@@ -14,8 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Run tests
-        run:  make test_bashscripts
+      - name: Run bash tests
+	      run: docker run --rm -v "${PWD}/.github:/code" bats-with-helpers:latest /code/tests/test_retag_and_push.bats
 
   build-start-test:
     runs-on: ubuntu-latest
@@ -33,7 +33,7 @@ jobs:
           make build
           docker tag local-frontend navigator-frontend
 
-      - name: Run frontend
+      - name: Run frontend TODO - use own backend?
         run:  make run_ci
 
       - name: verify frontend is up

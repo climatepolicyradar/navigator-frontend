@@ -22,3 +22,13 @@ with_production:
 build:
 	docker build -t ${TAG} .
 
+run_ci:
+	docker run --rm -d \
+		-p 3000:3000 \
+       	-e THEME=$(THEME) \
+       	-e API_URL=$(API_URL) \
+      	-e ADOBE_API_KEY=$(ADOBE_API_KEY) \
+      	-e NODE_ENV="production" \
+      	-e ROBOTS="false" \
+      	-e HOSTNAME="http://localhost:3000" \
+		$(TAG)
