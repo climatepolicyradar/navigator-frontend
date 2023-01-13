@@ -38,11 +38,8 @@ jobs:
       - name: Run frontend TODO - use own backend?
         run: make run_ci
 
-      - name: Wait for port to open
-        run: timeout 10 sh -c 'until nc -z $0 $1; do sleep 1; done' localhost 3000
-
-      - name: verify frontend is up
-        run:  curl http://localhost:3000
+      - name: Wait for max 10 seconds until frontend responds
+        run: timeout 10 sh -c 'until curl http://$0:$1 ; do sleep 1; done' localhost 3000
       
       - name: Configure frontend test env
         run:  cp e2e/.env.example e2e/.env
