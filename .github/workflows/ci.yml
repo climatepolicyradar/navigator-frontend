@@ -36,7 +36,9 @@ jobs:
           docker tag local-frontend navigator-frontend
 
       - name: Run frontend TODO - use own backend?
-        run:  make run_ci
+        run:  |
+          make run_ci
+          timeout 10 sh -c 'until nc -z $0 $1; do sleep 1; done' localhost 3000
 
       - name: verify frontend is up
         run:  curl http://localhost:3000
