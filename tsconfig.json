@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "baseUrl": "src",
+    "paths": {
+      "@api/*": ["api/*"],
+      "@components/*": ["components/*"],
+      "@constants/*": ["constants/*"],
+      "@context/*": ["context/*"],
+      "@helpers/*": ["helpers/*"],
+      "@hooks/*": ["hooks/*"],
+      "@interfaces/*": ["interfaces/*"],
+      "@types": ["types/index"],
+      "@pages/*": ["pages/*"],
+      "@utils/*": ["utils/*"],
+      "@cclw/*": ["sites/cclw/*"],
+      "@cpr/*": ["sites/cpr/*"],
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/api/pdf.js"],
+  "exclude": ["node_modules"],
+  "types": ["cypress", "cypress-file-upload"]
+}
