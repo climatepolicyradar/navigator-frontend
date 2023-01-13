@@ -15,7 +15,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Run bash tests
-        run: docker run --rm -v "${PWD}/.github:/code" bats-with-helpers:latest /code/tests/test_retag_and_push.bats
+        run: |
+          docker build bats -t bats-with-helpers:latest
+          docker run --rm -v "${PWD}/.github:/code" bats-with-helpers:latest /code/tests/test_retag_and_push.bats
 
   build-start-test:
     runs-on: ubuntu-latest
