@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-bash:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run tests
+        run:  make test_bashscripts
+
+  build-start-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use .env.example
+        run:  cp .env.example .env
+
+      - name: Get node Container
+        run:  docker pull node:16-alpine3.13
+
+      - name: Build
+        run: |
+          make build
+          docker tag local-frontend navigator-frontend
+
+      - name: Run frontend
+        run:  make run_ci
+
+      - name: verify frontend is up
+        run:  curl http://localhost:3000
+      
+      - name: Configure frontend test env
+        run:  cp e2e/.env.example e2e/.env
+
+      - name: Get cypress Container      
+        run:  docker pull cypress/included:10.1.0
+
+      - name: Build e2e tests
+        run:  cd e2e && docker-compose build
+
+      - name: Run e2e tests
+        run:  cd e2e && docker-compose up --abort-on-container-exit --exit-code-from cypress
+      
+      - name: Run Integration Tests
+        run: echo TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Push Images to ECR
+        run: |
+          .github/retag-and-push.sh navigator-frontend latest
+        env:
+          DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

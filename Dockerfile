@@ -1,18 +1,5 @@
 FROM node:16-alpine3.13
 
-ARG API_URL
-ENV API_URL=${API_URL}
-
-ARG LOGIN_API_URL
-ENV LOGIN_API_URL=${LOGIN_API_URL}
-
-ARG ADOBE_API_KEY
-ENV ADOBE_API_KEY=${ADOBE_API_KEY}
-
-ARG PORT=3000
-ENV PORT $PORT
-EXPOSE $PORT
-
 # you'll likely want the latest npm, regardless of node version, for speed and fixes
 # but pin this version for the best stability
 RUN npm i npm@latest -g

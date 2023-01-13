@@ -24,8 +24,6 @@ function getRedirects(): Array<TRedirect> {
         case "cclw": redirects.push.apply(redirects, cclwRedirects); break;
         case "cpr": redirects.push.apply(redirects, cprRedirects); break;
     }
-    console.log(`Loaded ${redirects.length} redirects for ${theme}`);
-    console.log(JSON.stringify(redirects, null, 4));
     return redirects;
 }
 
