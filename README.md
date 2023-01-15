@@ -16,5 +16,10 @@ Run `make` or `make THEME=cclw`
 
 Local development is done using docker 
 
-
 ## Environment
+
+See the `.env.example` file for details of configuration environment variables.
+
+## Testing
+
+This project is tested with BrowserStack.
