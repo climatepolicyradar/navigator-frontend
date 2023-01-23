@@ -67,7 +67,8 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
       <div className={`max-w-screen-lg mx-auto flex items-stretch relative ${wrapperCssClass}`}>
         <input
           id="landingPage-searchInput"
-          data-cy="search-input"
+          data-analytics="landingPage-searchInput"   
+          data-cy="search-input"   
           type="search"
           className={inputCssClass}
           value={term}
