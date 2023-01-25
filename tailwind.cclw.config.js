@@ -38,6 +38,7 @@ module.exports = {
       sky: "var(--color-sky)",
       primary: {
         400: "var(--color-primary-400)",
+        600: "var(--color-primary-600)",
         700: "var(--color-primary-700)",
       },
       secondary: {
