@@ -4,79 +4,20 @@ import Layout from "@components/layouts/Main";
 import DocumentInfo from "@components/blocks/DocumentInfo";
 import { Timeline } from "@components/blocks/Timeline";
 import Event from "@components/blocks/Event";
-import SquareButton from "@components/buttons/SquareButton";
-import { RelatedDocument } from "@components/blocks/RelatedDocument";
-import TabbedNav from "@components/nav/TabbedNav";
 import { ExternalLinkIcon, GlobeIcon, DocumentIcon, PDFIcon } from "@components/svg/Icons";
 import { CountryLink } from "@components/CountryLink";
-import { convertDate, formatDate } from "@utils/timedate";
+import { Targets } from "@components/Targets";
+import { FamilyDocument } from "@components/document/FamilyDocument";
+import { ShowHide } from "@components/controls/ShowHide";
+import { convertDate } from "@utils/timedate";
 import { initialSummaryLength } from "@constants/document";
 import { truncateString } from "@helpers/index";
 
-import { TEvent } from "@types";
+import { TEvent, TFamilyDocument } from "@types";
 import { ExternalLink } from "@components/ExternalLink";
 import { ApiClient } from "@api/http-common";
 import { getDocumentTitle } from "@helpers/getDocumentTitle";
-
-// TODO: move into separate file
-type TFamilyDocument = {
-  id: number;
-  type: { name: string; description: string };
-  title: string;
-  date: string;
-  variant: { id: number; label: string; description: string };
-  format: string;
-  matches: number;
-};
-
-type TFamilyDocumentProps = {
-  document: TFamilyDocument;
-};
-
-const FamilyDocument = ({ document }: TFamilyDocumentProps) => {
-  const [year, _, month] = formatDate(document.date);
-
-  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    console.log(e);
-  };
-
-  return (
-    <div className="mt-4 cursor-pointer p-3 border border-transparent hover:border-primary-600 hover:bg-offwhite transition duration-300" onClick={handleClick}>
-      <div className="underline text-primary-600 mb-2">{document.title}</div>
-      <div className="flex items-center">
-        <div className="flex-1 flex flex-wrap gap-8">
-          <span className="font-bold">{document.type.description}</span>
-          <span>{document.format.toUpperCase()}</span>
-          <span>{document.variant.label}</span>
-          <span>{`${month} ${year}`}</span>
-        </div>
-        <div className="flex-0">
-          <SquareButton>{document.matches} matches in document</SquareButton>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-type TShowHideControlProps = {
-  show: boolean;
-  label?: string;
-  onClick: () => void;
-  className?: string;
-};
-
-const ShowHideControl = ({ show, label, onClick, className }: TShowHideControlProps) => {
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault();
-    onClick();
-  };
-
-  return (
-    <a href="#" onClick={handleClick} className={`text-primary-600 hover:text-primary-700 hover:underline transition duration-300 ${className}`}>
-      {label ?? show ? "Hide" : "Show"}
-    </a>
-  );
-};
+import { Divider } from "@components/dividers/Divider";
 
 const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page }) => {
   const [showTimeline, setShowTimeline] = useState(false);
@@ -85,6 +26,14 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const [summary, setSummary] = useState("");
 
   const [year] = convertDate(page?.publication_ts);
+
+  const handleCollectionClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setShowCollectionDetail(true);
+    setTimeout(() => {
+      document.getElementById("collection").scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
 
   useEffect(() => {
     console.log(page);
@@ -134,17 +83,17 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
         <div className="bg-offwhite border-solid border-lineBorder border-b">
           <div className="container">
             <div className="flex flex-col md:flex-row">
-              <div className="flex-1 mt-6">
+              <div className="flex-1 my-4">
                 <h1 className="text-3xl lg:smaller">{page.title}</h1>
                 {page?.collection && (
-                  <div className="flex text-base text-indigo-400 mt-3 items-center w-full mb-2 font-medium">
-                    Part of &nbsp;
-                    <a href="#collection" className="underline text-primary-400 hover:text-indigo-600 duration-300">
+                  <div className="flex text-base text-indigo-400 mt-4 items-center w-full mb-2 font-medium">
+                    <span>Part of &nbsp;</span>
+                    <a onClick={handleCollectionClick} href="#collection" className="underline text-primary-400 hover:text-indigo-600 duration-300">
                       {page?.collection}
                     </a>
                   </div>
                 )}
-                <div className="flex text-base text-indigo-400 mt-3 items-center w-full mb-6 font-medium">
+                <div className="flex text-base text-indigo-400 mt-2 items-center w-full font-medium">
                   <CountryLink countryCode={page.geography.value}>
                     <span className={`rounded-sm border border-black flag-icon-background flag-icon-${page.geography.value.toLowerCase()}`} />
                     <span className="ml-2">{page.geography.display_value}</span>
@@ -161,25 +110,29 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               <section className="mt-6">
                 <h3>Summary</h3>
                 <div className="text-content mt-4" dangerouslySetInnerHTML={{ __html: summary }} />
+                {page.description.length > initialSummaryLength && (
+                  <div className="mt-6 flex justify-end">
+                    {showFullSummary ? (
+                      <button onClick={() => setShowFullSummary(false)} className="text-blue-500 font-medium">
+                        Collapse summary
+                      </button>
+                    ) : (
+                      <button onClick={() => setShowFullSummary(true)} className="text-blue-500 font-medium">
+                        Show full summary
+                      </button>
+                    )}
+                  </div>
+                )}
                 <FamilyDocument document={page.documents.find((doc: TFamilyDocument) => doc.type.name === "main")} />
               </section>
-              {page.description.length > initialSummaryLength && (
-                <section className="mt-6 flex justify-end">
-                  {showFullSummary ? (
-                    <button onClick={() => setShowFullSummary(false)} className="text-blue-500 font-medium">
-                      Collapse
-                    </button>
-                  ) : (
-                    <button onClick={() => setShowFullSummary(true)} className="text-blue-500 font-medium">
-                      Show full summary
-                    </button>
-                  )}
-                </section>
-              )}
+
+              <div className="mt-12">
+                <Divider color="bg-lineBorder" />
+              </div>
 
               <section className="mt-12">
                 <h3>Related documents</h3>
-                <div className="divide-solid divide-y">
+                <div className="divide-solid divide-blue-100 divide-y">
                   {page.documents.map((doc: TFamilyDocument) => {
                     if (doc.type.name !== "main") {
                       return (
@@ -192,36 +145,100 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                 </div>
               </section>
 
-              {/* {renderSourceLink()} */}
+              <div className="mt-12">
+                <Divider color="bg-lineBorder" />
+              </div>
+
+              <section className="mt-12">
+                <div>
+                  <h3 className="flex flex-col mb-4 md:flex-row md:items-center justify-between">
+                    <span className="flex-1">Targets (3)</span>
+                    <span className="text-sm text-grey-700 flex-0">
+                      Download targets data (.csv){" "}
+                      <a href="#" onClick={(e) => e.preventDefault()} className="underline text-primary-600">
+                        this list
+                      </a>{" "}
+                      |{" "}
+                      <a href="#" onClick={(e) => e.preventDefault()} className="underline text-primary-600">
+                        whole database
+                      </a>
+                    </span>
+                  </h3>
+                  <Targets targets={page.targets} />
+                </div>
+              </section>
 
               {page.events.length > 0 && (
-                <section className="mt-12">
-                  <h3>Timeline</h3>
-                  <ShowHideControl show={showTimeline} onClick={() => setShowTimeline(!showTimeline)} className="mt-4" />
-                  {showTimeline && (
-                    <Timeline>
-                      {page.events.map((event: TEvent, index: number) => (
-                        <React.Fragment key={`event-${index}`}>
-                          <Event event={event} index={index} last={index === page.events.length - 1 ? true : false} />
-                        </React.Fragment>
-                      ))}
-                    </Timeline>
-                  )}
-                </section>
+                <>
+                  <div className="mt-12">
+                    <Divider color="bg-lineBorder" />
+                  </div>
+
+                  <section className="mt-12">
+                    <h3>Timeline</h3>
+                    <ShowHide show={showTimeline} onClick={() => setShowTimeline(!showTimeline)} className="mt-4" />
+                    {showTimeline && (
+                      <Timeline>
+                        {page.events.map((event: TEvent, index: number) => (
+                          <React.Fragment key={`event-${index}`}>
+                            <Event event={event} index={index} last={index === page.events.length - 1 ? true : false} />
+                          </React.Fragment>
+                        ))}
+                      </Timeline>
+                    )}
+                  </section>
+                </>
               )}
 
-              {page.related_documents.length ? (
-                <section className="mt-12">
-                  <h3>Associated documents</h3>
-                  {page.related_documents.map((doc, i) => (
-                    <div key={i + "-" + doc.slug} className="my-4">
-                      <RelatedDocument document={doc} />
+              <div className="mt-12">
+                <Divider color="bg-lineBorder" />
+              </div>
+
+              <section className="mt-12" id="collection">
+                <h3>About the Common Agricultural Policy</h3>
+                <ShowHide show={showCollectionDetail} onClick={() => setShowCollectionDetail(!showCollectionDetail)} className="mt-4" />
+                {showCollectionDetail && (
+                  <div className="text-content">
+                    <div className="mb-8">
+                      <p>
+                        The common agricultural policy (CAP) was created in 1962 by the six founding countries of the European Communities and is the
+                        longest-serving EU policy. Its aim is to:
+                      </p>
+                      <ul>
+                        <li>provide affordable, safe and high-quality food for EU citizens</li>
+                        <li>ensure a fair standard of living for farmers</li>
+                        <li>preserve natural resources and respect the environment</li>
+                        <li>providing food security for all European citizens</li>
+                        <li>addressing global market fluctuations and price volatility</li>
+                        <li>maintaining thriving rural areas across the EU</li>
+                        <li>using natural resources in a more sustainable manner</li>
+                      </ul>
+                      <p>
+                        The CAP is a common policy for all EU countries. It is managed and funded at European level from the resources of the EU’s
+                        budget.
+                      </p>
                     </div>
-                  ))}
-                </section>
-              ) : null}
+                    <div className="mb-8">
+                      <h6 className="text-primary-600">
+                        The CAP towards 2020: Meeting the food, natural resources and territorial challenges of the future
+                      </h6>
+                      <p>
+                        This EU Comission Communication provides an overview of the rationale for reforming the Common Agricultural Policy to align
+                        with the EU’s climate change objectives.
+                      </p>
+                    </div>
+                    <div className="mb-8">
+                      <h6 className="text-primary-600">Overview of CAP Reform 2014 - 2020</h6>
+                      <p>
+                        The CAP 2014-2020 has been reformed by strengthing its greening aspects. Climate mitigation and adaption are explically among
+                        the key objectives of the CAP, which accounts for about 30% of the overall EU budget / MFF 2014-2020.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </section>
             </section>
-            <section className="mt-6 md:w-2/5 lg:w-1/4 md:pl-12 flex-shrink-0">
+            <section className="mt-12 md:border-t-0 md:mt-6 md:w-2/5 lg:w-1/4 md:pl-12 flex-shrink-0">
               <div className="md:pl-4 md:border-l md:border-lineBorder">
                 <h3>About this document</h3>
                 <div className="grid grid-cols-2 gap-x-2">
@@ -285,7 +302,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       page: {
         ...page,
-        title,
+        title: "Regulation 2020/2220 of the European Parliament and of the Council",
         collection: "Common Argicultural Policy",
         description: "A regulation was approved in December 2020 to lay down transitional provisions that will apply until the end of 2022.",
         documents: [
@@ -305,7 +322,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             date: "2020-01-31",
             variant: { id: 1, label: "(EN) unofficial translation", description: "" },
             format: "PDF",
-            matches: 7,
+            matches: 3,
           },
           {
             id: 3,
@@ -314,7 +331,28 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             date: "2020-01-31",
             variant: { id: 1, label: "(FR) official translation", description: "" },
             format: "PDF",
-            matches: 7,
+            matches: 2,
+          },
+        ],
+        targets: [
+          {
+            target: "Deploy 10 MW of Wind Power in by 2011, then 50 MW in 5-10 years by 2016",
+            group: "Energy: Renewable Energy",
+            base_year: 2013,
+            target_year: 2016,
+          },
+          {
+            target: "Rehabilitate 94 MW of hydropower capacity by 2008 against a 2006 baseline",
+            group: "Energy: Renewable Energy",
+            base_year: 2006,
+            target_year: 2008,
+          },
+          {
+            target:
+              "Effective protection rate of natural wetlands will reach more than 60%, and the area of desertified land will be over 50% of the controllable area. More than 95% of the state's key protected wild animals and over 90% of the minimum wild plant species will be effectively protected against desertification by 2020.",
+            group: "LULUCF: Preservation",
+            base_year: 2013,
+            target_year: 2020,
           },
         ],
       },

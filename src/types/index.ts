@@ -123,3 +123,13 @@ export type TAssociatedDocument = {
   publication_ts: string;
   category?: TCategory;
 };
+
+export type TFamilyDocument = {
+  id: number;
+  type: { name: string; description: string };
+  title: string;
+  date: string;
+  variant: { id: number; label: string; description: string };
+  format: string;
+  matches: number;
+};
