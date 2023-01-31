@@ -14,11 +14,14 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
       <section className="mb-8 flex-1 flex flex-col">
         <DocumentHead document={document} />
         <section className="mt-4 flex-1 flex">
-          <div className="container flex-1 flex flex-col md:flex-row">
-            <div className="md:block md:w-1/3 overflow-y-scroll pl-3 max-h-[80vh]">
+          <div className="container flex-1 md:flex md:flex-row md:flex-wrap">
+            <div className="w-full pb-4 border-b border-lineBorder">
+              <h3>Document matches for 'Adaptation Report' (9)</h3>
+            </div>
+            <div className="md:block md:w-1/3 overflow-y-scroll max-h-[30vh] md:max-h-[80vh]">
               <PassageMatches document={document.physical_document} setPassageIndex={setPassageIndex} activeIndex={passageIndex} />
             </div>
-            <div className={`md:block md:w-2/3 mt-4 px-6 flex-1`}>
+            <div className="md:block md:w-2/3 mt-4 px-6 flex-1 h-[400px] md:h-auto">
               <EmbeddedPDF document={document.physical_document} passageIndex={passageIndex} />
             </div>
           </div>
