@@ -48,6 +48,7 @@ export type TDocument = {
   document_title_match: boolean;
   document_type: string;
   document_url: string;
+  document_id: string;
   document_fileid?: string;
 };
 

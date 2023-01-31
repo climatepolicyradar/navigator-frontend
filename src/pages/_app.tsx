@@ -120,7 +120,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
         `}
           </Script>
           {dynamicTheme === "cclw" && <Banner />}
-          <div id={dynamicTheme}>
+          <div id={dynamicTheme} className="h-full">
             <Component {...pageProps} />
           </div>
           <CookieConsent />

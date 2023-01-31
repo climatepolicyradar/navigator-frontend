@@ -9,6 +9,7 @@ type TFamilyDocumentProps = {
 export const FamilyDocument = ({ document }: TFamilyDocumentProps) => {
   const [year, _, month] = formatDate(document.date);
   const isMain = document.type.name === "main";
+  const buttonText = document.matches > 0 ? `${document.matches} match${document.matches > 1 ? "es" : ""} in document` : "View document";
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     console.log(e);
@@ -30,7 +31,7 @@ export const FamilyDocument = ({ document }: TFamilyDocumentProps) => {
           <span>{`${month} ${year}`}</span>
         </div>
         <div className="flex-0">
-          <SquareButton>{document.matches} matches in document</SquareButton>
+          <SquareButton>{buttonText}</SquareButton>
         </div>
       </div>
     </div>

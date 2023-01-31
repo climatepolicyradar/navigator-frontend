@@ -1,31 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { ApiClient } from "@api/http-common";
 import Layout from "@components/layouts/Main";
 import DocumentInfo from "@components/blocks/DocumentInfo";
 import { Timeline } from "@components/blocks/Timeline";
 import Event from "@components/blocks/Event";
 import { ExternalLinkIcon, GlobeIcon, DocumentIcon, PDFIcon } from "@components/svg/Icons";
-import { CountryLink } from "@components/CountryLink";
-import { Targets } from "@components/Targets";
+import { DocumentHead } from "@components/document/DocumentHead";
 import { FamilyDocument } from "@components/document/FamilyDocument";
+import { ExternalLink } from "@components/ExternalLink";
+import { Targets } from "@components/Targets";
 import { ShowHide } from "@components/controls/ShowHide";
-import { convertDate } from "@utils/timedate";
+import { Divider } from "@components/dividers/Divider";
 import { initialSummaryLength } from "@constants/document";
 import { truncateString } from "@helpers/index";
-
-import { TEvent, TFamilyDocument } from "@types";
-import { ExternalLink } from "@components/ExternalLink";
-import { ApiClient } from "@api/http-common";
 import { getDocumentTitle } from "@helpers/getDocumentTitle";
-import { Divider } from "@components/dividers/Divider";
+import { TEvent, TFamilyDocument } from "@types";
 
 const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page }) => {
   const [showTimeline, setShowTimeline] = useState(false);
   const [showCollectionDetail, setShowCollectionDetail] = useState(false);
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [summary, setSummary] = useState("");
-
-  const [year] = convertDate(page?.publication_ts);
 
   const handleCollectionClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -80,30 +76,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   return (
     <Layout title={page.title}>
       <section className="mb-8">
-        <div className="bg-offwhite border-solid border-lineBorder border-b">
-          <div className="container">
-            <div className="flex flex-col md:flex-row">
-              <div className="flex-1 my-4">
-                <h1 className="text-3xl lg:smaller">{page.title}</h1>
-                {page?.collection && (
-                  <div className="flex text-base text-indigo-400 mt-4 items-center w-full mb-2 font-medium">
-                    <span>Part of &nbsp;</span>
-                    <a onClick={handleCollectionClick} href="#collection" className="underline text-primary-400 hover:text-indigo-600 duration-300">
-                      {page?.collection}
-                    </a>
-                  </div>
-                )}
-                <div className="flex text-base text-indigo-400 mt-2 items-center w-full font-medium">
-                  <CountryLink countryCode={page.geography.value}>
-                    <span className={`rounded-sm border border-black flag-icon-background flag-icon-${page.geography.value.toLowerCase()}`} />
-                    <span className="ml-2">{page.geography.display_value}</span>
-                  </CountryLink>
-                  <span>&nbsp;&#124;&nbsp;{year}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <DocumentHead document={page} onCollectionClick={handleCollectionClick} />
         <div className="container">
           <div className="md:flex">
             <section className="flex-1 md:w-0">

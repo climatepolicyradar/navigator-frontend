@@ -12,7 +12,7 @@ function generateHighlights(document: TDocument) {
       bodyValue: "",
       motivation: "commenting",
       target: {
-        source: document.document_fileid,
+        source: document.document_id,
         selector: {
           node: {
             index: passage.text_block_page - 1,
