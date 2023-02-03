@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Script from "next/script";
 import Head from "next/head";
 import Leaflet from "leaflet";
@@ -9,6 +9,7 @@ import { MapContainer, Marker, Popup, TileLayer, Polygon, GeoJSON, CircleMarker 
 import GeoJsonData from "../../../public/data/world-m.geo.json";
 // import CCLWData from "../../../public/data/cclw/world.topo.json";
 import { geoCentrePoints } from "@constants/mapCentres";
+import { CountryLink } from "@components/CountryLink";
 
 type TGeo = {
   type: string;
@@ -67,6 +68,7 @@ const getCenter = (coordinates: TGeoCoords): [number, number] => {
 // };
 
 const Map = () => {
+  const [popupPosition, setPopupPosition] = useState(null);
   const mapData: any = GeoJsonData;
   // const dataCircles = generateGeoCircles(data.features);
   // const dataCirclesManual = generateGeoCirclesManually(data.features);
@@ -80,19 +82,31 @@ const Map = () => {
   // const geoCentres: any = geoCentrePoints;
   // console.log(geoCentres);
 
+  // Listen for interactions with the feature / geography
+  // Save the feature/layer/geo info into state and dynamically populate the popup component with the data
   const geoClickHoverHandler = (e: any) => {
-    console.log(e.layer?.feature?.properties);
+    console.log('feature', e);
+    console.log('properties', e.layer?.feature?.properties);
+    setPopupPosition([e.latlng.lat, e.latlng.lng]);
     return false;
   };
 
   const onEachFeature = (feature: any, layer: any) => {
-    layer.bindPopup("<h1>" + feature.properties.f1 + "</h1><p>name: " + feature.properties.f2 + "</p>");
+    layer.bindPopup(
+      "<p>" +
+        feature.properties.formal_en +
+        "</p><p>name: " +
+        feature.properties.income_grp +
+        "</p><p>" +
+        <CountryLink countryCode={feature.properties.adm0_a3} /> +
+        "</p>"
+    );
   };
 
   const myCustomStyle = {
     stroke: true,
-    color: "#000",
-    opacity: 0.4,
+    color: "#5e5e5e",
+    opacity: 0.1,
     fill: true,
     fillColor: "#fff",
     fillOpacity: 1,
@@ -100,7 +114,7 @@ const Map = () => {
 
   const geoEventHandlers = {
     click: geoClickHoverHandler,
-    mouseover: geoClickHoverHandler,
+    // mouseover: geoClickHoverHandler,
   };
 
   return (
@@ -143,6 +157,7 @@ const Map = () => {
               );
             })} */}
           <GeoJSON data={mapData} style={myCustomStyle} eventHandlers={geoEventHandlers} onEachFeature={onEachFeature} />
+          {popupPosition && <Popup position={popupPosition}>Test</Popup>}
           {/* {geoCentres &&
             Object.keys(geoCentres).map((ISO, i) => {
               if (Number.isNaN(geoCentres[ISO]) || Number.isNaN(geoCentres[ISO])) return null;

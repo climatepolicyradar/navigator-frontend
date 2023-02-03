@@ -6,11 +6,18 @@ const Map = dynamic(() => import("@components/map/Map"), {
   ssr: false,
 });
 
+const SimpleMap = dynamic(() => import("@components/map/SimpleMap"), {
+  ssr: false,
+});
+
 const MapView = () => {
   return (
     <>
       <Layout title="Map view">
-        <Map />
+        {/* <div className="container"> */}
+          <Map />
+          {/* <SimpleMap /> */}
+        {/* </div> */}
       </Layout>
     </>
   );
