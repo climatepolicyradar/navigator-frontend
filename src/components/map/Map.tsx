@@ -1,109 +1,58 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Script from "next/script";
 import Head from "next/head";
-import Leaflet from "leaflet";
-// import TurfCenter from "@turf/center";
-// import { AllGeoJSON } from "@turf/helpers";
-import { feature, mergeArcs } from "topojson-client";
-import { MapContainer, Marker, Popup, TileLayer, Polygon, GeoJSON, CircleMarker } from "react-leaflet";
+import { MapContainer, Popup, GeoJSON } from "react-leaflet";
 import GeoJsonData from "../../../public/data/world-m.geo.json";
-// import CCLWData from "../../../public/data/cclw/world.topo.json";
-import { geoCentrePoints } from "@constants/mapCentres";
 import { CountryLink } from "@components/CountryLink";
 
-type TGeo = {
-  type: string;
-  properties: { adm0_a3: string };
-  geometry: {
-    type: string;
-    // coordinates: AllGeoJSON;
-  };
+type TMapStyleOptions = {
+  stroke?: boolean;
+  color?: string;
+  weight?: number;
+  opacity?: number;
+  dashArray?: string;
+  dashOffset?: string;
+  fill?: boolean;
+  fillColor?: string;
+  fillOpacity?: number;
+  bubblingMouseEvents?: boolean;
+  className?: string;
 };
 
-type TGeoCircle = {
-  centerCalc: any;
-  // country: string;
+type TPopup = {
+  position: [number, number];
+  country: string;
+  countryCode: string;
 };
-
-type TGeoCircleM = {
-  centerCalc: any;
-  // country: string;
-};
-
-type TGeoCoords = [number, number][];
-
-// function to calculate the center of the polygon
-const getCenter = (coordinates: TGeoCoords): [number, number] => {
-  const center = coordinates.reduce(
-    (acc, coord) => {
-      acc[0] += coord[0];
-      acc[1] += coord[1];
-      return acc;
-    },
-    [0, 0]
-  );
-  return [center[0] / coordinates.length, center[1] / coordinates.length];
-};
-
-// const generateGeoCircles = (geos: AllGeoJSON[]): TGeoCircle[] => {
-//   return geos.map((feature: AllGeoJSON) => {
-//     const centerCalc = TurfCenter(feature);
-
-//     return {
-//       centerCalc,
-//       // country: feature.properties.adm0_a3,
-//     };
-//   });
-// };
-
-// const generateGeoCirclesManually = (geos: TGeo[]): TGeoCircleM[] => {
-//   console.log(geos);
-//   return geos.map((feature: TGeo) => {
-//     const centerCalc = getCenter(feature.geometry.coordinates[0]);
-
-//     return {
-//       centerCalc,
-//     };
-//   });
-// };
 
 const Map = () => {
-  const [popupPosition, setPopupPosition] = useState(null);
+  const [popup, setPopup] = useState<TPopup>(null);
   const mapData: any = GeoJsonData;
-  // const dataCircles = generateGeoCircles(data.features);
-  // const dataCirclesManual = generateGeoCirclesManually(data.features);
-  // console.log(dataCircles.map((geoCircle) => geoCircle.center));
-  // console.log(data);
-  // console.log(dataCircles);
-  // console.log(dataCirclesManual);
-  // const data: any = CCLWData;
-  // const mapData = feature(data, CCLWData.objects[Object.keys(data.objects)[0]]);
-  // console.log(mapData);
-  // const geoCentres: any = geoCentrePoints;
-  // console.log(geoCentres);
 
   // Listen for interactions with the feature / geography
   // Save the feature/layer/geo info into state and dynamically populate the popup component with the data
-  const geoClickHoverHandler = (e: any) => {
-    console.log('feature', e);
-    console.log('properties', e.layer?.feature?.properties);
-    setPopupPosition([e.latlng.lat, e.latlng.lng]);
+  const geoClickHandler = (e: any) => {
+    const geoDetails = e.layer?.feature?.properties;
+    setPopup({ position: [e.latlng.lat, e.latlng.lng], country: geoDetails.admin, countryCode: geoDetails.adm0_a3 });
     return false;
   };
 
-  const onEachFeature = (feature: any, layer: any) => {
-    layer.bindPopup(
-      "<p>" +
-        feature.properties.formal_en +
-        "</p><p>name: " +
-        feature.properties.income_grp +
-        "</p><p>" +
-        <CountryLink countryCode={feature.properties.adm0_a3} /> +
-        "</p>"
-    );
+  const geoMouseOverHandler = (e: any) => {
+    const geoLayer = e.layer;
+    geoLayer.bringToFront();
+    geoLayer.setStyle({
+      opacity: 0.5,
+    });
+    return false;
   };
 
-  const myCustomStyle = {
+  const geoMouseOutHandler = (e: any) => {
+    const geoLayer = e.layer;
+    geoLayer.setStyle(baseStyle);
+    return false;
+  };
+
+  const baseStyle: TMapStyleOptions = {
     stroke: true,
     color: "#5e5e5e",
     opacity: 0.1,
@@ -113,8 +62,9 @@ const Map = () => {
   };
 
   const geoEventHandlers = {
-    click: geoClickHoverHandler,
-    // mouseover: geoClickHoverHandler,
+    click: geoClickHandler,
+    mouseover: geoMouseOverHandler,
+    mouseout: geoMouseOutHandler,
   };
 
   return (
@@ -132,51 +82,22 @@ const Map = () => {
         integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
         crossOrigin=""
       ></Script>
-      <div style={{ aspectRatio: (1000 / 400).toString() }}>
-        <MapContainer center={[51.505, -0.09]} zoom={3} minZoom={2} scrollWheelZoom={false} className="h-full w-full geo-map">
-          {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
-          {/* <GeoJSON data={data} style={myCustomStyle} eventHandlers={geoEventHandlers} />
-          {dataCircles &&
-            dataCircles.map((geoCircle, i) => {
-              // if (Number.isNaN(geoCircle.center[0]) || Number.isNaN(geoCircle.center[1])) return null;
-              return <CircleMarker key={i} center={geoCircle.centerCalc.geometry.coordinates} radius={20} fillOpacity={0.5} stroke={false} eventHandlers={geoEventHandlers} />;
-            })}
-          {dataCirclesManual &&
-            dataCirclesManual.map((geoCircle, i) => {
-              if (Number.isNaN(geoCircle.centerCalc[0]) || Number.isNaN(geoCircle.centerCalc[1])) return null;
-              return (
-                <CircleMarker
-                  key={i}
-                  center={geoCircle.centerCalc}
-                  radius={20}
-                  fillOpacity={0.5}
-                  stroke={false}
-                  color={"red"}
-                  eventHandlers={geoEventHandlers}
-                />
-              );
-            })} */}
-          <GeoJSON data={mapData} style={myCustomStyle} eventHandlers={geoEventHandlers} onEachFeature={onEachFeature} />
-          {popupPosition && <Popup position={popupPosition}>Test</Popup>}
-          {/* {geoCentres &&
-            Object.keys(geoCentres).map((ISO, i) => {
-              if (Number.isNaN(geoCentres[ISO]) || Number.isNaN(geoCentres[ISO])) return null;
-              return (
-                <CircleMarker
-                  key={i}
-                  center={[geoCentres[ISO][1], geoCentres[ISO][0]]}
-                  radius={5}
-                  fillOpacity={0.5}
-                  stroke={false}
-                  color={"red"}
-                  eventHandlers={geoEventHandlers}
-                >
-                  <Popup>{ISO}</Popup>
-                </CircleMarker>
-              );
-            })} */}
-        </MapContainer>
-      </div>
+
+      <MapContainer center={[51.505, -0.09]} zoom={3} minZoom={2} scrollWheelZoom={true} className="h-full w-full worldMap">
+        <GeoJSON data={mapData} style={baseStyle} eventHandlers={geoEventHandlers} />
+        {popup && (
+          <Popup position={popup.position} className="worldMap--popup">
+            <h4>{popup.country}</h4>
+            {popup.countryCode && (
+              <div className="mt-2">
+                <CountryLink countryCode={popup.countryCode} emptyContentFallback={<>We don't have details for this geography yet</>}>
+                  View details for {popup.country}
+                </CountryLink>
+              </div>
+            )}
+          </Popup>
+        )}
+      </MapContainer>
     </>
   );
 };

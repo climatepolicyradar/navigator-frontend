@@ -49,14 +49,16 @@
 
 @font-face {
   font-family: "Neue Haas Grotesk Display";
-  src: url("/fonts/5549031/5e356b56-25c1-43ac-9524-44e597eb7172.woff2") format("woff2"), url("/fonts/5549031/bb63728c-a742-41fb-929f-64692e41d2e7.woff") format("woff");
+  src: url("/fonts/5549031/5e356b56-25c1-43ac-9524-44e597eb7172.woff2") format("woff2"),
+    url("/fonts/5549031/bb63728c-a742-41fb-929f-64692e41d2e7.woff") format("woff");
   /* font-display: swap; */
   font-weight: 400;
 }
 
 @font-face {
   font-family: "Neue Haas Grotesk Display";
-  src: url("/fonts/5548986/4746c4e5-3355-4f8f-8395-3f7abfcbf4b8.woff2") format("woff2"), url("/fonts/5548986/0058324c-ca31-42b1-bf5b-b9d9025c1a9c.woff") format("woff");
+  src: url("/fonts/5548986/4746c4e5-3355-4f8f-8395-3f7abfcbf4b8.woff2") format("woff2"),
+    url("/fonts/5548986/0058324c-ca31-42b1-bf5b-b9d9025c1a9c.woff") format("woff");
   /* font-display: swap; */
   font-weight: 500;
 }
@@ -493,6 +495,15 @@ ul li.selected {
   }
 }
 
-.geo-map {
-  background: radial-gradient(ellipse at center, #c5e8ff 0, #a0c3ff 100%)
+.worldMap {
+  background: radial-gradient(ellipse at center, #c5e8ff 0, #a0c3ff 100%);
+}
+
+.worldMap--popup {
+  .leaflet-popup-content-wrapper {
+    @apply rounded-sm;
+    .leaflet-popup-content {
+      @apply my-2 mx-4;
+    }
+  }
 }
