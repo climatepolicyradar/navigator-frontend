@@ -501,7 +501,7 @@ ul li.selected {
 
 .worldMap--popup {
   .leaflet-popup-content-wrapper {
-    @apply rounded-sm;
+    @apply rounded-sm shadow-md border border-lineBorder;
     .leaflet-popup-content {
       @apply my-2 mx-4;
     }

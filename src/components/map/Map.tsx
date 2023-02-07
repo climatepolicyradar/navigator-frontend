@@ -25,9 +25,21 @@ type TPopup = {
   countryCode: string;
 };
 
-const Map = () => {
+type TProps = {
+  startingZoom?: number;
+};
+
+const Map = ({ startingZoom }: TProps) => {
   const [popup, setPopup] = useState<TPopup>(null);
   const mapData: any = GeoJsonData;
+  const baseStyle: TMapStyleOptions = {
+    stroke: true,
+    color: "#5e5e5e",
+    opacity: 0.1,
+    fill: true,
+    fillColor: "#fff",
+    fillOpacity: 1,
+  };
 
   // Listen for interactions with the feature / geography
   // Save the feature/layer/geo info into state and dynamically populate the popup component with the data
@@ -52,15 +64,6 @@ const Map = () => {
     return false;
   };
 
-  const baseStyle: TMapStyleOptions = {
-    stroke: true,
-    color: "#5e5e5e",
-    opacity: 0.1,
-    fill: true,
-    fillColor: "#fff",
-    fillOpacity: 1,
-  };
-
   const geoEventHandlers = {
     click: geoClickHandler,
     mouseover: geoMouseOverHandler,
@@ -82,12 +85,11 @@ const Map = () => {
         integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
         crossOrigin=""
       ></Script>
-
-      <MapContainer center={[51.505, -0.09]} zoom={3} minZoom={2} scrollWheelZoom={true} className="h-full w-full worldMap">
+      <MapContainer center={[51.505, -0.09]} zoom={startingZoom ?? 2} minZoom={2} scrollWheelZoom={true} className="h-full w-full worldMap">
         <GeoJSON data={mapData} style={baseStyle} eventHandlers={geoEventHandlers} />
         {popup && (
           <Popup position={popup.position} className="worldMap--popup">
-            <h4>{popup.country}</h4>
+            <h5>{popup.country}</h5>
             {popup.countryCode && (
               <div className="mt-2">
                 <CountryLink countryCode={popup.countryCode} emptyContentFallback={<>We don't have details for this geography yet</>}>
