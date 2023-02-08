@@ -8,6 +8,9 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import "../styles/flag-icon.css";
 import "@cclw/styles/cclw.main.scss";
 
+import { encode, decode } from "@utils/pako";
+import testJsonFromFile from "@utils/testJson.json";
+
 import { ThemeContext } from "@context/ThemeContext";
 import { AdobeContext } from "@context/AdobeContext";
 
@@ -72,6 +75,18 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
   const [siteTheme, setSiteTheme] = useState(null);
   const [adobeKey, setAdobeKey] = useState(null);
 
+  const [pakotest, setPakotest] = useState("");
+  const testJson = { my: "super", puper: [456, 567], awesome: "pako" };
+
+  const encodeTest = () => {
+    const encoded = encode(JSON.stringify(testJsonFromFile));
+    setPakotest(encoded);
+  };
+
+  const decodeTest = () => {
+    const decoded = decode(pakotest);
+  };
+
   useEffect(() => {
     // For access inside Cypress:
     if (window?.Cypress) {
@@ -117,6 +132,10 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
           gtag('config', 'G-ZD1WWE49TL');
         `}
           </Script>
+          <div className="z-50 absolute">
+            <button onClick={encodeTest}>Encode</button>
+            <button onClick={decodeTest}>Decode</button>
+          </div>
           {dynamicTheme === "cclw" && <Banner />}
           <div id={dynamicTheme}>
             <Component {...pageProps} />

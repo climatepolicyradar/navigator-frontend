@@ -1,0 +1,741 @@
+{
+  "hits": 1326,
+  "query_time_ms": 20,
+  "documents": [
+    {
+      "document_name": "National Climate Adaptation Strategy",
+      "document_geography": "NLD",
+      "document_sectors": [],
+      "document_source": "CCLW",
+      "document_date": "01/12/2016",
+      "document_id": "CCLW.executive.8708.1447",
+      "document_slug": "netherlands_2016_national-climate-adaptation-strategy_8708_1447",
+      "document_description": "This National Climate Adaptation Strategy introduces various new initiatives and will accelerate the progress of ongoing initiatives in the Netherlands.  The NAS uses four diagrams ('Hotter', 'Wetter', 'Drier' and 'Rising Sea Level') to visualise the effects of climate change within nine sectors: water and spatial management; nature; agriculture, horticulture and fisheries; health and welfare; recreation and tourism; infrastructure (road, rail, water and aviation); energy; IT and telecommunications; public safety and security.  Six climate effects which call for immediate action are identified: 1) Greater heat stress leading to increased morbidity, hospital admissions and mortality, as well as reduced productivity, 2) More frequent failure of vital systems: energy, telecommunications, IT and transport infrastructures, 3) More frequent crop failures or other problems in the agricultural sector, such as decreased yields or damage to production resources, 4) Shifting climate zones whereby some flora and fauna species will be unable to migrate or adapt, due in part to the lack of an internationally coordinated spatial policy, 5) Greater health burden and loss of productivity due to possible increase in infectious diseases or allergic (respiratory) conditions such as hay fever, and 6) Cumulative effects whereby a systems failure in one sector or at one location triggers further problems elsewhere.",
+      "document_type": "Strategy",
+      "document_category": "Policy",
+      "document_source_url": "https://climate-laws.org/rails/active_storage/blobs/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBdDhGIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--94937f4568971c5912a12874baf91ac6f912f351/f",
+      "document_url": "https://cdn.climatepolicyradar.org/NLD/2016/national-climate-adaptation-strategy_24f27bf84b960446b6229adcdb817fd0.pdf",
+      "document_content_type": "application/pdf",
+      "document_title_match": true,
+      "document_description_match": false,
+      "document_passage_matches": [
+        {
+          "text": "2016: Publication of the National Climate\nAdaptation Strategy (NAS).",
+          "text_block_id": "p_8_b_14",
+          "text_block_page": 9,
+          "text_block_coords": [
+            [372.1291809082031, 139.65655517578125],
+            [553.5045166015625, 139.65655517578125],
+            [553.5045166015625, 168.20892333984375],
+            [372.1291809082031, 168.20892333984375]
+          ]
+        },
+        {
+          "text": "National Climate Adaptation Strategy\nClimate trends\neffects at a glance",
+          "text_block_id": "p_17_b_0",
+          "text_block_page": 18,
+          "text_block_coords": [
+            [902.2066040039062, 595.9035949707031],
+            [1117.082763671875, 595.9035949707031],
+            [1117.082763671875, 650.6646118164062],
+            [902.2066040039062, 650.6646118164062]
+          ]
+        },
+        {
+          "text": "National Climate Adaptation Strategy\nClimate trends\neffects at a glance",
+          "text_block_id": "p_21_b_0",
+          "text_block_page": 22,
+          "text_block_coords": [
+            [905.4502563476562, 597.7380981445312],
+            [1117.785400390625, 597.7380981445312],
+            [1117.785400390625, 650.3662719726562],
+            [905.4502563476562, 650.3662719726562]
+          ]
+        },
+        {
+          "text": "2007: Publication of the first National\nClimate Adaptation Strategy. Preparations\nfor the 'Knowledge for Climate' research\nprogramme.",
+          "text_block_id": "p_8_b_2",
+          "text_block_page": 9,
+          "text_block_coords": [
+            [33.644554138183594, 248.03765869140625],
+            [213.17510986328125, 248.03765869140625],
+            [213.17510986328125, 299.2659912109375],
+            [33.644554138183594, 299.2659912109375]
+          ]
+        },
+        {
+          "text": "National Climate Adaptation Strategy\nClimate trends\neffects at a glance",
+          "text_block_id": "p_19_b_0",
+          "text_block_page": 20,
+          "text_block_coords": [
+            [904.5955200195312, 597.2102355957031],
+            [1117.074951171875, 597.2102355957031],
+            [1117.074951171875, 648.8833923339844],
+            [904.5955200195312, 648.8833923339844]
+          ]
+        },
+        {
+          "text": "The negative effects of climate change must be minimized or at least made manageable.\nThose effects include damage to property, nuisance or inconvenience, disease, increased\nmortality and a decline in environmental and ecological quality. This National Climate\nAdaptation Strategy (NAS) introduces various new initiatives and will accelerate the progress\nof ongoing initiatives. It builds upon a decade of climate adaptation policy and, in\ncombination with the Delta Programme, sets out the Netherlands' response to climate\nchange. One important component of the strategy is the desire to unite all parties in\npursuing common objectives. The NAS answers the European Commission's request for\nmember states to produce a climate adaptation strategy no later than 2017.",
+          "text_block_id": "p_5_b_4",
+          "text_block_page": 6,
+          "text_block_coords": [
+            [204.1973419189453, 560.5449829101562],
+            [554.3527221679688, 560.5449829101562],
+            [554.3527221679688, 670.6454925537109],
+            [204.1973419189453, 670.6454925537109]
+          ]
+        },
+        {
+          "text": "1. increase awareness of the necessity of climate adaptation\n2. encourage the implementation of climate adaptation measures\n3. develop and exploit the knowledge base\n4. address urgent climate risks\n5. embed climate adaptation within policy and legislation\n6. monitor the progress and effectiveness of the adaptation strategy.",
+          "text_block_id": "p_6_b_5",
+          "text_block_page": 7,
+          "text_block_coords": [
+            [203.23748779296875, 585.0411071777344],
+            [478.6129455566406, 585.0411071777344],
+            [478.6129455566406, 659.7920379638672],
+            [203.23748779296875, 659.7920379638672]
+          ]
+        },
+        {
+          "text": "1. increase awareness of the necessity of climate adaptation\n2. encourage the implementation of climate adaptation measures\n3. develop and exploit the knowledge base\n4. address urgent climate risks\n5. embed climate adaptation within policy and legislation\n6. monitor the progress and effectiveness of the adaptation strategy.",
+          "text_block_id": "p_33_b_5",
+          "text_block_page": 34,
+          "text_block_coords": [
+            [202.74961853027344, 525.294189453125],
+            [480.4253845214844, 525.294189453125],
+            [480.4253845214844, 599.3109436035156],
+            [202.74961853027344, 599.3109436035156]
+          ]
+        },
+        {
+          "text": "This National Climate Adaptation Strategy forms the precursor of a Climate Adaptation\nImplementation Programme which will build upon the various activities already in\nprogress, such as those of the Delta Programme. The necessary manpower and financial\nresources must now be put in place. The Delta Programme supports the implementation of\nthe NAS in various ways, including the production of the Delta Plan for Spatial Adaptation.\nThis will set out how the various parties are to pursue the objectives of the Delta Decision\non Spatial Adaptation, establishing the instruments and measures required to achieve the\nintended transition. The Climate Adaptation Implementation Programme will continue to\nbe considered in relationship to the Delta Programme.",
+          "text_block_id": "p_42_b_6",
+          "text_block_page": 43,
+          "text_block_coords": [
+            [202.63389587402344, 524.3970031738281],
+            [558.333984375, 524.3970031738281],
+            [558.333984375, 635.0974578857422],
+            [202.63389587402344, 635.0974578857422]
+          ]
+        }
+      ],
+      "document_postfix": ""
+    },
+    {
+      "document_name": "National Climate Change Adaptation Strategy",
+      "document_geography": "BEL",
+      "document_sectors": [],
+      "document_source": "CCLW",
+      "document_date": "06/12/2010",
+      "document_id": "CCLW.executive.1074.0",
+      "document_slug": "belgium_2010_national-climate-change-adaptation-strategy_1074_0",
+      "document_description": "The Strategy was developed by the Belgian National Climate Commission in response to the EU White Paper on Adaptation (2009) and the Belgian National Climate Plan (2009-2013). The three main objectives of the Strategy are:improve the coherence of existing adaptation initiatives (evaluation of climate change impacts and vulnerability, existing measures)improve communication at the national, European and international levelcreate a National Adaptation Plan  The Adaptation Strategy lays down the following principles and considerations to be followed during elaboration of a National Adaptation Plan (currently being developed):consideration of particular vulnerability of coastal areasneed for targeted specific adaptation measures and co-operation among all relevant stakeholderspossible side effects from adaptation measures but also potential for win-win measuresadaptation, so far a bottom-up approach, to be further encouraged and communicated through central co-ordinated initiatives especially for monitoring and best-practice sharingspecial support is to be provided to the most vulnerable groups  Based on the above, the following objectives of a future National Adaptation Plan are proposed:Cluster and co-ordinate work on adaptationEnsure visibility for stakeholders, both in and outside BelgiumCreate awareness and raise the sensitivity of actorsIdentify and communicate dangers, gaps, risks, possibilities and synergiesProvide policy coherence and a clear structure in which the current activities are to be positionedProvide basis for individual actors to take preventive measures and incorporate impacts of climate change in their private, business and public planningEnable co-operation and synergy between the federal, regional and local governmentsEnsure that all levels of government can fully control an effective implementation",
+      "document_type": "Strategy",
+      "document_category": "Policy",
+      "document_source_url": null,
+      "document_url": null,
+      "document_content_type": null,
+      "document_title_match": true,
+      "document_description_match": true,
+      "document_passage_matches": [],
+      "document_postfix": ""
+    },
+    {
+      "document_name": "National Climate Change Adaptation Strategy",
+      "document_geography": "CHN",
+      "document_sectors": [],
+      "document_source": "CCLW",
+      "document_date": "01/01/2013",
+      "document_id": "CCLW.executive.1313.2575",
+      "document_slug": "china_2013_national-climate-change-adaptation-strategy_1313_2575",
+      "document_description": "Reflecting China's vulnerability to climate change impacts, the National Development and Reform Commission (NDRC) published China's National Strategy for Climate Change Adaptation in November 2013.  The strategy lays out clear guidelines and principles for climate change adaptation and proposes some specific adaptation goals. It outlines a wide range of measures to be implemented by 2020 in order to protect water resources, minimise soil erosion and strengthen disaster prevention, such as early-warning detection and information-sharing mechanisms at the national and provincial levels, ocean disaster monitoring system and coastal restoration. To reduce climate impacts in agriculture the Chinese government plans to develop new farming practices, including controlling plant-eating pests and improving crop adaptability.  The plan also includes weather-based financial instruments such as catastrophe bonds and weather index-based insurance.",
+      "document_type": "Strategy",
+      "document_category": "Policy",
+      "document_source_url": "https://climate-laws.org/rails/active_storage/blobs/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBdXNKIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--0247f14fe7ec67e14b10dce599bfff3764e95a4c/f",
+      "document_url": "https://cdn.climatepolicyradar.org/CHN/2013/national-climate-change-adaptation-strategy_a25d29153160106826432d947f2c96c6.pdf",
+      "document_content_type": "application/pdf",
+      "document_title_match": true,
+      "document_description_match": true,
+      "document_passage_matches": [],
+      "document_postfix": ""
+    },
+    {
+      "document_name": "National Climate Change Adaptation Strategy",
+      "document_geography": "GHA",
+      "document_sectors": [],
+      "document_source": "CCLW",
+      "document_date": "15/11/2012",
+      "document_id": "CCLW.executive.1260.2259",
+      "document_slug": "ghana_2012_national-climate-change-adaptation-strategy_1260_2259",
+      "document_description": "The National Climate Change Adaptation Strategy (NCCAS) was released by a joint venture between UNEP/UNDP supported by the Danish Ministry of Foreign affairs. The document outlines strategies to increase climate resilience, decrease vulnerability of population, deepen awareness, draw from funding opportunities, and facilitate mainstreaming of disaster risk reduction to national development frameworks.It proposes to build capacity in the area of infrastructure, knowledge to deal with climate change impacts and reduce vulnerability in key sectors, ecosystems, districts and regions of the country. The National Climate Change Committee within the EPA (in MEST) is mandated to serve as the implementation agency of the NCCAS with the sub-national level institutions. It mandates town and area councils and unit committees to prepare their own climate change adaptation plans and submit to the District Assemblies to be incorporated into District Plans. It establishes regional co-ordination councils and proposes to link their work with that of the existing disaster management platforms.  Its key principles are:Adaptation policies to be addressed as part of national development policy frameworkStake holder participationPromotion of sustainable development and poverty reductionLong term impacts as the principle means for adaptationGender sensitivityFlexible and iterativeCross-sectoral integration but not sector wideImplementation- learning by doing  The strategy proposes early warning systems, focus on poor and vulnerable, improved land use management, improving research and awareness, stress on environmental sanitation, managing water resources, agricultural diversification, improved access to healthcare, and enhanced fisheries resource management.",
+      "document_type": "Strategy",
+      "document_category": "Policy",
+      "document_source_url": "https://climate-laws.org/rails/active_storage/blobs/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBcmdJIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--0a6a2da01128d0a2135ac97fdefeb6738ce2b783/f",
+      "document_url": "https://cdn.climatepolicyradar.org/GHA/2012/national-climate-change-adaptation-strategy_d50f5d654dbe63e560f90be4374a6ab5.pdf",
+      "document_content_type": "application/pdf",
+      "document_title_match": true,
+      "document_description_match": true,
+      "document_passage_matches": [
+        {
+          "text": "3.0 GHANA'S ADAPTATION STRATEGY DEVELOPMENT",
+          "text_block_id": "p_16_b_0",
+          "text_block_page": 17,
+          "text_block_coords": [
+            [33.90301513671875, 724.4272079467773],
+            [395.0282897949219, 724.4272079467773],
+            [395.0282897949219, 743.3570861816406],
+            [33.90301513671875, 743.3570861816406]
+          ]
+        },
+        {
+          "text": "Accordingly, this National Climate Change Adaptation Strategy intends to;",
+          "text_block_id": "p_4_b_6",
+          "text_block_page": 5,
+          "text_block_coords": [
+            [18.99060821533203, 266.39569091796875],
+            [502.89654541015625, 266.39569091796875],
+            [502.89654541015625, 286.95074462890625],
+            [18.99060821533203, 286.95074462890625]
+          ]
+        },
+        {
+          "text": "M&E Plan: There will be a comprehensive Climate Change Adaptation Strategy\nplan to support the implementation of the strategy. Key policy initiatives under\nthe plan will include the following:",
+          "text_block_id": "p_25_b_1",
+          "text_block_page": 26,
+          "text_block_coords": [
+            [35.51752853393555, 607.5048217773438],
+            [522.1514587402344, 607.5048217773438],
+            [522.1514587402344, 659.5227813720703],
+            [35.51752853393555, 659.5227813720703]
+          ]
+        },
+        {
+          "text": "Establish the institutional mechanism to implement the National\nClimate Change Adaptation Strategy\nLiaise with the National Development Planning Commission to\nmainstream the Adaptation Strategy into national development\nplanning processes\n• Coordinate the efforts of the other Government agencies, the private\nsector and civil society organizations.\n.\n• Ensure that the programmes / projects under the strategy are in line\nwith sectoral government policies and strategies\n.\n• Provide technical, financial and logistical support for the various actors\ninvolved in programme activities, and\n•\nSupervise, monitor and evaluate the performance of the strategy.",
+          "text_block_id": "p_21_b_9",
+          "text_block_page": 22,
+          "text_block_coords": [
+            [60.453102111816406, 127.44207763671875],
+            [537.2179565429688, 127.44207763671875],
+            [537.2179565429688, 309.46124267578125],
+            [60.453102111816406, 309.46124267578125]
+          ]
+        },
+        {
+          "text": "The capacities of all the implementing agencies at all spatial levels (National,\nRegional, District, Community) will be built in terms of their institutional,\nhuman resources, equipments and legal framework needs to enhance the\norderly implementation of the Climate Change Adaptation Strategy. This calls\nfor the preparation of a detailed capacity building plans at all levels to\nimplement the Adaptation Strategy.",
+          "text_block_id": "p_23_b_9",
+          "text_block_page": 24,
+          "text_block_coords": [
+            [36.310237884521484, 103.28955078125],
+            [534.08544921875, 103.28955078125],
+            [534.08544921875, 207.66412353515625],
+            [36.310237884521484, 207.66412353515625]
+          ]
+        },
+        {
+          "text": "The need to properly plan and carefully adopt a development path that ensures\nclimate resilience and integrate adaptation measures into all facets of national\ndevelopment planning, particularly at the local level makes the preparation of a\nNational Climate Change Adaptation Strategy (NCCAS) all the more relevant.",
+          "text_block_id": "p_6_b_1",
+          "text_block_page": 7,
+          "text_block_coords": [
+            [34.70877456665039, 604.9961700439453],
+            [538.7966918945312, 604.9961700439453],
+            [538.7966918945312, 674.1117858886719],
+            [34.70877456665039, 674.1117858886719]
+          ]
+        },
+        {
+          "text": "Recognizing that the key to catalyzing the implementation\nof climate change adaptation is to mainstream it into wider\nnational development process, there was the need to have a\nmore uniform structure and methodology to identify areas\nof overlaps, synergies, and/or conflicts among the proposed\nsectoral adaptation options, to ensure the development of a\nmore holistic and integrated national adaptation strategy.",
+          "text_block_id": "p_20_b_0",
+          "text_block_page": 21,
+          "text_block_coords": [
+            [69.88692474365234, 616.4790191650391],
+            [466.95123291015625, 616.4790191650391],
+            [466.95123291015625, 741.9988632202148],
+            [69.88692474365234, 741.9988632202148]
+          ]
+        },
+        {
+          "text": "• Stakeholder participation is central to the formulation and\nimplementation of the NCCAS to ensure ownership\nPromotion of sustainable development and poverty reduction are focus\nareas of the adaptation strategy\nLong term impacts of climate change is the principal means for\nconsidering adaptation\n.\nAdaptation policies must be addressed as part of a broader context of\nNational Development Policy Framework\n.\nGender sensitivity and reduction of vulnerability are extensively adopted\nFlexible and iterative\nCross sectoral and integrative but not necessarily sector wide",
+          "text_block_id": "p_6_b_8",
+          "text_block_page": 7,
+          "text_block_coords": [
+            [44.777156829833984, 80.70758056640625],
+            [542.3731079101562, 80.70758056640625],
+            [542.3731079101562, 269.5206298828125],
+            [44.777156829833984, 269.5206298828125]
+          ]
+        }
+      ],
+      "document_postfix": ""
+    },
+    {
+      "document_name": "National Climate Change Adaptation Strategy",
+      "document_geography": "GRC",
+      "document_sectors": [],
+      "document_source": "CCLW",
+      "document_date": "01/01/2016",
+      "document_id": "CCLW.executive.8704.1451",
+      "document_slug": "greece_2016_national-climate-change-adaptation-strategy_8704_1451",
+      "document_description": "This strategy aims at addressing risks and opportunities resulting from a changing climate. In particular, it seeks to 10 establish and enhance the short and long-term decision-making procedure regarding adaptation issues, 2) link adaptation with the promotion of a sustainable growth model through the implementation of regional/local action plans, ) promote adaptation actions and policies in all sectors of the Greek economy, with emphasis on the most vulnerable ones, 4) create a monitoring, evaluation and update mechanism for adaptation actions and policies, and 5) build adaptation capacity and raise public awareness.",
+      "document_type": "Strategy",
+      "document_category": "Policy",
+      "document_source_url": "https://climate-laws.org/rails/active_storage/blobs/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBdU1GIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--460a41f27cd5e4964b3a465dc2b4c84e71cddffa/f",
+      "document_url": "https://cdn.climatepolicyradar.org/GRC/2016/national-climate-change-adaptation-strategy_2580ce4d211e87bf2fac1ed04691a967.pdf",
+      "document_content_type": "application/pdf",
+      "document_title_match": true,
+      "document_description_match": true,
+      "document_passage_matches": [],
+      "document_postfix": "Greek"
+    },
+    {
+      "document_name": "National Climate Change Adaptation Strategy",
+      "document_geography": "GRC",
+      "document_sectors": [],
+      "document_source": "CCLW",
+      "document_date": "01/01/2016",
+      "document_id": "CCLW.executive.8704.1452",
+      "document_slug": "greece_2016_national-climate-change-adaptation-strategy_8704_1452",
+      "document_description": "This strategy aims at addressing risks and opportunities resulting from a changing climate. In particular, it seeks to 10 establish and enhance the short and long-term decision-making procedure regarding adaptation issues, 2) link adaptation with the promotion of a sustainable growth model through the implementation of regional/local action plans, ) promote adaptation actions and policies in all sectors of the Greek economy, with emphasis on the most vulnerable ones, 4) create a monitoring, evaluation and update mechanism for adaptation actions and policies, and 5) build adaptation capacity and raise public awareness.",
+      "document_type": "Strategy",
+      "document_category": "Policy",
+      "document_source_url": "https://climate-laws.org/rails/active_storage/blobs/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBdVFGIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--c6535ca9b15ef270902f553e9bf87b8b9bd7f410/f",
+      "document_url": "https://cdn.climatepolicyradar.org/GRC/2016/national-climate-change-adaptation-strategy_b760fc02eba59d4aa9cfc5a8e56f2a8d.pdf",
+      "document_content_type": "application/pdf",
+      "document_title_match": true,
+      "document_description_match": true,
+      "document_passage_matches": [
+        {
+          "text": "CLIMATE CHANGE ADAPTATION STRATEGY\n(EXCERPTS)",
+          "text_block_id": "p_0_b_2",
+          "text_block_page": 1,
+          "text_block_coords": [
+            [126.15913391113281, 449.2944641113281],
+            [468.8189392089844, 449.2944641113281],
+            [468.8189392089844, 494.9859924316406],
+            [126.15913391113281, 494.9859924316406]
+          ]
+        },
+        {
+          "text": "The present \"National Adaptation Strategy to Climate Change\" (hereinafter",
+          "text_block_id": "p_3_b_0",
+          "text_block_page": 4,
+          "text_block_coords": [
+            [74.34503173828125, 732.8899230957031],
+            [516.7695922851562, 732.8899230957031],
+            [516.7695922851562, 751.3213195800781],
+            [74.34503173828125, 751.3213195800781]
+          ]
+        },
+        {
+          "text": "ful adaptation strategy is the involvement of, and consultation with, all parties con-",
+          "text_block_id": "p_4_b_10",
+          "text_block_page": 5,
+          "text_block_coords": [
+            [75.78275299072266, 395.47137451171875],
+            [517.6116638183594, 395.47137451171875],
+            [517.6116638183594, 412.2751159667969],
+            [75.78275299072266, 412.2751159667969]
+          ]
+        },
+        {
+          "text": "tools of a modern, effective and growth-oriented adaptation strategy in line with EU",
+          "text_block_id": "p_3_b_2",
+          "text_block_page": 4,
+          "text_block_coords": [
+            [74.60786437988281, 690.0868072509766],
+            [519.5829772949219, 690.0868072509766],
+            [519.5829772949219, 706.9044494628906],
+            [74.60786437988281, 706.9044494628906]
+          ]
+        },
+        {
+          "text": "The main objective of the National Adaptation Strategy to Climate Change (NASCC) is",
+          "text_block_id": "p_15_b_20",
+          "text_block_page": 16,
+          "text_block_coords": [
+            [75.73811340332031, 133.00726318359375],
+            [516.2412719726562, 133.00726318359375],
+            [516.2412719726562, 149.94952392578125],
+            [75.73811340332031, 149.94952392578125]
+          ]
+        },
+        {
+          "text": "¹Up until 2014, according to the European Environment Agency (EEA 2014), 21 European countries\nhad adopted national adaptation strategies, while twelve among them have already developed na-\ntional adaptation plans as well. Updated information available on the Climate-ADAPT web portal\n(http://climate-adapt.eea.europa.eu) show that only nine European countries have not yet adopted a\nnational adaptation strategy, namely Greece, Cyprus, Bulgaria, Lithuania, Estonia, Czech Republic,\nIceland Croatia and Slovania",
+          "text_block_id": "p_2_b_25",
+          "text_block_page": 3,
+          "text_block_coords": [
+            [72.42426300048828, 77.0023193359375],
+            [520.3150634765625, 77.0023193359375],
+            [520.3150634765625, 146.910888671875],
+            [72.42426300048828, 146.910888671875]
+          ]
+        },
+        {
+          "text": "Scientific research and documentation. Emphasis should be given to scient\nresearch, in order to obtain the raw data necessary for a deeper understand\nof the problem of climate change and its individual impacts, by type, sector a\nactivity.\nFollow-up. The implementation of the adaptation strategy will be followed\nby a monitoring mechanism and appropriate indicators and tools.\nStakeholder awareness. Citizens' and all stakeholders' awareness of clim\nchange, of its impacts on the natural environment and everyday lives of peo\nand of the benefits of a coordinated effort to address them, represents the f\nstep towards the mitigation of any residual effects and climate change in g\neral.\nDeliberation and dialogue. The impacts of climate change will affect all prod\ntive activities at the local and national levels. The government should establis\nframework for ongoing deliberations and dialogue with key economic and so\nactors and local communities.",
+          "text_block_id": "p_5_b_3",
+          "text_block_page": 6,
+          "text_block_coords": [
+            [71.65016174316406, 156.58770751953125],
+            [490.2080383300781, 156.58770751953125],
+            [490.2080383300781, 489.3473205566406],
+            [71.65016174316406, 489.3473205566406]
+          ]
+        },
+        {
+          "text": "expanding our knowledge and information base on climate change issues;\nlinking the strategy with the existing framework for the management of natural\ndisasters;\nassessing and prioritising the measures suggested by the authorities;\nexploring funding possibilities from national and international sources;\ndeveloping sector-specific scenarios for the Greek economy and its most vulner-\nable sectors;\nincluding all of the above in specific action plans and roadmaps for each geo-\ngraphic region and area of interest;\nidentifying concrete measures to build the adaptation capacities of institutions\nand citizens; and\nestablishing a plan for reviewing and adjusting the NASCC.",
+          "text_block_id": "p_16_b_17",
+          "text_block_page": 17,
+          "text_block_coords": [
+            [72.814453125, 95.36383056640625],
+            [504.8406982421875, 95.36383056640625],
+            [504.8406982421875, 360.3828430175781],
+            [72.814453125, 360.3828430175781]
+          ]
+        }
+      ],
+      "document_postfix": "English"
+    },
+    {
+      "document_name": "National Climate Change Adaptation Strategy",
+      "document_geography": "MLT",
+      "document_sectors": [],
+      "document_source": "CCLW",
+      "document_date": "12/05/2019",
+      "document_id": "CCLW.executive.8497.3202",
+      "document_slug": "malta_2019_national-climate-change-adaptation-strategy_8497_3202",
+      "document_description": "The National Strategy for Climate Change and Adaptation was published in May 2012 by the Ministry for Resources and Rural Affairs. It sets out the government's vision on the strategic climate impacts and vulnerability of the water, agriculture, human health and tourism sectors. The document subsequently outlines sectoral action plans to develop Malta's adaptation effort in conjunction with its mitigation targets. The document strengthens the Malta Resouces Authority (MRA) administrative capabilities and missions. It sets up the Education and Communications Unit within the Climate Change Division of the MRA. The document also highlights the need to increase energy efficiency and conservation in the building sector. It establishes climate change adaptation, including adverse effects on water cycles and temperature intensity, at the core of agriculture policies forward.",
+      "document_type": "Strategy",
+      "document_category": "Policy",
+      "document_source_url": "https://climate-laws.org/rails/active_storage/blobs/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBdDBLIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--5e469441d2c9e4b02f23a40dd45c71d9009c95fc/National%20Adaptation%20Strategy.pdf",
+      "document_url": "https://cdn.climatepolicyradar.org/MLT/2019/national-climate-change-adaptation-strategy_c915751c841eef53545f7c9f2464f42b.pdf",
+      "document_content_type": "application/pdf",
+      "document_title_match": true,
+      "document_description_match": true,
+      "document_passage_matches": [
+        {
+          "text": "National Climate Change Adaptation Strategy",
+          "text_block_id": "p_1_b_0",
+          "text_block_page": 2,
+          "text_block_coords": [
+            [123.05577087402344, 561.0354309082031],
+            [470.3558349609375, 561.0354309082031],
+            [470.3558349609375, 582.8980102539062],
+            [123.05577087402344, 582.8980102539062]
+          ]
+        },
+        {
+          "text": "*National Adaptation Strategy, supra. Chapter 6",
+          "text_block_id": "p_47_b_9",
+          "text_block_page": 48,
+          "text_block_coords": [
+            [53.67462158203125, 132.99951171875],
+            [539.3069458007812, 132.99951171875],
+            [539.3069458007812, 192.33349609375],
+            [53.67462158203125, 192.33349609375]
+          ]
+        },
+        {
+          "text": "01.1 The National Climate Change Adaptation Strategy",
+          "text_block_id": "p_16_b_0",
+          "text_block_page": 17,
+          "text_block_coords": [
+            [64.15678405761719, 702.04931640625],
+            [384.5762939453125, 702.04931640625],
+            [384.5762939453125, 720.9793243408203],
+            [64.15678405761719, 720.9793243408203]
+          ]
+        },
+        {
+          "text": "The Adaptation strategy makes no reference organisational capacity for climate change and\nadaptation. This, however, is only because this matter was discussed in the climate change\nmitigation strategy. The CCCA was of the opinion that there was no need to replicate the\ndiscussion in this strategy as it agreed with the recommendations presented in this regard in\nthe Mitigation strategy.",
+          "text_block_id": "p_25_b_1",
+          "text_block_page": 26,
+          "text_block_coords": [
+            [54.57518768310547, 643.0095367431641],
+            [537.695068359375, 643.0095367431641],
+            [537.695068359375, 718.3693161010742],
+            [54.57518768310547, 718.3693161010742]
+          ]
+        },
+        {
+          "text": "The Adaptation strategy as presented to the Ministry by the CCCA focuses on the following\nsectors:",
+          "text_block_id": "p_17_b_5",
+          "text_block_page": 18,
+          "text_block_coords": [
+            [55.988037109375, 451.38751220703125],
+            [539.177734375, 451.38751220703125],
+            [539.177734375, 483.328125],
+            [55.988037109375, 483.328125]
+          ]
+        },
+        {
+          "text": "It is pertinent to underline that the Government affirms the CCCA's orientation in the design\nof its adaptation strategy to place sustainability as one of the important cornerstones of its\nstrategy. The following are the actions approved by Government:",
+          "text_block_id": "p_30_b_6",
+          "text_block_page": 31,
+          "text_block_coords": [
+            [55.316650390625, 105.760986328125],
+            [538.09326171875, 105.760986328125],
+            [538.09326171875, 152.236328125],
+            [55.316650390625, 152.236328125]
+          ]
+        },
+        {
+          "text": "It is unfortunate that by the time that the adaptation strategy was launched in November\n2010, an Education and Communications Unit within the Climate Change Division was\nas yet to be set up.",
+          "text_block_id": "p_20_b_0",
+          "text_block_page": 21,
+          "text_block_coords": [
+            [84.13028717041016, 726.3781967163086],
+            [535.8300170898438, 726.3781967163086],
+            [535.8300170898438, 772.3432846069336],
+            [84.13028717041016, 772.3432846069336]
+          ]
+        },
+        {
+          "text": "Climate Change Committee, National Climate Change Adaptation Strategy Consultation\nDocument, (2010), retrieved from http://mrra.gov.mt/page.aspx?id=124",
+          "text_block_id": "p_63_b_1",
+          "text_block_page": 64,
+          "text_block_coords": [
+            [55.749534606933594, 629.4778900146484],
+            [532.8194580078125, 629.4778900146484],
+            [532.8194580078125, 662.6566619873047],
+            [55.749534606933594, 662.6566619873047]
+          ]
+        }
+      ],
+      "document_postfix": ""
+    },
+    {
+      "document_name": "National Climate Change Adaptation Strategy",
+      "document_geography": "ZAF",
+      "document_sectors": [],
+      "document_source": "CCLW",
+      "document_date": "18/08/2020",
+      "document_id": "CCLW.executive.8802.1084",
+      "document_slug": "south-africa_2020_national-climate-change-adaptation-strategy_8802_1084",
+      "document_description": "The National Climate Change Adaptation Strategy (NCCAS) provides a common vision of climate change adaptation and climate resilience for South Africa, and outlines priority areas for achieving this vision. It draws on South Africa's National Climate Change Response Policy (NCCRP) (DEA 2011), the National Development Plan (NDP) (NPC 2011), the adaptation commitments included in its Nationally Determined Contributions (NDC), sector adaptation plans, provincial adaptation plans and local government adaptation plans. The main objective of the document is to provide guidance across all levels of government, sectors, and stakeholders affected by climate variability and change. It should also serve as the country's National Adaptation Plan and fulfils the commitment to its international obligations under the Paris Agreement. It is divided into sets of strategic objectives, interventions and outcomes with associated actions.",
+      "document_type": "Strategy",
+      "document_category": "Policy",
+      "document_source_url": "https://climate-laws.org/rails/active_storage/blobs/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBcDhFIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--b7f8a6519c6ebb589cfce5ec1dad6c5eb2e3e58c/f",
+      "document_url": "https://cdn.climatepolicyradar.org/ZAF/2020/national-climate-change-adaptation-strategy_c440df713dfd1e7893f32658283a3b65.pdf",
+      "document_content_type": "application/pdf",
+      "document_title_match": true,
+      "document_description_match": true,
+      "document_passage_matches": [
+        {
+          "text": "NATIONAL CLIMATE CHANGE ADAPTATION STRATEGY",
+          "text_block_id": "p_0_b_11",
+          "text_block_page": 1,
+          "text_block_coords": [
+            [148.5257110595703, 143.89031982421875],
+            [445.7040710449219, 143.89031982421875],
+            [445.7040710449219, 161.14508056640625],
+            [148.5257110595703, 161.14508056640625]
+          ]
+        },
+        {
+          "text": "NATIONAL CLIMATE CHANGE\nADAPTATION STRATEGY",
+          "text_block_id": "p_3_b_0",
+          "text_block_page": 4,
+          "text_block_coords": [
+            [88.4715347290039, 313.1895751953125],
+            [543.127685546875, 313.1895751953125],
+            [543.127685546875, 371.63104248046875],
+            [88.4715347290039, 371.63104248046875]
+          ]
+        },
+        {
+          "text": "DRAFT NATIONAL CLIMATE CHANGE ADAPTATION STRATEGY",
+          "text_block_id": "p_0_b_3",
+          "text_block_page": 1,
+          "text_block_coords": [
+            [130.1661376953125, 664.7153015136719],
+            [459.9091491699219, 664.7153015136719],
+            [459.9091491699219, 683.3632049560547],
+            [130.1661376953125, 683.3632049560547]
+          ]
+        },
+        {
+          "text": "The National Climate Change Adaptation Strategy\n(NCCAS) provides a common vision of climate change\nadaptation and climate resilience for the country,\nand outlines priority areas for achieving this vision.\nThe NCCAS's vision draws on South Africa's National\nClimate Change Response Policy (NCCRP) (DEA 2011),\nthe National Development Plan (NDP) (NPC 2011), the\nadaptation commitments included in its Nationally\nDetermined Contributions (NDC), sector adaptation\nplans, provincial adaptation plans and local government\nadaptation plans.",
+          "text_block_id": "p_8_b_4",
+          "text_block_page": 9,
+          "text_block_coords": [
+            [40.966407775878906, 166.096435546875],
+            [296.74578857421875, 166.096435546875],
+            [296.74578857421875, 280.751708984375],
+            [40.966407775878906, 280.751708984375]
+          ]
+        },
+        {
+          "text": "I, Nomvula Mokonyane, Minister of Environmental Affairs, hereby publishes the draft National Climate\nChange Adaptation Strategy for public inputs and comments, as set out in the Schedule hereto.",
+          "text_block_id": "p_0_b_4",
+          "text_block_page": 1,
+          "text_block_coords": [
+            [51.133460998535156, 624.5299987792969],
+            [538.4063110351562, 624.5299987792969],
+            [538.4063110351562, 654.2148895263672],
+            [51.133460998535156, 654.2148895263672]
+          ]
+        },
+        {
+          "text": "The National Climate Change Adaptation Strategy (NCASS) involved numerous people\nand organisations, and was characterised by a spirit of collaboration and cooperation\nacross organisational and disciplinary boundaries. The Department of Environmental Affairs\n(DEA) would like to thank the Climate Support Programme implemented by the Deutsche\nGesellschaft für Internationale Zusammenarbeit (GIZ) as part of the International Climate\nInitiative (IKI) which is funded by the Federal Ministry for Environment, Nature Conservation\nand Nuclear Safety (BMU) for their technical assistance.",
+          "text_block_id": "p_7_b_1",
+          "text_block_page": 8,
+          "text_block_coords": [
+            [84.87057495117188, 516.8160705566406],
+            [490.14044189453125, 516.8160705566406],
+            [490.14044189453125, 597.9977874755859],
+            [84.87057495117188, 597.9977874755859]
+          ]
+        },
+        {
+          "text": "The SADC Climate Change Strategy and Action Plan\n(2015) emphasises the need for enhanced climate\nchange adaptation responses in Africa due to the wide\nrange of pressing vulnerabilities. The CCSAP aims\nto coordinate regional and national climate change\nresponses in Africa, and to 'climate proof' SADC's\npolicies, strategies and protocols (SADC 2015).",
+          "text_block_id": "p_10_b_5",
+          "text_block_page": 11,
+          "text_block_coords": [
+            [284.7759094238281, 124.958740234375],
+            [534.43017578125, 124.958740234375],
+            [534.43017578125, 199.22076416015625],
+            [284.7759094238281, 199.22076416015625]
+          ]
+        },
+        {
+          "text": "South Africa needs to adapt to climate change: Sustained warming and increasing rainfall\nvariability over the short to medium term (the next two to three decades) will have increasingly\nadverse effects on key sectors of South Africa's economy in the absence of effective adaptation\nresponses.\n■ Climate change threatens development: The projected adverse effects of ongoing climate\nchange in South Africa are likely to threaten the achievement of urgent national development\nneeds, and well-founded aspirations to address historical inequities.\n■ The poor are most vulnerable to climate change impacts: The increasing frequency of extreme\nweather events is likely to have a disproportionate impact on the poorest in society (both rural\nand urban), amplifying existing social inequalities. The poor typically have limited opportunities\nand, consequently, are disproportionately affected by the negative impacts of climate change.\n■ The NCCAS will give South Africa an advantage in the future: Planning for climate change\nensures that South Africa is in a position to leverage opportunities that arise due to changing\nclimatic conditions and enhance its global competitiveness.\n■ Climate change presents investment opportunities: New funding flows to support adaptation\nrepresent the biggest acceleration of development investment since the achievement of\ndemocracy in South Africa. This provides a unique opportunity to both ensure climate resilience\nand achieve development aspirations.\n■ Transformational change: Transformational, systemic change is required to address the\nchallenges presented by climate change.\n■ The need for integration and collaboration: Sectoral and integrated cross-sectoral approaches\nare essential to building societal resilience in a holistic way.\n■ Linkages between adaptation and mitigation are increasingly vital: This is because there is an\nintensified international focus on keeping global warming below 2°C, and therefore adaptation\nresponses need to be cognisant of their mitigation implications. At the same time, the adverse\nimpacts of climate change on resource availability potentially limits energy development options.\nAn adaptation and mitigation strategy requires integrated planning.",
+          "text_block_id": "p_47_b_2",
+          "text_block_page": 48,
+          "text_block_coords": [
+            [71.26548767089844, 173.91192626953125],
+            [503.33184814453125, 173.91192626953125],
+            [503.33184814453125, 579.9566345214844],
+            [71.26548767089844, 579.9566345214844]
+          ]
+        }
+      ],
+      "document_postfix": ""
+    },
+    {
+      "document_name": "National Climate Change Adaptation Strategy (2020)",
+      "document_geography": "ZAF",
+      "document_sectors": ["Adaptation", "Economy-wide"],
+      "document_source": "CCLW",
+      "document_date": "01/01/2020",
+      "document_id": "CCLW.executive.8802.5868",
+      "document_slug": "south-africa_2020_national-climate-change-adaptation-strategy-2020_8802_5868",
+      "document_description": "The National Climate Change Adaptation Strategy (NCCAS) provides a common vision of climate change adaptation and climate resilience for South Africa, and outlines priority areas for achieving this vision. It draws on South Africa's National Climate Change Response Policy (NCCRP) (DEA 2011), the National Development Plan (NDP) (NPC 2011), the adaptation commitments included in its Nationally Determined Contributions (NDC), sector adaptation plans, provincial adaptation plans and local government adaptation plans. The main objective of the document is to provide guidance across all levels of government, sectors, and stakeholders affected by climate variability and change. It should also serve as the country's National Adaptation Plan and fulfils the commitment to its international obligations under the Paris Agreement. It is divided into sets of strategic objectives, interventions and outcomes with associated actions.",
+      "document_type": "Strategy",
+      "document_category": "Policy",
+      "document_source_url": "https://www.dffe.gov.za/sites/default/files/docs/nccas2020_pv.pdf",
+      "document_url": "https://cdn.climatepolicyradar.org/ZAF/2020/national-climate-change-adaptation-strategy-2020_78cb4f314f603075ef6675a5fc5f235a.pdf",
+      "document_content_type": "application/pdf",
+      "document_title_match": true,
+      "document_description_match": true,
+      "document_passage_matches": [
+        {
+          "text": "The National Climate Change Adaptation Strategy (NCCAS) provides a common\nvision of climate change adaptation and climate resilience for the country, drawing\nfrom the National Development Plan, the National Strategy for Sustainable\nDevelopment, the adaptation commitments included in its Nationally Determined\nContributions, sector adaptation plans, provincial adaptation plans and municipality\nadaptation plans. It is worth noting that the NCCAS is directed not only at national",
+          "text_block_id": "p_3_b_6",
+          "text_block_page": 4,
+          "text_block_coords": [
+            [122.08518981933594, 115.6319580078125],
+            [470.1313781738281, 115.6319580078125],
+            [470.1313781738281, 198.0980224609375],
+            [122.08518981933594, 198.0980224609375]
+          ]
+        },
+        {
+          "text": "However, as the NCCAS is a national strategy it does not\ndetail how adaptation will take place in the many sectors\nimpacted by climate change.",
+          "text_block_id": "p_14_b_4",
+          "text_block_page": 15,
+          "text_block_coords": [
+            [324.875244140625, 398.7973327636719],
+            [575.57861328125, 398.7973327636719],
+            [575.57861328125, 441.1795349121094],
+            [324.875244140625, 441.1795349121094]
+          ]
+        },
+        {
+          "text": "The National Climate Change Adaptation Strategy\n(NCCAS) provides a common vision of climate change\nadaptation and climate resilience for the country, and\noutlines priority areas for achieving this. The NCCAS's\nvision draws on South Africa's National Climate Change\nResponse Policy (NCCRP) (DEA 2011), the National\nDevelopment Plan (NDP) (NPC 2011), the National\nStrategy for Sustainable Development (NSSD) (DEA\n2011b), the adaptation commitments included in South\nAfrica's Nationally Determined Contributions (NDCs).\nsector adaptation plans, provincial adaptation plans and\nmunicipal adaptation plans. It should be noted that since\nthe NCCAS is specifically focussed on adaptation to\nclimate change, mitigation of greenhouse gas emissions\n(GHGs) is dealt with in other policy documents. However,\nit is acknowledged that adaptation action and mitigation\naction impact on one another. In some cases, adaptation\nand mitigation action are mutually supportive and in other\ncases mitigation action and adaptation action are mutually\ncontradictory.",
+          "text_block_id": "p_13_b_4",
+          "text_block_page": 14,
+          "text_block_coords": [
+            [309.2899169921875, 240.80963134765625],
+            [561.1294555664062, 240.80963134765625],
+            [561.1294555664062, 512.9912109375],
+            [309.2899169921875, 512.9912109375]
+          ]
+        },
+        {
+          "text": ".\n.\nClimate change presents investment opportunities:\nNew funding flows to support adaptation represent\nthe biggest acceleration of development investment\nsince the achievement of democracy in South\nAfrica. This provides a unique opportunity to both\nensure climate resilience and achieve development\naspirations.\nTransformational change: Transformational,\nsystemic change is required to address the challenges\npresented by climate change.\nThe need for integration and collaboration:\nSectoral and integrated cross-sectoral approaches\nare essential to building societal resilience in a holistic\nway.\nLinkages between adaptation and mitigation\nare increasingly vital: This is because there is an\nintensified international focus on keeping global\nwarming below 2°C, and therefore adaptation\nresponses need to be cognisant of their mitigation\nimplications. At the same time, the adverse impacts\nof climate change on resource availability potentially\nlimits energy development options. An adaptation\nand mitigation strategy requires integrated planning.\nFor instance, some forms of energy generation\nrequire large amounts of water. Since South Africa\nis projected to experience drier conditions under\nsome climate change scenarios, shortages of water\ncould limit energy development options.",
+          "text_block_id": "p_82_b_2",
+          "text_block_page": 83,
+          "text_block_coords": [
+            [316.8500671386719, 204.5260009765625],
+            [574.5997924804688, 204.5260009765625],
+            [574.5997924804688, 630.5481109619141],
+            [316.8500671386719, 630.5481109619141]
+          ]
+        },
+        {
+          "text": "The National Climate Change Adaptation Strategy (NCCAS) involved numerous people\nand organisations and its development was characterised by a spirit of collaboration and\ncooperation across organisational and disciplinary boundaries. The Department of Forestry,\nFisheries and the Environment (DFFE) would like to thank the Deutsche Gesellschaft für\nInternationale Zusammenarbeit (GIZ) for technical assistance in all the development phases of\nthe NCCAS. The NAP Global Network's United States In-Country NAP Support Program is\nalso acknowledged for providing support in the final stages of revising the NCCAS.",
+          "text_block_id": "p_12_b_0",
+          "text_block_page": 13,
+          "text_block_coords": [
+            [125.46926879882812, 465.1755676269531],
+            [523.1184387207031, 465.1755676269531],
+            [523.1184387207031, 563.7074890136719],
+            [125.46926879882812, 563.7074890136719]
+          ]
+        },
+        {
+          "text": "South Africa has invested in understanding its climate\nchange vulnerabilities since the late 1990s. From as early\nas 1999 a set of reports on climate change vulnerability\nfocusing on certain sectors were developed under the\nprogramme \"South African Country Reports on Climate\nChange\" (DEA 2018). In the early 2000s South Africa\ndeveloped a national climate change response strategy\nand some of the metropolitan municipalities and provinces\nstarted to develop climate change vulnerability and\nadaptation strategies. The NCCRP was then published\nin 2011 and following that work began on the Long Term",
+          "text_block_id": "p_26_b_7",
+          "text_block_page": 27,
+          "text_block_coords": [
+            [323.1116027832031, 104.23724365234375],
+            [574.2584838867188, 104.23724365234375],
+            [574.2584838867188, 256.46844482421875],
+            [323.1116027832031, 256.46844482421875]
+          ]
+        },
+        {
+          "text": "The Southern African Development Community's Climate\nChange Strategy and Action Plan (CCSAP) (SADC 2015)\nemphasises the need for enhanced climate change\nadaptation responses in Africa due to the wide range of\npressing vulnerabilities. The CCSAP aims to coordinate\nregional and national climate change responses in Africa,\nand to 'climate proof' SADC's policies, strategies and\nprotocols (SADC 2015).",
+          "text_block_id": "p_16_b_5",
+          "text_block_page": 17,
+          "text_block_coords": [
+            [324.0229187011719, 107.21417236328125],
+            [575.661376953125, 107.21417236328125],
+            [575.661376953125, 218.98895263671875],
+            [324.0229187011719, 218.98895263671875]
+          ]
+        },
+        {
+          "text": "Sorter ett\nouth Africa is already experiencing the negative effects\nof climate change and is expected to suffer significant\nconsequences in the future. To promote adaptation to\nthese impacts it is necessary to take measures to reduce\nhuman and economic vulnerability as well as to reduce\nthe vulnerability of physical and ecological infrastructure\nto climate change. In addition, it is necessary to build the\nadaptive capacity of individuals and society to respond\nto climate change impacts. Since vulnerability to climate\nchange differs depending on gender, age, wealth, social\nstatus and other factors, adaptation actions must be\ntargeted in ways that ensure equitable benefits for the\nindividuals and communities that are most vulnerable\nto climate change. Furthermore, the contributions of\nvulnerable groups should not be underestimated as their\ninsights and capacities can help to develop actions that\nare most effective. Existing strategies that focus on the\ninclusion of vulnerable groups should be drawn upon,\nsuch as DFFE's gender mainstreaming strategy in the\nenvironmental sector (DEA 2016c).",
+          "text_block_id": "p_26_b_4",
+          "text_block_page": 27,
+          "text_block_coords": [
+            [75.61337280273438, 239.88861083984375],
+            [327.13372802734375, 239.88861083984375],
+            [327.13372802734375, 516.6282043457031],
+            [75.61337280273438, 516.6282043457031]
+          ]
+        }
+      ],
+      "document_postfix": ""
+    },
+    {
+      "document_name": "National Climate Change Adaptation Strategy, 2018",
+      "document_geography": "KNA",
+      "document_sectors": [],
+      "document_source": "CCLW",
+      "document_date": "25/12/2018",
+      "document_id": "CCLW.executive.10422.0",
+      "document_slug": "saint-kitts-and-nevis_2018_national-climate-change-adaptation-strategy-2018_10422_0",
+      "document_description": "This document has been identified in the country's updated NDC, however no further documentation is available. The strategy operationalises the National Climate Change Policy and was developed using a participatory approach, gaining input and recommendations from diverse stakeholder groups through national consultations. The Strategy details specific adaptation objectives and measures across eight sectors.",
+      "document_type": "Strategy",
+      "document_category": "Policy",
+      "document_source_url": null,
+      "document_url": null,
+      "document_content_type": null,
+      "document_title_match": true,
+      "document_description_match": true,
+      "document_passage_matches": [],
+      "document_postfix": ""
+    }
+  ]
+}
