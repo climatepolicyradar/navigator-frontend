@@ -92,7 +92,7 @@ const Map = ({ startingZoom }: TProps) => {
             <h5>{popup.country}</h5>
             {popup.countryCode && (
               <div className="mt-2">
-                <CountryLink countryCode={popup.countryCode} emptyContentFallback={<>We don't have details for this geography yet</>}>
+                <CountryLink countryCode={popup.countryCode} emptyContentFallback={<>We don't have details for this country yet</>}>
                   View details for {popup.country}
                 </CountryLink>
               </div>

@@ -24,6 +24,10 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
         </div>
         <div className="container mt-12">
+          <div className="p-4 border border-lineBorder border-b-transparent bg-offwhite">
+            <h4>World Map</h4>
+            <p>The World Map helps you find and navigate to the country-level details page. In the future we will add more data to the map.</p>
+          </div>
           <div className="border border-lineBorder aspect-square md:aspect-video lg:aspect-[3/1]">
             <Map />
           </div>
