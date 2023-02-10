@@ -1,20 +1,12 @@
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from "react-query";
 
 export default function useUpdateSearchCriteria() {
   const queryClient = useQueryClient();
 
-  return useMutation(
-    (value: any) => {
-      return queryClient.setQueryData('searchCriteria', (old) => ({
-        ...old,
-        ...value,
-      }));
-    },
-
-    {
-      onError: (err) => {
-        console.log(err);
-      },
-    }
-  );
+  return useMutation(async (value: any) => {
+    return queryClient.setQueryData("searchCriteria", (old: any) => ({
+      ...old,
+      ...value,
+    }));
+  });
 }
