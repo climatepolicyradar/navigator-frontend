@@ -35,7 +35,8 @@ const Map = ({ startingZoom }: TProps) => {
   const baseStyle: TMapStyleOptions = {
     stroke: true,
     color: "#5e5e5e",
-    opacity: 0.1,
+    weight: 1.2,
+    opacity: 0.4,
     fill: true,
     fillColor: "#fff",
     fillOpacity: 1,
@@ -53,7 +54,8 @@ const Map = ({ startingZoom }: TProps) => {
     const geoLayer = e.layer;
     geoLayer.bringToFront();
     geoLayer.setStyle({
-      opacity: 0.5,
+      opacity: 0.8,
+      weight: 2
     });
     return false;
   };
