@@ -5,7 +5,6 @@ export default function useUpdateSearch() {
   const queryClient = useQueryClient();
 
   return useMutation(async (value: any) => {
-    console.log(value);
     return queryClient.setQueryData("searches", (old: any) => ({
       ...old,
       ...value,
