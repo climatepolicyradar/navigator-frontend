@@ -22,7 +22,7 @@ export const FamilyDocument = ({ document }: TFamilyDocumentProps) => {
       }bg-offwhite transition duration-300`}
       onClick={handleClick}
     >
-      <div className="underline text-primary-600 mb-2">{document.title}</div>
+      <div className="text-primary-600 mb-2">{document.title}</div>
       <div className="flex items-center">
         <div className="flex-1 flex flex-wrap gap-x-8">
           <span className="font-bold">{document.type.description}</span>

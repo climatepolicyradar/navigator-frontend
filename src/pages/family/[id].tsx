@@ -81,7 +81,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           <div className="md:flex">
             <section className="flex-1 md:w-0">
               <section className="mt-6">
-                <h3>Summary</h3>
                 <div className="text-content mt-4" dangerouslySetInnerHTML={{ __html: summary }} />
                 {page.description.length > initialSummaryLength && (
                   <div className="mt-6 flex justify-end">
