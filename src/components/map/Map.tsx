@@ -51,6 +51,8 @@ const Map = ({ startingZoom }: TProps) => {
   };
 
   const geoMouseOverHandler = (e: any) => {
+    const geo = e.layer?.feature?.properties?.admin;
+    console.log(e, geo);
     const geoLayer = e.layer;
     geoLayer.bringToFront();
     geoLayer.setStyle({
