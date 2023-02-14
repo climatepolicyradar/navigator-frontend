@@ -504,11 +504,19 @@ ul li.selected {
   }
 }
 
+.family-document {
+  &:hover {
+    .matches-button {
+      @apply bg-indigo-600;
+    }
+  }
+}
+
 // idea for implementing later
-// .pill {
-// background: #f1cb73;
-// color: #4f4f4f;
-// padding: 2px 10px;
-// margin-right: 5px;
-// border-radius: 5px;
+// .pill-box {
+//   background: #f1cb73;
+//   color: #4f4f4f;
+//   padding: 2px 10px;
+//   margin-right: 5px;
+//   border-radius: 5px;
 // }

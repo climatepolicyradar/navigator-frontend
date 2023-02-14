@@ -17,6 +17,8 @@ import { truncateString } from "@helpers/index";
 import { getDocumentTitle } from "@helpers/getDocumentTitle";
 import { TEvent, TFamilyDocument } from "@types";
 
+import DUMMY_JSON from "./data.json";
+
 const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page }) => {
   const [showTimeline, setShowTimeline] = useState(false);
   const [showCollectionDetail, setShowCollectionDetail] = useState(false);
@@ -32,7 +34,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   };
 
   useEffect(() => {
-    console.log(page);
     if (page?.description) {
       const text = page?.description;
       if (showFullSummary) {
@@ -268,65 +269,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const client = new ApiClient(process.env.API_URL);
 
   const { data: page } = await client.get(`/documents/${id}`, null);
+  const json = DUMMY_JSON;
   const title = getDocumentTitle(page.name, page.postfix);
 
   return {
     props: {
       page: {
         ...page,
-        title: "Regulation 2020/2220 of the European Parliament and of the Council",
-        collection: "Common Argicultural Policy",
-        description: "A regulation was approved in December 2020 to lay down transitional provisions that will apply until the end of 2022.",
-        documents: [
-          {
-            id: 1,
-            type: { name: "main", description: "Main document" },
-            title: "Decree n ° 2020-955 of July 31, 2020 relating to aid for the acquisition or rental of little polluting vehicles",
-            date: "2020-01-31",
-            variant: { id: 1, label: "(EN) official translation", description: "" },
-            format: "PDF",
-            matches: 7,
-          },
-          {
-            id: 2,
-            type: { name: "summary", description: "Summary" },
-            title: "Document Title",
-            date: "2020-01-31",
-            variant: { id: 1, label: "(EN) unofficial translation", description: "" },
-            format: "PDF",
-            matches: 3,
-          },
-          {
-            id: 3,
-            type: { name: "Amendment", description: "Amendment" },
-            title: "Document Title",
-            date: "2020-01-31",
-            variant: { id: 1, label: "(FR) official translation", description: "" },
-            format: "PDF",
-            matches: 2,
-          },
-        ],
-        targets: [
-          {
-            target: "Deploy 10 MW of Wind Power in by 2011, then 50 MW in 5-10 years by 2016",
-            group: "Energy: Renewable Energy",
-            base_year: 2013,
-            target_year: 2016,
-          },
-          {
-            target: "Rehabilitate 94 MW of hydropower capacity by 2008 against a 2006 baseline",
-            group: "Energy: Renewable Energy",
-            base_year: 2006,
-            target_year: 2008,
-          },
-          {
-            target:
-              "Effective protection rate of natural wetlands will reach more than 60%, and the area of desertified land will be over 50% of the controllable area. More than 95% of the state's key protected wild animals and over 90% of the minimum wild plant species will be effectively protected against desertification by 2020.",
-            group: "LULUCF: Preservation",
-            base_year: 2013,
-            target_year: 2020,
-          },
-        ],
+        ...json,
       },
     },
   };

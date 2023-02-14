@@ -133,4 +133,5 @@ export type TFamilyDocument = {
   variant: { id: number; label: string; description: string };
   format: string;
   matches: number;
+  slug: string;
 };
