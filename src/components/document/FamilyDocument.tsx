@@ -6,9 +6,24 @@ type TFamilyDocumentProps = {
   document: TFamilyDocument;
 };
 
-export const FamilyDocument = ({ document }: TFamilyDocumentProps) => {
-  const [year, _, month] = formatDate(document.date);
-  const isMain = document.type.name === "main";
+type TProps = {
+  title: string;
+  date: string;
+  slug: string;
+  matches?: number;
+  meta?: {
+    typeName: string;
+    typeDescription: string;
+    format: string;
+    variant: string;
+  };
+};
+
+export const FamilyDocument = ({ title, date, slug, matches, meta }: TProps) => {
+  const [year, _, month] = formatDate(date);
+  const isMain = meta?.typeName === "main";
+  const hasMeta = typeof meta !== "undefined";
+  const hasMatches = typeof matches !== "undefined";
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     console.log(e);
@@ -21,17 +36,23 @@ export const FamilyDocument = ({ document }: TFamilyDocumentProps) => {
       }bg-offwhite transition duration-300`}
       onClick={handleClick}
     >
-      <div className="text-primary-600 mb-2">{document.title}</div>
+      <div className="text-primary-600 mb-2">{title}</div>
       <div className="flex items-center">
         <div className="flex-1 flex flex-wrap gap-x-8">
-          {!isMain && <span className="font-bold">{document.type.description}</span>}
-          <span>{document.format.toUpperCase()}</span>
-          <span>{document.variant.label}</span>
+          {hasMeta && (
+            <>
+              {!isMain && <span className="font-bold">{meta.typeDescription}</span>}
+              <span>{meta.format.toUpperCase()}</span>
+              <span>{meta.variant}</span>
+            </>
+          )}
           <span>{`${month} ${year}`}</span>
         </div>
-        <div className="flex-0">
-          <MatchesButton dataAttribute={document.slug} count={document.matches} overideText={document.matches === 0 ? "view Document" : null} />
-        </div>
+        {hasMatches && (
+          <div className="flex-0">
+            <MatchesButton dataAttribute={slug} count={matches} overideText={matches === 0 ? "view Document" : null} />
+          </div>
+        )}
       </div>
     </div>
   );

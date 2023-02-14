@@ -6,6 +6,19 @@
       {
         "id": 1,
         "title": "Collection Family 1",
+        "slug": "collection-family-1",
+        "date": "2019-06-12"
+      },
+      {
+        "id": 2,
+        "title": "Collection Family 2",
+        "slug": "collection-family-1",
+        "date": "2019-06-12"
+      },
+      {
+        "id": 3,
+        "title": "Collection Family 3",
+        "slug": "collection-family-1",
         "date": "2019-06-12"
       }
     ]

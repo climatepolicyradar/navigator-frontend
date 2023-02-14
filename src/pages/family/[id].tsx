@@ -74,6 +74,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const sourceLogo = page?.source?.name === "CCLW" ? "grantham-logo.png" : null;
   const sourceName = page?.source?.name === "CCLW" ? "Grantham Research Institute" : page?.source?.name;
 
+  const mainDoc = page.documents.find((doc: TFamilyDocument) => doc.type.name === "main");
+
   return (
     <Layout title={page.title}>
       <section className="mb-8">
@@ -96,7 +98,20 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                     )}
                   </div>
                 )}
-                <FamilyDocument document={page.documents.find((doc: TFamilyDocument) => doc.type.name === "main")} />
+                {mainDoc && (
+                  <FamilyDocument
+                    title={mainDoc.title}
+                    date={mainDoc.date}
+                    slug={mainDoc.slug}
+                    matches={mainDoc.matches}
+                    meta={{
+                      typeName: mainDoc.type.name,
+                      typeDescription: mainDoc.type.description,
+                      format: mainDoc.format,
+                      variant: mainDoc.variant.label,
+                    }}
+                  />
+                )}
               </section>
 
               <div className="mt-12">
@@ -110,7 +125,13 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                     if (doc.type.name !== "main") {
                       return (
                         <div key={doc.id} className="mt-4">
-                          <FamilyDocument document={doc} />
+                          <FamilyDocument
+                            title={doc.title}
+                            date={doc.date}
+                            slug={doc.slug}
+                            matches={doc.matches}
+                            meta={{ typeName: doc.type.name, typeDescription: doc.type.description, format: doc.format, variant: doc.variant.label }}
+                          />
                         </div>
                       );
                     }
@@ -191,21 +212,13 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                         budget.
                       </p>
                     </div>
-                    <div className="mb-8">
-                      <h6 className="text-primary-600">
-                        The CAP towards 2020: Meeting the food, natural resources and territorial challenges of the future
-                      </h6>
-                      <p>
-                        This EU Comission Communication provides an overview of the rationale for reforming the Common Agricultural Policy to align
-                        with the EU’s climate change objectives.
-                      </p>
-                    </div>
-                    <div className="mb-8">
-                      <h6 className="text-primary-600">Overview of CAP Reform 2014 - 2020</h6>
-                      <p>
-                        The CAP 2014-2020 has been reformed by strengthing its greening aspects. Climate mitigation and adaption are explically among
-                        the key objectives of the CAP, which accounts for about 30% of the overall EU budget / MFF 2014-2020.
-                      </p>
+                    <h4>Other documents in the Common Agricultural Policy</h4>
+                    <div className="divide-solid divide-blue-100 divide-y">
+                      {page.collection.families.map((cFamily) => (
+                        <div key={cFamily.id} className="mt-4">
+                          <FamilyDocument title={cFamily.title} date={cFamily.date} slug={cFamily.slug} />
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
