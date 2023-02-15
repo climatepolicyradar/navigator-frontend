@@ -1,20 +1,13 @@
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from "react-query";
 
+// Sets the searches collection - at the moment just used to reset to empty when returning to the landing page
 export default function useUpdateSearch() {
   const queryClient = useQueryClient();
 
-  return useMutation(
-    (value: any) => {
-      return queryClient.setQueryData('searches', (old) => ({
-        ...old,
-        ...value,
-      }));
-    },
-
-    {
-      onError: (err) => {
-        console.log(err);
-      },
-    }
-  );
+  return useMutation(async (value: any) => {
+    return queryClient.setQueryData("searches", (old: any) => ({
+      ...old,
+      ...value,
+    }));
+  });
 }

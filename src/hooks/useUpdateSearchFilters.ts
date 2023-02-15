@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from 'react-query';
-import useSearchCriteria from './useSearchCriteria';
-import { multipleValuesAllowed } from '../constants/filters';
+import { useMutation, useQueryClient } from "react-query";
+import useSearchCriteria from "./useSearchCriteria";
+import { multipleValuesAllowed } from "../constants/filters";
 
 export default function useUpdateSearchFilters() {
   const queryClient = useQueryClient();
@@ -50,10 +50,10 @@ export default function useUpdateSearchFilters() {
   };
 
   const processFilter = (value: any) => {
-    const prev: any = queryClient.getQueryData('searchCriteria');
+    const prev: any = queryClient.getQueryData("searchCriteria");
     const { keyword_filters } = prev;
     let [key, val] = getKeyAndValue(value);
-    const { action } = val.length ? value : { action: 'delete' };
+    const { action } = val.length ? value : { action: "delete" };
     const new_keyword_filters = actions[action](key, val, keyword_filters);
 
     return {
@@ -62,21 +62,13 @@ export default function useUpdateSearchFilters() {
     };
   };
 
-  return useMutation(
-    (value: any) => {
-      const newObj = processFilter(value);
-      return queryClient.setQueryData('searchCriteria', (old) => {
-        return {
-          ...old,
-          ...newObj,
-        };
-      });
-    },
-
-    {
-      onError: (err) => {
-        console.log(err);
-      },
-    }
-  );
+  return useMutation(async (value: any) => {
+    const newObj = processFilter(value);
+    return queryClient.setQueryData("searchCriteria", (old: any) => {
+      return {
+        ...old,
+        ...newObj,
+      };
+    });
+  });
 }
