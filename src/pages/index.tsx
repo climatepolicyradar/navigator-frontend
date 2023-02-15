@@ -24,7 +24,7 @@ const IndexPage = () => {
   const { mutate: updateSearch } = useUpdateSearch();
   const theme = useContext(ThemeContext);
 
-  const configQuery: any = useConfig("config");
+  const configQuery = useConfig("config");
   const { data: { regions = [], countries = [] } = {} } = configQuery;
 
   const handleSearchInput = (term: string, filter?: string, filterValue?: string) => {
@@ -50,8 +50,7 @@ const IndexPage = () => {
       countries,
     });
     updateSearch({ data: emptySearchResults });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateCountries, updateSearch]);
+  }, [updateCountries, updateSearch, regions, countries]);
 
   return (
     <>

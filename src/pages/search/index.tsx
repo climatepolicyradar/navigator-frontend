@@ -58,7 +58,7 @@ const Search = () => {
   });
 
   // get lookups/filters
-  const configQuery: any = useConfig("config");
+  const configQuery = useConfig("config");
   const { data: { document_types = [], sectors = [], regions = [], countries = [] } = {} } = configQuery;
 
   const { data: filteredCountries } = useFilteredCountries(countries);

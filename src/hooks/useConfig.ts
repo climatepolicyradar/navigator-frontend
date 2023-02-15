@@ -1,9 +1,24 @@
 import { useQuery } from "react-query";
 import { ApiClient, getEnvFromServer } from "../api/http-common";
-import { removeDuplicates } from "../utils/removeDuplicates";
+import { removeDuplicates } from "@utils/removeDuplicates";
+import { TGeography } from "@types";
 
-export default function useConfig(path: string, filterProp: string = "") {
-  const extractNestedData = (response, levels, filterProp) => {
+type TGeographyNode = {
+  node: TGeography;
+  children: TGeographyNode[];
+};
+
+type TQueryResponse = {
+  document_types: any[];
+  geographies: TGeographyNode[];
+  instruments: any[];
+  sectors: any[];
+  regions: TGeography[];
+  countries: TGeography[];
+};
+
+export default function useConfig(path: string) {
+  function extractNestedData(response: TGeographyNode[], levels: number, filterProp: string) {
     let level1 = [];
     let level2Nested = [];
     let level2 = [];
@@ -26,7 +41,7 @@ export default function useConfig(path: string, filterProp: string = "") {
 
       return { level1, level2 };
     }
-  };
+  }
 
   return useQuery(
     path,
@@ -43,7 +58,7 @@ export default function useConfig(path: string, filterProp: string = "") {
       const regions = response_geo.level1;
       const countries = response_geo.level2;
 
-      const resp_end = {
+      const resp_end: TQueryResponse = {
         document_types,
         geographies,
         instruments,
