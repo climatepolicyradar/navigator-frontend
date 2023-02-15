@@ -15,7 +15,7 @@ export const DocumentHead = ({ document, onCollectionClick }: TProps) => {
         <div className="flex flex-col md:flex-row">
           <div className="flex-1 my-4">
             <h1 className="text-3xl lg:smaller">{document.title}</h1>
-            {document?.collection.name && (
+            {document?.collection?.name && (
               <div className="flex text-base text-indigo-400 mt-4 items-center w-full mb-2 font-medium">
                 <span>Part of &nbsp;</span>
                 {onCollectionClick ? (
