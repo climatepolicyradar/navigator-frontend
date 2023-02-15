@@ -32,12 +32,13 @@ module.exports = {
         300: "#c7ccd5",
         400: "#2B2F49",
         500: "#2B2F49",
-        600: "#2B2F49",
+        600: "#0A1C40",
         700: "#2B2F49",
       },
       sky: "var(--color-sky)",
       primary: {
         400: "var(--color-primary-400)",
+        600: "var(--color-primary-600)",
         700: "var(--color-primary-700)",
       },
       secondary: {

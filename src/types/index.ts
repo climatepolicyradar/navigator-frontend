@@ -48,6 +48,7 @@ export type TDocument = {
   document_title_match: boolean;
   document_type: string;
   document_url: string;
+  document_id: string;
   document_fileid?: string;
 };
 
@@ -122,4 +123,15 @@ export type TAssociatedDocument = {
   slug: string;
   publication_ts: string;
   category?: TCategory;
+};
+
+export type TFamilyDocument = {
+  id: number;
+  type: { name: string; description: string };
+  title: string;
+  date: string;
+  variant: { id: number; label: string; description: string };
+  format: string;
+  matches: number;
+  slug: string;
 };

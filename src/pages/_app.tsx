@@ -29,14 +29,15 @@ function getThemeColours(theme: string): string {
     :root { 
       --color-lineBorder:#bfc2d9;
       --color-primary-400:#ED3D48;
+      --color-primary-600:#ED3D48;
       --color-primary-700:#2B2F49;
       --color-indigo-400:#2B2F49;
       --color-indigo-500:#2B2F49;
       --color-indigo-600:#2B2F49;
       --color-indigo-700:#2B2F49;
-      --color-sky:#ED3D48;
+      --color-sky:#fde1e3;
       --color-blue-100:#e8f3fe;
-      --color-blue-200:#ED3D48;
+      --color-blue-200:#e2aeb2;
       --color-blue-300:#ED3D48;
       --color-blue-400:#ED3D48;
       --color-blue-500:#ED3D48;
@@ -47,6 +48,7 @@ function getThemeColours(theme: string): string {
     :root { 
       --color-lineBorder:#d0e5fd;
       --color-primary-400:#1f93ff;
+      --color-primary-600:#006FD6;
       --color-primary-700:#0A1C40;
       --color-indigo-400:#6E6E6E;
       --color-indigo-500:#616c85;
@@ -118,7 +120,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
         `}
           </Script>
           {dynamicTheme === "cclw" && <Banner />}
-          <div id={dynamicTheme}>
+          <div id={dynamicTheme} className="h-full">
             <Component {...pageProps} />
           </div>
           <CookieConsent />

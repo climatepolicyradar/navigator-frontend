@@ -27,23 +27,31 @@ const Button = ({
   wider = false,
   ...props
 }: ButtonProps) => {
-  let colorClasses = "bg-indigo-600 text-white border border-indigo-600 hover:bg-white hover:border-white hover:text-indigo-600";
+  let conditionalClasses = "bg-indigo-600 text-white border border-indigo-600 hover:bg-white hover:border-white hover:text-indigo-600";
   switch (color) {
     case "light":
-      colorClasses = "bg-blue-500 border border-blue-500 text-white hover:bg-secondary-700 hover:border-secondary-700 hover:text-white";
+      conditionalClasses = "bg-blue-500 border border-blue-500 text-white hover:bg-secondary-700 hover:border-secondary-700 hover:text-white";
       break;
     case "secondary":
-      colorClasses = "bg-white border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white";
+      conditionalClasses = "bg-white border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white";
       break;
     case "light-hover-dark":
-      colorClasses = "bg-blue-500 border border-blue-500 text-white hover:bg-indigo-600 hover:border-indigo-600 hover:text-white";
+      conditionalClasses = "bg-blue-500 border border-blue-500 text-white hover:bg-indigo-600 hover:border-indigo-600 hover:text-white";
       break;
     case "clear":
-      colorClasses = !disabled
+      conditionalClasses = !disabled
         ? "clear bg-white border hover:border-indigo-600 text-indigo-600 disabled:border-indigo-300 disabled:text-indigo-300 disabled:hover:bg-white"
         : "";
       break;
   }
+  conditionalClasses += " " + (thin ? "py-1" : "py-3");
+  conditionalClasses += " " + (wider ? "px-12" : "px-8");
+  conditionalClasses += " " + (!fullWidth ? "md:w-auto" : "");
+  if (disabled) {
+    conditionalClasses +=
+      " " + "pointer-events-none bg-indigo-300 text-indigo-200 border-indigo-300 hover:bg-indigo-300 hover:text-indigo-200 hover:border-indigo-300";
+  }
+  conditionalClasses += " " + extraClasses;
 
   return (
     <button
@@ -52,9 +60,7 @@ const Button = ({
       type={type}
       disabled={disabled}
       data-cy={props["data-cy"]}
-      className={`${colorClasses} ${thin ? "py-1" : "py-3"} ${wider ? "md:px-12" : "md:px-8"} button transition duration-300 px-4 rounded-sm pointer-events-auto w-full font-bold ${
-        disabled ? "pointer-events-none bg-indigo-300 text-indigo-200 border-indigo-300 hover:bg-indigo-300 hover:text-indigo-200 hover:border-indigo-300" : ""
-      } ${extraClasses} ${!fullWidth ? "md:w-auto" : ""}`}
+      className={`button transition duration-300 px-4 rounded-sm pointer-events-auto w-full font-bold ${conditionalClasses}`}
       {...props}
     >
       {children}
