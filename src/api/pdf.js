@@ -66,7 +66,7 @@ class ViewSDKClient {
           /* file name */
           fileName: doc.document_name,
           /* file ID */
-          id: doc.document_fileid,
+          id: doc.document_id,
         },
       },
       viewerConfig
@@ -100,7 +100,7 @@ class ViewSDKClient {
               /* file name */
               fileName: doc.document_name,
               /* file ID */
-              id: doc.document_fileid,
+              id: doc.document_id,
             },
           },
           viewerConfig
