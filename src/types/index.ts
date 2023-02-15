@@ -8,6 +8,20 @@ export type TError = {
   detail: TErrorDetail[];
 };
 
+export type TDocumentType = {
+  id: number;
+  name: string;
+  description: string;
+};
+
+export type TMeta = {
+  description: string;
+  id: number;
+  name: string;
+  parent_id?: number;
+  source_id: number;
+};
+
 export type TSector = {
   description: string;
   id: number;
