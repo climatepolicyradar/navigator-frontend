@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { ApiClient } from "@api/http-common";
+import useGetSearcheResults from "@hooks/useGetSearchResults";
 import Layout from "@components/layouts/Main";
 import DocumentInfo from "@components/blocks/DocumentInfo";
 import { Timeline } from "@components/blocks/Timeline";
@@ -15,7 +16,7 @@ import { Divider } from "@components/dividers/Divider";
 import { initialSummaryLength } from "@constants/document";
 import { truncateString } from "@helpers/index";
 import { getDocumentTitle } from "@helpers/getDocumentTitle";
-import { TEvent, TFamilyDocument } from "@types";
+import { TEvent, TDocument, TFamilyDocument } from "@types";
 
 import DUMMY_JSON from "./data.json";
 
@@ -24,6 +25,12 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const [showCollectionDetail, setShowCollectionDetail] = useState(false);
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [summary, setSummary] = useState("");
+
+  // Check if we have any search results
+  const { data: searchResults } = useGetSearcheResults();
+  const documents = searchResults?.data?.documents;
+  // See if the family is in the list of results
+  const familyResult: TDocument = documents ? documents.find((document) => document.document_id === page.import_id) : null;
 
   const handleCollectionClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -80,6 +87,12 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
     <Layout title={page.title}>
       <section className="mb-8">
         <DocumentHead document={page} onCollectionClick={handleCollectionClick} />
+        <div className="bg-gray-200 border-b border-lineBorder py-4">
+          <div className="container">
+            Family/document from search or local store: <br />{" "}
+            <code className="block whitespace-pre-wrap">{JSON.stringify(familyResult, null, "\t")}</code>
+          </div>
+        </div>
         <div className="container">
           <div className="md:flex">
             <section className="flex-1 md:w-0">
