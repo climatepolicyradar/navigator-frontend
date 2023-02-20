@@ -1,3 +1,21 @@
+export type TSearchKeywordFilters = {
+  categories?: string[];
+  regions?: string[];
+  countries?: string[];
+};
+
+export type TSearchCriteria = {
+  query_string: string;
+  exact_match: boolean;
+  max_passages_per_doc: number;
+  keyword_filters?: TSearchKeywordFilters;
+  year_range: [number, number];
+  sort_field: string | null;
+  sort_order: string;
+  limit: number;
+  offset: number;
+};
+
 type TErrorDetail = {
   loc: string[];
   msg: string;

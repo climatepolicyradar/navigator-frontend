@@ -64,7 +64,7 @@ const Search = () => {
   const { data: filteredCountries } = useFilteredCountries(countries);
 
   // search criteria and filters
-  const { isFetching: isFetchingSearchCriteria, data: searchCriteria }: any = useSearchCriteria();
+  const { isFetching: isFetchingSearchCriteria, data: searchCriteria } = useSearchCriteria();
   const isBrowsing = searchCriteria?.query_string.trim() === "";
 
   // search results

@@ -1,12 +1,13 @@
-import { useQuery, useQueryClient } from 'react-query';
-import { initialSearchCriteria } from '../constants/searchCriteria';
+import { useQuery, useQueryClient } from "react-query";
+import { initialSearchCriteria } from "../constants/searchCriteria";
+import { TSearchCriteria } from "@types";
 
 export default function useSearchCriteria() {
   const queryClient = useQueryClient();
-  return useQuery(
-    'searchCriteria',
+  return useQuery<TSearchCriteria>(
+    "searchCriteria",
     () => {
-      const existingCriteria = queryClient.getQueryData('searchCriteria');
+      const existingCriteria: TSearchCriteria = queryClient.getQueryData("searchCriteria");
       return existingCriteria ? existingCriteria : initialSearchCriteria;
     },
     {
