@@ -1,4 +1,5 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, ChangeEvent } from "react";
+import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import { TDocument } from "@types";
 import { useDidUpdateEffect } from "@hooks/useDidUpdateEffect";
@@ -33,6 +34,7 @@ import Tooltip from "@components/tooltip";
 import { calculatePageCount } from "@utils/paging";
 import { PER_PAGE } from "@constants/paging";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
+import buildSearchQuery from "@utils/buildSearchQuery";
 
 const Search = () => {
   const [showFilters, setShowFilters] = useState(false);
@@ -48,6 +50,7 @@ const Search = () => {
   const updateCountries = useUpdateCountries();
   const slideoutRef = useRef(null);
   const { t, ready } = useTranslation(["searchStart", "searchResults"]);
+  const router = useRouter();
 
   // close slideout panel when clicking outside of it
   useOutsideAlerter(slideoutRef, (e) => {
@@ -65,10 +68,14 @@ const Search = () => {
 
   // search criteria and filters
   const { isFetching: isFetchingSearchCriteria, data: searchCriteria } = useSearchCriteria();
-  const isBrowsing = searchCriteria?.query_string.trim() === "";
+
+  const isBrowsing = router?.query?.query_string.toString().trim() === "";
+  // const isBrowsing = searchCriteria?.query_string.trim() === "";
 
   // search results
-  const resultsQuery: any = useSearch("searches", searchCriteria);
+  // FIXME: change searchCriteria to take in buildSearchQuery()
+  // FIXME: strongly type the result here
+  const resultsQuery: any = useSearch("searches", buildSearchQuery(router.query));
   const { data: { data: { documents = [] } = [] } = [], data: { data: { hits } = 0 } = 0 } = resultsQuery;
 
   const { data: document }: { data: TDocument } = ({} = useDocument());
@@ -86,12 +93,14 @@ const Search = () => {
   };
 
   const handleRegionChange = (type: string, regionName: string) => {
-    handleFilterChange(type, regionName);
-    updateCountries.mutate({
-      regionName,
-      regions,
-      countries,
-    });
+    router.query[type] = regionName;
+    router.push({ query: router.query });
+    // handleFilterChange(type, regionName);
+    // updateCountries.mutate({
+    //   regionName,
+    //   regions,
+    //   countries,
+    // });
   };
 
   const handlePageChange = (page: number) => {
@@ -100,8 +109,25 @@ const Search = () => {
   };
 
   const handleFilterChange = (type: string, value: string, action: string = "update") => {
-    resetPaging();
-    updateSearchFilters.mutate({ [type]: value, action });
+    // default to page 1
+    delete router.query["offset"];
+
+    let queryCollection: string[];
+
+    if (router.query[type]) {
+      if (Array.isArray(router.query[type])) {
+        queryCollection = router.query[type] as string[];
+      } else {
+        queryCollection = [router.query[type].toString()];
+      }
+    }
+
+    queryCollection.push(value);
+    router.query[type] = queryCollection;
+    router.push({ query: router.query });
+
+    // resetPaging();
+    // updateSearchFilters.mutate({ [type]: value, action });
   };
 
   const handleSuggestion = (term: string, filter?: string, filterValue?: string) => {
@@ -116,39 +142,52 @@ const Search = () => {
   };
 
   const handleSearchChange = (type: string, value: any) => {
-    if (type !== "offset") resetPaging();
-    updateSearchCriteria.mutate({ [type]: value });
+    if (type !== "offset") delete router.query["offset"];
+    router.query[type] = value;
+    if (!value) {
+      delete router.query[type];
+    }
+    router.push({ query: router.query });
+    // updateSearchCriteria.mutate({ [type]: value });
   };
 
   const handleSearchInput = (term: string) => {
     handleSearchChange("query_string", term);
   };
 
-  const handleDocumentCategoryClick = (e) => {
+  const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const val = e.currentTarget.textContent;
     let category = val;
-    // map to values that the api knows
-    if (val === "Legislation") {
-      category = "Law";
+    router.query["category"] = category;
+    // Default search is all categories
+    if (val === "All") {
+      delete router.query["category"];
     }
-    if (val === "Policies") {
-      category = "Policy";
-    }
-    const action = val === "All" ? "delete" : "update";
-    handleFilterChange("categories", category, action);
+    router.push({ query: router.query });
+    // const action = val === "All" ? "delete" : "update";
+    // handleFilterChange("categories", category, action);
   };
 
-  const handleSortClick = (e) => {
+  const handleSortClick = (e: ChangeEvent<HTMLSelectElement>) => {
     const val = e.currentTarget.value;
     let field = null;
-    let order = "desc";
+    let order = null;
     if (val !== "relevance") {
       const valArray = val.split(":");
       field = valArray[0];
       order = valArray[1];
     }
-    handleSearchChange("sort_field", field);
-    handleSearchChange("sort_order", order);
+
+    router.query["sort_field"] = field;
+    router.query["sort_order"] = order;
+    // Delete the query params if they are null
+    if (!field) {
+      delete router.query["sort_field"];
+    }
+    if (!order) {
+      delete router.query["sort_order"];
+    }
+    router.push({ query: router.query });
   };
 
   const handleYearChange = (values: number[]) => {
@@ -186,8 +225,8 @@ const Search = () => {
   };
 
   const getCurrentSortChoice = () => {
-    const field = searchCriteria.sort_field;
-    const order = searchCriteria.sort_order;
+    const field = router.query["sort_field"];
+    const order = router.query["sort_order"];
     if (field === null && order === "desc") {
       if (isBrowsing) return "date:desc";
       return "relevance";
@@ -196,29 +235,25 @@ const Search = () => {
   };
 
   const getCategoryIndex = () => {
-    if (!searchCriteria?.keyword_filters?.categories) {
+    const categories = router.query["category"]?.toString();
+    // const categories = searchCriteria?.keyword_filters?.categories;
+    if (!categories) {
       return 0;
     }
-    let index = DOCUMENT_CATEGORIES.indexOf(searchCriteria.keyword_filters?.categories[0]);
-    // ['All', 'Executive', 'Legislative', 'Litigation']
-    // hack to get correct previously selected category
-    if (searchCriteria.keyword_filters?.categories[0] === "Law") {
-      index = 1;
-    }
-    if (searchCriteria.keyword_filters?.categories[0] === "Policy") {
-      index = 2;
-    }
+    let index = DOCUMENT_CATEGORIES.indexOf(categories);
     return index === -1 ? 0 : index;
   };
 
   const getCurrentPage = () => {
-    return searchCriteria?.offset / PER_PAGE + 1;
+    return parseInt(router.query?.offset?.toString()) / PER_PAGE + 1;
+    // return searchCriteria?.offset / PER_PAGE + 1;
   };
 
   useEffect(() => {
     if (offset === null) return;
-    handleSearchChange("offset", offset);
-    window.scrollTo(0, 0);
+    router.query["offset"] = offset;
+    router.push({ query: router.query });
+    // handleSearchChange("offset", offset);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset]);
 
@@ -228,10 +263,18 @@ const Search = () => {
     }
   }, [hits]);
 
-  useDidUpdateEffect(() => {
-    window.scrollTo(0, 0);
+  // FIXME: replace resultsQuery.refetch() on router.change
+  // useDidUpdateEffect(() => {
+  //   window.scrollTo(0, 0);
+  //   resultsQuery.refetch();
+  // }, [searchCriteria]);
+
+  useEffect(() => {
+    // console.log("on search page :: ROUTER QUERY changed: ", router.query);
+    // console.log("resultsQuery.refetch()");
     resultsQuery.refetch();
-  }, [searchCriteria]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query]);
 
   const renderNoOfResults = () => {
     let resultsMsg = `Showing`;
@@ -243,16 +286,21 @@ const Search = () => {
     return (
       <>
         {resultsMsg}{" "}
-        {searchCriteria.query_string && (
+        {router.query?.query_string && (
           <>
             <>
-              for "<i className="text-blue-600">{searchCriteria.query_string}</i>"
+              for "<i className="text-blue-600">{router.query?.query_string}</i>"
             </>
             {hits > 100 && (
               <div className="ml-2 inline-block">
                 <Tooltip
                   id="search-results-number"
-                  tooltip={<>We limit the number of search results to 100 so that you get the best performance from our tool. We’re working on a way to remove this limit.</>}
+                  tooltip={
+                    <>
+                      We limit the number of search results to 100 so that you get the best performance from our tool. We’re working on a way to
+                      remove this limit.
+                    </>
+                  }
                   icon="i"
                   place="bottom"
                 />
@@ -271,7 +319,7 @@ const Search = () => {
       ) : (
         <Layout title={t("Law and Policy Search")} heading={t("Law and Policy Search")}>
           <div onClick={handleDocumentClick}>
-            <Slideout ref={slideoutRef} show={showSlideout} setShowSlideout={resetSlideOut}>
+            {/* <Slideout ref={slideoutRef} show={showSlideout} setShowSlideout={resetSlideOut}>
               <div className="flex flex-col h-full relative">
                 <DocumentSlideout document={document} searchTerm={searchCriteria.query_string} showPDF={showPDF} setShowPDF={setShowPDF} />
                 <div className="flex flex-col md:flex-row flex-1 h-0">
@@ -284,12 +332,17 @@ const Search = () => {
                 </div>
               </div>
             </Slideout>
-            {showSlideout && <div className="w-full h-full bg-overlayWhite fixed top-0 z-30" />}
+            {showSlideout && <div className="w-full h-full bg-overlayWhite fixed top-0 z-30" />} */}
             <section>
               <div className="px-4 container">
                 <div className="md:py-8 md:w-3/4 md:mx-auto">
                   <p className="md:hidden mt-4 mb-2">{placeholder}</p>
-                  <SearchForm placeholder={placeholder} handleSearchInput={handleSearchInput} input={searchCriteria.query_string} handleSuggestion={handleSuggestion} />
+                  <SearchForm
+                    placeholder={placeholder}
+                    handleSearchInput={handleSearchInput}
+                    input={router.query.query_string?.toString()}
+                    handleSuggestion={handleSuggestion}
+                  />
                 </div>
               </div>
               <div className="px-4 md:flex container border-b border-lineBorder">

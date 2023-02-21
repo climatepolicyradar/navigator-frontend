@@ -36,7 +36,8 @@ const IndexPage = () => {
       additionalCritera = { ...additionalCritera, ["keyword_filters"]: { [filter]: [filterValue] } };
     }
     updateSearchCriteria.mutate({ ...initialSearchCriteria, ...newSearchCritera, ...additionalCritera });
-    router.push("/search");
+    router.query["query_string"] = term;
+    router.push({ pathname: "/search", query: router.query });
   };
 
   const handleSearchChange = (type: string, value: any) => {
