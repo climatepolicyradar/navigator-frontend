@@ -143,7 +143,6 @@ const Search = () => {
       router.query[filter] = [filterValue.toLowerCase()];
     }
 
-    console.log(router.query);
     router.push({ query: router.query });
 
     // const newSearchCritera = {
