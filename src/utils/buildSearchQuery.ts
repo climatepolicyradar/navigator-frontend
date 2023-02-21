@@ -6,7 +6,7 @@ type TRouterQuery = {
 };
 
 export default function buildSearchQuery(routerQuery: TRouterQuery): TSearchCriteria {
-  const { category, regions, countries } = routerQuery;
+  const { category, regions, countries, exact_match } = routerQuery;
   const keyword_filters: TSearchKeywordFilters = {};
 
   if (category) {
@@ -33,7 +33,7 @@ export default function buildSearchQuery(routerQuery: TRouterQuery): TSearchCrit
   delete routerQuery.category;
   delete routerQuery.regions;
   delete routerQuery.countries;
-  const query = { ...initialSearchCriteria, ...routerQuery, keyword_filters };
+  const query = { ...initialSearchCriteria, ...routerQuery, exact_match: exact_match?.toString() === "true", keyword_filters };
   return query;
 }
 

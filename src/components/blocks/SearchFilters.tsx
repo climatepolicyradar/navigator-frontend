@@ -7,7 +7,7 @@ import MultiList from "../filters/MultiList";
 import ExactMatch from "../filters/ExactMatch";
 import ByDateRange from "../filters/ByDateRange";
 import { currentYear, minYear } from "@constants/timedate";
-import { TSector } from "@types";
+import { TSector, TSearchCriteria } from "@types";
 import { ExternalLink } from "@components/ExternalLink";
 import { ThemeContext } from "@context/ThemeContext";
 
@@ -17,7 +17,7 @@ interface SearchFiltersProps {
   handleRegionChange(type: any, regionName: any): void;
   handleClearSearch(): void;
   handleSearchChange(type: string, value: string): void;
-  searchCriteria: any;
+  searchCriteria: TSearchCriteria;
   regions: object[];
   filteredCountries: object[];
   sectors: TSector[];
@@ -33,14 +33,13 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
   handleSearchChange,
   regions,
   filteredCountries,
-  sectors,
 }) => {
   const [showClear, setShowClear] = useState(false);
   const { t } = useTranslation("searchResults");
   const theme = useContext(ThemeContext);
 
   const {
-    keyword_filters: { countries: countryFilters = [], sectors: sectorFilters = [] },
+    keyword_filters: { countries: countryFilters = [] },
   } = searchCriteria;
 
   const thisYear = currentYear();
@@ -49,6 +48,8 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
     if (searchCriteria.year_range[0] !== minYear && searchCriteria.year_range[1] !== thisYear) {
       setShowClear(true);
     } else if (Object.keys(searchCriteria.keyword_filters).length > 0) {
+      setShowClear(true);
+    } else if (searchCriteria.exact_match) {
       setShowClear(true);
     } else {
       setShowClear(false);
@@ -93,7 +94,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
           />
           <MultiList list={countryFilters} removeFilter={handleFilterChange} type="countries" />
         </div>
-        <div className="relative mt-6 hidden">
+        {/* <div className="relative mt-6 hidden">
           <BySelect
             list={sectors.filter((sector) => !sectorFilters.includes(sector.name))}
             onChange={handleFilterChange}
@@ -104,7 +105,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
             defaultText={sectorFilters.length ? "Add more sectors" : "All"}
           />
           <MultiList list={sectorFilters} removeFilter={handleFilterChange} type="sectors" />
-        </div>
+        </div> */}
         <div className="relative mt-8 mb-12">
           <div className="">
             <ByDateRange

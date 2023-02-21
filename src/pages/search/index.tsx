@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, ChangeEvent } from "react";
+import { useEffect, useState, useRef, ChangeEvent, useMemo } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import { TDocument } from "@types";
@@ -52,6 +52,10 @@ const Search = () => {
   const { t, ready } = useTranslation(["searchStart", "searchResults"]);
   const router = useRouter();
 
+  const searchQuery = useMemo(() => {
+    return buildSearchQuery({ ...router.query });
+  }, [router.query]);
+
   // close slideout panel when clicking outside of it
   useOutsideAlerter(slideoutRef, (e) => {
     if (e.target.nodeName === "BUTTON") {
@@ -69,13 +73,12 @@ const Search = () => {
   // search criteria and filters
   const { isFetching: isFetchingSearchCriteria, data: searchCriteria } = useSearchCriteria();
 
-  const isBrowsing = router?.query?.query_string.toString().trim() === "";
+  const isBrowsing = router?.query?.query_string?.toString().trim() === "";
   // const isBrowsing = searchCriteria?.query_string.trim() === "";
 
   // search results
-  // FIXME: change searchCriteria to take in buildSearchQuery()
   // FIXME: strongly type the result here
-  const resultsQuery: any = useSearch("searches", buildSearchQuery({ ...router.query }));
+  const resultsQuery: any = useSearch("searches", searchQuery);
   const { data: { data: { documents = [] } = [] } = [], data: { data: { hits } = 0 } = 0 } = resultsQuery;
 
   const { data: document }: { data: TDocument } = ({} = useDocument());
@@ -208,14 +211,17 @@ const Search = () => {
   };
 
   const handleClearSearch = () => {
-    const { query_string, exact_match, sort_field, sort_order, ...initial } = initialSearchCriteria;
-    updateSearchCriteria.mutate(initial);
-    // reset filtered countries
-    updateCountries.mutate({
-      regionName: "",
-      regions,
-      countries,
-    });
+    const previousSearchQuery = router.query["query_string"];
+    router.push({ query: { query_string: previousSearchQuery } });
+
+    // const { query_string, exact_match, sort_field, sort_order, ...initial } = initialSearchCriteria;
+    // updateSearchCriteria.mutate(initial);
+    // // reset filtered countries
+    // updateCountries.mutate({
+    //   regionName: "",
+    //   regions,
+    //   countries,
+    // });
   };
 
   const handleDocumentClick = (e: any) => {
@@ -279,8 +285,6 @@ const Search = () => {
   // }, [searchCriteria]);
 
   useEffect(() => {
-    // console.log("on search page :: ROUTER QUERY changed: ", router.query);
-    // console.log("resultsQuery.refetch()");
     resultsQuery.refetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
@@ -349,7 +353,7 @@ const Search = () => {
                   <SearchForm
                     placeholder={placeholder}
                     handleSearchInput={handleSearchInput}
-                    input={router.query.query_string?.toString()}
+                    input={router.query?.query_string ? router.query.query_string?.toString() : ""}
                     handleSuggestion={handleSuggestion}
                   />
                 </div>
@@ -369,7 +373,7 @@ const Search = () => {
                     ) : (
                       <SearchFilters
                         handleFilterChange={handleFilterChange}
-                        searchCriteria={searchCriteria}
+                        searchCriteria={searchQuery}
                         handleYearChange={handleYearChange}
                         handleRegionChange={handleRegionChange}
                         handleClearSearch={handleClearSearch}
