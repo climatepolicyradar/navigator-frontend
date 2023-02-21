@@ -29,8 +29,11 @@ export default function buildSearchQuery(routerQuery: TRouterQuery): TSearchCrit
     keyword_filters.countries = Array.isArray(countries) ? countries : [countries];
   }
 
+  // Don't pass these to the API
+  delete routerQuery.category;
+  delete routerQuery.regions;
+  delete routerQuery.countries;
   const query = { ...initialSearchCriteria, ...routerQuery, keyword_filters };
-  // console.log("buildSearchQuery() returned: ", query);
   return query;
 }
 

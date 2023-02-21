@@ -75,7 +75,7 @@ const Search = () => {
   // search results
   // FIXME: change searchCriteria to take in buildSearchQuery()
   // FIXME: strongly type the result here
-  const resultsQuery: any = useSearch("searches", buildSearchQuery(router.query));
+  const resultsQuery: any = useSearch("searches", buildSearchQuery({ ...router.query }));
   const { data: { data: { documents = [] } = [] } = [], data: { data: { hits } = 0 } = 0 } = resultsQuery;
 
   const { data: document }: { data: TDocument } = ({} = useDocument());
@@ -86,10 +86,19 @@ const Search = () => {
     setOffset(0);
   };
 
+  const toggleFilters = () => {
+    setShowFilters(!showFilters);
+  };
+
   const resetSlideOut = (slideOut?: boolean) => {
     setShowPDF(false);
     setPassageIndex(null);
     setShowSlideout(slideOut ?? !showSlideout);
+  };
+
+  const handlePageChange = (page: number) => {
+    setOffset((page - 1) * PER_PAGE);
+    setShowSlideout(false);
   };
 
   const handleRegionChange = (type: string, regionName: string) => {
@@ -103,16 +112,11 @@ const Search = () => {
     // });
   };
 
-  const handlePageChange = (page: number) => {
-    setOffset((page - 1) * PER_PAGE);
-    setShowSlideout(false);
-  };
-
   const handleFilterChange = (type: string, value: string, action: string = "update") => {
     // default to page 1
     delete router.query["offset"];
 
-    let queryCollection: string[];
+    let queryCollection: string[] = [];
 
     if (router.query[type]) {
       if (Array.isArray(router.query[type])) {
@@ -131,14 +135,22 @@ const Search = () => {
   };
 
   const handleSuggestion = (term: string, filter?: string, filterValue?: string) => {
-    const newSearchCritera = {
-      ["query_string"]: term,
-    };
-    let additionalCritera = {};
+    router.query["query_string"] = term;
     if (filter && filterValue && filter.length && filterValue.length) {
-      additionalCritera = { ...additionalCritera, ["keyword_filters"]: { [filter]: [filterValue] } };
+      router.query[filter] = [filterValue.toLowerCase()];
     }
-    updateSearchCriteria.mutate({ ...newSearchCritera, ...additionalCritera });
+
+    console.log(router.query);
+    router.push({ query: router.query });
+
+    // const newSearchCritera = {
+    //   ["query_string"]: term,
+    // };
+    // let additionalCritera = {};
+    // if (filter && filterValue && filter.length && filterValue.length) {
+    //   additionalCritera = { ...additionalCritera, ["keyword_filters"]: { [filter]: [filterValue] } };
+    // }
+    // updateSearchCriteria.mutate({ ...newSearchCritera, ...additionalCritera });
   };
 
   const handleSearchChange = (type: string, value: any) => {
@@ -204,10 +216,6 @@ const Search = () => {
       regions,
       countries,
     });
-  };
-
-  const toggleFilters = () => {
-    setShowFilters(!showFilters);
   };
 
   const handleDocumentClick = (e: any) => {
@@ -320,9 +328,9 @@ const Search = () => {
       ) : (
         <Layout title={t("Law and Policy Search")} heading={t("Law and Policy Search")}>
           <div onClick={handleDocumentClick}>
-            {/* <Slideout ref={slideoutRef} show={showSlideout} setShowSlideout={resetSlideOut}>
+            <Slideout ref={slideoutRef} show={showSlideout} setShowSlideout={resetSlideOut}>
               <div className="flex flex-col h-full relative">
-                <DocumentSlideout document={document} searchTerm={searchCriteria.query_string} showPDF={showPDF} setShowPDF={setShowPDF} />
+                <DocumentSlideout document={document} searchTerm={router.query?.query_string?.toString()} showPDF={showPDF} setShowPDF={setShowPDF} />
                 <div className="flex flex-col md:flex-row flex-1 h-0">
                   <div className={`${showPDF ? "hidden" : "block"} md:block md:w-1/3 overflow-y-scroll pl-3`}>
                     <PassageMatches document={document} setPassageIndex={setPassageIndex} activeIndex={passageIndex} />
@@ -333,7 +341,7 @@ const Search = () => {
                 </div>
               </div>
             </Slideout>
-            {showSlideout && <div className="w-full h-full bg-overlayWhite fixed top-0 z-30" />} */}
+            {showSlideout && <div className="w-full h-full bg-overlayWhite fixed top-0 z-30" />}
             <section>
               <div className="px-4 container">
                 <div className="md:py-8 md:w-3/4 md:mx-auto">
@@ -401,7 +409,7 @@ const Search = () => {
                         <Loader />
                       </div>
                     ) : (
-                      <SearchResultList searchCriteria={searchCriteria} documents={documents} />
+                      <SearchResultList category={router.query?.category?.toString()} documents={documents} />
                     )}
                   </div>
                 </div>
