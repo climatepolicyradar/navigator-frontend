@@ -245,7 +245,8 @@ const Search = () => {
   };
 
   const getCurrentPage = () => {
-    return parseInt(router.query?.offset?.toString()) / PER_PAGE + 1;
+    const offSet = isNaN(parseInt(router.query?.offset?.toString())) ? 0 : parseInt(router.query?.offset?.toString());
+    return offSet / PER_PAGE + 1;
     // return searchCriteria?.offset / PER_PAGE + 1;
   };
 
