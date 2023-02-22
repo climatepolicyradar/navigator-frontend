@@ -27,12 +27,14 @@ import SearchResultList from "@components/blocks/SearchResultList";
 import { ExternalLink } from "@components/ExternalLink";
 import Tooltip from "@components/tooltip";
 import { calculatePageCount } from "@utils/paging";
+import buildSearchQuery from "@utils/buildSearchQuery";
 import { PER_PAGE } from "@constants/paging";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
-import buildSearchQuery from "@utils/buildSearchQuery";
+import { QUERY_PARAMS } from "@constants/queryParams";
 
 const Search = () => {
   const router = useRouter();
+  const qQueryString = router.query[QUERY_PARAMS.query_string];
   const slideoutRef = useRef(null);
   const { t, ready } = useTranslation(["searchStart", "searchResults"]);
   const [showFilters, setShowFilters] = useState(false);
@@ -62,7 +64,7 @@ const Search = () => {
 
   const { data: filteredCountries } = useFilteredCountries(countries);
 
-  const isBrowsing = router?.query?.query_string?.toString().trim() === "";
+  const isBrowsing = qQueryString?.toString().trim() === "";
 
   const resultsQuery = useSearch("searches", searchQuery);
   const documents = resultsQuery?.data?.data?.documents ?? [];
@@ -100,7 +102,7 @@ const Search = () => {
 
   const handleFilterChange = (type: string, value: string) => {
     // reset to page 1 when changing filters
-    delete router.query["offset"];
+    delete router.query[QUERY_PARAMS.offset];
 
     let queryCollection: string[] = [];
 
@@ -122,7 +124,7 @@ const Search = () => {
   };
 
   const handleSuggestion = (term: string, filter?: string, filterValue?: string) => {
-    router.query["query_string"] = term;
+    router.query[QUERY_PARAMS.query_string] = term;
     if (filter && filterValue && filter.length && filterValue.length) {
       router.query[filter] = [filterValue.toLowerCase()];
     }
@@ -131,7 +133,7 @@ const Search = () => {
   };
 
   const handleSearchChange = (type: string, value: any) => {
-    if (type !== "offset") delete router.query["offset"];
+    if (type !== "offset") delete router.query[QUERY_PARAMS.offset];
     router.query[type] = value;
     if (!value) {
       delete router.query[type];
@@ -140,16 +142,16 @@ const Search = () => {
   };
 
   const handleSearchInput = (term: string) => {
-    handleSearchChange("query_string", term);
+    handleSearchChange(QUERY_PARAMS.query_string, term);
   };
 
   const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const val = e.currentTarget.textContent;
     let category = val;
-    router.query["category"] = category;
+    router.query[QUERY_PARAMS.category] = category;
     // Default search is all categories
     if (val === "All") {
-      delete router.query["category"];
+      delete router.query[QUERY_PARAMS.category];
     }
     router.push({ query: router.query });
   };
@@ -164,27 +166,29 @@ const Search = () => {
       order = valArray[1];
     }
 
-    router.query["sort_field"] = field;
-    router.query["sort_order"] = order;
+    router.query[QUERY_PARAMS.sort_field] = field;
+    router.query[QUERY_PARAMS.sort_order] = order;
     // Delete the query params if they are null
     if (!field) {
-      delete router.query["sort_field"];
+      delete router.query[QUERY_PARAMS.sort_field];
     }
     if (!order) {
-      delete router.query["sort_order"];
+      delete router.query[QUERY_PARAMS.sort_order];
     }
     router.push({ query: router.query });
   };
 
   const handleYearChange = (values: number[]) => {
     const newVals = values.map((value: number) => Number(value).toFixed(0));
-    handleSearchChange("year_range", newVals);
+    handleSearchChange(QUERY_PARAMS.year_range, newVals);
   };
 
   const handleClearSearch = () => {
-    const previousSearchQuery = router.query["query_string"];
-    // Remove all query params except for the query string
-    router.push({ query: { query_string: previousSearchQuery } });
+    const previousSearchQuery = router.query[QUERY_PARAMS.query_string] as string;
+    if (previousSearchQuery && previousSearchQuery.length > 0) {
+      return router.push({ query: { [QUERY_PARAMS.query_string]: previousSearchQuery } });
+    }
+    return router.push({ query: {} });
   };
 
   const handleDocumentClick = (e: any) => {
@@ -202,8 +206,8 @@ const Search = () => {
   };
 
   const getCurrentSortChoice = () => {
-    const field = router.query["sort_field"];
-    const order = router.query["sort_order"];
+    const field = router.query[QUERY_PARAMS.sort_field];
+    const order = router.query[QUERY_PARAMS.sort_order];
     if (field === null && order === "desc") {
       if (isBrowsing) return "date:desc";
       return "relevance";
@@ -212,7 +216,7 @@ const Search = () => {
   };
 
   const getCategoryIndex = () => {
-    const categories = router.query["category"]?.toString();
+    const categories = router.query[QUERY_PARAMS.category]?.toString();
     if (!categories) {
       return 0;
     }
@@ -221,13 +225,13 @@ const Search = () => {
   };
 
   const getCurrentPage = () => {
-    const offSet = isNaN(parseInt(router.query?.offset?.toString())) ? 0 : parseInt(router.query?.offset?.toString());
+    const offSet = isNaN(parseInt(router.query[QUERY_PARAMS.offset]?.toString())) ? 0 : parseInt(router.query[QUERY_PARAMS.offset]?.toString());
     return offSet / PER_PAGE + 1;
   };
 
   useEffect(() => {
     if (offset === null) return;
-    router.query["offset"] = offset;
+    router.query[QUERY_PARAMS.offset] = offset;
     router.push({ query: router.query });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset]);
@@ -253,10 +257,10 @@ const Search = () => {
     return (
       <>
         {resultsMsg}{" "}
-        {router.query?.query_string && (
+        {qQueryString && (
           <>
             <>
-              for "<i className="text-blue-600">{router.query?.query_string}</i>"
+              for "<i className="text-blue-600">{qQueryString}</i>"
             </>
             {hits > 100 && (
               <div className="ml-2 inline-block">
@@ -288,7 +292,7 @@ const Search = () => {
           <div onClick={handleDocumentClick}>
             <Slideout ref={slideoutRef} show={showSlideout} setShowSlideout={resetSlideOut}>
               <div className="flex flex-col h-full relative">
-                <DocumentSlideout document={document} searchTerm={router.query?.query_string?.toString()} showPDF={showPDF} setShowPDF={setShowPDF} />
+                <DocumentSlideout document={document} searchTerm={qQueryString?.toString()} showPDF={showPDF} setShowPDF={setShowPDF} />
                 <div className="flex flex-col md:flex-row flex-1 h-0">
                   <div className={`${showPDF ? "hidden" : "block"} md:block md:w-1/3 overflow-y-scroll pl-3`}>
                     <PassageMatches document={document} setPassageIndex={setPassageIndex} activeIndex={passageIndex} />
@@ -307,7 +311,7 @@ const Search = () => {
                   <SearchForm
                     placeholder={placeholder}
                     handleSearchInput={handleSearchInput}
-                    input={router.query?.query_string ? router.query.query_string?.toString() : ""}
+                    input={qQueryString ? qQueryString.toString() : ""}
                     handleSuggestion={handleSuggestion}
                   />
                 </div>
@@ -367,7 +371,7 @@ const Search = () => {
                         <Loader />
                       </div>
                     ) : (
-                      <SearchResultList category={router.query?.category?.toString()} documents={documents} />
+                      <SearchResultList category={router.query[QUERY_PARAMS.category]?.toString()} documents={documents} />
                     )}
                   </div>
                 </div>

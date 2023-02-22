@@ -10,6 +10,7 @@ import { currentYear, minYear } from "@constants/timedate";
 import { TSector, TSearchCriteria } from "@types";
 import { ExternalLink } from "@components/ExternalLink";
 import { ThemeContext } from "@context/ThemeContext";
+import { QUERY_PARAMS } from "@constants/queryParams";
 
 interface SearchFiltersProps {
   handleFilterChange(type: string, value: string, action?: string): void;
@@ -79,7 +80,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
             title={t("By region")}
             keyField="slug"
             keyFieldDisplay="display_value"
-            filterType="regions"
+            filterType={QUERY_PARAMS.region}
           />
         </div>
         <div className="relative mt-6">
@@ -89,10 +90,10 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
             selectedList={countryFilters}
             keyField="slug"
             keyFieldDisplay="display_value"
-            filterType="countries"
+            filterType={QUERY_PARAMS.country}
             handleFilterChange={handleFilterChange}
           />
-          <MultiList list={countryFilters} removeFilter={handleFilterChange} type="countries" />
+          <MultiList list={countryFilters} removeFilter={handleFilterChange} type={QUERY_PARAMS.country} />
         </div>
         {/* <div className="relative mt-6 hidden">
           <BySelect

@@ -1,9 +1,10 @@
 import { ChangeEvent } from "react";
+import { QUERY_PARAMS } from "@constants/queryParams";
 
 const ExactMatch = ({ id, handleSearchChange, checked, landing = false }) => {
   const handleClick = (e: ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.currentTarget.checked;
-    handleSearchChange("exact_match", isChecked);
+    handleSearchChange(QUERY_PARAMS.exact_match, isChecked);
   };
 
   return (

@@ -4,6 +4,7 @@ import { currentYear } from "../../constants/timedate";
 import DateRangeInput from "./DateRangeInput";
 import DateRangeOption from "./DateRangeOption";
 import Error from "../blocks/Error";
+import { QUERY_PARAMS } from "@constants/queryParams";
 
 interface ByDateRangeProps {
   title: string;
@@ -35,8 +36,8 @@ const ByDateRange = ({ title, handleChange, defaultValues, min, max, clear }: By
 
   // Listen to the qury string to determine if the custom inputs should be shown
   useEffect(() => {
-    const start = Number(router.query.year_range?.[0]);
-    const end = Number(router.query.year_range?.[1]);
+    const start = Number(router.query[QUERY_PARAMS.year_range]?.[0]);
+    const end = Number(router.query[QUERY_PARAMS.year_range]?.[1]);
     if (start && end) {
       const range = end - start;
       if (range !== 1 && range !== 5) {
