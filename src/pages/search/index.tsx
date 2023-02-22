@@ -57,7 +57,6 @@ const Search = () => {
     setShowSlideout(false);
   });
 
-  // get lookups/filters
   const configQuery = useConfig("config");
   const { data: { document_types = [], sectors = [], regions = [], countries = [] } = {} } = configQuery;
 
@@ -65,10 +64,9 @@ const Search = () => {
 
   const isBrowsing = router?.query?.query_string?.toString().trim() === "";
 
-  // search results
-  // FIXME: strongly type the result here
-  const resultsQuery: any = useSearch("searches", searchQuery);
-  const { data: { data: { documents = [] } = [] } = [], data: { data: { hits } = 0 } = 0 } = resultsQuery;
+  const resultsQuery = useSearch("searches", searchQuery);
+  const documents = resultsQuery?.data?.data?.documents ?? [];
+  const hits = resultsQuery?.data?.data?.hits ?? 0;
 
   const { data: document }: { data: TDocument } = ({} = useDocument());
 
@@ -231,6 +229,7 @@ const Search = () => {
     if (offset === null) return;
     router.query["offset"] = offset;
     router.push({ query: router.query });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset]);
 
   useEffect(() => {

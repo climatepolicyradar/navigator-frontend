@@ -2,6 +2,14 @@ import { useQuery } from "react-query";
 import { ApiClient, getEnvFromServer } from "../api/http-common";
 import { initialSearchCriteria } from "../constants/searchCriteria";
 
+type TSearchReturned = {
+  data: {
+    hits: number;
+    query_time_ms: number;
+    documents: any[];
+  };
+};
+
 export default function useSearch(id: string, query = initialSearchCriteria) {
   const config = {
     headers: {
@@ -17,9 +25,9 @@ export default function useSearch(id: string, query = initialSearchCriteria) {
     return results;
   };
 
-  return useQuery(
+  return useQuery<TSearchReturned>(
     id,
-    () => {
+    async () => {
       return getResults();
     },
     {
