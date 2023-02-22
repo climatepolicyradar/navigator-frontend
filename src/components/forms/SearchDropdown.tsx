@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import useUpdateSearchCriteria from "@hooks/useUpdateSearchCriteria";
 import useConfig from "@hooks/useConfig";
 import { TGeography } from "@types";
 import { SearchIcon } from "@components/svg/Icons";
