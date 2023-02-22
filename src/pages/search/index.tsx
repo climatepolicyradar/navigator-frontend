@@ -2,13 +2,9 @@ import { useEffect, useState, useRef, ChangeEvent, useMemo } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import { TDocument } from "@types";
-import { useDidUpdateEffect } from "@hooks/useDidUpdateEffect";
 import useSearch from "@hooks/useSearch";
-import useSearchCriteria from "@hooks/useSearchCriteria";
 import useDocument from "@hooks/useDocument";
 import useUpdateDocument from "@hooks/useUpdateDocument";
-import useUpdateSearchCriteria from "@hooks/useUpdateSearchCriteria";
-import useUpdateSearchFilters from "@hooks/useUpdateSearchFilters";
 import useUpdateCountries from "@hooks/useUpdateCountries";
 import useConfig from "@hooks/useConfig";
 import useFilteredCountries from "@hooks/useFilteredCountries";
@@ -28,7 +24,6 @@ import EmbeddedPDF from "@components/EmbeddedPDF";
 import DocumentSlideout from "@components/headers/DocumentSlideout";
 import Pagination from "@components/pagination";
 import SearchResultList from "@components/blocks/SearchResultList";
-import { initialSearchCriteria } from "@constants/searchCriteria";
 import { ExternalLink } from "@components/ExternalLink";
 import Tooltip from "@components/tooltip";
 import { calculatePageCount } from "@utils/paging";
@@ -37,6 +32,9 @@ import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import buildSearchQuery from "@utils/buildSearchQuery";
 
 const Search = () => {
+  const router = useRouter();
+  const slideoutRef = useRef(null);
+  const { t, ready } = useTranslation(["searchStart", "searchResults"]);
   const [showFilters, setShowFilters] = useState(false);
   const [showSlideout, setShowSlideout] = useState(false);
   const [showPDF, setShowPDF] = useState(false);
@@ -44,13 +42,8 @@ const Search = () => {
   const [pageCount, setPageCount] = useState(1);
   const [offset, setOffset] = useState(null);
 
-  const updateSearchCriteria = useUpdateSearchCriteria();
-  const updateSearchFilters = useUpdateSearchFilters();
   const updateDocument = useUpdateDocument();
   const updateCountries = useUpdateCountries();
-  const slideoutRef = useRef(null);
-  const { t, ready } = useTranslation(["searchStart", "searchResults"]);
-  const router = useRouter();
 
   const searchQuery = useMemo(() => {
     return buildSearchQuery({ ...router.query });
@@ -70,11 +63,7 @@ const Search = () => {
 
   const { data: filteredCountries } = useFilteredCountries(countries);
 
-  // search criteria and filters
-  const { isFetching: isFetchingSearchCriteria, data: searchCriteria } = useSearchCriteria();
-
   const isBrowsing = router?.query?.query_string?.toString().trim() === "";
-  // const isBrowsing = searchCriteria?.query_string.trim() === "";
 
   // search results
   // FIXME: strongly type the result here
@@ -84,10 +73,6 @@ const Search = () => {
   const { data: document }: { data: TDocument } = ({} = useDocument());
 
   const placeholder = t("Search for something, e.g. 'carbon taxes'");
-
-  const resetPaging = () => {
-    setOffset(0);
-  };
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
@@ -105,18 +90,18 @@ const Search = () => {
   };
 
   const handleRegionChange = (type: string, regionName: string) => {
+    updateCountries.mutate({
+      regionName,
+      regions,
+      countries,
+    });
+
     router.query[type] = regionName;
     router.push({ query: router.query });
-    // handleFilterChange(type, regionName);
-    // updateCountries.mutate({
-    //   regionName,
-    //   regions,
-    //   countries,
-    // });
   };
 
-  const handleFilterChange = (type: string, value: string, action: string = "update") => {
-    // default to page 1
+  const handleFilterChange = (type: string, value: string) => {
+    // reset to page 1 when changing filters
     delete router.query["offset"];
 
     let queryCollection: string[] = [];
@@ -129,12 +114,13 @@ const Search = () => {
       }
     }
 
-    queryCollection.push(value);
+    if (queryCollection.includes(value)) {
+      queryCollection = queryCollection.filter((item) => item !== value);
+    } else {
+      queryCollection.push(value);
+    }
     router.query[type] = queryCollection;
     router.push({ query: router.query });
-
-    // resetPaging();
-    // updateSearchFilters.mutate({ [type]: value, action });
   };
 
   const handleSuggestion = (term: string, filter?: string, filterValue?: string) => {
@@ -144,15 +130,6 @@ const Search = () => {
     }
 
     router.push({ query: router.query });
-
-    // const newSearchCritera = {
-    //   ["query_string"]: term,
-    // };
-    // let additionalCritera = {};
-    // if (filter && filterValue && filter.length && filterValue.length) {
-    //   additionalCritera = { ...additionalCritera, ["keyword_filters"]: { [filter]: [filterValue] } };
-    // }
-    // updateSearchCriteria.mutate({ ...newSearchCritera, ...additionalCritera });
   };
 
   const handleSearchChange = (type: string, value: any) => {
@@ -162,7 +139,6 @@ const Search = () => {
       delete router.query[type];
     }
     router.push({ query: router.query });
-    // updateSearchCriteria.mutate({ [type]: value });
   };
 
   const handleSearchInput = (term: string) => {
@@ -178,8 +154,6 @@ const Search = () => {
       delete router.query["category"];
     }
     router.push({ query: router.query });
-    // const action = val === "All" ? "delete" : "update";
-    // handleFilterChange("categories", category, action);
   };
 
   const handleSortClick = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -211,16 +185,8 @@ const Search = () => {
 
   const handleClearSearch = () => {
     const previousSearchQuery = router.query["query_string"];
+    // Remove all query params except for the query string
     router.push({ query: { query_string: previousSearchQuery } });
-
-    // const { query_string, exact_match, sort_field, sort_order, ...initial } = initialSearchCriteria;
-    // updateSearchCriteria.mutate(initial);
-    // // reset filtered countries
-    // updateCountries.mutate({
-    //   regionName: "",
-    //   regions,
-    //   countries,
-    // });
   };
 
   const handleDocumentClick = (e: any) => {
@@ -249,7 +215,6 @@ const Search = () => {
 
   const getCategoryIndex = () => {
     const categories = router.query["category"]?.toString();
-    // const categories = searchCriteria?.keyword_filters?.categories;
     if (!categories) {
       return 0;
     }
@@ -260,15 +225,12 @@ const Search = () => {
   const getCurrentPage = () => {
     const offSet = isNaN(parseInt(router.query?.offset?.toString())) ? 0 : parseInt(router.query?.offset?.toString());
     return offSet / PER_PAGE + 1;
-    // return searchCriteria?.offset / PER_PAGE + 1;
   };
 
   useEffect(() => {
     if (offset === null) return;
     router.query["offset"] = offset;
     router.push({ query: router.query });
-    // handleSearchChange("offset", offset);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset]);
 
   useEffect(() => {
@@ -276,12 +238,6 @@ const Search = () => {
       setPageCount(calculatePageCount(hits));
     }
   }, [hits]);
-
-  // FIXME: replace resultsQuery.refetch() on router.change
-  // useDidUpdateEffect(() => {
-  //   window.scrollTo(0, 0);
-  //   resultsQuery.refetch();
-  // }, [searchCriteria]);
 
   useEffect(() => {
     resultsQuery.refetch();
@@ -326,7 +282,7 @@ const Search = () => {
 
   return (
     <>
-      {isFetchingSearchCriteria || !ready ? (
+      {!ready ? (
         <LoaderOverlay />
       ) : (
         <Layout title={t("Law and Policy Search")} heading={t("Law and Policy Search")}>

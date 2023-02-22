@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { currentYear } from "../../constants/timedate";
 import DateRangeInput from "./DateRangeInput";
 import DateRangeOption from "./DateRangeOption";
@@ -15,6 +16,7 @@ interface ByDateRangeProps {
 }
 
 const ByDateRange = ({ title, handleChange, defaultValues, min, max, clear }: ByDateRangeProps) => {
+  const router = useRouter();
   const [startYear, endYear] = defaultValues;
   const [showDateInput, setShowDateInput] = useState(false);
   const [startInput, setStartInput] = useState(startYear);
@@ -31,8 +33,24 @@ const ByDateRange = ({ title, handleChange, defaultValues, min, max, clear }: By
     setEndInput(endYear);
   }, [startYear, endYear]);
 
+  // Listen to the qury string to determine if the custom inputs should be shown
+  useEffect(() => {
+    const start = Number(router.query.year_range?.[0]);
+    const end = Number(router.query.year_range?.[1]);
+    if (start && end) {
+      const range = end - start;
+      if (range !== 1 && range !== 5) {
+        setShowDateInput(true);
+      }
+    }
+  }, [router.query]);
+
   const isChecked = (range?: number): boolean => {
-    return range ? Number(endYear) === currentYear() && Number(startYear) === endYear - range : showDateInput;
+    if (range) {
+      return Number(endYear) === currentYear() && Number(startYear) === endYear - range;
+    }
+
+    return showDateInput;
   };
 
   const setDateInputVisible = () => {
@@ -84,7 +102,6 @@ const ByDateRange = ({ title, handleChange, defaultValues, min, max, clear }: By
   return (
     <div>
       <div>{title}</div>
-      {/* TODO: make labels translatable */}
       <div className="mt-2 grid lg:grid-cols-2 gap-2">
         <DateRangeOption id="last1" label="in last year" name="date_range" value="1" onChange={selectRange} checked={isChecked(1)} />
         <DateRangeOption id="last5" label="in last 5 years" name="date_range" value="5" onChange={selectRange} checked={isChecked(5)} />
@@ -122,4 +139,5 @@ const ByDateRange = ({ title, handleChange, defaultValues, min, max, clear }: By
     </div>
   );
 };
+
 export default ByDateRange;
