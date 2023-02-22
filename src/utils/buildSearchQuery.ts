@@ -67,16 +67,3 @@ export default function buildSearchQuery(routerQuery: TRouterQuery): TSearchCrit
   };
   return query;
 }
-
-// Example search object
-// const EXAMPLE = {
-//   query_string: "Adaptation strategy",
-//   exact_match: false,
-//   max_passages_per_doc: 10,
-//   keyword_filters: { regions: ["europe-central-asia"], countries: ["united-kingdom"], categories: ["Policy"] },
-//   year_range: ["2018", "2023"],
-//   sort_field: "date",
-//   sort_order: "desc",
-//   limit: 10,
-//   offset: 0,
-// };
