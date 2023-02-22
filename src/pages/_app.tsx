@@ -81,22 +81,6 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
     if (window?.Cypress) {
       window.queryClient = queryClient;
     }
-    
-    // FIXME: persist query strings between page changes
-
-    // React router preserve query strings
-    // const handleRouteChange = (url: string, { shallow }) => {
-    //   console.log("router query: ", router.query);
-    //   console.log(`App is changing to ${url} ${shallow ? "with" : "without"} shallow routing`);
-    // };
-
-    // router.events.on("routeChangeStart", handleRouteChange);
-
-    // // If the component is unmounted, unsubscribe
-    // // from the event with the `off` method:
-    // return () => {
-    //   router.events.off("routeChangeStart", handleRouteChange);
-    // };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
