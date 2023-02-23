@@ -37,9 +37,7 @@ const BySelect = ({ onChange, list, title, keyField, keyFieldDisplay = null, fil
         }}
         value={defaultValue}
       >
-        <option value="">
-          {defaultText}
-        </option>
+        <option value="">{defaultText}</option>
         {sortedList.map((item, index) => (
           <option key={`${keyField}${index}`} value={item[keyField]}>
             {keyFieldDisplay ? item[keyFieldDisplay] : item[keyField]}

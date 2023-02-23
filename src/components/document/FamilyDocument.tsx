@@ -26,7 +26,7 @@ export const FamilyDocument = ({ title, date, slug, matches, meta }: TProps) => 
   const hasMatches = typeof matches !== "undefined";
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    console.log(e);
+    e.preventDefault();
   };
 
   return (

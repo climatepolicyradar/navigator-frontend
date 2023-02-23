@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { sortOptions, sortOptionsBrowse } from "@constants/sortOptions";
 
 type TProps = {
-  updateSort: (e: any) => void;
+  updateSort: (e: ChangeEvent<HTMLSelectElement>) => void;
   defaultValue: string;
   isBrowsing?: boolean;
 };

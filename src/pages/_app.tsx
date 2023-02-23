@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import App, { AppProps } from "next/app";
 import Head from "next/head";
 import Script from "next/script";
+import { useRouter } from "next/router";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import "../styles/flag-icon.css";
@@ -71,6 +72,7 @@ type TProps = AppProps & {
 };
 
 function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
+  const router = useRouter();
   const [siteTheme, setSiteTheme] = useState(null);
   const [adobeKey, setAdobeKey] = useState(null);
 
@@ -79,6 +81,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
     if (window?.Cypress) {
       window.queryClient = queryClient;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

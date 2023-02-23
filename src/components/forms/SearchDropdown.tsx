@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
-import useUpdateSearchCriteria from "@hooks/useUpdateSearchCriteria";
 import useConfig from "@hooks/useConfig";
 import { TGeography } from "@types";
 import { SearchIcon } from "@components/svg/Icons";
+import { QUERY_PARAMS } from "@constants/queryParams";
 
 type TProps = {
   show: boolean;
@@ -12,13 +12,14 @@ type TProps = {
 };
 
 export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpacing }: TProps) => {
-  const updateSearchCriteria = useUpdateSearchCriteria();
   const router = useRouter();
   const configQuery: any = useConfig("config");
   const geographies: TGeography[] = configQuery.data?.countries || [];
 
   const geographiesFiltered = geographies.filter(
-    (geography: TGeography) => geography.display_value.toLowerCase().includes(term.toLocaleLowerCase()) || term.toLocaleLowerCase().includes(geography.display_value.toLowerCase())
+    (geography: TGeography) =>
+      geography.display_value.toLowerCase().includes(term.toLocaleLowerCase()) ||
+      term.toLocaleLowerCase().includes(geography.display_value.toLowerCase())
   );
 
   const termWithoutGeography = (geography: string) => term.toLowerCase().replace(geography.toLowerCase(), "").trim();
@@ -32,16 +33,16 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
 
   const handleCountryClick = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
     e.preventDefault();
-    updateSearchCriteria.mutate({ ["query_string"]: term });
     router.push(url);
   };
 
   const handleSuggestionClick = (e: React.MouseEvent<HTMLAnchorElement>, geography: string) => {
     e.preventDefault();
-    handleSearchClick(termWithoutGeography(geography), "countries", geography);
+    handleSearchClick(termWithoutGeography(geography), QUERY_PARAMS.country, geography);
   };
 
-  const anchorClasses = (last: boolean) => `flex flex-wrap items-center cursor-pointer py-2 px-4 block hover:bg-search-itemHover focus:bg-bsearch-itemHover ${last ? "rounded-b-lg" : ""}`;
+  const anchorClasses = (last: boolean) =>
+    `flex flex-wrap items-center cursor-pointer py-2 px-4 block hover:bg-search-itemHover focus:bg-bsearch-itemHover ${last ? "rounded-b-lg" : ""}`;
 
   const renderSearchSuggestion = (geography: string) => {
     if (!term.toLowerCase().includes(geography.toLowerCase())) return;
@@ -59,7 +60,11 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
   };
 
   return (
-    <div className={`absolute bg-search-dropdownBg w-full text-indigo-400 rounded-b-lg max-h-[300px] overflow-y-auto search-dropdown ${largeSpacing ? "search-dropdown_large" : ""}`}>
+    <div
+      className={`absolute bg-search-dropdownBg w-full text-indigo-400 rounded-b-lg max-h-[300px] overflow-y-auto search-dropdown ${
+        largeSpacing ? "search-dropdown_large" : ""
+      }`}
+    >
       <a href="#" className={anchorClasses(!geographiesFiltered.length)} onClick={handleClick}>
         <span className="mr-2 w-[20px]">
           <SearchIcon />

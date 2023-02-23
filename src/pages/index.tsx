@@ -1,14 +1,10 @@
-import { useRouter } from "next/router";
 import React, { useEffect, useContext } from "react";
+import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
-import useSearchCriteria from "@hooks/useSearchCriteria";
-import useUpdateSearchCriteria from "@hooks/useUpdateSearchCriteria";
-import useUpdateSearch from "@hooks/useUpdateSearch";
 import useUpdateCountries from "@hooks/useUpdateCountries";
 import useConfig from "@hooks/useConfig";
 import Layout from "@components/layouts/LandingPage";
-import { initialSearchCriteria } from "@constants/searchCriteria";
-import { emptySearchResults } from "@constants/search";
+import { QUERY_PARAMS } from "@constants/queryParams";
 
 import CPRLandingPage from "@cpr/pages/landing-page";
 import CCLWLandingPage from "@cclw/pages/landing-page";
@@ -18,29 +14,23 @@ import { ThemeContext } from "@context/ThemeContext";
 const IndexPage = () => {
   const { t } = useTranslation(["searchStart", "searchResults"]);
   const router = useRouter();
-  const { data: searchCriteria }: any = useSearchCriteria();
-  const updateSearchCriteria = useUpdateSearchCriteria();
   const { mutate: updateCountries } = useUpdateCountries();
-  const { mutate: updateSearch } = useUpdateSearch();
   const theme = useContext(ThemeContext);
 
-  const configQuery: any = useConfig("config");
+  const configQuery = useConfig("config");
   const { data: { regions = [], countries = [] } = {} } = configQuery;
 
   const handleSearchInput = (term: string, filter?: string, filterValue?: string) => {
-    const newSearchCritera = {
-      ["query_string"]: term,
-    };
-    let additionalCritera = {};
     if (filter && filterValue && filter.length && filterValue.length) {
-      additionalCritera = { ...additionalCritera, ["keyword_filters"]: { [filter]: [filterValue] } };
+      router.query[filter] = [filterValue.toLowerCase()];
     }
-    updateSearchCriteria.mutate({ ...initialSearchCriteria, ...newSearchCritera, ...additionalCritera });
-    router.push("/search");
+    router.query[QUERY_PARAMS.query_string] = term;
+    router.push({ pathname: "/search", query: router.query });
   };
 
   const handleSearchChange = (type: string, value: any) => {
-    updateSearchCriteria.mutate({ [type]: value });
+    router.query[type] = [value];
+    router.push({ query: router.query });
   };
 
   useEffect(() => {
@@ -49,9 +39,7 @@ const IndexPage = () => {
       regions,
       countries,
     });
-    updateSearch({ data: emptySearchResults });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateCountries, updateSearch]);
+  }, [updateCountries, regions, countries]);
 
   return (
     <>
@@ -60,11 +48,13 @@ const IndexPage = () => {
           <CPRLandingPage
             handleSearchInput={handleSearchInput}
             handleSearchChange={handleSearchChange}
-            searchInput={searchCriteria?.query_string ?? ""}
-            exactMatch={searchCriteria?.exact_match ?? false}
+            searchInput={(router.query[QUERY_PARAMS.query_string] as string) ?? ""}
+            exactMatch={router.query[QUERY_PARAMS.exact_match] === "true"}
           />
         )}
-        {theme === "cclw" && <CCLWLandingPage handleSearchInput={handleSearchInput} searchInput={searchCriteria?.query_string ?? ""} />}
+        {theme === "cclw" && (
+          <CCLWLandingPage handleSearchInput={handleSearchInput} searchInput={(router.query[QUERY_PARAMS.query_string] as string) ?? ""} />
+        )}
       </Layout>
     </>
   );

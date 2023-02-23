@@ -62,13 +62,21 @@ export default function useUpdateSearchFilters() {
     };
   };
 
-  return useMutation(async (value: any) => {
-    const newObj = processFilter(value);
-    return queryClient.setQueryData("searchCriteria", (old: any) => {
-      return {
-        ...old,
-        ...newObj,
-      };
-    });
-  });
+  return useMutation(
+    async (value: any) => {
+      const newObj = processFilter(value);
+      return queryClient.setQueryData("searchCriteria", (old: Object) => {
+        return {
+          ...old,
+          ...newObj,
+        };
+      });
+    },
+
+    {
+      onError: (err) => {
+        console.log(err);
+      },
+    }
+  );
 }
