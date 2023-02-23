@@ -70,7 +70,6 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     event.preventDefault();
     router.query[QUERY_PARAMS.country] = geography.geography_slug;
     const documentCategory = selectedCategoryIndex === 1 ? "Legislation" : selectedCategoryIndex === 2 ? "Policies" : null;
-    console.log("documentCategory", documentCategory);
     if (documentCategory) {
       router.query[QUERY_PARAMS.category] = documentCategory;
     }
