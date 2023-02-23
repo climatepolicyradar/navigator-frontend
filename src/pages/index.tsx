@@ -1,11 +1,9 @@
 import React, { useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
-import useUpdateSearch from "@hooks/useUpdateSearch";
 import useUpdateCountries from "@hooks/useUpdateCountries";
 import useConfig from "@hooks/useConfig";
 import Layout from "@components/layouts/LandingPage";
-import { emptySearchResults } from "@constants/search";
 import { QUERY_PARAMS } from "@constants/queryParams";
 
 import CPRLandingPage from "@cpr/pages/landing-page";
@@ -17,7 +15,6 @@ const IndexPage = () => {
   const { t } = useTranslation(["searchStart", "searchResults"]);
   const router = useRouter();
   const { mutate: updateCountries } = useUpdateCountries();
-  const { mutate: updateSearch } = useUpdateSearch();
   const theme = useContext(ThemeContext);
 
   const configQuery = useConfig("config");
@@ -42,8 +39,7 @@ const IndexPage = () => {
       regions,
       countries,
     });
-    updateSearch({ data: emptySearchResults });
-  }, [updateCountries, updateSearch, regions, countries]);
+  }, [updateCountries, regions, countries]);
 
   return (
     <>
