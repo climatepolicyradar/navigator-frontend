@@ -44,7 +44,12 @@ const Targets = ({ targets }: TTargets) => {
   );
 };
 
-const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary }) => {
+type TProps = {
+  geography: TGeographyStats;
+  summary: TGeographySummary;
+}
+
+const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary }: TProps) => {
   const router = useRouter();
   const [showAllTargets, setShowAllTargets] = useState(false);
   const [selectedCategoryIndex, setselectedCategoryIndex] = useState(0);
