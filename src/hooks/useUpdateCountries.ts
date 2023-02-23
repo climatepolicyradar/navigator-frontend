@@ -12,7 +12,7 @@ export default function useUpdateCountries() {
 
   return useMutation(async (value: TMutationProps) => {
     const { regionName, regions, countries } = value;
-    const region = regions.find((item) => item.display_value === regionName);
+    const region = regions.find((item) => item.slug === regionName);
     let newList = countries;
     if (region) {
       newList = countries.filter((item: any) => item.parent_id === region.id);
