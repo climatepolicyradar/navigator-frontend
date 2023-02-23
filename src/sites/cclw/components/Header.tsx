@@ -54,10 +54,6 @@ const Header = ({ background = true }) => {
             </div>
           </div>
         </div>
-        {/* FIXME: hook this up to search context */}
-        {/* <div className="hidden lg:block py-4">
-            <div className="text-white text-center">Searched: [display searched query]</div>
-        </div> */}
         <div className="flex flex-col">
           <Button
             thin
