@@ -9,7 +9,6 @@ import { AccordianItem } from "@components/accordian/AccordianItem";
 const LitigationCoverPage = () => {
   const router = useRouter();
   const [showFullSummary, setShowFullSummary] = useState(false);
-  console.log("Law id: ", router.query.caseId);
 
   const UNFCCCPillars = [
     {
