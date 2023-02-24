@@ -16,6 +16,7 @@ export type TSearchCriteria = {
   sort_order: string;
   limit: number;
   offset: number;
+  group_documents?: boolean
 };
 
 type TErrorDetail = {

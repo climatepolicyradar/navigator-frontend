@@ -21,6 +21,7 @@ export default function useSearch(id: string, query = initialSearchCriteria) {
   const getResults = async () => {
     const { data } = await getEnvFromServer();
     const client = new ApiClient(data?.env?.api_url);
+    query.group_documents = true;
     const results = await client.post(`/searches`, query, config);
     return results;
   };
