@@ -35,7 +35,9 @@ const Header = ({ background = true }) => {
             </ExternalLink>
           </div>
           <div
-            className={`col-span-2 flex-1 flex justify-center text-white order-last lg:-order-none basis-full text-center lg:basis-auto mb-6 lg:mb-0 ${isHome ? "mt-10" : "mt-6"}`}
+            className={`col-span-2 flex-1 flex justify-center text-white order-last lg:-order-none basis-full text-center lg:basis-auto mb-6 lg:mb-0 ${
+              isHome ? "mt-10" : "mt-6"
+            }`}
           >
             <div className="cclw-font font-bold text-2xl md:text-4xl lg:text-3xl xl:text-4xl">
               <Link href={`/`} className="">
@@ -90,6 +92,11 @@ const Header = ({ background = true }) => {
                   <span className="mt-[-2px]">
                     <SearchIcon height="24" width="24" />
                   </span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/family/1" className={linkClass("/family")}>
+                  Family
                 </Link>
               </li>
             </ul>

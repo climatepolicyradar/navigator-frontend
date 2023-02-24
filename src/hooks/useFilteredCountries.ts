@@ -1,13 +1,12 @@
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery, useQueryClient } from "react-query";
 
 export default function useFilteredCountries(all) {
   const queryClient = useQueryClient();
 
   return useQuery(
-    'filteredCountries',
+    "filteredCountries",
     () => {
-      const existingCountries: any =
-        queryClient.getQueryData('filteredCountries');
+      const existingCountries: any = queryClient.getQueryData("filteredCountries");
       return existingCountries?.length ? existingCountries : all;
     },
     {
@@ -15,6 +14,5 @@ export default function useFilteredCountries(all) {
       enabled: all.length > 0,
       cacheTime: Infinity,
     }
-  )
+  );
 }
-

@@ -2,7 +2,15 @@ import { useQuery } from "react-query";
 import { ApiClient, getEnvFromServer } from "../api/http-common";
 import { initialSearchCriteria } from "../constants/searchCriteria";
 
-export default function useSearch(id: string, obj = initialSearchCriteria) {
+type TSearchReturned = {
+  data: {
+    hits: number;
+    query_time_ms: number;
+    documents: any[];
+  };
+};
+
+export default function useSearch(id: string, query = initialSearchCriteria) {
   const config = {
     headers: {
       accept: "application/json",
@@ -13,13 +21,13 @@ export default function useSearch(id: string, obj = initialSearchCriteria) {
   const getResults = async () => {
     const { data } = await getEnvFromServer();
     const client = new ApiClient(data?.env?.api_url);
-    const results = await client.post(`/searches`, obj, config);
+    const results = await client.post(`/searches`, query, config);
     return results;
   };
 
-  return useQuery(
+  return useQuery<TSearchReturned>(
     id,
-    () => {
+    async () => {
       return getResults();
     },
     {

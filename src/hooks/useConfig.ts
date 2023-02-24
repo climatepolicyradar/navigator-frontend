@@ -1,9 +1,24 @@
 import { useQuery } from "react-query";
 import { ApiClient, getEnvFromServer } from "../api/http-common";
-import { removeDuplicates } from "../utils/removeDuplicates";
+import { removeDuplicates } from "@utils/removeDuplicates";
+import { TMeta, TDocumentType, TGeography } from "@types";
 
-export default function useConfig(path: string, filterProp: string = "") {
-  const extractNestedData = (response, levels, filterProp) => {
+type TDataNode<T> = {
+  node: T;
+  children: T[];
+};
+
+type TQueryResponse = {
+  document_types: TDocumentType[];
+  geographies: TDataNode<TGeography>[];
+  instruments: TMeta[];
+  sectors: TMeta[];
+  regions: TGeography[];
+  countries: TGeography[];
+};
+
+export default function useConfig(path: string) {
+  function extractNestedData<T>(response: TDataNode<T>[], levels: number, filterProp: string): { level1: T[]; level2: T[] } {
     let level1 = [];
     let level2Nested = [];
     let level2 = [];
@@ -26,7 +41,7 @@ export default function useConfig(path: string, filterProp: string = "") {
 
       return { level1, level2 };
     }
-  };
+  }
 
   return useQuery(
     path,
@@ -35,15 +50,15 @@ export default function useConfig(path: string, filterProp: string = "") {
       const client = new ApiClient(data?.env?.api_url);
       const query_response = await client.get(`/${path}`, null);
       const response = query_response.data.metadata.CCLW;
-      const response_geo = extractNestedData(response.geographies, 2, "");
+      const response_geo = extractNestedData<TGeography>(response.geographies, 2, "");
       const document_types = response.document_types;
       const geographies = response.geographies;
       const instruments = response.instruments;
-      const sectors = extractNestedData(response.sectors, 1, "").level1;
+      const sectors = extractNestedData<TMeta>(response.sectors, 1, "").level1;
       const regions = response_geo.level1;
       const countries = response_geo.level2;
 
-      const resp_end = {
+      const resp_end: TQueryResponse = {
         document_types,
         geographies,
         instruments,

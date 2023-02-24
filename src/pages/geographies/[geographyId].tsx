@@ -2,7 +2,6 @@ import { useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { TTarget, TEvent } from "@types";
-import useUpdateSearchCriteria from "@hooks/useUpdateSearchCriteria";
 import Layout from "@components/layouts/Main";
 import { SingleCol } from "@components/SingleCol";
 import Event from "@components/blocks/Event";
@@ -16,9 +15,9 @@ import { RelatedDocumentFull } from "@components/blocks/RelatedDocumentFull";
 import TabbedNav from "@components/nav/TabbedNav";
 import TextLink from "@components/nav/TextLink";
 import { LawIcon, PolicyIcon, CaseIcon, TargetIcon } from "@components/svg/Icons";
-import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
-import { initialSearchCriteria } from "@constants/searchCriteria";
 import { ExternalLink } from "@components/ExternalLink";
+import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
+import { QUERY_PARAMS } from "@constants/queryParams";
 
 import { ApiClient } from "@api/http-common";
 import { TGeographyStats, TGeographySummary } from "@types";
@@ -45,10 +44,13 @@ const Targets = ({ targets }: TTargets) => {
   );
 };
 
-const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary }) => {
+type TProps = {
+  geography: TGeographyStats;
+  summary: TGeographySummary;
+}
+
+const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary }: TProps) => {
   const router = useRouter();
-  const { geographyId } = router.query;
-  const updateSearchCriteria = useUpdateSearchCriteria();
   const [showAllTargets, setShowAllTargets] = useState(false);
   const [selectedCategoryIndex, setselectedCategoryIndex] = useState(0);
 
@@ -66,14 +68,13 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
   const handleDocumentSeeMoreClick = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    let newSearchCritera = { ["keyword_filters"]: { ["countries"]: [geography.geography_slug] } };
-    const documentCategory = selectedCategoryIndex === 1 ? "Law" : selectedCategoryIndex === 2 ? "Policy" : null;
-    let additionalCriteria = {};
+    router.query[QUERY_PARAMS.country] = geography.geography_slug;
+    const documentCategory = selectedCategoryIndex === 1 ? "Legislation" : selectedCategoryIndex === 2 ? "Policies" : null;
     if (documentCategory) {
-      additionalCriteria = { ["keyword_filters"]: { ["countries"]: [geography.geography_slug], ["categories"]: [documentCategory] } };
+      router.query[QUERY_PARAMS.category] = documentCategory;
     }
-    updateSearchCriteria.mutate({ ...initialSearchCriteria, ...newSearchCritera, ...additionalCriteria });
-    router.push("/search");
+    delete router.query.geographyId;
+    router.push({ pathname: "/search", query: router.query });
   };
 
   const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geography.name}`}</p>;
@@ -211,7 +212,12 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                     <h3>Latest Documents</h3>
                     <div className="mt-4 md:flex">
                       <div className="flex-grow">
-                        <TabbedNav activeIndex={selectedCategoryIndex} items={documentCategories} handleTabClick={handleDocumentCategoryClick} indent={false} />
+                        <TabbedNav
+                          activeIndex={selectedCategoryIndex}
+                          items={documentCategories}
+                          handleTabClick={handleDocumentCategoryClick}
+                          indent={false}
+                        />
                       </div>
                     </div>
                     {renderDocuments()}

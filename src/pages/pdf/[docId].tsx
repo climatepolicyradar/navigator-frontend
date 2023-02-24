@@ -1,64 +1,59 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { useTranslation } from "react-i18next";
-import { v4 as uuidv4 } from "uuid";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { ApiClient } from "@api/http-common";
+import { DocumentHead } from "@components/document/DocumentHead";
 import Layout from "@components/layouts/Main";
-import useDocument from "@hooks/useDocument";
 import EmbeddedPDF from "@components/EmbeddedPDF";
-import Loader from "@components/Loader";
-import useDocumentDetail from "@hooks/useDocumentDetail";
-import TextLink from "@components/nav/TextLink";
-import { getDocumentTitle } from "@helpers/getDocumentTitle";
+import PassageMatches from "@components/PassageMatches";
 
-const PDFView = () => {
-  const [document, setDocument] = useState(null);
-  const { t } = useTranslation("searchStart");
-  const router = useRouter();
-  // get selected document to show passage matches
-  const { data: selectedDoc }: any = useDocument();
-  // get document detail in case no document was selected
-  const documentQuery = useDocumentDetail(router.query.docId as string);
-  const { data: { data: documentDetail } = {} } = documentQuery;
+import DUMMY_JSON from "./data.json";
 
-  useEffect(() => {
-    setDocument(selectedDoc);
-    // if no selected document, use doc detail instead
-    // and map document_url and document_name to url and name
-    // add document_fileid for Adobe PDF embed
-    if (selectedDoc === null && documentDetail) {
-      const doc = {
-        ...documentDetail,
-        document_url: documentDetail.url,
-        document_name: documentDetail.name,
-        document_fileid: uuidv4(),
-      };
-      setDocument(doc);
-    }
-  }, [selectedDoc, documentDetail]);
+const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document }) => {
+  const [passageIndex, setPassageIndex] = useState(null);
+  const hasPassageMatches = document.physical_document.document_passage_matches.length > 0;
 
   return (
-    <>
-      {!document ? (
-        <div className="w-full flex justify-center flex-1">
-          <Loader />
-        </div>
-      ) : (
-        <Layout title={getDocumentTitle(document.document_name, document.document_postfix) ?? "Loading..."} heading={t("Law and Policy Search PDF View")} screenHeight={true}>
-          <div className="container mt-2">
-            <h1 className="text-2xl font-medium">{getDocumentTitle(document.document_name, document.document_postfix)}</h1>
-            {/* TODO: translate below text */}
-            <TextLink href="/search">
-              <span className="text-lg">&laquo;</span>Back to search results
-            </TextLink>
-          </div>
-          <section className="mt-4 flex-1">
-            <div className="container pdf-container">
-              <EmbeddedPDF document={document} />
+    <Layout title={document.title}>
+      <section className="mb-8 flex-1 flex flex-col">
+        <DocumentHead document={document} />
+        <section className="mt-4 flex-1 flex">
+          <div className="container flex-1">
+            <div className="pb-4 border-b border-lineBorder">
+              <h3>Document matches for 'Adaptation Report' (9)</h3>
             </div>
-          </section>
-        </Layout>
-      )}
-    </>
+            <div className="md:flex md:h-[80vh]">
+              {hasPassageMatches && (
+                <div className="md:block md:w-1/3 overflow-y-scroll pr-4 max-h-[30vh] md:max-h-full">
+                  <PassageMatches document={document.physical_document} setPassageIndex={setPassageIndex} activeIndex={passageIndex} />
+                </div>
+              )}
+              <div className="md:block mt-4 flex-1 h-[400px] md:h-full">
+                <EmbeddedPDF document={document.physical_document} passageIndex={passageIndex} />
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </Layout>
   );
 };
-export default PDFView;
+
+export default DocumentPage;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // const id = context.params.id;
+  const id = "netherlands_2016_national-climate-adaptation-strategy_8708_1447";
+  const client = new ApiClient(process.env.API_URL);
+
+  const { data: document } = await client.get(`/documents/${id}`, null);
+  const json = DUMMY_JSON;
+
+  return {
+    props: {
+      document: {
+        ...document,
+        ...json,
+      },
+    },
+  };
+};
