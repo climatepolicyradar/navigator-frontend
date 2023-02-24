@@ -9,6 +9,7 @@ const MatchesButton = ({ dataAttribute, count, overideText }: TProps) => {
 
   return (
     <button
+      data-analytics="document-matches-button"
       data-slug={dataAttribute}
       className="matches-button mt-2 lg:mt-0 py-1 px-4 bg-blue-600 text-white text-sm font-medium transition duration-300 rounded hover:bg-indigo-600"
     >
