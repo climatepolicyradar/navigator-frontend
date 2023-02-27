@@ -7,12 +7,10 @@ import { CountryLink } from "@components/CountryLink";
 import { ThemeContext } from "@context/ThemeContext";
 import { getCountryName } from "@helpers/getCountryFields";
 import useConfig from "@hooks/useConfig";
-import { getDocumentTitle } from "@helpers/getDocumentTitle";
 
 type TProps = {
   listItem: {
     slug: string;
-    postfix: string;
     country_code: string;
     description: string;
     name: string;
@@ -23,22 +21,25 @@ type TProps = {
 };
 
 export const DocumentListItem: FC<TProps> = ({ children, listItem }) => {
-  const { slug, postfix, country_code, description, name, document_year, category } = listItem;
+  const { slug, country_code, description, name, document_year, category } = listItem;
   const theme = useContext(ThemeContext);
   const configQuery: any = useConfig("config");
   const { data: { countries = [] } = {} } = configQuery;
 
   const country_name = getCountryName(country_code, countries);
+
   return (
     <div className="relative">
       <div className="flex justify-between items-start">
         <h2 className="leading-none flex items-start">
           <Link
             href={`/document/${slug}`}
-            className={`text-left text-blue-500 font-medium text-lg transition duration-300 leading-tight hover:underline ${theme === "cpr" ? "underline" : ""}`}
+            className={`text-left text-blue-500 font-medium text-lg transition duration-300 leading-tight hover:underline ${
+              theme === "cpr" ? "underline" : ""
+            }`}
             passHref
           >
-            {getDocumentTitle(name, postfix)}
+            {name}
           </Link>
         </h2>
       </div>

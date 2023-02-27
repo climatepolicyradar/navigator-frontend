@@ -67,7 +67,7 @@ const Search = () => {
   const isBrowsing = qQueryString?.toString().trim() === "";
 
   const resultsQuery = useSearch("searches", searchQuery);
-  const documents = resultsQuery?.data?.data?.documents ?? [];
+  const families = resultsQuery?.data?.data?.families ?? [];
   const hits = resultsQuery?.data?.data?.hits ?? 0;
 
   const { data: document }: { data: TDocument } = ({} = useDocument());
@@ -371,7 +371,7 @@ const Search = () => {
                         <Loader />
                       </div>
                     ) : (
-                      <SearchResultList category={router.query[QUERY_PARAMS.category]?.toString()} documents={documents} />
+                      <SearchResultList category={router.query[QUERY_PARAMS.category]?.toString()} families={families} />
                     )}
                   </div>
                 </div>
