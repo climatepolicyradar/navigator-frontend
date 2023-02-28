@@ -64,7 +64,7 @@ const Search = () => {
 
   const { data: filteredCountries } = useFilteredCountries(countries);
 
-  const isBrowsing = qQueryString?.toString().trim() === "";
+  const isBrowsing = !qQueryString || qQueryString?.toString().trim() === "";
 
   const resultsQuery = useSearch("searches", searchQuery);
   const families = resultsQuery?.data?.data?.families ?? [];
