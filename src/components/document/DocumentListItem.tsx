@@ -11,7 +11,6 @@ type TProps = {
 
 export const DocumentListItem: FC<TProps> = ({ document }) => {
   const {
-    document_category,
     document_content_type,
     document_date,
     document_passage_matches,
@@ -47,13 +46,7 @@ export const DocumentListItem: FC<TProps> = ({ document }) => {
         </h2>
       </div>
       <div className="flex flex-wrap text-sm text-indigo-400 mt-4 items-center font-medium">
-        {document_category && (
-          <div className="mr-3 flex" title={document_category}>
-            {getCategoryIcon(document_category, "20")}
-          </div>
-        )}
-        {document_category}
-        <span>, {year}</span>
+        <span>{year}</span>
       </div>
     </div>
   );
