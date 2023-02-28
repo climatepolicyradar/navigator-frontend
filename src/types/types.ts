@@ -160,17 +160,6 @@ export type TAssociatedDocument = {
   category?: TCategory;
 };
 
-// export type TFamilyDocument = {
-//   id: number;
-//   type: { name: string; description: string };
-//   title: string;
-//   date: string;
-//   variant: { id: number; label: string; description: string };
-//   format: string;
-//   matches: number;
-//   slug: string;
-// };
-
 export type TFamilyDocument = {
   document_category: TCategory;
   document_content_type: "application/pdf";
