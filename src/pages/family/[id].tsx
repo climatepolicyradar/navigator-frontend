@@ -81,7 +81,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const sourceLogo = page?.source?.name === "CCLW" ? "grantham-logo.png" : null;
   const sourceName = page?.source?.name === "CCLW" ? "Grantham Research Institute" : page?.source?.name;
 
-  const mainDoc = page.documents.find((doc: TFamilyDocument) => doc.type.name === "main");
+  // const mainDoc = page.documents.find((doc: TFamilyDocument) => doc.type.name === "main");
 
   return (
     <Layout title={page.title}>
@@ -111,7 +111,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                     )}
                   </div>
                 )}
-                {mainDoc && (
+                {/* {mainDoc && (
                   <FamilyDocument
                     title={mainDoc.title}
                     date={mainDoc.date}
@@ -124,7 +124,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                       variant: mainDoc.variant.label,
                     }}
                   />
-                )}
+                )} */}
               </section>
 
               <div className="mt-12">
@@ -133,6 +133,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
               <section className="mt-12">
                 <h3>Related documents</h3>
+                {/* TODO: replace when we have the new family endpoint
                 <div className="divide-solid divide-blue-100 divide-y">
                   {page.documents.map((doc: TFamilyDocument) => {
                     if (doc.type.name !== "main") {
@@ -149,7 +150,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                       );
                     }
                   })}
-                </div>
+                </div> */}
               </section>
 
               <div className="mt-12">

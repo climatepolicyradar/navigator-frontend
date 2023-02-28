@@ -16,6 +16,7 @@ export type TSearchCriteria = {
   sort_order: string;
   limit: number;
   offset: number;
+  group_documents?: boolean;
 };
 
 type TErrorDetail = {
@@ -160,12 +161,31 @@ export type TAssociatedDocument = {
 };
 
 export type TFamilyDocument = {
-  id: number;
-  type: { name: string; description: string };
-  title: string;
-  date: string;
-  variant: { id: number; label: string; description: string };
-  format: string;
-  matches: number;
-  slug: string;
+  document_content_type: "application/pdf";
+  document_date: string;
+  document_passage_matches: TPassage[];
+  document_slug: string;
+  document_source_url: string;
+  document_title: string;
+  document_type: string;
+  document_url: string;
+};
+
+export type TFamily = {
+  family_category: TCategory;
+  family_description: string;
+  family_description_match: boolean;
+  family_documents: TFamilyDocument[];
+  family_geography: string;
+  family_metadata: {};
+  family_name: string;
+  family_slug: string;
+  family_source: string;
+  family_title_match: boolean;
+};
+
+export type TSearch = {
+  hits: number;
+  query_time_ms: number;
+  families: TFamily[];
 };
