@@ -7,7 +7,7 @@ interface SearchResultProps {
 }
 
 const SearchResult = ({ family }: SearchResultProps) => {
-  const { family_slug, family_name, family_description, family_geography, family_description_match, family_title_match } = family;
+  const { family_slug, family_name, family_description, family_geography, family_description_match, family_title_match, family_documents } = family;
 
   const showMatches = () => {
     if (family_title_match || family_description_match) {
@@ -18,6 +18,7 @@ const SearchResult = ({ family }: SearchResultProps) => {
             <div className="divide-x divide-current flex-grow-0">
               {family_title_match && <span className="px-2">Title</span>}
               {family_description_match && <span className="px-2">Summary</span>}
+              {family_documents.length && <span className="px-2">Document passage</span>}
             </div>
           </div>
           {/* {document_content_type === "application/pdf" && document_passage_matches.length > 0 && (

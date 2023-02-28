@@ -33,7 +33,7 @@ export const FamilyListItem: FC<TProps> = ({ children, listItem }) => {
       <div className="flex justify-between items-start">
         <h2 className="leading-none flex items-start">
           <Link
-            href={`/family/${slug}`}
+            href={`/document/${slug}`}
             className={`text-left text-blue-500 font-medium text-lg transition duration-300 leading-tight hover:underline ${
               theme === "cpr" ? "underline" : ""
             }`}
