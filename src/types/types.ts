@@ -161,18 +161,18 @@ export type TAssociatedDocument = {
 };
 
 export type TFamilyDocument = {
-  document_category: TCategory;
   document_content_type: "application/pdf";
   document_date: string;
   document_passage_matches: TPassage[];
   document_slug: string;
   document_source_url: string;
   document_title: string;
-  document_type: TCategory;
+  document_type: string;
   document_url: string;
 };
 
 export type TFamily = {
+  family_category: TCategory;
   family_description: string;
   family_description_match: boolean;
   family_documents: TFamilyDocument[];
