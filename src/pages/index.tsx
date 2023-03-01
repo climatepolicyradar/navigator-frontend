@@ -21,11 +21,15 @@ const IndexPage = () => {
   const { data: { regions = [], countries = [] } = {} } = configQuery;
 
   const handleSearchInput = (term: string, filter?: string, filterValue?: string) => {
+    const newQuery = {};
+    newQuery[QUERY_PARAMS.query_string] = term;
     if (filter && filterValue && filter.length && filterValue.length) {
-      router.query[filter] = [filterValue.toLowerCase()];
+      newQuery[filter] = [filterValue.toLowerCase()];
     }
-    router.query[QUERY_PARAMS.query_string] = term;
-    router.push({ pathname: "/search", query: router.query });
+    if (router.query[QUERY_PARAMS.exact_match] === "true") {
+      newQuery[QUERY_PARAMS.exact_match] = "true";
+    }
+    router.push({ pathname: "/search", query: { ...newQuery } });
   };
 
   const handleSearchChange = (type: string, value: any) => {

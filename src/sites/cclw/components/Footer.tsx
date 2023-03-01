@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
-import Link from "next/link";
 import { ExternalLink } from "@components/ExternalLink";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 type TFooterItem = {
   title: string;
@@ -56,9 +56,9 @@ const Footer = () => {
       return <ExternalLink url={item.url}>{item.text}</ExternalLink>;
     }
     return (
-      <Link href={item.url}>
+      <LinkWithQuery href={item.url}>
         {item.text}
-      </Link>
+      </LinkWithQuery>
     );
   };
 
@@ -89,9 +89,9 @@ const Footer = () => {
                       <ExternalLink url="mailto:gri.cgl@lse.co.uk" className="block">
                         gri.cgl@lse.co.uk
                       </ExternalLink>
-                      <Link href="/contact">
+                      <LinkWithQuery href="/contact">
                         Full contact details
-                      </Link>
+                      </LinkWithQuery>
                     </div>
                   </div>
                   <div className="footer__section">
@@ -156,9 +156,9 @@ const Footer = () => {
             <ExternalLink url="https://www.climatepolicyradar.org/privacy-policy" className="text-secondary-700 underline">
               Privacy policy
             </ExternalLink>
-            <Link href={"/terms-of-use"} className="text-secondary-700 underline">
+            <LinkWithQuery href={"/terms-of-use"} className="text-secondary-700 underline">
               Terms of use
-            </Link>
+            </LinkWithQuery>
           </div>
         </div>
       </div>

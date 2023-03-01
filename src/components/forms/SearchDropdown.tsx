@@ -33,7 +33,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
 
   const handleCountryClick = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
     e.preventDefault();
-    router.push(url);
+    router.push({ pathname: url, query: router.query });
   };
 
   const handleSuggestionClick = (e: React.MouseEvent<HTMLAnchorElement>, geography: string) => {

@@ -1,5 +1,4 @@
 import { FC, ReactNode, useContext } from "react";
-import Link from "next/link";
 import { TEventCategory } from "@types";
 import { truncateString } from "@helpers/index";
 import { getCategoryIcon } from "@helpers/getCatgeoryIcon";
@@ -7,6 +6,7 @@ import { CountryLink } from "@components/CountryLink";
 import { ThemeContext } from "@context/ThemeContext";
 import { getCountryName } from "@helpers/getCountryFields";
 import useConfig from "@hooks/useConfig";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 type TProps = {
   listItem: {
@@ -32,7 +32,7 @@ export const FamilyListItem: FC<TProps> = ({ children, listItem }) => {
     <div className="relative">
       <div className="flex justify-between items-start">
         <h2 className="leading-none flex items-start">
-          <Link
+          <LinkWithQuery
             href={`/document/${slug}`}
             className={`text-left text-blue-500 font-medium text-lg transition duration-300 leading-tight hover:underline ${
               theme === "cpr" ? "underline" : ""
@@ -40,7 +40,7 @@ export const FamilyListItem: FC<TProps> = ({ children, listItem }) => {
             passHref
           >
             {name}
-          </Link>
+          </LinkWithQuery>
         </h2>
       </div>
       <div className="flex flex-wrap text-sm text-indigo-400 mt-4 items-center font-medium">

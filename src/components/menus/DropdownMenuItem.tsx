@@ -1,5 +1,5 @@
 import { ExternalLink } from "@components/ExternalLink";
-import Link from "next/link";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 interface DropdownMenuItemProps {
   first?: boolean;
@@ -7,15 +7,12 @@ interface DropdownMenuItemProps {
   href?: string;
   target?: string;
   external?: boolean;
-  onClick?(): void;
   setShowMenu?(value: boolean): void;
 }
-const DropdownMenuItem = ({ first = false, title, href, target = "", external = false, onClick = () => {}, setShowMenu }: DropdownMenuItemProps) => {
-  const cssClass = `${!first ? "border-t border-indigo-200 pt-3" : "pt-2"} px-6 pt-2 block w-full text-left text-sm pb-3 hover:text-blue-500 transition duration-300`;
-  const handleClick = () => {
-    onClick();
-    setShowMenu(false);
-  };
+const DropdownMenuItem = ({ first = false, title, href, target = "", external = false, setShowMenu }: DropdownMenuItemProps) => {
+  const cssClass = `${
+    !first ? "border-t border-indigo-200 pt-3" : "pt-2"
+  } px-6 pt-2 block w-full text-left text-sm pb-3 hover:text-blue-500 transition duration-300`;
 
   if (external)
     return (
@@ -24,18 +21,18 @@ const DropdownMenuItem = ({ first = false, title, href, target = "", external = 
       </ExternalLink>
     );
 
-  return <>
-    {href ? (
-      (<Link href={href} onClick={handleClick} target={target} className={cssClass}>
-
-        {title}
-
-      </Link>)
-    ) : (
-      <button className={cssClass} onClick={handleClick}>
-        {title}
-      </button>
-    )}
-  </>;
+  return (
+    <>
+      {href ? (
+        <LinkWithQuery href={href} target={target} className={cssClass}>
+          {title}
+        </LinkWithQuery>
+      ) : (
+        <button className={cssClass} onClick={() => setShowMenu(false)}>
+          {title}
+        </button>
+      )}
+    </>
+  );
 };
 export default DropdownMenuItem;

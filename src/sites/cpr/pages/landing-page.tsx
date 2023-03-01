@@ -1,5 +1,4 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 import { Hero } from "@components/blocks/Hero";
 import LandingSearchForm from "@components/forms/LandingSearchForm";
 import AlphaLogo from "@components/logo/AlphaLogo";
@@ -19,8 +18,6 @@ type TProps = {
 };
 
 const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exactMatch }: TProps) => {
-  const { t } = useTranslation(["searchStart", "searchResults"]);
-
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const term = e.currentTarget.textContent;
