@@ -38,8 +38,6 @@ const DocumentSlideout = ({ document, searchTerm, showPDF, setShowPDF }: TProps)
                   {country_name}, {year}
                 </span>
               </div>
-
-              {/* TODO: translate below text, how to handle plurals? */}
               <h3 className="text-indigo-500 text-xl">
                 Document {`match${document.document_passage_matches.length === 1 ? "" : "es"}`} ({document.document_passage_matches.length}) for "
                 {searchTerm}"
@@ -48,7 +46,6 @@ const DocumentSlideout = ({ document, searchTerm, showPDF, setShowPDF }: TProps)
             <DocumentMenu document={document} />
           </div>
           {showPDF && (
-            // TODO: translate below text
             <div className="md:hidden ml-6">
               <TextLink onClick={() => setShowPDF(false)}>
                 <span className="text-lg">&laquo;</span>Back to passage matches
