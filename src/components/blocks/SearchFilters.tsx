@@ -46,7 +46,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
   const thisYear = currentYear();
 
   useEffect(() => {
-    if (searchCriteria.year_range[0] !== minYear && searchCriteria.year_range[1] !== thisYear) {
+    if (searchCriteria.year_range[0] !== minYear || searchCriteria.year_range[1] !== thisYear) {
       setShowClear(true);
     } else if (Object.keys(searchCriteria.keyword_filters).length > 0) {
       setShowClear(true);
