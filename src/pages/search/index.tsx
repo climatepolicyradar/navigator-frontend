@@ -42,7 +42,7 @@ const Search = () => {
   const [showPDF, setShowPDF] = useState(false);
   const [passageIndex, setPassageIndex] = useState(null);
   const [pageCount, setPageCount] = useState(1);
-  const [offset, setOffset] = useState(null);
+  // const [offset, setOffset] = useState(null);
 
   const updateDocument = useUpdateDocument();
   const updateCountries = useUpdateCountries();
@@ -85,8 +85,10 @@ const Search = () => {
   };
 
   const handlePageChange = (page: number) => {
-    setOffset((page - 1) * PER_PAGE);
     setShowSlideout(false);
+    const offSet = (page - 1) * PER_PAGE;
+    router.query[QUERY_PARAMS.offset] = offSet.toString();
+    router.push({ query: router.query });
   };
 
   const handleRegionChange = (type: string, regionName: string) => {
@@ -228,13 +230,6 @@ const Search = () => {
     const offSet = isNaN(parseInt(router.query[QUERY_PARAMS.offset]?.toString())) ? 0 : parseInt(router.query[QUERY_PARAMS.offset]?.toString());
     return offSet / PER_PAGE + 1;
   };
-
-  useEffect(() => {
-    if (offset === null) return;
-    router.query[QUERY_PARAMS.offset] = offset;
-    router.push({ query: router.query });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offset]);
 
   useEffect(() => {
     if (hits !== undefined) {
