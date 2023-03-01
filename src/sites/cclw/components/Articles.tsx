@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { ExternalLink } from "@components/ExternalLink";
-import Link from "next/link";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 type TArticle = {
   url: string;
@@ -89,11 +89,11 @@ export const Articles = () => {
                 {renderArticleContent(article)}
               </ExternalLink>
             ) : (
-              <Link
+              <LinkWithQuery
                 href={article.url}
                 className="block relative border border-grey-400 rounded h-full">
                 {renderArticleContent(article)}
-              </Link>
+              </LinkWithQuery>
             )}
           </div>
         );

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import Link from "next/link";
 import Layout from "@components/layouts/Main";
 import DocumentInfo from "@components/blocks/DocumentInfo";
 import { Timeline } from "@components/blocks/Timeline";
@@ -16,6 +15,7 @@ import { TEvent } from "@types";
 import { ExternalLink } from "@components/ExternalLink";
 import { ApiClient } from "@api/http-common";
 import { getDocumentTitle } from "@helpers/getDocumentTitle";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 const DocumentCoverPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page }) => {
   const [showFullSummary, setShowFullSummary] = useState(false);
@@ -81,9 +81,9 @@ const DocumentCoverPage: InferGetServerSidePropsType<typeof getServerSideProps> 
                 </div>
               </div>
               <div className="my-6 md:w-2/5 lg:w-1/4 md:pl-16 flex-shrink-0">
-                <Link href="/search" className="underline text-primary-400 hover:text-indigo-600 duration-300">
+                <LinkWithQuery href="/search" className="underline text-primary-400 hover:text-indigo-600 duration-300">
                   Back to search results
-                </Link>
+                </LinkWithQuery>
               </div>
             </div>
             <TabbedNav activeIndex={0} items={["Overview"]} handleTabClick={() => false} showBorder={false} />

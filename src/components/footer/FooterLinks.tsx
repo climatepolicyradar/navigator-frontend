@@ -1,5 +1,5 @@
 import { ExternalLink } from "@components/ExternalLink";
-import Link from "next/link";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 const FooterLinks = ({ landing = false }) => {
   return (
@@ -8,11 +8,9 @@ const FooterLinks = ({ landing = false }) => {
         <ExternalLink url="https://github.com/climatepolicyradar/methodology" className="transtion duration-300 hover:text-blue-500">
           Methodology
         </ExternalLink>
-        <Link
-          href="/terms-of-use"
-          className="transtion duration-300 hover:text-blue-500">
+        <LinkWithQuery href="/terms-of-use" className="transtion duration-300 hover:text-blue-500">
           Terms &amp; conditions
-        </Link>
+        </LinkWithQuery>
         <ExternalLink url="https://climatepolicyradar.org/privacy-policy" className="transtion duration-300 hover:text-blue-500">
           Privacy policy
         </ExternalLink>

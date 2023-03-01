@@ -1,6 +1,6 @@
-import Link from "next/link";
 import Layout from "@components/layouts/Main";
 import { ExternalLink } from "@components/ExternalLink";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 const About = () => {
   return (
@@ -20,9 +20,9 @@ const About = () => {
           <h2>Use and reference of the data</h2>
           <p>
             For information about using and referencing the data, please see our{" "}
-            <Link href="/terms-of-use">
+            <LinkWithQuery href="/terms-of-use">
               Terms of Use
-            </Link>
+            </LinkWithQuery>
             .
           </p>
           <h2>Invitation to contribute</h2>

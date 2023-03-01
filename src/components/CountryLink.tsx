@@ -1,7 +1,7 @@
 import { FC, ReactNode } from "react";
-import Link from "next/link";
 import useConfig from "@hooks/useConfig";
 import { getCountrySlug } from "@helpers/getCountryFields";
+import { LinkWithQuery } from "./LinkWithQuery";
 
 type TCountryLink = {
   countryCode: string;
@@ -19,8 +19,8 @@ export const CountryLink: FC<TCountryLink> = ({ countryCode, className = "", emp
   if (!slug && emptyContentFallback) return <>{emptyContentFallback}</>;
   if (!slug && !emptyContentFallback) return <>{children}</>;
   return (
-    <Link href={`/geographies/${slug}`} className={`flex items-center underline ${className}`} passHref>
+    <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center underline ${className}`} passHref>
       {children}
-    </Link>
+    </LinkWithQuery>
   );
 };

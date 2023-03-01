@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Image from "next/legacy/image";
 import { ExternalLink } from "@components/ExternalLink";
 import Logo from "@components/svg/LogoMono";
 import { SearchIcon } from "@components/svg/Icons";
 import { useState } from "react";
 import Button from "@components/buttons/Button";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 const Header = ({ background = true }) => {
   const { pathname } = useRouter();
@@ -40,9 +40,9 @@ const Header = ({ background = true }) => {
             }`}
           >
             <div className="cclw-font font-bold text-2xl md:text-4xl lg:text-3xl xl:text-4xl">
-              <Link href={`/`} className="">
+              <LinkWithQuery href={`/`} className="">
                 Climate Change Laws of the World
-              </Link>
+              </LinkWithQuery>
             </div>
           </div>
           <div className="text-white flex justify-self-end text-sm flex-grow-0 lg:basis-1/5 lg:justify-end lg:items-end">
@@ -67,37 +67,37 @@ const Header = ({ background = true }) => {
           <nav className={`mt-8 flex-1 text-white transition duration-300 ${menuOpen ? "" : "hidden md:block"}`}>
             <ul className="grid grid-cols-2 md:flex justify-center items-end gap-1 h-full text-sm lg:text-base font-bold">
               <li>
-                <Link href="/" className={linkClass("/")}>
+                <LinkWithQuery href="/" className={linkClass("/")}>
                   Home
-                </Link>
+                </LinkWithQuery>
               </li>
               <li>
-                <Link href="/about" className={linkClass("/about")}>
+                <LinkWithQuery href="/about" className={linkClass("/about")}>
                   About
-                </Link>
+                </LinkWithQuery>
               </li>
               <li>
-                <Link href="/methodology" className={linkClass("/methodology")}>
+                <LinkWithQuery href="/methodology" className={linkClass("/methodology")}>
                   Methodology
-                </Link>
+                </LinkWithQuery>
               </li>
               <li>
-                <Link href="/acknowledgements" className={linkClass("/acknowledgements")}>
+                <LinkWithQuery href="/acknowledgements" className={linkClass("/acknowledgements")}>
                   Acknowledgements
-                </Link>
+                </LinkWithQuery>
               </li>
               <li>
-                <Link href="/search" className={linkClass("/search") + " !flex gap-2"} passHref>
+                <LinkWithQuery href="/search" className={linkClass("/search") + " !flex gap-2"} passHref>
                   Search{" "}
                   <span className="mt-[-2px]">
                     <SearchIcon height="24" width="24" />
                   </span>
-                </Link>
+                </LinkWithQuery>
               </li>
               <li>
-                <Link href="/family/1" className={linkClass("/family")}>
+                <LinkWithQuery href="/family/1" className={linkClass("/family")}>
                   Family
-                </Link>
+                </LinkWithQuery>
               </li>
             </ul>
           </nav>

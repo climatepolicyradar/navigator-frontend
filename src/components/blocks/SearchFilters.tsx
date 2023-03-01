@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import ByTextInput from "../filters/ByTextInput";
 import BySelect from "../filters/BySelect";
@@ -11,6 +10,7 @@ import { TSector, TSearchCriteria } from "@types";
 import { ExternalLink } from "@components/ExternalLink";
 import { ThemeContext } from "@context/ThemeContext";
 import { QUERY_PARAMS } from "@constants/queryParams";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 interface SearchFiltersProps {
   handleFilterChange(type: string, value: string, action?: string): void;
@@ -129,9 +129,9 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
                 our methodology page
               </ExternalLink>
             ) : (
-              <Link href="/methodology" className="underline text-blue-600">
+              <LinkWithQuery href="/methodology" className="underline text-blue-600">
                 our methodology page
-              </Link>
+              </LinkWithQuery>
             )}
           </p>
         </div>
