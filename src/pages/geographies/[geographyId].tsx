@@ -47,7 +47,7 @@ const Targets = ({ targets }: TTargets) => {
 type TProps = {
   geography: TGeographyStats;
   summary: TGeographySummary;
-}
+};
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary }: TProps) => {
   const router = useRouter();
@@ -68,13 +68,13 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
   const handleDocumentSeeMoreClick = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    router.query[QUERY_PARAMS.country] = geography.geography_slug;
+    const newQuery = {};
+    newQuery[QUERY_PARAMS.country] = geography.geography_slug;
     const documentCategory = selectedCategoryIndex === 1 ? "Legislation" : selectedCategoryIndex === 2 ? "Policies" : null;
     if (documentCategory) {
-      router.query[QUERY_PARAMS.category] = documentCategory;
+      newQuery[QUERY_PARAMS.category] = documentCategory;
     }
-    delete router.query.geographyId;
-    router.push({ pathname: "/search", query: router.query });
+    router.push({ pathname: "/search", query: { ...newQuery } });
   };
 
   const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geography.name}`}</p>;
