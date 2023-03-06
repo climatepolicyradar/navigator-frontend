@@ -27,7 +27,8 @@ const defaultRedirects = [
 
 const nextConfig = {
   i18n: {
-    locales: ["en", "fr"],
+    // locales: ["en", "fr"],
+    locales: ["en"],
     defaultLocale: "en",
   },
   pageExtensions: ["tsx", "ts"],

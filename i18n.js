@@ -28,7 +28,7 @@ i18n
       order: ['path', 'navigator'],
       lookupFromPathIndex: 0,
     },
-    supportedLngs: ['en', 'fr'],
+    supportedLngs: ['en'],
     react: { wait: true, useSuspense: false },
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default

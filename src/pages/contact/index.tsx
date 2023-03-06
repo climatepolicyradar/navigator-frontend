@@ -12,8 +12,8 @@ const Contact = () => {
             <ExternalLink url="mailto:gri.cgl@lse.co.uk">gri.cgl@lse.ac.uk</ExternalLink>
           </p>
           <p>
-            We particularly welcome comments and inputs about the content of the database, including laws and policies we may have missed. We are a small team, and rely on the
-            collaboration of our global stakeholders to support our efforts to keep the database up to date.
+            We particularly welcome comments and inputs about the content of the database, including laws and policies we may have missed. We are a
+            small team, and rely on the collaboration of our global stakeholders to support our efforts to keep the database up to date.
           </p>
           <h2>Correspondence address, telephone number and email</h2>
           <p>As many of our staff regularly work remotely, the best way to contact us is by email.</p>
@@ -55,3 +55,9 @@ const Contact = () => {
 };
 
 export default Contact;
+
+export async function getStaticProps() {
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+}
