@@ -2,7 +2,7 @@ import { initialSearchCriteria } from "@constants/searchCriteria";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { TSearchCriteria, TSearchKeywordFilters } from "@types";
 
-type TRouterQuery = {
+export type TRouterQuery = {
   [key: string]: string | string[];
 };
 

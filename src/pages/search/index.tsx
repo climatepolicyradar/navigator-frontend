@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, ChangeEvent, useMemo } from "react";
+import { useEffect, useState, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import { TDocument } from "@types";
@@ -27,7 +27,6 @@ import SearchResultList from "@components/blocks/SearchResultList";
 import { ExternalLink } from "@components/ExternalLink";
 import Tooltip from "@components/tooltip";
 import { calculatePageCount } from "@utils/paging";
-import buildSearchQuery from "@utils/buildSearchQuery";
 import { PER_PAGE } from "@constants/paging";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
@@ -55,11 +54,7 @@ const Search = () => {
     setShowSlideout(false);
   });
 
-  const searchQuery = useMemo(() => {
-    return buildSearchQuery({ ...router.query });
-  }, [router.query]);
-
-  const { status, families, hits } = useSearch(searchQuery);
+  const { status, families, hits, searchQuery } = useSearch(router.query);
 
   const configQuery = useConfig("config");
   const { data: { document_types = [], sectors = [], regions = [], countries = [] } = {} } = configQuery;

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { ApiClient, getEnvFromServer } from "../api/http-common";
 import { initialSearchCriteria } from "../constants/searchCriteria";
 import { getCachedSearch, updateCacheSearch, TCacheResult } from "@utils/searchCache";
-import { TFamily, TSearch, TSearchCriteria } from "../types";
+import { TFamily, TSearch } from "../types";
+import buildSearchQuery, { TRouterQuery } from "@utils/buildSearchQuery";
 
 type TConfig = {
   headers: {
@@ -11,7 +12,7 @@ type TConfig = {
   };
 };
 
-export async function getSearch(query = initialSearchCriteria) {
+async function getSearch(query = initialSearchCriteria) {
   const config: TConfig = {
     headers: {
       accept: "application/json",
@@ -27,23 +28,27 @@ export async function getSearch(query = initialSearchCriteria) {
   return results;
 }
 
-const useSearch = (query: TSearchCriteria) => {
+const useSearch = (query: TRouterQuery) => {
   const [status, setStatus] = useState<"fetched" | "loading" | "idle">("idle");
   const [families, setFamilies] = useState<TFamily[]>([]);
   const [hits, setHits] = useState<number>(null);
+
+  const searchQuery = useMemo(() => {
+    return buildSearchQuery({ ...query });
+  }, [query]);
 
   useEffect(() => {
     setStatus("loading");
 
     // Check if we have a cached result before calling the API
     const cacheId = {
-      query_string: query.query_string,
-      exact_match: query.exact_match,
-      keyword_filters: query.keyword_filters,
-      year_range: query.year_range,
-      sort_field: query.sort_field,
-      sort_order: query.sort_order,
-      offset: query.offset,
+      query_string: searchQuery.query_string,
+      exact_match: searchQuery.exact_match,
+      keyword_filters: searchQuery.keyword_filters,
+      year_range: searchQuery.year_range,
+      sort_field: searchQuery.sort_field,
+      sort_order: searchQuery.sort_order,
+      offset: searchQuery.offset,
     };
 
     const cachedResult = getCachedSearch(cacheId);
@@ -55,7 +60,7 @@ const useSearch = (query: TSearchCriteria) => {
       return;
     }
 
-    const resultsQuery = getSearch(query);
+    const resultsQuery = getSearch(searchQuery);
 
     resultsQuery.then((res) => {
       if (res.status === 200) {
@@ -72,9 +77,9 @@ const useSearch = (query: TSearchCriteria) => {
       }
       setStatus("fetched");
     });
-  }, [query]);
+  }, [searchQuery]);
 
-  return { status, families, hits };
+  return { status, families, hits, searchQuery };
 };
 
 export default useSearch;
