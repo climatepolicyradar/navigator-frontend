@@ -273,6 +273,7 @@ const Search = () => {
           ...cacheId,
           families: res.data.families,
           hits: res.data.hits,
+          timestamp: new Date().getTime(),
         };
         updateCacheSearch(searchToCache);
       }

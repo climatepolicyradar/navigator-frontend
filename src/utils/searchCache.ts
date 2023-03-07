@@ -14,6 +14,7 @@ export type TCacheIdentifier = {
 export type TCacheResult = TCacheIdentifier & {
   families: TFamily[];
   hits: number;
+  timestamp: number;
 };
 
 type TCacheSearch = {
@@ -22,7 +23,6 @@ type TCacheSearch = {
 
 const LS_CACHE_NAME = "CPR_search_cache";
 
-// Handle all search caching in local storage
 const getCache = (): TCacheSearch => {
   const cachedSearch = window.localStorage.getItem(LS_CACHE_NAME);
   return cachedSearch === null || undefined ? { cache: [] } : JSON.parse(cachedSearch);
