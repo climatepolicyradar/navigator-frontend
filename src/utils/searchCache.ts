@@ -1,5 +1,6 @@
 import { TFamily, TSearchKeywordFilters } from "@types";
 import { arrayOfStringdMatch } from "./arrayEquality";
+import { CACHE_NAME, CACHE_LIMIT } from "@constants/cache";
 
 export type TCacheIdentifier = {
   query_string: string;
@@ -21,15 +22,13 @@ type TCacheSearch = {
   cache: TCacheResult[];
 };
 
-const LS_CACHE_NAME = "CPR_search_cache";
-
 const getCache = (): TCacheSearch => {
-  const cachedSearch = window.localStorage.getItem(LS_CACHE_NAME);
+  const cachedSearch = window.localStorage.getItem(CACHE_NAME);
   return cachedSearch === null || undefined ? { cache: [] } : JSON.parse(cachedSearch);
 };
 
 const saveCache = (newCache: TCacheSearch) => {
-  window.localStorage.setItem(LS_CACHE_NAME, JSON.stringify(newCache));
+  window.localStorage.setItem(CACHE_NAME, JSON.stringify(newCache));
 };
 
 export const getCachedSearch = (cacheId: TCacheIdentifier) => {
@@ -54,8 +53,11 @@ export const getCachedSearch = (cacheId: TCacheIdentifier) => {
 export const updateCacheSearch = (search: TCacheResult) => {
   if (getCachedSearch(search) !== undefined) return;
   const cache = getCache();
+  if (cache.cache.length > CACHE_LIMIT) {
+    cache.cache.pop();
+  }
   const newCache = {
-    cache: [...cache.cache, search],
+    cache: [search, ...cache.cache],
   };
   saveCache(newCache);
 };
