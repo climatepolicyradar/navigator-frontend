@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { Navigation } from "../../support/page_objects/NavigationConstructor";
+import { Navigation } from "../../../support/page_objects/NavigationConstructor";
 
 describe("Site navigation", () => {
   before(() => {
