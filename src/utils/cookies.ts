@@ -13,7 +13,7 @@ export function getCookie(cname: string) {
   return "";
 }
 
-export function setCookie(cname: string, cvalue: string) {
+export function setCookie(cname: string, cvalue: string, exdays?: number) {
   const d = new Date();
   let y = d.getFullYear() + 1;
   d.setFullYear(y);

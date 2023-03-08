@@ -177,7 +177,7 @@ export type TFamily = {
   family_description_match: boolean;
   family_documents: TFamilyDocument[];
   family_geography: string;
-  family_metadata: {};
+  family_metadata: {}; // TODO: type this
   family_name: string;
   family_slug: string;
   family_source: string;

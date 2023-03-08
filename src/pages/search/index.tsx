@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, ChangeEvent, useMemo } from "react";
+import { useEffect, useState, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import { TDocument } from "@types";
@@ -27,7 +27,6 @@ import SearchResultList from "@components/blocks/SearchResultList";
 import { ExternalLink } from "@components/ExternalLink";
 import Tooltip from "@components/tooltip";
 import { calculatePageCount } from "@utils/paging";
-import buildSearchQuery from "@utils/buildSearchQuery";
 import { PER_PAGE } from "@constants/paging";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
@@ -35,6 +34,7 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 const Search = () => {
   const router = useRouter();
   const qQueryString = router.query[QUERY_PARAMS.query_string];
+  const isBrowsing = !qQueryString || qQueryString?.toString().trim() === "";
   const slideoutRef = useRef(null);
   const { t, ready } = useTranslation(["searchStart", "searchResults"]);
   const [showFilters, setShowFilters] = useState(false);
@@ -42,14 +42,9 @@ const Search = () => {
   const [showPDF, setShowPDF] = useState(false);
   const [passageIndex, setPassageIndex] = useState(null);
   const [pageCount, setPageCount] = useState(1);
-  const [offset, setOffset] = useState(null);
 
   const updateDocument = useUpdateDocument();
   const updateCountries = useUpdateCountries();
-
-  const searchQuery = useMemo(() => {
-    return buildSearchQuery({ ...router.query });
-  }, [router.query]);
 
   // close slideout panel when clicking outside of it
   useOutsideAlerter(slideoutRef, (e) => {
@@ -59,16 +54,12 @@ const Search = () => {
     setShowSlideout(false);
   });
 
+  const { status, families, hits, searchQuery } = useSearch(router.query);
+
   const configQuery = useConfig("config");
   const { data: { document_types = [], sectors = [], regions = [], countries = [] } = {} } = configQuery;
 
   const { data: filteredCountries } = useFilteredCountries(countries);
-
-  const isBrowsing = !qQueryString || qQueryString?.toString().trim() === "";
-
-  const resultsQuery = useSearch("searches", searchQuery);
-  const families = resultsQuery?.data?.data?.families ?? [];
-  const hits = resultsQuery?.data?.data?.hits ?? 0;
 
   const { data: document }: { data: TDocument } = ({} = useDocument());
 
@@ -85,8 +76,10 @@ const Search = () => {
   };
 
   const handlePageChange = (page: number) => {
-    setOffset((page - 1) * PER_PAGE);
     setShowSlideout(false);
+    const offSet = (page - 1) * PER_PAGE;
+    router.query[QUERY_PARAMS.offset] = offSet.toString();
+    router.push({ query: router.query });
   };
 
   const handleRegionChange = (type: string, regionName: string) => {
@@ -230,22 +223,10 @@ const Search = () => {
   };
 
   useEffect(() => {
-    if (offset === null) return;
-    router.query[QUERY_PARAMS.offset] = offset;
-    router.push({ query: router.query });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offset]);
-
-  useEffect(() => {
     if (hits !== undefined) {
       setPageCount(calculatePageCount(hits));
     }
   }, [hits]);
-
-  useEffect(() => {
-    resultsQuery.refetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.query]);
 
   const renderNoOfResults = () => {
     let resultsMsg = `Showing`;
@@ -347,7 +328,7 @@ const Search = () => {
                 <div className="md:w-3/4">
                   <div className="md:pl-8">
                     <div className="lg:flex justify-between">
-                      <div className="text-sm my-4 md:my-0 md:flex">{!resultsQuery.isFetching && renderNoOfResults()}</div>
+                      <div className="text-sm my-4 md:my-0 md:flex">{status === "fetched" && renderNoOfResults()}</div>
                       <ExternalLink
                         url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform"
                         className="text-sm text-blue-600 mt-4 md:mt-0 hover:underline"
@@ -366,7 +347,7 @@ const Search = () => {
                   </div>
 
                   <div className="search-results md:pl-8 md:mt-12 relative">
-                    {resultsQuery.isFetching ? (
+                    {status === "loading" ? (
                       <div className="w-full flex justify-center h-96">
                         <Loader />
                       </div>

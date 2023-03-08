@@ -31,10 +31,10 @@ class ApiClient {
       });
   }
 
-  post(url: string, values: any, config = {}) {
+  post<T>(url: string, values: any, config = {}) {
     // console.log(`POST: ${this.baseUrl}${url}`);
     return this.axiosClient
-      .post(`${this.baseUrl}${url}`, values, config)
+      .post<T>(`${this.baseUrl}${url}`, values, config)
       .then((res) => res)
       .catch((err) => {
         console.log(err);

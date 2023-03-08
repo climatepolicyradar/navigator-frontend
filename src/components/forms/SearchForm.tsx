@@ -42,7 +42,7 @@ const SearchForm = ({ input, placeholder, handleSearchInput, handleSuggestion }:
   };
 
   useEffect(() => {
-    if (input) setTerm(input);
+    if (input || input === "") setTerm(input);
   }, [input]);
 
   useEffect(() => {
