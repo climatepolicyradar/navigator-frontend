@@ -261,8 +261,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { data: geographyData }: { data: TGeographyStats } = await client.get(`/geo_stats/${id}`, null);
   const { data: summaryData }: { data: TGeographySummary } = await client.get(`/summaries/country/${id}`, null);
 
-  console.log(summaryData);
-
   if (!geographyData || !summaryData) {
     return {
       notFound: true,
