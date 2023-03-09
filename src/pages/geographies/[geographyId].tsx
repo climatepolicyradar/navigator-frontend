@@ -208,7 +208,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
               )}
               {hasDocuments && (
                 <>
-                  <section className="mt-12">
+                  <section className="mt-12" data-cy="top-documents">
                     <h3>Latest Documents</h3>
                     <div className="mt-4 md:flex">
                       <div className="flex-grow">
@@ -223,7 +223,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                     {renderDocuments()}
                   </section>
                   {selectedCategoryIndex !== 3 && (
-                    <div className="mt-12">
+                    <div className="mt-12" data-cy="see-more-button">
                       <Divider>
                         <Button color="secondary" extraClasses="flex items-center" onClick={handleDocumentSeeMoreClick}>
                           <>
@@ -239,7 +239,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                 </>
               )}
               {geography.legislative_process && (
-                <section className="mt-12">
+                <section className="mt-12" data-cy="legislative-process">
                   <h3 className="mb-4">Legislative Process</h3>
                   <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
                 </section>
@@ -258,8 +258,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = context.params.geographyId;
   const client = new ApiClient();
 
-  const { data: geographyData }: { data: TGeographyStats } = await client.get(`/geo_stats/${id}`, null);
-  const { data: summaryData }: { data: TGeographySummary } = await client.get(`/summaries/country/${id}`, null);
+  let geographyData: TGeographyStats;
+  let summaryData: TGeographySummary;
+
+  try {
+    const { data: returnedData }: { data: TGeographyStats } = await client.get(`/geo_stats/${id}`, null);
+    geographyData = returnedData;
+  } catch (error) {
+    // TODO: handle error more elegantly
+  }
+  try {
+    const { data: returnedData }: { data: TGeographySummary } = await client.get(`/summaries/country/${id}`, null);
+    summaryData = returnedData;
+  } catch {
+    // TODO: handle error more elegantly
+  }
 
   if (!geographyData || !summaryData) {
     return {

@@ -4,7 +4,7 @@ import { clickCookiePolicy } from "../../../utils/cookiePolicy";
 const searchInputSelector = '[data-cy="search-input"]';
 const searchResultsSelector = '[data-cy="search-results"]';
 const searchTerm = "adaptation report";
-const searchTermQueryString = "adaptation+report";
+const searchTermQueryString = "?q=adaptation+report";
 
 describe("Search Flow", () => {
   before(() => {
@@ -16,11 +16,7 @@ describe("Search Flow", () => {
     cy.get(searchInputSelector)
       .should("be.visible")
       .type(searchTerm)
-      .invoke("val")
-      .then((val) => {
-        const myVal = val;
-        expect(myVal).to.equal(searchTerm);
-      });
+      .should('have.value', searchTerm);
   });
 
   it("should submit the search form when enter is pressed", () => {
@@ -32,7 +28,10 @@ describe("Search Flow", () => {
   });
 
   it("should have the accurate query string value", () => {
-    cy.url().should("include", `q=${searchTermQueryString}`);
+    cy.location().should((loc) => {
+      expect(loc.search).to.eq(searchTermQueryString)
+      expect(loc.pathname).to.eq('/search')
+    })
   });
 
   it("should display list of search results", () => {
