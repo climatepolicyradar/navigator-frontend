@@ -64,8 +64,9 @@ const useSearch = (query: TRouterQuery) => {
 
     resultsQuery.then((res) => {
       if (res.status === 200) {
-        setFamilies(res.data.families);
-        setHits(res.data.hits);
+        // Catch missing attributes fro the API response
+        setFamilies(res.data.families || []);
+        setHits(res.data.hits || 0);
 
         const searchToCache: TCacheResult = {
           ...cacheId,
