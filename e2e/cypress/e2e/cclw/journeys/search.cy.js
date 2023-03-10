@@ -13,10 +13,7 @@ describe("Search Flow", () => {
   });
 
   it("should display the input, type in search", () => {
-    cy.get(searchInputSelector)
-      .should("be.visible")
-      .type(searchTerm)
-      .should('have.value', searchTerm);
+    cy.get(searchInputSelector).should("be.visible").type(searchTerm).should("have.value", searchTerm);
   });
 
   it("should submit the search form when enter is pressed", () => {
@@ -29,9 +26,9 @@ describe("Search Flow", () => {
 
   it("should have the accurate query string value", () => {
     cy.location().should((loc) => {
-      expect(loc.search).to.eq(searchTermQueryString)
-      expect(loc.pathname).to.eq('/search')
-    })
+      expect(loc.search).to.eq(searchTermQueryString);
+      expect(loc.pathname).to.eq("/search");
+    });
   });
 
   it("should display list of search results", () => {
