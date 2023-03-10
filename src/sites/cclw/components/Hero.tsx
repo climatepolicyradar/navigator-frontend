@@ -17,13 +17,13 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
     <div className="pt-12 pb-6 text-white">
       <div className="container">
         <div className="mx-auto text-center">
-          <p className="text-lg lg:text-2xl">Use our database to search climate laws and policies globally</p>
+          <p className="text-lg lg:text-2xl" data-cy="intro-message">Use our database to search climate laws and policies globally</p>
         </div>
         <div className="max-w-screen-lg mx-auto mt-6">
           <LandingSearchForm handleSearchInput={handleSearchInput} placeholder="Search for countries, legislation and policies" input={searchInput} />
         </div>
         <div className="mt-6 lg:mt-12 grid gap-y-5 gap-x-8 sm:grid-cols-1 lg:grid-cols-3 text-center max-w-screen-lg mx-auto">
-          <div className="lg:px-8 flex flex-col items-center">
+          <div className="lg:px-8 flex flex-col items-center" data-cy="feature-laws-policies">
             <div className="text-lg font-bold">Laws and policies</div>
             <a className="cclw-semi-circle" href="#" onClick={(e) => handleDocumentBrowseClick(e, "Policy")}>
               <span>
@@ -36,7 +36,7 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
               </span>
             </a>
           </div>
-          <div className="border-y lg:border-y-0 lg:border-x border-white py-5 lg:py-0 lg:px-8">
+          <div className="border-y lg:border-y-0 lg:border-x border-white py-5 lg:py-0 lg:px-8" data-cy="feature-litigation">
             <div className="text-lg font-bold">Litigation</div>
             {/* <div className="flex items-center justify-center my-4 cursor-pointer hover:underline" role="button" onClick={(e) => handleDocumentBrowseClick(e, "Law")}>
               <div className="p-3 border bg-secondary-500 border-overlayWhite rounded-full mr-[-5px]">{getCategoryIcon("Case")}</div>
@@ -57,7 +57,7 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
               </p>
             </div>
           </div>
-          <div className="flex flex-col justify-between items-center lg:px-8">
+          <div className="flex flex-col justify-between items-center lg:px-8" data-cy="feature-cpr">
             <div className="text-lg font-bold">We are now powered by data science and AI in partnership with Climate Policy Radar</div>
             <div className="mt-4">
               <ExternalLink url="https://climatepolicyradar.org">

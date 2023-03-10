@@ -1,18 +1,53 @@
 /// <reference types="cypress" />
 import { clickCookiePolicy } from "../../../utils/cookiePolicy";
 
+const pageSelectors = [
+  "[data-cy='map']",
+  "[data-cy='featured-content']",
+  "[data-cy='partners']",
+  "[data-cy='search-input']",
+  "[data-cy='intro-message']",
+  "[data-cy='feature-laws-policies']",
+  "[data-cy='feature-litigation']",
+  "[data-cy='feature-cpr']",
+];
+
+const headerSelectors = ["[data-cy='lse-logo']", "[data-cy='gri-logo']", "[data-cy='cclw-logo']", "[data-cy='cpr-logo']"];
+
+const navigationSelectors = [
+  "[data-cy='navigation']",
+  "[data-cy='navigation-home']",
+  "[data-cy='navigation-about']",
+  "[data-cy='navigation-methodology']",
+  "[data-cy='navigation-acknowledgements']",
+  "[data-cy='navigation-search']",
+];
+
 describe("Homepage", () => {
   before(() => {
     cy.visit("/");
     clickCookiePolicy();
   });
 
-  // Phase 1 - are we in the right place
   it("should be on the homepage", () => {
     cy.location("pathname").should("eq", "/");
   });
 
-  // Phase 2 - are the right things visible
+  it("should display correct page elements", () => {
+    pageSelectors.forEach((selector) => {
+      cy.get(selector).should("be.visible");
+    });
+  });
 
-  // Phase 3 - can we interact with the page
+  it("should display correct header elements", () => {
+    headerSelectors.forEach((selector) => {
+      cy.get(selector).should("be.visible");
+    });
+  });
+
+  it("should display correct navigation elements", () => {
+    navigationSelectors.forEach((selector) => {
+      cy.get(selector).should("be.visible");
+    });
+  });
 });

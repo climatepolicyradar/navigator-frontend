@@ -24,12 +24,12 @@ const Header = ({ background = true }) => {
         <div className={`grid grid-cols-2 auto-cols-auto lg:flex lg:flex-nowrap lg:justify-between ${isHome ? "lg:mb-6" : ""}`}>
           <div className="items-end flex flex-grow-0 lg:basis-1/5">
             <ExternalLink className="flex" url="https://www.lse.ac.uk/">
-              <div className="h-[40px] w-[40px] flex">
+              <div className="h-[40px] w-[40px] flex" data-cy="lse-logo">
                 <img src="/images/partners/lse-logo.png" alt="LSE logo" width={40} height={40} />
               </div>
             </ExternalLink>
             <ExternalLink className="flex" url="https://www.lse.ac.uk/granthaminstitute/">
-              <div className="h-[40px] w-[180px] flex">
+              <div className="h-[40px] w-[180px] flex" data-cy="gri-logo">
                 <img src="/cclw/partners/gri_white_logo.svg" alt="GRI logo" width={180} height={40} />
               </div>
             </ExternalLink>
@@ -40,7 +40,7 @@ const Header = ({ background = true }) => {
             }`}
           >
             <div className="cclw-font font-bold text-2xl md:text-4xl lg:text-3xl xl:text-4xl">
-              <LinkWithQuery href={`/`} className="">
+              <LinkWithQuery href={`/`} className="" cypress="cclw-logo">
                 Climate Change Laws of the World
               </LinkWithQuery>
             </div>
@@ -49,7 +49,9 @@ const Header = ({ background = true }) => {
             <div className="flex flex-wrap justify-end items-end gap-2">
               <p className="text-right basis-full md:basis-auto md:self-start">Powered by</p>
               <ExternalLink className="flex" url="https://www.climatepolicyradar.org">
-                <Logo fixed />
+                <div data-cy="cpr-logo">
+                  <Logo fixed />
+                </div>
               </ExternalLink>
             </div>
           </div>
@@ -64,29 +66,29 @@ const Header = ({ background = true }) => {
           >
             {menuOpen ? <>Hide menu &#x25B2;</> : <>Show menu &#x25BC;</>}
           </Button>
-          <nav className={`mt-8 flex-1 text-white transition duration-300 ${menuOpen ? "" : "hidden md:block"}`}>
+          <nav className={`mt-8 flex-1 text-white transition duration-300 ${menuOpen ? "" : "hidden md:block"}`} data-cy="navigation">
             <ul className="grid grid-cols-2 md:flex justify-center items-end gap-1 h-full text-sm lg:text-base font-bold">
-              <li>
+              <li data-cy="navigation-home">
                 <LinkWithQuery href="/" className={linkClass("/")}>
                   Home
                 </LinkWithQuery>
               </li>
-              <li>
+              <li data-cy="navigation-about">
                 <LinkWithQuery href="/about" className={linkClass("/about")}>
                   About
                 </LinkWithQuery>
               </li>
-              <li>
+              <li data-cy="navigation-methodology">
                 <LinkWithQuery href="/methodology" className={linkClass("/methodology")}>
                   Methodology
                 </LinkWithQuery>
               </li>
-              <li>
+              <li data-cy="navigation-acknowledgements">
                 <LinkWithQuery href="/acknowledgements" className={linkClass("/acknowledgements")}>
                   Acknowledgements
                 </LinkWithQuery>
               </li>
-              <li>
+              <li data-cy="navigation-search">
                 <LinkWithQuery href="/search" className={linkClass("/search") + " !flex gap-2"} passHref>
                   Search{" "}
                   <span className="mt-[-2px]">
