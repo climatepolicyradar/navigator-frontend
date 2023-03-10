@@ -66,12 +66,12 @@ const Footer = () => {
     <footer className="flex flex-col bg-grey-400 mt-12">
       <div className="py-12">
         <div className="container">
-          <p className="text-lg mb-6 md:text-center">
+          <p className="text-lg mb-6 md:text-center" data-cy="report-problem">
             To report a problem email us at support@climatepolicyradar.org <br /> Spotted missing or inaccurate data?{" "}
             <ExternalLink url="https://docs.google.com/forms/d/e/1FAIpQLScNy6pZTInQKdxNDaZPKyPGgbfRktstzgVDjGBCeTnLVzl3Pg/viewform" className="underline">Let us know</ExternalLink>
           </p>
           <p className="font-bold text-xl mb-8">Climate Change Laws of the World</p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4" data-cy="footer-gri">
             <div key={navLinks.title} className="footer__section">
               <h5>{navLinks.title}</h5>
               <div className="grid gap-x-5 gap-y-5 md:grid-cols-2">
@@ -112,7 +112,7 @@ const Footer = () => {
               </div>
             </div>
 
-            <div className="footer__section md:w-1/2 lg:mx-auto">
+            <div className="footer__section md:w-1/2 lg:mx-auto" data-cy="footer-cpr">
               <h5>Climate Policy Radar</h5>
               <p>Using AI and data science to map the world's climate policies</p>
               <ul className="mb-6">
