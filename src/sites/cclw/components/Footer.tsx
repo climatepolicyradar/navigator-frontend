@@ -71,8 +71,8 @@ const Footer = () => {
             <ExternalLink url="https://docs.google.com/forms/d/e/1FAIpQLScNy6pZTInQKdxNDaZPKyPGgbfRktstzgVDjGBCeTnLVzl3Pg/viewform" className="underline">Let us know</ExternalLink>
           </p>
           <p className="font-bold text-xl mb-8">Climate Change Laws of the World</p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4" data-cy="footer-gri">
-            <div key={navLinks.title} className="footer__section">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div key={navLinks.title} className="footer__section" data-cy="footer-gri">
               <h5>{navLinks.title}</h5>
               <div className="grid gap-x-5 gap-y-5 md:grid-cols-2">
                 <ul>
