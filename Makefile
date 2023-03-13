@@ -1,7 +1,7 @@
 .PHONEY: build run run_ci with_production
 
 TAG=local-frontend
-THEME ?= cpr
+THEME ?= cclw
 API_URL ?= https://api.dev.climatepolicyradar.org/api/v1  
 
 run: build
