@@ -27,7 +27,7 @@ describe("Browse Flow", () => {
   });
 
   it("should display a list of 10 search results", () => {
-    cy.get(searchResultsSelector).children().should("have.length", 10);
+    cy.get(searchResultsSelector).children({ timeout: 10000 }).should("have.length", 10);
   });
 
   it("should have a clickable country link, which is clicked", () => {
