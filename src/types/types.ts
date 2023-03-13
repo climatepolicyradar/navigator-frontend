@@ -131,10 +131,10 @@ export type TGeographyStats = {
 };
 
 export type TGeographySummary = {
-  document_counts: { Law: number; Policy: number; Case: number };
+  family_counts: { Legislative: number; Executive: number; Case: number };
   events: TEvent[];
   targets: string[];
-  top_documents: { Law: TDocument[]; Policy: TDocument[]; Case: TDocument[] };
+  top_families: { Legislative: TFamily[]; Executive: TFamily[]; Case: TFamily[] };
 };
 
 export type TCategory = "Law" | "Policy" | "Case";
@@ -174,18 +174,22 @@ export type TFamilyDocument = {
 export type TFamily = {
   family_category: TCategory;
   family_description: string;
-  family_description_match: boolean;
   family_documents: TFamilyDocument[];
   family_geography: string;
   family_metadata: {}; // TODO: type this
   family_name: string;
   family_slug: string;
   family_source: string;
+  family_date: string;
+};
+
+export type TMatchedFamily = TFamily & {
+  family_description_match: boolean;
   family_title_match: boolean;
 };
 
 export type TSearch = {
   hits: number;
   query_time_ms: number;
-  families: TFamily[];
+  families: TMatchedFamily[];
 };

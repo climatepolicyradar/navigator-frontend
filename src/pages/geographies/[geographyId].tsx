@@ -10,8 +10,8 @@ import { CountryHeader } from "@components/blocks/CountryHeader";
 import { KeyDetail } from "@components/KeyDetail";
 import { Divider } from "@components/dividers/Divider";
 import { RightArrowIcon } from "@components/svg/Icons";
+import { FamilyListItem } from "@components/document/FamilyListItem";
 import Button from "@components/buttons/Button";
-import { RelatedDocumentFull } from "@components/blocks/RelatedDocumentFull";
 import TabbedNav from "@components/nav/TabbedNav";
 import TextLink from "@components/nav/TextLink";
 import { LawIcon, PolicyIcon, CaseIcon, TargetIcon } from "@components/svg/Icons";
@@ -56,7 +56,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
   const hasEvents = !!summary?.events && summary?.events?.length > 0;
   const hasTargets = !!summary?.targets && summary?.targets?.length > 0;
-  const hasDocuments = !!summary?.top_documents;
+  const hasFamilies = !!summary?.top_families;
 
   const documentCategories = DOCUMENT_CATEGORIES;
   const TARGETS_SHOW = 5;
@@ -82,36 +82,36 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   const renderDocuments = () => {
     // All
     if (selectedCategoryIndex === 0) {
-      const allDocuments = summary.top_documents.Policy.concat(summary.top_documents.Law).concat(summary.top_documents.Case);
-      if (allDocuments.length === 0) {
+      const allFamilies = summary.top_families.Executive.concat(summary.top_families.Legislative).concat(summary.top_families.Case);
+      if (allFamilies.length === 0) {
         return renderEmpty();
       }
-      allDocuments.sort((a, b) => {
-        return new Date(b.document_date).getTime() - new Date(a.document_date).getTime();
+      allFamilies.sort((a, b) => {
+        return new Date(b.family_date).getTime() - new Date(a.family_date).getTime();
       });
-      return allDocuments.slice(0, 5).map((doc) => (
-        <div key={doc.document_slug} className="mt-4 mb-10">
-          <RelatedDocumentFull document={doc} />
+      return allFamilies.slice(0, 5).map((family) => (
+        <div key={family.family_slug} className="mt-4 mb-10">
+          <FamilyListItem family={family} />
         </div>
       ));
     }
     // Legislative
     if (selectedCategoryIndex === 1) {
-      return summary.top_documents.Law.length === 0
+      return summary.top_families.Legislative.length === 0
         ? renderEmpty("Legislative")
-        : summary.top_documents.Law.map((doc) => (
-            <div key={doc.document_slug} className="mt-4 mb-10">
-              <RelatedDocumentFull document={doc} />
+        : summary.top_families.Legislative.map((family) => (
+            <div key={family.family_slug} className="mt-4 mb-10">
+              <FamilyListItem family={family} />
             </div>
           ));
     }
     // Executive
     if (selectedCategoryIndex === 2) {
-      return summary.top_documents.Policy.length === 0
+      return summary.top_families.Executive.length === 0
         ? renderEmpty("Executive")
-        : summary.top_documents.Policy.map((doc) => (
-            <div key={doc.document_slug} className="mt-4 mb-10">
-              <RelatedDocumentFull document={doc} />
+        : summary.top_families.Executive.map((family) => (
+            <div key={family.family_slug} className="mt-4 mb-10">
+              <FamilyListItem family={family} />
             </div>
           ));
     }
@@ -149,7 +149,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   <KeyDetail
                     detail="Legislation"
                     extraDetail="Laws, Acts, Constitutions (legislative branch)"
-                    amount={summary.document_counts.Law}
+                    amount={summary.family_counts.Legislative}
                     icon={<LawIcon />}
                     onClick={() => setselectedCategoryIndex(1)}
                   />
@@ -158,7 +158,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   <KeyDetail
                     detail="Policies"
                     extraDetail="Policies, strategies, decrees, action plans (from executive branch)"
-                    amount={summary.document_counts.Policy}
+                    amount={summary.family_counts.Executive}
                     icon={<PolicyIcon />}
                     onClick={() => setselectedCategoryIndex(2)}
                   />
@@ -206,7 +206,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   </Divider>
                 </div>
               )}
-              {hasDocuments && (
+              {hasFamilies && (
                 <>
                   <section className="mt-12" data-cy="top-documents">
                     <h3>Latest Documents</h3>
@@ -268,7 +268,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // TODO: handle error more elegantly
   }
   try {
-    const { data: returnedData }: { data: TGeographySummary } = await client.get(`/summaries/country/${id}`, null);
+    const { data: returnedData }: { data: TGeographySummary } = await client.get(`/summaries/country/${id}`, { group_documents: true });
     summaryData = returnedData;
   } catch {
     // TODO: handle error more elegantly

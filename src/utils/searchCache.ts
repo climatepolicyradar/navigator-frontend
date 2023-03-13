@@ -1,4 +1,4 @@
-import { TFamily, TSearchKeywordFilters } from "@types";
+import { TMatchedFamily, TSearchKeywordFilters } from "@types";
 import { arrayOfStringdMatch } from "./arrayEquality";
 import { CACHE_NAME, CACHE_LIMIT } from "@constants/cache";
 
@@ -13,7 +13,7 @@ export type TCacheIdentifier = {
 };
 
 export type TCacheResult = TCacheIdentifier & {
-  families: TFamily[];
+  families: TMatchedFamily[];
   hits: number;
   timestamp: number;
 };
