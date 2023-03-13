@@ -27,21 +27,22 @@ type TTargets = {
 };
 
 const Targets = ({ targets }: TTargets) => {
-  return (
-    <ul className="ml-4 list-disc list-outside">
-      {targets.map((target) => (
-        <li className="mb-4" key={target.target}>
-          <span className="text-blue-700 text-lg">{target.target}</span>
-          <span className="block">
-            <span className="font-semibold mr-1">{target.group}</span>
-            <span>
-              | Base year: {target.base_year} | Target year: {target.target_year}
-            </span>
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
+  return null;
+  // return (
+  //   <ul className="ml-4 list-disc list-outside">
+  //     {targets.map((target) => (
+  //       <li className="mb-4" key={target.target}>
+  //         <span className="text-blue-700 text-lg">{target.target}</span>
+  //         <span className="block">
+  //           <span className="font-semibold mr-1">{target.group}</span>
+  //           <span>
+  //             | Base year: {target.base_year} | Target year: {target.target_year}
+  //           </span>
+  //         </span>
+  //       </li>
+  //     ))}
+  //   </ul>
+  // );
 };
 
 type TProps = {

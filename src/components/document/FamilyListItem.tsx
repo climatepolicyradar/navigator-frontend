@@ -28,7 +28,7 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
       <div className="flex justify-between items-start">
         <h2 className="leading-none flex items-start">
           <LinkWithQuery
-            href={`/document/${family_slug}`}
+            href={`/family/${family_slug}`}
             className={`text-left text-blue-500 font-medium text-lg transition duration-300 leading-tight hover:underline ${
               theme === "cpr" ? "underline" : ""
             }`}

@@ -8,6 +8,7 @@ import { Timeline } from "@components/blocks/Timeline";
 import Event from "@components/blocks/Event";
 import { ExternalLinkIcon, GlobeIcon, DocumentIcon, PDFIcon } from "@components/svg/Icons";
 import { DocumentHead } from "@components/document/DocumentHead";
+import { FamilyHead } from "@components/document/FamilyHead";
 import { FamilyDocument } from "@components/document/FamilyDocument";
 import { ExternalLink } from "@components/ExternalLink";
 import { Targets } from "@components/Targets";
@@ -16,21 +17,20 @@ import { Divider } from "@components/dividers/Divider";
 import { initialSummaryLength } from "@constants/document";
 import { truncateString } from "@helpers/index";
 import { getDocumentTitle } from "@helpers/getDocumentTitle";
-import { TEvent, TDocument, TFamilyDocument } from "@types";
+import { TEvent, TDocument, TFamilyDocument, TFamily, TFamilyPage, TTarget } from "@types";
 
 import DUMMY_JSON from "./data.json";
 
-const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page }) => {
+type TProps = {
+  page: TFamilyPage;
+  targets: TTarget[];
+};
+
+const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page, targets = [] }: TProps) => {
   const [showTimeline, setShowTimeline] = useState(false);
   const [showCollectionDetail, setShowCollectionDetail] = useState(false);
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [summary, setSummary] = useState("");
-
-  // Check if we have any search results
-  const { data: searchResults } = useGetSearcheResults();
-  const documents = searchResults?.data?.documents;
-  // See if the family is in the list of results
-  const familyResult: TDocument = documents ? documents.find((document) => document.document_id === page.import_id) : null;
 
   const handleCollectionClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -41,8 +41,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   };
 
   useEffect(() => {
-    if (page?.description) {
-      const text = page?.description;
+    if (page?.summary) {
+      const text = page?.summary;
       if (showFullSummary) {
         setSummary(text);
       } else {
@@ -51,54 +51,23 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
     }
   }, [page, showFullSummary]);
 
-  const renderSourceLink = () => {
-    let link: string;
-    if (page.url?.length) {
-      link = page.url;
-    } else if (page.source_url?.length) {
-      link = page.source_url;
-    }
-
-    if (!link) return null;
-
-    return (
-      <section className="mt-12">
-        <h3>Source</h3>
-        <div className="mt-4 flex align-bottom gap-2">
-          {page?.content_type.includes("pdf") && <PDFIcon height="24" width="24" />}
-          {page?.content_type.includes("x-ole-storage") && <DocumentIcon height="24" width="24" />}
-          {page?.content_type.includes("html") && <GlobeIcon height="24" width="24" />}
-          <ExternalLink url={link} className="text-blue-500 underline font-medium hover:text-indigo-600 transition duration-300 flex">
-            <span className="mr-1">{page?.content_type.includes("html") ? "Visit source website" : "See full text (opens in new tab)"}</span>
-            <ExternalLinkIcon height="16" width="16" />
-          </ExternalLink>
-        </div>
-      </section>
-    );
-  };
-
   // TODO: align with BE on an approach to sources and their logos
-  const sourceLogo = page?.source?.name === "CCLW" ? "grantham-logo.png" : null;
-  const sourceName = page?.source?.name === "CCLW" ? "Grantham Research Institute" : page?.source?.name;
+  const sourceLogo = page?.organisation === "CCLW" ? "grantham-logo.png" : null;
+  const sourceName = page?.organisation === "CCLW" ? "Grantham Research Institute" : page?.organisation;
 
-  // const mainDoc = page.documents.find((doc: TFamilyDocument) => doc.type.name === "main");
+  const mainDoc = page.documents.find((doc) => doc.variant === "MAIN");
+  const otherDocs = page.documents.filter((doc) => doc.variant !== "MAIN");
 
   return (
     <Layout title={page.title}>
       <section className="mb-8">
-        <DocumentHead document={page} onCollectionClick={handleCollectionClick} />
-        <div className="bg-gray-200 border-b border-lineBorder py-4">
-          <div className="container">
-            Family/document from search or local store: <br />{" "}
-            <code className="block whitespace-pre-wrap">{JSON.stringify(familyResult, null, "\t")}</code>
-          </div>
-        </div>
+        <FamilyHead family={page} onCollectionClick={handleCollectionClick} />
         <div className="container">
           <div className="md:flex">
             <section className="flex-1 md:w-0">
               <section className="mt-6">
                 <div className="text-content mt-4" dangerouslySetInnerHTML={{ __html: summary }} />
-                {page.description.length > initialSummaryLength && (
+                {page.summary.length > initialSummaryLength && (
                   <div className="mt-6 flex justify-end">
                     {showFullSummary ? (
                       <button onClick={() => setShowFullSummary(false)} className="text-blue-500 font-medium">
@@ -111,70 +80,54 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                     )}
                   </div>
                 )}
-                {/* {mainDoc && (
-                  <FamilyDocument
-                    title={mainDoc.title}
-                    date={mainDoc.date}
-                    slug={mainDoc.slug}
-                    matches={mainDoc.matches}
-                    meta={{
-                      typeName: mainDoc.type.name,
-                      typeDescription: mainDoc.type.description,
-                      format: mainDoc.format,
-                      variant: mainDoc.variant.label,
-                    }}
-                  />
-                )} */}
+                {mainDoc && <FamilyDocument title={mainDoc.title} date={page.published_date} slug={mainDoc.slugs[0]} variant={mainDoc.variant} />}
               </section>
 
-              <div className="mt-12">
-                <Divider color="bg-lineBorder" />
-              </div>
+              {otherDocs.length > 0 && (
+                <>
+                  <div className="mt-12">
+                    <Divider color="bg-lineBorder" />
+                  </div>
 
-              <section className="mt-12">
-                <h3>Related documents</h3>
-                {/* TODO: replace when we have the new family endpoint
-                <div className="divide-solid divide-blue-100 divide-y">
-                  {page.documents.map((doc: TFamilyDocument) => {
-                    if (doc.type.name !== "main") {
-                      return (
-                        <div key={doc.id} className="mt-4">
-                          <FamilyDocument
-                            title={doc.title}
-                            date={doc.date}
-                            slug={doc.slug}
-                            matches={doc.matches}
-                            meta={{ typeName: doc.type.name, typeDescription: doc.type.description, format: doc.format, variant: doc.variant.label }}
-                          />
+                  <section className="mt-12">
+                    <h3>Related documents</h3>
+                    <div className="divide-solid divide-blue-100 divide-y">
+                      {page.documents.map((doc) => (
+                        <div key={doc.title} className="mt-4">
+                          <FamilyDocument title={doc.title} date={page.published_date} slug={doc.slugs[0]} variant={doc.variant} />
                         </div>
-                      );
-                    }
-                  })}
-                </div> */}
-              </section>
+                      ))}
+                    </div>
+                  </section>
+                </>
+              )}
 
-              <div className="mt-12">
-                <Divider color="bg-lineBorder" />
-              </div>
+              {targets.length > 0 && (
+                <>
+                  <div className="mt-12">
+                    <Divider color="bg-lineBorder" />
+                  </div>
 
-              <section className="mt-12">
-                <div>
-                  <h3 className="flex flex-col mb-4 md:flex-row md:items-center justify-between">
-                    <span className="flex-1">Targets (3)</span>
-                    <span className="text-sm text-grey-700 flex-0">
-                      Download targets data (.csv){" "}
-                      <a href="#" onClick={(e) => e.preventDefault()} className="underline text-primary-600">
-                        this list
-                      </a>{" "}
-                      |{" "}
-                      <a href="#" onClick={(e) => e.preventDefault()} className="underline text-primary-600">
-                        whole database
-                      </a>
-                    </span>
-                  </h3>
-                  <Targets targets={page.targets} />
-                </div>
-              </section>
+                  <section className="mt-12">
+                    <div>
+                      <h3 className="flex flex-col mb-4 md:flex-row md:items-center justify-between">
+                        <span className="flex-1">Targets (3)</span>
+                        <span className="text-sm text-grey-700 flex-0">
+                          Download targets data (.csv){" "}
+                          <a href="#" onClick={(e) => e.preventDefault()} className="underline text-primary-600">
+                            this list
+                          </a>{" "}
+                          |{" "}
+                          <a href="#" onClick={(e) => e.preventDefault()} className="underline text-primary-600">
+                            whole database
+                          </a>
+                        </span>
+                      </h3>
+                      <Targets targets={targets} />
+                    </div>
+                  </section>
+                </>
+              )}
 
               {page.events.length > 0 && (
                 <>
@@ -187,7 +140,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                     <ShowHide show={showTimeline} onClick={() => setShowTimeline(!showTimeline)} className="mt-4" />
                     {showTimeline && (
                       <Timeline>
-                        {page.events.map((event: TEvent, index: number) => (
+                        {page.events.map((event, index: number) => (
                           <React.Fragment key={`event-${index}`}>
                             <Event event={event} index={index} last={index === page.events.length - 1 ? true : false} />
                           </React.Fragment>
@@ -198,6 +151,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                 </>
               )}
 
+              {/* TODO: return collection information
               <div className="mt-12">
                 <Divider color="bg-lineBorder" />
               </div>
@@ -228,39 +182,42 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                     </div>
                     <h4>Other documents in the Common Agricultural Policy</h4>
                     <div className="divide-solid divide-blue-100 divide-y">
-                      {page.collection.families.map((cFamily) => (
-                        <div key={cFamily.id} className="mt-4">
-                          <FamilyDocument title={cFamily.title} date={cFamily.date} slug={cFamily.slug} />
-                        </div>
-                      ))}
+                      {page.collections.map((collection) => {
+                        return <></>;
+                        // TODO: return collection related families
+                        // return collection.families.map((cFamily) => (
+                        //   <div key={cFamily.id} className="mt-4">
+                        //     <FamilyDocument title={cFamily.title} date={cFamily.date} slug={cFamily.slug} />
+                        //   </div>
+                        // ));
+                      })}
                     </div>
                   </div>
                 )}
-              </section>
+              </section> */}
             </section>
             <section className="mt-12 md:border-t-0 md:mt-6 md:w-2/5 lg:w-1/4 md:pl-12 flex-shrink-0">
               <div className="md:pl-4 md:border-l md:border-lineBorder">
                 <h3>About this document</h3>
                 <div className="grid grid-cols-2 gap-x-2">
-                  <DocumentInfo id="category-tt" heading="Category" text={page.category.name} />
-                  <DocumentInfo id="type-tt" heading="Type" text={page.type.name} />
-                  {/* Topics maps to responses */}
-                  {page.topics.length > 0 && <DocumentInfo id="topics-tt" heading="Topics" list={page.topics} />}
-                  {page.languages.length > 0 && <DocumentInfo heading="Language" text={page.languages[0].name} />}
+                  <DocumentInfo id="category-tt" heading="Category" text={page.category} />
+                  <DocumentInfo id="type-tt" heading="Type" text={page.metadata.document_type} />
+                  {page.metadata.topic.length > 0 && <DocumentInfo id="topics-tt" heading="Topics" list={page.metadata.topic} />}
+                  {/* {page.metadata.languages.length > 0 && <DocumentInfo heading="Language" text={page.languages[0].name} />} */}
                 </div>
 
-                {page.keywords.length > 0 && <DocumentInfo id="keywords-tt" heading="Keywords" list={page.keywords} />}
-                {page.sectors.length > 0 && <DocumentInfo id="sectors-tt" heading="Sectors" list={page.sectors} />}
+                {page.metadata.keyword.length > 0 && <DocumentInfo id="keywords-tt" heading="Keywords" list={page.metadata.keyword} />}
+                {page.metadata.sector.length > 0 && <DocumentInfo id="sectors-tt" heading="Sectors" list={page.metadata.sector} />}
                 <div className="mt-8 border-t border-blue-100">
                   <h3 className="mt-4">Note</h3>
                   <div className="flex items-end my-4">
                     {sourceLogo && (
                       <div className="relative flex-shrink w-3/4 xmax-w-[40px] mr-1">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={`/images/partners/${sourceLogo}`} alt={page.source.name} />
+                        <img src={`/images/partners/${sourceLogo}`} alt={page.organisation} />
                       </div>
                     )}
-                    {page.source.name !== "CCLW" && <p className="text-sm">{sourceName}</p>}
+                    {page.organisation !== "CCLW" && <p className="text-sm">{sourceName}</p>}
                   </div>
                   <p>
                     The summary of this document was written by researchers at the{" "}
@@ -291,20 +248,16 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 export default FamilyPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  // const id = context.params.id;
-  const id = "netherlands_2016_national-climate-adaptation-strategy_8708_1447";
+  const id = context.params.id;
+  // const id = "netherlands_2016_national-climate-adaptation-strategy_8708_1447";
   const client = new ApiClient(process.env.API_URL);
 
-  const { data: page } = await client.get(`/documents/${id}`, null);
-  const json = DUMMY_JSON;
-  const title = getDocumentTitle(page.name, page.postfix);
+  const { data: page } = await client.get(`/documents/${id}`, { group_documents: true });
+  // const json = DUMMY_JSON;
 
   return {
     props: {
-      page: {
-        ...page,
-        ...json,
-      },
+      page,
     },
   };
 };

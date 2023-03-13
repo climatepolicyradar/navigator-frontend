@@ -6,13 +6,13 @@ const List = ({ list, bulleted = false }) => {
   return (
     <ul className={`text-indigo-500 ${bulleted ? "ml-4 list-disc list-outside mb-4" : ""}`}>
       {list.map((item, index) => (
-        <li key={`listitem-${index}-${item.name}`} className={bulleted ? "" : "inline"}>
+        <li key={`listitem-${index}-${item}`} className={bulleted ? "" : "inline"}>
           {
             <>
-              {index > 0 && !bulleted && ", "} {item.name}
+              {index > 0 && !bulleted && ", "} {item}
             </>
           }
-          {item?.children && renderChildren(item.children)}
+          {/* {item?.children && renderChildren(item.children)} */}
         </li>
       ))}
     </ul>

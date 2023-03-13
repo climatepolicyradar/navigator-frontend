@@ -10,19 +10,19 @@ type TProps = {
   title: string;
   date: string;
   slug: string;
+  variant: string;
   matches?: number;
-  meta?: {
-    typeName: string;
-    typeDescription: string;
-    format: string;
-    variant: string;
-  };
+  // meta?: {
+  //   typeName: string;
+  //   typeDescription: string;
+  //   format: string;
+  // };
 };
 
-export const FamilyDocument = ({ title, date, slug, matches, meta }: TProps) => {
+export const FamilyDocument = ({ title, date, slug, variant, matches }: TProps) => {
   const [year, _, month] = formatDate(date);
-  const isMain = meta?.typeName === "main";
-  const hasMeta = typeof meta !== "undefined";
+  const isMain = variant === "MAIN";
+  // const hasMeta = typeof meta !== "undefined";
   const hasMatches = typeof matches !== "undefined";
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -39,13 +39,13 @@ export const FamilyDocument = ({ title, date, slug, matches, meta }: TProps) => 
       <div className="text-primary-600 mb-2">{title}</div>
       <div className="flex items-center">
         <div className="flex-1 flex flex-wrap gap-x-8">
-          {hasMeta && (
+          {/* {hasMeta && (
             <>
               {!isMain && <span className="font-bold">{meta.typeDescription}</span>}
               <span>{meta.format.toUpperCase()}</span>
               <span>{meta.variant}</span>
             </>
-          )}
+          )} */}
           <span>{`${month} ${year}`}</span>
         </div>
         {hasMatches && (

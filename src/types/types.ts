@@ -96,11 +96,30 @@ export type TGeography = {
   slug: string;
 };
 
+// export type TTarget = {
+//   target: string;
+//   group: string;
+//   base_year: string;
+//   target_year: string;
+// };
+
 export type TTarget = {
-  target: string;
-  group: string;
-  base_year: string;
-  target_year: string;
+  ID: string;
+  "Target type": string;
+  Source: string;
+  Description: string;
+  "GHG target": string;
+  Year: string;
+  "Base year period": string;
+  "Single year": string;
+  Geography: string;
+  "Geography ISO": string;
+  Sector: string;
+  "CCLW legislation ID": string;
+  Scopes: string;
+  "Visibility status": string;
+  "CPR family ID": string;
+  "family-slug": string;
 };
 
 export type TGeographyConfigNode = {
@@ -143,10 +162,10 @@ export type TDisplayCategory = "All" | "Legislative" | "Executive" | "Litigation
 export type TEventCategory = TCategory | "Target";
 
 export type TEvent = {
-  name: string;
-  created_ts: string;
-  description: string;
-  category?: TEventCategory;
+  title: string;
+  date: string;
+  event_type: string;
+  status: string;
 };
 
 export type TAssociatedDocument = {
@@ -181,6 +200,43 @@ export type TFamily = {
   family_slug: string;
   family_source: string;
   family_date: string;
+};
+
+export type TFamilyPage = {
+  organisation: string;
+  title: string;
+  summary: string;
+  geography: string;
+  category: TCategory;
+  metadata: TFamilyMetadata;
+  slugs: string[];
+  events: TEvent[];
+  documents: TDocumentPage[];
+  collections: TCollection[];
+  published_date: string;
+  last_updated_date: string;
+};
+
+export type TDocumentPage = {
+  variant: string;
+  slugs: string[];
+  title: string;
+  md5_sum: string;
+  cdn_object: string;
+  source_url: string;
+  content_type: string;
+};
+
+export type TCollection = {};
+
+export type TFamilyMetadata = {
+  topic: string[];
+  hazard: string[];
+  sector: string[];
+  keyword: string[];
+  framework: string[];
+  instrument: string[];
+  document_type: string;
 };
 
 export type TMatchedFamily = TFamily & {

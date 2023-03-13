@@ -14,14 +14,13 @@ type TListChild = {
 type TDoucmentInfoProps = {
   heading: string;
   text?: string;
-  list?: TListType[];
+  list?: string[];
   id?: string;
   tooltip?: string;
   bulleted?: boolean;
 };
 
 const DocumentInfo = ({ heading, text = "", list = [], id = "", tooltip = "", bulleted = false }: TDoucmentInfoProps) => {
-
   return (
     <div className="mt-4">
       <h4 className="text-base text-indigo-400 font-semibold flex">
