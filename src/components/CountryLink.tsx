@@ -19,7 +19,7 @@ export const CountryLink: FC<TCountryLink> = ({ countryCode, className = "", emp
   if (!slug && emptyContentFallback) return <>{emptyContentFallback}</>;
   if (!slug && !emptyContentFallback) return <>{children}</>;
   return (
-    <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center underline ${className}`} passHref>
+    <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center underline ${className}`} passHref cypress="country-link">
       {children}
     </LinkWithQuery>
   );

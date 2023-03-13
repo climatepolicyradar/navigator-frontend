@@ -346,7 +346,7 @@ const Search = () => {
                     </div>
                   </div>
 
-                  <div className="search-results md:pl-8 md:mt-12 relative">
+                  <div data-cy="search-results" className="md:pl-8 md:mt-12 relative">
                     {status === "loading" ? (
                       <div className="w-full flex justify-center h-96">
                         <Loader />

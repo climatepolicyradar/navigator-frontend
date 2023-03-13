@@ -6,8 +6,9 @@ require('dotenv').config();
 // console.log(process.env)
 
 module.exports = defineConfig({
-  viewportWidth: 1000,
-  viewportHeight: 700,
+  // Viewport for "MacBook 13"
+  viewportWidth: 1280,
+  viewportHeight: 800,
   chromeWebSecurity: false,
   e2e: {
     baseUrl: 'http://localhost:3000',

@@ -69,10 +69,10 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
       </div>
 
       <div className="my-4 text-sm text-indigo-500">
-        <div>
+        <div data-cy="exact-match">
           <ExactMatch checked={searchCriteria.exact_match} id="exact-match" handleSearchChange={handleSearchChange} />
         </div>
-        <div className="relative mt-6">
+        <div className="relative mt-6" data-cy="regions">
           <BySelect
             list={regions}
             defaultValue={searchCriteria.keyword_filters?.regions ? searchCriteria.keyword_filters.regions[0] : ""}
@@ -83,7 +83,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
             filterType={QUERY_PARAMS.region}
           />
         </div>
-        <div className="relative mt-6">
+        <div className="relative mt-6" data-cy="countries">
           <ByTextInput
             title={t("By country")}
             list={filteredCountries}
@@ -93,7 +93,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
             filterType={QUERY_PARAMS.country}
             handleFilterChange={handleFilterChange}
           />
-          <MultiList list={countryFilters} removeFilter={handleFilterChange} type={QUERY_PARAMS.country} />
+          <MultiList list={countryFilters} removeFilter={handleFilterChange} type={QUERY_PARAMS.country} dataCy="selected-countries" />
         </div>
         {/* <div className="relative mt-6 hidden">
           <BySelect
@@ -108,7 +108,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
           <MultiList list={sectorFilters} removeFilter={handleFilterChange} type="sectors" />
         </div> */}
         <div className="relative mt-8 mb-12">
-          <div className="">
+          <div data-cy="date-range">
             <ByDateRange
               title={t("By date range")}
               type="year_range"
@@ -120,7 +120,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
             />
           </div>
         </div>
-        <div className="my-8 pt-8 border-t border-lineBorder">
+        <div className="my-8 pt-8 border-t border-lineBorder" data-cy="methodology-notice">
           <p className="text-center">
             For more info see
             <br />

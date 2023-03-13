@@ -22,9 +22,8 @@ async function getSearch(query = initialSearchCriteria) {
 
   const { data } = await getEnvFromServer();
   const client = new ApiClient(data?.env?.api_url);
-  // TODO: remove this attribute as/when the API returns families as default
-  query.group_documents = true;
-  const results = await client.post<TSearch>(`/searches`, query, config);
+  // TODO: remove group_documents attribute as/when the API returns families as default
+  const results = await client.post<TSearch>(`/searches?group_documents=True`, query, config);
   return results;
 }
 
@@ -64,8 +63,9 @@ const useSearch = (query: TRouterQuery) => {
 
     resultsQuery.then((res) => {
       if (res.status === 200) {
-        setFamilies(res.data.families);
-        setHits(res.data.hits);
+        // Catch missing attributes fro the API response
+        setFamilies(res.data.families || []);
+        setHits(res.data.hits || 0);
 
         const searchToCache: TCacheResult = {
           ...cacheId,

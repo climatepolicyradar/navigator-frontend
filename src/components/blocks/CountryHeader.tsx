@@ -27,24 +27,24 @@ export const CountryHeader = ({ country }: TProps) => {
         <div className="md:max-w-lg lg:max-w-5xl md:flex-shrink-0">
           <h1 className="mb-6">{name}</h1>
           <div className="grid grid-cols-2 gap-6 items-center text-indigo-700">
-            <div className="font-semibold  text-xl">{getCountryRegion()}</div>
+            <div className="font-semibold  text-xl" data-cy="region">{getCountryRegion()}</div>
             <div className="font-semibold text-xl">
               {federal && <>Federative {federal && federal_details && <span className="font-light text-lg">({federal_details})</span>}</>}
             </div>
             {political_groups !== "" && (
-              <div>
+              <div data-cy="political-group">
                 <div className="text-lg">Political Groups</div>
                 <div className="font-semibold text-xl">{political_groups.split(";").join(", ")}</div>
               </div>
             )}
             {worldbank_income_group !== "" && (
-              <div>
+              <div data-cy="world-bank-income-group">
                 <div className="text-lg">World Bank Income Group</div>
                 <div className="font-semibold text-xl">{worldbank_income_group}</div>
               </div>
             )}
             {climate_risk_index !== null && (
-              <div>
+              <div data-cy="global-climate-risk-index">
                 <div className="text-lg">Global Climate Risk Index</div>
                 <div className="font-semibold text-xl flex">
                   <div className="mr-1">{climate_risk_index}</div>{" "}
@@ -53,8 +53,8 @@ export const CountryHeader = ({ country }: TProps) => {
                     tooltip={
                       <>
                         <p className="mb-4">
-                          The annually published Global Climate Risk Index analyses to what extent countries have been affected by the impacts of weather-related loss events
-                          (storms, floods, heat waves etc.).
+                          The annually published Global Climate Risk Index analyses to what extent countries have been affected by the impacts of
+                          weather-related loss events (storms, floods, heat waves etc.).
                         </p>
                         Published by German Watch{" "}
                         <ExternalLink url="https://www.germanwatch.org/en/cri" className="underline">
@@ -68,7 +68,7 @@ export const CountryHeader = ({ country }: TProps) => {
               </div>
             )}
             {global_emissions_percent !== null && (
-              <div>
+              <div data-cy="share-of-global-emissions">
                 <div className="text-lg">Share of Global Emissions</div>
                 <div className="font-semibold text-xl">{global_emissions_percent}%</div>
               </div>
@@ -76,7 +76,7 @@ export const CountryHeader = ({ country }: TProps) => {
           </div>
         </div>
         {countryGeography?.value && (
-          <div className="hidden place-items-center lg:flex overflow-hidden svg-country">
+          <div className="hidden place-items-center lg:flex overflow-hidden svg-country" data-cy="map">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img className="w-full max-h-[280px]" src={`/images/countries/${countryGeography?.value}.svg`} alt={`${country.name} map`} />
           </div>

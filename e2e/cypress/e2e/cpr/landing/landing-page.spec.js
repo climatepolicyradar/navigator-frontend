@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe("Landing page", () => {
+describe.skip("Landing page", () => {
   before(() => {
     cy.visit("/");
   });

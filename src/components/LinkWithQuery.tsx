@@ -9,9 +9,10 @@ type TProps = {
   className?: string;
   passHref?: boolean;
   target?: string;
+  cypress?: string;
 };
 
-export const LinkWithQuery = ({ href, query, children, ...props }: TProps) => {
+export const LinkWithQuery = ({ href, query, children, cypress, ...props }: TProps) => {
   const router = useRouter();
 
   // Remove specific slug parameters from the query string
@@ -20,7 +21,7 @@ export const LinkWithQuery = ({ href, query, children, ...props }: TProps) => {
   delete router.query["geographyId"];
 
   return (
-    <Link href={{ pathname: href, query: { ...router.query } }} {...props}>
+    <Link href={{ pathname: href, query: { ...router.query } }} data-cy={cypress} {...props}>
       {children}
     </Link>
   );
