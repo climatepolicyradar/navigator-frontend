@@ -74,6 +74,9 @@ const useSearch = (query: TRouterQuery) => {
           timestamp: new Date().getTime(),
         };
         updateCacheSearch(searchToCache);
+      } else {
+        setFamilies([]);
+        setHits(0);
       }
       setStatus("fetched");
     });

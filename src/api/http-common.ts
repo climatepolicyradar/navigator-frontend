@@ -20,7 +20,7 @@ class ApiClient {
   /**
    * Submit a GET request and return the response as a mapped promise.
    */
-  get(url: string, params?: any) : Promise<AxiosResponse> {
+  get(url: string, params?: any): Promise<AxiosResponse> {
     // console.log(`GET: ${this.baseUrl}${url}`);
     return this.axiosClient
       .get(`${this.baseUrl}${url}`, { params })
@@ -38,7 +38,7 @@ class ApiClient {
       .then((res) => res)
       .catch((err) => {
         console.log(err);
-        return Promise.reject(err);
+        return err;
       });
   }
 
