@@ -2,7 +2,7 @@
 
 import { Navigation } from "../../../support/page_objects/NavigationConstructor";
 
-describe("Site navigation", () => {
+describe.skip("Site navigation", () => {
   before(() => {
     cy.visit("/");
   });

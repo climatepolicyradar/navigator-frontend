@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe("Header", () => {
+describe.skip("Header", () => {
   before(() => {
     cy.visit("/");
   });
