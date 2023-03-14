@@ -21,17 +21,21 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
       <div className="container">
         <div className="flex flex-col md:flex-row">
           <div className="flex-1 my-4">
-            <h1 className="text-3xl lg:smaller">{document.title}</h1>
+            <h1 className="text-3xl lg:smaller">{family.title}</h1>
             {family.collections.length > 0 && (
               <div className="flex text-base text-indigo-400 mt-4 items-center w-full mb-2 font-medium">
                 <span>Part of &nbsp;</span>
-                {/* {onCollectionClick ? (
-                  <a onClick={onCollectionClick} href="#collection" className="underline text-primary-400 hover:text-indigo-600 duration-300">
-                    {family.collections.name}
-                  </a>
-                ) : (
-                  document?.collection.name
-                )} */}
+                {family.collections.length > 0 &&
+                  family.collections.map((collection) => (
+                    <a
+                      key={collection[0]}
+                      onClick={onCollectionClick ?? (() => {})}
+                      href="#collection"
+                      className="underline text-primary-400 hover:text-indigo-600 duration-300"
+                    >
+                      {collection}
+                    </a>
+                  ))}
               </div>
             )}
             <div className="flex text-base text-grey-700 mt-4 items-center w-full font-medium divide-x gap-2 divide-grey-700">
