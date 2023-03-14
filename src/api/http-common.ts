@@ -27,7 +27,7 @@ class ApiClient {
       .then((res: any) => res)
       .catch((err) => {
         console.log(err);
-        return Promise.reject(err);
+        return err;
       });
   }
 

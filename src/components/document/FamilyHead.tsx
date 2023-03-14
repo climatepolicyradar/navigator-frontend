@@ -13,7 +13,6 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
   const configQuery: any = useConfig("config");
   const { data: { countries = [] } = {} } = configQuery;
   const geoName = getCountryName(family.geography, countries);
-
   const [year] = convertDate(family.published_date);
 
   return (
@@ -28,12 +27,12 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
                 {family.collections.length > 0 &&
                   family.collections.map((collection) => (
                     <a
-                      key={collection[0]}
+                      key={collection.name}
                       onClick={onCollectionClick ?? (() => {})}
                       href="#collection"
                       className="underline text-primary-400 hover:text-indigo-600 duration-300"
                     >
-                      {collection}
+                      {collection.name}
                     </a>
                   ))}
               </div>

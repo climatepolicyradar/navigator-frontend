@@ -249,11 +249,9 @@ export default FamilyPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = context.params.id;
-  // const id = "netherlands_2016_national-climate-adaptation-strategy_8708_1447";
   const client = new ApiClient(process.env.API_URL);
 
   const { data: page } = await client.get(`/documents/${id}`, { group_documents: true });
-  // const json = DUMMY_JSON;
 
   return {
     props: {

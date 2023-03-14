@@ -227,7 +227,9 @@ export type TDocumentPage = {
   content_type: string;
 };
 
-export type TCollection = {};
+export type TCollection = {
+  name: string;
+};
 
 export type TFamilyMetadata = {
   topic: string[];

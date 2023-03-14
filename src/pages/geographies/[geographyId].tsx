@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { TTarget, TEvent } from "@types";
@@ -48,9 +49,10 @@ const Targets = ({ targets }: TTargets) => {
 type TProps = {
   geography: TGeographyStats;
   summary: TGeographySummary;
+  targets: TTarget[];
 };
 
-const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary }: TProps) => {
+const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets }: TProps) => {
   const router = useRouter();
   const [showAllTargets, setShowAllTargets] = useState(false);
   const [selectedCategoryIndex, setselectedCategoryIndex] = useState(0);
@@ -130,8 +132,8 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     }
   };
 
-  let targets = [];
-  if (!!summary?.targets) targets = showAllTargets ? summary.targets : summary.targets.slice(0, TARGETS_SHOW);
+  // let targets = [];
+  // if (!!summary?.targets) targets = showAllTargets ? summary.targets : summary.targets.slice(0, TARGETS_SHOW);
 
   return (
     <>
@@ -261,6 +263,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   let geographyData: TGeographyStats;
   let summaryData: TGeographySummary;
+  let targetsData: TTarget[];
 
   try {
     const { data: returnedData }: { data: TGeographyStats } = await client.get(`/geo_stats/${id}`, null);
@@ -275,6 +278,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // TODO: handle error more elegantly
   }
 
+  try {
+    const targetsRaw = await axios.get<TTarget[]>(`https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com/geographies/gbr.json`);
+    targetsData = targetsRaw.data;
+  } catch {
+    // TODO: handle error more elegantly
+  }
+
   if (!geographyData || !summaryData) {
     return {
       notFound: true,
@@ -285,6 +295,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       geography: geographyData,
       summary: summaryData,
+      targets: targetsData,
     },
   };
 };
