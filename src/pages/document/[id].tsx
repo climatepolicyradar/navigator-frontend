@@ -19,8 +19,6 @@ import { truncateString } from "@helpers/index";
 import { getDocumentTitle } from "@helpers/getDocumentTitle";
 import { TEvent, TDocument, TFamilyDocument, TFamily, TFamilyPage, TTarget } from "@types";
 
-import DUMMY_JSON from "./data.json";
-
 type TProps = {
   page: TFamilyPage;
   targets: TTarget[];
