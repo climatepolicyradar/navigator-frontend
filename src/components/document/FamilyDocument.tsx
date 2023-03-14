@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import MatchesButton from "@components/buttons/MatchesButton";
 import { formatDate } from "@utils/timedate";
 import { TFamilyDocument } from "@types";
@@ -20,6 +21,7 @@ type TProps = {
 };
 
 export const FamilyDocument = ({ title, date, slug, variant, matches }: TProps) => {
+  const router = useRouter();
   const [year, _, month] = formatDate(date);
   const isMain = variant === "MAIN";
   // const hasMeta = typeof meta !== "undefined";
@@ -27,6 +29,7 @@ export const FamilyDocument = ({ title, date, slug, variant, matches }: TProps) 
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
+    router.push({ pathname: `/documents/${slug}`, query: router.query });
   };
 
   return (

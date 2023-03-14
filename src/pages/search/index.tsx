@@ -1,10 +1,7 @@
 import { useEffect, useState, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
-import { TDocument } from "@types";
 import useSearch from "@hooks/useSearch";
-import useDocument from "@hooks/useDocument";
-import useUpdateDocument from "@hooks/useUpdateDocument";
 import useUpdateCountries from "@hooks/useUpdateCountries";
 import useConfig from "@hooks/useConfig";
 import useFilteredCountries from "@hooks/useFilteredCountries";
@@ -18,10 +15,6 @@ import Loader from "@components/Loader";
 import Sort from "@components/filters/Sort";
 import Close from "@components/buttons/Close";
 import FilterToggle from "@components/buttons/FilterToggle";
-import Slideout from "@components/slideout";
-import PassageMatches from "@components/PassageMatches";
-import EmbeddedPDF from "@components/EmbeddedPDF";
-import DocumentSlideout from "@components/headers/DocumentSlideout";
 import Pagination from "@components/pagination";
 import SearchResultList from "@components/blocks/SearchResultList";
 import { ExternalLink } from "@components/ExternalLink";
@@ -39,11 +32,8 @@ const Search = () => {
   const { t, ready } = useTranslation(["searchStart", "searchResults"]);
   const [showFilters, setShowFilters] = useState(false);
   const [showSlideout, setShowSlideout] = useState(false);
-  const [showPDF, setShowPDF] = useState(false);
-  const [passageIndex, setPassageIndex] = useState(null);
   const [pageCount, setPageCount] = useState(1);
 
-  const updateDocument = useUpdateDocument();
   const updateCountries = useUpdateCountries();
 
   // close slideout panel when clicking outside of it
@@ -61,18 +51,10 @@ const Search = () => {
 
   const { data: filteredCountries } = useFilteredCountries(countries);
 
-  const { data: document }: { data: TDocument } = ({} = useDocument());
-
   const placeholder = t("Search for something, e.g. 'carbon taxes'");
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
-  };
-
-  const resetSlideOut = (slideOut?: boolean) => {
-    setShowPDF(false);
-    setPassageIndex(null);
-    setShowSlideout(slideOut ?? !showSlideout);
   };
 
   const handlePageChange = (page: number) => {
@@ -184,20 +166,6 @@ const Search = () => {
     return router.push({ query: {} });
   };
 
-  const handleDocumentClick = (e: any) => {
-    // Check if we are clicking on the document matches button
-    const slug = e.target.dataset.slug;
-    if (!slug) return;
-
-    // keep panel open if clicking a different document
-    if (document?.document_slug != slug) {
-      resetSlideOut(true);
-    } else {
-      resetSlideOut();
-    }
-    updateDocument.mutate(slug);
-  };
-
   const getCurrentSortChoice = () => {
     const field = router.query[QUERY_PARAMS.sort_field];
     const order = router.query[QUERY_PARAMS.sort_order];
@@ -270,20 +238,7 @@ const Search = () => {
         <LoaderOverlay />
       ) : (
         <Layout title={t("Law and Policy Search")} heading={t("Law and Policy Search")}>
-          <div onClick={handleDocumentClick}>
-            <Slideout ref={slideoutRef} show={showSlideout} setShowSlideout={resetSlideOut}>
-              <div className="flex flex-col h-full relative">
-                <DocumentSlideout document={document} searchTerm={qQueryString?.toString()} showPDF={showPDF} setShowPDF={setShowPDF} />
-                <div className="flex flex-col md:flex-row flex-1 h-0">
-                  <div className={`${showPDF ? "hidden" : "block"} md:block md:w-1/3 overflow-y-scroll pl-3`}>
-                    <PassageMatches document={document} setPassageIndex={setPassageIndex} activeIndex={passageIndex} />
-                  </div>
-                  <div className={`${showPDF ? "block" : "hidden"} md:block md:w-2/3 mt-4 px-6 flex-1`}>
-                    <EmbeddedPDF document={document} passageIndex={passageIndex} />
-                  </div>
-                </div>
-              </div>
-            </Slideout>
+          <div>
             {showSlideout && <div className="w-full h-full bg-overlayWhite fixed top-0 z-30" />}
             <section>
               <div className="px-4 container">

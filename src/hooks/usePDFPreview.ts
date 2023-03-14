@@ -1,10 +1,10 @@
 import ViewSDKClient from "@api/pdf";
-import { TDocument } from "@types";
+import { TPassage, TPhysicalDocument } from "@types";
 import { PDF_SCROLL_DELAY } from "@constants/document";
 
-function generateHighlights(document: TDocument) {
+function generateHighlights(document: TPhysicalDocument, documentPassageMatches: TPassage[]) {
   const date = new Date();
-  return document.document_passage_matches.map((passage) => {
+  return documentPassageMatches.map((passage) => {
     return {
       "@context": ["https://www.w3.org/ns/anno.jsonld", "https://comments.acrobat.com/ns/anno.jsonld"],
       type: "Annotation",
@@ -12,7 +12,7 @@ function generateHighlights(document: TDocument) {
       bodyValue: "",
       motivation: "commenting",
       target: {
-        source: document.document_id,
+        source: document.import_id,
         selector: {
           node: {
             index: passage.text_block_page - 1,
@@ -20,7 +20,12 @@ function generateHighlights(document: TDocument) {
           subtype: "highlight",
           // WE CAN ASSUME BLOCK_COORDS IS ALWAYS LENGTH 4
           // format [xmin, ymin, xmax, ymax]
-          boundingBox: [passage.text_block_coords[0][0], passage.text_block_coords[0][1], passage.text_block_coords[1][0], passage.text_block_coords[2][1]],
+          boundingBox: [
+            passage.text_block_coords[0][0],
+            passage.text_block_coords[0][1],
+            passage.text_block_coords[1][0],
+            passage.text_block_coords[2][1],
+          ],
           // format [Xmin, Ymin, Xmax, Ymin, Xmax, Ymax, Xmin, Ymax]
           quadPoints: [
             passage.text_block_coords[0][0],
@@ -49,7 +54,7 @@ function generateHighlights(document: TDocument) {
   });
 }
 
-export default function usePDFPreview(document: TDocument, adobeKey: string) {
+export default function usePDFPreview(document: TPhysicalDocument, documentPassageMatches: TPassage[], adobeKey: string) {
   const viewerConfig = {
     showDownloadPDF: true,
     showPrintPDF: true,
@@ -69,13 +74,15 @@ export default function usePDFPreview(document: TDocument, adobeKey: string) {
     viewSDKClient = new ViewSDKClient();
     viewSDKClient.ready().then(() => {
       const previewFilePromise = viewSDKClient.previewFile(document, adobeKey, "pdf-div", viewerConfig);
-      previewFilePromise.then((adobeViewer) => {
+      previewFilePromise.then((adobeViewer: any) => {
         adobeViewer.getAPIs().then((api: any) => {
           embedApi = api;
         });
         adobeViewer.getAnnotationManager().then((annotationManager: any) => {
           annotationManager.setConfig(annotationConfig);
-          annotationManager.addAnnotations(generateHighlights(document));
+          if (documentPassageMatches.length > 0) {
+            annotationManager.addAnnotations(generateHighlights(document, documentPassageMatches));
+          }
         });
       });
     });
@@ -87,7 +94,7 @@ export default function usePDFPreview(document: TDocument, adobeKey: string) {
     }
     if (passageIndex === null) return;
     setTimeout(() => {
-      embedApi.gotoLocation(document.document_passage_matches[passageIndex].text_block_page);
+      embedApi.gotoLocation(documentPassageMatches[passageIndex].text_block_page);
     }, PDF_SCROLL_DELAY);
   };
 

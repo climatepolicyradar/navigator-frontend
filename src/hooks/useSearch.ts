@@ -27,7 +27,7 @@ async function getSearch(query = initialSearchCriteria) {
   return results;
 }
 
-const useSearch = (query: TRouterQuery) => {
+const useSearch = (query: TRouterQuery, runFreshSearch: boolean = true) => {
   const [status, setStatus] = useState<"fetched" | "loading" | "idle">("idle");
   const [families, setFamilies] = useState<TMatchedFamily[]>([]);
   const [hits, setHits] = useState<number>(null);
@@ -38,6 +38,12 @@ const useSearch = (query: TRouterQuery) => {
 
   useEffect(() => {
     setStatus("loading");
+
+    // If we don't want to trigger an API call, return early
+    if(!runFreshSearch) {
+      setStatus("fetched");
+      return;
+    };
 
     // Check if we have a cached result before calling the API
     const cacheId = {
@@ -80,7 +86,7 @@ const useSearch = (query: TRouterQuery) => {
       }
       setStatus("fetched");
     });
-  }, [searchQuery]);
+  }, [searchQuery, runFreshSearch]);
 
   return { status, families, hits, searchQuery };
 };

@@ -16,7 +16,7 @@ class ViewSDKClient {
         resolve();
       } else {
         /* Wait for Adobe Document Services PDF Embed API to be ready */
-        document.addEventListener('adobe_dc_view_sdk.ready', () => {
+        document.addEventListener("adobe_dc_view_sdk.ready", () => {
           resolve();
         });
       }
@@ -29,7 +29,7 @@ class ViewSDKClient {
   }
 
   previewFile(doc, adobeKey, divId, viewerConfig) {
-    if(!doc) return;
+    if (!doc) return;
     const config = {
       /* Pass your registered client id */
       clientId: adobeKey,
@@ -49,7 +49,7 @@ class ViewSDKClient {
         content: {
           /* Location of file where it is hosted */
           location: {
-            url: doc.document_url,
+            url: doc.url,
             /*
                   If the file URL requires some additional headers, then it can be passed as follows:-
                   headers: [
@@ -64,76 +64,15 @@ class ViewSDKClient {
         /* Pass meta data of file */
         metaData: {
           /* file name */
-          fileName: doc.document_name,
+          fileName: doc.name,
           /* file ID */
-          id: doc.document_id,
+          id: doc.import_id,
         },
       },
       viewerConfig
     );
 
     return previewFilePromise;
-  }
-  previewFileBlob(doc, divId, viewerConfig) {
-    const config = {
-      /* Pass your registered client id */
-      clientId: process.env.ADOBE_API_KEY,
-    };
-    if (divId) {
-      /* Optional only for Light Box embed mode */
-      /* Pass the div id in which PDF should be rendered */
-      config.divId = divId;
-    }
-    /* Initialize the AdobeDC View object */
-    this.adobeDCView = new window.AdobeDC.View(config);
-    const previewFilePromise = fetch(doc.document_url)
-      .then((res) => res.blob())
-      .then((blob) => {
-        /* Invoke the file preview API on Adobe DC View object */
-        return this.adobeDCView.previewFile(
-          {
-            /* Pass information on how to access the file */
-            content: { promise: Promise.resolve(blob.arrayBuffer()) },
-
-            /* Pass meta data of file */
-            metaData: {
-              /* file name */
-              fileName: doc.document_name,
-              /* file ID */
-              id: doc.document_id,
-            },
-          },
-          viewerConfig
-        );
-      });
-
-    return previewFilePromise;
-  }
-  previewFileUsingFilePromise(divId, filePromise, fileName) {
-    /* Initialize the AdobeDC View object */
-    this.adobeDCView = new window.AdobeDC.View({
-      /* Pass your registered client id */
-      clientId: process.env.ADOBE_API_KEY,
-      /* Pass the div id in which PDF should be rendered */
-      divId,
-    });
-
-    /* Invoke the file preview API on Adobe DC View object */
-    this.adobeDCView.previewFile(
-      {
-        /* Pass information on how to access the file */
-        content: {
-          /* pass file promise which resolve to arrayBuffer */
-          promise: filePromise,
-        },
-        /* Pass meta data of file */
-        metaData: {
-          /* file name */
-          fileName: fileName,
-        },
-      },
-      {}
-    );
   }
 
   registerSaveApiHandler() {
@@ -156,11 +95,7 @@ class ViewSDKClient {
       });
     };
 
-    this.adobeDCView.registerCallback(
-      window.AdobeDC.View.Enum.CallbackType.SAVE_API,
-      saveApiHandler,
-      {}
-    );
+    this.adobeDCView.registerCallback(window.AdobeDC.View.Enum.CallbackType.SAVE_API, saveApiHandler, {});
   }
 
   registerEventsHandler() {

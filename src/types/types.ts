@@ -1,5 +1,3 @@
-// TODO: split this file into relevant sub type files based on usage
-
 export type TSearchKeywordFilters = {
   categories?: string[];
   regions?: string[];
@@ -85,6 +83,22 @@ export type TDocument = {
   document_url: string;
   document_id: string;
   document_fileid?: string;
+};
+
+export type TPhysicalDocument = {
+  name: string;
+  url: string;
+  id: number;
+  import_id: string;
+  slug: string;
+  source_url: string;
+  publication_ts: string;
+  geography: {
+    display_value: string;
+    slug: string;
+    value: string;
+    type: string;
+  };
 };
 
 export type TGeography = {
