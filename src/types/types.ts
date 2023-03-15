@@ -110,13 +110,6 @@ export type TGeography = {
   slug: string;
 };
 
-// export type TTarget = {
-//   target: string;
-//   group: string;
-//   base_year: string;
-//   target_year: string;
-// };
-
 export type TTarget = {
   ID: string;
   "Target type": string;

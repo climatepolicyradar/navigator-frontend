@@ -50,7 +50,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   };
 
   const getDocumentMatches = (docSlugs: string[]) => {
-    console.log(docSlugs, searchFamily);
     if (searchFamily) {
       const searchDocument = searchFamily.family_documents.find((doc) => docSlugs.includes(doc.document_slug));
       if (searchDocument) {
