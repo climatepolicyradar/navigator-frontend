@@ -1,35 +1,33 @@
 import { useRouter } from "next/router";
 import MatchesButton from "@components/buttons/MatchesButton";
 import { formatDate } from "@utils/timedate";
-import { TFamilyDocument } from "@types";
-
-type TFamilyDocumentProps = {
-  document: TFamilyDocument;
-};
+import { PDFIcon } from "@components/svg/Icons";
 
 type TProps = {
   title: string;
   date: string;
   slug: string;
   variant: string;
+  contentType: string;
   matches?: number;
-  // meta?: {
-  //   typeName: string;
-  //   typeDescription: string;
-  //   format: string;
-  // };
 };
 
-export const FamilyDocument = ({ title, date, slug, variant, matches }: TProps) => {
+export const FamilyDocument = ({ title, date, slug, variant, matches, contentType }: TProps) => {
   const router = useRouter();
-  const [year, _, month] = formatDate(date);
+  const [year, _day, _month] = formatDate(date);
   const isMain = variant === "MAIN";
-  // const hasMeta = typeof meta !== "undefined";
   const hasMatches = typeof matches !== "undefined";
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
     router.push({ pathname: `/documents/${slug}`, query: router.query });
+  };
+
+  const renderIcon = (t: string) => {
+    switch (t) {
+      case "application/pdf":
+        return <PDFIcon />;
+    }
   };
 
   return (
@@ -41,15 +39,10 @@ export const FamilyDocument = ({ title, date, slug, variant, matches }: TProps) 
     >
       <div className="text-primary-600 mb-2">{title}</div>
       <div className="flex items-center">
-        <div className="flex-1 flex flex-wrap gap-x-8">
-          {/* {hasMeta && (
-            <>
-              {!isMain && <span className="font-bold">{meta.typeDescription}</span>}
-              <span>{meta.format.toUpperCase()}</span>
-              <span>{meta.variant}</span>
-            </>
-          )} */}
-          <span>{`${month} ${year}`}</span>
+        <div className="flex-1 flex flex-wrap gap-x-8 items-center">
+          <span className="capitalize">{renderIcon(contentType)}</span>
+          <span className="capitalize">{variant.toLowerCase()}</span>
+          <span>{year}</span>
         </div>
         {hasMatches && (
           <div className="flex-0">

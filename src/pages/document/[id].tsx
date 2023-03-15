@@ -78,7 +78,15 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                     )}
                   </div>
                 )}
-                {mainDoc && <FamilyDocument title={mainDoc.title} date={page.published_date} slug={mainDoc.slugs[0]} variant={mainDoc.variant} />}
+                {mainDoc && (
+                  <FamilyDocument
+                    title={mainDoc.title}
+                    date={page.published_date}
+                    slug={mainDoc.slugs[0]}
+                    variant={mainDoc.variant}
+                    contentType={mainDoc.content_type}
+                  />
+                )}
               </section>
 
               {otherDocs.length > 0 && (
@@ -90,9 +98,15 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                   <section className="mt-12">
                     <h3>Related documents</h3>
                     <div className="divide-solid divide-blue-100 divide-y">
-                      {page.documents.map((doc) => (
-                        <div key={doc.title} className="mt-4">
-                          <FamilyDocument title={doc.title} date={page.published_date} slug={doc.slugs[0]} variant={doc.variant} />
+                      {otherDocs.map((doc, i) => (
+                        <div key={`${i}-${doc.title}`} className="mt-4">
+                          <FamilyDocument
+                            title={doc.title}
+                            date={page.published_date}
+                            slug={doc.slugs[0]}
+                            variant={doc.variant}
+                            contentType={doc.content_type}
+                          />
                         </div>
                       ))}
                     </div>
