@@ -215,6 +215,7 @@ export type TFamilyPage = {
   title: string;
   summary: string;
   geography: string;
+  import_id: string;
   category: TCategory;
   metadata: TFamilyMetadata;
   slugs: string[];

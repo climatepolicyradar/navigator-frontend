@@ -18,6 +18,9 @@ import useSearch from "@hooks/useSearch";
 import { useRouter } from "next/router";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import Loader from "@components/Loader";
+import axios from "axios";
+import { TargetIcon } from "@components/svg/Icons";
+import Button from "@components/buttons/Button";
 
 type TProps = {
   page: TFamilyPage;
@@ -26,10 +29,14 @@ type TProps = {
 
 const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page, targets = [] }: TProps) => {
   const router = useRouter();
+  const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(5);
   const [showTimeline, setShowTimeline] = useState(false);
   const [showCollectionDetail, setShowCollectionDetail] = useState(false);
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [summary, setSummary] = useState("");
+
+  const publishedTargets = targets.filter((target) => target["Visibility status"] === "published");
+  const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
 
   let searchFamily: TMatchedFamily = null;
   const { status, families } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
@@ -141,7 +148,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                   </>
                 )}
 
-                {targets.length > 0 && (
+                {hasTargets && (
                   <>
                     <div className="mt-12">
                       <Divider color="bg-lineBorder" />
@@ -149,9 +156,13 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
                     <section className="mt-12">
                       <div>
-                        <h3 className="flex flex-col mb-4 md:flex-row md:items-center justify-between">
-                          <span className="flex-1">Targets (3)</span>
-                          <span className="text-sm text-grey-700 flex-0">
+                        <h3 className="flex mb-4">
+                          <span className="mr-2">
+                            <TargetIcon />
+                          </span>
+                          Targets ({publishedTargets.length})
+                        </h3>
+                        {/* <span className="text-sm text-grey-700 flex-0">
                             Download targets data (.csv){" "}
                             <a href="#" onClick={(e) => e.preventDefault()} className="underline text-primary-600">
                               this list
@@ -160,12 +171,20 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                             <a href="#" onClick={(e) => e.preventDefault()} className="underline text-primary-600">
                               whole database
                             </a>
-                          </span>
-                        </h3>
-                        <Targets targets={targets} />
+                          </span> */}
+                        <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} />
                       </div>
                     </section>
                   </>
+                )}
+                {publishedTargets.length > numberOfTargetsToDisplay && (
+                  <div className="mt-12">
+                    <Divider>
+                      <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}>
+                        See more
+                      </Button>
+                    </Divider>
+                  </div>
                 )}
 
                 {page.events.length > 0 && (
@@ -291,11 +310,29 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = context.params.id;
   const client = new ApiClient(process.env.API_URL);
 
-  const { data: page } = await client.get(`/documents/${id}`, { group_documents: true });
+  let familyData: TFamilyPage;
+  let targetsData: TTarget[] = [];
+
+  try {
+    const { data: returnedData } = await client.get(`/documents/${id}`, { group_documents: true });
+    familyData = returnedData;
+  } catch (error) {
+    // TODO: handle error more elegantly
+  }
+
+  if (familyData) {
+    try {
+      const targetsRaw = await axios.get<TTarget[]>(
+        `https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com/families/${familyData.import_id}.json`
+      );
+      targetsData = targetsRaw.data;
+    } catch (error) {}
+  }
 
   return {
     props: {
-      page,
+      page: familyData,
+      targets: targetsData,
     },
   };
 };
