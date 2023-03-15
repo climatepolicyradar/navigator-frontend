@@ -1,25 +1,33 @@
 import { TTarget } from "@types";
+import { LinkWithQuery } from "./LinkWithQuery";
 
-// TODO: move into separate file
 type TTargets = {
   targets: TTarget[];
+  showFamilyInfo?: boolean;
 };
 
-export const Targets = ({ targets }: TTargets) => {
+export const Targets = ({ targets = [], showFamilyInfo = false }: TTargets) => {
   if (!targets.length) return null;
 
-  return null;
-  
-  // return (
-  //   <ul className="ml-4 list-disc list-outside">
-  //     {targets.map((target) => (
-  //       <li className="mb-4" key={target.target}>
-  //         <span className="text-blue-700">{target.target}</span>
-  //         <span className="block text-grey-700">
-  //           {target.group} | Base year: {target.base_year} | Target year: {target.target_year}
-  //         </span>
-  //       </li>
-  //     ))}
-  //   </ul>
-  // );
+  return (
+    <ul className="ml-4 list-disc list-outside" data-cy="targets">
+      {targets.map((target) => (
+        <li className="mb-4" key={target.ID}>
+          <span className="text-indigo-700">{target.Description}</span>
+          <span className="block text-grey-700">
+            {`${target.Sector}${target.Scopes !== "" ? `: ${target.Scopes}` : ""}`} | Target year: {target.Year}
+          </span>
+          {showFamilyInfo && (
+            <span className="block text-grey-700">
+              Source: <LinkWithQuery href={`/document/${target["family-slug"]}`} className="text-blue-500 hover:underline">{target["family-name"]}</LinkWithQuery>
+            </span>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
 };
+
+// Ordering TBC:
+// source = plan, law, framework, strategy, policy
+// law above others

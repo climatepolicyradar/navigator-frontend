@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { TTarget, TEvent } from "@types";
+import { TTarget, TEvent, TGeography } from "@types";
 import Layout from "@components/layouts/Main";
 import { SingleCol } from "@components/SingleCol";
 import Event from "@components/blocks/Event";
@@ -12,6 +12,7 @@ import { KeyDetail } from "@components/KeyDetail";
 import { Divider } from "@components/dividers/Divider";
 import { RightArrowIcon } from "@components/svg/Icons";
 import { FamilyListItem } from "@components/document/FamilyListItem";
+import { Targets } from "@components/Targets";
 import Button from "@components/buttons/Button";
 import TabbedNav from "@components/nav/TabbedNav";
 import TextLink from "@components/nav/TextLink";
@@ -22,29 +23,8 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 
 import { ApiClient } from "@api/http-common";
 import { TGeographyStats, TGeographySummary } from "@types";
-
-type TTargets = {
-  targets: TTarget[];
-};
-
-const Targets = ({ targets }: TTargets) => {
-  return null;
-  // return (
-  //   <ul className="ml-4 list-disc list-outside">
-  //     {targets.map((target) => (
-  //       <li className="mb-4" key={target.target}>
-  //         <span className="text-blue-700 text-lg">{target.target}</span>
-  //         <span className="block">
-  //           <span className="font-semibold mr-1">{target.group}</span>
-  //           <span>
-  //             | Base year: {target.base_year} | Target year: {target.target_year}
-  //           </span>
-  //         </span>
-  //       </li>
-  //     ))}
-  //   </ul>
-  // );
-};
+import { extractNestedData } from "@utils/extractNestedData";
+import { getCountryCode } from "@helpers/getCountryFields";
 
 type TProps = {
   geography: TGeographyStats;
@@ -54,15 +34,15 @@ type TProps = {
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets }: TProps) => {
   const router = useRouter();
-  const [showAllTargets, setShowAllTargets] = useState(false);
+  const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(5);
   const [selectedCategoryIndex, setselectedCategoryIndex] = useState(0);
 
   const hasEvents = !!summary?.events && summary?.events?.length > 0;
-  const hasTargets = !!summary?.targets && summary?.targets?.length > 0;
   const hasFamilies = !!summary?.top_families;
+  const publishedTargets = targets.filter((target) => target["Visibility status"] === "published");
+  const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
 
   const documentCategories = DOCUMENT_CATEGORIES;
-  const TARGETS_SHOW = 5;
 
   const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number) => {
     e.preventDefault();
@@ -194,16 +174,16 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                       <span className="mr-2">
                         <TargetIcon />
                       </span>
-                      Targets ({summary.targets.length})
+                      Targets ({publishedTargets.length})
                     </h3>
-                    <Targets targets={targets} />
+                    <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
                   </div>
                 </section>
               )}
-              {!showAllTargets && summary?.targets?.length > TARGETS_SHOW && (
+              {publishedTargets.length > numberOfTargetsToDisplay && (
                 <div className="mt-12">
                   <Divider>
-                    <Button color="secondary" wider onClick={() => setShowAllTargets(true)}>
+                    <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}>
                       See more
                     </Button>
                   </Divider>
@@ -263,7 +243,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   let geographyData: TGeographyStats;
   let summaryData: TGeographySummary;
-  let targetsData: TTarget[];
+  let targetsData: TTarget[] = [];
 
   try {
     const { data: returnedData }: { data: TGeographyStats } = await client.get(`/geo_stats/${id}`, null);
@@ -277,10 +257,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch {
     // TODO: handle error more elegantly
   }
-
   try {
-    const targetsRaw = await axios.get<TTarget[]>(`https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com/geographies/gbr.json`);
-    targetsData = targetsRaw.data;
+    let countries: TGeography[] = [];
+    const configData = await client.get(`/config`, null);
+    const response_geo = extractNestedData<TGeography>(configData.data?.metadata?.CCLW?.geographies, 2, "");
+    countries = response_geo.level2;
+    const country = getCountryCode(id as string, countries);
+    if (country) {
+      const targetsRaw = await axios.get<TTarget[]>(
+        `https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com/geographies/${country.toLowerCase()}.json`
+      );
+      targetsData = targetsRaw.data;
+    }
   } catch {
     // TODO: handle error more elegantly
   }

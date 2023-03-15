@@ -127,6 +127,7 @@ export type TTarget = {
   "Visibility status": string;
   "CPR family ID": string;
   "family-slug": string;
+  "family-name": string;
 };
 
 export type TGeographyConfigNode = {
