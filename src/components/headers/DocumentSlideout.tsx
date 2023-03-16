@@ -43,7 +43,7 @@ const DocumentSlideout = ({ document, searchTerm, showPDF, setShowPDF }: TProps)
                 {searchTerm}"
               </h3>
             </div>
-            <DocumentMenu document={document} />
+            {/* <DocumentMenu document={document} /> */}
           </div>
           {showPDF && (
             <div className="md:hidden ml-6">
