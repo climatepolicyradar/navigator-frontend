@@ -168,35 +168,37 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
               )}
 
               {hasTargets && (
-                <section className="mt-12">
-                  <div>
-                    <h3 className="flex mb-4">
-                      <span className="mr-2">
-                        <TargetIcon />
-                      </span>
-                      Targets ({publishedTargets.length})
-                    </h3>
-                    <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
-                  </div>
-                </section>
-              )}
-              {hasTargets && publishedTargets.length > numberOfTargetsToDisplay && (
-                <div className="mt-12">
-                  <Divider>
-                    <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}>
-                      See more
-                    </Button>
-                  </Divider>
-                </div>
-              )}
-              {hasTargets && publishedTargets.length <= numberOfTargetsToDisplay && (
-                <div className="mt-12">
-                  <Divider>
-                    <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(5)}>
-                      Hide &#8679;
-                    </Button>
-                  </Divider>
-                </div>
+                <>
+                  <section className="mt-12">
+                    <div>
+                      <h3 className="flex mb-4">
+                        <span className="mr-2">
+                          <TargetIcon />
+                        </span>
+                        Targets ({publishedTargets.length})
+                      </h3>
+                      <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
+                    </div>
+                  </section>
+                  {publishedTargets.length > numberOfTargetsToDisplay && (
+                    <div className="mt-12">
+                      <Divider>
+                        <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}>
+                          See more
+                        </Button>
+                      </Divider>
+                    </div>
+                  )}
+                  {publishedTargets.length <= numberOfTargetsToDisplay && (
+                    <div className="mt-12">
+                      <Divider>
+                        <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(5)}>
+                          Hide &#8679;
+                        </Button>
+                      </Divider>
+                    </div>
+                  )}
+                </>
               )}
 
               {hasFamilies && (

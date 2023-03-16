@@ -40,7 +40,7 @@ export const FamilyDocument = ({ title, date, slug, variant, matches, contentTyp
       <div className="text-primary-600 mb-2">{title}</div>
       <div className="flex items-center">
         <div className="flex-1 flex flex-wrap gap-x-8 items-center">
-          {!!contentType && <span className="capitalize">{renderIcon(contentType)}</span>}
+          {!!contentType && <span>{renderIcon(contentType)}</span>}
           <span className="capitalize">{variant.toLowerCase()}</span>
           <span>{year}</span>
         </div>

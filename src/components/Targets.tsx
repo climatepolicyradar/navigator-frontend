@@ -9,6 +9,12 @@ type TTargets = {
 export const Targets = ({ targets = [], showFamilyInfo = false }: TTargets) => {
   if (!targets.length) return null;
 
+  const showSourceLink = (target: TTarget) => {
+    if (!target["family-slug"] || !target["family-name"]) return false;
+    if (target["family-slug"] === "" || target["family-name"] === "") return false;
+    return showFamilyInfo;
+  };
+
   return (
     <ul className="ml-4 list-disc list-outside" data-cy="targets">
       {targets.map((target) => (
@@ -17,9 +23,12 @@ export const Targets = ({ targets = [], showFamilyInfo = false }: TTargets) => {
           <span className="block text-grey-700">
             {`${target.Sector}${target.Scopes !== "" ? `: ${target.Scopes}` : ""}`} | Target year: {target.Year}
           </span>
-          {showFamilyInfo && (
+          {showSourceLink(target) && (
             <span className="block text-grey-700">
-              Source: <LinkWithQuery href={`/document/${target["family-slug"]}`} className="text-blue-500 hover:underline">{target["family-name"]}</LinkWithQuery>
+              Source:{" "}
+              <LinkWithQuery href={`/document/${target["family-slug"]}`} className="text-blue-500 hover:underline">
+                {target["family-name"]}
+              </LinkWithQuery>
             </span>
           )}
         </li>
