@@ -85,22 +85,6 @@ export type TDocument = {
   document_fileid?: string;
 };
 
-export type TPhysicalDocument = {
-  name: string;
-  url: string;
-  id: number;
-  import_id: string;
-  slug: string;
-  source_url: string;
-  publication_ts: string;
-  geography: {
-    display_value: string;
-    slug: string;
-    value: string;
-    type: string;
-  };
-};
-
 export type TGeography = {
   id: number;
   display_value: string;
@@ -227,6 +211,7 @@ export type TFamilyPage = {
 };
 
 export type TDocumentPage = {
+  import_id: string;
   variant: string;
   slugs: string[];
   title: string;

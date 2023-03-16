@@ -1,4 +1,4 @@
-import { TDocument, TPassage } from "@types";
+import { TPassage } from "@types";
 import Loader from "./Loader";
 
 type TProps = {

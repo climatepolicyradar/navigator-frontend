@@ -29,7 +29,7 @@ class ViewSDKClient {
   }
 
   previewFile(doc, adobeKey, divId, viewerConfig) {
-    if (!doc) return;
+    if (!doc || !doc.cdn_object) return;
     const config = {
       /* Pass your registered client id */
       clientId: adobeKey,
@@ -49,7 +49,7 @@ class ViewSDKClient {
         content: {
           /* Location of file where it is hosted */
           location: {
-            url: doc.url,
+            url: doc.cdn_object,
             /*
                   If the file URL requires some additional headers, then it can be passed as follows:-
                   headers: [
@@ -64,7 +64,7 @@ class ViewSDKClient {
         /* Pass meta data of file */
         metaData: {
           /* file name */
-          fileName: doc.name,
+          fileName: doc.title,
           /* file ID */
           id: doc.import_id,
         },

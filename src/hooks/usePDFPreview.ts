@@ -1,8 +1,8 @@
 import ViewSDKClient from "@api/pdf";
-import { TPassage, TPhysicalDocument } from "@types";
+import { TPassage, TDocumentPage } from "@types";
 import { PDF_SCROLL_DELAY } from "@constants/document";
 
-function generateHighlights(document: TPhysicalDocument, documentPassageMatches: TPassage[]) {
+function generateHighlights(document: TDocumentPage, documentPassageMatches: TPassage[]) {
   const date = new Date();
   return documentPassageMatches.map((passage) => {
     return {
@@ -54,7 +54,7 @@ function generateHighlights(document: TPhysicalDocument, documentPassageMatches:
   });
 }
 
-export default function usePDFPreview(document: TPhysicalDocument, documentPassageMatches: TPassage[], adobeKey: string) {
+export default function usePDFPreview(document: TDocumentPage, documentPassageMatches: TPassage[], adobeKey: string) {
   const viewerConfig = {
     showDownloadPDF: true,
     showPrintPDF: true,

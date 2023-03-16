@@ -6,16 +6,26 @@ import { DocumentHead } from "@components/document/DocumentHead";
 import Layout from "@components/layouts/Main";
 import EmbeddedPDF from "@components/EmbeddedPDF";
 import PassageMatches from "@components/PassageMatches";
-import { TPhysicalDocument } from "@types";
+import { TDocumentPage } from "@types";
 import useSearch from "@hooks/useSearch";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import Loader from "@components/Loader";
 
-type TProps = {
-  document: TPhysicalDocument;
+type TDocFamily = {
+  title: string;
+  import_id: string;
+  geography: string;
+  slugs: string[];
+  published_date: string;
+  last_updated_date: string;
 };
 
-const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document }: TProps) => {
+type TProps = {
+  document: TDocumentPage;
+  family: TDocFamily;
+};
+
+const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family }: TProps) => {
   const [passageIndex, setPassageIndex] = useState(null);
   const router = useRouter();
 
@@ -23,18 +33,18 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const { status, families } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
   if (!!router.query[QUERY_PARAMS.query_string]) {
     families.forEach((family) => {
-      family.family_documents.forEach((doc) => {
-        if (doc.document_slug === document.slug) {
-          passageMatches.push(...doc.document_passage_matches);
+      family.family_documents.forEach((cacheDoc) => {
+        if (document.slugs.includes(cacheDoc.document_slug)) {
+          passageMatches.push(...cacheDoc.document_passage_matches);
         }
       });
     });
   }
 
   return (
-    <Layout title={document.name}>
+    <Layout title={document.title}>
       <section className="mb-8 flex-1 flex flex-col">
-        <DocumentHead document={document} />
+        <DocumentHead document={document} date={family.published_date} geography={family.geography} />
         {status !== "fetched" ? (
           <div className="w-full flex justify-center flex-1">
             <Loader />
@@ -73,16 +83,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = context.params.id;
   const client = new ApiClient(process.env.API_URL);
 
-  let documentData: any;
+  let documentData: TDocumentPage;
+  let familyData: TDocFamily;
 
   try {
-    const { data: returnedData } = await client.get(`/documents/${id}`, null);
-    documentData = returnedData;
+    const { data: returnedData } = await client.get(`/documents/${id}`, { group_documents: true });
+    documentData = returnedData.document;
+    familyData = returnedData.family;
   } catch {
     // TODO: Handle error more gracefully
   }
 
-  if (!documentData) {
+  if (!documentData || !familyData) {
     return {
       notFound: true,
     };
@@ -91,6 +103,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       document: documentData,
+      family: familyData,
     },
   };
 };

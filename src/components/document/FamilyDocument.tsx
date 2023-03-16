@@ -2,25 +2,27 @@ import { useRouter } from "next/router";
 import MatchesButton from "@components/buttons/MatchesButton";
 import { formatDate } from "@utils/timedate";
 import { PDFIcon } from "@components/svg/Icons";
+import { TDocumentPage } from "@types";
 
 type TProps = {
-  title: string;
+  document: TDocumentPage;
   date: string;
-  slug: string;
-  variant: string;
-  contentType: string;
   matches?: number;
 };
 
-export const FamilyDocument = ({ title, date, slug, variant, matches, contentType }: TProps) => {
+export const FamilyDocument = ({ document, date, matches }: TProps) => {
+  const { title, slugs, variant, content_type } = document;
   const router = useRouter();
   const [year, _day, _month] = formatDate(date);
   const isMain = variant === "MAIN";
   const hasMatches = typeof matches !== "undefined";
+  const canView = !!document.cdn_object;
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
-    router.push({ pathname: `/documents/${slug}`, query: router.query });
+    // No cdn_object means the document will not render
+    if (!canView) return;
+    router.push({ pathname: `/documents/${slugs[0]}`, query: router.query });
   };
 
   const renderIcon = (t: string) => {
@@ -30,23 +32,23 @@ export const FamilyDocument = ({ title, date, slug, variant, matches, contentTyp
     }
   };
 
+  let cssClass = "family-document mt-4 p-3 border border-transparent hover:border-primary-600 ";
+  cssClass += `${!isMain ? "hover:" : ""}bg-offwhite transition duration-300 `;
+  cssClass += canView ? "cursor-pointer" : "";
+
   return (
-    <div
-      className={`family-document mt-4 cursor-pointer p-3 border border-transparent hover:border-primary-600 ${
-        !isMain ? "hover:" : ""
-      }bg-offwhite transition duration-300`}
-      onClick={handleClick}
-    >
+    <div className={cssClass} onClick={handleClick}>
       <div className="text-primary-600 mb-2">{title}</div>
       <div className="flex items-center">
         <div className="flex-1 flex flex-wrap gap-x-8 items-center">
-          {!!contentType && <span>{renderIcon(contentType)}</span>}
+          {!!content_type && <span>{renderIcon(content_type)}</span>}
           <span className="capitalize">{variant.toLowerCase()}</span>
           <span>{year}</span>
+          {!canView && <span>Document preview is not currently available</span>}
         </div>
         {hasMatches && (
           <div className="flex-0">
-            <MatchesButton dataAttribute={slug} count={matches} overideText={matches === 0 ? "view Document" : null} />
+            <MatchesButton dataAttribute={slugs[0]} count={matches} overideText={matches === 0 ? "view Document" : null} />
           </div>
         )}
       </div>
