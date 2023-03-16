@@ -19,7 +19,7 @@ export const Targets = ({ targets = [], showFamilyInfo = false }: TTargets) => {
     <ul className="ml-4 list-disc list-outside" data-cy="targets">
       {targets.map((target) => (
         <li className="mb-4" key={target.ID}>
-          <span className="text-indigo-700">{target.Description}</span>
+          <span className="text-indigo-700" dangerouslySetInnerHTML={{ __html: target.Description }} />
           <span className="block text-grey-700">
             {`${target.Sector}${target.Scopes !== "" ? `: ${target.Scopes}` : ""}`} | Target year: {target.Year}
           </span>

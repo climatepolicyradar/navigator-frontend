@@ -34,7 +34,8 @@ type TProps = {
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets }: TProps) => {
   const router = useRouter();
-  const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(5);
+  const startingNumberOfTargetsToDisplay = 5;
+  const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
   const [selectedCategoryIndex, setselectedCategoryIndex] = useState(0);
 
   const hasEvents = !!summary?.events && summary?.events?.length > 0;
@@ -189,7 +190,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                       </Divider>
                     </div>
                   )}
-                  {publishedTargets.length <= numberOfTargetsToDisplay && (
+                  {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
                     <div className="mt-12">
                       <Divider>
                         <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(5)}>

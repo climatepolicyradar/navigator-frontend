@@ -29,7 +29,8 @@ type TProps = {
 
 const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page, targets = [] }: TProps) => {
   const router = useRouter();
-  const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(5);
+  const startingNumberOfTargetsToDisplay = 5;
+  const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
   const [showTimeline, setShowTimeline] = useState(false);
   const [showCollectionDetail, setShowCollectionDetail] = useState(false);
   const [showFullSummary, setShowFullSummary] = useState(false);
@@ -110,16 +111,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                       )}
                     </div>
                   )}
-                  {mainDoc && (
-                    <FamilyDocument
-                      title={mainDoc.title}
-                      date={page.published_date}
-                      slug={mainDoc.slugs[0]}
-                      variant={mainDoc.variant}
-                      contentType={mainDoc.content_type}
-                      matches={getDocumentMatches(mainDoc.slugs)}
-                    />
-                  )}
+                  {mainDoc && <FamilyDocument date={page.published_date} matches={getDocumentMatches(mainDoc.slugs)} document={mainDoc} />}
                 </section>
 
                 {otherDocs.length > 0 && (
@@ -133,14 +125,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                       <div className="divide-solid divide-blue-100 divide-y">
                         {otherDocs.map((doc, i) => (
                           <div key={`${i}-${doc.title}`} className="mt-4">
-                            <FamilyDocument
-                              title={doc.title}
-                              date={page.published_date}
-                              slug={doc.slugs[0]}
-                              variant={doc.variant}
-                              contentType={doc.content_type}
-                              matches={getDocumentMatches(doc.slugs)}
-                            />
+                            <FamilyDocument date={page.published_date} matches={getDocumentMatches(doc.slugs)} document={doc} />
                           </div>
                         ))}
                       </div>
@@ -185,7 +170,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                       </div>
                     )}
 
-                    {publishedTargets.length <= numberOfTargetsToDisplay && (
+                    {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
                       <div className="mt-12">
                         <Divider>
                           <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(5)}>
