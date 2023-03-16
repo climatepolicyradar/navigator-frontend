@@ -118,7 +118,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
   return (
     <>
-      <Layout title={geography?.name ?? "Loading..."}>
+      <Layout title={geography.name}>
         {!geography ? (
           <SingleCol>
             <TextLink onClick={() => router.back()}>Go back</TextLink>

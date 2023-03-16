@@ -86,7 +86,12 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
   return (
     <Layout title={page.title}>
-      <section className="mb-8">
+      <section
+        className="mb-8"
+        data-analytics-category={page.category}
+        data-analytics-type={page.metadata.document_type}
+        data-analytics-geography={page.geography}
+      >
         <FamilyHead family={page} onCollectionClick={handleCollectionClick} />
         <div className="container">
           {status !== "fetched" ? (
