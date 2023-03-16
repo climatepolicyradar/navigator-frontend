@@ -251,7 +251,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 export default CountryPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const id = context.params.geographyId;
+  const id = context.params.id;
   const client = new ApiClient();
 
   let geographyData: TGeographyStats;
