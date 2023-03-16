@@ -187,6 +187,16 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                   </div>
                 )}
 
+                {publishedTargets.length <= numberOfTargetsToDisplay && (
+                  <div className="mt-12">
+                    <Divider>
+                      <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(5)}>
+                        Hide &#8679;
+                      </Button>
+                    </Divider>
+                  </div>
+                )}
+
                 {page.events.length > 0 && (
                   <>
                     <div className="mt-12">

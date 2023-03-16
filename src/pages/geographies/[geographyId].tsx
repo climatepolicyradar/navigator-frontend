@@ -180,7 +180,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   </div>
                 </section>
               )}
-              {publishedTargets.length > numberOfTargetsToDisplay && (
+              {hasTargets && publishedTargets.length > numberOfTargetsToDisplay && (
                 <div className="mt-12">
                   <Divider>
                     <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}>
@@ -189,6 +189,16 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   </Divider>
                 </div>
               )}
+              {hasTargets && publishedTargets.length <= numberOfTargetsToDisplay && (
+                <div className="mt-12">
+                  <Divider>
+                    <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(5)}>
+                      Hide &#8679;
+                    </Button>
+                  </Divider>
+                </div>
+              )}
+
               {hasFamilies && (
                 <>
                   <section className="mt-12" data-cy="top-documents">
