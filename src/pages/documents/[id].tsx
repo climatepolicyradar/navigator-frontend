@@ -44,7 +44,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   return (
     <Layout title={document.title}>
       <section className="mb-8 flex-1 flex flex-col">
-        <DocumentHead document={document} date={family.published_date} geography={family.geography} />
+        <DocumentHead document={document} date={family.published_date} geography={family.geography} backLink={family.slugs[0]} />
         {status !== "fetched" ? (
           <div className="w-full flex justify-center flex-1">
             <Loader />

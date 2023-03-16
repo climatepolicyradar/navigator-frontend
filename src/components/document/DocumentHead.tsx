@@ -1,4 +1,5 @@
 import { CountryLink } from "@components/CountryLink";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 import { getCountryName } from "@helpers/getCountryFields";
 import useConfig from "@hooks/useConfig";
 import { TDocumentPage } from "@types";
@@ -8,9 +9,10 @@ type TProps = {
   document: TDocumentPage;
   date: string;
   geography: string;
+  backLink?: string;
 };
 
-export const DocumentHead = ({ document, date, geography }: TProps) => {
+export const DocumentHead = ({ document, date, geography, backLink }: TProps) => {
   const configQuery: any = useConfig("config");
   const { data: { countries = [] } = {} } = configQuery;
   const geoName = getCountryName(geography, countries);
@@ -30,6 +32,13 @@ export const DocumentHead = ({ document, date, geography }: TProps) => {
               <span className="pl-2">{year}</span>
               {document.variant && <span className="pl-2 capitalize">{document.variant.toLowerCase()}</span>}
             </div>
+            {backLink && (
+              <div className="mt-4">
+                <LinkWithQuery href={`/document/${backLink}`} className="text-primary-400 hover:underline">
+                  View document details
+                </LinkWithQuery>
+              </div>
+            )}
           </div>
         </div>
       </div>
