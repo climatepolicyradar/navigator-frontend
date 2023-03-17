@@ -96,11 +96,6 @@ const Header = ({ background = true }) => {
                   </span>
                 </LinkWithQuery>
               </li>
-              <li>
-                <LinkWithQuery href="/family/1" className={linkClass("/family")}>
-                  Family
-                </LinkWithQuery>
-              </li>
             </ul>
           </nav>
         </div>

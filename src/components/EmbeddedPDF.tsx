@@ -1,20 +1,21 @@
 import { useRef, useMemo, useEffect, useContext } from "react";
 import Script from "next/script";
-import { TDocument } from "@types";
+import { TDocumentPage, TPassage } from "@types";
 import usePDFPreview from "@hooks/usePDFPreview";
 import Loader from "./Loader";
 import { AdobeContext } from "@context/AdobeContext";
 
 type TProps = {
-  document: TDocument;
+  document: TDocumentPage;
+  documentPassageMatches?: TPassage[];
   passageIndex?: number;
 };
 
-const EmbeddedPDF = ({ document, passageIndex = null }: TProps) => {
+const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = null }: TProps) => {
   const containerRef = useRef();
   const adobeKey = useContext(AdobeContext);
 
-  const pdfPreview = usePDFPreview(document, adobeKey);
+  const pdfPreview = usePDFPreview(document, documentPassageMatches, adobeKey);
   
   // Ensure the instance of the PDF client is not reset on render 
   // otherwise we lose the ability to interact with the pdf

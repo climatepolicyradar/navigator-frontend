@@ -1,6 +1,5 @@
 import { TDocument } from "@types";
 import useConfig from "@hooks/useConfig";
-import DocumentMenu from "../menus/DocumentMenu";
 import TextLink from "../nav/TextLink";
 import { getDocumentTitle } from "@helpers/getDocumentTitle";
 import { getCountryName } from "@helpers/getCountryFields";
@@ -43,7 +42,6 @@ const DocumentSlideout = ({ document, searchTerm, showPDF, setShowPDF }: TProps)
                 {searchTerm}"
               </h3>
             </div>
-            <DocumentMenu document={document} />
           </div>
           {showPDF && (
             <div className="md:hidden ml-6">

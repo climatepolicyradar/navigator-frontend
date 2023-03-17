@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { ApiClient, getEnvFromServer } from "../api/http-common";
 import { initialSearchCriteria } from "../constants/searchCriteria";
 import { getCachedSearch, updateCacheSearch, TCacheResult } from "@utils/searchCache";
-import { TFamily, TSearch } from "../types";
+import { TMatchedFamily, TSearch } from "../types";
 import buildSearchQuery, { TRouterQuery } from "@utils/buildSearchQuery";
 
 type TConfig = {
@@ -27,9 +27,9 @@ async function getSearch(query = initialSearchCriteria) {
   return results;
 }
 
-const useSearch = (query: TRouterQuery) => {
+const useSearch = (query: TRouterQuery, runFreshSearch: boolean = true) => {
   const [status, setStatus] = useState<"fetched" | "loading" | "idle">("idle");
-  const [families, setFamilies] = useState<TFamily[]>([]);
+  const [families, setFamilies] = useState<TMatchedFamily[]>([]);
   const [hits, setHits] = useState<number>(null);
 
   const searchQuery = useMemo(() => {
@@ -38,6 +38,12 @@ const useSearch = (query: TRouterQuery) => {
 
   useEffect(() => {
     setStatus("loading");
+
+    // If we don't want to trigger an API call, return early
+    if(!runFreshSearch) {
+      setStatus("fetched");
+      return;
+    };
 
     // Check if we have a cached result before calling the API
     const cacheId = {
@@ -74,10 +80,13 @@ const useSearch = (query: TRouterQuery) => {
           timestamp: new Date().getTime(),
         };
         updateCacheSearch(searchToCache);
+      } else {
+        setFamilies([]);
+        setHits(0);
       }
       setStatus("fetched");
     });
-  }, [searchQuery]);
+  }, [searchQuery, runFreshSearch]);
 
   return { status, families, hits, searchQuery };
 };

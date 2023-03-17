@@ -1,13 +1,10 @@
-import { KebabMenuIcon } from '../svg/Icons';
+import { KebabMenuIcon } from "../svg/Icons";
 interface KebabProps {
   onClick(): void;
 }
 const Kebab = ({ onClick }) => {
   return (
-    <button
-      className="bg-indigo-500 text-white p-3 shadow rounded-full"
-      onClick={onClick}
-    >
+    <button className="bg-indigo-500 text-white p-3 shadow rounded-full" onClick={onClick}>
       <KebabMenuIcon />
     </button>
   );

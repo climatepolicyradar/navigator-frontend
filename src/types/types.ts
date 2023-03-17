@@ -1,5 +1,3 @@
-// TODO: split this file into relevant sub type files based on usage
-
 export type TSearchKeywordFilters = {
   categories?: string[];
   regions?: string[];
@@ -97,10 +95,23 @@ export type TGeography = {
 };
 
 export type TTarget = {
-  target: string;
-  group: string;
-  base_year: string;
-  target_year: string;
+  ID: string;
+  "Target type": string;
+  Source: string;
+  Description: string;
+  "GHG target": string;
+  Year: string;
+  "Base year period": string;
+  "Single year": string;
+  Geography: string;
+  "Geography ISO": string;
+  Sector: string;
+  "CCLW legislation ID": string;
+  Scopes: string;
+  "Visibility status": string;
+  "CPR family ID": string;
+  "family-slug": string;
+  "family-name": string;
 };
 
 export type TGeographyConfigNode = {
@@ -131,22 +142,21 @@ export type TGeographyStats = {
 };
 
 export type TGeographySummary = {
-  document_counts: { Law: number; Policy: number; Case: number };
+  family_counts: { Legislative: number; Executive: number; Case: number };
   events: TEvent[];
   targets: string[];
-  top_documents: { Law: TDocument[]; Policy: TDocument[]; Case: TDocument[] };
+  top_families: { Legislative: TFamily[]; Executive: TFamily[]; Case: TFamily[] };
 };
 
-export type TCategory = "Law" | "Policy" | "Case";
-export type TDisplayCategory = "All" | "Legislative" | "Executive" | "Litigation";
-
+export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law";
+export type TDisplayCategory = "All" | TCategory;
 export type TEventCategory = TCategory | "Target";
 
 export type TEvent = {
-  name: string;
-  created_ts: string;
-  description: string;
-  category?: TEventCategory;
+  title: string;
+  date: string;
+  event_type: string;
+  status: string;
 };
 
 export type TAssociatedDocument = {
@@ -174,18 +184,63 @@ export type TFamilyDocument = {
 export type TFamily = {
   family_category: TCategory;
   family_description: string;
-  family_description_match: boolean;
   family_documents: TFamilyDocument[];
   family_geography: string;
   family_metadata: {}; // TODO: type this
   family_name: string;
   family_slug: string;
   family_source: string;
+  family_date: string;
+};
+
+export type TFamilyPage = {
+  organisation: string;
+  title: string;
+  summary: string;
+  geography: string;
+  import_id: string;
+  category: TCategory;
+  metadata: TFamilyMetadata;
+  slugs: string[];
+  events: TEvent[];
+  documents: TDocumentPage[];
+  collections: TCollection[];
+  published_date: string;
+  last_updated_date: string;
+};
+
+export type TDocumentPage = {
+  import_id: string;
+  variant: string;
+  slugs: string[];
+  title: string;
+  md5_sum: string;
+  cdn_object: string;
+  source_url: string;
+  content_type: string;
+};
+
+export type TCollection = {
+  name: string;
+};
+
+export type TFamilyMetadata = {
+  topic: string[];
+  hazard: string[];
+  sector: string[];
+  keyword: string[];
+  framework: string[];
+  instrument: string[];
+  document_type: string;
+};
+
+export type TMatchedFamily = TFamily & {
+  family_description_match: boolean;
   family_title_match: boolean;
 };
 
 export type TSearch = {
   hits: number;
   query_time_ms: number;
-  families: TFamily[];
+  families: TMatchedFamily[];
 };

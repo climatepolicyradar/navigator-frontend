@@ -1,6 +1,8 @@
-import { TFamily, TSearchKeywordFilters } from "@types";
+import { TMatchedFamily, TSearchKeywordFilters } from "@types";
 import { arrayOfStringdMatch } from "./arrayEquality";
 import { CACHE_NAME, CACHE_LIMIT } from "@constants/cache";
+
+const day = 1000 * 60 * 60 * 24;
 
 export type TCacheIdentifier = {
   query_string: string;
@@ -13,7 +15,7 @@ export type TCacheIdentifier = {
 };
 
 export type TCacheResult = TCacheIdentifier & {
-  families: TFamily[];
+  families: TMatchedFamily[];
   hits: number;
   timestamp: number;
 };
@@ -31,7 +33,16 @@ const saveCache = (newCache: TCacheSearch) => {
   window.localStorage.setItem(CACHE_NAME, JSON.stringify(newCache));
 };
 
+const clearOldCache = () => {
+  const cache = getCache();
+  const newCache = {
+    cache: cache.cache.filter((search) => search.timestamp > Date.now() - day),
+  };
+  saveCache(newCache);
+};
+
 export const getCachedSearch = (cacheId: TCacheIdentifier) => {
+  clearOldCache();
   const cache = getCache();
   const { query_string, exact_match, keyword_filters, year_range, sort_field, sort_order, offset } = cacheId;
   const cachedSearch = cache.cache.find(

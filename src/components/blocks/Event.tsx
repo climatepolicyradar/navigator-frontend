@@ -1,6 +1,5 @@
 import { TEvent } from "@types";
 import { convertDate } from "@utils/timedate";
-import { getCategoryIcon } from "@helpers/getCatgeoryIcon";
 
 interface EventProps {
   event: TEvent;
@@ -9,8 +8,8 @@ interface EventProps {
 }
 
 const Event = ({ event, last, index }: EventProps) => {
-  const { name, created_ts, category } = event;
-  const [year, _, month] = convertDate(created_ts);
+  const { title, date } = event;
+  const [year, _, month] = convertDate(date);
 
   const even = (index + 1) % 2 === 0;
 
@@ -28,13 +27,13 @@ const Event = ({ event, last, index }: EventProps) => {
   return (
     <div className={`text-center w-[140px] relative flex-shrink-0`}>
       <div className={`h-[2px] bg-blue-600 absolute top-1/2 translate-y-[-1px] z-0 ${timelineStyles}`} />
-      <div className="flex items-end justify-center h-[100px]">{!even && renderText(name, month + " " + year)}</div>
+      <div className="flex items-end justify-center h-[100px]">{!even && renderText(title, month + " " + year)}</div>
       <div className="flex place-content-center h-full relative z-10">
         <div className="circle-container">
-          {category ? <div className="circle-icon">{getCategoryIcon(category, "22")}</div> : <div className={index === 0 || last ? "circle-full" : "circle-empty"}></div>}
+          <div className={index === 0 || last ? "circle-full" : "circle-empty"}></div>
         </div>
       </div>
-      <div className="flex items-start justify-center h-[100px]">{even && renderText(name, month + " " + year)}</div>
+      <div className="flex items-start justify-center h-[100px]">{even && renderText(title, month + " " + year)}</div>
     </div>
   );
 };

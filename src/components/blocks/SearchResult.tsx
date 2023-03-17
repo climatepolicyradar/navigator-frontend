@@ -1,13 +1,13 @@
 import { DocumentListItem } from "@components/document/DocumentListItem";
 import { FamilyListItem } from "@components/document/FamilyListItem";
-import { TFamilyDocument, TFamily } from "@types";
+import { TFamilyDocument, TMatchedFamily } from "@types";
 
 interface SearchResultProps {
-  family: TFamily;
+  family: TMatchedFamily;
 }
 
 const SearchResult = ({ family }: SearchResultProps) => {
-  const { family_slug, family_name, family_description, family_geography, family_description_match, family_title_match, family_documents } = family;
+  const { family_documents, family_description_match, family_title_match } = family;
 
   const showMatches = () => {
     if (family_title_match || family_description_match) {
@@ -21,9 +21,6 @@ const SearchResult = ({ family }: SearchResultProps) => {
               {family_documents.length && <span className="px-2">Document passage</span>}
             </div>
           </div>
-          {/* {document_content_type === "application/pdf" && document_passage_matches.length > 0 && (
-            <MatchesButton dataAttribute={document_slug} count={document_passage_matches.length} />
-          )} */}
         </>
       );
     }
@@ -35,18 +32,6 @@ const SearchResult = ({ family }: SearchResultProps) => {
     });
   };
 
-  return (
-    <FamilyListItem
-      listItem={{
-        slug: family_slug,
-        name: family_name,
-        country_code: family_geography,
-        document_year: "2023_FIXME",
-        description: family_description,
-      }}
-    >
-      {showMatches()}
-    </FamilyListItem>
-  );
+  return <FamilyListItem family={family}>{showMatches()}</FamilyListItem>;
 };
 export default SearchResult;

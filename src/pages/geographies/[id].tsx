@@ -1,7 +1,8 @@
 import { useState } from "react";
+import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { TTarget, TEvent } from "@types";
+import { TTarget, TEvent, TGeography } from "@types";
 import Layout from "@components/layouts/Main";
 import { SingleCol } from "@components/SingleCol";
 import Event from "@components/blocks/Event";
@@ -10,8 +11,9 @@ import { CountryHeader } from "@components/blocks/CountryHeader";
 import { KeyDetail } from "@components/KeyDetail";
 import { Divider } from "@components/dividers/Divider";
 import { RightArrowIcon } from "@components/svg/Icons";
+import { FamilyListItem } from "@components/document/FamilyListItem";
+import { Targets } from "@components/Targets";
 import Button from "@components/buttons/Button";
-import { RelatedDocumentFull } from "@components/blocks/RelatedDocumentFull";
 import TabbedNav from "@components/nav/TabbedNav";
 import TextLink from "@components/nav/TextLink";
 import { LawIcon, PolicyIcon, CaseIcon, TargetIcon } from "@components/svg/Icons";
@@ -21,45 +23,27 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 
 import { ApiClient } from "@api/http-common";
 import { TGeographyStats, TGeographySummary } from "@types";
-
-type TTargets = {
-  targets: TTarget[];
-};
-
-const Targets = ({ targets }: TTargets) => {
-  return (
-    <ul className="ml-4 list-disc list-outside">
-      {targets.map((target) => (
-        <li className="mb-4" key={target.target}>
-          <span className="text-blue-700 text-lg">{target.target}</span>
-          <span className="block">
-            <span className="font-semibold mr-1">{target.group}</span>
-            <span>
-              | Base year: {target.base_year} | Target year: {target.target_year}
-            </span>
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
-};
+import { extractNestedData } from "@utils/extractNestedData";
+import { getCountryCode } from "@helpers/getCountryFields";
 
 type TProps = {
   geography: TGeographyStats;
   summary: TGeographySummary;
+  targets: TTarget[];
 };
 
-const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary }: TProps) => {
+const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets }: TProps) => {
   const router = useRouter();
-  const [showAllTargets, setShowAllTargets] = useState(false);
+  const startingNumberOfTargetsToDisplay = 5;
+  const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
   const [selectedCategoryIndex, setselectedCategoryIndex] = useState(0);
 
   const hasEvents = !!summary?.events && summary?.events?.length > 0;
-  const hasTargets = !!summary?.targets && summary?.targets?.length > 0;
-  const hasDocuments = !!summary?.top_documents;
+  const hasFamilies = !!summary?.top_families;
+  const publishedTargets = targets.filter((target) => target["Visibility status"] === "published");
+  const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
 
   const documentCategories = DOCUMENT_CATEGORIES;
-  const TARGETS_SHOW = 5;
 
   const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number) => {
     e.preventDefault();
@@ -82,36 +66,36 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   const renderDocuments = () => {
     // All
     if (selectedCategoryIndex === 0) {
-      const allDocuments = summary.top_documents.Policy.concat(summary.top_documents.Law).concat(summary.top_documents.Case);
-      if (allDocuments.length === 0) {
+      const allFamilies = summary.top_families.Executive.concat(summary.top_families.Legislative).concat(summary.top_families.Case);
+      if (allFamilies.length === 0) {
         return renderEmpty();
       }
-      allDocuments.sort((a, b) => {
-        return new Date(b.document_date).getTime() - new Date(a.document_date).getTime();
+      allFamilies.sort((a, b) => {
+        return new Date(b.family_date).getTime() - new Date(a.family_date).getTime();
       });
-      return allDocuments.slice(0, 5).map((doc) => (
-        <div key={doc.document_slug} className="mt-4 mb-10">
-          <RelatedDocumentFull document={doc} />
+      return allFamilies.slice(0, 5).map((family) => (
+        <div key={family.family_slug} className="mt-4 mb-10">
+          <FamilyListItem family={family} />
         </div>
       ));
     }
     // Legislative
     if (selectedCategoryIndex === 1) {
-      return summary.top_documents.Law.length === 0
+      return summary.top_families.Legislative.length === 0
         ? renderEmpty("Legislative")
-        : summary.top_documents.Law.map((doc) => (
-            <div key={doc.document_slug} className="mt-4 mb-10">
-              <RelatedDocumentFull document={doc} />
+        : summary.top_families.Legislative.map((family) => (
+            <div key={family.family_slug} className="mt-4 mb-10">
+              <FamilyListItem family={family} />
             </div>
           ));
     }
     // Executive
     if (selectedCategoryIndex === 2) {
-      return summary.top_documents.Policy.length === 0
+      return summary.top_families.Executive.length === 0
         ? renderEmpty("Executive")
-        : summary.top_documents.Policy.map((doc) => (
-            <div key={doc.document_slug} className="mt-4 mb-10">
-              <RelatedDocumentFull document={doc} />
+        : summary.top_families.Executive.map((family) => (
+            <div key={family.family_slug} className="mt-4 mb-10">
+              <FamilyListItem family={family} />
             </div>
           ));
     }
@@ -129,12 +113,9 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     }
   };
 
-  let targets = [];
-  if (!!summary?.targets) targets = showAllTargets ? summary.targets : summary.targets.slice(0, TARGETS_SHOW);
-
   return (
     <>
-      <Layout title={geography?.name ?? "Loading..."}>
+      <Layout title={geography.name}>
         {!geography ? (
           <SingleCol>
             <TextLink onClick={() => router.back()}>Go back</TextLink>
@@ -149,7 +130,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   <KeyDetail
                     detail="Legislation"
                     extraDetail="Laws, Acts, Constitutions (legislative branch)"
-                    amount={summary.document_counts.Law}
+                    amount={summary.family_counts.Legislative}
                     icon={<LawIcon />}
                     onClick={() => setselectedCategoryIndex(1)}
                   />
@@ -158,7 +139,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   <KeyDetail
                     detail="Policies"
                     extraDetail="Policies, strategies, decrees, action plans (from executive branch)"
-                    amount={summary.document_counts.Policy}
+                    amount={summary.family_counts.Executive}
                     icon={<PolicyIcon />}
                     onClick={() => setselectedCategoryIndex(2)}
                   />
@@ -185,28 +166,40 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
               )}
 
               {hasTargets && (
-                <section className="mt-12">
-                  <div>
-                    <h3 className="flex mb-4">
-                      <span className="mr-2">
-                        <TargetIcon />
-                      </span>
-                      Targets ({summary.targets.length})
-                    </h3>
-                    <Targets targets={targets} />
-                  </div>
-                </section>
+                <>
+                  <section className="mt-12">
+                    <div>
+                      <h3 className="flex mb-4">
+                        <span className="mr-2">
+                          <TargetIcon />
+                        </span>
+                        Targets ({publishedTargets.length})
+                      </h3>
+                      <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
+                    </div>
+                  </section>
+                  {publishedTargets.length > numberOfTargetsToDisplay && (
+                    <div className="mt-12">
+                      <Divider>
+                        <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}>
+                          See more
+                        </Button>
+                      </Divider>
+                    </div>
+                  )}
+                  {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
+                    <div className="mt-12">
+                      <Divider>
+                        <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(5)}>
+                          Hide &#8679;
+                        </Button>
+                      </Divider>
+                    </div>
+                  )}
+                </>
               )}
-              {!showAllTargets && summary?.targets?.length > TARGETS_SHOW && (
-                <div className="mt-12">
-                  <Divider>
-                    <Button color="secondary" wider onClick={() => setShowAllTargets(true)}>
-                      See more
-                    </Button>
-                  </Divider>
-                </div>
-              )}
-              {hasDocuments && (
+
+              {hasFamilies && (
                 <>
                   <section className="mt-12" data-cy="top-documents">
                     <h3>Latest Documents</h3>
@@ -255,11 +248,12 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 export default CountryPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const id = context.params.geographyId;
+  const id = context.params.id;
   const client = new ApiClient();
 
   let geographyData: TGeographyStats;
   let summaryData: TGeographySummary;
+  let targetsData: TTarget[] = [];
 
   try {
     const { data: returnedData }: { data: TGeographyStats } = await client.get(`/geo_stats/${id}`, null);
@@ -268,8 +262,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // TODO: handle error more elegantly
   }
   try {
-    const { data: returnedData }: { data: TGeographySummary } = await client.get(`/summaries/country/${id}`, null);
+    const { data: returnedData }: { data: TGeographySummary } = await client.get(`/summaries/country/${id}`, { group_documents: true });
     summaryData = returnedData;
+  } catch {
+    // TODO: handle error more elegantly
+  }
+  try {
+    let countries: TGeography[] = [];
+    const configData = await client.get(`/config`, null);
+    const response_geo = extractNestedData<TGeography>(configData.data?.metadata?.CCLW?.geographies, 2, "");
+    countries = response_geo.level2;
+    const country = getCountryCode(id as string, countries);
+    if (country) {
+      const targetsRaw = await axios.get<TTarget[]>(`${process.env.S3_PATH}/geographies/${country.toLowerCase()}.json`);
+      targetsData = targetsRaw.data;
+    }
   } catch {
     // TODO: handle error more elegantly
   }
@@ -284,6 +291,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       geography: geographyData,
       summary: summaryData,
+      targets: targetsData,
     },
   };
 };

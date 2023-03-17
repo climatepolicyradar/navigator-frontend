@@ -1,56 +1,56 @@
+import { useRouter } from "next/router";
 import MatchesButton from "@components/buttons/MatchesButton";
 import { formatDate } from "@utils/timedate";
-import { TFamilyDocument } from "@types";
-
-type TFamilyDocumentProps = {
-  document: TFamilyDocument;
-};
+import { GlobeIcon, PDFIcon } from "@components/svg/Icons";
+import { TDocumentPage } from "@types";
 
 type TProps = {
-  title: string;
+  document: TDocumentPage;
   date: string;
-  slug: string;
   matches?: number;
-  meta?: {
-    typeName: string;
-    typeDescription: string;
-    format: string;
-    variant: string;
-  };
 };
 
-export const FamilyDocument = ({ title, date, slug, matches, meta }: TProps) => {
-  const [year, _, month] = formatDate(date);
-  const isMain = meta?.typeName === "main";
-  const hasMeta = typeof meta !== "undefined";
+export const FamilyDocument = ({ document, date, matches }: TProps) => {
+  const { title, slugs, variant, content_type } = document;
+  const router = useRouter();
+  const [year, _day, _month] = formatDate(date);
+  const isMain = variant === "MAIN";
   const hasMatches = typeof matches !== "undefined";
+  const canView = !!document.cdn_object;
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
+    // No cdn_object means the document will not render
+    if (!canView) return;
+    router.push({ pathname: `/documents/${slugs[0]}`, query: router.query });
   };
 
+  const renderContentType = (t: string) => {
+    switch (t) {
+      case "application/pdf":
+        return <PDFIcon />;
+      case "text/html":
+        return <div className="flex items-center gap-x-8">HTML</div>;
+    }
+  };
+
+  let cssClass = "family-document mt-4 p-3 border border-transparent hover:border-primary-600 ";
+  cssClass += `${!isMain ? "hover:" : ""}bg-offwhite transition duration-300 `;
+  cssClass += canView ? "cursor-pointer" : "";
+
   return (
-    <div
-      className={`family-document mt-4 cursor-pointer p-3 border border-transparent hover:border-primary-600 ${
-        !isMain ? "hover:" : ""
-      }bg-offwhite transition duration-300`}
-      onClick={handleClick}
-    >
+    <div className={cssClass} onClick={handleClick}>
       <div className="text-primary-600 mb-2">{title}</div>
       <div className="flex items-center">
-        <div className="flex-1 flex flex-wrap gap-x-8">
-          {hasMeta && (
-            <>
-              {!isMain && <span className="font-bold">{meta.typeDescription}</span>}
-              <span>{meta.format.toUpperCase()}</span>
-              <span>{meta.variant}</span>
-            </>
-          )}
-          <span>{`${month} ${year}`}</span>
+        <div className="flex-1 flex flex-wrap gap-x-8 items-center">
+          {!!content_type && <span>{renderContentType(content_type)}</span>}
+          <span className="capitalize">{variant.toLowerCase()}</span>
+          <span>{year}</span>
+          {!canView && <span>Document preview is not currently available</span>}
         </div>
         {hasMatches && (
           <div className="flex-0">
-            <MatchesButton dataAttribute={slug} count={matches} overideText={matches === 0 ? "view Document" : null} />
+            <MatchesButton dataAttribute={slugs[0]} count={matches} overideText={matches === 0 ? "view Document" : null} />
           </div>
         )}
       </div>

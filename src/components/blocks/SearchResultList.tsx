@@ -1,10 +1,10 @@
 import { ExternalLink } from "@components/ExternalLink";
 import SearchResult from "./SearchResult";
-import { TFamily } from "@types";
+import { TMatchedFamily } from "@types";
 
 type TProps = {
   category?: string;
-  families: TFamily[];
+  families: TMatchedFamily[];
 };
 
 const SearchResultList = ({ category, families }: TProps) => {
