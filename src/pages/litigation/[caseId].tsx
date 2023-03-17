@@ -261,9 +261,6 @@ const LitigationCoverPage = () => {
                   <DocumentInfo id="filed-tt" heading="Filed" text="File by, Party Type" />
                   <DocumentInfo id="responding-tt" heading="Responding" text="Responding party, Type" />
                   <DocumentInfo id="intervenor-tt" heading="Intervenor" text="Intervenor, Type" />
-                  {/* {1 > 0 && <DocumentInfo id="keywords-tt" heading="UNFCCC pillars" list={UNFCCCPillars} />}
-                  {1 > 0 && <DocumentInfo id="sectors-tt" heading="Sectors" list={SECTORS} />}
-                  {1 > 0 && <DocumentInfo id="keywords-tt" heading="Keywords" list={KEYWORDS} />} */}
                 </section>
                 <section className="mt-8 pt-4 border-t border-blue-100">
                   <h4 className="text-base text-indigo-400 font-semibold flex">Connected cases</h4>

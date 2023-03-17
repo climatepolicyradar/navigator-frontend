@@ -1,6 +1,5 @@
 import { TEvent } from "@types";
 import { convertDate } from "@utils/timedate";
-import { getCategoryIcon } from "@helpers/getCatgeoryIcon";
 
 interface EventProps {
   event: TEvent;
@@ -31,11 +30,7 @@ const Event = ({ event, last, index }: EventProps) => {
       <div className="flex items-end justify-center h-[100px]">{!even && renderText(title, month + " " + year)}</div>
       <div className="flex place-content-center h-full relative z-10">
         <div className="circle-container">
-          {/* {category ? (
-            <div className="circle-icon">{getCategoryIcon(category, "22")}</div>
-          ) : ( */}
           <div className={index === 0 || last ? "circle-full" : "circle-empty"}></div>
-          {/* )} */}
         </div>
       </div>
       <div className="flex items-start justify-center h-[100px]">{even && renderText(title, month + " " + year)}</div>
