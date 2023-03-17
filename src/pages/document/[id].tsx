@@ -260,10 +260,10 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                   <div className="grid grid-cols-2 gap-x-2">
                     <DocumentInfo id="category-tt" heading="Category" text={page.category} />
                     <DocumentInfo id="type-tt" heading="Type" text={page.metadata.document_type} />
-                    {page.metadata.topic.length > 0 && <DocumentInfo id="topics-tt" heading="Topics" list={page.metadata.topic} />}
                     {/* {page.metadata.languages.length > 0 && <DocumentInfo heading="Language" text={page.languages[0].name} />} */}
                   </div>
 
+                  {page.metadata.topic.length > 0 && <DocumentInfo id="topics-tt" heading="Topics" list={page.metadata.topic} />}
                   {page.metadata.keyword.length > 0 && <DocumentInfo id="keywords-tt" heading="Keywords" list={page.metadata.keyword} />}
                   {page.metadata.sector.length > 0 && <DocumentInfo id="sectors-tt" heading="Sectors" list={page.metadata.sector} />}
                   <div className="mt-8 border-t border-blue-100">

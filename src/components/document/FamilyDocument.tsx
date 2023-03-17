@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import MatchesButton from "@components/buttons/MatchesButton";
 import { formatDate } from "@utils/timedate";
-import { PDFIcon } from "@components/svg/Icons";
+import { GlobeIcon, PDFIcon } from "@components/svg/Icons";
 import { TDocumentPage } from "@types";
 
 type TProps = {
@@ -25,10 +25,12 @@ export const FamilyDocument = ({ document, date, matches }: TProps) => {
     router.push({ pathname: `/documents/${slugs[0]}`, query: router.query });
   };
 
-  const renderIcon = (t: string) => {
+  const renderContentType = (t: string) => {
     switch (t) {
       case "application/pdf":
         return <PDFIcon />;
+      case "text/html":
+        return <div className="flex items-center gap-x-8">HTML</div>;
     }
   };
 
@@ -41,7 +43,7 @@ export const FamilyDocument = ({ document, date, matches }: TProps) => {
       <div className="text-primary-600 mb-2">{title}</div>
       <div className="flex items-center">
         <div className="flex-1 flex flex-wrap gap-x-8 items-center">
-          {!!content_type && <span>{renderIcon(content_type)}</span>}
+          {!!content_type && <span>{renderContentType(content_type)}</span>}
           <span className="capitalize">{variant.toLowerCase()}</span>
           <span>{year}</span>
           {!canView && <span>Document preview is not currently available</span>}
