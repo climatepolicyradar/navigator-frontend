@@ -113,9 +113,6 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     }
   };
 
-  // let targets = [];
-  // if (!!summary?.targets) targets = showAllTargets ? summary.targets : summary.targets.slice(0, TARGETS_SHOW);
-
   return (
     <>
       <Layout title={geography.name}>

@@ -21,9 +21,6 @@ const SearchResult = ({ family }: SearchResultProps) => {
               {family_documents.length && <span className="px-2">Document passage</span>}
             </div>
           </div>
-          {/* {document_content_type === "application/pdf" && document_passage_matches.length > 0 && (
-            <MatchesButton dataAttribute={document_slug} count={document_passage_matches.length} />
-          )} */}
         </>
       );
     }
