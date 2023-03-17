@@ -9,6 +9,19 @@ interface SearchResultProps {
 const SearchResult = ({ family }: SearchResultProps) => {
   const { family_documents, family_description_match, family_title_match } = family;
 
+  const hasDocumentMatches = (documents: TFamilyDocument[]) => {
+    let hasMatches = false;
+    if (documents.length) {
+      for (const doc of documents) {
+        if (doc.document_passage_matches.length) {
+          hasMatches = true;
+          break;
+        }
+      }
+    }
+    return hasMatches;
+  };
+
   const showMatches = () => {
     if (family_title_match || family_description_match) {
       return (
@@ -18,7 +31,7 @@ const SearchResult = ({ family }: SearchResultProps) => {
             <div className="divide-x divide-current flex-grow-0">
               {family_title_match && <span className="px-2">Title</span>}
               {family_description_match && <span className="px-2">Summary</span>}
-              {family_documents.length && <span className="px-2">Document passage</span>}
+              {hasDocumentMatches(family_documents) && <span className="px-2">Document passage</span>}
             </div>
           </div>
         </>
@@ -34,4 +47,5 @@ const SearchResult = ({ family }: SearchResultProps) => {
 
   return <FamilyListItem family={family}>{showMatches()}</FamilyListItem>;
 };
+
 export default SearchResult;
