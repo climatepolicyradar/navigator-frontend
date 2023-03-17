@@ -274,9 +274,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     countries = response_geo.level2;
     const country = getCountryCode(id as string, countries);
     if (country) {
-      const targetsRaw = await axios.get<TTarget[]>(
-        `https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com/geographies/${country.toLowerCase()}.json`
-      );
+      const targetsRaw = await axios.get<TTarget[]>(`${process.env.S3_PATH}/geographies/${country.toLowerCase()}.json`);
       targetsData = targetsRaw.data;
     }
   } catch {
