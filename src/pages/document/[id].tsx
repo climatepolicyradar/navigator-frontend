@@ -70,8 +70,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const sourceLogo = page?.organisation === "CCLW" ? "grantham-logo.png" : null;
   const sourceName = page?.organisation === "CCLW" ? "Grantham Research Institute" : page?.organisation;
 
-  const mainDoc = page.documents.find((doc) => doc.variant === "MAIN");
-  const otherDocs = page.documents.filter((doc) => doc.variant !== "MAIN");
+  const mainDocs = page.documents.filter((doc) => doc.variant.toLowerCase().includes("main"));
+  const otherDocs = page.documents.filter((doc) => !doc.variant.toLowerCase().includes("main"));
 
   useEffect(() => {
     if (page?.summary) {
@@ -116,7 +116,11 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                       )}
                     </div>
                   )}
-                  {mainDoc && <FamilyDocument date={page.published_date} matches={getDocumentMatches(mainDoc.slugs)} document={mainDoc} />}
+                  {mainDocs.map((doc) => (
+                    <>
+                      <FamilyDocument matches={getDocumentMatches(doc.slugs)} document={doc} />
+                    </>
+                  ))}
                 </section>
 
                 {otherDocs.length > 0 && (
@@ -130,7 +134,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                       <div className="divide-solid divide-blue-100 divide-y">
                         {otherDocs.map((doc, i) => (
                           <div key={`${i}-${doc.title}`} className="mt-4">
-                            <FamilyDocument date={page.published_date} matches={getDocumentMatches(doc.slugs)} document={doc} />
+                            <FamilyDocument matches={getDocumentMatches(doc.slugs)} document={doc} />
                           </div>
                         ))}
                       </div>

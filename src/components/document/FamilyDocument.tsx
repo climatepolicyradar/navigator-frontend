@@ -1,22 +1,21 @@
 import { useRouter } from "next/router";
 import MatchesButton from "@components/buttons/MatchesButton";
-import { formatDate } from "@utils/timedate";
-import { GlobeIcon, PDFIcon } from "@components/svg/Icons";
-import { TDocumentPage } from "@types";
+import { TDocumentContentType, TDocumentPage } from "@types";
 
 type TProps = {
   document: TDocumentPage;
-  date: string;
   matches?: number;
 };
 
-export const FamilyDocument = ({ document, date, matches }: TProps) => {
+export const FamilyDocument = ({ document, matches }: TProps) => {
   const { title, slugs, variant, content_type } = document;
   const router = useRouter();
-  const [year, _day, _month] = formatDate(date);
-  const isMain = variant === "MAIN";
-  const hasMatches = typeof matches !== "undefined";
-  const canView = !!document.cdn_object;
+  const isMain = variant.toLowerCase().includes("main");
+  const hasMatches = typeof matches !== "undefined" && matches > 0;
+  // PDFs need to have a cdn location
+  // HTMLs need a source url / website
+  const canView =
+    document.content_type === "application/pdf" ? !!document.cdn_object : document.content_type === "text/html" ? !!document.source_url : false;
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
@@ -25,12 +24,12 @@ export const FamilyDocument = ({ document, date, matches }: TProps) => {
     router.push({ pathname: `/documents/${slugs[0]}`, query: router.query });
   };
 
-  const renderContentType = (t: string) => {
+  const renderContentType = (t: TDocumentContentType) => {
     switch (t) {
       case "application/pdf":
-        return <PDFIcon />;
+        return "PDF";
       case "text/html":
-        return <div className="flex items-center gap-x-8">HTML</div>;
+        return "HTML";
     }
   };
 
@@ -43,14 +42,13 @@ export const FamilyDocument = ({ document, date, matches }: TProps) => {
       <div className="text-primary-600 mb-2">{title}</div>
       <div className="flex items-center">
         <div className="flex-1 flex flex-wrap gap-x-8 items-center">
+          {!isMain && <span className="capitalize">{variant.toLowerCase()}</span>}
           {!!content_type && <span>{renderContentType(content_type)}</span>}
-          <span className="capitalize">{variant.toLowerCase()}</span>
-          <span>{year}</span>
           {!canView && <span>Document preview is not currently available</span>}
         </div>
-        {hasMatches && (
+        {canView && (
           <div className="flex-0">
-            <MatchesButton dataAttribute={slugs[0]} count={matches} overideText={matches === 0 ? "view Document" : null} />
+            <MatchesButton dataAttribute={slugs[0]} count={matches} overideText={!hasMatches ? "view document" : null} />
           </div>
         )}
       </div>

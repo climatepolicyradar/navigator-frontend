@@ -209,6 +209,8 @@ export type TFamilyPage = {
   last_updated_date: string;
 };
 
+export type TDocumentContentType = "application/pdf" | "text/html";
+
 export type TDocumentPage = {
   import_id: string;
   variant: string;
@@ -217,7 +219,7 @@ export type TDocumentPage = {
   md5_sum: string;
   cdn_object: string;
   source_url: string;
-  content_type: string;
+  content_type: TDocumentContentType;
 };
 
 export type TCollection = {
