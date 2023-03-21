@@ -19,7 +19,7 @@ export const KeyDetail = ({ detail, amount, icon, extraDetail, onClick }: TProps
   const cssClass = theme === "cpr" ? "text-blue-600" : "text-secondary-700";
 
   return (
-    <div className={`key-detail bg-secondary-700 text-white flex p-3 shadow-md ${onClick ? "cursor-pointer" : ""}`} onClick={handleOnClick}>
+    <div className={`key-detail bg-secondary-700 text-white flex p-3 shadow-md ${onClick ? "cursor-pointer hover:bg-secondary-500" : ""}`} onClick={handleOnClick}>
       {icon && (
         <div className="flex items-center justify-center">
           <div className={`p-1 bg-white rounded-full w-[54px] h-[54px] flex items-center justify-center ${cssClass}`}>{icon}</div>
