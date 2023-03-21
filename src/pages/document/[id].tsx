@@ -117,9 +117,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                     </div>
                   )}
                   {mainDocs.map((doc) => (
-                    <>
-                      <FamilyDocument matches={getDocumentMatches(doc.slugs)} document={doc} />
-                    </>
+                    <FamilyDocument matches={getDocumentMatches(doc.slugs)} document={doc} key={doc.import_id} />
                   ))}
                 </section>
 
@@ -132,8 +130,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                     <section className="mt-12">
                       <h3>Related documents</h3>
                       <div className="divide-solid divide-blue-100 divide-y">
-                        {otherDocs.map((doc, i) => (
-                          <div key={`${i}-${doc.title}`} className="mt-4">
+                        {otherDocs.map((doc) => (
+                          <div key={doc.import_id} className="mt-4">
                             <FamilyDocument matches={getDocumentMatches(doc.slugs)} document={doc} />
                           </div>
                         ))}
@@ -329,6 +327,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       const targetsRaw = await axios.get<TTarget[]>(`${process.env.S3_PATH}/families/${familyData.import_id}.json`);
       targetsData = targetsRaw.data;
     } catch (error) {}
+  }
+
+  if (!familyData) {
+    return {
+      notFound: true,
+    };
   }
 
   return {
