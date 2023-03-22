@@ -19,18 +19,20 @@ export const FamilyDocument = ({ document, matches }: TProps) => {
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
-    // No cdn_object means the document will not render
+    // If there is no document to render, don't display the document page
     if (!canView) return;
     router.push({ pathname: `/documents/${slugs[0]}`, query: router.query });
   };
 
   const renderContentType = (t: TDocumentContentType) => {
+    if (!t) return null;
     switch (t) {
       case "application/pdf":
-        return "PDF";
+        return <span>PDF</span>;
       case "text/html":
-        return "HTML";
+        return <span>HTML</span>;
     }
+    return null;
   };
 
   let cssClass = "family-document mt-4 p-3 border border-transparent hover:border-primary-600 ";
@@ -43,7 +45,7 @@ export const FamilyDocument = ({ document, matches }: TProps) => {
       <div className="flex items-center">
         <div className="flex-1 flex flex-wrap gap-x-8 items-center">
           {!isMain && <span className="capitalize">{variant.toLowerCase()}</span>}
-          {!!content_type && <span>{renderContentType(content_type)}</span>}
+          {renderContentType(content_type)}
           {!canView && <span>Document preview is not currently available</span>}
         </div>
         {canView && (

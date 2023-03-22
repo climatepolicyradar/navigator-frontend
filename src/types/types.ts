@@ -209,7 +209,7 @@ export type TFamilyPage = {
   last_updated_date: string;
 };
 
-export type TDocumentContentType = "application/pdf" | "text/html";
+export type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
 
 export type TDocumentPage = {
   import_id: string;
