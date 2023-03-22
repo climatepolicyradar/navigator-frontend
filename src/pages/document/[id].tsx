@@ -54,7 +54,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
     e.preventDefault();
     setShowCollectionDetail(true);
     setTimeout(() => {
-      document.getElementById("collection").scrollIntoView({ behavior: "smooth" });
+      const collectionElement = document.getElementById("collection");
+      if (collectionElement) collectionElement.scrollIntoView({ behavior: "smooth" });
     }, 100);
   };
 
@@ -71,8 +72,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const sourceLogo = page?.organisation === "CCLW" ? "grantham-logo.png" : null;
   const sourceName = page?.organisation === "CCLW" ? "Grantham Research Institute" : page?.organisation;
 
-  const mainDoc = page.documents.find((doc) => doc.variant === "MAIN");
-  const otherDocs = page.documents.filter((doc) => doc.variant !== "MAIN");
+  const mainDocs = page.documents.filter((doc) => doc.variant.toLowerCase().includes("main"));
+  const otherDocs = page.documents.filter((doc) => !doc.variant.toLowerCase().includes("main"));
 
   useEffect(() => {
     if (page?.summary) {
@@ -122,7 +123,9 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                       )}
                     </div>
                   )}
-                  {mainDoc && <FamilyDocument date={page.published_date} matches={getDocumentMatches(mainDoc.slugs)} document={mainDoc} />}
+                  {mainDocs.map((doc) => (
+                    <FamilyDocument matches={getDocumentMatches(doc.slugs)} document={doc} key={doc.import_id} />
+                  ))}
                 </section>
 
                 {otherDocs.length > 0 && (
@@ -134,9 +137,9 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                     <section className="mt-12">
                       <h3>Related documents</h3>
                       <div className="divide-solid divide-blue-100 divide-y">
-                        {otherDocs.map((doc, i) => (
-                          <div key={`${i}-${doc.title}`} className="mt-4">
-                            <FamilyDocument date={page.published_date} matches={getDocumentMatches(doc.slugs)} document={doc} />
+                        {otherDocs.map((doc) => (
+                          <div key={doc.import_id} className="mt-4">
+                            <FamilyDocument matches={getDocumentMatches(doc.slugs)} document={doc} />
                           </div>
                         ))}
                       </div>
@@ -331,6 +334,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       const targetsRaw = await axios.get<TTarget[]>(`${process.env.S3_PATH}/families/${familyData.import_id}.json`);
       targetsData = targetsRaw.data;
     } catch (error) {}
+  }
+
+  if (!familyData) {
+    return {
+      notFound: true,
+    };
   }
 
   return {

@@ -50,6 +50,12 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     return setselectedCategoryIndex(index);
   };
 
+  const handleTargetClick = () => {
+    setTimeout(() => {
+      document.getElementById("targets").scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
   const handleDocumentSeeMoreClick = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const newQuery = {};
@@ -124,36 +130,39 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
         ) : (
           <section className="mb-8">
             <CountryHeader country={geography} />
-            <SingleCol>
-              <section className="grid grid-cols-1 md:grid-cols-3 gap-px rounded mb-8">
-                {
-                  <KeyDetail
-                    detail="Legislation"
-                    extraDetail="Laws, Acts, Constitutions (legislative branch)"
-                    amount={summary.family_counts.Legislative}
-                    icon={<LawIcon />}
-                    onClick={() => setselectedCategoryIndex(1)}
-                  />
-                }
-                {
-                  <KeyDetail
-                    detail="Policies"
-                    extraDetail="Policies, strategies, decrees, action plans (from executive branch)"
-                    amount={summary.family_counts.Executive}
-                    icon={<PolicyIcon />}
-                    onClick={() => setselectedCategoryIndex(2)}
-                  />
-                }
-                {
-                  <KeyDetail
-                    detail="Litigation"
-                    extraDetail="Court cases and tribunal proceedings"
-                    amount={<span className="text-sm font-normal">Coming soon</span>}
-                    icon={<CaseIcon />}
-                    onClick={() => setselectedCategoryIndex(3)}
-                  />
-                }
+            <div className="container mt-12">
+              <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px rounded mb-8">
+                <KeyDetail
+                  detail="Legislation"
+                  extraDetail="Laws, Acts, Constitutions (legislative branch)"
+                  amount={summary.family_counts.Legislative}
+                  icon={<LawIcon />}
+                  onClick={() => setselectedCategoryIndex(1)}
+                />
+                <KeyDetail
+                  detail="Policies"
+                  extraDetail="Policies, strategies, decrees, action plans (from executive branch)"
+                  amount={summary.family_counts.Executive}
+                  icon={<PolicyIcon />}
+                  onClick={() => setselectedCategoryIndex(2)}
+                />
+                <KeyDetail
+                  detail="Litigation"
+                  extraDetail="Court cases and tribunal proceedings"
+                  amount={<span className="text-sm font-normal">Coming soon</span>}
+                  icon={<CaseIcon />}
+                  onClick={() => setselectedCategoryIndex(3)}
+                />
+                <KeyDetail
+                  detail="Targets"
+                  extraDetail="Climate targets in National Law & Policy"
+                  amount={targets.length}
+                  icon={<TargetIcon />}
+                  onClick={() => handleTargetClick()}
+                />
               </section>
+            </div>
+            <SingleCol>
               {hasEvents && (
                 <section className="mt-12 hidden">
                   <h3 className="mb-4">Events</h3>
@@ -163,40 +172,6 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                     ))}
                   </Timeline>
                 </section>
-              )}
-
-              {hasTargets && (
-                <>
-                  <section className="mt-12">
-                    <div>
-                      <h3 className="flex mb-4">
-                        <span className="mr-2">
-                          <TargetIcon />
-                        </span>
-                        Targets ({publishedTargets.length})
-                      </h3>
-                      <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
-                    </div>
-                  </section>
-                  {publishedTargets.length > numberOfTargetsToDisplay && (
-                    <div className="mt-12">
-                      <Divider>
-                        <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}>
-                          See more
-                        </Button>
-                      </Divider>
-                    </div>
-                  )}
-                  {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
-                    <div className="mt-12">
-                      <Divider>
-                        <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(5)}>
-                          Hide &#8679;
-                        </Button>
-                      </Divider>
-                    </div>
-                  )}
-                </>
               )}
 
               {hasFamilies && (
@@ -225,6 +200,39 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                               <RightArrowIcon height="20" width="20" />
                             </span>
                           </>
+                        </Button>
+                      </Divider>
+                    </div>
+                  )}
+                </>
+              )}
+              {hasTargets && (
+                <>
+                  <section className="mt-12" id="targets">
+                    <div>
+                      <h3 className="flex mb-4">
+                        <span className="mr-2">
+                          <TargetIcon />
+                        </span>
+                        Targets ({publishedTargets.length})
+                      </h3>
+                      <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
+                    </div>
+                  </section>
+                  {publishedTargets.length > numberOfTargetsToDisplay && (
+                    <div className="mt-12">
+                      <Divider>
+                        <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}>
+                          See more
+                        </Button>
+                      </Divider>
+                    </div>
+                  )}
+                  {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
+                    <div className="mt-12">
+                      <Divider>
+                        <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(5)}>
+                          Hide &#8679;
                         </Button>
                       </Divider>
                     </div>

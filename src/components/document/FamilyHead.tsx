@@ -27,12 +27,12 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
                 {family.collections.length > 0 &&
                   family.collections.map((collection) => (
                     <a
-                      key={collection.name}
+                      key={collection.title}
                       onClick={onCollectionClick ?? (() => {})}
                       href="#collection"
                       className="underline text-primary-400 hover:text-indigo-600 duration-300"
                     >
-                      {collection.name}
+                      {collection.title}
                     </a>
                   ))}
               </div>
