@@ -53,7 +53,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
     e.preventDefault();
     setShowCollectionDetail(true);
     setTimeout(() => {
-      document.getElementById("collection").scrollIntoView({ behavior: "smooth" });
+      const collectionElement = document.getElementById("collection");
+      if (collectionElement) collectionElement.scrollIntoView({ behavior: "smooth" });
     }, 100);
   };
 

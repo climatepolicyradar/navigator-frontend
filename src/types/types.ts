@@ -223,7 +223,9 @@ export type TDocumentPage = {
 };
 
 export type TCollection = {
-  name: string;
+  import_id: string;
+  title: string;
+  description: string;
 };
 
 export type TFamilyMetadata = {
