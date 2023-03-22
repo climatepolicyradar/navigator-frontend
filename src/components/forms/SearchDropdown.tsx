@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import useConfig from "@hooks/useConfig";
-import { TGeography } from "@types";
 import { SearchIcon } from "@components/svg/Icons";
 import { QUERY_PARAMS } from "@constants/queryParams";
 
@@ -13,11 +12,11 @@ type TProps = {
 
 export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpacing }: TProps) => {
   const router = useRouter();
-  const configQuery: any = useConfig("config");
-  const geographies: TGeography[] = configQuery.data?.countries || [];
+  const configQuery = useConfig();
+  const geographies = configQuery.data?.countries || [];
 
   const geographiesFiltered = geographies.filter(
-    (geography: TGeography) =>
+    (geography) =>
       geography.display_value.toLowerCase().includes(term.toLocaleLowerCase()) ||
       term.toLocaleLowerCase().includes(geography.display_value.toLowerCase())
   );

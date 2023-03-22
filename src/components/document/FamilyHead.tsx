@@ -10,7 +10,7 @@ type TProps = {
 };
 
 export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
-  const configQuery: any = useConfig("config");
+  const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
   const geoName = getCountryName(family.geography, countries);
   const [year] = convertDate(family.published_date);

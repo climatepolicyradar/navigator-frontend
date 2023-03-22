@@ -10,7 +10,7 @@ type TProps = {
 };
 
 const MultiList = ({ list, removeFilter, type, dataCy }: TProps) => {
-  const configQuery = useConfig("config");
+  const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
 
   const handleClick = (item: string) => {

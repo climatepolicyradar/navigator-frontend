@@ -16,7 +16,7 @@ function extractGeographySlugs(config: TGeographyConfig): string[] {
 async function fetchGeographies(): Promise<TGeographyConfig[]> {
   const client = new ApiClient();
   const { data: data } = await client.get(`/config`, null);
-  return data.metadata.CCLW.geographies;
+  return data.geographies;
 }
 
 async function getGeographyIds(): Promise<string[]> {

@@ -13,7 +13,7 @@ type TProps = {
 };
 
 export const DocumentHead = ({ document, date, geography, backLink }: TProps) => {
-  const configQuery: any = useConfig("config");
+  const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
   const geoName = getCountryName(geography, countries);
   const [year] = convertDate(date);
