@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import Script from "next/script";
 import { ApiClient } from "@api/http-common";
 import Layout from "@components/layouts/Main";
 import DocumentInfo from "@components/blocks/DocumentInfo";
@@ -87,6 +88,11 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
   return (
     <Layout title={page.title}>
+      <Script id="analytics">
+        analytics.category = "{page.category}";
+        analytics.type = "{page.metadata.document_type}";
+        analytics.geography = "{page.geography}";
+      </Script>
       <section
         className="mb-8"
         data-analytics-category={page.category}

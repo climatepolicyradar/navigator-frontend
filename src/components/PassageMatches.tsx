@@ -17,7 +17,7 @@ const PassageMatches = ({ passages, onClick, activeIndex }: TProps) => {
       ) : (
         <div className="divide-lineBorder divide-y passage-matches-list" id="passage-matches">
           {passages.map((item, index: number) => (
-            <div key={item.text_block_id} id={`passage-${index}`}>
+            <div key={item.text_block_id} data-analytics-passage={index + 1} id={`passage-${index}`}>
               <div
                 className={`p-4 cursor-pointer border-x hover:bg-offwhite ${
                   activeIndex === index ? "border-lineBorder bg-grey-200" : "border-transparent"

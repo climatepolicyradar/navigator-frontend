@@ -41,7 +41,7 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = nul
         </div>
       ) : (
         <>
-          <div ref={containerRef} id="pdf-div" className="h-full"></div>
+          <div ref={containerRef} id="pdf-div" className="h-full" data-analytics-document={document.content_type}></div>
         </>
       )}
     </>

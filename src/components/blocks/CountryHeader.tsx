@@ -19,15 +19,18 @@ export const CountryHeader = ({ country }: TProps) => {
     return region.display_value ?? "";
   };
 
+  const countryRegion = getCountryRegion();
   const { name, political_groups, federal, federal_details, worldbank_income_group, climate_risk_index, global_emissions_percent } = country;
 
   return (
-    <div className="bg-offwhite border-solid border-lineBorder border-b py-6" data-analytics-region={getCountryRegion()}>
+    <div className="bg-offwhite border-solid border-lineBorder border-b py-6">
       <div className="container flex items-end justify-between overflow-hidden">
         <div className="md:max-w-lg lg:max-w-5xl md:flex-shrink-0">
           <h1 className="mb-6">{name}</h1>
           <div className="grid grid-cols-2 gap-6 items-center text-indigo-700">
-            <div className="font-semibold  text-xl" data-cy="region">{getCountryRegion()}</div>
+            <div className="font-semibold  text-xl" data-cy="region" data-analytics-region={countryRegion}>
+              {countryRegion}
+            </div>
             <div className="font-semibold text-xl">
               {federal && <>Federative {federal && federal_details && <span className="font-light text-lg">({federal_details})</span>}</>}
             </div>
