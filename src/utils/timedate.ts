@@ -1,7 +1,12 @@
 import { months } from "../constants/timedate";
 
 export const convertDate = (data: string): [number, string, string] => {
-  const dateObj = new Date(data);
+  if (data.length === 0) return [0, "", ""];
+  let dateObj = new Date(data);
+  if (data.length === 10) {
+    const [day, month, year] = data.split("/");
+    dateObj = new Date(`${month}-${day}-${year}`);
+  }
   const year = dateObj.getFullYear();
   const day = padNumber(dateObj.getDate());
   const month = dateObj.getMonth();

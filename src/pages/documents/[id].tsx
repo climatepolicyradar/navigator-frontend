@@ -10,6 +10,7 @@ import { TDocumentPage } from "@types";
 import useSearch from "@hooks/useSearch";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import Loader from "@components/Loader";
+import Button from "@components/buttons/SquareButton";
 
 type TDocFamily = {
   title: string;
@@ -41,6 +42,20 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     });
   }
 
+  const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const url = document.content_type === "application/pdf" ? document.cdn_object : document.source_url;
+    if (!url) return;
+    window.open(url);
+  };
+
+  const handlePassageClick = (index: number) => {
+    setPassageIndex(index);
+    setTimeout(() => {
+      window.document.getElementById("document-viewer").scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
   return (
     <Layout title={document.title}>
       <section
@@ -50,28 +65,38 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
         data-analytics-variant={document.variant}
         data-analytics-type={document.content_type}
       >
-        <DocumentHead document={document} date={family.published_date} geography={family.geography} backLink={family.slugs[0]} />
+        <DocumentHead document={document} geography={family.geography} backLink={family.slugs[0]} />
         {status !== "fetched" ? (
           <div className="w-full flex justify-center flex-1">
             <Loader />
           </div>
         ) : (
-          <section className="mt-4 flex-1 flex">
+          <section className="pt-4 flex-1 flex" id="document-viewer">
             <div className="container flex-1">
-              {passageMatches.length > 0 && (
-                <div className="pb-4 border-b border-lineBorder">
+              <div className="flex flex-col md:flex-row justify-between items-center pb-4 border-b border-lineBorder gap-4">
+                {passageMatches.length > 0 && (
                   <h3>Document matches for {`'${router.query[QUERY_PARAMS.query_string]}' (${passageMatches.length})`}</h3>
+                )}
+                <div className="flex-1 flex justify-end">
+                  <Button data-cy="view-source" onClick={handleViewSourceClick}>
+                    View source document
+                  </Button>
                 </div>
-              )}
+              </div>
               <div className="md:flex md:h-[80vh]">
                 {passageMatches.length > 0 && (
                   <div className="md:block md:w-1/3 overflow-y-scroll pr-4 max-h-[30vh] md:max-h-full">
-                    <PassageMatches passages={passageMatches} setPassageIndex={setPassageIndex} activeIndex={passageIndex} />
+                    <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex} />
                   </div>
                 )}
                 {status === "fetched" && (
                   <div className="md:block mt-4 flex-1 h-[400px] md:h-full">
-                    <EmbeddedPDF document={document} documentPassageMatches={passageMatches} passageIndex={passageIndex} />
+                    {document.content_type === "application/pdf" && (
+                      <EmbeddedPDF document={document} documentPassageMatches={passageMatches} passageIndex={passageIndex} />
+                    )}
+                    {document.content_type === "text/html" && (
+                      <iframe src={document.source_url} className="w-full h-full" title={document.title} referrerPolicy="no-referrer" />
+                    )}
                   </div>
                 )}
               </div>

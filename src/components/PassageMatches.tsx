@@ -3,11 +3,11 @@ import Loader from "./Loader";
 
 type TProps = {
   passages: TPassage[];
-  setPassageIndex: (index: number) => void;
+  onClick: (index: number) => void;
   activeIndex?: number;
 };
 
-const PassageMatches = ({ passages, setPassageIndex, activeIndex }: TProps) => {
+const PassageMatches = ({ passages, onClick, activeIndex }: TProps) => {
   return (
     <>
       {!passages ? (
@@ -15,15 +15,15 @@ const PassageMatches = ({ passages, setPassageIndex, activeIndex }: TProps) => {
           <Loader />
         </div>
       ) : (
-        <div className="divide-lineBorder divide-y passage-matches-list">
+        <div className="divide-lineBorder divide-y passage-matches-list" id="passage-matches">
           {passages.map((item, index: number) => (
-            <div key={item.text_block_id} data-analytics-passage={index + 1}>
+            <div key={item.text_block_id} data-analytics-passage={index + 1} id={`passage-${index}`}>
               <div
                 className={`p-4 cursor-pointer border-x hover:bg-offwhite ${
                   activeIndex === index ? "border-lineBorder bg-grey-200" : "border-transparent"
                 }`}
                 onClick={() => {
-                  setPassageIndex(index);
+                  onClick(index);
                 }}
               >
                 <div className="text-s text-blue-500">
