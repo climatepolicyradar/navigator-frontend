@@ -11,7 +11,7 @@ type TCountryLink = {
 };
 
 export const CountryLink: FC<TCountryLink> = ({ countryCode, className = "", emptyContentFallback, children }) => {
-  const configQuery: any = useConfig("config");
+  const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
 
   const slug = getCountrySlug(countryCode, countries);

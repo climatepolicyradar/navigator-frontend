@@ -8,7 +8,7 @@ type TProps = {
 };
 
 export const CountryHeader = ({ country }: TProps) => {
-  const configQuery: any = useConfig("config");
+  const configQuery = useConfig();
   const { data: { regions = [], countries = [] } = {} } = configQuery;
 
   const countryGeography = countries.find((c: TGeography) => c.display_value === country.name);

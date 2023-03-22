@@ -23,7 +23,7 @@ async function getSearch(query = initialSearchCriteria) {
   const { data } = await getEnvFromServer();
   const client = new ApiClient(data?.env?.api_url);
   // TODO: remove group_documents attribute as/when the API returns families as default
-  const results = await client.post<TSearch>(`/searches?group_documents=True`, query, config);
+  const results = await client.post<TSearch>("/searches", query, config);
   return results;
 }
 
@@ -40,10 +40,10 @@ const useSearch = (query: TRouterQuery, runFreshSearch: boolean = true) => {
     setStatus("loading");
 
     // If we don't want to trigger an API call, return early
-    if(!runFreshSearch) {
+    if (!runFreshSearch) {
       setStatus("fetched");
       return;
-    };
+    }
 
     // Check if we have a cached result before calling the API
     const cacheId = {

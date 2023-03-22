@@ -46,8 +46,8 @@ const Search = () => {
 
   const { status, families, hits, searchQuery } = useSearch(router.query);
 
-  const configQuery = useConfig("config");
-  const { data: { document_types = [], sectors = [], regions = [], countries = [] } = {} } = configQuery;
+  const configQuery = useConfig();
+  const { data: { regions = [], countries = [] } = {} } = configQuery;
 
   const { data: filteredCountries } = useFilteredCountries(countries);
 
@@ -274,8 +274,6 @@ const Search = () => {
                         handleSearchChange={handleSearchChange}
                         regions={regions}
                         filteredCountries={filteredCountries}
-                        sectors={sectors}
-                        documentTypes={document_types}
                       />
                     )}
                   </div>

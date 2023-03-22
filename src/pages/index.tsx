@@ -17,7 +17,7 @@ const IndexPage = () => {
   const { mutate: updateCountries } = useUpdateCountries();
   const theme = useContext(ThemeContext);
 
-  const configQuery = useConfig("config");
+  const configQuery = useConfig();
   const { data: { regions = [], countries = [] } = {} } = configQuery;
 
   const handleSearchInput = (term: string, filter?: string, filterValue?: string) => {

@@ -1,12 +1,13 @@
 import { useQuery, useQueryClient } from "react-query";
+import { TGeography } from "@types";
 
-export default function useFilteredCountries(all) {
+export default function useFilteredCountries(all: TGeography[]) {
   const queryClient = useQueryClient();
 
   return useQuery(
     "filteredCountries",
     () => {
-      const existingCountries: any = queryClient.getQueryData("filteredCountries");
+      const existingCountries: TGeography[] = queryClient.getQueryData("filteredCountries");
       return existingCountries?.length ? existingCountries : all;
     },
     {

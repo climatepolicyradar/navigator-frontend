@@ -11,7 +11,7 @@ type TProps = {
 };
 
 export const DocumentHead = ({ document, geography, backLink }: TProps) => {
-  const configQuery: any = useConfig("config");
+  const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
   const geoName = getCountryName(geography, countries);
   const isMain = document.variant.toLowerCase().includes("main");

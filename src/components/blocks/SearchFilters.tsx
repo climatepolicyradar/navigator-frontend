@@ -6,7 +6,7 @@ import MultiList from "../filters/MultiList";
 import ExactMatch from "../filters/ExactMatch";
 import ByDateRange from "../filters/ByDateRange";
 import { currentYear, minYear } from "@constants/timedate";
-import { TSector, TSearchCriteria } from "@types";
+import { TSearchCriteria } from "@types";
 import { ExternalLink } from "@components/ExternalLink";
 import { ThemeContext } from "@context/ThemeContext";
 import { QUERY_PARAMS } from "@constants/queryParams";
@@ -21,8 +21,6 @@ interface SearchFiltersProps {
   searchCriteria: TSearchCriteria;
   regions: object[];
   filteredCountries: object[];
-  sectors: TSector[];
-  documentTypes: object[];
 }
 
 const SearchFilters: React.FC<SearchFiltersProps> = ({
@@ -95,18 +93,6 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
           />
           <MultiList list={countryFilters} removeFilter={handleFilterChange} type={QUERY_PARAMS.country} dataCy="selected-countries" />
         </div>
-        {/* <div className="relative mt-6 hidden">
-          <BySelect
-            list={sectors.filter((sector) => !sectorFilters.includes(sector.name))}
-            onChange={handleFilterChange}
-            title={t("By sector")}
-            keyField="name"
-            filterType="sectors"
-            defaultValue=""
-            defaultText={sectorFilters.length ? "Add more sectors" : "All"}
-          />
-          <MultiList list={sectorFilters} removeFilter={handleFilterChange} type="sectors" />
-        </div> */}
         <div className="relative mt-8 mb-12">
           <div data-cy="date-range">
             <ByDateRange
