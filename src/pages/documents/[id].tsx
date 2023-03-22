@@ -49,6 +49,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     window.open(url);
   };
 
+  const handlePassageClick = (index: number) => {
+    setPassageIndex(index);
+    setTimeout(() => {
+      window.document.getElementById("document-viewer").scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
   return (
     <Layout title={document.title}>
       <section
@@ -64,7 +71,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
             <Loader />
           </div>
         ) : (
-          <section className="mt-4 flex-1 flex">
+          <section className="pt-4 flex-1 flex" id="document-viewer">
             <div className="container flex-1">
               <div className="flex flex-col md:flex-row justify-between items-center pb-4 border-b border-lineBorder gap-4">
                 {passageMatches.length > 0 && (
@@ -79,7 +86,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
               <div className="md:flex md:h-[80vh]">
                 {passageMatches.length > 0 && (
                   <div className="md:block md:w-1/3 overflow-y-scroll pr-4 max-h-[30vh] md:max-h-full">
-                    <PassageMatches passages={passageMatches} setPassageIndex={setPassageIndex} activeIndex={passageIndex} />
+                    <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex} />
                   </div>
                 )}
                 {status === "fetched" && (
