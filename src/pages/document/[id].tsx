@@ -89,9 +89,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   return (
     <Layout title={page.title}>
       <Script id="analytics">
-        analytics.category = "{page.category}";
-        analytics.type = "{page.metadata.document_type}";
-        analytics.geography = "{page.geography}";
+        analytics.category = "{page.category}"; analytics.type = "{page.metadata.document_type}"; analytics.geography = "{page.geography}";
       </Script>
       <section
         className="mb-8"
@@ -123,9 +121,11 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                       )}
                     </div>
                   )}
-                  {mainDocs.map((doc) => (
-                    <FamilyDocument matches={getDocumentMatches(doc.slugs)} document={doc} key={doc.import_id} />
-                  ))}
+                  <div data-cy="main-documents">
+                    {mainDocs.map((doc) => (
+                      <FamilyDocument matches={getDocumentMatches(doc.slugs)} document={doc} key={doc.import_id} />
+                    ))}
+                  </div>
                 </section>
 
                 {otherDocs.length > 0 && (
@@ -136,7 +136,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
                     <section className="mt-12">
                       <h3>Related documents</h3>
-                      <div className="divide-solid divide-blue-100 divide-y">
+                      <div className="divide-solid divide-blue-100 divide-y" data-cy="related-documents">
                         {otherDocs.map((doc) => (
                           <div key={doc.import_id} className="mt-4">
                             <FamilyDocument matches={getDocumentMatches(doc.slugs)} document={doc} />
