@@ -1,8 +1,9 @@
 .PHONEY: build run run_ci with_production
 
-TAG=local-frontend
+TAG = local-frontend
 THEME ?= cclw
-API_URL ?= https://api.dev.climatepolicyradar.org/api/v1  
+API_URL ?= https://api.dev.climatepolicyradar.org/api/v1
+S3_PATH ?= https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
 
 run: build
 	docker run --rm -it \
@@ -10,6 +11,7 @@ run: build
 		-e THEME=$(THEME) \
 		-e API_URL=$(API_URL) \
 		-e ADOBE_API_KEY=$(ADOBE_API_KEY) \
+		-e S3_PATH=$(S3_PATH) \
 		-e NODE_ENV="development" \
 		-e ROBOTS="false" \
 		-e HOSTNAME="http://localhost:3000" \
@@ -28,6 +30,7 @@ run_ci:
 		-e THEME=$(THEME) \
 		-e API_URL=$(API_URL) \
 		-e ADOBE_API_KEY=$(ADOBE_API_KEY) \
+		-e S3_PATH=$(S3_PATH) \
 		-e NODE_ENV="production" \
 		-e ROBOTS="false" \
 		-e HOSTNAME="http://localhost:3000" \
