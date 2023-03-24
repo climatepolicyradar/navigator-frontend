@@ -3,6 +3,7 @@ import { clickCookiePolicy } from "../../../utils/cookiePolicy";
 
 const searchInputSelector = '[data-cy="search-input"]';
 const searchResultsSelector = '[data-cy="search-results"]';
+const searchResultSelector = '[data-cy="search-result"]';
 const searchTerm = "adaptation report";
 const searchTermQueryString = "?q=adaptation+report";
 
@@ -31,7 +32,11 @@ describe("Search Flow", () => {
     });
   });
 
-  it("should display list of search results", () => {
+  it("should display list of search results container", () => {
     cy.get(searchResultsSelector).should("be.visible");
+  });
+
+  it("should display at least 1 result", () => {
+    cy.get(searchResultsSelector).children(searchResultSelector, { timeout: 10000 }).should("have.length.gte", 1);
   });
 });

@@ -36,7 +36,7 @@ const SearchResultList = ({ category, families }: TProps) => {
   return (
     <>
       {families?.map((family, index: number) => (
-        <div key={index} className="my-16 first:md:mt-4">
+        <div key={index} className="my-16 first:md:mt-4" data-cy="search-result">
           <SearchResult family={family} />
         </div>
       ))}
