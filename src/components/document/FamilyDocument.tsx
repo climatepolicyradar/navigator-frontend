@@ -1,13 +1,15 @@
 import { useRouter } from "next/router";
 import MatchesButton from "@components/buttons/MatchesButton";
-import { TDocumentContentType, TDocumentPage } from "@types";
+import { TDocumentContentType, TDocumentPage, TLoadingStatus } from "@types";
+import { Loading } from "@components/svg/Icons";
 
 type TProps = {
   document: TDocumentPage;
   matches?: number;
+  status?: TLoadingStatus;
 };
 
-export const FamilyDocument = ({ document, matches }: TProps) => {
+export const FamilyDocument = ({ document, matches, status }: TProps) => {
   const { title, slugs, variant, content_type } = document;
   const router = useRouter();
   const isMain = variant.toLowerCase().includes("main");
@@ -50,7 +52,11 @@ export const FamilyDocument = ({ document, matches }: TProps) => {
         </div>
         {canView && (
           <div className="flex-0">
-            <MatchesButton dataAttribute={slugs[0]} count={matches} overideText={!hasMatches ? "view document" : null} />
+            <MatchesButton
+              dataAttribute={slugs[0]}
+              count={matches}
+              overideText={status === "loading" ? <Loading /> : !hasMatches ? "view document" : null}
+            />
           </div>
         )}
       </div>

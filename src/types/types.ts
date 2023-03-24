@@ -248,3 +248,5 @@ export type TSearch = {
   query_time_ms: number;
   families: TMatchedFamily[];
 };
+
+export type TLoadingStatus = "idle" | "loading" | "success" | "error";

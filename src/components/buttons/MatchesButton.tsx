@@ -1,7 +1,7 @@
 type TProps = {
   dataAttribute: string;
   count: number | string;
-  overideText?: string;
+  overideText?: string | JSX.Element;
 };
 
 const MatchesButton = ({ dataAttribute, count, overideText }: TProps) => {

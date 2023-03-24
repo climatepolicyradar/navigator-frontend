@@ -66,7 +66,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
         data-analytics-type={document.content_type}
       >
         <DocumentHead document={document} geography={family.geography} backLink={family.slugs[0]} />
-        {status !== "fetched" ? (
+        {status !== "success" ? (
           <div className="w-full flex justify-center flex-1">
             <Loader />
           </div>
@@ -89,7 +89,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                     <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex} />
                   </div>
                 )}
-                {status === "fetched" && (
+                {status === "success" && (
                   <div className="md:block mt-4 flex-1 h-[400px] md:h-full">
                     {document.content_type === "application/pdf" && (
                       <EmbeddedPDF document={document} documentPassageMatches={passageMatches} passageIndex={passageIndex} />
