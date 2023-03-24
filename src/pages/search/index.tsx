@@ -282,7 +282,7 @@ const Search = () => {
                   <div className="md:pl-8">
                     <div className="lg:flex justify-between">
                       <div className="text-sm my-4 md:my-0 md:flex" data-cy="number-of-results">
-                        {status === "fetched" && renderNoOfResults()}
+                        {status === "success" && renderNoOfResults()}
                       </div>
                       <ExternalLink
                         url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform"

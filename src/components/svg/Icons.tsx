@@ -65,7 +65,13 @@ export function DocumentsIcon({ width, height, color = "currentColor" }: IconPro
 
 export function JurisdictionsIcon({ width, height, color = "currentColor" }: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" fill={color} style={{ width: `${width}px`, height: `${height}px` }} version="1.1" viewBox="0 0 512 512.0001">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill={color}
+      style={{ width: `${width}px`, height: `${height}px` }}
+      version="1.1"
+      viewBox="0 0 512 512.0001"
+    >
       <g id="surface1">
         <path d="M 15 512 L 287 512 C 295.285156 512 302 505.285156 302 497 L 302 481 C 302 464.429688 288.570312 451 272 451 L 272 433.066406 C 272 409.320312 252.679688 390 228.933594 390 L 73.066406 390 C 49.320312 390 30 409.320312 30 433.066406 L 30 451 C 13.429688 451 0 464.429688 0 481 L 0 497 C 0 505.28125 6.71875 512 15 512 Z M 15 512 " />
         <path d="M 187.734375 330.34375 C 197.703125 343.574219 216.515625 346.21875 229.746094 336.246094 C 242.980469 326.277344 245.621094 307.464844 235.652344 294.230469 L 145.378906 174.4375 C 135.40625 161.203125 116.597656 158.5625 103.367188 168.53125 C 90.132812 178.503906 87.488281 197.3125 97.460938 210.546875 Z M 187.734375 330.34375 " />
@@ -80,7 +86,14 @@ export function JurisdictionsIcon({ width, height, color = "currentColor" }: Ico
 
 export function AddIcon({ width, height, color = "currentColor" }: IconProps) {
   return (
-    <svg id="bold" style={{ width: `${width}px`, height: `${height}px` }} fill={color} enableBackground="new 0 0 24 24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      id="bold"
+      style={{ width: `${width}px`, height: `${height}px` }}
+      fill={color}
+      enableBackground="new 0 0 24 24"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path d="m14.25 0h-11.5c-1.52 0-2.75 1.23-2.75 2.75v15.5c0 1.52 1.23 2.75 2.75 2.75h6.59c-.54-1.14-.84-2.41-.84-3.75 0-1.15.22-2.25.63-3.26-.04.01-.08.01-.13.01h-5c-.55 0-1-.45-1-1s.45-1 1-1h5c.38 0 .72.22.88.54.65-1.01 1.49-1.87 2.48-2.54h-8.36c-.55 0-1-.45-1-1s.45-1 1-1h9c.55 0 1 .45 1 1 0 .05 0 .09-.01.13.93-.38 1.95-.6 3.01-.62v-5.76c0-1.52-1.23-2.75-2.75-2.75zm-6.25 6h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1z" />
       <path d="m17.25 10.5c-3.722 0-6.75 3.028-6.75 6.75s3.028 6.75 6.75 6.75 6.75-3.028 6.75-6.75-3.028-6.75-6.75-6.75zm2.75 7.75h-1.75v1.75c0 .552-.448 1-1 1s-1-.448-1-1v-1.75h-1.75c-.552 0-1-.448-1-1s.448-1 1-1h1.75v-1.75c0-.552.448-1 1-1s1 .448 1 1v1.75h1.75c.552 0 1 .448 1 1s-.448 1-1 1z" />
     </svg>
@@ -257,7 +270,11 @@ export function ExternalLinkIcon({ height = "32", width = "32", color = "current
     <svg id="icon" xmlns="http://www.w3.org/2000/svg" fill={color} style={{ width: `${width}px`, height: `${height}px` }} viewBox="0 0 32 32">
       <path d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z" />
       <polygon points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2" />
-      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" style={{ width: `${width}px`, height: `${height}px`, fill: "none" }} />
+      <rect
+        id="_Transparent_Rectangle_"
+        data-name="&lt;Transparent Rectangle&gt;"
+        style={{ width: `${width}px`, height: `${height}px`, fill: "none" }}
+      />
     </svg>
   );
 }
@@ -314,15 +331,30 @@ export const TargetIcon = ({ height = "32", width = "32", color = "currentColor"
 
 export const DocumentIcon = ({ height = "32", width = "32", color = "currentColor" }: IconProps) => {
   return (
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd" style={{ width: `${width}px`, height: `${height}px` }}>
-      <path d="M22 24h-20v-24h14l6 6v18zm-7-23h-12v22h18v-16h-6v-6zm3 15v1h-12v-1h12zm0-3v1h-12v-1h12zm0-3v1h-12v-1h12zm-2-4h4.586l-4.586-4.586v4.586z" fill={color} />
+    <svg
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      fillRule="evenodd"
+      clipRule="evenodd"
+      style={{ width: `${width}px`, height: `${height}px` }}
+    >
+      <path
+        d="M22 24h-20v-24h14l6 6v18zm-7-23h-12v22h18v-16h-6v-6zm3 15v1h-12v-1h12zm0-3v1h-12v-1h12zm0-3v1h-12v-1h12zm-2-4h4.586l-4.586-4.586v4.586z"
+        fill={color}
+      />
     </svg>
   );
 };
 
 export const GlobeIcon = ({ height = "32", width = "32", color = "currentColor" }: IconProps) => {
   return (
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd" style={{ width: `${width}px`, height: `${height}px` }}>
+    <svg
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      fillRule="evenodd"
+      clipRule="evenodd"
+      style={{ width: `${width}px`, height: `${height}px` }}
+    >
       <path
         d="M12.02 0c6.614.011 11.98 5.383 11.98 12 0 6.623-5.376 12-12 12-6.623 0-12-5.377-12-12 0-6.617 5.367-11.989 11.981-12h.039zm3.694 16h-7.427c.639 4.266 2.242 7 3.713 7 1.472 0 3.075-2.734 3.714-7m6.535 0h-5.523c-.426 2.985-1.321 5.402-2.485 6.771 3.669-.76 6.671-3.35 8.008-6.771m-14.974 0h-5.524c1.338 3.421 4.34 6.011 8.009 6.771-1.164-1.369-2.059-3.786-2.485-6.771m-.123-7h-5.736c-.331 1.166-.741 3.389 0 6h5.736c-.188-1.814-.215-3.925 0-6m8.691 0h-7.685c-.195 1.8-.225 3.927 0 6h7.685c.196-1.811.224-3.93 0-6m6.742 0h-5.736c.062.592.308 3.019 0 6h5.736c.741-2.612.331-4.835 0-6m-12.825-7.771c-3.669.76-6.671 3.35-8.009 6.771h5.524c.426-2.985 1.321-5.403 2.485-6.771m5.954 6.771c-.639-4.266-2.242-7-3.714-7-1.471 0-3.074 2.734-3.713 7h7.427zm-1.473-6.771c1.164 1.368 2.059 3.786 2.485 6.771h5.523c-1.337-3.421-4.339-6.011-8.008-6.771"
         fill={color}
@@ -338,6 +370,19 @@ export const PDFIcon = ({ height = "32", width = "32", color = "currentColor" }:
         d="M11.363 2c4.155 0 2.637 6 2.637 6s6-1.65 6 2.457v11.543h-16v-20h7.363zm.826-2h-10.189v24h20v-14.386c0-2.391-6.648-9.614-9.811-9.614zm4.811 13h-2.628v3.686h.907v-1.472h1.49v-.732h-1.49v-.698h1.721v-.784zm-4.9 0h-1.599v3.686h1.599c.537 0 .961-.181 1.262-.535.555-.658.587-2.034-.062-2.692-.298-.3-.712-.459-1.2-.459zm-.692.783h.496c.473 0 .802.173.915.644.064.267.077.679-.021.948-.128.351-.381.528-.754.528h-.637v-2.12zm-2.74-.783h-1.668v3.686h.907v-1.277h.761c.619 0 1.064-.277 1.224-.763.095-.291.095-.597 0-.885-.16-.484-.606-.761-1.224-.761zm-.761.732h.546c.235 0 .467.028.576.228.067.123.067.366 0 .489-.109.199-.341.227-.576.227h-.546v-.944z"
         fill={color}
       />
+    </svg>
+  );
+};
+
+export const Loading = ({ height = "16", width = "16", color = "currentColor" }: IconProps) => {
+  return (
+    <svg className="animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style={{ width: `${width}px`, height: `${height}px` }}>
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke={color} strokeWidth="4"></circle>
+      <path
+        className="opacity-75"
+        fill={color}
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+      ></path>
     </svg>
   );
 };
