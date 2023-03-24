@@ -18,7 +18,6 @@ import { TFamilyPage, TMatchedFamily, TTarget } from "@types";
 import useSearch from "@hooks/useSearch";
 import { useRouter } from "next/router";
 import { QUERY_PARAMS } from "@constants/queryParams";
-import Loader from "@components/Loader";
 import axios from "axios";
 import { TargetIcon } from "@components/svg/Icons";
 import Button from "@components/buttons/Button";
