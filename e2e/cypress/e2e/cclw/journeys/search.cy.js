@@ -3,6 +3,7 @@ import { clickCookiePolicy } from "../../../utils/cookiePolicy";
 
 const searchInputSelector = '[data-cy="search-input"]';
 const searchResultsSelector = '[data-cy="search-results"]';
+const searchResultSelector = '[data-cy="search-result"]';
 const searchTerm = "adaptation report";
 const searchTermQueryString = "?q=adaptation+report";
 
@@ -31,7 +32,24 @@ describe("Search Flow", () => {
     });
   });
 
-  it("should display list of search results", () => {
+  it("should display list of search results container", () => {
     cy.get(searchResultsSelector).should("be.visible");
+  });
+
+  it("should display at least 1 result", () => {
+    cy.get(searchResultsSelector).children(searchResultSelector, { timeout: 10000 }).should("have.length.gte", 1);
+  });
+
+  it("should display the correct search result attributes", () => {
+    cy.get(searchResultsSelector)
+      .children(searchResultSelector, { timeout: 10000 })
+      .first()
+      .within(() => {
+        cy.get('[data-cy="result-title"]').should("be.visible");
+        cy.get('[data-cy="result-category"]').should("be.visible");
+        cy.get('[data-cy="result-year"]').should("be.visible");
+        cy.get('[data-cy="result-description"]').should("be.visible");
+        cy.get('[data-cy="country-link"]').should("be.visible");
+      });
   });
 });

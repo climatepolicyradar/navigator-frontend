@@ -26,7 +26,7 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
   return (
     <div className="relative">
       <div className="flex justify-between items-start">
-        <h2 className="leading-none flex items-start">
+        <h2 className="leading-none flex items-start" data-cy="result-title">
           <LinkWithQuery
             href={`/document/${family_slug}`}
             className={`text-left text-blue-500 font-medium text-lg transition duration-300 leading-tight hover:underline ${
@@ -40,7 +40,7 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
       </div>
       <div className="flex flex-wrap text-sm text-indigo-400 mt-4 items-center font-medium">
         {family_category && (
-          <div className="mr-3" title={family_category}>
+          <div className="mr-3" title={family_category} data-cy="result-category">
             {getCategoryIcon(family_category, "20")}
           </div>
         )}
@@ -48,10 +48,12 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
           <div className={`rounded-sm border border-black flag-icon-background flag-icon-${family_geography.toLowerCase()}`} />
           <span className="ml-2">{country_name}</span>
         </CountryLink>
-        {!isNaN(year) && <span>, {year}</span>}
+        {!isNaN(year) && <span data-cy="result-year">, {year}</span>}
         {children}
       </div>
-      <p className="text-indigo-400 mt-3 text-content">{truncateString(family_description.replace(/(<([^>]+)>)/gi, ""), 375)}</p>
+      <p className="text-indigo-400 mt-3 text-content" data-cy="result-description">
+        {truncateString(family_description.replace(/(<([^>]+)>)/gi, ""), 375)}
+      </p>
     </div>
   );
 };

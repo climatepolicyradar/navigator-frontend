@@ -14,6 +14,7 @@ const pageSelectors = [
   '[data-cy="top-documents"]',
   '[data-cy="see-more-button"]',
   '[data-cy="legislative-process"]',
+  '[data-cy="targets"]',
 ];
 
 describe("Geography Page", () => {
