@@ -4,11 +4,12 @@ type TProps = {
   url: string;
   className?: string;
   children?: ReactNode;
+  cy?: string;
 };
 
-export const ExternalLink: FC<TProps> = ({ url, className, children }) => {
+export const ExternalLink: FC<TProps> = ({ url, className, children, cy }) => {
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer nofollow" className={className}>
+    <a href={url} target="_blank" rel="noopener noreferrer nofollow" className={className} data-cy={cy}>
       {children}
     </a>
   );

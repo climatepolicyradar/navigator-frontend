@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
 import { clickCookiePolicy } from "../../../utils/cookiePolicy";
+const inputSelector = '[data-cy="search-input"]';
 const searchResultsSelector = '[data-cy="search-results"]';
 
 const filterSelectors = [
@@ -11,6 +12,10 @@ const filterSelectors = [
 ];
 
 const selectedCountries = '[data-cy="selected-countries"]';
+const tabbedNavSelector = '[data-cy="tabbed-nav"]';
+const sortSelector = '[data-cy="sort"]';
+
+const pageSelectors = [inputSelector, searchResultsSelector, '[data-cy="download-csv"]', '[data-cy="number-of-results"]', tabbedNavSelector, sortSelector];
 
 describe("Search Page", () => {
   before(() => {
@@ -36,8 +41,29 @@ describe("Search Page", () => {
     cy.get(selectedCountries).should("not.be.visible");
   });
 
-  it("should display list of search results", () => {
+  it("should display the container for list of search results", () => {
     cy.get(searchResultsSelector).should("be.visible");
   });
-  
+
+  it("should display the correct page elements", () => {
+    pageSelectors.forEach((selector) => {
+      cy.get(selector, { timeout: 10000 }).should("be.visible");
+    });
+  });
+
+  it("search input should be empty", () => {
+    cy.get(inputSelector).should("have.value", "");
+  });
+
+  it("should display the correct number of category tabs", () => {
+    cy.get(tabbedNavSelector).children().should("have.length", 4);
+  });
+
+  it("should display one tab selected, and be 'All' by default", () => {
+    cy.get(tabbedNavSelector).children(".tabbed-nav__active").should("have.length", 1).contains("All");
+  });
+
+  it("should contain the correct number of sort options", () => {
+    cy.get(sortSelector).children("select").children().should("have.length", 4);
+  });
 });

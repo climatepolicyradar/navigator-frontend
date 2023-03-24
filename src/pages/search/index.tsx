@@ -281,10 +281,13 @@ const Search = () => {
                 <div className="md:w-3/4">
                   <div className="md:pl-8">
                     <div className="lg:flex justify-between">
-                      <div className="text-sm my-4 md:my-0 md:flex">{status === "fetched" && renderNoOfResults()}</div>
+                      <div className="text-sm my-4 md:my-0 md:flex" data-cy="number-of-results">
+                        {status === "fetched" && renderNoOfResults()}
+                      </div>
                       <ExternalLink
                         url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform"
                         className="text-sm text-blue-600 mt-4 md:mt-0 hover:underline"
+                        cy="download-csv"
                       >
                         Request to download all data (.csv)
                       </ExternalLink>
@@ -294,7 +297,7 @@ const Search = () => {
                     <div className="flex-grow">
                       <TabbedNav activeIndex={getCategoryIndex()} items={DOCUMENT_CATEGORIES} handleTabClick={handleDocumentCategoryClick} />
                     </div>
-                    <div className="mt-4 md:-mt-2 md:ml-2 lg:ml-8 md:mb-2 flex items-center">
+                    <div className="mt-4 md:-mt-2 md:ml-2 lg:ml-8 md:mb-2 flex items-center" data-cy="sort">
                       <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
                     </div>
                   </div>
