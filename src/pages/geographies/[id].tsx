@@ -25,7 +25,7 @@ import { ApiClient } from "@api/http-common";
 import { TGeographyStats, TGeographySummary } from "@types";
 import { extractNestedData } from "@utils/extractNestedData";
 import { getCountryCode } from "@helpers/getCountryFields";
-import { GEO_DESCRIPTION } from "@constants/metaDescriptions";
+import { getGeoDescription } from "@constants/metaDescriptions";
 
 type TProps = {
   geography: TGeographyStats;
@@ -122,7 +122,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
   return (
     <>
-      <Layout title={geography.name} description={GEO_DESCRIPTION(geography.name)}>
+      <Layout title={geography.name} description={getGeoDescription(geography.name)}>
         {!geography ? (
           <SingleCol>
             <TextLink onClick={() => router.back()}>Go back</TextLink>
