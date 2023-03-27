@@ -6,21 +6,26 @@ import getPageTitle from "@utils/getPageTitle";
 
 import { useContext } from "react";
 import { ThemeContext } from "@context/ThemeContext";
+import getPageDescription from "@utils/getPageDescription";
 
 type TProps = {
   title?: string;
+  description?: string;
   heading?: string;
   screenHeight?: boolean;
   children?: ReactNode;
 };
 
-const Layout: FC<TProps> = ({ children, title = "", screenHeight = false }) => {
+const Layout: FC<TProps> = ({ children, title = "", description = null, screenHeight = false }) => {
   const theme = useContext(ThemeContext);
-  
+
   return (
     <div className="h-full flex flex-col">
       <Head>
-        <title>{`${getPageTitle(theme)} | ${title}`}</title>
+        <title>{`${title} | ${getPageTitle(theme)}`}</title>
+        <meta property="og:title" content={`${title} | ${getPageTitle(theme)}`} />
+        <meta name="description" content={description ?? getPageDescription(theme)} key="desc" />
+        <meta property="og:description" content={description ?? getPageDescription(theme)} />
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
