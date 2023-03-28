@@ -12,8 +12,8 @@ import { ThemeContext } from "@context/ThemeContext";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 
-interface SearchFiltersProps {
-  handleFilterChange(type: string, value: string, action?: string): void;
+type TSearchFiltersProps = {
+  handleFilterChange(type: string, value: string): void;
   handleYearChange(values: number[]): void;
   handleRegionChange(type: any, regionName: any): void;
   handleClearSearch(): void;
@@ -23,7 +23,7 @@ interface SearchFiltersProps {
   filteredCountries: object[];
 }
 
-const SearchFilters: React.FC<SearchFiltersProps> = ({
+const SearchFilters: React.FC<TSearchFiltersProps> = ({
   handleFilterChange,
   handleYearChange,
   searchCriteria,

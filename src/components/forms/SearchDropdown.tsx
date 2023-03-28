@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import useConfig from "@hooks/useConfig";
 import { SearchIcon } from "@components/svg/Icons";
 import { QUERY_PARAMS } from "@constants/queryParams";
+import { TGeography } from "@types";
 
 type TProps = {
   show: boolean;
@@ -35,23 +36,24 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
     router.push({ pathname: url, query: router.query });
   };
 
-  const handleSuggestionClick = (e: React.MouseEvent<HTMLAnchorElement>, geography: string) => {
+  const handleSuggestionClick = (e: React.MouseEvent<HTMLAnchorElement>, geography: TGeography) => {
     e.preventDefault();
-    handleSearchClick(termWithoutGeography(geography), QUERY_PARAMS.country, geography);
+    handleSearchClick(termWithoutGeography(geography.display_value), QUERY_PARAMS.country, geography.slug);
   };
 
   const anchorClasses = (last: boolean) =>
     `flex flex-wrap items-center cursor-pointer py-2 px-4 block hover:bg-search-itemHover focus:bg-bsearch-itemHover ${last ? "rounded-b-lg" : ""}`;
 
-  const renderSearchSuggestion = (geography: string) => {
-    if (!term.toLowerCase().includes(geography.toLowerCase())) return;
-    if (!termWithoutGeography(geography).trim().length) return;
+  const renderSearchSuggestion = (geography: TGeography) => {
+    if (!term.toLowerCase().includes(geography.display_value.toLowerCase())) return;
+    if (!termWithoutGeography(geography.display_value).trim().length) return;
     return (
       <ul>
-        <li key={geography}>
+        <li key={geography.slug}>
           <a href="#" className={anchorClasses(false)} onClick={(e) => handleSuggestionClick(e, geography)}>
-            Did you mean to search for <span className="font-bold text-black mx-2">{term.toLowerCase().replace(geography.toLowerCase(), "")}</span> in{" "}
-            <span className="font-bold text-black ml-2">{geography}</span>?
+            Did you mean to search for&nbsp;
+            <span className="font-bold text-black">{termWithoutGeography(geography.display_value)}</span>&nbsp;in&nbsp;
+            <span className="font-bold text-black">{geography.display_value}</span>?
           </a>
         </li>
       </ul>
@@ -70,7 +72,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
         </span>
         Search <span className="font-bold text-black mx-1">{term}</span> in all documents
       </a>
-      {geographiesFiltered.length === 1 && renderSearchSuggestion(geographiesFiltered[0].display_value)}
+      {geographiesFiltered.length === 1 && renderSearchSuggestion(geographiesFiltered[0])}
       {!!geographiesFiltered.length && (
         <>
           <div className="py-2 px-4 text-sm mt-2">View countries and territories information</div>
