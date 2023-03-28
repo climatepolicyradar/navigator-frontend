@@ -15,6 +15,7 @@ const pageSelectors = [
   '[data-cy="see-more-button"]',
   '[data-cy="legislative-process"]',
   '[data-cy="targets"]',
+  '[data-cy="download-target-csv"]',
 ];
 
 describe("Geography Page", () => {
