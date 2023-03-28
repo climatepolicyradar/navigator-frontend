@@ -32,9 +32,7 @@ const SearchResult = ({ family }: SearchResultProps) => {
         <>
           <div className="w-full lg:w-auto flex flex-nowrap mt-2 lg:mt-0 lg:mr-4">
             <span className="font-medium lg:ml-10">Matches:&nbsp;</span>
-            <div className="divide-x divide-current flex-grow-0">
-              {matches.join(" | ")}
-            </div>
+            <div className="flex-grow-0">{matches.join(", ")}</div>
           </div>
         </>
       );

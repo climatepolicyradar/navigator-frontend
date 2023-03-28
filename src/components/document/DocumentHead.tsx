@@ -14,7 +14,7 @@ export const DocumentHead = ({ document, geography, backLink }: TProps) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
   const geoName = getCountryName(geography, countries);
-  const isMain = document.variant.toLowerCase().includes("main");
+  const isMain = document.document_role.toLowerCase().includes("main");
 
   return (
     <div className="bg-offwhite border-solid border-lineBorder border-b">
@@ -27,7 +27,13 @@ export const DocumentHead = ({ document, geography, backLink }: TProps) => {
                 <span className={`rounded-sm border border-black flag-icon-background flag-icon-${geography.toLowerCase()}`} />
                 <span className="ml-2">{geoName}</span>
               </CountryLink>
-              {!isMain && <span className="pl-2 capitalize">{document.variant.toLowerCase()}</span>}
+              {!isMain && <span className="pl-2 capitalize">{document.document_role.toLowerCase()}</span>}
+              {!!document.language && (
+                <span className="pl-2">
+                  {document.language.toUpperCase()}
+                  {!!document.variant && ` (${document.variant})`}
+                </span>
+              )}
             </div>
             {backLink && (
               <div className="mt-4">

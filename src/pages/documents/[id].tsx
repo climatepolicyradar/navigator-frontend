@@ -16,7 +16,7 @@ type TDocFamily = {
   title: string;
   import_id: string;
   geography: string;
-  slugs: string[];
+  slug: string;
   published_date: string;
   last_updated_date: string;
 };
@@ -35,7 +35,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   if (!!router.query[QUERY_PARAMS.query_string]) {
     families.forEach((family) => {
       family.family_documents.forEach((cacheDoc) => {
-        if (document.slugs.includes(cacheDoc.document_slug)) {
+        if (document.slug === cacheDoc.document_slug) {
           passageMatches.push(...cacheDoc.document_passage_matches);
         }
       });
@@ -65,7 +65,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
         data-analytics-variant={document.variant}
         data-analytics-type={document.content_type}
       >
-        <DocumentHead document={document} geography={family.geography} backLink={family.slugs[0]} />
+        <DocumentHead document={document} geography={family.geography} backLink={family.slug} />
         {status !== "success" ? (
           <div className="w-full flex justify-center flex-1">
             <Loader />

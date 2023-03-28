@@ -10,9 +10,9 @@ type TProps = {
 };
 
 export const FamilyDocument = ({ document, matches, status }: TProps) => {
-  const { title, slugs, variant, content_type } = document;
+  const { title, slug, document_role, language, content_type, variant } = document;
   const router = useRouter();
-  const isMain = variant.toLowerCase().includes("main");
+  const isMain = document_role?.toLowerCase().includes("main");
   const hasMatches = typeof matches !== "undefined" && matches > 0;
   // PDFs need to have a cdn location
   // HTMLs need a source url / website
@@ -23,7 +23,7 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
     e.preventDefault();
     // If there is no document to render, don't display the document page
     if (!canView) return;
-    router.push({ pathname: `/documents/${slugs[0]}`, query: router.query });
+    router.push({ pathname: `/documents/${slug}`, query: router.query });
   };
 
   const renderContentType = (t: TDocumentContentType) => {
@@ -46,16 +46,17 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
       <div className="text-primary-600 mb-2">{title}</div>
       <div className="flex items-center">
         <div className="flex-1 flex flex-wrap gap-x-8 items-center">
-          {!isMain && <span className="capitalize">{variant.toLowerCase()}</span>}
+          {!isMain && <span className="capitalize font-bold">{document_role?.toLowerCase()}</span>}
           {renderContentType(content_type)}
+          {!!language && <span>{language.toUpperCase()}{!!variant && ` (${variant})`}</span>}
           {!canView && <span>Document preview is not currently available</span>}
         </div>
         {canView && (
           <div className="flex-0">
             <MatchesButton
-              dataAttribute={slugs[0]}
+              dataAttribute={slug}
               count={matches}
-              overideText={status === "loading" ? <Loading /> : !hasMatches ? "view document" : null}
+              overideText={status === "loading" ? <Loading /> : !hasMatches ? "View document" : null}
             />
           </div>
         )}
