@@ -224,9 +224,11 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                 </>
               )}
 
-              <div className="mt-12">
-                <Divider color="bg-lineBorder" />
-              </div>
+              {page.collections.length > 0 && (
+                <div className="mt-12">
+                  <Divider color="bg-lineBorder" />
+                </div>
+              )}
 
               {page.collections.map((collection, i) => (
                 <section className="pt-12" id={`collection`} key={collection.import_id}>
