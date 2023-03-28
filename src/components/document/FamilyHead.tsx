@@ -3,6 +3,7 @@ import { CountryLink } from "@components/CountryLink";
 import { TFamilyPage } from "@types";
 import { convertDate } from "@utils/timedate";
 import { getCountryName } from "@helpers/getCountryFields";
+import { Fragment } from "react";
 
 type TProps = {
   family: TFamilyPage;
@@ -23,17 +24,19 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
             <h1 className="text-3xl lg:smaller">{family.title}</h1>
             {family.collections.length > 0 && (
               <div className="flex text-base text-indigo-400 mt-4 items-center w-full mb-2 font-medium">
-                <span>Part of &nbsp;</span>
+                <span>Part of the&nbsp;</span>
                 {family.collections.length > 0 &&
-                  family.collections.map((collection) => (
-                    <a
-                      key={collection.title}
-                      onClick={onCollectionClick ?? (() => {})}
-                      href="#collection"
-                      className="underline text-primary-400 hover:text-indigo-600 duration-300"
-                    >
-                      {collection.title}
-                    </a>
+                  family.collections.map((collection, i) => (
+                    <Fragment key={`${collection.title}-${i}`}>
+                      <a
+                        onClick={onCollectionClick ?? (() => {})}
+                        href="#collection"
+                        className="underline text-primary-400 hover:text-indigo-600 duration-300"
+                      >
+                        {collection.title}
+                      </a>
+                      {i < family.collections.length - 1 && <span>,&nbsp;</span>}
+                    </Fragment>
                   ))}
               </div>
             )}

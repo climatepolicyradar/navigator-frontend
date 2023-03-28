@@ -229,6 +229,13 @@ export type TCollection = {
   import_id: string;
   title: string;
   description: string;
+  families: TCollectionFamily[];
+};
+
+export type TCollectionFamily = {
+  description: string;
+  slug: string;
+  title: string;
 };
 
 export type TFamilyMetadata = {

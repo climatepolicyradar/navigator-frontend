@@ -17,10 +17,12 @@ import { truncateString } from "@helpers/index";
 import { TFamilyPage, TMatchedFamily, TTarget } from "@types";
 import useSearch from "@hooks/useSearch";
 import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import axios from "axios";
 import { TargetIcon } from "@components/svg/Icons";
 import Button from "@components/buttons/Button";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 type TProps = {
   page: TFamilyPage;
@@ -29,6 +31,7 @@ type TProps = {
 
 const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page, targets = [] }: TProps) => {
   const router = useRouter();
+  const pathname = usePathname();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
   const [showTimeline, setShowTimeline] = useState(false);
@@ -74,6 +77,11 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const mainDocs = page.documents.filter((doc) => doc.document_role && doc.document_role.toLowerCase().includes("main"));
   const otherDocs = page.documents.filter((doc) => !doc.document_role || !doc.document_role.toLowerCase().includes("main"));
 
+  const getDocumentCategories = () => {
+    const categories = page.documents.map((doc) => doc.document_type);
+    return [...new Set(categories)];
+  };
+
   useEffect(() => {
     if (page?.summary) {
       const text = page?.summary;
@@ -85,10 +93,9 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
     }
   }, [page, showFullSummary]);
 
-  const getDocumentCategories = () => {
-    const categories = page.documents.map((doc) => doc.document_type);
-    return [...new Set(categories)];
-  };
+  useEffect(() => {
+    setShowCollectionDetail(false);
+  }, [pathname]);
 
   return (
     <Layout title={page.title}>
@@ -217,50 +224,35 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                 </>
               )}
 
-              {/* TODO: return collection information
               <div className="mt-12">
                 <Divider color="bg-lineBorder" />
               </div>
 
-              <section className="mt-12" id="collection">
-                <h3>About the Common Agricultural Policy</h3>
-                <ShowHide show={showCollectionDetail} onClick={() => setShowCollectionDetail(!showCollectionDetail)} className="mt-4" />
-                {showCollectionDetail && (
-                  <div className="text-content">
-                    <div className="mb-8">
-                      <p>
-                        The common agricultural policy (CAP) was created in 1962 by the six founding countries of the European Communities and is the
-                        longest-serving EU policy. Its aim is to:
-                      </p>
-                      <ul>
-                        <li>provide affordable, safe and high-quality food for EU citizens</li>
-                        <li>ensure a fair standard of living for farmers</li>
-                        <li>preserve natural resources and respect the environment</li>
-                        <li>providing food security for all European citizens</li>
-                        <li>addressing global market fluctuations and price volatility</li>
-                        <li>maintaining thriving rural areas across the EU</li>
-                        <li>using natural resources in a more sustainable manner</li>
-                      </ul>
-                      <p>
-                        The CAP is a common policy for all EU countries. It is managed and funded at European level from the resources of the EU’s
-                        budget.
-                      </p>
+              {page.collections.map((collection, i) => (
+                <section className="pt-12" id={`collection`} key={collection.import_id}>
+                  <h3>About the {collection.title}</h3>
+                  <ShowHide show={showCollectionDetail} onClick={() => setShowCollectionDetail(!showCollectionDetail)} className="mt-4" />
+                  {showCollectionDetail && (
+                    <div>
+                      <div className="mb-8 text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
+                      <h4>Other documents in the {collection.title}</h4>
+                      <div className="divide-solid divide-blue-100 divide-y">
+                        {collection.families.map((collFamily, i) => (
+                          <div key={collFamily.slug} className="pt-4 pb-4">
+                            <LinkWithQuery
+                              href={`/document/${collFamily.slug}`}
+                              className="hover:underline text-primary-400 hover:text-indigo-600 duration-300"
+                            >
+                              {collFamily.title}
+                            </LinkWithQuery>
+                            <p className="mt-2">{collFamily.description}</p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <h4>Other documents in the Common Agricultural Policy</h4>
-                    <div className="divide-solid divide-blue-100 divide-y">
-                      {page.collections.map((collection) => {
-                        return <></>;
-                        // TODO: return collection related families
-                        // return collection.families.map((cFamily) => (
-                        //   <div key={cFamily.id} className="mt-4">
-                        //     <FamilyDocument title={cFamily.title} date={cFamily.date} slug={cFamily.slug} />
-                        //   </div>
-                        // ));
-                      })}
-                    </div>
-                  </div>
-                )}
-              </section> */}
+                  )}
+                </section>
+              ))}
             </section>
             <section className="mt-12 md:border-t-0 md:mt-6 md:w-2/5 lg:w-1/4 md:pl-12 flex-shrink-0">
               <div className="md:pl-4 md:border-l md:border-lineBorder">
@@ -268,7 +260,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                 <div className="grid grid-cols-2 gap-x-2">
                   <DocumentInfo id="category-tt" heading="Category" text={page.category} />
                   <DocumentInfo id="type-tt" heading="Type" text={getDocumentCategories().join(", ")} />
-                  {/* {page.metadata.languages.length > 0 && <DocumentInfo heading="Language" text={page.languages[0].name} />} */}
                 </div>
 
                 {page.metadata.topic.length > 0 && <DocumentInfo id="topics-tt" heading="Topics" list={page.metadata.topic} />}
