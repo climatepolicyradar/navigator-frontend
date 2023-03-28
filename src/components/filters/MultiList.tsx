@@ -1,10 +1,11 @@
 import useConfig from "@hooks/useConfig";
 import FilterTag from "../buttons/FilterTag";
 import { getCountryName } from "@helpers/getCountryFields";
+import { QUERY_PARAMS } from "@constants/queryParams";
 
 type TProps = {
   list: string[];
-  removeFilter: (type: string, value: string, action?: string) => void;
+  removeFilter: (type: string, value: string) => void;
   type: string;
   dataCy?: string;
 };
@@ -14,7 +15,7 @@ const MultiList = ({ list, removeFilter, type, dataCy }: TProps) => {
   const { data: { countries = [] } = {} } = configQuery;
 
   const handleClick = (item: string) => {
-    removeFilter(type, item, "delete");
+    removeFilter(type, item);
   };
 
   return (
@@ -22,7 +23,7 @@ const MultiList = ({ list, removeFilter, type, dataCy }: TProps) => {
       {list.length > 0
         ? list.map((item, index) => (
             <div key={`tag${index}`} className="mr-2 mt-1">
-              <FilterTag onClick={() => handleClick(item)} item={type === "countries" ? getCountryName(item, countries) : item} />
+              <FilterTag onClick={() => handleClick(item)} item={type === QUERY_PARAMS.country ? getCountryName(item, countries) : item} />
             </div>
           ))
         : null}
