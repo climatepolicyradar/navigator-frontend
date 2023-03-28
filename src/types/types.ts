@@ -201,7 +201,7 @@ export type TFamilyPage = {
   import_id: string;
   category: TCategory;
   metadata: TFamilyMetadata;
-  slugs: string[];
+  slug: string;
   events: TEvent[];
   documents: TDocumentPage[];
   collections: TCollection[];
@@ -213,19 +213,29 @@ export type TDocumentContentType = "application/pdf" | "text/html" | "applicatio
 
 export type TDocumentPage = {
   import_id: string;
-  variant: string;
-  slugs: string[];
+  variant?: string | null;
+  slug: string;
   title: string;
-  md5_sum: string;
-  cdn_object: string;
+  md5_sum?: string | null;
+  cdn_object?: string | null;
   source_url: string;
   content_type: TDocumentContentType;
+  language: string;
+  document_type: string;
+  document_role: string;
 };
 
 export type TCollection = {
   import_id: string;
   title: string;
   description: string;
+  families: TCollectionFamily[];
+};
+
+export type TCollectionFamily = {
+  description: string;
+  slug: string;
+  title: string;
 };
 
 export type TFamilyMetadata = {
@@ -235,7 +245,6 @@ export type TFamilyMetadata = {
   keyword: string[];
   framework: string[];
   instrument: string[];
-  document_type: string;
 };
 
 export type TMatchedFamily = TFamily & {

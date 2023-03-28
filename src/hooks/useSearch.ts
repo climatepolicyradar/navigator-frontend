@@ -22,7 +22,8 @@ async function getSearch(query = initialSearchCriteria) {
 
   const { data } = await getEnvFromServer();
   const client = new ApiClient(data?.env?.api_url);
-  // TODO: remove group_documents attribute as/when the API returns families as default
+  // TODO: remove this later when BE is updated
+  query["jit_query"] = "disabled";
   const results = await client.post<TSearch>("/searches", query, config);
   return results;
 }
