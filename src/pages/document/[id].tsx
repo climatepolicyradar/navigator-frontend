@@ -161,22 +161,21 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
                   <section className="mt-12">
                     <div>
-                      <h3 className="flex mb-4">
-                        <span className="mr-2">
-                          <TargetIcon />
-                        </span>
-                        Targets ({publishedTargets.length})
-                      </h3>
-                      {/* <span className="text-sm text-grey-700 flex-0">
-                            Download targets data (.csv){" "}
-                            <a href="#" onClick={(e) => e.preventDefault()} className="underline text-primary-600">
-                              this list
-                            </a>{" "}
-                            |{" "}
-                            <a href="#" onClick={(e) => e.preventDefault()} className="underline text-primary-600">
-                              whole database
-                            </a>
-                          </span> */}
+                      <div className="lg:flex justify-between items-end">
+                        <h3 className="flex mb-4">
+                          <span className="mr-2">
+                            <TargetIcon />
+                          </span>
+                          Targets ({publishedTargets.length})
+                        </h3>
+                        <ExternalLink
+                          url="https://docs.google.com/forms/d/e/1FAIpQLSfP2ECC6W92xF5HHvy5KAPVTim0Agrbr4dD2LhiWkDjcY2f6g/viewform"
+                          className="block text-sm text-blue-600 my-4 md:mt-0 hover:underline"
+                          cy="download-target-csv"
+                        >
+                          Request to download all target data (.csv)
+                        </ExternalLink>
+                      </div>
                       <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} />
                     </div>
                   </section>
