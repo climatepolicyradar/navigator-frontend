@@ -43,7 +43,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const { status, families } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
   if (!!router.query[QUERY_PARAMS.query_string]) {
     families.forEach((family) => {
-      if (page.slugs.includes(family.family_slug)) {
+      if (page.slug === family.family_slug) {
         searchFamily = family;
       }
     });
@@ -58,9 +58,9 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
     }, 100);
   };
 
-  const getDocumentMatches = (docSlugs: string[]) => {
+  const getDocumentMatches = (docSlug: string) => {
     if (searchFamily) {
-      const searchDocument = searchFamily.family_documents.find((doc) => docSlugs.includes(doc.document_slug));
+      const searchDocument = searchFamily.family_documents.find((doc) => docSlug === doc.document_slug);
       if (searchDocument) {
         return searchDocument.document_passage_matches.length;
       }
@@ -71,8 +71,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const sourceLogo = page?.organisation === "CCLW" ? "grantham-logo.png" : null;
   const sourceName = page?.organisation === "CCLW" ? "Grantham Research Institute" : page?.organisation;
 
-  const mainDocs = page.documents.filter((doc) => doc.variant.toLowerCase().includes("main"));
-  const otherDocs = page.documents.filter((doc) => !doc.variant.toLowerCase().includes("main"));
+  const mainDocs = page.documents.filter((doc) => doc.document_role && doc.document_role.toLowerCase().includes("main"));
+  const otherDocs = page.documents.filter((doc) => !doc.document_role || !doc.document_role.toLowerCase().includes("main"));
 
   useEffect(() => {
     if (page?.summary) {
@@ -85,15 +85,20 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
     }
   }, [page, showFullSummary]);
 
+  const getDocumentCategories = () => {
+    const categories = page.documents.map((doc) => doc.document_type);
+    return [...new Set(categories)];
+  };
+
   return (
     <Layout title={page.title}>
       <Script id="analytics">
-        analytics.category = "{page.category}"; analytics.type = "{page.metadata.document_type}"; analytics.geography = "{page.geography}";
+        analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "{page.geography}";
       </Script>
       <section
         className="mb-8"
         data-analytics-category={page.category}
-        data-analytics-type={page.metadata.document_type}
+        data-analytics-type={getDocumentCategories().join(",")}
         data-analytics-geography={page.geography}
       >
         <FamilyHead family={page} onCollectionClick={handleCollectionClick} />
@@ -117,7 +122,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                 )}
                 <div data-cy="main-documents">
                   {mainDocs.map((doc) => (
-                    <FamilyDocument matches={getDocumentMatches(doc.slugs)} document={doc} key={doc.import_id} status={status} />
+                    <FamilyDocument matches={getDocumentMatches(doc.slug)} document={doc} key={doc.import_id} status={status} />
                   ))}
                 </div>
               </section>
@@ -133,7 +138,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                     <div className="divide-solid divide-blue-100 divide-y" data-cy="related-documents">
                       {otherDocs.map((doc) => (
                         <div key={doc.import_id} className="mt-4">
-                          <FamilyDocument matches={getDocumentMatches(doc.slugs)} document={doc} status={status} />
+                          <FamilyDocument matches={getDocumentMatches(doc.slug)} document={doc} status={status} />
                         </div>
                       ))}
                     </div>
@@ -262,7 +267,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                 <h3>About this document</h3>
                 <div className="grid grid-cols-2 gap-x-2">
                   <DocumentInfo id="category-tt" heading="Category" text={page.category} />
-                  <DocumentInfo id="type-tt" heading="Type" text={page.metadata.document_type} />
+                  <DocumentInfo id="type-tt" heading="Type" text={getDocumentCategories().join(", ")} />
                   {/* {page.metadata.languages.length > 0 && <DocumentInfo heading="Language" text={page.languages[0].name} />} */}
                 </div>
 
