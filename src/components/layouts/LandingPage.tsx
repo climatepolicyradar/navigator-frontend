@@ -14,7 +14,7 @@ const Layout = ({ children, title = "" }: TProps) => {
   return (
     <div>
       <Head>
-        <title>{`${getPageTitle(theme)} | ${title}`}</title>
+        <title>{`${title} - ${getPageTitle(theme)}`}</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
