@@ -10,6 +10,7 @@ module.exports = defineConfig({
   viewportWidth: 1280,
   viewportHeight: 800,
   chromeWebSecurity: false,
+  video: false,
   e2e: {
     baseUrl: 'http://localhost:3000',
     // We've imported your old cypress plugins here.
