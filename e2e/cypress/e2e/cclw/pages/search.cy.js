@@ -15,7 +15,7 @@ const selectedCountries = '[data-cy="selected-countries"]';
 const tabbedNavSelector = '[data-cy="tabbed-nav"]';
 const sortSelector = '[data-cy="sort"]';
 
-const pageSelectors = [inputSelector, searchResultsSelector, '[data-cy="download-csv"]', '[data-cy="number-of-results"]', tabbedNavSelector, sortSelector];
+const pageSelectors = [inputSelector, searchResultsSelector, '[data-cy="download-search-csv"]', '[data-cy="number-of-results"]', tabbedNavSelector, sortSelector];
 
 describe("Search Page", () => {
   before(() => {
