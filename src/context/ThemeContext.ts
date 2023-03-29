@@ -1,3 +1,5 @@
 import { createContext } from "react";
 
-export const ThemeContext = createContext(null);
+type TThemes = "cpr" | "cclw";
+
+export const ThemeContext = createContext<TThemes>(null);

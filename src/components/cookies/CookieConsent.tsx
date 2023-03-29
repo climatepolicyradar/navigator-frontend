@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Script from "next/script";
 import Button from "@components/buttons/Button";
 import { getCookie, setCookie } from "@utils/cookies";
 import { COOKIE_CONSENT_NAME } from "@constants/cookies";
 import { ExternalLink } from "@components/ExternalLink";
+import { ThemeContext } from "@context/ThemeContext";
 
 export const CookieConsent = () => {
+  const theme = useContext(ThemeContext);
   const [hide, setHide] = useState(true);
   const [enableAnalytics, setEnableAnalytics] = useState(false);
   const [hotjar, setHotjar] = useState(false);
@@ -45,15 +47,21 @@ export const CookieConsent = () => {
     setHide(true);
   };
 
+  const cclwAnalyticsAllowed = theme === "cclw" && enableAnalytics;
+
   return (
     <>
-      <div data-cy="cookie-consent" className={`${hide ? "hidden" : ""} fixed w-[90%] max-w-[600px] bottom-6 left-1/2 translate-x-[-50%] z-[9999] rounded-xl bg-blue-100`}>
+      <div
+        data-cy="cookie-consent"
+        className={`${hide ? "hidden" : ""} fixed w-[90%] max-w-[600px] bottom-6 left-1/2 translate-x-[-50%] z-[9999] rounded-xl bg-blue-100`}
+      >
         <div className="py-4 px-6">
           <h3 className="">Cookies and your privacy</h3>
           <p className="text-content text-sm">
-            We take your trust and privacy seriously. Climate Policy Radar uses cookies to make our site work optimally, analyse traffic to our website and improve your experience.
-            Read our <ExternalLink url="https://climatepolicyradar.org/privacy-policy">privacy and cookie policy</ExternalLink> to learn more. By accepting cookies you will help us
-            make our site better, but you can reject them if you wish.
+            We take your trust and privacy seriously. Climate Policy Radar uses cookies to make our site work optimally, analyse traffic to our
+            website and improve your experience. Read our{" "}
+            <ExternalLink url="https://climatepolicyradar.org/privacy-policy">privacy and cookie policy</ExternalLink> to learn more. By accepting
+            cookies you will help us make our site better, but you can reject them if you wish.
           </p>
           <div className="flex justify-end">
             <div className="">
@@ -70,6 +78,21 @@ export const CookieConsent = () => {
         </div>
       </div>
       {enableAnalytics && <Script id="google-tag-manager" async src={`https://www.googletagmanager.com/gtm.js?id=GTM-NTNH983`} />}
+      {cclwAnalyticsAllowed && (
+        <>
+          <Script async src="https://www.googletagmanager.com/gtag/js?id=UA-153841121-2" />
+          <Script id="cclw-google-analytics" strategy="afterInteractive">
+            {`
+              (function(w,l,i) {
+                w[l] = w[l] || [];
+                function gtag(){w[l].push(arguments);}
+                gtag('js', new Date());
+                gtag('config', i);
+              })(window, "dataLayer", "UA-153841121-2");
+            `}
+          </Script>
+        </>
+      )}
       {hotjar && (
         <Script id="hotjar" strategy="afterInteractive">
           {`
