@@ -26,6 +26,7 @@ import { TGeographyStats, TGeographySummary } from "@types";
 import { extractNestedData } from "@utils/extractNestedData";
 import { getCountryCode } from "@helpers/getCountryFields";
 import { getGeoDescription } from "@constants/metaDescriptions";
+import { sortFilterTargets } from "@utils/sortFilterTargets";
 
 type TProps = {
   geography: TGeographyStats;
@@ -41,7 +42,8 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
   const hasEvents = !!summary?.events && summary?.events?.length > 0;
   const hasFamilies = !!summary?.top_families;
-  const publishedTargets = targets.filter((target) => target["Visibility status"] === "published");
+
+  const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
 
   const documentCategories = DOCUMENT_CATEGORIES;
@@ -53,7 +55,9 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
   const handleTargetClick = () => {
     setTimeout(() => {
-      document.getElementById("targets").scrollIntoView({ behavior: "smooth" });
+      if (document.getElementById("targets")) {
+        document.getElementById("targets").scrollIntoView({ behavior: "smooth" });
+      }
     }, 100);
   };
 
