@@ -15,14 +15,14 @@ type TArticle = {
 
 const ARTICLES: TArticle[] = [
   {
-    url: "/document/inflation-reduction-act_9785?q=us+inflation+reductiona+ct",
+    url: "/document/inflation-reduction-act_9785",
     type: "Legislation",
     title: "US Inflation Reduction Act",
     countryCode: "usa",
     meta: "USA | Filing | 2022",
   },
   {
-    url: "/document/the-european-green-deal_60e2?q=european+green+deal",
+    url: "/document/the-european-green-deal_60e2",
     type: "Legislation",
     title: "The European Green Deal",
     countryCode: "eur",
