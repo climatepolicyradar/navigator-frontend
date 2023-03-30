@@ -15,14 +15,14 @@ type TArticle = {
 
 const ARTICLES: TArticle[] = [
   {
-    url: "/document/united-states-of-america_2022_inflation-reduction-act_10699_5931",
+    url: "/document/inflation-reduction-act_9785?q=us+inflation+reductiona+ct",
     type: "Legislation",
     title: "US Inflation Reduction Act",
     countryCode: "usa",
     meta: "USA | Filing | 2022",
   },
   {
-    url: "/document/european-union_2019_the-european-green-deal_9369_3236",
+    url: "/document/the-european-green-deal_60e2?q=european+green+deal",
     type: "Legislation",
     title: "The European Green Deal",
     countryCode: "eur",
@@ -31,14 +31,14 @@ const ARTICLES: TArticle[] = [
     imageAlt: "European Union flag",
   },
   {
-    url: "/document/fiji_2021_climate-change-act-2021_10190_4775",
+    url: "/document/climate-change-act-2021_8bf7",
     type: "Legislation",
     countryCode: "fji",
     title: "Fiji's Climate Change Act 2021",
     meta: "Fiji | Filing | 2019",
   },
   {
-    url: "/document/chile_2022_framework-law-on-climate-change-chile_9772_5709",
+    url: "/document/framework-law-on-climate-change-chile_dc8a",
     type: "Legislation",
     title: "Framework Law on Climate Change - Chile",
     meta: "Chile | Published | 2022",
