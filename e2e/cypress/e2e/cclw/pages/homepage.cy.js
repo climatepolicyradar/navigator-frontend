@@ -2,7 +2,6 @@
 import { clickCookiePolicy } from "../../../utils/cookiePolicy";
 
 const pageSelectors = [
-  "[data-cy='map']",
   "[data-cy='featured-content']",
   "[data-cy='partners']",
   "[data-cy='search-input']",
