@@ -205,8 +205,8 @@ export type TFamilyPage = {
   events: TEvent[];
   documents: TDocumentPage[];
   collections: TCollection[];
-  published_date: string;
-  last_updated_date: string;
+  published_date: string | null;
+  last_updated_date: string | null;
 };
 
 export type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
