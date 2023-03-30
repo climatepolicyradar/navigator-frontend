@@ -12,6 +12,7 @@ Run `make` or `make THEME=cclw`
 
 - make  
 - docker
+- 
 ## Getting started
 
 Local development is done using docker 

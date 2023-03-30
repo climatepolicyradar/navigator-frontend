@@ -11,6 +11,9 @@ import useSearch from "@hooks/useSearch";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import Loader from "@components/Loader";
 import Button from "@components/buttons/SquareButton";
+import useConfig from "@hooks/useConfig";
+import { getCountryName } from "@helpers/getCountryFields";
+import { getDocumentDescription } from "@constants/metaDescriptions";
 
 type TDocFamily = {
   title: string;
@@ -29,6 +32,10 @@ type TProps = {
 const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family }: TProps) => {
   const [passageIndex, setPassageIndex] = useState(null);
   const router = useRouter();
+
+  const configQuery = useConfig();
+  const { data: { countries = [] } = {} } = configQuery;
+  const geographyName = getCountryName(family.geography, countries);
 
   const passageMatches = [];
   const { status, families } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
@@ -57,7 +64,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   };
 
   return (
-    <Layout title={document.title}>
+    <Layout title={`${document.title} - ${geographyName}`} description={getDocumentDescription(document.title)}>
       <section
         className="mb-8 flex-1 flex flex-col"
         data-analytics-date={family.published_date}

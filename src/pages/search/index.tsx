@@ -5,7 +5,6 @@ import useSearch from "@hooks/useSearch";
 import useUpdateCountries from "@hooks/useUpdateCountries";
 import useConfig from "@hooks/useConfig";
 import useFilteredCountries from "@hooks/useFilteredCountries";
-import useOutsideAlerter from "@hooks/useOutsideAlerter";
 import Layout from "@components/layouts/Main";
 import LoaderOverlay from "@components/LoaderOverlay";
 import SearchForm from "@components/forms/SearchForm";
@@ -28,21 +27,11 @@ const Search = () => {
   const router = useRouter();
   const qQueryString = router.query[QUERY_PARAMS.query_string];
   const isBrowsing = !qQueryString || qQueryString?.toString().trim() === "";
-  const slideoutRef = useRef(null);
   const { t, ready } = useTranslation(["searchStart", "searchResults"]);
   const [showFilters, setShowFilters] = useState(false);
-  const [showSlideout, setShowSlideout] = useState(false);
   const [pageCount, setPageCount] = useState(1);
 
   const updateCountries = useUpdateCountries();
-
-  // close slideout panel when clicking outside of it
-  useOutsideAlerter(slideoutRef, (e) => {
-    if (e.target.nodeName === "BUTTON") {
-      return;
-    }
-    setShowSlideout(false);
-  });
 
   const { status, families, hits, searchQuery } = useSearch(router.query);
 
@@ -58,7 +47,6 @@ const Search = () => {
   };
 
   const handlePageChange = (page: number) => {
-    setShowSlideout(false);
     const offSet = (page - 1) * PER_PAGE;
     router.query[QUERY_PARAMS.offset] = offSet.toString();
     router.push({ query: router.query });
@@ -239,7 +227,6 @@ const Search = () => {
       ) : (
         <Layout title={t("Law and Policy Search")} heading={t("Law and Policy Search")}>
           <div>
-            {showSlideout && <div className="w-full h-full bg-overlayWhite fixed top-0 z-30" />}
             <section>
               <div className="px-4 container">
                 <div className="md:py-8 md:w-3/4 md:mx-auto">
@@ -287,7 +274,7 @@ const Search = () => {
                       <ExternalLink
                         url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform"
                         className="text-sm text-blue-600 mt-4 md:mt-0 hover:underline"
-                        cy="download-csv"
+                        cy="download-search-csv"
                       >
                         Request to download all data (.csv)
                       </ExternalLink>

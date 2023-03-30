@@ -23,6 +23,8 @@ import axios from "axios";
 import { TargetIcon } from "@components/svg/Icons";
 import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
+import useConfig from "@hooks/useConfig";
+import { getCountryName } from "@helpers/getCountryFields";
 
 type TProps = {
   page: TFamilyPage;
@@ -41,6 +43,10 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
   const publishedTargets = targets.filter((target) => target["Visibility status"] === "published");
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
+
+  const configQuery = useConfig();
+  const { data: { countries = [] } = {} } = configQuery;
+  const geographyName = getCountryName(page.geography, countries);
 
   let searchFamily: TMatchedFamily = null;
   const { status, families } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
@@ -98,7 +104,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   }, [pathname]);
 
   return (
-    <Layout title={page.title}>
+    <Layout title={`${page.title} - ${geographyName}`} description={page.summary.substring(0, 164)}>
       <Script id="analytics">
         analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "{page.geography}";
       </Script>
@@ -108,7 +114,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
         data-analytics-type={getDocumentCategories().join(",")}
         data-analytics-geography={page.geography}
       >
-        <FamilyHead family={page} onCollectionClick={handleCollectionClick} />
+        <FamilyHead family={page} geographyName={geographyName} onCollectionClick={handleCollectionClick} />
         <div className="container">
           <div className="md:flex">
             <section className="flex-1 md:w-0">
@@ -161,22 +167,21 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
                   <section className="mt-12">
                     <div>
-                      <h3 className="flex mb-4">
-                        <span className="mr-2">
-                          <TargetIcon />
-                        </span>
-                        Targets ({publishedTargets.length})
-                      </h3>
-                      {/* <span className="text-sm text-grey-700 flex-0">
-                            Download targets data (.csv){" "}
-                            <a href="#" onClick={(e) => e.preventDefault()} className="underline text-primary-600">
-                              this list
-                            </a>{" "}
-                            |{" "}
-                            <a href="#" onClick={(e) => e.preventDefault()} className="underline text-primary-600">
-                              whole database
-                            </a>
-                          </span> */}
+                      <div className="lg:flex justify-between items-end">
+                        <h3 className="flex mb-4">
+                          <span className="mr-2">
+                            <TargetIcon />
+                          </span>
+                          Targets ({publishedTargets.length})
+                        </h3>
+                        <ExternalLink
+                          url="https://docs.google.com/forms/d/e/1FAIpQLSfP2ECC6W92xF5HHvy5KAPVTim0Agrbr4dD2LhiWkDjcY2f6g/viewform"
+                          className="block text-sm text-blue-600 my-4 md:mt-0 hover:underline"
+                          cy="download-target-csv"
+                        >
+                          Request to download all target data (.csv)
+                        </ExternalLink>
+                      </div>
                       <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} />
                     </div>
                   </section>

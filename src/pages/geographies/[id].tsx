@@ -25,6 +25,7 @@ import { ApiClient } from "@api/http-common";
 import { TGeographyStats, TGeographySummary } from "@types";
 import { extractNestedData } from "@utils/extractNestedData";
 import { getCountryCode } from "@helpers/getCountryFields";
+import { getGeoDescription } from "@constants/metaDescriptions";
 
 type TProps = {
   geography: TGeographyStats;
@@ -121,7 +122,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
   return (
     <>
-      <Layout title={geography.name}>
+      <Layout title={geography.name} description={getGeoDescription(geography.name)}>
         {!geography ? (
           <SingleCol>
             <TextLink onClick={() => router.back()}>Go back</TextLink>
@@ -210,12 +211,22 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                 <>
                   <section className="mt-12" id="targets">
                     <div>
-                      <h3 className="flex mb-4">
-                        <span className="mr-2">
-                          <TargetIcon />
-                        </span>
-                        Targets ({publishedTargets.length})
-                      </h3>
+                      <div className="lg:flex justify-between items-end">
+                        <h3 className="flex mb-4">
+                          <span className="mr-2">
+                            <TargetIcon />
+                          </span>
+                          Targets ({publishedTargets.length})
+                        </h3>
+
+                        <ExternalLink
+                          url="https://docs.google.com/forms/d/e/1FAIpQLSfP2ECC6W92xF5HHvy5KAPVTim0Agrbr4dD2LhiWkDjcY2f6g/viewform"
+                          className="block text-sm text-blue-600 my-4 md:mt-0 hover:underline"
+                          cy="download-target-csv"
+                        >
+                          Request to download all target data (.csv)
+                        </ExternalLink>
+                      </div>
                       <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
                     </div>
                   </section>
