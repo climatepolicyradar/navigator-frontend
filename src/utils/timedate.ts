@@ -1,7 +1,7 @@
 import { months } from "../constants/timedate";
 
 export const convertDate = (data: string): [number, string, string] => {
-  if (data.length === 0) return [0, "", ""];
+  if (!data || data.length === 0) return [0, "", ""];
   let dateObj = new Date(data);
   if (data.length === 10) {
     const [day, month, year] = data.split("/");
