@@ -43,7 +43,7 @@ export const FamilyHead = ({ family, geographyName, onCollectionClick }: TProps)
                   {geographyName}
                 </span>
               </CountryLink>
-              {year && <span>{year}</span>}
+              {year && <span className="pl-2">{year}</span>}
             </div>
           </div>
         </div>
