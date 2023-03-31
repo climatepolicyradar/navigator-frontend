@@ -11,6 +11,7 @@ const sourceMapping = {
 
 export const sortFilterTargets = (targets: TTarget[]) => {
   let t: TTarget[] = [];
+  if (!targets) return t;
   t = targets.filter((target) => target["Visibility status"] === "published");
 
   const netZeroKey = "Net zero target?";
