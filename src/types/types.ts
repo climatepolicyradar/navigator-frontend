@@ -99,10 +99,10 @@ export type TTarget = {
   "Target type": string;
   Source: string;
   Description: string;
-  "GHG target": string;
+  "GHG target": "TRUE" | "FALSE";
   Year: string;
   "Base year period": string;
-  "Single year": string;
+  "Single year": "TRUE" | "FALSE";
   Geography: string;
   "Geography ISO": string;
   Sector: string;
@@ -110,6 +110,7 @@ export type TTarget = {
   Scopes: string;
   "Visibility status": string;
   "CPR family ID": string;
+  "Net zero target?": "TRUE" | "FALSE";
   "family-slug": string;
   "family-name": string;
 };
