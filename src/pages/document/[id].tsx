@@ -42,7 +42,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [summary, setSummary] = useState("");
 
-  // const publishedTargets = targets.filter((target) => target["Visibility status"] === "published");
   const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
 
