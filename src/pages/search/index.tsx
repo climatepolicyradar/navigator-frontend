@@ -96,7 +96,12 @@ const Search = () => {
   };
 
   const handleSearchChange = (type: string, value: any) => {
-    if (type !== "offset") delete router.query[QUERY_PARAMS.offset];
+    if (type !== QUERY_PARAMS.offset) delete router.query[QUERY_PARAMS.offset];
+    // Clear ordering on new query search
+    if (type === QUERY_PARAMS.query_string) {
+      delete router.query[QUERY_PARAMS.sort_field];
+      delete router.query[QUERY_PARAMS.sort_order];
+    }
     router.query[type] = value;
     if (!value) {
       delete router.query[type];
@@ -157,7 +162,7 @@ const Search = () => {
   const getCurrentSortChoice = () => {
     const field = router.query[QUERY_PARAMS.sort_field];
     const order = router.query[QUERY_PARAMS.sort_order];
-    if (field === null && order === "desc") {
+    if (field === undefined && order === undefined) {
       if (isBrowsing) return "date:desc";
       return "relevance";
     }

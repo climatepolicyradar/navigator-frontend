@@ -42,11 +42,11 @@ export default function buildSearchQuery(routerQuery: TRouterQuery): TSearchCrit
   if (routerQuery[QUERY_PARAMS.category]) {
     const qCategory = routerQuery[QUERY_PARAMS.category] as string;
     let category: string;
-    if (["Legislation", "Law"].includes(qCategory)) {
-      category = "Law";
+    if (["Legislation", "Law", "Legislative"].includes(qCategory)) {
+      category = "Legislative";
     }
-    if (["Policies", "Policy"].includes(qCategory)) {
-      category = "Policy";
+    if (["Policies", "Policy", "Executive"].includes(qCategory)) {
+      category = "Executive";
     }
     keyword_filters.categories = [category];
   }
