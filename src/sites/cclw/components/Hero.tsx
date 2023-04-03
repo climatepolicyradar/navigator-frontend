@@ -8,16 +8,18 @@ type TProps = {
 };
 
 export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
-  const handleDocumentBrowseClick = (e: React.MouseEvent, category: string) => {
+  const handleDocumentBrowseClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    handleSearchInput("", "categories", category);
+    handleSearchInput("");
   };
 
   return (
     <div className="pt-12 pb-6 text-white">
       <div className="container">
         <div className="mx-auto text-center">
-          <p className="text-lg lg:text-2xl" data-cy="intro-message">Use our database to search climate laws and policies globally</p>
+          <p className="text-lg lg:text-2xl" data-cy="intro-message">
+            Use our database to search climate laws and policies globally
+          </p>
         </div>
         <div className="max-w-screen-lg mx-auto mt-6">
           <LandingSearchForm handleSearchInput={handleSearchInput} placeholder="Search for countries, legislation and policies" input={searchInput} />
@@ -25,7 +27,7 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
         <div className="mt-6 lg:mt-12 grid gap-y-5 gap-x-8 sm:grid-cols-1 lg:grid-cols-3 text-center max-w-screen-lg mx-auto">
           <div className="lg:px-8 flex flex-col items-center" data-cy="feature-laws-policies">
             <div className="text-lg font-bold">Laws and policies</div>
-            <a className="cclw-semi-circle" href="#" onClick={(e) => handleDocumentBrowseClick(e, "Policy")}>
+            <a className="cclw-semi-circle" href="#" onClick={(e) => handleDocumentBrowseClick(e)}>
               <span>
                 Browse
                 <span className="font-bold"> 3500+</span>
@@ -44,7 +46,10 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
             </div> */}
             <div className="mt-6">
               <p>Climate litigation is coming soon</p>
-              <ExternalLink url="https://climatepolicyradar.org/latest/new-partnership-launches-ai-powered-global-climate-law-and-policy-database" className="font-bold underline">
+              <ExternalLink
+                url="https://climatepolicyradar.org/latest/new-partnership-launches-ai-powered-global-climate-law-and-policy-database"
+                className="font-bold underline"
+              >
                 Read more &gt;
               </ExternalLink>
             </div>
