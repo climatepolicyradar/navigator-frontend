@@ -30,7 +30,7 @@ const Header = ({ background = true }) => {
             </ExternalLink>
             <ExternalLink className="flex" url="https://www.lse.ac.uk/granthaminstitute/">
               <div className="h-[40px] w-[180px] flex" data-cy="gri-logo">
-                <img src="/cclw/partners/gri_white_logo.svg" alt="GRI logo" width={180} height={40} />
+                <img src="/images/cclw/partners/gri_white_logo.svg" alt="GRI logo" width={180} height={40} />
               </div>
             </ExternalLink>
           </div>

@@ -313,6 +313,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 export default FamilyPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+
   const id = context.params.id;
   const client = new ApiClient(process.env.API_URL);
 

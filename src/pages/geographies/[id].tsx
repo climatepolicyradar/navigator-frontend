@@ -271,6 +271,8 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 export default CountryPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+  
   const id = context.params.id;
   const client = new ApiClient();
 

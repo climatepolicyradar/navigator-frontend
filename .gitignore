@@ -34,3 +34,4 @@ yarn-error.log*
 # vercel
 .vercel
 .vscode
+e2e/cypress/fixtures/importData.csv
