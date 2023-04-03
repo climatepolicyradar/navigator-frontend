@@ -27,7 +27,7 @@ const ARTICLES: TArticle[] = [
     title: "The European Green Deal",
     countryCode: "eur",
     meta: "EU | Published | 2019",
-    imageUrl: "/cclw/images/eu.jpg",
+    imageUrl: "/images/cclw/images/eu.jpg",
     imageAlt: "European Union flag",
   },
   {
@@ -43,7 +43,7 @@ const ARTICLES: TArticle[] = [
     title: "Framework Law on Climate Change - Chile",
     meta: "Chile | Published | 2022",
     countryCode: "chl",
-    imageUrl: "/cclw/images/chile.jpg",
+    imageUrl: "/images/cclw/images/chile.jpg",
     imageAlt: "Chile flag",
   },
   {
@@ -51,7 +51,7 @@ const ARTICLES: TArticle[] = [
     external: true,
     type: "Policy brief",
     title: "Challenging government responses to climate change through framework litigation",
-    imageUrl: "/cclw/images/hague.jpg",
+    imageUrl: "/images/cclw/images/hague.jpg",
     imageAlt: "The Hague",
   },
 ];

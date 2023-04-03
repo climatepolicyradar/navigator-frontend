@@ -1,4 +1,4 @@
-import Image from "next/legacy/image";
+/* eslint-disable @next/next/no-img-element */
 import { ExternalLink } from "@components/ExternalLink";
 
 const partners = [
@@ -36,7 +36,7 @@ export const Partners = () => {
         <div className="md:basis-1/2 lg:basis-1/3" key={partner.link}>
           <div className="m-4">
             <ExternalLink className="flex items-center justify-center relative h-[96px]" url={partner.link}>
-              <img src={`/cclw/partners/${partner.logo}`} alt={partner.name} className="object-contain max-h-full" />
+              <img src={`/images/cclw/partners/${partner.logo}`} alt={partner.name} className="object-contain max-h-full" />
             </ExternalLink>
           </div>
         </div>
