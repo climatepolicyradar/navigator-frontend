@@ -26,7 +26,7 @@ const Search = () => {
   const router = useRouter();
   const qQueryString = router.query[QUERY_PARAMS.query_string];
   const isBrowsing = !qQueryString || qQueryString?.toString().trim() === "";
-  const { t, ready } = useTranslation(["searchStart", "searchResults"]);
+  const { t } = useTranslation(["searchStart", "searchResults"]);
   const [showFilters, setShowFilters] = useState(false);
   const [pageCount, setPageCount] = useState(1);
 
