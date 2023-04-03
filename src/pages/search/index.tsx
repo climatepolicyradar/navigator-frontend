@@ -6,7 +6,6 @@ import useUpdateCountries from "@hooks/useUpdateCountries";
 import useConfig from "@hooks/useConfig";
 import useFilteredCountries from "@hooks/useFilteredCountries";
 import Layout from "@components/layouts/Main";
-import LoaderOverlay from "@components/LoaderOverlay";
 import SearchForm from "@components/forms/SearchForm";
 import SearchFilters from "@components/blocks/SearchFilters";
 import TabbedNav from "@components/nav/TabbedNav";
@@ -226,97 +225,92 @@ const Search = () => {
   };
 
   return (
-    <>
-      {!ready ? (
-        <LoaderOverlay />
-      ) : (
-        <Layout title={t("Law and Policy Search")} heading={t("Law and Policy Search")}>
-          <div>
-            <section>
-              <div className="px-4 container">
-                <div className="md:py-8 md:w-3/4 md:mx-auto">
-                  <p className="md:hidden mt-4 mb-2">{placeholder}</p>
-                  <SearchForm
-                    placeholder={placeholder}
-                    handleSearchInput={handleSearchInput}
-                    input={qQueryString ? qQueryString.toString() : ""}
-                    handleSuggestion={handleSuggestion}
-                  />
-                </div>
-              </div>
-              <div className="px-4 md:flex container border-b border-lineBorder">
-                <div className="md:w-1/4 lg:w-[30%] xl:w-1/4 md:border-r border-lineBorder md:pr-8 flex-shrink-0">
-                  <div className="flex md:hidden items-center justify-center w-full mt-4">
-                    <FilterToggle toggle={toggleFilters} isOpen={showFilters} />
-                  </div>
-
-                  <div className={`${showFilters ? "" : "hidden"} relative md:block mb-12 md:mb-0`}>
-                    <div className="md:hidden absolute right-0 top-0">
-                      <Close onClick={() => setShowFilters(false)} size="16" />
-                    </div>
-                    {configQuery.isFetching ? (
-                      <p>Loading filters...</p>
-                    ) : (
-                      <SearchFilters
-                        handleFilterChange={handleFilterChange}
-                        searchCriteria={searchQuery}
-                        handleYearChange={handleYearChange}
-                        handleRegionChange={handleRegionChange}
-                        handleClearSearch={handleClearSearch}
-                        handleSearchChange={handleSearchChange}
-                        regions={regions}
-                        filteredCountries={filteredCountries}
-                      />
-                    )}
-                  </div>
-                </div>
-                <div className="md:w-3/4">
-                  <div className="md:pl-8">
-                    <div className="lg:flex justify-between">
-                      <div className="text-sm my-4 md:my-0 md:flex" data-cy="number-of-results">
-                        {status === "success" && renderNoOfResults()}
-                      </div>
-                      <ExternalLink
-                        url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform"
-                        className="text-sm text-blue-600 mt-4 md:mt-0 hover:underline"
-                        cy="download-search-csv"
-                      >
-                        Request to download all data (.csv)
-                      </ExternalLink>
-                    </div>
-                  </div>
-                  <div className="mt-4 md:flex">
-                    <div className="flex-grow">
-                      <TabbedNav activeIndex={getCategoryIndex()} items={DOCUMENT_CATEGORIES} handleTabClick={handleDocumentCategoryClick} />
-                    </div>
-                    <div className="mt-4 md:-mt-2 md:ml-2 lg:ml-8 md:mb-2 flex items-center" data-cy="sort">
-                      <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
-                    </div>
-                  </div>
-
-                  <div data-cy="search-results" className="md:pl-8 md:mt-12 relative">
-                    {status === "loading" ? (
-                      <div className="w-full flex justify-center h-96">
-                        <Loader />
-                      </div>
-                    ) : (
-                      <SearchResultList category={router.query[QUERY_PARAMS.category]?.toString()} families={families} />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </section>
-            {pageCount > 1 && (
-              <section>
-                <div className="mb-12">
-                  <Pagination pageNumber={getCurrentPage()} pageCount={pageCount} onChange={handlePageChange} />
-                </div>
-              </section>
-            )}
+    <Layout title={t("Law and Policy Search")} heading={t("Law and Policy Search")}>
+      <div>
+        <section>
+          <div className="px-4 container">
+            <div className="md:py-8 md:w-3/4 md:mx-auto">
+              <p className="md:hidden mt-4 mb-2">{placeholder}</p>
+              <SearchForm
+                placeholder={placeholder}
+                handleSearchInput={handleSearchInput}
+                input={qQueryString ? qQueryString.toString() : ""}
+                handleSuggestion={handleSuggestion}
+              />
+            </div>
           </div>
-        </Layout>
-      )}
-    </>
+          <div className="px-4 md:flex container border-b border-lineBorder">
+            <div className="md:w-1/4 lg:w-[30%] xl:w-1/4 md:border-r border-lineBorder md:pr-8 flex-shrink-0">
+              <div className="flex md:hidden items-center justify-center w-full mt-4">
+                <FilterToggle toggle={toggleFilters} isOpen={showFilters} />
+              </div>
+
+              <div className={`${showFilters ? "" : "hidden"} relative md:block mb-12 md:mb-0`}>
+                <div className="md:hidden absolute right-0 top-0">
+                  <Close onClick={() => setShowFilters(false)} size="16" />
+                </div>
+                {configQuery.isFetching ? (
+                  <p>Loading filters...</p>
+                ) : (
+                  <SearchFilters
+                    handleFilterChange={handleFilterChange}
+                    searchCriteria={searchQuery}
+                    handleYearChange={handleYearChange}
+                    handleRegionChange={handleRegionChange}
+                    handleClearSearch={handleClearSearch}
+                    handleSearchChange={handleSearchChange}
+                    regions={regions}
+                    filteredCountries={filteredCountries}
+                  />
+                )}
+              </div>
+            </div>
+            <div className="md:w-3/4">
+              <div className="md:pl-8">
+                <div className="lg:flex justify-between">
+                  <div className="text-sm my-4 md:my-0 md:flex" data-cy="number-of-results">
+                    {status === "success" && renderNoOfResults()}
+                  </div>
+                  <ExternalLink
+                    url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform"
+                    className="text-sm text-blue-600 mt-4 md:mt-0 hover:underline"
+                    cy="download-search-csv"
+                  >
+                    Request to download all data (.csv)
+                  </ExternalLink>
+                </div>
+              </div>
+              <div className="mt-4 md:flex">
+                <div className="flex-grow">
+                  <TabbedNav activeIndex={getCategoryIndex()} items={DOCUMENT_CATEGORIES} handleTabClick={handleDocumentCategoryClick} />
+                </div>
+                <div className="mt-4 md:-mt-2 md:ml-2 lg:ml-8 md:mb-2 flex items-center" data-cy="sort">
+                  <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
+                </div>
+              </div>
+
+              <div data-cy="search-results" className="md:pl-8 md:mt-12 relative">
+                {status === "loading" ? (
+                  <div className="w-full flex justify-center h-96">
+                    <Loader />
+                  </div>
+                ) : (
+                  <SearchResultList category={router.query[QUERY_PARAMS.category]?.toString()} families={families} />
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+        {pageCount > 1 && (
+          <section>
+            <div className="mb-12">
+              <Pagination pageNumber={getCurrentPage()} pageCount={pageCount} onChange={handlePageChange} />
+            </div>
+          </section>
+        )}
+      </div>
+    </Layout>
   );
 };
+
 export default Search;
