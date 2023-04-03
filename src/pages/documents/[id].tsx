@@ -118,6 +118,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
 export default DocumentPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+  
   const id = context.params.id;
   const client = new ApiClient(process.env.API_URL);
 
