@@ -6,9 +6,9 @@ const pageSelectors = [
   "[data-cy='partners']",
   "[data-cy='search-input']",
   "[data-cy='intro-message']",
-  "[data-cy='feature-laws-policies']",
+  "[data-cy='feature-search']",
   "[data-cy='feature-litigation']",
-  "[data-cy='feature-cpr']",
+  "[data-cy='feature-highlights']",
 ];
 
 const headerSelectors = ["[data-cy='lse-logo']", "[data-cy='gri-logo']", "[data-cy='cclw-logo']", "[data-cy='cpr-logo']"];

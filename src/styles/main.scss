@@ -385,7 +385,7 @@ ul li.selected {
   top: 42px;
 
   &.search-dropdown_large {
-    top: 50px;
+    top: 60px;
   }
 }
 
@@ -455,7 +455,7 @@ ul li.selected {
   }
 }
 
-#landingPage-searchInput {
+#landingPage-searchInput-cpr {
   @screen md {
     &::-webkit-input-placeholder {
       /* WebKit browsers */

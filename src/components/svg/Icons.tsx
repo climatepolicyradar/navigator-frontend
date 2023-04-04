@@ -376,13 +376,34 @@ export const PDFIcon = ({ height = "32", width = "32", color = "currentColor" }:
 
 export const Loading = ({ height = "16", width = "16", color = "currentColor" }: IconProps) => {
   return (
-    <svg className="animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style={{ width: `${width}px`, height: `${height}px` }}>
+    <svg
+      className="animate-spin text-white"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      style={{ width: `${width}px`, height: `${height}px` }}
+    >
       <circle className="opacity-25" cx="12" cy="12" r="10" stroke={color} strokeWidth="4"></circle>
       <path
         className="opacity-75"
         fill={color}
         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
       ></path>
+    </svg>
+  );
+};
+
+export const Translation = ({ height = "68", width = "89", color = "currentColor" }: IconProps) => {
+  return (
+    <svg width={width} height={height} viewBox="0 0 89 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M89 68H80.5667L77.2144 59.1789H61.8669L58.6979 68H50.4741L65.4288 29.1661H73.6263L89 68ZM74.7263 52.636L69.4359 38.2256L64.2502 52.636H74.7263Z"
+        fill={color}
+      />
+      <path
+        d="M32.5674 11.046C27.4742 27.1939 16.9448 36.3576 0 40.8651C1.17536 42.3016 3.03636 45.1745 3.72199 46.6605C21.2545 41.1128 32.6653 30.7107 38.836 12.8787L32.5674 11.046ZM13.6636 11.4422L7.78679 13.2254C13.9085 30.364 23.997 41.7072 42.3621 46.5615C43.2926 44.8278 45.2026 42.0044 46.6228 40.6174C29.1882 36.6548 18.6099 26.1041 13.6636 11.4422ZM0.881524 7.82629V13.6712H45.7413V7.82629H0.881524ZM20.1281 0V11.3927H26.2008V0H20.1281Z"
+        fill={color}
+      />
     </svg>
   );
 };
