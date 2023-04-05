@@ -14,7 +14,7 @@ class ApiClient {
     } else {
       this.baseUrl = process.env.API_URL;
     }
-    this.axiosClient = axios.create({ baseURL: this.baseUrl, headers: { "Cache-control": "public, max-age=3600, immutable" } });
+    this.axiosClient = axios.create({ baseURL: this.baseUrl });
   }
 
   /**
