@@ -1,65 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
-
-type TFooterItem = {
-  title: string;
-  links: TLinkItem[];
-};
-
-type TLinkItem = {
-  text: string;
-  url: string;
-  external: boolean;
-};
-
-const navLinks: TFooterItem = {
-  title: "Grantham Research Institute",
-  links: [
-    {
-      text: "Grantham Research Institute",
-      url: "https://www.lse.ac.uk/granthaminstitute/",
-      external: true,
-    },
-    {
-      text: "Research areas",
-      url: "https://www.lse.ac.uk/granthaminstitute/research-areas/",
-      external: true,
-    },
-    {
-      text: "Publications",
-      url: "https://www.lse.ac.uk/granthaminstitute/publications/",
-      external: true,
-    },
-    {
-      text: "Events",
-      url: "https://www.lse.ac.uk/granthaminstitute/events/",
-      external: true,
-    },
-    {
-      text: "News and commentaries",
-      url: "https://www.lse.ac.uk/granthaminstitute/news-and-commentary/",
-      external: true,
-    },
-    {
-      text: "Sign up to Grantham Research Institute's newsletter",
-      url: "https://www.lse.ac.uk/granthaminstitute/mailing-list/ ",
-      external: true,
-    },
-  ],
-  // },
-};
+import MENU_LINKS from "../constants/menuLinks";
+import GRI_LINKS, { TLinkItem } from "../constants/griLinks";
 
 const Footer = () => {
   const renderLink = (item: TLinkItem) => {
     if (item.external) {
-      return <ExternalLink url={item.url}>{item.text}</ExternalLink>;
+      return <ExternalLink url={item.href}>{item.text}</ExternalLink>;
     }
-    return (
-      <LinkWithQuery href={item.url}>
-        {item.text}
-      </LinkWithQuery>
-    );
+    return <LinkWithQuery href={item.href}>{item.text}</LinkWithQuery>;
   };
 
   return (
@@ -68,51 +18,64 @@ const Footer = () => {
         <div className="container">
           <p className="text-lg mb-6 md:text-center" data-cy="report-problem">
             To report a problem email us at support@climatepolicyradar.org <br /> Spotted missing or inaccurate data?{" "}
-            <ExternalLink url="https://docs.google.com/forms/d/e/1FAIpQLScNy6pZTInQKdxNDaZPKyPGgbfRktstzgVDjGBCeTnLVzl3Pg/viewform" className="underline">Let us know</ExternalLink>
+            <ExternalLink
+              url="https://docs.google.com/forms/d/e/1FAIpQLScNy6pZTInQKdxNDaZPKyPGgbfRktstzgVDjGBCeTnLVzl3Pg/viewform"
+              className="underline"
+            >
+              Let us know
+            </ExternalLink>
           </p>
-          <p className="font-bold text-xl mb-8">Climate Change Laws of the World</p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div key={navLinks.title} className="footer__section" data-cy="footer-gri">
-              <h5>{navLinks.title}</h5>
-              <div className="grid gap-x-5 gap-y-5 md:grid-cols-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="footer__section" data-cy="footer-cclw">
+              <h5>Climate Change Laws of the World</h5>
+              <ul className="mb-6">
+                {MENU_LINKS.map((link) => (
+                  <li key={link.href} className="mb-1">
+                    {renderLink(link)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div key={GRI_LINKS.title} className="footer__section" data-cy="footer-gri">
+              <h5>{GRI_LINKS.title}</h5>
+              <ul>
+                {GRI_LINKS.links.map((link) => (
+                  <li key={link.text} className="mb-1">
+                    {renderLink(link)}
+                  </li>
+                ))}
+              </ul>
+              <div className="footer__section">
                 <ul>
-                  {navLinks.links.map((link) => (
-                    <li key={link.text} className="mb-1">
-                      {renderLink(link)}
-                    </li>
-                  ))}
+                  <li className="mb-1">
+                    For media enquiries contact{" "}
+                    <ExternalLink url="mailto:gri.cgl@lse.co.uk" className="block">
+                      gri.cgl@lse.co.uk
+                    </ExternalLink>
+                  </li>
+                  <li className="mb-1">
+                    <LinkWithQuery href="/contact">Full contact details</LinkWithQuery>
+                  </li>
                 </ul>
-                <div>
-                  <div className="mb-6 footer__section flex gap-6">
-                    <div>Contact</div>
-                    <div>
-                      <ExternalLink url="mailto:gri.cgl@lse.co.uk" className="block">
-                        gri.cgl@lse.co.uk
-                      </ExternalLink>
-                      <LinkWithQuery href="/contact">
-                        Full contact details
-                      </LinkWithQuery>
-                    </div>
-                  </div>
-                  <div className="footer__section">
-                    <div>Follow Grantham Research Institute</div>
-                    <div className="flex items-start gap-6 footer__social-links">
-                      <ExternalLink url="https://twitter.com/GRI_LSE">
-                        <img src="/images/social/twitter.svg" alt="Twitter Logo" />
-                      </ExternalLink>
-                      <ExternalLink url="https://www.youtube.com/user/GranthamResearch">
-                        <img src="/images/social/youtube.svg" alt="YouTube Logo" />
-                      </ExternalLink>
-                      <ExternalLink url="https://www.linkedin.com/company/grantham-research-institute-lse/">
-                        <img src="/images/social/linkedIn.svg" alt="LinkedIn Logo" />
-                      </ExternalLink>
-                    </div>
-                  </div>
+              </div>
+              <div className="footer__section">
+                <div>Follow Grantham Research Institute</div>
+                <div className="flex items-start gap-6 footer__social-links">
+                  <ExternalLink url="https://twitter.com/GRI_LSE">
+                    <img src="/images/social/twitter.svg" alt="Twitter Logo" />
+                  </ExternalLink>
+                  <ExternalLink url="https://www.youtube.com/user/GranthamResearch">
+                    <img src="/images/social/youtube.svg" alt="YouTube Logo" />
+                  </ExternalLink>
+                  <ExternalLink url="https://www.linkedin.com/company/grantham-research-institute-lse/">
+                    <img src="/images/social/linkedIn.svg" alt="LinkedIn Logo" />
+                  </ExternalLink>
                 </div>
               </div>
             </div>
 
-            <div className="footer__section md:w-1/2 lg:mx-auto" data-cy="footer-cpr">
+            <div className="footer__section" data-cy="footer-cpr">
               <h5>Climate Policy Radar</h5>
               <p>Using AI and data science to map the world's climate policies</p>
               <ul className="mb-6">
@@ -150,9 +113,9 @@ const Footer = () => {
         </div>
       </div>
       <div className="footer__base">
-        <div className="container flex flex-1 items-end gap-10 h-full">
+        <div className="container flex flex-1 items-end md:gap-10 h-full">
           <p className="mb-6">Copyright © LSE {new Date().getFullYear()}</p>
-          <div className="mb-6 flex gap-10">
+          <div className="mb-6 flex flex-wrap md:gap-10 order">
             <ExternalLink url="https://www.climatepolicyradar.org/privacy-policy" className="text-secondary-700 underline">
               Privacy policy
             </ExternalLink>

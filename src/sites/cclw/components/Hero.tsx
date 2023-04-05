@@ -39,7 +39,7 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
             <div className="mb-6 h-[80px] flex items-center justify-center relative">
               <img src="/images/highlight.png" alt="Phrase highlighting" className="max-h-full" />
             </div>
-            <p className="mb-6">See exact matches and related phrases highlighted in test</p>
+            <p className="mb-6">See exact matches and related phrases highlighted in the text</p>
           </div>
           {/* <div
             className="border-t lg:border-t-0 lg:border-l border-white py-5 lg:py-0 flex flex-col items-center lg:px-4"

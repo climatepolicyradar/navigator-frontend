@@ -1,12 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { ExternalLink } from "@components/ExternalLink";
-import Logo from "@components/svg/LogoMono";
-import { SearchIcon } from "@components/svg/Icons";
 import { useState } from "react";
 import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
+import MENU_LINKS from "../constants/menuLinks";
 
 const Header = ({ background = true }) => {
   const { pathname } = useRouter();
@@ -39,21 +37,18 @@ const Header = ({ background = true }) => {
               isHome ? "mt-10" : "mt-6"
             }`}
           >
-            <div className="cclw-font font-bold text-2xl md:text-4xl lg:text-3xl xl:text-4xl">
+            <div className="cclw-font font-bold text-xl md:text-4xl lg:text-3xl xl:text-4xl">
               <LinkWithQuery href={`/`} className="" cypress="cclw-logo">
                 Climate Change Laws of the World
               </LinkWithQuery>
             </div>
           </div>
           <div className="text-white flex justify-self-end text-sm flex-grow-0 lg:basis-1/5 lg:justify-end lg:items-end">
-            <div className="flex flex-wrap justify-end items-end gap-2">
-              <p className="text-right basis-full md:basis-auto md:self-start">Powered by</p>
-              <ExternalLink className="flex" url="https://www.climatepolicyradar.org">
-                <div data-cy="cpr-logo">
-                  <Logo fixed />
-                </div>
-              </ExternalLink>
-            </div>
+            <ExternalLink className="flex" url="https://www.climatepolicyradar.org">
+              <div data-cy="cpr-logo">
+                <img src="/images/cpr-logo.png" alt="Climate Policy Radar logo" height={40} className="h-[40px]" />
+              </div>
+            </ExternalLink>
           </div>
         </div>
         <div className="flex flex-col">
@@ -68,34 +63,13 @@ const Header = ({ background = true }) => {
           </Button>
           <nav className={`mt-8 flex-1 text-white transition duration-300 ${menuOpen ? "" : "hidden md:block"}`} data-cy="navigation">
             <ul className="grid grid-cols-2 md:flex justify-center items-end gap-1 h-full text-sm lg:text-base font-bold">
-              <li data-cy="navigation-home">
-                <LinkWithQuery href="/" className={linkClass("/")}>
-                  Home
-                </LinkWithQuery>
-              </li>
-              <li data-cy="navigation-about">
-                <LinkWithQuery href="/about" className={linkClass("/about")}>
-                  About
-                </LinkWithQuery>
-              </li>
-              <li data-cy="navigation-methodology">
-                <LinkWithQuery href="/methodology" className={linkClass("/methodology")}>
-                  Methodology
-                </LinkWithQuery>
-              </li>
-              <li data-cy="navigation-acknowledgements">
-                <LinkWithQuery href="/acknowledgements" className={linkClass("/acknowledgements")}>
-                  Acknowledgements
-                </LinkWithQuery>
-              </li>
-              <li data-cy="navigation-search">
-                <LinkWithQuery href="/search" className={linkClass("/search") + " !flex gap-2"} passHref>
-                  Search{" "}
-                  <span className="mt-[-2px]">
-                    <SearchIcon height="24" width="24" />
-                  </span>
-                </LinkWithQuery>
-              </li>
+              {MENU_LINKS.map((link) => (
+                <li data-cy={`navigation-${link.cy}`} key={link.href}>
+                  <LinkWithQuery href={link.href} className={linkClass(link.href)}>
+                    {link.text}
+                  </LinkWithQuery>
+                </li>
+              ))}
             </ul>
           </nav>
         </div>
