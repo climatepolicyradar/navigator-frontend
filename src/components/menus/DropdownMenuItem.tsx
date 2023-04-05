@@ -8,9 +8,10 @@ interface DropdownMenuItemProps {
   href?: string;
   target?: string;
   external?: boolean;
+  cy?: string;
   setShowMenu?(value: boolean): void;
 }
-const DropdownMenuItem = ({ first = false, title, href, target = "", external = false, setShowMenu }: DropdownMenuItemProps) => {
+const DropdownMenuItem = ({ first = false, title, href, target = "", external = false, cy, setShowMenu }: DropdownMenuItemProps) => {
   const { pathname } = useRouter();
 
   const linkClass = (pageUrl: string) => {
@@ -23,10 +24,9 @@ const DropdownMenuItem = ({ first = false, title, href, target = "", external = 
 
   cssClass = cssClass + linkClass(href);
 
-
   if (external)
     return (
-      <ExternalLink url={href} className={cssClass}>
+      <ExternalLink url={href} className={cssClass} cy={cy}>
         {title}
       </ExternalLink>
     );
@@ -34,11 +34,11 @@ const DropdownMenuItem = ({ first = false, title, href, target = "", external = 
   return (
     <>
       {href ? (
-        <LinkWithQuery href={href} target={target} className={cssClass}>
+        <LinkWithQuery href={href} target={target} className={cssClass} cypress={cy}>
           {title}
         </LinkWithQuery>
       ) : (
-        <button className={cssClass} onClick={() => setShowMenu(false)}>
+        <button className={cssClass} onClick={() => setShowMenu(false)} data-cy={cy}>
           {title}
         </button>
       )}

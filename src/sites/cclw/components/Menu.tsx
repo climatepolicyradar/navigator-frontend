@@ -24,7 +24,7 @@ export const Menu = () => {
         <div className="absolute right-0 top-[100%] z-50">
           <DropdownMenuWrapper>
             {MENU_LINKS.map((link, index) => (
-              <DropdownMenuItem key={index} {...link} title={link.text} setShowMenu={setShowMenu} first={index === 0} />
+              <DropdownMenuItem key={index} {...link} title={link.text} setShowMenu={setShowMenu} first={index === 0} cy={`navigation-${link.cy}`} />
             ))}
           </DropdownMenuWrapper>
         </div>
