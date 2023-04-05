@@ -16,12 +16,12 @@ export const Menu = () => {
   };
 
   return (
-    <div ref={menuRef} className="ml-4 flex items-center relative z-[41]">
+    <div ref={menuRef} className="ml-4 h-full flex items-center relative z-[41]">
       <button data-cy="menu-icon" onClick={toggleMenu}>
         <MenuIcon />
       </button>
       {showMenu && (
-        <div className="absolute right-0 top-[44px] z-50">
+        <div className="absolute right-0 top-[100%] z-50">
           <DropdownMenuWrapper>
             {MENU_LINKS.map((link, index) => (
               <DropdownMenuItem key={index} {...link} title={link.text} setShowMenu={setShowMenu} first={index === 0} />

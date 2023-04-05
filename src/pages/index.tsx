@@ -10,6 +10,7 @@ import CPRLandingPage from "@cpr/pages/landing-page";
 import CCLWLandingPage from "@cclw/pages/landing-page";
 
 import { ThemeContext } from "@context/ThemeContext";
+import { triggerNewSearch } from "@utils/triggerNewSearch";
 
 const IndexPage = () => {
   const { t } = useTranslation(["searchStart", "searchResults"]);
@@ -21,19 +22,7 @@ const IndexPage = () => {
   const { data: { regions = [], countries = [] } = {} } = configQuery;
 
   const handleSearchInput = (term: string, filter?: string, filterValue?: string) => {
-    const newQuery = {};
-    if (term && term !== "") {
-      newQuery[QUERY_PARAMS.query_string] = term;
-    } else {
-      delete router.query[QUERY_PARAMS.query_string];
-    }
-    if (filter && filterValue && filter.length && filterValue.length) {
-      newQuery[filter] = [filterValue.toLowerCase()];
-    }
-    if (router.query[QUERY_PARAMS.exact_match] === "true") {
-      newQuery[QUERY_PARAMS.exact_match] = "true";
-    }
-    router.push({ pathname: "/search", query: { ...newQuery } });
+    triggerNewSearch(router, term, filter, filterValue);
   };
 
   const handleSearchChange = (type: string, value: any) => {
