@@ -1,5 +1,6 @@
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
+import { useRouter } from "next/router";
 
 interface DropdownMenuItemProps {
   first?: boolean;
@@ -10,9 +11,18 @@ interface DropdownMenuItemProps {
   setShowMenu?(value: boolean): void;
 }
 const DropdownMenuItem = ({ first = false, title, href, target = "", external = false, setShowMenu }: DropdownMenuItemProps) => {
-  const cssClass = `${
+  const { pathname } = useRouter();
+
+  const linkClass = (pageUrl: string) => {
+    return pathname.toLowerCase() === pageUrl ? "text-blue-500" : "";
+  };
+
+  let cssClass = `${
     !first ? "border-t border-indigo-200 pt-3" : "pt-2"
-  } px-6 pt-2 block w-full text-left text-sm pb-3 hover:text-blue-500 transition duration-300`;
+  } px-6 pt-2 block w-full text-left text-sm pb-3 hover:text-blue-500 transition duration-300 `;
+
+  cssClass = cssClass + linkClass(href);
+
 
   if (external)
     return (
