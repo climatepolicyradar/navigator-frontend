@@ -16,14 +16,17 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
   const hasMatches = typeof matches !== "undefined" && matches > 0;
   // PDFs need to have a cdn location
   // HTMLs need a source url / website
-  const canView =
+  const canPreview =
     document.content_type === "application/pdf" ? !!document.cdn_object : document.content_type === "text/html" ? !!document.source_url : false;
+  const canViewSource = !canPreview && !!document.source_url;
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
-    // If there is no document to render, don't display the document page
-    if (!canView) return;
-    router.push({ pathname: `/documents/${slug}`, query: router.query });
+    // If there is no document to access, don't direct the user
+    if (!canPreview && !canViewSource) return;
+    // Otherwise either preview or open the source url
+    if (canPreview) router.push({ pathname: `/documents/${slug}`, query: router.query });
+    if (canViewSource) window.open(document.source_url, "_blank");
   };
 
   const renderContentType = (t: TDocumentContentType) => {
@@ -37,9 +40,26 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
     return null;
   };
 
-  let cssClass = "family-document mt-4 p-3 border border-transparent hover:border-primary-600 ";
-  cssClass += `${!isMain ? "hover:" : ""}bg-offwhite transition duration-300 `;
-  cssClass += canView ? "cursor-pointer" : "";
+  const renderDocumentInfo = (): string => {
+    if (canViewSource) return "Document preview is not currently available";
+    return "We do not have this document in our database. Contact us if you can help us find it";
+  };
+
+  const renderMatchesOverrideText = (): string | JSX.Element => {
+    if (status === "loading")
+      return (
+        <span className="flex gap-2 items-center">
+          <Loading />
+          Searching...
+        </span>
+      );
+    if (canPreview && !hasMatches) return "View document";
+    if (canViewSource) return "View source document";
+  };
+
+  let cssClass = "family-document mt-4 p-3 border border-transparent hover:bg-offwhite transition duration-300 ";
+  cssClass += isMain ? "bg-offwhite " : "";
+  cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-primary-600" : "";
 
   return (
     <div className={cssClass} onClick={handleClick}>
@@ -48,16 +68,17 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
         <div className="flex-1 flex flex-wrap gap-x-8 items-center">
           {!isMain && <span className="capitalize font-bold">{document_role?.toLowerCase()}</span>}
           {renderContentType(content_type)}
-          {!!language && <span>{language.toUpperCase()}{!!variant && ` (${variant})`}</span>}
-          {!canView && <span>Document preview is not currently available</span>}
+          {!!language && (
+            <span>
+              {language.toUpperCase()}
+              {!!variant && ` (${variant})`}
+            </span>
+          )}
+          {!canPreview && <span>{renderDocumentInfo()}</span>}
         </div>
-        {canView && (
+        {(canPreview || canViewSource) && (
           <div className="flex-0">
-            <MatchesButton
-              dataAttribute={slug}
-              count={matches}
-              overideText={status === "loading" ? <Loading /> : !hasMatches ? "View document" : null}
-            />
+            <MatchesButton dataAttribute={slug} count={matches} overideText={renderMatchesOverrideText()} />
           </div>
         )}
       </div>
