@@ -41,15 +41,15 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
             </div>
             <p className="mb-6">See exact matches and related phrases highlighted in the text</p>
           </div>
-          {/* <div
-            className="border-t lg:border-t-0 lg:border-l border-white py-5 lg:py-0 flex flex-col items-center lg:px-4"
+          <div
+            className="hidden border-t lg:border-t-0 lg:border-l border-white py-5 lg:py-0 flex flex-col items-center lg:px-4"
             data-cy="feature-translations"
           >
             <div className="mb-6 h-[80px] flex items-center justify-center">
               <Translation height="60" />
             </div>
             <p className="mb-6">Find English translations of documents published in any language</p>
-          </div> */}
+          </div>
           <div
             className="border-t md:border-t-0 lg:border-t-0 md:border-l border-white py-5 lg:py-0 lg:px-4 flex items-center justify-center flex-wrap"
             data-cy="feature-litigation"
