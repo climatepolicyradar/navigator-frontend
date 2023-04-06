@@ -42,7 +42,7 @@ describe("Footer", () => {
 
   it("should contain GRI footer links", () => {
     cy.get("footer").within(() => {
-      cy.get(griSelector).find("ul").children("li").should("have.length", 6);
+      cy.get(griSelector).find("ul").children("li").should("have.length", 8);
     });
   });
 

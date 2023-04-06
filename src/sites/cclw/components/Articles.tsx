@@ -15,44 +15,41 @@ type TArticle = {
 
 const ARTICLES: TArticle[] = [
   {
-    url: "/document/inflation-reduction-act_9785",
-    type: "Legislation",
-    title: "US Inflation Reduction Act",
-    countryCode: "usa",
-    meta: "USA | Filing | 2022",
-  },
-  {
-    url: "/document/the-european-green-deal_60e2",
-    type: "Legislation",
-    title: "The European Green Deal",
-    countryCode: "eur",
-    meta: "EU | Published | 2019",
-    imageUrl: "/images/cclw/images/eu.jpg",
-    imageAlt: "European Union flag",
-  },
-  {
-    url: "/document/climate-change-act-2021_8bf7",
-    type: "Legislation",
-    countryCode: "fji",
-    title: "Fiji's Climate Change Act 2021",
-    meta: "Fiji | Filing | 2019",
-  },
-  {
-    url: "/document/framework-law-on-climate-change-chile_dc8a",
-    type: "Legislation",
-    title: "Framework Law on Climate Change - Chile",
-    meta: "Chile | Published | 2022",
-    countryCode: "chl",
-    imageUrl: "/images/cclw/images/chile.jpg",
-    imageAlt: "Chile flag",
-  },
-  {
-    url: "https://www.lse.ac.uk/granthaminstitute/publication/challenging-government-responses-to-climate-change-through-framework-litigation/",
+    url: "https://www.lse.ac.uk/granthaminstitute/publication/climate-change-law-in-europe-what-do-new-eu-climate-laws-mean-for-the-courts/",
     external: true,
     type: "Policy brief",
-    title: "Challenging government responses to climate change through framework litigation",
-    imageUrl: "/images/cclw/images/hague.jpg",
-    imageAlt: "The Hague",
+    title: "Climate change law in Europe: what do new EU climate laws mean for the courts?",
+    imageUrl: "/images/cclw/images/eu2-min.jpg",
+    imageAlt: "European Commission",
+  },
+  {
+    url: "https://www.lse.ac.uk/granthaminstitute/news/evolving-regulation-of-companies-in-climate-change-framework-laws/",
+    external: true,
+    type: "Commentary",
+    title: "Evolving regulation of companies in climate change framework laws",
+    imageUrl: "/images/cclw/images/tower-min.jpg",
+    imageAlt: "Eiffel Tower",
+  },
+  {
+    url: "/document/nigeria-s-climate-change-act_5ef7",
+    type: "Legislation",
+    title: "Nigeria's Climate Change Act",
+    countryCode: "nga",
+    meta: "Nigeria | Act | 2021",
+  },
+  {
+    url: "/document/decree-no-2022-539-relating-to-carbon-offsetting-and-claims-of-carbon-neutrality-in-advertising_e3ac",
+    type: "Policy",
+    title: "France's recent Decree on Carbon Offsetting",
+    countryCode: "fra",
+    meta: "France | Decree | 2021",
+  },
+  {
+    url: "/document/costa-rica-s-national-plan-of-adaptation-to-climate-change-2022-2026_7a7f",
+    type: "Policy",
+    title: "Costa Rica's National Plan on Adaptation",
+    countryCode: "cri",
+    meta: "Costa Rica | Plan | 2021",
   },
 ];
 
@@ -70,7 +67,9 @@ export const Articles = () => {
           <div className={`p-4 text-primary-400 flex-1 flex items-center text-lg font-bold ${article.imageUrl ? "" : "pt-8"}`}>{article.title}</div>
           {article.meta && (
             <div className="flex items-center gap-2 mb-2 text-grey-700">
-              {article.countryCode && <span className={`rounded-sm border border-black flag-icon-background flag-icon-${article.countryCode} inline-block`} />}
+              {article.countryCode && (
+                <span className={`rounded-sm border border-black flag-icon-background flag-icon-${article.countryCode} inline-block`} />
+              )}
               <div className="">{article.meta}</div>
             </div>
           )}
@@ -89,9 +88,7 @@ export const Articles = () => {
                 {renderArticleContent(article)}
               </ExternalLink>
             ) : (
-              <LinkWithQuery
-                href={article.url}
-                className="block relative border border-grey-400 rounded h-full">
+              <LinkWithQuery href={article.url} className="block relative border border-grey-400 rounded h-full">
                 {renderArticleContent(article)}
               </LinkWithQuery>
             )}

@@ -6,20 +6,20 @@ const pageSelectors = [
   "[data-cy='partners']",
   "[data-cy='search-input']",
   "[data-cy='intro-message']",
-  "[data-cy='feature-laws-policies']",
+  "[data-cy='feature-search']",
   "[data-cy='feature-litigation']",
-  "[data-cy='feature-cpr']",
+  "[data-cy='feature-highlights']",
 ];
 
 const headerSelectors = ["[data-cy='lse-logo']", "[data-cy='gri-logo']", "[data-cy='cclw-logo']", "[data-cy='cpr-logo']"];
 
 const navigationSelectors = [
-  "[data-cy='navigation']",
   "[data-cy='navigation-home']",
   "[data-cy='navigation-about']",
   "[data-cy='navigation-methodology']",
   "[data-cy='navigation-acknowledgements']",
   "[data-cy='navigation-search']",
+  "[data-cy='navigation-contact']",
 ];
 
 describe("Homepage", () => {
@@ -44,7 +44,8 @@ describe("Homepage", () => {
     });
   });
 
-  it("should display correct navigation elements", () => {
+  it("should display correct menu and navigation elements", () => {
+    cy.get("[data-cy='menu-icon']").click();
     navigationSelectors.forEach((selector) => {
       cy.get(selector).should("be.visible");
     });

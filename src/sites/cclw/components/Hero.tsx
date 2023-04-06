@@ -1,6 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 import LandingSearchForm from "@components/forms/LandingSearchForm";
-import Button from "@components/buttons/Button";
 import { ExternalLink } from "@components/ExternalLink";
+import { LinkWithQuery } from "@components/LinkWithQuery";
+import { Translation } from "@components/svg/Icons";
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
@@ -8,11 +10,6 @@ type TProps = {
 };
 
 export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
-  const handleDocumentBrowseClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    handleSearchInput("");
-  };
-
   return (
     <div className="pt-12 pb-6 text-white">
       <div className="container">
@@ -22,56 +19,56 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
           </p>
         </div>
         <div className="max-w-screen-lg mx-auto mt-6">
-          <LandingSearchForm handleSearchInput={handleSearchInput} placeholder="Search for countries, legislation and policies" input={searchInput} />
+          <LandingSearchForm
+            handleSearchInput={handleSearchInput}
+            placeholder="Search full text of 3,500+ climate laws and policies"
+            input={searchInput}
+          />
         </div>
-        <div className="mt-6 lg:mt-12 grid gap-y-5 gap-x-8 sm:grid-cols-1 lg:grid-cols-3 text-center max-w-screen-lg mx-auto">
-          <div className="lg:px-8 flex flex-col items-center" data-cy="feature-laws-policies">
-            <div className="text-lg font-bold">Laws and policies</div>
-            <a className="cclw-semi-circle" href="#" onClick={(e) => handleDocumentBrowseClick(e)}>
-              <span>
-                Browse
-                <span className="font-bold"> 3500+</span>
-              </span>
-              <span>
-                laws and policies
-                <span className="font-bold"> &gt;</span>
-              </span>
-            </a>
+        <div className="mt-6 lg:mt-12 grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 text-center max-w-screen-lg mx-auto">
+          <div className="py-5 lg:py-0 flex flex-col lg:px-4" data-cy="feature-search">
+            <div className="mb-6 h-[80px] flex items-center justify-center">
+              <img src="/images/earth.png" alt="Phrase highlighting" className="max-h-full" />
+            </div>
+            <p className="mb-6">Search 3500+ climate law and policy documents from every country</p>
           </div>
-          <div className="border-y lg:border-y-0 lg:border-x border-white py-5 lg:py-0 lg:px-8" data-cy="feature-litigation">
-            <div className="text-lg font-bold">Litigation</div>
-            {/* <div className="flex items-center justify-center my-4 cursor-pointer hover:underline" role="button" onClick={(e) => handleDocumentBrowseClick(e, "Law")}>
-              <div className="p-3 border bg-secondary-500 border-overlayWhite rounded-full mr-[-5px]">{getCategoryIcon("Case")}</div>
-              <div className="w-[100px] h-[100px] bg-primary-400 rounded-full text-3xl flex items-center justify-center">2,082</div>
-            </div> */}
-            <div className="mt-6">
-              <p>Climate litigation is coming soon</p>
-              <ExternalLink
-                url="https://climatepolicyradar.org/latest/new-partnership-launches-ai-powered-global-climate-law-and-policy-database"
-                className="font-bold underline"
-              >
-                Read more &gt;
-              </ExternalLink>
+          <div
+            className="border-t md:border-t-0 md:border-l border-white py-5 lg:py-0 flex flex-col items-center lg:px-4"
+            data-cy="feature-highlights"
+          >
+            <div className="mb-6 h-[80px] flex items-center justify-center relative">
+              <img src="/images/highlight.png" alt="Phrase highlighting" className="max-h-full" />
             </div>
-            <div className="mt-6">
-              <p>
-                Climate Change Litigation data currently available at{" "}
-                <ExternalLink url="http://climatecasechart.com/" className="font-bold underline">
-                  climatecasechart.com
-                </ExternalLink>
-              </p>
-            </div>
+            <p className="mb-6">See exact matches and related phrases highlighted in the text</p>
           </div>
-          <div className="flex flex-col justify-between items-center lg:px-8" data-cy="feature-cpr">
-            <div className="text-lg font-bold">We are now powered by data science and AI in partnership with Climate Policy Radar</div>
-            <div className="mt-4">
-              <ExternalLink url="https://climatepolicyradar.org">
-                <Button extraClasses="flex items-center">
-                  <span>Learn more about our technology</span>
-                  <span className="text-3xl ml-4">&gt;</span>
-                </Button>
-              </ExternalLink>
+          <div
+            className="hidden border-t lg:border-t-0 lg:border-l border-white py-5 lg:py-0 flex flex-col items-center lg:px-4"
+            data-cy="feature-translations"
+          >
+            <div className="mb-6 h-[80px] flex items-center justify-center">
+              <Translation height="60" />
             </div>
+            <p className="mb-6">Find English translations of documents published in any language</p>
+          </div>
+          <div
+            className="border-t md:border-t-0 lg:border-t-0 md:border-l border-white py-5 lg:py-0 lg:px-4 flex items-center justify-center flex-wrap"
+            data-cy="feature-litigation"
+          >
+            <p>
+              <LinkWithQuery href="/faq#litigation" className="font-bold underline">
+                Climate litigation
+              </LinkWithQuery>{" "}
+              is coming soon. Access it now at{" "}
+              <ExternalLink url="http://climatecasechart.com/" className="font-bold underline">
+                Climate Case Chart
+              </ExternalLink>
+            </p>
+            <p>
+              Learn more about{" "}
+              <LinkWithQuery href="/faq#litigation" className="font-bold underline">
+                how to use this site
+              </LinkWithQuery>
+            </p>
           </div>
         </div>
       </div>

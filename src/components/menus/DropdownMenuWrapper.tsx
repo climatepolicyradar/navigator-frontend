@@ -6,7 +6,7 @@ type TProps = {
 
 const DropdownMenuWrapper: FC<TProps> = ({ children }) => {
   return (
-    <div data-cy="dropdown-menu" className="rounded bg-indigo-100 shadow-xl shadow-black/10 py-2 w-48">
+    <div data-cy="dropdown-menu" className="rounded shadow-xl py-2 shadow-black/10 w-48 bg-indigo-100">
       {children}
     </div>
   );

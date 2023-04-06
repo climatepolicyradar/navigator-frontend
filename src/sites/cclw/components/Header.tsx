@@ -1,28 +1,23 @@
 /* eslint-disable @next/next/no-img-element */
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { ExternalLink } from "@components/ExternalLink";
-import Logo from "@components/svg/LogoMono";
-import { SearchIcon } from "@components/svg/Icons";
-import { useState } from "react";
-import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
+import { FloatingSearch } from "@components/FloatingSearch";
+import { Menu } from "./Menu";
 
 const Header = ({ background = true }) => {
-  const { pathname } = useRouter();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter();
 
-  const linkClass = (pageUrl: string) => {
-    return pathname.toLowerCase() === pageUrl ? "active" : "";
+  // Do not show search on specific pages
+  const showSearch = () => {
+    return !["/", "/search"].includes(router.pathname);
   };
 
-  const isHome = pathname.toLowerCase() === "/";
-
   return (
-    <header data-cy="header" className={`${background ? "bg-secondary-700" : ""} w-full border-b-2 pt-6 lg:pt-0`}>
+    <header data-cy="header" className={`${background ? "bg-secondary-700" : ""} w-full pt-6 lg:pt-0`}>
       <div className="container">
-        <div className={`grid grid-cols-2 auto-cols-auto lg:flex lg:flex-nowrap lg:justify-between ${isHome ? "lg:mb-6" : ""}`}>
-          <div className="items-end flex flex-grow-0 lg:basis-1/5">
+        <div className="grid grid-cols-2 auto-cols-auto lg:my-6">
+          <div className="items-end flex flex-grow-0">
             <ExternalLink className="flex" url="https://www.lse.ac.uk/">
               <div className="h-[40px] w-[40px] flex" data-cy="lse-logo">
                 <img src="/images/partners/lse-logo.png" alt="LSE logo" width={40} height={40} />
@@ -34,70 +29,26 @@ const Header = ({ background = true }) => {
               </div>
             </ExternalLink>
           </div>
-          <div
-            className={`col-span-2 flex-1 flex justify-center text-white order-last lg:-order-none basis-full text-center lg:basis-auto mb-6 lg:mb-0 ${
-              isHome ? "mt-10" : "mt-6"
-            }`}
-          >
-            <div className="cclw-font font-bold text-2xl md:text-4xl lg:text-3xl xl:text-4xl">
+          <div className="flex justify-self-end text-sm flex-grow-0 items-end">
+            <ExternalLink className="flex" url="https://www.climatepolicyradar.org">
+              <div data-cy="cpr-logo">
+                <img src="/images/cpr-logo-monoSmall.png" alt="Climate Policy Radar logo" height={40} className="h-[40px]" />
+              </div>
+            </ExternalLink>
+            {showSearch() && (
+              <div className="hidden md:block ml-4 md:w-[220px] lg:[280px]">
+                <FloatingSearch />
+              </div>
+            )}
+            <Menu />
+          </div>
+          <div className="col-span-2 flex-1 flex justify-center text-white order-last items-end basis-full text-center my-6 lg:my-0 lg:mt-6">
+            <div className="cclw-font font-bold text-xl md:text-4xl lg:text-3xl xl:text-4xl">
               <LinkWithQuery href={`/`} className="" cypress="cclw-logo">
                 Climate Change Laws of the World
               </LinkWithQuery>
             </div>
           </div>
-          <div className="text-white flex justify-self-end text-sm flex-grow-0 lg:basis-1/5 lg:justify-end lg:items-end">
-            <div className="flex flex-wrap justify-end items-end gap-2">
-              <p className="text-right basis-full md:basis-auto md:self-start">Powered by</p>
-              <ExternalLink className="flex" url="https://www.climatepolicyradar.org">
-                <div data-cy="cpr-logo">
-                  <Logo fixed />
-                </div>
-              </ExternalLink>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <Button
-            thin
-            onClick={() => {
-              setMenuOpen(!menuOpen);
-            }}
-            extraClasses="mb-6 text-sm font-normal md:hidden"
-          >
-            {menuOpen ? <>Hide menu &#x25B2;</> : <>Show menu &#x25BC;</>}
-          </Button>
-          <nav className={`mt-8 flex-1 text-white transition duration-300 ${menuOpen ? "" : "hidden md:block"}`} data-cy="navigation">
-            <ul className="grid grid-cols-2 md:flex justify-center items-end gap-1 h-full text-sm lg:text-base font-bold">
-              <li data-cy="navigation-home">
-                <LinkWithQuery href="/" className={linkClass("/")}>
-                  Home
-                </LinkWithQuery>
-              </li>
-              <li data-cy="navigation-about">
-                <LinkWithQuery href="/about" className={linkClass("/about")}>
-                  About
-                </LinkWithQuery>
-              </li>
-              <li data-cy="navigation-methodology">
-                <LinkWithQuery href="/methodology" className={linkClass("/methodology")}>
-                  Methodology
-                </LinkWithQuery>
-              </li>
-              <li data-cy="navigation-acknowledgements">
-                <LinkWithQuery href="/acknowledgements" className={linkClass("/acknowledgements")}>
-                  Acknowledgements
-                </LinkWithQuery>
-              </li>
-              <li data-cy="navigation-search">
-                <LinkWithQuery href="/search" className={linkClass("/search") + " !flex gap-2"} passHref>
-                  Search{" "}
-                  <span className="mt-[-2px]">
-                    <SearchIcon height="24" width="24" />
-                  </span>
-                </LinkWithQuery>
-              </li>
-            </ul>
-          </nav>
         </div>
       </div>
     </header>
