@@ -50,7 +50,10 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
             </div>
             <p className="mb-6">Find English translations of documents published in any language</p>
           </div> */}
-          <div className="border-t md:border-t-0 lg:border-t-0 md:border-l border-white py-5 lg:py-0 lg:px-4 flex items-center justify-center flex-wrap" data-cy="feature-litigation">
+          <div
+            className="border-t md:border-t-0 lg:border-t-0 md:border-l border-white py-5 lg:py-0 lg:px-4 flex items-center justify-center flex-wrap"
+            data-cy="feature-litigation"
+          >
             <p>
               <LinkWithQuery href="/faq#litigation" className="font-bold underline">
                 Climate litigation
