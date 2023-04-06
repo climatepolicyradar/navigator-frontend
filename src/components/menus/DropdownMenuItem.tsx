@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 interface DropdownMenuItemProps {
   first?: boolean;
   title: string;
-  href?: string;
+  href: string;
   target?: string;
   external?: boolean;
   cy?: string;
@@ -32,17 +32,9 @@ const DropdownMenuItem = ({ first = false, title, href, target = "", external = 
     );
 
   return (
-    <>
-      {href ? (
-        <LinkWithQuery href={href} target={target} className={cssClass} cypress={cy}>
-          {title}
-        </LinkWithQuery>
-      ) : (
-        <button className={cssClass} onClick={() => setShowMenu(false)} data-cy={cy}>
-          {title}
-        </button>
-      )}
-    </>
+    <LinkWithQuery href={href} target={target} className={cssClass} cypress={cy}>
+      {title}
+    </LinkWithQuery>
   );
 };
 export default DropdownMenuItem;
