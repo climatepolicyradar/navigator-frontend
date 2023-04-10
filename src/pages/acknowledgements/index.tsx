@@ -46,7 +46,6 @@ const Acknowledgements = () => {
               imageAlt: "Sabin Center for Climate Change Law at Columbia Law School logo",
             }}
           >
-            <h4>The Sabin Center for Climate Change Law</h4>
             <p>
               The Sabin Center for Climate Change Law, a joint center of the Columbia Law School and the Climate School, develops and promulgates
               legal techniques to address climate change and trains the next generation of lawyers who will be leaders in the field. The Sabin Center
@@ -62,14 +61,12 @@ const Acknowledgements = () => {
               imageAlt: "Foundation for International Law and the Environment logo",
             }}
           >
-            <h4>Foundation for International Law and the Environment</h4>
             <p>
               FILE is a global philanthropic foundation supporting legal innovation to address the climate crisis. The Grantham Institute would like
               to thank FILE for its generous support for developments to the database.
             </p>
           </Acknowledgement>
           <Acknowledgement partnerImage={{ url: "https://www.ipu.org/", imageUrl: "IPU_logo.png", imageAlt: "Inter-Parliamentary Union logo" }}>
-            <h4>Inter-Parliamentary Union</h4>
             <p>
               The Inter-Parliamentary Union (IPU) is the global organisation of national parliaments. It began in 1889 as a small group of
               parliamentarians, dedicated to promoting peace through parliamentary diplomacy and dialogue, and has since grown into a truly global
@@ -84,7 +81,6 @@ const Acknowledgements = () => {
               imageAlt: "Edinburgh Centre for Constitutional Law logo",
             }}
           >
-            <h4>Edinburgh Centre for Constitutional Law, University of Edinburgh</h4>
             <p>
               The Edinburgh Centre for Constitutional Law (ECCL) provides a focal point for staff and postgraduate research students working in all
               areas of Scots and UK public law, Commonwealth and comparative constitutional law, human rights law, environmental law and climate
@@ -99,7 +95,6 @@ const Acknowledgements = () => {
               imageAlt: "Fossil Fuel Non-Proliferation Treaty Initiative logo",
             }}
           >
-            <h4>Fossil Fuel Non-Proliferation Treaty Initiative</h4>
             <p>
               Based on the best practices of former treaty campaigns and existing struggles led by frontline communities, the Fossil Fuel
               Non-Proliferation Treaty Initiative started in 2019 through a Climate Breakthrough Project award. The Initiative promotes international
