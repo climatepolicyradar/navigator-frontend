@@ -1,8 +1,17 @@
 import { ExternalLink } from "@components/ExternalLink";
-
-// FIXME: replace the span blocks with h4s and then change style of h4 in the .text-content wrapper
+import { useState } from "react";
 
 const Methodology = () => {
+  const [openSections, setOpenSections] = useState([]);
+
+  const toggleSection = (sectionId: number) => {
+    if (openSections.includes(sectionId)) {
+      setOpenSections(openSections.filter((id) => id !== sectionId));
+    } else {
+      setOpenSections([...openSections, sectionId]);
+    }
+  };
+
   return (
     <section>
       <div className="text-content px-4 container mb-12">
@@ -20,8 +29,10 @@ const Methodology = () => {
           classifications powered by AI. Sign up to our newsletter to receive updates.
         </p>
 
-        <h2 id="scope">Scope of documents included</h2>
-        <div id="content-scope">
+        <h2 id="scope" className="cursor-pointer flex items-center" onClick={() => toggleSection(1)}>
+          <span>Scope of documents included</span> <span className={`arrow border-indigo-600 ml-6 ${openSections.includes(1) ? "up" : "down"}`} />
+        </h2>
+        <div id="content-scope" className={`${openSections.includes(1) ? "block" : "hidden"}`}>
           <p>
             This database covers all UNFCCC parties (196 countries plus the European Union), and several territories that are not in the UN or UNFCCC,
             such as Taiwan, Palestine and Western Sahara.
@@ -70,8 +81,13 @@ const Methodology = () => {
           </p>
         </div>
 
-        <h2 id="definitions-in-use">Definitions and classifications: currently in use </h2>
-        <div id="content-definitions-in-use">
+        <hr />
+
+        <h2 id="scope" className="cursor-pointer flex items-center" onClick={() => toggleSection(2)}>
+          <span>Definitions and classifications: currently in use</span>
+          <span className={`arrow border-indigo-600 ml-6 ${openSections.includes(2) ? "up" : "down"}`} />
+        </h2>
+        <div id="content-definitions-in-use" className={`${openSections.includes(2) ? "block" : "hidden"}`}>
           <p>
             <b className="font-bold">
               We assign a number of classifications and categories to laws and policies in the CCLW database to enhance the usability and
@@ -81,8 +97,8 @@ const Methodology = () => {
             needs of our user community. Codes and categories currently in use include:
           </p>
 
+          <h4>Legislation and policy</h4>
           <p>
-            <span className="block font-bold">Legislation and policy</span>
             <b className="font-bold">
               We categorise documents as legislation or policy depending on if they are enacted by the legislative or executive branch of government
             </b>
@@ -90,15 +106,15 @@ const Methodology = () => {
             made based on our best understanding of the country’s legal system.
           </p>
 
+          <h4>Document types</h4>
           <p>
-            <span className="block font-bold">Document types</span>
             <b className="font-bold">Document types are determined with reference to a non-exhaustive list of options</b> and may be classified
             according to their legal status, i.e. as a Constitution or a Decree Law, or, in the case of policy documents, by their content, e.g. as a
             strategy, a roadmap or a government guidance note.
           </p>
 
+          <h4>Responses</h4>
           <p>
-            <span className="block font-bold">Responses</span>
             <b className="font-bold">Laws and policies are categorised according to the climate policy response to which they are most relevant</b>:
             mitigation, adaptation, loss and damage, or disaster risk management. Where appropriate, laws may be tagged as relevant to more than one
             policy response.
@@ -148,8 +164,8 @@ const Methodology = () => {
             </li>
           </ol>
 
+          <h4>Frameworks</h4>
           <p>
-            <span className="block font-bold">Frameworks</span>
             <b className="font-bold">A number of laws or policies in the database are categorised as ‘framework’ documents</b>. While there is no
             agreed definition of a ‘climate change framework law’, this term is applied with increasing frequency to a discrete class of laws that
             share some or all of the following characteristics, and we tag legislative documents within the database as ‘framework laws’ accordingly:
@@ -178,8 +194,8 @@ const Methodology = () => {
             risk management.
           </p>
 
+          <h4>Sectors</h4>
           <p>
-            <span className="block font-bold">Sectors</span>
             <b className="font-bold">Each document is assessed to determine the most relevant sector or sectors to which it relates</b>. The following
             sectors are currently considered: Agriculture, Transport, Energy, Waste, Environment, Tourism, Land Use, Land-Use Change and Forestry
             (LULUCF), Industry, Buildings, Water, Health, Public Sector, and Other. Where a document relates to multiple sectors or appears
@@ -189,22 +205,26 @@ const Methodology = () => {
             methane, another greenhouse gas, or if they deal with waste-to-energy schemes.
           </p>
 
+          <h4>Targets</h4>
           <p>
-            <span className="block font-bold">Targets</span>
             <b className="font-bold">Up until January 2023, efforts were made to manually identify all targets included in laws and policies</b>. We
             are currently in the process of developing an automated process to identify targets. For documents added after January 2023, we only
             manually identify “net zero” targets or their equivalent. See further detail in the Definitions and classifications: not currently in use
             section.
           </p>
+          <h4>Keywords</h4>
           <p>
-            <span className="block font-bold">Keywords</span>
             <b className="font-bold">Discretionary keywords may be assigned to cases to enable data users to identify these more easily</b>. We do not
             maintain a comprehensive list of keywords.
           </p>
         </div>
 
-        <h2 id="collection">Data collection process</h2>
-        <div id="content-collection">
+        <hr />
+
+        <h2 id="collection" className="cursor-pointer flex items-center" onClick={() => toggleSection(3)}>
+          <span>Data collection process</span> <span className={`arrow border-indigo-600 ml-6 ${openSections.includes(3) ? "up" : "down"}`} />
+        </h2>
+        <div id="content-collection" className={`${openSections.includes(3) ? "block" : "hidden"}`}>
           <p>
             The Climate Change Laws of the World Database started life in 2010 as a printed publication, comprising an overview of climate change laws
             and policies in just 16 countries. Since then, it has expanded to include all countries in the present scope and has moved online to
@@ -221,8 +241,12 @@ const Methodology = () => {
           </p>
         </div>
 
-        <h2 id="principles">Principles and limitations</h2>
-        <div id="content-principles">
+        <hr />
+
+        <h2 id="principles" className="cursor-pointer flex items-center" onClick={() => toggleSection(4)}>
+          <span>Principles and limitations</span> <span className={`arrow border-indigo-600 ml-6 ${openSections.includes(4) ? "up" : "down"}`} />
+        </h2>
+        <div id="content-principles" className={`${openSections.includes(4) ? "block" : "hidden"}`}>
           <p>
             <b className="font-bold">In general, our approach has been to be inclusive and flexible with definitions</b>, to allow for the different
             regulatory approaches and cultures among 200 countries, and to recognise the elusive boundaries of climate change, which spans multiple
@@ -254,8 +278,13 @@ const Methodology = () => {
           <p>We invite users to exercise their judgment when using the data and any data sub-sets that serve their research and policy purposes.</p>
         </div>
 
-        <h2 id="definitions-not-in-use">Definitions and classifications: not currently in use</h2>
-        <div id="content-definitions-not-in-use">
+        <hr />
+
+        <h2 id="definitions-not-in-use" className="cursor-pointer flex items-center" onClick={() => toggleSection(5)}>
+          <span>Definitions and classifications: not currently in use</span>{" "}
+          <span className={`arrow border-indigo-600 ml-6 ${openSections.includes(5) ? "up" : "down"}`} />
+        </h2>
+        <div id="content-definitions-not-in-use" className={`${openSections.includes(5) ? "block" : "hidden"}`}>
           <p>
             This section provides details on classifications found in the full data download that are not currently in regular use, but have been
             previously assigned to subsets of documents in the database.{" "}
@@ -265,13 +294,13 @@ const Methodology = () => {
             </b>
             .
           </p>
+          <h4>Targets</h4>
           <p>
-            <span className="block font-bold">Targets</span>
             As noted above, until January 2023 efforts were made to manually identify targets in laws and policies. Full details of the methodology
             for this process can be found below in <b className="font-bold">Annex I</b>.
           </p>
+          <h4>Instruments</h4>
           <p>
-            <span className="block font-bold">Instruments</span>
             <b className="font-bold">
               A subset of documents have been assessed to determine the primary policy instruments or ‘tools’ on which they rely
             </b>
@@ -282,15 +311,19 @@ const Methodology = () => {
             to more than one area of government activity and rely on multiple instruments. See <b className="font-bold">Annex II</b> below for the
             full list of instruments considered.
           </p>
+          <h4>Natural hazards</h4>
           <p>
-            <span className="block font-bold">Natural hazards</span>
             Natural hazards, such as floods and droughts, have been identified for a subset of documents relating to disaster risk management and
             adaptation.
           </p>
         </div>
 
-        <h2 id="notes">Notes</h2>
-        <div id="content-notes">
+        <hr />
+
+        <h2 id="notes" className="cursor-pointer flex items-center" onClick={() => toggleSection(6)}>
+          <span>Notes</span> <span className={`arrow border-indigo-600 ml-6 ${openSections.includes(6) ? "up" : "down"}`} />
+        </h2>
+        <div id="content-notes" className={`${openSections.includes(6) ? "block" : "hidden"}`}>
           <p>
             <span className="block" id="note-i">
               <span className="text-primary-600">[i]</span> Nachmany M, Byrnes R, Surminski S (2019) National laws and policies on climate change
@@ -312,8 +345,12 @@ const Methodology = () => {
           </p>
         </div>
 
-        <h2 id="annex-1">Annex I: Targets methodology</h2>
-        <div id="content-annex-1">
+        <hr />
+
+        <h2 id="annex-1" className="cursor-pointer flex items-center" onClick={() => toggleSection(7)}>
+          <span>Annex I: Targets methodology</span> <span className={`arrow border-indigo-600 ml-6 ${openSections.includes(7) ? "up" : "down"}`} />
+        </h2>
+        <div id="content-annex-1" className={`${openSections.includes(7) ? "block" : "hidden"}`}>
           <p>
             <b className="font-bold">
               This Annex outlines the process used to collect and categorise the targets displayed in the Climate Change Laws of the World database
@@ -325,21 +362,25 @@ const Methodology = () => {
             This data was reviewed extensively during the first semester of 2022.
           </p>
 
+          <h4>Scope</h4>
           <p>
-            <span className="block font-bold">Scope</span>
             Targets were included in the target dataset based on whether they are quantifiable. Both mitigation and adaptation targets are included.
             Aspirational or non-measurable targets are not generally included.
           </p>
 
+          <h4>Sector</h4>
           <p>
-            <span className="block font-bold">Sector</span>
             Upon addition to the database, targets are categorised by sector. Targets are defined as ‘economy-wide’ if they are communicated on a
             national level, without further detail on the specific sectors to which they apply.
           </p>
         </div>
 
-        <h2 id="annex-2">Annex II: List of instruments</h2>
-        <div id="content-annex-2">
+        <hr />
+
+        <h2 id="annex-2" className="cursor-pointer flex items-center" onClick={() => toggleSection(8)}>
+          <span>Annex II: List of instruments</span> <span className={`arrow border-indigo-600 ml-6 ${openSections.includes(8) ? "up" : "down"}`} />
+        </h2>
+        <div id="content-annex-2" className={`${openSections.includes(8) ? "block" : "hidden"}`}>
           <p>This Annex lists the instrument types currently included in the CCLW data download.</p>
           <h4>Regulation</h4>
           <ul>
