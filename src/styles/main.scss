@@ -80,13 +80,13 @@ h6 {
   @apply text-indigo-600 font-bold;
 }
 h1 {
-  @apply text-h1;
+  @apply text-3xl md:text-h1;
 }
 h2 {
-  @apply text-h2;
+  @apply text-xl md:text-h2;
 }
 h3 {
-  @apply text-h3 font-medium;
+  @apply text-lg font-medium md:text-h3;
 }
 h4 {
   @apply text-h4 font-medium;
