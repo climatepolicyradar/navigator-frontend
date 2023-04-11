@@ -2,5 +2,5 @@
 2-advanced-examples
 
 importData.csv
-screenshots
 /cypress/videos
+/cypress/screenshots

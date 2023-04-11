@@ -70,7 +70,7 @@ const useSearch = (query: TRouterQuery, runFreshSearch: boolean = true) => {
 
     resultsQuery.then((res) => {
       if (res.status === 200) {
-        // Catch missing attributes fro the API response
+        // Catch missing attributes from the API response
         setFamilies(res.data.families || []);
         setHits(res.data.hits || 0);
 

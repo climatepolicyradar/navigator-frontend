@@ -57,18 +57,19 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
   const inputCssClass =
     theme === "cpr"
       ? "placeholder:text-white pr-16 text-2xl bg-transparent border-t-0 border-l-0 border-r-0 border-white border-b-2 focus:border-white focus:ring-0 w-full"
-      : "py-3 pl-6 pr-16 w-full text-indigo-400 focus:ring-0";
+      : "text-xl py-4 pl-6 pr-16 w-full text-indigo-400 focus:ring-0";
 
   const buttonCssClass = theme === "cpr" ? "absolute top-0 right-0 h-full" : "absolute right-0 h-full pr-2 text-grey-700";
+  const searchIconCssClass = theme === "cpr" ? "block" : "border-l border-lineBorder py-1 pl-1 block";
   const displayPlaceholder = placeholder ?? "Search full text of 3000+ laws and policies";
 
   return (
     <form data-cy="search-form" ref={formRef} onSubmit={(e) => e.preventDefault()}>
       <div className={`max-w-screen-lg mx-auto flex items-stretch relative ${wrapperCssClass}`}>
         <input
-          id="landingPage-searchInput"
-          data-analytics="landingPage-searchInput"   
-          data-cy="search-input"   
+          id={`landingPage-searchInput-${theme}`}
+          data-analytics="landingPage-searchInput"
+          data-cy="search-input"
           type="search"
           className={inputCssClass}
           value={term}
@@ -84,7 +85,9 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
           </div>
         )}
         <button className={buttonCssClass} onClick={() => handleSearchInput(term)}>
-          <SearchIcon height="20" width="40" />
+          <span className={searchIconCssClass}>
+            <SearchIcon height="30" width="40" />
+          </span>
         </button>
         <SearchDropdown term={term} show={formFocus} handleSearchClick={handleSearchInput} largeSpacing />
       </div>

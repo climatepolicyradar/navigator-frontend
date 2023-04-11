@@ -80,13 +80,13 @@ h6 {
   @apply text-indigo-600 font-bold;
 }
 h1 {
-  @apply text-h1;
+  @apply text-3xl md:text-h1;
 }
 h2 {
-  @apply text-h2;
+  @apply text-xl md:text-h2;
 }
 h3 {
-  @apply text-h3 font-medium;
+  @apply text-lg font-medium md:text-h3;
 }
 h4 {
   @apply text-h4 font-medium;
@@ -344,6 +344,9 @@ ul li.selected {
       @apply border border-gray-300 p-2 align-top;
     }
   }
+  hr {
+    @apply my-6;
+  }
 }
 .pdf-container {
   height: 440px;
@@ -385,7 +388,7 @@ ul li.selected {
   top: 42px;
 
   &.search-dropdown_large {
-    top: 50px;
+    top: 60px;
   }
 }
 
@@ -455,7 +458,7 @@ ul li.selected {
   }
 }
 
-#landingPage-searchInput {
+#landingPage-searchInput-cpr {
   @screen md {
     &::-webkit-input-placeholder {
       /* WebKit browsers */
@@ -556,3 +559,32 @@ ul li.selected {
 //   margin-right: 5px;
 //   border-radius: 5px;
 // }
+
+.arrow {
+  border-style: solid;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 6px;
+}
+
+.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.left {
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+}
+
+.up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+  margin-top: 6px;
+}
+
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  margin-top: -6px;
+}

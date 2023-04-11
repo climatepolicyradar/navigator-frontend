@@ -3,6 +3,7 @@ import { arrayOfStringdMatch } from "./arrayEquality";
 import { CACHE_NAME, CACHE_LIMIT } from "@constants/cache";
 
 const day = 1000 * 60 * 60 * 24;
+const hour = 1000 * 60 * 60;
 
 export type TCacheIdentifier = {
   query_string: string;
@@ -36,7 +37,7 @@ const saveCache = (newCache: TCacheSearch) => {
 const clearOldCache = () => {
   const cache = getCache();
   const newCache = {
-    cache: cache.cache.filter((search) => search.timestamp > Date.now() - day),
+    cache: cache.cache.filter((search) => search.timestamp > Date.now() - hour),
   };
   saveCache(newCache);
 };
@@ -62,6 +63,8 @@ export const getCachedSearch = (cacheId: TCacheIdentifier) => {
 };
 
 export const updateCacheSearch = (search: TCacheResult) => {
+  // don't cache empty results
+  if(search.families.length === 0) return;
   if (getCachedSearch(search) !== undefined) return;
   const cache = getCache();
   if (cache.cache.length > CACHE_LIMIT) {

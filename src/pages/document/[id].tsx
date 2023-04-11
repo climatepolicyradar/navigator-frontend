@@ -25,6 +25,7 @@ import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import useConfig from "@hooks/useConfig";
 import { getCountryName } from "@helpers/getCountryFields";
+import { sortFilterTargets } from "@utils/sortFilterTargets";
 
 type TProps = {
   page: TFamilyPage;
@@ -41,7 +42,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [summary, setSummary] = useState("");
 
-  const publishedTargets = targets.filter((target) => target["Visibility status"] === "published");
+  const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
 
   const configQuery = useConfig();
@@ -312,6 +313,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 export default FamilyPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+
   const id = context.params.id;
   const client = new ApiClient(process.env.API_URL);
 

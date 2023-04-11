@@ -10,7 +10,7 @@ type TProps = {
 };
 
 export const FamilyHead = ({ family, geographyName, onCollectionClick }: TProps) => {
-  const [year] = convertDate(family.published_date);
+  const [year] = family.published_date ? convertDate(family.published_date) : "";
 
   return (
     <div className="bg-offwhite border-solid border-lineBorder border-b">
@@ -43,7 +43,7 @@ export const FamilyHead = ({ family, geographyName, onCollectionClick }: TProps)
                   {geographyName}
                 </span>
               </CountryLink>
-              <span className="pl-2">{year}</span>
+              {year && <span className="pl-2">{year}</span>}
             </div>
           </div>
         </div>
