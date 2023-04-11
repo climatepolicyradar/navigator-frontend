@@ -20,15 +20,6 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
     document.content_type === "application/pdf" ? !!document.cdn_object : document.content_type === "text/html" ? !!document.source_url : false;
   const canViewSource = !canPreview && !!document.source_url;
 
-  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.preventDefault();
-    // If there is no document to access, don't direct the user
-    if (!canPreview && !canViewSource) return;
-    // Otherwise either preview or open the source url
-    if (canPreview) router.push({ pathname: `/documents/${slug}`, query: router.query });
-    if (canViewSource) window.open(document.source_url, "_blank");
-  };
-
   const renderContentType = (t: TDocumentContentType) => {
     if (!t) return null;
     switch (t) {
@@ -57,12 +48,23 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
     if (canViewSource) return "View source document";
   };
 
-  let cssClass = "family-document mt-4 p-3 border border-transparent hover:bg-offwhite transition duration-300 ";
-  cssClass += isMain ? "bg-offwhite " : "";
-  cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-primary-600" : "";
+  const getPreviewBehaviour = () => {
+    let cssClass = "family-document mt-4 p-3 border border-transparent hover:bg-offwhite transition duration-300 ";
+    cssClass += isMain ? "bg-offwhite " : "";
+    cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-primary-600" : "";
+
+    const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      e.preventDefault();
+      // Otherwise either preview or open the source url
+      if (canPreview) router.push({ pathname: `/documents/${slug}`, query: router.query });
+      if (canViewSource) window.open(document.source_url, "_blank");
+    };
+
+    return { className: cssClass, onClick: !canPreview && !canViewSource ? null : handleClick };
+  };
 
   return (
-    <div className={cssClass} onClick={handleClick}>
+    <div {...getPreviewBehaviour()}>
       <div className="text-primary-600 mb-2">{title}</div>
       <div className="flex items-center">
         <div className="flex-1 flex flex-wrap gap-x-8 items-center">
