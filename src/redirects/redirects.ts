@@ -17,7 +17,6 @@ const cprRedirects = [
 const theme = process.env.THEME;
 
 function getRedirects(): Array<TRedirect> {
-  // const REDIRECT_FILE = process.env.NEXT_REDIRECT_FILE || "default.json";
   const REDIRECT_FILE = process.env.NEXT_REDIRECT_FILE || "CCLW_redirects.json";
   const redirectsFromFile = require(`./${REDIRECT_FILE}`);
   let redirects = redirectsFromFile;
