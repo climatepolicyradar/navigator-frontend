@@ -13,5 +13,8 @@
     "cypress-file-upload": "^5.0.8",
     "cypress-pseudo-localization": "^1.0.0",
     "dotenv": "^16.0.1"
+  },
+  "devDependencies": {
+    "neat-csv": "^5.2.0"
   }
 }
