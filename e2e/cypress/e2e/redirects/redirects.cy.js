@@ -1,10 +1,11 @@
 /// <reference types="cypress" />
-import CCLW_redirects from "../../../../src/redirects/CCLW_redirects.json";
+// import CCLW_redirects from "../../../../src/redirects/CCLW_redirects.json";
 
 const startingIndex = 0;
 const createTestCases = false;
 
 describe.skip("Redirects", () => {
+  const CCLW_redirects = [];
   if (createTestCases) {
     for (let index = startingIndex; index < CCLW_redirects.length; index++) {
       it(`should import all data items successfully - row:${index} - source:${CCLW_redirects[index].destination}`, () => {
