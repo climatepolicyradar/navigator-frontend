@@ -1,5 +1,6 @@
 import { AccordianItem } from "@cclw/components/AccordianItem";
 import { METHODOLOGY } from "@cclw/constants/methodologyItems";
+import { Fragment } from "react";
 
 const Methodology = () => {
   return (
@@ -20,14 +21,11 @@ const Methodology = () => {
         </p>
 
         {METHODOLOGY.map((item, i) => (
-          <>
-            <AccordianItem title={item.title} key={item.title}>
-              {item.content}
-            </AccordianItem>
+          <Fragment key={item.title}>
+            <AccordianItem title={item.title}>{item.content}</AccordianItem>
             <hr />
-          </>
+          </Fragment>
         ))}
-        
       </div>
     </section>
   );
