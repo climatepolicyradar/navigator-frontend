@@ -12,6 +12,7 @@ const cprRedirects = [
     { source: "/acknowledgements", destination: "/", permanent: true },
     { source: "/contact", destination: "/", permanent: true },
     { source: "/methodology", destination: "/", permanent: true },
+    { source: "/faq", destination: "/", permanent: true },
 ];
 
 const theme = process.env.THEME;
