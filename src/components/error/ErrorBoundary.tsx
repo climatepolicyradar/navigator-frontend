@@ -1,5 +1,7 @@
 import React from "react";
 
+// based on: https://nextjs.org/docs/advanced-features/error-handling
+
 type TState = {
   hasError: boolean;
 };
