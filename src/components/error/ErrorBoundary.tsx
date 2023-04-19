@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "@components/buttons/Button";
+import TopLevel from "./TopLevel";
 
 // based on: https://nextjs.org/docs/advanced-features/error-handling
 
@@ -8,6 +9,7 @@ type TState = {
 };
 type TProps = {
   children: React.ReactNode;
+  level: "top" | "page" | "component";
 };
 
 class ErrorBoundary extends React.Component<TProps, TState> {
@@ -21,26 +23,18 @@ class ErrorBoundary extends React.Component<TProps, TState> {
     // Update state so the next render will show the fallback UI
     return { hasError: true };
   }
-  componentDidCatch(error, errorInfo) {
-    // You can use your own error logging service here
-    console.log({ error, errorInfo });
-  }
+  // Track using error logging service
+  // compnentDidCatch(error, errorInfo) {
+  //   console.log({ error, errorInfo });
+  // }
+
+  handleClick = () => {
+    this.setState({ hasError: false });
+  };
+
   render() {
-    // Check if the error is thrown
     if (this.state.hasError) {
-      // You can render any custom fallback UI
-      return (
-        <div className="max-w-screen-sm m-auto h-full flex flex-col justify-center p-4">
-          <h2>Sorry, the app has encountered an error and needs to restart</h2>
-          <p className="my-4">Please click the button below to start the app.</p>
-          <div>
-            <Button extraClasses="bg-black text-white hover:border-black hover:bg-black" thin onClick={() => this.setState({ hasError: false })}>
-              Restart
-            </Button>
-          </div>
-          <p className="my-4">To report a problem email us at support@climatepolicyradar.org</p>
-        </div>
-      );
+      return <TopLevel resetError={this.handleClick} />;
     }
 
     // Return children components in case of no error

@@ -103,7 +103,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
     <QueryClientProvider client={queryClient}>
       <ThemeContext.Provider value={dynamicTheme}>
         <AdobeContext.Provider value={dynamicAdobeKey}>
-          <ErrorBoundary>
+          <ErrorBoundary level="top">
             <Head>
               <link rel="icon" href={favicon} />
               <style>{getThemeColours(dynamicTheme)}</style>
