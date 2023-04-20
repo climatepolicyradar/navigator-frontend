@@ -266,7 +266,7 @@ const Search = () => {
             <div className="md:w-3/4">
               <div className="md:pl-8">
                 <div className="lg:flex justify-between">
-                  <div className="text-sm my-4 md:my-0 xmd:flex" data-cy="number-of-results">
+                  <div className="text-sm my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
                     {status === "success" && renderNoOfResults()}
                   </div>
                   <ExternalLink
