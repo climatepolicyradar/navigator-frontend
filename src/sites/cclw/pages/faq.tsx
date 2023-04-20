@@ -1,6 +1,6 @@
+import { Fragment } from "react";
 import { AccordianItem } from "@cclw/components/AccordianItem";
 import { FAQS } from "@cclw/constants/faqs";
-import { Fragment } from "react";
 
 const FAQ = () => {
   return (
@@ -13,7 +13,7 @@ const FAQ = () => {
 
         {FAQS.map((faq, i) => (
           <Fragment key={faq.title}>
-            <AccordianItem title={faq.title} startOpen={i === 0}>
+            <AccordianItem id={faq.id} title={faq.title} startOpen={i === 0}>
               {faq.content}
             </AccordianItem>
             <hr />
