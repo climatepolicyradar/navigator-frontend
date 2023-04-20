@@ -1,16 +1,24 @@
+import { ExternalLink } from "@components/ExternalLink";
 import Button from "@components/buttons/Button";
 
-const TopLevel = ({ resetError }) => {
+type TProps = {
+  resetError: () => void;
+};
+
+const TopLevel = ({ resetError }: TProps) => {
   return (
-    <div className="max-w-screen-sm m-auto h-full flex flex-col justify-center p-4">
-      <h2>Sorry, the app has encountered an error and needs to restart</h2>
-      <p className="my-4">Please click the button below to start the app.</p>
+    <div className="max-w-screen-sm m-auto h-full flex flex-col justify-center p-4 gap-4">
+      <h2>Sorry, the app has encountered an error</h2>
+      <p>Restarting the app might fix the problem. Click the button below to restart</p>
       <div>
         <Button extraClasses="bg-black text-white hover:border-black hover:bg-black" thin onClick={resetError}>
           Restart
         </Button>
       </div>
-      <p className="my-4">To report a problem email us at support@climatepolicyradar.org</p>
+      <p>
+        If this doesn't work, report a problem by emailing: {" "}
+        <ExternalLink className="underline" url="mailto:support@climatepolicyradar.org">support@climatepolicyradar.org</ExternalLink>
+      </p>
     </div>
   );
 };

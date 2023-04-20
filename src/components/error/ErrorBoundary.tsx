@@ -1,6 +1,6 @@
 import React from "react";
-import Button from "@components/buttons/Button";
 import TopLevel from "./TopLevel";
+import PageLevel from "./PageLevel";
 
 // based on: https://nextjs.org/docs/advanced-features/error-handling
 
@@ -9,7 +9,7 @@ type TState = {
 };
 type TProps = {
   children: React.ReactNode;
-  level: "top" | "page" | "component";
+  level: "top" | "page";
 };
 
 class ErrorBoundary extends React.Component<TProps, TState> {
@@ -24,9 +24,9 @@ class ErrorBoundary extends React.Component<TProps, TState> {
     return { hasError: true };
   }
   // Track using error logging service
-  // compnentDidCatch(error, errorInfo) {
-  //   console.log({ error, errorInfo });
-  // }
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.warn({ error, errorInfo });
+  }
 
   handleClick = () => {
     this.setState({ hasError: false });
@@ -34,6 +34,7 @@ class ErrorBoundary extends React.Component<TProps, TState> {
 
   render() {
     if (this.state.hasError) {
+      if (this.props.level === "page") return <PageLevel resetError={this.handleClick} />;
       return <TopLevel resetError={this.handleClick} />;
     }
 
