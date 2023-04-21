@@ -52,6 +52,8 @@ const Search = () => {
   };
 
   const handleRegionChange = (type: string, regionName: string) => {
+    delete router.query[QUERY_PARAMS.offset];
+
     updateCountries.mutate({
       regionName,
       regions,
@@ -124,6 +126,7 @@ const Search = () => {
   };
 
   const handleSortClick = (e: ChangeEvent<HTMLSelectElement>) => {
+    delete router.query[QUERY_PARAMS.offset];
     const val = e.currentTarget.value;
     let field = null;
     let order = null;
