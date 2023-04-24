@@ -300,7 +300,10 @@ ul li.selected {
 .search-results {
   @apply font-light;
   a {
-    @apply text-blue-600 transition duration-300 hover:underline visited:text-bluegreen-100 active:bg-bluegreen-200 active:text-white;
+    @apply text-blue-600 transition duration-300 hover:underline visited:text-bluegreen-100;
+    &.accordian-item {
+      @apply text-indigo-600 text-lg cursor-pointer flex items-center no-underline hover:no-underline md:text-h3;
+    }
   }
   p {
     @apply my-6 font-light;

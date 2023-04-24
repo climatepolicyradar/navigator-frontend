@@ -24,6 +24,12 @@ const menuLinks = [
     cy: "acknowledgements",
   },
   {
+    text: "FAQ",
+    href: "/faq",
+    external: false,
+    cy: "faq",
+  },
+  {
     text: "Search",
     href: "/search",
     external: false,
