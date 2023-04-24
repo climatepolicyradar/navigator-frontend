@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 import { clickCookiePolicy } from "../../../utils/cookiePolicy";
 
-const URL = "documents/north-sea-transition-deal-one-year-on_dbfe?q=2050&l=united-kingdom&y=2022&y=2023";
+const URL = "documents/jet-zero-strategy_a6a6?q=2050&l=united-kingdom&y=2022&y=2023";
 
 const pageSelectors = ["h1", '[data-cy="country-link"]', '[data-cy="view-source"]', "#passage-matches", "#pdf-div"];
 
@@ -16,7 +16,7 @@ describe("Document Page", () => {
   });
 
   it("should have the correct page title", () => {
-    cy.title().should("include", "North Sea Transition Deal: One Year On");
+    cy.title().should("include", "Jet zero strategy");
   });
 
   it("should display the page elements", () => {
