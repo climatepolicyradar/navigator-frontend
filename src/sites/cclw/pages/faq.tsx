@@ -28,7 +28,7 @@ const FAQ = () => {
         <h2 className="my-6">FAQs</h2>
         {FAQS.map((faq, i) => (
           <Fragment key={faq.title}>
-            <AccordianItem title={faq.title} startOpen={i === 0}>
+            <AccordianItem id={faq.id} title={faq.title} startOpen={i === 0}>
               {faq.content}
             </AccordianItem>
             <hr />

@@ -2,6 +2,7 @@ import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 
 type TFAQ = {
+  id?: string;
   title: string;
   content: JSX.Element;
 };
@@ -125,6 +126,7 @@ export const FAQS: TFAQ[] = [
     ),
   },
   {
+    id: "litigation-data",
     title: "Where can I find climate litigation data?",
     content: (
       <>

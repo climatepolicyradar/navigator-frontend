@@ -4,6 +4,7 @@ import { ParsedUrlQuery } from "querystring";
 
 type TProps = {
   href: string;
+  hash?: string;
   query?: ParsedUrlQuery;
   children: React.ReactNode;
   className?: string;
@@ -12,7 +13,7 @@ type TProps = {
   cypress?: string;
 };
 
-export const LinkWithQuery = ({ href, query, children, cypress, ...props }: TProps) => {
+export const LinkWithQuery = ({ href, hash, query, children, cypress, ...props }: TProps) => {
   const router = useRouter();
 
   // Remove specific slug parameters from the query string
@@ -21,7 +22,7 @@ export const LinkWithQuery = ({ href, query, children, cypress, ...props }: TPro
   delete router.query["geographyId"];
 
   return (
-    <Link href={{ pathname: href, query: { ...router.query } }} data-cy={cypress} {...props}>
+    <Link href={{ pathname: href, query: { ...router.query }, hash: hash }} data-cy={cypress} {...props}>
       {children}
     </Link>
   );
