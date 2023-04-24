@@ -200,9 +200,7 @@ const Search = () => {
         {resultsMsg}{" "}
         {qQueryString && (
           <>
-            <>
-              for "<i className="text-blue-600">{qQueryString}</i>"
-            </>
+            for "<i className="text-blue-600">{qQueryString}</i>"
             {hits > 100 && (
               <div className="ml-2 inline-block">
                 <Tooltip
@@ -268,7 +266,7 @@ const Search = () => {
             <div className="md:w-3/4">
               <div className="md:pl-8">
                 <div className="lg:flex justify-between">
-                  <div className="text-sm my-4 md:my-0 md:flex" data-cy="number-of-results">
+                  <div className="text-sm my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
                     {status === "success" && renderNoOfResults()}
                   </div>
                   <ExternalLink
