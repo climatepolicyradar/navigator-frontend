@@ -19,7 +19,6 @@ RUN npm ci && npm cache clean --force && mv node_modules ../ && mkdir node_modul
 ENV PATH /opt/node_app/node_modules/.bin:$PATH
 
 COPY --chown=node:node . .
-RUN [ -f .env] && rm .env
 
 RUN npm run build
 
