@@ -4,6 +4,7 @@ TAG = local-frontend
 THEME ?= cclw
 API_URL ?= https://api.dev.climatepolicyradar.org/api/v1
 S3_PATH ?= https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
+ADOBE_API_KEY ?= dca9187b65294374a6367824df902fdf
 
 run: build
 	docker run --rm -it \
@@ -19,7 +20,7 @@ run: build
 		$(TAG) npm run dev
 
 with_production:
-	make APU_URL=https://api.climatepolicyradar.org/api/v1
+	make API_URL=https://api.climatepolicyradar.org/api/v1
 
 build:
 	docker build -t ${TAG} .

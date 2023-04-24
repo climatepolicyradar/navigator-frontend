@@ -30,8 +30,8 @@ describe("Browse Flow", () => {
     cy.get(searchResultsSelector).children({ timeout: 10000 }).should("have.length", 10);
   });
 
-  it("should have a clickable country link, which is clicked", () => {
-    cy.get(searchResultsSelector).children().first().find(countryLinkSelector).should("be.visible").click();
+  it("should have a clickable country link, which is clickable", () => {
+    cy.get(searchResultsSelector).children().eq(1).find(countryLinkSelector).should("be.visible").click();
   });
 
   it("should now be on the geography page", () => {
