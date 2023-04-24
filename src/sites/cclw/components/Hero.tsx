@@ -55,7 +55,7 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
             data-cy="feature-litigation"
           >
             <p>
-              <LinkWithQuery href="/faq#litigation" className="font-bold underline">
+              <LinkWithQuery href="/faq" hash="litigation-data" className="font-bold underline">
                 Climate litigation
               </LinkWithQuery>{" "}
               is coming soon. Access it now at{" "}
@@ -65,7 +65,7 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
             </p>
             <p>
               Learn more about{" "}
-              <LinkWithQuery href="/faq#litigation" className="font-bold underline">
+              <LinkWithQuery href="/faq" className="font-bold underline">
                 how to use this site
               </LinkWithQuery>
             </p>
