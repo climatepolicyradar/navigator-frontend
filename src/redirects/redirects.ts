@@ -18,9 +18,17 @@ const cprRedirects = [
 const theme = process.env.THEME;
 
 function getRedirects(): Array<TRedirect> {
-  const REDIRECT_FILE = process.env.NEXT_REDIRECT_FILE || "CCLW_redirects.json";
-  const redirectsFromFile = require(`./${REDIRECT_FILE}`);
-  let redirects = redirectsFromFile;
+  const REDIRECT_FILE = process.env.REDIRECT_FILE || "CCLW_redirects.json";
+  let redirects = [];
+  let redirectsFromFile = null;
+  try {
+    redirectsFromFile = require(`./${REDIRECT_FILE}`);
+  } catch (e) {
+    console.error(`Error loading redirects from ${REDIRECT_FILE}: ${e}`);
+  }
+  if (redirectsFromFile) {
+    redirects = redirectsFromFile;
+  }
   switch (theme) {
     case "cclw":
       redirects.push.apply(redirects, cclwRedirects);
