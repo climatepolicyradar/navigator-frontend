@@ -12,6 +12,7 @@ import { AdobeContext } from "@context/AdobeContext";
 
 import { CookieConsent } from "@components/cookies/CookieConsent";
 import { Banner } from "@cclw/components/Banner";
+import ErrorBoundary from "@components/error/ErrorBoundary";
 
 const queryClient = new QueryClient();
 
@@ -102,15 +103,17 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
     <QueryClientProvider client={queryClient}>
       <ThemeContext.Provider value={dynamicTheme}>
         <AdobeContext.Provider value={dynamicAdobeKey}>
-          <Head>
-            <link rel="icon" href={favicon} />
-            <style>{getThemeColours(dynamicTheme)}</style>
-          </Head>
-          {dynamicTheme === "cclw" && <Banner />}
-          <div id={dynamicTheme} className="h-full">
-            <Component {...pageProps} />
-          </div>
-          <CookieConsent />
+          <ErrorBoundary level="top">
+            <Head>
+              <link rel="icon" href={favicon} />
+              <style>{getThemeColours(dynamicTheme)}</style>
+            </Head>
+            {dynamicTheme === "cclw" && <Banner />}
+            <div id={dynamicTheme} className="h-full">
+              <Component {...pageProps} />
+            </div>
+            <CookieConsent />
+          </ErrorBoundary>
         </AdobeContext.Provider>
       </ThemeContext.Provider>
       <ReactQueryDevtools initialIsOpen={false} />
