@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { FloatingSearch } from "@components/FloatingSearch";
+import LogoMono from "@components/svg/LogoMono";
 import { Menu } from "./Menu";
 
 const Header = ({ background = true }) => {
@@ -30,9 +31,10 @@ const Header = ({ background = true }) => {
             </ExternalLink>
           </div>
           <div className="flex justify-self-end text-sm flex-grow-0 items-end">
-            <ExternalLink className="flex" url="https://www.climatepolicyradar.org">
-              <div data-cy="cpr-logo">
-                <img src="/images/cpr-logo-monoSmall.png" alt="Climate Policy Radar logo" height={40} className="h-[40px]" />
+            <ExternalLink className="flex text-white" url="https://www.climatepolicyradar.org">
+              <div data-cy="cpr-logo" className="md:flex">
+                <span className="text-xs md:mr-2">Powered by</span>
+                <LogoMono fixed />
               </div>
             </ExternalLink>
             {showSearch() && (
