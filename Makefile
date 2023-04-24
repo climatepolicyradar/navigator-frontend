@@ -20,7 +20,7 @@ run: build
 		$(TAG) npm run dev
 
 with_production:
-	make APU_URL=https://api.climatepolicyradar.org/api/v1
+	make API_URL=https://api.climatepolicyradar.org/api/v1
 
 build:
 	docker build -t ${TAG} .
