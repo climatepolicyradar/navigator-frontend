@@ -1,5 +1,4 @@
 import { createContext } from "react";
+import { TTheme } from "@types";
 
-type TThemes = "cpr" | "cclw";
-
-export const ThemeContext = createContext<TThemes>(null);
+export const ThemeContext = createContext<TTheme>(null);

@@ -5,6 +5,7 @@ import { getCookie, setCookie } from "@utils/cookies";
 import { COOKIE_CONSENT_NAME } from "@constants/cookies";
 import { ExternalLink } from "@components/ExternalLink";
 import { ThemeContext } from "@context/ThemeContext";
+import getThemeDomain from "@utils/getThemeDomain";
 
 export const CookieConsent = () => {
   const theme = useContext(ThemeContext);
@@ -37,13 +38,13 @@ export const CookieConsent = () => {
   }, [enableAnalytics]);
 
   const cookiesAcceptHandler = () => {
-    setCookie(COOKIE_CONSENT_NAME, "true");
+    setCookie(COOKIE_CONSENT_NAME, "true", getThemeDomain(theme));
     setHide(true);
     setEnableAnalytics(true);
   };
 
   const cookiesRejectHandler = () => {
-    setCookie(COOKIE_CONSENT_NAME, "false");
+    setCookie(COOKIE_CONSENT_NAME, "false", getThemeDomain(theme));
     setHide(true);
   };
 
