@@ -1,3 +1,5 @@
+export type TTheme = "cpr" | "cclw";
+
 export type TSearchKeywordFilters = {
   categories?: string[];
   regions?: string[];
