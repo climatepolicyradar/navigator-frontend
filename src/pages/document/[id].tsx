@@ -253,9 +253,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                             >
                               {collFamily.title}
                             </LinkWithQuery>
-                            <LinkWithQuery href={`/document/${collFamily.slug}`}>
-                              <p className="mt-2">{collFamily.description}</p>
-                            </LinkWithQuery>
+                            <p className="mt-2">{collFamily.description}</p>
                           </div>
                         ))}
                       </div>
