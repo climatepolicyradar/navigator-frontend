@@ -180,14 +180,14 @@ export const FAQS: TFAQ[] = [
       </>
     ),
   },
-  {
-    title: "How do I download the data from my search result?",
-    content: (
-      <>
-        <p>You can download the data from your search result by clicking ‘download search result as csv’.</p>
-      </>
-    ),
-  },
+  // {
+  //   title: "How do I download the data from my search result?",
+  //   content: (
+  //     <>
+  //       <p>You can download the data from your search result by clicking ‘download search result as csv’.</p>
+  //     </>
+  //   ),
+  // },
   {
     title: "What does ‘exact phrase only’ mean?",
     content: (
