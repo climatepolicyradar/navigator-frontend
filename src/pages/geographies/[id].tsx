@@ -77,18 +77,24 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   const renderDocuments = () => {
     // All
     if (selectedCategoryIndex === 0) {
-      const allFamilies = summary.top_families.Executive.concat(summary.top_families.Legislative).concat(summary.top_families.Case);
+      let allFamilies = summary.top_families.Executive.concat(summary.top_families.Legislative);
       if (allFamilies.length === 0) {
         return renderEmpty();
       }
       allFamilies.sort((a, b) => {
         return new Date(b.family_date).getTime() - new Date(a.family_date).getTime();
       });
-      return allFamilies.slice(0, 5).map((family) => (
-        <div key={family.family_slug} className="mt-4 mb-10">
-          <FamilyListItem family={family} />
-        </div>
-      ));
+      if (allFamilies.length > 5) {
+        allFamilies = allFamilies.slice(0, 5);
+      }
+      return allFamilies.map((family) => {
+        if (family)
+          return (
+            <div key={family.family_slug} className="mt-4 mb-10">
+              <FamilyListItem family={family} />
+            </div>
+          );
+      });
     }
     // Legislative
     if (selectedCategoryIndex === 1) {
@@ -272,7 +278,7 @@ export default CountryPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-  
+
   const id = context.params.id;
   const client = new ApiClient();
 
