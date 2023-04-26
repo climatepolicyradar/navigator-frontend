@@ -148,7 +148,7 @@ export type TGeographySummary = {
   family_counts: { Legislative: number; Executive: number; Case: number };
   events: TEvent[];
   targets: string[];
-  top_families: { Legislative: TFamily[]; Executive: TFamily[]; Case: TFamily[] };
+  top_families: { Legislative: TFamily[]; Executive: TFamily[]; };
 };
 
 export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law";
