@@ -16,8 +16,7 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
   const hasMatches = typeof matches !== "undefined" && matches > 0;
   // PDFs need to have a cdn location
   // HTMLs need a source url / website
-  const canPreview =
-    document.content_type === "application/pdf" ? !!document.cdn_object : document.content_type === "text/html" ? !!document.source_url : false;
+  const canPreview = document.content_type === "application/pdf" ? !!document.cdn_object : false;
   const canViewSource = !canPreview && !!document.source_url;
 
   const renderContentType = (t: TDocumentContentType) => {

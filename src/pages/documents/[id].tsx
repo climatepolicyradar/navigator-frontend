@@ -90,23 +90,20 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                   </Button>
                 </div>
               </div>
-              <div className="md:flex md:h-[80vh]">
-                {passageMatches.length > 0 && (
-                  <div className="md:block md:w-1/3 overflow-y-scroll pr-4 max-h-[30vh] md:max-h-full">
-                    <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex} />
-                  </div>
-                )}
-                {status === "success" && (
-                  <div className="md:block mt-4 flex-1 h-[400px] md:h-full">
-                    {document.content_type === "application/pdf" && (
+              {document.content_type === "application/pdf" && (
+                <div className="md:flex md:h-[80vh]">
+                  {passageMatches.length > 0 && (
+                    <div className="md:block md:w-1/3 overflow-y-scroll pr-4 max-h-[30vh] md:max-h-full">
+                      <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex} />
+                    </div>
+                  )}
+                  {status === "success" && (
+                    <div className="md:block mt-4 flex-1 h-[400px] md:h-full">
                       <EmbeddedPDF document={document} documentPassageMatches={passageMatches} passageIndex={passageIndex} />
-                    )}
-                    {document.content_type === "text/html" && (
-                      <iframe src={document.source_url} className="w-full h-full" title={document.title} referrerPolicy="no-referrer" />
-                    )}
-                  </div>
-                )}
-              </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </section>
         )}
@@ -119,7 +116,7 @@ export default DocumentPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-  
+
   const id = context.params.id;
   const client = new ApiClient(process.env.API_URL);
 
