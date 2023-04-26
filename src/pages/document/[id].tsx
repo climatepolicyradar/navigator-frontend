@@ -105,7 +105,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   }, [pathname]);
 
   return (
-    <Layout title={`${page.title} - ${geographyName}`} description={page.summary.substring(0, 164)}>
+    <Layout title={`${page.title}`} description={page.summary.substring(0, 164)}>
       <Script id="analytics">
         analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "{page.geography}";
       </Script>
