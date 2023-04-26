@@ -19713,5 +19713,45 @@
     "source": "/geographies/austria/laws/national-emissions-trading-act",
     "destination": "/document/national-emissions-certificate-trading-act_bff1",
     "permanent": true
+  },
+  {
+    "source": "/geographies/brazil/policies/decrees-10-145-2019-and-10-845-2021-on-the-interministerial-committee-on-climate-change-and-green-growth-and-associated-resolution",
+    "destination": "/document/decree-no-10-145-of-november-28-2019_c66f",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/france/laws/finance-law-2022-2021-2020-2019-2018-2014-and-second-rectifying-finance-law-for-2017",
+    "destination": "/document/law-no-2019-1270-of-december-2-2019-on-amending-finances-for-2019_404c",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/liechtenstein/policies/climate-strategy-2050",
+    "destination": "/document/climate-strategy-2050_5c70",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/oman/policies/royal-decree-approving-net-zero-target-and-establishment-of-oman-sustainability-centre",
+    "destination": "/geographies/oman",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/south-africa/policies/south-african-green-finance-taxonomy",
+    "destination": "/geographies/south-africa",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/portugal/policies/decree-law-15-2022-on-the-organisation-and-functioning-of-the-national-electric-system",
+    "destination": "/geographies/portugal",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/kyrgyzstan/policies/comprehensive-action-plan-for-education-on-climate-change-and-green-economy-of-the-kyrgyz-republic",
+    "destination": "/geographies/kyrgyzstan",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/sudan/policies/solar-transformation-programme-stp",
+    "destination": "/geographies/sudan",
+    "permanent": true
   }
 ]
