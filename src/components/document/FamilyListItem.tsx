@@ -51,11 +51,13 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
         {!isNaN(year) && <span data-cy="result-year">, {year}</span>}
         {children}
       </div>
-      <p
-        className="text-indigo-400 mt-3 text-content"
-        data-cy="result-description"
-        dangerouslySetInnerHTML={{ __html: truncateString(family_description.replace(/(<([^>]+)>)/gi, ""), 375) }}
-      />
+      <LinkWithQuery href={`/document/${family_slug}`} passHref>
+        <p
+          className="text-indigo-400 mt-3 text-content"
+          data-cy="result-description"
+          dangerouslySetInnerHTML={{ __html: truncateString(family_description.replace(/(<([^>]+)>)/gi, ""), 375) }}
+        />
+      </LinkWithQuery>
     </div>
   );
 };
