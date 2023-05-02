@@ -31,7 +31,10 @@ const Acknowledgement: FC<TAcknowledgement> = ({ partnerImage, children }) => {
 
 const Acknowledgements = () => {
   return (
-    <Layout title={"Acknowledgements"}>
+    <Layout
+      title="Acknowledgements"
+      description="The Climate Change Laws of the World project is made possible through the work of many contributors, who we would like to thank."
+    >
       <section>
         <div className="text-content px-4 container mb-12">
           <h1 className="my-8">Acknowledgements</h1>

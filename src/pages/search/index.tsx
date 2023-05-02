@@ -226,7 +226,10 @@ const Search = () => {
   };
 
   return (
-    <Layout title={t("Law and Policy Search")} heading={t("Law and Policy Search")}>
+    <Layout
+      title={t("Law and Policy Search")}
+      description="Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country."
+    >
       <div>
         <section>
           <div className="px-4 container">

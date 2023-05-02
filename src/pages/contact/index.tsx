@@ -3,7 +3,10 @@ import { ExternalLink } from "@components/ExternalLink";
 
 const Contact = () => {
   return (
-    <Layout title={`Contact`}>
+    <Layout
+      title="Contact"
+      description="If you have questions or comments about the content of the database, use this page to get in touch with our team."
+    >
       <section>
         <div className="text-content px-4 container mb-12">
           <h1 className="my-8">Contact</h1>
@@ -12,8 +15,8 @@ const Contact = () => {
             <ExternalLink url="mailto:gri.cgl@lse.co.uk">gri.cgl@lse.ac.uk</ExternalLink>
           </p>
           <p>
-            We particularly welcome comments and inputs about the content of the database, including laws and policies we may have missed. We are a small team, and rely on the
-            collaboration of our global stakeholders to support our efforts to keep the database up to date.
+            We particularly welcome comments and inputs about the content of the database, including laws and policies we may have missed. We are a
+            small team, and rely on the collaboration of our global stakeholders to support our efforts to keep the database up to date.
           </p>
           <h2>Correspondence address, telephone number and email</h2>
           <p>As many of our staff regularly work remotely, the best way to contact us is by email.</p>
