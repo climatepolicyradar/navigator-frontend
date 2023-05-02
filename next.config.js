@@ -19,6 +19,27 @@ const defaultRedirects = [
     destination: "/",
     permanent: false, // will become a page eventually
   },
+  // CCLW REDIRECTS
+  {
+    source: "/geography/:slug/laws",
+    destination: "/geographies/:slug",
+    permanent: true,
+  },
+  {
+    source: "/geography/:slug/policies",
+    destination: "/geographies/:slug",
+    permanent: true,
+  },
+  {
+    source: "/geography/:slug/litigation_cases",
+    destination: "/geographies/:slug",
+    permanent: true,
+  },
+  {
+    source: "/geography/:slug/climate_targets/:type*",
+    destination: "/geographies/:slug",
+    permanent: true,
+  },
 ];
 
 /**
