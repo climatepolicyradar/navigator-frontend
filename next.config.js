@@ -41,6 +41,11 @@ const defaultRedirects = [
     permanent: true,
   },
   {
+    source: "/cclow",
+    destination: "/",
+    permanent: true,
+  },
+  {
     source: "/cclow/:slug*",
     destination: "/:slug*",
     permanent: true,
