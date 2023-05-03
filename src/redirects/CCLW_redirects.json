@@ -19753,5 +19753,185 @@
     "source": "/geographies/sudan/policies/solar-transformation-programme-stp",
     "destination": "/geographies/sudan",
     "permanent": true
+  },
+  {
+    "source": "/climate_targets",
+    "destination": "/",
+    "permanent": true
+  },
+  {
+    "source": "/documents/national-climate-change-adaptation-strategy_0",
+    "destination": "/",
+    "permanent": true
+  },
+  {
+    "source": "/geographies",
+    "destination": "/",
+    "permanent": true
+  },
+  {
+    "source": "/rails/active_storage/blobs/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBb2tPIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--fd46d4069047e7b34fbfce8db1823e2d6243cd4f/fulltext.docx",
+    "destination": "/",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/168/policies/8572",
+    "destination": "/",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/198/laws/4782",
+    "destination": "/",
+    "permanent": true
+  },
+  {
+    "source": "/document",
+    "destination": "/",
+    "permanent": true
+  },
+  {
+    "source": "/document/the-national-climate-plan_01b8,",
+    "destination": "/",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/181/policies/4838",
+    "destination": "/",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/south-korea/policies/eighth-long-term-plan-for-electricity-supply-and-demand-and-implementation-plan-for-renewable-20-by-2030",
+    "destination": "/document/8th-electric-power-supply-supply-supply-plan-2017-2031_8fd7",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/germany/policies/climate-action-plan-2050",
+    "destination": "/document/climate-action-plan-2050_37a5",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/new-zealand/laws/climate-change-response-zero-carbon-amendment-act-amending-the-climate-change-response-act-2002",
+    "destination": "/document/climate-change-response-zero-carbon-amendment-act-amending-the-climate-change-response-act-2002_abaa",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/brazil/policies/decrees-10-145-2019-and-10-845-2021-on-the-interministerial-committee-on-climate-change-and-green-growth-and-associated-resolution",
+    "destination": "/document/decree-no-10-145-of-november-28-2019_c66f",
+    "permanent": true
+  },
+  {
+    "source": "/documents/decree-no-2003-142-of-30-april-2003-on-the-establishment-powers-and-functioning-of-the-national-committee-on-climate-change_14c9.",
+    "destination": "/document/decree-no-2003-142-of-30-april-2003-on-the-establishment-powers-and-functioning-of-the-national-committee-on-climate-change_16a2",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/kenya/laws/environment-and-land-court-act-cap-12a",
+    "destination": "/document/environment-and-land-court-act-cap-12a_5a2d",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/japan/policies/fundamental-plan-for-national-resilience",
+    "destination": "/document/fundamental-plan-for-national-resilience_3879",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/grenada/policies/grenada-strategic-program-for-climate-resilience",
+    "destination": "/document/grenada-strategic-program-for-climate-resilience_df3f",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/grenada/policies/grenada-vision-2030",
+    "destination": "/document/grenada-vision-2030_6b27",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/france/policies/hydrogen-deployment-plan-for-the-energy-transition",
+    "destination": "/document/hydrogen-deployment-plan-for-the-energy-transition_0bcb",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/france/laws/law-n-2019-1147-on-energy-and-the-climate",
+    "destination": "/document/law-no-2019-1147-on-energy-and-the-climate_64b3",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/iran/laws/law-on-national-committee-to-reduce-destructive-impacts-of-natural-disasters",
+    "destination": "/document/law-on-national-committee-to-reduce-destructive-impacts-of-natural-disasters_dac6",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/philippines/laws/mini-hydroelectric-power-incentive-act-ra-7156",
+    "destination": "/document/mini-hydroelectric-power-incentive-act-ra-7156_4ac8",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/bhutan/policies/national-strategy-for-community-forestry",
+    "destination": "/document/national-strategy-for-community-forestry_93a7",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/germany/laws/offshore-wind-energy-act-windseeg-2017",
+    "destination": "/document/offshore-wind-energy-act-windseeg-2017_31b6",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/%20european-union/laws/regulation-eu-2021-1119-establishing-the-framework-for-achieving-climate-neutrality-european-climate-law",
+    "destination": "/document/regulation-eu-2021-1119-establishing-the-framework-for-achieving-climate-neutrality-european-climate-law_df60",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/germany/laws/energy-industry-act-enwg",
+    "destination": "/geographies/germany",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/kenya/policies/national-climate-change-action-plan-2018-2022-nccap",
+    "destination": "/document/national-climate-change-action-plan-2018-2022-nccap_a381",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/south-africa/litigation_cases/africa-climate-alliance-et-al-v-minister-of-mineral-resources-energy-et-al-cancelcoal-case",
+    "destination": "http://climatecasechart.com/non-us-case/africa-climate-alliance-et-al-v-minister-of-mineral-resources-energy-et-al-cancelcoal-case/",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/romania/litigation_cases/declic-et-al-v-the-romani",
+    "destination": "http://climatecasechart.com/non-us-case/declic-et-al-v-the-romanian-government/",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/romania/litigation_cases/declic-et-al-v-the-romanian-government",
+    "destination": "http://climatecasechart.com/non-us-case/declic-et-al-v-the-romanian-government/",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/australia/litigation_cases/hunter-environment-lobby-inc-v-minister-for-planning-new-south-wales-court-of-appeal-2011",
+    "destination": "http://climatecasechart.com/non-us-case/hunter-environment-lobby-inc-v-minister-for-planning/",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/south-korea/litigation_cases/kim-yujin-et-al-v-south-korea",
+    "destination": "http://climatecasechart.com/non-us-case/kim-yujin-et-al-v-south-korea/",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/canada/litigation_cases/la-rose-v-her-majesty-the-queen",
+    "destination": "http://climatecasechart.com/non-us-case/la-rose-v-her-majesty-the-queen/",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/united-kingdom/litigation_cases/r-on-the-application-of-the-london-borough-of-hillingdon-others-v-secretary-of-state-for-transport-queen-s-bench-division-high-court-2010",
+    "destination": "http://climatecasechart.com/non-us-case/r-on-the-application-of-the-london-borough-of-hillingdon-and-others-v-secretary-of-state-for-transport/",
+    "permanent": true
+  },
+  {
+    "source": "/cclow/geographies/netherlands/litigation_cases/urgenda-foundation-v-state-of-the-netherlands",
+    "destination": "http://climatecasechart.com/non-us-case/urgenda-foundation-v-kingdom-of-the-netherlands/",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/south-africa/litigation_cases/africa-climate-alliance-et-al-v-minister-of-mineral-resources-energy-et-al-",
+    "destination": "http://climatecasechart.com/non-us-jurisdiction/south-africa/",
+    "permanent": true
   }
 ]
