@@ -40,6 +40,11 @@ const defaultRedirects = [
     destination: "/geographies/:slug",
     permanent: true,
   },
+  {
+    source: "/cclow/:slug*",
+    destination: "/:slug*",
+    permanent: true,
+  },
 ];
 
 /**

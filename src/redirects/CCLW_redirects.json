@@ -19755,53 +19755,8 @@
     "permanent": true
   },
   {
-    "source": "/cclow/geographies/germany/policies/climate-action-plan-2050",
-    "destination": "/document/climate-action-plan-2050_37a5",
-    "permanent": true
-  },
-  {
-    "source": "/cclow/geographies/new-zealand/laws/climate-change-response-zero-carbon-amendment-act-amending-the-climate-change-response-act-2002",
-    "destination": "/document/climate-change-response-zero-carbon-amendment-act-amending-the-climate-change-response-act-2002_abaa",
-    "permanent": true
-  },
-  {
-    "source": "/cclow/geographies/kenya/laws/environment-and-land-court-act-cap-12a",
-    "destination": "/document/environment-and-land-court-act-cap-12a_5a2d",
-    "permanent": true
-  },
-  {
-    "source": "/cclow/geographies/japan/policies/fundamental-plan-for-national-resilience",
-    "destination": "/document/fundamental-plan-for-national-resilience_3879",
-    "permanent": true
-  },
-  {
-    "source": "/cclow/geographies/grenada/policies/grenada-strategic-program-for-climate-resilience",
-    "destination": "/document/grenada-strategic-program-for-climate-resilience_df3f",
-    "permanent": true
-  },
-  {
-    "source": "/cclow/geographies/grenada/policies/grenada-vision-2030",
-    "destination": "/document/grenada-vision-2030_6b27",
-    "permanent": true
-  },
-  {
-    "source": "/cclow/geographies/france/policies/hydrogen-deployment-plan-for-the-energy-transition",
-    "destination": "/document/hydrogen-deployment-plan-for-the-energy-transition_0bcb",
-    "permanent": true
-  },
-  {
-    "source": "/cclow/geographies/france/laws/law-n-2019-1147-on-energy-and-the-climate",
-    "destination": "/document/law-no-2019-1147-on-energy-and-the-climate_64b3",
-    "permanent": true
-  },
-  {
     "source": "/geographies/iran/laws/law-on-national-committee-to-reduce-destructive-impacts-of-natural-disasters",
     "destination": "/document/law-on-national-committee-to-reduce-destructive-impacts-of-natural-disasters_dac6",
-    "permanent": true
-  },
-  {
-    "source": "/cclow/geographies/philippines/laws/mini-hydroelectric-power-incentive-act-ra-7156",
-    "destination": "/document/mini-hydroelectric-power-incentive-act-ra-7156_4ac8",
     "permanent": true
   },
   {
@@ -19810,18 +19765,8 @@
     "permanent": true
   },
   {
-    "source": "/cclow/geographies/germany/laws/offshore-wind-energy-act-windseeg-2017",
-    "destination": "/document/offshore-wind-energy-act-windseeg-2017_31b6",
-    "permanent": true
-  },
-  {
     "source": "/geographies/%20european-union/laws/regulation-eu-2021-1119-establishing-the-framework-for-achieving-climate-neutrality-european-climate-law",
     "destination": "/document/regulation-eu-2021-1119-establishing-the-framework-for-achieving-climate-neutrality-european-climate-law_df60",
-    "permanent": true
-  },
-  {
-    "source": "/cclow/geographies/kenya/policies/national-climate-change-action-plan-2018-2022-nccap",
-    "destination": "/document/national-climate-change-action-plan-2018-2022-nccap_a381",
     "permanent": true
   },
   {
@@ -19845,22 +19790,22 @@
     "permanent": true
   },
   {
-    "source": "/cclow/geographies/south-korea/litigation_cases/kim-yujin-et-al-v-south-korea",
+    "source": "/geographies/south-korea/litigation_cases/kim-yujin-et-al-v-south-korea",
     "destination": "http://climatecasechart.com/non-us-case/kim-yujin-et-al-v-south-korea/",
     "permanent": true
   },
   {
-    "source": "/cclow/geographies/canada/litigation_cases/la-rose-v-her-majesty-the-queen",
+    "source": "/geographies/canada/litigation_cases/la-rose-v-her-majesty-the-queen",
     "destination": "http://climatecasechart.com/non-us-case/la-rose-v-her-majesty-the-queen/",
     "permanent": true
   },
   {
-    "source": "/cclow/geographies/united-kingdom/litigation_cases/r-on-the-application-of-the-london-borough-of-hillingdon-others-v-secretary-of-state-for-transport-queen-s-bench-division-high-court-2010",
+    "source": "/geographies/united-kingdom/litigation_cases/r-on-the-application-of-the-london-borough-of-hillingdon-others-v-secretary-of-state-for-transport-queen-s-bench-division-high-court-2010",
     "destination": "http://climatecasechart.com/non-us-case/r-on-the-application-of-the-london-borough-of-hillingdon-and-others-v-secretary-of-state-for-transport/",
     "permanent": true
   },
   {
-    "source": "/cclow/geographies/netherlands/litigation_cases/urgenda-foundation-v-state-of-the-netherlands",
+    "source": "/geographies/netherlands/litigation_cases/urgenda-foundation-v-state-of-the-netherlands",
     "destination": "http://climatecasechart.com/non-us-case/urgenda-foundation-v-kingdom-of-the-netherlands/",
     "permanent": true
   },
