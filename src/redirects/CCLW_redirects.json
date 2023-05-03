@@ -19753,5 +19753,65 @@
     "source": "/geographies/sudan/policies/solar-transformation-programme-stp",
     "destination": "/geographies/sudan",
     "permanent": true
+  },
+  {
+    "source": "/geographies/iran/laws/law-on-national-committee-to-reduce-destructive-impacts-of-natural-disasters",
+    "destination": "/document/law-on-national-committee-to-reduce-destructive-impacts-of-natural-disasters_dac6",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/bhutan/policies/national-strategy-for-community-forestry",
+    "destination": "/document/national-strategy-for-community-forestry_93a7",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/%20european-union/laws/regulation-eu-2021-1119-establishing-the-framework-for-achieving-climate-neutrality-european-climate-law",
+    "destination": "/document/regulation-eu-2021-1119-establishing-the-framework-for-achieving-climate-neutrality-european-climate-law_df60",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/south-africa/litigation_cases/africa-climate-alliance-et-al-v-minister-of-mineral-resources-energy-et-al-cancelcoal-case",
+    "destination": "http://climatecasechart.com/non-us-case/africa-climate-alliance-et-al-v-minister-of-mineral-resources-energy-et-al-cancelcoal-case/",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/romania/litigation_cases/declic-et-al-v-the-romani",
+    "destination": "http://climatecasechart.com/non-us-case/declic-et-al-v-the-romanian-government/",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/romania/litigation_cases/declic-et-al-v-the-romanian-government",
+    "destination": "http://climatecasechart.com/non-us-case/declic-et-al-v-the-romanian-government/",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/australia/litigation_cases/hunter-environment-lobby-inc-v-minister-for-planning-new-south-wales-court-of-appeal-2011",
+    "destination": "http://climatecasechart.com/non-us-case/hunter-environment-lobby-inc-v-minister-for-planning/",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/south-korea/litigation_cases/kim-yujin-et-al-v-south-korea",
+    "destination": "http://climatecasechart.com/non-us-case/kim-yujin-et-al-v-south-korea/",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/canada/litigation_cases/la-rose-v-her-majesty-the-queen",
+    "destination": "http://climatecasechart.com/non-us-case/la-rose-v-her-majesty-the-queen/",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/united-kingdom/litigation_cases/r-on-the-application-of-the-london-borough-of-hillingdon-others-v-secretary-of-state-for-transport-queen-s-bench-division-high-court-2010",
+    "destination": "http://climatecasechart.com/non-us-case/r-on-the-application-of-the-london-borough-of-hillingdon-and-others-v-secretary-of-state-for-transport/",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/netherlands/litigation_cases/urgenda-foundation-v-state-of-the-netherlands",
+    "destination": "http://climatecasechart.com/non-us-case/urgenda-foundation-v-kingdom-of-the-netherlands/",
+    "permanent": true
+  },
+  {
+    "source": "/geographies/south-africa/litigation_cases/africa-climate-alliance-et-al-v-minister-of-mineral-resources-energy-et-al-",
+    "destination": "http://climatecasechart.com/non-us-jurisdiction/south-africa/",
+    "permanent": true
   }
 ]
