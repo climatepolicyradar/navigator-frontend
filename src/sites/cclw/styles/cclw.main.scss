@@ -17,6 +17,22 @@
   font-weight: 500;
 }
 
+/* Tailwind specific styles for special radio and checkbox styles */
+@layer components {
+  [type="checkbox"]:checked {
+    background: none;
+    @apply bg-blue-600;
+  }
+  .landing [type="checkbox"]:checked {
+    background: none;
+  }
+
+  [type="radio"]:checked {
+    background: none;
+    @apply bg-blue-600;
+  }
+}
+
 #cclw .cclw-font {
   font-family: "LL Brown";
 }
