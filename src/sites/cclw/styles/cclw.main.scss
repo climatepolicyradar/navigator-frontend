@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+// @tailwind base;
+// @tailwind components;
+// @tailwind utilities;
 
 // Import base styles before overriding
 @import "../../../styles/main.scss";
@@ -15,22 +15,6 @@
   src: url("/fonts/LL-Brown/lineto-brown-bold.woff2") format("woff2"), url("/fonts/LL-Brown/lineto-brown-bold.woff") format("woff");
   /* font-display: swap; */
   font-weight: 500;
-}
-
-/* Tailwind specific styles for special radio and checkbox styles */
-@layer components {
-  [type="checkbox"]:checked {
-    background: none;
-    @apply bg-blue-600;
-  }
-  .landing [type="checkbox"]:checked {
-    background: none;
-  }
-
-  [type="radio"]:checked {
-    background: none;
-    @apply bg-blue-600;
-  }
 }
 
 #cclw .cclw-font {
