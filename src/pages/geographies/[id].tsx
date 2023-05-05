@@ -293,7 +293,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // TODO: handle error more elegantly
   }
   try {
-    const { data: returnedData }: { data: TGeographySummary } = await client.get(`/summaries/country/${id}`, { group_documents: true });
+    const { data: returnedData }: { data: TGeographySummary } = await client.get(`/summaries/geography/${id}`, { group_documents: true });
     summaryData = returnedData;
   } catch {
     // TODO: handle error more elegantly
