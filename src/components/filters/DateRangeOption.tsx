@@ -13,7 +13,7 @@ const DateRangeOption = ({ id, label, name, value, onChange, checked }: DateRang
   return (
     <label className="checkbox-input flex items-center border py-2 px-1 rounded-md cursor-pointer border-indigo-200 bg-white" htmlFor={id}>
       <input
-        className="text-white border-indigo-400 cursor-pointer"
+        className="border-indigo-400 cursor-pointer"
         id={id}
         type="radio"
         name={name}
@@ -22,10 +22,7 @@ const DateRangeOption = ({ id, label, name, value, onChange, checked }: DateRang
         onClick={onChange}
         onChange={onChange}
       />
-      <span className="pl-2 text-sm">
-        {/* TODO: make translatable */}
-        {label}
-      </span>
+      <span className="pl-2 text-sm">{label}</span>
     </label>
   );
 };

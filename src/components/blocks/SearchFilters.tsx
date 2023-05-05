@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import ByTextInput from "../filters/ByTextInput";
 import BySelect from "../filters/BySelect";
 import MultiList from "../filters/MultiList";
-import ExactMatch from "../filters/ExactMatch";
 import ByDateRange from "../filters/ByDateRange";
 import { currentYear, minYear } from "@constants/timedate";
 import { TSearchCriteria } from "@types";
@@ -11,6 +10,8 @@ import { ExternalLink } from "@components/ExternalLink";
 import { ThemeContext } from "@context/ThemeContext";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { LinkWithQuery } from "@components/LinkWithQuery";
+import BySemanticSearch from "@components/filters/BySemanticSearch";
+import Tooltip from "@components/tooltip";
 
 type TSearchFiltersProps = {
   handleFilterChange(type: string, value: string): void;
@@ -21,7 +22,7 @@ type TSearchFiltersProps = {
   searchCriteria: TSearchCriteria;
   regions: object[];
   filteredCountries: object[];
-}
+};
 
 const SearchFilters: React.FC<TSearchFiltersProps> = ({
   handleFilterChange,
@@ -58,7 +59,23 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
   return (
     <>
       <div className="flex md:justify-between items-center mt-2 md:mt-0">
-        <div className="text-indigo-400 font-medium mr-2 md:mr-0">{t("Filter by")}</div>
+        <div className="text-indigo-400 font-medium mr-2 md:mr-0">
+          Find documents containing
+          <div className="ml-2 inline-block">
+            <Tooltip
+              id="filter-by"
+              tooltip={
+                <>
+                  Selecting exact phrases only will narrow down your search to only show documents that contain the precise words you typed in the
+                  search bar. Our enhanced search will look for similar and related terms, so you’ll get more results, with the most relevant ones
+                  automatically appearing at the top. See our FAQs for more information.
+                </>
+              }
+              icon="i"
+              place="right"
+            />
+          </div>
+        </div>
         {showClear && (
           <button className="underline text-sm text-blue-500 hover:text-indigo-600 transition duration-300" onClick={handleClearSearch}>
             Clear all filters
@@ -68,7 +85,7 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
 
       <div className="my-4 text-sm text-indigo-500">
         <div data-cy="exact-match">
-          <ExactMatch checked={searchCriteria.exact_match} id="exact-match" handleSearchChange={handleSearchChange} />
+          <BySemanticSearch checked={searchCriteria.exact_match} handleSearchChange={handleSearchChange} />
         </div>
         <div className="relative mt-6" data-cy="regions">
           <BySelect
