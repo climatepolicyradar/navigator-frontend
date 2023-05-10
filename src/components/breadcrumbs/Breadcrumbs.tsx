@@ -33,7 +33,7 @@ const BreadCrumb = ({ last = false, label, href = null }: TBreadcrumbLink) => {
 
 export const BreadCrumbs = ({ geography = null, category = null, family = null, label }: TProps) => {
   return (
-    <ul className="flex flex-wrap gap-2 py-2">
+    <ul className="flex flex-wrap gap-2 pt-4">
       <BreadCrumb label="Home" href="/" />
       {geography && <BreadCrumb label={geography.label} href={geography.href} />}
       {category && <BreadCrumb label={category.label} href={category.href} />}

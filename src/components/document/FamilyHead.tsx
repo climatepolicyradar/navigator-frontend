@@ -19,7 +19,7 @@ export const FamilyHead = ({ family, geographyName, geographySlug, onCollectionC
   return (
     <div className="bg-offwhite border-solid border-lineBorder border-b">
       <div className="container">
-        <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} family={null} label={family.title} />
+        <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={family.title} />
         <div className="flex flex-col md:flex-row">
           <div className="flex-1 my-4">
             <h1 className="text-3xl lg:smaller">{family.title}</h1>
