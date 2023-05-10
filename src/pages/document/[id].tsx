@@ -24,7 +24,7 @@ import { TargetIcon } from "@components/svg/Icons";
 import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import useConfig from "@hooks/useConfig";
-import { getCountryName } from "@helpers/getCountryFields";
+import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
 
 type TProps = {
@@ -48,6 +48,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
   const geographyName = getCountryName(page.geography, countries);
+  const geographySlug = getCountrySlug(page.geography, countries);
 
   let searchFamily: TMatchedFamily = null;
   const { status, families } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
@@ -115,7 +116,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
         data-analytics-type={getDocumentCategories().join(",")}
         data-analytics-geography={page.geography}
       >
-        <FamilyHead family={page} geographyName={geographyName} onCollectionClick={handleCollectionClick} />
+        <FamilyHead family={page} geographyName={geographyName} geographySlug={geographySlug} onCollectionClick={handleCollectionClick} />
         <div className="container">
           <div className="md:flex">
             <section className="flex-1 md:w-0">
