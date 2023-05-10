@@ -1,3 +1,5 @@
+import { LinkWithQuery } from "@components/LinkWithQuery";
+
 type TBreadcrumbLink = {
   label: string;
   href?: string;
@@ -14,7 +16,16 @@ type TProps = {
 const BreadCrumb = ({ last = false, label, href = null }: TBreadcrumbLink) => {
   return (
     <>
-      <li>{href ? <a className="underline" href={href}>{label}</a> : label}</li>
+      <li>
+        {href ? (
+          <LinkWithQuery className="underline" href={href}>
+            {label}
+          </LinkWithQuery>
+        ) : (
+          label
+        )}
+      </li>
+
       {!last && <li>&rsaquo;</li>}
     </>
   );
