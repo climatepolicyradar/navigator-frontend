@@ -1,7 +1,7 @@
 import { LinkWithQuery } from "@components/LinkWithQuery";
 
 type TBreadcrumbLink = {
-  label: string;
+  label: string | React.ReactNode;
   href?: string;
   last?: boolean;
 };
@@ -10,7 +10,7 @@ type TProps = {
   category?: TBreadcrumbLink;
   family?: TBreadcrumbLink;
   geography?: TBreadcrumbLink;
-  label: string;
+  label: string | React.ReactNode;
 };
 
 const BreadCrumb = ({ last = false, label, href = null }: TBreadcrumbLink) => {

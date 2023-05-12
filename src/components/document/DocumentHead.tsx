@@ -20,14 +20,20 @@ export const DocumentHead = ({ document, family, geography, backLink }: TProps) 
   const { data: { countries = [] } = {} } = configQuery;
   const geoName = getCountryName(geography, countries);
   const geoSlug = getCountrySlug(geography, countries);
+  const isMain = document.document_role.toLowerCase().includes("main");
   const breadcrumbGeography = { label: geoName, href: `/geographies/${geoSlug}` };
   const breadcrumbFamily = { label: family.title, href: `/document/${family.slug}` };
-  const isMain = document.document_role.toLowerCase().includes("main");
+  const breadcrumbLabel = isMain ? "Document" : document.document_role.toLowerCase();
 
   return (
     <div className="bg-offwhite border-solid border-lineBorder border-b">
       <div className="container">
-        <BreadCrumbs geography={breadcrumbGeography} category={null} family={breadcrumbFamily} label={document.document_role} />
+        <BreadCrumbs
+          geography={breadcrumbGeography}
+          category={null}
+          family={breadcrumbFamily}
+          label={<span className="capitalize">{breadcrumbLabel}</span>}
+        />
         <div className="flex flex-col md:flex-row">
           <div className="flex-1 my-4">
             <h1 className="text-3xl lg:smaller">{document.title}</h1>
