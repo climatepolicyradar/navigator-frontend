@@ -58,7 +58,14 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
 
   return (
     <>
-      <div className="flex md:justify-between items-center mt-2 md:mt-0">
+      <div className="mt-2 md:mt-0">
+        {showClear && (
+          <div className="flex md:justify-end mb-2">
+            <button className="underline text-sm text-blue-500 hover:text-indigo-600 transition duration-300" onClick={handleClearSearch}>
+              Clear all filters
+            </button>
+          </div>
+        )}
         <div className="text-indigo-400 font-medium mr-2 md:mr-0">
           Find documents containing
           <div className="ml-2 inline-block">
@@ -76,11 +83,6 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
             />
           </div>
         </div>
-        {showClear && (
-          <button className="underline text-sm text-blue-500 hover:text-indigo-600 transition duration-300" onClick={handleClearSearch}>
-            Clear all filters
-          </button>
-        )}
       </div>
 
       <div className="my-4 text-sm text-indigo-500">
