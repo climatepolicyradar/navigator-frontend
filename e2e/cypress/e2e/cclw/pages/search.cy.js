@@ -56,7 +56,7 @@ describe("Search Page", () => {
   });
 
   it("should display the correct number of category tabs", () => {
-    cy.get(tabbedNavSelector).children().should("have.length", 4);
+    cy.get(tabbedNavSelector).children().should("have.length", 5);
   });
 
   it("should display one tab selected, and be 'All' by default", () => {
