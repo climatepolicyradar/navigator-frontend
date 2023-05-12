@@ -2,19 +2,24 @@ import { CountryLink } from "@components/CountryLink";
 import { TFamilyPage } from "@types";
 import { convertDate } from "@utils/timedate";
 import { Fragment } from "react";
+import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 
 type TProps = {
   family: TFamilyPage;
   geographyName: string;
+  geographySlug: string;
   onCollectionClick?: (e: any) => void;
 };
 
-export const FamilyHead = ({ family, geographyName, onCollectionClick }: TProps) => {
+export const FamilyHead = ({ family, geographyName, geographySlug, onCollectionClick }: TProps) => {
   const [year] = family.published_date ? convertDate(family.published_date) : "";
+  const breadcrumbCategory = { label: family.category, href: "/search" };
+  const breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
 
   return (
     <div className="bg-offwhite border-solid border-lineBorder border-b">
       <div className="container">
+        <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={family.title} />
         <div className="flex flex-col md:flex-row">
           <div className="flex-1 my-4">
             <h1 className="text-3xl lg:smaller">{family.title}</h1>

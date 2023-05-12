@@ -11,8 +11,6 @@ import useSearch from "@hooks/useSearch";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import Loader from "@components/Loader";
 import Button from "@components/buttons/SquareButton";
-import useConfig from "@hooks/useConfig";
-import { getCountryName } from "@helpers/getCountryFields";
 import { getDocumentDescription } from "@constants/metaDescriptions";
 
 type TDocFamily = {
@@ -32,10 +30,6 @@ type TProps = {
 const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family }: TProps) => {
   const [passageIndex, setPassageIndex] = useState(null);
   const router = useRouter();
-
-  const configQuery = useConfig();
-  const { data: { countries = [] } = {} } = configQuery;
-  const geographyName = getCountryName(family.geography, countries);
 
   const passageMatches = [];
   const { status, families } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
@@ -72,7 +66,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
         data-analytics-variant={document.variant}
         data-analytics-type={document.content_type}
       >
-        <DocumentHead document={document} geography={family.geography} backLink={family.slug} />
+        <DocumentHead document={document} geography={family.geography} backLink={family.slug} family={{ title: family.title, slug: family.slug }} />
         {status !== "success" ? (
           <div className="w-full flex justify-center flex-1">
             <Loader />

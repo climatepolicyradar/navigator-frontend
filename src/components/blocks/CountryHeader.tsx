@@ -2,6 +2,7 @@ import { TGeographyStats, TGeography } from "@types";
 import useConfig from "@hooks/useConfig";
 import Tooltip from "@components/tooltip";
 import { ExternalLink } from "@components/ExternalLink";
+import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 
 type TProps = {
   country: TGeographyStats;
@@ -23,9 +24,12 @@ export const CountryHeader = ({ country }: TProps) => {
   const { name, political_groups, federal, federal_details, worldbank_income_group, climate_risk_index, global_emissions_percent } = country;
 
   return (
-    <div className="bg-offwhite border-solid border-lineBorder border-b py-6">
+    <div className="bg-offwhite border-solid border-lineBorder border-b">
+      <div className="container">
+        <BreadCrumbs label={name} />
+      </div>
       <div className="container flex items-end justify-between overflow-hidden">
-        <div className="md:max-w-lg lg:max-w-5xl md:flex-shrink-0">
+        <div className="md:max-w-lg lg:max-w-5xl md:flex-shrink-0 my-4">
           <h1 className="mb-6">{name}</h1>
           <div className="grid grid-cols-2 gap-6 items-center text-indigo-700">
             <div className="font-semibold  text-xl" data-cy="region" data-analytics-region={countryRegion}>
@@ -79,7 +83,7 @@ export const CountryHeader = ({ country }: TProps) => {
           </div>
         </div>
         {countryGeography?.value && (
-          <div className="hidden place-items-center lg:flex overflow-hidden svg-country" data-cy="map">
+          <div className="hidden place-items-center lg:flex overflow-hidden svg-country mb-4" data-cy="map">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img className="w-full max-h-[280px]" src={`/images/countries/${countryGeography?.value}.svg`} alt={`${country.name} map`} />
           </div>

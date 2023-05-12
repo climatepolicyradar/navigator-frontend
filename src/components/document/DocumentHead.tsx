@@ -1,24 +1,39 @@
+import useConfig from "@hooks/useConfig";
+import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
 import { CountryLink } from "@components/CountryLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
-import { getCountryName } from "@helpers/getCountryFields";
-import useConfig from "@hooks/useConfig";
+import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { TDocumentPage } from "@types";
 
 type TProps = {
   document: TDocumentPage;
+  family: {
+    title: string;
+    slug: string;
+  };
   geography: string;
   backLink?: string;
 };
 
-export const DocumentHead = ({ document, geography, backLink }: TProps) => {
+export const DocumentHead = ({ document, family, geography, backLink }: TProps) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
   const geoName = getCountryName(geography, countries);
+  const geoSlug = getCountrySlug(geography, countries);
   const isMain = document.document_role.toLowerCase().includes("main");
+  const breadcrumbGeography = { label: geoName, href: `/geographies/${geoSlug}` };
+  const breadcrumbFamily = { label: family.title, href: `/document/${family.slug}` };
+  const breadcrumbLabel = isMain ? "Document" : document.document_role.toLowerCase();
 
   return (
     <div className="bg-offwhite border-solid border-lineBorder border-b">
       <div className="container">
+        <BreadCrumbs
+          geography={breadcrumbGeography}
+          category={null}
+          family={breadcrumbFamily}
+          label={<span className="capitalize">{breadcrumbLabel}</span>}
+        />
         <div className="flex flex-col md:flex-row">
           <div className="flex-1 my-4">
             <h1 className="text-3xl lg:smaller">{document.title}</h1>

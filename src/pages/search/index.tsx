@@ -21,6 +21,7 @@ import { calculatePageCount } from "@utils/paging";
 import { PER_PAGE } from "@constants/paging";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
+import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 
 const Search = () => {
   const router = useRouter();
@@ -233,7 +234,8 @@ const Search = () => {
       <div>
         <section>
           <div className="px-4 container">
-            <div className="md:py-8 md:w-3/4 md:mx-auto">
+            <BreadCrumbs label={t("Search")} />
+            <div className="md:pb-8 md:pt-4 md:w-3/4 md:mx-auto">
               <p className="md:hidden mt-4 mb-2">{placeholder}</p>
               <SearchForm
                 placeholder={placeholder}
