@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
+import { UNFCCC_SURVEY } from "@constants/UNFCCCSurvey";
 
 type TArticle = {
   url: string;
@@ -14,6 +15,13 @@ type TArticle = {
 };
 
 const ARTICLES: TArticle[] = [
+  {
+    url: UNFCCC_SURVEY,
+    external: true,
+    type: "UNFCCC",
+    title: "UNFCCC documents coming soon",
+    meta: "UNFCCC Portal documents, including submissions under the first Global Stocktake, will be available here soon. Get notified when it's ready or help us design this.",
+  },
   {
     url: "https://www.lse.ac.uk/granthaminstitute/publication/climate-change-law-in-europe-what-do-new-eu-climate-laws-mean-for-the-courts/",
     external: true,
@@ -54,23 +62,25 @@ const ARTICLES: TArticle[] = [
 ];
 
 export const Articles = () => {
-  const renderArticleContent = (article) => {
+  const renderArticleContent = (article: TArticle) => {
     return (
       <>
         <div className="absolute top-0 left-0 p-2 px-4 bg-secondary-500 rounded text-sm font-bold text-white z-10">{article.type}</div>
-        <div className="text-center flex flex-col justify-center items-center min-h-[180px]">
+        <div className={`text-center flex flex-wrap min-h-[180px] h-full ${article.imageUrl ? "content-start" : "content-center"}`}>
           {article.imageUrl && (
-            <div className="w-full h-[120px] overflow-hidden relative">
+            <div className="w-full h-[120px] overflow-hidden relative self-start">
               <img src={article.imageUrl} alt={article.imageAlt} />
             </div>
           )}
-          <div className={`p-4 text-primary-400 flex-1 flex items-center text-lg font-bold ${article.imageUrl ? "" : "pt-8"}`}>{article.title}</div>
+          <div className={`p-4 text-primary-400 basis-full text-center text-lg font-bold ${article.imageUrl ? "" : "pt-10"}`}>{article.title}</div>
           {article.meta && (
-            <div className="flex items-center gap-2 mb-2 text-grey-700">
-              {article.countryCode && (
-                <span className={`rounded-sm border border-black flag-icon-background flag-icon-${article.countryCode} inline-block`} />
-              )}
-              <div className="">{article.meta}</div>
+            <div className="mb-2 px-2 text-grey-700 basis-full text-center">
+              <div className="flex flex-wrap items-center content-center justify-center gap-2">
+                {article.countryCode && (
+                  <span className={`rounded-sm border border-black flag-icon-background flag-icon-${article.countryCode} inline-block`} />
+                )}
+                <div className="">{article.meta}</div>
+              </div>
             </div>
           )}
         </div>

@@ -1,1 +1,1 @@
-export const DOCUMENT_CATEGORIES = ["All", "Legislation", "Policies", "Litigation"];
+export const DOCUMENT_CATEGORIES = ["All", "Legislation", "Policies", "Litigation", "UNFCCC"];
