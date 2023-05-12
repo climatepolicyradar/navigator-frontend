@@ -3,6 +3,7 @@ import SearchResult from "./SearchResult";
 import { TMatchedFamily } from "@types";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import Button from "@components/buttons/Button";
+import { UNFCCC_SURVEY } from "@constants/UNFCCCSurvey";
 
 type TProps = {
   category?: (typeof DOCUMENT_CATEGORIES)[number];
@@ -11,7 +12,7 @@ type TProps = {
 
 const SearchResultList = ({ category, families }: TProps) => {
   const handleNotifiedClick = () => {
-    window.open("https://docs.google.com/forms/d/e/1FAIpQLSfpo03ytni3SmEqXfFRW38qz1OGyNgN5HhQF-6fW-QcSLZ67A/viewform");
+    window.open(UNFCCC_SURVEY);
   };
 
   if (category && category === "Litigation") {
@@ -42,10 +43,7 @@ const SearchResultList = ({ category, families }: TProps) => {
         <p>
           Documents from UNFCCC Portals, including submissions under the first Global Stocktake, nationally determined contributions and adaptation
           communications, and also IPCC reports will be available here soon.{" "}
-          <ExternalLink
-            className="underline"
-            url="https://docs.google.com/forms/d/e/1FAIpQLSfpo03ytni3SmEqXfFRW38qz1OGyNgN5HhQF-6fW-QcSLZ67A/viewform"
-          >
+          <ExternalLink className="underline" url={UNFCCC_SURVEY}>
             Get notified when it's ready or help us design this
           </ExternalLink>
           .

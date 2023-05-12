@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
+import { UNFCCC_SURVEY } from "@constants/UNFCCCSurvey";
 
 type TArticle = {
   url: string;
@@ -15,7 +16,7 @@ type TArticle = {
 
 const ARTICLES: TArticle[] = [
   {
-    url: "https://docs.google.com/forms/d/e/1FAIpQLSfpo03ytni3SmEqXfFRW38qz1OGyNgN5HhQF-6fW-QcSLZ67A/viewform",
+    url: UNFCCC_SURVEY,
     external: true,
     type: "UNFCCC",
     title: "UNFCCC documents coming soon",
