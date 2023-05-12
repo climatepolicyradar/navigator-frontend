@@ -15,12 +15,10 @@ type TArticle = {
 
 const ARTICLES: TArticle[] = [
   {
-    url: "",
+    url: "https://docs.google.com/forms/d/e/1FAIpQLSfpo03ytni3SmEqXfFRW38qz1OGyNgN5HhQF-6fW-QcSLZ67A/viewform",
     external: true,
     type: "UNFCCC",
     title: "UNFCCC documents coming soon",
-    // imageUrl: "/images/cclw/images/eu2-min.jpg",
-    // imageAlt: "European Commission",
     meta: "UNFCCC Portal documents, including submissions under the first Global Stocktake, will be available here soon. Get notified when it's ready or help us design this.",
   },
   {
