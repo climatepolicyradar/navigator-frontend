@@ -15,7 +15,16 @@ const selectedCountries = '[data-cy="selected-countries"]';
 const tabbedNavSelector = '[data-cy="tabbed-nav"]';
 const sortSelector = '[data-cy="sort"]';
 
-const pageSelectors = [inputSelector, searchResultsSelector, '[data-cy="download-search-csv"]', '[data-cy="number-of-results"]', tabbedNavSelector, sortSelector];
+const pageSelectors = [
+  inputSelector,
+  searchResultsSelector,
+  '[data-cy="download-search-csv"]',
+  '[data-cy="number-of-results"]',
+  tabbedNavSelector,
+  sortSelector,
+];
+
+const breadcrumbSelectors = ["[data-cy='breadcrumbs']", "[data-cy='breadcrumb home']", "[data-cy='breadcrumb current']"];
 
 describe("Search Page", () => {
   before(() => {
@@ -48,6 +57,12 @@ describe("Search Page", () => {
   it("should display the correct page elements", () => {
     pageSelectors.forEach((selector) => {
       cy.get(selector, { timeout: 10000 }).should("be.visible");
+    });
+  });
+
+  it("should display the breadcrumbs", () => {
+    breadcrumbSelectors.forEach((selector) => {
+      cy.get(selector).should("be.visible");
     });
   });
 
