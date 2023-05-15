@@ -12,10 +12,9 @@ type TProps = {
     slug: string;
   };
   geography: string;
-  backLink?: string;
 };
 
-export const DocumentHead = ({ document, family, geography, backLink }: TProps) => {
+export const DocumentHead = ({ document, family, geography }: TProps) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
   const geoName = getCountryName(geography, countries);
@@ -24,13 +23,14 @@ export const DocumentHead = ({ document, family, geography, backLink }: TProps) 
   const breadcrumbGeography = { label: geoName, href: `/geographies/${geoSlug}` };
   const breadcrumbFamily = { label: family.title, href: `/document/${family.slug}` };
   const breadcrumbLabel = isMain ? "Document" : document.document_role.toLowerCase();
+  const breadcrumbCategory = { label: "Search results", href: "/search" };
 
   return (
     <div className="bg-offwhite border-solid border-lineBorder border-b">
       <div className="container">
         <BreadCrumbs
           geography={breadcrumbGeography}
-          category={null}
+          category={breadcrumbCategory}
           family={breadcrumbFamily}
           label={<span className="capitalize">{breadcrumbLabel}</span>}
         />
@@ -50,13 +50,6 @@ export const DocumentHead = ({ document, family, geography, backLink }: TProps) 
                 </span>
               )}
             </div>
-            {backLink && (
-              <div className="mt-4">
-                <LinkWithQuery href={`/document/${backLink}`} className="text-primary-400 hover:underline">
-                  View document details
-                </LinkWithQuery>
-              </div>
-            )}
           </div>
         </div>
       </div>

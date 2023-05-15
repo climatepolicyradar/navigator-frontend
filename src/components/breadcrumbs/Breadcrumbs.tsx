@@ -14,15 +14,16 @@ type TProps = {
 };
 
 const BreadCrumb = ({ last = false, label, href = null }: TBreadcrumbLink) => {
+  const labelShort = typeof label === "string" && label.toString().length > 50 ? `${label.toString().substring(0, 50)}...` : label;
   return (
     <>
       <li>
         {href ? (
           <LinkWithQuery className="underline" href={href}>
-            {label}
+            {labelShort}
           </LinkWithQuery>
         ) : (
-          label
+          labelShort
         )}
       </li>
 
