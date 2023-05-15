@@ -11,12 +11,10 @@ if [ "$#" -ne 2 ]; then
     echo "Example: $0 container-name 6cd9d7ebad4f16ef7273a7a831d79d5d5caf4164"
     echo "Relies on the following environment variables:"
     echo "- GITHUB_HEAD_REF, GITHUB_REF, GITHUB_SHA (GH Action default)"
-    echo "- AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, DOCKER_REGISTRY"
+    echo "- DOCKER_REGISTRY"
     exit 1
 fi
 
-[ "${AWS_ACCESS_KEY_ID}" == "" ] && (echo "AWS_ACCESS_KEY_ID is not set" ; exit 1)
-[ "${AWS_SECRET_ACCESS_KEY}" == "" ] && (echo "AWS_SECRET_ACCESS_KEY is not set" ; exit 1)
 [ "${DOCKER_REGISTRY}" == "" ] && (echo "DOCKER_REGISTRY is not set" ; exit 1)
 
 project="$1"
@@ -41,6 +39,17 @@ echo "-------------"
 docker_tag() {
     echo "Re-tagging $1 -> $2"
     docker tag $1 $2
+}
+
+process_tagged_version() {
+    local tag_array
+    semver=$1
+    get_docker_tags tag_array ${name} ${semver}
+
+    for tag in "${tag_array[@]}" ; do
+        docker_tag "${input_image}" ${tag}
+        docker push "${tag}"
+    done
 }
 
 timestamp=$(date --utc -Iseconds | cut -c1-19 | tr -c '[0-9]T\n' '-')
@@ -73,18 +82,7 @@ elif is_tagged_version ${GITHUB_REF} ; then
     # push `semver` tagged image
     semver="${GITHUB_REF/refs\/tags\/v/}"
     echo "Detected Tag: ${semver}"
-    major=$(get_major "${semver}")
-    minor=$(get_minor "${semver}")
-    patch=$(get_patch "${semver}")
-    maturity=$(get_maturity "${semver}")
-    echo "Detected Version: ${major} . ${minor} . ${patch} [${maturity}]"
-
-    docker_tag "${input_image}" "${name}:${major}.${minor}.${patch}-${maturity}"
-    docker_tag "${input_image}" "${name}:${major}.${minor}-${maturity}"
-    docker_tag "${input_image}" "${name}:${major}-${maturity}"
-    docker push "${name}:${major}.${minor}.${patch}-${maturity}"
-    docker push "${name}:${major}.${minor}-${maturity}"
-    docker push "${name}:${major}-${maturity}"
+    process_tagged_version ${semver}
 else
     echo "${GITHUB_REF} is neither a branch head nor valid semver tag"
     echo "Assuming '${GITHUB_HEAD_REF}' is a branch"
