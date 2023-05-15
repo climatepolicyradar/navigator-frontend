@@ -1,4 +1,5 @@
 import { LinkWithQuery } from "@components/LinkWithQuery";
+const BREADCRUMB_MAXLENGTH = 50;
 
 type TBreadcrumbLink = {
   label: string | React.ReactNode;
@@ -14,7 +15,9 @@ type TProps = {
 };
 
 const BreadCrumb = ({ last = false, label, href = null }: TBreadcrumbLink) => {
-  const labelShort = typeof label === "string" && label.toString().length > 50 ? `${label.toString().substring(0, 50)}...` : label;
+  const labelShort =
+    typeof label === "string" && label.toString().length > BREADCRUMB_MAXLENGTH ? `${label.toString().substring(0, BREADCRUMB_MAXLENGTH)}...` : label;
+    
   return (
     <>
       <li>
