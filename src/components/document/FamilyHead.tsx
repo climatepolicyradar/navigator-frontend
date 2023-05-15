@@ -13,7 +13,7 @@ type TProps = {
 
 export const FamilyHead = ({ family, geographyName, geographySlug, onCollectionClick }: TProps) => {
   const [year] = family.published_date ? convertDate(family.published_date) : "";
-  const breadcrumbCategory = { label: family.category, href: "/search" };
+  const breadcrumbCategory = { label: "Search results", href: "/search" };
   const breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
 
   return (

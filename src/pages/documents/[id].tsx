@@ -66,7 +66,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
         data-analytics-variant={document.variant}
         data-analytics-type={document.content_type}
       >
-        <DocumentHead document={document} geography={family.geography} backLink={family.slug} family={{ title: family.title, slug: family.slug }} />
+        <DocumentHead document={document} geography={family.geography} family={{ title: family.title, slug: family.slug }} />
         {status !== "success" ? (
           <div className="w-full flex justify-center flex-1">
             <Loader />
