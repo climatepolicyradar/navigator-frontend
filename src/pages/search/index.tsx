@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import useSearch from "@hooks/useSearch";
+import { getDownloadCsv } from "@hooks/useDownloadCsv";
 import useUpdateCountries from "@hooks/useUpdateCountries";
 import useConfig from "@hooks/useConfig";
 import useFilteredCountries from "@hooks/useFilteredCountries";
@@ -15,7 +16,6 @@ import Close from "@components/buttons/Close";
 import FilterToggle from "@components/buttons/FilterToggle";
 import Pagination from "@components/pagination";
 import SearchResultList from "@components/blocks/SearchResultList";
-import { ExternalLink } from "@components/ExternalLink";
 import Tooltip from "@components/tooltip";
 import { calculatePageCount } from "@utils/paging";
 import { PER_PAGE } from "@constants/paging";
@@ -186,6 +186,11 @@ const Search = () => {
     return offSet / PER_PAGE + 1;
   };
 
+  const handleDownloadCsvClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    getDownloadCsv(router.query);
+  };
+
   useEffect(() => {
     if (hits !== undefined) {
       setPageCount(calculatePageCount(hits));
@@ -277,13 +282,14 @@ const Search = () => {
                   <div className="text-sm my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
                     {status === "success" && renderNoOfResults()}
                   </div>
-                  <ExternalLink
-                    url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform"
+                  <a
+                    href="#"
                     className="text-sm text-blue-600 mt-4 md:mt-0 hover:underline"
-                    cy="download-search-csv"
+                    data-cy="download-search-csv"
+                    onClick={handleDownloadCsvClick}
                   >
                     Request to download all data (.csv)
-                  </ExternalLink>
+                  </a>
                 </div>
               </div>
               <div className="mt-4 md:flex">
