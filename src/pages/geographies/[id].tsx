@@ -278,8 +278,19 @@ export default CountryPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-
   const id = context.params.id;
+
+  const ignoredSlugs = [
+    "xaa", // No Geography
+    "xab" // International
+  ];
+
+  if (ignoredSlugs.includes(id as string)) {
+    return {
+      notFound: true,
+    };
+  }
+
   const client = new ApiClient();
 
   let geographyData: TGeographyStats;

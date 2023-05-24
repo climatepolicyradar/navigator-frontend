@@ -10,6 +10,11 @@ type TCountryLink = {
   children?: ReactNode;
 };
 
+const nonLinkableSlugs = [
+  "xaa", // No Geography
+  "xab" // International
+];
+
 export const CountryLink: FC<TCountryLink> = ({ countryCode, className = "", emptyContentFallback, children }) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
@@ -18,6 +23,8 @@ export const CountryLink: FC<TCountryLink> = ({ countryCode, className = "", emp
   // Force render without any empty content fallback the children without a link
   if (!slug && emptyContentFallback) return <>{emptyContentFallback}</>;
   if (!slug && !emptyContentFallback) return <>{children}</>;
+  if (nonLinkableSlugs.includes(slug)) return <>{children}</>;
+
   return (
     <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center underline ${className}`} passHref cypress="country-link">
       {children}
