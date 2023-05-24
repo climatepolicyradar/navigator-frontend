@@ -41,16 +41,6 @@ const defaultRedirects = [
     permanent: true,
   },
   {
-    source: "/geographies/xaa",
-    destination: "/not-found",
-    permanent: true,
-  },
-  {
-    source: "/geographies/xab",
-    destination: "/not-found",
-    permanent: true,
-  },
-  {
     source: "/cclow",
     destination: "/",
     permanent: true,
