@@ -16,10 +16,8 @@ export const sortData = (data, prop) => {
 
 export const sortGeos = (data, prop) => {
   var myData = data.sort((a, b) => {
-    if (b[prop] == "other") return -1;
-    if (a[prop] == "other") return 1;
-    if (a[prop] < b[prop]) return -1;
-    if (a[prop] > b[prop]) return 1;
+    if (b[prop] === "other" || a[prop] < b[prop]) return -1;
+    if (a[prop] === "other" || a[prop] > b[prop]) return 1;
     return 0;
   });
 
