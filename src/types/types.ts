@@ -144,14 +144,28 @@ export type TGeographyStats = {
   visibility_status: string;
 };
 
-export type TGeographySummary = {
-  family_counts: { Legislative: number; Executive: number; Case: number };
-  events: TEvent[];
-  targets: string[];
-  top_families: { Legislative: TFamily[]; Executive: TFamily[]; };
+type TGeoFamilyCounts = {
+  Legislative: number;
+  Executive: number;
+  // Case: number;
+  UNFCCC: number;
 };
 
-export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law";
+type TGeoFamilys = {
+  Legislative: TFamily[];
+  Executive: TFamily[];
+  // Case: TFamily[];
+  UNFCCC: TFamily[];
+};
+
+export type TGeographySummary = {
+  family_counts: TGeoFamilyCounts;
+  events: TEvent[];
+  targets: string[];
+  top_families: TGeoFamilys;
+};
+
+export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC";
 export type TDisplayCategory = "All" | TCategory;
 export type TEventCategory = TCategory | "Target";
 

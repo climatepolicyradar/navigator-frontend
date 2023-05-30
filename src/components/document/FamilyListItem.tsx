@@ -12,9 +12,10 @@ import { convertDate } from "@utils/timedate";
 type TProps = {
   family: TFamily;
   children?: ReactNode;
+  hideSummary?: boolean;
 };
 
-export const FamilyListItem: FC<TProps> = ({ family, children }) => {
+export const FamilyListItem: FC<TProps> = ({ family, children, hideSummary = true }) => {
   const { family_slug, family_geography, family_description, family_name, family_date, family_category } = family;
   const theme = useContext(ThemeContext);
   const configQuery = useConfig();
@@ -51,11 +52,13 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
         {!isNaN(year) && <span data-cy="result-year">, {year}</span>}
         {children}
       </div>
-      <p
-        className="text-indigo-400 mt-3 text-content"
-        data-cy="result-description"
-        dangerouslySetInnerHTML={{ __html: truncateString(family_description.replace(/(<([^>]+)>)/gi, ""), 375) }}
-      />
+      {!hideSummary && (
+        <p
+          className="text-indigo-400 mt-3 text-content"
+          data-cy="result-description"
+          dangerouslySetInnerHTML={{ __html: truncateString(family_description.replace(/(<([^>]+)>)/gi, ""), 375) }}
+        />
+      )}
     </div>
   );
 };
