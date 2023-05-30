@@ -12,7 +12,7 @@ type TCountryLink = {
 
 const nonLinkableSlugs = [
   "xaa", // No Geography
-  "xab" // International
+  "xab", // International
 ];
 
 export const CountryLink: FC<TCountryLink> = ({ countryCode, className = "", emptyContentFallback, children }) => {
@@ -26,7 +26,8 @@ export const CountryLink: FC<TCountryLink> = ({ countryCode, className = "", emp
   if (nonLinkableSlugs.includes(slug)) return <>{children}</>;
 
   return (
-    <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center underline ${className}`} passHref cypress="country-link">
+    <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center underline gap-2 ${className}`} passHref cypress="country-link">
+      <span className={`rounded-sm border border-black flag-icon-background flag-icon-${countryCode.toLowerCase()}`} />
       {children}
     </LinkWithQuery>
   );
