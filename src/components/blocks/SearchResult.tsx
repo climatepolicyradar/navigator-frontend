@@ -39,7 +39,7 @@ const SearchResult = ({ family }: SearchResultProps) => {
     );
   };
 
-  return <FamilyListItem family={family}>{showMatches()}</FamilyListItem>;
+  return <FamilyListItem family={family} hideSummary={family.family_category === "UNFCCC"}>{showMatches()}</FamilyListItem>;
 };
 
 export default SearchResult;
