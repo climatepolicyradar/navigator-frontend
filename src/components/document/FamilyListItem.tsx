@@ -15,7 +15,7 @@ type TProps = {
   hideSummary?: boolean;
 };
 
-export const FamilyListItem: FC<TProps> = ({ family, children, hideSummary = true }) => {
+export const FamilyListItem: FC<TProps> = ({ family, children, hideSummary = false }) => {
   const { family_slug, family_geography, family_description, family_name, family_date, family_category } = family;
   const theme = useContext(ThemeContext);
   const configQuery = useConfig();
