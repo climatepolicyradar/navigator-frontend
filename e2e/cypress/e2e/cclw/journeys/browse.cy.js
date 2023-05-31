@@ -31,7 +31,7 @@ describe("Browse Flow", () => {
   });
 
   it("should have a clickable country link, which is clickable", () => {
-    cy.get(searchResultsSelector).children().eq(1).find(countryLinkSelector).should("be.visible").click();
+    cy.get(searchResultsSelector).children().eq(0).find(countryLinkSelector).should("be.visible").click();
   });
 
   it("should now be on the geography page", () => {
