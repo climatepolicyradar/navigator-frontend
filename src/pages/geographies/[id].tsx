@@ -91,7 +91,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
         if (family)
           return (
             <div key={family.family_slug} className="mt-4 mb-10">
-              <FamilyListItem family={family} hideSummary={family.family_category === "UNFCCC"} />
+              <FamilyListItem family={family} />
             </div>
           );
       });
@@ -134,7 +134,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
         ? renderEmpty("UNFCCC")
         : summary.top_families.UNFCCC.map((family) => (
             <div key={family.family_slug} className="mt-4 mb-10">
-              <FamilyListItem family={family} hideSummary />
+              <FamilyListItem family={family} />
             </div>
           ));
     }
