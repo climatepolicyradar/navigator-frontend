@@ -256,12 +256,14 @@ export type TCollectionFamily = {
 };
 
 export type TFamilyMetadata = {
-  topic: string[];
-  hazard: string[];
-  sector: string[];
-  keyword: string[];
-  framework: string[];
-  instrument: string[];
+  topic?: string[];
+  hazard?: string[];
+  sector?: string[];
+  keyword?: string[];
+  framework?: string[];
+  instrument?: string[];
+  author_type?: string[];
+  author?: string[];
 };
 
 export type TMatchedFamily = TFamily & {
