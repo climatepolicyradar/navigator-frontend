@@ -34,6 +34,14 @@ type TProps = {
   targets: TTarget[];
 };
 
+const categoryByIndex = {
+  0: "All",
+  1: "Legislation",
+  2: "Policies",
+  3: "Litigation",
+  4: "UNFCCC",
+};
+
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets }: TProps) => {
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
@@ -65,7 +73,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     event.preventDefault();
     const newQuery = {};
     newQuery[QUERY_PARAMS.country] = geography.geography_slug;
-    const documentCategory = selectedCategoryIndex === 1 ? "Legislation" : selectedCategoryIndex === 2 ? "Policies" : null;
+    const documentCategory = categoryByIndex[selectedCategoryIndex] ?? null;
     if (documentCategory) {
       newQuery[QUERY_PARAMS.category] = documentCategory;
     }
