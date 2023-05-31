@@ -1,5 +1,5 @@
 import { TEventCategory } from "@types";
-import { LawIcon, PolicyIcon, CaseIcon, TargetIcon } from "@components/svg/Icons";
+import { LawIcon, PolicyIcon, CaseIcon, TargetIcon, UNFCCCIcon } from "@components/svg/Icons";
 
 export const getCategoryIcon = (category: TEventCategory, size?: string) => {
   let icon: JSX.Element;
@@ -17,6 +17,9 @@ export const getCategoryIcon = (category: TEventCategory, size?: string) => {
       break;
     case "Target":
       icon = <TargetIcon height={size} width={size} />;
+      break;
+    case "UNFCCC":
+      icon = <UNFCCCIcon height={size} width={size} />;
       break;
   }
   return icon;

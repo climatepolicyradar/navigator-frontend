@@ -39,8 +39,7 @@ export const DocumentHead = ({ document, family, geography }: TProps) => {
             <h1 className="text-3xl lg:smaller">{document.title}</h1>
             <div className="flex text-base text-grey-700 mt-4 items-center w-full font-medium divide-x gap-2 divide-grey-700">
               <CountryLink countryCode={geography} className="text-primary-400 hover:text-indigo-600 duration-300">
-                <span className={`rounded-sm border border-black flag-icon-background flag-icon-${geography.toLowerCase()}`} />
-                <span className="ml-2">{geoName}</span>
+                <span>{geoName}</span>
               </CountryLink>
               {!isMain && <span className="pl-2 capitalize">{document.document_role.toLowerCase()}</span>}
               {!!document.language && (

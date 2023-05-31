@@ -34,6 +34,14 @@ type TProps = {
   targets: TTarget[];
 };
 
+const categoryByIndex = {
+  0: "All",
+  1: "Legislation",
+  2: "Policies",
+  3: "Litigation",
+  4: "UNFCCC",
+};
+
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets }: TProps) => {
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
@@ -65,7 +73,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     event.preventDefault();
     const newQuery = {};
     newQuery[QUERY_PARAMS.country] = geography.geography_slug;
-    const documentCategory = selectedCategoryIndex === 1 ? "Legislation" : selectedCategoryIndex === 2 ? "Policies" : null;
+    const documentCategory = categoryByIndex[selectedCategoryIndex] ?? null;
     if (documentCategory) {
       newQuery[QUERY_PARAMS.category] = documentCategory;
     }
@@ -77,7 +85,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   const renderDocuments = () => {
     // All
     if (selectedCategoryIndex === 0) {
-      let allFamilies = summary.top_families.Executive.concat(summary.top_families.Legislative);
+      let allFamilies = summary.top_families.Executive.concat(summary.top_families.Legislative).concat(summary.top_families.UNFCCC);
       if (allFamilies.length === 0) {
         return renderEmpty();
       }
@@ -127,6 +135,16 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
           .
         </div>
       );
+    }
+    // UNFCCC
+    if (selectedCategoryIndex === 4) {
+      return summary.top_families.UNFCCC.length === 0
+        ? renderEmpty("UNFCCC")
+        : summary.top_families.UNFCCC.map((family) => (
+            <div key={family.family_slug} className="mt-4 mb-10">
+              <FamilyListItem family={family} />
+            </div>
+          ));
     }
   };
 
@@ -282,7 +300,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const ignoredSlugs = [
     "xaa", // No Geography
-    "xab" // International
+    "xab", // International
   ];
 
   if (ignoredSlugs.includes(id as string)) {

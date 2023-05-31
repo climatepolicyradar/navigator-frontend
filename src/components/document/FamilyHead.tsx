@@ -43,8 +43,7 @@ export const FamilyHead = ({ family, geographyName, geographySlug, onCollectionC
             )}
             <div className="flex text-base text-grey-700 mt-4 items-center w-full font-medium divide-x gap-2 divide-grey-700">
               <CountryLink countryCode={family.geography} className="text-primary-400 hover:text-indigo-600 duration-300">
-                <span className={`rounded-sm border border-black flag-icon-background flag-icon-${family.geography.toLowerCase()}`} />
-                <span className="ml-2" data-analytics-country={geographyName}>
+                <span data-analytics-country={geographyName}>
                   {geographyName}
                 </span>
               </CountryLink>

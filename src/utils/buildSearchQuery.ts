@@ -48,6 +48,9 @@ export default function buildSearchQuery(routerQuery: TRouterQuery): TSearchCrit
     if (["Policies", "Policy", "Executive"].includes(qCategory)) {
       category = "Executive";
     }
+    if (["UNFCCC"].includes(qCategory)) {
+      category = "UNFCCC";
+    }
     keyword_filters.categories = [category];
   }
 
