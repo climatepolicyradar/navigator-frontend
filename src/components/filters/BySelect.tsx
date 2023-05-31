@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { sortData } from "@utils/sorting";
+import { sortData, SortFuncType } from "@utils/sorting";
 
 type TProps = {
   onChange(type: string, value: string, action?: string): void;
@@ -10,9 +10,10 @@ type TProps = {
   filterType: string;
   defaultValue?: string;
   defaultText?: string;
+  sortFunc?: SortFuncType;
 };
 
-const BySelect = ({ onChange, list, title, keyField, keyFieldDisplay = null, filterType, defaultValue, defaultText = "All" }: TProps) => {
+const BySelect = ({ onChange, list, title, keyField, keyFieldDisplay = null, filterType, defaultValue, defaultText = "All", sortFunc = sortData}: TProps) => {
   const [sortedList, setSortedList] = useState(list);
   const selectRef = useRef(null);
 
@@ -23,7 +24,7 @@ const BySelect = ({ onChange, list, title, keyField, keyFieldDisplay = null, fil
   }, [defaultValue, selectRef]);
 
   useEffect(() => {
-    setSortedList(sortData(list, keyField));
+    setSortedList(sortFunc(list, keyField));
   }, [list, keyField]);
 
   return (
