@@ -14,23 +14,23 @@ export const FAQS: TFAQ[] = [
       <>
         <p>
           We’ve been working with our partners, <ExternalLink url="https://climatepolicyradar.org/">Climate Policy Radar</ExternalLink>, to redesign
-          and upgrade our legislation database, bringing you a better experience and new features to help you explore and interact with our data. You
+          and upgrade our legislation database, bringing you a better experience and new features to help you explore and interact with the data. You
           can now:
         </p>
         <ul>
+          <li>Conduct searches in the full text of documents in the database. This improves the comprehensiveness of your search results.</li>
           <li>
-            Conduct searches that return results based on ‘reading’ the whole text of documents in the database (previously, search functionality was
-            limited to returning results based on document titles, summaries, and keywords assigned by our researchers).This improves the
-            comprehensiveness of your search results.
-          </li>
-          <li>
-            More easily find relevant information. Our new search function looks for similar and related phrases to your query, known as ‘semantic
-            search’. Previously, results were based on finding exact matches to your query within document titles, summaries, and document metadata
+            Find relevant information more easily. The new search function looks for similar and related phrases to search queries (‘semantic
+            search’). Previously, results were based on finding exact matches to your query within document titles, summaries, and document metadata
             (keywords).
           </li>
           <li>
             See where a search term or relevant text appears in a document, with relevant passages of text automatically highlighted in yellow to help
             you identify important information more quickly.
+          </li>
+          <li>
+            Search and explore documents from various UNFCCC data portals, including Nationally Determined Contributions, National Communications,
+            Adaptation Communications, IPCC reports, and submissions by Parties and non-Party stakeholders to the first Global Stocktake, and more.
           </li>
         </ul>
         <p>
@@ -41,15 +41,20 @@ export const FAQS: TFAQ[] = [
     ),
   },
   {
-    title: "What is Climate Change Laws of the World?",
+    title: "What is 'Climate Change Laws of the World'?",
     content: (
       <>
         <p>
           Climate Change Laws of the World is a database covering national-level climate change legislation and policies from around the world. These
           laws and policies address policy areas directly relevant to climate change mitigation, adaptation, loss and damage or disaster risk
           management. More specifically, the database includes laws and policies that establish rules and procedures related to the transition to
-          low-carbon economies, enhancing adaptation capabilities, and disaster risk management. For more information on how we define the scope of
-          what we include in the dataset, <LinkWithQuery href="/methodology">please visit our Methodology section</LinkWithQuery>.
+          low-carbon economies, enhancing adaptation capabilities, and disaster risk management.
+        </p>
+        <p>
+          As of June 2023, the database includes documents submitted by Parties and non-Party stakeholders to the UNFCCC, including, among others,
+          Nationally Determined Contributions (NDCs), National Communications and Adaptation Communications, IPCC reports, and submissions to the
+          first Global Stocktake (hereinafter: Submissions to the UNFCCC). (see FAQ ‘What UNFCCC documents are included?’). For more information
+          please visit our <LinkWithQuery href="/methodology">Methodology section</LinkWithQuery>.
         </p>
         <p>
           This database originates from a collaboration between the Grantham Research Institute and GLOBE International on a series of Climate
@@ -57,9 +62,8 @@ export const FAQS: TFAQ[] = [
           strategic projects, underpinning much of the Institute’s work on our governance and legislation theme.
         </p>
         <p>
-          The database is now powered by new technology built by our partners{" "}
-          <ExternalLink url="https://climatepolicyradar.org/">Climate Policy Radar</ExternalLink>. This includes a series of features and
-          functionality to make it easier to explore the data.
+          The database is now powered and operated by our partners{" "}
+          <ExternalLink url="https://climatepolicyradar.org/">Climate Policy Radar</ExternalLink>.
         </p>
       </>
     ),
@@ -69,11 +73,20 @@ export const FAQS: TFAQ[] = [
     content: (
       <>
         <ul>
-          <li>Find climate and climate-related laws, policies, strategies and action plans from every national government worldwide</li>
-          <li>Search for keywords and policy concepts (like electric vehicles and blue hydrogen) across all of our documents</li>
-          <li>See where your search term and related phrases appear in documents with our automatic highlighting tool</li>
+          <li>
+            Find climate and climate-related laws, policies, strategies and action plans from every country and submissions to the UNFCCC relevant to
+            country level action
+          </li>
+          <li>Search for keywords and policy concepts (like ‘electric vehicles’ or ‘gender equality’) across the full text of all documents</li>
+          <li>View your search term (and related phrases) highlighted in search results</li>
           <li>Browse country profiles to find and compare their climate laws, policies and strategies</li>
-          <li>Access our raw data: you just need to fill out our form to request a copy of our entire dataset.</li>
+          <li>
+            Access the raw data: you just need to{" "}
+            <ExternalLink url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform">
+              fill out this form
+            </ExternalLink>{" "}
+            to request a copy of the entire dataset
+          </li>
         </ul>
       </>
     ),
@@ -90,29 +103,30 @@ export const FAQS: TFAQ[] = [
     ),
   },
   {
-    title: "Am I free to download and use your data?",
+    title: "Am I free to download and use the data?",
     content: (
       <>
         <p>
           Yes - and we encourage you to do so! The content of our database is available under the Creative Commons Attribution Licence{" "}
           <ExternalLink url="https://creativecommons.org/licenses/by/4.0/">(CC-BY)</ExternalLink>. Before doing so, you should read our Terms of Use
-          for more information and to find out how to credit our data. You will also need to{" "}
+          for more information and to find out how to cite and credit the resources. If you wish to download the data as a .csv file, please{" "}
           <ExternalLink url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform">
             fill out our form
-          </ExternalLink>{" "}
-          to receive a copy of the dataset as a .csv file.
+          </ExternalLink>
+          .
         </p>
       </>
     ),
   },
   {
-    title: "How up-to-date is your database?",
+    title: "How up-to-date is the data?",
     content: (
       <>
         <p>
           New data, and updates to existing data, are collected from official sources such as government websites, parliamentary records and court
-          documents. We add these to the database on a rolling basis. You can help grow our database by telling us about any laws, policies or
-          strategies that are missing using our <ExternalLink url="https://forms.gle/QQMXoKdnvAEWh9Sr5">data contributors form</ExternalLink>.
+          documents. We add these to the database on a rolling basis. Submissions to the UNFCCC portals were first added on the 23rd of May 2023, and
+          are checked for updates regularly. If you’re aware of documents that are missing, please let us know using our{" "}
+          <ExternalLink url="https://forms.gle/QQMXoKdnvAEWh9Sr5">data contributors form</ExternalLink>.
         </p>
       </>
     ),
@@ -121,7 +135,94 @@ export const FAQS: TFAQ[] = [
     title: "How many laws and policies do you have in your database?",
     content: (
       <>
-        <p>We have over 3,100 laws and policies in the database. This number is regularly updated as new data is entered.</p>
+        <p>
+          As of June 2023, the data includes 3,100 laws and policies in the database and over 1,700 Submissions to the UNFCCC portals. This number is
+          regularly updated as new data is entered.
+        </p>
+      </>
+    ),
+  },
+  {
+    title: "Which Submissions to the UNFCCC are included?",
+    content: (
+      <>
+        <p>The database has over 1,700 Submissions to the UNFCCC that have been sourced from the following UNFCCC and related websites:</p>
+        <ul>
+          <li>
+            <ExternalLink url="https://unfccc.int/topics/global-stocktake/information-portal?field_document_topic_target_id=All&field_document_type_target_id=4174&field_calculated_author_type_target_id=All&field_document_ca_target_id=">
+              Global Stocktake Information Portal
+            </ExternalLink>
+          </li>
+          <li>
+            <ExternalLink url="https://unfccc.int/NDCREG">NDC Registry</ExternalLink>
+          </li>
+          <li>
+            <ExternalLink url="https://unfccc.int/ACR">Adaptation Communications Registry</ExternalLink>
+          </li>
+          <li>
+            <ExternalLink url="https://napcentral.org/submitted-naps">NAP Central Portal</ExternalLink>
+          </li>
+          <li>
+            <ExternalLink url="https://unfccc.int/ttclear/tna/reports.html">TNA Portal</ExternalLink>
+          </li>
+          <li>
+            <ExternalLink url="https://unfccc.int/climatefinance?submissions">Fast-Start Finance Country Reports</ExternalLink>
+          </li>
+          <li>
+            <ExternalLink url="https://www.ipcc.ch/reports/">IPCC Website</ExternalLink>
+          </li>
+        </ul>
+        <p>These include the following documents:</p>
+        <ul>
+          <li>Nationally Determined Contributions (NDCs)</li>
+          <li>IPCC Assessment Reports (from 2015 onwards)</li>
+          <li>Fast-Start Finance Reports</li>
+          <li>National Communications</li>
+          <li>Biennial Reports</li>
+          <li>Biennial Update Reports</li>
+          <li>Annual Compilation and Accounting Reports</li>
+          <li>Facilitative Sharing of Views Reports</li>
+          <li>Global Stocktake Synthesis Reports</li>
+          <li>Intersessional Documents</li>
+          <li>Long-Term Low Greenhouse Gas Development Strategies</li>
+          <li>National Inventory Reports</li>
+          <li>Pre-Session Documents</li>
+          <li>Progress Reports</li>
+          <li>Publications submitted via the Global Stocktake Information Portal</li>
+          <li>Reports submitted via the Global Stocktake Information Portal</li>
+          <li>Statements submitted via the Global Stocktake Information Portal</li>
+          <li>Submissions to the Global Stocktake</li>
+          <li>Summary Reports</li>
+          <li>Synthesis Reports</li>
+          <li>Technical Analysis Summary Reports</li>
+          <li>Adaptation Communications</li>
+          <li>National Adaptation Plans</li>
+          <li>Technology Needs Assessments</li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    title: "How do I find Submissions to the UNFCCC that were submitted by multiple Parties?",
+    content: (
+      <>
+        <p>
+          Documents that have been written by multiple Parties, or by one Party on behalf of a coalition/negotiating block, are given the geography
+          profile label "International", which you can search for using the search bar. The specific countries that contributed to the document are
+          captured in the ‘author’ field.
+        </p>
+      </>
+    ),
+  },
+  {
+    title: "How do I find documents not submitted by countries?",
+    content: (
+      <>
+        <p>
+          Some documents are submitted to the UNFCCC by non-state actors (also called non-Party stakeholders (labelled in the app as 'non-party').
+          These documents currently have no country assigned, and will be excluded from results when geography and region filters are applied. We will
+          explore including location filters for non-state actors in the future.
+        </p>
       </>
     ),
   },
@@ -147,10 +248,9 @@ export const FAQS: TFAQ[] = [
     content: (
       <>
         <p>
-          Climate Change framework laws are a subset of all laws and policies in the database (see our{" "}
-          <LinkWithQuery href="/methodology">Methodology</LinkWithQuery> for further detail). If you are interested in this subset of the data, please
-          request a download of the full dataset. You can then filter this so you only see legislative documents (column L). From there you can filter
-          for any entry that includes data in Column O on frameworks.
+          Climate Change framework laws are a subset of all laws and policies in the database. If you are interested in this subset of the data,
+          please request a download of the full dataset. You can then filter this so you only see legislative documents (column L). From there you can
+          filter for any entry that includes data in Column O on frameworks.
         </p>
       </>
     ),
@@ -162,7 +262,7 @@ export const FAQS: TFAQ[] = [
         <p>
           You’ll need to{" "}
           <ExternalLink url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform">
-            fill out our form
+            fill out this form
           </ExternalLink>{" "}
           to request our entire dataset.
         </p>
@@ -170,13 +270,10 @@ export const FAQS: TFAQ[] = [
     ),
   },
   {
-    title: "Why do you limit the number of search results?",
+    title: "Why is the number of search results limited?",
     content: (
       <>
-        <p>
-          We limit the number of search results you’ll see to 100 so that you get the best performance from our system. We’re working to remove this
-          limit.
-        </p>
+        <p>The number of search results is currently limited to 100 to optimise system performance. We’re working to remove this limit.</p>
       </>
     ),
   },
@@ -204,15 +301,15 @@ export const FAQS: TFAQ[] = [
     content: (
       <>
         <p>
-          If you don’t toggle (or click on) ‘exact phrase only’, our new search feature searches our database for similar and related terms to the
+          If you don’t toggle (or click on) ‘exact phrase only’, our new search feature searches the database for similar and related terms to the
           query you typed into the search bar. This means you’ll get a richer search experience, as often climate or policy concepts are described in
           different ways by the government actors and policymakers producing the documents (such as petrol cars, internal combustion engine vehicles,
           gasoline-powered cars, etc). This feature relies on a technique called{" "}
           <ExternalLink url="https://climatepolicyradar.org/latest/building-natural-language-search-for-climate-change-laws-and-policies">
             natural language processing
           </ExternalLink>
-          , which trains computers to understand text and the meaning of words and phrases. This work is verified by our team of humans and we’re
-          working to improve it continually.
+          , which trains computers to understand text and the meaning of words and phrases in context. Climate Policy Radar’s team of policy experts
+          is working to continually improve the performance and accuracy of the models, and to make them more domain-specific.
         </p>
       </>
     ),
@@ -274,13 +371,25 @@ export const FAQS: TFAQ[] = [
     ),
   },
   {
+    title: "Why am I being redirected to an external site for some documents?",
+    content: (
+      <>
+        <p>
+          A small minority of our documents aren't yet machine-readable, meaning our tool can’t extract their text and make it searchable. In these
+          instances our tool will look for matches to your search term in the documents’ title and summary. To access the full text you’ll be taken to
+          the document’s source. We’re working to resolve this soon.
+        </p>
+      </>
+    ),
+  },
+  {
     title: "What are the limitations of our search?",
     content: (
       <>
         <p>
           Our database is not exhaustive. We don’t have access to some law and policy documents, while others aren’t currently machine-readable,
-          meaning we can’t extract the text from them and share them through our resource. We’re working to improve this so that you can search
-          through the full text of more documents in our database. If you think we’re missing some data, you can tell us about it using our{" "}
+          meaning we can’t extract the text from them. We’re working to improve this so that you can search through the full text of more documents in
+          our database. If you think we’re missing some data, you can tell us about it using our{" "}
           <ExternalLink url="https://forms.gle/gyRo9AqC8yiM9eaz7">data contribution form</ExternalLink>.
         </p>
         <p>
@@ -294,10 +403,11 @@ export const FAQS: TFAQ[] = [
     title: "How do I share a link to one of your documents?",
     content: (
       <>
+        <p>While we work on developing shareable links, the best way to share documents is by using the URL of a document page.</p>
         <p>
-          While we work on developing shareable links, the best way to share documents is by using the URL of a document page. You can also share
-          documents by downloading and then attaching them to an email. To download a document, click the ‘download’ button when viewing the document
-          on our tool. You can also click the three horizontal dots on the top right of a document view, and download the PDF from there.
+          You can also share documents by downloading and then attaching them to an email. To download a document, click the ‘download’ button when
+          viewing the document on our tool. You can also click the three horizontal dots on the top right of a document view, and download the PDF
+          from there.
         </p>
       </>
     ),
@@ -326,16 +436,17 @@ export const FAQS: TFAQ[] = [
     ),
   },
   {
-    title: "Can you explain the targets in the database?",
+    title: "What does ‘targets’ mean?",
     content: (
       <>
         <p>
-          For most laws and policies in the database, targets included in laws and policies have been manually identified. These include all types of
-          targets, not just greenhouse gas emissions reduction targets. Targets for individual documents are displayed on the document page. You can
-          also see all targets identified in the laws and policies of any given country on the country page. We’re working to develop new tools to
-          improve our identification and display of targets. While we do this, we have paused the manual identification of all targets except for “net
-          zero” targets or climate neutrality targets. You can request to download the full targets dataset by clicking the ‘Request to download all
-          target data (.csv)’ button at the top of any list of targets, and filling out the form.
+          Quantified policy targets included in laws and policies (such as ‘reduce emissions by X% by year 2030), have been manually identified for
+          most laws and policies in the database. These include various targets, including greenhouse gas emissions reduction targets, renewables
+          targets, adaptation-related stargets, and more. Targets for individual documents are displayed on the document page. You can also see all
+          targets identified in the laws and policies of any given country on the country page. Climate Policy Radar is developing automated
+          algorithms for identification and display of targets. While we do this, we have paused the manual identification of targets in new laws and
+          policies. We still identify “net zero” targets and climate neutrality targets. You can request to download the dataset by clicking the
+          ‘Request to download all target data (.csv)’ button at the top of any list of targets, and filling out the form.
         </p>
       </>
     ),
