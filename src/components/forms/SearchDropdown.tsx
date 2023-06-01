@@ -3,7 +3,7 @@ import useConfig from "@hooks/useConfig";
 import { SearchIcon } from "@components/svg/Icons";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { TGeography } from "@types";
-import { systemCountryCodes } from "@constants/systemCountryCodes";
+import { systemGeoCodes } from "@constants/systemGeos";
 
 type TProps = {
   show: boolean;
@@ -19,7 +19,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
 
   const geographiesFiltered = geographies.filter(
     (geography) =>
-      !systemCountryCodes.includes(geography.slug) &&
+      !systemGeoCodes.includes(geography.slug) &&
       (geography.display_value.toLowerCase().includes(term.toLocaleLowerCase()) ||
         term.toLocaleLowerCase().includes(geography.display_value.toLowerCase()))
   );

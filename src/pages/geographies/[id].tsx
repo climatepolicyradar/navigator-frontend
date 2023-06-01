@@ -27,7 +27,7 @@ import { extractNestedData } from "@utils/extractNestedData";
 import { getCountryCode } from "@helpers/getCountryFields";
 import { getGeoDescription } from "@constants/metaDescriptions";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
-import { systemCountryCodes } from "@constants/systemCountryCodes";
+import { systemGeoCodes } from "@constants/systemGeos";
 
 type TProps = {
   geography: TGeographyStats;
@@ -299,7 +299,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
   const id = context.params.id;
 
-  if (systemCountryCodes.includes(id as string)) {
+  if (systemGeoCodes.includes(id as string)) {
     return {
       notFound: true,
     };
