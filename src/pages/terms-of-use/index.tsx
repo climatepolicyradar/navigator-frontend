@@ -288,6 +288,12 @@ const TermsOfUse = () => {
                     <ExternalLink url="https://www.ipcc.ch/copyright/">View</ExternalLink>
                   </td>
                 </tr>
+                <tr>
+                  <td>Additional data sources will be added here as they are added to the CPR database and app</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
               </tbody>
             </table>
             <h2>Changes To This Agreement</h2>
