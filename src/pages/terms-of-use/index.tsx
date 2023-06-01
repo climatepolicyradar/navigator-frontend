@@ -144,9 +144,10 @@ const TermsOfUse = () => {
                   </p>
                 )}
                 <p>
-                  <span className="font-bold">Note</span>: As of November 2022, all summaries in the CPR App were written by researchers at the
-                  Grantham Research Institute (as reflected on every document page). This section and recommended citation will be updated to reflect
-                  any changes to this.
+                  <span className="font-bold">Note</span>: As of May 2023, all climate law and policy summaries in the CPR App were written by
+                  researchers at the Grantham Research Institute (as reflected on every document page). Documents from the UNFCCC document registries
+                  and data portals are out of the scope for this declaration (see further “Data from third party sources” are out of scope for this
+                  declaration. This section and recommended citation will be updated to reflect any changes to this.
                 </p>
               </li>
             </ul>
@@ -202,7 +203,7 @@ const TermsOfUse = () => {
                 <tr>
                   <th>Source</th>
                   <th>Data</th>
-                  <th>Date added</th>
+                  <th>Date first added</th>
                   <th>Third party terms and conditions</th>
                 </tr>
               </thead>
@@ -216,10 +217,76 @@ const TermsOfUse = () => {
                   </td>
                 </tr>
                 <tr>
-                  <td>Additional data sources will be added here as they are added to the CPR database and app</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td>
+                    <ExternalLink url="https://unfccc.int/topics/global-stocktake/information-portal?field_document_topic_target_id=All&field_document_type_target_id=4174&field_calculated_author_type_target_id=All&field_document_ca_target_id=">
+                      Global Stocktake Information Portal
+                    </ExternalLink>
+                  </td>
+                  <td>Submissions to the first Global Stocktake by parties and non-Party stakeholders </td>
+                  <td>23 May 2023</td>
+                  <td>
+                    <ExternalLink url="https://unfccc.int/this-site/terms-of-use">View</ExternalLink>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <ExternalLink url="https://unfccc.int/NDCREG">NDC Registry</ExternalLink>
+                  </td>
+                  <td>Nationally Determined Contributions</td>
+                  <td>23 May 2023</td>
+                  <td>
+                    <ExternalLink url="https://unfccc.int/this-site/terms-of-use">View</ExternalLink>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <ExternalLink url="https://unfccc.int/ACR">Adaptation Communications Registry</ExternalLink>
+                  </td>
+                  <td>Adaptation Communications</td>
+                  <td>23 May 2023</td>
+                  <td>
+                    <ExternalLink url="https://unfccc.int/this-site/terms-of-use">View</ExternalLink>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <ExternalLink url="https://napcentral.org/submitted-naps">NAP Central Portal</ExternalLink>
+                  </td>
+                  <td>National Adaptation Plans</td>
+                  <td>23 May 2023</td>
+                  <td>
+                    <ExternalLink url="https://unfccc.int/this-site/terms-of-use">View</ExternalLink>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <ExternalLink url="https://unfccc.int/ttclear/tna/reports.html">TNA Portal</ExternalLink>
+                  </td>
+                  <td>Technology Needs Assessments</td>
+                  <td>23 May 2023</td>
+                  <td>
+                    <ExternalLink url="https://unfccc.int/this-site/terms-of-use">View</ExternalLink>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <ExternalLink url="https://unfccc.int/climatefinance?submissions">Fast-Start Finance Country Reports</ExternalLink>
+                  </td>
+                  <td>Country Finance reports</td>
+                  <td>23 May 2023</td>
+                  <td>
+                    <ExternalLink url="https://unfccc.int/this-site/terms-of-use">View</ExternalLink>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <ExternalLink url="https://www.ipcc.ch/reports/">IPCC Website</ExternalLink>
+                  </td>
+                  <td>IPCC reports from 2015</td>
+                  <td>23 May 2023</td>
+                  <td>
+                    <ExternalLink url="https://www.ipcc.ch/copyright/">View</ExternalLink>
+                  </td>
                 </tr>
               </tbody>
             </table>
