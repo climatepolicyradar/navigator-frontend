@@ -146,8 +146,8 @@ const TermsOfUse = () => {
                 <p>
                   <span className="font-bold">Note</span>: As of May 2023, all climate law and policy summaries in the CPR App were written by
                   researchers at the Grantham Research Institute (as reflected on every document page). Documents from the UNFCCC document registries
-                  and data portals are out of the scope for this declaration (see further “Data from third party sources” are out of scope for this
-                  declaration. This section and recommended citation will be updated to reflect any changes to this.
+                  and data portals are out of the scope for this declaration (see further “Data from third party sources”). This section and
+                  recommended citation will be updated to reflect any changes to this.
                 </p>
               </li>
             </ul>
