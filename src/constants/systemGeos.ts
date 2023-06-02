@@ -3,4 +3,4 @@ export const systemGeoCodes = [
   "xab", // International
 ];
 
-export const systemGeoNames = ["No Geography", "International"];
+export const systemGeoNames = ["no-geography", "international"];
