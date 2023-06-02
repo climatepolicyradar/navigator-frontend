@@ -41,15 +41,12 @@ describe("Search Flow", () => {
   });
 
   it("should display the correct search result attributes", () => {
-    cy.get(searchResultsSelector)
-      .children(searchResultSelector, { timeout: 10000 })
-      .first()
-      .within(() => {
-        cy.get('[data-cy="result-title"]').should("be.visible");
-        cy.get('[data-cy="result-category"]').should("be.visible");
-        cy.get('[data-cy="result-year"]').should("be.visible");
-        cy.get('[data-cy="result-description"]').should("be.visible");
-        cy.get('[data-cy="country-link"]').should("be.visible");
-      });
+    cy.get(searchResultsSelector).within(() => {
+      cy.get('[data-cy="result-title"]').should("be.visible");
+      cy.get('[data-cy="result-category"]').should("be.visible");
+      cy.get('[data-cy="result-year"]').should("be.visible");
+      cy.get('[data-cy="result-description"]').should("be.visible");
+      cy.get('[data-cy="country-link"]').should("be.visible");
+    });
   });
 });

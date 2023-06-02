@@ -2,6 +2,7 @@ import { FC, ReactNode } from "react";
 import useConfig from "@hooks/useConfig";
 import { getCountrySlug } from "@helpers/getCountryFields";
 import { LinkWithQuery } from "./LinkWithQuery";
+import { systemGeoCodes } from "@constants/systemGeos";
 
 type TCountryLink = {
   countryCode: string;
@@ -9,11 +10,6 @@ type TCountryLink = {
   emptyContentFallback?: ReactNode;
   children?: ReactNode;
 };
-
-const nonLinkableSlugs = [
-  "xaa", // No Geography
-  "xab", // International
-];
 
 export const CountryLink: FC<TCountryLink> = ({ countryCode, className = "", emptyContentFallback, children }) => {
   const configQuery = useConfig();
@@ -23,7 +19,7 @@ export const CountryLink: FC<TCountryLink> = ({ countryCode, className = "", emp
   // Force render without any empty content fallback the children without a link
   if (!slug && emptyContentFallback) return <>{emptyContentFallback}</>;
   if (!slug && !emptyContentFallback) return <>{children}</>;
-  if (nonLinkableSlugs.includes(slug)) return <>{children}</>;
+  if (systemGeoCodes.includes(slug)) return <>{children}</>;
 
   return (
     <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center underline gap-2 ${className}`} passHref cypress="country-link">
