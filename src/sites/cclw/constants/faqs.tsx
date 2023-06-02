@@ -62,7 +62,7 @@ export const FAQS: TFAQ[] = [
           strategic projects, underpinning much of the Institute’s work on our governance and legislation theme.
         </p>
         <p>
-          The database is now powered and operated by our partners{" "}
+          The database is now powered and operated by our partner{" "}
           <ExternalLink url="https://climatepolicyradar.org/">Climate Policy Radar</ExternalLink>.
         </p>
       </>
@@ -387,13 +387,13 @@ export const FAQS: TFAQ[] = [
     content: (
       <>
         <p>
-          Our database is not exhaustive. We don’t have access to some law and policy documents, while others aren’t currently machine-readable,
+          The database is not exhaustive. We don’t have access to some law and policy documents, while others aren’t currently machine-readable,
           meaning we can’t extract the text from them. We’re working to improve this so that you can search through the full text of more documents in
-          our database. If you think we’re missing some data, you can tell us about it using our{" "}
+          the database. If you think we’re missing some data, you can tell us about it using the{" "}
           <ExternalLink url="https://forms.gle/gyRo9AqC8yiM9eaz7">data contribution form</ExternalLink>.
         </p>
         <p>
-          We also limit the number of matches you can see in a document to 10 so that you get the best performance from our tool. This means you might
+          We also limit the number of matches you can see in a document to 10 so that you get the best performance from the tool. This means you might
           miss some matches. We’re working on a way to remove this limit.
         </p>
       </>
