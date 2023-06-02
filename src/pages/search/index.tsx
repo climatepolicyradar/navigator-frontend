@@ -116,6 +116,7 @@ const Search = () => {
   };
 
   const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    delete router.query[QUERY_PARAMS.offset];
     const val = e.currentTarget.textContent;
     let category = val;
     router.query[QUERY_PARAMS.category] = category;
