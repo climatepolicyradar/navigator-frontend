@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
-import { UNFCCC_SURVEY } from "@constants/UNFCCCSurvey";
 
 type TArticle = {
   url: string;
@@ -15,13 +14,6 @@ type TArticle = {
 };
 
 const ARTICLES: TArticle[] = [
-  {
-    url: UNFCCC_SURVEY,
-    external: true,
-    type: "UNFCCC",
-    title: "UNFCCC documents coming soon",
-    meta: "UNFCCC Portal documents, including submissions under the first Global Stocktake, will be available here soon. Get notified when it's ready or help us design this.",
-  },
   {
     url: "https://www.lse.ac.uk/granthaminstitute/publication/climate-change-law-in-europe-what-do-new-eu-climate-laws-mean-for-the-courts/",
     external: true,
