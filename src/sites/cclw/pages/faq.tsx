@@ -12,8 +12,8 @@ const FAQ = () => {
           <h1 className="my-8">How to use this resource</h1>
           <p>You can use this resource to:</p>
           <ul>
-            <li>Search 3500+ climate law and policy documents from every country</li>
-            <li>See exact matches and related phrases highlighted in the text</li>
+            <li>Search the full text of over 5000 laws, policies and UNFCCC submissions from every country.</li>
+            <li>See exact matches and related phrases highlighted in the text.</li>
           </ul>
           <p>Watch the video below to learn how to use this resource</p>
           <iframe
