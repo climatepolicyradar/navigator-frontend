@@ -8,6 +8,7 @@ import { getCountryName } from "@helpers/getCountryFields";
 import useConfig from "@hooks/useConfig";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { convertDate } from "@utils/timedate";
+import { isSystemGeo } from "@utils/isSystemGeo";
 
 type TProps = {
   family: TFamily;
@@ -44,10 +45,17 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
             {getCategoryIcon(family_category, "20")}
           </div>
         )}
-        <CountryLink countryCode={family_geography}>
-          <span>{country_name}</span>
-        </CountryLink>
-        {!isNaN(year) && <span data-cy="result-year">, {year}</span>}
+        {!isSystemGeo(family_geography) && (
+          <CountryLink countryCode={family_geography}>
+            <span>{country_name}</span>
+          </CountryLink>
+        )}
+        {!isNaN(year) && (
+          <span data-cy="result-year">
+            {!isSystemGeo(family_geography) && ", "}
+            {year}
+          </span>
+        )}
         {children}
       </div>
       <p

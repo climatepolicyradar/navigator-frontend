@@ -1,9 +1,9 @@
 import useConfig from "@hooks/useConfig";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
 import { CountryLink } from "@components/CountryLink";
-import { LinkWithQuery } from "@components/LinkWithQuery";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { TDocumentPage } from "@types";
+import { isSystemGeo } from "@utils/isSystemGeo";
 
 type TProps = {
   document: TDocumentPage;
@@ -38,9 +38,11 @@ export const DocumentHead = ({ document, family, geography }: TProps) => {
           <div className="flex-1 my-4">
             <h1 className="text-3xl lg:smaller">{document.title}</h1>
             <div className="flex text-base text-grey-700 mt-4 items-center w-full font-medium divide-x gap-2 divide-grey-700">
-              <CountryLink countryCode={geography} className="text-primary-400 hover:text-indigo-600 duration-300">
-                <span>{geoName}</span>
-              </CountryLink>
+              {!isSystemGeo(geography) && (
+                <CountryLink countryCode={geography} className="text-primary-400 hover:text-indigo-600 duration-300">
+                  <span>{geoName}</span>
+                </CountryLink>
+              )}
               {!isMain && <span className="pl-2 capitalize">{document.document_role.toLowerCase()}</span>}
               {!!document.language && (
                 <span className="pl-2">
