@@ -276,12 +276,10 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                   <DocumentInfo id="category-tt" heading="Category" text={page.category} />
                   <DocumentInfo id="type-tt" heading="Type" text={getDocumentCategories().join(", ")} />
                 </div>
-                <div className="grid gap-2 grid-cols-2">
-                  {page.metadata.author_type?.length > 0 && (
-                    <DocumentInfo id="party-tt" heading="Party / non-Party" text={page.metadata.author_type?.join(", ")} />
-                  )}
-                  {page.metadata.author?.length > 0 && <DocumentInfo id="author-tt" heading="Author" text={page.metadata.author?.join(", ")} />}
-                </div>
+                {page.metadata.author_type?.length > 0 && (
+                  <DocumentInfo id="party-tt" heading="Party / non-Party" text={page.metadata.author_type?.join(", ")} />
+                )}
+                {page.metadata.author?.length > 0 && <DocumentInfo id="author-tt" heading="Author" text={page.metadata.author?.join(", ")} />}
 
                 {page.metadata.topic?.length > 0 && <DocumentInfo id="topics-tt" heading="Topics" list={page.metadata.topic} />}
                 {page.metadata.keyword?.length > 0 && <DocumentInfo id="keywords-tt" heading="Keywords" list={page.metadata.keyword} />}
