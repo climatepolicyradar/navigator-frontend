@@ -15,7 +15,7 @@ const MainMenu = () => {
   };
 
   return (
-    <div ref={menuRef} className="ml-auto relative z-[41]">
+    <div ref={menuRef} className="relative z-[41] h-[35px]">
       <button data-cy="menu-icon" onClick={toggleMenu}>
         <MenuIcon />
       </button>
