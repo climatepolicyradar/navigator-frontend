@@ -6,8 +6,8 @@ const LandingPageHeader = () => {
     <header data-cy="header" className={`absolute bg-transparent w-full top-0 left-0 transition duration-300 z-30`}>
       <div className="container my-4">
         <div className="flex items-center justify-end">
-          <div>
-            <Button onClick={() => window.open("https://gst1.org")} extraClasses="mr-6 rounded-full" thin>
+          <div className="mr-6">
+            <Button onClick={() => window.open("https://gst1.org")} extraClasses="rounded-full" thin>
               Global Stocktake Explorer
             </Button>
           </div>

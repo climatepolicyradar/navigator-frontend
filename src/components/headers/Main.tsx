@@ -9,8 +9,8 @@ const Header = () => {
         <div className="flex items-center justify-between">
           <AlphaLogoSmall />
           <div className="flex items-center justify-end">
-            <div>
-              <Button onClick={() => window.open("https://gst1.org")} extraClasses="mr-6 rounded-full" thin>
+            <div className="hidden md:block mr-6">
+              <Button onClick={() => window.open("https://gst1.org")} extraClasses="rounded-full" thin>
                 Global Stocktake Explorer
               </Button>
             </div>

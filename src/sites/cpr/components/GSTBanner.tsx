@@ -3,9 +3,9 @@ import { SpeakerIcon } from "@components/svg/Icons";
 
 export const GSTBanner = () => {
   return (
-    <div className="bg-blue-100 w-full flex justify-center py-2">
+    <div className="bg-blue-100 w-full flex justify-center p-2 text-sm md:text-base">
       <div className="flex items-center">
-        <span className="text-primary-400 mr-2">
+        <span className="text-primary-400 mr-2 self-start">
           <SpeakerIcon />
         </span>
         <span>
