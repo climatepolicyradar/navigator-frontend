@@ -3,6 +3,7 @@ import { TFamilyPage } from "@types";
 import { convertDate } from "@utils/timedate";
 import { Fragment } from "react";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
+import { isSystemGeo } from "@utils/isSystemGeo";
 
 type TProps = {
   family: TFamilyPage;
@@ -41,13 +42,15 @@ export const FamilyHead = ({ family, geographyName, geographySlug, onCollectionC
                   ))}
               </div>
             )}
-            <div className="flex text-base text-grey-700 mt-4 items-center w-full font-medium divide-x gap-2 divide-grey-700">
-              <CountryLink countryCode={family.geography} className="text-primary-400 hover:text-indigo-600 duration-300">
-                <span data-analytics-country={geographyName}>
-                  {geographyName}
-                </span>
-              </CountryLink>
-              {year && <span className="pl-2">{year}</span>}
+            <div className="flex text-base text-grey-700 mt-4 items-center w-full font-medium divide-grey-700">
+              {!isSystemGeo(family.geography) ? (
+                <CountryLink countryCode={family.geography} className="text-primary-400 hover:text-indigo-600 duration-300">
+                  <span data-analytics-country={geographyName}>{geographyName}</span>
+                </CountryLink>
+              ) : (
+                <span>{family.metadata.author.join(", ")}</span>
+              )}
+              {year && <span>, {year}</span>}
             </div>
           </div>
         </div>
