@@ -57,9 +57,9 @@ export function useDownloadCsv() {
 
   const download = async (query: TRouterQuery) => {
     setStatus("loading");
-    const download = await getDownloadCsv(query);
+    const downloadResponse = await getDownloadCsv(query);
 
-    if (!download) return setStatus("error");
+    if (!downloadResponse) return setStatus("error");
 
     return setStatus("success");
   };
