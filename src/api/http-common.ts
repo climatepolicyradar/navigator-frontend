@@ -1,10 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
-interface ValidationError {
-  message: string;
-  errors: Record<string, string[]>;
-}
-
 export async function getEnvFromServer() {
   return await axios.get("/api/env").then((res: any) => res);
 }
