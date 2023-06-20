@@ -26,6 +26,7 @@ import { LinkWithQuery } from "@components/LinkWithQuery";
 import useConfig from "@hooks/useConfig";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
+import { getOrganisationNote } from "@helpers/getOrganisationNote";
 
 type TProps = {
   page: TFamilyPage;
@@ -86,8 +87,13 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const otherDocs = page.documents.filter((doc) => !doc.document_role || !doc.document_role.toLowerCase().includes("main"));
 
   const getDocumentCategories = () => {
-    const categories = page.documents.map((doc) => doc.document_type);
-    return [...new Set(categories)];
+    // Some types are comma separated, so we need to split them
+    let categories = page.documents.map((doc) => {
+      if (doc.document_type.includes(",")) {
+        return doc.document_type.split(",");
+      } else return doc.document_type;
+    });
+    return [...new Set(categories.flat())];
   };
 
   useEffect(() => {
@@ -266,42 +272,29 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
             <section className="mt-12 md:border-t-0 md:mt-6 md:w-2/5 lg:w-1/4 md:pl-12 flex-shrink-0">
               <div className="md:pl-4 md:border-l md:border-lineBorder">
                 <h3>About this document</h3>
-                <div className="grid grid-cols-2 gap-x-2">
+                <div className={`grid gap-2 ${page.category === "UNFCCC" ? "" : "grid-cols-2"}`}>
                   <DocumentInfo id="category-tt" heading="Category" text={page.category} />
                   <DocumentInfo id="type-tt" heading="Type" text={getDocumentCategories().join(", ")} />
                 </div>
+                {page.metadata.author_type?.length > 0 && (
+                  <DocumentInfo id="party-tt" heading="Party / non-Party" text={page.metadata.author_type?.join(", ")} />
+                )}
+                {page.metadata.author?.length > 0 && <DocumentInfo id="author-tt" heading="Author" text={page.metadata.author?.join(", ")} />}
 
-                {page.metadata.topic.length > 0 && <DocumentInfo id="topics-tt" heading="Topics" list={page.metadata.topic} />}
-                {page.metadata.keyword.length > 0 && <DocumentInfo id="keywords-tt" heading="Keywords" list={page.metadata.keyword} />}
-                {page.metadata.sector.length > 0 && <DocumentInfo id="sectors-tt" heading="Sectors" list={page.metadata.sector} />}
+                {page.metadata.topic?.length > 0 && <DocumentInfo id="topics-tt" heading="Topics" list={page.metadata.topic} />}
+                {page.metadata.keyword?.length > 0 && <DocumentInfo id="keywords-tt" heading="Keywords" list={page.metadata.keyword} />}
+                {page.metadata.sector?.length > 0 && <DocumentInfo id="sectors-tt" heading="Sectors" list={page.metadata.sector} />}
                 <div className="mt-8 border-t border-blue-100">
-                  <h3 className="mt-4">Note</h3>
-                  <div className="flex items-end my-4">
-                    {sourceLogo && (
+                  <h3 className="my-4">Note</h3>
+                  {sourceLogo && (
+                    <div className="flex items-end mb-4">
                       <div className="relative flex-shrink w-3/4 xmax-w-[40px] mr-1">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={`/images/partners/${sourceLogo}`} alt={page.organisation} />
                       </div>
-                    )}
-                    {page.organisation !== "CCLW" && <p className="text-sm">{sourceName}</p>}
-                  </div>
-                  <p>
-                    The summary of this document was written by researchers at the{" "}
-                    <ExternalLink
-                      url="http://lse.ac.uk/grantham"
-                      className="text-blue-500 hover:text-indigo-600 hover:underline transition duration-300"
-                    >
-                      Grantham Research Institute
-                    </ExternalLink>
-                    . If you want to use this summary, please check{" "}
-                    <ExternalLink
-                      url="https://www.lse.ac.uk/granthaminstitute/cclw-terms-and-conditions"
-                      className="text-blue-500 hover:text-indigo-600 hover:underline transition duration-300"
-                    >
-                      terms of use
-                    </ExternalLink>{" "}
-                    for citation and licensing of third party data.
-                  </p>
+                    </div>
+                  )}
+                  {getOrganisationNote(page.organisation)}
                 </div>
               </div>
             </section>

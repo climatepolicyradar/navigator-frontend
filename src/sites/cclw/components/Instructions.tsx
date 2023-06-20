@@ -10,7 +10,7 @@ const Instructions = () => {
         <div className="mb-6 h-[80px] flex items-center justify-center">
           <img src="/images/earth.png" alt="Phrase highlighting" className="max-h-full" />
         </div>
-        <p className="mb-6">Search 3500+ climate law and policy documents from every country</p>
+        <p className="mb-6">Search the full text of over 5000 laws, policies and UNFCCC submissions from every country.</p>
       </div>
       <div className="border-t md:border-t-0 md:border-l border-white py-5 lg:py-0 flex flex-col items-center lg:px-4" data-cy="feature-highlights">
         <div className="mb-6 h-[80px] flex items-center justify-center relative">

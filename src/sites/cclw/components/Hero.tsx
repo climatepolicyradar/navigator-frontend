@@ -18,7 +18,7 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
         <div className="max-w-screen-lg mx-auto mt-6">
           <LandingSearchForm
             handleSearchInput={handleSearchInput}
-            placeholder="Search full text of 3,500+ climate laws and policies"
+            placeholder="Search the full text of over 5000 laws, policies and UNFCCC submissions"
             input={searchInput}
           />
         </div>

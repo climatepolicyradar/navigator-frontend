@@ -12,6 +12,7 @@ import { AdobeContext } from "@context/AdobeContext";
 
 import { CookieConsent } from "@components/cookies/CookieConsent";
 import { Banner } from "@cclw/components/Banner";
+import { GSTBanner } from "@cpr/components/GSTBanner";
 import ErrorBoundary from "@components/error/ErrorBoundary";
 
 const queryClient = new QueryClient();
@@ -109,7 +110,8 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
               <style>{getThemeColours(dynamicTheme)}</style>
             </Head>
             {dynamicTheme === "cclw" && <Banner />}
-            <div id={dynamicTheme} className="h-full">
+            {dynamicTheme === "cpr" && <GSTBanner />}
+            <div id={dynamicTheme} className="h-full relative">
               <Component {...pageProps} />
             </div>
             <CookieConsent />

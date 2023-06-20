@@ -27,11 +27,20 @@ import { extractNestedData } from "@utils/extractNestedData";
 import { getCountryCode } from "@helpers/getCountryFields";
 import { getGeoDescription } from "@constants/metaDescriptions";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
+import { systemGeoNames } from "@constants/systemGeos";
 
 type TProps = {
   geography: TGeographyStats;
   summary: TGeographySummary;
   targets: TTarget[];
+};
+
+const categoryByIndex = {
+  0: "All",
+  1: "Legislation",
+  2: "Policies",
+  3: "Litigation",
+  4: "UNFCCC",
 };
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets }: TProps) => {
@@ -65,7 +74,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     event.preventDefault();
     const newQuery = {};
     newQuery[QUERY_PARAMS.country] = geography.geography_slug;
-    const documentCategory = selectedCategoryIndex === 1 ? "Legislation" : selectedCategoryIndex === 2 ? "Policies" : null;
+    const documentCategory = categoryByIndex[selectedCategoryIndex] ?? null;
     if (documentCategory) {
       newQuery[QUERY_PARAMS.category] = documentCategory;
     }
@@ -77,7 +86,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   const renderDocuments = () => {
     // All
     if (selectedCategoryIndex === 0) {
-      let allFamilies = summary.top_families.Executive.concat(summary.top_families.Legislative);
+      let allFamilies = summary.top_families.Executive.concat(summary.top_families.Legislative).concat(summary.top_families.UNFCCC);
       if (allFamilies.length === 0) {
         return renderEmpty();
       }
@@ -127,6 +136,16 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
           .
         </div>
       );
+    }
+    // UNFCCC
+    if (selectedCategoryIndex === 4) {
+      return summary.top_families.UNFCCC.length === 0
+        ? renderEmpty("UNFCCC")
+        : summary.top_families.UNFCCC.map((family) => (
+            <div key={family.family_slug} className="mt-4 mb-10">
+              <FamilyListItem family={family} />
+            </div>
+          ));
     }
   };
 
@@ -278,8 +297,14 @@ export default CountryPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-
   const id = context.params.id;
+
+  if (systemGeoNames.includes(id as string)) {
+    return {
+      notFound: true,
+    };
+  }
+
   const client = new ApiClient();
 
   let geographyData: TGeographyStats;

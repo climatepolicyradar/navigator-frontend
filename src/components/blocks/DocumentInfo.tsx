@@ -22,7 +22,12 @@ type TDoucmentInfoProps = {
 
 const DocumentInfo = ({ heading, text = "", list = [], id = "", tooltip = "", bulleted = false }: TDoucmentInfoProps) => {
   const dataProps = {};
-  dataProps[`data-analytics-${heading.toLowerCase().trim().replace(" ", "-")}`] = "";
+  dataProps[
+    `data-analytics-${heading
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-zA-Z0-9]/g, "-")}`
+  ] = "";
 
   return (
     <div className="mt-4">

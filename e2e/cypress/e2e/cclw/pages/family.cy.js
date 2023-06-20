@@ -11,6 +11,13 @@ const pageSelectors = ["h1", '[data-cy="country-link"]', '[data-cy="download-tar
 const pageHeadings = ["Related documents", "Targets", "Timeline", "About this document", "Note"];
 const metaHeadings = ["Category", "Type", "Topics", "Sectors"];
 
+const breadcrumbSelectors = [
+  "[data-cy='breadcrumbs']",
+  "[data-cy='breadcrumb home']",
+  "[data-cy='breadcrumb category']",
+  "[data-cy='breadcrumb current']",
+];
+
 describe("Family Page", () => {
   before(() => {
     cy.visit(URL);
@@ -31,6 +38,12 @@ describe("Family Page", () => {
 
   it("should display the page elements", () => {
     pageSelectors.forEach((selector) => {
+      cy.get(selector).should("be.visible");
+    });
+  });
+
+  it("should display the breadcrumbs", () => {
+    breadcrumbSelectors.forEach((selector) => {
       cy.get(selector).should("be.visible");
     });
   });

@@ -53,4 +53,16 @@ describe("Geography Page", () => {
     // Without resetting the page Cypress and Next may get stuck in a GET loop
     cy.visit(geoUrl);
   });
+
+  it("should return a 404 if 'no geography'", () => {
+    cy.request({ url: "/geographies/xaa", failOnStatusCode: false }).its("status").should("equal", 404);
+    // Without resetting the page Cypress and Next may get stuck in a GET loop
+    cy.visit(geoUrl);
+  });
+
+  it("should return a 404 if 'international'", () => {
+    cy.request({ url: "/geographies/xab", failOnStatusCode: false }).its("status").should("equal", 404);
+    // Without resetting the page Cypress and Next may get stuck in a GET loop
+    cy.visit(geoUrl);
+  });
 });

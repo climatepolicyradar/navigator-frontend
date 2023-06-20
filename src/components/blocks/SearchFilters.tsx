@@ -12,6 +12,7 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import BySemanticSearch from "@components/filters/BySemanticSearch";
 import Tooltip from "@components/tooltip";
+import { sortGeos } from "@utils/sorting";
 
 type TSearchFiltersProps = {
   handleFilterChange(type: string, value: string): void;
@@ -98,6 +99,7 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
             keyField="slug"
             keyFieldDisplay="display_value"
             filterType={QUERY_PARAMS.region}
+            sortFunc={sortGeos}
           />
         </div>
         <div className="relative mt-6" data-cy="countries">
