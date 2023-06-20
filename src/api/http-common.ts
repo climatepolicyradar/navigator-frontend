@@ -1,5 +1,10 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
+interface ValidationError {
+  message: string;
+  errors: Record<string, string[]>;
+}
+
 export async function getEnvFromServer() {
   return await axios.get("/api/env").then((res: any) => res);
 }
@@ -36,9 +41,13 @@ class ApiClient {
     return this.axiosClient
       .post<T>(`${url}?group_documents=true`, values, config)
       .then((res) => res)
-      .catch((err) => {
-        console.log(err);
-        return err;
+      .catch((error) => {
+        if (axios.isAxiosError(error)) {
+          console.error(error.response);
+          return error.response;
+        }
+        console.error(error);
+        return error;
       });
   }
 

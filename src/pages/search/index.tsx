@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import useSearch from "@hooks/useSearch";
-import { getDownloadCsv } from "@hooks/useDownloadCsv";
+import { useDownloadCsv } from "@hooks/useDownloadCsv";
 import useUpdateCountries from "@hooks/useUpdateCountries";
 import useConfig from "@hooks/useConfig";
 import useFilteredCountries from "@hooks/useFilteredCountries";
@@ -22,6 +22,7 @@ import { PER_PAGE } from "@constants/paging";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
+import { Loading } from "@components/svg/Icons";
 
 const Search = () => {
   const router = useRouter();
@@ -39,6 +40,8 @@ const Search = () => {
   const { data: { regions = [], countries = [] } = {} } = configQuery;
 
   const { data: filteredCountries } = useFilteredCountries(countries);
+
+  const { status: downloadCSVStatus, download: downloadCSV } = useDownloadCsv();
 
   const placeholder = t("Search for something, e.g. 'carbon taxes'");
 
@@ -189,7 +192,8 @@ const Search = () => {
 
   const handleDownloadCsvClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    getDownloadCsv(router.query);
+    if (downloadCSVStatus === "loading") return;
+    downloadCSV(router.query);
   };
 
   useEffect(() => {
@@ -283,14 +287,22 @@ const Search = () => {
                   <div className="text-sm my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
                     {status === "success" && renderNoOfResults()}
                   </div>
-                  <a
-                    href="#"
-                    className="text-sm text-blue-600 mt-4 md:mt-0 hover:underline"
-                    data-cy="download-search-csv"
-                    onClick={handleDownloadCsvClick}
-                  >
-                    Request to download all data (.csv)
-                  </a>
+                  <span className="text-sm mt-4 md:mt-0 text-right">
+                    <a
+                      href="#"
+                      className="text-blue-600 hover:underline flex gap-2 items-center justify-end"
+                      data-cy="download-search-csv"
+                      onClick={handleDownloadCsvClick}
+                    >
+                      {downloadCSVStatus === "loading" && <Loading />} Download search results (.csv)
+                    </a>
+                  </span>
+                </div>
+                <div className="text-right text-sm">
+                  {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
+                  {downloadCSVStatus === "success" && (
+                    <span className="text-green-600">CSV downloaded successfully, please check your downloads folder</span>
+                  )}
                 </div>
               </div>
               <div className="mt-4 md:flex">

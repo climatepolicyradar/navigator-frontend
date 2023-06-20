@@ -377,7 +377,7 @@ export const PDFIcon = ({ height = "32", width = "32", color = "currentColor" }:
 export const Loading = ({ height = "16", width = "16", color = "currentColor" }: IconProps) => {
   return (
     <svg
-      className="animate-spin text-white"
+      className="animate-spin"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

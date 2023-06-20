@@ -1,6 +1,7 @@
 import { ApiClient, getEnvFromServer } from "../api/http-common";
-import { TSearch } from "../types";
 import buildSearchQuery, { TRouterQuery } from "@utils/buildSearchQuery";
+import { TLoadingStatus, TSearch } from "@types";
+import { useState } from "react";
 
 type TConfig = {
   headers: {
@@ -11,21 +12,20 @@ type TConfig = {
 
 const downloadFile = ({ data, fileName, fileType }) => {
   const blob = new Blob([data], { type: fileType });
-  console.log(blob);
 
   const a = document.createElement("a");
   a.download = fileName;
   a.href = window.URL.createObjectURL(blob);
-  const clickEvt = new MouseEvent("click", {
+  const clickEvent = new MouseEvent("click", {
     view: window,
     bubbles: true,
     cancelable: true,
   });
-  a.dispatchEvent(clickEvt);
+  a.dispatchEvent(clickEvent);
   a.remove();
 };
 
-export async function getDownloadCsv(query: TRouterQuery) {
+async function getDownloadCsv(query: TRouterQuery) {
   const config: TConfig = {
     headers: {
       accept: "application/json",
@@ -39,9 +39,30 @@ export async function getDownloadCsv(query: TRouterQuery) {
   const searchQuery = buildSearchQuery(query);
 
   const results = await client.post<TSearch>("/searches/download-csv", searchQuery, config);
+  if (results.status !== 200) {
+    return false;
+  }
+
   downloadFile({
     data: results.data || "",
     fileName: "search_results.csv",
     fileType: "text/csv",
   });
+
+  return true;
+}
+
+export function useDownloadCsv() {
+  const [status, setStatus] = useState<TLoadingStatus>("idle");
+
+  const download = async (query: TRouterQuery) => {
+    setStatus("loading");
+    const download = await getDownloadCsv(query);
+
+    if (!download) return setStatus("error");
+
+    return setStatus("success");
+  };
+
+  return { status, download };
 }
