@@ -292,7 +292,7 @@ const Search = () => {
                     <span>Download data (.csv): </span>
                     <a
                       href="#"
-                      className="text-blue-600 hover:underline lg:flex gap-2 items-center justify-end"
+                      className="text-blue-600 hover:underline flex gap-2 items-center justify-end"
                       data-cy="download-search-csv"
                       onClick={handleDownloadCsvClick}
                     >
