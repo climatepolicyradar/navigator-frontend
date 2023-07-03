@@ -302,7 +302,7 @@ const Search = () => {
                     <ExternalLink
                       url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform"
                       className="text-blue-600 hover:underline"
-                      cy="download-search-csv"
+                      cy="download-entire-search-csv"
                     >
                       whole database
                     </ExternalLink>

@@ -19,6 +19,7 @@ const pageSelectors = [
   inputSelector,
   searchResultsSelector,
   '[data-cy="download-search-csv"]',
+  '[data-cy="download-entire-search-csv"]',
   '[data-cy="number-of-results"]',
   tabbedNavSelector,
   sortSelector,
