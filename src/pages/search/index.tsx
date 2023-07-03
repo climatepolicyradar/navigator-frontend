@@ -42,7 +42,7 @@ const Search = () => {
 
   const { data: filteredCountries } = useFilteredCountries(countries);
 
-  const { status: downloadCSVStatus, download: downloadCSV } = useDownloadCsv();
+  const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 
   const placeholder = t("Search for something, e.g. 'carbon taxes'");
 
@@ -54,6 +54,7 @@ const Search = () => {
     const offSet = (page - 1) * PER_PAGE;
     router.query[QUERY_PARAMS.offset] = offSet.toString();
     router.push({ query: router.query });
+    resetCSVStatus();
   };
 
   const handleRegionChange = (type: string, regionName: string) => {
@@ -67,6 +68,7 @@ const Search = () => {
 
     router.query[type] = regionName;
     router.push({ query: router.query });
+    resetCSVStatus();
   };
 
   const handleFilterChange = (type: string, value: string) => {
@@ -90,6 +92,7 @@ const Search = () => {
     }
     router.query[type] = queryCollection;
     router.push({ query: router.query });
+    resetCSVStatus();
   };
 
   const handleSuggestion = (term: string, filter?: string, filterValue?: string) => {
@@ -97,8 +100,8 @@ const Search = () => {
     if (filter && filterValue && filter.length && filterValue.length) {
       router.query[filter] = [filterValue.toLowerCase()];
     }
-
     router.push({ query: router.query });
+    resetCSVStatus();
   };
 
   const handleSearchChange = (type: string, value: any) => {
@@ -113,6 +116,7 @@ const Search = () => {
       delete router.query[type];
     }
     router.push({ query: router.query });
+    resetCSVStatus();
   };
 
   const handleSearchInput = (term: string) => {
@@ -129,6 +133,7 @@ const Search = () => {
       delete router.query[QUERY_PARAMS.category];
     }
     router.push({ query: router.query });
+    resetCSVStatus();
   };
 
   const handleSortClick = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -152,6 +157,7 @@ const Search = () => {
       delete router.query[QUERY_PARAMS.sort_order];
     }
     router.push({ query: router.query });
+    resetCSVStatus();
   };
 
   const handleYearChange = (values: number[]) => {
