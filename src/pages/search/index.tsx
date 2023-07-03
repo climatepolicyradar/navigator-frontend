@@ -23,6 +23,7 @@ import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { Loading } from "@components/svg/Icons";
+import { ExternalLink } from "@components/ExternalLink";
 
 const Search = () => {
   const router = useRouter();
@@ -287,18 +288,27 @@ const Search = () => {
                   <div className="text-sm my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
                     {status === "success" && renderNoOfResults()}
                   </div>
-                  <span className="text-sm mt-4 md:mt-0 text-right">
+                  <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
+                    <span>Download data (.csv): </span>
                     <a
                       href="#"
-                      className="text-blue-600 hover:underline flex gap-2 items-center justify-end"
+                      className="text-blue-600 hover:underline lg:flex gap-2 items-center justify-end"
                       data-cy="download-search-csv"
                       onClick={handleDownloadCsvClick}
                     >
-                      {downloadCSVStatus === "loading" && <Loading />} Download search results (.csv)
+                      {downloadCSVStatus === "loading" && <Loading />} this search
                     </a>
+                    <span>|</span>
+                    <ExternalLink
+                      url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform"
+                      className="text-blue-600 hover:underline"
+                      cy="download-search-csv"
+                    >
+                      whole database
+                    </ExternalLink>
                   </span>
                 </div>
-                <div className="text-right text-sm">
+                <div className="text-sm md:text-right">
                   {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
                   {downloadCSVStatus === "success" && (
                     <span className="text-green-600">CSV downloaded successfully, please check your downloads folder</span>
