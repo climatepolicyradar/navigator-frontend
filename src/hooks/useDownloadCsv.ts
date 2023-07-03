@@ -64,5 +64,7 @@ export function useDownloadCsv() {
     return setStatus("success");
   };
 
-  return { status, download };
+  const resetStatus = () => setStatus("idle");
+
+  return { status, download, resetStatus };
 }
