@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 import redirect_map from "./redirects/redirects";
 
 export function middleware(request: NextRequest) {
+  console.log(request.headers);
   const url = new URL(request.url);
   const redirect_detail = redirect_map.get(url.pathname);
   // If destination matches the requested path, do nothing
