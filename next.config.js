@@ -2,7 +2,7 @@ const defaultRedirects = [
   // Remove www from all URLs
   {
     source: "/:path*",
-    has: [{ type: "header", key: "host", value: "www.climate-laws.org" }],
+    has: [{ type: "host", value: "www.climate-laws.org" }],
     destination: "https://climate-laws.org/:path*",
     permanent: true,
   },
