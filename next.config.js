@@ -8,7 +8,7 @@ const defaultRedirects = [
   },
   {
     source: "/:path*",
-    has: [{ type: "header", key: "x-forwarded-host", value: "www.cclw.dev.climatepolicyradar.org" }],
+    has: [{ type: "header", key: "x-forwarded-host", value: "www-cclw.dev.climatepolicyradar.org" }],
     destination: "https://cclw.dev.climatepolicyradar.org/:path*",
     permanent: true,
   },
