@@ -2,8 +2,14 @@ const defaultRedirects = [
   // Remove www from all URLs
   {
     source: "/:path*",
-    has: [{ type: "host", value: "www.climate-laws.org" }],
+    has: [{ type: "header", key: "x-forwarded-host", value: "www.climate-laws.org" }],
     destination: "https://climate-laws.org/:path*",
+    permanent: true,
+  },
+  {
+    source: "/:path*",
+    has: [{ type: "header", key: "x-forwarded-host", value: "www-cclw.dev.climatepolicyradar.org" }],
+    destination: "https://cclw.dev.climatepolicyradar.org/:path*",
     permanent: true,
   },
   {
