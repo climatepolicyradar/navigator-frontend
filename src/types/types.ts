@@ -242,6 +242,16 @@ export type TDocumentPage = {
   document_role: string;
 };
 
+export type TDocumentFamily = {
+  title: string;
+  import_id: string;
+  geography: string;
+  category: TCategory;
+  slug: string;
+  published_date: string;
+  last_updated_date: string;
+};
+
 export type TCollection = {
   import_id: string;
   title: string;
