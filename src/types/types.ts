@@ -278,3 +278,7 @@ export type TSearch = {
 };
 
 export type TLoadingStatus = "idle" | "loading" | "success" | "error";
+
+export type TLanguages = {
+  [key: string]: string;
+};
