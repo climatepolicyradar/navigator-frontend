@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { ApiClient, getEnvFromServer } from "../api/http-common";
 import { extractNestedData } from "@utils/extractNestedData";
-import { TGeography } from "@types";
+import { TGeography, TLanguages } from "@types";
 
 type TDataNode<T> = {
   node: T;
@@ -12,6 +12,7 @@ type TQueryResponse = {
   geographies: TDataNode<TGeography>[];
   regions: TGeography[];
   countries: TGeography[];
+  languages: TLanguages;
 };
 
 export default function useConfig() {
@@ -30,6 +31,7 @@ export default function useConfig() {
         geographies,
         regions,
         countries,
+        languages: query_response.data.languages,
       };
       return resp_end;
     },
