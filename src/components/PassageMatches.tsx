@@ -15,20 +15,19 @@ const PassageMatches = ({ passages, onClick, activeIndex }: TProps) => {
           <Loader />
         </div>
       ) : (
-        <div className="divide-lineBorder divide-y passage-matches-list" id="passage-matches">
+        <div className="my-4" id="passage-matches">
           {passages.map((item, index: number) => (
-            <div key={item.text_block_id} data-analytics-passage={index + 1} id={`passage-${index}`}>
+            <div key={item.text_block_id} data-analytics-passage={index + 1} id={`passage-${index}`} className="mb-4">
               <div
-                className={`p-4 cursor-pointer border-x hover:bg-offwhite ${
-                  activeIndex === index ? "border-lineBorder bg-grey-200" : "border-transparent"
+                className={`p-4 cursor-pointer border border-white rounded-md bg-white hover:border-blue-300 ${
+                  activeIndex === index ? "border-blue-300 bg-blue-100" : ""
                 }`}
                 onClick={() => {
                   onClick(index);
                 }}
               >
-                <div className="text-s text-blue-500">
-                  <span className="font-bold">Page {item.text_block_page} | &nbsp;</span>
-                  <span>go to page &gt;</span>
+                <div className="text-sm text-blue-500">
+                  <span className="font-bold">Page {item.text_block_page}</span>
                 </div>
                 <p className="mt-2 text-indigo-400 font-light">{item.text}</p>
               </div>
