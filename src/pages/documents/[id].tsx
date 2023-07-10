@@ -6,25 +6,16 @@ import { DocumentHead } from "@components/document/DocumentHead";
 import Layout from "@components/layouts/Main";
 import EmbeddedPDF from "@components/EmbeddedPDF";
 import PassageMatches from "@components/PassageMatches";
-import { TDocumentPage } from "@types";
+import { TDocumentFamily, TDocumentPage } from "@types";
 import useSearch from "@hooks/useSearch";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import Loader from "@components/Loader";
 import Button from "@components/buttons/SquareButton";
 import { getDocumentDescription } from "@constants/metaDescriptions";
 
-type TDocFamily = {
-  title: string;
-  import_id: string;
-  geography: string;
-  slug: string;
-  published_date: string;
-  last_updated_date: string;
-};
-
 type TProps = {
   document: TDocumentPage;
-  family: TDocFamily;
+  family: TDocumentFamily;
 };
 
 const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family }: TProps) => {
@@ -60,13 +51,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)}>
       <section
-        className="mb-8 flex-1 flex flex-col"
+        className="pb-8 flex-1 flex flex-col bg-gray-100"
         data-analytics-date={family.published_date}
         data-analytics-geography={family.geography}
         data-analytics-variant={document.variant}
         data-analytics-type={document.content_type}
       >
-        <DocumentHead document={document} geography={family.geography} family={{ title: family.title, slug: family.slug }} />
+        <DocumentHead document={document} family={family} />
         {status !== "success" ? (
           <div className="w-full flex justify-center flex-1">
             <Loader />
@@ -115,7 +106,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const client = new ApiClient(process.env.API_URL);
 
   let documentData: TDocumentPage;
-  let familyData: TDocFamily;
+  let familyData: TDocumentFamily;
 
   try {
     const { data: returnedData } = await client.get(`/documents/${id}`, { group_documents: true });
