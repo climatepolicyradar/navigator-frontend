@@ -37,7 +37,7 @@ function getThemeColours(theme: string): string {
       --color-indigo-600:#2B2F49;
       --color-indigo-700:#2B2F49;
       --color-sky:#fde1e3;
-      --color-blue-100:#e8f3fe;
+      --color-blue-100:#f4e8e9;
       --color-blue-200:#e2aeb2;
       --color-blue-300:#ED3D48;
       --color-blue-400:#ED3D48;
