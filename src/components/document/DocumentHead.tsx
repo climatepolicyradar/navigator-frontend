@@ -1,24 +1,21 @@
-import useConfig from "@hooks/useConfig";
-import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
 import { CountryLink } from "@components/CountryLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import { TDocumentPage } from "@types";
+import useConfig from "@hooks/useConfig";
+import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
+import { getLanguage } from "@helpers/getLanguage";
 import { isSystemGeo } from "@utils/isSystemGeo";
+import { TDocumentFamily, TDocumentPage } from "@types";
 
 type TProps = {
   document: TDocumentPage;
-  family: {
-    title: string;
-    slug: string;
-  };
-  geography: string;
+  family: TDocumentFamily;
 };
 
-export const DocumentHead = ({ document, family, geography }: TProps) => {
+export const DocumentHead = ({ document, family }: TProps) => {
   const configQuery = useConfig();
-  const { data: { countries = [] } = {} } = configQuery;
-  const geoName = getCountryName(geography, countries);
-  const geoSlug = getCountrySlug(geography, countries);
+  const { data: { countries = [], languages = {} } = {} } = configQuery;
+  const geoName = getCountryName(family.geography, countries);
+  const geoSlug = getCountrySlug(family.geography, countries);
   const isMain = document.document_role.toLowerCase().includes("main");
   const breadcrumbGeography = { label: geoName, href: `/geographies/${geoSlug}` };
   const breadcrumbFamily = { label: family.title, href: `/document/${family.slug}` };
@@ -26,7 +23,7 @@ export const DocumentHead = ({ document, family, geography }: TProps) => {
   const breadcrumbCategory = { label: "Search results", href: "/search" };
 
   return (
-    <div className="bg-offwhite border-solid border-lineBorder border-b">
+    <div className="bg-white border-solid border-lineBorder border-b">
       <div className="container">
         <BreadCrumbs
           geography={breadcrumbGeography}
@@ -37,18 +34,32 @@ export const DocumentHead = ({ document, family, geography }: TProps) => {
         <div className="flex flex-col md:flex-row">
           <div className="flex-1 my-4">
             <h1 className="text-3xl lg:smaller">{document.title}</h1>
-            <div className="flex text-base text-grey-700 mt-4 items-center w-full font-medium divide-x gap-2 divide-grey-700">
-              {!isSystemGeo(geography) && (
-                <CountryLink countryCode={geography} className="text-primary-400 hover:text-indigo-600 duration-300">
+            <div className="flex text-base text-grey-700 mt-4 items-center w-full font-medium gap-2">
+              {!isSystemGeo(family.geography) && (
+                <CountryLink countryCode={family.geography} className="text-primary-400 hover:text-indigo-600 duration-300">
                   <span>{geoName}</span>
                 </CountryLink>
               )}
-              {!isMain && <span className="pl-2 capitalize">{document.document_role.toLowerCase()}</span>}
+              {!isMain && (
+                <>
+                  <span>&middot;</span>
+                  <span className="capitalize">{document.document_role.toLowerCase()}</span>
+                </>
+              )}
+              {family.category && (
+                <>
+                  <span>&middot;</span>
+                  <span className="capitalize">{family.category}</span>
+                </>
+              )}
               {!!document.language && (
-                <span className="pl-2">
-                  {document.language.toUpperCase()}
-                  {!!document.variant && ` (${document.variant})`}
-                </span>
+                <>
+                  <span>&middot;</span>
+                  <span>
+                    {getLanguage(document.language, languages)}
+                    {!!document.variant && ` (${document.variant})`}
+                  </span>
+                </>
               )}
             </div>
           </div>

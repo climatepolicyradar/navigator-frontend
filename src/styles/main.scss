@@ -536,14 +536,6 @@ ul li.selected {
     }
   }
 }
-.passage-matches-list {
-  > *:first-child > * {
-    @apply border-t;
-  }
-  > *:last-child > * {
-    @apply border-b;
-  }
-}
 
 .family-document {
   &:hover {
