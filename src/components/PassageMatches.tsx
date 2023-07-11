@@ -1,13 +1,16 @@
-import { TPassage } from "@types";
+import { MAX_PASSAGE_LENGTH } from "@constants/document";
 import Loader from "./Loader";
+import { truncateString } from "@helpers/index";
+import { TPassage } from "@types";
 
 type TProps = {
   passages: TPassage[];
   onClick: (index: number) => void;
   activeIndex?: number;
+  showPageNumbers?: boolean;
 };
 
-const PassageMatches = ({ passages, onClick, activeIndex }: TProps) => {
+const PassageMatches = ({ passages, onClick, activeIndex, showPageNumbers = true }: TProps) => {
   return (
     <>
       {!passages ? (
@@ -26,10 +29,12 @@ const PassageMatches = ({ passages, onClick, activeIndex }: TProps) => {
                   onClick(index);
                 }}
               >
-                <div className="text-sm text-blue-500">
-                  <span className="font-bold">Page {item.text_block_page}</span>
-                </div>
-                <p className="mt-2 text-indigo-400 font-light">{item.text}</p>
+                {showPageNumbers && (
+                  <div className="text-sm text-blue-500">
+                    <span className="font-bold">Page {item.text_block_page}</span>
+                  </div>
+                )}
+                <p className="mt-2 text-indigo-400 font-light">{truncateString(item.text, MAX_PASSAGE_LENGTH)}</p>
               </div>
             </div>
           ))}
