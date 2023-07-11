@@ -25,7 +25,7 @@ import { truncateString } from "@helpers/index";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
 import { getOrganisationNote } from "@helpers/getOrganisationNote";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
-import { initialSummaryLength } from "@constants/document";
+import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { TFamilyPage, TMatchedFamily, TTarget } from "@types";
 
 type TProps = {
@@ -109,7 +109,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
       if (showFullSummary) {
         setSummary(text);
       } else {
-        setSummary(truncateString(text, initialSummaryLength));
+        setSummary(truncateString(text, MAX_FAMILY_SUMMARY_LENGTH));
       }
     }
   }, [page, showFullSummary]);
@@ -135,7 +135,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
             <section className="flex-1 md:w-0">
               <section className="mt-6">
                 <div className="text-content mt-4" dangerouslySetInnerHTML={{ __html: summary }} />
-                {page.summary.length > initialSummaryLength && (
+                {page.summary.length > MAX_FAMILY_SUMMARY_LENGTH && (
                   <div className="mt-6 flex justify-end">
                     {showFullSummary ? (
                       <button onClick={() => setShowFullSummary(false)} className="text-blue-500 font-medium">
