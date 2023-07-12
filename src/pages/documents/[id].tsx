@@ -18,12 +18,19 @@ type TProps = {
   family: TDocumentFamily;
 };
 
+const passageClasses = (docType: string) => {
+  if (docType === "application/pdf") {
+    return "md:w-1/3";
+  }
+  return "md:w-2/3";
+};
+
 const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family }: TProps) => {
   const [passageIndex, setPassageIndex] = useState(null);
   const router = useRouter();
+  const { status, families } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
 
   const passageMatches = [];
-  const { status, families } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
   if (!!router.query[QUERY_PARAMS.query_string]) {
     families.forEach((family) => {
       family.family_documents.forEach((cacheDoc) => {
@@ -33,6 +40,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
       });
     });
   }
+  const hasPassageMatches = passageMatches.length > 0;
+  const canPreview = document.content_type === "application/pdf";
 
   const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -63,32 +72,39 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
             <Loader />
           </div>
         ) : (
-          <section className="pt-4 flex-1 flex" id="document-viewer">
+          <section className="flex-1 flex" id="document-viewer">
             <div className="container flex-1">
-              <div className="flex flex-col md:flex-row justify-between items-center pb-4 border-b border-lineBorder gap-4">
-                {passageMatches.length > 0 && (
-                  <h3>Document matches for {`'${router.query[QUERY_PARAMS.query_string]}' (${passageMatches.length})`}</h3>
-                )}
+              {/* <div className="flex flex-col md:flex-row justify-between items-center pb-4 border-b border-lineBorder gap-4">
+                {hasPassageMatches && <h3>Document matches for {`'${router.query[QUERY_PARAMS.query_string]}' (${passageMatches.length})`}</h3>}
                 <div className="flex-1 flex justify-end">
                   <Button data-cy="view-source" onClick={handleViewSourceClick}>
                     View source document
                   </Button>
                 </div>
+              </div> */}
+              <div className="md:flex md:h-[80vh]">
+                {hasPassageMatches && (
+                  <div className={`overflow-y-scroll pr-4 max-h-[30vh] md:block md:max-h-full ${passageClasses(document.content_type)}`}>
+                    <div className="my-4">
+                      <p className="">
+                        {passageMatches.length} matches for "<b>{`${router.query[QUERY_PARAMS.query_string]}`}</b>"
+                      </p>
+                      <p className="text-sm">Sorted by search relevance</p>
+                    </div>
+                    <PassageMatches
+                      passages={passageMatches}
+                      onClick={handlePassageClick}
+                      activeIndex={passageIndex}
+                      showPageNumbers={document.content_type === "application/pdf"}
+                    />
+                  </div>
+                )}
+                {status === "success" && (
+                  <div className={`pt-4 flex-1 h-[400px] md:block md:h-full ${hasPassageMatches ? "md:border-l md:border-l-gray-200" : ""}`}>
+                    {canPreview && <EmbeddedPDF document={document} documentPassageMatches={passageMatches} passageIndex={passageIndex} />}
+                  </div>
+                )}
               </div>
-              {document.content_type === "application/pdf" && (
-                <div className="md:flex md:h-[80vh]">
-                  {passageMatches.length > 0 && (
-                    <div className="md:block md:w-1/3 overflow-y-scroll pr-4 max-h-[30vh] md:max-h-full">
-                      <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex} />
-                    </div>
-                  )}
-                  {status === "success" && (
-                    <div className="md:block mt-4 flex-1 h-[400px] md:h-full">
-                      <EmbeddedPDF document={document} documentPassageMatches={passageMatches} passageIndex={passageIndex} />
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
           </section>
         )}
