@@ -44,6 +44,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const canPreview = document.content_type === "application/pdf";
 
   const handlePassageClick = (index: number) => {
+    if (!canPreview) return;
     setPassageIndex(index);
     setTimeout(() => {
       window.document.getElementById("document-viewer").scrollIntoView({ behavior: "smooth" });
