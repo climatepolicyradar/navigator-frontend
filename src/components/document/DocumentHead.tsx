@@ -6,11 +6,32 @@ import { getLanguage } from "@helpers/getLanguage";
 import { isSystemGeo } from "@utils/isSystemGeo";
 import { TDocumentFamily, TDocumentPage } from "@types";
 import Button from "@components/buttons/Button";
+import { LinkWithQuery } from "@components/LinkWithQuery";
+import { ExternalLinkIcon } from "@components/svg/Icons";
 
 type TProps = {
   document: TDocumentPage;
   family: TDocumentFamily;
 };
+
+const containsNonEnglish = (languages: string[]) => {
+  return languages.some((lang) => lang !== "eng");
+};
+
+const Alert = () => (
+  <div className="flex">
+    <div className="w-[6px] h-full bg-blue-400 rounded-l-lg"></div>
+    <div className="bg-white p-2 border border-gray-200 border-l-0 rounded-r-lg" role="alert">
+      <p className="text-sm">
+        English translations of this document have been provided by Google Cloud Translate. They may not be 100% accurate. Read our{" "}
+        <LinkWithQuery href="/terms-of-use" className="underline">
+          Terms of Use
+        </LinkWithQuery>{" "}
+        for more information.
+      </p>
+    </div>
+  </div>
+);
 
 export const DocumentHead = ({ document, family }: TProps) => {
   const configQuery = useConfig();
@@ -22,6 +43,7 @@ export const DocumentHead = ({ document, family }: TProps) => {
   const breadcrumbFamily = { label: family.title, href: `/document/${family.slug}` };
   const breadcrumbLabel = isMain ? "Document" : document.document_role.toLowerCase();
   const breadcrumbCategory = { label: "Search results", href: "/search" };
+  const translated = containsNonEnglish(document.languages);
 
   const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -43,7 +65,7 @@ export const DocumentHead = ({ document, family }: TProps) => {
           <div className="flex-1 my-4">
             <h1 className="text-3xl lg:smaller">{document.title}</h1>
             <div className="mt-4 md:mt-0 md:flex justify-between items-center">
-              <div className="flex text-base text-grey-700 items-center font-medium gap-2">
+              <div className="flex text-sm text-grey-700 items-center font-medium gap-2">
                 {!isSystemGeo(family.geography) && (
                   <CountryLink countryCode={family.geography} className="text-primary-400 hover:text-indigo-600 duration-300">
                     <span>{geoName}</span>
@@ -72,11 +94,16 @@ export const DocumentHead = ({ document, family }: TProps) => {
                 )}
               </div>
               <div className="mt-4 md:mt-0">
-                <Button color="clear" data-cy="view-source" onClick={handleViewSourceClick}>
-                  View source document
+                <Button color="clear" data-cy="view-source" onClick={handleViewSourceClick} extraClasses="flex items-center">
+                  <ExternalLinkIcon height="16" width="16" /> <span className="ml-2">View source document</span>
                 </Button>
               </div>
             </div>
+            {translated && (
+              <div className="flex mt-4">
+                <Alert />
+              </div>
+            )}
           </div>
         </div>
       </div>

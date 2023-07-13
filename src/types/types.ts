@@ -238,6 +238,7 @@ export type TDocumentPage = {
   source_url: string;
   content_type: TDocumentContentType;
   language: string;
+  languages: string[];
   document_type: string;
   document_role: string;
 };
