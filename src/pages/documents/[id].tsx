@@ -28,7 +28,7 @@ const passageClasses = (docType: string) => {
 const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family }: TProps) => {
   const [passageIndex, setPassageIndex] = useState(null);
   const router = useRouter();
-  const { status, families } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
+  const { status, families, searchQuery } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
 
   const passageMatches = [];
   if (!!router.query[QUERY_PARAMS.query_string]) {
@@ -42,13 +42,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   }
   const hasPassageMatches = passageMatches.length > 0;
   const canPreview = document.content_type === "application/pdf";
-
-  const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const url = document.content_type === "application/pdf" ? document.cdn_object : document.source_url;
-    if (!url) return;
-    window.open(url);
-  };
 
   const handlePassageClick = (index: number) => {
     setPassageIndex(index);
@@ -74,20 +67,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
         ) : (
           <section className="flex-1 flex" id="document-viewer">
             <div className="container flex-1">
-              {/* <div className="flex flex-col md:flex-row justify-between items-center pb-4 border-b border-lineBorder gap-4">
-                {hasPassageMatches && <h3>Document matches for {`'${router.query[QUERY_PARAMS.query_string]}' (${passageMatches.length})`}</h3>}
-                <div className="flex-1 flex justify-end">
-                  <Button data-cy="view-source" onClick={handleViewSourceClick}>
-                    View source document
-                  </Button>
-                </div>
-              </div> */}
               <div className="md:flex md:h-[80vh]">
                 {hasPassageMatches && (
                   <div className={`overflow-y-scroll pr-4 max-h-[30vh] md:block md:max-h-full ${passageClasses(document.content_type)}`}>
                     <div className="my-4">
                       <p className="">
                         {passageMatches.length} matches for "<b>{`${router.query[QUERY_PARAMS.query_string]}`}</b>"
+                        {!searchQuery.exact_match && ` and related phrases`}
                       </p>
                       <p className="text-sm">Sorted by search relevance</p>
                     </div>
