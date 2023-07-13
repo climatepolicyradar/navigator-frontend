@@ -25,7 +25,7 @@ export const FamilyHead = ({ family, geographyName, geographySlug, onCollectionC
           <div className="flex-1 my-4">
             <h1 className="text-3xl lg:smaller">{family.title}</h1>
             {family.collections.length > 0 && (
-              <div className="flex text-base text-indigo-400 mt-4 items-center w-full mb-2 font-medium">
+              <div className="flex text-sm text-indigo-400 mt-4 items-center w-full mb-2 font-medium">
                 <span>Part of the&nbsp;</span>
                 {family.collections.length > 0 &&
                   family.collections.map((collection, i) => (
@@ -42,7 +42,7 @@ export const FamilyHead = ({ family, geographyName, geographySlug, onCollectionC
                   ))}
               </div>
             )}
-            <div className="flex text-base text-grey-700 mt-4 items-center w-full font-medium divide-grey-700">
+            <div className="flex text-sm text-grey-700 mt-4 items-center w-full font-medium divide-grey-700">
               {!isSystemGeo(family.geography) ? (
                 <CountryLink countryCode={family.geography} className="text-primary-400 hover:text-indigo-600 duration-300">
                   <span data-analytics-country={geographyName}>{geographyName}</span>
