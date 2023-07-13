@@ -10,8 +10,8 @@ import { TDocumentFamily, TDocumentPage } from "@types";
 import useSearch from "@hooks/useSearch";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import Loader from "@components/Loader";
-import Button from "@components/buttons/SquareButton";
 import { getDocumentDescription } from "@constants/metaDescriptions";
+import { ExternalLink } from "@components/ExternalLink";
 
 type TProps = {
   document: TDocumentPage;
@@ -89,6 +89,20 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                 {status === "success" && (
                   <div className={`pt-4 flex-1 h-[400px] md:block md:h-full ${hasPassageMatches ? "md:border-l md:border-l-gray-200" : ""}`}>
                     {canPreview && <EmbeddedPDF document={document} documentPassageMatches={passageMatches} passageIndex={passageIndex} />}
+                    {!canPreview && (
+                      <div className="flex flex-col justify-center items-center h-full ml-4 border border-gray-300 rounded-lg text-center text-gray-600">
+                        <p className="mb-2">Document Preview</p>
+                        <p className="mb-2 text-sm">
+                          You’ll soon be able to view the full-text of the document here, along with the English translation.
+                        </p>
+                        <p className="text-sm">
+                          <ExternalLink className="underline" url="https://3566c5a7.sibforms.com/serve/MUIEAPkXK4liqQjleE87527EfcD9gDzY26dQhnJOxNeXZK_TvEAjl_Qu7rrkysJS2ODrj1LioiH24HTGbul2vS1sAxYCPHtu7PgnhZrAE9yCfaFrJ7vzmvBc3u87cs_pkC_99nQ2AqBONHtLwErrV7mcVga2qNlO1xetSeqVVWYsrVPRjg6Rc978eQEMasGQc4PFgIfMFza8TJEv">
+                            Sign up here
+                          </ExternalLink>{" "}
+                          to be notified when it’s available.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
