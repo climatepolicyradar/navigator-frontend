@@ -96,7 +96,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                           You’ll soon be able to view the full-text of the document here, along with the English translation.
                         </p>
                         <p className="text-sm">
-                          <ExternalLink className="underline" url="https://3566c5a7.sibforms.com/serve/MUIEAPkXK4liqQjleE87527EfcD9gDzY26dQhnJOxNeXZK_TvEAjl_Qu7rrkysJS2ODrj1LioiH24HTGbul2vS1sAxYCPHtu7PgnhZrAE9yCfaFrJ7vzmvBc3u87cs_pkC_99nQ2AqBONHtLwErrV7mcVga2qNlO1xetSeqVVWYsrVPRjg6Rc978eQEMasGQc4PFgIfMFza8TJEv">
+                          <ExternalLink className="underline" url="https://forms.gle/yJTRdwTNBdTesexW8">
                             Sign up here
                           </ExternalLink>{" "}
                           to be notified when it’s available.
