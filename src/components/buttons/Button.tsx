@@ -40,7 +40,7 @@ const Button = ({
       break;
     case "clear":
       conditionalClasses = !disabled
-        ? "clear bg-white border hover:border-indigo-600 text-indigo-600 disabled:border-indigo-300 disabled:text-indigo-300 disabled:hover:bg-white"
+        ? "clear bg-white border hover:border-blue-400 text-blue-400 disabled:border-indigo-300 disabled:text-indigo-300 disabled:hover:bg-white"
         : "";
       break;
   }
@@ -60,7 +60,7 @@ const Button = ({
       type={type}
       disabled={disabled}
       data-cy={props["data-cy"]}
-      className={`button transition duration-300 px-4 rounded-sm pointer-events-auto w-full font-bold ${conditionalClasses}`}
+      className={`button transition duration-300 px-4 rounded-full pointer-events-auto w-full font-bold ${conditionalClasses}`}
       {...props}
     >
       {children}
