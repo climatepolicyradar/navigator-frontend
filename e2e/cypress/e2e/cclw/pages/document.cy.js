@@ -40,7 +40,7 @@ describe("Document Page", () => {
   });
 
   it("should display the matches heading", () => {
-    cy.contains("h3", "Document matches for").should("be.visible");
+    cy.get("[data-cy='document-matches-description']").should("be.visible").should("contain", "Sorted by search relevance");
   });
 
   it("should contain at least 1 passage match", () => {
