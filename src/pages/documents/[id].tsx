@@ -62,7 +62,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
       >
         <DocumentHead document={document} family={family} />
         {status !== "success" ? (
-          <div className="w-full flex justify-center flex-1">
+          <div className="w-full flex justify-center flex-1 bg-white">
             <Loader />
           </div>
         ) : (
