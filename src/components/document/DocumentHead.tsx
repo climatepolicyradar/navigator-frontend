@@ -12,6 +12,7 @@ import { ExternalLinkIcon, AlertCircleIcon } from "@components/svg/Icons";
 type TProps = {
   document: TDocumentPage;
   family: TDocumentFamily;
+  handleViewSourceClick: (e: React.FormEvent<HTMLButtonElement>) => void;
 };
 
 const containsNonEnglish = (languages: string[]) => {
@@ -36,7 +37,7 @@ const Alert = () => (
   </div>
 );
 
-export const DocumentHead = ({ document, family }: TProps) => {
+export const DocumentHead = ({ document, family, handleViewSourceClick }: TProps) => {
   const configQuery = useConfig();
   const { data: { countries = [], languages = {} } = {} } = configQuery;
   const geoName = getCountryName(family.geography, countries);
@@ -47,13 +48,6 @@ export const DocumentHead = ({ document, family }: TProps) => {
   const breadcrumbLabel = isMain ? "Document" : document.document_role.toLowerCase();
   const breadcrumbCategory = { label: "Search results", href: "/search" };
   const translated = containsNonEnglish(document.languages);
-
-  const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const url = document.content_type === "application/pdf" ? document.cdn_object : document.source_url;
-    if (!url) return;
-    window.open(url);
-  };
 
   return (
     <div className="bg-white border-solid border-lineBorder border-b">
