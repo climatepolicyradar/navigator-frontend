@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Script from "next/script";
+import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
+import axios from "axios";
 import { ApiClient } from "@api/http-common";
 import Layout from "@components/layouts/Main";
 import DocumentInfo from "@components/blocks/DocumentInfo";
@@ -12,26 +15,30 @@ import { ExternalLink } from "@components/ExternalLink";
 import { Targets } from "@components/Targets";
 import { ShowHide } from "@components/controls/ShowHide";
 import { Divider } from "@components/dividers/Divider";
-import { initialSummaryLength } from "@constants/document";
-import { truncateString } from "@helpers/index";
-import { TFamilyPage, TMatchedFamily, TTarget } from "@types";
-import useSearch from "@hooks/useSearch";
-import { useRouter } from "next/router";
-import { usePathname } from "next/navigation";
 import { QUERY_PARAMS } from "@constants/queryParams";
-import axios from "axios";
 import { TargetIcon } from "@components/svg/Icons";
 import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
+import useSearch from "@hooks/useSearch";
 import useConfig from "@hooks/useConfig";
+import { truncateString } from "@helpers/index";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
-import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { getOrganisationNote } from "@helpers/getOrganisationNote";
+import { sortFilterTargets } from "@utils/sortFilterTargets";
+import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
+import { TFamilyPage, TMatchedFamily, TTarget } from "@types";
 
 type TProps = {
   page: TFamilyPage;
   targets: TTarget[];
 };
+
+/*
+  # DEV NOTES
+  - This page displays a single document family and its associated documents, meta data, targets, and events.
+  - Families can contain multiple documents, often referred to as 'physical documents'.
+  - The 'physical document' view is within the folder: src/pages/documents/[id].tsx.
+*/
 
 const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page, targets = [] }: TProps) => {
   const router = useRouter();
@@ -102,7 +109,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
       if (showFullSummary) {
         setSummary(text);
       } else {
-        setSummary(truncateString(text, initialSummaryLength));
+        setSummary(truncateString(text, MAX_FAMILY_SUMMARY_LENGTH));
       }
     }
   }, [page, showFullSummary]);
@@ -128,7 +135,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
             <section className="flex-1 md:w-0">
               <section className="mt-6">
                 <div className="text-content mt-4" dangerouslySetInnerHTML={{ __html: summary }} />
-                {page.summary.length > initialSummaryLength && (
+                {page.summary.length > MAX_FAMILY_SUMMARY_LENGTH && (
                   <div className="mt-6 flex justify-end">
                     {showFullSummary ? (
                       <button onClick={() => setShowFullSummary(false)} className="text-blue-500 font-medium">

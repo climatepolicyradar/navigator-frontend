@@ -56,8 +56,8 @@ function generateHighlights(document: TDocumentPage, documentPassageMatches: TPa
 
 export default function usePDFPreview(document: TDocumentPage, documentPassageMatches: TPassage[], adobeKey: string) {
   const viewerConfig = {
-    showDownloadPDF: true,
-    showPrintPDF: true,
+    showDownloadPDF: false,
+    showPrintPDF: false,
     showLeftHandPanel: false,
     enableAnnotationAPIs: true,
     includePDFAnnotations: true,

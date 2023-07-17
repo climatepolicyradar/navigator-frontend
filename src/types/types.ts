@@ -238,8 +238,19 @@ export type TDocumentPage = {
   source_url: string;
   content_type: TDocumentContentType;
   language: string;
+  languages: string[];
   document_type: string;
   document_role: string;
+};
+
+export type TDocumentFamily = {
+  title: string;
+  import_id: string;
+  geography: string;
+  category: TCategory;
+  slug: string;
+  published_date: string;
+  last_updated_date: string;
 };
 
 export type TCollection = {
@@ -278,3 +289,7 @@ export type TSearch = {
 };
 
 export type TLoadingStatus = "idle" | "loading" | "success" | "error";
+
+export type TLanguages = {
+  [key: string]: string;
+};

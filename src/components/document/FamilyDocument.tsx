@@ -1,7 +1,9 @@
 import { useRouter } from "next/router";
 import MatchesButton from "@components/buttons/MatchesButton";
-import { TDocumentContentType, TDocumentPage, TLoadingStatus } from "@types";
 import { Loading } from "@components/svg/Icons";
+import useConfig from "@hooks/useConfig";
+import { getLanguage } from "@helpers/getLanguage";
+import { TDocumentContentType, TDocumentPage, TLoadingStatus } from "@types";
 
 type TProps = {
   document: TDocumentPage;
@@ -11,13 +13,21 @@ type TProps = {
 
 export const FamilyDocument = ({ document, matches, status }: TProps) => {
   const { title, slug, document_role, language, content_type, variant } = document;
+  const configQuery = useConfig();
+  const { data: { languages = {} } = {} } = configQuery;
   const router = useRouter();
   const isMain = document_role?.toLowerCase().includes("main");
   const hasMatches = typeof matches !== "undefined" && matches > 0;
-  // PDFs need to have a cdn location
-  // HTMLs need a source url / website
-  const canPreview = document.content_type === "application/pdf" ? !!document.cdn_object : false;
+  // If we have matches or the document is a pdf - and we have the document, we can preview it
+  const canPreview = hasMatches || (document.content_type === "application/pdf" && !!document.cdn_object);
   const canViewSource = !canPreview && !!document.source_url;
+
+  const loadingIndicator = (
+    <span className="flex gap-2 items-center">
+      <Loading />
+      Searching...
+    </span>
+  );
 
   const renderContentType = (t: TDocumentContentType) => {
     if (!t) return null;
@@ -30,19 +40,14 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
     return null;
   };
 
-  const renderDocumentInfo = (): string => {
+  const renderDocumentInfo = (): string | JSX.Element => {
+    if (status === "loading") return loadingIndicator;
     if (canViewSource) return "Document preview is not currently available";
     return "We do not have this document in our database. Contact us if you can help us find it";
   };
 
   const renderMatchesOverrideText = (): string | JSX.Element => {
-    if (status === "loading")
-      return (
-        <span className="flex gap-2 items-center">
-          <Loading />
-          Searching...
-        </span>
-      );
+    if (status === "loading") return loadingIndicator;
     if (canPreview && !hasMatches) return "View document";
     if (canViewSource) return "View source document";
   };
@@ -71,11 +76,11 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
           {renderContentType(content_type)}
           {!!language && (
             <span>
-              {language.toUpperCase()}
+              {getLanguage(language, languages)}
               {!!variant && ` (${variant})`}
             </span>
           )}
-          {!canPreview && <span>{renderDocumentInfo()}</span>}
+          {!canPreview && <span className="flex gap-2 items-center">{renderDocumentInfo()}</span>}
         </div>
         {(canPreview || canViewSource) && (
           <div className="flex-0">

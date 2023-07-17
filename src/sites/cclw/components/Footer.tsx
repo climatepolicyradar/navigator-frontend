@@ -13,7 +13,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="flex flex-col bg-grey-400 mt-12">
+    <footer className="flex flex-col bg-grey-400">
       <div className="py-12">
         <div className="container">
           <p className="text-lg mb-6 md:text-center" data-cy="report-problem">
