@@ -7,7 +7,7 @@ import { isSystemGeo } from "@utils/isSystemGeo";
 import { TDocumentFamily, TDocumentPage } from "@types";
 import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
-import { ExternalLinkIcon } from "@components/svg/Icons";
+import { ExternalLinkIcon, AlertCircleIcon } from "@components/svg/Icons";
 
 type TProps = {
   document: TDocumentPage;
@@ -21,7 +21,10 @@ const containsNonEnglish = (languages: string[]) => {
 const Alert = () => (
   <div className="flex">
     <div className="w-[6px] h-full bg-blue-400 rounded-l-lg"></div>
-    <div className="bg-white p-2 border border-gray-200 border-l-0 rounded-r-lg" role="alert">
+    <div className="bg-white p-2 border border-gray-200 border-l-0 rounded-r-lg flex items-center" role="alert">
+      <div className="mr-1 text-blue-400">
+        <AlertCircleIcon height="16" width="16" />
+      </div>
       <p className="text-sm">
         English translations of this document have been provided by Google Cloud Translate. They may not be 100% accurate. Read our{" "}
         <LinkWithQuery href="/terms-of-use" className="underline">
