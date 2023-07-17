@@ -109,7 +109,6 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
               <link rel="icon" href={favicon} />
               <style>{getThemeColours(dynamicTheme)}</style>
             </Head>
-            {dynamicTheme === "cclw" && <Banner />}
             {dynamicTheme === "cpr" && <GSTBanner />}
             <div id={dynamicTheme} className="h-full relative">
               <Component {...pageProps} />
