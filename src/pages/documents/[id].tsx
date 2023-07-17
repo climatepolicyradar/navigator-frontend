@@ -11,8 +11,9 @@ import useSearch from "@hooks/useSearch";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import Loader from "@components/Loader";
 import { getDocumentDescription } from "@constants/metaDescriptions";
+import Button from "@components/buttons/Button";
 import { ExternalLink } from "@components/ExternalLink";
-import { BookOpenIcon } from "@components/svg/Icons";
+import { BookOpenIcon, ExternalLinkIcon } from "@components/svg/Icons";
 
 type TProps = {
   document: TDocumentPage;
@@ -52,6 +53,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     }, 100);
   };
 
+  const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const url = document.content_type === "application/pdf" ? document.cdn_object : document.source_url;
+    if (!url) return;
+    window.open(url);
+  };
+
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)}>
       <section
@@ -61,7 +69,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
         data-analytics-variant={document.variant}
         data-analytics-type={document.content_type}
       >
-        <DocumentHead document={document} family={family} />
+        <DocumentHead document={document} family={family} handleViewSourceClick={handleViewSourceClick} />
         {status !== "success" ? (
           <div className="w-full flex justify-center flex-1 bg-white">
             <Loader />
@@ -97,8 +105,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                         </div>
                         <p className="mb-2">Document Preview</p>
                         <p className="mb-2 text-sm">
-                          You’ll soon be able to view the full-text of the document here, along with the English translation.
+                          You’ll soon be able to view the full-text of the document here, along with any English translation.
                         </p>
+                        <div className="my-4 flex justify-center">
+                          <Button color="clear" data-cy="view-source" onClick={handleViewSourceClick} extraClasses="flex items-center">
+                            <ExternalLinkIcon height="16" width="16" /> <span className="ml-2">View source document</span>
+                          </Button>
+                        </div>
                         <p className="text-sm">
                           <ExternalLink className="underline" url="https://forms.gle/yJTRdwTNBdTesexW8">
                             Sign up here
