@@ -12,6 +12,7 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 import Loader from "@components/Loader";
 import { getDocumentDescription } from "@constants/metaDescriptions";
 import { ExternalLink } from "@components/ExternalLink";
+import { BookOpenIcon } from "@components/svg/Icons";
 
 type TProps = {
   document: TDocumentPage;
@@ -90,7 +91,10 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                   <div className={`pt-4 flex-1 h-[400px] md:block md:h-full ${hasPassageMatches ? "md:border-l md:border-l-gray-200" : ""}`}>
                     {canPreview && <EmbeddedPDF document={document} documentPassageMatches={passageMatches} passageIndex={passageIndex} />}
                     {!canPreview && (
-                      <div className="flex flex-col justify-center items-center h-full ml-4 border border-gray-300 rounded-lg text-center text-gray-600">
+                      <div className="ml-4 text-center text-gray-600">
+                        <div className="mb-2 flex justify-center">
+                          <BookOpenIcon />
+                        </div>
                         <p className="mb-2">Document Preview</p>
                         <p className="mb-2 text-sm">
                           You’ll soon be able to view the full-text of the document here, along with the English translation.
