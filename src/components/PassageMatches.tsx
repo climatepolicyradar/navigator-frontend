@@ -34,7 +34,7 @@ const PassageMatches = ({ passages, onClick, activeIndex, showPageNumbers = true
                     <span className="font-bold">Page {item.text_block_page}</span>
                   </div>
                 )}
-                <p className="mt-2 text-indigo-400 font-light">{truncateString(item.text, MAX_PASSAGE_LENGTH)}</p>
+                <p className="mt-2 text-indigo-400 font-light">{item.text}</p>
               </div>
             </div>
           ))}
