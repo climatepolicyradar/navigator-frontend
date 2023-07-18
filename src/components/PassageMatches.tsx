@@ -1,6 +1,4 @@
-import { MAX_PASSAGE_LENGTH } from "@constants/document";
 import Loader from "./Loader";
-import { truncateString } from "@helpers/index";
 import { TPassage } from "@types";
 
 type TProps = {
