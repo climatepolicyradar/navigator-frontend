@@ -44,7 +44,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
   };
 
   const anchorClasses = (last: boolean) =>
-    `flex flex-wrap items-center cursor-pointer py-2 px-4 block hover:bg-search-itemHover focus:bg-bsearch-itemHover ${last ? "rounded-b-lg" : ""}`;
+    `flex flex-wrap items-center cursor-pointer py-2 px-4 block text-cpr-dark hover:bg-gray-200 focus:bg-gray-200 ${last ? "rounded-b-lg" : ""}`;
 
   const renderSearchSuggestion = (geography: TGeography) => {
     if (!term.toLowerCase().includes(geography.display_value.toLowerCase())) return;
@@ -64,7 +64,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
 
   return (
     <div
-      className={`absolute bg-search-dropdownBg border-t-transparent border border-lineBorder w-full text-indigo-400 rounded-b-lg max-h-[300px] overflow-y-auto search-dropdown z-50 ${
+      className={`absolute bg-gray-100 text-cpr-dark border-t-transparent border border-gray-600 w-full rounded-b-lg max-h-[300px] overflow-y-auto search-dropdown z-50 ${
         largeSpacing ? "search-dropdown_large" : ""
       }`}
     >
@@ -77,7 +77,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
       {geographiesFiltered.length === 1 && renderSearchSuggestion(geographiesFiltered[0])}
       {!!geographiesFiltered.length && (
         <>
-          <div className="py-2 px-4 text-sm mt-2">View countries and territories information</div>
+          <div className="py-2 px-4 text-sm">View countries and territories information</div>
           <ul>
             {geographiesFiltered.map((geography, i) => {
               const last = i + 1 === geographiesFiltered.length;
