@@ -19,8 +19,8 @@ const DropdownMenuItem = ({ first = false, title, href, target = "", external = 
   };
 
   let cssClass = `${
-    !first ? "border-t border-indigo-200 pt-3" : "pt-2"
-  } px-6 pt-2 block w-full text-left text-sm pb-3 hover:text-blue-500 transition duration-300 `;
+    !first ? "border-t border-gray-200 pt-3" : "pt-2"
+  } px-6 py-2 block w-full text-left text-sm transition duration-300 hover:no-underline `;
 
   cssClass = cssClass + linkClass(href);
 

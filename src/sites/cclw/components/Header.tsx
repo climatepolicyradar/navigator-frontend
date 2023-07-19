@@ -15,7 +15,7 @@ const Header = ({ background = true }) => {
   };
 
   return (
-    <header data-cy="header" className={`${background ? "bg-secondary-700" : ""} w-full pt-6 lg:pt-0`}>
+    <header data-cy="header" className={`${background ? "bg-cclw-dark" : ""} w-full pt-6 lg:pt-0`}>
       <div className="container">
         <div className="grid grid-cols-2 auto-cols-auto lg:my-6">
           <div className="items-end flex flex-grow-0">
@@ -46,7 +46,7 @@ const Header = ({ background = true }) => {
           </div>
           <div className="col-span-2 flex-1 flex justify-center text-white order-last items-end basis-full text-center my-6 lg:my-0 lg:mt-6">
             <div className="cclw-font font-bold text-xl md:text-4xl lg:text-3xl xl:text-4xl">
-              <LinkWithQuery href={`/`} className="" cypress="cclw-logo">
+              <LinkWithQuery href={`/`} className="text-white hover:no-underline hover:text-white" cypress="cclw-logo">
                 Climate Change Laws of the World
               </LinkWithQuery>
             </div>
