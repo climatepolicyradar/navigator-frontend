@@ -1,14 +1,9 @@
 import React from "react";
-import dynamic from "next/dynamic";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Hero } from "../components/Hero";
 import { Articles } from "../components/Articles";
 import { Partners } from "@cclw/components/Partners";
-
-const Map = dynamic(() => import("@components/map/Map"), {
-  ssr: false,
-});
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
@@ -23,11 +18,11 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
           <Header background={false} />
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
         </div>
-        <div className="container mt-12" data-cy="featured-content">
+        <div className="container my-12" data-cy="featured-content">
           <h2 className="text-center mb-6">Featured Content</h2>
           <Articles />
         </div>
-        <div className="container mt-12" data-cy="partners">
+        <div className="container my-12" data-cy="partners">
           <h2 className="text-center mb-6">Our partners</h2>
           <Partners />
         </div>
