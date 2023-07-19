@@ -40,8 +40,14 @@
 }
 
 #cclw footer {
+  @apply bg-cclw-dark text-white;
+
+  h5 {
+    @apply text-white;
+  }
+  
   a {
-    @apply text-primary-400;
+    @apply text-blue-200;
     &:hover {
       @apply underline;
     }
@@ -64,12 +70,11 @@
 
   .footer__base {
     background-image: url("/images/cclw/angles_2.svg");
-    height: 164px;
     background-position: center;
-    width: 100%;
-  }
-}
+    @apply text-cclw-dark w-full h-[164px];
 
-#cclw .cclw-semi-circle {
-  @apply transition duration-300  w-[260px] h-[160px] lg:h-auto lg:w-full bg-primary-400 rounded-t-full mt-4 pt-4 pb-2 px-6 text-xl text-center hover:bg-secondary-700 flex-grow flex flex-col items-center justify-center;
+    a {
+      @apply text-cclw-dark;
+    }
+  }
 }
