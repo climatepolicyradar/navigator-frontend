@@ -70,6 +70,9 @@ body {
   @apply text-cpr-dark;
   font-family: Arial;
 }
+a {
+  @apply text-blue-600 transition duration-300 hover:underline hover:text-blue-800;
+}
 h1,
 h2,
 h3,
@@ -299,7 +302,7 @@ ul li.selected {
 .search-results {
   @apply font-light;
   a {
-    @apply text-blue-600 transition duration-300 hover:underline visited:text-blue-300;
+    @apply visited:text-blue-300 visited:hover:text-blue-800;
     &.accordian-item {
       @apply text-cpr-dark text-lg cursor-pointer flex items-center no-underline hover:no-underline md:text-h3;
     }
