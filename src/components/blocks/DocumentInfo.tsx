@@ -31,7 +31,7 @@ const DocumentInfo = ({ heading, text = "", list = [], id = "", tooltip = "", bu
 
   return (
     <div className="mt-4">
-      <h4 className="text-base text-indigo-400 font-semibold flex">
+      <h4 className="text-base font-semibold flex">
         {heading}
         {tooltip.length > 0 && (
           <div className="ml-1 font-normal">
@@ -39,13 +39,7 @@ const DocumentInfo = ({ heading, text = "", list = [], id = "", tooltip = "", bu
           </div>
         )}
       </h4>
-      {list.length ? (
-        <List list={list} bulleted={bulleted} dataProps={dataProps} />
-      ) : (
-        <p className="text-indigo-500" {...dataProps}>
-          {text}
-        </p>
-      )}
+      {list.length ? <List list={list} bulleted={bulleted} dataProps={dataProps} /> : <p {...dataProps}>{text}</p>}
     </div>
   );
 };
