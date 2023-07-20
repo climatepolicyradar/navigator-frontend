@@ -53,9 +53,9 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
   };
 
   const getPreviewBehaviour = () => {
-    let cssClass = "family-document mt-4 p-3 border border-transparent hover:bg-offwhite transition duration-300 ";
-    cssClass += isMain ? "bg-offwhite " : "";
-    cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-primary-600" : "";
+    let cssClass = "family-document mt-4 p-3 border border-transparent hover:bg-gray-50 transition duration-300 ";
+    cssClass += isMain ? "bg-gray-50 " : "";
+    cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-blue-600" : "";
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.preventDefault();
@@ -69,7 +69,7 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
 
   return (
     <div {...getPreviewBehaviour()}>
-      <div className="text-primary-600 mb-2">{title}</div>
+      <div className="text-blue-600 mb-2">{title}</div>
       <div className="flex items-center">
         <div className="flex-1 flex flex-wrap gap-x-8 items-center">
           {!isMain && <span className="capitalize font-bold">{document_role?.toLowerCase()}</span>}
