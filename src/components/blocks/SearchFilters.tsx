@@ -67,7 +67,7 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
             </button>
           </div>
         )}
-        <div className="text-indigo-400 font-medium mr-2 md:mr-0">
+        <div className="mr-2 md:mr-0">
           Find documents containing
           <div className="ml-2 inline-block">
             <Tooltip
@@ -86,7 +86,7 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
         </div>
       </div>
 
-      <div className="my-4 text-sm text-indigo-500">
+      <div className="my-4 text-sm">
         <div data-cy="exact-match">
           <BySemanticSearch checked={searchCriteria.exact_match} handleSearchChange={handleSearchChange} />
         </div>
@@ -127,18 +127,14 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
             />
           </div>
         </div>
-        <div className="my-8 pt-8 border-t border-lineBorder" data-cy="methodology-notice">
+        <div className="my-8 pt-8 border-t" data-cy="methodology-notice">
           <p className="text-center">
             For more info see
             <br />
             {theme === "cpr" ? (
-              <ExternalLink url="https://github.com/climatepolicyradar/methodology" className="underline text-blue-600">
-                our methodology page
-              </ExternalLink>
+              <ExternalLink url="https://github.com/climatepolicyradar/methodology">our methodology page</ExternalLink>
             ) : (
-              <LinkWithQuery href="/methodology" className="underline text-blue-600">
-                our methodology page
-              </LinkWithQuery>
+              <LinkWithQuery href="/methodology">our methodology page</LinkWithQuery>
             )}
           </p>
         </div>
