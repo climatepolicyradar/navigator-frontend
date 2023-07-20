@@ -15,10 +15,14 @@ const SearchButton: FC<TProps> = ({ onClick, children }) => {
     onClick();
   };
 
-  const buttonCssClass = theme === "cpr" ? "bg-blue-500 hover:bg-indigo-600" : "bg-secondary-700 hover:bg-primary-400";
+  const buttonCssClass = "bg-blue-600 hover:bg-cpr-dark";
 
   return (
-    <button onClick={handleOnClick} type="submit" className={`text-white py-1 px-2 md:px-4 rounded-r-lg h-full transtion duration-300 shrink-0 ${buttonCssClass}`}>
+    <button
+      onClick={handleOnClick}
+      type="submit"
+      className={`text-white py-1 px-2 md:px-4 rounded-r-lg h-full transtion duration-300 shrink-0 ${buttonCssClass}`}
+    >
       <SearchIcon height="20" width="40" />
       {children}
     </button>

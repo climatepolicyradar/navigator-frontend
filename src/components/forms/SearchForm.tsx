@@ -64,15 +64,14 @@ const SearchForm = ({ input, placeholder, handleSearchInput, handleSuggestion }:
         <input
           data-analytics="seachPage-searchInput"
           data-cy="search-input"
-          className="analytics-searchPage-searchInput bg-transparent text-indigo-600 appearance-none py-2 pl-2 z-10 rounded-lg relative flex-grow mr-8 placeholder:text-indigo-400 border-transparent"
+          className="analytics-searchPage-searchInput bg-white appearance-none py-2 pr-6 z-10 rounded-l-lg relative flex-grow border-gray-300 border-r-0 placeholder:text-grey-300"
           type="search"
           placeholder={`${windowSize.width > 767 ? placeholder : ""}`}
           value={term}
           onChange={onChange}
         />
-        <div className="rounded-lg absolute inset-0 shadow-innerThin z-0 pointer-events-none" />
         {term.length > 0 && (
-          <div data-cy="search-clear-button" className="flex items-center mx-2 text-indigo-400 shrink-0 absolute top-0 right-0 mr-16 h-full md:mr-20 z-20">
+          <div data-cy="search-clear-button" className="flex items-center mx-2 shrink-0 absolute top-0 right-0 mr-16 h-full md:mr-20 z-20">
             <Close onClick={clearSearch} size="16" />
           </div>
         )}
