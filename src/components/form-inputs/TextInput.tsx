@@ -33,14 +33,14 @@ const TextInput = ({
     <div className={className}>
       <label className="">
         {label}
-        {required && label ? <strong className="text-red-500"> *</strong> : null}
+        {required && label ? <strong className="text-red-600"> *</strong> : null}
       </label>
       <div className="relative mt-1">
         <input
           type={type}
           placeholder={placeholder}
           accept={accept}
-          className={`border ${errors[name] ? "border-red-500" : "border-gray-300"}`}
+          className={`border ${errors[name] ? "border-red-600" : "border-gray-300"}`}
           onChange={onChange}
           {...register(name)}
         />

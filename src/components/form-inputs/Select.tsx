@@ -16,19 +16,31 @@ interface SelectProps {
   multiple?: boolean;
 }
 
-const Select = ({ id, label = "", name, children, required = false, classes = "", onChange = () => {}, errors, register, "data-cy": dataCy, multiple = false }: SelectProps) => {
+const Select = ({
+  id,
+  label = "",
+  name,
+  children,
+  required = false,
+  classes = "",
+  onChange = () => {},
+  errors,
+  register,
+  "data-cy": dataCy,
+  multiple = false,
+}: SelectProps) => {
   return (
     <div className={`${classes}`}>
       <label htmlFor={id}>
         {label}
-        {required && label ? <strong className="text-red-500"> *</strong> : null}
+        {required && label ? <strong className="text-red-600"> *</strong> : null}
       </label>
       <div className="mt-1">
         <select
           selected
           multiple={multiple}
           data-cy={dataCy}
-          className={`border ${errors[name] ? "border-red-500" : "border-gray-300"}`}
+          className={`border ${errors[name] ? "border-red-600" : "border-gray-300"}`}
           {...register(name, { onChange: onChange })}
         >
           {children}
