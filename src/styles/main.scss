@@ -70,7 +70,7 @@ body {
   @apply text-cpr-dark;
   font-family: Arial;
 }
-a {
+a, .anchor {
   @apply text-blue-600 transition duration-300 hover:underline hover:text-blue-800;
 }
 h1,
