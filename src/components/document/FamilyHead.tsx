@@ -18,23 +18,19 @@ export const FamilyHead = ({ family, geographyName, geographySlug, onCollectionC
   const breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
 
   return (
-    <div className="bg-offwhite border-solid border-lineBorder border-b">
+    <div className="bg-gray-50 border-b">
       <div className="container">
         <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={family.title} />
         <div className="flex flex-col md:flex-row">
           <div className="flex-1 my-4">
             <h1 className="text-3xl lg:smaller">{family.title}</h1>
             {family.collections.length > 0 && (
-              <div className="flex text-sm text-indigo-400 mt-4 items-center w-full mb-2 font-medium">
+              <div className="flex text-sm text-indigo-400 mt-4 items-center w-full mb-2">
                 <span>Part of the&nbsp;</span>
                 {family.collections.length > 0 &&
                   family.collections.map((collection, i) => (
                     <Fragment key={`${collection.title}-${i}`}>
-                      <a
-                        onClick={onCollectionClick ?? (() => {})}
-                        href="#collection"
-                        className="underline text-primary-400 hover:text-indigo-600 duration-300"
-                      >
+                      <a onClick={onCollectionClick ?? (() => {})} href="#collection">
                         {collection.title}
                       </a>
                       {i < family.collections.length - 1 && <span>,&nbsp;</span>}
@@ -42,9 +38,9 @@ export const FamilyHead = ({ family, geographyName, geographySlug, onCollectionC
                   ))}
               </div>
             )}
-            <div className="flex text-sm text-grey-700 mt-4 items-center w-full font-medium divide-grey-700">
+            <div className="flex text-sm mt-4 items-center w-full">
               {!isSystemGeo(family.geography) ? (
-                <CountryLink countryCode={family.geography} className="text-primary-400 hover:text-indigo-600 duration-300">
+                <CountryLink countryCode={family.geography}>
                   <span data-analytics-country={geographyName}>{geographyName}</span>
                 </CountryLink>
               ) : (
