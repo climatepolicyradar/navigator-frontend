@@ -39,14 +39,14 @@ const ByTextInput = ({ title, list, selectedList, keyField, keyFieldDisplay, fil
       <div>{title}</div>
       <input
         type="text"
-        className="border border-indigo-200 mt-2 small outline-none placeholder:text-indigo-300"
+        className="border border-gray-300 mt-2 small outline-none placeholder:text-gray-300"
         placeholder={t("Start typing")}
         value={input}
         onChange={handleChange}
       />
 
       {suggestList.length > 0 && (
-        <div className="absolute top-3 mt-12 left-0 w-full z-30">
+        <div className="absolute top-full mt-[-10px] left-0 w-full z-30">
           <SuggestList list={suggestList} setList={setSuggestList} keyField={keyField} keyFieldDisplay={keyFieldDisplay} type={filterType} setInput={setInput} handleFilterChange={handleFilterChange} />
         </div>
       )}

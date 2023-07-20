@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 interface DateRangeInputProps {
   label: string;
   name: string;
@@ -31,7 +29,7 @@ const DateRangeInput = ({ label, name, value, handleSubmit, handleChange }: Date
           onBlur={onBlur}
           onKeyDown={onKeyDown}
           type="number"
-          className="border border-indigo-200 mt-2 small outline-none placeholder:text-indigo-300"
+          className="border border-gray-300 mt-2 small outline-none placeholder:text-gray-600"
         />
       </div>
     </div>

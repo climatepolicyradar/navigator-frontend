@@ -62,7 +62,7 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
       <div className="mt-2 md:mt-0">
         {showClear && (
           <div className="flex md:justify-end mb-2">
-            <button className="underline text-sm text-blue-500 hover:text-indigo-600 transition duration-300" onClick={handleClearSearch}>
+            <button className="anchor text-sm" onClick={handleClearSearch}>
               Clear all filters
             </button>
           </div>
