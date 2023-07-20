@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, ChangeEvent } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import useSearch from "@hooks/useSearch";
@@ -17,13 +17,13 @@ import FilterToggle from "@components/buttons/FilterToggle";
 import Pagination from "@components/pagination";
 import SearchResultList from "@components/blocks/SearchResultList";
 import Tooltip from "@components/tooltip";
-import { calculatePageCount } from "@utils/paging";
-import { PER_PAGE } from "@constants/paging";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { Loading } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
+import { calculatePageCount } from "@utils/paging";
+import { PER_PAGE } from "@constants/paging";
 
 const Search = () => {
   const router = useRouter();
