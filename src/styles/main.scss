@@ -224,7 +224,7 @@ input[type="search"]::-webkit-search-results-decoration {
   @apply text-blue-600;
   @screen md {
     &:after {
-      bottom: -8px;
+      bottom: -9px;
     }
   }
 }
