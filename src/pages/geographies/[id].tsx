@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { TTarget, TEvent, TGeography } from "@types";
+import { ApiClient } from "@api/http-common";
 import Layout from "@components/layouts/Main";
 import { SingleCol } from "@components/SingleCol";
 import Event from "@components/blocks/Event";
@@ -19,15 +19,14 @@ import TextLink from "@components/nav/TextLink";
 import { LawIcon, PolicyIcon, CaseIcon, TargetIcon } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
-import { QUERY_PARAMS } from "@constants/queryParams";
-
-import { ApiClient } from "@api/http-common";
-import { TGeographyStats, TGeographySummary } from "@types";
-import { extractNestedData } from "@utils/extractNestedData";
 import { getCountryCode } from "@helpers/getCountryFields";
-import { getGeoDescription } from "@constants/metaDescriptions";
+import { extractNestedData } from "@utils/extractNestedData";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
+import { QUERY_PARAMS } from "@constants/queryParams";
+import { getGeoDescription } from "@constants/metaDescriptions";
 import { systemGeoNames } from "@constants/systemGeos";
+import { TGeographyStats, TGeographySummary } from "@types";
+import { TTarget, TEvent, TGeography } from "@types";
 
 type TProps = {
   geography: TGeographyStats;
@@ -130,10 +129,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       return (
         <div className="mt-4">
           Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center’s{" "}
-          <ExternalLink url="http://climatecasechart.com/" className="text-blue-500 transition duration-300 hover:text-indigo-600">
-            Climate Change Litigation Databases
-          </ExternalLink>
-          .
+          <ExternalLink url="http://climatecasechart.com/">Climate Change Litigation Databases</ExternalLink>.
         </div>
       );
     }
@@ -250,7 +246,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
                         <ExternalLink
                           url="https://docs.google.com/forms/d/e/1FAIpQLSfP2ECC6W92xF5HHvy5KAPVTim0Agrbr4dD2LhiWkDjcY2f6g/viewform"
-                          className="block text-sm text-blue-600 my-4 md:mt-0 hover:underline"
+                          className="block text-sm my-4 md:mt-0"
                           cy="download-target-csv"
                         >
                           Request to download all target data (.csv)
