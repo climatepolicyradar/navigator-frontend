@@ -64,7 +64,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
 
   return (
     <div
-      className={`absolute bg-gray-100 text-cpr-dark border-t-transparent border border-gray-600 w-full rounded-b-lg max-h-[300px] overflow-y-auto search-dropdown z-50 ${
+      className={`absolute bg-gray-100 text-cpr-dark border-t-transparent border border-gray-600 w-full rounded-b-lg max-h-[300px] overflow-y-auto search-dropdown z-50 shadow-lg ${
         largeSpacing ? "search-dropdown_large" : ""
       }`}
     >
