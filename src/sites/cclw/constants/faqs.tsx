@@ -463,4 +463,17 @@ export const FAQS: TFAQ[] = [
       </>
     ),
   },
+  {
+    title: "How are the documents translated to English?",
+    content: (
+      <>
+        <p>
+          Documents are translated to English using Google’s Cloud Translation API. While the quality of auto-translation does not always capture full
+          meaning and nuance from the original language, we hope it serves as a first step to improve accessibility. We are planning to add
+          auto-translation to other languages in the future, as well as to improve the quality of translation using other, potentially domain
+          specific, models.
+        </p>
+      </>
+    ),
+  },
 ];
