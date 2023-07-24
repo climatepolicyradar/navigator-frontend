@@ -107,11 +107,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                         <p className="mb-2 text-sm">
                           You’ll soon be able to view the full-text of the document here, along with any English translation.
                         </p>
-                        <div className="my-4 flex justify-center">
-                          <Button color="clear" data-cy="view-source" onClick={handleViewSourceClick} extraClasses="flex items-center">
-                            <ExternalLinkIcon height="16" width="16" /> <span className="ml-2">View source document</span>
-                          </Button>
-                        </div>
                         <p className="text-sm">
                           <ExternalLink className="underline" url="https://forms.gle/yJTRdwTNBdTesexW8">
                             Sign up here
