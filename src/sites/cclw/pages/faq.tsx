@@ -14,6 +14,7 @@ const FAQ = () => {
           <ul>
             <li>Search the full text of over 5000 laws, policies and UNFCCC submissions from every country.</li>
             <li>See exact matches and related phrases highlighted in the text.</li>
+            <li>Find documents from all languages translated to English to increase accessibility.</li>
           </ul>
           <p>Watch the video below to learn how to use this resource</p>
           <iframe

@@ -27,11 +27,7 @@ const Alert = () => (
         <AlertCircleIcon height="16" width="16" />
       </div>
       <p className="text-sm">
-        English translations of this document have been provided by Google Cloud Translate. They may not be 100% accurate. Read our{" "}
-        <LinkWithQuery href="/terms-of-use" className="underline">
-          Terms of Use
-        </LinkWithQuery>{" "}
-        for more information.
+        Any English translations of this document have been provided by Google Cloud Translate. They may not be 100% accurate.
       </p>
     </div>
   </div>
@@ -47,7 +43,7 @@ export const DocumentHead = ({ document, family, handleViewSourceClick }: TProps
   const breadcrumbFamily = { label: family.title, href: `/document/${family.slug}` };
   const breadcrumbLabel = isMain ? "Document" : document.document_role.toLowerCase();
   const breadcrumbCategory = { label: "Search results", href: "/search" };
-  const translated = containsNonEnglish(document.languages);
+  const translated = document.languages.length === 0 || containsNonEnglish(document.languages);
 
   return (
     <div className="bg-white border-solid border-lineBorder border-b">
