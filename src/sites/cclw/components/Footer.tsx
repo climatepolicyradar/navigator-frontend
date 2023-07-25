@@ -63,13 +63,13 @@ const Footer = () => {
                 <div>Follow Grantham Research Institute</div>
                 <div className="flex items-start gap-6 footer__social-links">
                   <ExternalLink url="https://twitter.com/GRI_LSE">
-                    <img src="/images/social/twitter.svg" alt="Twitter Logo" />
+                    <img src="/images/social/twitter_col.svg" alt="Twitter Logo" />
                   </ExternalLink>
                   <ExternalLink url="https://www.youtube.com/user/GranthamResearch">
-                    <img src="/images/social/youtube.svg" alt="YouTube Logo" />
+                    <img src="/images/social/youtube_col.svg" alt="YouTube Logo" />
                   </ExternalLink>
                   <ExternalLink url="https://www.linkedin.com/company/grantham-research-institute-lse/">
-                    <img src="/images/social/linkedIn.svg" alt="LinkedIn Logo" />
+                    <img src="/images/social/linkedIn_col.svg" alt="LinkedIn Logo" />
                   </ExternalLink>
                 </div>
               </div>
@@ -95,13 +95,13 @@ const Footer = () => {
                 <div>Follow Climate Policy Radar</div>
                 <div className="flex items-start gap-6 footer__social-links">
                   <ExternalLink url="https://twitter.com/climatepolradar">
-                    <img src="/images/social/twitter.svg" alt="Twitter Logo" />
+                    <img src="/images/social/twitter_col.svg" alt="Twitter Logo" />
                   </ExternalLink>
                   <ExternalLink url="https://www.youtube.com/channel/UCjcQnXKzZmo7r9t-RnHjbnA">
-                    <img src="/images/social/youtube.svg" alt="YouTube Logo" />
+                    <img src="/images/social/youtube_col.svg" alt="YouTube Logo" />
                   </ExternalLink>
                   <ExternalLink url="https://www.linkedin.com/company/climate-policy-radar">
-                    <img src="/images/social/linkedIn.svg" alt="LinkedIn Logo" />
+                    <img src="/images/social/linkedIn_col.svg" alt="LinkedIn Logo" />
                   </ExternalLink>
                   <ExternalLink url="https://github.com/climatepolicyradar/">
                     <img src="/images/social/github.svg" alt="GitHub Logo" />
