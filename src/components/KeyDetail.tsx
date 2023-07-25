@@ -4,16 +4,19 @@ type TProps = {
   amount: number | string | JSX.Element;
   icon?: JSX.Element;
   onClick?: () => void;
+  cssClasses?: string;
 };
 
-export const KeyDetail = ({ detail, amount, icon, extraDetail, onClick }: TProps) => {
+export const KeyDetail = ({ detail, amount, icon, extraDetail, onClick, cssClasses }: TProps) => {
   const handleOnClick = () => {
     if (onClick) onClick();
   };
 
   return (
     <div
-      className={`key-detail bg-cpr-dark text-white flex p-3 shadow-md ${onClick ? "cursor-pointer hover:bg-secondary-500" : ""}`}
+      className={`key-detail bg-cpr-dark text-white flex p-3 shadow-md transition-all ${
+        onClick ? "cursor-pointer hover:bg-blue-500" : ""
+      } ${cssClasses}`}
       onClick={handleOnClick}
     >
       {icon && (

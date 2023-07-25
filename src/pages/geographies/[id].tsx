@@ -10,7 +10,7 @@ import { Timeline } from "@components/blocks/Timeline";
 import { CountryHeader } from "@components/blocks/CountryHeader";
 import { KeyDetail } from "@components/KeyDetail";
 import { Divider } from "@components/dividers/Divider";
-import { RightArrowIcon } from "@components/svg/Icons";
+import { RightArrowIcon, UNFCCCIcon } from "@components/svg/Icons";
 import { FamilyListItem } from "@components/document/FamilyListItem";
 import { Targets } from "@components/Targets";
 import Button from "@components/buttons/Button";
@@ -41,6 +41,8 @@ const categoryByIndex = {
   3: "Litigation",
   4: "UNFCCC",
 };
+
+const keyDetailCssClasses = "md:col-span-2 lg:col-span-4";
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets }: TProps) => {
   const router = useRouter();
@@ -157,13 +159,14 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
           <section className="mb-8">
             <CountryHeader country={geography} />
             <div className="container mt-12">
-              <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px rounded mb-8">
+              <section className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-px mb-8 auto-rows-fr">
                 <KeyDetail
                   detail="Legislation"
                   extraDetail="Laws, Acts, Constitutions (legislative branch)"
                   amount={summary.family_counts.Legislative}
                   icon={<LawIcon />}
                   onClick={() => setselectedCategoryIndex(1)}
+                  cssClasses={keyDetailCssClasses}
                 />
                 <KeyDetail
                   detail="Policies"
@@ -171,6 +174,15 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   amount={summary.family_counts.Executive}
                   icon={<PolicyIcon />}
                   onClick={() => setselectedCategoryIndex(2)}
+                  cssClasses={keyDetailCssClasses}
+                />
+                <KeyDetail
+                  detail="UNFCCC"
+                  extraDetail="Documents submitted to the UNFCCC (including NDCs)"
+                  amount={summary.family_counts.UNFCCC}
+                  icon={<UNFCCCIcon />}
+                  onClick={() => setselectedCategoryIndex(4)}
+                  cssClasses={keyDetailCssClasses}
                 />
                 <KeyDetail
                   detail="Litigation"
@@ -178,6 +190,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   amount={<span className="text-sm font-normal">Coming soon</span>}
                   icon={<CaseIcon />}
                   onClick={() => setselectedCategoryIndex(3)}
+                  cssClasses={`${keyDetailCssClasses} lg:col-start-3`}
                 />
                 <KeyDetail
                   detail="Targets"
@@ -185,6 +198,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   amount={targets.length}
                   icon={<TargetIcon />}
                   onClick={() => handleTargetClick()}
+                  cssClasses={`${keyDetailCssClasses} md:col-start-2`}
                 />
               </section>
             </div>
