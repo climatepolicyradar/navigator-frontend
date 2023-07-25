@@ -444,10 +444,10 @@ ul li.selected {
       @apply rounded-none;
     }
     &:nth-child(5n + 3) {
-      @apply rounded-r-lg;
+      @apply rounded-none rounded-r-lg;
     }
     &:nth-child(5n+4) {
-      @apply rounded-bl-lg;
+      @apply rounded-none rounded-bl-lg;
     }
   }
 }
