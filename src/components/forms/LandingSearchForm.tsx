@@ -56,7 +56,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
 
   const inputCssClass =
     theme === "cpr"
-      ? "placeholder:text-white pr-16 text-2xl bg-transparent border-t-0 border-l-0 border-r-0 border-white border-b-2 focus:border-white focus:ring-0 w-full"
+      ? "placeholder:text-white py-4 pr-16 text-2xl bg-transparent border-t-0 border-l-0 border-r-0 border-white border-b-2 focus:border-white focus:ring-0 w-full"
       : "text-xl py-4 pl-6 pr-16 w-full text-cpr-dark focus:ring-0";
 
   const buttonCssClass = theme === "cpr" ? "absolute top-0 right-0 h-full" : "absolute right-0 h-full pr-2 text-blue-400";
