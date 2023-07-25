@@ -10,7 +10,7 @@ export const Menu = () => {
   const menuRef = useRef(null);
   useOutsideAlerter(menuRef, () => setShowMenu(false));
 
-  const toggleMenu = (e) => {
+  const toggleMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setShowMenu(!showMenu);
   };

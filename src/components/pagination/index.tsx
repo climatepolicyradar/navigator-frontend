@@ -6,16 +6,16 @@ interface PaginationProps {
 }
 
 const Pagination = ({ pageNumber, pageCount, onChange, maxNeighbourDistance = 2 }: PaginationProps) => {
-  const renderPlaceholder = (page) => {
+  const renderPlaceholder = (page: number) => {
     return (
       <span key={page} className="md:mx-1">
         ...
       </span>
     );
   };
-  const renderPageButton = (page) => {
+  const renderPageButton = (page: number) => {
     const baseCssClasses = "mx-1 rounded px-3 py-1 transition duration-300 text-sm md:text-base";
-    const colorCssClasses = page === pageNumber ? "bg-blue-500 text-white pointer-events-none" : "bg-indigo-100 hover:bg-indigo-200 text-indigo-600";
+    const colorCssClasses = page === pageNumber ? "bg-blue-400 text-white pointer-events-none" : "hover:bg-gray-100 text-cpr-dark";
     return (
       <button
         key={page}

@@ -29,7 +29,7 @@ export const AccordianItem = ({ id, title, children, startOpen = false, classNam
     <div className="mb-4" id={id}>
       <a href="#" className={`accordian-item ${className ?? ""}`} onClick={(e) => handleClick(e)}>
         <span>{title}</span>
-        <span className={`arrow border-indigo-600 ml-6 ${open ? "up" : "down"}`} />
+        <span className={`arrow border-cpr-dark ml-6 ${open ? "up" : "down"}`} />
       </a>
       <div className={`${open ? "block" : "hidden"}`}>{children}</div>
     </div>

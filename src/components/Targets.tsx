@@ -19,16 +19,13 @@ export const Targets = ({ targets = [], showFamilyInfo = false }: TTargets) => {
     <ul className="ml-4 list-disc list-outside" data-cy="targets">
       {targets.map((target) => (
         <li className="mb-4" key={target.ID}>
-          <span className="text-indigo-700" dangerouslySetInnerHTML={{ __html: target.Description }} />
-          <span className="block text-grey-700">
+          <span dangerouslySetInnerHTML={{ __html: target.Description }} />
+          <span className="block text-gray-500">
             {`${target.Sector}${target.Scopes !== "" ? `: ${target.Scopes}` : ""}`} | Target year: {target.Year}
           </span>
           {showSourceLink(target) && (
-            <span className="block text-grey-700">
-              Source:{" "}
-              <LinkWithQuery href={`/document/${target["family-slug"]}`} className="text-blue-500 hover:underline">
-                {target["family-name"]}
-              </LinkWithQuery>
+            <span className="block text-gray-500">
+              Source: <LinkWithQuery href={`/document/${target["family-slug"]}`}>{target["family-name"]}</LinkWithQuery>
             </span>
           )}
         </li>

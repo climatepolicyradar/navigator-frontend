@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, ChangeEvent } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import useSearch from "@hooks/useSearch";
@@ -17,13 +17,13 @@ import FilterToggle from "@components/buttons/FilterToggle";
 import Pagination from "@components/pagination";
 import SearchResultList from "@components/blocks/SearchResultList";
 import Tooltip from "@components/tooltip";
-import { calculatePageCount } from "@utils/paging";
-import { PER_PAGE } from "@constants/paging";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { Loading } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
+import { calculatePageCount } from "@utils/paging";
+import { PER_PAGE } from "@constants/paging";
 
 const Search = () => {
   const router = useRouter();
@@ -221,7 +221,7 @@ const Search = () => {
         {resultsMsg}{" "}
         {qQueryString && (
           <>
-            for "<i className="text-blue-600">{qQueryString}</i>"
+            for "<i className="font-bold">{qQueryString}</i>"
             {hits > 100 && (
               <div className="ml-2 inline-block">
                 <Tooltip
@@ -262,8 +262,8 @@ const Search = () => {
               />
             </div>
           </div>
-          <div className="px-4 md:flex container border-b border-lineBorder">
-            <div className="md:w-1/4 lg:w-[30%] xl:w-1/4 md:border-r border-lineBorder md:pr-8 flex-shrink-0">
+          <div className="px-4 md:flex container border-b">
+            <div className="md:w-1/4 lg:w-[30%] xl:w-1/4 md:border-r md:pr-8 flex-shrink-0">
               <div className="flex md:hidden items-center justify-center w-full mt-4">
                 <FilterToggle toggle={toggleFilters} isOpen={showFilters} />
               </div>
@@ -296,18 +296,12 @@ const Search = () => {
                   </div>
                   <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
                     <span>Download data (.csv): </span>
-                    <a
-                      href="#"
-                      className="text-blue-600 hover:underline flex gap-2 items-center justify-end"
-                      data-cy="download-search-csv"
-                      onClick={handleDownloadCsvClick}
-                    >
+                    <a href="#" className="flex gap-2 items-center justify-end" data-cy="download-search-csv" onClick={handleDownloadCsvClick}>
                       {downloadCSVStatus === "loading" && <Loading />} this search
                     </a>
                     <span>|</span>
                     <ExternalLink
                       url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform"
-                      className="text-blue-600 hover:underline"
                       cy="download-entire-search-csv"
                     >
                       whole database

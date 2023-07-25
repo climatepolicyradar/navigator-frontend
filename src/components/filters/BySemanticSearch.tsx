@@ -12,11 +12,11 @@ const BySemanticSearch = ({ handleSearchChange, checked }) => {
     <div className="flex flex-wrap gap-2">
       <div>
         <label
-          className="checkbox-input flex items-center border py-2 px-1 rounded-md cursor-pointer border-indigo-200 bg-white"
+          className="checkbox-input flex items-center border py-2 px-1 rounded-md cursor-pointer border-gray-300 bg-white"
           htmlFor="related_phrases"
         >
           <input
-            className="border-indigo-400 cursor-pointer"
+            className="border-gray-300 cursor-pointer"
             id="related_phrases"
             type="radio"
             name="exact_match"
@@ -28,12 +28,9 @@ const BySemanticSearch = ({ handleSearchChange, checked }) => {
         </label>
       </div>
       <div>
-        <label
-          className="checkbox-input flex items-center border py-2 px-1 rounded-md cursor-pointer border-indigo-200 bg-white"
-          htmlFor="exact_match"
-        >
+        <label className="checkbox-input flex items-center border py-2 px-1 rounded-md cursor-pointer border-gray-300 bg-white" htmlFor="exact_match">
           <input
-            className="border-indigo-400 cursor-pointer"
+            className="border-gray-300 cursor-pointer"
             id="exact_match"
             type="radio"
             name="exact_match"

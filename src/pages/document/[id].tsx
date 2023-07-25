@@ -124,7 +124,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
         analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "{page.geography}";
       </Script>
       <section
-        className="mb-8"
+        className="mb-12"
         data-analytics-category={page.category}
         data-analytics-type={getDocumentCategories().join(",")}
         data-analytics-geography={page.geography}
@@ -138,11 +138,11 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                 {page.summary.length > MAX_FAMILY_SUMMARY_LENGTH && (
                   <div className="mt-6 flex justify-end">
                     {showFullSummary ? (
-                      <button onClick={() => setShowFullSummary(false)} className="text-blue-500 font-medium">
+                      <button onClick={() => setShowFullSummary(false)} className="anchor">
                         Collapse summary
                       </button>
                     ) : (
-                      <button onClick={() => setShowFullSummary(true)} className="text-blue-500 font-medium">
+                      <button onClick={() => setShowFullSummary(true)} className="anchor">
                         Show full summary
                       </button>
                     )}
@@ -158,12 +158,12 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               {otherDocs.length > 0 && (
                 <>
                   <div className="mt-12">
-                    <Divider color="bg-lineBorder" />
+                    <Divider />
                   </div>
 
                   <section className="mt-12">
                     <h3>Related documents</h3>
-                    <div className="divide-solid divide-blue-100 divide-y" data-cy="related-documents">
+                    <div className="divide-solid divide-y" data-cy="related-documents">
                       {otherDocs.map((doc) => (
                         <div key={doc.import_id} className="mt-4">
                           <FamilyDocument matches={getDocumentMatches(doc.slug)} document={doc} status={status} />
@@ -177,7 +177,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               {hasTargets && (
                 <>
                   <div className="mt-12">
-                    <Divider color="bg-lineBorder" />
+                    <Divider />
                   </div>
 
                   <section className="mt-12">
@@ -191,7 +191,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                         </h3>
                         <ExternalLink
                           url="https://docs.google.com/forms/d/e/1FAIpQLSfP2ECC6W92xF5HHvy5KAPVTim0Agrbr4dD2LhiWkDjcY2f6g/viewform"
-                          className="block text-sm text-blue-600 my-4 md:mt-0 hover:underline"
+                          className="block text-sm my-4 md:mt-0"
                           cy="download-target-csv"
                         >
                           Request to download all target data (.csv)
@@ -225,7 +225,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               {page.events.length > 0 && (
                 <>
                   <div className="mt-12">
-                    <Divider color="bg-lineBorder" />
+                    <Divider />
                   </div>
 
                   <section className="mt-12">
@@ -246,27 +246,22 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
               {page.collections.length > 0 && (
                 <div className="mt-12">
-                  <Divider color="bg-lineBorder" />
+                  <Divider />
                 </div>
               )}
 
               {page.collections.map((collection, i) => (
-                <section className="pt-12" id={`collection`} key={collection.import_id}>
+                <section className="pt-12" id={`collection-${i}`} key={collection.import_id}>
                   <h3>About the {collection.title}</h3>
                   <ShowHide show={showCollectionDetail} onClick={() => setShowCollectionDetail(!showCollectionDetail)} className="mt-4" />
                   {showCollectionDetail && (
                     <div>
                       <div className="mb-8 text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
                       <h4>Other documents in the {collection.title}</h4>
-                      <div className="divide-solid divide-blue-100 divide-y">
+                      <div className="divide-solid divide-y">
                         {collection.families.map((collFamily, i) => (
                           <div key={collFamily.slug} className="pt-4 pb-4">
-                            <LinkWithQuery
-                              href={`/document/${collFamily.slug}`}
-                              className="hover:underline text-primary-400 hover:text-indigo-600 duration-300"
-                            >
-                              {collFamily.title}
-                            </LinkWithQuery>
+                            <LinkWithQuery href={`/document/${collFamily.slug}`}>{collFamily.title}</LinkWithQuery>
                             <p className="mt-2">{collFamily.description}</p>
                           </div>
                         ))}
@@ -277,7 +272,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               ))}
             </section>
             <section className="mt-12 md:border-t-0 md:mt-6 md:w-2/5 lg:w-1/4 md:pl-12 flex-shrink-0">
-              <div className="md:pl-4 md:border-l md:border-lineBorder">
+              <div className="md:pl-4 md:border-l">
                 <h3>About this document</h3>
                 <div className={`grid gap-2 ${page.category === "UNFCCC" ? "" : "grid-cols-2"}`}>
                   <DocumentInfo id="category-tt" heading="Category" text={page.category} />
@@ -291,7 +286,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                 {page.metadata.topic?.length > 0 && <DocumentInfo id="topics-tt" heading="Topics" list={page.metadata.topic} />}
                 {page.metadata.keyword?.length > 0 && <DocumentInfo id="keywords-tt" heading="Keywords" list={page.metadata.keyword} />}
                 {page.metadata.sector?.length > 0 && <DocumentInfo id="sectors-tt" heading="Sectors" list={page.metadata.sector} />}
-                <div className="mt-8 border-t border-blue-100">
+                <div className="mt-8 border-t">
                   <h3 className="my-4">Note</h3>
                   {sourceLogo && (
                     <div className="flex items-end mb-4">

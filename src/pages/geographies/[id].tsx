@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { TTarget, TEvent, TGeography } from "@types";
+import { ApiClient } from "@api/http-common";
 import Layout from "@components/layouts/Main";
 import { SingleCol } from "@components/SingleCol";
 import Event from "@components/blocks/Event";
@@ -10,7 +10,7 @@ import { Timeline } from "@components/blocks/Timeline";
 import { CountryHeader } from "@components/blocks/CountryHeader";
 import { KeyDetail } from "@components/KeyDetail";
 import { Divider } from "@components/dividers/Divider";
-import { RightArrowIcon } from "@components/svg/Icons";
+import { RightArrowIcon, UNFCCCIcon } from "@components/svg/Icons";
 import { FamilyListItem } from "@components/document/FamilyListItem";
 import { Targets } from "@components/Targets";
 import Button from "@components/buttons/Button";
@@ -19,15 +19,14 @@ import TextLink from "@components/nav/TextLink";
 import { LawIcon, PolicyIcon, CaseIcon, TargetIcon } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
-import { QUERY_PARAMS } from "@constants/queryParams";
-
-import { ApiClient } from "@api/http-common";
-import { TGeographyStats, TGeographySummary } from "@types";
-import { extractNestedData } from "@utils/extractNestedData";
 import { getCountryCode } from "@helpers/getCountryFields";
-import { getGeoDescription } from "@constants/metaDescriptions";
+import { extractNestedData } from "@utils/extractNestedData";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
+import { QUERY_PARAMS } from "@constants/queryParams";
+import { getGeoDescription } from "@constants/metaDescriptions";
 import { systemGeoNames } from "@constants/systemGeos";
+import { TGeographyStats, TGeographySummary } from "@types";
+import { TTarget, TEvent, TGeography } from "@types";
 
 type TProps = {
   geography: TGeographyStats;
@@ -42,6 +41,8 @@ const categoryByIndex = {
   3: "Litigation",
   4: "UNFCCC",
 };
+
+const keyDetailCssClasses = "md:col-span-2 lg:col-span-4";
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets }: TProps) => {
   const router = useRouter();
@@ -128,12 +129,9 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     // Litigation
     if (selectedCategoryIndex === 3) {
       return (
-        <div className="mt-4">
+        <div className="mt-4 pb-4 border-b">
           Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center’s{" "}
-          <ExternalLink url="http://climatecasechart.com/" className="text-blue-500 transition duration-300 hover:text-indigo-600">
-            Climate Change Litigation Databases
-          </ExternalLink>
-          .
+          <ExternalLink url="http://climatecasechart.com/">Climate Change Litigation Databases</ExternalLink>.
         </div>
       );
     }
@@ -161,13 +159,14 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
           <section className="mb-8">
             <CountryHeader country={geography} />
             <div className="container mt-12">
-              <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px rounded mb-8">
+              <section className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-px mb-8 auto-rows-fr">
                 <KeyDetail
                   detail="Legislation"
                   extraDetail="Laws, Acts, Constitutions (legislative branch)"
                   amount={summary.family_counts.Legislative}
                   icon={<LawIcon />}
                   onClick={() => setselectedCategoryIndex(1)}
+                  cssClasses={keyDetailCssClasses}
                 />
                 <KeyDetail
                   detail="Policies"
@@ -175,6 +174,15 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   amount={summary.family_counts.Executive}
                   icon={<PolicyIcon />}
                   onClick={() => setselectedCategoryIndex(2)}
+                  cssClasses={keyDetailCssClasses}
+                />
+                <KeyDetail
+                  detail="UNFCCC"
+                  extraDetail="Documents submitted to the UNFCCC (including NDCs)"
+                  amount={summary.family_counts.UNFCCC}
+                  icon={<UNFCCCIcon />}
+                  onClick={() => setselectedCategoryIndex(4)}
+                  cssClasses={keyDetailCssClasses}
                 />
                 <KeyDetail
                   detail="Litigation"
@@ -182,6 +190,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   amount={<span className="text-sm font-normal">Coming soon</span>}
                   icon={<CaseIcon />}
                   onClick={() => setselectedCategoryIndex(3)}
+                  cssClasses={`${keyDetailCssClasses} lg:col-start-3`}
                 />
                 <KeyDetail
                   detail="Targets"
@@ -189,6 +198,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   amount={targets.length}
                   icon={<TargetIcon />}
                   onClick={() => handleTargetClick()}
+                  cssClasses={`${keyDetailCssClasses} md:col-start-2`}
                 />
               </section>
             </div>
@@ -250,7 +260,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
                         <ExternalLink
                           url="https://docs.google.com/forms/d/e/1FAIpQLSfP2ECC6W92xF5HHvy5KAPVTim0Agrbr4dD2LhiWkDjcY2f6g/viewform"
-                          className="block text-sm text-blue-600 my-4 md:mt-0 hover:underline"
+                          className="block text-sm my-4 md:mt-0"
                           cy="download-target-csv"
                         >
                           Request to download all target data (.csv)

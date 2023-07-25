@@ -13,7 +13,17 @@ type TProps = {
   sortFunc?: SortFuncType;
 };
 
-const BySelect = ({ onChange, list, title, keyField, keyFieldDisplay = null, filterType, defaultValue, defaultText = "All", sortFunc = sortData}: TProps) => {
+const BySelect = ({
+  onChange,
+  list,
+  title,
+  keyField,
+  keyFieldDisplay = null,
+  filterType,
+  defaultValue,
+  defaultText = "All",
+  sortFunc = sortData,
+}: TProps) => {
   const [sortedList, setSortedList] = useState(list);
   const selectRef = useRef(null);
 
@@ -25,14 +35,14 @@ const BySelect = ({ onChange, list, title, keyField, keyFieldDisplay = null, fil
 
   useEffect(() => {
     setSortedList(sortFunc(list, keyField));
-  }, [list, keyField]);
+  }, [list, keyField, sortFunc]);
 
   return (
     <div>
       <div>{title}</div>
       <select
         ref={selectRef}
-        className="border border-indigo-200 mt-2 small"
+        className="border border-gray-300 mt-2 small"
         onChange={(e) => {
           onChange(filterType, e.currentTarget.value);
         }}

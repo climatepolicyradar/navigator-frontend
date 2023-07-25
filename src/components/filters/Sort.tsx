@@ -21,8 +21,8 @@ const Sort = ({ updateSort, defaultValue, isBrowsing = false }: TProps) => {
 
   return (
     <>
-      <div className="flex-shrink-0 font-medium text-indigo-400">Sort by:</div>
-      <select className="border border-indigo-200 small ml-2 z-0" onChange={updateSort} defaultValue={defaultV} key={defaultV}>
+      <div className="flex-shrink-0">Sort by:</div>
+      <select className="border border-gray-300 small ml-2 z-0" onChange={updateSort} defaultValue={defaultV} key={defaultV}>
         {options.map((item) => (
           <option key={item.value} value={item.value}>
             {item.label}

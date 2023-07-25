@@ -11,9 +11,9 @@ interface DateRangeOptionProps {
 
 const DateRangeOption = ({ id, label, name, value, onChange, checked }: DateRangeOptionProps) => {
   return (
-    <label className="checkbox-input flex items-center border py-2 px-1 rounded-md cursor-pointer border-indigo-200 bg-white" htmlFor={id}>
+    <label className="checkbox-input flex items-center border py-2 px-1 rounded-md cursor-pointer border-gray-300 bg-white" htmlFor={id}>
       <input
-        className="border-indigo-400 cursor-pointer"
+        className="border-gray-300 cursor-pointer"
         id={id}
         type="radio"
         name={name}
