@@ -127,7 +127,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     // Litigation
     if (selectedCategoryIndex === 3) {
       return (
-        <div className="mt-4">
+        <div className="mt-4 pb-4 border-b">
           Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center’s{" "}
           <ExternalLink url="http://climatecasechart.com/">Climate Change Litigation Databases</ExternalLink>.
         </div>
