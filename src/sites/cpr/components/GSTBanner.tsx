@@ -10,7 +10,7 @@ export const GSTBanner = () => {
         </span>
         <span>
           We’ve launched the Global Stocktake Explorer, a tool that enables you to explore and analyse the full text of all Global Stocktake inputs.{" "}
-          <ExternalLink className="underline" url="https://gst1.org">
+          <ExternalLink className="underline text-cpr-dark" url="https://gst1.org">
             Search inputs now
           </ExternalLink>
         </span>
