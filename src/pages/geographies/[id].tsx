@@ -76,7 +76,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     const newQuery = {};
     newQuery[QUERY_PARAMS.country] = geography.geography_slug;
     const documentCategory = categoryByIndex[selectedCategoryIndex] ?? null;
-    if (documentCategory) {
+    if (documentCategory && documentCategory !== "All") {
       newQuery[QUERY_PARAMS.category] = documentCategory;
     }
     router.push({ pathname: "/search", query: { ...newQuery } });
