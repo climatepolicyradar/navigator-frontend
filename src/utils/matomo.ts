@@ -52,7 +52,7 @@ const buildCustomDimensions = (query: { [key: string]: string | string[] }): IDi
     if (Object.values(QUERY_PARAMS).includes(key)) {
       const dimensionIndex = getKeyByValue(customDimensions, key);
       if (dimensionIndex) {
-        dimensions[`dimension${dimensionIndex}`] = query[key];
+        dimensions[`${dimensionIndex}`] = query[key];
       }
     }
   });
@@ -93,8 +93,9 @@ const Matomo = () => {
   const defaultOnRouteChangeComplete = (path: string): void => {
     // In order to ensure that the page title had been updated,
     // we delayed pushing the tracking to the next tick.
+    const dimensions = buildCustomDimensions(Router.query);
+    console.log(dimensions);
     setTimeout(() => {
-      const dimensions = buildCustomDimensions(Router.query);
       if (startsWith(path, "/search")) {
         const { q, c } = Router.query;
         push(["trackSiteSearch", q ?? "", c ?? "", false, dimensions]);
