@@ -94,7 +94,6 @@ const Matomo = () => {
     // In order to ensure that the page title had been updated,
     // we delayed pushing the tracking to the next tick.
     const dimensions = buildCustomDimensions(Router.query);
-    console.log(dimensions);
     setTimeout(() => {
       if (startsWith(path, "/search")) {
         const { q, c } = Router.query;
