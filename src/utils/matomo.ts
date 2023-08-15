@@ -1,3 +1,5 @@
+// This code is not being used, but it is kept here for future reference.
+// See the CookieConsent component for the current implementation.
 import { default as Router } from "next/router";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
@@ -72,21 +74,15 @@ const pushCustomDimensions = (query: { [key: string]: string | string[] }): void
 };
 
 const Matomo = () => {
-  let previousPath = "";
   push(["trackPageView", document.title, buildCustomDimensions(Router.query)]);
-  previousPath = location.pathname;
 
   const defaultOnRouteChangeStart = (path: string): void => {
     // We use only the part of the url without the querystring to ensure piwik is happy
     // It seems that piwik doesn't track well page with querystring
     const [pathname] = path.split("?");
 
-    if (previousPath) {
-      push(["setReferrerUrl", `${previousPath}`]);
-    }
     push(["setCustomUrl", pathname]);
     push(["deleteCustomVariables", "page"]);
-    previousPath = pathname;
   };
   Router.events.on("routeChangeStart", defaultOnRouteChangeStart);
 

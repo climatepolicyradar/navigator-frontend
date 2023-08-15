@@ -13,7 +13,6 @@ import { AdobeContext } from "@context/AdobeContext";
 import { CookieConsent } from "@components/cookies/CookieConsent";
 import { GSTBanner } from "@cpr/components/GSTBanner";
 import ErrorBoundary from "@components/error/ErrorBoundary";
-import Matomo from "@utils/matomo";
 
 const queryClient = new QueryClient();
 
@@ -31,7 +30,6 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
     if (window?.Cypress) {
       window.queryClient = queryClient;
     }
-    Matomo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
