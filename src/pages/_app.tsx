@@ -16,13 +16,6 @@ import ErrorBoundary from "@components/error/ErrorBoundary";
 
 const queryClient = new QueryClient();
 
-declare global {
-  interface Window {
-    Cypress: any;
-    queryClient: any;
-  }
-}
-
 type TProps = AppProps & {
   theme?: string;
   adobeApiKey?: string;
