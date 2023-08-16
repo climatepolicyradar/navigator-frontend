@@ -39,27 +39,28 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
           </LinkWithQuery>
         </h2>
       </div>
-      <div className="flex flex-wrap text-sm text-indigo-400 mt-4 items-center font-medium">
-        {family_category && (
-          <div className="mr-2" title={family_category} data-cy="result-category">
-            {getCategoryIcon(family_category, "20")}
-          </div>
-        )}
+      <div className="flex flex-wrap text-sm gap-1 text-gray-700 mt-2 items-center font-medium">
         {!isSystemGeo(family_geography) && (
-          <CountryLink countryCode={family_geography}>
+          <CountryLink countryCode={family_geography} className="text-gray-700">
             <span>{country_name}</span>
           </CountryLink>
         )}
         {!isNaN(year) && (
-          <span data-cy="result-year">
-            {!isSystemGeo(family_geography) && ", "}
-            {year}
-          </span>
+          <>
+            <span>&middot;</span>
+            <span data-cy="result-year">{year}</span>
+          </>
+        )}
+        {family_category && (
+          <>
+            <span>&middot;</span>
+            <span className="capitalize">{family_category}</span>
+          </>
         )}
         {children}
       </div>
       <p
-        className="text-indigo-400 mt-3 text-content"
+        className="mt-2 text-content"
         data-cy="result-description"
         dangerouslySetInnerHTML={{ __html: truncateString(family_description.replace(/(<([^>]+)>)/gi, ""), 375) }}
       />

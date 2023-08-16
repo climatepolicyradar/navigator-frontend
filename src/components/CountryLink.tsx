@@ -22,7 +22,7 @@ export const CountryLink: FC<TCountryLink> = ({ countryCode, className = "", emp
   if (systemGeoCodes.includes(slug)) return <>{children}</>;
 
   return (
-    <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center gap-2 ${className}`} passHref cypress="country-link">
+    <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center gap-1 ${className}`} passHref cypress="country-link">
       <span className={`rounded-sm border border-black flag-icon-background flag-icon-${countryCode.toLowerCase()}`} />
       {children}
     </LinkWithQuery>
