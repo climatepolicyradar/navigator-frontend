@@ -293,18 +293,22 @@ const Search = () => {
                 <div className="flex-grow">
                   <TabbedNav activeIndex={getCategoryIndex()} items={DOCUMENT_CATEGORIES} handleTabClick={handleDocumentCategoryClick} />
                 </div>
-                <div className="mt-4 md:-mt-2 md:ml-2 lg:ml-8 md:mb-2 flex items-center" data-cy="sort">
-                  <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
-                </div>
               </div>
 
-              <div data-cy="search-results" className="md:pl-8 md:mt-12 relative">
+              <div data-cy="search-results" className="mt-4 md:pl-8 relative">
                 {status === "loading" ? (
                   <div className="w-full flex justify-center h-96">
                     <Loader />
                   </div>
                 ) : (
-                  <SearchResultList category={router.query[QUERY_PARAMS.category]?.toString()} families={families} />
+                  <>
+                    <div className="flex justify-end" data-cy="sort">
+                      <div>
+                        <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
+                      </div>
+                    </div>
+                    <SearchResultList category={router.query[QUERY_PARAMS.category]?.toString()} families={families} />
+                  </>
                 )}
               </div>
             </div>
