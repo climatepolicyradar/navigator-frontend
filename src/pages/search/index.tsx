@@ -250,10 +250,9 @@ const Search = () => {
     >
       <div>
         <section>
-          <div className="px-4 container">
+          <div className="px-4 mb-4 container">
             <BreadCrumbs label={"Search results"} />
-            <div className="md:pb-8 md:pt-4 md:w-3/4 md:mx-auto">
-              <p className="md:hidden mt-4 mb-2">{placeholder}</p>
+            <div className="pt-4 md:hidden">
               <SearchForm
                 placeholder={placeholder}
                 handleSearchInput={handleSearchInput}
@@ -289,7 +288,15 @@ const Search = () => {
               </div>
             </div>
             <div className="md:w-3/4">
-              <div className="md:pl-8">
+              <div className="md:pl-2">
+                <div className="hidden md:block mb-4 xl:w-3/4">
+                  <SearchForm
+                    placeholder={placeholder}
+                    handleSearchInput={handleSearchInput}
+                    input={qQueryString ? qQueryString.toString() : ""}
+                    handleSuggestion={handleSuggestion}
+                  />
+                </div>
                 <div className="lg:flex justify-between">
                   <div className="text-sm my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
                     {status === "success" && renderNoOfResults()}
