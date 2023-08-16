@@ -24,6 +24,7 @@ import { Loading } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
 import { calculatePageCount } from "@utils/paging";
 import { PER_PAGE } from "@constants/paging";
+import { NoOfResults } from "@components/NoOfResults";
 
 const Search = () => {
   const router = useRouter();
@@ -209,40 +210,6 @@ const Search = () => {
     }
   }, [hits]);
 
-  const renderNoOfResults = () => {
-    let resultsMsg = `Showing`;
-    if (hits < 100) {
-      resultsMsg += ` ${hits} results`;
-    } else {
-      resultsMsg += ` the top 100 results`;
-    }
-    return (
-      <>
-        {resultsMsg}{" "}
-        {qQueryString && (
-          <>
-            for "<i className="font-bold">{qQueryString}</i>"
-            {hits > 100 && (
-              <div className="ml-2 inline-block">
-                <Tooltip
-                  id="search-results-number"
-                  tooltip={
-                    <>
-                      We limit the number of search results to 100 so that you get the best performance from our tool. We’re working on a way to
-                      remove this limit.
-                    </>
-                  }
-                  icon="i"
-                  place="bottom"
-                />
-              </div>
-            )}
-          </>
-        )}
-      </>
-    );
-  };
-
   return (
     <Layout
       title={t("Law and Policy Search")}
@@ -299,7 +266,7 @@ const Search = () => {
                 </div>
                 <div className="lg:flex justify-between">
                   <div className="text-sm my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
-                    {status === "success" && renderNoOfResults()}
+                    {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
                   </div>
                   <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
                     <span>Download data (.csv): </span>
