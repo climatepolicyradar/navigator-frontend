@@ -391,9 +391,11 @@ ul li.selected {
 }
 
 .search-dropdown {
-  top: 42px;
+  top: 20px;
+  padding-top: 20px;
 
   &.search-dropdown_large {
+    padding-top: 0;
     top: 60px;
   }
 }
