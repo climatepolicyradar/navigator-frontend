@@ -255,7 +255,7 @@ const Search = () => {
               </div>
             </div>
             <div className="md:w-3/4">
-              <div className="md:pl-2">
+              <div className="md:pl-3">
                 <div className="hidden md:block mb-4 xl:w-3/4">
                   <SearchForm
                     placeholder={placeholder}
@@ -265,7 +265,7 @@ const Search = () => {
                   />
                 </div>
                 <div className="lg:flex justify-between">
-                  <div className="text-sm my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
+                  <div className="text-xs my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
                     {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
                   </div>
                   <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
@@ -289,10 +289,8 @@ const Search = () => {
                   )}
                 </div>
               </div>
-              <div className="mt-4 md:flex">
-                <div className="flex-grow">
-                  <TabbedNav activeIndex={getCategoryIndex()} items={DOCUMENT_CATEGORIES} handleTabClick={handleDocumentCategoryClick} />
-                </div>
+              <div className="mt-4">
+                <TabbedNav activeIndex={getCategoryIndex()} items={DOCUMENT_CATEGORIES} handleTabClick={handleDocumentCategoryClick} />
               </div>
 
               <div data-cy="search-results" className="mt-4 md:pl-8 relative">

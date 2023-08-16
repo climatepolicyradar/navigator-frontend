@@ -22,10 +22,7 @@ const TabbedNav = ({ handleTabClick, items, activeIndex = 0, showBorder = true, 
   };
 
   return (
-    <div
-      className={`grid grid-cols-2 md:grid-cols-none md:flex pb-2 ${indent && "md:pl-8"} ${showBorder && "border-b"}`}
-      data-cy="tabbed-nav"
-    >
+    <div className={`grid grid-cols-2 pb-2 ${showBorder && "border-b"} md:grid-cols-none md:flex`} data-cy="tabbed-nav">
       {items.map((item, index) => (
         <TabbedNavItem
           key={`tab${index}`}
@@ -35,6 +32,7 @@ const TabbedNav = ({ handleTabClick, items, activeIndex = 0, showBorder = true, 
           onClick={(e) => {
             onClick(e, index);
           }}
+          indent={indent}
         />
       ))}
     </div>
