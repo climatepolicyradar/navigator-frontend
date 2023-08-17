@@ -2,7 +2,6 @@ import { ExternalLink } from "@components/ExternalLink";
 import SearchResult from "./SearchResult";
 import { TMatchedFamily } from "@types";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
-import Button from "@components/buttons/Button";
 import { UNFCCC_SURVEY } from "@constants/UNFCCCSurvey";
 
 type TProps = {

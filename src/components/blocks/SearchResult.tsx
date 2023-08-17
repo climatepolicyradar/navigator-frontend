@@ -3,7 +3,7 @@ import { SearchMatchesButton } from "@components/buttons/SearchMatchesButton";
 import { TFamilyDocument, TMatchedFamily } from "@types";
 import { useMemo } from "react";
 
-interface SearchResultProps {
+interface ISearchResultProps {
   family: TMatchedFamily;
 }
 
@@ -19,7 +19,7 @@ const calculateNumberOfMatches = (documents: TFamilyDocument[]) => {
   return numberOfMatches;
 };
 
-const SearchResult = ({ family }: SearchResultProps) => {
+const SearchResult = ({ family }: ISearchResultProps) => {
   const { family_documents, family_slug } = family;
   const numberOfMatches = useMemo(() => calculateNumberOfMatches(family_documents), [family_documents]);
 
