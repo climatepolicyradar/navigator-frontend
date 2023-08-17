@@ -11,9 +11,8 @@ import useSearch from "@hooks/useSearch";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import Loader from "@components/Loader";
 import { getDocumentDescription } from "@constants/metaDescriptions";
-import Button from "@components/buttons/Button";
 import { ExternalLink } from "@components/ExternalLink";
-import { BookOpenIcon, ExternalLinkIcon } from "@components/svg/Icons";
+import { BookOpenIcon } from "@components/svg/Icons";
 
 type TProps = {
   document: TDocumentPage;
