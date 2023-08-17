@@ -78,7 +78,11 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
             <div className="container flex-1">
               <div className="md:flex md:h-[80vh]">
                 {hasPassageMatches && (
-                  <div className={`overflow-y-scroll pr-4 max-h-[30vh] md:block md:max-h-full ${passageClasses(document.content_type)}`}>
+                  <div
+                    className={`pr-4 max-h-[30vh] md:block md:max-h-full ${passageClasses(
+                      document.content_type
+                    )} overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500`}
+                  >
                     <div className="my-4" data-cy="document-matches-description">
                       <p className="">
                         {passageMatches.length} matches for "<b>{`${router.query[QUERY_PARAMS.query_string]}`}</b>"
