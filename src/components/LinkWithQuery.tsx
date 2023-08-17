@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
-
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { CleanRouterQuery } from "@utils/cleanRouterQuery";
 
 type TProps = {
   href: string;
@@ -17,13 +16,7 @@ type TProps = {
 
 export const LinkWithQuery = ({ href, hash, query, children, cypress, ...props }: TProps) => {
   const router = useRouter();
-
-  // remove any keys from router.query that are not values in QUERY_PARAMS
-  Object.keys(router.query).forEach((key) => {
-    if (!Object.values(QUERY_PARAMS).includes(key)) {
-      delete router.query[key];
-    }
-  });
+  router.query = CleanRouterQuery(router.query);
 
   return (
     <Link href={{ pathname: href, query: { ...router.query }, hash: hash }} data-cy={cypress} {...props}>
