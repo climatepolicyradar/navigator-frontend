@@ -15,16 +15,17 @@ import Sort from "@components/filters/Sort";
 import Close from "@components/buttons/Close";
 import FilterToggle from "@components/buttons/FilterToggle";
 import Pagination from "@components/pagination";
+import Drawer from "@components/drawer/Drawer";
 import SearchResultList from "@components/blocks/SearchResultList";
-import Tooltip from "@components/tooltip";
-import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
-import { QUERY_PARAMS } from "@constants/queryParams";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { Loading } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
-import { calculatePageCount } from "@utils/paging";
-import { PER_PAGE } from "@constants/paging";
 import { NoOfResults } from "@components/NoOfResults";
+import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
+import { calculatePageCount } from "@utils/paging";
+import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
+import { QUERY_PARAMS } from "@constants/queryParams";
+import { PER_PAGE } from "@constants/paging";
 
 const Search = () => {
   const router = useRouter();
@@ -33,6 +34,7 @@ const Search = () => {
   const { t } = useTranslation(["searchStart", "searchResults"]);
   const [showFilters, setShowFilters] = useState(false);
   const [pageCount, setPageCount] = useState(1);
+  const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
 
   const updateCountries = useUpdateCountries();
 
@@ -204,6 +206,17 @@ const Search = () => {
     downloadCSV(router.query);
   };
 
+  const handleMatchesButtonClick = (index: number) => {
+    if (drawerFamily === false) return setDrawerFamily(index);
+    if (drawerFamily === index) return;
+
+    setDrawerFamily(false);
+
+    setTimeout(() => {
+      setDrawerFamily(index);
+    }, 150);
+  };
+
   useEffect(() => {
     if (hits !== undefined) {
       setPageCount(calculatePageCount(hits));
@@ -305,7 +318,12 @@ const Search = () => {
                         <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
                       </div>
                     </div>
-                    <SearchResultList category={router.query[QUERY_PARAMS.category]?.toString()} families={families} />
+                    <SearchResultList
+                      category={router.query[QUERY_PARAMS.category]?.toString()}
+                      families={families}
+                      onClick={handleMatchesButtonClick}
+                      activeFamilyIndex={drawerFamily}
+                    />
                   </>
                 )}
               </div>
@@ -320,6 +338,9 @@ const Search = () => {
           </section>
         )}
       </div>
+      <Drawer show={drawerFamily !== false} setShow={setDrawerFamily}>
+        <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
+      </Drawer>
     </Layout>
   );
 };

@@ -2,18 +2,15 @@ import { ExternalLink } from "@components/ExternalLink";
 import SearchResult from "./SearchResult";
 import { TMatchedFamily } from "@types";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
-import { UNFCCC_SURVEY } from "@constants/UNFCCCSurvey";
 
 type TProps = {
   category?: (typeof DOCUMENT_CATEGORIES)[number];
   families: TMatchedFamily[];
+  activeFamilyIndex?: number | boolean;
+  onClick?: (index: number) => void;
 };
 
-const SearchResultList = ({ category, families }: TProps) => {
-  const handleNotifiedClick = () => {
-    window.open(UNFCCC_SURVEY);
-  };
-
+const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: TProps) => {
   const emptyMessage = (category: string) => {
     if (category !== "UNFCCC") {
       category = category.toLowerCase();
@@ -53,7 +50,7 @@ const SearchResultList = ({ category, families }: TProps) => {
     <>
       {families?.map((family, index: number) => (
         <div key={index} className={`my-10 md:my-16 ${index === 0 && "md:mt-0"}`} data-cy="search-result">
-          <SearchResult family={family} />
+          <SearchResult family={family} onClick={() => onClick(index)} active={activeFamilyIndex === index} />
         </div>
       ))}
     </>

@@ -5,6 +5,8 @@ import { useMemo } from "react";
 
 interface ISearchResultProps {
   family: TMatchedFamily;
+  active: boolean;
+  onClick?: () => void;
 }
 
 const calculateNumberOfMatches = (documents: TFamilyDocument[]) => {
@@ -19,12 +21,14 @@ const calculateNumberOfMatches = (documents: TFamilyDocument[]) => {
   return numberOfMatches;
 };
 
-const SearchResult = ({ family }: ISearchResultProps) => {
+const SearchResult = ({ family, active, onClick }: ISearchResultProps) => {
   const { family_documents, family_slug } = family;
   const numberOfMatches = useMemo(() => calculateNumberOfMatches(family_documents), [family_documents]);
 
   return (
-    <FamilyListItem family={family}>{numberOfMatches && <SearchMatchesButton count={numberOfMatches} dataAttribute={family_slug} />}</FamilyListItem>
+    <FamilyListItem family={family}>
+      {numberOfMatches && <SearchMatchesButton count={numberOfMatches} dataAttribute={family_slug} onClick={onClick} active={active} />}
+    </FamilyListItem>
   );
 };
 
