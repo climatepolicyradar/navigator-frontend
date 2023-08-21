@@ -30,7 +30,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const [passageIndex, setPassageIndex] = useState(null);
   const router = useRouter();
   const startingPassage = Number(router.query.passage) || 0;
-  console.log("startingPassage", startingPassage);
   const { status, families, searchQuery } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
 
   const passageMatches = [];
