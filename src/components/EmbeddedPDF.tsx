@@ -9,24 +9,25 @@ type TProps = {
   document: TDocumentPage;
   documentPassageMatches?: TPassage[];
   passageIndex?: number;
+  startingPassageIndex?: number;
 };
 
-const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = null }: TProps) => {
+const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = null, startingPassageIndex = 0 }: TProps) => {
   const containerRef = useRef();
   const adobeKey = useContext(AdobeContext);
 
   const pdfPreview = usePDFPreview(document, documentPassageMatches, adobeKey);
-  
-  // Ensure the instance of the PDF client is not reset on render 
+
+  // Ensure the instance of the PDF client is not reset on render
   // otherwise we lose the ability to interact with the pdf
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const { createPDFClient, passageIndexChangeHandler } = useMemo(() => pdfPreview, [document]);
 
   useEffect(() => {
     if (containerRef?.current) {
-      createPDFClient();
+      createPDFClient(startingPassageIndex);
     }
-  }, [containerRef, document, createPDFClient]);
+  }, [containerRef, document, createPDFClient, startingPassageIndex]);
 
   useEffect(() => {
     passageIndexChangeHandler(passageIndex);

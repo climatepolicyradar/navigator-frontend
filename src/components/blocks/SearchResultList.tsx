@@ -2,19 +2,15 @@ import { ExternalLink } from "@components/ExternalLink";
 import SearchResult from "./SearchResult";
 import { TMatchedFamily } from "@types";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
-import Button from "@components/buttons/Button";
-import { UNFCCC_SURVEY } from "@constants/UNFCCCSurvey";
 
 type TProps = {
   category?: (typeof DOCUMENT_CATEGORIES)[number];
   families: TMatchedFamily[];
+  activeFamilyIndex?: number | boolean;
+  onClick?: (index: number) => void;
 };
 
-const SearchResultList = ({ category, families }: TProps) => {
-  const handleNotifiedClick = () => {
-    window.open(UNFCCC_SURVEY);
-  };
-
+const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: TProps) => {
   const emptyMessage = (category: string) => {
     if (category !== "UNFCCC") {
       category = category.toLowerCase();
@@ -31,7 +27,10 @@ const SearchResultList = ({ category, families }: TProps) => {
     return (
       <div className="h-96 mt-4 md:mt-0">
         Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center's{" "}
-        <ExternalLink url="http://climatecasechart.com/" className="underline">Climate Change Litigation Databases</ExternalLink>.
+        <ExternalLink url="http://climatecasechart.com/" className="underline">
+          Climate Change Litigation Databases
+        </ExternalLink>
+        .
       </div>
     );
   }
@@ -50,8 +49,8 @@ const SearchResultList = ({ category, families }: TProps) => {
   return (
     <>
       {families?.map((family, index: number) => (
-        <div key={index} className="my-16 first:md:mt-4" data-cy="search-result">
-          <SearchResult family={family} />
+        <div key={index} className={`my-10 md:my-16 ${index === 0 && "md:mt-0"}`} data-cy="search-result">
+          <SearchResult family={family} onClick={() => onClick(index)} active={activeFamilyIndex === index} />
         </div>
       ))}
     </>

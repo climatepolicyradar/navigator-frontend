@@ -1,45 +1,24 @@
+import { useMemo } from "react";
+import { TMatchedFamily } from "@types";
 import { FamilyListItem } from "@components/document/FamilyListItem";
-import { TFamilyDocument, TMatchedFamily } from "@types";
+import { SearchMatchesButton } from "@components/buttons/SearchMatchesButton";
+import { matchesCount } from "@utils/matchesCount";
 
-interface SearchResultProps {
+interface ISearchResultProps {
   family: TMatchedFamily;
+  active: boolean;
+  onClick?: () => void;
 }
 
-const SearchResult = ({ family }: SearchResultProps) => {
-  const { family_documents, family_description_match, family_title_match } = family;
+const SearchResult = ({ family, active, onClick }: ISearchResultProps) => {
+  const { family_documents, family_slug } = family;
+  const numberOfMatches = useMemo(() => matchesCount(family_documents), [family_documents]);
 
-  const hasDocumentMatches = (documents: TFamilyDocument[]) => {
-    let hasMatches = false;
-    if (documents.length) {
-      for (const doc of documents) {
-        if (doc.document_passage_matches.length) {
-          hasMatches = true;
-          break;
-        }
-      }
-    }
-    return hasMatches;
-  };
-
-  const showMatches = () => {
-    let matches = [];
-    if (family_title_match) matches.push("Title");
-    if (family_description_match) matches.push("Summary");
-    if (hasDocumentMatches(family_documents)) matches.push("Document passage");
-
-    if(!matches.length) return null;
-
-    return (
-      <>
-        <div className="w-full lg:w-auto flex flex-nowrap mt-2 lg:mt-0 lg:mr-4">
-          <span className="font-medium lg:ml-10">Matches:&nbsp;</span>
-          <div className="flex-grow-0">{matches.join(", ")}</div>
-        </div>
-      </>
-    );
-  };
-
-  return <FamilyListItem family={family}>{showMatches()}</FamilyListItem>;
+  return (
+    <FamilyListItem family={family}>
+      {numberOfMatches > 0 && <SearchMatchesButton count={numberOfMatches} dataAttribute={family_slug} onClick={onClick} active={active} />}
+    </FamilyListItem>
+  );
 };
 
 export default SearchResult;

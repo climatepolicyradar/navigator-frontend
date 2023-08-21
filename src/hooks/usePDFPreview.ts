@@ -70,13 +70,18 @@ export default function usePDFPreview(document: TDocumentPage, documentPassageMa
   let viewSDKClient = null;
   let embedApi = null;
 
-  const createPDFClient = () => {
+  const createPDFClient = (startingPassage: number, onLoadCallback?: Function) => {
     viewSDKClient = new ViewSDKClient();
     viewSDKClient.ready().then(() => {
       const previewFilePromise = viewSDKClient.previewFile(document, adobeKey, "pdf-div", viewerConfig);
       previewFilePromise.then((adobeViewer: any) => {
+        // PDF PREVIEW -- SHOULD BE VISIBLE NOW
         adobeViewer.getAPIs().then((api: any) => {
           embedApi = api;
+          // if we have a passage index, scroll to it
+          if (!isNaN(Number(startingPassage))) {
+            passageIndexChangeHandler(startingPassage);
+          }
         });
         adobeViewer.getAnnotationManager().then((annotationManager: any) => {
           annotationManager.setConfig(annotationConfig);
@@ -84,6 +89,9 @@ export default function usePDFPreview(document: TDocumentPage, documentPassageMa
             annotationManager.addAnnotations(generateHighlights(document, documentPassageMatches));
           }
         });
+        if (onLoadCallback) {
+          onLoadCallback();
+        }
       });
     });
   };

@@ -220,12 +220,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                     <h3>Latest Documents</h3>
                     <div className="mt-4 md:flex">
                       <div className="flex-grow">
-                        <TabbedNav
-                          activeIndex={selectedCategoryIndex}
-                          items={documentCategories}
-                          handleTabClick={handleDocumentCategoryClick}
-                          indent={false}
-                        />
+                        <TabbedNav activeIndex={selectedCategoryIndex} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
                       </div>
                     </div>
                     {renderDocuments()}

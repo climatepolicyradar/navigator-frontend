@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Loader from "./Loader";
 import { TPassage } from "@types";
 
@@ -6,9 +7,10 @@ type TProps = {
   onClick: (index: number) => void;
   activeIndex?: number;
   showPageNumbers?: boolean;
+  pageColour?: string;
 };
 
-const PassageMatches = ({ passages, onClick, activeIndex, showPageNumbers = true }: TProps) => {
+const PassageMatches = ({ passages, onClick, activeIndex, showPageNumbers = true, pageColour = "blue-500" }: TProps) => {
   return (
     <>
       {!passages ? (
@@ -20,7 +22,7 @@ const PassageMatches = ({ passages, onClick, activeIndex, showPageNumbers = true
           {passages.map((item, index: number) => (
             <div key={item.text_block_id} data-analytics-passage={index + 1} id={`passage-${index}`} className="mb-4">
               <div
-                className={`p-4 cursor-pointer border border-white rounded-md bg-white hover:border-blue-300 ${
+                className={`p-4 cursor-pointer border border-gray-200 rounded-md bg-white hover:border-blue-300 ${
                   activeIndex === index ? "border-blue-300 bg-blue-100" : ""
                 }`}
                 onClick={() => {
@@ -28,11 +30,11 @@ const PassageMatches = ({ passages, onClick, activeIndex, showPageNumbers = true
                 }}
               >
                 {showPageNumbers && (
-                  <div className="text-sm text-blue-500">
+                  <div className={`text-sm ${"text-" + pageColour}`}>
                     <span className="font-bold">Page {item.text_block_page}</span>
                   </div>
                 )}
-                <p className="mt-2 text-indigo-400 font-light">{item.text}</p>
+                <p className="mt-2 text-indigo-400 font-light break-words">{item.text}</p>
               </div>
             </div>
           ))}

@@ -15,14 +15,16 @@ import Sort from "@components/filters/Sort";
 import Close from "@components/buttons/Close";
 import FilterToggle from "@components/buttons/FilterToggle";
 import Pagination from "@components/pagination";
+import Drawer from "@components/drawer/Drawer";
 import SearchResultList from "@components/blocks/SearchResultList";
-import Tooltip from "@components/tooltip";
-import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
-import { QUERY_PARAMS } from "@constants/queryParams";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { Loading } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
+import { NoOfResults } from "@components/NoOfResults";
+import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
 import { calculatePageCount } from "@utils/paging";
+import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
+import { QUERY_PARAMS } from "@constants/queryParams";
 import { PER_PAGE } from "@constants/paging";
 
 const Search = () => {
@@ -32,6 +34,7 @@ const Search = () => {
   const { t } = useTranslation(["searchStart", "searchResults"]);
   const [showFilters, setShowFilters] = useState(false);
   const [pageCount, setPageCount] = useState(1);
+  const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
 
   const updateCountries = useUpdateCountries();
 
@@ -203,45 +206,22 @@ const Search = () => {
     downloadCSV(router.query);
   };
 
+  const handleMatchesButtonClick = (index: number) => {
+    if (drawerFamily === false) return setDrawerFamily(index);
+    if (drawerFamily === index) return;
+
+    setDrawerFamily(false);
+
+    setTimeout(() => {
+      setDrawerFamily(index);
+    }, 150);
+  };
+
   useEffect(() => {
     if (hits !== undefined) {
       setPageCount(calculatePageCount(hits));
     }
   }, [hits]);
-
-  const renderNoOfResults = () => {
-    let resultsMsg = `Showing`;
-    if (hits < 100) {
-      resultsMsg += ` ${hits} results`;
-    } else {
-      resultsMsg += ` the top 100 results`;
-    }
-    return (
-      <>
-        {resultsMsg}{" "}
-        {qQueryString && (
-          <>
-            for "<i className="font-bold">{qQueryString}</i>"
-            {hits > 100 && (
-              <div className="ml-2 inline-block">
-                <Tooltip
-                  id="search-results-number"
-                  tooltip={
-                    <>
-                      We limit the number of search results to 100 so that you get the best performance from our tool. We’re working on a way to
-                      remove this limit.
-                    </>
-                  }
-                  icon="i"
-                  place="bottom"
-                />
-              </div>
-            )}
-          </>
-        )}
-      </>
-    );
-  };
 
   return (
     <Layout
@@ -250,10 +230,9 @@ const Search = () => {
     >
       <div>
         <section>
-          <div className="px-4 container">
+          <div className="px-4 mb-4 container">
             <BreadCrumbs label={"Search results"} />
-            <div className="md:pb-8 md:pt-4 md:w-3/4 md:mx-auto">
-              <p className="md:hidden mt-4 mb-2">{placeholder}</p>
+            <div className="pt-4 md:hidden">
               <SearchForm
                 placeholder={placeholder}
                 handleSearchInput={handleSearchInput}
@@ -289,10 +268,18 @@ const Search = () => {
               </div>
             </div>
             <div className="md:w-3/4">
-              <div className="md:pl-8">
+              <div className="md:pl-3">
+                <div className="hidden md:block mb-4 xl:w-3/4">
+                  <SearchForm
+                    placeholder={placeholder}
+                    handleSearchInput={handleSearchInput}
+                    input={qQueryString ? qQueryString.toString() : ""}
+                    handleSuggestion={handleSuggestion}
+                  />
+                </div>
                 <div className="lg:flex justify-between">
-                  <div className="text-sm my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
-                    {status === "success" && renderNoOfResults()}
+                  <div className="text-xs my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
+                    {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
                   </div>
                   <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
                     <span>Download data (.csv): </span>
@@ -315,22 +302,31 @@ const Search = () => {
                   )}
                 </div>
               </div>
-              <div className="mt-4 md:flex">
-                <div className="flex-grow">
-                  <TabbedNav activeIndex={getCategoryIndex()} items={DOCUMENT_CATEGORIES} handleTabClick={handleDocumentCategoryClick} />
-                </div>
-                <div className="mt-4 md:-mt-2 md:ml-2 lg:ml-8 md:mb-2 flex items-center" data-cy="sort">
-                  <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
-                </div>
+              <div className="mt-4">
+                <TabbedNav activeIndex={getCategoryIndex()} items={DOCUMENT_CATEGORIES} handleTabClick={handleDocumentCategoryClick} />
               </div>
 
-              <div data-cy="search-results" className="md:pl-8 md:mt-12 relative">
+              <div className="mt-4 md:pl-8 relative">
                 {status === "loading" ? (
                   <div className="w-full flex justify-center h-96">
                     <Loader />
                   </div>
                 ) : (
-                  <SearchResultList category={router.query[QUERY_PARAMS.category]?.toString()} families={families} />
+                  <>
+                    <div className="flex justify-end">
+                      <div>
+                        <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
+                      </div>
+                    </div>
+                    <div data-cy="search-results">
+                      <SearchResultList
+                        category={router.query[QUERY_PARAMS.category]?.toString()}
+                        families={families}
+                        onClick={handleMatchesButtonClick}
+                        activeFamilyIndex={drawerFamily}
+                      />
+                    </div>
+                  </>
                 )}
               </div>
             </div>
@@ -344,6 +340,9 @@ const Search = () => {
           </section>
         )}
       </div>
+      <Drawer show={drawerFamily !== false} setShow={setDrawerFamily}>
+        <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
+      </Drawer>
     </Layout>
   );
 };

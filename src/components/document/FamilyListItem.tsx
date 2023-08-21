@@ -1,14 +1,9 @@
 import { FC, ReactNode, useContext } from "react";
 import { TFamily } from "@types";
 import { truncateString } from "@helpers/index";
-import { getCategoryIcon } from "@helpers/getCatgeoryIcon";
-import { CountryLink } from "@components/CountryLink";
 import { ThemeContext } from "@context/ThemeContext";
-import { getCountryName } from "@helpers/getCountryFields";
-import useConfig from "@hooks/useConfig";
 import { LinkWithQuery } from "@components/LinkWithQuery";
-import { convertDate } from "@utils/timedate";
-import { isSystemGeo } from "@utils/isSystemGeo";
+import { FamilyMeta } from "./FamilyMeta";
 
 type TProps = {
   family: TFamily;
@@ -18,11 +13,6 @@ type TProps = {
 export const FamilyListItem: FC<TProps> = ({ family, children }) => {
   const { family_slug, family_geography, family_description, family_name, family_date, family_category } = family;
   const theme = useContext(ThemeContext);
-  const configQuery = useConfig();
-  const { data: { countries = [] } = {} } = configQuery;
-
-  const country_name = getCountryName(family_geography, countries);
-  const [year] = convertDate(family_date);
 
   return (
     <div className="relative">
@@ -39,27 +29,12 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
           </LinkWithQuery>
         </h2>
       </div>
-      <div className="flex flex-wrap text-sm text-indigo-400 mt-4 items-center font-medium">
-        {family_category && (
-          <div className="mr-2" title={family_category} data-cy="result-category">
-            {getCategoryIcon(family_category, "20")}
-          </div>
-        )}
-        {!isSystemGeo(family_geography) && (
-          <CountryLink countryCode={family_geography}>
-            <span>{country_name}</span>
-          </CountryLink>
-        )}
-        {!isNaN(year) && (
-          <span data-cy="result-year">
-            {!isSystemGeo(family_geography) && ", "}
-            {year}
-          </span>
-        )}
+      <div className="flex flex-wrap text-sm gap-1 text-gray-700 mt-2 items-center font-medium">
+        <FamilyMeta category={family_category} date={family_date} geography={family_geography} />
         {children}
       </div>
       <p
-        className="text-indigo-400 mt-3 text-content"
+        className="mt-2 text-content"
         data-cy="result-description"
         dangerouslySetInnerHTML={{ __html: truncateString(family_description.replace(/(<([^>]+)>)/gi, ""), 375) }}
       />

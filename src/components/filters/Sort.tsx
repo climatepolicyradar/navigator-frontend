@@ -20,7 +20,7 @@ const Sort = ({ updateSort, defaultValue, isBrowsing = false }: TProps) => {
   }, [defaultValue]);
 
   return (
-    <>
+    <div className="flex items-center" data-cy="sort">
       <div className="flex-shrink-0">Sort by:</div>
       <select className="border border-gray-300 small ml-2 z-0" onChange={updateSort} defaultValue={defaultV} key={defaultV}>
         {options.map((item) => (
@@ -29,7 +29,7 @@ const Sort = ({ updateSort, defaultValue, isBrowsing = false }: TProps) => {
           </option>
         ))}
       </select>
-    </>
+    </div>
   );
 };
 export default Sort;
