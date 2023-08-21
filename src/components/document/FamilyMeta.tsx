@@ -1,6 +1,7 @@
 import useConfig from "@hooks/useConfig";
 import { CountryLink } from "@components/CountryLink";
 import { getCountryName } from "@helpers/getCountryFields";
+import { getCategoryName } from "@helpers/getCategoryName";
 import { isSystemGeo } from "@utils/isSystemGeo";
 import { convertDate } from "@utils/timedate";
 import { TCategory } from "@types";
@@ -34,7 +35,7 @@ export const FamilyMeta = ({ category, date, geography }: TProps) => {
       {category && (
         <>
           <span>&middot;</span>
-          <span className="capitalize">{category}</span>
+          <span className="capitalize">{getCategoryName(category)}</span>
         </>
       )}
     </>
