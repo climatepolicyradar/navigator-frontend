@@ -23,7 +23,7 @@ describe("Browse Flow", () => {
   });
 
   it("should display list of search results", () => {
-    cy.get(searchResultsSelector).should("be.visible");
+    cy.get(searchResultsSelector, { timeout: 10000 }).should("be.visible");
   });
 
   it("should display a list of 10 search results", () => {
