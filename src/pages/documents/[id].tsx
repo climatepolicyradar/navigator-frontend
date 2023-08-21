@@ -29,7 +29,8 @@ const passageClasses = (docType: string) => {
 const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family }: TProps) => {
   const [passageIndex, setPassageIndex] = useState(null);
   const router = useRouter();
-  const startingPassage = !isNaN(Number(router.query.passage)) ? Number(router.query.passage) : 0;
+  const startingPassage = Number(router.query.passage) || 0;
+  console.log("startingPassage", startingPassage);
   const { status, families, searchQuery } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
 
   const passageMatches = [];
