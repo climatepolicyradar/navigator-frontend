@@ -313,7 +313,7 @@ const Search = () => {
                   </div>
                 ) : (
                   <>
-                    <div className="flex justify-end" data-cy="sort">
+                    <div className="flex justify-end">
                       <div>
                         <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
                       </div>

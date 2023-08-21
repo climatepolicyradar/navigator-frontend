@@ -17,7 +17,7 @@ const TabbedNavItem = ({ title, index, activeTab, onClick }: TabbedNavItemProps)
 
   return (
     <>
-      <button onClick={onClick} className={cssClass} data-tip="React-tooltip" data-for={tooltipId}>
+      <button onClick={onClick} className={cssClass} data-tip="React-tooltip" data-for={tooltipId} data-cy="tabbed-nav-item">
         {title}
       </button>
       {tooltipText !== "" && (

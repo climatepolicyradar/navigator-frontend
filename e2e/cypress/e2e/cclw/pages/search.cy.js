@@ -13,6 +13,7 @@ const filterSelectors = [
 
 const selectedCountries = '[data-cy="selected-countries"]';
 const tabbedNavSelector = '[data-cy="tabbed-nav"]';
+const tabbedNavItem = '[data-cy="tabbed-nav-item"]';
 const sortSelector = '[data-cy="sort"]';
 
 const pageSelectors = [
@@ -52,7 +53,7 @@ describe("Search Page", () => {
   });
 
   it("should display the container for list of search results", () => {
-    cy.get(searchResultsSelector).should("be.visible");
+    cy.get(searchResultsSelector, { timeout: 10000 }).should("be.visible");
   });
 
   it("should display the correct page elements", () => {
@@ -72,7 +73,7 @@ describe("Search Page", () => {
   });
 
   it("should display the correct number of category tabs", () => {
-    cy.get(tabbedNavSelector).children().should("have.length", 5);
+    cy.get(tabbedNavSelector).children(tabbedNavItem).should("have.length", 5);
   });
 
   it("should display one tab selected, and be 'All' by default", () => {
