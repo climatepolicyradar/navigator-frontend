@@ -237,14 +237,14 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 /* Tooltips styles to override the default */
 .customTooltip {
-  @apply bg-white border-cpr-dark leading-5 max-w-[300px] #{!important};
+  @apply bg-cpr-dark border-cpr-dark rounded-lg leading-5 max-w-[300px] #{!important};
   &.show {
     opacity: 0.98 !important;
   }
   &.place-top {
     filter: drop-shadow(2px 1px 2px rgba(black, 0.2)) !important;
     &:after {
-      border-top-color: white !important;
+      border-top-color: cpr-dark !important;
       border-top-style: solid !important;
       border-top-width: 6px !important;
     }
@@ -252,7 +252,7 @@ input[type="search"]::-webkit-search-results-decoration {
   &.place-left {
     filter: drop-shadow(2px 1px 2px rgba(black, 0.2)) !important;
     &:after {
-      border-left-color: white !important;
+      border-left-color: cpr-dark !important;
       border-left-style: solid !important;
       border-left-width: 6px !important;
     }
@@ -260,7 +260,7 @@ input[type="search"]::-webkit-search-results-decoration {
   &.place-right {
     filter: drop-shadow(2px 1px 2px rgba(black, 0.2)) !important;
     &:after {
-      border-right-color: white !important;
+      border-right-color: cpr-dark !important;
       border-right-style: solid !important;
       border-right-width: 6px !important;
     }
@@ -268,7 +268,7 @@ input[type="search"]::-webkit-search-results-decoration {
   &.place-bottom {
     filter: drop-shadow(2px 1px 2px rgba(black, 0.2)) !important;
     &:after {
-      border-bottom-color: white !important;
+      border-bottom-color: cpr-dark !important;
       border-bottom-style: solid !important;
       border-bottom-width: 6px !important;
     }
