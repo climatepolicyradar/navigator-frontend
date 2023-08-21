@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { ApiClient } from "@api/http-common";
+import useSearch from "@hooks/useSearch";
 import { DocumentHead } from "@components/document/DocumentHead";
 import Layout from "@components/layouts/Main";
 import EmbeddedPDF from "@components/EmbeddedPDF";
 import PassageMatches from "@components/PassageMatches";
-import { TDocumentFamily, TDocumentPage } from "@types";
-import useSearch from "@hooks/useSearch";
-import { QUERY_PARAMS } from "@constants/queryParams";
 import Loader from "@components/Loader";
-import { getDocumentDescription } from "@constants/metaDescriptions";
 import { ExternalLink } from "@components/ExternalLink";
 import { BookOpenIcon } from "@components/svg/Icons";
+import { QUERY_PARAMS } from "@constants/queryParams";
+import { getDocumentDescription } from "@constants/metaDescriptions";
+import { TDocumentFamily, TDocumentPage } from "@types";
 
 type TProps = {
   document: TDocumentPage;
@@ -45,12 +45,21 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const hasPassageMatches = passageMatches.length > 0;
   const canPreview = document.content_type === "application/pdf";
 
+  const scrollToPassage = (index: number) => {
+    setTimeout(() => {
+      const passage = window.document.getElementById(`passage-${index}`);
+      if (!passage) return;
+      const topPos = passage.offsetTop;
+      const container = window.document.getElementById("passages-container");
+      if (!container) return;
+      container.scrollTo({ top: topPos, behavior: "smooth" });
+    }, 100);
+  };
+
   const handlePassageClick = (index: number) => {
     if (!canPreview) return;
     setPassageIndex(index);
-    setTimeout(() => {
-      window.document.getElementById("document-viewer").scrollIntoView({ behavior: "smooth" });
-    }, 100);
+    scrollToPassage(index);
   };
 
   const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
@@ -59,6 +68,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     if (!url) return;
     window.open(url);
   };
+
+  useEffect(() => {
+    // Scroll to starting passage on page load
+    if (startingPassage) {
+      scrollToPassage(startingPassage);
+    }
+  }, [startingPassage]);
 
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)}>
@@ -80,9 +96,10 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
               <div className="md:flex md:h-[80vh]">
                 {hasPassageMatches && (
                   <div
+                    id="passages-container"
                     className={`pr-4 max-h-[30vh] md:block md:max-h-full ${passageClasses(
                       document.content_type
-                    )} overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500`}
+                    )} relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500`}
                   >
                     <div className="my-4" data-cy="document-matches-description">
                       <p className="">

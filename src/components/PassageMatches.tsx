@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Loader from "./Loader";
 import { TPassage } from "@types";
 
