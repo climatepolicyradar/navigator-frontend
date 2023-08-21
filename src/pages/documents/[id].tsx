@@ -29,6 +29,7 @@ const passageClasses = (docType: string) => {
 const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family }: TProps) => {
   const [passageIndex, setPassageIndex] = useState(null);
   const router = useRouter();
+  const startingPassage = !isNaN(Number(router.query.passage)) ? Number(router.query.passage) : 0;
   const { status, families, searchQuery } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
 
   const passageMatches = [];
@@ -93,14 +94,21 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                     <PassageMatches
                       passages={passageMatches}
                       onClick={handlePassageClick}
-                      activeIndex={passageIndex}
+                      activeIndex={passageIndex ?? startingPassage}
                       showPageNumbers={document.content_type === "application/pdf"}
                     />
                   </div>
                 )}
                 {status === "success" && (
                   <div className={`pt-4 flex-1 h-[400px] md:block md:h-full ${hasPassageMatches ? "md:border-l md:border-l-gray-200" : ""}`}>
-                    {canPreview && <EmbeddedPDF document={document} documentPassageMatches={passageMatches} passageIndex={passageIndex} />}
+                    {canPreview && (
+                      <EmbeddedPDF
+                        document={document}
+                        documentPassageMatches={passageMatches}
+                        passageIndex={passageIndex}
+                        startingPassageIndex={startingPassage}
+                      />
+                    )}
                     {!canPreview && (
                       <div className="ml-4 text-center text-gray-600">
                         <div className="mb-2 flex justify-center">

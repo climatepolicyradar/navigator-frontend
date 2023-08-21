@@ -16,10 +16,10 @@ type TProps = {
 
 export const LinkWithQuery = ({ href, hash, query, children, cypress, ...props }: TProps) => {
   const router = useRouter();
-  router.query = CleanRouterQuery(router.query);
+  const queryObj = CleanRouterQuery({ ...router.query });
 
   return (
-    <Link href={{ pathname: href, query: { ...router.query }, hash: hash }} data-cy={cypress} {...props}>
+    <Link href={{ pathname: href, query: queryObj, hash: hash }} data-cy={cypress} {...props}>
       {children}
     </Link>
   );

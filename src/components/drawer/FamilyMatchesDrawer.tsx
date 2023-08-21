@@ -22,8 +22,9 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
 
   const onPassageClick = (passageIndex: number, documentIndex: number) => {
     const document = family_documents[documentIndex];
-    router.query = CleanRouterQuery(router.query);
-    router.push({ pathname: `/documents/${document.document_slug}`, query: { ...router.query, passage: passageIndex } });
+    const queryObj = CleanRouterQuery({ ...router.query });
+    queryObj.passage = passageIndex.toString();
+    router.push({ pathname: `/documents/${document.document_slug}`, query: queryObj });
   };
 
   return (
