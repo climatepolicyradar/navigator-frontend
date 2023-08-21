@@ -35,7 +35,9 @@ export const FamilyMeta = ({ category, date, geography }: TProps) => {
       {category && (
         <>
           <span>&middot;</span>
-          <span className="capitalize">{getCategoryName(category)}</span>
+          <span className="capitalize" data-cy="result-category">
+            {getCategoryName(category)}
+          </span>
         </>
       )}
     </>

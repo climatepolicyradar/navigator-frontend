@@ -306,7 +306,7 @@ const Search = () => {
                 <TabbedNav activeIndex={getCategoryIndex()} items={DOCUMENT_CATEGORIES} handleTabClick={handleDocumentCategoryClick} />
               </div>
 
-              <div data-cy="search-results" className="mt-4 md:pl-8 relative">
+              <div className="mt-4 md:pl-8 relative">
                 {status === "loading" ? (
                   <div className="w-full flex justify-center h-96">
                     <Loader />
@@ -318,12 +318,14 @@ const Search = () => {
                         <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
                       </div>
                     </div>
-                    <SearchResultList
-                      category={router.query[QUERY_PARAMS.category]?.toString()}
-                      families={families}
-                      onClick={handleMatchesButtonClick}
-                      activeFamilyIndex={drawerFamily}
-                    />
+                    <div data-cy="search-results">
+                      <SearchResultList
+                        category={router.query[QUERY_PARAMS.category]?.toString()}
+                        families={families}
+                        onClick={handleMatchesButtonClick}
+                        activeFamilyIndex={drawerFamily}
+                      />
+                    </div>
                   </>
                 )}
               </div>
