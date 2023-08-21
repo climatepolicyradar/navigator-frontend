@@ -6,10 +6,9 @@ interface TabbedNavProps {
   items: string[];
   activeIndex: number;
   showBorder?: boolean;
-  indent?: boolean;
 }
 
-const TabbedNav = ({ handleTabClick, items, activeIndex = 0, showBorder = true, indent = true }: TabbedNavProps) => {
+const TabbedNav = ({ handleTabClick, items, activeIndex = 0, showBorder = true }: TabbedNavProps) => {
   const [activeTab, setActiveTab] = useState(activeIndex);
 
   useEffect(() => {
@@ -32,7 +31,6 @@ const TabbedNav = ({ handleTabClick, items, activeIndex = 0, showBorder = true, 
           onClick={(e) => {
             onClick(e, index);
           }}
-          indent={indent}
         />
       ))}
     </div>
