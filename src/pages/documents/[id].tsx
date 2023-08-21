@@ -52,7 +52,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
       const topPos = passage.offsetTop;
       const container = window.document.getElementById("passages-container");
       if (!container) return;
-      container.scrollTo({ top: topPos, behavior: "smooth" });
+      container.scrollTo({ top: topPos - 10, behavior: "smooth" });
     }, 100);
   };
 
