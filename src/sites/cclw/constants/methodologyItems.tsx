@@ -1,4 +1,5 @@
 import { ExternalLink } from "@components/ExternalLink";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 type TDataListItem = {
   title: string;
@@ -35,14 +36,18 @@ export const METHODOLOGY: TDataListItem[] = [
         </p>
 
         <p>
-          <b className="font-bold">The database includes legislation and policy at the national and sectoral levels only</b>. At present, it excludes
-          information about the policy response of sub-national governments. It also excludes international legislation, such as treaties. Documents
-          submitted only to international organisations such as the UNFCCC are generally excluded unless they have been converted into specific
-          legislation or formally adopted as executive policies. In most cases, this means that documents such as the Long-term Low Emissions
-          Development Strategies and National Adaptation Plans submitted to UNFCCC registries are not included. Users are encouraged to consult the
-          relevant UN websites where these documents may be relevant to their search. For EU member states, laws transposing EU Directives are in the
-          process of being added to the database, along with the relevant EU law, since in many instances these may contain additional relevant
-          provisions. Where possible these additional provisions have been noted in the description of the relevant law.{" "}
+          <b className="font-bold">The dataset includes legislation and policy at the national and sectoral levels only</b>. At present, it excludes
+          information about the policy response of sub-national governments. For EU member states, laws transposing EU Directives are in the process
+          of being added to the database, along with the relevant EU law, since in many instances these may contain additional relevant provisions.
+          Where possible these additional provisions have been noted in the description of the relevant law.
+        </p>
+        <p>
+          As noted above, alongside the CCLW dataset, the database includes documents submitted by Parties and non-Party stakeholders to the UNFCCC,
+          including, among others, Nationally Determined Contributions (NDCs), National Communications and Adaptation Communications, IPCC reports,
+          and submissions to the first Global Stocktake. For more details on the scope of UNFCCC documents, please see FAQ{" "}
+          <LinkWithQuery href="/faq" hash="unfccc-docs">
+            Which Submissions to the UNFCCC are included?
+          </LinkWithQuery>
         </p>
 
         <p>
