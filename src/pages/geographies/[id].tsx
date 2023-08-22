@@ -317,13 +317,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let targetsData: TTarget[] = [];
 
   try {
-    const { data: returnedData }: { data: TGeographyStats } = await client.get(`/geo_stats/${id}`, null);
+    const { data: returnedData }: { data: TGeographyStats } = await client.get(`/geo_stats/${id}`);
     geographyData = returnedData;
   } catch (error) {
     // TODO: handle error more elegantly
   }
   try {
-    const { data: returnedData }: { data: TGeographySummary } = await client.get(`/summaries/geography/${id}`, { group_documents: true });
+    const { data: returnedData }: { data: TGeographySummary } = await client.get(`/summaries/geography/${id}`);
     summaryData = returnedData;
   } catch {
     // TODO: handle error more elegantly
