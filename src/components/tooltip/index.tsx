@@ -1,4 +1,4 @@
-import ReactTooltip from "react-tooltip";
+import { ToolTipSSR } from "./TooltipSSR";
 
 interface TooltipProps {
   id: string;
@@ -10,12 +10,10 @@ interface TooltipProps {
 const Tooltip = ({ id, tooltip, icon = "?", place }: TooltipProps) => {
   return (
     <div>
-      <button data-tip="React-tooltip" data-for={id} className="circle-sm rounded-full bg-blue-600 text-white flex justify-center items-center text-sm">
+      <button data-tip={tooltip} data-for={id} className="circle-sm rounded-full bg-blue-600 text-white flex justify-center items-center text-sm">
         {icon}
       </button>
-      <ReactTooltip className="customTooltip" id={id} place={place}>
-        {tooltip}
-      </ReactTooltip>
+      <ToolTipSSR id={id} place={place} tooltip={tooltip} />
     </div>
   );
 };

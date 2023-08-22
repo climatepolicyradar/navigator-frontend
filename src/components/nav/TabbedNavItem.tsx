@@ -1,5 +1,5 @@
+import { ToolTipSSR } from "@components/tooltip/TooltipSSR";
 import { getCategoryTooltip } from "@helpers/getCategoryTooltip";
-import ReactTooltip from "react-tooltip";
 
 interface TabbedNavItemProps {
   title: string;
@@ -17,14 +17,10 @@ const TabbedNavItem = ({ title, index, activeTab, onClick }: TabbedNavItemProps)
 
   return (
     <>
-      <button onClick={onClick} className={cssClass} data-tip="React-tooltip" data-for={tooltipId} data-cy="tabbed-nav-item">
+      <button onClick={onClick} className={cssClass} data-tip={tooltipText} data-for={tooltipId} data-cy="tabbed-nav-item">
         {title}
       </button>
-      {tooltipText !== "" && (
-        <ReactTooltip className="customTooltip" id={tooltipId} place={"top"}>
-          {tooltipText}
-        </ReactTooltip>
-      )}
+      {tooltipText !== "" && <ToolTipSSR id={tooltipId} place={"top"} />}
     </>
   );
 };
