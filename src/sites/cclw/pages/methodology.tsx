@@ -1,9 +1,9 @@
-import { AccordianItem } from "@cclw/components/AccordianItem";
-import { METHODOLOGY } from "@cclw/constants/methodologyItems";
+import { Fragment } from "react";
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import { Fragment } from "react";
+import { AccordianItem } from "@cclw/components/AccordianItem";
+import { METHODOLOGY } from "@cclw/constants/methodologyItems";
 
 const Methodology = () => {
   return (

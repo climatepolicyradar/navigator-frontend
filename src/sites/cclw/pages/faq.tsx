@@ -1,7 +1,7 @@
 import { Fragment } from "react";
+import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { AccordianItem } from "@cclw/components/AccordianItem";
 import { FAQS } from "@cclw/constants/faqs";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 
 const FAQ = () => {
   return (
