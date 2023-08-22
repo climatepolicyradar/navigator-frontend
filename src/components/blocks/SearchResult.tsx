@@ -3,6 +3,7 @@ import { TMatchedFamily } from "@types";
 import { FamilyListItem } from "@components/document/FamilyListItem";
 import { SearchMatchesButton } from "@components/buttons/SearchMatchesButton";
 import { matchesCount } from "@utils/matchesCount";
+import { ToolTipSSR } from "@components/tooltip/TooltipSSR";
 
 interface ISearchResultProps {
   family: TMatchedFamily;
@@ -16,7 +17,12 @@ const SearchResult = ({ family, active, onClick }: ISearchResultProps) => {
 
   return (
     <FamilyListItem family={family}>
-      {numberOfMatches > 0 && <SearchMatchesButton count={numberOfMatches} dataAttribute={family_slug} onClick={onClick} active={active} />}
+      {numberOfMatches > 0 && (
+        <div data-tip="View passages in this document that match your search" data-for={family_slug}>
+          <SearchMatchesButton count={numberOfMatches} dataAttribute={family_slug} onClick={onClick} active={active} />
+          <ToolTipSSR id={family_slug} place={"top"} />
+        </div>
+      )}
     </FamilyListItem>
   );
 };
