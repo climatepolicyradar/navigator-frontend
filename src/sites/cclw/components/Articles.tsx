@@ -15,12 +15,12 @@ type TArticle = {
 
 const ARTICLES: TArticle[] = [
   {
-    url: "https://www.lse.ac.uk/granthaminstitute/publication/climate-change-law-in-europe-what-do-new-eu-climate-laws-mean-for-the-courts/",
+    url: "https://www.lse.ac.uk/granthaminstitute/publication/submission-to-the-special-rapporteur-on-the-promotion-and-protection-of-human-rights-in-the-context-of-climate-change/",
     external: true,
-    type: "Policy brief",
-    title: "Climate change law in Europe: what do new EU climate laws mean for the courts?",
-    imageUrl: "/images/cclw/images/eu2-min.jpg",
-    imageAlt: "European Commission",
+    type: "Policy publication",
+    title: "Submission to the Special Rapporteur on the promotion and protection of human rights in the context of climate change",
+    imageUrl: "/images/cclw/images/portuguese-supreme-court.jpg",
+    imageAlt: "Portuguese Supreme Court",
   },
   {
     url: "https://www.lse.ac.uk/granthaminstitute/news/evolving-regulation-of-companies-in-climate-change-framework-laws/",
@@ -45,11 +45,11 @@ const ARTICLES: TArticle[] = [
     meta: "Uganda · Act · 2021",
   },
   {
-    url: "/document/greenhouse-gas-reduction-and-management-act_1357",
-    type: "Legislation",
-    title: "Greenhouse Gas Reduction and Management Act",
-    countryCode: "twn",
-    meta: "Taiwan · Law - Act · 2021",
+    url: "/document/plan-to-control-illegal-deforestation-and-recovery-of-native-vegetation-ppcdam-and-ppcerrado_212e",
+    type: "Policy",
+    title: "Plan to Control Illegal Deforestation and Recovery of Native Vegetation (PPCDAm and PPCerrado)",
+    countryCode: "bra",
+    meta: "Brazil · Plan · 2004",
   },
 ];
 
