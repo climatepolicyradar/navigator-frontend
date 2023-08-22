@@ -19,7 +19,7 @@ export const LinkWithQuery = ({ href, hash, query, children, cypress, ...props }
   const queryObj = CleanRouterQuery({ ...router.query });
 
   return (
-    <Link href={{ pathname: href }} data-cy={cypress} {...props}>
+    <Link href={{ pathname: href, query: queryObj, hash: hash }} data-cy={cypress} {...props}>
       {children}
     </Link>
   );
