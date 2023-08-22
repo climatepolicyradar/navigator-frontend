@@ -166,7 +166,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let familyData: TDocumentFamily;
 
   try {
-    const { data: returnedData } = await client.get(`/documents/${id}`, { group_documents: true });
+    const { data: returnedData } = await client.get(`/documents/${id}`);
     documentData = returnedData.document;
     familyData = returnedData.family;
   } catch {

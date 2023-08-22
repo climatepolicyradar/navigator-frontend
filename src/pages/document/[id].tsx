@@ -318,7 +318,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let targetsData: TTarget[] = [];
 
   try {
-    const { data: returnedData } = await client.get(`/documents/${id}`, { group_documents: true });
+    const { data: returnedData } = await client.get(`/documents/${id}`);
     familyData = returnedData;
   } catch (error) {
     // TODO: handle error more elegantly
