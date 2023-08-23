@@ -23,7 +23,7 @@ class ApiClient {
   get(url: string, params?: any): Promise<AxiosResponse> {
     // console.log(`GET: ${this.baseUrl}${url}`);
     return this.axiosClient
-      .get(`${url}?group_documents=true`, { params })
+      .get(url, { params })
       .then((res: any) => res)
       .catch((err) => {
         console.log(err);
@@ -34,7 +34,7 @@ class ApiClient {
   post<T>(url: string, values: any, config = {}) {
     // console.log(`POST: ${this.baseUrl}${url}`);
     return this.axiosClient
-      .post<T>(`${url}?group_documents=true`, values, config)
+      .post<T>(url, values, config)
       .then((res) => res)
       .catch((error) => {
         if (axios.isAxiosError(error)) {
