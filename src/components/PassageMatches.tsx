@@ -20,7 +20,7 @@ const PassageMatches = ({ passages, onClick, activeIndex, showPageNumbers = true
       ) : (
         <div className="my-4" id="passage-matches">
           {passages.map((item, index: number) => (
-            <div key={item.text_block_id} data-analytics-passage={index + 1} id={`passage-${index}`} className="mb-4">
+            <div key={item.text_block_id} data-analytics="document-passage-result" id={`passage-${index}`} className="mb-4">
               <div
                 className={`p-4 cursor-pointer border border-gray-200 rounded-md bg-white hover:border-blue-300 ${
                   activeIndex === index ? "border-blue-300 bg-blue-100" : ""
