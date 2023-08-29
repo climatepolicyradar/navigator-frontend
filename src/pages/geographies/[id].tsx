@@ -8,20 +8,19 @@ import { SingleCol } from "@components/SingleCol";
 import Event from "@components/blocks/Event";
 import { Timeline } from "@components/blocks/Timeline";
 import { CountryHeader } from "@components/blocks/CountryHeader";
-import { KeyDetail } from "@components/KeyDetail";
 import { Divider } from "@components/dividers/Divider";
-import { RightArrowIcon, UNFCCCIcon } from "@components/svg/Icons";
+import { RightArrowIcon } from "@components/svg/Icons";
 import { FamilyListItem } from "@components/document/FamilyListItem";
 import { Targets } from "@components/Targets";
 import Button from "@components/buttons/Button";
 import TabbedNav from "@components/nav/TabbedNav";
 import TextLink from "@components/nav/TextLink";
-import { LawIcon, PolicyIcon, CaseIcon, TargetIcon } from "@components/svg/Icons";
+import { TargetIcon } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
-import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { getCountryCode } from "@helpers/getCountryFields";
 import { extractNestedData } from "@utils/extractNestedData";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
+import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { getGeoDescription } from "@constants/metaDescriptions";
 import { systemGeoNames } from "@constants/systemGeos";
@@ -38,8 +37,8 @@ const categoryByIndex = {
   0: "All",
   1: "Legislation",
   2: "Policies",
-  3: "Litigation",
-  4: "UNFCCC",
+  3: "UNFCCC",
+  4: "Litigation",
 };
 
 const keyDetailCssClasses = "md:col-span-2 lg:col-span-4";
@@ -56,7 +55,31 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
 
-  const documentCategories = DOCUMENT_CATEGORIES;
+  const documentCategories = DOCUMENT_CATEGORIES.map((category) => {
+    let count = null;
+    switch (category) {
+      case "All":
+        count = summary.family_counts.Legislative + summary.family_counts.Executive + summary.family_counts.UNFCCC;
+        break;
+      case "Legislation":
+        count = summary.family_counts.Legislative;
+        break;
+      case "Policies":
+        count = summary.family_counts.Executive;
+        break;
+      case "UNFCCC":
+        count = summary.family_counts.UNFCCC;
+        break;
+      case "Litigation":
+        count = 0;
+        break;
+    }
+
+    return {
+      title: category,
+      count,
+    };
+  });
 
   const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number) => {
     e.preventDefault();
@@ -126,17 +149,8 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
             </div>
           ));
     }
-    // Litigation
-    if (selectedCategoryIndex === 3) {
-      return (
-        <div className="mt-4 pb-4 border-b">
-          Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center’s{" "}
-          <ExternalLink url="http://climatecasechart.com/">Climate Change Litigation Databases</ExternalLink>.
-        </div>
-      );
-    }
     // UNFCCC
-    if (selectedCategoryIndex === 4) {
+    if (selectedCategoryIndex === 3) {
       return summary.top_families.UNFCCC.length === 0
         ? renderEmpty("UNFCCC")
         : summary.top_families.UNFCCC.map((family) => (
@@ -144,6 +158,15 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
               <FamilyListItem family={family} />
             </div>
           ));
+    }
+    // Litigation
+    if (selectedCategoryIndex === 4) {
+      return (
+        <div className="mt-4 pb-4 border-b">
+          Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center’s{" "}
+          <ExternalLink url="http://climatecasechart.com/">Climate Change Litigation Databases</ExternalLink>.
+        </div>
+      );
     }
   };
 
@@ -158,50 +181,6 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
         ) : (
           <section className="mb-8">
             <CountryHeader country={geography} />
-            <div className="container mt-12">
-              <section className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-px mb-8 auto-rows-fr">
-                <KeyDetail
-                  detail="Legislation"
-                  extraDetail="Laws, Acts, Constitutions (legislative branch)"
-                  amount={summary.family_counts.Legislative}
-                  icon={<LawIcon />}
-                  onClick={() => setselectedCategoryIndex(1)}
-                  cssClasses={keyDetailCssClasses}
-                />
-                <KeyDetail
-                  detail="Policies"
-                  extraDetail="Policies, strategies, decrees, action plans (from executive branch)"
-                  amount={summary.family_counts.Executive}
-                  icon={<PolicyIcon />}
-                  onClick={() => setselectedCategoryIndex(2)}
-                  cssClasses={keyDetailCssClasses}
-                />
-                <KeyDetail
-                  detail="UNFCCC"
-                  extraDetail="Documents submitted to the UNFCCC (including NDCs)"
-                  amount={summary.family_counts.UNFCCC}
-                  icon={<UNFCCCIcon />}
-                  onClick={() => setselectedCategoryIndex(4)}
-                  cssClasses={keyDetailCssClasses}
-                />
-                <KeyDetail
-                  detail="Litigation"
-                  extraDetail="Court cases and tribunal proceedings"
-                  amount={<span className="text-sm font-normal">Coming soon</span>}
-                  icon={<CaseIcon />}
-                  onClick={() => setselectedCategoryIndex(3)}
-                  cssClasses={`${keyDetailCssClasses} lg:col-start-3`}
-                />
-                <KeyDetail
-                  detail="Targets"
-                  extraDetail="Climate targets in National Law & Policy"
-                  amount={targets.length}
-                  icon={<TargetIcon />}
-                  onClick={() => handleTargetClick()}
-                  cssClasses={`${keyDetailCssClasses} md:col-start-2`}
-                />
-              </section>
-            </div>
             <SingleCol>
               {hasEvents && (
                 <section className="mt-12 hidden">
@@ -225,7 +204,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                     </div>
                     {renderDocuments()}
                   </section>
-                  {selectedCategoryIndex !== 3 && (
+                  {selectedCategoryIndex !== 4 && (
                     <div className="mt-12" data-cy="see-more-button">
                       <Divider>
                         <Button color="secondary" extraClasses="flex items-center" onClick={handleDocumentSeeMoreClick}>

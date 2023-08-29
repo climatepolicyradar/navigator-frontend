@@ -1,14 +1,19 @@
 import { useState, useEffect } from "react";
 import TabbedNavItem from "./TabbedNavItem";
 
-interface TabbedNavProps {
+type TTabItems = {
+  title: string;
+  count?: number;
+};
+
+type TTabbedNavProps = {
   handleTabClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number): void;
-  items: string[];
+  items: TTabItems[];
   activeIndex: number;
   showBorder?: boolean;
-}
+};
 
-const TabbedNav = ({ handleTabClick, items, activeIndex = 0, showBorder = true }: TabbedNavProps) => {
+const TabbedNav = ({ handleTabClick, items, activeIndex = 0, showBorder = true }: TTabbedNavProps) => {
   const [activeTab, setActiveTab] = useState(activeIndex);
 
   useEffect(() => {
@@ -25,7 +30,8 @@ const TabbedNav = ({ handleTabClick, items, activeIndex = 0, showBorder = true }
       {items.map((item, index) => (
         <TabbedNavItem
           key={`tab${index}`}
-          title={item}
+          title={item.title}
+          count={item.count}
           index={index}
           activeTab={activeTab}
           onClick={(e) => {

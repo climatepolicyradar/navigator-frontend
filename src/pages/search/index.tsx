@@ -49,6 +49,12 @@ const Search = () => {
 
   const placeholder = t("Search for something, e.g. 'carbon taxes'");
 
+  const documentCategories = DOCUMENT_CATEGORIES.map((category) => {
+    return {
+      title: category,
+    };
+  });
+
   const toggleFilters = () => {
     setShowFilters(!showFilters);
   };
@@ -303,7 +309,7 @@ const Search = () => {
                 </div>
               </div>
               <div className="mt-4">
-                <TabbedNav activeIndex={getCategoryIndex()} items={DOCUMENT_CATEGORIES} handleTabClick={handleDocumentCategoryClick} />
+                <TabbedNav activeIndex={getCategoryIndex()} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
               </div>
 
               <div className="mt-4 md:pl-8 relative">
