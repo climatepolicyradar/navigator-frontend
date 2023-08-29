@@ -117,10 +117,12 @@ export function SearchIcon({ width, height, color = "currentColor" }: IconProps)
   );
 }
 
-export function MenuIcon({ color = "currentColor" }: IconProps) {
+export function MenuIcon({ color = "currentColor", width = "24", height = "24" }: IconProps) {
   return (
-    <svg viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg" height="35" width="35">
-      <path d="M4.375 17.5H30.625M4.375 8.75H30.625M4.375 26.25H30.625" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: `${width}px`, height: `${height}px` }}>
+      <g>
+        <path d="M3.30957 18V16H21.3096V18H3.30957ZM3.30957 13V11H21.3096V13H3.30957ZM3.30957 8V6H21.3096V8H3.30957Z" fill={color} />
+      </g>
     </svg>
   );
 }
