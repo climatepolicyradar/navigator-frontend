@@ -45,17 +45,20 @@
   h5 {
     @apply text-white;
   }
-  
+
   a {
-    @apply text-blue-200;
+    @apply text-white underline;
     &:hover {
-      @apply underline;
+      @apply text-blue-200;
     }
   }
 
   .footer__section {
-    @apply text-sm lg:text-base;
+    @apply text-sm;
     > * {
+      @apply mb-2;
+    }
+    h5 {
       @apply mb-4;
     }
   }

@@ -3,6 +3,7 @@ import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import MENU_LINKS from "../constants/menuLinks";
 import GRI_LINKS, { TLinkItem } from "../constants/griLinks";
+import { Feedback } from "./Feedback";
 
 const Footer = () => {
   const renderLink = (item: TLinkItem) => {
@@ -16,21 +17,12 @@ const Footer = () => {
     <footer className="flex flex-col bg-grey-400">
       <div className="py-12">
         <div className="container">
-          <p className="text-lg mb-6 md:text-center" data-cy="report-problem">
-            To report a problem email us at support@climatepolicyradar.org <br /> Spotted missing or inaccurate data?{" "}
-            <ExternalLink
-              url="https://docs.google.com/forms/d/e/1FAIpQLScNy6pZTInQKdxNDaZPKyPGgbfRktstzgVDjGBCeTnLVzl3Pg/viewform"
-              className="underline"
-            >
-              Let us know
-            </ExternalLink>
-          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="footer__section" data-cy="footer-cclw">
               <h5>Climate Change Laws of the World</h5>
               <ul className="mb-6">
                 {MENU_LINKS.map((link) => (
-                  <li key={link.href} className="mb-1">
+                  <li key={link.href} className="mb-2">
                     {renderLink(link)}
                   </li>
                 ))}
@@ -41,20 +33,20 @@ const Footer = () => {
               <h5>{GRI_LINKS.title}</h5>
               <ul>
                 {GRI_LINKS.links.map((link) => (
-                  <li key={link.text} className="mb-1">
+                  <li key={link.text} className="mb-2">
                     {renderLink(link)}
                   </li>
                 ))}
               </ul>
               <div className="footer__section">
                 <ul>
-                  <li className="mb-1">
+                  <li className="mb-2">
                     For media enquiries contact{" "}
                     <ExternalLink url="mailto:gri.cgl@lse.co.uk" className="block">
                       gri.cgl@lse.co.uk
                     </ExternalLink>
                   </li>
-                  <li className="mb-1">
+                  <li className="mb-2">
                     <LinkWithQuery href="/contact">Full contact details</LinkWithQuery>
                   </li>
                 </ul>
@@ -65,11 +57,11 @@ const Footer = () => {
                   <ExternalLink url="https://twitter.com/GRI_LSE">
                     <img src="/images/social/twitter_col.svg" alt="Twitter Logo" />
                   </ExternalLink>
-                  <ExternalLink url="https://www.youtube.com/user/GranthamResearch">
-                    <img src="/images/social/youtube_col.svg" alt="YouTube Logo" />
-                  </ExternalLink>
                   <ExternalLink url="https://www.linkedin.com/company/grantham-research-institute-lse/">
                     <img src="/images/social/linkedIn_col.svg" alt="LinkedIn Logo" />
+                  </ExternalLink>
+                  <ExternalLink url="https://www.youtube.com/user/GranthamResearch">
+                    <img src="/images/social/youtube_col.svg" alt="YouTube Logo" />
                   </ExternalLink>
                 </div>
               </div>
@@ -97,16 +89,19 @@ const Footer = () => {
                   <ExternalLink url="https://twitter.com/climatepolradar">
                     <img src="/images/social/twitter_col.svg" alt="Twitter Logo" />
                   </ExternalLink>
-                  <ExternalLink url="https://www.youtube.com/channel/UCjcQnXKzZmo7r9t-RnHjbnA">
-                    <img src="/images/social/youtube_col.svg" alt="YouTube Logo" />
-                  </ExternalLink>
                   <ExternalLink url="https://www.linkedin.com/company/climate-policy-radar">
                     <img src="/images/social/linkedIn_col.svg" alt="LinkedIn Logo" />
                   </ExternalLink>
+                  <ExternalLink url="https://www.youtube.com/channel/UCjcQnXKzZmo7r9t-RnHjbnA">
+                    <img src="/images/social/youtube_col.svg" alt="YouTube Logo" />
+                  </ExternalLink>
                   <ExternalLink url="https://github.com/climatepolicyradar/">
-                    <img src="/images/social/github.svg" alt="GitHub Logo" />
+                    <img src="/images/social/github-white.svg" alt="GitHub Logo" />
                   </ExternalLink>
                 </div>
+              </div>
+              <div className="footer__section mt-4">
+                <Feedback />
               </div>
             </div>
           </div>
