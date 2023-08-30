@@ -9,7 +9,7 @@ import Event from "@components/blocks/Event";
 import { Timeline } from "@components/blocks/Timeline";
 import { CountryHeader } from "@components/blocks/CountryHeader";
 import { Divider } from "@components/dividers/Divider";
-import { RightArrowIcon } from "@components/svg/Icons";
+import { DownArrowIcon, RightArrowIcon } from "@components/svg/Icons";
 import { FamilyListItem } from "@components/document/FamilyListItem";
 import { Targets } from "@components/Targets";
 import Button from "@components/buttons/Button";
@@ -41,7 +41,7 @@ const categoryByIndex = {
   4: "Litigation",
 };
 
-const keyDetailCssClasses = "md:col-span-2 lg:col-span-4";
+const MAX_NUMBER_OF_FAMILIES = 3;
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets }: TProps) => {
   const router = useRouter();
@@ -108,6 +108,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geography.name}`}</p>;
 
   const renderDocuments = () => {
+    // const executiveFamilies = summary.top_families.Executive;
     // All
     if (selectedCategoryIndex === 0) {
       let allFamilies = summary.top_families.Executive.concat(summary.top_families.Legislative).concat(summary.top_families.UNFCCC);
@@ -117,13 +118,13 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       allFamilies.sort((a, b) => {
         return new Date(b.family_date).getTime() - new Date(a.family_date).getTime();
       });
-      if (allFamilies.length > 5) {
-        allFamilies = allFamilies.slice(0, 5);
+      if (allFamilies.length > MAX_NUMBER_OF_FAMILIES) {
+        allFamilies = allFamilies.slice(0, MAX_NUMBER_OF_FAMILIES);
       }
       return allFamilies.map((family) => {
         if (family)
           return (
-            <div key={family.family_slug} className="mt-4 mb-10">
+            <div key={family.family_slug} className="mt-6">
               <FamilyListItem family={family} />
             </div>
           );
@@ -133,8 +134,8 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     if (selectedCategoryIndex === 1) {
       return summary.top_families.Legislative.length === 0
         ? renderEmpty("Legislative")
-        : summary.top_families.Legislative.map((family) => (
-            <div key={family.family_slug} className="mt-4 mb-10">
+        : summary.top_families.Legislative.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
+            <div key={family.family_slug} className="mt-6">
               <FamilyListItem family={family} />
             </div>
           ));
@@ -143,8 +144,8 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     if (selectedCategoryIndex === 2) {
       return summary.top_families.Executive.length === 0
         ? renderEmpty("Executive")
-        : summary.top_families.Executive.map((family) => (
-            <div key={family.family_slug} className="mt-4 mb-10">
+        : summary.top_families.Executive.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
+            <div key={family.family_slug} className="mt-6">
               <FamilyListItem family={family} />
             </div>
           ));
@@ -153,8 +154,8 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     if (selectedCategoryIndex === 3) {
       return summary.top_families.UNFCCC.length === 0
         ? renderEmpty("UNFCCC")
-        : summary.top_families.UNFCCC.map((family) => (
-            <div key={family.family_slug} className="mt-4 mb-10">
+        : summary.top_families.UNFCCC.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
+            <div key={family.family_slug} className="mt-6">
               <FamilyListItem family={family} />
             </div>
           ));
@@ -183,7 +184,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
             <CountryHeader country={geography} />
             <SingleCol>
               {hasEvents && (
-                <section className="mt-12 hidden">
+                <section className="mt-10 hidden">
                   <h3 className="mb-4">Events</h3>
                   <Timeline>
                     {summary.events.map((event: TEvent, index: number) => (
@@ -195,8 +196,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
               {hasFamilies && (
                 <>
-                  <section className="mt-12" data-cy="top-documents">
-                    <h3>Latest Documents</h3>
+                  <section className="mt-10" data-cy="top-documents">
                     <div className="mt-4 md:flex">
                       <div className="flex-grow">
                         <TabbedNav activeIndex={selectedCategoryIndex} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
@@ -205,36 +205,28 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                     {renderDocuments()}
                   </section>
                   {selectedCategoryIndex !== 4 && (
-                    <div className="mt-12" data-cy="see-more-button">
-                      <Divider>
-                        <Button color="secondary" extraClasses="flex items-center" onClick={handleDocumentSeeMoreClick}>
-                          <>
-                            See more
-                            <span className="ml-8">
-                              <RightArrowIcon height="20" width="20" />
-                            </span>
-                          </>
-                        </Button>
-                      </Divider>
+                    <div data-cy="see-more-button">
+                      <Button color="secondary" extraClasses="my-6" onClick={handleDocumentSeeMoreClick}>
+                        View more documents
+                      </Button>
+                      <Divider></Divider>
                     </div>
                   )}
                 </>
               )}
               {hasTargets && (
                 <>
-                  <section className="mt-12" id="targets">
+                  <section className="mt-10" id="targets">
                     <div>
-                      <div className="lg:flex justify-between items-end">
-                        <h3 className="flex mb-4">
-                          <span className="mr-2">
-                            <TargetIcon />
-                          </span>
-                          Targets ({publishedTargets.length})
+                      <div className="justify-between items-end lg:flex">
+                        <h3 className="flex items-center gap-2">
+                          <TargetIcon />
+                          Targets <span className="text-gray-700 font-normal">({publishedTargets.length})</span>
                         </h3>
 
                         <ExternalLink
                           url="https://docs.google.com/forms/d/e/1FAIpQLSfP2ECC6W92xF5HHvy5KAPVTim0Agrbr4dD2LhiWkDjcY2f6g/viewform"
-                          className="block text-sm my-4 md:mt-0"
+                          className="block mt-4 underline md:mt-0"
                           cy="download-target-csv"
                         >
                           Request to download all target data (.csv)
@@ -244,27 +236,32 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                     </div>
                   </section>
                   {publishedTargets.length > numberOfTargetsToDisplay && (
-                    <div className="mt-12">
-                      <Divider>
-                        <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}>
-                          See more
-                        </Button>
-                      </Divider>
+                    <div data-cy="more-targets-button">
+                      <Button
+                        color="secondary"
+                        extraClasses="flex gap-2 items-center my-6"
+                        onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
+                      >
+                        <DownArrowIcon /> View more targets
+                      </Button>
+                      <Divider></Divider>
                     </div>
                   )}
                   {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
-                    <div className="mt-12">
-                      <Divider>
-                        <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(5)}>
-                          Hide &#8679;
-                        </Button>
-                      </Divider>
+                    <div>
+                      <Button color="secondary" extraClasses="flex gap-2 items-center my-6" onClick={() => setNumberOfTargetsToDisplay(5)}>
+                        <div className="rotate-180">
+                          <DownArrowIcon />
+                        </div>{" "}
+                        Hide targets
+                      </Button>
+                      <Divider></Divider>
                     </div>
                   )}
                 </>
               )}
               {geography.legislative_process && (
-                <section className="mt-12" data-cy="legislative-process">
+                <section className="mt-10" data-cy="legislative-process">
                   <h3 className="mb-4">Legislative Process</h3>
                   <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
                 </section>
