@@ -17,6 +17,7 @@ import TabbedNav from "@components/nav/TabbedNav";
 import TextLink from "@components/nav/TextLink";
 import { TargetIcon } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
+import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { getCountryCode } from "@helpers/getCountryFields";
 import { extractNestedData } from "@utils/extractNestedData";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
@@ -181,8 +182,11 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
           </SingleCol>
         ) : (
           <section className="mb-8">
-            <CountryHeader country={geography} />
+            <div className="container">
+              <BreadCrumbs label={geography.name} />
+            </div>
             <SingleCol>
+              <CountryHeader country={geography} targetCount={hasTargets ? publishedTargets?.length : 0} onTargetClick={handleTargetClick} />
               {hasEvents && (
                 <section className="mt-10 hidden">
                   <h3 className="mb-4">Events</h3>
