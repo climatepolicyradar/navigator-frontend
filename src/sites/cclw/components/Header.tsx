@@ -6,12 +6,14 @@ import { FloatingSearch } from "@components/FloatingSearch";
 import LogoMono from "@components/svg/LogoMono";
 import { Menu } from "./Menu";
 
+const NON_SEARCH_PAGES = ["/", "/search"];
+
 const Header = ({ background = true }) => {
   const router = useRouter();
 
   // Do not show search on specific pages
   const showSearch = () => {
-    return !["/", "/search"].includes(router.pathname);
+    return !NON_SEARCH_PAGES.includes(router.pathname);
   };
 
   return (
