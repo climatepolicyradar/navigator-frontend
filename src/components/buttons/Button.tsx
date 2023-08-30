@@ -33,7 +33,7 @@ const Button = ({
       conditionalClasses = "bg-blue-500 border border-blue-500 text-white hover:bg-secondary-700 hover:border-secondary-700 hover:text-white";
       break;
     case "secondary":
-      conditionalClasses = "bg-white border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white";
+      conditionalClasses = "bg-white border border-gray-300 text-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-white";
       break;
     case "light-hover-dark":
       conditionalClasses = "bg-blue-500 border border-blue-500 text-white hover:bg-indigo-600 hover:border-indigo-600 hover:text-white";
