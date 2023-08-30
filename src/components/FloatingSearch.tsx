@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { QUERY_PARAMS } from "@constants/queryParams";
 import { SearchIcon } from "./svg/Icons";
+import { CleanRouterQuery } from "@utils/cleanRouterQuery";
+import { QUERY_PARAMS } from "@constants/queryParams";
 
 export const FloatingSearch = () => {
   const router = useRouter();
@@ -10,8 +11,9 @@ export const FloatingSearch = () => {
 
   // We specifically do not want to erase any filtering
   const handleSearch = () => {
-    router.query[QUERY_PARAMS.query_string] = search;
-    router.push({ pathname: "/search", query: router.query });
+    const queryObj = CleanRouterQuery({ ...router.query });
+    queryObj[QUERY_PARAMS.query_string] = search;
+    router.push({ pathname: "/search", query: queryObj });
   };
 
   useEffect(() => {
