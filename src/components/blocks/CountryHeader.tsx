@@ -31,30 +31,32 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
         <div className="mt-4 shrink-0">
           <div className="grid grid-cols-2 gap-6 items-center text-indigo-700">
             <div className="col-span-2">
-              <div className="" data-cy="region" data-analytics-region={countryRegion}>
+              <div data-cy="region" data-analytics-region={countryRegion}>
                 {countryRegion}
               </div>
-              <div className="font-bold text-sm">
-                {federal && <>Federative {federal && federal_details && <span className="font-light text-xs">({federal_details})</span>}</>}
+            </div>
+            <div className="col-span-2">
+              <div className="font-bold">
+                {federal && <>Federative {federal && federal_details && <span className="font-light text-sm">({federal_details})</span>}</>}
               </div>
             </div>
             {political_groups !== "" && (
               <div data-cy="political-group">
-                <div className="text-xs font-bold">Political Groups</div>
-                <div className="text-sm">{political_groups.split(";").join(", ")}</div>
+                <div className="text-sm font-bold">Political Groups</div>
+                <div>{political_groups.split(";").join(", ")}</div>
               </div>
             )}
             {worldbank_income_group !== "" && (
               <div data-cy="world-bank-income-group">
-                <div className="text-xs font-bold">World Bank Income Group</div>
-                <div className="text-sm">{worldbank_income_group}</div>
+                <div className="text-sm font-bold">World Bank Income Group</div>
+                <div>{worldbank_income_group}</div>
               </div>
             )}
             {climate_risk_index !== null && (
               <div data-cy="global-climate-risk-index">
-                <div className="text-xs font-bold">Global Climate Risk Index</div>
+                <div className="text-sm font-bold">Global Climate Risk Index</div>
                 <div className="flex">
-                  <div className="text-sm mr-1">{climate_risk_index}</div>{" "}
+                  <div className=" mr-1">{climate_risk_index}</div>{" "}
                   <Tooltip
                     id="country-gcri"
                     tooltip={
@@ -74,8 +76,8 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
             )}
             {global_emissions_percent !== null && (
               <div data-cy="share-of-global-emissions">
-                <div className="text-xs font-bold">Share of Global Emissions</div>
-                <div className="text-sm">{global_emissions_percent}%</div>
+                <div className="text-sm font-bold">Share of Global Emissions</div>
+                <div>{global_emissions_percent}%</div>
               </div>
             )}
           </div>
