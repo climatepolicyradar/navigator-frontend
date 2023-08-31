@@ -9,7 +9,7 @@ import Event from "@components/blocks/Event";
 import { Timeline } from "@components/blocks/Timeline";
 import { CountryHeader } from "@components/blocks/CountryHeader";
 import { Divider } from "@components/dividers/Divider";
-import { DownArrowIcon, RightArrowIcon } from "@components/svg/Icons";
+import { DownArrowIcon } from "@components/svg/Icons";
 import { FamilyListItem } from "@components/document/FamilyListItem";
 import { Targets } from "@components/Targets";
 import Button from "@components/buttons/Button";
@@ -27,6 +27,7 @@ import { getGeoDescription } from "@constants/metaDescriptions";
 import { systemGeoNames } from "@constants/systemGeos";
 import { TGeographyStats, TGeographySummary } from "@types";
 import { TTarget, TEvent, TGeography } from "@types";
+import SearchForm from "@components/forms/SearchForm";
 
 type TProps = {
   geography: TGeographyStats;
@@ -44,6 +45,8 @@ const categoryByIndex = {
 
 const MAX_NUMBER_OF_FAMILIES = 3;
 
+const FEATURED_SEARCHES = ["Methane emissions", "Fossil fuel divestment", "Net zero growth plan", "Sustainable fishing"];
+
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets }: TProps) => {
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
@@ -55,12 +58,13 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
   const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
+  const allDocumentsCount = summary.family_counts.Legislative + summary.family_counts.Executive + summary.family_counts.UNFCCC;
 
   const documentCategories = DOCUMENT_CATEGORIES.map((category) => {
     let count = null;
     switch (category) {
       case "All":
-        count = summary.family_counts.Legislative + summary.family_counts.Executive + summary.family_counts.UNFCCC;
+        count = allDocumentsCount;
         break;
       case "Legislation":
         count = summary.family_counts.Legislative;
@@ -104,6 +108,14 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       newQuery[QUERY_PARAMS.category] = documentCategory;
     }
     router.push({ pathname: "/search", query: { ...newQuery } });
+  };
+
+  // Search handlers
+  const handleSearchInput = (term: string) => {
+    const queryObj = {};
+    queryObj[QUERY_PARAMS.query_string] = term;
+    queryObj[QUERY_PARAMS.country] = geography.geography_slug;
+    router.push({ pathname: "/search", query: queryObj });
   };
 
   const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geography.name}`}</p>;
@@ -187,17 +199,31 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
             </div>
             <SingleCol>
               <CountryHeader country={geography} targetCount={hasTargets ? publishedTargets?.length : 0} onTargetClick={handleTargetClick} />
-              {hasEvents && (
-                <section className="mt-10 hidden">
-                  <h3 className="mb-4">Events</h3>
-                  <Timeline>
-                    {summary.events.map((event: TEvent, index: number) => (
-                      <Event event={event} key={`event-${index}`} index={index} last={index === summary.events.length - 1 ? true : false} />
-                    ))}
-                  </Timeline>
-                </section>
-              )}
-
+              <section className="mt-10" data-cy="top-documents">
+                <h3 className="mb-4">Documents</h3>
+                <div className="p-4 rounded-xl bg-blue-100">
+                  <SearchForm
+                    placeholder={`Search the full text of ${allDocumentsCount} documents authored by ${geography.name}`}
+                    handleSearchInput={handleSearchInput}
+                    input={""}
+                  />
+                  <div className="mt-4 flex gap-2 text-sm">
+                    <span className="text-blue-900 pt-1">Featured searches</span>
+                    <ul className="flex gap-2 flex-wrap items-center">
+                      {FEATURED_SEARCHES.map((searchTerm) => (
+                        <li key={searchTerm}>
+                          <button
+                            onClick={() => handleSearchInput(searchTerm)}
+                            className="text-gray-800 bg-white border border-gray-300 rounded-[40px] py-1 px-2 transition hover:bg-blue-600 hover:text-white"
+                          >
+                            {searchTerm}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </section>
               {hasFamilies && (
                 <>
                   <section className="mt-10" data-cy="top-documents">
@@ -263,6 +289,16 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                     </div>
                   )}
                 </>
+              )}
+              {hasEvents && (
+                <section className="mt-10 hidden">
+                  <h3 className="mb-4">Events</h3>
+                  <Timeline>
+                    {summary.events.map((event: TEvent, index: number) => (
+                      <Event event={event} key={`event-${index}`} index={index} last={index === summary.events.length - 1 ? true : false} />
+                    ))}
+                  </Timeline>
+                </section>
               )}
               {geography.legislative_process && (
                 <section className="mt-10" data-cy="legislative-process">

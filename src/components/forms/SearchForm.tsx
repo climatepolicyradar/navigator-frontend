@@ -5,10 +5,10 @@ import useWindowResize from "@hooks/useWindowResize";
 import { SearchDropdown } from "./SearchDropdown";
 
 interface SearchFormProps {
+  input?: string;
   placeholder: string;
   handleSearchInput(term: string): void;
-  handleSuggestion(term: string, filter?: string, filterValue?: string): void;
-  input?: string;
+  handleSuggestion?(term: string, filter?: string, filterValue?: string): void;
 }
 
 const SearchForm = ({ input, placeholder, handleSearchInput, handleSuggestion }: SearchFormProps) => {
@@ -27,7 +27,9 @@ const SearchForm = ({ input, placeholder, handleSearchInput, handleSuggestion }:
 
   const handleSuggestionClick = (term: string, filter?: string, filterValue?: string) => {
     setTerm(term);
-    handleSuggestion(term, filter, filterValue);
+    if (handleSuggestion) {
+      handleSuggestion(term, filter, filterValue);
+    }
     return setFormFocus(false);
   };
 
@@ -80,7 +82,7 @@ const SearchForm = ({ input, placeholder, handleSearchInput, handleSuggestion }:
             <SearchButton onClick={handleSearchButtonClick} />
           </div>
         </div>
-        <SearchDropdown term={term} show={formFocus} handleSearchClick={handleSuggestionClick} />
+        {handleSuggestion && <SearchDropdown term={term} show={formFocus} handleSearchClick={handleSuggestionClick} />}
       </div>
     </form>
   );
