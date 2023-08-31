@@ -27,7 +27,7 @@ const Header = ({ background = true }) => {
             </ExternalLink>
             <ExternalLink className="flex" url="https://www.lse.ac.uk/granthaminstitute/">
               <div className="flex" data-cy="gri-logo">
-                <Image src="/images/cclw/partners/gri-white-alternative-logo.png" alt="GRI logo" width={186} height={35} />
+                <Image src="/images/cclw/partners/gri-3-line-logo.png" alt="GRI logo" width={203} height={35} />
               </div>
             </ExternalLink>
             {showSearch() && (
