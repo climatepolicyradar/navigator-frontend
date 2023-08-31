@@ -100,9 +100,9 @@ export default function usePDFPreview(document: TDocumentPage, documentPassageMa
     if (!embedApi) {
       return;
     }
-    if (passageIndex === null) return;
+    if (passageIndex === null || !documentPassageMatches[passageIndex]) return;
     setTimeout(() => {
-      embedApi.gotoLocation(documentPassageMatches[passageIndex].text_block_page);
+      embedApi.gotoLocation(documentPassageMatches[passageIndex]?.text_block_page);
     }, PDF_SCROLL_DELAY);
   };
 
