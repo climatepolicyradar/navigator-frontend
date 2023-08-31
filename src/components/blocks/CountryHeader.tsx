@@ -28,58 +28,79 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
     <div>
       <h1 className="text-4xl">{name}</h1>
       <div className="flex items-start justify-between overflow-hidden">
-        <div className="mt-4 shrink-0">
-          <div className="grid grid-cols-2 gap-6 items-center text-indigo-700">
-            <div className="col-span-2">
+        <div className="mt-4 shrink-0 md:basis-4/6">
+          <div className="grid grid-cols-5 gap-6 items-center text-indigo-700">
+            <div className="col-span-5">
               <div data-cy="region" data-analytics-region={countryRegion}>
                 {countryRegion}
               </div>
             </div>
-            <div className="col-span-2">
+            <div className="col-span-5">
               <div className="font-bold">
                 {federal && <>Federative {federal && federal_details && <span className="font-light text-sm">({federal_details})</span>}</>}
               </div>
             </div>
-            {political_groups !== "" && (
-              <div data-cy="political-group">
-                <div className="text-sm font-bold">Political Groups</div>
-                <div>{political_groups.split(";").join(", ")}</div>
-              </div>
-            )}
-            {climate_risk_index !== null && (
-              <div data-cy="global-climate-risk-index">
-                <div className="text-sm font-bold">Global Climate Risk Index</div>
-                <div className="flex items-center">
-                  <div className=" mr-1">{climate_risk_index}</div>{" "}
-                  <Tooltip
-                    id="country-gcri"
-                    tooltip={
-                      <>
-                        <p className="mb-4">
-                          The annually published Global Climate Risk Index analyses to what extent countries have been affected by the impacts of
-                          weather-related loss events (storms, floods, heat waves etc.).
-                        </p>
-                        Published by German Watch{" "}
-                        <ExternalLink url="https://www.germanwatch.org/en/cri">https://www.germanwatch.org/en/cri</ExternalLink>
-                      </>
-                    }
-                    icon="i"
-                  />
-                </div>
-              </div>
-            )}
-            {worldbank_income_group !== "" && (
-              <div data-cy="world-bank-income-group">
-                <div className="text-sm font-bold">World Bank Income Group</div>
-                <div>{worldbank_income_group}</div>
-              </div>
-            )}
-            {global_emissions_percent !== null && (
-              <div data-cy="share-of-global-emissions">
-                <div className="text-sm font-bold">Share of Global Emissions</div>
-                <div>{global_emissions_percent}%</div>
-              </div>
-            )}
+            <div data-cy="political-group" className="col-span-2">
+              {political_groups !== "" && (
+                <>
+                  <div className="text-sm font-bold">Political Groups</div>
+                  <div>{political_groups.split(";").join(", ")}</div>
+                </>
+              )}
+            </div>
+            <div data-cy="global-climate-risk-index" className="col-span-2">
+              {climate_risk_index !== null && (
+                <>
+                  <div className="text-sm font-bold">Global Climate Risk Index</div>
+                  <div className="flex items-center">
+                    <div className=" mr-1">{climate_risk_index}</div>{" "}
+                    <Tooltip
+                      id="country-gcri"
+                      tooltip={
+                        <>
+                          <p className="mb-4">
+                            The annually published Global Climate Risk Index analyses to what extent countries have been affected by the impacts of
+                            weather-related loss events (storms, floods, heat waves etc.).
+                          </p>
+                          Published by German Watch{" "}
+                          <ExternalLink url="https://www.germanwatch.org/en/cri">https://www.germanwatch.org/en/cri</ExternalLink>
+                        </>
+                      }
+                      icon="i"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+            <div data-cy="targets" className="col-span-1">
+              {targetCount > 0 && (
+                <>
+                  <div className="text-sm font-bold">Targets</div>
+                  <div className="flex items-center">
+                    <button onClick={onTargetClick} className="mr-1 underline hover:text-blue-800">
+                      {targetCount}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+            <div data-cy="world-bank-income-group" className="col-span-2">
+              {worldbank_income_group !== "" && (
+                <>
+                  <div className="text-sm font-bold">World Bank Income Group</div>
+                  <div>{worldbank_income_group}</div>
+                </>
+              )}
+            </div>
+            <div data-cy="share-of-global-emissions" className="col-span-2">
+              {global_emissions_percent !== null && (
+                <>
+                  <div className="text-sm font-bold">Share of Global Emissions</div>
+                  <div>{global_emissions_percent}%</div>
+                </>
+              )}
+            </div>
+            <div></div>
           </div>
         </div>
         {countryGeography?.value && (
