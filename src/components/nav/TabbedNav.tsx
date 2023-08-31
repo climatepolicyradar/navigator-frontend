@@ -7,7 +7,7 @@ type TTabItems = {
 };
 
 type TTabbedNavProps = {
-  handleTabClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number): void;
+  handleTabClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string): void;
   items: TTabItems[];
   activeIndex: number;
   showBorder?: boolean;
@@ -20,9 +20,9 @@ const TabbedNav = ({ handleTabClick, items, activeIndex = 0, showBorder = true }
     setActiveTab(activeIndex);
   }, [activeIndex]);
 
-  const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number) => {
+  const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string) => {
     setActiveTab(index);
-    handleTabClick(e, index);
+    handleTabClick(e, index, value);
   };
 
   return (
@@ -34,9 +34,7 @@ const TabbedNav = ({ handleTabClick, items, activeIndex = 0, showBorder = true }
           count={item.count}
           index={index}
           activeTab={activeTab}
-          onClick={(e) => {
-            onClick(e, index);
-          }}
+          onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, value: string) => onClick(e, index, value)}
         />
       ))}
     </div>

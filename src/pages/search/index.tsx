@@ -132,9 +132,9 @@ const Search = () => {
     handleSearchChange(QUERY_PARAMS.query_string, term);
   };
 
-  const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement>, _?: number, value?: string) => {
     delete router.query[QUERY_PARAMS.offset];
-    const val = e.currentTarget.textContent;
+    const val = value ?? e.currentTarget.textContent;
     let category = val;
     router.query[QUERY_PARAMS.category] = category;
     // Default search is all categories
