@@ -19,6 +19,7 @@ const SearchForm = ({ input, placeholder, handleSearchInput, handleSuggestion }:
 
   const clearSearch = () => {
     setTerm("");
+    handleSearchInput("");
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +79,7 @@ const SearchForm = ({ input, placeholder, handleSearchInput, handleSuggestion }:
               <Close onClick={clearSearch} size="10" />
             </div>
           )}
-          <div className="absolute top-0 right-0 h-full flex items-center justify-end z-20">
+          <div className="absolute p-[1px] pr-0 top-0 right-0 h-full flex items-center justify-end z-20">
             <SearchButton onClick={handleSearchButtonClick} />
           </div>
         </div>
