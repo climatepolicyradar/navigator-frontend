@@ -9,7 +9,7 @@ import Event from "@components/blocks/Event";
 import { Timeline } from "@components/blocks/Timeline";
 import { CountryHeader } from "@components/blocks/CountryHeader";
 import { Divider } from "@components/dividers/Divider";
-import { DownArrowIcon } from "@components/svg/Icons";
+import { DownArrowIcon, LegislativeIcon } from "@components/svg/Icons";
 import { FamilyListItem } from "@components/document/FamilyListItem";
 import { Targets } from "@components/Targets";
 import Button from "@components/buttons/Button";
@@ -250,7 +250,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                     <div>
                       <div className="justify-between items-end lg:flex">
                         <h3 className="flex items-center gap-2">
-                          <TargetIcon />
+                          <TargetIcon width="20" height="20" />
                           Targets <span className="text-gray-700 font-normal">({publishedTargets.length})</span>
                         </h3>
 
@@ -302,7 +302,9 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
               )}
               {geography.legislative_process && (
                 <section className="mt-10" data-cy="legislative-process">
-                  <h3 className="mb-4">Legislative Process</h3>
+                  <h3 className="mb-4 flex items-center gap-2">
+                    <LegislativeIcon width="20" height="20" /> Legislative Process
+                  </h3>
                   <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
                 </section>
               )}

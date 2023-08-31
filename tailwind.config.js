@@ -98,7 +98,7 @@ module.exports = {
       fontSize: {
         h1: "48px",
         h2: "32px",
-        h3: "24px",
+        h3: "20px",
         h4: "21px",
         h5: "18px",
         h6: "16px",
