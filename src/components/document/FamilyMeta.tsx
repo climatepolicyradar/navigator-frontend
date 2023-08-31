@@ -22,19 +22,21 @@ export const FamilyMeta = ({ category, date, geography }: TProps) => {
   return (
     <>
       {!isSystemGeo(geography) && (
-        <CountryLink countryCode={geography} className="text-gray-700">
-          <span>{country_name}</span>
-        </CountryLink>
+        <>
+          <CountryLink countryCode={geography} className="text-gray-700">
+            <span>{country_name}</span>
+          </CountryLink>
+          <span>&middot;</span>
+        </>
       )}
       {!isNaN(year) && (
         <>
-          <span>&middot;</span>
           <span data-cy="result-year">{year}</span>
+          <span>&middot;</span>
         </>
       )}
       {category && (
         <>
-          <span>&middot;</span>
           <span className="capitalize" data-cy="result-category">
             {getCategoryName(category)}
           </span>
