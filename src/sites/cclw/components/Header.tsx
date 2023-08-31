@@ -1,10 +1,9 @@
-/* eslint-disable @next/next/no-img-element */
 import { useRouter } from "next/router";
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { FloatingSearch } from "@components/FloatingSearch";
-import LogoMono from "@components/svg/LogoMono";
-import { Menu } from "./Menu";
+import { Menu } from "@cclw/components/Menu";
+import Image from "next/image";
 
 const NON_SEARCH_PAGES = ["/", "/search"];
 
@@ -20,30 +19,30 @@ const Header = ({ background = true }) => {
     <header data-cy="header" className={`${background ? "bg-cclw-dark" : ""} w-full pt-6 lg:pt-0`}>
       <div className="container">
         <div className="grid grid-cols-2 auto-cols-auto lg:my-6">
-          <div className="items-end flex flex-grow-0">
+          <div className="items-end flex gap-1 flex-grow-0">
             <ExternalLink className="flex" url="https://www.lse.ac.uk/">
-              <div className="h-[40px] w-[40px] flex" data-cy="lse-logo">
-                <img src="/images/partners/lse-logo.png" alt="LSE logo" width={40} height={40} />
+              <div className="flex" data-cy="lse-logo">
+                <Image src="/images/partners/lse-logo.png" alt="LSE logo" width={34} height={35} />
               </div>
             </ExternalLink>
             <ExternalLink className="flex" url="https://www.lse.ac.uk/granthaminstitute/">
-              <div className="h-[40px] w-[180px] flex" data-cy="gri-logo">
-                <img src="/images/cclw/partners/gri_white_logo.svg" alt="GRI logo" width={180} height={40} />
-              </div>
-            </ExternalLink>
-          </div>
-          <div className="flex justify-self-end text-sm flex-grow-0 items-end">
-            <ExternalLink className="flex text-white" url="https://www.climatepolicyradar.org">
-              <div data-cy="cpr-logo" className="md:flex">
-                <span className="text-xs md:mr-2">Powered by</span>
-                <LogoMono fixed />
+              <div className="flex" data-cy="gri-logo">
+                <Image src="/images/cclw/partners/gri-white-alternative-logo.png" alt="GRI logo" width={186} height={35} />
               </div>
             </ExternalLink>
             {showSearch() && (
-              <div className="hidden md:block ml-4 md:w-[220px] lg:[280px]">
+              <div className="hidden md:block md:w-[220px] lg:[280px]">
                 <FloatingSearch />
               </div>
             )}
+          </div>
+          <div className="flex justify-self-end text-sm flex-grow-0 items-end">
+            <ExternalLink className="flex text-white hover:text-white hover:no-underline" url="https://www.climatepolicyradar.org">
+              <div data-cy="cpr-logo" className="flex flex-col">
+                <span className="text-[11px] leading-none">Powered by</span>
+                <Image width={157} height={24} alt="Climate Policy Radar logo" src="/images/cpr-logo-horizontal.png" />
+              </div>
+            </ExternalLink>
             <Menu />
           </div>
           <div className="col-span-2 flex-1 flex justify-center text-white order-last items-end basis-full text-center my-6 lg:my-0 lg:mt-6">

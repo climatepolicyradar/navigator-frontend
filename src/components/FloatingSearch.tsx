@@ -23,17 +23,17 @@ export const FloatingSearch = () => {
   return (
     <div className="relative">
       <form onSubmit={(e) => e.preventDefault()}>
+        <button className="absolute left-0 h-full px-3 text-grey-700" onClick={() => handleSearch()}>
+          <span className="block">
+            <SearchIcon height="14" width="14" color="gray-500" />
+          </span>
+        </button>
         <input
           type="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="text-sm w-full text-indigo-400 focus:ring-0 pr-[40px]"
+          className="pl-[34px] rounded-[40px] text-sm w-full text-gray-500 focus:ring-0"
         />
-        <button className="absolute right-0 h-full pr-2 text-grey-700" onClick={() => handleSearch()}>
-          <span className="border-l border-lineBorder py-1 pl-2 block">
-            <SearchIcon height="20" width="20" />
-          </span>
-        </button>
       </form>
     </div>
   );
