@@ -35,11 +35,11 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
                 {countryRegion}
               </div>
             </div>
-            <div className="col-span-5">
-              <div className="font-bold">
-                {federal && <>Federative {federal && federal_details && <span className="font-light text-sm">({federal_details})</span>}</>}
+            {federal && (
+              <div className="col-span-5">
+                <div className="font-bold">Federative {federal_details && <span className="font-light text-sm">({federal_details})</span>}</div>
               </div>
-            </div>
+            )}
             <div data-cy="political-group" className="col-span-2">
               {political_groups !== "" && (
                 <>
