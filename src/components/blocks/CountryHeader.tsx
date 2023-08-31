@@ -46,16 +46,10 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
                 <div>{political_groups.split(";").join(", ")}</div>
               </div>
             )}
-            {worldbank_income_group !== "" && (
-              <div data-cy="world-bank-income-group">
-                <div className="text-sm font-bold">World Bank Income Group</div>
-                <div>{worldbank_income_group}</div>
-              </div>
-            )}
             {climate_risk_index !== null && (
               <div data-cy="global-climate-risk-index">
                 <div className="text-sm font-bold">Global Climate Risk Index</div>
-                <div className="flex">
+                <div className="flex items-center">
                   <div className=" mr-1">{climate_risk_index}</div>{" "}
                   <Tooltip
                     id="country-gcri"
@@ -72,6 +66,12 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
                     icon="i"
                   />
                 </div>
+              </div>
+            )}
+            {worldbank_income_group !== "" && (
+              <div data-cy="world-bank-income-group">
+                <div className="text-sm font-bold">World Bank Income Group</div>
+                <div>{worldbank_income_group}</div>
               </div>
             )}
             {global_emissions_percent !== null && (
