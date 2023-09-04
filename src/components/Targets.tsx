@@ -22,8 +22,8 @@ export const Targets = ({ targets = [], showFamilyInfo = false }: TTargets) => {
   return (
     <ul className="" data-cy="targets">
       {targets.map((target) => (
-        <li className="mt-6 flex flex-col gap-2" key={target.ID}>
-          <span dangerouslySetInnerHTML={{ __html: target.Description }} />
+        <li className="mt-6 flex flex-col gap-2 border-b pb-2 last:border-0" key={target.ID}>
+          <span dangerouslySetInnerHTML={{ __html: target.Description }} className="" />
           <span className="text-gray-700 text-sm">
             {`${target.Sector}${target.Scopes !== "" ? `: ${target.Scopes}` : ""}`} &middot; Target year: {target.Year}
           </span>
