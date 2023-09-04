@@ -203,7 +203,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                 <h3 className="mb-4">Documents</h3>
                 <div className="p-4 rounded-xl bg-blue-100">
                   <SearchForm
-                    placeholder={`Search the full text of ${allDocumentsCount} documents authored by ${geography.name}`}
+                    placeholder={`Search the full text of ${allDocumentsCount} documents from ${geography.name}`}
                     handleSearchInput={handleSearchInput}
                     input={""}
                   />
@@ -239,7 +239,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                       <Button color="secondary" extraClasses="my-6" onClick={handleDocumentSeeMoreClick}>
                         View more documents
                       </Button>
-                      <Divider></Divider>
+                      <Divider />
                     </div>
                   )}
                 </>
@@ -274,7 +274,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                       >
                         <DownArrowIcon /> View more targets
                       </Button>
-                      <Divider></Divider>
+                      <Divider />
                     </div>
                   )}
                   {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
@@ -285,7 +285,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                         </div>{" "}
                         Hide targets
                       </Button>
-                      <Divider></Divider>
+                      <Divider />
                     </div>
                   )}
                 </>
