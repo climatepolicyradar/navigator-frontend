@@ -5,9 +5,10 @@ type TProps = {
   id: string;
   place?: "top" | "right" | "bottom" | "left";
   tooltip?: string | React.ReactNode;
+  interactableContent?: boolean;
 };
 
-export const ToolTipSSR = ({ id, place, tooltip }: TProps) => {
+export const ToolTipSSR = ({ id, place, tooltip, interactableContent }: TProps) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -17,7 +18,7 @@ export const ToolTipSSR = ({ id, place, tooltip }: TProps) => {
   return (
     <>
       {isMounted && (
-        <ReactTooltip className="customTooltip" id={id} place={place}>
+        <ReactTooltip className="customTooltip" id={id} place={place} delayHide={interactableContent ? 500 : 0}>
           {tooltip}
         </ReactTooltip>
       )}

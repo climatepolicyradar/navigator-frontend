@@ -67,6 +67,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
                         </>
                       }
                       icon="i"
+                      interactableContent
                     />
                   </div>
                 </>
