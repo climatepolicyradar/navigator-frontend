@@ -5,7 +5,7 @@ interface ButtonProps {
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
   onClick?(event: React.FormEvent<HTMLButtonElement>): void;
-  color?: "dark" | "light" | "clear" | "light-hover-dark" | "secondary";
+  color?: "light" | "clear" | "ghost" | "secondary";
   id?: string;
   extraClasses?: string;
   "data-cy"?: string;
@@ -27,20 +27,20 @@ const Button = ({
   wider = false,
   ...props
 }: ButtonProps) => {
-  let conditionalClasses = "bg-indigo-600 text-white border border-indigo-600 hover:bg-white hover:border-white hover:text-indigo-600";
+  let conditionalClasses = "";
   switch (color) {
     case "light":
-      conditionalClasses = "bg-blue-500 border border-blue-500 text-white hover:bg-secondary-700 hover:border-secondary-700 hover:text-white";
+      conditionalClasses = "bg-blue-500 border border-blue-500 text-white hover:bg-blue-700 hover:border-blue-700 hover:text-white";
       break;
     case "secondary":
       conditionalClasses = "bg-white border border-gray-300 text-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-white";
       break;
-    case "light-hover-dark":
-      conditionalClasses = "bg-blue-500 border border-blue-500 text-white hover:bg-indigo-600 hover:border-indigo-600 hover:text-white";
+    case "ghost":
+      conditionalClasses = "underline bg-transparent border border-transparent text-blue-600";
       break;
     case "clear":
       conditionalClasses = !disabled
-        ? "clear bg-white border border-gray-300 hover:border-blue-400 text-blue-400 disabled:border-indigo-300 disabled:text-indigo-300 disabled:hover:bg-white"
+        ? "clear bg-transparent border border-gray-300 hover:border-blue-400 text-blue-400 disabled:border-gray-300 disabled:text-gray-300 disabled:hover:bg-white"
         : "";
       break;
   }
@@ -49,7 +49,7 @@ const Button = ({
   conditionalClasses += " " + (!fullWidth ? "md:w-auto" : "");
   if (disabled) {
     conditionalClasses +=
-      " " + "pointer-events-none bg-indigo-300 text-indigo-200 border-indigo-300 hover:bg-indigo-300 hover:text-indigo-200 hover:border-indigo-300";
+      " " + "pointer-events-none bg-gray-300 text-gray-200 border-gray-300 hover:bg-gray-300 hover:text-gray-200 hover:border-gray-300";
   }
   conditionalClasses += " " + extraClasses;
 
