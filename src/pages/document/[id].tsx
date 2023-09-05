@@ -162,10 +162,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
           {otherDocs.length > 0 && (
             <>
-              <div className="mt-12">
-                <Divider />
-              </div>
-
               <section className="mt-12">
                 <h3>Related documents</h3>
                 <div className="divide-solid divide-y" data-cy="related-documents">
@@ -181,10 +177,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
           {hasTargets && (
             <>
-              <div className="mt-12">
-                <Divider />
-              </div>
-
               <section className="mt-12">
                 <div>
                   <div className="lg:flex justify-between items-end">
@@ -228,26 +220,33 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           )}
 
           {page.events.length > 0 && (
-            <>
-              <div className="mt-12">
-                <Divider />
-              </div>
-
-              <section className="mt-12">
-                <h3>Timeline</h3>
-                <ShowHide show={showTimeline} onClick={() => setShowTimeline(!showTimeline)} className="mt-4" />
-                {showTimeline && (
-                  <Timeline>
-                    {page.events.map((event, index: number) => (
-                      <React.Fragment key={`event-${index}`}>
-                        <Event event={event} index={index} last={index === page.events.length - 1 ? true : false} />
-                      </React.Fragment>
-                    ))}
-                  </Timeline>
-                )}
-              </section>
-            </>
+            <section className="mt-12">
+              <h3>Timeline</h3>
+              <ShowHide show={showTimeline} onClick={() => setShowTimeline(!showTimeline)} className="mt-4" />
+              {showTimeline && (
+                <Timeline>
+                  {page.events.map((event, index: number) => (
+                    <React.Fragment key={`event-${index}`}>
+                      <Event event={event} index={index} last={index === page.events.length - 1 ? true : false} />
+                    </React.Fragment>
+                  ))}
+                </Timeline>
+              )}
+            </section>
           )}
+
+          <section className="mt-12">
+            <h3 className="my-4">Note</h3>
+            <div className="flex text-sm">
+              {sourceLogo && (
+                <div className="relative max-w-[144px] mt-1 mr-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={`/images/partners/${sourceLogo}`} alt={page.organisation} />
+                </div>
+              )}
+              {getOrganisationNote(page.organisation)}
+            </div>
+          </section>
 
           {page.collections.length > 0 && (
             <div className="mt-12">
@@ -275,7 +274,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               )}
             </section>
           ))}
-          <div className="md:pl-4 md:border-l">
+          {/* <div className="md:pl-4 md:border-l">
             <h3>About this document</h3>
             <div className={`grid gap-2 ${page.category === "UNFCCC" ? "" : "grid-cols-2"}`}>
               <DocumentInfo id="category-tt" heading="Category" text={page.category} />
@@ -289,19 +288,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
             {page.metadata.topic?.length > 0 && <DocumentInfo id="topics-tt" heading="Topics" list={page.metadata.topic} />}
             {page.metadata.keyword?.length > 0 && <DocumentInfo id="keywords-tt" heading="Keywords" list={page.metadata.keyword} />}
             {page.metadata.sector?.length > 0 && <DocumentInfo id="sectors-tt" heading="Sectors" list={page.metadata.sector} />}
-            <div className="mt-8 border-t">
-              <h3 className="my-4">Note</h3>
-              {sourceLogo && (
-                <div className="flex items-end mb-4">
-                  <div className="relative flex-shrink w-3/4 xmax-w-[40px] mr-1">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`/images/partners/${sourceLogo}`} alt={page.organisation} />
-                  </div>
-                </div>
-              )}
-              {getOrganisationNote(page.organisation)}
-            </div>
-          </div>
+          </div> */}
         </SingleCol>
       </section>
     </Layout>

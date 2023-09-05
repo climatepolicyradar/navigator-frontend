@@ -9,7 +9,7 @@ type TProps = {
 };
 
 export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
-  // don't show more details if there is no extra metadata
+  // don't show 'more details' if there is no extra metadata
   const hasExtraMetadata =
     family.metadata.sector && family.metadata.sector.length > 0 && family.metadata.keyword && family.metadata.keyword.length > 0;
   const [showMoreDetails, setShowMoreDetails] = useState(!hasExtraMetadata);
