@@ -1,55 +1,70 @@
-import { CountryLink } from "@components/CountryLink";
+import { Fragment, useState } from "react";
+import { FamilyMeta } from "./FamilyMeta";
 import { TFamilyPage } from "@types";
-import { convertDate } from "@utils/timedate";
-import { Fragment } from "react";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import { isSystemGeo } from "@utils/isSystemGeo";
 
 type TProps = {
   family: TFamilyPage;
   geographyName: string;
-  geographySlug: string;
-  onCollectionClick?: (e: any) => void;
+  onCollectionClick?: (e: any, i: number) => void;
 };
 
-export const FamilyHead = ({ family, geographyName, geographySlug, onCollectionClick }: TProps) => {
-  const [year] = family.published_date ? convertDate(family.published_date) : "";
-  const breadcrumbCategory = { label: "Search results", href: "/search" };
-  const breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
+export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
+  // don't show more details if there is no extra metadata
+  const hasExtraMetadata =
+    family.metadata.sector && family.metadata.sector.length > 0 && family.metadata.keyword && family.metadata.keyword.length > 0;
+  const [showMoreDetails, setShowMoreDetails] = useState(!hasExtraMetadata);
+
+  const handleMoreDetailsClick = (e: any) => {
+    e.preventDefault();
+    setShowMoreDetails(true);
+  };
 
   return (
-    <div className="bg-gray-50 border-b">
-      <div className="container">
-        <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={family.title} />
-        <div className="flex flex-col md:flex-row">
-          <div className="flex-1 my-4">
-            <h1 className="text-3xl lg:smaller">{family.title}</h1>
-            {family.collections.length > 0 && (
-              <div className="flex text-sm text-indigo-400 mt-4 items-center w-full mb-2">
-                <span>Part of the&nbsp;</span>
-                {family.collections.length > 0 &&
-                  family.collections.map((collection, i) => (
-                    <Fragment key={`${collection.title}-${i}`}>
-                      <a onClick={onCollectionClick ?? (() => {})} href="#collection">
-                        {collection.title}
-                      </a>
-                      {i < family.collections.length - 1 && <span>,&nbsp;</span>}
-                    </Fragment>
-                  ))}
+    <div>
+      <h1 className="text-4xl">{family.title}</h1>
+      {family.collections.length > 0 && (
+        <div className="flex text-sm text-indigo-400 mt-4 items-center w-full mb-2">
+          <span>Part of the&nbsp;</span>
+          {family.collections.length > 0 &&
+            family.collections.map((collection, i) => (
+              <Fragment key={`${collection.title}-${i}`}>
+                <a onClick={(e) => onCollectionClick(e, i)} href={`#collection-${i}`}>
+                  {collection.title}
+                </a>
+                {i < family.collections.length - 1 && <span>,&nbsp;</span>}
+              </Fragment>
+            ))}
+        </div>
+      )}
+      <div className="flex flex-wrap text-sm gap-1 text-gray-700 mt-2 items-center font-medium" data-cy="family-metadata">
+        <FamilyMeta
+          category={family.category}
+          date={family.published_date}
+          geography={family.geography}
+          topics={family.metadata.topic}
+          author={family.metadata.author_type}
+        />
+        {!showMoreDetails && (
+          <a href="#more-details" className="text-gray-700 ml-2 underline" onClick={handleMoreDetailsClick} data-cy="family-metadata-moreDetails">
+            More details
+          </a>
+        )}
+      </div>
+      <div data-cy="family-extra-metadata" className="text-sm text-gray-700">
+        {showMoreDetails && (
+          <>
+            {family.metadata.sector && family.metadata.sector.length > 0 && (
+              <div className="mt-2">
+                <span className="text-gray-600">Sectors:</span> {family.metadata.sector.join(", ")}
               </div>
             )}
-            <div className="flex text-sm mt-4 items-center w-full">
-              {!isSystemGeo(family.geography) ? (
-                <CountryLink countryCode={family.geography}>
-                  <span data-analytics-country={geographyName}>{geographyName}</span>
-                </CountryLink>
-              ) : (
-                <span>{family.metadata.author.join(", ")}</span>
-              )}
-              {year && <span>, {year}</span>}
-            </div>
-          </div>
-        </div>
+            {family.metadata.keyword && family.metadata.keyword.length > 0 && (
+              <div className="mt-2">
+                <span className="text-gray-600">Keywords:</span> {family.metadata.keyword.join(", ")}
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

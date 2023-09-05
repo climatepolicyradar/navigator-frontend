@@ -10,9 +10,11 @@ type TProps = {
   category: TCategory;
   date: string;
   geography: string;
+  topics?: string[];
+  author?: string[];
 };
 
-export const FamilyMeta = ({ category, date, geography }: TProps) => {
+export const FamilyMeta = ({ category, date, geography, topics, author }: TProps) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
 
@@ -26,19 +28,35 @@ export const FamilyMeta = ({ category, date, geography }: TProps) => {
           <CountryLink countryCode={geography} className="text-gray-700">
             <span>{country_name}</span>
           </CountryLink>
-          <span>&middot;</span>
         </>
       )}
       {!isNaN(year) && (
         <>
-          <span data-cy="result-year">{year}</span>
           <span>&middot;</span>
+          <span data-cy="family-metadata-year">{year}</span>
         </>
       )}
       {category && (
         <>
-          <span className="capitalize" data-cy="result-category">
+          <span>&middot;</span>
+          <span className="capitalize" data-cy="family-metadata-category">
             {getCategoryName(category)}
+          </span>
+        </>
+      )}
+      {topics && topics.length > 0 && (
+        <>
+          <span>&middot;</span>
+          <span className="capitalize" data-cy="family-metadata-topics">
+            {topics.join(", ")}
+          </span>
+        </>
+      )}
+      {author && author.length > 0 && (
+        <>
+          <span>&middot;</span>
+          <span className="capitalize" data-cy="family-metadata-author">
+            {author.join(", ")}
           </span>
         </>
       )}
