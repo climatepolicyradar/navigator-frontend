@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import axios from "axios";
 import { ApiClient } from "@api/http-common";
 import Layout from "@components/layouts/Main";
-import DocumentInfo from "@components/blocks/DocumentInfo";
 import { Timeline } from "@components/blocks/Timeline";
 import Event from "@components/blocks/Event";
 import { FamilyHead } from "@components/document/FamilyHead";
@@ -16,7 +15,7 @@ import { Targets } from "@components/Targets";
 import { ShowHide } from "@components/controls/ShowHide";
 import { Divider } from "@components/dividers/Divider";
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { TargetIcon } from "@components/svg/Icons";
+import { DownArrowIcon, TargetIcon } from "@components/svg/Icons";
 import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
@@ -196,22 +195,25 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                 </div>
               </section>
               {publishedTargets.length > numberOfTargetsToDisplay && (
-                <div className="mt-8">
-                  <Divider>
-                    <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}>
-                      See more
-                    </Button>
-                  </Divider>
+                <div data-cy="more-targets-button">
+                  <Button
+                    color="secondary"
+                    extraClasses="flex gap-2 items-center my-6"
+                    onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
+                  >
+                    <DownArrowIcon /> View more targets
+                  </Button>
                 </div>
               )}
 
               {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
-                <div className="mt-8">
-                  <Divider>
-                    <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(5)}>
-                      Hide &#8679;
-                    </Button>
-                  </Divider>
+                <div>
+                  <Button color="secondary" extraClasses="flex gap-2 items-center my-6" onClick={() => setNumberOfTargetsToDisplay(5)}>
+                    <div className="rotate-180">
+                      <DownArrowIcon />
+                    </div>{" "}
+                    Hide targets
+                  </Button>
                 </div>
               )}
             </>
