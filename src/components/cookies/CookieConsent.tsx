@@ -79,12 +79,12 @@ export const CookieConsent = () => {
           </p>
           <div className="flex justify-end">
             <div className="">
-              <Button color="light-hover-dark" thin onClick={cookiesAcceptHandler} data-cy="cookie-consent-accept">
+              <Button thin onClick={cookiesAcceptHandler} data-cy="cookie-consent-accept">
                 Accept
               </Button>
             </div>
             <div className="ml-4">
-              <Button color="clear" thin onClick={cookiesRejectHandler} data-cy="cookie-consent-reject">
+              <Button color="ghost" thin onClick={cookiesRejectHandler} data-cy="cookie-consent-reject">
                 Reject
               </Button>
             </div>

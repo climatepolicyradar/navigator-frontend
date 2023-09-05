@@ -141,18 +141,16 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           <section className="mt-6">
             <div className="text-content mt-4" dangerouslySetInnerHTML={{ __html: summary }} />
             {page.summary.length > MAX_FAMILY_SUMMARY_LENGTH && (
-              <div className="mt-6 flex justify-end">
-                {showFullSummary ? (
-                  <button onClick={() => setShowFullSummary(false)} className="anchor">
-                    Collapse summary
-                  </button>
-                ) : (
-                  <button onClick={() => setShowFullSummary(true)} className="anchor">
-                    Show full summary
-                  </button>
-                )}
+              <div className="mt-4">
+                <button onClick={() => setShowFullSummary(!showFullSummary)} className="anchor alt text-sm">
+                  {showFullSummary ? "Hide full summary" : "View full summary"}
+                </button>
               </div>
             )}
+          </section>
+
+          <section className="mt-8">
+            <h3>Main documents</h3>
             <div data-cy="main-documents">
               {mainDocs.map((doc) => (
                 <FamilyDocument matches={getDocumentMatches(doc.slug)} document={doc} key={doc.import_id} status={status} />
@@ -162,7 +160,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
           {otherDocs.length > 0 && (
             <>
-              <section className="mt-12">
+              <section className="mt-8">
                 <h3>Related documents</h3>
                 <div className="divide-solid divide-y" data-cy="related-documents">
                   {otherDocs.map((doc) => (
@@ -177,10 +175,10 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
           {hasTargets && (
             <>
-              <section className="mt-12">
+              <section className="mt-8">
                 <div>
-                  <div className="lg:flex justify-between items-end">
-                    <h3 className="flex mb-4">
+                  <div className="lg:flex justify-between items-center">
+                    <h3 className="flex">
                       <span className="mr-2">
                         <TargetIcon />
                       </span>
@@ -188,7 +186,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                     </h3>
                     <ExternalLink
                       url="https://docs.google.com/forms/d/e/1FAIpQLSfP2ECC6W92xF5HHvy5KAPVTim0Agrbr4dD2LhiWkDjcY2f6g/viewform"
-                      className="block text-sm my-4 md:mt-0"
+                      className="block text-sm my-4 md:my-0"
                       cy="download-target-csv"
                     >
                       Request to download all target data (.csv)
@@ -198,7 +196,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                 </div>
               </section>
               {publishedTargets.length > numberOfTargetsToDisplay && (
-                <div className="mt-12">
+                <div className="mt-8">
                   <Divider>
                     <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}>
                       See more
@@ -208,7 +206,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               )}
 
               {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
-                <div className="mt-12">
+                <div className="mt-8">
                   <Divider>
                     <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(5)}>
                       Hide &#8679;
@@ -220,7 +218,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           )}
 
           {page.events.length > 0 && (
-            <section className="mt-12">
+            <section className="mt-8">
               <h3>Timeline</h3>
               <ShowHide show={showTimeline} onClick={() => setShowTimeline(!showTimeline)} className="mt-4" />
               {showTimeline && (
@@ -235,7 +233,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
             </section>
           )}
 
-          <section className="mt-12">
+          <section className="mt-8">
             <h3 className="my-4">Note</h3>
             <div className="flex text-sm">
               {sourceLogo && (
@@ -249,7 +247,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           </section>
 
           {page.collections.length > 0 && (
-            <div className="mt-12">
+            <div className="mt-8">
               <Divider />
             </div>
           )}

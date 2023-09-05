@@ -53,8 +53,7 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
   };
 
   const getPreviewBehaviour = () => {
-    let cssClass = "family-document mt-4 p-3 border border-transparent hover:bg-gray-50 transition duration-300 ";
-    cssClass += isMain ? "bg-gray-50 " : "";
+    let cssClass = "family-document group mt-4 p-3 rounded-lg border border-transparent bg-gray-50 transition duration-300 ";
     cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-blue-600" : "";
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -69,22 +68,26 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
 
   return (
     <div {...getPreviewBehaviour()}>
-      <div className="text-blue-600 mb-2">{title}</div>
-      <div className="flex items-center">
-        <div className="flex-1 flex flex-wrap gap-x-8 items-center">
-          {!isMain && <span className="capitalize font-bold">{document_role?.toLowerCase()}</span>}
-          {renderContentType(content_type)}
-          {!!language && (
-            <span>
-              {getLanguage(language, languages)}
-              {!!variant && ` (${variant})`}
-            </span>
-          )}
-          {!canPreview && <span className="flex gap-2 items-center">{renderDocumentInfo()}</span>}
+      <div className="mb-2">{title}</div>
+      <div className="flex flex-nowrap items-center">
+        <div className="flex-1">
+          <div className="flex items-center text-sm">
+            <div className="flex-1 flex flex-wrap gap-x-8 items-center">
+              {!isMain && <span className="capitalize font-bold">{document_role?.toLowerCase()}</span>}
+              {renderContentType(content_type)}
+              {!!language && (
+                <span>
+                  {getLanguage(language, languages)}
+                  {!!variant && ` (${variant})`}
+                </span>
+              )}
+              {!canPreview && <span className="flex gap-2 items-center">{renderDocumentInfo()}</span>}
+            </div>
+          </div>
         </div>
         {(canPreview || canViewSource) && (
           <div className="flex-0">
-            <MatchesButton dataAttribute={slug} count={matches} overideText={renderMatchesOverrideText()} />
+            <MatchesButton dataAttribute={slug} count={matches} overideText={renderMatchesOverrideText()} variant={canPreview ? "light" : "ghost"} />
           </div>
         )}
       </div>
