@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import MatchesButton from "@components/buttons/MatchesButton";
-import { Loading } from "@components/svg/Icons";
+import { DocumentIcon, GlobeIcon, Loading } from "@components/svg/Icons";
 import useConfig from "@hooks/useConfig";
 import { getLanguage } from "@helpers/getLanguage";
 import { TDocumentContentType, TDocumentPage, TLoadingStatus } from "@types";
@@ -53,7 +53,7 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
   };
 
   const getPreviewBehaviour = () => {
-    let cssClass = "family-document group mt-4 p-3 rounded-lg border border-transparent bg-gray-50 transition duration-300 ";
+    let cssClass = "family-document group mt-4 p-3 rounded-lg border border-transparent bg-gray-50 transition duration-300 flex flex-no-wrap ";
     cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-blue-600" : "";
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -68,28 +68,39 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
 
   return (
     <div {...getPreviewBehaviour()}>
-      <div className="mb-2">{title}</div>
-      <div className="flex flex-nowrap items-center">
-        <div className="flex-1">
-          <div className="flex items-center text-sm">
-            <div className="flex-1 flex flex-wrap gap-x-8 items-center">
-              {!isMain && <span className="capitalize font-bold">{document_role?.toLowerCase()}</span>}
-              {renderContentType(content_type)}
-              {!!language && (
-                <span>
-                  {getLanguage(language, languages)}
-                  {!!variant && ` (${variant})`}
-                </span>
-              )}
-              {!canPreview && <span className="flex gap-2 items-center">{renderDocumentInfo()}</span>}
+      <div className="flex-0 mr-2 hidden md:block">
+        {canViewSource && <GlobeIcon width="20" height="20" />}
+        {canPreview && !canViewSource && <DocumentIcon width="20" height="20" />}
+      </div>
+      <div className="flex-1">
+        <div className="mb-2">{title}</div>
+        <div className="md:flex flex-nowrap items-center">
+          <div className="flex-1">
+            <div className="flex items-center text-sm">
+              <div className="flex-1 flex flex-wrap gap-x-8 items-center">
+                {!isMain && <span className="capitalize font-bold">{document_role?.toLowerCase()}</span>}
+                {renderContentType(content_type)}
+                {!!language && (
+                  <span>
+                    {getLanguage(language, languages)}
+                    {!!variant && ` (${variant})`}
+                  </span>
+                )}
+                {!canPreview && <span className="flex gap-2 items-center">{renderDocumentInfo()}</span>}
+              </div>
             </div>
           </div>
+          {(canPreview || canViewSource) && (
+            <div className="flex-0 mt-2 md:mt-0">
+              <MatchesButton
+                dataAttribute={slug}
+                count={matches}
+                overideText={renderMatchesOverrideText()}
+                variant={canPreview ? "light" : "ghost"}
+              />
+            </div>
+          )}
         </div>
-        {(canPreview || canViewSource) && (
-          <div className="flex-0">
-            <MatchesButton dataAttribute={slug} count={matches} overideText={renderMatchesOverrideText()} variant={canPreview ? "light" : "ghost"} />
-          </div>
-        )}
       </div>
     </div>
   );

@@ -352,17 +352,16 @@ export const TargetIcon = ({ height = "32", width = "32", color = "currentColor"
 
 export const DocumentIcon = ({ height = "32", width = "32", color = "currentColor" }: IconProps) => {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-      fillRule="evenodd"
-      clipRule="evenodd"
-      style={{ width: `${width}px`, height: `${height}px` }}
-    >
-      <path
-        d="M22 24h-20v-24h14l6 6v18zm-7-23h-12v22h18v-16h-6v-6zm3 15v1h-12v-1h12zm0-3v1h-12v-1h12zm0-3v1h-12v-1h12zm-2-4h4.586l-4.586-4.586v4.586z"
-        fill={color}
-      />
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: `${width}px`, height: `${height}px` }}>
+      <mask id="mask0_8122_184911" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
+        <rect width="24" height="24" fill={color} />
+      </mask>
+      <g mask="url(#mask0_8122_184911)">
+        <path
+          d="M8 18H16V16H8V18ZM8 14H16V12H8V14ZM6 22C5.45 22 4.97917 21.8042 4.5875 21.4125C4.19583 21.0208 4 20.55 4 20V4C4 3.45 4.19583 2.97917 4.5875 2.5875C4.97917 2.19583 5.45 2 6 2H14L20 8V20C20 20.55 19.8042 21.0208 19.4125 21.4125C19.0208 21.8042 18.55 22 18 22H6Z"
+          fill={color}
+        />
+      </g>
     </svg>
   );
 };
