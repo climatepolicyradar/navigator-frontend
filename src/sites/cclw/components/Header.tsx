@@ -16,9 +16,9 @@ const Header = ({ background = true }) => {
   };
 
   return (
-    <header data-cy="header" className={`${background ? "bg-cclw-dark" : ""} w-full pt-6 lg:pt-0`}>
+    <header data-cy="header" className={`${background ? "bg-cclw-dark" : ""} w-full md:pt-2 lg:pt-0`}>
       <div className="container">
-        <div className="grid grid-cols-2 auto-cols-auto lg:my-6">
+        <div className="grid grid-cols-2 auto-cols-auto lg:my-2">
           <div className="items-end flex flex-grow-0">
             <ExternalLink className="flex" url="https://www.lse.ac.uk/">
               <div className="flex" data-cy="lse-logo">
@@ -45,7 +45,7 @@ const Header = ({ background = true }) => {
             </ExternalLink>
             <Menu />
           </div>
-          <div className="col-span-2 flex-1 flex justify-center text-white order-last items-end basis-full text-center my-6 lg:my-0 lg:mt-6">
+          <div className="col-span-2 flex-1 flex justify-center text-white order-last items-end basis-full text-center my-2 lg:my-0 lg:mt-2">
             <div className="cclw-font font-bold text-xl md:text-2xl">
               <LinkWithQuery href={`/`} className="text-white hover:no-underline hover:text-white" cypress="cclw-logo">
                 Climate Change Laws of the World
