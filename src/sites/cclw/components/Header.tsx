@@ -31,7 +31,7 @@ const Header = ({ background = true }) => {
               </span>
             </ExternalLink>
             {showSearch && (
-              <div className="hidden ml-2 md:block md:w-[220px] lg:[280px]">
+              <div className="hidden ml-2 md:block md:w-[260px] lg:w-[340px]">
                 <FloatingSearch />
               </div>
             )}

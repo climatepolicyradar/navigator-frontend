@@ -6,7 +6,7 @@ type TProps = {
 };
 
 export const Divider: FC<TProps> = ({ children, color }) => {
-  const dividerColor = color ?? "bg-gray-300";
+  const dividerColor = color ?? "bg-gray-200";
 
   return (
     <div className="relative">

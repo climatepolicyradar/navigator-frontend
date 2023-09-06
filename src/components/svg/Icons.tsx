@@ -583,3 +583,24 @@ export const LegislativeIcon = ({ height = "24", width = "24", color = "currentC
     </svg>
   );
 };
+
+export const LightblubIcon = ({ height = "24", width = "24", color = "currentColor" }: IconProps) => {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: `${width}px`, height: `${height}px` }}>
+      <mask id="mask0_8127_184940" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
+        <rect width="24" height="24" fill="#D9D9D9" />
+      </mask>
+      <g mask="url(#mask0_8127_184940)">
+        <path
+          d="M12 22C11.56 22 11.1833 21.8433 10.87 21.53C10.5567 21.2167 10.4 20.84 10.4 20.4H13.6C13.6 20.84 13.4433 21.2167 13.13 21.53C12.8167 21.8433 12.44 22 12 22ZM8.8 19.6V18H15.2V19.6H8.8ZM9 17.2C8.08 16.6533 7.35 15.92 6.81 15C6.27 14.08 6 13.08 6 12C6 10.3333 6.58333 8.91667 7.75 7.75C8.91667 6.58333 10.3333 6 12 6C13.6667 6 15.0833 6.58333 16.25 7.75C17.4167 8.91667 18 10.3333 18 12C18 13.08 17.73 14.08 17.19 15C16.65 15.92 15.92 16.6533 15 17.2H9Z"
+          fill={color}
+        />
+        <line x1="12" y1="5" x2="12" y2="1.5" stroke={color} />
+        <line x1="17.677" y1="6.87905" x2="20.3489" y2="4.61827" stroke={color} />
+        <line y1="-0.5" x2="3.5" y2="-0.5" transform="matrix(-0.763393 -0.645935 -0.645935 0.763393 6 7.26074)" stroke={color} />
+        <line x1="19.25" y1="11.5" x2="22.75" y2="11.5" stroke={color} />
+        <line x1="1.25" y1="11.5" x2="4.75" y2="11.5" stroke={color} />
+      </g>
+    </svg>
+  );
+};
