@@ -42,10 +42,10 @@ describe("Search Flow", () => {
 
   it("should display the correct search result attributes", () => {
     cy.get(searchResultsSelector).within(() => {
-      cy.get('[data-cy="result-title"]').should("be.visible");
-      cy.get('[data-cy="result-category"]').should("be.visible");
-      cy.get('[data-cy="result-year"]').should("be.visible");
-      cy.get('[data-cy="result-description"]').should("be.visible");
+      cy.get('[data-cy="family-title"]').should("be.visible");
+      cy.get('[data-cy="family-metadata-category"]').should("be.visible");
+      cy.get('[data-cy="family-metadata-year"]').should("be.visible");
+      cy.get('[data-cy="family-description"]').should("be.visible");
       cy.get('[data-cy="country-link"]').should("be.visible");
     });
   });
