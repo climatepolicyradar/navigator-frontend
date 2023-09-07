@@ -8,8 +8,10 @@ const relatedDocsSelector = '[data-cy="related-documents"]';
 const targetsSelector = '[data-cy="targets"]';
 
 const pageSelectors = ["h1", '[data-cy="country-link"]', '[data-cy="download-target-csv"]', mainDocsSelector, relatedDocsSelector, targetsSelector];
-const pageHeadings = ["Related documents", "Targets", "Timeline", "About this document", "Note"];
-const metaHeadings = ["Category", "Type", "Topics", "Sectors"];
+const pageHeadings = ["Main documents", "Related documents", "Targets", "Timeline", "Note"];
+const metaData = [
+  '[data-cy="family-metadata-category"], [data-cy="family-metadata-year"], [data-cy="country-link"], [data-cy="family-metadata-topics"]',
+];
 
 const breadcrumbSelectors = [
   "[data-cy='breadcrumbs']",
@@ -55,8 +57,8 @@ describe("Family Page", () => {
   });
 
   it("should display the metadata", () => {
-    metaHeadings.forEach((heading) => {
-      cy.contains("h4", heading).should("be.visible");
+    metaData.forEach((meta) => {
+      cy.get(meta).should("be.visible");
     });
   });
 
