@@ -56,6 +56,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
                     <div className=" mr-1">{climate_risk_index}</div>{" "}
                     <Tooltip
                       id="country-gcri"
+                      colour="blue-600"
                       tooltip={
                         <>
                           <p className="mb-4">
