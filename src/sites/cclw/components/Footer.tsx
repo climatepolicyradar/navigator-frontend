@@ -67,10 +67,10 @@ const Footer = () => {
               </div>
             </div>
 
-            <div className="footer__section" data-cy="footer-cpr">
+            <div className="footer__section">
               <h5>Climate Policy Radar</h5>
               <p>Using AI and data science to map the world's climate policies</p>
-              <ul className="mb-6">
+              <ul className="mb-6" data-cy="footer-cpr-links">
                 <li className="mb-1">
                   Visit the <ExternalLink url="https://www.climatepolicyradar.org">Climate Policy Radar website</ExternalLink>
                 </li>

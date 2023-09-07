@@ -2,8 +2,8 @@
 import { clickCookiePolicy } from "../../../utils/cookiePolicy";
 
 const griSelector = "[data-cy='footer-gri']";
-const cprSelector = "[data-cy='footer-cpr']";
-const footerSelectors = ["[data-cy='report-problem']", griSelector, cprSelector];
+const cprSelector = "[data-cy='footer-cpr-links']";
+const footerSelectors = ["[data-cy='feedback']", griSelector, cprSelector];
 const footerContains = [
   "Follow Grantham Research Institute",
   "Follow Climate Policy Radar",
@@ -48,7 +48,7 @@ describe("Footer", () => {
 
   it("should contain CPR footer links", () => {
     cy.get("footer").within(() => {
-      cy.get(cprSelector).find("ul").children("li").should("have.length", 3);
+      cy.get(cprSelector).children("li").should("have.length", 3);
     });
   });
 });
