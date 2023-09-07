@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { LightblubIcon, SearchIcon } from "./svg/Icons";
+import { CloseIcon, LightblubIcon, SearchIcon } from "./svg/Icons";
+import { Divider } from "./dividers/Divider";
 import { CleanRouterQuery } from "@utils/cleanRouterQuery";
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { Divider } from "./dividers/Divider";
+import { getSessionStorage, setSessionStorage } from "@utils/sessionStorage";
+import { get } from "http";
 
 const FEATURED_SEARCHES = ["Adaptation strategy", "Energy prices", "Flood defense", "Fossil fuels"];
 const FEATURED_DOCUMENT_SLUG = "adaptation-strategy-to-climate-change-in-the-czech-republic_3c9c";
@@ -13,9 +15,17 @@ export const FloatingSearch = () => {
   const router = useRouter();
   const qQueryString = router.query[QUERY_PARAMS.query_string] as string;
   const [search, setSearch] = useState("");
+  const [hasOpenedSearch, setHasOpenedSearch] = useState(false);
   const [showFloatingSearch, setShowFloatingSearch] = useState(false);
+  const [showSearchHighlight, setShowSearchHighlight] = useState(false);
 
   const inputFocusStyles = "rounded-bl-none rounded-br-none";
+
+  const handleInputFocus = () => {
+    setHasOpenedSearch(true);
+    setShowFloatingSearch(true);
+    setShowSearchHighlight(false);
+  };
 
   // We specifically do not want to erase any filtering
   const handleSearch = (term: string) => {
@@ -33,6 +43,15 @@ export const FloatingSearch = () => {
     router.push({ pathname: FEATURED_DOCUMENT_SLUG, query: queryObj });
     setShowFloatingSearch(false);
   };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (getSessionStorage("showSearchHighlight") || hasOpenedSearch) return;
+      setShowSearchHighlight(true);
+      setSessionStorage("showSearchHighlight", true);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, [hasOpenedSearch]);
 
   useEffect(() => {
     setSearch(qQueryString || "");
@@ -64,7 +83,7 @@ export const FloatingSearch = () => {
           value={search}
           placeholder="Full text of over 5000 climate laws and policies"
           onChange={(e) => setSearch(e.target.value)}
-          onFocus={() => setShowFloatingSearch(true)}
+          onFocus={() => handleInputFocus()}
           className={`pl-[34px] rounded-[20px] text-sm w-full text-gray-800 border-0 focus:ring-0 focus:ring-offset-0 focus:ring-white ${
             showFloatingSearch ? inputFocusStyles : ""
           }`}
@@ -108,6 +127,26 @@ export const FloatingSearch = () => {
           </a>
         </div>
       )}
+      <div
+        data-cy="search-highlight"
+        className={`absolute left-[40px] top-full mt-3 p-4 bg-blue-800 w-[320px] text-white rounded-lg transition opacity-0 ${
+          showSearchHighlight ? "visible !opacity-100" : "invisible"
+        }`}
+      >
+        <div className="tooltip-up-arrow" />
+        <button onClick={() => setShowSearchHighlight(false)} className="absolute right-0 top-0 p-4">
+          <CloseIcon width="12" height="12" />
+        </button>
+        <p>Find relevant climate information</p>
+        <ul className="text-sm list-disc pl-5 mt-2">
+          <li>
+            Documents from <b>all languages</b> translated into English
+          </li>
+          <li>
+            Exact matches and related phrases <b>highlighted</b> in the text
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };

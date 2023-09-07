@@ -288,6 +288,18 @@ input[type="search"]::-webkit-search-results-decoration {
   }
 }
 
+.tooltip-up-arrow {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 12px solid;
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  @apply border-b-blue-800 translate-x-[-5px];
+}
+
 ul li.selected {
   @apply bg-blue-200;
 }
