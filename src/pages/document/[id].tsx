@@ -28,6 +28,7 @@ import { getOrganisationNote } from "@helpers/getOrganisationNote";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { TFamilyPage, TMatchedFamily, TTarget } from "@types";
+import Tooltip from "@components/tooltip";
 
 type TProps = {
   page: TFamilyPage;
@@ -160,7 +161,16 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           {otherDocs.length > 0 && (
             <>
               <section className="mt-8">
-                <h3>Related documents</h3>
+                <h3 className="flex items-center gap-2">
+                  Related documents{" "}
+                  <Tooltip
+                    id="related-documents-info"
+                    place="right"
+                    icon="i"
+                    colour="gray-800"
+                    tooltip="Related documents can be previous versions, amendments, annexes, supporting legislation, and more."
+                  />
+                </h3>
                 <div className="divide-solid divide-y" data-cy="related-documents">
                   {otherDocs.map((doc) => (
                     <div key={doc.import_id} className="mt-4">

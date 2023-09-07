@@ -10,8 +10,7 @@ type TProps = {
 
 export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
   // don't show 'more details' if there is no extra metadata
-  const hasExtraMetadata =
-    (family.metadata.sector && family.metadata.sector.length > 0) || (family.metadata.keyword && family.metadata.keyword.length > 0);
+  const hasExtraMetadata = family.metadata.keyword && family.metadata.keyword.length > 0;
   const [showMoreDetails, setShowMoreDetails] = useState(!hasExtraMetadata);
 
   const handleMoreDetailsClick = (e: any) => {
@@ -51,13 +50,13 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
         )}
       </div>
       <div data-cy="family-extra-metadata" className="text-sm text-gray-700">
+        {family.metadata.sector && family.metadata.sector.length > 0 && (
+          <div className="mt-2">
+            <span className="text-gray-600">Sectors:</span> {family.metadata.sector.join(", ")}
+          </div>
+        )}
         {showMoreDetails && (
           <>
-            {family.metadata.sector && family.metadata.sector.length > 0 && (
-              <div className="mt-2">
-                <span className="text-gray-600">Sectors:</span> {family.metadata.sector.join(", ")}
-              </div>
-            )}
             {family.metadata.keyword && family.metadata.keyword.length > 0 && (
               <div className="mt-2">
                 <span className="text-gray-600">Keywords:</span> {family.metadata.keyword.join(", ")}
