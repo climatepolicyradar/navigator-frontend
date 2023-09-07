@@ -274,21 +274,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               )}
             </section>
           ))}
-          {/* <div className="md:pl-4 md:border-l">
-            <h3>About this document</h3>
-            <div className={`grid gap-2 ${page.category === "UNFCCC" ? "" : "grid-cols-2"}`}>
-              <DocumentInfo id="category-tt" heading="Category" text={page.category} />
-              <DocumentInfo id="type-tt" heading="Type" text={getDocumentCategories().join(", ")} />
-            </div>
-            {page.metadata.author_type?.length > 0 && (
-              <DocumentInfo id="party-tt" heading="Party / non-Party" text={page.metadata.author_type?.join(", ")} />
-            )}
-            {page.metadata.author?.length > 0 && <DocumentInfo id="author-tt" heading="Author" text={page.metadata.author?.join(", ")} />}
-
-            {page.metadata.topic?.length > 0 && <DocumentInfo id="topics-tt" heading="Topics" list={page.metadata.topic} />}
-            {page.metadata.keyword?.length > 0 && <DocumentInfo id="keywords-tt" heading="Keywords" list={page.metadata.keyword} />}
-            {page.metadata.sector?.length > 0 && <DocumentInfo id="sectors-tt" heading="Sectors" list={page.metadata.sector} />}
-          </div> */}
         </SingleCol>
       </section>
     </Layout>
