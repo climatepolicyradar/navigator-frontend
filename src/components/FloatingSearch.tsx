@@ -5,8 +5,8 @@ import { Divider } from "./dividers/Divider";
 import { CleanRouterQuery } from "@utils/cleanRouterQuery";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { getSessionStorage, setSessionStorage } from "@utils/sessionStorage";
-import { get } from "http";
 
+const SEARCH_HIGHLIGHT_DELAY = 5000;
 const FEATURED_SEARCHES = ["Adaptation strategy", "Energy prices", "Flood defense", "Fossil fuels"];
 const FEATURED_DOCUMENT_SLUG = "adaptation-strategy-to-climate-change-in-the-czech-republic_3c9c";
 
@@ -49,7 +49,7 @@ export const FloatingSearch = () => {
       if (getSessionStorage("showSearchHighlight") || hasOpenedSearch) return;
       setShowSearchHighlight(true);
       setSessionStorage("showSearchHighlight", true);
-    }, 2000);
+    }, SEARCH_HIGHLIGHT_DELAY);
     return () => clearTimeout(timeout);
   }, [hasOpenedSearch]);
 
