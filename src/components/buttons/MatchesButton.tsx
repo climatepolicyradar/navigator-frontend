@@ -1,20 +1,25 @@
+import Button from "./Button";
+
 type TProps = {
   dataAttribute: string;
   count: number | string;
+  variant?: "ghost" | "secondary" | "clear" | "light";
   overideText?: string | JSX.Element;
 };
 
-const MatchesButton = ({ dataAttribute, count, overideText }: TProps) => {
+const MatchesButton = ({ dataAttribute, count, overideText, variant = "light" }: TProps) => {
   const numberOfMatches = typeof count === "number" ? count : parseInt(count, 10);
 
   return (
-    <button
+    <Button
+      data-cy="document-matches-button"
       data-analytics="document-matches-button"
+      extraClasses="text-sm"
       data-slug={dataAttribute}
-      className="matches-button mt-2 lg:mt-0 py-1 px-4 bg-blue-600 text-white text-sm font-medium transition duration-300 rounded hover:bg-indigo-600"
+      color={variant}
     >
-      {overideText ? overideText : `${numberOfMatches} match${numberOfMatches > 1 ? "es" : ""} in document`}
-    </button>
+      {overideText ? overideText : `View ${numberOfMatches} match${numberOfMatches > 1 ? "es" : ""} in document`}
+    </Button>
   );
 };
 

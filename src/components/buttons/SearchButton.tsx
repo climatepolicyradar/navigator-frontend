@@ -13,7 +13,11 @@ const SearchButton: FC<TProps> = ({ onClick, children }) => {
   };
 
   return (
-    <button onClick={handleOnClick} type="submit" className="text-white py-1 px-2 rounded-r-lg h-full transtion duration-300 shrink-0 md:px-4">
+    <button
+      onClick={handleOnClick}
+      type="submit"
+      className="text-white py-1 px-2 rounded-r-full h-full transtion duration-300 shrink-0 hover:bg-gray-100 md:px-4"
+    >
       <SearchIcon height="18" width="18" color="#1F93FF" />
       {children}
     </button>

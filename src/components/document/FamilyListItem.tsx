@@ -17,7 +17,7 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
   return (
     <div className="relative">
       <div className="flex justify-between items-start">
-        <h2 className="leading-none flex items-start" data-cy="result-title">
+        <h2 className="leading-none flex items-start" data-cy="family-title">
           <LinkWithQuery
             href={`/document/${family_slug}`}
             className={`text-left text-blue-500 font-medium text-lg transition duration-300 leading-tight hover:underline ${
@@ -35,7 +35,7 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
       </div>
       <p
         className="mt-2 text-content"
-        data-cy="result-description"
+        data-cy="family-description"
         dangerouslySetInnerHTML={{ __html: truncateString(family_description.replace(/(<([^>]+)>)/gi, ""), 375) }}
       />
     </div>

@@ -6,6 +6,10 @@ type TTargets = {
   showFamilyInfo?: boolean;
 };
 
+// Ordering TBC:
+// source = plan, law, framework, strategy, policy
+// law above others
+
 export const Targets = ({ targets = [], showFamilyInfo = false }: TTargets) => {
   if (!targets.length) return null;
 
@@ -16,16 +20,16 @@ export const Targets = ({ targets = [], showFamilyInfo = false }: TTargets) => {
   };
 
   return (
-    <ul className="ml-4 list-disc list-outside" data-cy="targets">
+    <ul className="" data-cy="targets">
       {targets.map((target) => (
-        <li className="mb-4" key={target.ID}>
-          <span dangerouslySetInnerHTML={{ __html: target.Description }} />
-          <span className="block text-gray-500">
-            {`${target.Sector}${target.Scopes !== "" ? `: ${target.Scopes}` : ""}`} | Target year: {target.Year}
+        <li className="mt-6 flex flex-col gap-2 border-b pb-2 last:border-0" key={target.ID}>
+          <span dangerouslySetInnerHTML={{ __html: target.Description }} className="" />
+          <span className="text-gray-700 text-sm">
+            {`${target.Sector}${target.Scopes !== "" ? `: ${target.Scopes}` : ""}`} &middot; Target year: {target.Year}
           </span>
           {showSourceLink(target) && (
-            <span className="block text-gray-500">
-              Source: <LinkWithQuery href={`/document/${target["family-slug"]}`}>{target["family-name"]}</LinkWithQuery>
+            <span className="text-gray-700 text-sm">
+              Source: <LinkWithQuery href={`/document/${target["family-slug"]}`} className="underline text-gray-700">{target["family-name"]}</LinkWithQuery>
             </span>
           )}
         </li>
@@ -33,7 +37,3 @@ export const Targets = ({ targets = [], showFamilyInfo = false }: TTargets) => {
     </ul>
   );
 };
-
-// Ordering TBC:
-// source = plan, law, framework, strategy, policy
-// law above others

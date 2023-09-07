@@ -8,25 +8,26 @@ import { SingleCol } from "@components/SingleCol";
 import Event from "@components/blocks/Event";
 import { Timeline } from "@components/blocks/Timeline";
 import { CountryHeader } from "@components/blocks/CountryHeader";
-import { KeyDetail } from "@components/KeyDetail";
 import { Divider } from "@components/dividers/Divider";
-import { RightArrowIcon, UNFCCCIcon } from "@components/svg/Icons";
+import { DownArrowIcon, LegislativeIcon } from "@components/svg/Icons";
 import { FamilyListItem } from "@components/document/FamilyListItem";
 import { Targets } from "@components/Targets";
 import Button from "@components/buttons/Button";
 import TabbedNav from "@components/nav/TabbedNav";
 import TextLink from "@components/nav/TextLink";
-import { LawIcon, PolicyIcon, CaseIcon, TargetIcon } from "@components/svg/Icons";
+import { TargetIcon } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
-import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
+import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { getCountryCode } from "@helpers/getCountryFields";
 import { extractNestedData } from "@utils/extractNestedData";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
+import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { getGeoDescription } from "@constants/metaDescriptions";
 import { systemGeoNames } from "@constants/systemGeos";
 import { TGeographyStats, TGeographySummary } from "@types";
 import { TTarget, TEvent, TGeography } from "@types";
+import SearchForm from "@components/forms/SearchForm";
 
 type TProps = {
   geography: TGeographyStats;
@@ -38,11 +39,13 @@ const categoryByIndex = {
   0: "All",
   1: "Legislation",
   2: "Policies",
-  3: "Litigation",
-  4: "UNFCCC",
+  3: "UNFCCC",
+  4: "Litigation",
 };
 
-const keyDetailCssClasses = "md:col-span-2 lg:col-span-4";
+const MAX_NUMBER_OF_FAMILIES = 3;
+
+const FEATURED_SEARCHES = ["Methane emissions", "Fossil fuel divestment", "Net zero growth plan", "Sustainable fishing"];
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets }: TProps) => {
   const router = useRouter();
@@ -55,8 +58,33 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
   const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
+  const allDocumentsCount = summary.family_counts.Legislative + summary.family_counts.Executive + summary.family_counts.UNFCCC;
 
-  const documentCategories = DOCUMENT_CATEGORIES;
+  const documentCategories = DOCUMENT_CATEGORIES.map((category) => {
+    let count = null;
+    switch (category) {
+      case "All":
+        count = allDocumentsCount;
+        break;
+      case "Legislation":
+        count = summary.family_counts.Legislative;
+        break;
+      case "Policies":
+        count = summary.family_counts.Executive;
+        break;
+      case "UNFCCC":
+        count = summary.family_counts.UNFCCC;
+        break;
+      case "Litigation":
+        count = 0;
+        break;
+    }
+
+    return {
+      title: category,
+      count,
+    };
+  });
 
   const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number) => {
     e.preventDefault();
@@ -82,9 +110,18 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     router.push({ pathname: "/search", query: { ...newQuery } });
   };
 
+  // Search handlers
+  const handleSearchInput = (term: string) => {
+    const queryObj = {};
+    queryObj[QUERY_PARAMS.query_string] = term;
+    queryObj[QUERY_PARAMS.country] = geography.geography_slug;
+    router.push({ pathname: "/search", query: queryObj });
+  };
+
   const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geography.name}`}</p>;
 
   const renderDocuments = () => {
+    // const executiveFamilies = summary.top_families.Executive;
     // All
     if (selectedCategoryIndex === 0) {
       let allFamilies = summary.top_families.Executive.concat(summary.top_families.Legislative).concat(summary.top_families.UNFCCC);
@@ -94,13 +131,13 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       allFamilies.sort((a, b) => {
         return new Date(b.family_date).getTime() - new Date(a.family_date).getTime();
       });
-      if (allFamilies.length > 5) {
-        allFamilies = allFamilies.slice(0, 5);
+      if (allFamilies.length > MAX_NUMBER_OF_FAMILIES) {
+        allFamilies = allFamilies.slice(0, MAX_NUMBER_OF_FAMILIES);
       }
       return allFamilies.map((family) => {
         if (family)
           return (
-            <div key={family.family_slug} className="mt-4 mb-10">
+            <div key={family.family_slug} className="mt-6">
               <FamilyListItem family={family} />
             </div>
           );
@@ -110,8 +147,8 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     if (selectedCategoryIndex === 1) {
       return summary.top_families.Legislative.length === 0
         ? renderEmpty("Legislative")
-        : summary.top_families.Legislative.map((family) => (
-            <div key={family.family_slug} className="mt-4 mb-10">
+        : summary.top_families.Legislative.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
+            <div key={family.family_slug} className="mt-6">
               <FamilyListItem family={family} />
             </div>
           ));
@@ -120,30 +157,30 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     if (selectedCategoryIndex === 2) {
       return summary.top_families.Executive.length === 0
         ? renderEmpty("Executive")
-        : summary.top_families.Executive.map((family) => (
-            <div key={family.family_slug} className="mt-4 mb-10">
+        : summary.top_families.Executive.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
+            <div key={family.family_slug} className="mt-6">
+              <FamilyListItem family={family} />
+            </div>
+          ));
+    }
+    // UNFCCC
+    if (selectedCategoryIndex === 3) {
+      return summary.top_families.UNFCCC.length === 0
+        ? renderEmpty("UNFCCC")
+        : summary.top_families.UNFCCC.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
+            <div key={family.family_slug} className="mt-6">
               <FamilyListItem family={family} />
             </div>
           ));
     }
     // Litigation
-    if (selectedCategoryIndex === 3) {
+    if (selectedCategoryIndex === 4) {
       return (
         <div className="mt-4 pb-4 border-b">
           Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center’s{" "}
           <ExternalLink url="http://climatecasechart.com/">Climate Change Litigation Databases</ExternalLink>.
         </div>
       );
-    }
-    // UNFCCC
-    if (selectedCategoryIndex === 4) {
-      return summary.top_families.UNFCCC.length === 0
-        ? renderEmpty("UNFCCC")
-        : summary.top_families.UNFCCC.map((family) => (
-            <div key={family.family_slug} className="mt-4 mb-10">
-              <FamilyListItem family={family} />
-            </div>
-          ));
     }
   };
 
@@ -157,67 +194,39 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
           </SingleCol>
         ) : (
           <section className="mb-8">
-            <CountryHeader country={geography} />
-            <div className="container mt-12">
-              <section className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-px mb-8 auto-rows-fr">
-                <KeyDetail
-                  detail="Legislation"
-                  extraDetail="Laws, Acts, Constitutions (legislative branch)"
-                  amount={summary.family_counts.Legislative}
-                  icon={<LawIcon />}
-                  onClick={() => setselectedCategoryIndex(1)}
-                  cssClasses={keyDetailCssClasses}
-                />
-                <KeyDetail
-                  detail="Policies"
-                  extraDetail="Policies, strategies, decrees, action plans (from executive branch)"
-                  amount={summary.family_counts.Executive}
-                  icon={<PolicyIcon />}
-                  onClick={() => setselectedCategoryIndex(2)}
-                  cssClasses={keyDetailCssClasses}
-                />
-                <KeyDetail
-                  detail="UNFCCC"
-                  extraDetail="Documents submitted to the UNFCCC (including NDCs)"
-                  amount={summary.family_counts.UNFCCC}
-                  icon={<UNFCCCIcon />}
-                  onClick={() => setselectedCategoryIndex(4)}
-                  cssClasses={keyDetailCssClasses}
-                />
-                <KeyDetail
-                  detail="Litigation"
-                  extraDetail="Court cases and tribunal proceedings"
-                  amount={<span className="text-sm font-normal">Coming soon</span>}
-                  icon={<CaseIcon />}
-                  onClick={() => setselectedCategoryIndex(3)}
-                  cssClasses={`${keyDetailCssClasses} lg:col-start-3`}
-                />
-                <KeyDetail
-                  detail="Targets"
-                  extraDetail="Climate targets in National Law & Policy"
-                  amount={targets.length}
-                  icon={<TargetIcon />}
-                  onClick={() => handleTargetClick()}
-                  cssClasses={`${keyDetailCssClasses} md:col-start-2`}
-                />
-              </section>
+            <div className="container">
+              <BreadCrumbs label={geography.name} />
             </div>
             <SingleCol>
-              {hasEvents && (
-                <section className="mt-12 hidden">
-                  <h3 className="mb-4">Events</h3>
-                  <Timeline>
-                    {summary.events.map((event: TEvent, index: number) => (
-                      <Event event={event} key={`event-${index}`} index={index} last={index === summary.events.length - 1 ? true : false} />
-                    ))}
-                  </Timeline>
-                </section>
-              )}
-
+              <CountryHeader country={geography} targetCount={hasTargets ? publishedTargets?.length : 0} onTargetClick={handleTargetClick} />
+              <section className="mt-10" data-cy="top-documents">
+                <h3 className="mb-4">Documents</h3>
+                <div className="p-4 rounded-xl bg-blue-100">
+                  <SearchForm
+                    placeholder={`Search the full text of ${allDocumentsCount} documents from ${geography.name}`}
+                    handleSearchInput={handleSearchInput}
+                    input={""}
+                  />
+                  <div className="mt-4 flex gap-2 text-sm">
+                    <span className="text-blue-900 pt-1">Featured searches</span>
+                    <ul className="flex gap-2 flex-wrap items-center">
+                      {FEATURED_SEARCHES.map((searchTerm) => (
+                        <li key={searchTerm}>
+                          <button
+                            onClick={() => handleSearchInput(searchTerm)}
+                            className="text-gray-800 bg-white border border-gray-300 rounded-[40px] py-1 px-2 transition hover:bg-blue-600 hover:text-white"
+                          >
+                            {searchTerm}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </section>
               {hasFamilies && (
                 <>
-                  <section className="mt-12" data-cy="top-documents">
-                    <h3>Latest Documents</h3>
+                  <section className="mt-10" data-cy="top-documents">
                     <div className="mt-4 md:flex">
                       <div className="flex-grow">
                         <TabbedNav activeIndex={selectedCategoryIndex} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
@@ -225,37 +234,29 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                     </div>
                     {renderDocuments()}
                   </section>
-                  {selectedCategoryIndex !== 3 && (
-                    <div className="mt-12" data-cy="see-more-button">
-                      <Divider>
-                        <Button color="secondary" extraClasses="flex items-center" onClick={handleDocumentSeeMoreClick}>
-                          <>
-                            See more
-                            <span className="ml-8">
-                              <RightArrowIcon height="20" width="20" />
-                            </span>
-                          </>
-                        </Button>
-                      </Divider>
+                  {selectedCategoryIndex !== 4 && (
+                    <div data-cy="see-more-button">
+                      <Button color="secondary" extraClasses="my-6" onClick={handleDocumentSeeMoreClick}>
+                        View more documents
+                      </Button>
+                      <Divider />
                     </div>
                   )}
                 </>
               )}
               {hasTargets && (
                 <>
-                  <section className="mt-12" id="targets">
+                  <section className="mt-10" id="targets">
                     <div>
-                      <div className="lg:flex justify-between items-end">
-                        <h3 className="flex mb-4">
-                          <span className="mr-2">
-                            <TargetIcon />
-                          </span>
-                          Targets ({publishedTargets.length})
+                      <div className="justify-between items-end lg:flex">
+                        <h3 className="flex items-center gap-2">
+                          <TargetIcon width="20" height="20" />
+                          Targets <span className="text-gray-700 font-normal">({publishedTargets.length})</span>
                         </h3>
 
                         <ExternalLink
                           url="https://docs.google.com/forms/d/e/1FAIpQLSfP2ECC6W92xF5HHvy5KAPVTim0Agrbr4dD2LhiWkDjcY2f6g/viewform"
-                          className="block text-sm my-4 md:mt-0"
+                          className="text-sm block mt-4 underline md:mt-0"
                           cy="download-target-csv"
                         >
                           Request to download all target data (.csv)
@@ -265,28 +266,45 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                     </div>
                   </section>
                   {publishedTargets.length > numberOfTargetsToDisplay && (
-                    <div className="mt-12">
-                      <Divider>
-                        <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}>
-                          See more
-                        </Button>
-                      </Divider>
+                    <div data-cy="more-targets-button">
+                      <Button
+                        color="secondary"
+                        extraClasses="flex gap-2 items-center my-6"
+                        onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
+                      >
+                        <DownArrowIcon /> View more targets
+                      </Button>
+                      <Divider />
                     </div>
                   )}
                   {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
-                    <div className="mt-12">
-                      <Divider>
-                        <Button color="secondary" wider onClick={() => setNumberOfTargetsToDisplay(5)}>
-                          Hide &#8679;
-                        </Button>
-                      </Divider>
+                    <div>
+                      <Button color="secondary" extraClasses="flex gap-2 items-center my-6" onClick={() => setNumberOfTargetsToDisplay(5)}>
+                        <div className="rotate-180">
+                          <DownArrowIcon />
+                        </div>{" "}
+                        Hide targets
+                      </Button>
+                      <Divider />
                     </div>
                   )}
                 </>
               )}
+              {hasEvents && (
+                <section className="mt-10 hidden">
+                  <h3 className="mb-4">Events</h3>
+                  <Timeline>
+                    {summary.events.map((event: TEvent, index: number) => (
+                      <Event event={event} key={`event-${index}`} index={index} last={index === summary.events.length - 1 ? true : false} />
+                    ))}
+                  </Timeline>
+                </section>
+              )}
               {geography.legislative_process && (
-                <section className="mt-12" data-cy="legislative-process">
-                  <h3 className="mb-4">Legislative Process</h3>
+                <section className="mt-10" data-cy="legislative-process">
+                  <h3 className="mb-4 flex items-center gap-2">
+                    <LegislativeIcon width="20" height="20" /> Legislative Process
+                  </h3>
                   <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
                 </section>
               )}

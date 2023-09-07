@@ -44,7 +44,6 @@
 
 @import "variables";
 @import "mixins";
-@import "range-slider";
 
 @font-face {
   font-family: "Neue Haas Grotesk Display";
@@ -67,12 +66,16 @@ html,
   height: 100%;
 }
 body {
-  @apply text-cpr-dark ;
+  @apply text-gray-800;
   font-family: Arial;
 }
 a,
 .anchor {
   @apply text-blue-600 transition duration-300 hover:underline hover:text-blue-800;
+
+  &.alt {
+    @apply underline text-gray-800 hover:text-blue-800;
+  }
 }
 h1,
 h2,
@@ -232,12 +235,16 @@ input[type="search"]::-webkit-search-results-decoration {
 
 /* Tooltip button */
 .circle-sm {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 }
 /* Tooltips styles to override the default */
 .customTooltip {
-  @apply bg-cpr-dark border-cpr-dark rounded-lg leading-5 max-w-[300px] #{!important};
+  @apply bg-cpr-dark border-cpr-dark rounded-lg leading-5 max-w-[300px] pointer-events-auto #{!important};
+  &:hover {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
   &.show {
     opacity: 0.98 !important;
   }
@@ -273,6 +280,24 @@ input[type="search"]::-webkit-search-results-decoration {
       border-bottom-width: 6px !important;
     }
   }
+  a {
+    @apply text-blue-200;
+    &:hover {
+      @apply text-blue-50;
+    }
+  }
+}
+
+.tooltip-up-arrow {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 12px solid;
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  @apply border-b-blue-800 translate-x-[-5px];
 }
 
 ul li.selected {
@@ -435,7 +460,6 @@ ul li.selected {
       @apply rounded-none;
     }
 
-
     &:nth-child(5n) {
       @apply rounded-br-lg;
     }
@@ -448,7 +472,7 @@ ul li.selected {
     &:nth-child(5n + 3) {
       @apply rounded-none rounded-r-lg;
     }
-    &:nth-child(5n+4) {
+    &:nth-child(5n + 4) {
       @apply rounded-none rounded-bl-lg;
     }
   }

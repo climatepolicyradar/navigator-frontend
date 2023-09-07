@@ -49,6 +49,12 @@ const Search = () => {
 
   const placeholder = t("Search for something, e.g. 'carbon taxes'");
 
+  const documentCategories = DOCUMENT_CATEGORIES.map((category) => {
+    return {
+      title: category,
+    };
+  });
+
   const toggleFilters = () => {
     setShowFilters(!showFilters);
   };
@@ -126,9 +132,9 @@ const Search = () => {
     handleSearchChange(QUERY_PARAMS.query_string, term);
   };
 
-  const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement>, _?: number, value?: string) => {
     delete router.query[QUERY_PARAMS.offset];
-    const val = e.currentTarget.textContent;
+    const val = value ?? e.currentTarget.textContent;
     let category = val;
     router.query[QUERY_PARAMS.category] = category;
     // Default search is all categories
@@ -303,7 +309,7 @@ const Search = () => {
                 </div>
               </div>
               <div className="mt-4">
-                <TabbedNav activeIndex={getCategoryIndex()} items={DOCUMENT_CATEGORIES} handleTabClick={handleDocumentCategoryClick} />
+                <TabbedNav activeIndex={getCategoryIndex()} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
               </div>
 
               <div className="mt-4 md:pl-8 relative">

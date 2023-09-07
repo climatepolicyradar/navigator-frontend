@@ -26,6 +26,14 @@ const passageClasses = (docType: string) => {
   return "md:w-2/3";
 };
 
+/*
+  # DEV NOTES
+  - This page displays a 'physical' document, which is a single document within a document family.
+  - The default view will display a preview of the document if it is a PDF.
+  - If there are search matches for the document, the page will display a list of passages that match the search query.
+  - If the document is an HTML, the passages will be displayed in a list on the left side of the page but the document will not be displayed.
+*/
+
 const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family }: TProps) => {
   const [passageIndex, setPassageIndex] = useState(null);
   const router = useRouter();
