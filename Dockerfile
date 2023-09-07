@@ -1,4 +1,4 @@
-FROM node:16-alpine3.13
+FROM node:20-alpine3.17
 
 # you'll likely want the latest npm, regardless of node version, for speed and fixes
 # but pin this version for the best stability
