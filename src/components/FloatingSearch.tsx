@@ -81,7 +81,7 @@ export const FloatingSearch = () => {
         <input
           type="search"
           value={search}
-          placeholder="Full text of over 5000 climate laws and policies"
+          placeholder="Full text of over 5,000 climate laws and policies"
           onChange={(e) => setSearch(e.target.value)}
           onFocus={() => handleInputFocus()}
           className={`pl-[34px] rounded-[20px] text-sm w-full text-gray-800 border-0 focus:ring-0 focus:ring-offset-0 focus:ring-white ${
@@ -121,8 +121,8 @@ export const FloatingSearch = () => {
               Try this out
             </p>
             <p className="text-sm">
-              See search results for “<b>Flood defence</b>” highlighted and translated in the document “
-              <i>Adaptation strategy to climate change in the Czech Republic</i>”
+              See search results for “<b>Flood defence</b>” highlighted and translated in the document “<i>Adaptation strategy to climate change</i>”
+              in Czechia
             </p>
           </a>
         </div>

@@ -5,11 +5,11 @@ export const getCategoryTooltip = (category: TDocumentCategory): string => {
     case "All":
       return "";
     case "Legislation":
-      return "Laws, Acts, Constitutions (legislative branch)";
+      return "For example: Laws, Acts, Constitutions (legislative branch)";
     case "Policies":
-      return "Policies, strategies, decrees, action plans (from executive branch)";
+      return "For example: Policies, strategies, decrees, action plans (from executive branch)";
     case "Litigation":
-      return "Court cases and tribunal proceedings";
+      return "For example: Court cases and tribunal proceedings";
     case "UNFCCC":
       return "Documents submitted to the UNFCCC (including NDCs)";
     default:

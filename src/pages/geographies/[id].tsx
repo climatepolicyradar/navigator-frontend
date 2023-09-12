@@ -45,7 +45,7 @@ const categoryByIndex = {
 
 const MAX_NUMBER_OF_FAMILIES = 3;
 
-const FEATURED_SEARCHES = ["Methane emissions", "Fossil fuel divestment", "Net zero growth plan", "Sustainable fishing"];
+const FEATURED_SEARCHES = ["Resilient infrastructure", "Fossil fuel divestment", "Net zero growth plan", "Sustainable fishing"];
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets }: TProps) => {
   const router = useRouter();
@@ -207,9 +207,9 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                     handleSearchInput={handleSearchInput}
                     input={""}
                   />
-                  <div className="mt-4 flex gap-2 text-sm">
-                    <span className="text-blue-900 pt-1">Featured searches</span>
-                    <ul className="flex gap-2 flex-wrap items-center">
+                  <div className="mt-4 md:flex gap-2 text-sm">
+                    <div className="mb-2 md:mb-0 flex-shrink-0 text-blue-900 pt-1">Featured searches</div>
+                    <ul className="flex gap-1 flex-wrap items-center">
                       {FEATURED_SEARCHES.map((searchTerm) => (
                         <li key={searchTerm}>
                           <button
