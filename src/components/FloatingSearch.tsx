@@ -8,7 +8,7 @@ import { getSessionStorage, setSessionStorage } from "@utils/sessionStorage";
 
 const SEARCH_HIGHLIGHT_DELAY = 5000;
 const FEATURED_SEARCHES = ["Adaptation strategy", "Energy prices", "Flood defense", "Fossil fuels"];
-const FEATURED_DOCUMENT_SLUG = "adaptation-strategy-to-climate-change-in-the-czech-republic_3c9c";
+const FEATURED_DOCUMENT_SLUG = "/documents/adaptation-strategy-to-climate-change-in-the-czech-republic_213b";
 
 export const FloatingSearch = () => {
   const ref = useRef(null);
@@ -137,7 +137,7 @@ export const FloatingSearch = () => {
         <button onClick={() => setShowSearchHighlight(false)} className="absolute right-0 top-0 p-4">
           <CloseIcon width="12" height="12" />
         </button>
-        <p>Find relevant climate information</p>
+        <p>Find relevant information</p>
         <ul className="text-sm list-disc pl-5 mt-2">
           <li>
             Documents from <b>all languages</b> translated into English
