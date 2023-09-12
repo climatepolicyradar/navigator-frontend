@@ -60,13 +60,6 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
   return (
     <>
       <div className="mt-2 md:mt-0">
-        {showClear && (
-          <div className="flex md:justify-end mb-2">
-            <button className="anchor text-sm" onClick={handleClearSearch}>
-              Clear all filters
-            </button>
-          </div>
-        )}
         <div className="mr-2 md:mr-0">
           Find documents containing
           <div className="ml-2 inline-block">
@@ -114,7 +107,7 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
           />
           <MultiList list={countryFilters} removeFilter={handleFilterChange} type={QUERY_PARAMS.country} dataCy="selected-countries" />
         </div>
-        <div className="relative mt-8 mb-12">
+        <div className="relative mt-8 mb-8">
           <div data-cy="date-range">
             <ByDateRange
               title={t("By date range")}
@@ -126,6 +119,13 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
               clear={showClear}
             />
           </div>
+        </div>
+        <div>
+          {showClear && (
+            <button className="anchor text-sm" onClick={handleClearSearch}>
+              Clear all filters
+            </button>
+          )}
         </div>
         <div className="my-8 pt-8 border-t" data-cy="methodology-notice">
           <p className="text-center">
