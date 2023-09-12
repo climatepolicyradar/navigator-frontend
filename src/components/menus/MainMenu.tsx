@@ -15,8 +15,8 @@ const MainMenu = () => {
   };
 
   return (
-    <div ref={menuRef} className="relative z-[41] h-[35px]">
-      <button data-cy="menu-icon" onClick={toggleMenu}>
+    <div ref={menuRef} className="relative z-[41]">
+      <button data-cy="menu-icon" onClick={toggleMenu} className="text-white">
         <MenuIcon />
       </button>
       {showMenu && (

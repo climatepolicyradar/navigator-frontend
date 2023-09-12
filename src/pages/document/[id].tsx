@@ -167,7 +167,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                     id="related-documents-info"
                     place="right"
                     icon="i"
-                    colour="gray-800"
                     tooltip="Related documents can be previous versions, amendments, annexes, supporting legislation, and more."
                   />
                 </h3>

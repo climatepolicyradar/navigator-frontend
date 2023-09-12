@@ -32,7 +32,7 @@ export const FamilyMeta = ({ category, date, geography, topics, author }: TProps
       )}
       {!isNaN(year) && (
         <>
-          <span>&middot;</span>
+          {!isSystemGeo(geography) && <span>&middot;</span>}
           <span data-cy="family-metadata-year">{year}</span>
         </>
       )}
