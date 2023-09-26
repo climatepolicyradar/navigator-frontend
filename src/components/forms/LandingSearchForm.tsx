@@ -61,7 +61,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
 
   const buttonCssClass = theme === "cpr" ? "absolute top-0 right-0 h-full" : "absolute right-0 h-full pr-2 text-blue-400";
   const searchIconCssClass = theme === "cpr" ? "block" : "border-l py-1 pl-1 block";
-  const displayPlaceholder = placeholder ?? "Search full text of 3000+ laws and policies";
+  const displayPlaceholder = placeholder ?? "Search full text of 5000+ laws and policies";
 
   return (
     <form data-cy="search-form" ref={formRef} onSubmit={(e) => e.preventDefault()}>
