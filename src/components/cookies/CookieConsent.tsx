@@ -7,46 +7,45 @@ import { ExternalLink } from "@components/ExternalLink";
 import { ThemeContext } from "@context/ThemeContext";
 import getDomain from "@utils/getDomain";
 
+function initialiseGTM() {
+  (function (w, d, s, l, i) {
+    w[l] = w[l] || [];
+    w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+    var f = d.getElementsByTagName(s)[0],
+      j = d.createElement(s) as HTMLScriptElement,
+      dl = l != "dataLayer" ? "&l=" + l : "";
+    j.async = true;
+    j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+    f.parentNode.insertBefore(j, f);
+  })(window, document, "script", "dataLayer", "GTM-NTNH983");
+}
+
 export const CookieConsent = () => {
   const theme = useContext(ThemeContext);
   const [hide, setHide] = useState(true);
   const [enableAnalytics, setEnableAnalytics] = useState(false);
-  const [hotjar, setHotjar] = useState(false);
+
+  const gtag = (...args: any) => window.dataLayer.push(...args);
 
   useEffect(() => {
+    initialiseGTM();
+    // By default, disable consent for Google Tag Manager
+    gtag("consent", "default", {
+      ad_storage: "denied",
+      analytics_storage: "denied",
+    });
     const cc = getCookie(COOKIE_CONSENT_NAME);
     if (!cc) setHide(false);
     if (cc === "true") setEnableAnalytics(true);
   }, []);
 
   useEffect(() => {
-    // If the user has accepted cookies, enable Google Tag Manager
-    // and Hotjar
+    // If the user has accepted cookies, update the consent options for Google Tag Manager
     if (enableAnalytics) {
-      // Hotjar
-      setHotjar(true);
-      // Google Tag Manager
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s) as HTMLScriptElement,
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-NTNH983");
-      // Matomo
-      (function () {
-        var _mtm = (window._mtm = window._mtm || []);
-        _mtm.push({ "mtm.startTime": new Date().getTime(), event: "mtm.Start" });
-        var d = document,
-          g = d.createElement("script"),
-          s = d.getElementsByTagName("script")[0];
-        g.async = true;
-        g.src = "https://cdn.matomo.cloud/climatelaws.matomo.cloud/container_l8tXApwR.js";
-        s.parentNode.insertBefore(g, s);
-      })();
+      gtag("consent", "update", {
+        ad_storage: "granted",
+        analytics_storage: "granted",
+      });
     }
   }, [enableAnalytics]);
 
@@ -61,6 +60,7 @@ export const CookieConsent = () => {
     setHide(true);
   };
 
+  // gtm controls for CCLW theme only
   const cclwAnalyticsAllowed = theme === "cclw" && enableAnalytics;
 
   return (
@@ -91,7 +91,6 @@ export const CookieConsent = () => {
           </div>
         </div>
       </div>
-      {enableAnalytics && <Script id="google-tag-manager" async src={`https://www.googletagmanager.com/gtm.js?id=GTM-NTNH983`} />}
       {cclwAnalyticsAllowed && (
         <>
           <Script async src="https://www.googletagmanager.com/gtag/js?id=UA-153841121-2" />
@@ -107,7 +106,7 @@ export const CookieConsent = () => {
           </Script>
         </>
       )}
-      {hotjar && (
+      {enableAnalytics && (
         <Script id="hotjar" strategy="afterInteractive">
           {`
             (function(h,o,t,j,a,r){
