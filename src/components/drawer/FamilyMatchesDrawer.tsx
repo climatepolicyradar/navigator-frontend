@@ -29,9 +29,9 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
   };
 
   const showPageNumbers = (documentContentType: TDocumentContentType) => {
-    if (!documentContentType) return null;
+    if (!documentContentType) return false;
     if (documentContentType === "text/html") return false;
-    else return true;
+    return true;
   };
 
   return (
