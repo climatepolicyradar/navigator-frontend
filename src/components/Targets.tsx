@@ -20,8 +20,9 @@ export const Targets = ({ targets = [], showFamilyInfo = false }: TTargets) => {
   };
 
   const showTargetYear = (target: TTarget) => {
+    const middotCharCode = 183;
     if (!target.Year || target.Year === "") return "";
-    return ` ${String.fromCharCode(183)} Target year: ${target.Year}`
+    return ` ${String.fromCharCode(middotCharCode)} Target year: ${target.Year}`
   };
 
   return (
