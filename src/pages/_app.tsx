@@ -31,9 +31,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
       window.queryClient = queryClient;
     }
     // For GTM
-    if (window) {
-      window.dataLayer = window.dataLayer || [];
-    }
+    window.dataLayer = window.dataLayer || [];
   }, []);
 
   useEffect(() => {
