@@ -30,7 +30,10 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
     if (window?.Cypress) {
       window.queryClient = queryClient;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // For GTM
+    if (window) {
+      window.dataLayer = window.dataLayer || [];
+    }
   }, []);
 
   useEffect(() => {
