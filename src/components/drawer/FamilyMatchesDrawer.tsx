@@ -5,6 +5,7 @@ import PassageMatches from "@components/PassageMatches";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { matchesCount } from "@utils/matchesCount";
 import { CleanRouterQuery } from "@utils/cleanRouterQuery";
+import { TDocumentContentType } from "@types";
 
 type TProps = {
   family?: TMatchedFamily;
@@ -27,6 +28,12 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
     router.push({ pathname: `/documents/${document.document_slug}`, query: queryObj });
   };
 
+  const showPageNumbers = (documentContentType: TDocumentContentType) => {
+    if (!documentContentType) return false;
+    if (documentContentType === "text/html") return false;
+    return true;
+  };
+
   return (
     <>
       <div className="h-full flex flex-col">
@@ -45,7 +52,7 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
                 <PassageMatches
                   passages={document.document_passage_matches}
                   onClick={(index) => onPassageClick(index, docIndex)}
-                  showPageNumbers={true}
+                  showPageNumbers={showPageNumbers(document.document_content_type)}
                   pageColour="gray-600"
                 />
               </div>
