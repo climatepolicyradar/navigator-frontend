@@ -5,7 +5,6 @@ import PassageMatches from "@components/PassageMatches";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { matchesCount } from "@utils/matchesCount";
 import { CleanRouterQuery } from "@utils/cleanRouterQuery";
-import { TDocumentContentType } from "@types";
 
 type TProps = {
   family?: TMatchedFamily;
