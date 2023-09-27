@@ -120,7 +120,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                       passages={passageMatches}
                       onClick={handlePassageClick}
                       activeIndex={passageIndex ?? startingPassage}
-                      showPageNumbers={document.content_type === "application/pdf"}
                     />
                   </div>
                 )}
