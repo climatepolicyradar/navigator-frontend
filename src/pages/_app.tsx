@@ -30,8 +30,13 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
     if (window?.Cypress) {
       window.queryClient = queryClient;
     }
-    // For GTM
+    // Initialise the GTM consent
+    // By default, disable consent for Google Tag Manager
     window.dataLayer = window.dataLayer || [];
+    gtag("consent", "default", {
+      ad_storage: "denied",
+      analytics_storage: "denied",
+    });
   }, []);
 
   useEffect(() => {

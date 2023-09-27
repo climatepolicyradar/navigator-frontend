@@ -7,7 +7,7 @@ import { ExternalLink } from "@components/ExternalLink";
 import { ThemeContext } from "@context/ThemeContext";
 import getDomain from "@utils/getDomain";
 
-function initialiseGTM() {
+function loadGTM() {
   (function (w, d, s, l, i) {
     w[l] = w[l] || [];
     w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
@@ -28,12 +28,7 @@ export const CookieConsent = () => {
   const gtag = (...args: any) => window.dataLayer.push(...args);
 
   useEffect(() => {
-    initialiseGTM();
-    // By default, disable consent for Google Tag Manager
-    gtag("consent", "default", {
-      ad_storage: "denied",
-      analytics_storage: "denied",
-    });
+    loadGTM();
     const cc = getCookie(COOKIE_CONSENT_NAME);
     if (!cc) setHide(false);
     if (cc === "true") setEnableAnalytics(true);
