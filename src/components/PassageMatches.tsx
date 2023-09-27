@@ -6,11 +6,10 @@ type TProps = {
   passages: TPassage[];
   onClick: (index: number) => void;
   activeIndex?: number;
-  showPageNumbers?: boolean;
   pageColour?: string;
 };
 
-const PassageMatches = ({ passages, onClick, activeIndex, showPageNumbers = true, pageColour = "blue-500" }: TProps) => {
+const PassageMatches = ({ passages, onClick, activeIndex, pageColour = "blue-500" }: TProps) => {
   return (
     <>
       {!passages ? (
@@ -29,7 +28,7 @@ const PassageMatches = ({ passages, onClick, activeIndex, showPageNumbers = true
                   onClick(index);
                 }}
               >
-                {showPageNumbers && (
+                {item.text_block_page !== null && (
                   <div className={`text-sm ${"text-" + pageColour}`}>
                     <span className="font-bold">Page {item.text_block_page}</span>
                   </div>
