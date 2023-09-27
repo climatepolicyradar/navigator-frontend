@@ -30,8 +30,6 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
     if (window?.Cypress) {
       window.queryClient = queryClient;
     }
-    // For GTM
-    window.dataLayer = window.dataLayer || [];
   }, []);
 
   useEffect(() => {

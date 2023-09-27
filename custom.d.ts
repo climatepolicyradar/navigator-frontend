@@ -14,3 +14,5 @@ declare namespace NodeJS {
     queryClient: any;
   }
 }
+
+declare module "gtag.js";
