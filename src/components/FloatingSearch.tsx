@@ -7,7 +7,7 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 import { getSessionStorage, setSessionStorage } from "@utils/sessionStorage";
 
 const SEARCH_HIGHLIGHT_DELAY = 5000;
-const FEATURED_SEARCHES = ["Adaptation strategy", "Energy prices", "Flood defense", "Fossil fuels"];
+const FEATURED_SEARCHES = ["Adaptation strategy", "Energy prices", "Flood defence", "Fossil fuels"];
 const FEATURED_DOCUMENT_SLUG = "/documents/adaptation-strategy-to-climate-change-in-the-czech-republic_213b";
 
 export const FloatingSearch = () => {
