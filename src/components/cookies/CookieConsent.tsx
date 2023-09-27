@@ -7,28 +7,12 @@ import { ExternalLink } from "@components/ExternalLink";
 import { ThemeContext } from "@context/ThemeContext";
 import getDomain from "@utils/getDomain";
 
-function loadGTM() {
-  (function (w, d, s, l, i) {
-    w[l] = w[l] || [];
-    w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-    var f = d.getElementsByTagName(s)[0],
-      j = d.createElement(s) as HTMLScriptElement,
-      dl = l != "dataLayer" ? "&l=" + l : "";
-    j.async = true;
-    j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-    f.parentNode.insertBefore(j, f);
-  })(window, document, "script", "dataLayer", "GTM-NTNH983");
-}
-
 export const CookieConsent = () => {
   const theme = useContext(ThemeContext);
   const [hide, setHide] = useState(true);
   const [enableAnalytics, setEnableAnalytics] = useState(false);
 
-  const gtag = (...args: any) => window.dataLayer.push(...args);
-
   useEffect(() => {
-    loadGTM();
     const cc = getCookie(COOKIE_CONSENT_NAME);
     if (!cc) setHide(false);
     if (cc === "true") setEnableAnalytics(true);
@@ -86,6 +70,17 @@ export const CookieConsent = () => {
           </div>
         </div>
       </div>
+      <Script async src="https://www.googletagmanager.com/gtm.js?id=GTM-NTNH983" />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag("consent", "default", {
+              ad_storage: "denied",
+              analytics_storage: "denied",
+            });
+          `}
+      </Script>
       {cclwAnalyticsAllowed && (
         <>
           <Script async src="https://www.googletagmanager.com/gtag/js?id=UA-153841121-2" />
