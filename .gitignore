@@ -35,3 +35,6 @@ yarn-error.log*
 .vercel
 .vscode
 e2e/cypress/fixtures/importData.csv
+
+# tsconfig
+tsconfig.tsbuildinfo
