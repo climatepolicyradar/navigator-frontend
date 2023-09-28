@@ -2,6 +2,8 @@ import { TGeographyStats, TGeography } from "@types";
 import useConfig from "@hooks/useConfig";
 import Tooltip from "@components/tooltip";
 import { ExternalLink } from "@components/ExternalLink";
+import { useContext } from "react";
+import { ThemeContext } from "@context/ThemeContext";
 
 type TProps = {
   country: TGeographyStats;
@@ -23,6 +25,9 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
 
   const countryRegion = getCountryRegion();
   const { name, political_groups, federal, federal_details, worldbank_income_group, climate_risk_index, global_emissions_percent } = country;
+
+  const theme = useContext(ThemeContext);
+  const websiteName = theme == "cclw" ? "Climate Change Laws of the World": "Climate Policy Radar";
 
   return (
     <div>
@@ -62,8 +67,13 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
                             The annually published Global Climate Risk Index analyses to what extent countries have been affected by the impacts of
                             weather-related loss events (storms, floods, heat waves etc.).
                           </p>
-                          Published by German Watch{" "}
-                          <ExternalLink url="https://www.germanwatch.org/en/cri">https://www.germanwatch.org/en/cri</ExternalLink>
+                          <p className="mb-4">
+                            This data is from the Global Risk Index 2021 published by German Watch. Numbers marked with an asterisk (*) are from the
+                            Global Risk Index 2020, being the latest available data for that country. This data was last updated on {websiteName} on
+                            18 September 2023.
+                          </p>
+                          See the full report published by German Watch here:{" "}
+                          <ExternalLink url="https://www.germanwatch.org/en/19777">https://www.germanwatch.org/en/19777</ExternalLink>
                         </>
                       }
                       icon="i"
