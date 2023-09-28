@@ -68,12 +68,12 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
                             weather-related loss events (storms, floods, heat waves etc.).
                           </p>
                           <p className="mb-4">
-                            This data is from the Global Risk Index 2021 published by German Watch. Numbers marked with an asterisk (*) are from the
-                            Global Risk Index 2020, being the latest available data for that country. This data was last updated on {websiteName} on
-                            18 September 2023.
+                            This data is from the Global Risk Index 2021 published by{" "}
+                            <ExternalLink url="https://www.germanwatch.org/en/cri">German Watch</ExternalLink>. Numbers marked with an asterisk (*)
+                            are from the Global Risk Index 2020, being the latest available data for that country. This data was last updated on{" "}
+                            {websiteName} on 18 September 2023.
                           </p>
-                          See the full report published by German Watch here:{" "}
-                          <ExternalLink url="https://www.germanwatch.org/en/19777">https://www.germanwatch.org/en/19777</ExternalLink>
+                          See the full report published by German Watch <ExternalLink url="https://www.germanwatch.org/en/19777">here</ExternalLink>.
                         </>
                       }
                       icon="i"
@@ -114,12 +114,13 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
                       tooltip={
                         <>
                           <p className="mb-4">
-                            The share of global emissions data is from Climate Watch, managed by the World Resources Institute:
-                            <ExternalLink url="https://www.climatewatchdata.org/"> https://www.climatewatchdata.org/</ExternalLink>.
+                            The share of global emissions data is from{" "}
+                            <ExternalLink url="https://www.climatewatchdata.org/">Climate Watch</ExternalLink>, managed by the World Resources
+                            Institute.
                           </p>
                           <p className="mb-4">
                             This percentage is based on emissions data from 2020. This data was last updated on
-                            {websiteName} on 18 September 2023.
+                            {" " + websiteName} on 18 September 2023.
                           </p>
                         </>
                       }
