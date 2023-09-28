@@ -82,28 +82,31 @@ const TermsOfUse = () => {
               </li>
               <li>
                 <span className="font-bold">Licence terms</span>: Climate Policy Radar will not revoke these freedoms as long as you follow the
-                license terms - see [full legal code](https://creativecommons.org/licenses/by/4.0/legalcode), which include but are not limited to
-                these key issues:
+                license terms - see <ExternalLink url="https://creativecommons.org/licenses/by/4.0/legalcode">full legal code</ExternalLink>, which
+                include but are not limited to these key issues:
                 <ul>
                   <li>
-                    <span className="font-bold">Attribution</span>: You must give CPR and its partners [appropriate
-                    credit](https://creativecommons.org/licenses/by/4.0/#), provide a link to the license, and [indicate if changes were
-                    made](https://creativecommons.org/licenses/by/4.0/#). You may do so in any reasonable manner, but not in any way that suggests the
-                    licensor endorses you or your use. See suggested citation below.
+                    <span className="font-bold">Attribution</span>: You must give CPR and its partners{" "}
+                    <ExternalLink url="https://creativecommons.org/licenses/by/4.0/#">appropriate credit</ExternalLink>, provide a link to the
+                    license, and <ExternalLink url="https://creativecommons.org/licenses/by/4.0/#">indicate if changes were made</ExternalLink>. You
+                    may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use. See suggested citation
+                    below.
                   </li>
                   <li>
-                    <span className="font-bold">No additional restrictions</span>: You may not apply legal terms or [technological
-                    measures](https://creativecommons.org/licenses/by/4.0/#) that legally restrict others from doing anything the license permits.
+                    <span className="font-bold">No additional restrictions</span>: You may not apply legal terms or{" "}
+                    <ExternalLink url="https://creativecommons.org/licenses/by/4.0/#">technological measures</ExternalLink> that legally restrict
+                    others from doing anything the license permits.
                   </li>
                   <li>
                     <span className="font-bold">Exemptions and Limitations</span>: You do not have to comply with the license for elements of the
-                    material in the public domain or where your use is permitted by an applicable [exception or
-                    limitation](https://creativecommons.org/licenses/by/4.0/#).
+                    material in the public domain or where your use is permitted by an applicable{" "}
+                    <ExternalLink url="https://creativecommons.org/licenses/by/4.0/#">exception or limitation</ExternalLink>.
                   </li>
                   <li>
                     <span className="font-bold">No warranties</span>: The license may not give you all of the permissions necessary for your intended
-                    use. For example, other rights such as [publicity, privacy, or moral rights](https://creativecommons.org/licenses/by/4.0/#) may
-                    limit how you use the material.
+                    use. For example, other rights such as{" "}
+                    <ExternalLink url="https://creativecommons.org/licenses/by/4.0/#">publicity, privacy, or moral rights</ExternalLink> may limit how
+                    you use the material.
                   </li>
                 </ul>
               </li>
