@@ -27,7 +27,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
   const { name, political_groups, federal, federal_details, worldbank_income_group, climate_risk_index, global_emissions_percent } = country;
 
   const theme = useContext(ThemeContext);
-  const websiteName = theme == "cclw" ? "Climate Change Laws of the World": "Climate Policy Radar";
+  const websiteName = theme == "cclw" ? "Climate Change Laws of the World" : "Climate Policy Radar";
 
   return (
     <div>
@@ -107,7 +107,26 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
               {global_emissions_percent !== null && (
                 <>
                   <div className="text-sm font-bold">Share of Global Emissions</div>
-                  <div>{global_emissions_percent}%</div>
+                  <div className="flex items-center">
+                    <div className=" mr-1">{global_emissions_percent}%</div>{" "}
+                    <Tooltip
+                      id="country-gep"
+                      tooltip={
+                        <>
+                          <p className="mb-4">
+                            The share of global emissions data is from Climate Watch, managed by the World Resources Institute:
+                            <ExternalLink url="https://www.climatewatchdata.org/"> https://www.climatewatchdata.org/</ExternalLink>.
+                          </p>
+                          <p className="mb-4">
+                            This percentage is based on emissions data from 2020. This data was last updated on
+                            {websiteName} on 18 September 2023.
+                          </p>
+                        </>
+                      }
+                      icon="i"
+                      interactableContent
+                    />
+                  </div>
                 </>
               )}
             </div>
