@@ -220,6 +220,22 @@ export const METHODOLOGY: TDataListItem[] = [
     ),
   },
   {
+    title: "Country profiles data",
+    content: (
+      <>
+        <p>
+          Country profiles include data showing the share of global emissions and the Global Climate Risk Index. The share of global emissions data is
+          from <ExternalLink url="https://www.climatewatchdata.org/">Climate Watch</ExternalLink>, managed by the World Resources Institute. This
+          percentage is based on emissions data from 2020. This data was last updated on this site on 18 September 2023. The annually published Global
+          Climate Risk Index analyses to what extent countries have been affected by the impacts of weather-related loss events (storms, floods, heat
+          waves etc.). This data is from the Global Risk Index 2021 published by{" "}
+          <ExternalLink url="https://www.germanwatch.org/en/cri">German Watch</ExternalLink>. Numbers marked with an asterisk (*) are from the Global
+          Risk Index 2020, being the latest available data for that country. This data was last updated on this site on 18 September 2023.
+        </p>
+      </>
+    ),
+  },
+  {
     title: "Principles and limitations",
     content: (
       <>
