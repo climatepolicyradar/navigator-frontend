@@ -26,9 +26,6 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
   const countryRegion = getCountryRegion();
   const { name, political_groups, federal, federal_details, worldbank_income_group, climate_risk_index, global_emissions_percent } = country;
 
-  const theme = useContext(ThemeContext);
-  const websiteName = theme == "cclw" ? "Climate Change Laws of the World" : "Climate Policy Radar";
-
   return (
     <div>
       <h1 className="text-4xl">{name}</h1>
@@ -70,8 +67,8 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
                           <p className="mb-4">
                             This data is from the Global Risk Index 2021 published by{" "}
                             <ExternalLink url="https://www.germanwatch.org/en/cri">German Watch</ExternalLink>. Numbers marked with an asterisk (*)
-                            are from the Global Risk Index 2020, being the latest available data for that country. This data was last updated on{" "}
-                            {websiteName} on 18 September 2023.
+                            are from the Global Risk Index 2020, being the latest available data for that country. This data was last updated on this
+                            site on 18 September 2023.
                           </p>
                           See the full report published by German Watch <ExternalLink url="https://www.germanwatch.org/en/19777">here</ExternalLink>.
                         </>
@@ -119,8 +116,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
                             Institute.
                           </p>
                           <p className="mb-4">
-                            This percentage is based on emissions data from 2020. This data was last updated on
-                            {" " + websiteName} on 18 September 2023.
+                            This percentage is based on emissions data from 2020. This data was last updated on this site on 18 September 2023.
                           </p>
                         </>
                       }
