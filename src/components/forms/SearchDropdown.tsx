@@ -63,7 +63,6 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
     const intendedGeography = geography;
     if (Object.keys(intendedGeography).length === 0) return;
 
-    console.log(Object.keys(intendedGeography).length);   
     if (Object.keys(intendedGeography).length === 1) {
       if (!term.toLowerCase().includes(intendedGeography.display_value.toLowerCase())) return;
       if (!termWithoutGeography(intendedGeography.display_value).trim().length) return;
