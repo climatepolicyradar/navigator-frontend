@@ -21,7 +21,8 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
     (geography) =>
       !systemGeoCodes.includes(geography.slug) &&
       (geography.display_value.toLowerCase().includes(term.toLocaleLowerCase()) ||
-        term.toLocaleLowerCase().includes(geography.display_value.toLowerCase()))
+        term.toLocaleLowerCase().includes(geography.display_value.toLowerCase())) &&
+      term.toLocaleLowerCase().search(new RegExp("\\b" + geography.display_value.toLowerCase() + "\\b", "i")) >= 0
   );
 
   const termWithoutGeography = (geography: string) => term.toLowerCase().replace(geography.toLowerCase(), "").trim();
@@ -46,16 +47,36 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
   const anchorClasses = (last: boolean) =>
     `flex flex-wrap items-center cursor-pointer py-2 px-4 block text-cpr-dark hover:bg-gray-200 focus:bg-gray-200 ${last ? "rounded-b-lg" : ""}`;
 
-  const renderSearchSuggestion = (geography: TGeography) => {
-    if (!term.toLowerCase().includes(geography.display_value.toLowerCase())) return;
-    if (!termWithoutGeography(geography.display_value).trim().length) return;
+  const renderSearchSuggestion = (geographies: TGeography[]) => {
+    if (!geographies || geographies == null || geographies.length === 0) return;
+
+    // When multiple geography matches are found e.g., Sudan and South Sudan, select the geography with the longest
+    // display name.
+    let geography;
+    if (geographies.length > 1) {
+      geography = geographies.reduce(function (prev, current) {
+        return prev && prev.display_value.length > current.display_value.length ? prev : current;
+      });
+      geography = Object.keys(geography).length === 1 ? geography[0] : geography;
+    } else geography = geographies[0];
+    
+    const intendedGeography = geography;
+    if (Object.keys(intendedGeography).length === 0) return;
+
+    console.log(Object.keys(intendedGeography).length);   
+    if (Object.keys(intendedGeography).length === 1) {
+      if (!term.toLowerCase().includes(intendedGeography.display_value.toLowerCase())) return;
+      if (!termWithoutGeography(intendedGeography.display_value).trim().length) return;
+    }
+
     return (
       <ul>
-        <li key={geography.slug}>
-          <a href="#" className={anchorClasses(false)} onClick={(e) => handleSuggestionClick(e, geography)}>
+        {intendedGeography.length === 1}
+        <li key={intendedGeography.slug}>
+          <a href="#" className={anchorClasses(false)} onClick={(e) => handleSuggestionClick(e, intendedGeography)}>
             Did you mean to search for&nbsp;
-            <span className="font-bold text-black">{termWithoutGeography(geography.display_value)}</span>&nbsp;in&nbsp;
-            <span className="font-bold text-black">{geography.display_value}</span>?
+            <span className="font-bold text-black">{termWithoutGeography(intendedGeography.display_value)}</span>&nbsp;in&nbsp;
+            <span className="font-bold text-black">{intendedGeography.display_value}</span>?
           </a>
         </li>
       </ul>
@@ -74,7 +95,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
         </span>
         Search <span className="font-bold text-black mx-1">{term}</span> in all documents
       </a>
-      {geographiesFiltered.length === 1 && renderSearchSuggestion(geographiesFiltered[0])}
+      {geographiesFiltered.length > 0 && renderSearchSuggestion(geographiesFiltered)}
       {!!geographiesFiltered.length && (
         <>
           <div className="py-2 px-4 text-sm">View countries and territories information</div>
