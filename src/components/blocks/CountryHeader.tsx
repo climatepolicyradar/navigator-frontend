@@ -2,6 +2,8 @@ import { TGeographyStats, TGeography } from "@types";
 import useConfig from "@hooks/useConfig";
 import Tooltip from "@components/tooltip";
 import { ExternalLink } from "@components/ExternalLink";
+import { useContext } from "react";
+import { ThemeContext } from "@context/ThemeContext";
 
 type TProps = {
   country: TGeographyStats;
@@ -29,18 +31,18 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
       <h1 className="text-4xl">{name}</h1>
       <div className="flex items-start justify-between overflow-hidden">
         <div className="mt-4 shrink-0 md:basis-4/6">
-          <div className="grid grid-cols-5 gap-6 items-center text-indigo-700">
-            <div className="col-span-5">
+          <div className="grid grid-cols-2 gap-6 items-center text-indigo-700 md:grid-cols-5">
+            <div className="col-span-2 md:col-span-5">
               <div data-cy="region" data-analytics-region={countryRegion}>
                 {countryRegion}
               </div>
             </div>
             {federal && (
-              <div className="col-span-5">
+              <div className="col-span-2 md:col-span-5">
                 <div className="font-bold">Federative {federal_details && <span className="font-light text-sm">({federal_details})</span>}</div>
               </div>
             )}
-            <div data-cy="political-group" className="col-span-2">
+            <div data-cy="political-group" className="col-span-1 md:col-span-2">
               {political_groups !== "" && (
                 <>
                   <div className="text-sm font-bold">Political Groups</div>
@@ -48,7 +50,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
                 </>
               )}
             </div>
-            <div data-cy="global-climate-risk-index" className="col-span-2">
+            <div data-cy="global-climate-risk-index" className="col-span-1 md:col-span-2">
               {climate_risk_index !== null && (
                 <>
                   <div className="text-sm font-bold">Global Climate Risk Index</div>
@@ -62,8 +64,13 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
                             The annually published Global Climate Risk Index analyses to what extent countries have been affected by the impacts of
                             weather-related loss events (storms, floods, heat waves etc.).
                           </p>
-                          Published by German Watch{" "}
-                          <ExternalLink url="https://www.germanwatch.org/en/cri">https://www.germanwatch.org/en/cri</ExternalLink>
+                          <p className="mb-4">
+                            This data is from the Global Risk Index 2021 published by{" "}
+                            <ExternalLink url="https://www.germanwatch.org/en/cri">German Watch</ExternalLink>. Numbers marked with an asterisk (*)
+                            are from the Global Risk Index 2020, being the latest available data for that country. This data was last updated on this
+                            site on 18 September 2023.
+                          </p>
+                          See the full report published by German Watch <ExternalLink url="https://www.germanwatch.org/en/19777">here</ExternalLink>.
                         </>
                       }
                       icon="i"
@@ -73,7 +80,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
                 </>
               )}
             </div>
-            <div data-cy="targets" className="col-span-1">
+            <div data-cy="targets" className="order-last col-span-2 md:col-span-1 md:order-none">
               {targetCount > 0 && (
                 <>
                   <div className="text-sm font-bold">Targets</div>
@@ -85,7 +92,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
                 </>
               )}
             </div>
-            <div data-cy="world-bank-income-group" className="col-span-2">
+            <div data-cy="world-bank-income-group" className="col-span-1 md:col-span-2">
               {worldbank_income_group !== "" && (
                 <>
                   <div className="text-sm font-bold">World Bank Income Group</div>
@@ -93,15 +100,33 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
                 </>
               )}
             </div>
-            <div data-cy="share-of-global-emissions" className="col-span-2">
+            <div data-cy="share-of-global-emissions" className="col-span-1 md:col-span-2">
               {global_emissions_percent !== null && (
                 <>
                   <div className="text-sm font-bold">Share of Global Emissions</div>
-                  <div>{global_emissions_percent}%</div>
+                  <div className="flex items-center">
+                    <div className=" mr-1">{global_emissions_percent}%</div>{" "}
+                    <Tooltip
+                      id="country-gep"
+                      tooltip={
+                        <>
+                          <p className="mb-4">
+                            The share of global emissions data is from{" "}
+                            <ExternalLink url="https://www.climatewatchdata.org/">Climate Watch</ExternalLink>, managed by the World Resources
+                            Institute.
+                          </p>
+                          <p className="mb-4">
+                            This percentage is based on emissions data from 2020. This data was last updated on this site on 18 September 2023.
+                          </p>
+                        </>
+                      }
+                      icon="i"
+                      interactableContent
+                    />
+                  </div>
                 </>
               )}
             </div>
-            <div></div>
           </div>
         </div>
         {countryGeography?.value && (

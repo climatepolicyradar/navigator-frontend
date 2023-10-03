@@ -45,7 +45,6 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
                 <PassageMatches
                   passages={document.document_passage_matches}
                   onClick={(index) => onPassageClick(index, docIndex)}
-                  showPageNumbers={true}
                   pageColour="gray-600"
                 />
               </div>
