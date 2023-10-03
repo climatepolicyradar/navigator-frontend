@@ -96,9 +96,9 @@ const Acknowledgements = () => {
             </Acknowledgement>
             <Acknowledgement
               partnerImage={{
-                url: "https://fossilfueltracker.org/app/ffnpt",
-                imageUrl: "FFNPT_logo.png",
-                imageAlt: "Fossil Fuel Non-Proliferation Treaty Initiative logo",
+                url: "https://www.sussex.ac.uk/",
+                imageUrl: "UoS.png",
+                imageAlt: "University of Sussex logo",
               }}
             >
               <p>
