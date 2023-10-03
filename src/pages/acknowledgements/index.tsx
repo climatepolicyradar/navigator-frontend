@@ -97,7 +97,7 @@ const Acknowledgements = () => {
             <Acknowledgement
               partnerImage={{
                 url: "https://www.sussex.ac.uk/",
-                imageUrl: "UoS.png",
+                imageUrl: "UoS_logo.png",
                 imageAlt: "University of Sussex logo",
               }}
             >
