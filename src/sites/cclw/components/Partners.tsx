@@ -13,9 +13,9 @@ const partners = [
     name: "Foundation for International Law and the Environment",
   },
   {
-    link: "https://fossilfueltracker.org/app/ffnpt",
-    logo: "FFNPT_logo.png",
-    name: "Fossil Fuel Non-Proliferation Treaty Initiative",
+    link: "https://www.sussex.ac.uk/",
+    logo: "UoS_logo.png",
+    name: "University of Sussex",
   },
   {
     link: "https://www.ipu.org",
