@@ -12,12 +12,19 @@ import { ExternalLink } from "@components/ExternalLink";
 import { BookOpenIcon } from "@components/svg/Icons";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { getDocumentDescription } from "@constants/metaDescriptions";
-import { TDocumentFamily, TDocumentPage } from "@types";
+import { TDocumentFamily, TDocumentPage, TGeographySummary } from "@types";
+import SearchForm from "@components/forms/SearchForm";
+import useConfig from "@hooks/useConfig";
+import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
+import { SingleCol } from "@components/SingleCol";
 
 type TProps = {
   document: TDocumentPage;
   family: TDocumentFamily;
+  geographySummary: TGeographySummary;
 };
+
+const FEATURED_SEARCHES = ["Resilient infrastructure", "Fossil fuel divestment", "Net zero growth plan", "Sustainable fishing"];
 
 const passageClasses = (docType: string) => {
   if (docType === "application/pdf") {
@@ -34,11 +41,16 @@ const passageClasses = (docType: string) => {
   - If the document is an HTML, the passages will be displayed in a list on the left side of the page but the document will not be displayed.
 */
 
-const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family }: TProps) => {
+const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family, geographySummary }: TProps) => {
   const [passageIndex, setPassageIndex] = useState(null);
   const router = useRouter();
   const startingPassage = Number(router.query.passage) || 0;
   const { status, families, searchQuery } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
+
+  const configQuery = useConfig();
+  const { data: { countries = [] } = {} } = configQuery;
+  const geographyName = getCountryName(family.geography, countries);
+  const geographySlug = getCountrySlug(family.geography, countries);
 
   const passageMatches = [];
   if (!!router.query[QUERY_PARAMS.query_string]) {
@@ -52,6 +64,9 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   }
   const hasPassageMatches = passageMatches.length > 0;
   const canPreview = document.content_type === "application/pdf";
+
+  const totalDocsInFamilyGeography =
+    geographySummary.family_counts.Legislative + geographySummary.family_counts.Executive + geographySummary.family_counts.UNFCCC;
 
   const scrollToPassage = (index: number) => {
     setTimeout(() => {
@@ -75,6 +90,14 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     const url = document.content_type === "application/pdf" ? document.cdn_object : document.source_url;
     if (!url) return;
     window.open(url);
+  };
+
+  // Search handlers
+  const handleSearchInput = (term: string) => {
+    const queryObj = {};
+    queryObj[QUERY_PARAMS.query_string] = term;
+    queryObj[QUERY_PARAMS.country] = geographySlug;
+    router.push({ pathname: "/search", query: queryObj });
   };
 
   useEffect(() => {
@@ -116,11 +139,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                       </p>
                       <p className="text-sm">Sorted by search relevance</p>
                     </div>
-                    <PassageMatches
-                      passages={passageMatches}
-                      onClick={handlePassageClick}
-                      activeIndex={passageIndex ?? startingPassage}
-                    />
+                    <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
                   </div>
                 )}
                 {status === "success" && (
@@ -156,6 +175,36 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
             </div>
           </section>
         )}
+
+        <div className="flex place-content-center">
+          <div className="mt-8 mx-auto max-w-screen-md px-4 lg:px-0">
+            <section className="mt-10" data-cy="top-documents">
+              <h3 className="mb-4">Documents</h3>
+              <div className="p-4 rounded-xl bg-blue-100">
+                <SearchForm
+                  placeholder={`Search the full text of ${totalDocsInFamilyGeography} documents from ${geographyName}`}
+                  handleSearchInput={handleSearchInput}
+                  input={""}
+                />
+                <div className="mt-4 md:flex gap-2 text-sm">
+                  <div className="mb-2 md:mb-0 flex-shrink-0 text-blue-900 pt-1">Featured searches</div>
+                  <ul className="flex gap-1 flex-wrap items-center">
+                    {FEATURED_SEARCHES.map((searchTerm) => (
+                      <li key={searchTerm}>
+                        <button
+                          onClick={() => handleSearchInput(searchTerm)}
+                          className="text-gray-800 bg-white border border-gray-300 rounded-[40px] py-1 px-2 transition hover:bg-blue-600 hover:text-white"
+                        >
+                          {searchTerm}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
       </section>
     </Layout>
   );
@@ -171,6 +220,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   let documentData: TDocumentPage;
   let familyData: TDocumentFamily;
+  let geographySummaryData: TGeographySummary;
+  let geographyCode: string;
 
   try {
     const { data: returnedData } = await client.get(`/documents/${id}`);
@@ -180,7 +231,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // TODO: Handle error more gracefully
   }
 
-  if (!documentData || !familyData) {
+  if (familyData) geographyCode = familyData.geography;
+
+  if (geographyCode) {
+    try {
+      const { data: returnedData }: { data: TGeographySummary } = await client.get(`/summaries/geography/${geographyCode}`);
+      geographySummaryData = returnedData;
+    } catch (error) {}
+  }
+
+  if (!documentData || !familyData || !geographySummaryData) {
     return {
       notFound: true,
     };
@@ -190,6 +250,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       document: documentData,
       family: familyData,
+      geographySummary: geographySummaryData,
     },
   };
 };

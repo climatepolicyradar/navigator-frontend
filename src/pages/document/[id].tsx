@@ -27,10 +27,9 @@ import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
 import { getOrganisationNote } from "@helpers/getOrganisationNote";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
-import { TFamilyPage, TMatchedFamily, TTarget } from "@types";
+import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary } from "@types";
 import Tooltip from "@components/tooltip";
 import SearchForm from "@components/forms/SearchForm";
-import { TGeographySummary } from "@types";
 
 type TProps = {
   page: TFamilyPage;
@@ -99,11 +98,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const sourceLogo = page?.organisation === "CCLW" ? "grantham-logo.png" : null;
   const sourceName = page?.organisation === "CCLW" ? "Grantham Research Institute" : page?.organisation;
 
-  const allDocumentsCount = () => {
-    const allDocumentsCount =
-      geographySummary.family_counts.Legislative + geographySummary.family_counts.Executive + geographySummary.family_counts.UNFCCC;
-    return allDocumentsCount;
-  };
+  const totalDocsInPageGeography =
+    geographySummary.family_counts.Legislative + geographySummary.family_counts.Executive + geographySummary.family_counts.UNFCCC;
 
   const mainDocs = page.documents.filter((doc) => doc.document_role && doc.document_role.toLowerCase().includes("main"));
   const otherDocs = page.documents.filter((doc) => !doc.document_role || !doc.document_role.toLowerCase().includes("main"));
@@ -307,7 +303,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
             <h3 className="mb-4">Documents</h3>
             <div className="p-4 rounded-xl bg-blue-100">
               <SearchForm
-                placeholder={`Search the full text of ${allDocumentsCount()} documents from ${geographyName}`}
+                placeholder={`Search the full text of ${totalDocsInPageGeography} documents from ${geographyName}`}
                 handleSearchInput={handleSearchInput}
                 input={""}
               />
