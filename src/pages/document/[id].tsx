@@ -299,14 +299,16 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
             </section>
           ))}
 
-          <section className="mt-8" data-cy="top-documents">
-            <DocumentSearchForm
-              placeholder={`Search the full text of ${totalDocsInPageGeography} documents from ${geographyName}`}
-              handleSearchInput={handleSearchInput}
-              input={""}
-              featuredSearches={FEATURED_SEARCHES}
-            />
-          </section>
+          {!!geographySummary && (
+            <section className="mt-8" data-cy="top-documents">
+              <DocumentSearchForm
+                placeholder={`Search the full text of ${totalDocsInPageGeography} documents from ${geographyName}`}
+                handleSearchInput={handleSearchInput}
+                input={""}
+                featuredSearches={FEATURED_SEARCHES}
+              />
+            </section>
+          )}
         </SingleCol>
       </section>
     </Layout>
@@ -347,7 +349,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     } catch (error) {}
   }
 
-  if (!familyData || !geographySummaryData) {
+  if (!familyData) {
     return {
       notFound: true,
     };

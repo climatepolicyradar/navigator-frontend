@@ -174,15 +174,16 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
             </div>
           </section>
         )}
-
-        <section className="flex mt-8 mx-auto max-w-screen-md px-4 lg:px-0" data-cy="top-documents">
-          <DocumentSearchForm
-            placeholder={`Search the full text of ${totalDocsInFamilyGeography} documents from ${geographyName}`}
-            handleSearchInput={handleSearchInput}
-            input={""}
-            featuredSearches={FEATURED_SEARCHES}
-          />
-        </section>
+        {!!geographySummary && (
+          <section className="flex mt-8 mx-auto max-w-screen-md px-4 lg:px-0" data-cy="country-search">
+            <DocumentSearchForm
+              placeholder={`Search the full text of ${totalDocsInFamilyGeography} documents from ${geographyName}`}
+              handleSearchInput={handleSearchInput}
+              input={""}
+              featuredSearches={FEATURED_SEARCHES}
+            />
+          </section>
+        )}
       </section>
     </Layout>
   );
@@ -218,7 +219,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     } catch (error) {}
   }
 
-  if (!documentData || !familyData || !geographySummaryData) {
+  if (!documentData || !familyData) {
     return {
       notFound: true,
     };

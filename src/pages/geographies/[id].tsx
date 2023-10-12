@@ -199,7 +199,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
             </div>
             <SingleCol>
               <CountryHeader country={geography} targetCount={hasTargets ? publishedTargets?.length : 0} onTargetClick={handleTargetClick} />
-              <section className="mt-8" data-cy="top-documents">
+              <section className="mt-8" data-cy="country-search">
                 <h3 className="mb-4">Documents</h3>
                 <DocumentSearchForm
                   placeholder={`Search the full text of ${allDocumentsCount} documents from ${geography.name}`}
