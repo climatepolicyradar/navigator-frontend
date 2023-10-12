@@ -68,7 +68,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     if (!!geographySummary) {
       return geographySummary.family_counts.Legislative + geographySummary.family_counts.Executive + geographySummary.family_counts.UNFCCC;
     }
-    return 0;
   };
 
   const scrollToPassage = (index: number) => {
@@ -178,10 +177,10 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
             </div>
           </section>
         )}
-        {!!geographySummary && (
+        {!!geographySummary && totalDocsInFamilyGeography() > 0 && (
           <section className="flex mt-8 mx-auto max-w-screen-md px-4 lg:px-0" data-cy="country-search">
             <DocumentSearchForm
-              placeholder={`Search the full text of ${totalDocsInFamilyGeography} documents from ${geographyName}`}
+              placeholder={`Search the full text of ${totalDocsInFamilyGeography()} documents from ${geographyName}`}
               handleSearchInput={handleSearchInput}
               input={""}
               featuredSearches={FEATURED_SEARCHES}

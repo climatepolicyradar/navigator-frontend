@@ -302,10 +302,10 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
             </section>
           ))}
 
-          {!!geographySummary && (
+          {!!geographySummary && totalDocsInPageGeography() > 0 && (
             <section className="mt-8" data-cy="top-documents">
               <DocumentSearchForm
-                placeholder={`Search the full text of ${totalDocsInPageGeography} documents from ${geographyName}`}
+                placeholder={`Search the full text of ${totalDocsInPageGeography()} documents from ${geographyName}`}
                 handleSearchInput={handleSearchInput}
                 input={""}
                 featuredSearches={FEATURED_SEARCHES}
