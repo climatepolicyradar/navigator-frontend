@@ -98,8 +98,11 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const sourceLogo = page?.organisation === "CCLW" ? "grantham-logo.png" : null;
   const sourceName = page?.organisation === "CCLW" ? "Grantham Research Institute" : page?.organisation;
 
-  const totalDocsInPageGeography =
-    geographySummary.family_counts.Legislative + geographySummary.family_counts.Executive + geographySummary.family_counts.UNFCCC;
+  const totalDocsInPageGeography = () => {
+    if (!!geographySummary) {
+      return geographySummary.family_counts.Legislative + geographySummary.family_counts.Executive + geographySummary.family_counts.UNFCCC;
+    }
+  };
 
   const mainDocs = page.documents.filter((doc) => doc.document_role && doc.document_role.toLowerCase().includes("main"));
   const otherDocs = page.documents.filter((doc) => !doc.document_role || !doc.document_role.toLowerCase().includes("main"));

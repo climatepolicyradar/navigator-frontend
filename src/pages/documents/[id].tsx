@@ -64,8 +64,12 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const hasPassageMatches = passageMatches.length > 0;
   const canPreview = document.content_type === "application/pdf";
 
-  const totalDocsInFamilyGeography =
-    geographySummary.family_counts.Legislative + geographySummary.family_counts.Executive + geographySummary.family_counts.UNFCCC;
+  const totalDocsInFamilyGeography = () => {
+    if (!!geographySummary) {
+      return geographySummary.family_counts.Legislative + geographySummary.family_counts.Executive + geographySummary.family_counts.UNFCCC;
+    }
+    return 0;
+  };
 
   const scrollToPassage = (index: number) => {
     setTimeout(() => {
