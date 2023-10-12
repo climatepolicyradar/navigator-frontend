@@ -27,13 +27,17 @@ import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
 import { getOrganisationNote } from "@helpers/getOrganisationNote";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
-import { TFamilyPage, TMatchedFamily, TTarget } from "@types";
+import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary } from "@types";
 import Tooltip from "@components/tooltip";
+import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 
 type TProps = {
   page: TFamilyPage;
   targets: TTarget[];
+  geographySummary: TGeographySummary;
 };
+
+const FEATURED_SEARCHES = ["Resilient infrastructure", "Fossil fuel divestment", "Net zero growth plan", "Sustainable fishing"];
 
 /*
   # DEV NOTES
@@ -42,7 +46,7 @@ type TProps = {
   - The 'physical document' view is within the folder: src/pages/documents/[id].tsx.
 */
 
-const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page, targets = [] }: TProps) => {
+const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page, targets = [], geographySummary }: TProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const startingNumberOfTargetsToDisplay = 5;
@@ -94,6 +98,12 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const sourceLogo = page?.organisation === "CCLW" ? "grantham-logo.png" : null;
   const sourceName = page?.organisation === "CCLW" ? "Grantham Research Institute" : page?.organisation;
 
+  const totalDocsInPageGeography = () => {
+    if (!!geographySummary) {
+      return geographySummary.family_counts.Legislative + geographySummary.family_counts.Executive + geographySummary.family_counts.UNFCCC;
+    }
+  };
+
   const mainDocs = page.documents.filter((doc) => doc.document_role && doc.document_role.toLowerCase().includes("main"));
   const otherDocs = page.documents.filter((doc) => !doc.document_role || !doc.document_role.toLowerCase().includes("main"));
 
@@ -121,6 +131,14 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   useEffect(() => {
     setShowCollectionDetail(false);
   }, [pathname]);
+
+  // Search handlers
+  const handleSearchInput = (term: string) => {
+    const queryObj = {};
+    queryObj[QUERY_PARAMS.query_string] = term;
+    queryObj[QUERY_PARAMS.country] = geographySlug;
+    router.push({ pathname: "/search", query: queryObj });
+  };
 
   return (
     <Layout title={`${page.title}`} description={page.summary.substring(0, 164)}>
@@ -283,6 +301,17 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               )}
             </section>
           ))}
+
+          {!!geographySummary && totalDocsInPageGeography() > 0 && (
+            <section className="mt-8" data-cy="top-documents">
+              <DocumentSearchForm
+                placeholder={`Search the full text of ${totalDocsInPageGeography()} documents from ${geographyName}`}
+                handleSearchInput={handleSearchInput}
+                input={""}
+                featuredSearches={FEATURED_SEARCHES}
+              />
+            </section>
+          )}
         </SingleCol>
       </section>
     </Layout>
@@ -298,6 +327,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   let familyData: TFamilyPage;
   let targetsData: TTarget[] = [];
+  let geographySummaryData: TGeographySummary;
+  let geographyCode: string;
 
   try {
     const { data: returnedData } = await client.get(`/documents/${id}`);
@@ -307,9 +338,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   if (familyData) {
+    geographyCode = familyData.geography;
     try {
       const targetsRaw = await axios.get<TTarget[]>(`${process.env.S3_PATH}/families/${familyData.import_id}.json`);
       targetsData = targetsRaw.data;
+    } catch (error) {}
+  }
+
+  if (geographyCode) {
+    try {
+      const { data: returnedData }: { data: TGeographySummary } = await client.get(`/summaries/geography/${geographyCode}`);
+      geographySummaryData = returnedData;
     } catch (error) {}
   }
 
@@ -323,6 +362,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       page: familyData,
       targets: targetsData,
+      geographySummary: geographySummaryData,
     },
   };
 };

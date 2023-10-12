@@ -27,7 +27,7 @@ import { getGeoDescription } from "@constants/metaDescriptions";
 import { systemGeoNames } from "@constants/systemGeos";
 import { TGeographyStats, TGeographySummary } from "@types";
 import { TTarget, TEvent, TGeography } from "@types";
-import SearchForm from "@components/forms/SearchForm";
+import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 
 type TProps = {
   geography: TGeographyStats;
@@ -199,30 +199,14 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
             </div>
             <SingleCol>
               <CountryHeader country={geography} targetCount={hasTargets ? publishedTargets?.length : 0} onTargetClick={handleTargetClick} />
-              <section className="mt-10" data-cy="top-documents">
+              <section className="mt-8" data-cy="country-search">
                 <h3 className="mb-4">Documents</h3>
-                <div className="p-4 rounded-xl bg-blue-100">
-                  <SearchForm
-                    placeholder={`Search the full text of ${allDocumentsCount} documents from ${geography.name}`}
-                    handleSearchInput={handleSearchInput}
-                    input={""}
-                  />
-                  <div className="mt-4 md:flex gap-2 text-sm">
-                    <div className="mb-2 md:mb-0 flex-shrink-0 text-blue-900 pt-1">Featured searches</div>
-                    <ul className="flex gap-1 flex-wrap items-center">
-                      {FEATURED_SEARCHES.map((searchTerm) => (
-                        <li key={searchTerm}>
-                          <button
-                            onClick={() => handleSearchInput(searchTerm)}
-                            className="text-gray-800 bg-white border border-gray-300 rounded-[40px] py-1 px-2 transition hover:bg-blue-600 hover:text-white"
-                          >
-                            {searchTerm}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
+                <DocumentSearchForm
+                  placeholder={`Search the full text of ${allDocumentsCount} documents from ${geography.name}`}
+                  handleSearchInput={handleSearchInput}
+                  input={""}
+                  featuredSearches={FEATURED_SEARCHES}
+                />
               </section>
               {hasFamilies && (
                 <>
