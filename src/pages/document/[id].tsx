@@ -29,7 +29,7 @@ import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary } from "@types";
 import Tooltip from "@components/tooltip";
-import SearchForm from "@components/forms/SearchForm";
+import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 
 type TProps = {
   page: TFamilyPage;
@@ -299,30 +299,13 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
             </section>
           ))}
 
-          <section className="mt-10" data-cy="top-documents">
-            <h3 className="mb-4">Documents</h3>
-            <div className="p-4 rounded-xl bg-blue-100">
-              <SearchForm
-                placeholder={`Search the full text of ${totalDocsInPageGeography} documents from ${geographyName}`}
-                handleSearchInput={handleSearchInput}
-                input={""}
-              />
-              <div className="mt-4 md:flex gap-2 text-sm">
-                <div className="mb-2 md:mb-0 flex-shrink-0 text-blue-900 pt-1">Featured searches</div>
-                <ul className="flex gap-1 flex-wrap items-center">
-                  {FEATURED_SEARCHES.map((searchTerm) => (
-                    <li key={searchTerm}>
-                      <button
-                        onClick={() => handleSearchInput(searchTerm)}
-                        className="text-gray-800 bg-white border border-gray-300 rounded-[40px] py-1 px-2 transition hover:bg-blue-600 hover:text-white"
-                      >
-                        {searchTerm}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+          <section className="mt-8" data-cy="top-documents">
+            <DocumentSearchForm
+              placeholder={`Search the full text of ${totalDocsInPageGeography} documents from ${geographyName}`}
+              handleSearchInput={handleSearchInput}
+              input={""}
+              featuredSearches={FEATURED_SEARCHES}
+            />
           </section>
         </SingleCol>
       </section>
