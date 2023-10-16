@@ -178,9 +178,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
           </section>
         )}
         {!!geographySummary && totalDocsInFamilyGeography() > 0 && (
-          <section className="flex mt-8 mx-auto max-w-screen-md px-4 lg:px-0" data-cy="country-search">
+          <section className="flex mt-8 mx-auto max-w-screen-md px-4 lg:px-0" data-cy="top-documents">
             <DocumentSearchForm
-              placeholder={`Search the full text of ${totalDocsInFamilyGeography()} documents from ${geographyName}`}
+              placeholder={
+                geographyName === "No Geography"
+                  ? `Search the full text of ${totalDocsInFamilyGeography()} UNFCCC documents`
+                  : `Search the full text of ${totalDocsInFamilyGeography()} documents from ${geographyName}`
+              }
               handleSearchInput={handleSearchInput}
               input={""}
               featuredSearches={FEATURED_SEARCHES}
