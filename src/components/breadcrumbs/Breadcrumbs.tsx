@@ -40,7 +40,7 @@ export const BreadCrumbs = ({ geography = null, category = null, family = null, 
   return (
     <ul className="flex flex-wrap gap-2 pt-4 text-sm" data-cy="breadcrumbs">
       <BreadCrumb label="Home" href="/" cy="home" />
-      {geography && <BreadCrumb label={geography.label} href={geography.href} cy="geography" />}
+      {geography && <BreadCrumb label={geography.label} href={geography.label === "No Geography" ? null : geography.href} cy="geography" />}
       {category && <BreadCrumb label={category.label} href={category.href} cy="category" />}
       {family && <BreadCrumb label={family.label} href={family.href} cy="family" />}
       <BreadCrumb label={label} last cy="current" />
