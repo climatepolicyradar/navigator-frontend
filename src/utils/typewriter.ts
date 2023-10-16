@@ -12,7 +12,7 @@ export function typeWriter(text, i, fnCallback, el) {
     }, 30);
   }
   // text finished, call callback if there is a callback function
-  else if (typeof fnCallback == 'function') {
+  else if (typeof fnCallback === 'function') {
     // call callback after timeout
     setTimeout(fnCallback, 700);
   }
