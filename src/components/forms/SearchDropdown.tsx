@@ -59,14 +59,12 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
       });
       geography = Object.keys(geography).length === 1 ? geography[0] : geography;
     } else geography = geographies[0];
-    
+
     const intendedGeography = geography;
     if (Object.keys(intendedGeography).length === 0) return;
 
-    if (Object.keys(intendedGeography).length === 1) {
-      if (!term.toLowerCase().includes(intendedGeography.display_value.toLowerCase())) return;
-      if (!termWithoutGeography(intendedGeography.display_value).trim().length) return;
-    }
+    if (!term.toLowerCase().includes(intendedGeography.display_value.toLowerCase())) return;
+    if (!termWithoutGeography(intendedGeography.display_value).trim().length) return;
 
     return (
       <ul>
