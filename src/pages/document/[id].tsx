@@ -305,7 +305,11 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           {!!geographySummary && totalDocsInPageGeography() > 0 && (
             <section className="mt-8" data-cy="top-documents">
               <DocumentSearchForm
-                placeholder={`Search the full text of ${totalDocsInPageGeography()} documents from ${geographyName}`}
+                placeholder={
+                  geographyName === "No Geography"
+                    ? `Search the full text of ${totalDocsInPageGeography()} UNFCCC documents`
+                    : `Search the full text of ${totalDocsInPageGeography()} documents from ${geographyName}`
+                }
                 handleSearchInput={handleSearchInput}
                 input={""}
                 featuredSearches={FEATURED_SEARCHES}
