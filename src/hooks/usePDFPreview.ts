@@ -15,7 +15,7 @@ function generateHighlights(document: TDocumentPage, documentPassageMatches: TPa
         source: document.import_id,
         selector: {
           node: {
-            index: passage.text_block_page - 1,
+            index: passage.text_block_page,
           },
           subtype: "highlight",
           // WE CAN ASSUME BLOCK_COORDS IS ALWAYS LENGTH 4
@@ -102,7 +102,8 @@ export default function usePDFPreview(document: TDocumentPage, documentPassageMa
     }
     if (passageIndex === null || !documentPassageMatches[passageIndex]) return;
     setTimeout(() => {
-      embedApi.gotoLocation(documentPassageMatches[passageIndex]?.text_block_page);
+      // Adobe's page indexing is out by 1
+      embedApi.gotoLocation(documentPassageMatches[passageIndex]?.text_block_page + 1);
     }, PDF_SCROLL_DELAY);
   };
 
