@@ -102,6 +102,7 @@ export default function usePDFPreview(document: TDocumentPage, documentPassageMa
     }
     if (passageIndex === null || !documentPassageMatches[passageIndex]) return;
     setTimeout(() => {
+      // Adobe's page indexing is out by 1
       embedApi.gotoLocation(documentPassageMatches[passageIndex]?.text_block_page + 1);
     }, PDF_SCROLL_DELAY);
   };
