@@ -1,4 +1,5 @@
 import React from "react";
+import dynamic from "next/dynamic";
 import { Hero } from "@components/blocks/Hero";
 import LandingSearchForm from "@components/forms/LandingSearchForm";
 import AlphaLogo from "@components/logo/AlphaLogo";
@@ -9,6 +10,10 @@ import Banner from "@components/banner/FullHeight";
 import Summary from "@components/blocks/Summary";
 import Partners from "@components/blocks/Partners";
 import Footer from "@components/footer/Footer";
+
+const Map = dynamic(() => import("@components/map/Map"), {
+  ssr: false,
+});
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
@@ -44,6 +49,9 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
       </main>
       <Summary />
       <Partners />
+      <div className="h-[800px] w-full">
+        <Map />
+      </div>
       <Footer />
     </>
   );
