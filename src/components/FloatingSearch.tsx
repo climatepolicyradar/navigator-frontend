@@ -1,4 +1,4 @@
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { CloseIcon, LightblubIcon, SearchIcon } from "./svg/Icons";
 import { Divider } from "./dividers/Divider";
@@ -73,9 +73,9 @@ export const FloatingSearch = () => {
   return (
     <div className="relative" ref={ref}>
       <form onSubmit={(e) => e.preventDefault()} className={`${showFloatingSearch ? "w-[425px] lg:w-[625px]" : ""}`}>
-        <button className="absolute left-0 h-full px-3 text-grey-700" onClick={() => handleSearch(search)}>
+        <button className="absolute left-0 h-full px-3 text-grey-500" onClick={() => handleSearch(search)}>
           <span className="block">
-            <SearchIcon height="14" width="14" color="gray-500" />
+            <SearchIcon height="12" width="12" color="gray-500" />
           </span>
         </button>
         <input
