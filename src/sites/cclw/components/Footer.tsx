@@ -1,9 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
+import { Feedback } from "./Feedback";
 import MENU_LINKS from "../constants/menuLinks";
 import GRI_LINKS, { TLinkItem } from "../constants/griLinks";
-import { Feedback } from "./Feedback";
 
 const Footer = () => {
   const renderLink = (item: TLinkItem) => {
@@ -41,13 +42,10 @@ const Footer = () => {
               <div className="footer__section">
                 <ul>
                   <li className="mb-2">
-                    For media enquiries contact{" "}
-                    <ExternalLink url="mailto:gri.cgl@lse.co.uk" className="block">
+                    For media enquiries or queries about research and policy analysis contact{" "}
+                    <ExternalLink url="mailto:gri.cgl@lse.co.uk">
                       gri.cgl@lse.co.uk
                     </ExternalLink>
-                  </li>
-                  <li className="mb-2">
-                    <LinkWithQuery href="/contact">Full contact details</LinkWithQuery>
                   </li>
                 </ul>
               </div>
@@ -108,15 +106,32 @@ const Footer = () => {
         </div>
       </div>
       <div className="footer__base">
-        <div className="container flex flex-1 items-end md:gap-10 h-full">
-          <p className="mb-6">Copyright © LSE {new Date().getFullYear()}</p>
-          <div className="mb-6 flex flex-wrap md:gap-10 order">
+        <div className="container flex flex-1 items-end h-full pt-[114px] flex-wrap text-sm lg:text-base lg:pt-0 lg:gap-6">
+          <p className="lg:mb-6">Copyright © LSE {new Date().getFullYear()}</p>
+          <div className="ml-6 flex flex-wrap gap-6 lg:mb-6 lg:ml-0">
             <ExternalLink url="https://www.climatepolicyradar.org/privacy-policy" className="text-secondary-700 underline">
               Privacy policy
             </ExternalLink>
             <LinkWithQuery href={"/terms-of-use"} className="text-secondary-700 underline">
               Terms of use
             </LinkWithQuery>
+          </div>
+          <div className="mb-6 items-center flex flex-nowrap flex-1 gap-6 basis-full lg:basis-auto lg:justify-end" data-cy="footer-partners">
+            <ExternalLink className="flex" url="https://www.lse.ac.uk/">
+              <span className="flex" data-cy="lse-logo">
+                <Image src="/images/partners/lse-logo.png" alt="London School of Economics logo" width={32} height={32} />
+              </span>
+            </ExternalLink>
+            <ExternalLink className="flex" url="https://www.lse.ac.uk/granthaminstitute/">
+              <span className="flex" data-cy="gri-logo">
+                <Image src="/images/cclw/partners/gri-logo.png" alt="Grantham Research Institute logo" width={169} height={32} />
+              </span>
+            </ExternalLink>
+            <ExternalLink className="flex" url="https://www.climatepolicyradar.org">
+              <span className="flex" data-cy="cpr-logo">
+                <Image src="/images/cclw/partners/cpr-logo.png" alt="Climate Policy Radar logo" width={170} height={32} />
+              </span>
+            </ExternalLink>
           </div>
         </div>
       </div>

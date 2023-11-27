@@ -3,6 +3,7 @@ import { clickCookiePolicy } from "../../../utils/cookiePolicy";
 
 const griSelector = "[data-cy='footer-gri']";
 const cprSelector = "[data-cy='footer-cpr-links']";
+const footerPartnersSelector = "[data-cy='footer-partners']";
 const footerSelectors = ["[data-cy='feedback']", griSelector, cprSelector];
 const footerContains = [
   "Follow Grantham Research Institute",
@@ -42,13 +43,19 @@ describe("Footer", () => {
 
   it("should contain GRI footer links", () => {
     cy.get("footer").within(() => {
-      cy.get(griSelector).find("ul").children("li").should("have.length", 8);
+      cy.get(griSelector).find("ul").children("li").should("have.length", 7);
     });
   });
 
   it("should contain CPR footer links", () => {
     cy.get("footer").within(() => {
       cy.get(cprSelector).children("li").should("have.length", 3);
+    });
+  });
+
+  it("should contain the partner links", () => {
+    cy.get(footerPartnersSelector).within(() => {
+      cy.get("a").should("have.length", 3);
     });
   });
 });

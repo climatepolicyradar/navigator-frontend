@@ -56,7 +56,7 @@
   .footer__section {
     @apply text-sm;
     > * {
-      @apply mb-2;
+      @apply mb-4;
     }
     h5 {
       @apply mb-4;
@@ -73,8 +73,9 @@
 
   .footer__base {
     background-image: url("/images/cclw/angles_2.svg");
-    background-position: center;
-    @apply text-cclw-dark w-full h-[164px];
+    background-position: top;
+    background-repeat: no-repeat;
+    @apply text-cclw-dark w-full h-[232px] flex items-end overflow-hidden lg:h-[184px];
 
     a {
       @apply text-cclw-dark;

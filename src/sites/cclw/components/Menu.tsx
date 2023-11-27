@@ -16,7 +16,7 @@ export const Menu = () => {
   };
 
   return (
-    <div ref={menuRef} className="ml-4 flex items-center relative z-[41]">
+    <div ref={menuRef} className="flex items-center relative z-[41]">
       <button data-cy="menu-icon" onClick={toggleMenu}>
         <MenuIcon color="white" width="32" height="32" />
       </button>
