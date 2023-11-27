@@ -42,13 +42,10 @@ const Footer = () => {
               <div className="footer__section">
                 <ul>
                   <li className="mb-2">
-                    For media enquiries contact{" "}
-                    <ExternalLink url="mailto:gri.cgl@lse.co.uk" className="block">
+                    For media enquiries or queries about research and policy analysis contact{" "}
+                    <ExternalLink url="mailto:gri.cgl@lse.co.uk">
                       gri.cgl@lse.co.uk
                     </ExternalLink>
-                  </li>
-                  <li className="mb-2">
-                    <LinkWithQuery href="/contact">Full contact details</LinkWithQuery>
                   </li>
                 </ul>
               </div>
