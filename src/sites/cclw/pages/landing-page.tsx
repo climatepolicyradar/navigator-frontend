@@ -24,7 +24,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
           <h2 className="text-center mb-6">Featured Content</h2>
           <Articles />
         </div>
-        <div className="container my-12" data-cy="powered">
+        <div className="container my-12" data-cy="powered-by">
           <div className="md:flex justify-center gap-12 text-center">
             <div className="mb-12 md:mb-0">
               <h2 className="mb-6">Hosted by</h2>
