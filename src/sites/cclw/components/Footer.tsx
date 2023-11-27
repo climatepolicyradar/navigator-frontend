@@ -119,7 +119,7 @@ const Footer = () => {
               Terms of use
             </LinkWithQuery>
           </div>
-          <div className="mb-6 items-end flex flex-nowrap flex-1 gap-6 basis-full lg:basis-auto lg:justify-end">
+          <div className="mb-6 items-center flex flex-nowrap flex-1 gap-6 basis-full lg:basis-auto lg:justify-end">
             <ExternalLink className="flex" url="https://www.lse.ac.uk/">
               <span className="flex" data-cy="lse-logo">
                 <Image src="/images/partners/lse-logo.png" alt="London School of Economics logo" width={32} height={32} />
@@ -132,7 +132,7 @@ const Footer = () => {
             </ExternalLink>
             <ExternalLink className="flex" url="https://www.climatepolicyradar.org">
               <span className="flex" data-cy="cpr-logo">
-                <Image src="/images/cclw/partners/cpr-logo.png" alt="Climate Policy Radar logo" width={209} height={32} />
+                <Image src="/images/cclw/partners/cpr-logo.png" alt="Climate Policy Radar logo" width={170} height={32} />
               </span>
             </ExternalLink>
           </div>
