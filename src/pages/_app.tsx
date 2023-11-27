@@ -47,7 +47,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
   const dynamicTheme = theme ?? siteTheme;
   const dynamicAdobeKey = adobeApiKey ?? adobeKey;
 
-  const favicon = dynamicTheme === "cclw" ? "/images/cclw/images/favicon.png" : "/favicon.png";
+  const favicon = dynamicTheme === "cclw" ? "/images/cclw/favicon.png" : "/favicon.png";
 
   return (
     <QueryClientProvider client={queryClient}>
