@@ -92,21 +92,6 @@ export const CookieConsent = () => {
             })(window,document,"script","dataLayer","GTM-NTNH983");
           `}
       </Script>
-      {cclwAnalyticsAllowed && (
-        <>
-          <Script async src="https://www.googletagmanager.com/gtag/js?id=UA-153841121-2" />
-          <Script id="cclw-google-analytics" strategy="afterInteractive">
-            {`
-              (function(w,l,i) {
-                w[l] = w[l] || [];
-                function gtag(){w[l].push(arguments);}
-                gtag('js', new Date());
-                gtag('config', i);
-              })(window, "dataLayer", "UA-153841121-2");
-            `}
-          </Script>
-        </>
-      )}
       {enableAnalytics && (
         <>
           <Script id="hotjar" strategy="afterInteractive">
@@ -122,6 +107,24 @@ export const CookieConsent = () => {
           `}
           </Script>
         </>
+      )}
+      {cclwAnalyticsAllowed && (
+        <>
+          <Script async src="https://www.googletagmanager.com/gtag/js?id=UA-153841121-2" />
+          <Script id="cclw-google-analytics" strategy="afterInteractive">
+            {`
+              (function(w,l,i) {
+                w[l] = w[l] || [];
+                function gtag(){w[l].push(arguments);}
+                gtag('js', new Date());
+                gtag('config', i);
+              })(window, "dataLayer", "UA-153841121-2");
+            `}
+          </Script>
+        </>
+      )}
+      {theme === "cclw" && (
+        <Script id="cclw-plausible" defer data-domain="climate-laws.org" strategy="afterInteractive" src="https://plausible.io/js/script.js" />
       )}
     </>
   );
