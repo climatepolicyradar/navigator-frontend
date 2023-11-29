@@ -74,7 +74,7 @@
   .footer__base {
     background-image: url("/images/cclw/angles_2.svg");
     background-position: top;
-    background-repeat: no-repeat;
+    background-repeat: repeat-x;
     @apply text-cclw-dark w-full h-[232px] flex items-end overflow-hidden lg:h-[184px];
 
     a {
