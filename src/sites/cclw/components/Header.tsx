@@ -11,15 +11,18 @@ const Header = ({ background = true }) => {
 
   // Do not show search on specific pages
   const showSearch = !NON_SEARCH_PAGES.includes(router.pathname);
+  const showLogo = router.pathname !== "/";
 
   return (
     <header data-cy="header" className={`${background ? "bg-cclw-dark" : ""} w-full`}>
       <div className="container">
         <div className="flex flex-nowrap my-2">
           <div className="items-center flex flex-nowrap flex-1">
-            <LinkWithQuery href={`/`} className="flex items-center flex-nowrap gap-1" cypress="cclw-logo">
-              <Logo />
-            </LinkWithQuery>
+            {showLogo && (
+              <LinkWithQuery href={`/`} className="flex items-center flex-nowrap gap-1" cypress="cclw-logo">
+                <Logo />
+              </LinkWithQuery>
+            )}
             {showSearch && (
               <div className="hidden ml-6 md:block md:w-[340px]">
                 <FloatingSearch />

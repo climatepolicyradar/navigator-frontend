@@ -20,10 +20,6 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
           <Header background={false} />
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
         </div>
-        <div className="container my-12" data-cy="featured-content">
-          <h2 className="text-center mb-6">Featured Content</h2>
-          <Articles />
-        </div>
         <div className="container my-12" data-cy="powered-by">
           <div className="md:flex justify-center gap-12 text-center">
             <div className="mb-12 md:mb-0">
@@ -50,6 +46,10 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
               </ExternalLink>
             </div>
           </div>
+        </div>
+        <div className="container my-12" data-cy="featured-content">
+          <h2 className="text-center mb-6">Featured Content</h2>
+          <Articles />
         </div>
         <div className="container my-12" data-cy="partners">
           <h2 className="text-center mb-6">Our partners</h2>

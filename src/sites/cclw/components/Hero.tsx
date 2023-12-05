@@ -1,5 +1,6 @@
 import LandingSearchForm from "@components/forms/LandingSearchForm";
 import Instructions from "./Instructions";
+import { LogoLarge } from "./LogoLarge";
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
@@ -8,8 +9,11 @@ type TProps = {
 
 export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
   return (
-    <div className="pt-12 pb-6 text-white">
+    <div className="pb-6 text-white">
       <div className="container">
+        <div className="flex flex-col items-center justify-center mb-6">
+          <LogoLarge />
+        </div>
         <div className="mx-auto text-center">
           <p className="text-lg lg:text-2xl" data-cy="intro-message">
             Use our database to search climate laws and policies globally
