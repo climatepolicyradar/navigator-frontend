@@ -27,12 +27,12 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
               <div className="flex items-center justify-center gap-6">
                 <ExternalLink className="flex" url="https://www.lse.ac.uk/">
                   <span className="flex" data-cy="lse-logo">
-                    <Image src="/images/partners/lse-logo.png" alt="London School of Economics logo" width={64} height={64} />
+                    <Image src="/images/partners/lse-logo.png" alt="London School of Economics logo" width={57} height={58} />
                   </span>
                 </ExternalLink>
                 <ExternalLink className="flex" url="https://www.lse.ac.uk/granthaminstitute/">
                   <span className="flex" data-cy="gri-logo">
-                    <Image src="/images/cclw/partners/gri-logo.png" alt="Grantham Research Institute logo" width={339} height={64} />
+                    <Image src="/images/cclw/partners/gri-logo.png" alt="Grantham Research Institute logo" width={307} height={58} />
                   </span>
                 </ExternalLink>
               </div>
@@ -41,7 +41,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
               <h2 className="mb-6">Powered by</h2>
               <ExternalLink className="flex justify-center" url="https://www.climatepolicyradar.org">
                 <span className="flex" data-cy="cpr-logo">
-                  <Image src="/images/cclw/partners/cpr-logo.png" alt="Climate Policy Radar logo" width={353} height={64} />
+                  <Image src="/images/cclw/partners/cpr-logo.png" alt="Climate Policy Radar logo" width={320} height={58} />
                 </span>
               </ExternalLink>
             </div>
