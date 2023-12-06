@@ -12,6 +12,7 @@ const footerContains = [
   "Privacy policy",
   "Terms of use",
 ];
+const logoSelectors = ["[data-cy='lse-logo']", "[data-cy='gri-logo']", "[data-cy='cpr-logo']"];
 
 describe("Footer", () => {
   before(() => {
@@ -56,6 +57,14 @@ describe("Footer", () => {
   it("should contain the partner links", () => {
     cy.get(footerPartnersSelector).within(() => {
       cy.get("a").should("have.length", 3);
+    });
+  });
+
+  it("should display correct partner logos", () => {
+    cy.get("footer").within(() => {
+      logoSelectors.forEach((selector) => {
+        cy.get(selector).should("be.visible");
+      });
     });
   });
 });

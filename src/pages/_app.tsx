@@ -56,7 +56,6 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
           <ErrorBoundary level="top">
             <Head>
               <link rel="icon" href={favicon} />
-              {/* <style>{getThemeColours(dynamicTheme)}</style> */}
             </Head>
             {dynamicTheme === "cpr" && <GSTBanner />}
             <div id={dynamicTheme} className="h-full relative">
@@ -66,7 +65,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
           </ErrorBoundary>
         </AdobeContext.Provider>
       </ThemeContext.Provider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );
 }
