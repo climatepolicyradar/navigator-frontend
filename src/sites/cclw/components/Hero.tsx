@@ -13,6 +13,7 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
       <div className="container">
         <div className="flex flex-col items-center justify-center mb-6">
           <LogoLarge />
+          <h1 className="visually-hidden">Climate Change Laws of the World</h1>
         </div>
         <div className="mx-auto text-center">
           <p className="text-lg lg:text-2xl" data-cy="intro-message">
