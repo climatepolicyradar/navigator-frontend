@@ -129,7 +129,7 @@ const Footer = () => {
             </ExternalLink>
             <ExternalLink className="flex" url="https://www.climatepolicyradar.org">
               <span className="flex" data-cy="cpr-logo">
-                <Image src="/images/cclw/partners/cpr-logo.png" alt="Climate Policy Radar logo" width={170} height={32} />
+                <Image src="/images/cclw/partners/cpr-logo.png" alt="Climate Policy Radar logo" width={232} height={42} />
               </span>
             </ExternalLink>
           </div>

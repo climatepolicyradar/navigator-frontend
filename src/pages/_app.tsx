@@ -65,7 +65,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
           </ErrorBoundary>
         </AdobeContext.Provider>
       </ThemeContext.Provider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );
 }
