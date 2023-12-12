@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 const defaultRedirects = [
   // Remove www from all URLs
   {
@@ -65,18 +67,31 @@ const defaultRedirects = [
   },
 ];
 
+const configureRedirects = (theme) => {
+  const redirectRules = JSON.parse(fs.readFileSync(`./themes/${theme}/redirects.json`, "utf-8"));
+
+  return defaultRedirects.concat(redirectRules);
+};
+
 /**
  * @type {import('next').NextConfig}
  */
 
 const nextConfig = {
+  env: {
+    BUILDTIME_TEST: process.env.BUILDTIME_TEST,
+  },
+  webpack(config) {
+    config.experiments = { ...config.experiments, topLevelAwait: true };
+    return config;
+  },
   i18n: {
     locales: ["en"],
     defaultLocale: "en",
   },
   pageExtensions: ["tsx", "ts"],
   redirects: async () => {
-    return defaultRedirects;
+    return configureRedirects(process.env.BUILDTIME_TEST);
   },
   headers: async () => {
     return [
