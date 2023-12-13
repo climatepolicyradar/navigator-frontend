@@ -1,9 +1,15 @@
+// The tailwind imports are imported as part of the base styles loaded into the _app.tsx file at the root of the application
+
+/*
+  TODO: remove all of this
+// Import tailwind styles
 // @tailwind base;
 // @tailwind components;
 // @tailwind utilities;
 
 // Import base styles before overriding
 // @import "../../../styles/main.scss";
+*/
 
 @mixin cclw-dark-gradient() {
   background: linear-gradient(134.5deg, rgba(43, 47, 73, 1) 0%, rgba(43, 47, 73, 1) 33%, rgba(21, 116, 209, 1) 66%, rgba(21, 116, 209, 1) 100%);
