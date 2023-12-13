@@ -5,7 +5,7 @@ import Head from "next/head";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import "../styles/flag-icon.css";
-import "@cclw/styles/cclw.main.scss";
+import "../styles/main.scss";
 
 import { ThemeContext } from "@context/ThemeContext";
 import { AdobeContext } from "@context/AdobeContext";

@@ -78,21 +78,31 @@ const configureRedirects = (theme) => {
  */
 
 const nextConfig = {
+  // TODO: confirm this is necessary
   env: {
     BUILDTIME_TEST: process.env.BUILDTIME_TEST,
   },
+  // Supports dynamic component imports
   webpack(config) {
     config.experiments = { ...config.experiments, topLevelAwait: true };
     return config;
   },
+  // Loads in theme styles
+  sassOptions: {
+    prependData: `@import "./themes/${process.env.BUILDTIME_TEST}/styles/styles.scss";`,
+  },
+  // Redirects
+  redirects: async () => {
+    return configureRedirects(process.env.BUILDTIME_TEST);
+  },
+  // Translations
   i18n: {
     locales: ["en"],
     defaultLocale: "en",
   },
+  // TypeScript
   pageExtensions: ["tsx", "ts"],
-  redirects: async () => {
-    return configureRedirects(process.env.BUILDTIME_TEST);
-  },
+  // Cache control
   headers: async () => {
     return [
       {
