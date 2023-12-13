@@ -89,7 +89,7 @@ const nextConfig = {
   },
   // Loads in theme styles
   sassOptions: {
-    prependData: `@import "./themes/${process.env.BUILDTIME_TEST}/styles/styles.scss";`,
+    additionalData: `@import "./themes/${process.env.BUILDTIME_TEST}/styles/styles.scss";`,
   },
   // Redirects
   redirects: async () => {
