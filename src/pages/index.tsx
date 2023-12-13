@@ -12,7 +12,7 @@ import CCLWLandingPage from "@cclw/pages/landing-page";
 import { ThemeContext } from "@context/ThemeContext";
 import { triggerNewSearch } from "@utils/triggerNewSearch";
 
-const Header = await import(`/themes/${process.env.BUILDTIME_TEST}/components/header.tsx`);
+const Header = await import(`/themes/${process.env.BUILDTIME_TEST}/components/header`);
 
 const IndexPage = () => {
   const { t } = useTranslation(["searchStart", "searchResults"]);
@@ -43,7 +43,7 @@ const IndexPage = () => {
   return (
     <>
       <Layout title={t("Law and Policy Search")}>
-        <Header.default />
+        {Header && <Header.default />}
         {theme === "cpr" && (
           <CPRLandingPage
             handleSearchInput={handleSearchInput}
