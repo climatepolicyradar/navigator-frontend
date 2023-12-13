@@ -12,7 +12,7 @@ import CCLWLandingPage from "@cclw/pages/landing-page";
 import { ThemeContext } from "@context/ThemeContext";
 import { triggerNewSearch } from "@utils/triggerNewSearch";
 
-const Header = await import(`/themes/${process.env.BUILDTIME_TEST}/header.tsx`);
+const Header = await import(`/themes/${process.env.BUILDTIME_TEST}/components/header.tsx`);
 
 const IndexPage = () => {
   const { t } = useTranslation(["searchStart", "searchResults"]);
