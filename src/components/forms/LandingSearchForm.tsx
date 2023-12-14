@@ -77,6 +77,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
           onFocus={clearPlaceholderAnimation}
           onBlur={showPlaceholderAnimation}
           placeholder={displayPlaceholder}
+          aria-label="Search term"
         />
         {theme === "cpr" && showAnimation && term.length === 0 && <div className="search-animated-placeholder">{displayPlaceholder}</div>}
         {theme === "cpr" && term.length > 0 && (
@@ -84,7 +85,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
             <Close onClick={clearSearch} size="16" />
           </div>
         )}
-        <button className={buttonCssClass} onClick={() => handleSearchInput(term)}>
+        <button className={buttonCssClass} onClick={() => handleSearchInput(term)} aria-label="Search">
           <span className={searchIconCssClass}>
             <SearchIcon height="30" width="40" />
           </span>

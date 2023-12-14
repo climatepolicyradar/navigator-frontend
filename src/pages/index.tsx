@@ -13,6 +13,7 @@ import { ThemeContext } from "@context/ThemeContext";
 import { triggerNewSearch } from "@utils/triggerNewSearch";
 
 const Header = await import(`/themes/${process.env.BUILDTIME_TEST}/components/header`);
+const Homepage = await import(`/themes/${process.env.BUILDTIME_TEST}/pages/Homepage`);
 
 const IndexPage = () => {
   const { t } = useTranslation(["searchStart", "searchResults"]);
@@ -42,8 +43,7 @@ const IndexPage = () => {
 
   return (
     <>
-      <Layout title={t("Law and Policy Search")}>
-        {Header && <Header.default />}
+      {/* <Layout title={t("Law and Policy Search")}>
         {theme === "cpr" && (
           <CPRLandingPage
             handleSearchInput={handleSearchInput}
@@ -55,7 +55,8 @@ const IndexPage = () => {
         {theme === "cclw" && (
           <CCLWLandingPage handleSearchInput={handleSearchInput} searchInput={(router.query[QUERY_PARAMS.query_string] as string) ?? ""} />
         )}
-      </Layout>
+      </Layout> */}
+      <Homepage.default handleSearchInput={handleSearchInput} searchInput={(router.query[QUERY_PARAMS.query_string] as string) ?? ""} testIgnore="123" />
     </>
   );
 };
