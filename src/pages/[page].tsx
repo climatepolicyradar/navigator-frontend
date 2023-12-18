@@ -1,11 +1,24 @@
 import fs from "fs";
-import path from "path";
+import dynamic from "next/dynamic";
+import React, { useState, useEffect } from "react";
 
-export default function Page({ page }) {
+type TProps = {
+  page: {
+    title: string;
+    path: string;
+    contentPath: string;
+  };
+};
+
+export default function Page({ page }: TProps) {
+  const DynamicComponent = dynamic(() => import(`../../themes/${process.env.BUILDTIME_TEST}/pages/${page.contentPath}`).catch(() => () => null), {
+    ssr: true,
+  });
+
   return (
     <>
       <h1>{page.title}</h1>
-      {/* <div dangerouslySetInnerHTML={{ __html: page.content }}></div> */}
+      <DynamicComponent />
     </>
   );
 }
