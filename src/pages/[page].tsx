@@ -1,6 +1,6 @@
 import fs from "fs";
 import dynamic from "next/dynamic";
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 type TProps = {
   page: {
