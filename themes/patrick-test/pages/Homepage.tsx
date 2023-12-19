@@ -6,7 +6,7 @@ import Footer from "@cclw/components/Footer";
 import { Hero } from "@cclw/components/Hero";
 import { Articles } from "@cclw/components/Articles";
 import { Partners } from "@cclw/components/Partners";
-import Layout from "../layouts/Main";
+import Layout from "../layouts/Home";
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;

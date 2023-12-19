@@ -2,31 +2,34 @@ import fs from "fs";
 import dynamic from "next/dynamic";
 import React from "react";
 
+type TPage = {
+  title: string;
+  path: string;
+  contentPath: string;
+};
+
 type TProps = {
-  page: {
-    title: string;
-    path: string;
-    contentPath: string;
+  page?: TPage & {
+    notfound?: boolean;
   };
 };
 
 export default function Page({ page }: TProps) {
+  if (page.notfound) {
+    return null;
+  }
+
   const DynamicComponent = dynamic(() => import(`../../themes/${process.env.BUILDTIME_TEST}/pages/${page.contentPath}`).catch(() => () => null), {
     ssr: true,
   });
 
-  return (
-    <>
-      <h1>{page.title}</h1>
-      <DynamicComponent />
-    </>
-  );
+  return <DynamicComponent />;
 }
 
 export async function getStaticPaths() {
   // Read the JSON file based on the environment variable
   const filePath = `./themes/${process.env.BUILDTIME_TEST}/routes.json`;
-  let jsonData = [];
+  let jsonData: TPage[] = [];
   try {
     jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
   } catch (err) {
@@ -57,7 +60,7 @@ export async function getStaticProps({ params }) {
 
   // Read the JSON file based on the environment variable
   const filePath = `./themes/${process.env.BUILDTIME_TEST}/routes.json`;
-  let jsonData = [];
+  let jsonData: TPage[] = [];
   try {
     jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
   } catch (err) {

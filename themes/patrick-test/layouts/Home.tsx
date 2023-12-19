@@ -1,25 +1,20 @@
-import React, { FC, ReactNode, useContext } from "react";
+import React, { ReactNode, useContext } from "react";
 import Head from "next/head";
-import getPageTitle from "@utils/getPageTitle";
-
 import { ThemeContext } from "@context/ThemeContext";
+import getPageTitle from "@utils/getPageTitle";
 import getPageDescription from "@utils/getPageDescription";
 
-import Header from "@cclw/components/Header";
-import Footer from "@cclw/components/Footer";
-
 type TProps = {
+  children?: ReactNode;
   title?: string;
   description?: string;
-  heading?: string;
-  children?: ReactNode;
 };
 
-const Layout: FC<TProps> = ({ children, title = "", description = null }) => {
+const Layout = ({ children, title = "", description = null }: TProps) => {
   const theme = useContext(ThemeContext);
 
   return (
-    <div className="h-full flex flex-col">
+    <div>
       <Head>
         <title>{`${title} - ${getPageTitle(theme)}`}</title>
         <meta property="og:title" content={`${title} - ${getPageTitle(theme)}`} />
@@ -31,9 +26,7 @@ const Layout: FC<TProps> = ({ children, title = "", description = null }) => {
       <a className="sr-only" href="#main">
         Skip to content
       </a>
-      <Header />
-      <main className="flex flex-col flex-1">{children}</main>
-      <Footer />
+      {children}
     </div>
   );
 };

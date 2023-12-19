@@ -1,10 +1,14 @@
+import Layout from "../layouts/Main";
+
 const PatrickTest = () => {
   return (
-    <section>
-      <div className="container px-4">
-        <p>Content test Content test Content test Content test Content test Content test Content test Content test</p>
-      </div>
-    </section>
+    <Layout title="Patrick test page">
+      <main id="main" className="flex flex-col flex-1">
+        <div className="container my-12">
+          <p>Content test Content test Content test Content test Content test Content test Content test Content test</p>
+        </div>
+      </main>
+    </Layout>
   );
 };
 
