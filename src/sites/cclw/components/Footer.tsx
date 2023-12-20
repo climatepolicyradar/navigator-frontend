@@ -20,7 +20,7 @@ const Footer = () => {
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="footer__section" data-cy="footer-cclw">
-              <h5>Climate Change Laws of the World</h5>
+              <div className="font-bold text-lg">Climate Change Laws of the World</div>
               <ul className="mb-6">
                 {MENU_LINKS.map((link) => (
                   <li key={link.href} className="mb-2">
@@ -31,7 +31,7 @@ const Footer = () => {
             </div>
 
             <div key={GRI_LINKS.title} className="footer__section" data-cy="footer-gri">
-              <h5>{GRI_LINKS.title}</h5>
+              <div className="font-bold text-lg">{GRI_LINKS.title}</div>
               <ul>
                 {GRI_LINKS.links.map((link) => (
                   <li key={link.text} className="mb-2">
@@ -43,9 +43,7 @@ const Footer = () => {
                 <ul>
                   <li className="mb-2">
                     For media enquiries or queries about research and policy analysis contact{" "}
-                    <ExternalLink url="mailto:gri.cgl@lse.co.uk">
-                      gri.cgl@lse.co.uk
-                    </ExternalLink>
+                    <ExternalLink url="mailto:gri.cgl@lse.co.uk">gri.cgl@lse.co.uk</ExternalLink>
                   </li>
                 </ul>
               </div>
@@ -66,7 +64,7 @@ const Footer = () => {
             </div>
 
             <div className="footer__section">
-              <h5>Climate Policy Radar</h5>
+              <div className="font-bold text-lg">Climate Policy Radar</div>
               <p>Using AI and data science to map the world's climate policies</p>
               <ul className="mb-6" data-cy="footer-cpr-links">
                 <li className="mb-1">
