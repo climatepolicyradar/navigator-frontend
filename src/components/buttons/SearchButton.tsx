@@ -17,6 +17,7 @@ const SearchButton: FC<TProps> = ({ onClick, children }) => {
       onClick={handleOnClick}
       type="submit"
       className="text-white py-1 px-2 rounded-r-full h-full transtion duration-300 shrink-0 hover:bg-gray-100 md:px-4"
+      aria-label="Search"
     >
       <SearchIcon height="18" width="18" color="#1F93FF" />
       {children}

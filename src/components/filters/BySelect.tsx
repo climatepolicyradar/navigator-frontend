@@ -47,6 +47,7 @@ const BySelect = ({
           onChange(filterType, e.currentTarget.value);
         }}
         value={defaultValue}
+        aria-label={`Select a ${title}`}
       >
         <option value="">{defaultText}</option>
         {sortedList.map((item, index) => (
