@@ -27,7 +27,7 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
   return (
     <>
       <Header />
-      <main>
+      <main id="main">
         <Banner />
         <Hero>
           <AlphaLogo />

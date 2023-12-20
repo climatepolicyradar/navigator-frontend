@@ -9,7 +9,9 @@ type TProps = {
 const Main: FC<TProps> = ({ children }) => (
   <>
     <Header />
-    <main className="flex flex-col flex-1">{children}</main>
+    <main id="main" className="flex flex-col flex-1">
+      {children}
+    </main>
     <Footer />
   </>
 );
