@@ -73,7 +73,7 @@ export const FloatingSearch = () => {
   return (
     <div className="relative" ref={ref}>
       <form onSubmit={(e) => e.preventDefault()} className={`${showFloatingSearch ? "w-[425px] lg:w-[625px]" : ""}`}>
-        <button className="absolute left-0 h-full px-3 text-grey-500" onClick={() => handleSearch(search)}>
+        <button className="absolute left-0 h-full px-3 text-grey-500" onClick={() => handleSearch(search)} aria-label="Search">
           <span className="block">
             <SearchIcon height="12" width="12" color="gray-500" />
           </span>

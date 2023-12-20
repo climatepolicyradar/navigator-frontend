@@ -84,7 +84,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
             <Close onClick={clearSearch} size="16" />
           </div>
         )}
-        <button className={buttonCssClass} onClick={() => handleSearchInput(term)}>
+        <button className={buttonCssClass} onClick={() => handleSearchInput(term)} aria-label="Search">
           <span className={searchIconCssClass}>
             <SearchIcon height="30" width="40" />
           </span>
