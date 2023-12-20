@@ -200,7 +200,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
             <SingleCol>
               <CountryHeader country={geography} targetCount={hasTargets ? publishedTargets?.length : 0} onTargetClick={handleTargetClick} />
               <section className="mt-8" data-cy="country-search">
-                <h3 className="mb-4">Documents</h3>
+                <h2 className="mb-4 text-2xl">Documents</h2>
                 <DocumentSearchForm
                   placeholder={`Search the full text of ${allDocumentsCount} documents from ${geography.name}`}
                   handleSearchInput={handleSearchInput}
@@ -233,10 +233,10 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   <section className="mt-10" id="targets">
                     <div>
                       <div className="justify-between items-end lg:flex">
-                        <h3 className="flex items-center gap-2">
-                          <TargetIcon width="20" height="20" />
+                        <h2 className="flex items-center gap-2 text-2xl">
+                          <TargetIcon width="24" height="24" />
                           Targets <span className="text-gray-700 font-normal">({publishedTargets.length})</span>
-                        </h3>
+                        </h2>
 
                         <ExternalLink
                           url="https://docs.google.com/forms/d/e/1FAIpQLSfP2ECC6W92xF5HHvy5KAPVTim0Agrbr4dD2LhiWkDjcY2f6g/viewform"
@@ -276,7 +276,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
               )}
               {hasEvents && (
                 <section className="mt-10 hidden">
-                  <h3 className="mb-4">Events</h3>
+                  <h2 className="mb-4 text-2xl">Events</h2>
                   <Timeline>
                     {summary.events.map((event: TEvent, index: number) => (
                       <Event event={event} key={`event-${index}`} index={index} last={index === summary.events.length - 1 ? true : false} />
@@ -286,9 +286,9 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
               )}
               {geography.legislative_process && (
                 <section className="mt-10" data-cy="legislative-process">
-                  <h3 className="mb-4 flex items-center gap-2">
-                    <LegislativeIcon width="20" height="20" /> Legislative Process
-                  </h3>
+                  <h2 className="mb-4 flex items-center gap-2 text-2xl">
+                    <LegislativeIcon width="24" height="24" /> Legislative Process
+                  </h2>
                   <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
                 </section>
               )}
