@@ -12,7 +12,7 @@ import CCLWLandingPage from "@cclw/pages/landing-page";
 import { ThemeContext } from "@context/ThemeContext";
 import { triggerNewSearch } from "@utils/triggerNewSearch";
 
-const Homepage = await import(`/themes/${process.env.BUILDTIME_TEST}/pages/Homepage`);
+const { default: Homepage } = await import(`/themes/${process.env.BUILDTIME_TEST}/pages/Homepage`);
 
 const IndexPage = () => {
   const { t } = useTranslation(["searchStart", "searchResults"]);
@@ -55,11 +55,7 @@ const IndexPage = () => {
           <CCLWLandingPage handleSearchInput={handleSearchInput} searchInput={(router.query[QUERY_PARAMS.query_string] as string) ?? ""} />
         )}
       </Layout> */}
-      <Homepage.default
-        handleSearchInput={handleSearchInput}
-        searchInput={(router.query[QUERY_PARAMS.query_string] as string) ?? ""}
-        testIgnore="123"
-      />
+      <Homepage handleSearchInput={handleSearchInput} searchInput={(router.query[QUERY_PARAMS.query_string] as string) ?? ""} testIgnore="123" />
     </>
   );
 };
