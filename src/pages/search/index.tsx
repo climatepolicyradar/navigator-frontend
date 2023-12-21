@@ -320,9 +320,11 @@ const Search = () => {
                 ) : (
                   <>
                     <div className="flex justify-end">
-                      <div>
-                        <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
-                      </div>
+                      {router.query[QUERY_PARAMS.category]?.toString() !== "Litigation" && (
+                        <div>
+                          <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
+                        </div>
+                      )}
                     </div>
                     <div data-cy="search-results">
                       <SearchResultList
