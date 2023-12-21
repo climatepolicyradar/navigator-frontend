@@ -293,10 +293,7 @@ const Search = () => {
                       {downloadCSVStatus === "loading" && <Loading />} this search
                     </a>
                     <span>|</span>
-                    <ExternalLink
-                      url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform"
-                      cy="download-entire-search-csv"
-                    >
+                    <ExternalLink url="https://form.jotform.com/233131638610347" cy="download-entire-search-csv">
                       whole database
                     </ExternalLink>
                   </span>
@@ -320,9 +317,11 @@ const Search = () => {
                 ) : (
                   <>
                     <div className="flex justify-end">
-                      <div>
-                        <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
-                      </div>
+                      {router.query[QUERY_PARAMS.category]?.toString() !== "Litigation" && (
+                        <div>
+                          <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
+                        </div>
+                      )}
                     </div>
                     <div data-cy="search-results">
                       <SearchResultList

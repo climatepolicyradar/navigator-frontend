@@ -15,7 +15,7 @@ import { Targets } from "@components/Targets";
 import { ShowHide } from "@components/controls/ShowHide";
 import { Divider } from "@components/dividers/Divider";
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { DownArrowIcon, TargetIcon } from "@components/svg/Icons";
+import { DownArrowIcon, TargetIcon, AlertCircleIcon } from "@components/svg/Icons";
 import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
@@ -30,6 +30,7 @@ import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary } from "@types";
 import Tooltip from "@components/tooltip";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
+import { Alert } from "@components/Alert";
 
 type TProps = {
   page: TFamilyPage;
@@ -210,13 +211,20 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                       </span>
                       Targets ({publishedTargets.length})
                     </h2>
-                    <ExternalLink
-                      url="https://docs.google.com/forms/d/e/1FAIpQLSfP2ECC6W92xF5HHvy5KAPVTim0Agrbr4dD2LhiWkDjcY2f6g/viewform"
-                      className="block text-sm my-4 md:my-0"
-                      cy="download-target-csv"
-                    >
+                    <ExternalLink url="https://form.jotform.com/233542296946365" className="block text-sm my-4 md:my-0" cy="download-target-csv">
                       Request to download all target data (.csv)
                     </ExternalLink>
+                  </div>
+                  <div className="flex mt-4">
+                    <Alert
+                      message={
+                        <>
+                          We are developing the ability to detect targets in documents.{" "}
+                          <ExternalLink url="https://form.jotform.com/233294139336358">Get notified when this is ready</ExternalLink>.
+                        </>
+                      }
+                      icon={<AlertCircleIcon height="16" width="16" />}
+                    />
                   </div>
                   <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} />
                 </div>

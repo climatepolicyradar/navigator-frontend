@@ -9,10 +9,7 @@ export const Feedback = () => {
           To report a problem email us at <ExternalLink url="mailto:support@climatepolicyradar.org">support@climatepolicyradar.org</ExternalLink>
         </li>
         <li className="mb-2">
-          Spotted missing or inaccurate data?{" "}
-          <ExternalLink url="https://docs.google.com/forms/d/e/1FAIpQLScNy6pZTInQKdxNDaZPKyPGgbfRktstzgVDjGBCeTnLVzl3Pg/viewform">
-            Let us know
-          </ExternalLink>
+          Spotted missing or inaccurate data? <ExternalLink url="https://form.jotform.com/233294135296359">Let us know</ExternalLink>
         </li>
       </ul>
     </div>

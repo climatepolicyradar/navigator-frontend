@@ -9,7 +9,7 @@ import Event from "@components/blocks/Event";
 import { Timeline } from "@components/blocks/Timeline";
 import { CountryHeader } from "@components/blocks/CountryHeader";
 import { Divider } from "@components/dividers/Divider";
-import { DownArrowIcon, LegislativeIcon } from "@components/svg/Icons";
+import { DownArrowIcon, LegislativeIcon, AlertCircleIcon } from "@components/svg/Icons";
 import { FamilyListItem } from "@components/document/FamilyListItem";
 import { Targets } from "@components/Targets";
 import Button from "@components/buttons/Button";
@@ -28,6 +28,7 @@ import { systemGeoNames } from "@constants/systemGeos";
 import { TGeographyStats, TGeographySummary } from "@types";
 import { TTarget, TEvent, TGeography } from "@types";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
+import { Alert } from "@components/Alert";
 
 type TProps = {
   geography: TGeographyStats;
@@ -239,12 +240,23 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                         </h2>
 
                         <ExternalLink
-                          url="https://docs.google.com/forms/d/e/1FAIpQLSfP2ECC6W92xF5HHvy5KAPVTim0Agrbr4dD2LhiWkDjcY2f6g/viewform"
+                          url="https://form.jotform.com/233542296946365"
                           className="text-sm block mt-4 underline md:mt-0"
                           cy="download-target-csv"
                         >
                           Request to download all target data (.csv)
                         </ExternalLink>
+                      </div>
+                      <div className="flex mt-4">
+                        <Alert
+                          message={
+                            <>
+                              We are developing the ability to detect targets in documents.{" "}
+                              <ExternalLink url="https://form.jotform.com/233294139336358">Get notified when this is ready</ExternalLink>.
+                            </>
+                          }
+                          icon={<AlertCircleIcon height="16" width="16" />}
+                        />
                       </div>
                       <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
                     </div>

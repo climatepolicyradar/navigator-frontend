@@ -25,13 +25,22 @@ const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: TP
 
   if (category && category === "Litigation") {
     return (
-      <div className="h-96 mt-4 md:mt-0">
-        Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center's{" "}
-        <ExternalLink url="http://climatecasechart.com/" className="underline">
-          Climate Change Litigation Databases
-        </ExternalLink>
-        .
-      </div>
+      <>
+        <p className="my-4 md:mt-0">
+          Climate litigation case documents are coming soon.{" "}
+          <ExternalLink url="https://form.jotform.com/233294371485361" className="underline">
+            Get notified when they arrive
+          </ExternalLink>
+          .
+        </p>
+        <p className="my-4 md:mt-0">
+          In the meantime, visit the Sabin Center's{" "}
+          <ExternalLink url="http://climatecasechart.com/" className="underline">
+            Climate Change Litigation Databases
+          </ExternalLink>
+          .
+        </p>
+      </>
     );
   }
   if (category && category === "Legislation" && families.length === 0) {
