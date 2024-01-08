@@ -41,6 +41,13 @@ const menuLinks = [
     external: false,
     cy: "contact",
   },
+  // FIXME: delete this test link
+  {
+    text: "Patrick test",
+    href: "/patrick-test",
+    external: false,
+    cy: "patrick-test",
+  },
 ];
 
 export default menuLinks;
