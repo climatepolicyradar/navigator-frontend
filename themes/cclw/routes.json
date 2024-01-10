@@ -1,0 +1,27 @@
+[
+  {
+    "title": "About",
+    "path": "about",
+    "contentPath": "about"
+  },
+  {
+    "title": "Acknowledgements",
+    "path": "acknowledgements",
+    "contentPath": "acknowledgements"
+  },
+  {
+    "title": "Contact",
+    "path": "contact",
+    "contentPath": "contact"
+  },
+  {
+    "title": "FAQ",
+    "path": "faq",
+    "contentPath": "faq"
+  },
+  {
+    "title": "Methodology",
+    "path": "methodology",
+    "contentPath": "methodology"
+  }
+]

@@ -1,6 +1,13 @@
+/* eslint-disable no-console */
 import fs from "fs";
 import dynamic from "next/dynamic";
 import React from "react";
+
+/*
+// This is a handler to generate dynamic pages based on the routes.json file
+// For each theme we must define the list of routes and supply a contentPath
+// The content will be statically generated at build time
+*/
 
 type TPage = {
   title: string;
@@ -33,6 +40,7 @@ export async function getStaticPaths() {
   try {
     jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
   } catch (err) {
+    console.group("[page] getStaticPaths() catch");
     if (err.code === "ENOENT") {
       // Handle the case where the file does not exist
       console.error("File not found");
@@ -42,6 +50,7 @@ export async function getStaticPaths() {
       console.error("Error reading the file", err);
       console.error("at :" + filePath);
     }
+    console.groupEnd();
   }
 
   // Use the data from the JSON file to generate dynamic paths
@@ -64,6 +73,7 @@ export async function getStaticProps({ params }) {
   try {
     jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
   } catch (err) {
+    console.group("[page] getStaticProps() catch");
     if (err.code === "ENOENT") {
       // Handle the case where the file does not exist
       console.error("File not found");
@@ -73,6 +83,7 @@ export async function getStaticProps({ params }) {
       console.error("Error reading the file", err);
       console.error("at :" + filePath);
     }
+    console.groupEnd();
   }
 
   // Find the specific data for the dynamic route

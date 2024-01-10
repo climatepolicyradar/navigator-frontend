@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import App, { AppProps } from "next/app";
 import Head from "next/head";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
-import "../styles/flag-icon.css";
+// import { ReactQueryDevtools } from "react-query/devtools";
+import "../styles/flag-icons.css";
 import "../styles/main.scss";
 
 import { ThemeContext } from "@context/ThemeContext";
@@ -13,6 +13,8 @@ import { AdobeContext } from "@context/AdobeContext";
 import { CookieConsent } from "@components/cookies/CookieConsent";
 import { GSTBanner } from "@cpr/components/GSTBanner";
 import ErrorBoundary from "@components/error/ErrorBoundary";
+
+const favicon = `/images/favicon/${process.env.BUILDTIME_TEST}.png`;
 
 const queryClient = new QueryClient();
 
@@ -47,8 +49,6 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
   const dynamicTheme = theme ?? siteTheme;
   const dynamicAdobeKey = adobeApiKey ?? adobeKey;
 
-  const favicon = dynamicTheme === "cclw" ? "/images/cclw/favicon.png" : "/favicon.png";
-
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeContext.Provider value={dynamicTheme}>
@@ -76,7 +76,7 @@ MyApp.getInitialProps = async () => {
     return { ...initialProps };
   }
 
-  return { ...initialProps, theme: process.env.THEME ?? "cpr", adobeApiKey: process.env.ADOBE_API_KEY ?? "" };
+  return { ...initialProps, theme: process.env.THEME, adobeApiKey: process.env.ADOBE_API_KEY ?? "" };
 };
 
 export default MyApp;
