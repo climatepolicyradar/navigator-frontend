@@ -1,6 +1,5 @@
+/* eslint-disable no-console */
 import { TRedirect } from "@types";
-
-const theme = process.env.THEME;
 
 function getRedirects(): Array<TRedirect> {
   const REDIRECT_FILE = process.env.REDIRECT_FILE || "CCLW_redirects.json";
