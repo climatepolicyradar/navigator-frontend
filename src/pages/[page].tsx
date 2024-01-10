@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
 import fs from "fs";
 import dynamic from "next/dynamic";
+import { redirect } from "next/navigation";
 import React from "react";
 
 /*
-// This is a handler to generate dynamic pages based on the routes.json file
+// This is a dynamic page to generate pages based on the routes.json file
 // For each theme we must define the list of routes and supply a contentPath
 // The content will be statically generated at build time
 */
@@ -17,13 +18,15 @@ type TPage = {
 
 type TProps = {
   page?: TPage & {
-    notfound?: boolean;
+    notFound?: boolean;
   };
 };
 
 export default function Page({ page }: TProps) {
-  if (page.notfound) {
-    return null;
+  // TODO: fix this properly
+  // Next is throwing a NEXT_REDIRECT error under the hood when attemping to navigate to a missing page at root, e.g. /missing-page
+  if (!page || page.notFound) {
+    return window.location.replace("/not-found");
   }
 
   const DynamicComponent = dynamic(() => import(`../../themes/${process.env.BUILDTIME_TEST}/pages/${page.contentPath}`).catch(() => () => null), {
@@ -87,7 +90,14 @@ export async function getStaticProps({ params }) {
   }
 
   // Find the specific data for the dynamic route
-  const page = jsonData.find((page) => page.path === currentPath) || { notfound: true };
+  const page = jsonData.find((page) => page.path === currentPath);
+
+  // If no data is found, return not found to redirect to a 404 page
+  if (!page) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {

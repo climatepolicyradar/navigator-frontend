@@ -48,6 +48,12 @@ const menuLinks = [
     external: false,
     cy: "patrick-test",
   },
+  {
+    text: "What",
+    href: "/document/national-policy-framework-for-msmes_6870PAT",
+    external: false,
+    cy: "what",
+  },
 ];
 
 export default menuLinks;
