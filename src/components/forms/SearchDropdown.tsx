@@ -44,7 +44,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
   };
 
   const anchorClasses = (last: boolean) =>
-    `flex flex-wrap items-center cursor-pointer py-2 px-4 block text-cpr-dark hover:bg-gray-200 focus:bg-gray-200 ${last ? "rounded-b-lg" : ""}`;
+    `flex flex-wrap items-center cursor-pointer py-2 px-4 block text-cpr-dark hover:no-underline hover:bg-gray-200 focus:bg-gray-200 ${last ? "rounded-b-lg" : ""}`;
 
   const renderSearchSuggestion = (geographies: TGeography[]) => {
     if (!geographies || geographies === null || geographies.length === 0) return;
