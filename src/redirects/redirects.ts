@@ -1,20 +1,5 @@
 import { TRedirect } from "@types";
 
-// for pages that are not in cclw's sitemap
-const cclwRedirects = [
-  { source: "/cookie-policy", destination: "/", permanent: true },
-  { source: "/privacy", destination: "/", permanent: true },
-];
-
-// for pages that are not in cpr's sitemap
-const cprRedirects = [
-  { source: "/about", destination: "/", permanent: true },
-  { source: "/acknowledgements", destination: "/", permanent: true },
-  { source: "/contact", destination: "/", permanent: true },
-  { source: "/methodology", destination: "/", permanent: true },
-  { source: "/faq", destination: "/", permanent: true },
-];
-
 const theme = process.env.THEME;
 
 function getRedirects(): Array<TRedirect> {
@@ -28,14 +13,6 @@ function getRedirects(): Array<TRedirect> {
   }
   if (redirectsFromFile) {
     redirects = redirectsFromFile;
-  }
-  switch (theme) {
-    case "cclw":
-      redirects.push.apply(redirects, cclwRedirects);
-      break;
-    case "cpr":
-      redirects.push.apply(redirects, cprRedirects);
-      break;
   }
   return redirects;
 }
