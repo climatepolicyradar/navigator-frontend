@@ -1,12 +1,8 @@
-import { useContext } from "react";
-import { ThemeContext } from "@context/ThemeContext";
 import Layout from "@components/layouts/Main";
 import { ExternalLink } from "@components/ExternalLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 
 const TermsOfUse = () => {
-  const theme = useContext(ThemeContext);
-
   return (
     <Layout title={`Terms of use`}>
       <section>
@@ -15,30 +11,17 @@ const TermsOfUse = () => {
           <div className="text-content mb-12">
             <h1 className="my-8">Terms of use</h1>
             <h2>Introduction</h2>
-            {theme === "cclw" && (
-              <>
-                <p>
-                  Welcome to Climate Change Laws of the World website, a leading resource on global climate law and policy. The website is offered
-                  through a partnership between the Grantham Research Institute at the London School of Economics and Climate Policy Radar.
-                </p>
-                <p>
-                  This website provides a user interface for the Climate Policy Radar Database and the Climate Policy Radar Application ("CPR Database
-                  and App"). The CPR Database builds on over a decade of work at the Grantham Research Institute to provide data and insights on
-                  climate change law and policy worldwide to support informed and ambitious climate change policymaking and research.
-                </p>
-              </>
-            )}
-            {theme === "cpr" && (
-              <>
-                <p>Welcome to Climate Policy Radar, a leading resource on global climate law and policy. </p>
-                <p>
-                  This website provides a user interface for the Climate Policy Radar Database and the Climate Policy Radar Application ("CPR Database
-                  and App"). The CPR Database builds on over a decade of work at the Grantham Research Institute to provide data and insights on
-                  climate change law and policy worldwide to support informed and ambitious climate change policymaking and research. The work is
-                  underpinned by a partnership between the Grantham Research Institute at the London School of Economics and Climate Policy Radar.
-                </p>
-              </>
-            )}
+            <>
+              <p>
+                Welcome to Climate Change Laws of the World website, a leading resource on global climate law and policy. The website is offered
+                through a partnership between the Grantham Research Institute at the London School of Economics and Climate Policy Radar.
+              </p>
+              <p>
+                This website provides a user interface for the Climate Policy Radar Database and the Climate Policy Radar Application ("CPR Database
+                and App"). The CPR Database builds on over a decade of work at the Grantham Research Institute to provide data and insights on climate
+                change law and policy worldwide to support informed and ambitious climate change policymaking and research.
+              </p>
+            </>
             <p>
               The following Terms govern the use of the CPR Database and App and the ‘Climate Change Laws of the World’ interface for the Climate
               Policy Radar App (”CCLW Interface”).
@@ -55,8 +38,8 @@ const TermsOfUse = () => {
             <h2>Using the CPR Database and App</h2>
             <ul>
               <li>
-                Climate Policy Radar actively encourages and supports the use of information from the CPR Database and App{" "}
-                {theme === "cclw" && <>via the CCLW Interface</>} for a wide range of purposes.
+                Climate Policy Radar actively encourages and supports the use of information from the CPR Database and App via the CCLW Interface for
+                a wide range of purposes.
               </li>
               <li>
                 Climate Policy Radar, its collaborators, licensors, or authorised contributors to the CPR Database and App own the copyright, database
@@ -112,84 +95,54 @@ const TermsOfUse = () => {
               </li>
             </ul>
             <h3>Recommended citation</h3>
-            {theme === "cclw" && (
+            <ul>
+              <li>
+                <p>Recommended academic citation for citing the database:</p>
+                <p className="italic">
+                  "Grantham Research Institute at the London School of Economics and Climate Policy Radar (2023) Climate Change Laws of the
+                  World. https://climate-laws.org and https://app.climatepolicyradar.org/search"
+                </p>
+              </li>
+
+              <li>
+                <p>Recommended citation for specific law/policy summaries:</p>
+                <p className="italic">
+                  "Grantham Research Institute at the London School of Economics and Climate Policy Radar (2023) [Title of law or policy]. Climate
+                  Change Laws of the World. https://climate-laws.org and https://app.climatepolicyradar.org/search"
+                </p>
+              </li>
+
+              <li>
+                <p>Recommended citation for specific law/policy documents:</p>
+                <p className="italic">
+                  "[Document author] (Year document passed or published) [Title of document]. Sourced from: Grantham Research Institute at the London
+                  School of Economics and Climate Policy Radar. Climate Change Laws of the
+                  World, https://climate-laws.org and https://app.climatepolicyradar.org/search"
+                </p>
+              </li>
+
+              <li>
+                <p>Recommended media citation for citing the database:</p>
+                <p className="italic">
+                  "Climate Change Laws of the World. Grantham Research Institute at the London School of Economics, Climate Policy Radar. 2023."
+                </p>
+              </li>
+            </ul>
+
+            <>
+              <h3>Acknowledgement</h3>
               <ul>
                 <li>
-                  <p>Recommended academic citation for citing the database:</p>
+                  <p>Recommended wording for acknowledgement:</p>
                   <p className="italic">
-                    "Grantham Research Institute at the London School of Economics and Climate Policy Radar (2023) Climate Change Laws of the
-                    World. https://climate-laws.org and https://app.climatepolicyradar.org/search"
-                  </p>
-                </li>
-
-                <li>
-                  <p>Recommended citation for specific law/policy summaries:</p>
-                  <p className="italic">
-                    "Grantham Research Institute at the London School of Economics and Climate Policy Radar (2023) [Title of law or policy]. Climate
-                    Change Laws of the World. https://climate-laws.org and https://app.climatepolicyradar.org/search"
-                  </p>
-                </li>
-
-                <li>
-                  <p>Recommended citation for specific law/policy documents:</p>
-                  <p className="italic">
-                    "[Document author] (Year document passed or published) [Title of document]. Sourced from: Grantham Research Institute at the
-                    London School of Economics and Climate Policy Radar. Climate Change Laws of the
-                    World, https://climate-laws.org and https://app.climatepolicyradar.org/search"
-                  </p>
-                </li>
-
-                <li>
-                  <p>Recommended media citation for citing the database:</p>
-                  <p className="italic">
-                    "Climate Change Laws of the World. Grantham Research Institute at the London School of Economics, Climate Policy Radar. 2023."
+                    "When using data from Climate Change Laws of the World for an academic or policy publication, you agree to acknowledge the
+                    following in your publication: “Data used in this publication is sourced from the ‘Climate Change Laws of the World’ interface for
+                    the Climate Policy Radar Database, https://climate-laws.org and made available under the Creative Commons CC-BY licence. The data
+                    in this database was sourced primarily from the Grantham Research Institute at the London School of Economics.”
                   </p>
                 </li>
               </ul>
-            )}
-            {theme === "cpr" && (
-              <ul>
-                <li>
-                  <p>When citing use of the Database, you may use this text:</p>
-                  <p className="italic">
-                    "Sourced from the Climate Policy Radar Database, https://app.climatepolicyradar.org and made available under the Creative Commons
-                    CC-BY licence. The data in this database was sourced primarily from the Grantham Research Institute at the London School of
-                    Economics."
-                  </p>
-                </li>
-
-                <li>
-                  <p>When citing a specific data point(s), for example, if citing a summary of a document, please use the following citation:</p>
-                  <p className="italic">
-                    “This summary was written by researchers at the Grantham Research Institute at the London School of Economics, sourced from
-                    Climate Policy Radar, https://app.climatepolicyradar.org and made available under and under the Creative Commons CC-BY licence”
-                  </p>
-                  <p>
-                    <span className="font-bold">Note</span>: As of May 2023, all climate law and policy summaries in the CPR App were written by
-                    researchers at the Grantham Research Institute (as reflected on every document page). Documents from the UNFCCC document
-                    registries and data portals are out of the scope for this declaration (see further “Data from third party sources”). This section
-                    and recommended citation will be updated to reflect any changes to this.
-                  </p>
-                </li>
-              </ul>
-            )}
-
-            {theme === "cclw" && (
-              <>
-                <h3>Acknowledgement</h3>
-                <ul>
-                  <li>
-                    <p>Recommended wording for acknowledgement:</p>
-                    <p className="italic">
-                      "When using data from Climate Change Laws of the World for an academic or policy publication, you agree to acknowledge the
-                      following in your publication: “Data used in this publication is sourced from the ‘Climate Change Laws of the World’ interface
-                      for the Climate Policy Radar Database, https://climate-laws.org and made available under the Creative Commons CC-BY licence. The
-                      data in this database was sourced primarily from the Grantham Research Institute at the London School of Economics.”
-                    </p>
-                  </li>
-                </ul>
-              </>
-            )}
+            </>
 
             <h2>Commercial Licensing</h2>
             <p>

@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import fs from "fs";
 import dynamic from "next/dynamic";
-import { redirect } from "next/navigation";
 import React from "react";
 
 /*
