@@ -235,6 +235,11 @@ const Search = () => {
     } else {
       document.body.classList.remove("overflow-hidden");
     }
+
+    // Allow flow on unmount
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
   }, [drawerFamily]);
 
   return (
