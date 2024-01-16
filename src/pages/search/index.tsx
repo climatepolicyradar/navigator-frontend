@@ -229,6 +229,14 @@ const Search = () => {
     }
   }, [hits]);
 
+  useEffect(() => {
+    if (drawerFamily) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, [drawerFamily]);
+
   return (
     <Layout
       title={t("Law and Policy Search")}
