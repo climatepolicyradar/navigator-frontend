@@ -9,6 +9,7 @@ import Banner from "@components/banner/FullHeight";
 import Summary from "@components/blocks/Summary";
 import Partners from "@components/blocks/Partners";
 import Footer from "@components/footer/Footer";
+import Layout from "../layouts/HomepageLayout";
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
@@ -25,7 +26,7 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
   };
 
   return (
-    <>
+    <Layout title="Law and Policy Search">
       <Header />
       <main>
         <Banner />
@@ -45,7 +46,7 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
       <Summary />
       <Partners />
       <Footer />
-    </>
+    </Layout>
   );
 };
 
