@@ -33,7 +33,6 @@ jobs:
       - name: Build
         run: |
           make build
-          docker tag local-frontend navigator-frontend
 
       - name: Run frontend TODO - use own backend?
         run: make run_ci

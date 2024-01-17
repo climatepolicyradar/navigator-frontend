@@ -1,7 +1,7 @@
 .PHONEY: build run run_ci with_production
 
 TAG = local-frontend
-THEME ?= cclw
+THEME ?= $(BUILDTIME_TEST)
 API_URL ?= https://app.dev.climatepolicyradar.org/api/v1
 S3_PATH ?= https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
 ADOBE_API_KEY ?= dca9187b65294374a6367824df902fdf
@@ -23,7 +23,9 @@ with_production:
 	make API_URL=https://api.climatepolicyradar.org/api/v1
 
 build:
+	echo "Building with theme: $(THEME)"
 	docker build -t ${TAG} .
+	docker tag local-frontend navigator-$(THEME)
 
 run_ci:
 	docker run --rm -d \
