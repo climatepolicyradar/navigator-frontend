@@ -1,17 +1,4 @@
-export const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
+export const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 export const minYear = 1947;
 export const currentYear = (): number => {
@@ -35,5 +22,3 @@ export const daysInMonth = (month, year) => {
   // Use 1 for January, 2 for February, etc.
   return new Date(year, month, 0).getDate();
 };
-
-export const dayRange = (month) => {};
