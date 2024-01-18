@@ -27,7 +27,7 @@
       "@types": ["src/types/index"],
       "@pages/*": ["src/pages/*"],
       "@utils/*": ["src/utils/*"],
-      "@cclw/*": ["src/sites/cclw/*"],
+      "@cclw/*": ["themes/cclw/*"],
       "@cpr/*": ["src/sites/cpr/*"]
     }
   },
