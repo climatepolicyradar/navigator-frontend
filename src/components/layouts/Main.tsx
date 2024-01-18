@@ -8,7 +8,7 @@ import { useContext } from "react";
 import { ThemeContext } from "@context/ThemeContext";
 import getPageDescription from "@utils/getPageDescription";
 
-const { default: Wrapper } = await import(`/themes/${process.env.BUILDTIME_TEST}/layouts/MainWrapper`);
+const { default: Wrapper } = await import(`/themes/${process.env.BUILDTIME_TEST}/layouts/main`);
 
 type TProps = {
   title?: string;
