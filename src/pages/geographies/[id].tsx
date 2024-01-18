@@ -185,118 +185,116 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   };
 
   return (
-    <>
-      <Layout title={geography.name} description={getGeoDescription(geography.name)}>
-        {!geography ? (
+    <Layout title={geography.name} description={getGeoDescription(geography.name)}>
+      {!geography ? (
+        <SingleCol>
+          <TextLink onClick={() => router.back()}>Go back</TextLink>
+          <p>We were not able to load the data for the country.</p>
+        </SingleCol>
+      ) : (
+        <section className="mb-8">
+          <div className="container">
+            <BreadCrumbs label={geography.name} />
+          </div>
           <SingleCol>
-            <TextLink onClick={() => router.back()}>Go back</TextLink>
-            <p>We were not able to load the data for the country.</p>
-          </SingleCol>
-        ) : (
-          <section className="mb-8">
-            <div className="container">
-              <BreadCrumbs label={geography.name} />
-            </div>
-            <SingleCol>
-              <CountryHeader country={geography} targetCount={hasTargets ? publishedTargets?.length : 0} onTargetClick={handleTargetClick} />
-              <section className="mt-8" data-cy="country-search">
-                <h3 className="mb-4">Documents</h3>
-                <DocumentSearchForm
-                  placeholder={`Search the full text of ${allDocumentsCount} documents from ${geography.name}`}
-                  handleSearchInput={handleSearchInput}
-                  input={""}
-                  featuredSearches={FEATURED_SEARCHES}
-                />
-              </section>
-              {hasFamilies && (
-                <>
-                  <section className="mt-10" data-cy="top-documents">
-                    <div className="mt-4 md:flex">
-                      <div className="flex-grow">
-                        <TabbedNav activeIndex={selectedCategoryIndex} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
-                      </div>
+            <CountryHeader country={geography} targetCount={hasTargets ? publishedTargets?.length : 0} onTargetClick={handleTargetClick} />
+            <section className="mt-8" data-cy="country-search">
+              <h3 className="mb-4">Documents</h3>
+              <DocumentSearchForm
+                placeholder={`Search the full text of ${allDocumentsCount} documents from ${geography.name}`}
+                handleSearchInput={handleSearchInput}
+                input={""}
+                featuredSearches={FEATURED_SEARCHES}
+              />
+            </section>
+            {hasFamilies && (
+              <>
+                <section className="mt-10" data-cy="top-documents">
+                  <div className="mt-4 md:flex">
+                    <div className="flex-grow">
+                      <TabbedNav activeIndex={selectedCategoryIndex} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
                     </div>
-                    {renderDocuments()}
-                  </section>
-                  {selectedCategoryIndex !== 4 && (
-                    <div data-cy="see-more-button">
-                      <Button color="secondary" extraClasses="my-6" onClick={handleDocumentSeeMoreClick}>
-                        View more documents
-                      </Button>
-                      <Divider />
-                    </div>
-                  )}
-                </>
-              )}
-              {hasTargets && (
-                <>
-                  <section className="mt-10" id="targets">
-                    <div>
-                      <div className="justify-between items-end lg:flex">
-                        <h3 className="flex items-center gap-2">
-                          <TargetIcon width="20" height="20" />
-                          Targets <span className="text-gray-700 font-normal">({publishedTargets.length})</span>
-                        </h3>
+                  </div>
+                  {renderDocuments()}
+                </section>
+                {selectedCategoryIndex !== 4 && (
+                  <div data-cy="see-more-button">
+                    <Button color="secondary" extraClasses="my-6" onClick={handleDocumentSeeMoreClick}>
+                      View more documents
+                    </Button>
+                    <Divider />
+                  </div>
+                )}
+              </>
+            )}
+            {hasTargets && (
+              <>
+                <section className="mt-10" id="targets">
+                  <div>
+                    <div className="justify-between items-end lg:flex">
+                      <h3 className="flex items-center gap-2">
+                        <TargetIcon width="20" height="20" />
+                        Targets <span className="text-gray-700 font-normal">({publishedTargets.length})</span>
+                      </h3>
 
-                        <ExternalLink
-                          url="https://docs.google.com/forms/d/e/1FAIpQLSfP2ECC6W92xF5HHvy5KAPVTim0Agrbr4dD2LhiWkDjcY2f6g/viewform"
-                          className="text-sm block mt-4 underline md:mt-0"
-                          cy="download-target-csv"
-                        >
-                          Request to download all target data (.csv)
-                        </ExternalLink>
-                      </div>
-                      <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
-                    </div>
-                  </section>
-                  {publishedTargets.length > numberOfTargetsToDisplay && (
-                    <div data-cy="more-targets-button">
-                      <Button
-                        color="secondary"
-                        extraClasses="flex gap-2 items-center my-6"
-                        onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
+                      <ExternalLink
+                        url="https://docs.google.com/forms/d/e/1FAIpQLSfP2ECC6W92xF5HHvy5KAPVTim0Agrbr4dD2LhiWkDjcY2f6g/viewform"
+                        className="text-sm block mt-4 underline md:mt-0"
+                        cy="download-target-csv"
                       >
-                        <DownArrowIcon /> View more targets
-                      </Button>
-                      <Divider />
+                        Request to download all target data (.csv)
+                      </ExternalLink>
                     </div>
-                  )}
-                  {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
-                    <div>
-                      <Button color="secondary" extraClasses="flex gap-2 items-center my-6" onClick={() => setNumberOfTargetsToDisplay(5)}>
-                        <div className="rotate-180">
-                          <DownArrowIcon />
-                        </div>{" "}
-                        Hide targets
-                      </Button>
-                      <Divider />
-                    </div>
-                  )}
-                </>
-              )}
-              {hasEvents && (
-                <section className="mt-10 hidden">
-                  <h3 className="mb-4">Events</h3>
-                  <Timeline>
-                    {summary.events.map((event: TEvent, index: number) => (
-                      <Event event={event} key={`event-${index}`} index={index} last={index === summary.events.length - 1 ? true : false} />
-                    ))}
-                  </Timeline>
+                    <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
+                  </div>
                 </section>
-              )}
-              {geography.legislative_process && (
-                <section className="mt-10" data-cy="legislative-process">
-                  <h3 className="mb-4 flex items-center gap-2">
-                    <LegislativeIcon width="20" height="20" /> Legislative Process
-                  </h3>
-                  <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
-                </section>
-              )}
-            </SingleCol>
-          </section>
-        )}
-      </Layout>
-    </>
+                {publishedTargets.length > numberOfTargetsToDisplay && (
+                  <div data-cy="more-targets-button">
+                    <Button
+                      color="secondary"
+                      extraClasses="flex gap-2 items-center my-6"
+                      onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
+                    >
+                      <DownArrowIcon /> View more targets
+                    </Button>
+                    <Divider />
+                  </div>
+                )}
+                {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
+                  <div>
+                    <Button color="secondary" extraClasses="flex gap-2 items-center my-6" onClick={() => setNumberOfTargetsToDisplay(5)}>
+                      <div className="rotate-180">
+                        <DownArrowIcon />
+                      </div>{" "}
+                      Hide targets
+                    </Button>
+                    <Divider />
+                  </div>
+                )}
+              </>
+            )}
+            {hasEvents && (
+              <section className="mt-10 hidden">
+                <h3 className="mb-4">Events</h3>
+                <Timeline>
+                  {summary.events.map((event: TEvent, index: number) => (
+                    <Event event={event} key={`event-${index}`} index={index} last={index === summary.events.length - 1 ? true : false} />
+                  ))}
+                </Timeline>
+              </section>
+            )}
+            {geography.legislative_process && (
+              <section className="mt-10" data-cy="legislative-process">
+                <h3 className="mb-4 flex items-center gap-2">
+                  <LegislativeIcon width="20" height="20" /> Legislative Process
+                </h3>
+                <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
+              </section>
+            )}
+          </SingleCol>
+        </section>
+      )}
+    </Layout>
   );
 };
 
