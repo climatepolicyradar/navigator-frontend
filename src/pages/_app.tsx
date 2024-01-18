@@ -11,7 +11,6 @@ import { ThemeContext } from "@context/ThemeContext";
 import { AdobeContext } from "@context/AdobeContext";
 
 import { CookieConsent } from "@components/cookies/CookieConsent";
-import { GSTBanner } from "@cpr/components/GSTBanner";
 import ErrorBoundary from "@components/error/ErrorBoundary";
 
 const favicon = `/images/favicon/${process.env.BUILDTIME_TEST}.png`;
@@ -57,8 +56,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
             <Head>
               <link rel="icon" href={favicon} />
             </Head>
-            {dynamicTheme === "cpr" && <GSTBanner />}
-            <div id={dynamicTheme} className="h-full relative">
+            <div id={dynamicTheme}>
               <Component {...pageProps} />
             </div>
             <CookieConsent />
