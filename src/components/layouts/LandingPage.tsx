@@ -14,7 +14,7 @@ const Layout = ({ children, title = "", description = null }: TProps) => {
   const theme = useContext(ThemeContext);
 
   return (
-    <div>
+    <>
       <Head>
         <title>{`${title} - ${getPageTitle(theme)}`}</title>
         <meta property="og:title" content={`${title} - ${getPageTitle(theme)}`} />
@@ -27,7 +27,7 @@ const Layout = ({ children, title = "", description = null }: TProps) => {
         Skip to content
       </a>
       {children}
-    </div>
+    </>
   );
 };
 

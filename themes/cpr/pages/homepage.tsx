@@ -10,6 +10,7 @@ import Summary from "@components/blocks/Summary";
 import Partners from "@components/blocks/Partners";
 import Footer from "@components/footer/Footer";
 import Layout from "@components/layouts/LandingPage";
+import { GSTBanner } from "@cpr/components/GSTBanner";
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
@@ -27,25 +28,28 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
 
   return (
     <Layout title="Law and Policy Search">
-      <Header />
-      <main>
-        <Banner />
-        <Hero>
-          <AlphaLogo />
-          <div className="container mt-24 md:mt-48 max-w-screen-lg mx-auto">
-            <LandingSearchForm handleSearchInput={handleSearchInput} input={searchInput} />
-            <div className="mt-4 flex justify-end">
-              <ExactMatch landing={true} checked={exactMatch} id="exact-match" handleSearchChange={handleSearchChange} />
+      <GSTBanner />
+      <div className="relative">
+        <Header />
+        <main className="relative h-full">
+          <Banner />
+          <Hero>
+            <AlphaLogo />
+            <div className="container mt-24 md:mt-48 max-w-screen-lg mx-auto">
+              <LandingSearchForm handleSearchInput={handleSearchInput} input={searchInput} />
+              <div className="mt-4 flex justify-end">
+                <ExactMatch landing={true} checked={exactMatch} id="exact-match" handleSearchChange={handleSearchChange} />
+              </div>
+              <div className="mt-12">
+                <LandingPageLinks handleLinkClick={handleLinkClick} />
+              </div>
             </div>
-            <div className="mt-12">
-              <LandingPageLinks handleLinkClick={handleLinkClick} />
-            </div>
-          </div>
-        </Hero>
-      </main>
-      <Summary />
-      <Partners />
-      <Footer />
+          </Hero>
+        </main>
+        <Summary />
+        <Partners />
+        <Footer />
+      </div>
     </Layout>
   );
 };
