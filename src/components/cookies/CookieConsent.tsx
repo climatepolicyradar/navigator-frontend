@@ -1,14 +1,14 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import Script from "next/script";
 import Button from "@components/buttons/Button";
 import { getCookie, setCookie } from "@utils/cookies";
 import { COOKIE_CONSENT_NAME } from "@constants/cookies";
 import { ExternalLink } from "@components/ExternalLink";
-import { ThemeContext } from "@context/ThemeContext";
 import getDomain from "@utils/getDomain";
 
+const { default: ThemeAnalytics } = await import(`/themes/${process.env.THEME}/components/Analytics`);
+
 export const CookieConsent = () => {
-  const theme = useContext(ThemeContext);
   const [hide, setHide] = useState(true);
   const [enableAnalytics, setEnableAnalytics] = useState(false);
 
@@ -40,7 +40,7 @@ export const CookieConsent = () => {
   };
 
   // gtm controls for CCLW theme only
-  const cclwAnalyticsAllowed = theme === "cclw" && enableAnalytics;
+  // const cclwAnalyticsAllowed = theme === "cclw" && enableAnalytics;
 
   return (
     <>
@@ -108,7 +108,8 @@ export const CookieConsent = () => {
           </Script>
         </>
       )}
-      {cclwAnalyticsAllowed && (
+      <ThemeAnalytics enableAnalytics={enableAnalytics} />
+      {/* {cclwAnalyticsAllowed && (
         <>
           <Script async src="https://www.googletagmanager.com/gtag/js?id=UA-153841121-2" />
           <Script id="cclw-google-analytics" strategy="afterInteractive">
@@ -125,7 +126,7 @@ export const CookieConsent = () => {
       )}
       {theme === "cclw" && (
         <Script id="cclw-plausible" defer data-domain="climate-laws.org" strategy="afterInteractive" src="https://plausible.io/js/script.js" />
-      )}
+      )} */}
     </>
   );
 };
