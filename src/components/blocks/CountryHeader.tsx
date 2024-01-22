@@ -2,8 +2,6 @@ import { TGeographyStats, TGeography } from "@types";
 import useConfig from "@hooks/useConfig";
 import Tooltip from "@components/tooltip";
 import { ExternalLink } from "@components/ExternalLink";
-import { useContext } from "react";
-import { ThemeContext } from "@context/ThemeContext";
 
 type TProps = {
   country: TGeographyStats;
