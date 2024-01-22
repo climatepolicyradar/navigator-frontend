@@ -1,7 +1,7 @@
 .PHONEY: build run run_ci with_production
 
 TAG = local-frontend
-THEME ?= $(BUILDTIME_TEST)
+THEME ?= $(THEME)
 API_URL ?= https://app.dev.climatepolicyradar.org/api/v1
 S3_PATH ?= https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
 ADOBE_API_KEY ?= dca9187b65294374a6367824df902fdf

@@ -5,7 +5,7 @@ import useConfig from "@hooks/useConfig";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { triggerNewSearch } from "@utils/triggerNewSearch";
 
-const { default: Homepage } = await import(`/themes/${process.env.BUILDTIME_TEST}/pages/homepage`);
+const { default: Homepage } = await import(`/themes/${process.env.THEME}/pages/homepage`);
 
 const IndexPage = () => {
   const router = useRouter();

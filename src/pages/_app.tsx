@@ -13,7 +13,7 @@ import { AdobeContext } from "@context/AdobeContext";
 import { CookieConsent } from "@components/cookies/CookieConsent";
 import ErrorBoundary from "@components/error/ErrorBoundary";
 
-const favicon = `/images/favicon/${process.env.BUILDTIME_TEST}.png`;
+const favicon = `/images/favicon/${process.env.THEME}.png`;
 
 const queryClient = new QueryClient();
 

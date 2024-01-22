@@ -80,7 +80,7 @@ const configureRedirects = (theme) => {
 const nextConfig = {
   // TODO: confirm this is necessary
   env: {
-    BUILDTIME_TEST: process.env.BUILDTIME_TEST,
+    THEME: process.env.THEME,
   },
   // Supports dynamic component imports
   webpack(config) {
@@ -89,11 +89,11 @@ const nextConfig = {
   },
   // Loads in theme styles
   sassOptions: {
-    additionalData: `@import "./themes/${process.env.BUILDTIME_TEST}/styles/styles.scss";`,
+    additionalData: `@import "./themes/${process.env.THEME}/styles/styles.scss";`,
   },
   // Redirects
   redirects: async () => {
-    return configureRedirects(process.env.BUILDTIME_TEST);
+    return configureRedirects(process.env.THEME);
   },
   // Translations
   i18n: {

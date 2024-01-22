@@ -28,7 +28,7 @@ export default function Page({ page }: TProps) {
     return window.location.replace("/not-found");
   }
 
-  const DynamicComponent = dynamic(() => import(`../../themes/${process.env.BUILDTIME_TEST}/pages/${page.contentPath}`).catch(() => () => null), {
+  const DynamicComponent = dynamic(() => import(`../../themes/${process.env.THEME}/pages/${page.contentPath}`).catch(() => () => null), {
     ssr: true,
   });
 
@@ -37,7 +37,7 @@ export default function Page({ page }: TProps) {
 
 export async function getStaticPaths() {
   // Read the JSON file based on the environment variable
-  const filePath = `./themes/${process.env.BUILDTIME_TEST}/routes.json`;
+  const filePath = `./themes/${process.env.THEME}/routes.json`;
   let jsonData: TPage[] = [];
   try {
     jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
@@ -70,7 +70,7 @@ export async function getStaticProps({ params }) {
   const currentPath = params.page;
 
   // Read the JSON file based on the environment variable
-  const filePath = `./themes/${process.env.BUILDTIME_TEST}/routes.json`;
+  const filePath = `./themes/${process.env.THEME}/routes.json`;
   let jsonData: TPage[] = [];
   try {
     jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
