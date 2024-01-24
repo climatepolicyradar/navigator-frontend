@@ -43,6 +43,12 @@ const menuLinks = [
   },
   // FIXME: delete this test link
   {
+    text: "Redirect test",
+    href: "/legislation_and_policies",
+    external: false,
+    cy: "redirect test",
+  },
+  {
     text: "Patrick test",
     href: "/patrick-test",
     external: false,

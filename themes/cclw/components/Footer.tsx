@@ -4,7 +4,7 @@ import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { Feedback } from "./Feedback";
 import MENU_LINKS from "../constants/menuLinks";
-import GRI_LINKS, { TLinkItem } from "../constants/griLinks";
+import GRI_LINKS, { TLinkItem } from "@cclw/constants/griLinks";
 
 const Footer = () => {
   const renderLink = (item: TLinkItem) => {
@@ -43,9 +43,7 @@ const Footer = () => {
                 <ul>
                   <li className="mb-2">
                     For media enquiries or queries about research and policy analysis contact{" "}
-                    <ExternalLink url="mailto:gri.cgl@lse.co.uk">
-                      gri.cgl@lse.co.uk
-                    </ExternalLink>
+                    <ExternalLink url="mailto:gri.cgl@lse.co.uk">gri.cgl@lse.co.uk</ExternalLink>
                   </li>
                 </ul>
               </div>
