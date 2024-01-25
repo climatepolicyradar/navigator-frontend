@@ -1,6 +1,5 @@
-import React from "react";
+import { MouseEvent } from "react";
 import { Hero } from "@components/blocks/Hero";
-import LandingSearchForm from "@components/forms/LandingSearchForm";
 import AlphaLogo from "@components/logo/AlphaLogo";
 import ExactMatch from "@components/filters/ExactMatch";
 import LandingPageLinks from "@components/blocks/LandingPageLinks";
@@ -10,6 +9,7 @@ import Summary from "@components/blocks/Summary";
 import Partners from "@components/blocks/Partners";
 import Footer from "@components/footer/Footer";
 import Layout from "@components/layouts/LandingPage";
+import LandingSearchForm from "@cpr/components/LandingSearchForm";
 import { GSTBanner } from "@cpr/components/GSTBanner";
 
 type TProps = {
@@ -20,7 +20,7 @@ type TProps = {
 };
 
 const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exactMatch }: TProps) => {
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleLinkClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const term = e.currentTarget.textContent;
     handleSearchInput(term);

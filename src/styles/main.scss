@@ -494,30 +494,6 @@ ul li.selected {
   }
 }
 
-#landingPage-searchInput-cpr {
-  @screen md {
-    &::-webkit-input-placeholder {
-      /* WebKit browsers */
-      color: transparent;
-    }
-    &:-moz-placeholder {
-      /* Mozilla Firefox 4 to 18 */
-      color: transparent;
-    }
-    &::-moz-placeholder {
-      /* Mozilla Firefox 19+ */
-      color: transparent;
-    }
-    &:-ms-input-placeholder {
-      /* Internet Explorer 10+ */
-      color: transparent;
-    }
-    &::placeholder {
-      color: transparent;
-    }
-  }
-}
-
 .search-animated-placeholder {
   display: none;
   @screen md {
