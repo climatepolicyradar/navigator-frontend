@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { SearchIcon } from "@components/svg/Icons";
 import { SearchDropdown } from "@components/forms/SearchDropdown";
 
@@ -13,7 +13,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
   const [formFocus, setFormFocus] = useState(false);
   const formRef = useRef(null);
 
-  const onChange = (e) => {
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTerm(e.currentTarget.value);
   };
 
