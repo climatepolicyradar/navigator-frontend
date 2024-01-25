@@ -1,4 +1,4 @@
-import LandingSearchForm from "@components/forms/LandingSearchForm";
+import LandingSearchForm from "./LandingSearchForm";
 import Instructions from "./Instructions";
 import { LogoLarge } from "./LogoLarge";
 
