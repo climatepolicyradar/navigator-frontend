@@ -21,11 +21,17 @@ jobs:
 
   build-start-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        theme: [cpr, cclw]
     steps:
       - uses: actions/checkout@v2
 
       - name: Use .env.example
         run:  cp .env.example .env
+
+      - name: Set theme
+        run:  export THEME=${{ matrix.theme }}
 
       - name: Get node Container
         run:  docker pull node:16-alpine3.13
