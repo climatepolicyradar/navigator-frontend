@@ -24,9 +24,7 @@ with_production:
 	make API_URL=https://api.climatepolicyradar.org/api/v1
 
 build:
-	echo "Building with theme: $(THEME)"
 	docker build -t ${TAG} .
-	docker tag local-frontend navigator-$(THEME)
 
 run_ci:
 	docker run --rm -d \
