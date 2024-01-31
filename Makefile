@@ -9,7 +9,7 @@ S3_PATH ?= https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
 ADOBE_API_KEY ?= dca9187b65294374a6367824df902fdf
 
 build:
-	docker build --build-arg THEME=${THEME} -t ${TAG} .
+	docker build -t ${TAG} .
 
 run: build
 	docker run --rm -it \

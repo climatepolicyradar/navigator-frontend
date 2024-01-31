@@ -1,8 +1,5 @@
 FROM node:20-alpine3.17
 
-ARG THEME
-ENV THEME=$THEME
-
 # you'll likely want the latest npm, regardless of node version, for speed and fixes
 # but pin this version for the best stability
 RUN npm i npm@latest -g

@@ -21,9 +21,6 @@ jobs:
 
   build-start-test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        theme: [cpr, cclw]
     steps:
       - uses: actions/checkout@v2
 
@@ -35,7 +32,7 @@ jobs:
 
       - name: Build
         run: |
-          export THEME=${{ matrix.theme }} && make build
+          make build
 
       - name: Run frontend TODO - use own backend?
         run: make run_ci
