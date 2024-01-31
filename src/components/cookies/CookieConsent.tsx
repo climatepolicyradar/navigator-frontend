@@ -49,7 +49,7 @@ export const CookieConsent = () => {
         className={`${hide ? "hidden" : ""} fixed w-[90%] max-w-[600px] bottom-6 left-1/2 translate-x-[-50%] z-[9999] rounded-xl bg-blue-100`}
       >
         <div className="py-4 px-6">
-          <h3 className="">Cookies and your privacy</h3>
+          <div className="text-xl mb-2">Cookies and your privacy</div>
           <p className="text-content text-sm">
             We take your trust and privacy seriously. Climate Policy Radar uses cookies to make our site work optimally, analyse traffic to our
             website and improve your experience. Read our{" "}

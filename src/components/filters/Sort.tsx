@@ -21,8 +21,7 @@ const Sort = ({ updateSort, defaultValue, isBrowsing = false }: TProps) => {
 
   return (
     <div className="flex items-center" data-cy="sort">
-      <div className="flex-shrink-0">Sort by:</div>
-      <select className="border border-gray-300 small ml-2 z-0" onChange={updateSort} defaultValue={defaultV} key={defaultV}>
+      <select className="border border-gray-300 small ml-2 z-0" onChange={updateSort} defaultValue={defaultV} key={defaultV} aria-label="Sort">
         {options.map((item) => (
           <option key={item.value} value={item.value}>
             {item.label}

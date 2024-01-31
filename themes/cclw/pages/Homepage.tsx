@@ -56,8 +56,8 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
           <h2 className="text-center mb-6">Our partners</h2>
           <Partners />
         </div>
+        <Footer />
       </main>
-      <Footer />
     </Layout>
   );
 };

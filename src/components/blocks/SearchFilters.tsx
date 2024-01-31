@@ -10,6 +10,7 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 import BySemanticSearch from "@components/filters/BySemanticSearch";
 import Tooltip from "@components/tooltip";
 import { sortGeos } from "@utils/sorting";
+import { ExternalLink } from "@components/ExternalLink";
 
 const { default: MethodologyLink } = await import(`/themes/${process.env.THEME}/components/MethodologyLink`);
 
@@ -126,6 +127,9 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
           )}
         </div>
         <div className="my-8 pt-8 border-t" data-cy="methodology-notice">
+          <p className="text-center mb-6">
+            <ExternalLink url="https://form.jotform.com/233132076355350">Get notified when we add new filters</ExternalLink>
+          </p>
           <p className="text-center">
             For more info see
             <br />
