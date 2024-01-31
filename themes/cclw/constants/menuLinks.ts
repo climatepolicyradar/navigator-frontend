@@ -41,25 +41,6 @@ const menuLinks = [
     external: false,
     cy: "contact",
   },
-  // FIXME: delete this test link
-  {
-    text: "Redirect test",
-    href: "/legislation_and_policies",
-    external: false,
-    cy: "redirect test",
-  },
-  {
-    text: "Patrick test",
-    href: "/patrick-test",
-    external: false,
-    cy: "patrick-test",
-  },
-  {
-    text: "What",
-    href: "/document/national-policy-framework-for-msmes_6870PAT",
-    external: false,
-    cy: "what",
-  },
 ];
 
 export default menuLinks;
