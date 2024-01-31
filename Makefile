@@ -1,7 +1,8 @@
 .PHONEY: build run run_ci with_production
 
+# These vars are only used for CI testing
 TAG = local-frontend
-THEME ?= $(THEME)
+THEME ?= cclw
 API_URL ?= https://app.dev.climatepolicyradar.org/api/v1
 S3_PATH ?= https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
 ADOBE_API_KEY ?= dca9187b65294374a6367824df902fdf
