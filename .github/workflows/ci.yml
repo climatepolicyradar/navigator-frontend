@@ -8,6 +8,7 @@ on:
     branches:
       - main
 
+
 jobs:
   test-bash:
     runs-on: ubuntu-latest
@@ -21,6 +22,9 @@ jobs:
 
   build-start-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        theme: [cpr, cclw]
     steps:
       - uses: actions/checkout@v2
 
@@ -31,9 +35,10 @@ jobs:
         run:  docker pull node:16-alpine3.13
 
       - name: Build
-        run: |
-          make build
-          docker tag local-frontend navigator-frontend
+        run: export THEME=${{ matrix.theme }} make build
+
+      - name: Tag
+        run: docker tag local-frontend-${{ matrix.theme }} navigator-frontend-${{ matrix.theme }}
 
       - name: Run frontend TODO - use own backend?
         run: make run_ci
