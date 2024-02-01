@@ -28,9 +28,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Use .env.example
-        run:  cp .env.example .env
-
       - name: Get node Container
         run:  docker pull node:16-alpine3.13
 
