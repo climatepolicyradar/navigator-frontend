@@ -35,10 +35,9 @@ jobs:
         run:  docker pull node:16-alpine3.13
 
       - name: Build
-        run: export THEME=${{ matrix.theme }} make build
-
-      - name: Tag
-        run: docker tag local-frontend-${{ matrix.theme }} navigator-frontend-${{ matrix.theme }}
+        run: |
+          export THEME=${{ matrix.theme }}
+          make build
 
       - name: Run frontend TODO - use own backend?
         run: make run_ci
@@ -74,6 +73,6 @@ jobs:
 
       - name: Push Images to ECR
         run: |
-          .github/retag-and-push.sh navigator-frontend latest
+          .github/retag-and-push.sh navigator-frontend-${{ matrix.theme }} latest
         env:
           DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
