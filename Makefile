@@ -6,6 +6,9 @@ API_URL ?= https://app.dev.climatepolicyradar.org/api/v1
 S3_PATH ?= https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
 ADOBE_API_KEY ?= dca9187b65294374a6367824df902fdf
 
+build:
+	docker build --build-arg THEME=${THEME} -t ${TAG}-${THEME} .
+
 run: build
 	docker run --rm -it \
 		-p 3000:3000 \
@@ -21,9 +24,6 @@ run: build
 
 with_production:
 	make API_URL=https://api.climatepolicyradar.org/api/v1
-
-build:
-	docker build -t ${TAG} .
 
 run_ci:
 	docker run --rm -d \
