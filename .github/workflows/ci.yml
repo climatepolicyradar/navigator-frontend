@@ -40,7 +40,9 @@ jobs:
           make build
 
       - name: Run frontend TODO - use own backend?
-        run: make run_ci
+        run: |
+          export THEME=${{ matrix.theme }}
+          make run_ci
 
       - name: Wait for max 10 seconds until frontend responds
         run: timeout 10 sh -c 'until curl http://$0:$1 ; do sleep 1; done' localhost 3000

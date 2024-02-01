@@ -20,7 +20,7 @@ run: build
 		-e ROBOTS="false" \
 		-e HOSTNAME="http://localhost:3000" \
 		-v $(PWD):/opt/node_app/app \
-		$(TAG) npm run dev
+		${TAG}-${THEME} npm run dev
 
 with_production:
 	make API_URL=https://api.climatepolicyradar.org/api/v1
@@ -35,4 +35,4 @@ run_ci:
 		-e NODE_ENV="production" \
 		-e ROBOTS="false" \
 		-e HOSTNAME="http://localhost:3000" \
-		$(TAG)
+		${TAG}-${THEME}
