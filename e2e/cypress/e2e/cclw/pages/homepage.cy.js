@@ -23,32 +23,34 @@ const navigationSelectors = [
   "[data-cy='navigation-contact']",
 ];
 
-describe("Homepage", () => {
-  before(() => {
-    cy.visit("/");
-    clickCookiePolicy();
-  });
+if (Cypress.env("THEME") === "cclw") {
+  describe("Homepage", () => {
+    before(() => {
+      cy.visit("/");
+      clickCookiePolicy();
+    });
 
-  it("should be on the homepage", () => {
-    cy.location("pathname").should("eq", "/");
-  });
+    it("should be on the homepage", () => {
+      cy.location("pathname").should("eq", "/");
+    });
 
-  it("should display correct page elements", () => {
-    pageSelectors.forEach((selector) => {
-      cy.get(selector).should("be.visible");
+    it("should display correct page elements", () => {
+      pageSelectors.forEach((selector) => {
+        cy.get(selector).should("be.visible");
+      });
+    });
+
+    it("should display correct header elements", () => {
+      headerSelectors.forEach((selector) => {
+        cy.get(selector).should("be.visible");
+      });
+    });
+
+    it("should display correct menu and navigation elements", () => {
+      cy.get("[data-cy='menu-icon']").click();
+      navigationSelectors.forEach((selector) => {
+        cy.get(selector).should("be.visible");
+      });
     });
   });
-
-  it("should display correct header elements", () => {
-    headerSelectors.forEach((selector) => {
-      cy.get(selector).should("be.visible");
-    });
-  });
-
-  it("should display correct menu and navigation elements", () => {
-    cy.get("[data-cy='menu-icon']").click();
-    navigationSelectors.forEach((selector) => {
-      cy.get(selector).should("be.visible");
-    });
-  });
-});
+}

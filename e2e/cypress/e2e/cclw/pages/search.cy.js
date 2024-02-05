@@ -28,59 +28,61 @@ const pageSelectors = [
 
 const breadcrumbSelectors = ["[data-cy='breadcrumbs']", "[data-cy='breadcrumb home']", "[data-cy='breadcrumb current']"];
 
-describe("Search Page", () => {
-  before(() => {
-    cy.visit("/search");
-    clickCookiePolicy();
-  });
+if (Cypress.env("THEME") === "cclw") {
+  describe("Search Page", () => {
+    before(() => {
+      cy.visit("/search");
+      clickCookiePolicy();
+    });
 
-  it("should be on the search page", () => {
-    cy.location("pathname").should("eq", "/search");
-  });
+    it("should be on the search page", () => {
+      cy.location("pathname").should("eq", "/search");
+    });
 
-  it("should not have any query string values", () => {
-    cy.url().should("not.include", "?");
-  });
+    it("should not have any query string values", () => {
+      cy.url().should("not.include", "?");
+    });
 
-  it("should display the filters", () => {
-    filterSelectors.forEach((selector) => {
-      cy.get(selector).should("be.visible");
+    it("should display the filters", () => {
+      filterSelectors.forEach((selector) => {
+        cy.get(selector).should("be.visible");
+      });
+    });
+
+    it("should not display the selected countries", () => {
+      cy.get(selectedCountries).should("not.be.visible");
+    });
+
+    it("should display the container for list of search results", () => {
+      cy.get(searchResultsSelector, { timeout: 10000 }).should("be.visible");
+    });
+
+    it("should display the correct page elements", () => {
+      pageSelectors.forEach((selector) => {
+        cy.get(selector, { timeout: 10000 }).should("be.visible");
+      });
+    });
+
+    it("should display the breadcrumbs", () => {
+      breadcrumbSelectors.forEach((selector) => {
+        cy.get(selector).should("be.visible");
+      });
+    });
+
+    it("search input should be empty", () => {
+      cy.get(inputSelector).should("have.value", "");
+    });
+
+    it("should display the correct number of category tabs", () => {
+      cy.get(tabbedNavSelector).children(tabbedNavItem).should("have.length", 5);
+    });
+
+    it("should display one tab selected, and be 'All' by default", () => {
+      cy.get(tabbedNavSelector).children(".tabbed-nav__active").should("have.length", 1).contains("All");
+    });
+
+    it("should contain the correct number of sort options", () => {
+      cy.get(sortSelector).children("select").children().should("have.length", 4);
     });
   });
-
-  it("should not display the selected countries", () => {
-    cy.get(selectedCountries).should("not.be.visible");
-  });
-
-  it("should display the container for list of search results", () => {
-    cy.get(searchResultsSelector, { timeout: 10000 }).should("be.visible");
-  });
-
-  it("should display the correct page elements", () => {
-    pageSelectors.forEach((selector) => {
-      cy.get(selector, { timeout: 10000 }).should("be.visible");
-    });
-  });
-
-  it("should display the breadcrumbs", () => {
-    breadcrumbSelectors.forEach((selector) => {
-      cy.get(selector).should("be.visible");
-    });
-  });
-
-  it("search input should be empty", () => {
-    cy.get(inputSelector).should("have.value", "");
-  });
-
-  it("should display the correct number of category tabs", () => {
-    cy.get(tabbedNavSelector).children(tabbedNavItem).should("have.length", 5);
-  });
-
-  it("should display one tab selected, and be 'All' by default", () => {
-    cy.get(tabbedNavSelector).children(".tabbed-nav__active").should("have.length", 1).contains("All");
-  });
-
-  it("should contain the correct number of sort options", () => {
-    cy.get(sortSelector).children("select").children().should("have.length", 4);
-  });
-});
+}

@@ -11,3 +11,5 @@ services:
     network_mode: 'host'
     volumes:
       - .:/opt/e2e
+    # run the tests
+    command: cypress run --env THEME=cclw
