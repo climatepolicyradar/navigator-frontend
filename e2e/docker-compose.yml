@@ -8,7 +8,7 @@ services:
       - CYPRESS_baseUrl=http://localhost:3000
     # share the current folder as volume to avoid copying
     working_dir: /opt/e2e
-    network_mode: 'host'
+    network_mode: host
     volumes:
       - .:/opt/e2e
     # run the tests
