@@ -1,4 +1,6 @@
 FROM cypress/included:10.10.0
+ARG THEME
+ENV THEME=${THEME}
 
 WORKDIR /opt
 # Need to explicitly install the dependencies here, as the package.json is not copied into the image
