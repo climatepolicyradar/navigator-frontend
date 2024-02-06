@@ -13,39 +13,37 @@ const breadcrumbSelectors = [
   "[data-cy='breadcrumb current']",
 ];
 
-if (Cypress.env("THEME") === "cclw") {
-  describe("Document Page", () => {
-    before(() => {
-      cy.visit(URL);
-      clickCookiePolicy();
-    });
+describe("Document Page", () => {
+  before(() => {
+    cy.visit(URL);
+    clickCookiePolicy();
+  });
 
-    it("should load the document page", () => {
-      cy.location("pathname").should("include", "/documents");
-    });
+  it("should load the document page", () => {
+    cy.location("pathname").should("include", "/documents");
+  });
 
-    it("should have the correct page title", () => {
-      cy.title().should("include", "Jet zero strategy");
-    });
+  it("should have the correct page title", () => {
+    cy.title().should("include", "Jet zero strategy");
+  });
 
-    it("should display the page elements", () => {
-      pageSelectors.forEach((selector) => {
-        cy.get(selector).should("be.visible");
-      });
-    });
-
-    it("should display the breadcrumbs", () => {
-      breadcrumbSelectors.forEach((selector) => {
-        cy.get(selector).should("be.visible");
-      });
-    });
-
-    it("should display the matches heading", () => {
-      cy.get("[data-cy='document-matches-description']").should("be.visible").should("contain", "Sorted by search relevance");
-    });
-
-    it("should contain at least 1 passage match", () => {
-      cy.get("#passage-matches").children().should("have.length.greaterThan", 0);
+  it("should display the page elements", () => {
+    pageSelectors.forEach((selector) => {
+      cy.get(selector).should("be.visible");
     });
   });
-}
+
+  it("should display the breadcrumbs", () => {
+    breadcrumbSelectors.forEach((selector) => {
+      cy.get(selector).should("be.visible");
+    });
+  });
+
+  it("should display the matches heading", () => {
+    cy.get("[data-cy='document-matches-description']").should("be.visible").should("contain", "Sorted by search relevance");
+  });
+
+  it("should contain at least 1 passage match", () => {
+    cy.get("#passage-matches").children().should("have.length.greaterThan", 0);
+  });
+});

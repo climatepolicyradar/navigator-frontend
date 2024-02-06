@@ -43,15 +43,12 @@ jobs:
 
       - name: Wait for max 10 seconds until frontend responds
         run: timeout 10 sh -c 'until curl http://$0:$1 ; do sleep 1; done' localhost 3000
-      
-      - name: Configure frontend test env
-        run:  cp e2e/.env.example e2e/.env
 
       - name: Get cypress Container      
         run:  docker pull cypress/included:10.1.0
 
       - name: Build e2e tests
-        run:  cd e2e && docker-compose build
+        run:  cd e2e && docker-compose build --build-arg THEME=${{ matrix.theme }}
 
       - name: Run e2e tests
         run:  cd e2e && docker-compose up --abort-on-container-exit --exit-code-from cypress

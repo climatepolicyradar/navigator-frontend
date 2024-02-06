@@ -20,59 +20,57 @@ const breadcrumbSelectors = [
   "[data-cy='breadcrumb current']",
 ];
 
-if (Cypress.env("THEME") === "cclw") {
-  describe("Family Page", () => {
-    before(() => {
-      cy.visit(URL);
-      clickCookiePolicy();
-    });
+describe("Family Page", () => {
+  before(() => {
+    cy.visit(URL);
+    clickCookiePolicy();
+  });
 
-    it("should load the family page", () => {
-      cy.location("pathname").should("include", "/document");
-    });
+  it("should load the family page", () => {
+    cy.location("pathname").should("include", "/document");
+  });
 
-    it("should not have any query string values", () => {
-      cy.url().should("not.include", "?");
-    });
+  it("should not have any query string values", () => {
+    cy.url().should("not.include", "?");
+  });
 
-    it("should have the correct page title", () => {
-      cy.title().should("include", "North Sea Transition Deal");
-    });
+  it("should have the correct page title", () => {
+    cy.title().should("include", "North Sea Transition Deal");
+  });
 
-    it("should display the page elements", () => {
-      pageSelectors.forEach((selector) => {
-        cy.get(selector).should("be.visible");
-      });
-    });
-
-    it("should display the breadcrumbs", () => {
-      breadcrumbSelectors.forEach((selector) => {
-        cy.get(selector).should("be.visible");
-      });
-    });
-
-    it("should display the page headings", () => {
-      pageHeadings.forEach((heading) => {
-        cy.contains("h2", heading).should("be.visible");
-      });
-    });
-
-    it("should display the metadata", () => {
-      metaData.forEach((meta) => {
-        cy.get(meta).should("be.visible");
-      });
-    });
-
-    it("should contain at least 1 main document", () => {
-      cy.get(mainDocsSelector).children().should("have.length.greaterThan", 0);
-    });
-
-    it("should contain at least 1 related document", () => {
-      cy.get(relatedDocsSelector).children().should("have.length.greaterThan", 0);
-    });
-
-    it("should contain at least 1 target", () => {
-      cy.get(targetsSelector).children().should("have.length.greaterThan", 0);
+  it("should display the page elements", () => {
+    pageSelectors.forEach((selector) => {
+      cy.get(selector).should("be.visible");
     });
   });
-}
+
+  it("should display the breadcrumbs", () => {
+    breadcrumbSelectors.forEach((selector) => {
+      cy.get(selector).should("be.visible");
+    });
+  });
+
+  it("should display the page headings", () => {
+    pageHeadings.forEach((heading) => {
+      cy.contains("h2", heading).should("be.visible");
+    });
+  });
+
+  it("should display the metadata", () => {
+    metaData.forEach((meta) => {
+      cy.get(meta).should("be.visible");
+    });
+  });
+
+  it("should contain at least 1 main document", () => {
+    cy.get(mainDocsSelector).children().should("have.length.greaterThan", 0);
+  });
+
+  it("should contain at least 1 related document", () => {
+    cy.get(relatedDocsSelector).children().should("have.length.greaterThan", 0);
+  });
+
+  it("should contain at least 1 target", () => {
+    cy.get(targetsSelector).children().should("have.length.greaterThan", 0);
+  });
+});

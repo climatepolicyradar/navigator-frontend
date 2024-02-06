@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 services:
   cypress:
     # the Docker image to use from https://github.com/cypress-io/cypress-docker-images
@@ -12,4 +12,4 @@ services:
     volumes:
       - .:/opt/e2e
     # run the tests
-    command: cypress run --env THEME=cclw
+    command: cypress run
