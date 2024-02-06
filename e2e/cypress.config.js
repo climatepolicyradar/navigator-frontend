@@ -2,7 +2,6 @@ const { defineConfig } = require("cypress");
 
 // load the environment variables from the local .env file
 require("dotenv").config();
-// console.log(process.env);
 
 module.exports = defineConfig({
   // Viewport for "MacBook 13"
