@@ -15,7 +15,7 @@ WORKDIR /tests
 # Install the dependencies. We only copy in the package.json file and mount the
 # remaining test content via a volume to reduce the size of the image.
 COPY . /tests
-RUN npm install cypress-file-upload cypress-pseudo-localization dotenv neat-csv@v5
+RUN npm install
 
 # Switch to the built-in  "node" user that comes from the base Node layer of the
 # Cypress image.
