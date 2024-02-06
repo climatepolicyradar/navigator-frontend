@@ -49,7 +49,9 @@ jobs:
           docker build --build-arg THEME=${{ matrix.theme }} -t cypress/unprivileged .
 
       - name: Run e2e tests
-        run: docker run -v $PWD:/tests -w /tests -u node cypress/unprivileged
+        run: |
+          cd e2e
+          docker run -v $PWD:/tests -w /tests -u node cypress/unprivileged
 
       - name: Run Integration Tests
         run: echo TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO
