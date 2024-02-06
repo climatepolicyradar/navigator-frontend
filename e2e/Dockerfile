@@ -10,9 +10,6 @@
 ################################################################################
 FROM cypress/included:10.10.0
 
-ARG THEME
-ENV THEME=${THEME}
-
 WORKDIR /tests
 
 # Install the dependencies. We only copy in the package.json file and mount the
@@ -22,7 +19,11 @@ RUN npm install
 
 # Switch to the built-in  "node" user that comes from the base Node layer of the
 # Cypress image.
+RUN mv /root/.cache /home/node/.cache
 USER node
+
+ARG THEME
+ENV THEME=${THEME}
 
 HEALTHCHECK --interval=3s --timeout=3s --start-period=2s --retries=3    \
 CMD cypress verify || exit 1
