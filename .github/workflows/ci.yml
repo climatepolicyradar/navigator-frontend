@@ -51,7 +51,7 @@ jobs:
       - name: Run e2e tests
         run: |
           cd e2e
-          docker run -u node cypress/unprivileged
+          docker run --net=host -u node cypress/unprivileged
 
       - name: Run Integration Tests
         run: echo TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO
