@@ -28,9 +28,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Get node Container
-        run: docker pull node:16-alpine3.13
-
       - name: Build
         run: |
           export THEME=${{ matrix.theme }}
