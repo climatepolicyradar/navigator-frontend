@@ -118,9 +118,10 @@ const TermsOfUse = () => {
 
             <h2>Commercial Licensing</h2>
             <p>
-              Climate Policy Radar reserves the right to provide specific licences for commercial use. If you wish to use, copy, redistribute, publish
-              or exploit a substantial amount of the information from the CPR Database for commercial purposes please contact us by emailing
-              support@climatepolicyradar.org to discuss this.
+              If you wish to use, copy, redistribute, publish, or exploit a substantial amount of the information from the CPR Database for commercial
+              purposes, please contact us by emailing{" "}
+              <ExternalLink url="mailto:partners@climatepolicyradar.org">partners@climatepolicyradar.org</ExternalLink> to discuss the best way to
+              address your specific needs.
             </p>
             <h2>Disclaimer</h2>
             <ul>
