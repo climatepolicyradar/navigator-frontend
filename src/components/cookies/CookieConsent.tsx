@@ -39,9 +39,6 @@ export const CookieConsent = () => {
     setHide(true);
   };
 
-  // gtm controls for CCLW theme only
-  // const cclwAnalyticsAllowed = theme === "cclw" && enableAnalytics;
-
   return (
     <>
       <div
@@ -109,24 +106,6 @@ export const CookieConsent = () => {
         </>
       )}
       <ThemeAnalytics enableAnalytics={enableAnalytics} />
-      {/* {cclwAnalyticsAllowed && (
-        <>
-          <Script async src="https://www.googletagmanager.com/gtag/js?id=UA-153841121-2" />
-          <Script id="cclw-google-analytics" strategy="afterInteractive">
-            {`
-              (function(w,l,i) {
-                w[l] = w[l] || [];
-                function gtag(){w[l].push(arguments);}
-                gtag('js', new Date());
-                gtag('config', i);
-              })(window, "dataLayer", "UA-153841121-2");
-            `}
-          </Script>
-        </>
-      )}
-      {theme === "cclw" && (
-        <Script id="cclw-plausible" defer data-domain="climate-laws.org" strategy="afterInteractive" src="https://plausible.io/js/script.js" />
-      )} */}
     </>
   );
 };
