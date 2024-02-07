@@ -3,25 +3,23 @@ FROM node:20-alpine3.17
 ARG THEME
 ENV THEME=$THEME
 
-# you'll likely want the latest npm, regardless of node version, for speed and fixes
-# but pin this version for the best stability
+# Make sure the latest npm is installed for speed and fixes.
 RUN npm i npm@latest -g
 
-# install dependencies first, in a different location for easier app bind mounting for local development
-# due to default /opt permissions we have to create the dir with root and change perms
-RUN mkdir -p /opt/node_app/app && chown node:node -R /opt/node_app
-WORKDIR /opt/node_app/app
-# the official node image provides an unprivileged user as a security best practice
-# but we have to manually enable it. We put it here so npm installs dependencies as the same
-# user who runs the app.
-# https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#non-root-user
-#USER node
-COPY --chown=node:node package.json package-lock.json ./
+# The official Node image provides an unprivileged user as a security best
+# practice, but it needs to be manually enabled. We put it here so npm installs
+# dependencies as the same user who runs the app.
+USER node
 
-RUN npm ci && npm cache clean --force && mv node_modules ../ && mkdir node_modules && chown node:node node_modules
-ENV PATH /opt/node_app/node_modules/.bin:$PATH
+# Create workdir and copy source code into it, giving the node user read and
+# execute permissions, but not alter permissions.
+WORKDIR /home/node/app
+COPY --chmod=0755  . .
 
-COPY --chown=node:node . .
+# Install dependencies.
+RUN npm ci && npm cache clean --force
+
+ENV PATH /home/node/app/node_modules/.bin:$PATH
 
 RUN npm run build
 
