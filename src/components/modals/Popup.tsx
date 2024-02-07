@@ -1,6 +1,6 @@
 import Close from '../buttons/Close';
 
-const Popup = ({ active, onClick, children }) => {
+const Popup = ({ active, onCloseClick, children }) => {
   return (
     <div
       className={`absolute pointer-events-none  top-0 left-0 p-2 md:p-4 transition duration-500 z-50 transform w-full h-full md:flex justify-center items-start xl:items-center ${
@@ -13,7 +13,7 @@ const Popup = ({ active, onClick, children }) => {
         }`}
       >
         <div className="absolute top-0 right-0 mt-8 mr-8">
-          <Close onClick={onClick} size="30" />
+          <Close onClick={onCloseClick} size="30" />
         </div>
         {children}
       </div>
