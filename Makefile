@@ -1,6 +1,6 @@
 .PHONEY: build run run_ci with_production
 
-TAG = local-frontend
+TAG = navigator-frontend
 THEME ?= cclw
 API_URL ?= https://app.dev.climatepolicyradar.org/api/v1
 S3_PATH ?= https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
