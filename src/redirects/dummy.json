@@ -1,7 +1,0 @@
-[
-   {
-      "source": "/test",
-      "destination": "/test-redirect",
-      "permanent": true
-   }
-]
