@@ -1,5 +1,7 @@
 import { ExternalLink } from "@components/ExternalLink";
+import Button from "@components/buttons/Button";
 import Popup from "./Popup";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 type TProps = {
   active: boolean;
@@ -11,18 +13,16 @@ export const DownloadCsvPopup = ({ active, onCancelClick, onConfirmClick }: TPro
   return (
     <Popup active={active} onCloseClick={onCancelClick}>
       <div className="flex flex-col items-center">
-        <h2 className="text-2xl font-bold mb-4">Download CSV</h2>
-        <p className="text-lg mb-4">
-          Please read our Terms of Use, including any specific terms relevant to commercial use. Please contact{" "}
-          <ExternalLink url="mailto:partners@climatepolicyradar.org">partners@climatepolicyradar.org</ExternalLink> with any questions.
+        <h3 className="mb-4 block">Download CSV</h3>
+        <p className="mb-4">
+          Please read our <LinkWithQuery href="/terms-of-use">terms of use</LinkWithQuery>, including any specific terms relevant to commercial use.
+          Please contact <ExternalLink url="mailto:partners@climatepolicyradar.org">partners@climatepolicyradar.org</ExternalLink> with any questions.
         </p>
-        <div className="flex justify-between w-1/2">
-          <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg" onClick={onConfirmClick}>
-            Download
-          </button>
-          <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg" onClick={onCancelClick}>
+        <div className="flex">
+          <Button onClick={onConfirmClick}>Download</Button>
+          <Button color="ghost" onClick={onCancelClick}>
             Cancel
-          </button>
+          </Button>
         </div>
       </div>
     </Popup>

@@ -34,6 +34,7 @@ const Search = () => {
   const isBrowsing = !qQueryString || qQueryString?.toString().trim() === "";
   const { t } = useTranslation(["searchStart", "searchResults"]);
   const [showFilters, setShowFilters] = useState(false);
+  const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
 
@@ -207,9 +208,9 @@ const Search = () => {
     return offSet / PER_PAGE + 1;
   };
 
-  const handleDownloadCsvClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
+  const handleDownloadCsvClick = () => {
     if (downloadCSVStatus === "loading") return;
+    setShowCSVDownloadPopup(false);
     downloadCSV(router.query);
   };
 
@@ -230,18 +231,19 @@ const Search = () => {
     }
   }, [hits]);
 
+  // Concerned only with preventing scrolling when either the drawer or the CSV download popup is open
   useEffect(() => {
-    if (drawerFamily) {
+    if (typeof drawerFamily === "number" || showCSVDownloadPopup) {
       document.body.classList.add("overflow-hidden");
     } else {
       document.body.classList.remove("overflow-hidden");
     }
 
-    // Allow flow on unmount
+    // Allow page to scroll on unmount
     return () => {
       document.body.classList.remove("overflow-hidden");
     };
-  }, [drawerFamily]);
+  }, [drawerFamily, showCSVDownloadPopup]);
 
   return (
     <Layout
@@ -303,8 +305,16 @@ const Search = () => {
                   </div>
                   <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
                     <span>Download data (.csv): </span>
-                    <a href="#" className="flex gap-2 items-center justify-end" data-cy="download-search-csv" onClick={handleDownloadCsvClick}>
-                      {downloadCSVStatus === "loading" && <Loading />} this search
+                    <a
+                      href="#"
+                      className="flex gap-2 items-center justify-end"
+                      data-cy="download-search-csv"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowCSVDownloadPopup(true);
+                      }}
+                    >
+                      {downloadCSVStatus === "loading" ? <Loading /> : "this search"}
                     </a>
                     <span>|</span>
                     <ExternalLink url="https://form.jotform.com/233131638610347" cy="download-entire-search-csv">
@@ -362,6 +372,11 @@ const Search = () => {
       <Drawer show={drawerFamily !== false} setShow={setDrawerFamily}>
         <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
       </Drawer>
+      <DownloadCsvPopup
+        active={showCSVDownloadPopup}
+        onCancelClick={() => setShowCSVDownloadPopup(false)}
+        onConfirmClick={() => handleDownloadCsvClick()}
+      />
     </Layout>
   );
 };
