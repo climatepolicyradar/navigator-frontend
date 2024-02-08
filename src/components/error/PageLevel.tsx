@@ -1,5 +1,3 @@
-// import { useContext } from "react";
-// import { ThemeContext } from "@context/ThemeContext";
 import Layout from "@components/layouts/Main";
 import { ExternalLink } from "@components/ExternalLink";
 import Button from "@components/buttons/Button";
@@ -9,7 +7,6 @@ type TProps = {
 };
 
 const PageLevel = ({ resetError }: TProps) => {
-  // const theme = useContext(ThemeContext);
 
   return (
     <Layout title={"Application Error"}>

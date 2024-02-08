@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 export async function getEnvFromServer() {

@@ -1,9 +1,6 @@
 import { TMatchedFamily, TSearchKeywordFilters } from "@types";
 import { arrayOfStringdMatch } from "./arrayEquality";
-import { CACHE_NAME, CACHE_LIMIT } from "@constants/cache";
-
-const day = 1000 * 60 * 60 * 24;
-const hour = 1000 * 60 * 60;
+import { CACHE_NAME, CACHE_LIMIT, CACHE_EXPIRY } from "@constants/cache";
 
 export type TCacheIdentifier = {
   query_string: string;
@@ -38,7 +35,7 @@ const saveCache = (newCache: TCacheSearch) => {
 const clearOldCache = () => {
   const cache = getCache();
   const newCache = {
-    cache: cache.cache.filter((search) => search.timestamp > Date.now() - hour),
+    cache: cache.cache.filter((search) => search.timestamp > Date.now() - CACHE_EXPIRY),
   };
   saveCache(newCache);
 };
