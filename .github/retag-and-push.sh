@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
 
 script_folder=$(dirname "${BASH_SOURCE[0]}")
@@ -7,7 +8,10 @@ if [ "$#" -ne 2 ]; then
     echo "Pushes a container image to ECR with tags"
     echo
     echo "Usage: $0 project input_tag"
-	@@ -15,7 +15,7 @@ if [ "$#" -ne 2 ]; then
+    echo "Example: $0 container-name 6cd9d7ebad4f16ef7273a7a831d79d5d5caf4164"
+    echo "Relies on the following environment variables:"
+    echo "- GITHUB_HEAD_REF, GITHUB_REF, GITHUB_SHA (GH Action default)"
+    echo "- DOCKER_REGISTRY"
     exit 1
 fi
 
@@ -15,7 +19,22 @@ fi
 
 project="$1"
 image_tag="$2"
-	@@ -38,16 +38,16 @@ echo "-------------"
+
+# login
+# This should now be performed as a GA
+# See: https://docs.docker.com/build/ci/github-actions/#step-three-define-the-workflow-steps
+
+name=$(clean_string "${DOCKER_REGISTRY}/${project}")
+input_image="${project}:${image_tag}"
+
+echo "-------------"
+echo "Input       : ${project}:${image_tag}"
+echo "Output      : ${name}"
+echo "GitRef      : ${GITHUB_REF}"
+echo "GitHeadRef  : ${GITHUB_HEAD_REF}"
+echo "Branch      : ${GITHUB_REF/refs\/heads\//}"
+echo "Repo Tag    : ${name}"
+echo "-------------"
 
 docker_tag() {
     echo "Re-tagging $1 -> $2"
@@ -32,7 +51,30 @@ process_tagged_version() {
         docker push "${tag}"
     done
 }
-	@@ -78,16 +78,16 @@ if [[ "${GITHUB_REF}" == "refs/heads"* ]]; then
+
+timestamp=$(date --utc -Iseconds | cut -c1-19 | tr -c '[0-9]T\n' '-')
+short_sha=${GITHUB_SHA:0:8}
+
+if [[ "${GITHUB_REF}" == "refs/heads"* ]]; then
+    # push `branch-sha` tagged image
+
+    # NOTE: Looks like the behaviour has changed for GITHHUB_REF
+    # See: https://github.com/semantic-release/env-ci/issues/157
+    # ... branches will no longer be handled here but in the 'else' statement below.
+
+    branch="${GITHUB_REF/refs\/heads\//}"
+    echo "Detected Branch: ${branch}"
+
+
+    # Only update latest if on main
+    if [[ "${branch}" = "main" ]]; then
+        # push `latest` tag
+        docker_tag "${input_image}" "${name}:latest"
+        docker push "${name}:latest"
+        # Also tag for any versioning that might get done
+        docker_tag "${input_image}" "${name}:${branch}-${timestamp}-${short_sha}"
+        docker push "${name}:${branch}-${timestamp}-${short_sha}"
+        # Also tag for any versioning that might get done
         docker_tag "${input_image}" "${name}:${branch}-${short_sha}"
         docker push "${name}:${branch}-${short_sha}"
     fi
