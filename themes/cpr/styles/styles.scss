@@ -1,3 +1,5 @@
+// The tailwind imports are imported as part of the base styles loaded into the _app.tsx file at the root of the application
+
 #landingPage-searchInput {
   @screen md {
     &::-webkit-input-placeholder {
