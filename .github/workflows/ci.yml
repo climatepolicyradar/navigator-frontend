@@ -21,37 +21,36 @@ jobs:
 
   build-start-test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        theme: [cpr, cclw]
     steps:
       - uses: actions/checkout@v2
 
-      - name: Use .env.example
-        run:  cp .env.example .env
-
-      - name: Get node Container
-        run:  docker pull node:16-alpine3.13
-
       - name: Build
         run: |
+          export THEME=${{ matrix.theme }}
           make build
 
       - name: Run frontend TODO - use own backend?
-        run: make run_ci
+        run: |
+          export THEME=${{ matrix.theme }}
+          make run_ci
 
       - name: Wait for max 10 seconds until frontend responds
         run: timeout 10 sh -c 'until curl http://$0:$1 ; do sleep 1; done' localhost 3000
-      
-      - name: Configure frontend test env
-        run:  cp e2e/.env.example e2e/.env
-
-      - name: Get cypress Container      
-        run:  docker pull cypress/included:10.1.0
 
       - name: Build e2e tests
-        run:  cd e2e && docker-compose build
+        run: |
+          cd e2e
+          docker build --build-arg THEME=${{ matrix.theme }} -t cypress/unprivileged .
 
       - name: Run e2e tests
-        run:  cd e2e && docker-compose up --abort-on-container-exit --exit-code-from cypress
-      
+        run: |
+          cd e2e
+          docker run --net=host -u node cypress/unprivileged
+
       - name: Run Integration Tests
         run: echo TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO-TODO
 
@@ -68,6 +67,6 @@ jobs:
 
       - name: Push Images to ECR
         run: |
-          .github/retag-and-push.sh navigator-frontend latest
+          .github/retag-and-push.sh navigator-frontend-${{ matrix.theme }} latest
         env:
           DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}

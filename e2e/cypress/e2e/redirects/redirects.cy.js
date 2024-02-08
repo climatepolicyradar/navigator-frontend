@@ -4,6 +4,9 @@
 const startingIndex = 0;
 const createTestCases = false;
 
+// TODO: write a better test script for redirects that doesn't run through the entire set of redirects
+// For example: we could use a sample of redirects to test against
+
 describe.skip("Redirects", () => {
   const CCLW_redirects = [];
   if (createTestCases) {
