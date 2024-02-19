@@ -81,11 +81,8 @@ export const FAQS: TFAQ[] = [
           <li>View your search term (and related phrases) highlighted in search results</li>
           <li>Browse country profiles to find and compare their climate laws, policies and strategies</li>
           <li>
-            Access the raw data: you just need to{" "}
-            <ExternalLink url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform">
-              fill out this form
-            </ExternalLink>{" "}
-            to request a copy of the entire dataset
+            Access the raw data: you just need to <ExternalLink url="https://form.jotform.com/233131638610347">fill out this form</ExternalLink> to
+            request a copy of the entire dataset
           </li>
         </ul>
       </>
@@ -110,10 +107,7 @@ export const FAQS: TFAQ[] = [
           Yes - and we encourage you to do so! The content of our database is available under the Creative Commons Attribution Licence{" "}
           <ExternalLink url="https://creativecommons.org/licenses/by/4.0/">(CC-BY)</ExternalLink>. Before doing so, you should read our Terms of Use
           for more information and to find out how to cite and credit the resources. If you wish to download the data as a .csv file, please{" "}
-          <ExternalLink url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform">
-            fill out our form
-          </ExternalLink>
-          .
+          <ExternalLink url="https://form.jotform.com/233131638610347">fill out our form</ExternalLink>.
         </p>
       </>
     ),
@@ -261,11 +255,7 @@ export const FAQS: TFAQ[] = [
     content: (
       <>
         <p>
-          You’ll need to{" "}
-          <ExternalLink url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform">
-            fill out this form
-          </ExternalLink>{" "}
-          to request our entire dataset.
+          You’ll need to <ExternalLink url="https://form.jotform.com/233131638610347">fill out this form</ExternalLink> to request our entire dataset.
         </p>
       </>
     ),
