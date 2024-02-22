@@ -120,7 +120,7 @@ export const FAQS: TFAQ[] = [
           New data, and updates to existing data, are collected from official sources such as government websites, parliamentary records and court
           documents. We add these to the database on a rolling basis. Submissions to the UNFCCC portals were first added on the 23rd of May 2023, and
           are checked for updates regularly. If you’re aware of documents that are missing, please let us know using our{" "}
-          <ExternalLink url="https://forms.gle/QQMXoKdnvAEWh9Sr5">data contributors form</ExternalLink>.
+          <ExternalLink url="https://form.jotform.com/233294135296359">data contributors form</ExternalLink>.
         </p>
       </>
     ),
@@ -381,7 +381,7 @@ export const FAQS: TFAQ[] = [
           The database is not exhaustive. We don’t have access to some law and policy documents, while others aren’t currently machine-readable,
           meaning we can’t extract the text from them. We’re working to improve this so that you can search through the full text of more documents in
           the database. If you think we’re missing some data, you can tell us about it using the{" "}
-          <ExternalLink url="https://forms.gle/gyRo9AqC8yiM9eaz7">data contribution form</ExternalLink>.
+          <ExternalLink url="https://form.jotform.com/233294135296359">data contribution form</ExternalLink>.
         </p>
         <p>
           We also limit the number of matches you can see in a document to 10 so that you get the best performance from the tool. This means you might
@@ -421,7 +421,7 @@ export const FAQS: TFAQ[] = [
       <>
         <p>
           We’d love to hear about this! Please tell us using our{" "}
-          <ExternalLink url="https://forms.gle/gyRo9AqC8yiM9eaz7">data contribution form</ExternalLink>.
+          <ExternalLink url="https://form.jotform.com/233294135296359">data contribution form</ExternalLink>.
         </p>
       </>
     ),
@@ -449,7 +449,7 @@ export const FAQS: TFAQ[] = [
         <p>
           Our current database includes documents from every national government. Including subnational and city-level data is part of our planned
           expansion. So if you’re aware of datasets you think we should include as part of this, please let us know using our{" "}
-          <ExternalLink url="https://forms.gle/gyRo9AqC8yiM9eaz7">data contribution form</ExternalLink>.
+          <ExternalLink url="https://form.jotform.com/233294135296359">data contribution form</ExternalLink>.
         </p>
       </>
     ),

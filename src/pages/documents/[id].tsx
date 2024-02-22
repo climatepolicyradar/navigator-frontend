@@ -164,7 +164,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                           You’ll soon be able to view the full-text of the document here, along with any English translation.
                         </p>
                         <p className="text-sm">
-                          <ExternalLink className="underline" url="https://forms.gle/yJTRdwTNBdTesexW8">
+                          <ExternalLink className="underline" url="https://form.jotform.com/233293886694373">
                             Sign up here
                           </ExternalLink>{" "}
                           to be notified when it’s available.
