@@ -165,8 +165,8 @@ const TermsOfUse = () => {
               </li>
               <li>
                 If you identify incomplete or inaccurate information please let us know by{" "}
-                <ExternalLink url="https://forms.gle/J1va24deERTSs8LXA">filling this form</ExternalLink> and Climate Policy Radar will endeavour to
-                complete or correct it, as soon as practicable.
+                <ExternalLink url="https://form.jotform.com/233294135296359">filling this form</ExternalLink> and Climate Policy Radar will endeavour
+                to complete or correct it, as soon as practicable.
               </li>
             </ul>
             <h2>Our trade marks</h2>
