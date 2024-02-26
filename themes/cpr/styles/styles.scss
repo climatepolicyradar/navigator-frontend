@@ -1,0 +1,31 @@
+// The tailwind imports are imported as part of the base styles loaded into the _app.tsx file at the root of the application
+
+#landingPage-searchInput {
+  @screen md {
+    &::-webkit-input-placeholder {
+      /* WebKit browsers */
+      color: transparent;
+    }
+    &:-moz-placeholder {
+      /* Mozilla Firefox 4 to 18 */
+      color: transparent;
+    }
+    &::-moz-placeholder {
+      /* Mozilla Firefox 19+ */
+      color: transparent;
+    }
+    &:-ms-input-placeholder {
+      /* Internet Explorer 10+ */
+      color: transparent;
+    }
+    &::placeholder {
+      color: transparent;
+    }
+  }
+}
+
+.family-list-item {
+  a {
+    @apply underline;
+  }
+}

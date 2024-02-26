@@ -7,7 +7,6 @@ interface CloseProps {
 }
 
 const Close = ({ onClick, size = "20" }: CloseProps) => {
-  
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     onClick();
   };
@@ -20,6 +19,7 @@ const Close = ({ onClick, size = "20" }: CloseProps) => {
         height: `${size}px`,
         width: `${size}px`,
       }}
+      aria-label="Close"
     >
       <CloseIcon height={size} width={size} />
     </button>

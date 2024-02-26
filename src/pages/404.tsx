@@ -1,7 +1,7 @@
 import { ExternalLink } from "@components/ExternalLink";
 import Layout from "../components/layouts/Main";
 
-function Error() {
+export default function NotFound() {
   return (
     <Layout title={"Page not found"}>
       <section>
@@ -15,5 +15,3 @@ function Error() {
     </Layout>
   );
 }
-
-export default Error;

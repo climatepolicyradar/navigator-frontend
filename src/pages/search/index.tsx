@@ -22,6 +22,7 @@ import { Loading } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
 import { NoOfResults } from "@components/NoOfResults";
 import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
+import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
 import { calculatePageCount } from "@utils/paging";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
@@ -33,6 +34,7 @@ const Search = () => {
   const isBrowsing = !qQueryString || qQueryString?.toString().trim() === "";
   const { t } = useTranslation(["searchStart", "searchResults"]);
   const [showFilters, setShowFilters] = useState(false);
+  const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
 
@@ -206,9 +208,9 @@ const Search = () => {
     return offSet / PER_PAGE + 1;
   };
 
-  const handleDownloadCsvClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
+  const handleDownloadCsvClick = () => {
     if (downloadCSVStatus === "loading") return;
+    setShowCSVDownloadPopup(false);
     downloadCSV(router.query);
   };
 
@@ -228,6 +230,20 @@ const Search = () => {
       setPageCount(calculatePageCount(hits));
     }
   }, [hits]);
+
+  // Concerned only with preventing scrolling when either the drawer or the CSV download popup is open
+  useEffect(() => {
+    if (typeof drawerFamily === "number" || showCSVDownloadPopup) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    // Allow page to scroll on unmount
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [drawerFamily, showCSVDownloadPopup]);
 
   return (
     <Layout
@@ -289,14 +305,19 @@ const Search = () => {
                   </div>
                   <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
                     <span>Download data (.csv): </span>
-                    <a href="#" className="flex gap-2 items-center justify-end" data-cy="download-search-csv" onClick={handleDownloadCsvClick}>
-                      {downloadCSVStatus === "loading" && <Loading />} this search
+                    <a
+                      href="#"
+                      className="flex gap-2 items-center justify-end"
+                      data-cy="download-search-csv"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowCSVDownloadPopup(true);
+                      }}
+                    >
+                      {downloadCSVStatus === "loading" ? <Loading /> : "this search"}
                     </a>
                     <span>|</span>
-                    <ExternalLink
-                      url="https://docs.google.com/forms/d/e/1FAIpQLSdFkgTNfzms7PCpfIY3d2xGDP5bYXx8T2-2rAk_BOmHMXvCoA/viewform"
-                      cy="download-entire-search-csv"
-                    >
+                    <ExternalLink url="https://form.jotform.com/233131638610347" cy="download-entire-search-csv">
                       whole database
                     </ExternalLink>
                   </span>
@@ -320,9 +341,11 @@ const Search = () => {
                 ) : (
                   <>
                     <div className="flex justify-end">
-                      <div>
-                        <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
-                      </div>
+                      {router.query[QUERY_PARAMS.category]?.toString() !== "Litigation" && (
+                        <div>
+                          <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
+                        </div>
+                      )}
                     </div>
                     <div data-cy="search-results">
                       <SearchResultList
@@ -349,6 +372,11 @@ const Search = () => {
       <Drawer show={drawerFamily !== false} setShow={setDrawerFamily}>
         <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
       </Drawer>
+      <DownloadCsvPopup
+        active={showCSVDownloadPopup}
+        onCancelClick={() => setShowCSVDownloadPopup(false)}
+        onConfirmClick={() => handleDownloadCsvClick()}
+      />
     </Layout>
   );
 };

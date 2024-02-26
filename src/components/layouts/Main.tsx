@@ -1,22 +1,21 @@
 import React, { FC, ReactNode } from "react";
 import Head from "next/head";
-import CPRMain from "@cpr/layouts/main";
-import CCLWMain from "@cclw/layouts/main";
 import getPageTitle from "@utils/getPageTitle";
 
 import { useContext } from "react";
 import { ThemeContext } from "@context/ThemeContext";
 import getPageDescription from "@utils/getPageDescription";
 
+const { default: Wrapper } = await import(`/themes/${process.env.THEME}/layouts/main`);
+
 type TProps = {
   title?: string;
   description?: string;
   heading?: string;
-  screenHeight?: boolean;
   children?: ReactNode;
 };
 
-const Layout: FC<TProps> = ({ children, title = "", description = null, screenHeight = false }) => {
+const Layout: FC<TProps> = ({ children, title = "", description = null }) => {
   const theme = useContext(ThemeContext);
 
   return (
@@ -32,8 +31,7 @@ const Layout: FC<TProps> = ({ children, title = "", description = null, screenHe
       <a className="sr-only" href="#main">
         Skip to content
       </a>
-      {theme === "cpr" && <CPRMain screenHeight={screenHeight}>{children}</CPRMain>}
-      {theme === "cclw" && <CCLWMain>{children}</CCLWMain>}
+      <Wrapper>{children}</Wrapper>
     </div>
   );
 };

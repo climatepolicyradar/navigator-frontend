@@ -1,9 +1,6 @@
 import { TMatchedFamily, TSearchKeywordFilters } from "@types";
 import { arrayOfStringdMatch } from "./arrayEquality";
-import { CACHE_NAME, CACHE_LIMIT } from "@constants/cache";
-
-const day = 1000 * 60 * 60 * 24;
-const hour = 1000 * 60 * 60;
+import { CACHE_NAME, CACHE_LIMIT, CACHE_EXPIRY } from "@constants/cache";
 
 export type TCacheIdentifier = {
   query_string: string;
@@ -13,6 +10,7 @@ export type TCacheIdentifier = {
   sort_field: string | null;
   sort_order: string;
   offset: number;
+  use_vespa: boolean;
 };
 
 export type TCacheResult = TCacheIdentifier & {
@@ -37,7 +35,7 @@ const saveCache = (newCache: TCacheSearch) => {
 const clearOldCache = () => {
   const cache = getCache();
   const newCache = {
-    cache: cache.cache.filter((search) => search.timestamp > Date.now() - hour),
+    cache: cache.cache.filter((search) => search.timestamp > Date.now() - CACHE_EXPIRY),
   };
   saveCache(newCache);
 };
@@ -45,7 +43,7 @@ const clearOldCache = () => {
 export const getCachedSearch = (cacheId: TCacheIdentifier) => {
   clearOldCache();
   const cache = getCache();
-  const { query_string, exact_match, keyword_filters, year_range, sort_field, sort_order, offset } = cacheId;
+  const { query_string, exact_match, keyword_filters, year_range, sort_field, sort_order, offset, use_vespa } = cacheId;
   const cachedSearch = cache.cache.find(
     (search) =>
       search.query_string === query_string &&
@@ -57,14 +55,15 @@ export const getCachedSearch = (cacheId: TCacheIdentifier) => {
       search.year_range[1] === year_range[1] &&
       search.sort_field === sort_field &&
       search.sort_order === sort_order &&
-      search.offset === offset
+      search.offset === offset &&
+      search.use_vespa === use_vespa
   );
   return cachedSearch;
 };
 
 export const updateCacheSearch = (search: TCacheResult) => {
   // don't cache empty results
-  if(search.families.length === 0) return;
+  if (search.families.length === 0) return;
   if (getCachedSearch(search) !== undefined) return;
   const cache = getCache();
   if (cache.cache.length > CACHE_LIMIT) {

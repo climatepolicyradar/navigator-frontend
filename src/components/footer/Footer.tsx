@@ -15,15 +15,14 @@ const Footer = () => {
       <div className="container">
         <p className="font-medium text-lg mb-6 text-white md:text-center">
           To report a problem email us at support@climatepolicyradar.org <br /> Spotted missing or inaccurate data?{" "}
-          <ExternalLink
-            url="https://docs.google.com/forms/d/e/1FAIpQLScNy6pZTInQKdxNDaZPKyPGgbfRktstzgVDjGBCeTnLVzl3Pg/viewform"
-            className="text-white underline hover:text-white"
-          >
+          <ExternalLink url="https://form.jotform.com/233294135296359" className="text-white underline hover:text-white">
             Let us know
           </ExternalLink>
         </p>
         <FooterLinks landing={true} />
-        <span onClick={handleVespaClick} className="cursor-pointer">v</span>
+        <span onClick={handleVespaClick} className="cursor-pointer">
+          v
+        </span>
       </div>
     </footer>
   );

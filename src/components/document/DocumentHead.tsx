@@ -6,8 +6,9 @@ import { getLanguage } from "@helpers/getLanguage";
 import { isSystemGeo } from "@utils/isSystemGeo";
 import { TDocumentFamily, TDocumentPage } from "@types";
 import Button from "@components/buttons/Button";
-import { LinkWithQuery } from "@components/LinkWithQuery";
 import { ExternalLinkIcon, AlertCircleIcon } from "@components/svg/Icons";
+import { Alert } from "@components/Alert";
+import { ExternalLink } from "@components/ExternalLink";
 
 type TProps = {
   document: TDocumentPage;
@@ -18,20 +19,6 @@ type TProps = {
 const containsNonEnglish = (languages: string[]) => {
   return languages.some((lang) => lang !== "eng");
 };
-
-const Alert = () => (
-  <div className="flex">
-    <div className="w-[6px] h-full bg-blue-400 rounded-l-lg"></div>
-    <div className="bg-white p-2 border border-gray-200 border-l-0 rounded-r-lg flex items-center" role="alert">
-      <div className="mr-1 text-blue-400">
-        <AlertCircleIcon height="16" width="16" />
-      </div>
-      <p className="text-sm">
-        Any English translations of this document have been provided by Google Cloud Translate. They may not be 100% accurate.
-      </p>
-    </div>
-  </div>
-);
 
 export const DocumentHead = ({ document, family, handleViewSourceClick }: TProps) => {
   const configQuery = useConfig();
@@ -94,7 +81,17 @@ export const DocumentHead = ({ document, family, handleViewSourceClick }: TProps
             </div>
             {translated && (
               <div className="flex mt-4">
-                <Alert />
+                <Alert
+                  message={
+                    <>
+                      Any English translations of this document have been provided by Google Cloud Translate. They may not be 100% accurate.{" "}
+                      <ExternalLink url="https://form.jotform.com/233293886694373">
+                        Get notified when full document translations are available.
+                      </ExternalLink>
+                    </>
+                  }
+                  icon={<AlertCircleIcon height="16" width="16" />}
+                />
               </div>
             )}
           </div>

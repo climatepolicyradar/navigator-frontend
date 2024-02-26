@@ -3,6 +3,7 @@ import { clickCookiePolicy } from "../../../utils/cookiePolicy";
 
 const pageSelectors = [
   "[data-cy='featured-content']",
+  "[data-cy='powered-by']",
   "[data-cy='partners']",
   "[data-cy='search-input']",
   "[data-cy='intro-message']",

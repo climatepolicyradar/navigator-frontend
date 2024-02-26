@@ -13,6 +13,10 @@ env:
 jobs:
   tag-main-with-semver:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        theme: [cpr, cclw]
     steps:
       - uses: actions/checkout@v2
       
@@ -29,6 +33,6 @@ jobs:
 
       - name: Docker pull, retag and push
         run: |
-          docker pull ${DOCKER_REGISTRY}/navigator-frontend:main-${GITHUB_SHA::8}
-          docker tag ${DOCKER_REGISTRY}/navigator-frontend:main-${GITHUB_SHA::8} navigator-frontend:main-${GITHUB_SHA::8}
-          .github/retag-and-push.sh navigator-frontend main-${GITHUB_SHA::8}
+          docker pull ${DOCKER_REGISTRY}/navigator-frontend-${{ matrix.theme }}:main-${GITHUB_SHA::8}
+          docker tag ${DOCKER_REGISTRY}/navigator-frontend-${{ matrix.theme }}:main-${GITHUB_SHA::8} navigator-frontend-${{ matrix.theme }}:main-${GITHUB_SHA::8}
+          .github/retag-and-push.sh navigator-frontend-${{ matrix.theme }} main-${GITHUB_SHA::8}

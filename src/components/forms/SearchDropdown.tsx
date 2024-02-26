@@ -21,8 +21,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
     (geography) =>
       !systemGeoCodes.includes(geography.slug) &&
       (geography.display_value.toLowerCase().includes(term.toLocaleLowerCase()) ||
-        term.toLocaleLowerCase().includes(geography.display_value.toLowerCase())) &&
-      term.toLocaleLowerCase().search(new RegExp("\\b" + geography.display_value.toLowerCase() + "\\b", "i")) >= 0
+        term.toLocaleLowerCase().includes(geography.display_value.toLowerCase()))
   );
 
   const termWithoutGeography = (geography: string) => term.toLowerCase().replace(geography.toLowerCase(), "").trim();
@@ -45,14 +44,14 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
   };
 
   const anchorClasses = (last: boolean) =>
-    `flex flex-wrap items-center cursor-pointer py-2 px-4 block text-cpr-dark hover:bg-gray-200 focus:bg-gray-200 ${last ? "rounded-b-lg" : ""}`;
+    `flex flex-wrap items-center cursor-pointer py-2 px-4 block text-cpr-dark hover:no-underline hover:bg-gray-200 focus:bg-gray-200 ${last ? "rounded-b-lg" : ""}`;
 
   const renderSearchSuggestion = (geographies: TGeography[]) => {
     if (!geographies || geographies === null || geographies.length === 0) return;
 
     // When multiple geography matches are found e.g., Sudan and South Sudan, select the geography with the longest
     // display name.
-    let geography;
+    let geography: TGeography;
     if (geographies.length > 1) {
       geography = geographies.reduce(function (prev, current) {
         return prev && prev.display_value.length > current.display_value.length ? prev : current;
@@ -68,7 +67,6 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
 
     return (
       <ul>
-        {intendedGeography.length === 1}
         <li key={intendedGeography.slug}>
           <a href="#" className={anchorClasses(false)} onClick={(e) => handleSuggestionClick(e, intendedGeography)}>
             Did you mean to search for&nbsp;

@@ -43,11 +43,20 @@ const ByTextInput = ({ title, list, selectedList, keyField, keyFieldDisplay, fil
         placeholder={t("Start typing")}
         value={input}
         onChange={handleChange}
+        aria-label="Search for a jurisdiction"
       />
 
       {suggestList.length > 0 && (
         <div className="absolute top-full mt-[-10px] left-0 w-full z-30">
-          <SuggestList list={suggestList} setList={setSuggestList} keyField={keyField} keyFieldDisplay={keyFieldDisplay} type={filterType} setInput={setInput} handleFilterChange={handleFilterChange} />
+          <SuggestList
+            list={suggestList}
+            setList={setSuggestList}
+            keyField={keyField}
+            keyFieldDisplay={keyFieldDisplay}
+            type={filterType}
+            setInput={setInput}
+            handleFilterChange={handleFilterChange}
+          />
         </div>
       )}
     </div>

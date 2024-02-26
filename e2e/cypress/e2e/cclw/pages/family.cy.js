@@ -52,7 +52,7 @@ describe("Family Page", () => {
 
   it("should display the page headings", () => {
     pageHeadings.forEach((heading) => {
-      cy.contains("h3", heading).should("be.visible");
+      cy.contains("h2", heading).should("be.visible");
     });
   });
 

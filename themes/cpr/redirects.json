@@ -1,0 +1,17 @@
+[
+  {
+    "source": "/auth/:id*",
+    "destination": "/",
+    "permanent": true
+  },
+  {
+    "source": "/account",
+    "destination": "/",
+    "permanent": true
+  },
+  {
+    "source": "/users/:id*",
+    "destination": "/",
+    "permanent": true
+  }
+]

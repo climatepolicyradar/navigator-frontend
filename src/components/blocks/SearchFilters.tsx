@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ByTextInput from "../filters/ByTextInput";
 import BySelect from "../filters/BySelect";
@@ -6,13 +6,13 @@ import MultiList from "../filters/MultiList";
 import ByDateRange from "../filters/ByDateRange";
 import { currentYear, minYear } from "@constants/timedate";
 import { TSearchCriteria } from "@types";
-import { ExternalLink } from "@components/ExternalLink";
-import { ThemeContext } from "@context/ThemeContext";
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { LinkWithQuery } from "@components/LinkWithQuery";
 import BySemanticSearch from "@components/filters/BySemanticSearch";
 import Tooltip from "@components/tooltip";
 import { sortGeos } from "@utils/sorting";
+import { ExternalLink } from "@components/ExternalLink";
+
+const { default: MethodologyLink } = await import(`/themes/${process.env.THEME}/components/MethodologyLink`);
 
 type TSearchFiltersProps = {
   handleFilterChange(type: string, value: string): void;
@@ -37,7 +37,6 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
 }) => {
   const [showClear, setShowClear] = useState(false);
   const { t } = useTranslation("searchResults");
-  const theme = useContext(ThemeContext);
 
   const {
     keyword_filters: { countries: countryFilters = [] },
@@ -128,14 +127,13 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
           )}
         </div>
         <div className="my-8 pt-8 border-t" data-cy="methodology-notice">
+          <p className="text-center mb-6">
+            <ExternalLink url="https://form.jotform.com/233132076355350">Get notified when we add new filters</ExternalLink>
+          </p>
           <p className="text-center">
             For more info see
             <br />
-            {theme === "cpr" ? (
-              <ExternalLink url="https://github.com/climatepolicyradar/methodology">our methodology page</ExternalLink>
-            ) : (
-              <LinkWithQuery href="/methodology">our methodology page</LinkWithQuery>
-            )}
+            <MethodologyLink />
           </p>
         </div>
       </div>
