@@ -27,18 +27,18 @@ export default function MapChart() {
 
   return (
     <ComposableMap>
-      {/* <ZoomableGroup> */}
+      <ZoomableGroup>
         <Geographies geography={geoUrl}>
           {({ geographies }) =>
             geographies.map((geo) => <Geography key={geo.rsmKey} geography={geo} style={geoStyle} onClick={() => handleGeoClick(geo)} />)
           }
         </Geographies>
         {Object.keys(GEO_CENTER_POINTS).map((point) => (
-          <Marker key={point} coordinates={GEO_CENTER_POINTS[point]}>
-            <circle r={2} fill="#F53" />
+          <Marker key={point} coordinates={GEO_CENTER_POINTS[point]} onClick={() => handleGeoClick(point)}>
+            <circle r={2} fill="#F53" cursor="pointer" />
           </Marker>
         ))}
-      {/* </ZoomableGroup> */}
+      </ZoomableGroup>
     </ComposableMap>
   );
 }
