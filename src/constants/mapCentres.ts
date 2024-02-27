@@ -1,4 +1,4 @@
-export const geoCentrePoints = {
+export const GEO_CENTER_POINTS = {
   AND: [1.56054378, 42.54229102],
   ARE: [54.3001671, 23.90528188],
   AFG: [66.00473366, 33.83523073],

@@ -96,7 +96,6 @@
         { "type": "Polygon", "arcs": [[168]], "id": "238", "properties": { "name": "Falkland Is." } },
         { "type": "MultiPolygon", "arcs": [[[169]], [[-161, 170, 171, 172]], [[173]], [[174]]], "id": "578", "properties": { "name": "Norway" } },
         { "type": "Polygon", "arcs": [[175]], "id": "304", "properties": { "name": "Greenland" } },
-        { "type": "Polygon", "arcs": [[176]], "id": "260", "properties": { "name": "Fr. S. Antarctic Lands" } },
         { "type": "Polygon", "arcs": [[177, -77]], "id": "626", "properties": { "name": "Timor-Leste" } },
         { "type": "Polygon", "arcs": [[178, 179, 180, 181, 182, 183, 184], [185]], "id": "710", "properties": { "name": "South Africa" } },
         { "type": "Polygon", "arcs": [[-186]], "id": "426", "properties": { "name": "Lesotho" } },
@@ -256,12 +255,6 @@
           "arcs": [[-346, -362, -356, 559, -354, 560, -352, -365, -559, 561]],
           "id": "682",
           "properties": { "name": "Saudi Arabia" }
-        },
-        {
-          "type": "MultiPolygon",
-          "arcs": [[[562]], [[563]], [[564]], [[565]], [[566]], [[567]], [[568]], [[569]]],
-          "id": "010",
-          "properties": { "name": "Antarctica" }
         },
         { "type": "Polygon", "arcs": [[570, 571]], "properties": { "name": "N. Cyprus" } },
         { "type": "Polygon", "arcs": [[-572, 572]], "id": "196", "properties": { "name": "Cyprus" } },
