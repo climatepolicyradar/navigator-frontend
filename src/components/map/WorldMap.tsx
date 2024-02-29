@@ -1,18 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
 import { GEO_CENTER_POINTS } from "@constants/mapCentres";
 import useConfig from "@hooks/useConfig";
+import { TGeography } from "@types";
 
 const geoUrl = "/data/map/world-countries-50m.json";
 
 type TGeo = {
-  geometry: { type: string; coordinates: [number, number][] };
+  geometry: { type: string; coordinates: TPoint[] };
   id: string;
   properties: { name: string };
   rsmKey: string;
   svgPath: string;
   type: string;
 };
+
+type TCountry = TGeography & { coords: TPoint };
+
+type TCountries = { [key: string]: TCountry };
 
 const geoStyle = (isActive: boolean) => {
   return {
@@ -54,22 +59,34 @@ const markerStyle = {
   },
 };
 
+// TODO: add a tooltip to the map
+
 export default function MapChart() {
   const configQuery = useConfig();
-  const { data: { countries = [] } = {} } = configQuery;
+  const { data: { countries: configContries = [] } = {} } = configQuery;
   const [activeGeography, setActiveGeography] = useState("");
   const [mapCenter, setMapCenter] = useState<TPoint>([0, 0]);
   const [mapZoom, setMapZoom] = useState(1);
 
+  const countries: TCountries = useMemo(
+    () =>
+      configContries.reduce((acc, country) => {
+        acc[country.value] = { ...country, coords: GEO_CENTER_POINTS[country.value] };
+        return acc;
+      }, {}),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   const handleGeoClick = (geo: TGeo) => {
     setActiveGeography(geo.properties.name);
-    const geography = countries.find((country) => country.display_value === geo.properties.name);
-    setMapCenter(GEO_CENTER_POINTS[geography.value]);
+    const geography = Object.values(countries).find((country) => country.display_value === geo.properties.name);
+    setMapCenter(geography.coords);
     setMapZoom(3);
   };
 
   const handleMarkerClick = (countryCode: string) => {
-    const geography = countries.find((country) => country.value === countryCode);
+    const geography = countries[countryCode];
     setActiveGeography(geography?.display_value ?? "");
     setMapCenter(GEO_CENTER_POINTS[countryCode]);
     setMapZoom(3);
