@@ -212,7 +212,7 @@ input[type="search"]::-webkit-search-results-decoration {
 
 .subnav-active {
   position: relative;
-  @apply z-20;
+  // @apply -z-10;
   @screen md {
     &:after {
       content: "";
@@ -243,7 +243,7 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 /* Tooltips styles to override the default */
 .customTooltip {
-  @apply bg-cpr-dark border-cpr-dark rounded-lg leading-5 max-w-[300px] pointer-events-auto #{!important};
+  @apply z-50 text-xs bg-cpr-dark border-cpr-dark rounded-lg leading-5 max-w-[300px] pointer-events-auto #{!important};
   &:hover {
     visibility: visible !important;
     opacity: 1 !important;

@@ -23,7 +23,13 @@ const TabbedNavItem = ({ title, count, index, activeTab, onClick }: TabbedNavIte
 
   return (
     <>
-      <button onClick={(e) => onClick(e, title)} className={cssClass} data-tip={tooltipText} data-for={tooltipId} data-cy="tabbed-nav-item">
+      <button
+        onClick={(e) => onClick(e, title)}
+        className={cssClass}
+        data-tooltip-content={tooltipText}
+        data-tooltip-id={tooltipId}
+        data-cy="tabbed-nav-item"
+      >
         {title} {count && tabCount(count, isActive)}
       </button>
       {tooltipText !== "" && <ToolTipSSR id={tooltipId} place={"top"} />}
