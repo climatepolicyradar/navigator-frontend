@@ -604,3 +604,7 @@ ul li.selected {
   padding: 0;
   border: 0;
 }
+
+#mapToolTip {
+  @apply text-cpr-dark bg-white p-4 rounded-lg drop-shadow border opacity-100;
+}
