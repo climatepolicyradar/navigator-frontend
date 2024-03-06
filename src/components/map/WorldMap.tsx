@@ -6,8 +6,6 @@ import { GEO_EU_COUNTRIES } from "@constants/mapEUCountries";
 import { TGeography } from "@types";
 import { Tooltip, TooltipRefProps } from "react-tooltip";
 import { LinkWithQuery } from "@components/LinkWithQuery";
-import ByTextInput from "@components/filters/ByTextInput";
-import MultiList from "@components/filters/MultiList";
 import GeographySelect from "./GeographySelect";
 import { ZoomControls } from "./ZoomControls";
 
@@ -83,7 +81,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
       {geography && (
         <>
           <p className="font-bold">{geography.display_value}</p>
-          <p>Laws and policies: 24</p>
+          <p>Laws and policies: TBC</p>
           <p>
             <LinkWithQuery href={`/geographies/${geography.slug}`}>View country profile</LinkWithQuery>
           </p>
@@ -94,10 +92,8 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
 };
 
 // TODO:
-// - Move tooltip show and hide to reusable component
 // - Add document type selector
 // - Add button to toggle between EU unified view
-// - Add zoom buttons
 
 export default function MapChart() {
   const configQuery = useConfig();
@@ -121,66 +117,18 @@ export default function MapChart() {
   const handleGeoClick = (e: React.MouseEvent<SVGPathElement>, geo: TGeo) => {
     setActiveGeography(geo.properties.name);
     const geography = Object.values(geographiesWithCoords).find((g) => g.display_value === geo.properties.name);
-    // console.log("handleGeoClick - geography", geography, geo);
-    if (geography) {
-      // setMapCenter(geography.coords);
-      // setMapZoom(5);
-      const mapElement = mapRef.current;
-      if (mapElement) {
-        // const mapRect = mapElement.getBoundingClientRect();
-        // const x = mapRect.left + mapRect.width / 2;
-        // const y = mapRect.top + mapRect.height / 2;
-        const x = e.clientX;
-        const y = e.clientY;
-        geographyInfoTooltipRef.current?.open({
-          position: {
-            x,
-            y,
-          },
-          place: "bottom",
-          content: <GeographyDetail geo={geography?.display_value} geographies={geographiesWithCoords} />,
-        });
-      }
-    }
+    openToolTip([e.clientX, e.clientY], geography?.display_value ?? "");
   };
 
   const handleMarkerClick = (e: React.MouseEvent<SVGPathElement>, countryCode: string) => {
-    // console.log("countryCode", countryCode);
     const geography = geographiesWithCoords[countryCode];
-    setActiveGeography(geography?.display_value ?? "");
-    // setMapCenter(GEO_CENTER_POINTS[countryCode]);
-    // setMapZoom(5);
-    const mapElement = mapRef.current;
-    if (mapElement) {
-      // const mapRect = mapElement.getBoundingClientRect();
-      // const x = mapRect.left + mapRect.width / 2;
-      // const y = mapRect.top + mapRect.height / 2;
-      const x = e.clientX;
-      const y = e.clientY;
-      geographyInfoTooltipRef.current?.open({
-        position: {
-          x,
-          y,
-        },
-        place: "bottom",
-        content: <GeographyDetail geo={geography?.display_value} geographies={geographiesWithCoords} />,
-      });
-    }
+    openToolTip([e.clientX, e.clientY], geography?.display_value ?? "");
   };
 
   const handleGeoHover = (e: React.MouseEvent<SVGPathElement>, hoveredGeo: string) => {
     setActiveGeography("");
-    geographyInfoTooltipRef.current?.open({
-      position: {
-        x: e.clientX,
-        y: e.clientY,
-      },
-      place: "bottom",
-      content: <GeographyDetail geo={hoveredGeo} geographies={geographiesWithCoords} />,
-    });
+    openToolTip([e.clientX, e.clientY], hoveredGeo);
   };
-
-  const handleGeoLeave = () => {};
 
   const handleGeographySelected = (selectedCountry: TGeographyWithCoords) => {
     setActiveGeography(selectedCountry.display_value);
@@ -191,14 +139,7 @@ export default function MapChart() {
       const mapRect = mapElement.getBoundingClientRect();
       const x = mapRect.left + mapRect.width / 2;
       const y = mapRect.top + mapRect.height / 2;
-      geographyInfoTooltipRef.current?.open({
-        position: {
-          x,
-          y,
-        },
-        place: "bottom",
-        content: <GeographyDetail geo={selectedCountry.display_value} geographies={geographiesWithCoords} />,
-      });
+      openToolTip([x, y], selectedCountry.display_value);
     }
   };
 
@@ -209,8 +150,8 @@ export default function MapChart() {
     geographyInfoTooltipRef.current?.close();
   };
 
-  const openToolTip = (coords: [number, number], selectedGeography: string, centreMap: boolean, zoom: number) => {
-    setActiveGeography("");
+  const openToolTip = (coords: [number, number], selectedGeography: string) => {
+    setActiveGeography(selectedGeography);
     geographyInfoTooltipRef.current?.open({
       position: {
         x: coords[0],
@@ -278,7 +219,6 @@ export default function MapChart() {
                     onMouseOver={(e) => {
                       handleGeoHover(e, geo.properties.name);
                     }}
-                    onMouseLeave={handleGeoLeave}
                   />
                 ))
               }
@@ -298,7 +238,6 @@ export default function MapChart() {
                   onMouseOver={(e) => {
                     handleGeoHover(e, geo.display_value);
                   }}
-                  onMouseLeave={handleGeoLeave}
                   style={markerStyle}
                 >
                   <circle r={2} />
@@ -307,7 +246,7 @@ export default function MapChart() {
             })}
           </ZoomableGroup>
         </ComposableMap>
-        <Tooltip id="mapToolTip" ref={geographyInfoTooltipRef} imperativeModeOnly clickable />
+        <Tooltip id="mapToolTip" ref={geographyInfoTooltipRef} afterHide={() => setActiveGeography("")} imperativeModeOnly clickable />
         <ZoomControls
           mapZoom={mapZoom}
           minZoom={minZoom}
