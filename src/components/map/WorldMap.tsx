@@ -9,6 +9,7 @@ import { LinkWithQuery } from "@components/LinkWithQuery";
 import ByTextInput from "@components/filters/ByTextInput";
 import MultiList from "@components/filters/MultiList";
 import GeographySelect from "./GeographySelect";
+import { ZoomControls } from "./ZoomControls";
 
 const geoUrl = "/data/map/world-countries-50m.json";
 
@@ -65,6 +66,9 @@ const markerStyle = {
   },
 };
 
+const maxZoom = 20;
+const minZoom = 1;
+
 const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeographiesWithCoords }) => {
   const geography = Object.values(geographies).find((country) => country.display_value === geo);
   if (!geography) {
@@ -91,9 +95,9 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
 
 // TODO:
 // - Move tooltip show and hide to reusable component
-// - Add geography dropdown
 // - Add document type selector
 // - Add button to toggle between EU unified view
+// - Add zoom buttons
 
 export default function MapChart() {
   const configQuery = useConfig();
@@ -104,7 +108,6 @@ export default function MapChart() {
   const [mapCenter, setMapCenter] = useState<TPoint>([0, 0]);
   const [mapZoom, setMapZoom] = useState(1);
   const [showUnifiedEU, setShowUnifiedEU] = useState(false);
-  const [selectedGeography, setSelectedGeography] = useState("");
 
   const geographiesWithCoords: TGeographiesWithCoords = useMemo(
     () =>
@@ -221,11 +224,8 @@ export default function MapChart() {
   return (
     <>
       <div className="flex justify-between items-center my-4">
-        <div>
-          <button onClick={() => handleGeographySelected(geographiesWithCoords.JPN)}>Go to Japan</button>
-        </div>
+        <div></div>
         <div className="flex items-center gap-4">
-          <button className="text-gray-500" onClick={() => handleResetMapClick()}>Reset map</button>
           <div className="relative w-[300px]" data-cy="geographies">
             <GeographySelect
               title="Search for a country or territory"
@@ -244,14 +244,15 @@ export default function MapChart() {
       <div ref={mapRef} className="map-container relative" data-cy="world-map">
         <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 160 }} height={340}>
           <ZoomableGroup
-            maxZoom={20}
+            maxZoom={maxZoom}
+            minZoom={minZoom}
             center={mapCenter}
             zoom={mapZoom}
             translateExtent={[
               [-400, -200],
               [1000, 600],
             ]}
-            onMoveStart={(e) => {
+            onMoveStart={() => {
               geographyInfoTooltipRef.current?.close();
               setActiveGeography("");
             }}
@@ -307,6 +308,14 @@ export default function MapChart() {
           </ZoomableGroup>
         </ComposableMap>
         <Tooltip id="mapToolTip" ref={geographyInfoTooltipRef} imperativeModeOnly clickable />
+        <ZoomControls
+          mapZoom={mapZoom}
+          minZoom={minZoom}
+          maxZoom={maxZoom}
+          handleZoomIn={() => setMapZoom(mapZoom + 1)}
+          handleZoomOut={() => setMapZoom(mapZoom - 1)}
+          handleReset={handleResetMapClick}
+        />
       </div>
     </>
   );
