@@ -38,11 +38,11 @@ const GeographySelect = ({ title, list, selectedList, keyField, keyFieldDisplay,
     <div className="relative">
       <input
         type="text"
-        className="border border-gray-300 mt-2 small outline-none placeholder:text-gray-300"
+        className="border border-gray-300 small outline-none placeholder:text-gray-300"
         placeholder={title}
         value={input}
         onChange={handleChange}
-        aria-label="Search for a jurisdiction"
+        aria-label="Search for a country or territory"
       />
 
       {suggestList.length > 0 && (

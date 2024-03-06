@@ -182,7 +182,7 @@ export default function MapChart() {
   const handleGeographySelected = (selectedCountry: TGeographyWithCoords) => {
     setActiveGeography(selectedCountry.display_value);
     setMapCenter(selectedCountry.coords);
-    // setMapZoom(5);
+    setMapZoom(5);
     const mapElement = mapRef.current;
     if (mapElement) {
       const mapRect = mapElement.getBoundingClientRect();
@@ -220,15 +220,15 @@ export default function MapChart() {
 
   return (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center my-4">
         <div>
           <button onClick={() => handleGeographySelected(geographiesWithCoords.JPN)}>Go to Japan</button>
         </div>
-        <div>
-          <button onClick={() => handleResetMapClick()}>Reset map</button>
-          <div className="relative mb-4" data-cy="geographies">
+        <div className="flex items-center gap-4">
+          <button className="text-gray-500" onClick={() => handleResetMapClick()}>Reset map</button>
+          <div className="relative w-[300px]" data-cy="geographies">
             <GeographySelect
-              title="Select a geography"
+              title="Search for a country or territory"
               list={geographiesWithCoords}
               keyField="value"
               keyFieldDisplay="display_value"
