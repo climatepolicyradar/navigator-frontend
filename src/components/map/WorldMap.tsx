@@ -213,16 +213,23 @@ export default function MapChart() {
         y: coords[1],
       },
       place: "bottom",
-      content: <GeographyDetail geo={selectedGeography} countries={countries} />,
+      content: <GeographyDetail geo={selectedGeography} geographies={geographiesWithCoords} />,
     });
   };
 
   return (
     <div ref={mapRef} className="map-container my-8 relative" data-cy="world-map">
-      <button onClick={() => handleGeographySelected(geographiesWithCoords.JPN)}>Go to Japan</button>
-      <button onClick={() => handleResetMapClick()}>Reset map</button>
-      <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 120 }} height={340}>
+      <div className="flex justify-between items-center">
+        <div>
+          <button onClick={() => handleGeographySelected(geographiesWithCoords.JPN)}>Go to Japan</button>
+        </div>
+        <div>
+          <button onClick={() => handleResetMapClick()}>Reset map</button>
+        </div>
+      </div>
+      <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 160 }} height={340}>
         <ZoomableGroup
+          maxZoom={20}
           center={mapCenter}
           zoom={mapZoom}
           translateExtent={[
