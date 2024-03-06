@@ -27,7 +27,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
           <Header background={false} />
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
         </div>
-        <div className="container" data-cy="world-map">
+        <div className="container">
           <WorldMap />
         </div>
         <div className="container my-12" data-cy="powered-by">

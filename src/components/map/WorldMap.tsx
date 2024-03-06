@@ -2,6 +2,7 @@ import React, { useRef, useState, useMemo } from "react";
 import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
 import useConfig from "@hooks/useConfig";
 import { GEO_CENTER_POINTS } from "@constants/mapCentres";
+import { GEO_EU_COUNTRIES } from "@constants/mapEUCountries";
 import { TGeography } from "@types";
 import { Tooltip, TooltipRefProps } from "react-tooltip";
 import { LinkWithQuery } from "@components/LinkWithQuery";
@@ -17,9 +18,9 @@ type TGeo = {
   type: string;
 };
 
-type TCountry = TGeography & { coords: TPoint };
+type TGeographyWithCoords = TGeography & { coords: TPoint };
 
-type TCountries = { [key: string]: TCountry };
+type TGeographiesWithCoords = { [key: string]: TGeographyWithCoords };
 
 const geoStyle = (isActive: boolean) => {
   return {
@@ -61,22 +62,35 @@ const markerStyle = {
   },
 };
 
-const GeographyDetail = ({ geo, countries }: { geo: any; countries: TCountries }) => {
-  const geography = Object.values(countries).find((country) => country.display_value === geo);
+const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeographiesWithCoords }) => {
+  const geography = Object.values(geographies).find((country) => country.display_value === geo);
+  if (!geography) {
+    return (
+      <>
+        <p>We do not have any information for this area yet.</p>
+      </>
+    );
+  }
   return (
     <>
       {geography && (
         <>
           <p className="font-bold">{geography.display_value}</p>
+          <p>Laws and policies: 24</p>
           <p>
-            <LinkWithQuery href={geography.slug}>View country profile</LinkWithQuery>
+            <LinkWithQuery href={`/geographies/${geography.slug}`}>View country profile</LinkWithQuery>
           </p>
         </>
       )}
-      <p>Laws and policies: 24</p>
     </>
   );
 };
+
+// TODO:
+// - Move tooltip show and hide to reusable component
+// - Add geography dropdown
+// - Add document type selector
+// - Add button to toggle between EU unified view
 
 export default function MapChart() {
   const configQuery = useConfig();
@@ -86,44 +100,47 @@ export default function MapChart() {
   const [activeGeography, setActiveGeography] = useState("");
   const [mapCenter, setMapCenter] = useState<TPoint>([0, 0]);
   const [mapZoom, setMapZoom] = useState(1);
-  const [tooltipContent, setTooltipContent] = useState("");
+  const [showUnifiedEU, setShowUnifiedEU] = useState(false);
 
-  const countries: TCountries = useMemo(
+  const geographiesWithCoords: TGeographiesWithCoords = useMemo(
     () =>
       configContries.reduce((acc, country) => {
         acc[country.value] = { ...country, coords: GEO_CENTER_POINTS[country.value] };
         return acc;
       }, {}),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [configContries]
   );
 
   const handleGeoClick = (e: React.MouseEvent<SVGPathElement>, geo: TGeo) => {
     setActiveGeography(geo.properties.name);
-    const geography = Object.values(countries).find((country) => country.display_value === geo.properties.name);
+    const geography = Object.values(geographiesWithCoords).find((g) => g.display_value === geo.properties.name);
     // console.log("handleGeoClick - geography", geography, geo);
     if (geography) {
-      // Not working because of tooltip placement
-      // setMapCenter(geography.coords);
-      // setMapZoom(3);
-      geographyInfoTooltipRef.current?.open({
-        position: {
-          x: e.clientX,
-          y: e.clientY,
-        },
-        place: "bottom",
-        content: <GeographyDetail geo={geo.properties.name} countries={countries} />,
-      });
+      setMapCenter(geography.coords);
+      setMapZoom(5);
+      const mapElement = mapRef.current;
+      if (mapElement) {
+        const mapRect = mapElement.getBoundingClientRect();
+        const x = mapRect.left + mapRect.width / 2;
+        const y = mapRect.top + mapRect.height / 2;
+        geographyInfoTooltipRef.current?.open({
+          position: {
+            x,
+            y,
+          },
+          place: "bottom",
+          content: <GeographyDetail geo={geography?.display_value} geographies={geographiesWithCoords} />,
+        });
+      }
     }
   };
 
   const handleMarkerClick = (countryCode: string) => {
     // console.log("countryCode", countryCode);
-    const geography = countries[countryCode];
+    const geography = geographiesWithCoords[countryCode];
     setActiveGeography(geography?.display_value ?? "");
     setMapCenter(GEO_CENTER_POINTS[countryCode]);
-    setMapZoom(3);
-    //find centre of mapRef
+    setMapZoom(5);
     const mapElement = mapRef.current;
     if (mapElement) {
       const mapRect = mapElement.getBoundingClientRect();
@@ -135,37 +152,75 @@ export default function MapChart() {
           y,
         },
         place: "bottom",
-        content: <GeographyDetail geo={geography?.display_value} countries={countries} />,
+        content: <GeographyDetail geo={geography?.display_value} geographies={geographiesWithCoords} />,
       });
     }
   };
 
   const handleGeoHover = (e: React.MouseEvent<SVGPathElement>, hoveredGeo: string) => {
-    // setTooltipContent(hoveredGeo);
+    setActiveGeography("");
     geographyInfoTooltipRef.current?.open({
       position: {
         x: e.clientX,
         y: e.clientY,
       },
       place: "bottom",
-      content: <GeographyDetail geo={hoveredGeo} countries={countries} />,
+      content: <GeographyDetail geo={hoveredGeo} geographies={geographiesWithCoords} />,
     });
   };
 
-  const handleGeoLeave = () => {
-    setTooltipContent("");
-    // geographyInfoTooltipRef.current?.close();
+  const handleGeoLeave = () => {};
+
+  const handleGeographySelected = (selectedCountry: TGeographyWithCoords) => {
+    setActiveGeography(selectedCountry.display_value);
+    setMapCenter(selectedCountry.coords);
+    setMapZoom(5);
+    // find centre of mapRef
+    const mapElement = mapRef.current;
+    if (mapElement) {
+      const mapRect = mapElement.getBoundingClientRect();
+      const x = mapRect.left + mapRect.width / 2;
+      const y = mapRect.top + mapRect.height / 2;
+      geographyInfoTooltipRef.current?.open({
+        position: {
+          x,
+          y,
+        },
+        place: "bottom",
+        content: <GeographyDetail geo={selectedCountry.display_value} geographies={geographiesWithCoords} />,
+      });
+    }
   };
 
-  // const handleResetMapClick = () => {
-  //   setMapCenter([0, 0]);
-  //   setMapZoom(1);
-  //   setActiveGeography("");
-  //   geographyInfoTooltipRef.current?.close();
-  // };
+  const handleResetMapClick = () => {
+    setMapCenter([0, 0]);
+    setMapZoom(1);
+    setActiveGeography("");
+    geographyInfoTooltipRef.current?.close();
+  };
+
+  const openToolTip = (coords: [number, number], selectedGeography: string, centreMap: boolean, zoom: number) => {
+    setActiveGeography("");
+    if (centreMap) {
+      setMapCenter(coords);
+    }
+    if (zoom) {
+      setMapZoom(3);
+    }
+    geographyInfoTooltipRef.current?.open({
+      position: {
+        x: coords[0],
+        y: coords[1],
+      },
+      place: "bottom",
+      content: <GeographyDetail geo={selectedGeography} countries={countries} />,
+    });
+  };
 
   return (
-    <div ref={mapRef} className="map-container my-8 relative">
+    <div ref={mapRef} className="map-container my-8 relative" data-cy="world-map">
+      <button onClick={() => handleGeographySelected(geographiesWithCoords.JPN)}>Go to Japan</button>
+      <button onClick={() => handleResetMapClick()}>Reset map</button>
       <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 120 }} height={340}>
         <ZoomableGroup
           center={mapCenter}
@@ -174,9 +229,13 @@ export default function MapChart() {
             [-400, -200],
             [1000, 600],
           ]}
-          onMoveStart={() => {
+          onMoveStart={(e) => {
             geographyInfoTooltipRef.current?.close();
             setActiveGeography("");
+          }}
+          onMoveEnd={(e) => {
+            setMapZoom(e.zoom);
+            setMapCenter(e.coordinates);
           }}
         >
           <Sphere id="1" stroke="#E4E5E6" strokeWidth={0.2} fill="none" />
@@ -193,7 +252,6 @@ export default function MapChart() {
                     e.stopPropagation();
                     handleGeoClick(e, geo);
                   }}
-                  // data-tooltip-id="map-tooltip"
                   onMouseOver={(e) => {
                     handleGeoHover(e, geo.properties.name);
                   }}
@@ -202,35 +260,30 @@ export default function MapChart() {
               ))
             }
           </Geographies>
-          {Object.keys(GEO_CENTER_POINTS).map((point) => (
-            <Marker
-              key={point}
-              // data-tooltip-id="map-tooltip"
-              coordinates={GEO_CENTER_POINTS[point]}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handleMarkerClick(point);
-              }}
-              onMouseOver={(e) => {
-                handleGeoHover(e, point);
-              }}
-              onMouseLeave={handleGeoLeave}
-              style={markerStyle}
-            >
-              <circle r={2} />
-            </Marker>
-          ))}
+          {Object.keys(geographiesWithCoords).map((i) => {
+            const geo = geographiesWithCoords[i];
+            if (!geo.coords) return null;
+            return (
+              <Marker
+                key={geo.slug}
+                coordinates={geo.coords}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleMarkerClick(geo.value);
+                }}
+                onMouseOver={(e) => {
+                  handleGeoHover(e, geo.display_value);
+                }}
+                onMouseLeave={handleGeoLeave}
+                style={markerStyle}
+              >
+                <circle r={2} />
+              </Marker>
+            );
+          })}
         </ZoomableGroup>
       </ComposableMap>
-      {/* <Tooltip className="customTooltip" id="map-tooltip" float>
-        {tooltipContent}
-      </Tooltip> */}
-      {/* {activeGeography && (
-        <div className="absolute bottom-12 right-12 p-4 border border-blue-600 bg-white">
-          <GeographyDetail geo={activeGeography} countries={countries} />
-        </div>
-      )} */}
       <Tooltip id="mapToolTip" ref={geographyInfoTooltipRef} imperativeModeOnly clickable />
     </div>
   );
