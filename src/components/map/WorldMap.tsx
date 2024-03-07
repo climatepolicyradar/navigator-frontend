@@ -184,7 +184,7 @@ export default function MapChart() {
           </div>
         </div>
       </div>
-      <div ref={mapRef} className="map-container relative" data-cy="world-map">
+      <div ref={mapRef} className="map-container relative border" data-cy="world-map">
         <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 160 }} height={340}>
           <ZoomableGroup
             maxZoom={maxZoom}
@@ -261,7 +261,7 @@ export default function MapChart() {
         />
         <div className="absolute top-0 right-0 p-4">
           <label
-            className="checkbox-input flex items-center py-2 px-1 rounded-md cursor-pointer border-gray-300 bg-white"
+            className="checkbox-input flex items-center py-2 px-1 rounded-md cursor-pointer border border-gray-300 bg-white"
             htmlFor="show_eu_aggregated"
           >
             <input
