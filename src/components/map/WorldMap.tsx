@@ -83,7 +83,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
           <p className="font-bold">{geography.display_value}</p>
           <p>Laws and policies: TBC</p>
           <p>
-            <LinkWithQuery href={`/geographies/${geography.slug}`}>View country profile</LinkWithQuery>
+            <LinkWithQuery href={`/geographies/${geography.slug}`}>View territory profile</LinkWithQuery>
           </p>
         </>
       )}
@@ -166,19 +166,21 @@ export default function MapChart() {
     <>
       <div className="flex justify-between items-center my-4">
         <div></div>
-        <div className="flex items-center gap-4">
-          <div className="relative w-[300px]" data-cy="geographies">
-            <GeographySelect
-              title="Search for a country or territory"
-              list={geographiesWithCoords}
-              keyField="value"
-              keyFieldDisplay="display_value"
-              filterType="geography"
-              selectedList={[]}
-              handleFilterChange={(_, value) => {
-                handleGeographySelected(geographiesWithCoords[value]);
-              }}
-            />
+        <div>
+          <div className="flex items-center gap-4">
+            <div className="relative w-[300px]" data-cy="geographies">
+              <GeographySelect
+                title="Search for a country or territory"
+                list={geographiesWithCoords}
+                keyField="value"
+                keyFieldDisplay="display_value"
+                filterType="geography"
+                selectedList={[]}
+                handleFilterChange={(_, value) => {
+                  handleGeographySelected(geographiesWithCoords[value]);
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -226,6 +228,8 @@ export default function MapChart() {
             {Object.keys(geographiesWithCoords).map((i) => {
               const geo = geographiesWithCoords[i];
               if (!geo.coords) return null;
+              if (!showUnifiedEU && geo.value === "EU") return null;
+              if (showUnifiedEU && GEO_EU_COUNTRIES.includes(geo.value)) return null;
               return (
                 <Marker
                   key={geo.slug}
@@ -255,6 +259,23 @@ export default function MapChart() {
           handleZoomOut={() => setMapZoom(mapZoom - 1)}
           handleReset={handleResetMapClick}
         />
+        <div className="absolute top-0 right-0 p-4">
+          <label
+            className="checkbox-input flex items-center py-2 px-1 rounded-md cursor-pointer border-gray-300 bg-white"
+            htmlFor="show_eu_aggregated"
+          >
+            <input
+              className="border-gray-300 cursor-pointer"
+              id="show_eu_aggregated"
+              type="checkbox"
+              name="exact_match"
+              value={0}
+              checked={showUnifiedEU}
+              onChange={() => setShowUnifiedEU(!showUnifiedEU)}
+            />
+            <span className="px-2 text-sm">Show EU aggregated data</span>
+          </label>
+        </div>
       </div>
     </>
   );
