@@ -20,12 +20,9 @@ async function getSearch(query = initialSearchCriteria) {
     },
   };
 
-  // TODO: remove this later when BE is updated
-  const url = `/searches${query.use_vespa ? "?use_vespa=true" : ""}`;
+  const url = "/searches";
   const { data } = await getEnvFromServer();
   const client = new ApiClient(data?.env?.api_url);
-  // TODO: remove this later when BE is updated
-  query["jit_query"] = "disabled";
   query["include_results"] = ["htmlsNonTranslated", "pdfsTranslated", "htmlsTranslated"];
   const results = await client.post<TSearch>(url, query, config);
   return results;
