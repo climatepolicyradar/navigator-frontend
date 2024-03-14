@@ -35,7 +35,7 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = nul
 
   return (
     <>
-      <Script src="https://documentcloud.adobe.com/view-sdk/viewer.js" />
+      <Script src="https://acrobatservices.adobe.com/view-sdk/viewer.js" />
       {!document ? (
         <div className="w-full flex justify-center flex-1">
           <Loader />
