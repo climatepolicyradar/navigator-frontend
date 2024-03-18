@@ -12,4 +12,5 @@ export const initialSearchCriteria: TSearchCriteria = {
   sort_order: "desc",
   limit: PER_PAGE,
   offset: 0,
+  include_results: ["htmlsNonTranslated", "pdfsTranslated", "htmlsTranslated"],
 };
