@@ -10,10 +10,9 @@ interface TooltipProps {
 
 const Tooltip = ({ id, tooltip, icon = "?", place, interactableContent }: TooltipProps) => {
   return (
-    <div>
+    <div className="">
       <button
-        data-tip={tooltip}
-        data-for={id}
+        data-tooltip-id={id}
         className={`circle-sm rounded-full border border-blue-600 bg-white text-blue-600 flex justify-center items-center text-xs`}
       >
         {icon}
