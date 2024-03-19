@@ -11,7 +11,9 @@ const MatchesButton = ({ dataAttribute, count, overideText }: TProps) => {
 
   return (
     <span data-cy="document-matches-button" data-analytics="document-matches-button" data-slug={dataAttribute} className="text-sm text-blue-400">
-      {overideText ? overideText : `View ${numberOfMatches}${numberOfMatches > 10 ? "+" : ""} match${numberOfMatches > 1 ? "es" : ""}`}
+      {overideText
+        ? overideText
+        : `View ${numberOfMatches > 10 ? 10 : numberOfMatches}${numberOfMatches > 10 ? "+" : ""} match${numberOfMatches > 1 ? "es" : ""}`}
     </span>
   );
 };
