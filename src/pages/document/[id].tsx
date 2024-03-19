@@ -325,7 +325,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const id = context.params.id;
   const query = context.query[QUERY_PARAMS.query_string];
-  console.log(query);
   const client = new ApiClient(process.env.API_URL);
 
   let familyData: TFamilyPage;
