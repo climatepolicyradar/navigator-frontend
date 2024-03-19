@@ -2,6 +2,21 @@ import { TMatchedFamily, TSearchKeywordFilters } from "@types";
 import { arrayOfStringdMatch } from "./arrayEquality";
 import { CACHE_NAME, CACHE_LIMIT, CACHE_EXPIRY } from "@constants/cache";
 
+const arrayStringMatchChecker = (a?: string[] | null, b?: string[] | null) => {
+  let result = false;
+  if (!a && !b) {
+    result = true;
+  }
+  if (a && b) {
+    if (a.length === b.length) {
+      a.sort();
+      b.sort();
+      result = a.every((val, index) => val === b[index]);
+    }
+  }
+  return result;
+};
+
 export type TCacheIdentifier = {
   query_string: string;
   exact_match: boolean;
@@ -11,6 +26,8 @@ export type TCacheIdentifier = {
   sort_order: string;
   offset: number;
   use_vespa: boolean;
+  family_ids?: string[] | null;
+  document_ids?: string[] | null;
 };
 
 export type TCacheResult = TCacheIdentifier & {
@@ -56,7 +73,9 @@ export const getCachedSearch = (cacheId: TCacheIdentifier) => {
       search.sort_field === sort_field &&
       search.sort_order === sort_order &&
       search.offset === offset &&
-      search.use_vespa === use_vespa
+      search.use_vespa === use_vespa &&
+      arrayStringMatchChecker(search.family_ids, cacheId.family_ids) &&
+      arrayStringMatchChecker(search.document_ids, cacheId.document_ids)
   );
   return cachedSearch;
 };
