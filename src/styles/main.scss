@@ -243,7 +243,7 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 /* Tooltips styles to override the default */
 .customTooltip {
-  @apply bg-cpr-dark border-cpr-dark rounded-lg leading-5 max-w-[300px] pointer-events-auto #{!important};
+  @apply bg-cpr-dark border-cpr-dark rounded-lg leading-5 max-w-[300px] pointer-events-auto font-normal #{!important};
   &:hover {
     visibility: visible !important;
     opacity: 1 !important;
@@ -603,4 +603,13 @@ ul li.selected {
   width: 1px;
   padding: 0;
   border: 0;
+}
+
+.middot-between {
+  > span:after {
+    content: " \00b7";
+  }
+  > span:last-child:after {
+    content: none;
+  }
 }

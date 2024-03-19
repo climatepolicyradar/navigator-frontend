@@ -48,12 +48,11 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
 
   const renderMatchesOverrideText = (): string | JSX.Element => {
     if (status === "loading") return loadingIndicator;
-    if (canPreview && !hasMatches) return "View document";
-    if (canViewSource) return "View source document";
   };
 
   const getPreviewBehaviour = () => {
-    let cssClass = "family-document group mt-4 p-4 rounded-lg border border-transparent bg-white border-gray-50 shadow-xs transition duration-300 flex flex-no-wrap ";
+    let cssClass =
+      "family-document group mt-4 p-4 rounded-lg border border-transparent bg-white border-gray-50 shadow-xs transition duration-300 flex flex-no-wrap ";
     cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-gray-200 hover:bg-gray-50" : "";
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -74,31 +73,20 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
       </div>
       <div className="flex-1">
         <div className="mb-2 flex justify-between no-wrap">
-          {title}{" "}
-          {(canPreview || canViewSource) && (
-            // <div className="flex-0 mt-2 md:mt-0">
-            //   <MatchesButton
-            //     dataAttribute={slug}
-            //     count={matches}
-            //     overideText={renderMatchesOverrideText()}
-            //     variant={canPreview ? "light" : "ghost"}
-            //   />
-            // </div>
-            <></>
-          )}
+          {title} {(canPreview || canViewSource) && <MatchesButton dataAttribute={slug} count={matches} overideText={renderMatchesOverrideText()} />}
         </div>
         <div className="md:flex flex-nowrap items-center">
           <div className="flex-1">
             <div className="flex items-center text-sm">
-              <div className="flex-1 flex flex-wrap gap-x-8 items-center">
-                {!isMain && <span className="capitalize font-bold">{document_role?.toLowerCase()}</span>}
-                {renderContentType(content_type)}
+              <div className="flex-1 flex flex-wrap gap-x-2 items-center middot-between">
                 {!!language && (
                   <span>
                     {getLanguage(language, languages)}
                     {!!variant && ` (${variant})`}
                   </span>
                 )}
+                {!isMain && <span className="capitalize">{document_role?.toLowerCase()}</span>}
+                {renderContentType(content_type)}
                 {!canPreview && <span className="flex gap-2 items-center">{renderDocumentInfo()}</span>}
               </div>
             </div>
