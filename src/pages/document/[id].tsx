@@ -169,7 +169,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           </section>
 
           <section className="mt-8">
-            <h2 className="text-2xl">Main documents</h2>
+            <h2 className="text-base">Main documents</h2>
             <div data-cy="main-documents">
               {mainDocs.map((doc) => (
                 <FamilyDocument matches={getDocumentMatches(doc.slug)} document={doc} key={doc.import_id} status={status} />
@@ -180,8 +180,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           {otherDocs.length > 0 && (
             <>
               <section className="mt-8">
-                <h2 className="flex items-center gap-2 text-2xl">
-                  Related documents{" "}
+                <h2 className="flex items-center gap-2 text-base">
+                  Other documents in this entry{" "}
                   <Tooltip
                     id="related-documents-info"
                     place="right"
@@ -189,7 +189,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                     tooltip="Related documents can be previous versions, amendments, annexes, supporting legislation, and more."
                   />
                 </h2>
-                <div className="divide-solid divide-y" data-cy="related-documents">
+                <div data-cy="related-documents">
                   {otherDocs.map((doc) => (
                     <div key={doc.import_id} className="mt-4">
                       <FamilyDocument matches={getDocumentMatches(doc.slug)} document={doc} status={status} />
@@ -205,7 +205,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               <section className="mt-8">
                 <div>
                   <div className="lg:flex justify-between items-center">
-                    <h2 className="flex text-2xl">
+                    <h2 className="flex items-center text-base">
                       <span className="mr-2">
                         <TargetIcon />
                       </span>
@@ -256,7 +256,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
           {page.events.length > 0 && (
             <section className="mt-8">
-              <h2 className="text-2xl">Timeline</h2>
+              <h2 className="text-base">Timeline</h2>
               <ShowHide show={showTimeline} onClick={() => setShowTimeline(!showTimeline)} className="mt-4" />
               {showTimeline && (
                 <Timeline>
@@ -271,7 +271,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           )}
 
           <section className="mt-8">
-            <h2 className="my-4 text-2xl">Note</h2>
+            <h2 className="my-4 text-base">Note</h2>
             <div className="flex text-sm">
               {sourceLogo && (
                 <div className="relative max-w-[144px] mt-1 mr-2">
@@ -291,7 +291,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
           {page.collections.map((collection, i) => (
             <section className="pt-12" id={`collection-${i}`} key={collection.import_id}>
-              <h2 className="text-2xl">About the {collection.title}</h2>
+              <h2 className="text-base">About the {collection.title}</h2>
               <ShowHide show={showCollectionDetail} onClick={() => setShowCollectionDetail(!showCollectionDetail)} className="mt-4" />
               {showCollectionDetail && (
                 <div>

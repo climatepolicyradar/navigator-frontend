@@ -53,8 +53,8 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
   };
 
   const getPreviewBehaviour = () => {
-    let cssClass = "family-document group mt-4 p-3 rounded-lg border border-transparent bg-gray-50 transition duration-300 flex flex-no-wrap ";
-    cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-blue-600" : "";
+    let cssClass = "family-document group mt-4 p-4 rounded-lg border border-transparent bg-white border-gray-50 shadow-xs transition duration-300 flex flex-no-wrap ";
+    cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-gray-200 hover:bg-gray-50" : "";
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.preventDefault();
@@ -69,11 +69,24 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
   return (
     <div {...getPreviewBehaviour()}>
       <div className="flex-0 mr-2 hidden md:block">
-        {canViewSource && <GlobeIcon width="20" height="20" />}
-        {canPreview && !canViewSource && <DocumentIcon width="20" height="20" />}
+        {canViewSource && <GlobeIcon width="20" height="20" color="#1F93FF" />}
+        {canPreview && !canViewSource && <DocumentIcon width="20" height="20" color="#1F93FF" />}
       </div>
       <div className="flex-1">
-        <div className="mb-2">{title}</div>
+        <div className="mb-2 flex justify-between no-wrap">
+          {title}{" "}
+          {(canPreview || canViewSource) && (
+            // <div className="flex-0 mt-2 md:mt-0">
+            //   <MatchesButton
+            //     dataAttribute={slug}
+            //     count={matches}
+            //     overideText={renderMatchesOverrideText()}
+            //     variant={canPreview ? "light" : "ghost"}
+            //   />
+            // </div>
+            <></>
+          )}
+        </div>
         <div className="md:flex flex-nowrap items-center">
           <div className="flex-1">
             <div className="flex items-center text-sm">
@@ -90,16 +103,6 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
               </div>
             </div>
           </div>
-          {(canPreview || canViewSource) && (
-            <div className="flex-0 mt-2 md:mt-0">
-              <MatchesButton
-                dataAttribute={slug}
-                count={matches}
-                overideText={renderMatchesOverrideText()}
-                variant={canPreview ? "light" : "ghost"}
-              />
-            </div>
-          )}
         </div>
       </div>
     </div>
