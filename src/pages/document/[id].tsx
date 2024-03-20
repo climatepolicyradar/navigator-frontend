@@ -68,7 +68,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
 
   let searchFamily: TMatchedFamily = null;
-  const { status, families } = useSearch(router.query, null, null, !!router.query[QUERY_PARAMS.query_string]);
+  const { status, families } = useSearch(router.query, page.import_id, null, !!router.query[QUERY_PARAMS.query_string]);
   if (!!router.query[QUERY_PARAMS.query_string]) {
     families.forEach((family) => {
       if (page.slug === family.family_slug) {
@@ -324,7 +324,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
   const id = context.params.id;
-  const query = context.query[QUERY_PARAMS.query_string];
   const client = new ApiClient(process.env.API_URL);
 
   let familyData: TFamilyPage;
