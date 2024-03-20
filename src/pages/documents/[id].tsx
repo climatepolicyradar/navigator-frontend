@@ -110,14 +110,15 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   }, [startingPassage]);
 
   // Prevent the "Are you sure you want to leave this page?" dialog
+  // Important: this does not override the Adobe SDK default behaviour if the user makes manual highlights
   useEffect(() => {
-    window.addEventListener("beforeunload", () => {
-      return null;
-    });
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      return;
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
-      window.removeEventListener("beforeunload", () => {
-        return null;
-      });
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
 
