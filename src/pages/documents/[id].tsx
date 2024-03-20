@@ -44,7 +44,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const [passageIndex, setPassageIndex] = useState(null);
   const router = useRouter();
   const startingPassage = Number(router.query.passage) || 0;
-  const { status, families, searchQuery } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
+  const { status, families, searchQuery } = useSearch(router.query, null, document.import_id, !!router.query[QUERY_PARAMS.query_string]);
 
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
@@ -108,6 +108,18 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
       scrollToPassage(startingPassage);
     }
   }, [startingPassage]);
+
+  // Prevent the "Are you sure you want to leave this page?" dialog
+  useEffect(() => {
+    window.addEventListener("beforeunload", () => {
+      return null;
+    });
+    return () => {
+      window.removeEventListener("beforeunload", () => {
+        return null;
+      });
+    };
+  }, []);
 
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)}>
