@@ -16,7 +16,6 @@ export type TSearchCriteria = {
   sort_order: string;
   limit: number;
   offset: number;
-  use_vespa?: boolean;
 };
 
 type TErrorDetail = {

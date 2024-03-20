@@ -55,7 +55,6 @@ const useSearch = (query: TRouterQuery, runFreshSearch: boolean = true) => {
       sort_field: searchQuery.sort_field,
       sort_order: searchQuery.sort_order,
       offset: searchQuery.offset,
-      use_vespa: searchQuery.use_vespa,
     };
 
     const cachedResult = getCachedSearch(cacheId);
