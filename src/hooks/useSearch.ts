@@ -23,7 +23,6 @@ async function getSearch(query = initialSearchCriteria) {
   const url = "/searches";
   const { data } = await getEnvFromServer();
   const client = new ApiClient(data?.env?.api_url);
-  query["include_results"] = ["htmlsNonTranslated", "pdfsTranslated", "htmlsTranslated"];
   const results = await client.post<TSearch>(url, query, config);
   return results;
 }
