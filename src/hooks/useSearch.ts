@@ -23,7 +23,6 @@ async function getSearch(query = initialSearchCriteria) {
   const url = "/searches";
   const { data } = await getEnvFromServer();
   const client = new ApiClient(data?.env?.api_url);
-  query["include_results"] = ["htmlsNonTranslated", "pdfsTranslated", "htmlsTranslated"];
   const results = await client.post<TSearch>(url, query, config);
   return results;
 }
@@ -55,7 +54,6 @@ const useSearch = (query: TRouterQuery, runFreshSearch: boolean = true) => {
       sort_field: searchQuery.sort_field,
       sort_order: searchQuery.sort_order,
       offset: searchQuery.offset,
-      use_vespa: searchQuery.use_vespa,
     };
 
     const cachedResult = getCachedSearch(cacheId);
