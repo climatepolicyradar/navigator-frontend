@@ -132,7 +132,12 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
     const queryObj = {};
     queryObj[QUERY_PARAMS.query_string] = term;
     if (term === "") return false;
-    router.push({ pathname: `/document/${page.slug}`, query: queryObj });
+    // if the family only has one physical document, redirect to that document
+    if (page.documents.length === 1) {
+      router.push({ pathname: `/documents/${page.documents[0].slug}`, query: queryObj });
+    } else {
+      router.push({ pathname: `/document/${page.slug}`, query: queryObj });
+    }
   };
 
   return (
