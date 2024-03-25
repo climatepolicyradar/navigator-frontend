@@ -27,7 +27,7 @@ async function getSearch(query = initialSearchCriteria) {
   return results;
 }
 
-const useSearch = (query: TRouterQuery, familyId: string, documentId: string, runFreshSearch: boolean = true) => {
+const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFreshSearch: boolean = true) => {
   const [status, setStatus] = useState<TLoadingStatus>("idle");
   const [families, setFamilies] = useState<TMatchedFamily[]>([]);
   const [hits, setHits] = useState<number>(null);
