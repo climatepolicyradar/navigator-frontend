@@ -8,7 +8,7 @@ export type TRouterQuery = {
 
 // We are storing the search object in the query using aliases
 // This function converts the query string to the search object
-export default function buildSearchQuery(routerQuery: TRouterQuery, familyId: string, documentId: string): TSearchCriteria {
+export default function buildSearchQuery(routerQuery: TRouterQuery, familyId = "", documentId = ""): TSearchCriteria {
   const keyword_filters: TSearchKeywordFilters = {};
   let query = { ...initialSearchCriteria };
 
