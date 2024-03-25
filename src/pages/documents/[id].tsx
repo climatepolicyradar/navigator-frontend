@@ -12,14 +12,14 @@ import { ExternalLink } from "@components/ExternalLink";
 import { BookOpenIcon } from "@components/svg/Icons";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { getDocumentDescription } from "@constants/metaDescriptions";
-import { TDocumentFamily, TDocumentPage, TGeographySummary } from "@types";
+import { TDocumentPage, TFamilyPage, TGeographySummary } from "@types";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 import useConfig from "@hooks/useConfig";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
 
 type TProps = {
   document: TDocumentPage;
-  family: TDocumentFamily;
+  family: TFamilyPage;
   geographySummary: TGeographySummary;
 };
 
@@ -110,7 +110,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   }, [startingPassage]);
 
   // Prevent the "Are you sure you want to leave this page?" dialog
-  // Important: this does not override the Adobe SDK default behaviour if the user makes manual highlights
+  // Important: this does not override the Adobe SDK default behaviour
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
@@ -218,14 +218,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const client = new ApiClient(process.env.API_URL);
 
   let documentData: TDocumentPage;
-  let familyData: TDocumentFamily;
+  let familyData: TFamilyPage;
   let geographySummaryData: TGeographySummary;
   let geographyCode: string;
 
   try {
-    const { data: returnedData } = await client.get(`/documents/${id}`);
-    documentData = returnedData.document;
-    familyData = returnedData.family;
+    const { data: returnedDocumentData } = await client.get(`/documents/${id}`);
+    documentData = returnedDocumentData.document;
+    const familySlug = returnedDocumentData.family?.slug;
+    const { data: returnedFamilyData } = await client.get(`/documents/${familySlug}`);
+    familyData = returnedFamilyData;
   } catch {
     // TODO: Handle error more gracefully
   }

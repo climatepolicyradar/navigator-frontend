@@ -1,18 +1,21 @@
+import { useEffect, useState } from "react";
 import { CountryLink } from "@components/CountryLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import useConfig from "@hooks/useConfig";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
 import { getLanguage } from "@helpers/getLanguage";
 import { isSystemGeo } from "@utils/isSystemGeo";
-import { TDocumentFamily, TDocumentPage } from "@types";
+import { TDocumentPage, TFamilyPage } from "@types";
 import Button from "@components/buttons/Button";
 import { ExternalLinkIcon, AlertCircleIcon } from "@components/svg/Icons";
 import { Alert } from "@components/Alert";
 import { ExternalLink } from "@components/ExternalLink";
+import { truncateString } from "@helpers/index";
+import { MAX_FAMILY_SUMMARY_LENGTH_ON_DOCUMENT } from "@constants/document";
 
 type TProps = {
   document: TDocumentPage;
-  family: TDocumentFamily;
+  family: TFamilyPage;
   handleViewSourceClick: (e: React.FormEvent<HTMLButtonElement>) => void;
 };
 
@@ -21,6 +24,9 @@ const containsNonEnglish = (languages: string[]) => {
 };
 
 export const DocumentHead = ({ document, family, handleViewSourceClick }: TProps) => {
+  const [showFullSummary, setShowFullSummary] = useState(false);
+  const [summary, setSummary] = useState("");
+
   const configQuery = useConfig();
   const { data: { countries = [], languages = {} } = {} } = configQuery;
   const geoName = getCountryName(family.geography, countries);
@@ -31,6 +37,17 @@ export const DocumentHead = ({ document, family, handleViewSourceClick }: TProps
   const breadcrumbLabel = isMain ? "Document" : document.document_role.toLowerCase();
   const breadcrumbCategory = { label: "Search results", href: "/search" };
   const translated = document.languages.length === 0 || containsNonEnglish(document.languages);
+
+  useEffect(() => {
+    if (family?.summary) {
+      const text = family?.summary;
+      if (showFullSummary) {
+        setSummary(text);
+      } else {
+        setSummary(truncateString(text, MAX_FAMILY_SUMMARY_LENGTH_ON_DOCUMENT));
+      }
+    }
+  }, [family, showFullSummary]);
 
   return (
     <div className="bg-white border-solid border-lineBorder border-b">
@@ -45,32 +62,19 @@ export const DocumentHead = ({ document, family, handleViewSourceClick }: TProps
           <div className="flex-1 my-4">
             <h1 className="text-3xl lg:smaller">{document.title}</h1>
             <div className="mt-4 md:mt-0 md:flex justify-between items-center">
-              <div className="flex text-sm text-grey-700 items-center font-medium gap-2">
+              <div className="flex text-sm text-grey-700 items-center font-medium gap-2 middot-between">
                 {!isSystemGeo(family.geography) && (
                   <CountryLink countryCode={family.geography} className="text-primary-400 hover:text-indigo-600 duration-300">
                     <span>{geoName}</span>
                   </CountryLink>
                 )}
-                {!isMain && (
-                  <>
-                    <span>&middot;</span>
-                    <span className="capitalize">{document.document_role.toLowerCase()}</span>
-                  </>
-                )}
-                {family.category && (
-                  <>
-                    <span>&middot;</span>
-                    <span className="capitalize">{family.category}</span>
-                  </>
-                )}
+                {!isMain && <span className="capitalize">{document.document_role.toLowerCase()}</span>}
+                {family.category && <span className="capitalize">{family.category}</span>}
                 {!!document.language && (
-                  <>
-                    <span>&middot;</span>
-                    <span>
-                      {getLanguage(document.language, languages)}
-                      {!!document.variant && ` (${document.variant})`}
-                    </span>
-                  </>
+                  <span>
+                    {getLanguage(document.language, languages)}
+                    {!!document.variant && ` (${document.variant})`}
+                  </span>
                 )}
               </div>
               <div className="mt-4 md:mt-0">
@@ -79,6 +83,14 @@ export const DocumentHead = ({ document, family, handleViewSourceClick }: TProps
                 </Button>
               </div>
             </div>
+            <div className="text-content" dangerouslySetInnerHTML={{ __html: summary }} />
+            {family.summary.length > MAX_FAMILY_SUMMARY_LENGTH_ON_DOCUMENT && (
+              <div className="mt-4">
+                <button onClick={() => setShowFullSummary(!showFullSummary)} className="anchor alt text-sm">
+                  {showFullSummary ? "Hide full summary" : "View full summary"}
+                </button>
+              </div>
+            )}
             {translated && (
               <div className="flex mt-4">
                 <Alert
