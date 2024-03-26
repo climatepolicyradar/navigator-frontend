@@ -15,6 +15,7 @@ import { getDocumentDescription } from "@constants/metaDescriptions";
 import { TDocumentPage, TFamilyPage, TGeographySummary } from "@types";
 import SearchForm from "@components/forms/SearchForm";
 import BySemanticSearch from "@components/filters/BySemanticSearch";
+import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 
 type TProps = {
   document: TDocumentPage;
@@ -148,6 +149,12 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                       checked={(router.query[QUERY_PARAMS.exact_match] as string) === "true"}
                       handleSearchChange={handleSemanticSearchChange}
                     />
+                    {!router.query[QUERY_PARAMS.query_string] && (
+                      <div className="flex text-sm text-gray-600">
+                        <div className="mr-2 flex-shrink-0 font-bold">Examples:</div>
+                        <div className="">{EXAMPLE_SEARCHES.join(", ")}</div>
+                      </div>
+                    )}
                   </div>
                   {hasPassageMatches && (
                     <>
