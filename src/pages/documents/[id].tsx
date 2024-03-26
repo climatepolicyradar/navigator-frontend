@@ -13,9 +13,8 @@ import { BookOpenIcon } from "@components/svg/Icons";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { getDocumentDescription } from "@constants/metaDescriptions";
 import { TDocumentPage, TFamilyPage, TGeographySummary } from "@types";
-import DocumentSearchForm from "@components/forms/DocumentSearchForm";
-import useConfig from "@hooks/useConfig";
-import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
+import SearchForm from "@components/forms/SearchForm";
+import BySemanticSearch from "@components/filters/BySemanticSearch";
 
 type TProps = {
   document: TDocumentPage;
@@ -23,13 +22,22 @@ type TProps = {
   geographySummary: TGeographySummary;
 };
 
-const FEATURED_SEARCHES = ["Resilient infrastructure", "Fossil fuel divestment", "Net zero growth plan", "Sustainable fishing"];
-
 const passageClasses = (docType: string) => {
   if (docType === "application/pdf") {
     return "md:w-1/3";
   }
   return "md:w-2/3";
+};
+
+const scrollToPassage = (index: number) => {
+  setTimeout(() => {
+    const passage = window.document.getElementById(`passage-${index}`);
+    if (!passage) return;
+    const topPos = passage.offsetTop;
+    const container = window.document.getElementById("document-sidebar");
+    if (!container) return;
+    container.scrollTo({ top: topPos - 10, behavior: "smooth" });
+  }, 100);
 };
 
 /*
@@ -40,16 +48,11 @@ const passageClasses = (docType: string) => {
   - If the document is an HTML, the passages will be displayed in a list on the left side of the page but the document will not be displayed.
 */
 
-const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family, geographySummary }: TProps) => {
+const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family }: TProps) => {
   const [passageIndex, setPassageIndex] = useState(null);
   const router = useRouter();
   const startingPassage = Number(router.query.passage) || 0;
   const { status, families, searchQuery } = useSearch(router.query, null, document.import_id, !!router.query[QUERY_PARAMS.query_string]);
-
-  const configQuery = useConfig();
-  const { data: { countries = [] } = {} } = configQuery;
-  const geographyName = getCountryName(family.geography, countries);
-  const geographySlug = getCountrySlug(family.geography, countries);
 
   const passageMatches = [];
   if (!!router.query[QUERY_PARAMS.query_string]) {
@@ -64,23 +67,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const hasPassageMatches = passageMatches.length > 0;
   const canPreview = document.content_type === "application/pdf";
 
-  const totalDocsInFamilyGeography = () => {
-    if (!!geographySummary) {
-      return geographySummary.family_counts.Legislative + geographySummary.family_counts.Executive + geographySummary.family_counts.UNFCCC;
-    }
-  };
-
-  const scrollToPassage = (index: number) => {
-    setTimeout(() => {
-      const passage = window.document.getElementById(`passage-${index}`);
-      if (!passage) return;
-      const topPos = passage.offsetTop;
-      const container = window.document.getElementById("passages-container");
-      if (!container) return;
-      container.scrollTo({ top: topPos - 10, behavior: "smooth" });
-    }, 100);
-  };
-
   const handlePassageClick = (index: number) => {
     if (!canPreview) return;
     setPassageIndex(index);
@@ -94,12 +80,26 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     window.open(url);
   };
 
-  // Search handlers
+  const handleViewOtherDocsClick = (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    router.push(`/document/${family.slug}`);
+  };
+
+  // Search input handler
   const handleSearchInput = (term: string) => {
     const queryObj = {};
     queryObj[QUERY_PARAMS.query_string] = term;
-    queryObj[QUERY_PARAMS.country] = geographySlug;
-    router.push({ pathname: "/search", query: queryObj });
+    if (term === "") return false;
+    router.push({ pathname: `/documents/${document.slug}`, query: queryObj });
+  };
+
+  const handleSemanticSearchChange = (_: string, isExact: boolean) => {
+    const queryObj = {};
+    if (isExact) {
+      queryObj[QUERY_PARAMS.exact_match] = isExact;
+    }
+    queryObj[QUERY_PARAMS.query_string] = router.query[QUERY_PARAMS.query_string] as string;
+    router.push({ pathname: `/documents/${document.slug}`, query: queryObj });
   };
 
   useEffect(() => {
@@ -109,29 +109,21 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     }
   }, [startingPassage]);
 
-  // Prevent the "Are you sure you want to leave this page?" dialog
-  // Important: this does not override the Adobe SDK default behaviour
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      return;
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
-
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)}>
       <section
-        className="pb-8 flex-1 flex flex-col bg-gray-100"
+        className="pb-8 flex-1 flex flex-col"
         data-analytics-date={family.published_date}
         data-analytics-geography={family.geography}
         data-analytics-variant={document.variant}
         data-analytics-type={document.content_type}
       >
-        <DocumentHead document={document} family={family} handleViewSourceClick={handleViewSourceClick} />
+        <DocumentHead
+          document={document}
+          family={family}
+          handleViewOtherDocsClick={handleViewOtherDocsClick}
+          handleViewSourceClick={handleViewSourceClick}
+        />
         {status !== "success" ? (
           <div className="w-full flex justify-center flex-1 bg-white">
             <Loader />
@@ -139,69 +131,76 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
         ) : (
           <section className="flex-1 flex" id="document-viewer">
             <div className="container flex-1">
-              <div className="md:flex md:h-[80vh]">
-                {hasPassageMatches && (
-                  <div
-                    id="passages-container"
-                    className={`pr-4 max-h-[30vh] md:block md:max-h-full ${passageClasses(
-                      document.content_type
-                    )} relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500`}
-                  >
-                    <div className="my-4" data-cy="document-matches-description">
-                      <p className="">
-                        {passageMatches.length} matches for "<b>{`${router.query[QUERY_PARAMS.query_string]}`}</b>"
-                        {!searchQuery.exact_match && ` and related phrases`}
-                      </p>
-                      <p className="text-sm">Sorted by search relevance</p>
-                    </div>
-                    <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
+              <div id="document-container" className="md:flex md:h-[80vh]">
+                <div
+                  id="document-sidebar"
+                  className={`pr-4 py-4 max-h-[30vh] md:block md:max-h-full ${passageClasses(
+                    document.content_type
+                  )} relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500`}
+                >
+                  <div id="document-search" className="flex flex-col gap-2">
+                    <SearchForm
+                      placeholder="Search the full text of the document"
+                      handleSearchInput={handleSearchInput}
+                      input={router.query[QUERY_PARAMS.query_string] as string}
+                    />
+                    <BySemanticSearch
+                      checked={(router.query[QUERY_PARAMS.exact_match] as string) === "true"}
+                      handleSearchChange={handleSemanticSearchChange}
+                    />
                   </div>
-                )}
-                {status === "success" && (
-                  <div className={`pt-4 flex-1 h-[400px] md:block md:h-full ${hasPassageMatches ? "md:border-l md:border-l-gray-200" : ""}`}>
-                    {canPreview && (
-                      <EmbeddedPDF
-                        document={document}
-                        documentPassageMatches={passageMatches}
-                        passageIndex={passageIndex}
-                        startingPassageIndex={startingPassage}
-                      />
-                    )}
-                    {!canPreview && (
-                      <div className="ml-4 text-center text-gray-600">
-                        <div className="mb-2 flex justify-center">
-                          <BookOpenIcon />
-                        </div>
-                        <p className="mb-2">Document Preview</p>
-                        <p className="mb-2 text-sm">
-                          You’ll soon be able to view the full-text of the document here, along with any English translation.
+                  {hasPassageMatches && (
+                    <>
+                      <div className="my-4 text-sm" data-cy="document-matches-description">
+                        <p>
+                          {passageMatches.length} matches for "<b>{`${router.query[QUERY_PARAMS.query_string]}`}</b>"
+                          {!searchQuery.exact_match && ` and related phrases`}
                         </p>
-                        <p className="text-sm">
-                          <ExternalLink className="underline" url="https://form.jotform.com/233293886694373">
-                            Sign up here
-                          </ExternalLink>{" "}
-                          to be notified when it’s available.
-                        </p>
+                        <p>Sorted by search relevance</p>
                       </div>
-                    )}
-                  </div>
-                )}
+                      <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
+                    </>
+                  )}
+                  {!hasPassageMatches && (
+                    <>
+                      <div>
+                        <p>No results / search</p>
+                      </div>
+                    </>
+                  )}
+                </div>
+                <div
+                  id="document-preview"
+                  className={`pt-4 flex-1 h-[400px] md:block md:h-full ${hasPassageMatches ? "md:border-l md:border-l-gray-200" : ""}`}
+                >
+                  {canPreview && (
+                    <EmbeddedPDF
+                      document={document}
+                      documentPassageMatches={passageMatches}
+                      passageIndex={passageIndex}
+                      startingPassageIndex={startingPassage}
+                    />
+                  )}
+                  {!canPreview && (
+                    <div className="ml-4 text-center text-gray-600">
+                      <div className="mb-2 flex justify-center">
+                        <BookOpenIcon />
+                      </div>
+                      <p className="mb-2">Document Preview</p>
+                      <p className="mb-2 text-sm">
+                        You’ll soon be able to view the full-text of the document here, along with any English translation.
+                      </p>
+                      <p className="text-sm">
+                        <ExternalLink className="underline" url="https://form.jotform.com/233293886694373">
+                          Sign up here
+                        </ExternalLink>{" "}
+                        to be notified when it’s available.
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </section>
-        )}
-        {!!geographySummary && totalDocsInFamilyGeography() > 0 && (
-          <section className="flex mt-8 mx-auto max-w-screen-md px-4 lg:px-0" data-cy="top-documents">
-            <DocumentSearchForm
-              placeholder={
-                geographyName === "No Geography"
-                  ? `Search the full text of ${totalDocsInFamilyGeography()} UNFCCC documents`
-                  : `Search the full text of ${totalDocsInFamilyGeography()} documents from ${geographyName}`
-              }
-              handleSearchInput={handleSearchInput}
-              input={""}
-              featuredSearches={FEATURED_SEARCHES}
-            />
           </section>
         )}
       </section>
@@ -219,8 +218,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   let documentData: TDocumentPage;
   let familyData: TFamilyPage;
-  let geographySummaryData: TGeographySummary;
-  let geographyCode: string;
 
   try {
     const { data: returnedDocumentData } = await client.get(`/documents/${id}`);
@@ -230,15 +227,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     familyData = returnedFamilyData;
   } catch {
     // TODO: Handle error more gracefully
-  }
-
-  if (familyData) geographyCode = familyData.geography;
-
-  if (geographyCode) {
-    try {
-      const { data: returnedData }: { data: TGeographySummary } = await client.get(`/summaries/geography/${geographyCode}`);
-      geographySummaryData = returnedData;
-    } catch (error) {}
   }
 
   if (!documentData || !familyData) {
@@ -251,7 +239,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       document: documentData,
       family: familyData,
-      geographySummary: geographySummaryData,
     },
   };
 };
