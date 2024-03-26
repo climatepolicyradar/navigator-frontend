@@ -31,14 +31,13 @@ import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary } from "@types"
 import Tooltip from "@components/tooltip";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 import { Alert } from "@components/Alert";
+import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 
 type TProps = {
   page: TFamilyPage;
   targets: TTarget[];
   geographySummary: TGeographySummary;
 };
-
-const FEATURED_SEARCHES = ["Resilient infrastructure", "Fossil fuel divestment", "Net zero growth plan", "Sustainable fishing"];
 
 /*
   # DEV NOTES
@@ -172,7 +171,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               placeholder={`Search the full text of the ${page.title}`}
               handleSearchInput={handleSearchInput}
               input={router.query[QUERY_PARAMS.query_string] as string}
-              featuredSearches={FEATURED_SEARCHES}
+              featuredSearches={EXAMPLE_SEARCHES}
               showSuggestions
             />
           </section>
