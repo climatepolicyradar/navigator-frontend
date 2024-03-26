@@ -40,7 +40,7 @@ const Button = ({
       break;
     case "clear":
       conditionalClasses = !disabled
-        ? "clear bg-transparent border border-gray-300 hover:border-blue-400 text-blue-400 disabled:border-gray-300 disabled:text-gray-300 disabled:hover:bg-white"
+        ? "clear bg-transparent border border-gray-300 hover:border-gray-600 text-gray-600 disabled:border-gray-300 disabled:text-gray-300 disabled:hover:bg-white"
         : "";
       break;
   }
