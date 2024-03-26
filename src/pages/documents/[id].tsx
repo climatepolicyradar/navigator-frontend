@@ -12,7 +12,7 @@ import { ExternalLink } from "@components/ExternalLink";
 import { BookOpenIcon } from "@components/svg/Icons";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { getDocumentDescription } from "@constants/metaDescriptions";
-import { TDocumentPage, TFamilyPage, TGeographySummary } from "@types";
+import { TDocumentPage, TFamilyPage, TGeographySummary, TPassage } from "@types";
 import SearchForm from "@components/forms/SearchForm";
 import BySemanticSearch from "@components/filters/BySemanticSearch";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
@@ -55,7 +55,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const startingPassage = Number(router.query.passage) || 0;
   const { status, families, searchQuery } = useSearch(router.query, null, document.import_id, !!router.query[QUERY_PARAMS.query_string]);
 
-  const passageMatches = [];
+  const passageMatches: TPassage[] = [];
   if (!!router.query[QUERY_PARAMS.query_string]) {
     families.forEach((family) => {
       family.family_documents.forEach((cacheDoc) => {
@@ -170,8 +170,15 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                   )}
                   {!hasPassageMatches && (
                     <>
-                      <div>
-                        <p>No results / search</p>
+                      <div className="flex flex-col gap-4 flex-1 mt-4 pt-4 border-t text-center text-gray-600 px-4">
+                        <p className="text-xl font-bold">No {router.query[QUERY_PARAMS.query_string] ? "results" : "searches yet"}</p>
+                        {router.query[QUERY_PARAMS.query_string] && <p>No results found for that search, please try a different term</p>}
+                        {!router.query[QUERY_PARAMS.query_string] && (
+                          <>
+                            <p>We'll search for the meaning of your phrase. You'll see exact matches and related phrases highlighted in the text.</p>
+                            <p>For example, a search for 'electric cars' will also show results for 'electric vehicles' and 'EVs'.</p>
+                          </>
+                        )}
                       </div>
                     </>
                   )}
