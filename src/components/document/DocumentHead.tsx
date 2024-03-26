@@ -16,6 +16,7 @@ import { MAX_FAMILY_SUMMARY_LENGTH_ON_DOCUMENT } from "@constants/document";
 type TProps = {
   document: TDocumentPage;
   family: TFamilyPage;
+  handleViewOtherDocsClick: (e: React.FormEvent<HTMLButtonElement>) => void;
   handleViewSourceClick: (e: React.FormEvent<HTMLButtonElement>) => void;
 };
 
@@ -23,7 +24,7 @@ const containsNonEnglish = (languages: string[]) => {
   return languages.some((lang) => lang !== "eng");
 };
 
-export const DocumentHead = ({ document, family, handleViewSourceClick }: TProps) => {
+export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handleViewSourceClick }: TProps) => {
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [summary, setSummary] = useState("");
 
@@ -58,10 +59,10 @@ export const DocumentHead = ({ document, family, handleViewSourceClick }: TProps
           family={breadcrumbFamily}
           label={<span className="capitalize">{breadcrumbLabel}</span>}
         />
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col lg:flex-row">
           <div className="flex-1 my-4">
             <h1 className="text-3xl lg:smaller">{document.title}</h1>
-            <div className="mt-4 md:mt-0 md:flex justify-between items-center">
+            <div className="my-4 md:my-2 md:flex justify-between items-center">
               <div className="flex text-sm text-grey-700 items-center font-medium gap-2 middot-between">
                 {!isSystemGeo(family.geography) && (
                   <CountryLink countryCode={family.geography} className="text-primary-400 hover:text-indigo-600 duration-300">
@@ -77,37 +78,45 @@ export const DocumentHead = ({ document, family, handleViewSourceClick }: TProps
                   </span>
                 )}
               </div>
-              <div className="mt-4 md:mt-0">
-                <Button color="clear" data-cy="view-source" onClick={handleViewSourceClick} extraClasses="flex items-center">
-                  <ExternalLinkIcon height="16" width="16" /> <span className="ml-2">View source document</span>
-                </Button>
-              </div>
             </div>
             <div className="text-content" dangerouslySetInnerHTML={{ __html: summary }} />
             {family.summary.length > MAX_FAMILY_SUMMARY_LENGTH_ON_DOCUMENT && (
               <div className="mt-4">
                 <button onClick={() => setShowFullSummary(!showFullSummary)} className="anchor alt text-sm">
-                  {showFullSummary ? "Hide full summary" : "View full summary"}
+                  {showFullSummary ? "Hide full summary" : "Read more"}
                 </button>
               </div>
             )}
-            {translated && (
-              <div className="flex mt-4">
-                <Alert
-                  message={
-                    <>
-                      Any English translations of this document have been provided by Google Cloud Translate. They may not be 100% accurate.{" "}
-                      <ExternalLink url="https://form.jotform.com/233293886694373">
-                        Get notified when full document translations are available.
-                      </ExternalLink>
-                    </>
-                  }
-                  icon={<AlertCircleIcon height="16" width="16" />}
-                />
-              </div>
-            )}
+          </div>
+          <div>
+            <div className="my-4 flex flex-col gap-2 xl:flex-row">
+              {family.documents.length > 1 && (
+                <Button color="clear" data-cy="view-source" onClick={handleViewOtherDocsClick} extraClasses="flex items-center text-sm">
+                  Other documents in this entry ({family.documents.length})
+                </Button>
+              )}
+              <Button color="clear" data-cy="view-source" onClick={handleViewSourceClick} extraClasses="flex items-center text-sm">
+                <span className="mr-2">View source document</span>
+                <ExternalLinkIcon height="16" width="16" />
+              </Button>
+            </div>
           </div>
         </div>
+        {translated && (
+          <div className="flex my-4">
+            <Alert
+              message={
+                <>
+                  Any English translations of this document have been provided by Google Cloud Translate. They may not be 100% accurate.{" "}
+                  <ExternalLink url="https://form.jotform.com/233293886694373">
+                    Get notified when full document translations are available.
+                  </ExternalLink>
+                </>
+              }
+              icon={<AlertCircleIcon height="16" width="16" />}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
