@@ -69,6 +69,7 @@ export default function usePDFPreview(document: TDocumentPage, documentPassageMa
 
   let viewSDKClient = null;
   let embedApi = null;
+  let annotationManagerApi = null;
 
   const createPDFClient = (startingPassage: number, onLoadCallback?: Function) => {
     viewSDKClient = new ViewSDKClient();
@@ -85,8 +86,10 @@ export default function usePDFPreview(document: TDocumentPage, documentPassageMa
         });
         adobeViewer.getAnnotationManager().then((annotationManager: any) => {
           annotationManager.setConfig(annotationConfig);
+          annotationManagerApi = annotationManager;
           if (documentPassageMatches.length > 0) {
-            annotationManager.addAnnotations(generateHighlights(document, documentPassageMatches));
+            // annotationManager.addAnnotations(generateHighlights(document, documentPassageMatches));
+            documentMatchesChangeHandler(documentPassageMatches);
           }
         });
         if (onLoadCallback) {
@@ -106,5 +109,15 @@ export default function usePDFPreview(document: TDocumentPage, documentPassageMa
     }, PDF_SCROLL_DELAY);
   };
 
-  return { createPDFClient, passageIndexChangeHandler };
+  const documentMatchesChangeHandler = async (documentPassageMatches: TPassage[]) => {
+    if (!annotationManagerApi) {
+      return;
+    }
+    // await annotationManagerApi.deleteAnnotations({});
+    if (documentPassageMatches.length > 0) {
+      await annotationManagerApi.addAnnotations(generateHighlights(document, documentPassageMatches));
+    }
+  };
+
+  return { createPDFClient, passageIndexChangeHandler, documentMatchesChangeHandler };
 }
