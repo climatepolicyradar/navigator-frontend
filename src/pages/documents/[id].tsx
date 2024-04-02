@@ -88,13 +88,16 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
 
   // Search input handler
   const handleSearchInput = (term: string) => {
+    setPassageIndex(0);
     const queryObj = {};
     queryObj[QUERY_PARAMS.query_string] = term;
     if (term === "") return false;
     router.push({ pathname: `/documents/${document.slug}`, query: queryObj });
   };
 
+  // Semantic search / exact match handler
   const handleSemanticSearchChange = (_: string, isExact: boolean) => {
+    setPassageIndex(0);
     const queryObj = {};
     if (isExact) {
       queryObj[QUERY_PARAMS.exact_match] = isExact;
