@@ -51,20 +51,11 @@ const scrollToPassage = (index: number) => {
 
 const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family }: TProps) => {
   const [passageIndex, setPassageIndex] = useState(null);
+  const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
   const router = useRouter();
   const startingPassage = Number(router.query.passage) || 0;
   const { status, families, searchQuery } = useSearch(router.query, null, document.import_id, !!router.query[QUERY_PARAMS.query_string]);
 
-  const passageMatches: TPassage[] = [];
-  if (!!router.query[QUERY_PARAMS.query_string]) {
-    families.forEach((family) => {
-      family.family_documents.forEach((cacheDoc) => {
-        if (document.slug === cacheDoc.document_slug) {
-          passageMatches.push(...cacheDoc.document_passage_matches);
-        }
-      });
-    });
-  }
   const hasPassageMatches = passageMatches.length > 0;
   const canPreview = document.content_type === "application/pdf";
 
@@ -105,6 +96,20 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     queryObj[QUERY_PARAMS.query_string] = router.query[QUERY_PARAMS.query_string] as string;
     router.push({ pathname: `/documents/${document.slug}`, query: queryObj });
   };
+
+  useEffect(() => {
+    let passageMatches: TPassage[] = [];
+    families.forEach((family) => {
+      family.family_documents.forEach((cacheDoc) => {
+        if (document.slug === cacheDoc.document_slug) {
+          passageMatches.push(...cacheDoc.document_passage_matches);
+        }
+      });
+    });
+    setPassageMatches(passageMatches);
+    // comparing families as objects will cause an infinite loop as each collection is a new instance of an object
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(families), document.slug]);
 
   useEffect(() => {
     // Scroll to starting passage on page load
