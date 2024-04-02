@@ -9,7 +9,7 @@ import EmbeddedPDF from "@components/EmbeddedPDF";
 import PassageMatches from "@components/PassageMatches";
 import Loader from "@components/Loader";
 import { ExternalLink } from "@components/ExternalLink";
-import { BookOpenIcon } from "@components/svg/Icons";
+import { BookOpenIcon, FindInDocIcon } from "@components/svg/Icons";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { getDocumentDescription } from "@constants/metaDescriptions";
 import { TDocumentPage, TFamilyPage, TGeographySummary, TPassage } from "@types";
@@ -173,7 +173,12 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                   )}
                   {!hasPassageMatches && (
                     <>
-                      <div className="flex flex-col gap-4 flex-1 mt-4 pt-4 border-t text-center text-gray-600 px-4">
+                      <div className="flex flex-col gap-4 flex-1 mt-4 pt-10 border-t text-center text-gray-600 px-4">
+                        <div className="text-blue-800 flex justify-center items-center">
+                          <div className="rounded-full bg-blue-50 p-6 mb-2">
+                            <FindInDocIcon width="48" height="48" />
+                          </div>
+                        </div>
                         <p className="text-xl font-bold">No {router.query[QUERY_PARAMS.query_string] ? "results" : "searches yet"}</p>
                         {router.query[QUERY_PARAMS.query_string] && <p>No results found for that search, please try a different term</p>}
                         {!router.query[QUERY_PARAMS.query_string] && (
