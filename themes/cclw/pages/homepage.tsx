@@ -24,7 +24,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
         <div className="container my-12" data-cy="powered-by">
           <div className="md:flex justify-center gap-12 text-center">
             <div className="mb-12 md:mb-0">
-              <h2 className="mb-6">Hosted by</h2>
+              <h2 className="font-normal mb-6">Hosted by</h2>
               <div className="flex items-center justify-center gap-6">
                 <ExternalLink className="flex" url="https://www.lse.ac.uk/">
                   <span className="flex" data-cy="lse-logo">
@@ -39,7 +39,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
               </div>
             </div>
             <div>
-              <h2 className="mb-6">Powered by</h2>
+              <h2 className="font-normal mb-6">Powered by</h2>
               <ExternalLink className="flex justify-center" url="https://www.climatepolicyradar.org">
                 <span className="flex" data-cy="cpr-logo">
                   <Image src="/images/cclw/partners/cpr-logo.png" alt="Climate Policy Radar logo" width={320} height={58} />
@@ -49,11 +49,11 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
           </div>
         </div>
         <div className="container my-12" data-cy="featured-content">
-          <h2 className="text-center mb-6">Featured Content</h2>
+          <h2 className="font-normal text-center mb-6">Featured Content</h2>
           <Articles />
         </div>
         <div className="container my-12" data-cy="partners">
-          <h2 className="text-center mb-6">Our partners</h2>
+          <h2 className="font-normal text-center mb-6">Our partners</h2>
           <Partners />
         </div>
         <Footer />
