@@ -3,7 +3,8 @@ import MatchesButton from "@components/buttons/MatchesButton";
 import { DocumentIcon, GlobeIcon, Loading } from "@components/svg/Icons";
 import useConfig from "@hooks/useConfig";
 import { getLanguage } from "@helpers/getLanguage";
-import { TDocumentContentType, TDocumentPage, TLoadingStatus } from "@types";
+import { TDocumentPage, TLoadingStatus } from "@types";
+import { getDocumentType } from "@helpers/getDocumentType";
 
 type TProps = {
   document: TDocumentPage;
@@ -28,17 +29,6 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
       Searching...
     </span>
   );
-
-  const renderContentType = (t: TDocumentContentType) => {
-    if (!t) return null;
-    switch (t) {
-      case "application/pdf":
-        return <span>PDF</span>;
-      case "text/html":
-        return <span>HTML</span>;
-    }
-    return null;
-  };
 
   const renderDocumentInfo = (): string | JSX.Element => {
     if (status === "loading") return loadingIndicator;
@@ -86,7 +76,7 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
                   </span>
                 )}
                 {!isMain && <span className="capitalize">{document_role?.toLowerCase()}</span>}
-                {renderContentType(content_type)}
+                {getDocumentType(content_type)}
                 {!canPreview && <span className="flex gap-2 items-center">{renderDocumentInfo()}</span>}
               </div>
             </div>
