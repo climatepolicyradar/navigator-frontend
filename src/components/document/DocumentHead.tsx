@@ -11,7 +11,7 @@ import { ExternalLinkIcon, AlertCircleIcon } from "@components/svg/Icons";
 import { Alert } from "@components/Alert";
 import { ExternalLink } from "@components/ExternalLink";
 import { truncateString } from "@helpers/index";
-import { MAX_FAMILY_SUMMARY_LENGTH_ON_DOCUMENT } from "@constants/document";
+import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
 
 type TProps = {
   document: TDocumentPage;
@@ -45,7 +45,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
       if (showFullSummary) {
         setSummary(text);
       } else {
-        setSummary(truncateString(text, MAX_FAMILY_SUMMARY_LENGTH_ON_DOCUMENT));
+        setSummary(truncateString(text, MAX_FAMILY_SUMMARY_LENGTH_BRIEF));
       }
     }
   }, [family, showFullSummary]);
@@ -82,7 +82,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
               </div>
             </div>
             <div className="text-content" dangerouslySetInnerHTML={{ __html: summary }} />
-            {family.summary.length > MAX_FAMILY_SUMMARY_LENGTH_ON_DOCUMENT && (
+            {family.summary.length > MAX_FAMILY_SUMMARY_LENGTH_BRIEF && (
               <div className="mt-4">
                 <button onClick={() => setShowFullSummary(!showFullSummary)} className="anchor alt text-sm">
                   {showFullSummary ? "Hide full summary" : "Read more"}
