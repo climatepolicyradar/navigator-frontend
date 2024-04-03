@@ -54,7 +54,6 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
       sort_field: searchQuery.sort_field,
       sort_order: searchQuery.sort_order,
       offset: searchQuery.offset,
-      use_vespa: searchQuery.use_vespa,
       family_ids: searchQuery.family_ids,
       document_ids: searchQuery.document_ids,
     };

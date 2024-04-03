@@ -64,10 +64,6 @@ export default function buildSearchQuery(routerQuery: TRouterQuery, familyId = "
     keyword_filters.countries = Array.isArray(countries) ? countries : [countries];
   }
 
-  if (routerQuery[QUERY_PARAMS.use_vespa]) {
-    query.use_vespa = routerQuery[QUERY_PARAMS.use_vespa] === "true";
-  }
-
   if (familyId) {
     query.family_ids = [familyId];
   }

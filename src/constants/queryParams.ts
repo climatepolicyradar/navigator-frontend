@@ -8,5 +8,4 @@ export const QUERY_PARAMS = {
   sort_field: "sf",
   sort_order: "so",
   offset: "o",
-  use_vespa: "uv",
 };

@@ -25,7 +25,6 @@ export type TCacheIdentifier = {
   sort_field: string | null;
   sort_order: string;
   offset: number;
-  use_vespa: boolean;
   family_ids?: string[] | null;
   document_ids?: string[] | null;
 };
@@ -60,7 +59,7 @@ const clearOldCache = () => {
 export const getCachedSearch = (cacheId: TCacheIdentifier) => {
   clearOldCache();
   const cache = getCache();
-  const { query_string, exact_match, keyword_filters, year_range, sort_field, sort_order, offset, use_vespa } = cacheId;
+  const { query_string, exact_match, keyword_filters, year_range, sort_field, sort_order, offset } = cacheId;
   const cachedSearch = cache.cache.find(
     (search) =>
       search.query_string === query_string &&
@@ -73,7 +72,6 @@ export const getCachedSearch = (cacheId: TCacheIdentifier) => {
       search.sort_field === sort_field &&
       search.sort_order === sort_order &&
       search.offset === offset &&
-      search.use_vespa === use_vespa &&
       arrayStringMatchChecker(search.family_ids, cacheId.family_ids) &&
       arrayStringMatchChecker(search.document_ids, cacheId.document_ids)
   );
