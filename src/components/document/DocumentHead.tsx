@@ -65,9 +65,11 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
             <div className="my-4 md:my-2 md:flex justify-between items-center">
               <div className="flex text-sm text-grey-700 items-center font-medium gap-2 middot-between">
                 {!isSystemGeo(family.geography) && (
-                  <CountryLink countryCode={family.geography} className="text-primary-400 hover:text-indigo-600 duration-300">
-                    <span>{geoName}</span>
-                  </CountryLink>
+                  <span className="flex gap-1">
+                    <CountryLink countryCode={family.geography} className="text-primary-400 hover:text-indigo-600 duration-300">
+                      <span>{geoName}</span>
+                    </CountryLink>
+                  </span>
                 )}
                 {!isMain && <span className="capitalize">{document.document_role.toLowerCase()}</span>}
                 {family.category && <span className="capitalize">{family.category}</span>}
