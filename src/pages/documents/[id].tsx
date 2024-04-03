@@ -74,7 +74,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
 
   const handleViewOtherDocsClick = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    router.push(`/document/${family.slug}`);
+    router.push({ pathname: `/document/${family.slug}`, query: router.query });
   };
 
   // Search input handler
