@@ -24,9 +24,11 @@ export const FamilyMeta = ({ category, date, geography, topics, author }: TProps
   return (
     <>
       {!isSystemGeo(geography) && (
-        <CountryLink countryCode={geography} className="text-gray-700">
-          <span>{country_name}</span>
-        </CountryLink>
+        <span className="flex gap-1">
+          <CountryLink countryCode={geography} className="text-gray-700">
+            <span>{country_name}</span>
+          </CountryLink>
+        </span>
       )}
       {!isNaN(year) && <span data-cy="family-metadata-year">{year}</span>}
       {category && (
