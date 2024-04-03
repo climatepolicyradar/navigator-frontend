@@ -32,6 +32,7 @@ import Tooltip from "@components/tooltip";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 import { Alert } from "@components/Alert";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
+import { getMainDocuments } from "@helpers/getMainDocuments";
 
 type TProps = {
   page: TFamilyPage;
@@ -98,8 +99,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const sourceLogo = page?.organisation === "CCLW" ? "grantham-logo.png" : null;
   const sourceName = page?.organisation === "CCLW" ? "Grantham Research Institute" : page?.organisation;
 
-  const mainDocs = page.documents.filter((doc) => doc.document_role && doc.document_role.toLowerCase().includes("main"));
-  const otherDocs = page.documents.filter((doc) => !doc.document_role || !doc.document_role.toLowerCase().includes("main"));
+  const [mainDocuments, otherDocuments] = getMainDocuments(page.documents);
 
   const getDocumentCategories = () => {
     // Some types are comma separated, so we need to split them
@@ -131,9 +131,12 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
     const queryObj = {};
     queryObj[QUERY_PARAMS.query_string] = term;
     if (term === "") return false;
-    // if the family only has one physical document, redirect to that document
-    if (page.documents.length === 1) {
-      router.push({ pathname: `/documents/${page.documents[0].slug}`, query: queryObj });
+    // if the family only has one main document, redirect to that document
+    // if there is no main document but only one other document, redirect to the other document
+    if (mainDocuments.length === 1) {
+      router.push({ pathname: `/documents/${mainDocuments[0].slug}`, query: queryObj });
+    } else if (mainDocuments.length === 0 && otherDocuments.length === 1) {
+      router.push({ pathname: `/documents/${otherDocuments[0].slug}`, query: queryObj });
     } else {
       router.push({ pathname: `/document/${page.slug}`, query: queryObj });
     }
@@ -177,15 +180,15 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           </section>
 
           <section className="mt-8">
-            <h2 className="text-base">Main documents</h2>
+            <h2 className="text-base">Main document{mainDocuments.length > 1 ? "s" : ""}</h2>
             <div data-cy="main-documents">
-              {mainDocs.map((doc) => (
+              {mainDocuments.map((doc) => (
                 <FamilyDocument matches={getDocumentMatches(doc.slug)} document={doc} key={doc.import_id} status={status} />
               ))}
             </div>
           </section>
 
-          {otherDocs.length > 0 && (
+          {otherDocuments.length > 0 && (
             <>
               <section className="mt-8">
                 <h2 className="flex items-center gap-2 text-base">
@@ -198,7 +201,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                   />
                 </h2>
                 <div data-cy="related-documents">
-                  {otherDocs.map((doc) => (
+                  {otherDocuments.map((doc) => (
                     <div key={doc.import_id} className="mt-4">
                       <FamilyDocument matches={getDocumentMatches(doc.slug)} document={doc} status={status} />
                     </div>
