@@ -58,7 +58,8 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
       document_ids: searchQuery.document_ids,
     };
 
-    const cachedResult = getCachedSearch(cacheId);
+    // Skip cache if we are running a search from a family or document page
+    const cachedResult = cacheId.family_ids?.length || cacheId.document_ids?.length ? null : getCachedSearch(cacheId);
 
     if (cachedResult) {
       setFamilies(cachedResult?.families || []);
