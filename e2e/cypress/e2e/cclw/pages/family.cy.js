@@ -8,7 +8,7 @@ const relatedDocsSelector = '[data-cy="related-documents"]';
 const targetsSelector = '[data-cy="targets"]';
 
 const pageSelectors = ["h1", '[data-cy="country-link"]', '[data-cy="download-target-csv"]', mainDocsSelector, relatedDocsSelector, targetsSelector];
-const pageHeadings = ["Main documents", "Related documents", "Targets", "Timeline", "Note"];
+const pageHeadings = ["Main document", "Other documents in this entry", "Targets", "Timeline", "Note"];
 const metaData = [
   '[data-cy="family-metadata-category"], [data-cy="family-metadata-year"], [data-cy="country-link"], [data-cy="family-metadata-topics"]',
 ];
