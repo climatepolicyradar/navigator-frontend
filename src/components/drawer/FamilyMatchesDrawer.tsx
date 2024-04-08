@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { TMatchedFamily } from "@types";
 import { FamilyMeta } from "@components/document/FamilyMeta";
@@ -9,38 +8,24 @@ import { CleanRouterQuery } from "@utils/cleanRouterQuery";
 import { truncateString } from "@helpers/index";
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
 import Button from "@components/buttons/Button";
+import { pluralise } from "@utils/pluralise";
 
 type TProps = {
   family?: TMatchedFamily;
 };
 
-const pluralise = (count: number, singular: string, plural: string) => {
-  return count === 1 ? singular : plural;
-};
-
 export const FamilyMatchesDrawer = ({ family }: TProps) => {
   const router = useRouter();
-  const [showFullSummary, setShowFullSummary] = useState(false);
-  const [summary, setSummary] = useState("");
-
-  useEffect(() => {
-    if (family.family_description) {
-      const text = family.family_description;
-      if (showFullSummary) {
-        setSummary(text);
-      } else {
-        setSummary(truncateString(text, MAX_FAMILY_SUMMARY_LENGTH_BRIEF));
-      }
-    }
-  }, [family.family_description, showFullSummary]);
 
   if (!family) return null;
   const { family_geography, family_name, family_category, family_date, family_documents } = family;
   const numberOfMatches = matchesCount(family_documents);
   const numberOfDocsWithMatches = family_documents.filter((document) => document.document_passage_matches.length > 0).length;
-  const matchesDescription = `${numberOfMatches} ${pluralise(numberOfMatches, "match", "matches")} in ${numberOfDocsWithMatches} ${
-    numberOfDocsWithMatches === 1 ? "document" : "documents"
-  }`;
+  const matchesDescription = `${numberOfMatches} ${pluralise(numberOfMatches, "match", "matches")} in ${numberOfDocsWithMatches} ${pluralise(
+    numberOfDocsWithMatches,
+    "document",
+    "documents"
+  )}`;
 
   const onPassageClick = (passageIndex: number, documentIndex: number) => {
     const document = family_documents[documentIndex];
@@ -65,7 +50,10 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
           </div>
           <div className="mt-6">
             <h5 className="text-base mb-2">Summary</h5>
-            <div className="text-content mb-2" dangerouslySetInnerHTML={{ __html: summary }} />
+            <div
+              className="text-content mb-2"
+              dangerouslySetInnerHTML={{ __html: truncateString(family.family_description, MAX_FAMILY_SUMMARY_LENGTH_BRIEF) }}
+            />
             <LinkWithQuery href={`/document/${family.family_slug}`} className="text-sm alt">
               View full summary and timeline
             </LinkWithQuery>
