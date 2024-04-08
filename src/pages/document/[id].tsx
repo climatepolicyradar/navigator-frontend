@@ -33,6 +33,7 @@ import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 import { Alert } from "@components/Alert";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { getMainDocuments } from "@helpers/getMainDocuments";
+import { pluralise } from "@utils/pluralise";
 
 type TProps = {
   page: TFamilyPage;
@@ -180,7 +181,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           </section>
 
           <section className="mt-8">
-            <h2 className="text-base">Main document{mainDocuments.length > 1 ? "s" : ""}</h2>
+            <h2 className="text-base">Main {pluralise(mainDocuments.length, "document", "documents")}</h2>
             <div data-cy="main-documents">
               {mainDocuments.map((doc) => (
                 <FamilyDocument matches={getDocumentMatches(doc.slug)} document={doc} key={doc.import_id} status={status} />
