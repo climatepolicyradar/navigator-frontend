@@ -1,6 +1,7 @@
 import React, { useRef, useState, useMemo } from "react";
 import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
 import useConfig from "@hooks/useConfig";
+import useGeographies from "@hooks/useGeographies";
 import { GEO_CENTER_POINTS } from "@constants/mapCentres";
 import { GEO_EU_COUNTRIES } from "@constants/mapEUCountries";
 import { TGeography } from "@types";
@@ -97,7 +98,10 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
 
 export default function MapChart() {
   const configQuery = useConfig();
+  const geographiesQuery = useGeographies();
   const { data: { countries: configContries = [] } = {} } = configQuery;
+  const { data: mapData = [], status: mapDataStatus } = geographiesQuery;
+  console.log(mapDataStatus, mapData);
   const geographyInfoTooltipRef = useRef<TooltipRefProps>(null);
   const mapRef = useRef(null);
   const [activeGeography, setActiveGeography] = useState("");
@@ -129,6 +133,14 @@ export default function MapChart() {
     setActiveGeography("");
     openToolTip([e.clientX, e.clientY], hoveredGeo);
   };
+
+  // const handleGeoLeave = (e: React.MouseEvent<SVGPathElement>) => {
+  //   // check if the mouse is over the tooltip
+  //   if (e.relatedTarget && (e.relatedTarget as HTMLElement).classList.contains("react-tooltip")) return;
+  //   console.log(e);
+  //   setActiveGeography("");
+  //   geographyInfoTooltipRef.current?.close();
+  // };
 
   const handleGeographySelected = (selectedCountry: TGeographyWithCoords) => {
     setActiveGeography(selectedCountry.display_value);
@@ -221,6 +233,9 @@ export default function MapChart() {
                     onMouseOver={(e) => {
                       handleGeoHover(e, geo.properties.name);
                     }}
+                    // onMouseLeave={(e) => {
+                    //   handleGeoLeave(e);
+                    // }}
                   />
                 ))
               }
