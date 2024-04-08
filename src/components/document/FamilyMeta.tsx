@@ -24,41 +24,27 @@ export const FamilyMeta = ({ category, date, geography, topics, author }: TProps
   return (
     <>
       {!isSystemGeo(geography) && (
-        <>
+        <span className="flex gap-1">
           <CountryLink countryCode={geography} className="text-gray-700">
             <span>{country_name}</span>
           </CountryLink>
-        </>
+        </span>
       )}
-      {!isNaN(year) && (
-        <>
-          {!isSystemGeo(geography) && <span>&middot;</span>}
-          <span data-cy="family-metadata-year">{year}</span>
-        </>
-      )}
+      {!isNaN(year) && <span data-cy="family-metadata-year">{year}</span>}
       {category && (
-        <>
-          <span>&middot;</span>
-          <span className="capitalize" data-cy="family-metadata-category">
-            {getCategoryName(category)}
-          </span>
-        </>
+        <span className="capitalize" data-cy="family-metadata-category">
+          {getCategoryName(category)}
+        </span>
       )}
       {topics && topics.length > 0 && (
-        <>
-          <span>&middot;</span>
-          <span className="capitalize" data-cy="family-metadata-topics">
-            {topics.join(", ")}
-          </span>
-        </>
+        <span className="capitalize" data-cy="family-metadata-topics">
+          {topics.join(", ")}
+        </span>
       )}
       {author && author.length > 0 && (
-        <>
-          <span>&middot;</span>
-          <span className="capitalize" data-cy="family-metadata-author">
-            {author.join(", ")}
-          </span>
-        </>
+        <span className="capitalize" data-cy="family-metadata-author">
+          {author.join(", ")}
+        </span>
       )}
     </>
   );

@@ -14,7 +14,7 @@ export const SearchMatchesButton = ({ count, dataAttribute, overideText, active,
       data-analytics="search-result-matches-button"
       data-slug={dataAttribute}
       onClick={onClick}
-      className={`flex gap-1 items-center ml-2 rounded-full border border-gray-200 py-1 px-2 transition hover:bg-blue-100 hover:border-blue-200 active:bg-blue-600 active:text-white ${
+      className={`flex gap-1 items-center rounded-full border border-gray-200 py-1 px-2 transition hover:bg-blue-100 hover:border-blue-200 active:bg-blue-600 active:text-white ${
         active && "bg-blue-600 text-white"
       }`}
       aria-label={`View ${count} match${count > 1 ? "es" : ""} in documents`}

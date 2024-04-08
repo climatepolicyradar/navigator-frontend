@@ -27,14 +27,14 @@ async function getSearch(query = initialSearchCriteria) {
   return results;
 }
 
-const useSearch = (query: TRouterQuery, runFreshSearch: boolean = true) => {
+const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFreshSearch: boolean = true) => {
   const [status, setStatus] = useState<TLoadingStatus>("idle");
   const [families, setFamilies] = useState<TMatchedFamily[]>([]);
   const [hits, setHits] = useState<number>(null);
 
   const searchQuery = useMemo(() => {
-    return buildSearchQuery({ ...query });
-  }, [query]);
+    return buildSearchQuery({ ...query }, familyId, documentId);
+  }, [query, familyId, documentId]);
 
   useEffect(() => {
     setStatus("loading");
@@ -54,9 +54,12 @@ const useSearch = (query: TRouterQuery, runFreshSearch: boolean = true) => {
       sort_field: searchQuery.sort_field,
       sort_order: searchQuery.sort_order,
       offset: searchQuery.offset,
+      family_ids: searchQuery.family_ids,
+      document_ids: searchQuery.document_ids,
     };
 
-    const cachedResult = getCachedSearch(cacheId);
+    // Skip cache if we are running a search from a family or document page
+    const cachedResult = cacheId.family_ids?.length || cacheId.document_ids?.length ? null : getCachedSearch(cacheId);
 
     if (cachedResult) {
       setFamilies(cachedResult?.families || []);

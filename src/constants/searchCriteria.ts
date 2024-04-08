@@ -5,7 +5,7 @@ import { TSearchCriteria } from "@types";
 export const initialSearchCriteria: TSearchCriteria = {
   query_string: "",
   exact_match: false,
-  max_passages_per_doc: 10,
+  max_passages_per_doc: 100,
   keyword_filters: {},
   year_range: [minYear, currentYear()],
   sort_field: null,

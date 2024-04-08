@@ -20,7 +20,7 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
 
   return (
     <div>
-      <h1 className="text-4xl">{family.title}</h1>
+      <h1 className="text-2xl">{family.title}</h1>
       {family.collections.length > 0 && (
         <div className="md:flex text-sm text-indigo-400 mt-4 items-center w-full mb-2">
           <span>Part of the&nbsp;</span>
@@ -35,7 +35,7 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
             ))}
         </div>
       )}
-      <div className="flex flex-wrap text-sm gap-1 text-gray-700 mt-2 items-center font-medium" data-cy="family-metadata">
+      <div className="flex flex-wrap text-sm gap-1 text-gray-700 mt-2 items-center font-medium middot-between" data-cy="family-metadata">
         <FamilyMeta
           category={family.category}
           date={family.published_date}
@@ -44,7 +44,7 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
           author={family.metadata.author_type}
         />
         {!showMoreDetails && (
-          <a href="#more-details" className="text-gray-700 ml-2 underline" onClick={handleMoreDetailsClick} data-cy="family-metadata-moreDetails">
+          <a href="#more-details" className="text-gray-700 underline" onClick={handleMoreDetailsClick} data-cy="family-metadata-moreDetails">
             More details
           </a>
         )}

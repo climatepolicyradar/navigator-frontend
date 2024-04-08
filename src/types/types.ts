@@ -16,6 +16,8 @@ export type TSearchCriteria = {
   sort_order: string;
   limit: number;
   offset: number;
+  family_ids?: string[] | null;
+  document_ids?: string[] | null;
 };
 
 type TErrorDetail = {

@@ -25,7 +25,7 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
           </LinkWithQuery>
         </h2>
       </div>
-      <div className="flex flex-wrap text-sm gap-1 text-gray-700 mt-2 items-center font-medium">
+      <div className="flex flex-wrap text-sm gap-1 text-gray-700 mt-2 items-center font-medium middot-between">
         <FamilyMeta category={family_category} date={family_date} geography={family_geography} />
         {children}
       </div>
