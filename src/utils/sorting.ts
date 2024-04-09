@@ -23,4 +23,3 @@ export const sortGeos = (data, prop) => {
 
   return myData;
 };
-

@@ -23,7 +23,12 @@ const MainMenu = () => {
         <div className="absolute right-0 z-50">
           <DropdownMenuWrapper>
             <DropdownMenuItem external={true} href="https://climatepolicyradar.org" title="About us" first={true} setShowMenu={setShowMenu} />
-            <DropdownMenuItem external={true} href="https://github.com/climatepolicyradar/methodology" title="Methodology" setShowMenu={setShowMenu} />
+            <DropdownMenuItem
+              external={true}
+              href="https://github.com/climatepolicyradar/methodology"
+              title="Methodology"
+              setShowMenu={setShowMenu}
+            />
           </DropdownMenuWrapper>
         </div>
       )}
