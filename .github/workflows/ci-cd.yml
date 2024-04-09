@@ -33,7 +33,7 @@ jobs:
       checks: write
       # For repo checkout
       contents: read
-    uses: climatepolicyradar/reusable-workflows/.github/workflows/node-precommit-validator.yml@v4
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/node-precommit-validator.yml@v5
     with:
       node-version: 20.11.0
       package-manager: npm
