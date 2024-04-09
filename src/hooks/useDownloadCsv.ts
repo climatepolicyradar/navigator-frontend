@@ -37,6 +37,8 @@ async function getDownloadCsv(query: TRouterQuery) {
   const client = new ApiClient(data?.env?.api_url);
 
   const searchQuery = buildSearchQuery(query);
+  // Manually set this to 100, overriding the default 10 which is used for pagination
+  searchQuery.limit = 100;
 
   const results = await client.post<TSearch>("/searches/download-csv", searchQuery, config);
   if (results.status !== 200) {
