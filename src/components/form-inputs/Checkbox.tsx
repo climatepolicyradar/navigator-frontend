@@ -1,5 +1,5 @@
-import React from 'react';
-import { FieldErrors, UseFormRegisterReturn } from 'react-hook-form';
+import React from "react";
+import { FieldErrors, UseFormRegisterReturn } from "react-hook-form";
 
 interface CheckboxProps {
   id?: string;
