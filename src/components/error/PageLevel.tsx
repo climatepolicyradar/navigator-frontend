@@ -7,7 +7,6 @@ type TProps = {
 };
 
 const PageLevel = ({ resetError }: TProps) => {
-
   return (
     <Layout title={"Application Error"}>
       <section>

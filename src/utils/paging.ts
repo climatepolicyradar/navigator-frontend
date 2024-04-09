@@ -1,4 +1,4 @@
-import { PER_PAGE } from '../constants/paging';
+import { PER_PAGE } from "../constants/paging";
 
 export const calculatePageCount = (totalItems) => {
   /* Temporary hack because we are only returning a

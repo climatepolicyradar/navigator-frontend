@@ -14,7 +14,16 @@ interface InputProps {
   register: any;
 }
 
-const PasswordInput = ({ label = "", required = false, errors, name, placeholder = "", className = "", onChange, register }: InputProps): JSX.Element => {
+const PasswordInput = ({
+  label = "",
+  required = false,
+  errors,
+  name,
+  placeholder = "",
+  className = "",
+  onChange,
+  register,
+}: InputProps): JSX.Element => {
   const [passwordReveal, setPasswordReveal] = useState(false);
 
   const handleOnClick = () => {

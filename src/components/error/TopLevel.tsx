@@ -16,8 +16,14 @@ const TopLevel = ({ resetError }: TProps) => {
         </Button>
       </div>
       <p>
-        If this doesn't work, <a className="underline" href="/">return to the homepage</a> or report a problem by emailing: {" "}
-        <ExternalLink className="underline" url="mailto:support@climatepolicyradar.org">support@climatepolicyradar.org</ExternalLink>
+        If this doesn't work,{" "}
+        <a className="underline" href="/">
+          return to the homepage
+        </a>{" "}
+        or report a problem by emailing:{" "}
+        <ExternalLink className="underline" url="mailto:support@climatepolicyradar.org">
+          support@climatepolicyradar.org
+        </ExternalLink>
       </p>
     </div>
   );
