@@ -15,10 +15,14 @@ Run `make` or `make THEME=cclw`
 
 - make
 - Docker
+- Trunk.io (for code quality)
+
+If you do not already have trunk.io installed on your machine, run `make install_trunk`
+to install.
 
 ## Getting started
 
-Local development is done using Docker
+Local development can be done via Docker or manual installation.
 
 ## Environment
 
