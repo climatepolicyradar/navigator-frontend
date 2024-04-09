@@ -1,0 +1,56 @@
+name: CI/CD
+
+on:
+  push:
+    tags: [v*]
+    branches:
+      - main
+  pull_request:
+    # By default, a workflow only runs when a pull_request event's activity type is opened,
+    # synchronize, or reopened.
+    types: [opened, synchronize, reopened, edited]
+    branches:
+      - main
+
+permissions: read-all
+
+jobs:
+  check-auto-tagging-will-work:
+    if: |
+      github.event_name == 'pull_request' &&
+      (! startsWith(github.ref, 'refs/tags') && ! startsWith(github.ref, 'refs/heads/main'))
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/check-auto-tagging-will-work.yml@v3
+
+  code-quality:
+    if: |
+      ! cancelled() && always() &&
+      (needs.check-auto-tagging-will-work.result == 'skipped' || needs.check-auto-tagging-will-work.result == 'success') &&
+      ! startsWith(github.ref, 'refs/tags')
+    needs:
+      - check-auto-tagging-will-work
+    permissions:
+      # For trunk to post annotations
+      checks: write
+      # For repo checkout
+      contents: read
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/node-precommit-validator.yml@v4
+    with:
+      node-version: 20.11.0
+      package-manager: npm
+
+  theme-factory:
+    if: |
+      ! cancelled() && always() && (needs.code-quality.result == 'success')
+    needs:
+      - code-quality
+    strategy:
+      fail-fast: false
+      matrix:
+        theme: [cpr, cclw]
+    permissions:
+      contents: write
+    secrets: inherit
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/theme-factory.yml@v5
+    with:
+      repo-name: navigator-frontend
+      theme: ${{ matrix.theme }}
