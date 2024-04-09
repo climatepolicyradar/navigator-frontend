@@ -30,10 +30,12 @@ const Button = ({
   let conditionalClasses = "";
   switch (color) {
     case "light":
-      conditionalClasses = "bg-blue-500 border border-blue-500 text-white hover:bg-blue-700 hover:border-blue-700 hover:text-white group-hover:bg-blue-700 group-hover:border-blue-700 group-hover:text-white";
+      conditionalClasses =
+        "bg-blue-500 border border-blue-500 text-white hover:bg-blue-700 hover:border-blue-700 hover:text-white group-hover:bg-blue-700 group-hover:border-blue-700 group-hover:text-white";
       break;
     case "secondary":
-      conditionalClasses = "bg-white border border-gray-300 text-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-white group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:text-white";
+      conditionalClasses =
+        "bg-white border border-gray-300 text-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-white group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:text-white";
       break;
     case "ghost":
       conditionalClasses = "underline bg-transparent border border-transparent text-blue-600";

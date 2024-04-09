@@ -15,7 +15,7 @@
   line-height: 1em;
 }
 .flag-icon:before {
-  content: ' ';
+  content: " ";
 }
 .flag-icon.flag-icon-squared {
   width: 1em;

@@ -2,7 +2,7 @@ const crawlableRobotsTxt = `User-agent: *\nAllow: /`;
 
 const uncrawlableRobotsTxt = `User-agent: *\nDisallow: /`;
 
-function Robots() { }
+function Robots() {}
 
 export async function getServerSideProps({ res }) {
   res.setHeader("Content-Type", "text/plan");

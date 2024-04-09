@@ -1,13 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
-const BySelectGroup = ({
-  onChange,
-  list,
-  title,
-  keyField,
-  filterType,
-  defaultValue,
-}) => {
+const BySelectGroup = ({ onChange, list, title, keyField, filterType, defaultValue }) => {
   const selectRef = useRef(null);
   useEffect(() => {
     if (selectRef?.current) {
@@ -29,11 +22,7 @@ const BySelectGroup = ({
         {list.map((item) => (
           <optgroup key={`${item[keyField]}`} label={item[keyField]}>
             {item.children.map((item) => (
-              <option
-                key={`${item[keyField]}|${item.parent}`}
-                value={`${item[keyField]}|${item.parent}`}
-                disabled={item?.children !== undefined}
-              >
+              <option key={`${item[keyField]}|${item.parent}`} value={`${item[keyField]}|${item.parent}`} disabled={item?.children !== undefined}>
                 {item[keyField]}
               </option>
             ))}

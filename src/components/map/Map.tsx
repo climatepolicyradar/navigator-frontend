@@ -56,7 +56,7 @@ const Map = ({ startingZoom }: TProps) => {
     geoLayer.bringToFront();
     geoLayer.setStyle({
       opacity: 0.8,
-      weight: 2
+      weight: 2,
     });
     return false;
   };
@@ -88,7 +88,14 @@ const Map = ({ startingZoom }: TProps) => {
         integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
         crossOrigin=""
       ></Script>
-      <MapContainer className="h-full w-full worldMap" center={[51.505, -0.09]} zoom={startingZoom ?? 2} minZoom={2} maxZoom={9} scrollWheelZoom={true}>
+      <MapContainer
+        className="h-full w-full worldMap"
+        center={[51.505, -0.09]}
+        zoom={startingZoom ?? 2}
+        minZoom={2}
+        maxZoom={9}
+        scrollWheelZoom={true}
+      >
         <GeoJSON data={mapData} style={baseStyle} eventHandlers={geoEventHandlers} />
         {popup && (
           <Popup position={popup.position} className="worldMap--popup">
