@@ -15,6 +15,7 @@ app.prepare().then(() => {
     handle(req, res, parsedUrl);
   }).listen(3000, (err) => {
     if (err) throw err;
+    /* trunk-ignore(eslint/no-console) */
     console.log("> Server started on https://localhost:3000");
   });
 });
