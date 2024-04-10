@@ -639,7 +639,7 @@
           "properties": { "name": "Mozambique" }
         },
         { "type": "Polygon", "arcs": [[859, 860, 861]], "id": "504", "properties": { "name": "Morocco" } },
-        { "type": "Polygon", "arcs": [[862, 863, 864, -861]], "id": "732", "properties": { "name": "W. Sahara" } },
+        { "type": "Polygon", "arcs": [[862, 863, 864, -861]], "id": "732", "properties": { "name": "Western Sahara" } },
         { "type": "Polygon", "arcs": [[-487, 865, 866, 867, 868, 869]], "id": "499", "properties": { "name": "Montenegro" } },
         { "type": "Polygon", "arcs": [[-542, 870]], "id": "496", "properties": { "name": "Mongolia" } },
         { "type": "Polygon", "arcs": [[-286, -644]], "id": "498", "properties": { "name": "Moldova" } },
@@ -1486,7 +1486,7 @@
           "properties": { "name": "Brazil" }
         },
         { "type": "Polygon", "arcs": [[-2, -438, -853]], "id": "072", "properties": { "name": "Botswana" } },
-        { "type": "Polygon", "arcs": [[-870, -1474, 1755, -1460, -488]], "id": "070", "properties": { "name": "Bosnia and Herz." } },
+        { "type": "Polygon", "arcs": [[-870, -1474, 1755, -1460, -488]], "id": "070", "properties": { "name": "Bosnia and Herzegovina" } },
         { "type": "Polygon", "arcs": [[-711, -1739, -718, 1756, -1524]], "id": "068", "properties": { "name": "Bolivia" } },
         { "type": "Polygon", "arcs": [[-1188, -1509]], "id": "064", "properties": { "name": "Bhutan" } },
         { "type": "Polygon", "arcs": [[-325, -1733, -808, -806, 1757]], "id": "204", "properties": { "name": "Benin" } },
