@@ -136,9 +136,9 @@ export default function MapChart() {
         markers: {
           lawsPolicy: Math.max(
             minMarkerSize,
-            ((geoStats.family_counts?.["EXECUTIVE"] || 0 + geoStats.family_counts?.["LEGISLATIVE"] || 0) / maxLawsPolicies) * maxMarkerSize
+            ((geoStats?.family_counts?.["EXECUTIVE"] || 0 + geoStats?.family_counts?.["LEGISLATIVE"] || 0) / maxLawsPolicies) * maxMarkerSize
           ),
-          unfccc: Math.max(minMarkerSize, (geoStats.family_counts?.UNFCCC || 0 / maxUNFCCC) * maxMarkerSize),
+          unfccc: Math.max(minMarkerSize, (geoStats?.family_counts?.UNFCCC || 0 / maxUNFCCC) * maxMarkerSize),
         },
       };
       return acc;
