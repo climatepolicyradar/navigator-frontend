@@ -21,7 +21,18 @@ type TSvgGeo = {
   type: string;
 };
 
-type TGeographyWithCoords = TGeography & { coords: TPoint; familyCounts: { UNFCCC: number; EXECUTIVE: number; LEGISLATIVE: number } };
+type TGeoFamilyCounts = {
+  UNFCCC: number;
+  EXECUTIVE: number;
+  LEGISLATIVE: number;
+};
+
+type TGeoMarkers = {
+  lawsPolicy: number;
+  unfccc: number;
+};
+
+type TGeographyWithCoords = TGeography & { coords: TPoint; familyCounts: TGeoFamilyCounts; markers: TGeoMarkers };
 
 type TGeographiesWithCoords = { [key: string]: TGeographyWithCoords };
 
@@ -65,8 +76,10 @@ const markerStyle = {
   },
 };
 
-const maxZoom = 20;
-const minZoom = 1;
+const MAX_ZOOM = 20;
+const MIN_ZOOM = 1;
+const maxMarkerSize = 10;
+const minMarkerSize = 1.5;
 
 const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeographiesWithCoords }) => {
   const geography = Object.values(geographies).find((country) => country.display_value === geo);
@@ -83,6 +96,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
         <>
           <p className="font-bold">{geography.display_value}</p>
           <p>Laws and policies: {geography.familyCounts?.EXECUTIVE || 0 + geography.familyCounts.LEGISLATIVE || 0}</p>
+          <p>UNFCCC documents: {geography.familyCounts?.UNFCCC || 0}</p>
           <p>
             <LinkWithQuery href={`/geographies/${geography.slug}`}>View territory profile</LinkWithQuery>
           </p>
@@ -108,15 +122,28 @@ export default function MapChart() {
   const [showUnifiedEU, setShowUnifiedEU] = useState(false);
 
   // Combine the data from the coordinates and the map data from the API into a unified object
-  const geographiesWithCoords: TGeographiesWithCoords = useMemo(
-    () =>
-      configContries.reduce((acc, country) => {
-        const geoStats = mapData.find((geo) => geo.slug === country.slug);
-        acc[country.value] = { ...country, coords: GEO_CENTER_POINTS[country.value], familyCounts: geoStats?.family_counts };
-        return acc;
-      }, {}),
-    [configContries, mapData]
-  );
+  const geographiesWithCoords: TGeographiesWithCoords = useMemo(() => {
+    // Calculate size of marker
+    const maxLawsPolicies = Math.max(...mapData.map((g) => g.family_counts?.["EXECUTIVE"] || 0 + g.family_counts?.["LEGISLATIVE"] || 0));
+    const maxUNFCCC = Math.max(...mapData.map((g) => g.family_counts?.["UNFCCC"] || 0));
+
+    return configContries.reduce((acc, country) => {
+      const geoStats = mapData.find((geo) => geo.slug === country.slug);
+      acc[country.value] = {
+        ...country,
+        coords: GEO_CENTER_POINTS[country.value],
+        familyCounts: geoStats?.family_counts,
+        markers: {
+          lawsPolicy: Math.max(
+            minMarkerSize,
+            ((geoStats.family_counts?.["EXECUTIVE"] || 0 + geoStats.family_counts?.["LEGISLATIVE"] || 0) / maxLawsPolicies) * maxMarkerSize
+          ),
+          unfccc: Math.max(minMarkerSize, (geoStats.family_counts?.UNFCCC || 0 / maxUNFCCC) * maxMarkerSize),
+        },
+      };
+      return acc;
+    }, {});
+  }, [configContries, mapData]);
 
   const handleGeoClick = (e: React.MouseEvent<SVGPathElement>, geo: TSvgGeo) => {
     setActiveGeography(geo.properties.name);
@@ -133,14 +160,6 @@ export default function MapChart() {
     setActiveGeography("");
     openToolTip([e.clientX, e.clientY], hoveredGeo);
   };
-
-  // const handleGeoLeave = (e: React.MouseEvent<SVGPathElement>) => {
-  //   // check if the mouse is over the tooltip
-  //   if (e.relatedTarget && (e.relatedTarget as HTMLElement).classList.contains("react-tooltip")) return;
-  //   console.log(e);
-  //   setActiveGeography("");
-  //   geographyInfoTooltipRef.current?.close();
-  // };
 
   const handleGeographySelected = (selectedCountry: TGeographyWithCoords) => {
     setActiveGeography(selectedCountry.display_value);
@@ -199,8 +218,8 @@ export default function MapChart() {
       <div ref={mapRef} className="map-container relative border" data-cy="world-map">
         <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 160 }} height={340}>
           <ZoomableGroup
-            maxZoom={maxZoom}
-            minZoom={minZoom}
+            maxZoom={MAX_ZOOM}
+            minZoom={MIN_ZOOM}
             center={mapCenter}
             zoom={mapZoom}
             translateExtent={[
@@ -233,9 +252,6 @@ export default function MapChart() {
                     onMouseOver={(e) => {
                       handleGeoHover(e, geo.properties.name);
                     }}
-                    // onMouseLeave={(e) => {
-                    //   handleGeoLeave(e);
-                    // }}
                   />
                 ))
               }
@@ -261,7 +277,7 @@ export default function MapChart() {
                       }}
                       style={markerStyle}
                     >
-                      <circle r={2} />
+                      <circle r={geo.markers.lawsPolicy} />
                     </Marker>
                   );
                 })}
@@ -272,8 +288,8 @@ export default function MapChart() {
         <Tooltip id="mapToolTip" ref={geographyInfoTooltipRef} afterHide={() => setActiveGeography("")} imperativeModeOnly clickable />
         <ZoomControls
           mapZoom={mapZoom}
-          minZoom={minZoom}
-          maxZoom={maxZoom}
+          maxZoom={MIN_ZOOM}
+          minZoom={MAX_ZOOM}
           handleZoomIn={() => setMapZoom(mapZoom + 1)}
           handleZoomOut={() => setMapZoom(mapZoom - 1)}
           handleReset={handleResetMapClick}
