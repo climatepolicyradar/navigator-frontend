@@ -1,18 +1,18 @@
 import React, { useRef, useState, useMemo } from "react";
 import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
+import { Tooltip, TooltipRefProps } from "react-tooltip";
 import useConfig from "@hooks/useConfig";
 import useGeographies from "@hooks/useGeographies";
 import { GEO_CENTER_POINTS } from "@constants/mapCentres";
 import { GEO_EU_COUNTRIES } from "@constants/mapEUCountries";
 import { TGeography } from "@types";
-import { Tooltip, TooltipRefProps } from "react-tooltip";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import GeographySelect from "./GeographySelect";
 import { ZoomControls } from "./ZoomControls";
 
 const geoUrl = "/data/map/world-countries-50m.json";
 
-type TGeo = {
+type TSvgGeo = {
   geometry: { type: string; coordinates: TPoint[] };
   id: string;
   properties: { name: string };
@@ -21,7 +21,7 @@ type TGeo = {
   type: string;
 };
 
-type TGeographyWithCoords = TGeography & { coords: TPoint };
+type TGeographyWithCoords = TGeography & { coords: TPoint; familyCounts: { UNFCCC: number; EXECUTIVE: number; LEGISLATIVE: number } };
 
 type TGeographiesWithCoords = { [key: string]: TGeographyWithCoords };
 
@@ -82,7 +82,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
       {geography && (
         <>
           <p className="font-bold">{geography.display_value}</p>
-          <p>Laws and policies: TBC</p>
+          <p>Laws and policies: {geography.familyCounts?.EXECUTIVE || 0 + geography.familyCounts.LEGISLATIVE || 0}</p>
           <p>
             <LinkWithQuery href={`/geographies/${geography.slug}`}>View territory profile</LinkWithQuery>
           </p>
@@ -94,14 +94,12 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
 
 // TODO:
 // - Add document type selector
-// - Add button to toggle between EU unified view
 
 export default function MapChart() {
   const configQuery = useConfig();
   const geographiesQuery = useGeographies();
   const { data: { countries: configContries = [] } = {} } = configQuery;
   const { data: mapData = [], status: mapDataStatus } = geographiesQuery;
-  console.log(mapDataStatus, mapData);
   const geographyInfoTooltipRef = useRef<TooltipRefProps>(null);
   const mapRef = useRef(null);
   const [activeGeography, setActiveGeography] = useState("");
@@ -109,19 +107,21 @@ export default function MapChart() {
   const [mapZoom, setMapZoom] = useState(1);
   const [showUnifiedEU, setShowUnifiedEU] = useState(false);
 
+  // Combine the data from the coordinates and the map data from the API into a unified object
   const geographiesWithCoords: TGeographiesWithCoords = useMemo(
     () =>
       configContries.reduce((acc, country) => {
-        acc[country.value] = { ...country, coords: GEO_CENTER_POINTS[country.value] };
+        const geoStats = mapData.find((geo) => geo.slug === country.slug);
+        acc[country.value] = { ...country, coords: GEO_CENTER_POINTS[country.value], familyCounts: geoStats?.family_counts };
         return acc;
       }, {}),
-    [configContries]
+    [configContries, mapData]
   );
 
-  const handleGeoClick = (e: React.MouseEvent<SVGPathElement>, geo: TGeo) => {
+  const handleGeoClick = (e: React.MouseEvent<SVGPathElement>, geo: TSvgGeo) => {
     setActiveGeography(geo.properties.name);
     const geography = Object.values(geographiesWithCoords).find((g) => g.display_value === geo.properties.name);
-    openToolTip([e.clientX, e.clientY], geography?.display_value ?? "");
+    openToolTip([e.clientX, e.clientY], geography?.display_value ?? geo.properties.name);
   };
 
   const handleMarkerClick = (e: React.MouseEvent<SVGPathElement>, countryCode: string) => {
@@ -240,29 +240,33 @@ export default function MapChart() {
                 ))
               }
             </Geographies>
-            {Object.keys(geographiesWithCoords).map((i) => {
-              const geo = geographiesWithCoords[i];
-              if (!geo.coords) return null;
-              if (!showUnifiedEU && geo.value === "EU") return null;
-              if (showUnifiedEU && GEO_EU_COUNTRIES.includes(geo.value)) return null;
-              return (
-                <Marker
-                  key={geo.slug}
-                  coordinates={geo.coords}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleMarkerClick(e, geo.value);
-                  }}
-                  onMouseOver={(e) => {
-                    handleGeoHover(e, geo.display_value);
-                  }}
-                  style={markerStyle}
-                >
-                  <circle r={2} />
-                </Marker>
-              );
-            })}
+            {mapDataStatus === "success" && (
+              <>
+                {Object.keys(geographiesWithCoords).map((i) => {
+                  const geo = geographiesWithCoords[i];
+                  if (!geo.coords) return null;
+                  if (!showUnifiedEU && geo.value === "EU") return null;
+                  if (showUnifiedEU && GEO_EU_COUNTRIES.includes(geo.value)) return null;
+                  return (
+                    <Marker
+                      key={geo.slug}
+                      coordinates={geo.coords}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleMarkerClick(e, geo.value);
+                      }}
+                      onMouseOver={(e) => {
+                        handleGeoHover(e, geo.display_value);
+                      }}
+                      style={markerStyle}
+                    >
+                      <circle r={2} />
+                    </Marker>
+                  );
+                })}
+              </>
+            )}
           </ZoomableGroup>
         </ComposableMap>
         <Tooltip id="mapToolTip" ref={geographyInfoTooltipRef} afterHide={() => setActiveGeography("")} imperativeModeOnly clickable />
@@ -276,7 +280,7 @@ export default function MapChart() {
         />
         <div className="absolute top-0 right-0 p-4">
           <label
-            className="checkbox-input flex items-center py-2 px-1 rounded-md cursor-pointer border border-gray-300 bg-white"
+            className="checkbox-input flex items-center p-2 rounded-md cursor-pointer border border-gray-300 bg-white"
             htmlFor="show_eu_aggregated"
           >
             <input
