@@ -214,7 +214,6 @@ input[type="search"]::-webkit-search-results-decoration {
 
 .subnav-active {
   position: relative;
-  @apply z-20;
   @screen md {
     &:after {
       content: "";
@@ -245,7 +244,7 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 /* Tooltips styles to override the default */
 .customTooltip {
-  @apply bg-cpr-dark border-cpr-dark rounded-lg leading-5 max-w-[300px] pointer-events-auto font-normal #{!important};
+  @apply z-50 text-xs bg-cpr-dark border-cpr-dark rounded-lg leading-5 max-w-[300px] pointer-events-auto #{!important};
   &:hover {
     visibility: visible !important;
     opacity: 1 !important;
@@ -607,6 +606,10 @@ ul li.selected {
   width: 1px;
   padding: 0;
   border: 0;
+}
+
+#mapToolTip {
+  @apply text-cpr-dark bg-white p-4 rounded-lg drop-shadow border opacity-100;
 }
 
 .middot-between {

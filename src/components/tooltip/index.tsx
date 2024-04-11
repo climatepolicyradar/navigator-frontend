@@ -12,9 +12,8 @@ const Tooltip = ({ id, tooltip, icon = "?", place, interactableContent }: Toolti
   return (
     <div>
       <button
-        data-tip={tooltip}
-        data-for={id}
-        className="circle-sm rounded-full border border-blue-600 bg-white text-blue-600 flex justify-center items-center text-xs"
+        data-tooltip-id={id}
+        className={`circle-sm rounded-full border border-blue-600 bg-white text-blue-600 flex justify-center items-center text-xs`}
       >
         {icon}
       </button>

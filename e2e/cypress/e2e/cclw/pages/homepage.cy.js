@@ -10,6 +10,7 @@ const pageSelectors = [
   "[data-cy='feature-search']",
   "[data-cy='feature-litigation']",
   "[data-cy='feature-highlights']",
+  "[data-cy='world-map']",
 ];
 
 const headerSelectors = ["[data-cy='lse-logo']", "[data-cy='gri-logo']", "[data-cy='cclw-logo']", "[data-cy='cpr-logo']"];

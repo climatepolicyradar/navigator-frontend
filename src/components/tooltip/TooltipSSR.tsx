@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ReactTooltip from "react-tooltip";
+import { Tooltip } from "react-tooltip";
 
 type TProps = {
   id: string;
@@ -18,9 +18,9 @@ export const ToolTipSSR = ({ id, place, tooltip, interactableContent }: TProps) 
   return (
     <>
       {isMounted && (
-        <ReactTooltip className="customTooltip" id={id} place={place} delayHide={interactableContent ? 500 : 0}>
+        <Tooltip className="customTooltip" id={id} place={place} delayHide={interactableContent ? 500 : 0}>
           {tooltip}
-        </ReactTooltip>
+        </Tooltip>
       )}
     </>
   );

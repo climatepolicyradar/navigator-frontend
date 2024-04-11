@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { ExternalLink } from "@components/ExternalLink";
 import Header from "@cclw/components/Header";
 import Footer from "@cclw/components/Footer";
@@ -7,6 +8,11 @@ import { Hero } from "@cclw/components/Hero";
 import { Articles } from "@cclw/components/Articles";
 import { Partners } from "@cclw/components/Partners";
 import Layout from "@components/layouts/LandingPage";
+
+const WorldMap = dynamic(() => import("@components/map/WorldMap"), {
+  loading: () => <p>Loading world map...</p>,
+  ssr: false,
+});
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
@@ -20,6 +26,9 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
         <div className="gradient-container">
           <Header background={false} />
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
+        </div>
+        <div className="container hidden md:block">
+          <WorldMap />
         </div>
         <div className="container my-12" data-cy="powered-by">
           <div className="md:flex justify-center gap-12 text-center">
