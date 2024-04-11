@@ -111,9 +111,6 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
   );
 };
 
-// TODO:
-// - Add document type selector
-
 export default function MapChart() {
   const configQuery = useConfig();
   const geographiesQuery = useGeographies();
@@ -225,7 +222,6 @@ export default function MapChart() {
                 keyField="value"
                 keyFieldDisplay="display_value"
                 filterType="geography"
-                selectedList={[]}
                 handleFilterChange={(_, value) => {
                   handleGeographySelected(geographiesWithCoords[value]);
                 }}

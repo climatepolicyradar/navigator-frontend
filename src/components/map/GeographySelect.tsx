@@ -5,14 +5,13 @@ import { sortData } from "@utils/sorting";
 interface ByTextInputProps {
   title: string;
   list: { [key: string]: {} };
-  selectedList: string[];
   keyField: string;
   keyFieldDisplay?: string;
   filterType: string;
   handleFilterChange(filterType: string, value: string): void;
 }
 
-const GeographySelect = ({ title, list, selectedList, keyField, keyFieldDisplay, filterType, handleFilterChange }: ByTextInputProps) => {
+const GeographySelect = ({ title, list, keyField, keyFieldDisplay, filterType, handleFilterChange }: ByTextInputProps) => {
   const [input, setInput] = useState("");
   const [suggestList, setSuggestList] = useState([]);
 
@@ -27,11 +26,10 @@ const GeographySelect = ({ title, list, selectedList, keyField, keyFieldDisplay,
     }
     let filteredList = [];
     filteredList = Object.values(list).filter((item) => {
-      /* Make sure item hasn't already been selected and limit list to 20 items */
-      return item[keyFieldDisplay ?? keyField].toLowerCase().indexOf(input.toLowerCase()) > -1 && selectedList.indexOf(item[keyField]) === -1;
+      return item[keyFieldDisplay ?? keyField].toLowerCase().indexOf(input.toLowerCase()) > -1;
     });
     setSuggestList(sortData(filteredList, keyFieldDisplay));
-  }, [input, keyField, keyFieldDisplay, list, selectedList]);
+  }, [input, keyField, keyFieldDisplay, list]);
 
   return (
     <div className="relative">
