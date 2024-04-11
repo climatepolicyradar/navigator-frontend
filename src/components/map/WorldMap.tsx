@@ -83,7 +83,7 @@ const minMarkerSize = 1.5;
 
 const calculateMarkerColour = (value: number, min: number, max: number) => {
   const offset = ((value - min) / (max - min)) * 100;
-  return `hsl(0, 0%, ${100 - offset}%)`;
+  return `hsl(200, 50%, ${100 - offset}%)`;
 };
 
 const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeographiesWithCoords }) => {
@@ -280,7 +280,7 @@ export default function MapChart() {
                 {Object.keys(geographiesWithCoords).map((i) => {
                   const geo = geographiesWithCoords[i];
                   if (!geo.coords) return null;
-                  if (!showUnifiedEU && geo.value === "EU") return null;
+                  if (!showUnifiedEU && geo.value === "EUR") return null;
                   if (showUnifiedEU && GEO_EU_COUNTRIES.includes(geo.value)) return null;
                   return (
                     <Marker
