@@ -60,6 +60,4 @@ jobs:
     needs: theme-factory
     permissions:
       contents: write
-    uses: climatepolicyradar/reusable-workflows/.github/workflows/release.yml@v3
-    with:
-      new_tag: ${{ needs.theme-factory.outputs.new_tag }}
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/release.yml@v6
