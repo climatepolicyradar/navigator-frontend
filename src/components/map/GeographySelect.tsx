@@ -37,7 +37,7 @@ const GeographySelect = ({ title, list, selectedList, keyField, keyFieldDisplay,
     <div className="relative">
       <input
         type="text"
-        className="border border-gray-300 small outline-none placeholder:text-gray-300"
+        className="border border-gray-300 small outline-none"
         placeholder={title}
         value={input}
         onChange={handleChange}
