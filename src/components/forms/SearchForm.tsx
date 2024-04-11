@@ -71,7 +71,7 @@ const SearchForm = ({ input, placeholder, handleSearchInput, handleSuggestion }:
           <input
             data-analytics="seachPage-searchInput"
             data-cy="search-input"
-            className="w-full bg-white appearance-none py-2 px-10 z-20 leading-snug rounded-full relative flex-grow border-gray-300 placeholder:text-grey-300 md:pl-12"
+            className="w-full bg-white appearance-none py-2 px-10 z-10 leading-snug rounded-full relative flex-grow border-gray-300 placeholder:text-grey-300 md:pl-12"
             type="search"
             placeholder={`${windowSize.width > 767 ? placeholder : ""}`}
             value={term}
