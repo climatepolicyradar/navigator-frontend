@@ -8,7 +8,7 @@ export type TRouterQuery = {
 
 // We are storing the search object in the query using aliases
 // This function converts the query string to the search object
-export default function buildSearchQuery(routerQuery: TRouterQuery): TSearchCriteria {
+export default function buildSearchQuery(routerQuery: TRouterQuery, familyId = "", documentId = ""): TSearchCriteria {
   const keyword_filters: TSearchKeywordFilters = {};
   let query = { ...initialSearchCriteria };
 
@@ -64,8 +64,12 @@ export default function buildSearchQuery(routerQuery: TRouterQuery): TSearchCrit
     keyword_filters.countries = Array.isArray(countries) ? countries : [countries];
   }
 
-  if (routerQuery[QUERY_PARAMS.use_vespa]) {
-    query.use_vespa = routerQuery[QUERY_PARAMS.use_vespa] === "true";
+  if (familyId) {
+    query.family_ids = [familyId];
+  }
+
+  if (documentId) {
+    query.document_ids = [documentId];
   }
 
   query = {

@@ -12,7 +12,7 @@ export function typeWriter(text, i, fnCallback, el) {
     }, 30);
   }
   // text finished, call callback if there is a callback function
-  else if (typeof fnCallback === 'function') {
+  else if (typeof fnCallback === "function") {
     // call callback after timeout
     setTimeout(fnCallback, 700);
   }
@@ -20,7 +20,7 @@ export function typeWriter(text, i, fnCallback, el) {
 // start a typewriter animation for a text in the dataText array
 export function StartTextAnimation(i, text, el) {
   //el.focus();
-  if (typeof text[i] === 'undefined') {
+  if (typeof text[i] === "undefined") {
     return;
     setTimeout(function () {
       StartTextAnimation(0, text, el);

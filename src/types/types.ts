@@ -16,7 +16,8 @@ export type TSearchCriteria = {
   sort_order: string;
   limit: number;
   offset: number;
-  use_vespa?: boolean;
+  family_ids?: string[] | null;
+  document_ids?: string[] | null;
 };
 
 type TErrorDetail = {

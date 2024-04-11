@@ -7,13 +7,11 @@
 
 @font-face {
   font-family: "LL Brown";
-  src: url("/fonts/LL-Brown/lineto-brown-bold.woff2") format("woff2"), url("/fonts/LL-Brown/lineto-brown-bold.woff") format("woff");
+  src:
+    url("/fonts/LL-Brown/lineto-brown-bold.woff2") format("woff2"),
+    url("/fonts/LL-Brown/lineto-brown-bold.woff") format("woff");
   /* font-display: swap; */
   font-weight: 500;
-}
-
-#cclw h2 {
-  @apply font-normal;
 }
 
 #cclw .cclw-font {

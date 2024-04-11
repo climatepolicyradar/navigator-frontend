@@ -467,4 +467,17 @@ export const FAQS: TFAQ[] = [
       </>
     ),
   },
+  {
+    title: "How do I download search results?",
+    content: (
+      <>
+        <p>You can download a csv of data for "this search" or the "whole database" from the top right of the search results page.</p>
+        <p>
+          If you download a csv for “this search” and you used the “related phrases” search function this will contain all documents related to the
+          top 100 entries returned by your search. If you use the “exact match” search function, fewer than 100 entries may be returned for some
+          search terms where these appear less than 100 times within the dataset searched.
+        </p>
+      </>
+    ),
+  },
 ];

@@ -98,7 +98,7 @@ module.exports = {
         150: "150%",
       },
       boxShadow: {
-        innerThin: "inset 0 0 1px 0 rgb(0 0 0 / 0.5)",
+        xs: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
       },
       fontSize: {
         h1: "48px",

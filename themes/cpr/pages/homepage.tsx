@@ -11,7 +11,6 @@ import Partners from "@components/blocks/Partners";
 import Footer from "@components/footer/Footer";
 import Layout from "@components/layouts/LandingPage";
 import LandingSearchForm from "@cpr/components/LandingSearchForm";
-import { GSTBanner } from "@cpr/components/GSTBanner";
 
 const WorldMap = dynamic(() => import("@components/map/WorldMap"), {
   loading: () => <p>Loading world map...</p>,
@@ -34,7 +33,6 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
 
   return (
     <Layout title="Law and Policy Search">
-      <GSTBanner />
       <div className="relative">
         <Header />
         <main className="relative h-full">

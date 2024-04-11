@@ -26,11 +26,11 @@ const Slideout = ({ children, show, setShow }: SlideoutProps) => {
   return (
     <div
       ref={ref}
-      className={`fixed top-0 right-0 w-11/12 h-screen bg-white z-50 transition duration-300 origin-left transform shadow-2xl shadow-black/40 md:w-1/2 xl:w-1/3 ${
+      className={`fixed top-0 right-0 w-11/12 h-screen bg-white z-50 transition duration-300 origin-left transform shadow-2xl shadow-black/40 md:w-2/3 xl:w-5/12 ${
         show ? "translate-x-0" : "translate-x-[110%]"
       }`}
     >
-      <div className="flex absolute z-20 top-4 right-4">
+      <div className="flex absolute z-20 top-6 right-8 md:top-10">
         <Close size="14" onClick={() => setShow(false)} />
       </div>
 

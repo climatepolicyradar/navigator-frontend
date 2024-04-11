@@ -206,6 +206,8 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                 handleSearchInput={handleSearchInput}
                 input={""}
                 featuredSearches={FEATURED_SEARCHES}
+                showSuggestions
+                suggestionsAsLinks
               />
             </section>
             {hasFamilies && (

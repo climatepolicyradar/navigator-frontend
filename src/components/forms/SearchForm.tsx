@@ -63,25 +63,25 @@ const SearchForm = ({ input, placeholder, handleSearchInput, handleSuggestion }:
 
   return (
     <form data-cy="search-form" ref={formRef} onSubmit={onFormSubmit}>
-      <div className="relative">
-        <div className="shadow-md rounded-full bg-white relative">
+      <div className="relative z-40">
+        <div className="shadow-md rounded-full bg-white relative z-20">
+          <div className="absolute p-[1px] pr-0 top-0 left-0 h-full flex items-center justify-start z-20">
+            <SearchButton onClick={handleSearchButtonClick} />
+          </div>
           <input
             data-analytics="seachPage-searchInput"
             data-cy="search-input"
-            className="w-full bg-white appearance-none px-4 py-2 pr-14 z-20 leading-snug rounded-full relative flex-grow border-gray-300 placeholder:text-grey-300 md:pr-20"
+            className="w-full bg-white appearance-none py-2 px-10 z-20 leading-snug rounded-full relative flex-grow border-gray-300 placeholder:text-grey-300 md:pl-12"
             type="search"
             placeholder={`${windowSize.width > 767 ? placeholder : ""}`}
             value={term}
             onChange={onChange}
           />
           {term.length > 0 && (
-            <div data-cy="search-clear-button" className="flex items-center shrink-0 px-2 absolute top-0 right-8 h-full z-20 md:right-14">
+            <div data-cy="search-clear-button" className="flex items-center shrink-0 px-2 absolute top-0 right-2 h-full z-20">
               <Close onClick={clearSearch} size="10" />
             </div>
           )}
-          <div className="absolute p-[1px] pr-0 top-0 right-0 h-full flex items-center justify-end">
-            <SearchButton onClick={handleSearchButtonClick} />
-          </div>
         </div>
         {handleSuggestion && <SearchDropdown term={term} show={formFocus} handleSearchClick={handleSuggestionClick} />}
       </div>

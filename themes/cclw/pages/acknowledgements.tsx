@@ -110,6 +110,32 @@ const Acknowledgements = () => {
                 fossil fuels.
               </p>
             </Acknowledgement>
+            <Acknowledgement
+              partnerImage={{
+                url: "https://www.juma.nima.puc-rio.br/sobre-juma/",
+                imageUrl: "JUMA_logo.png",
+                imageAlt: "JUMA logo",
+              }}
+            >
+              <p>
+                The Law, Environment and Justice in the Anthropocene Research Group (JUMA) produces qualified knowledge on topics linked to
+                environmental and climate issues in the context of the Anthropocene. Its objective is to contribute to the fight against
+                socio-environmental and climate injustice, based on a critical analysis of the challenges of Law in the face of the hypercomplex
+                scenario of environmental and climate crisis.
+              </p>
+            </Acknowledgement>
+            <Acknowledgement
+              partnerImage={{
+                url: "https://www.vancecenter.org/ ",
+                imageUrl: "CRVCIJ_logo.png",
+                imageAlt: "Cyrus R. Vance Center for International Justice logo",
+              }}
+            >
+              <p>
+                The Vance Center advances global justice by engaging lawyers across borders to support civil society and an ethically active legal
+                profession.
+              </p>
+            </Acknowledgement>
           </div>
         </div>
       </section>

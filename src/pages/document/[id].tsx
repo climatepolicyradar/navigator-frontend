@@ -31,14 +31,15 @@ import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary } from "@types"
 import Tooltip from "@components/tooltip";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 import { Alert } from "@components/Alert";
+import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
+import { getMainDocuments } from "@helpers/getMainDocuments";
+import { pluralise } from "@utils/pluralise";
 
 type TProps = {
   page: TFamilyPage;
   targets: TTarget[];
   geographySummary: TGeographySummary;
 };
-
-const FEATURED_SEARCHES = ["Resilient infrastructure", "Fossil fuel divestment", "Net zero growth plan", "Sustainable fishing"];
 
 /*
   # DEV NOTES
@@ -47,7 +48,7 @@ const FEATURED_SEARCHES = ["Resilient infrastructure", "Fossil fuel divestment",
   - The 'physical document' view is within the folder: src/pages/documents/[id].tsx.
 */
 
-const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page, targets = [], geographySummary }: TProps) => {
+const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page, targets = [] }: TProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const startingNumberOfTargetsToDisplay = 5;
@@ -68,7 +69,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
 
   let searchFamily: TMatchedFamily = null;
-  const { status, families } = useSearch(router.query, !!router.query[QUERY_PARAMS.query_string]);
+  const { status, families } = useSearch(router.query, page.import_id, null, !!router.query[QUERY_PARAMS.query_string]);
   if (!!router.query[QUERY_PARAMS.query_string]) {
     families.forEach((family) => {
       if (page.slug === family.family_slug) {
@@ -99,14 +100,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const sourceLogo = page?.organisation === "CCLW" ? "grantham-logo.png" : null;
   const sourceName = page?.organisation === "CCLW" ? "Grantham Research Institute" : page?.organisation;
 
-  const totalDocsInPageGeography = () => {
-    if (!!geographySummary) {
-      return geographySummary.family_counts.Legislative + geographySummary.family_counts.Executive + geographySummary.family_counts.UNFCCC;
-    }
-  };
-
-  const mainDocs = page.documents.filter((doc) => doc.document_role && doc.document_role.toLowerCase().includes("main"));
-  const otherDocs = page.documents.filter((doc) => !doc.document_role || !doc.document_role.toLowerCase().includes("main"));
+  const [mainDocuments, otherDocuments] = getMainDocuments(page.documents);
 
   const getDocumentCategories = () => {
     // Some types are comma separated, so we need to split them
@@ -137,8 +131,16 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const handleSearchInput = (term: string) => {
     const queryObj = {};
     queryObj[QUERY_PARAMS.query_string] = term;
-    queryObj[QUERY_PARAMS.country] = geographySlug;
-    router.push({ pathname: "/search", query: queryObj });
+    if (term === "") return false;
+    // if the family only has one main document, redirect to that document
+    // if there is no main document but only one other document, redirect to the other document
+    if (mainDocuments.length === 1) {
+      router.push({ pathname: `/documents/${mainDocuments[0].slug}`, query: queryObj });
+    } else if (mainDocuments.length === 0 && otherDocuments.length === 1) {
+      router.push({ pathname: `/documents/${otherDocuments[0].slug}`, query: queryObj });
+    } else {
+      router.push({ pathname: `/document/${page.slug}`, query: queryObj });
+    }
   };
 
   return (
@@ -168,29 +170,39 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
             )}
           </section>
 
+          <section className="mt-8" data-cy="top-documents">
+            <DocumentSearchForm
+              placeholder={`Search the full text of the ${page.title}`}
+              handleSearchInput={handleSearchInput}
+              input={router.query[QUERY_PARAMS.query_string] as string}
+              featuredSearches={EXAMPLE_SEARCHES}
+              showSuggestions
+            />
+          </section>
+
           <section className="mt-8">
-            <h2 className="text-2xl">Main documents</h2>
+            <h2 className="text-base">Main {pluralise(mainDocuments.length, "document", "documents")}</h2>
             <div data-cy="main-documents">
-              {mainDocs.map((doc) => (
+              {mainDocuments.map((doc) => (
                 <FamilyDocument matches={getDocumentMatches(doc.slug)} document={doc} key={doc.import_id} status={status} />
               ))}
             </div>
           </section>
 
-          {otherDocs.length > 0 && (
+          {otherDocuments.length > 0 && (
             <>
               <section className="mt-8">
-                <h2 className="flex items-center gap-2 text-2xl">
-                  Related documents{" "}
+                <h2 className="flex items-center gap-2 text-base">
+                  Other documents in this entry{" "}
                   <Tooltip
                     id="related-documents-info"
                     place="right"
                     icon="i"
-                    tooltip="Related documents can be previous versions, amendments, annexes, supporting legislation, and more."
+                    tooltip="Other documents can be previous versions, amendments, annexes, supporting legislation, and more."
                   />
                 </h2>
-                <div className="divide-solid divide-y" data-cy="related-documents">
-                  {otherDocs.map((doc) => (
+                <div data-cy="related-documents">
+                  {otherDocuments.map((doc) => (
                     <div key={doc.import_id} className="mt-4">
                       <FamilyDocument matches={getDocumentMatches(doc.slug)} document={doc} status={status} />
                     </div>
@@ -205,7 +217,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               <section className="mt-8">
                 <div>
                   <div className="lg:flex justify-between items-center">
-                    <h2 className="flex text-2xl">
+                    <h2 className="flex items-center text-base">
                       <span className="mr-2">
                         <TargetIcon />
                       </span>
@@ -256,7 +268,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
           {page.events.length > 0 && (
             <section className="mt-8">
-              <h2 className="text-2xl">Timeline</h2>
+              <h2 className="text-base">Timeline</h2>
               <ShowHide show={showTimeline} onClick={() => setShowTimeline(!showTimeline)} className="mt-4" />
               {showTimeline && (
                 <Timeline>
@@ -271,7 +283,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           )}
 
           <section className="mt-8">
-            <h2 className="my-4 text-2xl">Note</h2>
+            <h2 className="my-4 text-base">Note</h2>
             <div className="flex text-sm">
               {sourceLogo && (
                 <div className="relative max-w-[144px] mt-1 mr-2">
@@ -291,7 +303,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
           {page.collections.map((collection, i) => (
             <section className="pt-12" id={`collection-${i}`} key={collection.import_id}>
-              <h2 className="text-2xl">About the {collection.title}</h2>
+              <h2 className="text-base">About the {collection.title}</h2>
               <ShowHide show={showCollectionDetail} onClick={() => setShowCollectionDetail(!showCollectionDetail)} className="mt-4" />
               {showCollectionDetail && (
                 <div>
@@ -309,21 +321,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               )}
             </section>
           ))}
-
-          {!!geographySummary && totalDocsInPageGeography() > 0 && (
-            <section className="mt-8" data-cy="top-documents">
-              <DocumentSearchForm
-                placeholder={
-                  geographyName === "No Geography"
-                    ? `Search the full text of ${totalDocsInPageGeography()} UNFCCC documents`
-                    : `Search the full text of ${totalDocsInPageGeography()} documents from ${geographyName}`
-                }
-                handleSearchInput={handleSearchInput}
-                input={""}
-                featuredSearches={FEATURED_SEARCHES}
-              />
-            </section>
-          )}
         </SingleCol>
       </section>
     </Layout>
@@ -339,8 +336,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   let familyData: TFamilyPage;
   let targetsData: TTarget[] = [];
-  let geographySummaryData: TGeographySummary;
-  let geographyCode: string;
 
   try {
     const { data: returnedData } = await client.get(`/documents/${id}`);
@@ -350,17 +345,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   if (familyData) {
-    geographyCode = familyData.geography;
     try {
       const targetsRaw = await axios.get<TTarget[]>(`${process.env.S3_PATH}/families/${familyData.import_id}.json`);
       targetsData = targetsRaw.data;
-    } catch (error) {}
-  }
-
-  if (geographyCode) {
-    try {
-      const { data: returnedData }: { data: TGeographySummary } = await client.get(`/summaries/geography/${geographyCode}`);
-      geographySummaryData = returnedData;
     } catch (error) {}
   }
 
@@ -374,7 +361,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       page: familyData,
       targets: targetsData,
-      geographySummary: geographySummaryData,
     },
   };
 };

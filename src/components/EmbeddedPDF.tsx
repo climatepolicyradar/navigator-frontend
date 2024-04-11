@@ -21,7 +21,7 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = nul
   // Ensure the instance of the PDF client is not reset on render
   // otherwise we lose the ability to interact with the pdf
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const { createPDFClient, passageIndexChangeHandler } = useMemo(() => pdfPreview, [document]);
+  const { createPDFClient, passageIndexChangeHandler } = useMemo(() => pdfPreview, [document, documentPassageMatches, adobeKey]);
 
   useEffect(() => {
     if (containerRef?.current) {
@@ -35,7 +35,7 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = nul
 
   return (
     <>
-      <Script src="https://documentcloud.adobe.com/view-sdk/viewer.js" />
+      <Script src="https://acrobatservices.adobe.com/view-sdk/viewer.js" />
       {!document ? (
         <div className="w-full flex justify-center flex-1">
           <Loader />

@@ -3,7 +3,8 @@ import MatchesButton from "@components/buttons/MatchesButton";
 import { DocumentIcon, GlobeIcon, Loading } from "@components/svg/Icons";
 import useConfig from "@hooks/useConfig";
 import { getLanguage } from "@helpers/getLanguage";
-import { TDocumentContentType, TDocumentPage, TLoadingStatus } from "@types";
+import { TDocumentPage, TLoadingStatus } from "@types";
+import { getDocumentType } from "@helpers/getDocumentType";
 
 type TProps = {
   document: TDocumentPage;
@@ -29,17 +30,6 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
     </span>
   );
 
-  const renderContentType = (t: TDocumentContentType) => {
-    if (!t) return null;
-    switch (t) {
-      case "application/pdf":
-        return <span>PDF</span>;
-      case "text/html":
-        return <span>HTML</span>;
-    }
-    return null;
-  };
-
   const renderDocumentInfo = (): string | JSX.Element => {
     if (status === "loading") return loadingIndicator;
     if (canViewSource) return "Document preview is not currently available";
@@ -48,13 +38,11 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
 
   const renderMatchesOverrideText = (): string | JSX.Element => {
     if (status === "loading") return loadingIndicator;
-    if (canPreview && !hasMatches) return "View document";
-    if (canViewSource) return "View source document";
   };
 
   const getPreviewBehaviour = () => {
-    let cssClass = "family-document group mt-4 p-3 rounded-lg border border-transparent bg-gray-50 transition duration-300 flex flex-no-wrap ";
-    cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-blue-600" : "";
+    let cssClass = "family-document group mt-4 p-4 rounded-lg border bg-white border-gray-50 shadow-xs transition duration-300 flex flex-no-wrap ";
+    cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-gray-200 hover:bg-gray-50" : "";
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.preventDefault();
@@ -69,37 +57,29 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
   return (
     <div {...getPreviewBehaviour()}>
       <div className="flex-0 mr-2 hidden md:block">
-        {canViewSource && <GlobeIcon width="20" height="20" />}
-        {canPreview && !canViewSource && <DocumentIcon width="20" height="20" />}
+        {canViewSource && <GlobeIcon width="20" height="20" color="#1F93FF" />}
+        {canPreview && !canViewSource && <DocumentIcon width="20" height="20" color="#1F93FF" />}
       </div>
       <div className="flex-1">
-        <div className="mb-2">{title}</div>
+        <div className="mb-2 flex justify-between no-wrap">
+          {title} {(canPreview || canViewSource) && <MatchesButton dataAttribute={slug} count={matches} overideText={renderMatchesOverrideText()} />}
+        </div>
         <div className="md:flex flex-nowrap items-center">
           <div className="flex-1">
             <div className="flex items-center text-sm">
-              <div className="flex-1 flex flex-wrap gap-x-8 items-center">
-                {!isMain && <span className="capitalize font-bold">{document_role?.toLowerCase()}</span>}
-                {renderContentType(content_type)}
+              <div className="flex-1 flex flex-wrap gap-x-2 items-center middot-between">
                 {!!language && (
                   <span>
                     {getLanguage(language, languages)}
                     {!!variant && ` (${variant})`}
                   </span>
                 )}
+                {!isMain && <span className="capitalize">{document_role?.toLowerCase()}</span>}
+                {getDocumentType(content_type)}
                 {!canPreview && <span className="flex gap-2 items-center">{renderDocumentInfo()}</span>}
               </div>
             </div>
           </div>
-          {(canPreview || canViewSource) && (
-            <div className="flex-0 mt-2 md:mt-0">
-              <MatchesButton
-                dataAttribute={slug}
-                count={matches}
-                overideText={renderMatchesOverrideText()}
-                variant={canPreview ? "light" : "ghost"}
-              />
-            </div>
-          )}
         </div>
       </div>
     </div>

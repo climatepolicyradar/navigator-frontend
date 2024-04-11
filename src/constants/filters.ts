@@ -1,1 +1,1 @@
-export const multipleValuesAllowed = ['countries', 'sectors'];
+export const multipleValuesAllowed = ["countries", "sectors"];
