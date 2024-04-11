@@ -125,7 +125,7 @@ export default function MapChart() {
   const [mapCenter, setMapCenter] = useState<TPoint>([0, 0]);
   const [mapZoom, setMapZoom] = useState(1);
   const [showUnifiedEU, setShowUnifiedEU] = useState(false);
-  const [selectedDocType, setSelectedDocType] = useState<"lawsPolicies" | "unfccc">("unfccc");
+  const [selectedDocType, setSelectedDocType] = useState<"lawsPolicies" | "unfccc">("lawsPolicies");
 
   // Combine the data from the coordinates and the map data from the API into a unified object
   const geographiesWithCoords: TGeographiesWithCoords = useMemo(() => {
