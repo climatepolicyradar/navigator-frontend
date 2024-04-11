@@ -50,7 +50,16 @@ jobs:
     permissions:
       contents: write
     secrets: inherit
-    uses: climatepolicyradar/reusable-workflows/.github/workflows/theme-factory.yml@v5
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/theme-factory.yml@v6
     with:
       repo-name: navigator-frontend
       theme: ${{ matrix.theme }}
+
+  release:
+    if: ${{ ! cancelled() && always() && needs.theme-factory.result == 'success' && needs.theme-factory.outputs.new_tag != 'Skip' }}
+    needs: theme-factory
+    permissions:
+      contents: write
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/release.yml@v3
+    with:
+      new_tag: ${{ needs.theme-factory.outputs.new_tag }}
