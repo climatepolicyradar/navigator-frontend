@@ -28,7 +28,7 @@ type TGeoFamilyCounts = {
 };
 
 type TGeoMarkers = {
-  lawsPolicy: number;
+  lawsPolicies: number;
   unfccc: number;
 };
 
@@ -81,6 +81,11 @@ const MIN_ZOOM = 1;
 const maxMarkerSize = 10;
 const minMarkerSize = 1.5;
 
+const calculateMarkerColour = (value: number, min: number, max: number) => {
+  const offset = ((value - min) / (max - min)) * 100;
+  return `hsl(0, 0%, ${100 - offset}%)`;
+};
+
 const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeographiesWithCoords }) => {
   const geography = Object.values(geographies).find((country) => country.display_value === geo);
   if (!geography) {
@@ -120,12 +125,14 @@ export default function MapChart() {
   const [mapCenter, setMapCenter] = useState<TPoint>([0, 0]);
   const [mapZoom, setMapZoom] = useState(1);
   const [showUnifiedEU, setShowUnifiedEU] = useState(false);
+  const [selectedDocType, setSelectedDocType] = useState<"lawsPolicies" | "unfccc">("unfccc");
 
   // Combine the data from the coordinates and the map data from the API into a unified object
   const geographiesWithCoords: TGeographiesWithCoords = useMemo(() => {
     // Calculate size of marker
-    const maxLawsPolicies = Math.max(...mapData.map((g) => g.family_counts?.["EXECUTIVE"] || 0 + g.family_counts?.["LEGISLATIVE"] || 0));
-    const maxUNFCCC = Math.max(...mapData.map((g) => g.family_counts?.["UNFCCC"] || 0));
+    const maxLawsPolicies = Math.max(...mapData.map((g) => g.family_counts?.EXECUTIVE || 0 + g.family_counts?.LEGISLATIVE || 0));
+    // Only take UNFCCC counts for countries that are not XAA or XAB (international, no geography)
+    const maxUNFCCC = Math.max(...mapData.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.UNFCCC || 0)));
 
     return configContries.reduce((acc, country) => {
       const geoStats = mapData.find((geo) => geo.slug === country.slug);
@@ -134,11 +141,11 @@ export default function MapChart() {
         coords: GEO_CENTER_POINTS[country.value],
         familyCounts: geoStats?.family_counts,
         markers: {
-          lawsPolicy: Math.max(
+          lawsPolicies: Math.max(
             minMarkerSize,
-            ((geoStats?.family_counts?.["EXECUTIVE"] || 0 + geoStats?.family_counts?.["LEGISLATIVE"] || 0) / maxLawsPolicies) * maxMarkerSize
+            ((geoStats?.family_counts?.EXECUTIVE || 0 + geoStats?.family_counts?.LEGISLATIVE || 0) / maxLawsPolicies) * maxMarkerSize
           ),
-          unfccc: Math.max(minMarkerSize, (geoStats?.family_counts?.UNFCCC || 0 / maxUNFCCC) * maxMarkerSize),
+          unfccc: Math.max(minMarkerSize, ((geoStats?.family_counts?.UNFCCC || 0) / maxUNFCCC) * maxMarkerSize),
         },
       };
       return acc;
@@ -196,7 +203,19 @@ export default function MapChart() {
   return (
     <>
       <div className="flex justify-between items-center my-4">
-        <div></div>
+        <div>
+          <select
+            className="border border-gray-300 mt-2 small"
+            onChange={(e) => {
+              setSelectedDocType(e.currentTarget.value as "lawsPolicies" | "unfccc");
+            }}
+            value={selectedDocType}
+            aria-label="Select a docuement type to display on the map"
+          >
+            <option value="lawsPolicies">Laws and policies</option>
+            <option value="unfccc">UNFCCC</option>
+          </select>
+        </div>
         <div>
           <div className="flex items-center gap-4">
             <div className="relative w-[300px]" data-cy="geographies">
@@ -277,7 +296,10 @@ export default function MapChart() {
                       }}
                       style={markerStyle}
                     >
-                      <circle r={geo.markers.lawsPolicy} />
+                      <circle
+                        r={geo.markers[selectedDocType]}
+                        fill={calculateMarkerColour(geo.markers[selectedDocType], minMarkerSize, maxMarkerSize)}
+                      />
                     </Marker>
                   );
                 })}

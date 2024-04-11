@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import SuggestList from "@components/filters/SuggestList";
-import { useTranslation } from "react-i18next";
 import { sortData } from "@utils/sorting";
 
 interface ByTextInputProps {
