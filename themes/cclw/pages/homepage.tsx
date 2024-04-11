@@ -10,7 +10,7 @@ import { Partners } from "@cclw/components/Partners";
 import Layout from "@components/layouts/LandingPage";
 
 const WorldMap = dynamic(() => import("@components/map/WorldMap"), {
-  loading: () => <p>Loading map...</p>,
+  loading: () => <p>Loading world map...</p>,
   ssr: false,
 });
 
