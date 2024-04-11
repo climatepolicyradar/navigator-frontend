@@ -11,6 +11,7 @@ import Footer from "@components/footer/Footer";
 import Layout from "@components/layouts/LandingPage";
 import LandingSearchForm from "@cpr/components/LandingSearchForm";
 import { GSTBanner } from "@cpr/components/GSTBanner";
+import WorldMap from "@components/map/WorldMap";
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
@@ -46,6 +47,9 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
             </div>
           </Hero>
         </main>
+        <div className="container hidden my-6 md:block">
+          <WorldMap />
+        </div>
         <Summary />
         <Partners />
         <Footer />
