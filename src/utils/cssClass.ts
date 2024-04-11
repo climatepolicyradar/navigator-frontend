@@ -10,6 +10,7 @@ export function addClass(el, className) {
   if (el?.classList) {
     el.classList.add(className);
   } else {
+    if (!el) return;
     el.className += " " + className;
   }
 }
