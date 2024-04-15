@@ -306,8 +306,8 @@ export default function MapChart() {
         <Tooltip id="mapToolTip" ref={geographyInfoTooltipRef} afterHide={() => setActiveGeography("")} imperativeModeOnly clickable />
         <ZoomControls
           mapZoom={mapZoom}
-          maxZoom={MIN_ZOOM}
-          minZoom={MAX_ZOOM}
+          maxZoom={MAX_ZOOM}
+          minZoom={MIN_ZOOM}
           handleZoomIn={() => setMapZoom(mapZoom + 1)}
           handleZoomOut={() => setMapZoom(mapZoom - 1)}
           handleReset={handleResetMapClick}
