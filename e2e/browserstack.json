@@ -1,0 +1,39 @@
+{
+  "auth": {
+    "username": "henryfranks_WnspAl",
+    "access_key": "syCasEmZcTh4YpobHbtS"
+  },
+  "browsers": [
+    {
+      "browser": "chrome",
+      "os": "Windows 10",
+      "versions": ["latest", "latest - 1"]
+    },
+    {
+      "browser": "firefox",
+      "os": "OS X Mojave",
+      "versions": ["latest", "latest - 1"]
+    },
+    {
+      "browser": "edge",
+      "os": "OS X Catalina",
+      "versions": ["latest"]
+    }
+  ],
+  "run_settings": {
+    "cypress_config_file": "./cypress.config.js",
+    "cypress_version": "10.0.3",
+    "project_name": "navigator-frontend",
+    "build_name": "patrick-test",
+    "exclude": [],
+    "parallels": 5,
+    "npm_dependencies": {},
+    "package_config_options": {},
+    "headless": true
+  },
+  "connection_settings": {
+    "local": true,
+    "local_identifier": "patrick-test-identifier"
+  },
+  "disable_usage_reporting": false
+}
