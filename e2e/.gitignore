@@ -1,6 +1,10 @@
 1-getting-started
 2-advanced-examples
 
+local.log
+npm_install_debug.log
+/log
+
 importData.csv
 /cypress/videos
 /cypress/screenshots
