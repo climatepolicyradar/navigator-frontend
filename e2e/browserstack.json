@@ -1,21 +1,16 @@
 {
   "auth": {
-    "username": "henryfranks_WnspAl",
-    "access_key": "syCasEmZcTh4YpobHbtS"
+    "username": "",
+    "access_key": ""
   },
   "browsers": [
     {
       "browser": "chrome",
       "os": "Windows 10",
-      "versions": ["latest", "latest - 1"]
+      "versions": ["latest"]
     },
     {
-      "browser": "firefox",
-      "os": "OS X Mojave",
-      "versions": ["latest", "latest - 1"]
-    },
-    {
-      "browser": "edge",
+      "browser": "chrome",
       "os": "OS X Catalina",
       "versions": ["latest"]
     }
@@ -27,7 +22,7 @@
     "build_name": "patrick-test",
     "exclude": [],
     "parallels": 5,
-    "npm_dependencies": {},
+    "npm_dependencies": { "dotenv": "^16.0.1" },
     "package_config_options": {},
     "headless": true
   },
