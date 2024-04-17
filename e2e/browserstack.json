@@ -19,16 +19,16 @@
     "cypress_config_file": "./cypress.config.js",
     "cypress_version": "10.0.3",
     "project_name": "navigator-frontend",
-    "build_name": "patrick-test",
+    "build_name": "browserstack-test",
     "exclude": [],
-    "parallels": 5,
+    "parallels": 10,
     "npm_dependencies": { "dotenv": "^16.0.1" },
     "package_config_options": {},
     "headless": true
   },
   "connection_settings": {
     "local": true,
-    "local_identifier": "patrick-test-identifier"
+    "local_identifier": "browserstack-test-identifier"
   },
   "disable_usage_reporting": false
 }
