@@ -1,11 +1,17 @@
 1-getting-started
 2-advanced-examples
 
+# Browserstack
 local.log
 npm_install_debug.log
 /log
+/results
 
-importData.csv
+# Cypress
 /cypress/videos
 /cypress/screenshots
+
+# Data
+importData.csv
+
 .env
