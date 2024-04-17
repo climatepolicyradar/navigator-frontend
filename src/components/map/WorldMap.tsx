@@ -197,7 +197,6 @@ export default function MapChart() {
 
   return (
     <>
-      <div></div>
       <div className="flex justify-between items-center my-4">
         <div>
           <select
