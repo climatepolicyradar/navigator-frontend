@@ -54,23 +54,14 @@ const geoStyle = (isActive: boolean) => {
 
 const markerStyle = {
   default: {
-    fill: "#E4E7EC",
-    stroke: "#1D2939",
-    strokeWidth: 0.25,
     outline: "none",
     cursor: "pointer",
   },
   hover: {
-    fill: "#1F93FF",
-    stroke: "#1D2939",
-    strokeWidth: 0.25,
     outline: "none",
     cursor: "pointer",
   },
   pressed: {
-    fill: "#1F93FF",
-    stroke: "#1D2939",
-    strokeWidth: 0.25,
     outline: "none",
     cursor: "pointer",
   },
@@ -81,9 +72,16 @@ const MIN_ZOOM = 1;
 const maxMarkerSize = 10;
 const minMarkerSize = 1.5;
 
-const calculateMarkerColour = (value: number, min: number, max: number) => {
+const getMarkerColour = (value: number, min: number, max: number, active: boolean) => {
+  if (active) {
+    return "#1F93FF";
+  }
   const offset = ((value - min) / (max - min)) * 100;
   return `hsl(200, 50%, ${100 - offset}%)`;
+};
+
+const getMarketStroke = (active: boolean) => {
+  return active ? "#fff" : "#1D2939";
 };
 
 const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeographiesWithCoords }) => {
@@ -103,7 +101,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
           <p>Laws and policies: {geography.familyCounts?.EXECUTIVE || 0 + geography.familyCounts.LEGISLATIVE || 0}</p>
           <p>UNFCCC documents: {geography.familyCounts?.UNFCCC || 0}</p>
           <p>
-            <LinkWithQuery href={`/geographies/${geography.slug}`}>View territory profile</LinkWithQuery>
+            <LinkWithQuery href={`/geographies/${geography.slug}`}>View more</LinkWithQuery>
           </p>
         </>
       )}
@@ -199,6 +197,7 @@ export default function MapChart() {
 
   return (
     <>
+      <div></div>
       <div className="flex justify-between items-center my-4">
         <div>
           <select
@@ -294,7 +293,9 @@ export default function MapChart() {
                     >
                       <circle
                         r={geo.markers[selectedDocType]}
-                        fill={calculateMarkerColour(geo.markers[selectedDocType], minMarkerSize, maxMarkerSize)}
+                        fill={getMarkerColour(geo.markers[selectedDocType], minMarkerSize, maxMarkerSize, activeGeography === geo.display_value)}
+                        stroke={getMarketStroke(activeGeography === geo.display_value)}
+                        strokeWidth={0.25}
                       />
                     </Marker>
                   );
