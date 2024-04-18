@@ -72,7 +72,7 @@ html,
 }
 body {
   @apply text-gray-700;
-  font-family: Arial;
+  font-family: Arial, Helvetica, sans-serif;
 }
 a,
 .anchor {
@@ -115,7 +115,7 @@ input[type="email"],
 textarea,
 select,
 option {
-  font-family: "Neue Haas Grotesk Display";
+  font-family: Arial, Helvetica, sans-serif;
   @apply p-3 rounded-lg text-lg w-full text-cpr-dark;
   &.small {
     @apply p-2 text-base;
@@ -130,7 +130,7 @@ option {
 }
 
 select {
-  font-family: "Neue Haas Grotesk Display", Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   appearance: none;
   position: relative;
   background-image: url(/images/down-arrow.svg);
@@ -147,7 +147,7 @@ select {
 }
 
 option {
-  font-family: "Neue Haas Grotesk Display", Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 // radar loader
