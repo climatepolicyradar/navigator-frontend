@@ -164,7 +164,6 @@ export default function MapChart() {
   };
 
   const handleGeographySelected = (selectedCountry: TGeographyWithCoords) => {
-    setActiveGeography(selectedCountry.display_value);
     setMapCenter(selectedCountry.coords);
     setMapZoom(5);
     const mapElement = mapRef.current;
