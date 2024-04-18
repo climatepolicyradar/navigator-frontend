@@ -199,7 +199,7 @@ export default function MapChart() {
       <div className="flex justify-between items-center my-4">
         <div>
           <select
-            className="border border-gray-300 mt-2 small"
+            className="border border-gray-300 small rounded-full !pl-4"
             onChange={(e) => {
               setSelectedDocType(e.currentTarget.value as "lawsPolicies" | "unfccc");
             }}
@@ -313,7 +313,7 @@ export default function MapChart() {
         />
         <div className="absolute top-0 right-0 p-4">
           <label
-            className="checkbox-input flex items-center p-2 rounded-md cursor-pointer border border-gray-300 bg-white"
+            className="checkbox-input flex items-center p-2 px-4 rounded-full cursor-pointer border border-gray-300 bg-white"
             htmlFor="show_eu_aggregated"
           >
             <input
