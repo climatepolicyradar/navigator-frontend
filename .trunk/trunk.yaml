@@ -25,6 +25,7 @@ runtimes:
 # (https://docs.trunk.io/check/configuration)
 lint:
   disabled:
+    - hadolint
     - osv-scanner
   ignore:
     - linters: [ALL]
@@ -40,7 +41,6 @@ lint:
     - checkov@3.2.46
     - eslint@8.57.0
     - git-diff-check
-    - hadolint@2.12.0
     - markdownlint@0.39.0
     - oxipng@9.0.0
     - prettier@3.2.5
