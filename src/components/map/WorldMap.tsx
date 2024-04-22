@@ -98,7 +98,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
       {geography && (
         <>
           <p className="font-bold">{geography.display_value}</p>
-          <p>Laws and policies: {geography.familyCounts?.EXECUTIVE || 0 + geography.familyCounts.LEGISLATIVE || 0}</p>
+          <p>Laws and policies: {(geography.familyCounts?.EXECUTIVE || 0) + (geography.familyCounts.LEGISLATIVE || 0)}</p>
           <p>UNFCCC documents: {geography.familyCounts?.UNFCCC || 0}</p>
           <p>
             <LinkWithQuery href={`/geographies/${geography.slug}`}>View more</LinkWithQuery>
@@ -125,7 +125,7 @@ export default function MapChart() {
   // Combine the data from the coordinates and the map data from the API into a unified object
   const geographiesWithCoords: TGeographiesWithCoords = useMemo(() => {
     // Calculate size of marker
-    const maxLawsPolicies = Math.max(...mapData.map((g) => g.family_counts?.EXECUTIVE || 0 + g.family_counts?.LEGISLATIVE || 0));
+    const maxLawsPolicies = Math.max(...mapData.map((g) => (g.family_counts?.EXECUTIVE || 0) + (g.family_counts?.LEGISLATIVE || 0)));
     // Only take UNFCCC counts for countries that are not XAA or XAB (international, no geography)
     const maxUNFCCC = Math.max(...mapData.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.UNFCCC || 0)));
 
@@ -138,7 +138,7 @@ export default function MapChart() {
         markers: {
           lawsPolicies: Math.max(
             minMarkerSize,
-            ((geoStats?.family_counts?.EXECUTIVE || 0 + geoStats?.family_counts?.LEGISLATIVE || 0) / maxLawsPolicies) * maxMarkerSize
+            (((geoStats?.family_counts?.EXECUTIVE || 0) + (geoStats?.family_counts?.LEGISLATIVE || 0)) / maxLawsPolicies) * maxMarkerSize
           ),
           unfccc: Math.max(minMarkerSize, ((geoStats?.family_counts?.UNFCCC || 0) / maxUNFCCC) * maxMarkerSize),
         },
