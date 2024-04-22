@@ -537,19 +537,6 @@ ul li.selected {
   }
 }
 
-.worldMap {
-  background: radial-gradient(ellipse at center, #c5e8ff 0, #a0c3ff 100%);
-}
-
-.worldMap--popup {
-  .leaflet-popup-content-wrapper {
-    @apply rounded-sm shadow-md border border-gray-200;
-    .leaflet-popup-content {
-      @apply my-2 mx-4;
-    }
-  }
-}
-
 .family-document {
   &:hover {
     .matches-button {
@@ -623,4 +610,73 @@ ul li.selected {
 
 .scrollbar-narrow {
   @apply scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500;
+}
+
+.map-legend-colour-scale {
+  @apply h-[30px] w-[400px] relative;
+  background: linear-gradient(90deg, hsl(200, 50%, 100%) 0%, hsl(200, 50%, 50%) 50%, hsl(200, 50%, 0%) 100%);
+
+  &:after {
+    border-top: 30px solid white;
+    border-left: transparent;
+    border-right: 400px solid transparent;
+    width: 0;
+    height: 0;
+    left: 0;
+    bottom: 0;
+    position: absolute;
+    display: block;
+    content: "";
+  }
+}
+
+.map-circles {
+  @apply flex gap-4 items-baseline;
+
+  .scale-item {
+    .circle {
+      width: 8px;
+      height: 8px;
+      border-radius: 100%;
+      border: 1px solid #1d2939;
+    }
+
+    p {
+      text-align: center;
+    }
+
+    &:nth-child(1) {
+      .circle {
+        background: hsl(200, 50%, 100%);
+      }
+    }
+    &:nth-child(2) {
+      .circle {
+        width: 14px;
+        height: 14px;
+        background: hsl(200, 50%, 75%);
+      }
+    }
+    &:nth-child(3) {
+      .circle {
+        width: 20px;
+        height: 20px;
+        background: hsl(200, 50%, 50%);
+      }
+    }
+    &:nth-child(4) {
+      .circle {
+        width: 26px;
+        height: 26px;
+        background: hsl(200, 50%, 25%);
+      }
+    }
+    &:nth-child(5) {
+      .circle {
+        width: 32px;
+        height: 32px;
+        background: hsl(200, 50%, 0%);
+      }
+    }
+  }
 }
