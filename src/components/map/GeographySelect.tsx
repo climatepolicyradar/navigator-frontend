@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import SuggestList from "@components/filters/SuggestList";
 import { sortData } from "@utils/sorting";
+import { SearchIcon } from "@components/svg/Icons";
 
 interface ByTextInputProps {
   title: string;
@@ -33,17 +34,32 @@ const GeographySelect = ({ title, list, keyField, keyFieldDisplay, filterType, h
 
   return (
     <div className="relative">
-      <input
-        type="text"
-        className="border border-gray-300 small outline-none"
-        placeholder={title}
-        value={input}
-        onChange={handleChange}
-        aria-label="Search for a country or territory"
-      />
+      <div className={`bg-white relative z-20 ${suggestList.length > 0 ? "rounded-b-none rounded-t-lg" : "rounded-full"}`}>
+        <div className="absolute p-[1px] pr-0 top-0 left-0 h-full flex items-center justify-start z-20">
+          <div
+            className={`text-white py-1 px-2 pl-4 h-full transtion duration-300 shrink-0 drop-shadow flex items-center hover:bg-gray-100 ${
+              suggestList.length > 0 ? "rounded-tl-lg" : "rounded-l-full"
+            }`}
+          >
+            <SearchIcon height="16" width="16" color="#475467" />
+          </div>
+        </div>
+        <input
+          data-analytics="map-searchInput"
+          data-cy="map-input"
+          className={`w-full bg-white appearance-none py-2 pl-12 pr-2 z-10 leading-snug relative flex-grow border-gray-300 placeholder:text-grey-300 ${
+            suggestList.length > 0 ? "rounded-b-none rounded-t-lg" : "rounded-full"
+          }`}
+          type="search"
+          placeholder={title}
+          value={input}
+          onChange={handleChange}
+          aria-label="Search for a country or territory"
+        />
+      </div>
 
       {suggestList.length > 0 && (
-        <div className="absolute top-full mt-[-10px] left-0 w-full z-30">
+        <div className="absolute top-full mt-[-5px] left-0 w-full z-30">
           <SuggestList
             list={suggestList}
             setList={setSuggestList}

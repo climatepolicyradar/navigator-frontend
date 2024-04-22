@@ -9,6 +9,7 @@ import { TGeography } from "@types";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import GeographySelect from "./GeographySelect";
 import { ZoomControls } from "./ZoomControls";
+import { Legend } from "./Legend";
 
 const geoUrl = "/data/map/world-countries-50m.json";
 
@@ -36,6 +37,8 @@ type TGeographyWithCoords = TGeography & { coords: TPoint; familyCounts: TGeoFam
 
 type TGeographiesWithCoords = { [key: string]: TGeographyWithCoords };
 
+type TMapData = { maxLawsPolicies: number; maxUnfccc: number; geographies: TGeographiesWithCoords };
+
 const geoStyle = (isActive: boolean) => {
   return {
     default: {
@@ -54,23 +57,14 @@ const geoStyle = (isActive: boolean) => {
 
 const markerStyle = {
   default: {
-    fill: "#E4E7EC",
-    stroke: "#1D2939",
-    strokeWidth: 0.25,
     outline: "none",
     cursor: "pointer",
   },
   hover: {
-    fill: "#1F93FF",
-    stroke: "#1D2939",
-    strokeWidth: 0.25,
     outline: "none",
     cursor: "pointer",
   },
   pressed: {
-    fill: "#1F93FF",
-    stroke: "#1D2939",
-    strokeWidth: 0.25,
     outline: "none",
     cursor: "pointer",
   },
@@ -81,9 +75,16 @@ const MIN_ZOOM = 1;
 const maxMarkerSize = 10;
 const minMarkerSize = 1.5;
 
-const calculateMarkerColour = (value: number, min: number, max: number) => {
+const getMarkerColour = (value: number, min: number, max: number, active: boolean) => {
+  if (active) {
+    return "#1F93FF";
+  }
   const offset = ((value - min) / (max - min)) * 100;
   return `hsl(200, 50%, ${100 - offset}%)`;
+};
+
+const getMarketStroke = (active: boolean) => {
+  return active ? "#fff" : "#1D2939";
 };
 
 const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeographiesWithCoords }) => {
@@ -100,10 +101,10 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
       {geography && (
         <>
           <p className="font-bold">{geography.display_value}</p>
-          <p>Laws and policies: {geography.familyCounts?.EXECUTIVE || 0 + geography.familyCounts.LEGISLATIVE || 0}</p>
+          <p>Laws and policies: {(geography.familyCounts?.EXECUTIVE || 0) + (geography.familyCounts.LEGISLATIVE || 0)}</p>
           <p>UNFCCC documents: {geography.familyCounts?.UNFCCC || 0}</p>
           <p>
-            <LinkWithQuery href={`/geographies/${geography.slug}`}>View territory profile</LinkWithQuery>
+            <LinkWithQuery href={`/geographies/${geography.slug}`}>View more</LinkWithQuery>
           </p>
         </>
       )}
@@ -115,7 +116,7 @@ export default function MapChart() {
   const configQuery = useConfig();
   const geographiesQuery = useGeographies();
   const { data: { countries: configContries = [] } = {} } = configQuery;
-  const { data: mapData = [], status: mapDataStatus } = geographiesQuery;
+  const { data: mapDataRaw = [], status: mapDataStatus } = geographiesQuery;
   const geographyInfoTooltipRef = useRef<TooltipRefProps>(null);
   const mapRef = useRef(null);
   const [activeGeography, setActiveGeography] = useState("");
@@ -125,14 +126,20 @@ export default function MapChart() {
   const [selectedDocType, setSelectedDocType] = useState<"lawsPolicies" | "unfccc">("lawsPolicies");
 
   // Combine the data from the coordinates and the map data from the API into a unified object
-  const geographiesWithCoords: TGeographiesWithCoords = useMemo(() => {
+  const mapData: TMapData = useMemo(() => {
     // Calculate size of marker
-    const maxLawsPolicies = Math.max(...mapData.map((g) => g.family_counts?.EXECUTIVE || 0 + g.family_counts?.LEGISLATIVE || 0));
+    const maxLawsPolicies = Math.max(...mapDataRaw.map((g) => (g.family_counts?.EXECUTIVE || 0) + (g.family_counts?.LEGISLATIVE || 0)));
     // Only take UNFCCC counts for countries that are not XAA or XAB (international, no geography)
-    const maxUNFCCC = Math.max(...mapData.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.UNFCCC || 0)));
+    const maxUnfccc = Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.UNFCCC || 0)));
 
-    return configContries.reduce((acc, country) => {
-      const geoStats = mapData.find((geo) => geo.slug === country.slug);
+    const mapDataConstructor: TMapData = {
+      maxLawsPolicies,
+      maxUnfccc,
+      geographies: {},
+    };
+
+    mapDataConstructor.geographies = configContries.reduce((acc, country) => {
+      const geoStats = mapDataRaw.find((geo) => geo.slug === country.slug);
       acc[country.value] = {
         ...country,
         coords: GEO_CENTER_POINTS[country.value],
@@ -140,23 +147,24 @@ export default function MapChart() {
         markers: {
           lawsPolicies: Math.max(
             minMarkerSize,
-            ((geoStats?.family_counts?.EXECUTIVE || 0 + geoStats?.family_counts?.LEGISLATIVE || 0) / maxLawsPolicies) * maxMarkerSize
+            (((geoStats?.family_counts?.EXECUTIVE || 0) + (geoStats?.family_counts?.LEGISLATIVE || 0)) / maxLawsPolicies) * maxMarkerSize
           ),
-          unfccc: Math.max(minMarkerSize, ((geoStats?.family_counts?.UNFCCC || 0) / maxUNFCCC) * maxMarkerSize),
+          unfccc: Math.max(minMarkerSize, ((geoStats?.family_counts?.UNFCCC || 0) / maxUnfccc) * maxMarkerSize),
         },
       };
       return acc;
     }, {});
-  }, [configContries, mapData]);
+    return mapDataConstructor;
+  }, [configContries, mapDataRaw]);
 
   const handleGeoClick = (e: React.MouseEvent<SVGPathElement>, geo: TSvgGeo) => {
     setActiveGeography(geo.properties.name);
-    const geography = Object.values(geographiesWithCoords).find((g) => g.display_value === geo.properties.name);
+    const geography = Object.values(mapData.geographies).find((g) => g.display_value === geo.properties.name);
     openToolTip([e.clientX, e.clientY], geography?.display_value ?? geo.properties.name);
   };
 
   const handleMarkerClick = (e: React.MouseEvent<SVGPathElement>, countryCode: string) => {
-    const geography = geographiesWithCoords[countryCode];
+    const geography = mapData.geographies[countryCode];
     openToolTip([e.clientX, e.clientY], geography?.display_value ?? "");
   };
 
@@ -166,7 +174,6 @@ export default function MapChart() {
   };
 
   const handleGeographySelected = (selectedCountry: TGeographyWithCoords) => {
-    setActiveGeography(selectedCountry.display_value);
     setMapCenter(selectedCountry.coords);
     setMapZoom(5);
     const mapElement = mapRef.current;
@@ -193,7 +200,7 @@ export default function MapChart() {
         y: coords[1],
       },
       place: "bottom",
-      content: <GeographyDetail geo={selectedGeography} geographies={geographiesWithCoords} />,
+      content: <GeographyDetail geo={selectedGeography} geographies={mapData.geographies} />,
     });
   };
 
@@ -202,7 +209,7 @@ export default function MapChart() {
       <div className="flex justify-between items-center my-4">
         <div>
           <select
-            className="border border-gray-300 mt-2 small"
+            className="border border-gray-300 small rounded-full !pl-4"
             onChange={(e) => {
               setSelectedDocType(e.currentTarget.value as "lawsPolicies" | "unfccc");
             }}
@@ -218,12 +225,12 @@ export default function MapChart() {
             <div className="relative w-[300px]" data-cy="geographies">
               <GeographySelect
                 title="Search for a country or territory"
-                list={geographiesWithCoords}
+                list={mapData.geographies}
                 keyField="value"
                 keyFieldDisplay="display_value"
                 filterType="geography"
                 handleFilterChange={(_, value) => {
-                  handleGeographySelected(geographiesWithCoords[value]);
+                  handleGeographySelected(mapData.geographies[value]);
                 }}
               />
             </div>
@@ -273,8 +280,8 @@ export default function MapChart() {
             </Geographies>
             {mapDataStatus === "success" && (
               <>
-                {Object.keys(geographiesWithCoords).map((i) => {
-                  const geo = geographiesWithCoords[i];
+                {Object.keys(mapData.geographies).map((i) => {
+                  const geo = mapData.geographies[i];
                   if (!geo.coords) return null;
                   if (!showUnifiedEU && geo.value === "EUR") return null;
                   if (showUnifiedEU && GEO_EU_COUNTRIES.includes(geo.value)) return null;
@@ -294,7 +301,9 @@ export default function MapChart() {
                     >
                       <circle
                         r={geo.markers[selectedDocType]}
-                        fill={calculateMarkerColour(geo.markers[selectedDocType], minMarkerSize, maxMarkerSize)}
+                        fill={getMarkerColour(geo.markers[selectedDocType], minMarkerSize, maxMarkerSize, activeGeography === geo.display_value)}
+                        stroke={getMarketStroke(activeGeography === geo.display_value)}
+                        strokeWidth={0.25}
                       />
                     </Marker>
                   );
@@ -314,7 +323,7 @@ export default function MapChart() {
         />
         <div className="absolute top-0 right-0 p-4">
           <label
-            className="checkbox-input flex items-center p-2 rounded-md cursor-pointer border border-gray-300 bg-white"
+            className="checkbox-input flex items-center p-2 px-4 rounded-full cursor-pointer border border-gray-300 bg-white"
             htmlFor="show_eu_aggregated"
           >
             <input
@@ -330,6 +339,7 @@ export default function MapChart() {
           </label>
         </div>
       </div>
+      <Legend max={selectedDocType === "lawsPolicies" ? mapData.maxLawsPolicies : mapData.maxUnfccc} />
     </>
   );
 }

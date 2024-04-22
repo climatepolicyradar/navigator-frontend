@@ -265,7 +265,7 @@
           "id": "752",
           "properties": { "name": "Sweden" }
         },
-        { "type": "Polygon", "arcs": [[383, 384]], "id": "748", "properties": { "name": "eSwatini" } },
+        { "type": "Polygon", "arcs": [[383, 384]], "id": "748", "properties": { "name": "Eswatini" } },
         { "type": "Polygon", "arcs": [[385, 386, 387, 388]], "id": "740", "properties": { "name": "Suriname" } },
         { "type": "Polygon", "arcs": [[-297, 389, 390, 391, 392, 393]], "id": "728", "properties": { "name": "South Sudan" } },
         { "type": "Polygon", "arcs": [[-392, 394, 395, 396, 397, 398, 399, 400]], "id": "729", "properties": { "name": "Sudan" } },
@@ -680,7 +680,12 @@
         },
         { "type": "MultiPolygon", "arcs": [[[-859]], [[-858]], [[-9, -357, -856]]], "id": "454", "properties": { "name": "Malawi" } },
         { "type": "MultiPolygon", "arcs": [[[919]], [[920]], [[921]]], "id": "450", "properties": { "name": "Madagascar" } },
-        { "type": "Polygon", "arcs": [[-485, 922, 923, 924, 925]], "id": "807", "properties": { "name": "Macedonia" } },
+        {
+          "type": "Polygon",
+          "arcs": [[-485, 922, 923, 924, 925]],
+          "id": "807",
+          "properties": { "name": "North Macedonia (Republic of North Macedonia)" }
+        },
         { "type": "Polygon", "arcs": [[926, 927, 928]], "id": "442", "properties": { "name": "Luxembourg" } },
         { "type": "MultiPolygon", "arcs": [[[-639, 929]], [[-636, 930, 931, 932, -660]]], "id": "440", "properties": { "name": "Lithuania" } },
         { "type": "Polygon", "arcs": [[-371, 933]], "id": "438", "properties": { "name": "Liechtenstein" } },
