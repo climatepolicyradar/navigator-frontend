@@ -299,3 +299,13 @@ export type TCorpus = {
   corpus_type: string;
   corpus_type_description: string;
 };
+
+export type TOrganisation = {
+  copora: TCorpus[];
+};
+
+export interface TDictionary<T> {
+  [Key: string]: T;
+}
+
+export type TOrganisationDictionary = TDictionary<TOrganisation>;
