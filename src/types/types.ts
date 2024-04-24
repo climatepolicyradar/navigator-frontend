@@ -292,3 +292,20 @@ export type TLoadingStatus = "idle" | "loading" | "success" | "error";
 export type TLanguages = {
   [key: string]: string;
 };
+
+export type TCorpus = {
+  title: string;
+  description: string;
+  corpus_type: string;
+  corpus_type_description: string;
+};
+
+export type TOrganisation = {
+  copora: TCorpus[];
+};
+
+export interface TDictionary<T> {
+  [Key: string]: T;
+}
+
+export type TOrganisationDictionary = TDictionary<TOrganisation>;
