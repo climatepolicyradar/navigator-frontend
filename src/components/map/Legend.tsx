@@ -27,7 +27,7 @@ export const Legend = ({ max }: { max: number }) => {
           <p>{scale[4]}</p>
         </div>
       </div>
-      <p className="mb-2">The size and colour of the circles indicate the number of laws and policies or UNFCCC submissions in our knowledge base</p>
+      <p className="mb-2">The size and colour of the circles indicate the number of laws and policies or UNFCCC submissions in our knowledge base.</p>
     </div>
   );
 };
