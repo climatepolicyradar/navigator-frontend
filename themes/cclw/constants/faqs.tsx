@@ -480,4 +480,17 @@ export const FAQS: TFAQ[] = [
       </>
     ),
   },
+  {
+    title: "What map and boundaries are used?",
+    content: (
+      <p>
+        This map was made with the{" "}
+        <ExternalLink url="https://www.naturalearthdata.com/downloads/50m-cultural-vectors/50m-admin-0-countries-2/">
+          Admin o - Countries
+        </ExternalLink>{" "}
+        map package by <ExternalLink url="https://www.naturalearthdata.com/">Natural Earth</ExternalLink>. Climate Policy Radar's usage of this World
+        map does not represent an opinion on any disputed boundaries.
+      </p>
+    ),
+  },
 ];

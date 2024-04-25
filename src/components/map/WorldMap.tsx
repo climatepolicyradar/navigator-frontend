@@ -89,7 +89,7 @@ const getMarketStroke = (active: boolean) => {
 
 const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeographiesWithCoords }) => {
   const geography = Object.values(geographies).find((country) => country.display_value === geo);
-  if (!geography) {
+  if (!geography || geography.value === "ESH") {
     return (
       <>
         <p>We do not have any information for this area yet. ({geo})</p>
@@ -285,6 +285,7 @@ export default function MapChart() {
                   if (!geo.coords) return null;
                   if (!showUnifiedEU && geo.value === "EUR") return null;
                   if (showUnifiedEU && GEO_EU_COUNTRIES.includes(geo.value)) return null;
+                  if (geo.value === "ESH") return null; // Western Sahara (disputed territory)
                   return (
                     <Marker
                       key={geo.slug}
