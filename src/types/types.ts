@@ -18,6 +18,7 @@ export type TSearchCriteria = {
   offset: number;
   family_ids?: string[] | null;
   document_ids?: string[] | null;
+  continuation_tokens?: string[] | null;
 };
 
 type TErrorDetail = {

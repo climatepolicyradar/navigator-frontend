@@ -32,6 +32,7 @@ export type TCacheIdentifier = {
 export type TCacheResult = TCacheIdentifier & {
   families: TMatchedFamily[];
   hits: number;
+  continuation_token?: string | null;
   timestamp: number;
 };
 
