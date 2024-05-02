@@ -218,6 +218,7 @@ export type TFamilyPage = {
   category: TCategory;
   metadata: TFamilyMetadata;
   slug: string;
+  corpus_id: string;
   events: TEvent[];
   documents: TDocumentPage[];
   collections: TCollection[];
@@ -298,10 +299,13 @@ export type TCorpus = {
   description: string;
   corpus_type: string;
   corpus_type_description: string;
+  corpus_import_id: string;
+  image_url: string;
+  text: string;
 };
 
 export type TOrganisation = {
-  copora: TCorpus[];
+  corpora: TCorpus[];
 };
 
 export interface TDictionary<T> {

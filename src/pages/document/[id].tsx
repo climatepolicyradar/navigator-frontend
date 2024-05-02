@@ -24,7 +24,7 @@ import useSearch from "@hooks/useSearch";
 import useConfig from "@hooks/useConfig";
 import { truncateString } from "@helpers/index";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
-import { getOrganisationNote } from "@helpers/getOrganisationNote";
+import { getCorpusInfo } from "@helpers/getCorpusInfo";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary } from "@types";
@@ -62,7 +62,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
 
   const configQuery = useConfig();
-  const { data: { countries = [] } = {} } = configQuery;
+  const { data: { countries = [], organisations = null } = {} } = configQuery;
   const geographyName = getCountryName(page.geography, countries);
   const geographySlug = getCountrySlug(page.geography, countries);
   const breadcrumbCategory = { label: "Search results", href: "/search" };
@@ -96,9 +96,11 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
     }
   };
 
-  // TODO: align with BE on an approach to sources and their logos
-  const sourceLogo = page?.organisation === "CCLW" ? "grantham-logo.png" : null;
-  const sourceName = page?.organisation === "CCLW" ? "Grantham Research Institute" : page?.organisation;
+  const { corpusImage, corpusAltImage, corpusNote } = getCorpusInfo({
+    organisations,
+    organisation: page?.organisation,
+    corpus_id: page?.corpus_id,
+  });
 
   const [mainDocuments, otherDocuments] = getMainDocuments(page.documents);
 
@@ -285,13 +287,13 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           <section className="mt-8">
             <h2 className="my-4 text-base">Note</h2>
             <div className="flex text-sm">
-              {sourceLogo && (
+              {corpusImage && (
                 <div className="relative max-w-[144px] mt-1 mr-2">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={`/images/partners/${sourceLogo}`} alt={page.organisation} />
+                  <img src={`${corpusImage}`} alt={corpusAltImage} />
                 </div>
               )}
-              {getOrganisationNote(page.organisation)}
+              <span dangerouslySetInnerHTML={{ __html: corpusNote }} className="" />
             </div>
           </section>
 
