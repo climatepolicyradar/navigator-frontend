@@ -48,7 +48,7 @@ const FrameworkLaws = () => {
                 {FRAMEWORK_LAWS.map((law) => (
                   <tr key={law.geo_iso}>
                     <td>
-                      <LinkWithQuery href={law.url} cypress={`framework-law-${law.country}`}>
+                      <LinkWithQuery href={law.url} cypress={`framework-law-${law.geography}`}>
                         {law.title}
                       </LinkWithQuery>
                     </td>
