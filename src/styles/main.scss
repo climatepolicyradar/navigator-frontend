@@ -341,7 +341,6 @@ ul li.selected {
     @apply italic;
   }
   a {
-    @apply visited:text-blue-300 visited:hover:text-blue-800;
     &.accordian-item {
       @apply text-cpr-dark text-lg cursor-pointer flex items-center no-underline hover:no-underline md:text-h3;
     }
@@ -392,6 +391,13 @@ ul li.selected {
     @apply my-6;
   }
 }
+
+.search-results {
+  a {
+    @apply visited:text-blue-300 visited:hover:text-blue-800;
+  }
+}
+
 .pdf-container {
   height: 440px;
   margin-bottom: 16px;
