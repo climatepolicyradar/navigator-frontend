@@ -331,6 +331,15 @@ ul li.selected {
 .text-content,
 .search-results {
   @apply font-light;
+  b,
+  strong,
+  .bold {
+    @apply font-semibold;
+  }
+  i,
+  em {
+    @apply italic;
+  }
   a {
     @apply visited:text-blue-300 visited:hover:text-blue-800;
     &.accordian-item {
@@ -373,7 +382,7 @@ ul li.selected {
   table {
     @apply text-left my-6;
     th {
-      @apply p-2;
+      @apply border border-gray-300 p-2;
     }
     td {
       @apply border border-gray-300 p-2 align-top;
