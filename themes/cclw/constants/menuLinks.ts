@@ -6,6 +6,12 @@ const menuLinks = [
     cy: "home",
   },
   {
+    text: "Framework laws",
+    href: "/framework-laws",
+    external: false,
+    cy: "framework-laws",
+  },
+  {
     text: "About",
     href: "/about",
     external: false,

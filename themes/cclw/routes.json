@@ -20,6 +20,11 @@
     "contentPath": "faq"
   },
   {
+    "title": "Framework Laws",
+    "path": "framework-laws",
+    "contentPath": "framework-laws"
+  },
+  {
     "title": "Methodology",
     "path": "methodology",
     "contentPath": "methodology"
