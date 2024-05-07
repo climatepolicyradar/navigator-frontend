@@ -23,7 +23,6 @@ import { ExternalLink } from "@components/ExternalLink";
 import { NoOfResults } from "@components/NoOfResults";
 import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
 import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
-import { calculatePageCount } from "@utils/paging";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { PER_PAGE } from "@constants/paging";
@@ -40,11 +39,10 @@ const Search = () => {
 
   const updateCountries = useUpdateCountries();
 
-  const { status, families, hits, searchQuery } = useSearch(router.query);
+  const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
   const configQuery = useConfig();
   const { data: { regions = [], countries = [] } = {} } = configQuery;
-
   const { data: filteredCountries } = useFilteredCountries(countries);
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
@@ -62,9 +60,22 @@ const Search = () => {
   };
 
   const handlePageChange = (page: number) => {
-    const offSet = (page - 1) * PER_PAGE;
-    router.query[QUERY_PARAMS.offset] = offSet.toString();
-    router.push({ query: router.query });
+    const query = { ...router.query };
+    // TODO: add logic to handle pages with continuation tokens
+    // for example page 6 is results 100-120, so the payload should be offset 0, but include the continuation token from search that corresponds to the 6th
+    // e.g. pages 1-5 are no continuation token, page 6-10 is continuation token 1, page 11-15 is continuation token 2, etc
+    // const continuationTokens = router.query[QUERY_PARAMS.continuation_tokens] as string[];
+    // OR use JSON.stringify(ObjectData) to store the continuation tokens and the pages they correspond to
+    // console.log("handlePageChange", page, query);
+    if (page < 6) {
+      query[QUERY_PARAMS.active_continuation_token] = null;
+    } else {
+      const existingContinuationToken = query.continuation_tokens ? query.continuation_tokens[Math.floor(page / 5) - 1] : undefined;
+      query[QUERY_PARAMS.active_continuation_token] = existingContinuationToken ?? continuationToken;
+    }
+    const offSet = ((page - 1) % 5) * PER_PAGE;
+    query[QUERY_PARAMS.offset] = offSet.toString();
+    router.push({ query: query });
     resetCSVStatus();
   };
 
@@ -225,12 +236,6 @@ const Search = () => {
     }, 150);
   };
 
-  useEffect(() => {
-    if (hits !== undefined) {
-      setPageCount(calculatePageCount(hits));
-    }
-  }, [hits]);
-
   // Concerned only with preventing scrolling when either the drawer or the CSV download popup is open
   useEffect(() => {
     if (typeof drawerFamily === "number" || showCSVDownloadPopup) {
@@ -361,10 +366,10 @@ const Search = () => {
             </div>
           </div>
         </section>
-        {pageCount > 1 && (
+        {hits > 1 && (
           <section>
             <div className="mb-12">
-              <Pagination pageNumber={getCurrentPage()} pageCount={pageCount} onChange={handlePageChange} />
+              <Pagination pageNumber={getCurrentPage()} onChange={handlePageChange} totalHits={hits} continuationTokens={[continuationToken]} />
             </div>
           </section>
         )}

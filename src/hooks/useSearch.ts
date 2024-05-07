@@ -31,6 +31,7 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
   const [status, setStatus] = useState<TLoadingStatus>("idle");
   const [families, setFamilies] = useState<TMatchedFamily[]>([]);
   const [hits, setHits] = useState<number>(null);
+  const [continuationToken, setContinuationToken] = useState<string | null>(null);
 
   const searchQuery = useMemo(() => {
     return buildSearchQuery({ ...query }, familyId, documentId);
@@ -64,6 +65,7 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
     if (cachedResult) {
       setFamilies(cachedResult?.families || []);
       setHits(cachedResult.hits);
+      setContinuationToken(cachedResult.continuation_token || null);
       setStatus("success");
       return;
     }
@@ -74,25 +76,28 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
       if (res.status === 200) {
         // Catch missing attributes from the API response
         setFamilies(res.data.families || []);
-        setHits(res.data.hits || 0);
+        setHits(res.data.total_family_hits || 0);
+        setContinuationToken(res.data.continuation_token || null);
 
         const searchToCache: TCacheResult = {
           ...cacheId,
           families: res.data.families,
-          hits: res.data.hits,
+          hits: res.data.total_family_hits,
+          continuation_token: res.data.continuation_token,
           timestamp: new Date().getTime(),
         };
         updateCacheSearch(searchToCache);
       } else {
         setFamilies([]);
         setHits(0);
+        setContinuationToken(null);
         setStatus("error");
       }
       setStatus("success");
     });
   }, [searchQuery, runFreshSearch]);
 
-  return { status, families, hits, searchQuery };
+  return { status, families, hits, continuationToken, searchQuery };
 };
 
 export default useSearch;
