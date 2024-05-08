@@ -25,7 +25,7 @@ const FrameworkLaws = () => {
               applied with increasing frequency by the academic and policy community to laws that share some or all of the following characteristics:
             </p>
             <ul>
-              <li>Set out the strategic of travel for national climate change policy</li>
+              <li>Set out the strategic direction of travel for national climate change policy</li>
               <li>Are passed by the legislative branch of government</li>
               <li>Contain national long-term and/or medium targets and/or pathways for change</li>
               <li>Set out institutional arrangements for climate governance at the national level</li>
