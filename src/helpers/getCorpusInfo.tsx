@@ -8,8 +8,12 @@ type TProps = {
 };
 
 export const getCorpusInfo = ({ organisations, organisation, corpus_id }: TProps) => {
+  if (!organisations) {
+    // No organisations means we're not yet ready
+    return { corpusImage: null, corpusAltImage: null, corpusNote: null };
+  }
   const defaultResult = {
-    corpusImage: "image",
+    corpusImage: null,
     corpusAltImage: "No corpus image found",
     corpusNote: "No corpus note found",
   };
