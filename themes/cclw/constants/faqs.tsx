@@ -243,9 +243,8 @@ export const FAQS: TFAQ[] = [
     content: (
       <>
         <p>
-          Climate Change framework laws are a subset of all laws and policies in the database. If you are interested in this subset of the data,
-          please request a download of the full dataset. You can then filter this so you only see legislative documents (column L). From there you can
-          filter for any entry that includes data in Column O on frameworks.
+          Climate Change framework laws are a subset of all laws and policies in the database. We have added a new{" "}
+          <LinkWithQuery href="/framework-laws">framework laws page</LinkWithQuery> where these are listed.
         </p>
       </>
     ),

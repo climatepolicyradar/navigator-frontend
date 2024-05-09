@@ -36,6 +36,12 @@ const menuLinks = [
     cy: "search",
   },
   {
+    text: "Framework laws",
+    href: "/framework-laws",
+    external: false,
+    cy: "framework-laws",
+  },
+  {
     text: "Contact",
     href: "/contact",
     external: false,
