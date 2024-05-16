@@ -34,7 +34,6 @@ const Search = () => {
   const { t } = useTranslation(["searchStart", "searchResults"]);
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
-  const [pageCount, setPageCount] = useState(1);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
 
   const updateCountries = useUpdateCountries();
@@ -59,8 +58,10 @@ const Search = () => {
     setShowFilters(!showFilters);
   };
 
-  const handlePageChange = (page: number) => {
+  const handlePageChange = (page: number, ct: string) => {
     const query = { ...router.query };
+    const continuationTokens = JSON.parse((router.query[QUERY_PARAMS.continuation_tokens] as string) || '[""]');
+    // console.log("handlePageChange: continuationTokens", continuationTokens);
     // TODO: add logic to handle pages with continuation tokens
     // for example page 6 is results 100-120, so the payload should be offset 0, but include the continuation token from search that corresponds to the 6th
     // e.g. pages 1-5 are no continuation token, page 6-10 is continuation token 1, page 11-15 is continuation token 2, etc
@@ -68,13 +69,15 @@ const Search = () => {
     // OR use JSON.stringify(ObjectData) to store the continuation tokens and the pages they correspond to
     // console.log("handlePageChange", page, query);
     if (page < 6) {
-      query[QUERY_PARAMS.active_continuation_token] = null;
-    } else {
-      const existingContinuationToken = query.continuation_tokens ? query.continuation_tokens[Math.floor(page / 5) - 1] : undefined;
-      query[QUERY_PARAMS.active_continuation_token] = existingContinuationToken ?? continuationToken;
+      delete query[QUERY_PARAMS.active_continuation_token];
+    }
+    if (ct) {
+      query[QUERY_PARAMS.active_continuation_token] = ct;
+      query[QUERY_PARAMS.continuation_tokens] = JSON.stringify(continuationTokens);
     }
     const offSet = ((page - 1) % 5) * PER_PAGE;
     query[QUERY_PARAMS.offset] = offSet.toString();
+    // console.log("handlePageChange: query", query);
     router.push({ query: query });
     resetCSVStatus();
   };
@@ -369,7 +372,13 @@ const Search = () => {
         {hits > 1 && (
           <section>
             <div className="mb-12">
-              <Pagination pageNumber={getCurrentPage()} onChange={handlePageChange} totalHits={hits} continuationTokens={[continuationToken]} />
+              <Pagination
+                pageNumber={getCurrentPage()}
+                onChange={handlePageChange}
+                totalHits={hits}
+                continuationToken={continuationToken}
+                continuationTokens={router.query[QUERY_PARAMS.continuation_tokens] as string}
+              />
             </div>
           </section>
         )}

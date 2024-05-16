@@ -64,6 +64,10 @@ export default function buildSearchQuery(routerQuery: TRouterQuery, familyId = "
     keyword_filters.countries = Array.isArray(countries) ? countries : [countries];
   }
 
+  if (routerQuery[QUERY_PARAMS.active_continuation_token]) {
+    query.continuation_tokens = [routerQuery[QUERY_PARAMS.active_continuation_token] as string];
+  }
+
   if (familyId) {
     query.family_ids = [familyId];
   }

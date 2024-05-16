@@ -8,6 +8,6 @@ export const QUERY_PARAMS = {
   sort_field: "sf",
   sort_order: "so",
   offset: "o",
-  continuation_tokens: "ct",
   active_continuation_token: "act",
+  continuation_tokens: "cts",
 };
