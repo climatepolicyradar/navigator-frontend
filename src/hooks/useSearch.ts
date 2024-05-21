@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { ApiClient, getEnvFromServer } from "../api/http-common";
 import { initialSearchCriteria } from "../constants/searchCriteria";
-import { getCachedSearch, updateCacheSearch, TCacheResult } from "@utils/searchCache";
+// import { getCachedSearch, updateCacheSearch, TCacheResult } from "@utils/searchCache";
 import { TMatchedFamily, TSearch, TLoadingStatus } from "../types";
 import buildSearchQuery, { TRouterQuery } from "@utils/buildSearchQuery";
 
@@ -46,6 +46,7 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
       return;
     }
 
+    /* DISABLED CACHE
     // Check if we have a cached result before calling the API
     const cacheId = {
       query_string: searchQuery.query_string,
@@ -57,18 +58,21 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
       offset: searchQuery.offset,
       family_ids: searchQuery.family_ids,
       document_ids: searchQuery.document_ids,
+      continuation_tokens: searchQuery.continuation_tokens,
     };
 
     // Skip cache if we are running a search from a family or document page
     const cachedResult = cacheId.family_ids?.length || cacheId.document_ids?.length ? null : getCachedSearch(cacheId);
 
     if (cachedResult) {
+      // Set the search results from the cache
       setFamilies(cachedResult?.families || []);
       setHits(cachedResult.hits);
       setContinuationToken(cachedResult.continuation_token || null);
       setStatus("success");
       return;
     }
+    */
 
     const resultsQuery = getSearch(searchQuery);
 
@@ -79,6 +83,7 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
         setHits(res.data.total_family_hits || 0);
         setContinuationToken(res.data.continuation_token || null);
 
+        /* DISABLED CACHE
         const searchToCache: TCacheResult = {
           ...cacheId,
           families: res.data.families,
@@ -87,6 +92,7 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
           timestamp: new Date().getTime(),
         };
         updateCacheSearch(searchToCache);
+        */
       } else {
         setFamilies([]);
         setHits(0);
