@@ -57,7 +57,7 @@ const Pagination = ({
   // generate page sets at results per page per 100 items, with batches of 100 items determined by number of continuation tokens
   const pageSets = parsedTokens.length * (PER_CONTINUATION_TOKEN / resultsPerPage);
   const totalPagesForHits = Math.ceil(totalHits / resultsPerPage);
-  const numberOfPages = calculatePageCount(pageSets);
+  const numberOfPages = calculatePageCount(pageSets, totalPagesForHits);
 
   return (
     <div className="pagination w-full flex justify-center mt-6">
