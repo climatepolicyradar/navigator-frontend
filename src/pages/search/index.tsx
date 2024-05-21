@@ -1,6 +1,7 @@
 import { useEffect, useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
+import { ParsedUrlQueryInput } from "querystring";
 
 import useSearch from "@hooks/useSearch";
 import { useDownloadCsv } from "@hooks/useDownloadCsv";
@@ -106,8 +107,10 @@ const Search = () => {
   };
 
   const handleFilterChange = (type: string, value: string) => {
-    // reset to page 1 when changing filters
+    // Clear pagination controls and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
+    delete router.query[QUERY_PARAMS.active_continuation_token];
+    delete router.query[QUERY_PARAMS.continuation_tokens];
 
     let queryCollection: string[] = [];
 
@@ -130,21 +133,27 @@ const Search = () => {
   };
 
   const handleSuggestion = (term: string, filter?: string, filterValue?: string) => {
-    router.query[QUERY_PARAMS.query_string] = term;
+    const suggestedQuery: ParsedUrlQueryInput = {};
+    suggestedQuery[QUERY_PARAMS.query_string] = term;
     if (filter && filterValue && filter.length && filterValue.length) {
-      router.query[filter] = [filterValue.toLowerCase()];
+      suggestedQuery[filter] = [filterValue.toLowerCase()];
     }
-    router.push({ query: router.query });
+    router.push({ query: suggestedQuery });
     resetCSVStatus();
   };
 
   const handleSearchChange = (type: string, value: any) => {
-    if (type !== QUERY_PARAMS.offset) delete router.query[QUERY_PARAMS.offset];
-    // Clear ordering on new query search
+    if (type !== QUERY_PARAMS.offset) {
+      delete router.query[QUERY_PARAMS.offset];
+    }
+    // Clear query controls on new query search
     if (type === QUERY_PARAMS.query_string) {
       delete router.query[QUERY_PARAMS.sort_field];
       delete router.query[QUERY_PARAMS.sort_order];
     }
+    // Clear any continuation tokens when a new search query is made
+    delete router.query[QUERY_PARAMS.active_continuation_token];
+    delete router.query[QUERY_PARAMS.continuation_tokens];
     router.query[type] = value;
     if (!value) {
       delete router.query[type];
@@ -158,7 +167,10 @@ const Search = () => {
   };
 
   const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement>, _?: number, value?: string) => {
+    // Clear pagination controls and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
+    delete router.query[QUERY_PARAMS.active_continuation_token];
+    delete router.query[QUERY_PARAMS.continuation_tokens];
     const val = value ?? e.currentTarget.textContent;
     let category = val;
     router.query[QUERY_PARAMS.category] = category;
@@ -171,7 +183,10 @@ const Search = () => {
   };
 
   const handleSortClick = (e: ChangeEvent<HTMLSelectElement>) => {
+    // Clear pagination controls and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
+    delete router.query[QUERY_PARAMS.active_continuation_token];
+    delete router.query[QUERY_PARAMS.continuation_tokens];
     const val = e.currentTarget.value;
     let field = null;
     let order = null;
