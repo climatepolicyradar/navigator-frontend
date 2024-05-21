@@ -27,6 +27,7 @@ export type TCacheIdentifier = {
   offset: number;
   family_ids?: string[] | null;
   document_ids?: string[] | null;
+  continuation_tokens?: string[] | null;
 };
 
 export type TCacheResult = TCacheIdentifier & {
@@ -60,21 +61,22 @@ const clearOldCache = () => {
 export const getCachedSearch = (cacheId: TCacheIdentifier) => {
   clearOldCache();
   const cache = getCache();
-  const { query_string, exact_match, keyword_filters, year_range, sort_field, sort_order, offset } = cacheId;
+  const { query_string, exact_match, keyword_filters, year_range, sort_field, sort_order, offset, continuation_tokens } = cacheId;
   const cachedSearch = cache.cache.find(
-    (search) =>
-      search.query_string === query_string &&
-      search.exact_match === exact_match &&
-      arrayOfStringdMatch(search.keyword_filters?.categories, keyword_filters?.categories) &&
-      arrayOfStringdMatch(search.keyword_filters?.countries, keyword_filters?.countries) &&
-      arrayOfStringdMatch(search.keyword_filters?.regions, keyword_filters?.regions) &&
-      search.year_range[0] === year_range[0] &&
-      search.year_range[1] === year_range[1] &&
-      search.sort_field === sort_field &&
-      search.sort_order === sort_order &&
-      search.offset === offset &&
-      arrayStringMatchChecker(search.family_ids, cacheId.family_ids) &&
-      arrayStringMatchChecker(search.document_ids, cacheId.document_ids)
+    (oldSearch) =>
+      oldSearch.query_string === query_string &&
+      oldSearch.exact_match === exact_match &&
+      arrayOfStringdMatch(oldSearch.keyword_filters?.categories, keyword_filters?.categories) &&
+      arrayOfStringdMatch(oldSearch.keyword_filters?.countries, keyword_filters?.countries) &&
+      arrayOfStringdMatch(oldSearch.keyword_filters?.regions, keyword_filters?.regions) &&
+      oldSearch.year_range[0] === year_range[0] &&
+      oldSearch.year_range[1] === year_range[1] &&
+      oldSearch.sort_field === sort_field &&
+      oldSearch.sort_order === sort_order &&
+      oldSearch.offset === offset &&
+      continuation_tokens?.includes(oldSearch.continuation_token) &&
+      arrayStringMatchChecker(oldSearch.family_ids, cacheId.family_ids) &&
+      arrayStringMatchChecker(oldSearch.document_ids, cacheId.document_ids)
   );
   return cachedSearch;
 };
