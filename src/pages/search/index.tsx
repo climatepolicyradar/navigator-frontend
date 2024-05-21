@@ -1,11 +1,13 @@
 import { useEffect, useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
+
 import useSearch from "@hooks/useSearch";
 import { useDownloadCsv } from "@hooks/useDownloadCsv";
 import useUpdateCountries from "@hooks/useUpdateCountries";
 import useConfig from "@hooks/useConfig";
 import useFilteredCountries from "@hooks/useFilteredCountries";
+
 import Layout from "@components/layouts/Main";
 import SearchForm from "@components/forms/SearchForm";
 import SearchFilters from "@components/blocks/SearchFilters";
@@ -23,6 +25,9 @@ import { ExternalLink } from "@components/ExternalLink";
 import { NoOfResults } from "@components/NoOfResults";
 import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
 import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
+
+import { getCurrentPage } from "@utils/getCurrentPage";
+
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { PER_PAGE } from "@constants/paging";
@@ -58,26 +63,30 @@ const Search = () => {
     setShowFilters(!showFilters);
   };
 
+  // page changes involve 2 things:
+  // 1. managing the collection of continuation tokens
+  // 2. managing the offset based on the 'set' of continuation tokens
   const handlePageChange = (page: number, ct: string) => {
     const query = { ...router.query };
-    const continuationTokens = JSON.parse((router.query[QUERY_PARAMS.continuation_tokens] as string) || '[""]');
-    // console.log("handlePageChange: continuationTokens", continuationTokens);
-    // TODO: add logic to handle pages with continuation tokens
-    // for example page 6 is results 100-120, so the payload should be offset 0, but include the continuation token from search that corresponds to the 6th
-    // e.g. pages 1-5 are no continuation token, page 6-10 is continuation token 1, page 11-15 is continuation token 2, etc
-    // const continuationTokens = router.query[QUERY_PARAMS.continuation_tokens] as string[];
-    // OR use JSON.stringify(ObjectData) to store the continuation tokens and the pages they correspond to
-    // console.log("handlePageChange", page, query);
-    if (page < 6) {
+    const continuationTokens: string[] = JSON.parse((router.query[QUERY_PARAMS.continuation_tokens] as string) || "[]");
+    // console.log("handlePageChange: current continuationTokens: ", continuationTokens, "page: ", page, "ct: ", ct); TODO: remove
+
+    if (ct && ct !== "") {
+      query[QUERY_PARAMS.active_continuation_token] = ct;
+      // if ct is new token, it is added to the continuation tokens array
+      // if ct is in the array = we are navigating 'back' to a previous page 'set' so we don't need to alter array
+      if (!continuationTokens.includes(ct)) {
+        continuationTokens.push(ct);
+      }
+      query[QUERY_PARAMS.continuation_tokens] = JSON.stringify(continuationTokens);
+    } else {
+      // if ct is empty string (or not provided), we are navigating to the first 5 pages
       delete query[QUERY_PARAMS.active_continuation_token];
     }
-    if (ct) {
-      query[QUERY_PARAMS.active_continuation_token] = ct;
-      query[QUERY_PARAMS.continuation_tokens] = JSON.stringify(continuationTokens);
-    }
+
     const offSet = ((page - 1) % 5) * PER_PAGE;
     query[QUERY_PARAMS.offset] = offSet.toString();
-    // console.log("handlePageChange: query", query);
+    // console.log("handlePageChange: returned query: ", query); TODO: remove
     router.push({ query: query });
     resetCSVStatus();
   };
@@ -217,9 +226,12 @@ const Search = () => {
     return index === -1 ? 0 : index;
   };
 
-  const getCurrentPage = () => {
+  const calcCurrentPage = () => {
     const offSet = isNaN(parseInt(router.query[QUERY_PARAMS.offset]?.toString())) ? 0 : parseInt(router.query[QUERY_PARAMS.offset]?.toString());
-    return offSet / PER_PAGE + 1;
+    const cts: string[] = JSON.parse((router.query[QUERY_PARAMS.continuation_tokens] as string) || "[]");
+    // empty string represents the first 'set' of pages (as these do not require a continuation token)
+    cts.splice(0, 0, "");
+    return getCurrentPage(offSet, PER_PAGE, cts, router.query[QUERY_PARAMS.active_continuation_token] as string);
   };
 
   const handleDownloadCsvClick = () => {
@@ -373,7 +385,7 @@ const Search = () => {
           <section>
             <div className="mb-12">
               <Pagination
-                pageNumber={getCurrentPage()}
+                pageNumber={calcCurrentPage()}
                 onChange={handlePageChange}
                 totalHits={hits}
                 continuationToken={continuationToken}
