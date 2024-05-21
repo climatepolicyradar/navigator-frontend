@@ -65,6 +65,7 @@ export default function buildSearchQuery(routerQuery: TRouterQuery, familyId = "
   }
 
   if (routerQuery[QUERY_PARAMS.active_continuation_token]) {
+    // Array containing only 1 token - the active token
     query.continuation_tokens = [routerQuery[QUERY_PARAMS.active_continuation_token] as string];
   }
 
