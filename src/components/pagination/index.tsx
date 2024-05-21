@@ -17,16 +17,20 @@ const Pagination = ({
   onChange,
   totalHits = 0,
   resultsPerPage = PER_PAGE,
-  continuationToken,
-  continuationTokens = '[""]',
+  continuationToken = null,
+  continuationTokens = "[]",
 }: PaginationProps) => {
-  const parsedTokens = JSON.parse(continuationTokens);
-  // console.log("parsedTokens", parsedTokens);
+  const parsedTokens: string[] = JSON.parse(continuationTokens);
+  // add empty string to the beginning of the array to account for the first page
+  parsedTokens.splice(0, 0, "");
+  // ONLY if the continuation token is new
+  // add the continuation token to the array for the next set of pages
+  if (continuationToken && !parsedTokens.includes(continuationToken)) parsedTokens.push(continuationToken);
 
   const getToken = (page: number) => {
-    // console.log("getToken", parsedTokens);
+    // console.log("getToken", "| page: " + page, "| % 5: " + (page % 5), "| floor: " + Math.floor(page / 5)); TODO: remove
     if (page % 5) {
-      parsedTokens[Math.floor(page / 5)];
+      return parsedTokens[Math.floor(page / 5)];
     }
     return parsedTokens[page / 5 - 1];
   };
@@ -51,7 +55,7 @@ const Pagination = ({
   };
 
   // generate page sets at results per page per 100 items, with batches of 100 items determined by number of continuation tokens
-  const pageSets = (parsedTokens.length + 1) * (PER_CONTINUATION_TOKEN / resultsPerPage);
+  const pageSets = parsedTokens.length * (PER_CONTINUATION_TOKEN / resultsPerPage);
   const totalPagesForHits = Math.ceil(totalHits / resultsPerPage);
   const numberOfPages = calculatePageCount(pageSets);
 
