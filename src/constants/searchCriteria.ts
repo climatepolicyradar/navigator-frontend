@@ -1,5 +1,5 @@
 import { minYear, currentYear } from "@constants/timedate";
-import { PER_PAGE } from "@constants/paging";
+import { RESULTS_PER_PAGE } from "@constants/paging";
 import { TSearchCriteria } from "@types";
 
 export const initialSearchCriteria: TSearchCriteria = {
@@ -10,6 +10,6 @@ export const initialSearchCriteria: TSearchCriteria = {
   year_range: [minYear, currentYear()],
   sort_field: null,
   sort_order: "desc",
-  limit: PER_PAGE,
+  limit: RESULTS_PER_PAGE,
   offset: 0,
 };

@@ -1,77 +1,60 @@
-import { calculatePageCount } from "@utils/paging";
-import { PER_PAGE } from "@constants/paging";
-const PER_CONTINUATION_TOKEN = 100;
+import { Fragment } from "react";
+import { PageButton } from "./pageButton";
 
-const SETS_PER_PAGE = PER_CONTINUATION_TOKEN / PER_PAGE;
+import { RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN } from "@constants/paging";
 
 interface PaginationProps {
-  pageNumber: number;
+  currentPage: number;
   onChange(ct: string, offSet: number): void;
   maxNeighbourDistance?: number;
   totalHits?: number;
-  resultsPerPage?: number;
   continuationToken?: string;
   continuationTokens?: string;
 }
 
-const Pagination = ({
-  pageNumber,
-  onChange,
-  totalHits = 0,
-  resultsPerPage = PER_PAGE,
-  continuationToken = null,
-  continuationTokens = "[]",
-}: PaginationProps) => {
+// parsedTokens is 0 indexed, pages are 1 indexed
+const calculateToken = (page: number, tokens: string[]) => {
+  if (page % PAGES_PER_CONTINUATION_TOKEN) {
+    return tokens[Math.floor(page / PAGES_PER_CONTINUATION_TOKEN)];
+  }
+  // for page 5 this is index 0, for page 10 this is index 1 and so on
+  return tokens[page / PAGES_PER_CONTINUATION_TOKEN - 1];
+};
+
+const calculateOffset = (page: number) => {
+  return ((page - 1) % PAGES_PER_CONTINUATION_TOKEN) * RESULTS_PER_PAGE;
+};
+
+const Pagination = ({ currentPage, onChange, totalHits = 0, continuationToken = null, continuationTokens = "[]" }: PaginationProps) => {
   const parsedTokens: string[] = JSON.parse(continuationTokens);
-  // add empty string to the beginning of the array to account for the first page
+  // empty string to the beginning of the array accounts for the first set of pages that do not require a token
   parsedTokens.splice(0, 0, "");
   // ONLY if the continuation token is new
   // add the continuation token to the array for the next set of pages
   if (continuationToken && !parsedTokens.includes(continuationToken)) parsedTokens.push(continuationToken);
 
-  const getToken = (page: number) => {
-    // console.log("getToken", "| page: " + page, "| % 5: " + (page % 5), "| floor: " + Math.floor(page / 5)); TODO: remove
-    if (page % SETS_PER_PAGE) {
-      return parsedTokens[Math.floor(page / SETS_PER_PAGE)];
-    }
-    return parsedTokens[page / SETS_PER_PAGE - 1];
-  };
-
-  const getOffset = (page: number) => {
-    const offSet = ((page - 1) % SETS_PER_PAGE) * PER_PAGE;
-    return offSet;
-  };
-
-  const renderPageButton = (page: number, ct: string, offSet: number) => {
-    const baseCssClasses = "mx-1 rounded px-3 py-1 transition duration-300 text-sm md:text-base";
-    const colorCssClasses = page === pageNumber ? "bg-blue-400 text-white pointer-events-none" : "hover:bg-gray-100";
-    return (
-      <button
-        key={page}
-        value={page}
-        type="button"
-        className={`${baseCssClasses} ${colorCssClasses}`}
-        onClick={() => {
-          onChange(ct, offSet);
-        }}
-        data-ct={ct}
-        data-offset={offSet}
-      >
-        {page}
-      </button>
-    );
-  };
-
-  // generate page sets at results per page per 100 items, with batches of 100 items determined by number of continuation tokens
-  const pageSets = parsedTokens.length * (PER_CONTINUATION_TOKEN / resultsPerPage);
-  const totalPagesForHits = Math.ceil(totalHits / resultsPerPage);
-  const numberOfPages = calculatePageCount(pageSets, totalPagesForHits);
+  const totalPagesForHits = Math.ceil(totalHits / RESULTS_PER_PAGE);
+  // display the number of pages based on the number of continuation tokens, or the total number of pages - whichever is smaller
+  const numberOfPagesToDisplay = Math.min(parsedTokens.length * PAGES_PER_CONTINUATION_TOKEN, totalPagesForHits);
 
   return (
     <div className="pagination w-full flex justify-center mt-6">
       <>
-        {new Array(numberOfPages).fill(0).map((_, itemIndex) => renderPageButton(itemIndex + 1, getToken(itemIndex + 1), getOffset(itemIndex + 1)))}
-        {totalPagesForHits > numberOfPages && <span className="md:mx-1">...</span>}
+        {new Array(numberOfPagesToDisplay).fill(0).map((_, itemIndex) => {
+          const pageNumber = itemIndex + 1;
+          return (
+            <Fragment key={pageNumber}>
+              <PageButton
+                pageNumber={pageNumber}
+                ct={calculateToken(pageNumber, parsedTokens)}
+                offSet={calculateOffset(pageNumber)}
+                clickHandler={onChange}
+                isCurrentPage={pageNumber === currentPage}
+              />
+            </Fragment>
+          );
+        })}
+        {totalPagesForHits > numberOfPagesToDisplay && <span className="md:mx-1">...</span>}
       </>
     </div>
   );
