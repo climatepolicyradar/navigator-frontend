@@ -67,7 +67,7 @@ const Search = () => {
   // page changes involve 2 things:
   // 1. managing the collection of continuation tokens
   // 2. managing the offset based on the 'set' of continuation tokens
-  const handlePageChange = (page: number, ct: string) => {
+  const handlePageChange = (ct: string, offSet: number) => {
     const query = { ...router.query };
     const continuationTokens: string[] = JSON.parse((router.query[QUERY_PARAMS.continuation_tokens] as string) || "[]");
     // console.log("handlePageChange: current continuationTokens: ", continuationTokens, "page: ", page, "ct: ", ct); TODO: remove
@@ -85,7 +85,6 @@ const Search = () => {
       delete query[QUERY_PARAMS.active_continuation_token];
     }
 
-    const offSet = ((page - 1) % 5) * PER_PAGE;
     query[QUERY_PARAMS.offset] = offSet.toString();
     // console.log("handlePageChange: returned query: ", query); TODO: remove
     router.push({ query: query });
