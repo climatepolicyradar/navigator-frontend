@@ -36,9 +36,10 @@ const Pagination = ({ currentPage, onChange, totalHits = 0, continuationToken = 
   const totalPagesForHits = Math.ceil(totalHits / RESULTS_PER_PAGE);
   // display the number of pages based on the number of continuation tokens, or the total number of pages - whichever is smaller
   const numberOfPagesToDisplay = Math.min(parsedTokens.length * PAGES_PER_CONTINUATION_TOKEN, totalPagesForHits, MAX_PAGES);
+  const displayElipsis = totalPagesForHits > MAX_PAGES && numberOfPagesToDisplay < MAX_PAGES;
 
   return (
-    <div className="pagination w-full flex justify-center mt-6">
+    <div className="pagination w-full flex flex-wrap justify-center mt-6">
       <>
         {new Array(numberOfPagesToDisplay).fill(0).map((_, itemIndex) => {
           const pageNumber = itemIndex + 1;
@@ -54,7 +55,7 @@ const Pagination = ({ currentPage, onChange, totalHits = 0, continuationToken = 
             </Fragment>
           );
         })}
-        {numberOfPagesToDisplay < MAX_PAGES && <span className="md:mx-1">...</span>}
+        {displayElipsis && <span className="md:mx-1">...</span>}
       </>
     </div>
   );
