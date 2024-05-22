@@ -58,7 +58,7 @@ const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: TP
   return (
     <>
       {families?.map((family, index: number) => (
-        <div key={index} className={`my-10 md:my-16 ${index === 0 && "md:mt-0"}`} data-cy="search-result">
+        <div key={index} className={`my-10 ${index === 0 && "md:mt-0"}`} data-cy="search-result">
           <SearchResult family={family} onClick={() => onClick(index)} active={activeFamilyIndex === index} />
         </div>
       ))}
