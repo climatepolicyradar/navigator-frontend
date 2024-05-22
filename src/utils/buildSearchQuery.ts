@@ -8,7 +8,7 @@ export type TRouterQuery = {
 
 // We are storing the search object in the query using aliases
 // This function converts the query string to the search object
-export default function buildSearchQuery(routerQuery: TRouterQuery, familyId = "", documentId = ""): TSearchCriteria {
+export default function buildSearchQuery(routerQuery: TRouterQuery, familyId = "", documentId = "", includeAllTokens = false): TSearchCriteria {
   const keyword_filters: TSearchKeywordFilters = {};
   let query = { ...initialSearchCriteria };
 
@@ -67,6 +67,24 @@ export default function buildSearchQuery(routerQuery: TRouterQuery, familyId = "
   if (routerQuery[QUERY_PARAMS.active_continuation_token]) {
     // Array containing only 1 token - the active token
     query.continuation_tokens = [routerQuery[QUERY_PARAMS.active_continuation_token] as string];
+  }
+
+  if (includeAllTokens) {
+    let allContinuationTokens: string[] = [];
+    const routerQueryToken = routerQuery[QUERY_PARAMS.active_continuation_token] as string;
+    const routerQueryTokens = routerQuery[QUERY_PARAMS.continuation_tokens] as string;
+    if (routerQueryTokens) {
+      const continuationTokens: string[] = JSON.parse(routerQueryTokens);
+      if (Array.isArray(continuationTokens) && continuationTokens.length > 0) {
+        allContinuationTokens.push(...continuationTokens);
+      }
+    }
+    if (routerQueryToken) {
+      if (!allContinuationTokens.includes(routerQueryToken)) {
+        allContinuationTokens.push(routerQueryToken);
+      }
+    }
+    query.continuation_tokens = allContinuationTokens;
   }
 
   if (familyId) {
