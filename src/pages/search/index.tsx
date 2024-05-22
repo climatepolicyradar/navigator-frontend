@@ -69,7 +69,7 @@ const Search = () => {
   // 2. triggering a new search
   const handlePageChange = (ct: string, offSet: number) => {
     const query = { ...router.query };
-    const continuationTokens: string[] = JSON.parse((router.query[QUERY_PARAMS.continuation_tokens] as string) || "[]");
+    const continuationTokens: string[] = JSON.parse((query[QUERY_PARAMS.continuation_tokens] as string) || "[]");
 
     if (ct && ct !== "") {
       query[QUERY_PARAMS.active_continuation_token] = ct;
