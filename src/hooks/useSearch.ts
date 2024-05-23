@@ -29,15 +29,15 @@ async function getSearch(query = initialSearchCriteria) {
   return results;
 }
 
-const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFreshSearch: boolean = true) => {
+const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFreshSearch: boolean = true, noOfPassagesPerDoc: number = undefined) => {
   const [status, setStatus] = useState<TLoadingStatus>("idle");
   const [families, setFamilies] = useState<TMatchedFamily[]>([]);
   const [hits, setHits] = useState<number>(null);
   const [continuationToken, setContinuationToken] = useState<string | null>(null);
 
   const searchQuery = useMemo(() => {
-    return buildSearchQuery({ ...query }, familyId, documentId);
-  }, [query, familyId, documentId]);
+    return buildSearchQuery({ ...query }, familyId, documentId, undefined, noOfPassagesPerDoc);
+  }, [query, familyId, documentId, noOfPassagesPerDoc]);
 
   useEffect(() => {
     setStatus("loading");

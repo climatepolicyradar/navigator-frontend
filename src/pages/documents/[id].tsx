@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
+
 import { ApiClient } from "@api/http-common";
+
 import useSearch from "@hooks/useSearch";
+
 import { DocumentHead } from "@components/document/DocumentHead";
 import Layout from "@components/layouts/Main";
 import EmbeddedPDF from "@components/EmbeddedPDF";
@@ -10,12 +13,14 @@ import PassageMatches from "@components/PassageMatches";
 import Loader from "@components/Loader";
 import { ExternalLink } from "@components/ExternalLink";
 import { BookOpenIcon, FindInDocIcon } from "@components/svg/Icons";
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { getDocumentDescription } from "@constants/metaDescriptions";
-import { TDocumentPage, TFamilyPage, TGeographySummary, TPassage } from "@types";
 import SearchForm from "@components/forms/SearchForm";
 import BySemanticSearch from "@components/filters/BySemanticSearch";
+
+import { QUERY_PARAMS } from "@constants/queryParams";
+import { getDocumentDescription } from "@constants/metaDescriptions";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
+
+import { TDocumentPage, TFamilyPage, TGeographySummary, TPassage } from "@types";
 
 type TProps = {
   document: TDocumentPage;
@@ -54,7 +59,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
   const router = useRouter();
   const startingPassage = Number(router.query.passage) || 0;
-  const { status, families, searchQuery } = useSearch(router.query, null, document.import_id, !!router.query[QUERY_PARAMS.query_string]);
+  const { status, families, searchQuery } = useSearch(router.query, null, document.import_id, !!router.query[QUERY_PARAMS.query_string], 100);
 
   const hasPassageMatches = passageMatches.length > 0;
   const canPreview = document.content_type === "application/pdf";

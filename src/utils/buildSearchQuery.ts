@@ -8,7 +8,13 @@ export type TRouterQuery = {
 
 // We are storing the search object in the query using aliases
 // This function converts the query string to the search object
-export default function buildSearchQuery(routerQuery: TRouterQuery, familyId = "", documentId = "", includeAllTokens = false): TSearchCriteria {
+export default function buildSearchQuery(
+  routerQuery: TRouterQuery,
+  familyId = "",
+  documentId = "",
+  includeAllTokens = false,
+  noOfPassagesPerDoc: number = undefined
+): TSearchCriteria {
   const keyword_filters: TSearchKeywordFilters = {};
   let query = { ...initialSearchCriteria };
 
@@ -93,6 +99,13 @@ export default function buildSearchQuery(routerQuery: TRouterQuery, familyId = "
 
   if (documentId) {
     query.document_ids = [documentId];
+  }
+
+  if (noOfPassagesPerDoc) {
+    // ensure that the number of passages per doc is a positive integer
+    if (Number.isInteger(noOfPassagesPerDoc) && noOfPassagesPerDoc > 0) {
+      query.max_passages_per_doc = noOfPassagesPerDoc;
+    }
   }
 
   query = {
