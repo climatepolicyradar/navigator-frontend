@@ -2,7 +2,9 @@ import { useState } from "react";
 import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
+
 import { ApiClient } from "@api/http-common";
+
 import Layout from "@components/layouts/Main";
 import { SingleCol } from "@components/SingleCol";
 import Event from "@components/blocks/Event";
@@ -18,17 +20,21 @@ import TextLink from "@components/nav/TextLink";
 import { TargetIcon } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
+import DocumentSearchForm from "@components/forms/DocumentSearchForm";
+import { Alert } from "@components/Alert";
+
 import { getCountryCode } from "@helpers/getCountryFields";
+
 import { extractNestedData } from "@utils/extractNestedData";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
+
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { getGeoDescription } from "@constants/metaDescriptions";
 import { systemGeoNames } from "@constants/systemGeos";
+
 import { TGeographyStats, TGeographySummary } from "@types";
 import { TTarget, TEvent, TGeography } from "@types";
-import DocumentSearchForm from "@components/forms/DocumentSearchForm";
-import { Alert } from "@components/Alert";
 
 type TProps = {
   geography: TGeographyStats;
