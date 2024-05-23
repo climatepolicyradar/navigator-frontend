@@ -76,7 +76,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
 
   let searchFamily: TMatchedFamily = null;
-  const { status, families } = useSearch(router.query, page.import_id, null, !!router.query[QUERY_PARAMS.query_string]);
+  const { status, families } = useSearch(router.query, page.import_id, null, !!router.query[QUERY_PARAMS.query_string], 100);
   if (!!router.query[QUERY_PARAMS.query_string]) {
     families.forEach((family) => {
       if (page.slug === family.family_slug) {
