@@ -4,7 +4,12 @@ import Script from "next/script";
 import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
 import axios from "axios";
+
 import { ApiClient } from "@api/http-common";
+
+import useSearch from "@hooks/useSearch";
+import useConfig from "@hooks/useConfig";
+
 import Layout from "@components/layouts/Main";
 import { Timeline } from "@components/blocks/Timeline";
 import Event from "@components/blocks/Event";
@@ -20,20 +25,22 @@ import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { SingleCol } from "@components/SingleCol";
-import useSearch from "@hooks/useSearch";
-import useConfig from "@hooks/useConfig";
-import { truncateString } from "@helpers/index";
-import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
-import { getCorpusInfo } from "@helpers/getCorpusInfo";
-import { sortFilterTargets } from "@utils/sortFilterTargets";
-import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
-import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary } from "@types";
 import Tooltip from "@components/tooltip";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 import { Alert } from "@components/Alert";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
+
+import { truncateString } from "@helpers/index";
+import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
+import { getCorpusInfo } from "@helpers/getCorpusInfo";
 import { getMainDocuments } from "@helpers/getMainDocuments";
+
+import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { pluralise } from "@utils/pluralise";
+
+import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary } from "@types";
+
+import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 
 type TProps = {
   page: TFamilyPage;
