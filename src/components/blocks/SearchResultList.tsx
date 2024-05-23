@@ -1,6 +1,8 @@
 import { ExternalLink } from "@components/ExternalLink";
 import SearchResult from "./SearchResult";
+
 import { TMatchedFamily } from "@types";
+
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 
 type TProps = {
