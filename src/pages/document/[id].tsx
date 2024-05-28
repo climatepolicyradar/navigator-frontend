@@ -19,7 +19,6 @@ import { ExternalLink } from "@components/ExternalLink";
 import { Targets } from "@components/Targets";
 import { ShowHide } from "@components/controls/ShowHide";
 import { Divider } from "@components/dividers/Divider";
-import { QUERY_PARAMS } from "@constants/queryParams";
 import { DownArrowIcon, TargetIcon, AlertCircleIcon } from "@components/svg/Icons";
 import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
@@ -28,7 +27,6 @@ import { SingleCol } from "@components/SingleCol";
 import Tooltip from "@components/tooltip";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 import { Alert } from "@components/Alert";
-import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 
 import { truncateString } from "@helpers/index";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
@@ -40,6 +38,8 @@ import { pluralise } from "@utils/pluralise";
 
 import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary } from "@types";
 
+import { QUERY_PARAMS } from "@constants/queryParams";
+import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 
 type TProps = {
