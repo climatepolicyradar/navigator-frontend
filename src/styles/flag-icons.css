@@ -915,13 +915,6 @@
   background-image: url(/images/flags/1x1/kor.svg);
 }
 
-.flag-icon-kos {
-  background-image: url(/images/flags/4x3/kos.svg);
-}
-.flag-icon-kos.flag-icon-squared {
-  background-image: url(/images/flags/1x1/kos.svg);
-}
-
 .flag-icon-kwt {
   background-image: url(/images/flags/4x3/kwt.svg);
 }
@@ -1809,6 +1802,13 @@
 }
 .flag-icon-yem.flag-icon-squared {
   background-image: url(/images/flags/1x1/yem.svg);
+}
+
+.flag-icon-xkx {
+  background-image: url(/images/flags/4x3/xkx.svg);
+}
+.flag-icon-xkx.flag-icon-squared {
+  background-image: url(/images/flags/1x1/xkx.svg);
 }
 
 .flag-icon-zaf {
