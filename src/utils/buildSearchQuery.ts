@@ -99,6 +99,10 @@ export default function buildSearchQuery(
 
   if (documentId) {
     query.document_ids = [documentId];
+    // Only include the active passage token if we are on a document page
+    if (routerQuery[QUERY_PARAMS.active_passage_token]) {
+      query.continuation_tokens = [routerQuery[QUERY_PARAMS.active_passage_token] as string];
+    }
   }
 
   if (noOfPassagesPerDoc) {
