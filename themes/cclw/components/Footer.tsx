@@ -20,7 +20,7 @@ const Footer = () => {
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="footer__section" data-cy="footer-cclw">
-              <div className="font-bold text-lg">Climate Change Laws of the World</div>
+              <div className="font-bold text-base">Climate Change Laws of the World</div>
               <ul className="mb-6">
                 {MENU_LINKS.map((link) => (
                   <li key={link.href} className="mb-2">
@@ -31,7 +31,7 @@ const Footer = () => {
             </div>
 
             <div key={GRI_LINKS.title} className="footer__section" data-cy="footer-gri">
-              <div className="font-bold text-lg">{GRI_LINKS.title}</div>
+              <div className="font-bold text-base">{GRI_LINKS.title}</div>
               <ul>
                 {GRI_LINKS.links.map((link) => (
                   <li key={link.text} className="mb-2">
@@ -64,7 +64,7 @@ const Footer = () => {
             </div>
 
             <div className="footer__section">
-              <div className="font-bold text-lg">Climate Policy Radar</div>
+              <div className="font-bold text-base">Climate Policy Radar</div>
               <p>Using AI and data science to map the world's climate policies</p>
               <ul className="mb-6" data-cy="footer-cpr-links">
                 <li className="mb-1">
