@@ -18,6 +18,7 @@ module.exports = {
       },
       cclw: {
         dark: "#2E3152",
+        light: "#414466",
         molten: "#ED3D48",
       },
       gray: {
@@ -102,7 +103,7 @@ module.exports = {
       },
       fontSize: {
         h1: "48px",
-        h2: "30px",
+        h2: "36px",
         h3: "20px",
         h4: "21px",
         h5: "18px",

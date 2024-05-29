@@ -9,7 +9,7 @@ type TProps = {
 
 export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
   return (
-    <div className="pb-6 text-white">
+    <div className="md:pt-[140px] pb-6 text-white">
       <div className="container">
         <div className="flex flex-col items-center justify-center mb-6">
           <LogoLarge />
@@ -20,14 +20,14 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
             Use our database to search climate laws and policies globally
           </p>
         </div>
-        <div className="max-w-screen-lg mx-auto mt-6">
+        <div className="max-w-screen-md mx-auto mt-6">
           <LandingSearchForm
             handleSearchInput={handleSearchInput}
             placeholder="Search the full text of over 5000 laws, policies and UNFCCC submissions"
             input={searchInput}
           />
         </div>
-        <div className="mt-6 lg:mt-12">
+        <div className="mt-6 md:mt-[248px]">
           <Instructions />
         </div>
       </div>
