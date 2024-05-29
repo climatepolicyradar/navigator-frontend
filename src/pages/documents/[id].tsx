@@ -107,6 +107,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     router.push({ pathname: `/documents/${document.slug}`, query: queryObj });
   };
 
+  // TODO: confirm we need this or delete
   const handleLoadMorePassages = () => {
     if (families.length === 0) return;
     const queryObj = router.query;

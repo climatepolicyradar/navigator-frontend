@@ -61,6 +61,7 @@ const PassageMatches = ({ passages, onClick, activeIndex, pageColour = "gray-700
                 </div>
               </div>
             ))}
+            {/* TODO: confirm we need this or delete */}
             {showLoadMore && loadMore && (
               <div className="flex justify-center">
                 <Button onClick={loadMore}>Load more passages</Button>
