@@ -204,6 +204,14 @@ export default function MapChart() {
     });
   };
 
+  if (mapDataStatus === "loading") {
+    return <p>Loading data for the map...</p>;
+  }
+
+  if (mapDataStatus === "error") {
+    return <p>There was an error loading the data for the map.</p>;
+  }
+
   return (
     <>
       <div className="flex justify-between items-center my-4">
@@ -340,7 +348,7 @@ export default function MapChart() {
           </label>
         </div>
       </div>
-      <Legend max={selectedDocType === "lawsPolicies" ? mapData.maxLawsPolicies : mapData.maxUnfccc} />
+      {mapDataStatus === "success" && <Legend max={selectedDocType === "lawsPolicies" ? mapData.maxLawsPolicies : mapData.maxUnfccc} />}
     </>
   );
 }
