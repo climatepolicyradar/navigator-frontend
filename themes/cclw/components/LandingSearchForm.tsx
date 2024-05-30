@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
-import { SearchIcon } from "@components/svg/Icons";
+
+import { Search2Icon } from "@components/svg/Icons";
 import { SearchDropdown } from "@components/forms/SearchDropdown";
+import Button from "@components/buttons/Button";
+
+const EXAMPLE_SEARCHES = ["Adaptation", "Brazil", "Climate framework laws", "Coastal zones"];
 
 interface SearchFormProps {
   placeholder?: string;
@@ -34,30 +38,44 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
     };
   }, [formRef]);
 
-  const displayPlaceholder = placeholder ?? "Search full text of 5000+ laws and policies";
+  const displayPlaceholder = placeholder ?? "Search full text of any document";
 
   return (
-    <form data-cy="search-form" ref={formRef} onSubmit={(e) => e.preventDefault()}>
-      <div className="max-w-screen-lg mx-auto flex items-stretch relative text-indigo-400">
-        <input
-          id="landingPage-searchInput-cclw"
-          data-analytics="landingPage-searchInput"
-          data-cy="search-input"
-          type="search"
-          className="text-xl py-4 pl-6 pr-16 w-full text-cpr-dark focus:ring-0"
-          value={term}
-          onChange={onChange}
-          placeholder={displayPlaceholder}
-          aria-label="Search term"
-        />
-        <button className="absolute right-0 h-full pr-2 text-blue-400" onClick={() => handleSearchInput(term)} aria-label="Search">
-          <span className="border-l py-1 pl-1 block">
-            <SearchIcon height="30" width="40" />
-          </span>
-        </button>
-        <SearchDropdown term={term} show={formFocus} handleSearchClick={handleSearchInput} largeSpacing />
+    <>
+      <form data-cy="search-form" ref={formRef} onSubmit={(e) => e.preventDefault()}>
+        <div className="max-w-screen-lg mx-auto flex items-stretch relative text-indigo-400">
+          <input
+            id="landingPage-searchInput-cclw"
+            data-analytics="landingPage-searchInput"
+            data-cy="search-input"
+            type="search"
+            className="text-xl leading-5 py-3 h-[48px] pl-6 pr-3 mr-[72px] w-full text-cpr-dark focus:ring-0 rounded-l-4xl border-0"
+            value={term}
+            onChange={onChange}
+            placeholder={displayPlaceholder}
+            aria-label="Search term"
+          />
+          <button
+            className="absolute right-0 h-full px-6 text-white bg-blue-400 rounded-r-4xl hover:bg-blue-300 active:bg-blue-700"
+            onClick={() => handleSearchInput(term)}
+            aria-label="Search"
+          >
+            <span className="block">
+              <Search2Icon height="24" width="24" />
+            </span>
+          </button>
+          <SearchDropdown term={term} show={formFocus} handleSearchClick={handleSearchInput} largeSpacing />
+        </div>
+      </form>
+      <div className="mt-4 flex items-center gap-2">
+        <span className="text-gray-200">Search by:</span>
+        {EXAMPLE_SEARCHES.map((example) => (
+          <Button key={example} thin color="dark" onClick={() => handleSearchInput(example)} data-cy={`example-search-${example}`}>
+            {example}
+          </Button>
+        ))}
       </div>
-    </form>
+    </>
   );
 };
 export default LandingSearchForm;

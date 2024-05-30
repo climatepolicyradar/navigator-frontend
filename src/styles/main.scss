@@ -106,7 +106,7 @@ h5 {
   @apply text-h5;
 }
 h6 {
-  @apply text-h6 font-semibold;
+  @apply text-h6;
 }
 input[type="text"],
 input[type="number"],
@@ -440,7 +440,7 @@ ul li.selected {
 
   &.search-dropdown_large {
     padding-top: 0;
-    top: 60px;
+    top: 48px;
   }
 }
 

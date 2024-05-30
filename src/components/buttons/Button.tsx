@@ -5,7 +5,7 @@ interface ButtonProps {
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
   onClick?(event: React.FormEvent<HTMLButtonElement>): void;
-  color?: "light" | "clear" | "ghost" | "secondary";
+  color?: "light" | "clear" | "ghost" | "secondary" | "dark";
   id?: string;
   extraClasses?: string;
   "data-cy"?: string;
@@ -40,6 +40,9 @@ const Button = ({
     case "ghost":
       conditionalClasses = "underline bg-transparent border border-transparent text-blue-600";
       break;
+    case "dark":
+      conditionalClasses = "text-white bg-cclw-light border border-gray-500 font-normal hover:bg-gray-700";
+      break;
     case "clear":
       conditionalClasses = !disabled
         ? "clear bg-transparent border border-gray-300 hover:border-gray-600 text-gray-600 disabled:border-gray-300 disabled:text-gray-300 disabled:hover:bg-white"
@@ -62,7 +65,7 @@ const Button = ({
       type={type}
       disabled={disabled}
       data-cy={props["data-cy"]}
-      className={`button transition duration-300 px-4 rounded-full pointer-events-auto w-full font-bold ${conditionalClasses}`}
+      className={`button transition duration-300 px-4 rounded-full pointer-events-auto w-full font-medium ${conditionalClasses}`}
       {...props}
     >
       {children}

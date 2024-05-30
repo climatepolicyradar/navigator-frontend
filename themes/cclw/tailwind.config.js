@@ -109,6 +109,9 @@ module.exports = {
         h5: "18px",
         h6: "16px",
       },
+      borderRadius: {
+        "4xl": "30px",
+      },
     },
   },
   plugins: [require("@tailwindcss/forms"), require("tailwind-scrollbar")],
