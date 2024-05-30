@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { DocumentMagnifyIcon, DocumentsIcon, ExternalLinkIcon, Translation } from "@components/svg/Icons";
+import { ContextSearchIcon, ManyDocumentsIcon, ExternalLinkIcon, TranslationIcon } from "@components/svg/Icons";
 
 type TDocumentTotals = {
   laws: number;
@@ -40,17 +40,17 @@ export const INSTRUCTIONS = (documentTotals: TDocumentTotals) => [
         </li>
       </ul>
     ),
-    icon: <DocumentsIcon height="24" width="24" />,
+    icon: <ManyDocumentsIcon height="24" width="24" />,
     cy: "feature-documents",
   },
   {
     content: <p>See exact matches and related phrases highlighted in the text</p>,
-    icon: <DocumentMagnifyIcon height="24" width="24" />,
+    icon: <ContextSearchIcon height="24" width="24" />,
     cy: "feature-highlights",
   },
   {
     content: <p>Access English translations of document passages</p>,
-    icon: <Translation height="24" width="24" />,
+    icon: <TranslationIcon height="24" width="24" />,
     cy: "feature-translations",
   },
 ];
