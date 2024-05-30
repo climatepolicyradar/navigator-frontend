@@ -1,6 +1,12 @@
+import dynamic from "next/dynamic";
+
 import LandingSearchForm from "./LandingSearchForm";
-import Instructions from "./Instructions";
 import { LogoLarge } from "./LogoLarge";
+
+const Instructions = dynamic(() => import("./Instructions"), {
+  loading: () => <p>Loading document stats...</p>,
+  ssr: false,
+});
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
