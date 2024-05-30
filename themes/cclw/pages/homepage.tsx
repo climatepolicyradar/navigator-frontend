@@ -34,7 +34,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
           <WorldMap />
         </div>
         <div className="container my-12" data-cy="featured-content">
-          <h2 className="font-normal text-center mb-6">Featured Content</h2>
+          <h2 className="text-center mb-6">Featured Content</h2>
           <Articles />
         </div>
         <div className="container my-12" data-cy="partners">
