@@ -18,7 +18,7 @@ export const INSTRUCTIONS = (documentTotals: TDocumentTotals) => [
           <Link href="/search?c=Legislation" className={heroLinkClasses}>
             <b>{documentTotals.laws}</b> laws{" "}
             <span className="self-center">
-              <ExternalLinkIcon height="16" width="16" />
+              <ExternalLinkIcon height="12" width="12" />
             </span>
           </Link>
         </li>
@@ -26,7 +26,7 @@ export const INSTRUCTIONS = (documentTotals: TDocumentTotals) => [
           <Link href="/search?c=Policies" className={heroLinkClasses}>
             <b>{documentTotals.policies}</b> policies{" "}
             <span className="self-center">
-              <ExternalLinkIcon height="16" width="16" />
+              <ExternalLinkIcon height="12" width="12" />
             </span>
           </Link>
         </li>
@@ -34,7 +34,7 @@ export const INSTRUCTIONS = (documentTotals: TDocumentTotals) => [
           <Link href="?c=UNFCCC" className={heroLinkClasses}>
             <b>{documentTotals.unfccc}</b> UNFCCC submissions{" "}
             <span className="self-center">
-              <ExternalLinkIcon height="16" width="16" />
+              <ExternalLinkIcon height="12" width="12" />
             </span>
           </Link>
         </li>
