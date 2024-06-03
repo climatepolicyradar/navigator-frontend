@@ -46,7 +46,7 @@ const FrameworkLaws = () => {
               </thead>
               <tbody>
                 {FRAMEWORK_LAWS.map((law) => (
-                  <tr key={law.geo_iso}>
+                  <tr key={law.title}>
                     <td>
                       <LinkWithQuery href={law.url} cypress={`framework-law-${law.geography}`}>
                         {law.title}
@@ -95,27 +95,29 @@ const FrameworkLaws = () => {
               </li>
               <li>
                 <strong>What are the impacts of climate change framework laws?</strong>
-                <li>
-                  Averchenkova A, Higham C, Chan T, Keuschnigg I (2024){" "}
-                  <ExternalLink url="https://www.lse.ac.uk/granthaminstitute/publication/impacts-of-climate-framework-laws/">
-                    Impacts of Climate Framework Laws: lessons from Germany, Ireland and New Zealand
-                  </ExternalLink>
-                  , London: Grantham Research Institute on Climate Change and the Environment, London School of Economics and Political Science.
-                </li>
-                <li>
-                  Averchenkova A, Fankhauser S and Finnegan JJ (2021){" "}
-                  <ExternalLink url="https://doi.org/10.1080/14693062.2020.1819190">
-                    The impact of strategic climate legislation: evidence from expert interviews on the UK Climate Change Act
-                  </ExternalLink>
-                  . Climate Policy, 21(2), pp.251-263.
-                </li>
-                <li>
-                  Averchenkova A and Guzman Luna S (2018){" "}
-                  <ExternalLink url="https://www.lse.ac.uk/granthaminstitute/publication/mexicos-general-law-on-climate-change-key-achievements-and-challenges-ahead/">
-                    Mexico's General Law on Climate Change: Key achievements and challenges ahead
-                  </ExternalLink>
-                  . London: Grantham Research Institute on Climate Change and the Environment, London School of Economics and Political Science.
-                </li>
+                <ul>
+                  <li>
+                    Averchenkova A, Higham C, Chan T, Keuschnigg I (2024){" "}
+                    <ExternalLink url="https://www.lse.ac.uk/granthaminstitute/publication/impacts-of-climate-framework-laws/">
+                      Impacts of Climate Framework Laws: lessons from Germany, Ireland and New Zealand
+                    </ExternalLink>
+                    , London: Grantham Research Institute on Climate Change and the Environment, London School of Economics and Political Science.
+                  </li>
+                  <li>
+                    Averchenkova A, Fankhauser S and Finnegan JJ (2021){" "}
+                    <ExternalLink url="https://doi.org/10.1080/14693062.2020.1819190">
+                      The impact of strategic climate legislation: evidence from expert interviews on the UK Climate Change Act
+                    </ExternalLink>
+                    . Climate Policy, 21(2), pp.251-263.
+                  </li>
+                  <li>
+                    Averchenkova A and Guzman Luna S (2018){" "}
+                    <ExternalLink url="https://www.lse.ac.uk/granthaminstitute/publication/mexicos-general-law-on-climate-change-key-achievements-and-challenges-ahead/">
+                      Mexico's General Law on Climate Change: Key achievements and challenges ahead
+                    </ExternalLink>
+                    . London: Grantham Research Institute on Climate Change and the Environment, London School of Economics and Political Science.
+                  </li>
+                </ul>
               </li>
             </ul>
             <p>
