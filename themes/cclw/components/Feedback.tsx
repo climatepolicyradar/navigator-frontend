@@ -3,7 +3,7 @@ import { ExternalLink } from "@components/ExternalLink";
 export const Feedback = () => {
   return (
     <div data-cy="feedback" className="bg-[#414469] rounded-3xl p-4">
-      <div className="font-bold text-lg">Feedback</div>
+      <div className="font-medium text-lg">Feedback</div>
       <ul className="list-disc pl-4">
         <li className="mb-2">
           To report a problem email us at <ExternalLink url="mailto:support@climatepolicyradar.org">support@climatepolicyradar.org</ExternalLink>

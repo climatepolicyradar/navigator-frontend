@@ -159,7 +159,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                     />
                     {!router.query[QUERY_PARAMS.query_string] && (
                       <div className="flex text-sm text-gray-600">
-                        <div className="mr-2 flex-shrink-0 font-bold">Examples:</div>
+                        <div className="mr-2 flex-shrink-0 font-medium">Examples:</div>
                         <div className="">{EXAMPLE_SEARCHES.join(", ")}</div>
                       </div>
                     )}
@@ -184,7 +184,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                             <FindInDocIcon width="48" height="48" />
                           </div>
                         </div>
-                        <p className="text-xl font-bold">No {router.query[QUERY_PARAMS.query_string] ? "results" : "searches yet"}</p>
+                        <p className="text-xl font-medium">No {router.query[QUERY_PARAMS.query_string] ? "results" : "searches yet"}</p>
                         {router.query[QUERY_PARAMS.query_string] && <p>No results found for that search, please try a different term</p>}
                         {!router.query[QUERY_PARAMS.query_string] && (
                           <>

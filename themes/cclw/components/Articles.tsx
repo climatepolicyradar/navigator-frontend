@@ -65,14 +65,14 @@ export const Articles = () => {
   const renderArticleContent = (article: TArticle) => {
     return (
       <>
-        <div className="absolute top-0 left-0 p-2 px-4 bg-cclw-dark rounded text-sm font-bold text-white z-10">{article.type}</div>
+        <div className="absolute top-0 left-0 p-2 px-4 bg-cclw-dark rounded text-sm font-medium text-white z-10">{article.type}</div>
         <div className={`text-center flex flex-wrap min-h-[180px] h-full ${article.imageUrl ? "content-start" : "content-center"}`}>
           {article.imageUrl && (
             <div className="w-full h-[120px] overflow-hidden relative self-start">
               <img src={article.imageUrl} alt={article.imageAlt} />
             </div>
           )}
-          <div className={`article-title p-4 basis-full text-center text-lg font-bold ${article.imageUrl ? "" : "pt-10"}`}>{article.title}</div>
+          <div className={`article-title p-4 basis-full text-center text-lg font-medium ${article.imageUrl ? "" : "pt-10"}`}>{article.title}</div>
           {article.meta && (
             <div className="mb-2 px-2 basis-full text-center">
               <div className="flex flex-wrap items-center content-center justify-center gap-2">

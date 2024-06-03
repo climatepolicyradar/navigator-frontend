@@ -48,7 +48,7 @@ const PassageMatches = ({ passages, onClick, activeIndex, pageColour = "gray-700
                 }}
               >
                 <div className={`text-sm flex justify-between ${"text-" + pageColour}`}>
-                  <span className="font-bold">{item.text_block_page !== null && <>Page {item.text_block_page}</>}</span>
+                  <span className="font-medium">{item.text_block_page !== null && <>Page {item.text_block_page}</>}</span>
                   <div className={`text-blue-400 ${hasCopied === index && "text-green-700"}`} onClick={(e) => copyOnClick(e, index, item.text)}>
                     {hasCopied === index ? "Copied" : <CopyIcon width="16" height="16" />}
                   </div>

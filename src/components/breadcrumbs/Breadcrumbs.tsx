@@ -21,7 +21,7 @@ const BreadCrumb = ({ last = false, label, href = null, cy = "" }: TBreadcrumbLi
 
   return (
     <>
-      <li data-cy={`breadcrumb ${cy}`} className={`${last && "font-bold"}`}>
+      <li data-cy={`breadcrumb ${cy}`} className={`${last && "font-medium"}`}>
         {href ? (
           <LinkWithQuery className="underline text-cpr-dark" href={href}>
             {labelShort}

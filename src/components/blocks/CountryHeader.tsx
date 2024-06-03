@@ -37,13 +37,13 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
             </div>
             {federal && (
               <div className="col-span-2 md:col-span-5">
-                <div className="font-bold">Federative {federal_details && <span className="font-light text-sm">({federal_details})</span>}</div>
+                <div className="font-medium">Federative {federal_details && <span className="font-light text-sm">({federal_details})</span>}</div>
               </div>
             )}
             <div data-cy="political-group" className="col-span-1 md:col-span-2">
               {political_groups !== "" && (
                 <>
-                  <div className="text-sm font-bold">Political Groups</div>
+                  <div className="text-sm font-medium">Political Groups</div>
                   <div>{political_groups.split(";").join(", ")}</div>
                 </>
               )}
@@ -51,7 +51,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
             <div data-cy="global-climate-risk-index" className="col-span-1 md:col-span-2">
               {climate_risk_index !== null && (
                 <>
-                  <div className="text-sm font-bold">Global Climate Risk Index</div>
+                  <div className="text-sm font-medium">Global Climate Risk Index</div>
                   <div className="flex items-center">
                     <div className=" mr-1">{climate_risk_index}</div>{" "}
                     <Tooltip
@@ -81,7 +81,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
             <div data-cy="targets" className="order-last col-span-2 md:col-span-1 md:order-none">
               {targetCount > 0 && (
                 <>
-                  <div className="text-sm font-bold">Targets</div>
+                  <div className="text-sm font-medium">Targets</div>
                   <div className="flex items-center">
                     <button onClick={onTargetClick} className="mr-1 underline hover:text-blue-800">
                       {targetCount}
@@ -93,7 +93,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
             <div data-cy="world-bank-income-group" className="col-span-1 md:col-span-2">
               {worldbank_income_group !== "" && (
                 <>
-                  <div className="text-sm font-bold">World Bank Income Group</div>
+                  <div className="text-sm font-medium">World Bank Income Group</div>
                   <div>{worldbank_income_group}</div>
                 </>
               )}
@@ -101,7 +101,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
             <div data-cy="share-of-global-emissions" className="col-span-1 md:col-span-2">
               {global_emissions_percent !== null && (
                 <>
-                  <div className="text-sm font-bold">Share of Global Emissions</div>
+                  <div className="text-sm font-medium">Share of Global Emissions</div>
                   <div className="flex items-center">
                     <div className=" mr-1">{global_emissions_percent}%</div>{" "}
                     <Tooltip

@@ -88,7 +88,7 @@ h3,
 h4,
 h5,
 h6 {
-  @apply text-cpr-dark font-bold;
+  @apply text-cpr-dark font-medium;
 }
 h1 {
   @apply text-3xl md:text-h1;
@@ -229,7 +229,7 @@ input[type="search"]::-webkit-search-results-decoration {
 
 .tabbed-nav__active {
   @extend .subnav-active;
-  @apply text-blue-600;
+  @apply text-blue-600 font-medium;
   @screen md {
     &:after {
       bottom: -9px;
@@ -334,7 +334,7 @@ ul li.selected {
   b,
   strong,
   .bold {
-    @apply font-semibold;
+    @apply font-medium;
   }
   i,
   em {
@@ -362,10 +362,10 @@ ul li.selected {
         border: none;
       }
       &.heading {
-        @apply bg-gray-200 font-semibold;
+        @apply bg-gray-200 font-medium;
       }
       .term {
-        @apply p-4 font-semibold w-1/3 md:w-1/4 grow-0 shrink-0;
+        @apply p-4 font-medium w-1/3 md:w-1/4 grow-0 shrink-0;
       }
       .def {
         @apply p-4 flex-grow border-l border-gray-200;
@@ -620,6 +620,7 @@ ul li.selected {
 .middot-between {
   > span:after {
     content: " \00b7";
+    font-weight: normal;
   }
   > span:last-child:after {
     content: none;
