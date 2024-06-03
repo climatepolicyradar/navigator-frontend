@@ -67,7 +67,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
           <SearchDropdown term={term} show={formFocus} handleSearchClick={handleSearchInput} largeSpacing />
         </div>
       </form>
-      <div className="mt-4 flex items-center gap-2">
+      <div className="hidden mt-4 md:flex flex-wrap items-center gap-2">
         <span className="text-gray-200">Search by:</span>
         {EXAMPLE_SEARCHES.map((example) => (
           <Button key={example} thin color="dark" onClick={() => handleSearchInput(example)} data-cy={`example-search-${example}`}>
