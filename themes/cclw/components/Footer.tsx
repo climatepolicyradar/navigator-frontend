@@ -117,7 +117,7 @@ const Footer = () => {
           <div className="mb-6 items-center flex flex-nowrap flex-1 gap-6 basis-full lg:basis-auto lg:justify-end" data-cy="footer-partners">
             <ExternalLink className="flex" url="https://www.lse.ac.uk/">
               <span className="flex" data-cy="lse-logo">
-                <Image src="/images/partners/lse-logo.png" alt="London School of Economics logo" width={32} height={32} />
+                <Image src="/images/partners/lse-logo.png" alt="London School of Economics logo" width={31} height={32} />
               </span>
             </ExternalLink>
             <ExternalLink className="flex" url="https://www.lse.ac.uk/granthaminstitute/">
