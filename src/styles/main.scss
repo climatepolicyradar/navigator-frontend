@@ -439,6 +439,7 @@ ul li.selected {
   padding-top: 20px;
   margin-left: 24px;
   width: calc(100% - 48px);
+  border-top: none;
 
   &.search-dropdown_large {
     padding-top: 0;
