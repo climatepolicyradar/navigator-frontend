@@ -72,8 +72,8 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
         <li key={intendedGeography.slug}>
           <a href="#" className={anchorClasses(false)} onClick={(e) => handleSuggestionClick(e, intendedGeography)}>
             Did you mean to search for&nbsp;
-            <span className="font-bold text-black">{termWithoutGeography(intendedGeography.display_value)}</span>&nbsp;in&nbsp;
-            <span className="font-bold text-black">{intendedGeography.display_value}</span>?
+            <span className="font-medium text-black">{termWithoutGeography(intendedGeography.display_value)}</span>&nbsp;in&nbsp;
+            <span className="font-medium text-black">{intendedGeography.display_value}</span>?
           </a>
         </li>
       </ul>
@@ -90,7 +90,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
         <span className="mr-2 w-[20px]">
           <SearchIcon />
         </span>
-        Search <span className="font-bold text-black mx-1">{term}</span> in all documents
+        Search <span className="font-medium text-black mx-1">{term}</span> in all documents
       </a>
       {geographiesFiltered.length > 0 && renderSearchSuggestion(geographiesFiltered)}
       {!!geographiesFiltered.length && (
@@ -102,7 +102,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
               return (
                 <li key={geography.id}>
                   <a href="#" className={anchorClasses(last)} onClick={(e) => handleCountryClick(e, `/geographies/${geography.slug}`)}>
-                    <span className="font-bold text-black">{geography.display_value}</span> <span className="text-sm ml-4">Geography profile</span>
+                    <span className="font-medium text-black">{geography.display_value}</span> <span className="text-sm ml-4">Geography profile</span>
                   </a>
                 </li>
               );
