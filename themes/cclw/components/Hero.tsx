@@ -22,7 +22,7 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
           <h1 className="visually-hidden">Climate Change Laws of the World</h1>
         </div>
         <div className="mx-auto text-center">
-          <p className="font-medium text-lg lg:text-3xl" data-cy="intro-message">
+          <p className="font-medium tracking-slight text-lg lg:text-3xl" data-cy="intro-message">
             Search over 5000 climate laws and policies worldwide
           </p>
         </div>

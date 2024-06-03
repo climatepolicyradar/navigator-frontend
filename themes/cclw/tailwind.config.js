@@ -112,6 +112,9 @@ module.exports = {
       borderRadius: {
         "4xl": "30px",
       },
+      letterSpacing: {
+        slight: "0.015em",
+      },
     },
   },
   plugins: [require("@tailwindcss/forms"), require("tailwind-scrollbar")],
