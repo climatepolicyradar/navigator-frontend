@@ -210,6 +210,14 @@ export function DownArrowIcon({ height = "16", width = "16", color = "currentCol
   );
 }
 
+export function DownArrowNarrowIcon({ height = "16", width = "12", color = "currentColor" }: IconProps) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 16" fill="none" style={{ width: `${width}px`, height: `${height}px` }}>
+      <path d="M11.2 10.4L10.072 9.272L6.4 12.936V0H4.8V12.936L1.128 9.264L0 10.4L5.6 16L11.2 10.4Z" fill={color} />
+    </svg>
+  );
+}
+
 export function KebabMenuIcon({ height = "23", width = "5", color = "currentColor" }: IconProps) {
   return (
     <svg style={{ width: `${width}px`, height: `${height}px` }} viewBox="0 0 5 23" fill="none" xmlns="http://www.w3.org/2000/svg">

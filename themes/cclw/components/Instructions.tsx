@@ -1,14 +1,35 @@
+import { useEffect, useState } from "react";
+
 import useConfig from "@hooks/useConfig";
 
 import { calculateTotalDocuments } from "@helpers/getDocumentCounts";
 
+import Button from "@components/buttons/Button";
+import { DownArrowNarrowIcon } from "@components/svg/Icons";
+
 import { INSTRUCTIONS } from "@cclw/constants/instructions";
 
+const ANIMATION_DELAY = 3000;
+
+const scrollToMap = () => {
+  const worldMap = document.getElementById("world-map");
+  worldMap?.scrollIntoView({ behavior: "smooth" });
+};
+
 const Instructions = () => {
+  const [isAnimated, setIsAnimated] = useState(false);
   const configQuery = useConfig();
   const { data: { organisations } = {} } = configQuery;
 
   const totalDocuments = calculateTotalDocuments(organisations);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAnimated(true);
+    }, ANIMATION_DELAY);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="xl:max-w-[880px] mx-auto relative">
@@ -19,6 +40,14 @@ const Instructions = () => {
             <div>{instruction.content}</div>
           </div>
         ))}
+      </div>
+      <div className="hidden md:block absolute top-0 right-0 -translate-y-[140%] 2xl:top-auto 2xl:bottom-0 2xlright-full 2xl:translate-y-0 2xl:translate-x-[110%]">
+        <Button extraClasses="flex gap-2 items-center" color="dark-dark" onClick={scrollToMap}>
+          Or try exploring by country{" "}
+          <span className={`hover:animate-none ${isAnimated ? "animate-bounce" : ""}`}>
+            <DownArrowNarrowIcon />
+          </span>
+        </Button>
       </div>
     </div>
   );

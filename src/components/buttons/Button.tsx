@@ -5,7 +5,7 @@ interface ButtonProps {
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
   onClick?(event: React.FormEvent<HTMLButtonElement>): void;
-  color?: "light" | "clear" | "ghost" | "secondary" | "dark";
+  color?: "light" | "clear" | "ghost" | "secondary" | "dark" | "dark-dark";
   id?: string;
   extraClasses?: string;
   "data-cy"?: string;
@@ -42,6 +42,9 @@ const Button = ({
       break;
     case "dark":
       conditionalClasses = "text-white bg-cclw-light border border-gray-500 font-normal hover:bg-gray-700";
+      break;
+    case "dark-dark":
+      conditionalClasses = "text-white bg-blueGray-800 border border-blueGray-700 font-normal hover:bg-blueGray-700";
       break;
     case "clear":
       conditionalClasses = !disabled

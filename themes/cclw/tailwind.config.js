@@ -14,7 +14,7 @@ module.exports = {
       transparent: "transparent",
       current: "currentColor",
       cpr: {
-        dark: "#071e4a",
+        dark: "#071E4A",
       },
       cclw: {
         dark: "#2E3152",
@@ -43,6 +43,10 @@ module.exports = {
         700: "#0075E3",
         800: "#005CB2",
         900: "#00417D",
+      },
+      blueGray: {
+        700: "#394B6E",
+        800: "#071E4A",
       },
       red: {
         50: "#fef1ef",
