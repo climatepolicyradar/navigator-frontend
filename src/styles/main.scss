@@ -622,8 +622,11 @@ ul li.selected {
     content: " \00b7";
     font-weight: normal;
   }
-  > span:last-child:after {
-    content: none;
+  > span:last-child {
+    align-self: end;
+    &:after {
+      content: none;
+    }
   }
 }
 
