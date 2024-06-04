@@ -25,7 +25,7 @@ const DocumentSearchForm = ({
         <div className="mt-4 md:flex gap-2 text-sm items-center">
           {suggestionsAsLinks && (
             <>
-              <div className="mb-2 md:mb-0 flex-shrink-0 text-blue-900 pt-1">Featured searches</div>
+              <div className="mb-2 md:mb-0 flex-shrink-0 text-blue-900">Featured searches</div>
               <ul className="flex gap-1 flex-wrap items-center">
                 {featuredSearches.map((searchTerm) => (
                   <li key={searchTerm}>

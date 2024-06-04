@@ -1,12 +1,17 @@
 import React from "react";
 import dynamic from "next/dynamic";
+
+// generic layer component
+import Layout from "@components/layouts/LandingPage";
+// specific cclw components
 import Header from "@cclw/components/Header";
 import Footer from "@cclw/components/Footer";
 import { Hero } from "@cclw/components/Hero";
 import { Articles } from "@cclw/components/Articles";
 import { Partners } from "@cclw/components/Partners";
-import Layout from "@components/layouts/LandingPage";
 import { PoweredBy } from "@cclw/components/PoweredBy";
+import { Feature } from "@cclw/components/Feature";
+import { HelpUs } from "@cclw/components/HelpUs";
 
 const WorldMap = dynamic(() => import("@components/map/WorldMap"), {
   loading: () => <p>Loading world map...</p>,
@@ -36,6 +41,12 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
         <div className="container my-12" data-cy="featured-content">
           <h2 className="text-center mb-6">Featured Content</h2>
           <Articles />
+        </div>
+        <div data-cy="homepage-feature-1">
+          <Feature />
+        </div>
+        <div data-cy="homepage-help-us">
+          <HelpUs />
         </div>
         <div className="container my-12" data-cy="partners">
           <h2 className="text-center mb-6">Our partners</h2>
