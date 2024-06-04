@@ -8,15 +8,15 @@ export const Card = ({ heading, type, img, children }: TProps) => {
           {img && (
             <div
               className="w-full h-[120px] overflow-hidden rounded-xl"
-              style={{ backgroundImage: `url(${img}`, backgroundSize: "cover", backgroundPosition: "center center", backgroundRepeat: "no-repeat" }}
+              style={{ backgroundImage: `url(${img})`, backgroundSize: "cover", backgroundPosition: "center center", backgroundRepeat: "no-repeat" }}
             />
           )}
           {type && (
-            <div className="px-4 py-2 pb-0">
+            <div className="py-2 pb-0">
               <span className="bg-blue-50 py-2 px-3 text-blue-900 text-xs font-medium rounded-xl inline-block">{type}</span>
             </div>
           )}
-          <div className="px-4 py-2 basis-full text-base font-medium">{heading}</div>
+          <div className="py-2 basis-full text-base font-medium group-hover:underline">{heading}</div>
           {children}
         </div>
       </div>

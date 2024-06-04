@@ -119,6 +119,12 @@ module.exports = {
       letterSpacing: {
         slight: "0.015em",
       },
+      flexBasis: {
+        "1/2-gap-4": "calc(50% - (1/2 * 1rem))",
+        "1/3-gap-4": "calc(33.3% - (2/3 * 1rem))",
+        "1/4-gap-4": "calc(25% - (3/4 * 1rem))",
+        "1/6-gap-4": "calc(16.6% - (5/6 * 1rem))",
+      },
     },
   },
   plugins: [require("@tailwindcss/forms"), require("tailwind-scrollbar")],
