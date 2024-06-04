@@ -1,4 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
+import { Fragment } from "react";
+
+import { Card } from "@components/card/Card";
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 
@@ -61,48 +63,45 @@ const ARTICLES: TArticle[] = [
   },
 ];
 
-export const Articles = () => {
-  const renderArticleContent = (article: TArticle) => {
-    return (
-      <>
-        <div className="absolute top-0 left-0 p-2 px-4 bg-cclw-dark rounded text-sm font-medium text-white z-10">{article.type}</div>
-        <div className={`text-center flex flex-wrap min-h-[180px] h-full ${article.imageUrl ? "content-start" : "content-center"}`}>
-          {article.imageUrl && (
-            <div className="w-full h-[120px] overflow-hidden relative self-start">
-              <img src={article.imageUrl} alt={article.imageAlt} />
-            </div>
-          )}
-          <div className={`article-title p-4 basis-full text-center text-lg font-medium ${article.imageUrl ? "" : "pt-10"}`}>{article.title}</div>
-          {article.meta && (
-            <div className="mb-2 px-2 basis-full text-center">
-              <div className="flex flex-wrap items-center content-center justify-center gap-2">
-                {article.countryCode && (
-                  <span className={`rounded-sm border border-black flag-icon-background flag-icon-${article.countryCode} inline-block`} />
-                )}
-                <div className="">{article.meta}</div>
-              </div>
-            </div>
-          )}
+const renderArticleContent = (article: TArticle) => {
+  return (
+    <>
+      {article.meta && (
+        <div className="px-4 py-2 pt-0">
+          <div className="flex flex-wrap items-center gap-2">
+            {article.countryCode && (
+              <span className={`rounded-sm border border-black flag-icon-background flag-icon-${article.countryCode} inline-block`} />
+            )}
+            <div className="">{article.meta}</div>
+          </div>
         </div>
-      </>
-    );
-  };
+      )}
+    </>
+  );
+};
+
+export const Articles = () => {
+  const cssClasses = "md:basis-1/3 lg:basis-1/4 hover:no-underline";
 
   return (
-    <div className="md:flex flex-wrap justify-center">
+    <div className="md:flex flex-wrap justify-center items-stretch">
       {ARTICLES.map((article) => {
         return (
-          <div className="p-4 md:basis-1/2 lg:basis-1/3" key={article.title}>
+          <Fragment key={article.title}>
             {article.external ? (
-              <ExternalLink url={article.url} className="block relative border border-grey-400 rounded h-full shadow-md">
-                {renderArticleContent(article)}
+              <ExternalLink url={article.url} className={cssClasses}>
+                <Card key={article.title} heading={article.title} img={article.imageUrl} imgAlt={article.imageAlt} type={article.type}>
+                  {renderArticleContent(article)}
+                </Card>
               </ExternalLink>
             ) : (
-              <LinkWithQuery href={article.url} className="block relative border border-grey-400 rounded h-full shadow-md">
-                {renderArticleContent(article)}
+              <LinkWithQuery href={article.url} className={cssClasses}>
+                <Card key={article.title} heading={article.title} img={article.imageUrl} imgAlt={article.imageAlt} type={article.type}>
+                  {renderArticleContent(article)}
+                </Card>
               </LinkWithQuery>
             )}
-          </div>
+          </Fragment>
         );
       })}
     </div>
