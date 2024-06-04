@@ -66,10 +66,14 @@ export default function buildSearchQuery(routerQuery: TRouterQuery, familyId = "
 
   if (familyId) {
     query.family_ids = [familyId];
+    // Some query params are causing issues when we are on a family page
+    query.offset = 0;
   }
 
   if (documentId) {
     query.document_ids = [documentId];
+    // Some query params are causing issues when we are on a document page
+    query.offset = 0;
   }
 
   query = {
