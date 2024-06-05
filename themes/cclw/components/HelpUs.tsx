@@ -1,5 +1,9 @@
 import { ExternalLink } from "@components/ExternalLink";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 import { getButtonClasses } from "@components/buttons/Button";
+
+const EMAIL_SUBJECT = "Joining the NLP community";
+const EMAIL_BODY = "Hi, I am interested in joining the climate NLP community. Please provide me with more information.";
 
 const linkClasses = getButtonClasses("secondary");
 
@@ -12,15 +16,15 @@ export const HelpUs = () => (
         <ExternalLink url="https://form.jotform.com/233294135296359" className={linkClasses}>
           Report missing or inaccurate data
         </ExternalLink>
-        <ExternalLink url="https://form.jotform.com/233294135296359" className={linkClasses}>
+        <LinkWithQuery href="/contact" className={linkClasses}>
           Provide feedback
-        </ExternalLink>
-        <ExternalLink url="https://form.jotform.com/233294135296359" className={linkClasses}>
+        </LinkWithQuery>
+        <ExternalLink url={`mailto:info@climatepolicyradar.org?subject=${EMAIL_SUBJECT}&body=${EMAIL_BODY}`} className={linkClasses}>
           Join our climate NLP community
         </ExternalLink>
-        <ExternalLink url="https://form.jotform.com/233294135296359" className={linkClasses}>
+        <LinkWithQuery href="/contact" className={linkClasses}>
           Explore a partnership
-        </ExternalLink>
+        </LinkWithQuery>
       </div>
     </div>
   </div>
