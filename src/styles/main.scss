@@ -121,6 +121,11 @@ option {
     @apply p-2 text-base;
   }
 }
+b,
+strong,
+.bold {
+  @apply font-medium;
+}
 
 .form-row {
   @apply my-6;

@@ -2,7 +2,7 @@ import { ExternalLink } from "@components/ExternalLink";
 
 export const Feedback = () => {
   return (
-    <div data-cy="feedback" className="bg-[#414469] rounded-3xl p-4">
+    <div data-cy="feedback" className="bg-cclw-light rounded-3xl p-4">
       <div className="font-medium text-lg">Feedback</div>
       <ul className="list-disc pl-4">
         <li className="mb-2">

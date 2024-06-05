@@ -10,8 +10,9 @@ import { Hero } from "@cclw/components/Hero";
 import { Articles } from "@cclw/components/Articles";
 import { Partners } from "@cclw/components/Partners";
 import { PoweredBy } from "@cclw/components/PoweredBy";
-import { Feature } from "@cclw/components/Feature";
+import { FeatureDiscover } from "@cclw/components/FeatureDiscover";
 import { HelpUs } from "@cclw/components/HelpUs";
+import { FeatureSearch } from "@cclw/components/FeatureSearch";
 
 const WorldMap = dynamic(() => import("@components/map/WorldMap"), {
   loading: () => <p>Loading world map...</p>,
@@ -43,7 +44,10 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
           <Articles />
         </div>
         <div data-cy="homepage-feature-1">
-          <Feature />
+          <FeatureDiscover />
+        </div>
+        <div data-cy="homepage-feature-2">
+          <FeatureSearch />
         </div>
         <div data-cy="homepage-help-us">
           <HelpUs />

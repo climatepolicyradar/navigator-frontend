@@ -1,11 +1,13 @@
 import React from "react";
 
+type TButtonColours = "light" | "clear" | "ghost" | "secondary" | "dark" | "dark-dark";
+
 interface ButtonProps {
   children: React.ReactNode;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
   onClick?(event: React.FormEvent<HTMLButtonElement>): void;
-  color?: "light" | "clear" | "ghost" | "secondary" | "dark" | "dark-dark";
+  color?: TButtonColours;
   id?: string;
   extraClasses?: string;
   "data-cy"?: string;
@@ -14,7 +16,14 @@ interface ButtonProps {
   wider?: boolean;
 }
 
-export const getButtonClasses = (color = "light", disabled = false, extraClasses = "", thin = false, wider = false, fullWidth = false) => {
+export const getButtonClasses = (
+  color: TButtonColours = "light",
+  disabled = false,
+  extraClasses = "",
+  thin = false,
+  wider = false,
+  fullWidth = false
+) => {
   let classes = "button block transition duration-300 px-4 rounded-full pointer-events-auto font-medium no-underline hover:no-underline ";
   switch (color) {
     case "light":
