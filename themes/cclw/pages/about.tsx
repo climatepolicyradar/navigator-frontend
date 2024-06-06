@@ -2,7 +2,7 @@ import Layout from "@components/layouts/Main";
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import { Acknowledgements } from "@cclw/components/acknowledgements";
+import { Acknowledgements } from "@cclw/components/Acknowledgements";
 
 const About = () => {
   return (
