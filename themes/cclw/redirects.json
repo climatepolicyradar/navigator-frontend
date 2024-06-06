@@ -63,7 +63,12 @@
   },
   {
     "source": "/collaborations-and-acknowledgements",
-    "destination": "/acknowledgements",
+    "destination": "/about",
+    "permanent": true
+  },
+  {
+    "source": "/acknowledgements",
+    "destination": "/about",
     "permanent": true
   },
   {
