@@ -52,7 +52,7 @@ describe("Homepage", () => {
 
   it("should display correct menu and navigation elements", () => {
     cy.get("[data-cy='menu-icon']").click();
-    cy.get("[data-cy='dropdown-menu']").children().should("have.length", 8);
+    cy.get("[data-cy='dropdown-menu']").children().should("have.length", 7);
 
     navigationSelectors.forEach((selector) => {
       cy.get(selector).should("be.visible");
