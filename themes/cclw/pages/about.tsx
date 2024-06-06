@@ -84,16 +84,3 @@ const About = () => {
 };
 
 export default About;
-
-{
-  /* <iframe
-  width="560"
-  height="315"
-  src="https://www.youtube.com/embed/rgOHHasg88c?si=t9Lqckm550hA-8lx"
-  title="YouTube video player"
-  frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe> */
-}
