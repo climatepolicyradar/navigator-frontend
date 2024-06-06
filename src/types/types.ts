@@ -306,6 +306,9 @@ export type TCorpus = {
 
 export type TOrganisation = {
   corpora: TCorpus[];
+  count_by_category: {
+    [key: string]: number;
+  };
 };
 
 export interface TDictionary<T> {

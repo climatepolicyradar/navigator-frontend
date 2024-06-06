@@ -17,14 +17,14 @@ export const METHODOLOGY: TDataListItem[] = [
         </p>
 
         <p>
-          <b className="font-bold">The database focuses exclusively on climate change-related laws and policies</b>. We define climate change-related
-          laws and policies broadly as legal documents that are directly relevant to climate change mitigation, adaptation, loss and damage or
-          disaster risk management. Typically, to be included in the database one or more aspects of a law or policy must be demonstrably motivated by
-          climate change concerns.
+          <b className="font-medium">The database focuses exclusively on climate change-related laws and policies</b>. We define climate
+          change-related laws and policies broadly as legal documents that are directly relevant to climate change mitigation, adaptation, loss and
+          damage or disaster risk management. Typically, to be included in the database one or more aspects of a law or policy must be demonstrably
+          motivated by climate change concerns.
         </p>
 
         <p>
-          <b className="font-bold">We include legal documents that</b>: establish rules and procedures related to reducing energy demand; promote
+          <b className="font-medium">We include legal documents that</b>: establish rules and procedures related to reducing energy demand; promote
           low-carbon energy supply; restrict the development of fossil fuel-based infrastructure; promote or mandate low-carbon buildings; set carbon
           pricing policy; lower industry emissions; tackle deforestation and promote or mandate sustainable land use; contain other mitigation
           efforts; cover climate-related research and development; promote or mandate low-carbon transport; enhance adaptation capabilities; or put in
@@ -36,7 +36,7 @@ export const METHODOLOGY: TDataListItem[] = [
         </p>
 
         <p>
-          <b className="font-bold">The dataset includes legislation and policy at the national and sectoral levels only</b>. At present, it excludes
+          <b className="font-medium">The dataset includes legislation and policy at the national and sectoral levels only</b>. At present, it excludes
           information about the policy response of sub-national governments. For EU member states, laws transposing EU Directives are in the process
           of being added to the database, along with the relevant EU law, since in many instances these may contain additional relevant provisions.
           Where possible these additional provisions have been noted in the description of the relevant law.
@@ -51,12 +51,12 @@ export const METHODOLOGY: TDataListItem[] = [
         </p>
 
         <p>
-          <b className="font-bold">Documents included in the database must have full legal force</b>, having passed through the legislature or through
-          an executive decision-making body,{" "}
-          <b className="font-bold">and/or set out a current governmental policy objective or set of policy objectives</b>. To the best of our ability,
-          we capture major amendments to legislation and update document summaries accordingly. Where we become aware that laws are outdated, either
-          because they have been repealed or replaced, or because they were in force for a limited time period, these documents may be removed from
-          the database. In general, precedence is given to the document with the highest possible status dealing with a given matter. In some
+          <b className="font-medium">Documents included in the database must have full legal force</b>, having passed through the legislature or
+          through an executive decision-making body,{" "}
+          <b className="font-medium">and/or set out a current governmental policy objective or set of policy objectives</b>. To the best of our
+          ability, we capture major amendments to legislation and update document summaries accordingly. Where we become aware that laws are outdated,
+          either because they have been repealed or replaced, or because they were in force for a limited time period, these documents may be removed
+          from the database. In general, precedence is given to the document with the highest possible status dealing with a given matter. In some
           instances, policies or regulations aimed at giving effect to legislation or regulation of a higher order (‘parent legislation’), such as
           statutory instruments or other guidance adopted to provide detail on the implementation of an act of parliament, may be included in the
           database alongside their ‘parent legislation’ where these provide a significantly more detailed picture.
@@ -69,7 +69,7 @@ export const METHODOLOGY: TDataListItem[] = [
     content: (
       <>
         <p>
-          <b className="font-bold">
+          <b className="font-medium">
             We assign a number of classifications and categories to laws and policies in the CCLW database to enhance the usability and searchability
             of the data
           </b>
@@ -79,7 +79,7 @@ export const METHODOLOGY: TDataListItem[] = [
 
         <h4>Legislation and policy</h4>
         <p>
-          <b className="font-bold">
+          <b className="font-medium">
             We categorise documents as legislation or policy depending on if they are enacted by the legislative or executive branch of government
           </b>
           . Where the same body holds both legislative and executive power, a determination of whether a document constitutes a law or policy is made
@@ -88,30 +88,30 @@ export const METHODOLOGY: TDataListItem[] = [
 
         <h4>Document types</h4>
         <p>
-          <b className="font-bold">Document types are determined with reference to a non-exhaustive list of options</b> and may be classified
+          <b className="font-medium">Document types are determined with reference to a non-exhaustive list of options</b> and may be classified
           according to their legal status, i.e. as a Constitution or a Decree Law, or, in the case of policy documents, by their content, e.g. as a
           strategy, a roadmap or a government guidance note.
         </p>
 
         <h4>Responses</h4>
         <p>
-          <b className="font-bold">Laws and policies are categorised according to the climate policy response to which they are most relevant</b>:
+          <b className="font-medium">Laws and policies are categorised according to the climate policy response to which they are most relevant</b>:
           mitigation, adaptation, loss and damage, or disaster risk management. Where appropriate, laws may be tagged as relevant to more than one
           policy response.
         </p>
         <ol>
           <li>
-            <b className="font-bold">Mitigation</b>: Mitigation laws and policies refer to a legislative or executive disposition focused on curbing a
-            country’s greenhouse gases emissions in one sector or more. Measures can be directly related to emission reductions, such as establishing
-            a national carbon budget or cap and trade system, or indirectly related, such as establishing relevant institutions or providing
-            additional funding for research and development into low-carbon technologies. Laws and policies addressing forests and land use are
-            included if they explicitly support climate change mitigation through activities that reduce emissions and increase carbon removals.
+            <b className="font-medium">Mitigation</b>: Mitigation laws and policies refer to a legislative or executive disposition focused on curbing
+            a country’s greenhouse gases emissions in one sector or more. Measures can be directly related to emission reductions, such as
+            establishing a national carbon budget or cap and trade system, or indirectly related, such as establishing relevant institutions or
+            providing additional funding for research and development into low-carbon technologies. Laws and policies addressing forests and land use
+            are included if they explicitly support climate change mitigation through activities that reduce emissions and increase carbon removals.
             General forest management and conservation laws are not included, even if they may have implicit consequences for climate change
             mitigation.
           </li>
 
           <li>
-            <b className="font-bold">Adaptation</b>: Adaptation laws and policies contain explicit provisions concerning climate change adaptation,
+            <b className="font-medium">Adaptation</b>: Adaptation laws and policies contain explicit provisions concerning climate change adaptation,
             i.e. the need for changes in the management of ecological, social or economic systems in response to the actual or expected impacts of
             climate change. We conducted a comprehensive review of adaptation laws and policies in 2018 and have added documents since then. Note that
             in many cases, climate change adaptation responses may be embedded in development policies, general planning policies, risk-reduction and
@@ -120,10 +120,10 @@ export const METHODOLOGY: TDataListItem[] = [
           </li>
 
           <li>
-            <b className="font-bold">Disaster risk management</b>: Laws and policies governing countries’ approaches to disaster risk management (DRM)
-            and disaster risk reduction (DRR) were first added to the database in 2019. We have adopted a broad approach to assessing whether these
-            documents fall within the database scope, as laws and policies often target natural and human disasters in a holistic manner, making it
-            harder to isolate climate-related adverse events. Nonetheless, in determining whether a disaster risk management law or policy falls
+            <b className="font-medium">Disaster risk management</b>: Laws and policies governing countries’ approaches to disaster risk management
+            (DRM) and disaster risk reduction (DRR) were first added to the database in 2019. We have adopted a broad approach to assessing whether
+            these documents fall within the database scope, as laws and policies often target natural and human disasters in a holistic manner, making
+            it harder to isolate climate-related adverse events. Nonetheless, in determining whether a disaster risk management law or policy falls
             within scope, our researchers will usually consider whether the document relates to the types of disaster that are expected to become more
             frequent due to climate change, such as hurricanes, typhoons, flooding, heatwaves, droughts, forest fires and sea-level rise (this list is
             non-exhaustive). In some cases these laws and policies may constitute exceptions to the general rule that laws and policies must be
@@ -131,8 +131,8 @@ export const METHODOLOGY: TDataListItem[] = [
           </li>
 
           <li>
-            <b className="font-bold">Loss and damage</b>: We define loss and damage-related laws and policies as those that explicitly reduce the risk
-            of climate-related loss and damage by increasing resilience and those that provide compensation or other relief measures to support
+            <b className="font-medium">Loss and damage</b>: We define loss and damage-related laws and policies as those that explicitly reduce the
+            risk of climate-related loss and damage by increasing resilience and those that provide compensation or other relief measures to support
             victims of climate-related loss and damage. The guiding definition of loss and damage includes both economic and non-economic losses that
             arise due to climate impacts that are made more frequent or more severe by anthropogenic greenhouse gas emissions. Policy measures may
             include national climate relief funds, risk transfer mechanisms, internal relocation arrangements, mainstreaming loss and damage across
@@ -146,9 +146,9 @@ export const METHODOLOGY: TDataListItem[] = [
 
         <h4>Frameworks</h4>
         <p>
-          <b className="font-bold">A number of laws or policies in the database are categorised as ‘framework’ documents</b>. While there is no agreed
-          definition of a ‘climate change framework law’, this term is applied with increasing frequency to a discrete class of laws that share some
-          or all of the following characteristics, and we tag legislative documents within the database as ‘framework laws’ accordingly:
+          <b className="font-medium">A number of laws or policies in the database are categorised as ‘framework’ documents</b>. While there is no
+          agreed definition of a ‘climate change framework law’, this term is applied with increasing frequency to a discrete class of laws that share
+          some or all of the following characteristics, and we tag legislative documents within the database as ‘framework laws’ accordingly:
         </p>
         <ol>
           <li>Set out the strategic of travel for national climate change policy</li>
@@ -176,7 +176,7 @@ export const METHODOLOGY: TDataListItem[] = [
 
         <h4>Sectors</h4>
         <p>
-          <b className="font-bold">Each document is assessed to determine the most relevant sector or sectors to which it relates</b>. The following
+          <b className="font-medium">Each document is assessed to determine the most relevant sector or sectors to which it relates</b>. The following
           sectors are currently considered: Agriculture, Transport, Energy, Waste, Environment, Tourism, Land Use, Land-Use Change and Forestry
           (LULUCF), Industry, Buildings, Water, Health, Public Sector, and Other. Where a document relates to multiple sectors or appears
           cross-cutting in intention, we assign the labels ‘economy-wide’ or ‘cross-cutting area’. In some instances, multi-sectoral documents may
@@ -187,13 +187,14 @@ export const METHODOLOGY: TDataListItem[] = [
 
         <h4>Targets</h4>
         <p>
-          <b className="font-bold">Up until January 2023, efforts were made to manually identify all targets included in laws and policies</b>. We are
-          currently in the process of developing an automated process to identify targets. For documents added after January 2023, we only manually
-          identify “net zero” targets or their equivalent. See further detail in the Definitions and classifications: not currently in use section.
+          <b className="font-medium">Up until January 2023, efforts were made to manually identify all targets included in laws and policies</b>. We
+          are currently in the process of developing an automated process to identify targets. For documents added after January 2023, we only
+          manually identify “net zero” targets or their equivalent. See further detail in the Definitions and classifications: not currently in use
+          section.
         </p>
         <h4>Keywords</h4>
         <p>
-          <b className="font-bold">Discretionary keywords may be assigned to cases to enable data users to identify these more easily</b>. We do not
+          <b className="font-medium">Discretionary keywords may be assigned to cases to enable data users to identify these more easily</b>. We do not
           maintain a comprehensive list of keywords.
         </p>
       </>
@@ -240,18 +241,18 @@ export const METHODOLOGY: TDataListItem[] = [
     content: (
       <>
         <p>
-          <b className="font-bold">In general, our approach has been to be inclusive and flexible with definitions</b>, to allow for the different
+          <b className="font-medium">In general, our approach has been to be inclusive and flexible with definitions</b>, to allow for the different
           regulatory approaches and cultures among 200 countries, and to recognise the elusive boundaries of climate change, which spans multiple
           sectors and issues.
         </p>
         <p>
-          <b className="font-bold">We aim for the data collected through this resource to be as comprehensive and accurate as possible</b>. However,
+          <b className="font-medium">We aim for the data collected through this resource to be as comprehensive and accurate as possible</b>. However,
           we do not claim to have identified every relevant law or policy in the countries covered. Language limitations, levels of media coverage,
           and the specific expertise of our researchers and contributors may all result in information for certain countries being more comprehensive
           than others. Our current data collection process prioritises the most recently passed laws and policies.
         </p>
         <p>
-          <b className="font-bold">
+          <b className="font-medium">
             Although the Grantham Research Institute has developed rigorous internal protocols to guide the process of data collection, the
             categorisation of each document has been determined by individuals and has not generally been subject to checks for inter-coder
             reliability
@@ -261,7 +262,7 @@ export const METHODOLOGY: TDataListItem[] = [
           accordance with the definitions outlined above, may therefore be open to differing interpretations.
         </p>
         <p>
-          <b className="font-bold">
+          <b className="font-medium">
             We acknowledge that our current focus on national level legislation may mean that the database does not capture the full detail of the
             climate change policy response in many countries
           </b>
@@ -278,7 +279,7 @@ export const METHODOLOGY: TDataListItem[] = [
         <p>
           This section provides details on classifications found in the full data download that are not currently in regular use, but have been
           previously assigned to subsets of documents in the database.{" "}
-          <b className="font-bold">
+          <b className="font-medium">
             We are working with our partners at Climate Policy Radar to develop new automated processes to improve our classification of documents and
             apply these classifications to the entire dataset
           </b>
@@ -287,18 +288,18 @@ export const METHODOLOGY: TDataListItem[] = [
         <h4>Targets</h4>
         <p>
           As noted above, until January 2023 efforts were made to manually identify targets in laws and policies. Full details of the methodology for
-          this process can be found below in <b className="font-bold">Annex I</b>.
+          this process can be found below in <b className="font-medium">Annex I</b>.
         </p>
         <h4>Instruments</h4>
         <p>
-          <b className="font-bold">
+          <b className="font-medium">
             A subset of documents have been assessed to determine the primary policy instruments or ‘tools’ on which they rely
           </b>
           , in order to facilitate a more nuanced understanding of the ways in which governments around the world seek to influence the drivers and
           impacts of climate change. We categorise instruments according to an adapted version of the classic Hood and Margetts NATO typology of
           instruments.<a href="#note-iii">[iii]</a> We assess documents to determine the most relevant area(s) of government activity and then tag
           them with the specific types of instrument they employ to achieve their stated aims and objectives. The vast majority of documents relate to
-          more than one area of government activity and rely on multiple instruments. See <b className="font-bold">Annex II</b> below for the full
+          more than one area of government activity and rely on multiple instruments. See <b className="font-medium">Annex II</b> below for the full
           list of instruments considered.
         </p>
         <h4>Natural hazards</h4>
@@ -340,7 +341,7 @@ export const METHODOLOGY: TDataListItem[] = [
     content: (
       <>
         <p>
-          <b className="font-bold">
+          <b className="font-medium">
             This Annex outlines the process used to collect and categorise the targets displayed in the Climate Change Laws of the World database
           </b>
           . Data on targets was originally collected in 2018 following a review of the Nationally Determined Contributions (NDCs) submitted by parties

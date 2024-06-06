@@ -52,38 +52,38 @@ const TermsOfUse = () => {
                 free to:
                 <ul>
                   <li>
-                    <span className="font-bold">Adapt</span> — remix, transform, and build upon the material
+                    <span className="font-medium">Adapt</span> — remix, transform, and build upon the material
                   </li>
                   <li>
-                    <span className="font-bold">Share</span> — copy and redistribute the CPR material in any medium or format{" "}
+                    <span className="font-medium">Share</span> — copy and redistribute the CPR material in any medium or format{" "}
                   </li>
                 </ul>
               </li>
               <li>
-                <span className="font-bold">Licence terms</span>: Climate Policy Radar will not revoke these freedoms as long as you follow the
+                <span className="font-medium">Licence terms</span>: Climate Policy Radar will not revoke these freedoms as long as you follow the
                 license terms - see <ExternalLink url="https://creativecommons.org/licenses/by/4.0/legalcode">full legal code</ExternalLink>, which
                 include but are not limited to these key issues:
                 <ul>
                   <li>
-                    <span className="font-bold">Attribution</span>: You must give CPR and its partners{" "}
+                    <span className="font-medium">Attribution</span>: You must give CPR and its partners{" "}
                     <ExternalLink url="https://creativecommons.org/licenses/by/4.0/#">appropriate credit</ExternalLink>, provide a link to the
                     license, and <ExternalLink url="https://creativecommons.org/licenses/by/4.0/#">indicate if changes were made</ExternalLink>. You
                     may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use. See suggested citation
                     below.
                   </li>
                   <li>
-                    <span className="font-bold">No additional restrictions</span>: You may not apply legal terms or{" "}
+                    <span className="font-medium">No additional restrictions</span>: You may not apply legal terms or{" "}
                     <ExternalLink url="https://creativecommons.org/licenses/by/4.0/#">technological measures</ExternalLink> that legally restrict
                     others from doing anything the license permits.
                   </li>
                   <li>
-                    <span className="font-bold">Exemptions and Limitations</span>: You do not have to comply with the license for elements of the
+                    <span className="font-medium">Exemptions and Limitations</span>: You do not have to comply with the license for elements of the
                     material in the public domain or where your use is permitted by an applicable{" "}
                     <ExternalLink url="https://creativecommons.org/licenses/by/4.0/#">exception or limitation</ExternalLink>.
                   </li>
                   <li>
-                    <span className="font-bold">No warranties</span>: The license may not give you all of the permissions necessary for your intended
-                    use. For example, other rights such as{" "}
+                    <span className="font-medium">No warranties</span>: The license may not give you all of the permissions necessary for your
+                    intended use. For example, other rights such as{" "}
                     <ExternalLink url="https://creativecommons.org/licenses/by/4.0/#">publicity, privacy, or moral rights</ExternalLink> may limit how
                     you use the material.
                   </li>
@@ -108,7 +108,7 @@ const TermsOfUse = () => {
                   Policy Radar, https://app.climatepolicyradar.org and made available under and under the Creative Commons CC-BY licence”
                 </p>
                 <p>
-                  <span className="font-bold">Note</span>: As of May 2023, all climate law and policy summaries in the CPR App were written by
+                  <span className="font-medium">Note</span>: As of May 2023, all climate law and policy summaries in the CPR App were written by
                   researchers at the Grantham Research Institute (as reflected on every document page). Documents from the UNFCCC document registries
                   and data portals are out of the scope for this declaration (see further “Data from third party sources”). This section and
                   recommended citation will be updated to reflect any changes to this.

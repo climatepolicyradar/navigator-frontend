@@ -14,68 +14,83 @@
   font-weight: 500;
 }
 
-#cclw .cclw-font {
-  font-family: "LL Brown";
-}
-
-#cclw .gradient-container {
-  @include cclw-dark-gradient;
-}
-
-#cclw header {
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-#cclw nav {
-  a {
-    @apply h-full block py-2 px-4;
-    &:hover,
-    &.active {
-      @apply bg-blue-400;
-    }
-  }
-}
-
-#cclw footer {
-  @apply bg-cclw-dark text-white;
-
-  h5 {
-    @apply text-white;
+#cclw {
+  .cclw-font {
+    font-family: "LL Brown";
   }
 
-  a {
-    @apply text-white underline;
-    &:hover {
-      @apply text-blue-200;
+  .gradient-container {
+    @include cclw-dark-gradient;
+  }
+
+  header {
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+
+  nav {
+    a {
+      @apply h-full block py-2 px-4;
+      &:hover,
+      &.active {
+        @apply bg-blue-400;
+      }
     }
   }
 
-  .footer__section {
-    @apply text-sm;
-    > * {
-      @apply mb-4;
-    }
+  footer {
+    @apply bg-cclw-dark text-white;
+
     h5 {
-      @apply mb-4;
+      @apply text-white;
+    }
+
+    a {
+      @apply text-white underline;
+      &:hover {
+        @apply text-blue-200;
+      }
+    }
+
+    .footer__section {
+      @apply text-sm;
+      > * {
+        @apply mb-4;
+      }
+      h5 {
+        @apply mb-4;
+      }
+    }
+
+    .footer__social-links {
+      a {
+        display: block;
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .footer__base {
+      background-image: url("/images/cclw/angles_2.svg");
+      background-position: top;
+      background-repeat: repeat-x;
+      @apply text-cclw-dark w-full h-[232px] flex items-end overflow-hidden lg:h-[184px];
+
+      a {
+        @apply text-cclw-dark;
+      }
     }
   }
 
-  .footer__social-links {
-    a {
-      display: block;
-      width: 20px;
-      height: 20px;
-    }
-  }
+  .search-dropdown {
+    top: 20px;
+    padding-top: 20px;
+    margin-left: 24px;
+    width: calc(100% - 48px);
+    border-top: none;
 
-  .footer__base {
-    background-image: url("/images/cclw/angles_2.svg");
-    background-position: top;
-    background-repeat: repeat-x;
-    @apply text-cclw-dark w-full h-[232px] flex items-end overflow-hidden lg:h-[184px];
-
-    a {
-      @apply text-cclw-dark;
+    &.search-dropdown_large {
+      padding-top: 0;
+      top: 48px;
     }
   }
 }

@@ -21,7 +21,7 @@ const BreadCrumb = ({ last = false, label, href = null, cy = "" }: TBreadcrumbLi
 
   return (
     <>
-      <li data-cy={`breadcrumb ${cy}`} className={`${last && "font-bold"}`}>
+      <li data-cy={`breadcrumb ${cy}`} className={`${last && "font-medium"}`}>
         {href ? (
           <LinkWithQuery className="underline text-cpr-dark" href={href}>
             {labelShort}
@@ -38,7 +38,7 @@ const BreadCrumb = ({ last = false, label, href = null, cy = "" }: TBreadcrumbLi
 
 export const BreadCrumbs = ({ geography = null, category = null, family = null, label }: TProps) => {
   return (
-    <ul className="flex flex-wrap gap-2 pt-4 text-sm" data-cy="breadcrumbs">
+    <ul className="flex items-baseline flex-wrap gap-2 pt-4 text-sm" data-cy="breadcrumbs">
       <BreadCrumb label="Home" href="/" cy="home" />
       {geography && <BreadCrumb label={geography.label} href={geography.label === "No Geography" ? null : geography.href} cy="geography" />}
       {category && <BreadCrumb label={category.label} href={category.href} cy="category" />}

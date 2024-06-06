@@ -1,48 +1,53 @@
-/* eslint-disable @next/next/no-img-element */
-import { ExternalLink } from "@components/ExternalLink";
-import { LinkWithQuery } from "@components/LinkWithQuery";
-import { Translation } from "@components/svg/Icons";
+import { useEffect, useState } from "react";
 
-const heroLinkClasses = "text-white font-bold underline hover:text-white";
-const heroSectionClasses = "border-t border-white py-5 flex items-center md:px-4 lg:py-0";
+import useConfig from "@hooks/useConfig";
+
+import { calculateTotalDocuments } from "@helpers/getDocumentCounts";
+
+import Button from "@components/buttons/Button";
+import { DownArrowIcon } from "@components/svg/Icons";
+
+import { INSTRUCTIONS } from "@cclw/constants/instructions";
+
+const ANIMATION_DELAY = 3000;
+
+const scrollToMap = () => {
+  const worldMap = document.getElementById("world-map");
+  worldMap?.scrollIntoView({ behavior: "smooth" });
+};
 
 const Instructions = () => {
+  const [isAnimated, setIsAnimated] = useState(false);
+  const configQuery = useConfig();
+  const { data: { organisations } = {} } = configQuery;
+
+  const totalDocuments = calculateTotalDocuments(organisations);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAnimated(true);
+    }, ANIMATION_DELAY);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 text-center max-w-screen-lg mx-auto">
-      <div className={`${heroSectionClasses} border-t-0 flex-col`} data-cy="feature-search">
-        <div className="mb-6 h-[80px] flex items-center justify-center">
-          <img src="/images/earth.png" alt="Phrase highlighting" className="max-h-full" />
-        </div>
-        <p className="mb-6">Search the full text of over 5,000 laws, policies and UNFCCC submissions from every country</p>
+    <div className="xl:max-w-[880px] mx-auto relative">
+      <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-4">
+        {INSTRUCTIONS(totalDocuments).map((instruction, index) => (
+          <div key={index} className="p-3 flex gap-4 items-center bg-cclw-light" data-cy={instruction.cy}>
+            <div className="flex items-center justify-center">{instruction.icon}</div>
+            <div>{instruction.content}</div>
+          </div>
+        ))}
       </div>
-      <div className={`${heroSectionClasses} md:border-t-0 md:border-l flex-col`} data-cy="feature-highlights">
-        <div className="mb-6 h-[80px] flex items-center justify-center relative">
-          <img src="/images/highlight.png" alt="Phrase highlighting" className="max-h-full" />
-        </div>
-        <p className="mb-6">See exact matches and related phrases highlighted in the text</p>
-      </div>
-      <div className={`${heroSectionClasses} lg:border-t-0 lg:border-l flex-col`} data-cy="feature-translations">
-        <div className="mb-6 h-[80px] flex items-center justify-center">
-          <Translation height="60" />
-        </div>
-        <p className="mb-6">Find documents from all languages translated to English</p>
-      </div>
-      <div className={`${heroSectionClasses} lg:border-t-0 md:border-l justify-center flex-wrap`} data-cy="feature-litigation">
-        <p>
-          <LinkWithQuery href="/faq" hash="litigation-data" className={heroLinkClasses}>
-            Climate litigation
-          </LinkWithQuery>{" "}
-          is coming soon. Access it now at{" "}
-          <ExternalLink url="http://climatecasechart.com/" className={heroLinkClasses}>
-            Climate Case Chart
-          </ExternalLink>
-        </p>
-        <p>
-          Learn more about{" "}
-          <LinkWithQuery href="/faq" className={heroLinkClasses}>
-            how to use this site
-          </LinkWithQuery>
-        </p>
+      <div className="hidden md:block absolute top-0 right-0 -translate-y-[140%] 2xl:top-auto 2xl:bottom-0 2xlright-full 2xl:translate-y-0 2xl:translate-x-[110%]">
+        <Button extraClasses="flex gap-2 items-center" color="dark-dark" onClick={scrollToMap}>
+          Or try exploring by country{" "}
+          <span className={`hover:animate-none ${isAnimated ? "animate-bounce" : ""}`}>
+            <DownArrowIcon />
+          </span>
+        </Button>
       </div>
     </div>
   );
