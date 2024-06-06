@@ -442,13 +442,10 @@ ul li.selected {
 .search-dropdown {
   top: 20px;
   padding-top: 20px;
-  margin-left: 24px;
-  width: calc(100% - 48px);
-  border-top: none;
 
   &.search-dropdown_large {
     padding-top: 0;
-    top: 48px;
+    top: 60px;
   }
 }
 
