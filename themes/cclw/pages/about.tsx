@@ -52,7 +52,7 @@ const About = () => {
                   </div>
                 </div>
               </div>
-              <div>
+              <div className="max-w-full overflow-clip xl:basis-[560px] xl:shrink-0">
                 <iframe
                   width="560"
                   height="315"
