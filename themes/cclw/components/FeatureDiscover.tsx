@@ -13,7 +13,7 @@ export const FeatureDiscover = () => (
       </LinkWithQuery>{" "}
       and targets for every country.
     </p>
-    <div className="flex gap-4">
+    <div className="flex flex-col lg:flex-row gap-4">
       <LinkWithQuery href="/methodology" className={getButtonClasses()}>
         Learn more about our database
       </LinkWithQuery>
