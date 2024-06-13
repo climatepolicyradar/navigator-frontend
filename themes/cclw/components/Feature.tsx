@@ -11,8 +11,8 @@ type TProps = {
 
 export const Feature = ({ heading, contentSide = "left", image, imageAlt, children }: TProps) => {
   return (
-    <div className="bg-cclw-dark text-white py-4 md:py-12">
-      <div className="container my-12 md:flex gap-8">
+    <div className="bg-cclw-dark text-white py-12">
+      <div className="container md:flex gap-8">
         <div className={`basis-1/2 ${contentSide === "right" ? "order-last" : ""}`}>
           {heading && <h3 className="text-3xl md:text-h2 lg:text-h1 lg:leading-[72px] text-white">{heading}</h3>}
           {children}
