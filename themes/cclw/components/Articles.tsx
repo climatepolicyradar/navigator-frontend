@@ -13,6 +13,30 @@ type TArticle = {
   countryCode?: string;
   meta?: string;
   external?: boolean;
+  customMetaKey?: string;
+};
+
+// We must define a function to handle the custom meta data
+const getCustomMeta = (key: string) => {
+  switch (key) {
+    case "customAfrica":
+      return (
+        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
+          <div className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
+            <span className="rounded-sm border border-black flag-icon-background flag-icon-ken inline-block" /> Kenya
+          </div>
+          <div className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
+            <span className="rounded-sm border border-black flag-icon-background flag-icon-uga inline-block" /> Uganda
+          </div>
+
+          <div className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
+            <span className="rounded-sm border border-black flag-icon-background flag-icon-nga inline-block" /> Nigeria
+          </div>
+        </div>
+      );
+    default:
+      return null;
+  }
 };
 
 const ARTICLES: TArticle[] = [
@@ -33,9 +57,9 @@ const ARTICLES: TArticle[] = [
   {
     url: "https://www.lse.ac.uk/granthaminstitute/news/innovations-in-climate-change-legislation-kenya-uganda-and-nigeria-in-focus/",
     external: true,
-    type: "External site",
+    type: "Article",
     title: "Innovations in climate change legislation: Kenya, Uganda and Nigeria in focus",
-    meta: "Kenya · Uganda · Nigeria",
+    customMetaKey: "customAfrica",
   },
   {
     url: "https://www.lse.ac.uk/granthaminstitute/news/philippines-climate-accountability-bill-loss-and-damage-in-domestic-legislation/",
@@ -43,7 +67,7 @@ const ARTICLES: TArticle[] = [
     type: "Commentary",
     title: "Philippines Climate Accountability Bill: loss and damage in domestic legislation",
     countryCode: "phl",
-    meta: "Philippines · 2023",
+    meta: "Philippines",
     // imageUrl: "/images/cclw/images/typhoon_yolanda_philippines.jpg",
     imageAlt: "Aftermath of Typhoon Yolanda in the Philippines, 2013",
   },
@@ -64,15 +88,17 @@ const ARTICLES: TArticle[] = [
 ];
 
 const renderArticleContent = (article: TArticle) => {
+  const customMeta = getCustomMeta(article.customMetaKey);
   return (
     <>
+      {customMeta && customMeta}
       {article.meta && (
         <div className="py-2 pt-0">
-          <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
+          <div className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
             {article.countryCode && (
               <span className={`rounded-sm border border-black flag-icon-background flag-icon-${article.countryCode} inline-block`} />
             )}
-            <div className="">{article.meta}</div>
+            <div className="">{article.meta || customMeta}</div>
           </div>
         </div>
       )}
