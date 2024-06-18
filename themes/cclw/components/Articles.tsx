@@ -45,7 +45,7 @@ const ARTICLES: TArticle[] = [
     external: true,
     type: "Policy publication",
     title: "Governance pathways to credible implementation of net zero targets",
-    // imageUrl: "/images/cclw/images/storm_damage_fiji.jpg",
+    imageUrl: "/images/cclw/images/articles/article_fiji.jpg",
     imageAlt: "Storm damage in Fiji",
   },
   {
@@ -53,6 +53,8 @@ const ARTICLES: TArticle[] = [
     external: true,
     type: "Research publication",
     title: "Comparative analysis of legal mechanisms to net-zero: lessons from Germany, the United States, Brazil, and China",
+    imageUrl: "/images/cclw/images/articles/article_windmills.jpg",
+    imageAlt: "Windmills on a hill",
   },
   {
     url: "https://www.lse.ac.uk/granthaminstitute/news/innovations-in-climate-change-legislation-kenya-uganda-and-nigeria-in-focus/",
@@ -60,6 +62,8 @@ const ARTICLES: TArticle[] = [
     type: "Article",
     title: "Innovations in climate change legislation: Kenya, Uganda and Nigeria in focus",
     customMetaKey: "customAfrica",
+    imageUrl: "/images/cclw/images/articles/article_bunyonyi.jpg",
+    imageAlt: "Lake Bunyonyi, Uganda",
   },
   {
     url: "https://www.lse.ac.uk/granthaminstitute/news/philippines-climate-accountability-bill-loss-and-damage-in-domestic-legislation/",
@@ -68,7 +72,7 @@ const ARTICLES: TArticle[] = [
     title: "Philippines Climate Accountability Bill: loss and damage in domestic legislation",
     countryCode: "phl",
     meta: "Philippines",
-    // imageUrl: "/images/cclw/images/typhoon_yolanda_philippines.jpg",
+    imageUrl: "/images/cclw/images/articles/article_philippines.jpg",
     imageAlt: "Aftermath of Typhoon Yolanda in the Philippines, 2013",
   },
   {
@@ -76,7 +80,7 @@ const ARTICLES: TArticle[] = [
     external: true,
     type: "Commentary",
     title: "What the UN climate regime can learn from the Open Government Partnership",
-    // imageUrl: "/images/cclw/images/cop_28.jpg",
+    imageUrl: "/images/cclw/images/articles/article_cop.jpg",
     imageAlt: "COP 28",
   },
   {
@@ -84,6 +88,8 @@ const ARTICLES: TArticle[] = [
     type: "Framework laws",
     title: "Climate change framework laws",
     meta: "View the list here",
+    imageUrl: "/images/cclw/images/articles/article_courthouse.jpg",
+    imageAlt: "Courthouse",
   },
 ];
 
@@ -116,13 +122,27 @@ export const Articles = () => {
           <Fragment key={article.title}>
             {article.external ? (
               <ExternalLink url={article.url} className={cssClasses}>
-                <Card key={article.title} heading={article.title} img={article.imageUrl} imgAlt={article.imageAlt} type={article.type}>
+                <Card
+                  key={article.title}
+                  heading={article.title}
+                  img={article.imageUrl}
+                  imgAlt={article.imageAlt}
+                  type={article.type}
+                  extraClasses="mb-8 sm:mb-0"
+                >
                   {renderArticleContent(article)}
                 </Card>
               </ExternalLink>
             ) : (
               <LinkWithQuery href={article.url} className={cssClasses}>
-                <Card key={article.title} heading={article.title} img={article.imageUrl} imgAlt={article.imageAlt} type={article.type}>
+                <Card
+                  key={article.title}
+                  heading={article.title}
+                  img={article.imageUrl}
+                  imgAlt={article.imageAlt}
+                  type={article.type}
+                  extraClasses="mb-8 sm:mb-0"
+                >
                   {renderArticleContent(article)}
                 </Card>
               </LinkWithQuery>
