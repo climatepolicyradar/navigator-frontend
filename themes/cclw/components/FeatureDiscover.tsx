@@ -5,7 +5,7 @@ import { LinkWithQuery } from "@components/LinkWithQuery";
 import { ExternalLink } from "@components/ExternalLink";
 
 export const FeatureDiscover = () => (
-  <Feature heading="Central knowledge-base for climate data" image="app_search_results.jpg" imageAlt="Screenshot of the search results">
+  <Feature heading="Central knowledge-base for climate policy data" image="app_search_results.jpg" imageAlt="Screenshot of the search results">
     <p className="text-xl my-4">
       Discover climate laws and policies from over 196 countries, territories, and the European Union. This includes{" "}
       <LinkWithQuery href="/framework-laws" className="underline text-blue-200 hover:text-gray-100">
@@ -13,7 +13,7 @@ export const FeatureDiscover = () => (
       </LinkWithQuery>{" "}
       and targets for every country.
     </p>
-    <div className="flex gap-4">
+    <div className="flex flex-col gap-4 mt-6 lg:flex-row">
       <LinkWithQuery href="/methodology" className={getButtonClasses()}>
         Learn more about our database
       </LinkWithQuery>

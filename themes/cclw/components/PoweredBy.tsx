@@ -14,7 +14,7 @@ export const PoweredBy = () => (
         </ExternalLink>
         <ExternalLink className="flex" url="https://www.lse.ac.uk/granthaminstitute/">
           <span className="flex" data-cy="gri-logo">
-            <Image src="/images/cclw/partners/gri-logo.png" alt="Grantham Research Institute logo" width={275} height={52} />
+            <Image src="/images/cclw/partners/gri-logo.png" alt="Grantham Research Institute logo" width={275} height={52} quality={100} />
           </span>
         </ExternalLink>
       </div>

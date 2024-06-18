@@ -1,8 +1,8 @@
-type TProps = { heading: string; type?: string; img?: string; imgAlt?: string; children: React.ReactNode };
+type TProps = { heading: string; type?: string; img?: string; imgAlt?: string; extraClasses?: string; children: React.ReactNode };
 
-export const Card = ({ heading, type, img, children }: TProps) => {
+export const Card = ({ heading, type, img, extraClasses, children }: TProps) => {
   return (
-    <div className="h-full">
+    <div className={`h-full ${extraClasses}`}>
       <div className="block relative border border-grey-100 rounded-xl h-full shadow p-4">
         <div className="min-h-[180px] h-full">
           {img && (
@@ -13,7 +13,7 @@ export const Card = ({ heading, type, img, children }: TProps) => {
           )}
           {type && (
             <div className="pb-2">
-              <span className="bg-blue-50 py-2 px-3 text-blue-900 text-xs font-medium rounded-xl inline-block">{type}</span>
+              <span className="bg-blue-50 py-2 px-3 text-blue-900 text-xs rounded-xl inline-block">{type}</span>
             </div>
           )}
           <div className="pb-2 basis-full text-base font-medium group-hover:underline">{heading}</div>
