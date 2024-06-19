@@ -15,7 +15,7 @@ type TProps = {
 
 export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
   return (
-    <div className="md:pt-[140px] pb-6 text-white">
+    <div className="pb-6 text-white pt-[28px] sm:pt-[48px] md:pt-[80px] lg:pt-[140px]">
       <div className="container">
         <div className="flex flex-col items-center justify-center mb-6">
           <LogoLarge />
@@ -29,7 +29,7 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
         <div className="max-w-screen-md mx-auto mt-6">
           <LandingSearchForm handleSearchInput={handleSearchInput} placeholder="Search full text of any document" input={searchInput} />
         </div>
-        <div className="mt-6 md:mt-[248px]">
+        <div className="mt-6 mt-[48px] sm:mt-[88px] md:mt-[188px] lg:mt-[248px]">
           <Instructions />
         </div>
       </div>
