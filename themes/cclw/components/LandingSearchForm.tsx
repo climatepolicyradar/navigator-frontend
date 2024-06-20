@@ -6,6 +6,7 @@ import Button from "@components/buttons/Button";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 
+// See the method handleSearchInput in the index.tsx file for the processing of the example searches
 const EXAMPLE_SEARCHES = [
   { id: 1, term: "Adaptation" },
   { id: 2, filterValue: "Brazil", filterType: QUERY_PARAMS.country },
