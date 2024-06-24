@@ -37,7 +37,7 @@ h3,
 h4,
 h5,
 h6 {
-  @apply text-cpr-dark font-medium !tracking-slight;
+  @apply text-cpr-dark font-medium tracking-slight #{!important};
 }
 
 #landingPage-searchInput {
