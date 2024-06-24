@@ -31,6 +31,15 @@ option {
   font-family: "Neue Haas Grotesk Display", Arial, Helvetica, sans-serif !important;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply text-cpr-dark font-medium !tracking-slight;
+}
+
 #landingPage-searchInput {
   @screen md {
     &::-webkit-input-placeholder {
