@@ -125,6 +125,9 @@ module.exports = {
         "1/4-gap-4": "calc(25% - (3/4 * 1rem))",
         "1/6-gap-4": "calc(16.6% - (5/6 * 1rem))",
       },
+      fontWeight: {
+        medium: 700,
+      },
     },
   },
   plugins: [require("@tailwindcss/forms"), require("tailwind-scrollbar")],

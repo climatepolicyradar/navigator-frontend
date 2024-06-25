@@ -4,7 +4,15 @@ import { Search2Icon } from "@components/svg/Icons";
 import { SearchDropdown } from "@components/forms/SearchDropdown";
 import Button from "@components/buttons/Button";
 
-const EXAMPLE_SEARCHES = ["Adaptation", "Brazil", "Climate framework laws", "Coastal zones"];
+import { QUERY_PARAMS } from "@constants/queryParams";
+
+// See the method handleSearchInput in the index.tsx file for the processing of the example searches
+const EXAMPLE_SEARCHES = [
+  { id: 1, term: "Adaptation" },
+  { id: 2, filterValue: "Brazil", filterType: QUERY_PARAMS.country },
+  { id: 3, term: "Climate framework laws" },
+  { id: 4, term: "Coastal zones" },
+];
 
 interface SearchFormProps {
   placeholder?: string;
@@ -70,8 +78,14 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
       <div className="hidden mt-4 md:flex flex-wrap items-center gap-2">
         <span className="text-gray-200">Search by:</span>
         {EXAMPLE_SEARCHES.map((example) => (
-          <Button key={example} thin color="dark" onClick={() => handleSearchInput(example)} data-cy={`example-search-${example}`}>
-            {example}
+          <Button
+            key={example.id}
+            thin
+            color="dark"
+            onClick={() => handleSearchInput(example.term, example.filterType, example.filterValue)}
+            data-cy={`example-search-${example.id}`}
+          >
+            {example.term ?? example.filterValue}
           </Button>
         ))}
       </div>
