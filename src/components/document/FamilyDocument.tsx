@@ -10,9 +10,10 @@ type TProps = {
   document: TDocumentPage;
   matches?: number;
   status?: TLoadingStatus;
+  familyMatches?: number;
 };
 
-export const FamilyDocument = ({ document, matches, status }: TProps) => {
+export const FamilyDocument = ({ document, matches, status, familyMatches }: TProps) => {
   const { title, slug, document_role, language, content_type, variant } = document;
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
@@ -62,7 +63,10 @@ export const FamilyDocument = ({ document, matches, status }: TProps) => {
       </div>
       <div className="flex-1">
         <div className="mb-2 flex justify-between no-wrap">
-          {title} {(canPreview || canViewSource) && <MatchesButton dataAttribute={slug} count={matches} overideText={renderMatchesOverrideText()} />}
+          {title}{" "}
+          {(canPreview || canViewSource) && (
+            <MatchesButton dataAttribute={slug} count={matches} overideText={renderMatchesOverrideText()} familyMatches={familyMatches} />
+          )}
         </div>
         <div className="md:flex flex-nowrap items-center">
           <div className="flex-1">

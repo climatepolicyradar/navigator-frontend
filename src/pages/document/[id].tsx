@@ -193,7 +193,13 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
             <h2 className="text-base">Main {pluralise(mainDocuments.length, "document", "documents")}</h2>
             <div data-cy="main-documents">
               {mainDocuments.map((doc) => (
-                <FamilyDocument matches={getDocumentMatches(doc.slug)} document={doc} key={doc.import_id} status={status} />
+                <FamilyDocument
+                  matches={getDocumentMatches(doc.slug)}
+                  document={doc}
+                  key={doc.import_id}
+                  status={status}
+                  familyMatches={searchFamily?.total_passage_hits}
+                />
               ))}
             </div>
           </section>
@@ -213,7 +219,12 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                 <div data-cy="related-documents">
                   {otherDocuments.map((doc) => (
                     <div key={doc.import_id} className="mt-4">
-                      <FamilyDocument matches={getDocumentMatches(doc.slug)} document={doc} status={status} />
+                      <FamilyDocument
+                        matches={getDocumentMatches(doc.slug)}
+                        document={doc}
+                        status={status}
+                        familyMatches={searchFamily?.total_passage_hits}
+                      />
                     </div>
                   ))}
                 </div>
