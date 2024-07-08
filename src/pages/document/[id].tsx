@@ -19,7 +19,7 @@ import { ExternalLink } from "@components/ExternalLink";
 import { Targets } from "@components/Targets";
 import { ShowHide } from "@components/controls/ShowHide";
 import { Divider } from "@components/dividers/Divider";
-import { DownArrowIcon, TargetIcon, AlertCircleIcon } from "@components/svg/Icons";
+import { DownChevronIcon, TargetIcon, AlertCircleIcon } from "@components/svg/Icons";
 import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
