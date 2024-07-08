@@ -39,7 +39,7 @@ const Pagination = ({ currentPage, onChange, totalHits = 0, continuationToken = 
   const displayElipsis = totalPagesForHits > MAX_PAGES && numberOfPagesToDisplay < MAX_PAGES;
 
   return (
-    <div className="pagination w-full px-8 lg:w-2/3 m-auto flex flex-wrap justify-center mt-6 gap-1">
+    <div id="pagination" className="pagination w-full px-8 lg:w-2/3 m-auto flex flex-wrap justify-center mt-6 gap-1" data-cy="pagination">
       <>
         {new Array(numberOfPagesToDisplay).fill(0).map((_, itemIndex) => {
           const pageNumber = itemIndex + 1;
