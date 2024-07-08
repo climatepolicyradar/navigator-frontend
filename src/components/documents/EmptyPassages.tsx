@@ -11,7 +11,7 @@ export const EmptyPassages = ({ hasQueryString }: TProps) => (
         <FindInDocIcon width="48" height="48" />
       </div>
     </div>
-    <p className="text-xl font-bold">No {hasQueryString ? "results" : "searches yet"}</p>
+    <p className="text-xl font-medium">No {hasQueryString ? "results" : "searches yet"}</p>
     {hasQueryString && <p>No results found for that search, please try a different term</p>}
     {!hasQueryString && (
       <>
