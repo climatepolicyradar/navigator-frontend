@@ -8,6 +8,10 @@ type TProps = {
   onClick?: () => void;
 };
 
+const formatCount = (count: number) => {
+  return count >= 500 ? "More than 500" : count;
+};
+
 export const SearchMatchesButton = ({ count, dataAttribute, overideText, active, onClick }: TProps) => {
   return (
     <button
@@ -17,10 +21,10 @@ export const SearchMatchesButton = ({ count, dataAttribute, overideText, active,
       className={`flex gap-1 items-center rounded-full border border-gray-200 py-1 px-2 transition hover:bg-blue-100 hover:border-blue-200 active:bg-blue-600 active:text-white ${
         active && "bg-blue-600 text-white"
       }`}
-      aria-label={`View ${count} match${count > 1 ? "es" : ""} in documents`}
+      aria-label={`View ${formatCount(count)} match${count > 1 ? "es" : ""} in documents`}
     >
       <DocumentMagnifyIcon width="16" height="16" />
-      {overideText ? overideText : `${count} match${count > 1 ? "es" : ""} in documents`}
+      {overideText ? overideText : `${formatCount(count)} match${count > 1 ? "es" : ""} in documents`}
     </button>
   );
 };
