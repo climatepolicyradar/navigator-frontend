@@ -22,6 +22,7 @@ import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { PASSAGES_PER_CONTINUATION_TOKEN } from "@constants/paging";
 
 import { TDocumentPage, TFamilyPage, TGeographySummary, TPassage } from "@types";
+import { set } from "react-hook-form";
 
 type TProps = {
   document: TDocumentPage;
@@ -117,15 +118,17 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
 
   useEffect(() => {
     let passageMatches: TPassage[] = [];
+    let totalNoOfMatches = 0;
     families.forEach((family) => {
       family.family_documents.forEach((cacheDoc) => {
         if (document.slug === cacheDoc.document_slug) {
           passageMatches.push(...cacheDoc.document_passage_matches);
-          setTotalNoOfMatches(family.total_passage_hits);
+          totalNoOfMatches = family.total_passage_hits;
         }
       });
     });
     setPassageMatches(passageMatches);
+    setTotalNoOfMatches(totalNoOfMatches);
     // comparing families as objects will cause an infinite loop as each collection is a new instance of an object
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(families), document.slug]);
