@@ -48,23 +48,6 @@
 
 @import "mixins";
 
-@font-face {
-  font-family: "Neue Haas Grotesk Display";
-  src:
-    url("/fonts/5549031/5e356b56-25c1-43ac-9524-44e597eb7172.woff2") format("woff2"),
-    url("/fonts/5549031/bb63728c-a742-41fb-929f-64692e41d2e7.woff") format("woff");
-  /* font-display: swap; */
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: "Neue Haas Grotesk Display";
-  src:
-    url("/fonts/5548986/4746c4e5-3355-4f8f-8395-3f7abfcbf4b8.woff2") format("woff2"),
-    url("/fonts/5548986/0058324c-ca31-42b1-bf5b-b9d9025c1a9c.woff") format("woff");
-  /* font-display: swap; */
-  font-weight: 500;
-}
 body,
 html,
 #__next {
@@ -88,13 +71,13 @@ h3,
 h4,
 h5,
 h6 {
-  @apply text-cpr-dark font-bold;
+  @apply text-cpr-dark font-medium;
 }
 h1 {
   @apply text-3xl md:text-h1;
 }
 h2 {
-  @apply text-xl md:text-h2;
+  @apply text-xl font-medium md:text-h2;
 }
 h3 {
   @apply text-lg font-medium md:text-h3;
@@ -106,7 +89,7 @@ h5 {
   @apply text-h5;
 }
 h6 {
-  @apply text-h6 font-semibold;
+  @apply text-h6;
 }
 input[type="text"],
 input[type="number"],
@@ -121,6 +104,11 @@ option {
     @apply p-2 text-base;
   }
 }
+b,
+strong,
+.bold {
+  @apply font-medium;
+}
 
 .form-row {
   @apply my-6;
@@ -130,7 +118,6 @@ option {
 }
 
 select {
-  font-family: Arial, Helvetica, sans-serif;
   appearance: none;
   position: relative;
   background-image: url(/images/down-arrow.svg);
@@ -144,10 +131,6 @@ select {
     background-position-x: calc(100% - 6px);
     background-size: 12px 12px;
   }
-}
-
-option {
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 // radar loader
@@ -229,7 +212,7 @@ input[type="search"]::-webkit-search-results-decoration {
 
 .tabbed-nav__active {
   @extend .subnav-active;
-  @apply text-blue-600;
+  @apply text-blue-600 font-medium;
   @screen md {
     &:after {
       bottom: -9px;
@@ -334,7 +317,7 @@ ul li.selected {
   b,
   strong,
   .bold {
-    @apply font-semibold;
+    @apply font-medium;
   }
   i,
   em {
@@ -362,10 +345,10 @@ ul li.selected {
         border: none;
       }
       &.heading {
-        @apply bg-gray-200 font-semibold;
+        @apply bg-gray-200 font-medium;
       }
       .term {
-        @apply p-4 font-semibold w-1/3 md:w-1/4 grow-0 shrink-0;
+        @apply p-4 font-medium w-1/3 md:w-1/4 grow-0 shrink-0;
       }
       .def {
         @apply p-4 flex-grow border-l border-gray-200;
@@ -617,9 +600,13 @@ ul li.selected {
 .middot-between {
   > span:after {
     content: " \00b7";
+    font-weight: normal;
   }
-  > span:last-child:after {
-    content: none;
+  > span:last-child {
+    align-self: end;
+    &:after {
+      content: none;
+    }
   }
 }
 

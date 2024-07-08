@@ -257,7 +257,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                     extraClasses="flex gap-2 items-center my-6"
                     onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
                   >
-                    <DownArrowIcon /> View more targets
+                    <DownChevronIcon /> View more targets
                   </Button>
                 </div>
               )}
@@ -266,7 +266,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                 <div>
                   <Button color="secondary" extraClasses="flex gap-2 items-center my-6" onClick={() => setNumberOfTargetsToDisplay(5)}>
                     <div className="rotate-180">
-                      <DownArrowIcon />
+                      <DownChevronIcon />
                     </div>{" "}
                     Hide targets
                   </Button>

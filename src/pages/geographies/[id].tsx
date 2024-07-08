@@ -11,7 +11,7 @@ import Event from "@components/blocks/Event";
 import { Timeline } from "@components/blocks/Timeline";
 import { CountryHeader } from "@components/blocks/CountryHeader";
 import { Divider } from "@components/dividers/Divider";
-import { DownArrowIcon, LegislativeIcon, AlertCircleIcon } from "@components/svg/Icons";
+import { DownChevronIcon, LegislativeIcon, AlertCircleIcon } from "@components/svg/Icons";
 import { FamilyListItem } from "@components/document/FamilyListItem";
 import { Targets } from "@components/Targets";
 import Button from "@components/buttons/Button";
@@ -275,7 +275,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                       extraClasses="flex gap-2 items-center my-6"
                       onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
                     >
-                      <DownArrowIcon /> View more targets
+                      <DownChevronIcon /> View more targets
                     </Button>
                     <Divider />
                   </div>
@@ -284,7 +284,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   <div>
                     <Button color="secondary" extraClasses="flex gap-2 items-center my-6" onClick={() => setNumberOfTargetsToDisplay(5)}>
                       <div className="rotate-180">
-                        <DownArrowIcon />
+                        <DownChevronIcon />
                       </div>{" "}
                       Hide targets
                     </Button>

@@ -117,6 +117,22 @@ export function SearchIcon({ width, height, color = "currentColor" }: IconProps)
   );
 }
 
+export function Search2Icon({ width, height, color = "currentColor" }: IconProps) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" style={{ width: `${width}px`, height: `${height}px` }}>
+      <mask id="mask0_785_11660" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
+        <rect width="24" height="24" fill={color} />
+      </mask>
+      <g mask="url(#mask0_785_11660)">
+        <path
+          d="M19.6 21L13.3 14.7C12.8 15.1 12.225 15.4167 11.575 15.65C10.925 15.8833 10.2333 16 9.5 16C7.68333 16 6.14583 15.3708 4.8875 14.1125C3.62917 12.8542 3 11.3167 3 9.5C3 7.68333 3.62917 6.14583 4.8875 4.8875C6.14583 3.62917 7.68333 3 9.5 3C11.3167 3 12.8542 3.62917 14.1125 4.8875C15.3708 6.14583 16 7.68333 16 9.5C16 10.2333 15.8833 10.925 15.65 11.575C15.4167 12.225 15.1 12.8 14.7 13.3L21 19.6L19.6 21ZM9.5 14C10.75 14 11.8125 13.5625 12.6875 12.6875C13.5625 11.8125 14 10.75 14 9.5C14 8.25 13.5625 7.1875 12.6875 6.3125C11.8125 5.4375 10.75 5 9.5 5C8.25 5 7.1875 5.4375 6.3125 6.3125C5.4375 7.1875 5 8.25 5 9.5C5 10.75 5.4375 11.8125 6.3125 12.6875C7.1875 13.5625 8.25 14 9.5 14Z"
+          fill={color}
+        />
+      </g>
+    </svg>
+  );
+}
+
 export function MenuIcon({ color = "currentColor", width = "24", height = "24" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: `${width}px`, height: `${height}px` }}>
@@ -184,12 +200,20 @@ export function ViewDocumentCoverPageIcon({ height = "32", width = "32", color =
   );
 }
 
-export function DownArrowIcon({ height = "16", width = "16", color = "currentColor" }: IconProps) {
+export function DownChevronIcon({ height = "16", width = "16", color = "currentColor" }: IconProps) {
   return (
     <svg style={{ width: `${width}px`, height: `${height}px` }} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <g fill={color} id="Layer_3" data-name="Layer 3">
         <path d="m18.646 6.354-6.646 6.646-6.646-6.646a1.914 1.914 0 0 0 -2.708 2.707l9 9a.5.5 0 0 0 .708 0l9-9a1.914 1.914 0 1 0 -2.708-2.707z" />
       </g>
+    </svg>
+  );
+}
+
+export function DownArrowIcon({ height = "16", width = "12", color = "currentColor" }: IconProps) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 16" fill="none" style={{ width: `${width}px`, height: `${height}px` }}>
+      <path d="M11.2 10.4L10.072 9.272L6.4 12.936V0H4.8V12.936L1.128 9.264L0 10.4L5.6 16L11.2 10.4Z" fill={color} />
     </svg>
   );
 }
@@ -413,17 +437,18 @@ export const Loading = ({ height = "16", width = "16", color = "currentColor" }:
   );
 };
 
-export const Translation = ({ height = "68", width = "89", color = "currentColor" }: IconProps) => {
+export const TranslationIcon = ({ height = "68", width = "89", color = "currentColor" }: IconProps) => {
   return (
-    <svg width={width} height={height} viewBox="0 0 89 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M89 68H80.5667L77.2144 59.1789H61.8669L58.6979 68H50.4741L65.4288 29.1661H73.6263L89 68ZM74.7263 52.636L69.4359 38.2256L64.2502 52.636H74.7263Z"
-        fill={color}
-      />
-      <path
-        d="M32.5674 11.046C27.4742 27.1939 16.9448 36.3576 0 40.8651C1.17536 42.3016 3.03636 45.1745 3.72199 46.6605C21.2545 41.1128 32.6653 30.7107 38.836 12.8787L32.5674 11.046ZM13.6636 11.4422L7.78679 13.2254C13.9085 30.364 23.997 41.7072 42.3621 46.5615C43.2926 44.8278 45.2026 42.0044 46.6228 40.6174C29.1882 36.6548 18.6099 26.1041 13.6636 11.4422ZM0.881524 7.82629V13.6712H45.7413V7.82629H0.881524ZM20.1281 0V11.3927H26.2008V0H20.1281Z"
-        fill={color}
-      />
+    <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 24 24" fill="none">
+      <mask id="mask0_1846_4439" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
+        <rect width="24" height="24" fill={color} />
+      </mask>
+      <g mask="url(#mask0_1846_4439)">
+        <path
+          d="M11.9 22L16.45 10H18.55L23.1 22H21L19.95 18.95H15.1L14 22H11.9ZM15.7 17.2H19.3L17.55 12.25H17.45L15.7 17.2ZM4 19L2.6 17.6L7.65 12.55C7.01667 11.85 6.4625 11.125 5.9875 10.375C5.5125 9.625 5.1 8.83333 4.75 8H6.85C7.15 8.6 7.47083 9.14167 7.8125 9.625C8.15417 10.1083 8.56667 10.6167 9.05 11.15C9.78333 10.35 10.3917 9.52917 10.875 8.6875C11.3583 7.84583 11.7667 6.95 12.1 6H1V4H8V2H10V4H17V6H14.1C13.75 7.18333 13.275 8.33333 12.675 9.45C12.075 10.5667 11.3333 11.6167 10.45 12.6L12.85 15.05L12.1 17.1L9 14L4 19Z"
+          fill={color}
+        />
+      </g>
     </svg>
   );
 };
@@ -630,6 +655,33 @@ export const FindInDocIcon = ({ height = "24", width = "24", color = "currentCol
       <g mask="url(#mask0_1616_10180)">
         <path
           d="M29.5 40L33.5 44H12C10.9 44 9.95833 43.6083 9.175 42.825C8.39167 42.0417 8 41.1 8 40V8C8 6.9 8.39167 5.95833 9.175 5.175C9.95833 4.39167 10.9 4 12 4H30L40 16V40C40 40.6667 39.8583 41.275 39.575 41.825C39.2917 42.375 38.9 42.8333 38.4 43.2L28 32.9C27.4333 33.2667 26.8167 33.5417 26.15 33.725C25.4833 33.9083 24.7667 34 24 34C21.8 34 19.9167 33.2167 18.35 31.65C16.7833 30.0833 16 28.2 16 26C16 23.8 16.7833 21.9167 18.35 20.35C19.9167 18.7833 21.8 18 24 18C26.2 18 28.0833 18.7833 29.65 20.35C31.2167 21.9167 32 23.8 32 26C32 26.7667 31.9083 27.4833 31.725 28.15C31.5417 28.8167 31.2667 29.4333 30.9 30L36 35.2V17.4L28.1 8H12V40H29.5ZM24 30C25.1 30 26.0417 29.6083 26.825 28.825C27.6083 28.0417 28 27.1 28 26C28 24.9 27.6083 23.9583 26.825 23.175C26.0417 22.3917 25.1 22 24 22C22.9 22 21.9583 22.3917 21.175 23.175C20.3917 23.9583 20 24.9 20 26C20 27.1 20.3917 28.0417 21.175 28.825C21.9583 29.6083 22.9 30 24 30Z"
+          fill={color}
+        />
+      </g>
+    </svg>
+  );
+};
+
+export const ManyDocumentsIcon = ({ height = "24", width = "24", color = "currentColor" }: IconProps) => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" style={{ width: `${width}px`, height: `${height}px` }}>
+      <path
+        d="M10 14H14V12H10V14ZM10 11H18V9H10V11ZM10 8H18V6H10V8ZM8 18C7.45 18 6.97917 17.8042 6.5875 17.4125C6.19583 17.0208 6 16.55 6 16V4C6 3.45 6.19583 2.97917 6.5875 2.5875C6.97917 2.19583 7.45 2 8 2H20C20.55 2 21.0208 2.19583 21.4125 2.5875C21.8042 2.97917 22 3.45 22 4V16C22 16.55 21.8042 17.0208 21.4125 17.4125C21.0208 17.8042 20.55 18 20 18H8ZM8 16H20V4H8V16ZM4 22C3.45 22 2.97917 21.8042 2.5875 21.4125C2.19583 21.0208 2 20.55 2 20V6H4V20H18V22H4Z"
+        fill={color}
+      />
+    </svg>
+  );
+};
+
+export const ContextSearchIcon = ({ height = "24", width = "24", color = "currentColor" }: IconProps) => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" style={{ width: `${width}px`, height: `${height}px` }}>
+      <mask id="mask0_1038_1359" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
+        <rect width="24" height="24" fill={color} />
+      </mask>
+      <g mask="url(#mask0_1038_1359)">
+        <path
+          d="M2 19V17H12V19H2ZM2 14V12H7V14H2ZM2 9V7H7V9H2ZM20.6 19L16.75 15.15C16.35 15.4333 15.9125 15.6458 15.4375 15.7875C14.9625 15.9292 14.4833 16 14 16C12.6167 16 11.4375 15.5125 10.4625 14.5375C9.4875 13.5625 9 12.3833 9 11C9 9.61667 9.4875 8.4375 10.4625 7.4625C11.4375 6.4875 12.6167 6 14 6C15.3833 6 16.5625 6.4875 17.5375 7.4625C18.5125 8.4375 19 9.61667 19 11C19 11.4833 18.9292 11.9625 18.7875 12.4375C18.6458 12.9125 18.4333 13.35 18.15 13.75L22 17.6L20.6 19ZM14 14C14.8333 14 15.5417 13.7083 16.125 13.125C16.7083 12.5417 17 11.8333 17 11C17 10.1667 16.7083 9.45833 16.125 8.875C15.5417 8.29167 14.8333 8 14 8C13.1667 8 12.4583 8.29167 11.875 8.875C11.2917 9.45833 11 10.1667 11 11C11 11.8333 11.2917 12.5417 11.875 13.125C12.4583 13.7083 13.1667 14 14 14Z"
           fill={color}
         />
       </g>

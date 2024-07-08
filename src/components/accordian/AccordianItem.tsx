@@ -19,7 +19,7 @@ export const AccordianItem: FC<TProps> = ({ headerContent, isOpen = false, child
         {headerContent}
 
         <div className="flex-1 flex flex-col items-end">
-          <button className="text-blue-600 text-[34px] font-bold">{open ? "−" : "+"}</button>
+          <button className="text-blue-600 text-[34px] font-medium">{open ? "−" : "+"}</button>
         </div>
       </div>
       <div className={`${open ? "block" : "hidden"} accordian__content`}>{children}</div>

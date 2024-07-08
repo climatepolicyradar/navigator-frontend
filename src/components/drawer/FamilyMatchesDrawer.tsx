@@ -44,7 +44,7 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
     <>
       <div className="h-full flex flex-col">
         <div className="p-4 pb-0 pr-10 md:p-8 md:pr-12 md:pb-0">
-          <h4 className="text-xl font-bold">{family_name}</h4>
+          <h4 className="text-xl font-medium">{family_name}</h4>
           <div className="flex flex-wrap text-sm gap-1 text-gray-700 mt-2 items-center font-medium middot-between">
             <FamilyMeta category={family_category} geography={family_geography} date={family_date} />
           </div>

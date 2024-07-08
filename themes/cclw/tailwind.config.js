@@ -14,10 +14,11 @@ module.exports = {
       transparent: "transparent",
       current: "currentColor",
       cpr: {
-        dark: "#071e4a",
+        dark: "#071E4A",
       },
       cclw: {
         dark: "#2E3152",
+        light: "#414466",
         molten: "#ED3D48",
       },
       gray: {
@@ -42,6 +43,10 @@ module.exports = {
         700: "#0075E3",
         800: "#005CB2",
         900: "#00417D",
+      },
+      blueGray: {
+        700: "#394B6E",
+        800: "#071E4A",
       },
       red: {
         50: "#fef1ef",
@@ -102,11 +107,26 @@ module.exports = {
       },
       fontSize: {
         h1: "48px",
-        h2: "30px",
+        h2: "36px",
         h3: "20px",
         h4: "21px",
         h5: "18px",
         h6: "16px",
+      },
+      borderRadius: {
+        "4xl": "30px",
+      },
+      letterSpacing: {
+        slight: "0.015em",
+      },
+      flexBasis: {
+        "1/2-gap-4": "calc(50% - (1/2 * 1rem))",
+        "1/3-gap-4": "calc(33.3% - (2/3 * 1rem))",
+        "1/4-gap-4": "calc(25% - (3/4 * 1rem))",
+        "1/6-gap-4": "calc(16.6% - (5/6 * 1rem))",
+      },
+      fontWeight: {
+        medium: 700,
       },
     },
   },

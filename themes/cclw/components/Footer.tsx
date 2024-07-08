@@ -20,7 +20,7 @@ const Footer = () => {
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="footer__section" data-cy="footer-cclw">
-              <div className="font-bold text-lg">Climate Change Laws of the World</div>
+              <div className="font-medium text-base">Climate Change Laws of the World</div>
               <ul className="mb-6">
                 {MENU_LINKS.map((link) => (
                   <li key={link.href} className="mb-2">
@@ -31,7 +31,7 @@ const Footer = () => {
             </div>
 
             <div key={GRI_LINKS.title} className="footer__section" data-cy="footer-gri">
-              <div className="font-bold text-lg">{GRI_LINKS.title}</div>
+              <div className="font-medium text-base">{GRI_LINKS.title}</div>
               <ul>
                 {GRI_LINKS.links.map((link) => (
                   <li key={link.text} className="mb-2">
@@ -64,7 +64,7 @@ const Footer = () => {
             </div>
 
             <div className="footer__section">
-              <div className="font-bold text-lg">Climate Policy Radar</div>
+              <div className="font-medium text-base">Climate Policy Radar</div>
               <p>Using AI and data science to map the world's climate policies</p>
               <ul className="mb-6" data-cy="footer-cpr-links">
                 <li className="mb-1">
@@ -117,7 +117,7 @@ const Footer = () => {
           <div className="mb-6 items-center flex flex-nowrap flex-1 gap-6 basis-full lg:basis-auto lg:justify-end" data-cy="footer-partners">
             <ExternalLink className="flex" url="https://www.lse.ac.uk/">
               <span className="flex" data-cy="lse-logo">
-                <Image src="/images/partners/lse-logo.png" alt="London School of Economics logo" width={32} height={32} />
+                <Image src="/images/partners/lse-logo.png" alt="London School of Economics logo" width={31} height={32} />
               </span>
             </ExternalLink>
             <ExternalLink className="flex" url="https://www.lse.ac.uk/granthaminstitute/">

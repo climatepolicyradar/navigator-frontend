@@ -173,7 +173,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                     />
                     {!router.query[QUERY_PARAMS.query_string] && (
                       <div className="flex text-sm text-gray-600">
-                        <div className="mr-2 flex-shrink-0 font-bold">Examples:</div>
+                        <div className="mr-2 flex-shrink-0 font-medium">Examples:</div>
                         <div className="">{EXAMPLE_SEARCHES.join(", ")}</div>
                       </div>
                     )}

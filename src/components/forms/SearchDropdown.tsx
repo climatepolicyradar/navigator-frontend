@@ -44,7 +44,9 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
   };
 
   const anchorClasses = (last: boolean) =>
-    `flex flex-wrap items-center cursor-pointer py-2 px-4 block text-cpr-dark hover:no-underline hover:bg-gray-200 focus:bg-gray-200 ${last ? "rounded-b-lg" : ""}`;
+    `flex flex-wrap items-center cursor-pointer py-2 px-4 block text-cpr-dark hover:no-underline hover:bg-gray-200 focus:bg-gray-200 ${
+      last ? "rounded-b-lg" : ""
+    }`;
 
   const renderSearchSuggestion = (geographies: TGeography[]) => {
     if (!geographies || geographies === null || geographies.length === 0) return;
@@ -70,8 +72,8 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
         <li key={intendedGeography.slug}>
           <a href="#" className={anchorClasses(false)} onClick={(e) => handleSuggestionClick(e, intendedGeography)}>
             Did you mean to search for&nbsp;
-            <span className="font-bold text-black">{termWithoutGeography(intendedGeography.display_value)}</span>&nbsp;in&nbsp;
-            <span className="font-bold text-black">{intendedGeography.display_value}</span>?
+            <span className="font-medium text-black">{termWithoutGeography(intendedGeography.display_value)}</span>&nbsp;in&nbsp;
+            <span className="font-medium text-black">{intendedGeography.display_value}</span>?
           </a>
         </li>
       </ul>
@@ -80,7 +82,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
 
   return (
     <div
-      className={`absolute bg-gray-50 text-cpr-dark border-t-transparent border border-gray-200 w-full rounded-b-lg max-h-[300px] overflow-y-auto search-dropdown z-10 shadow-lg ${
+      className={`search-dropdown absolute bg-gray-50 text-cpr-dark border-t-transparent border border-gray-200 w-full rounded-b-lg max-h-[300px] overflow-y-auto z-10 shadow-inner ${
         largeSpacing ? "search-dropdown_large" : ""
       }`}
     >
@@ -88,7 +90,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
         <span className="mr-2 w-[20px]">
           <SearchIcon />
         </span>
-        Search <span className="font-bold text-black mx-1">{term}</span> in all documents
+        Search <span className="font-medium text-black mx-1">{term}</span> in all documents
       </a>
       {geographiesFiltered.length > 0 && renderSearchSuggestion(geographiesFiltered)}
       {!!geographiesFiltered.length && (
@@ -100,7 +102,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
               return (
                 <li key={geography.id}>
                   <a href="#" className={anchorClasses(last)} onClick={(e) => handleCountryClick(e, `/geographies/${geography.slug}`)}>
-                    <span className="font-bold text-black">{geography.display_value}</span> <span className="text-sm ml-4">Geography profile</span>
+                    <span className="font-medium text-black">{geography.display_value}</span> <span className="text-sm ml-4">Geography profile</span>
                   </a>
                 </li>
               );

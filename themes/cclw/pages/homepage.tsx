@@ -1,13 +1,18 @@
 import React from "react";
-import Image from "next/image";
 import dynamic from "next/dynamic";
-import { ExternalLink } from "@components/ExternalLink";
+
+// generic layer component
+import Layout from "@components/layouts/LandingPage";
+// specific cclw components
 import Header from "@cclw/components/Header";
 import Footer from "@cclw/components/Footer";
 import { Hero } from "@cclw/components/Hero";
 import { Articles } from "@cclw/components/Articles";
 import { Partners } from "@cclw/components/Partners";
-import Layout from "@components/layouts/LandingPage";
+import { PoweredBy } from "@cclw/components/PoweredBy";
+import { FeatureDiscover } from "@cclw/components/FeatureDiscover";
+import { HelpUs } from "@cclw/components/HelpUs";
+import { FeatureSearch } from "@cclw/components/FeatureSearch";
 
 const WorldMap = dynamic(() => import("@components/map/WorldMap"), {
   loading: () => <p>Loading world map...</p>,
@@ -23,47 +28,32 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
   return (
     <Layout title="Law and Policy Search">
       <main id="main" className="flex flex-col flex-1">
-        <div className="gradient-container">
+        <div className="bg-cclw-dark">
           <Header background={false} />
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
         </div>
-        <div className="container hidden mt-6 md:block">
-          <h2 className="font-normal mb-6">Visualise data on the map</h2>
+        <div className="container my-12" data-cy="powered-by">
+          <PoweredBy />
+        </div>
+        <div id="world-map" className="container hidden pt-6 md:block">
+          <h2 className="text-center mb-6">Explore by country</h2>
           <WorldMap />
         </div>
-        <div className="container my-12" data-cy="powered-by">
-          <div className="md:flex justify-center gap-12 text-center">
-            <div className="mb-12 md:mb-0">
-              <h2 className="font-normal mb-6">Hosted by</h2>
-              <div className="flex items-center justify-center gap-6">
-                <ExternalLink className="flex" url="https://www.lse.ac.uk/">
-                  <span className="flex" data-cy="lse-logo">
-                    <Image src="/images/partners/lse-logo.png" alt="London School of Economics logo" width={57} height={58} />
-                  </span>
-                </ExternalLink>
-                <ExternalLink className="flex" url="https://www.lse.ac.uk/granthaminstitute/">
-                  <span className="flex" data-cy="gri-logo">
-                    <Image src="/images/cclw/partners/gri-logo.png" alt="Grantham Research Institute logo" width={307} height={58} />
-                  </span>
-                </ExternalLink>
-              </div>
-            </div>
-            <div>
-              <h2 className="font-normal mb-6">Powered by</h2>
-              <ExternalLink className="flex justify-center" url="https://www.climatepolicyradar.org">
-                <span className="flex" data-cy="cpr-logo">
-                  <Image src="/images/cclw/partners/cpr-logo.png" alt="Climate Policy Radar logo" width={320} height={58} />
-                </span>
-              </ExternalLink>
-            </div>
-          </div>
-        </div>
         <div className="container my-12" data-cy="featured-content">
-          <h2 className="font-normal text-center mb-6">Featured Content</h2>
+          <h2 className="text-center mb-6">Featured content</h2>
           <Articles />
         </div>
+        <div data-cy="homepage-feature-1">
+          <FeatureDiscover />
+        </div>
+        <div data-cy="homepage-feature-2">
+          <FeatureSearch />
+        </div>
+        <div data-cy="homepage-help-us">
+          <HelpUs />
+        </div>
         <div className="container my-12" data-cy="partners">
-          <h2 className="font-normal text-center mb-6">Our partners</h2>
+          <h2 className="text-center mb-6">Our partners</h2>
           <Partners />
         </div>
         <Footer />

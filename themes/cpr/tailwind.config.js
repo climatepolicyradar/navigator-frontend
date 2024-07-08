@@ -18,6 +18,7 @@ module.exports = {
       },
       cclw: {
         dark: "#2E3152",
+        light: "#414466",
         molten: "#ED3D48",
       },
       gray: {
@@ -107,6 +108,18 @@ module.exports = {
         h4: "21px",
         h5: "18px",
         h6: "16px",
+      },
+      borderRadius: {
+        "4xl": "30px",
+      },
+      letterSpacing: {
+        slight: "0.015em",
+      },
+      flexBasis: {
+        "1/2-gap-4": "calc(50% - (1/2 * 1rem))",
+        "1/3-gap-4": "calc(33.3% - (2/3 * 1rem))",
+        "1/4-gap-4": "calc(25% - (3/4 * 1rem))",
+        "1/6-gap-4": "calc(16.6% - (5/6 * 1rem))",
       },
     },
   },

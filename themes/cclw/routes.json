@@ -5,11 +5,6 @@
     "contentPath": "about"
   },
   {
-    "title": "Acknowledgements",
-    "path": "acknowledgements",
-    "contentPath": "acknowledgements"
-  },
-  {
     "title": "Contact",
     "path": "contact",
     "contentPath": "contact"

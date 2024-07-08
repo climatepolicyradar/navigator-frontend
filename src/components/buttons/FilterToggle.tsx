@@ -1,4 +1,4 @@
-import { DownArrowIcon } from "../svg/Icons";
+import { DownChevronIcon } from "../svg/Icons";
 
 interface FilterToggleProps {
   toggle(): void;
@@ -10,7 +10,7 @@ const FilterToggle = ({ toggle, isOpen }: FilterToggleProps) => {
     <button onClick={toggle} className="text-sm flex items-center bg-blue-500 mt-2 text-white flex-nowrap rounded-md px-4 py-2 md:hidden">
       <span>{isOpen ? "Hide" : "Show"} filters</span>{" "}
       <div className={`ml-2 ${isOpen && "rotate-180"}`}>
-        <DownArrowIcon />
+        <DownChevronIcon />
       </div>
     </button>
   );

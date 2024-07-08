@@ -14,6 +14,7 @@ export type TSearchCriteria = {
   year_range: [number, number];
   sort_field: string | null;
   sort_order: string;
+  page_size: number;
   limit: number;
   offset: number;
   family_ids?: string[] | null;
@@ -309,6 +310,9 @@ export type TCorpus = {
 
 export type TOrganisation = {
   corpora: TCorpus[];
+  count_by_category: {
+    [key: string]: number;
+  };
 };
 
 export interface TDictionary<T> {

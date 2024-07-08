@@ -19,7 +19,7 @@ export const NoOfResults = ({ hits, queryString }: TProps) => {
       {resultsMsg}{" "}
       {queryString && (
         <>
-          for "<span className="font-bold">{queryString}</span>"
+          for "<span className="font-medium">{queryString}</span>"
           {hits >= MAX_RESULTS && (
             <div className="ml-2 inline-block">
               <Tooltip

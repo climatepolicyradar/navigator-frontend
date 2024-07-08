@@ -27,7 +27,7 @@ export const KeyDetail = ({ detail, amount, icon, extraDetail, onClick, cssClass
       <div>
         <div className="flex items-center">
           <div className="text-lg ml-2">{detail}</div>
-          <div className="flex items-center ml-3 text-2xl font-bold drop-shadow">{amount}</div>
+          <div className="flex items-center ml-3 text-2xl font-medium drop-shadow">{amount}</div>
         </div>
         <div className="ml-2 text-sm">{extraDetail}</div>
       </div>

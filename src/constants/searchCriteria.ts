@@ -10,6 +10,7 @@ export const initialSearchCriteria: TSearchCriteria = {
   year_range: [minYear, currentYear()],
   sort_field: null,
   sort_order: "desc",
-  limit: RESULTS_PER_PAGE,
+  page_size: RESULTS_PER_PAGE,
+  limit: 100,
   offset: 0,
 };

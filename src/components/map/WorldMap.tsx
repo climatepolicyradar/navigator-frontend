@@ -98,16 +98,14 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
   }
   return (
     <>
-      {geography && (
-        <>
-          <p className="font-bold">{geography.display_value}</p>
-          <p>Laws and policies: {(geography.familyCounts?.EXECUTIVE || 0) + (geography.familyCounts.LEGISLATIVE || 0)}</p>
-          <p>UNFCCC documents: {geography.familyCounts?.UNFCCC || 0}</p>
-          <p>
-            <LinkWithQuery href={`/geographies/${geography.slug}`}>View more</LinkWithQuery>
-          </p>
-        </>
+      <p className="font-medium">{geography.display_value}</p>
+      {geography.familyCounts?.EXECUTIVE && (
+        <p>Laws and policies: {(geography.familyCounts?.EXECUTIVE || 0) + (geography.familyCounts.LEGISLATIVE || 0)}</p>
       )}
+      {geography.familyCounts?.LEGISLATIVE && <p>UNFCCC documents: {geography.familyCounts?.UNFCCC || 0}</p>}
+      <p>
+        <LinkWithQuery href={`/geographies/${geography.slug}`}>View more</LinkWithQuery>
+      </p>
     </>
   );
 };
@@ -128,9 +126,13 @@ export default function MapChart() {
   // Combine the data from the coordinates and the map data from the API into a unified object
   const mapData: TMapData = useMemo(() => {
     // Calculate size of marker
-    const maxLawsPolicies = Math.max(...mapDataRaw.map((g) => (g.family_counts?.EXECUTIVE || 0) + (g.family_counts?.LEGISLATIVE || 0)));
+    const maxLawsPolicies = mapDataRaw.length
+      ? Math.max(...mapDataRaw.map((g) => (g.family_counts?.EXECUTIVE || 0) + (g.family_counts?.LEGISLATIVE || 0)))
+      : 0;
     // Only take UNFCCC counts for countries that are not XAA or XAB (international, no geography)
-    const maxUnfccc = Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.UNFCCC || 0)));
+    const maxUnfccc = mapDataRaw.length
+      ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.UNFCCC || 0)))
+      : 0;
 
     const mapDataConstructor: TMapData = {
       maxLawsPolicies,
@@ -203,6 +205,14 @@ export default function MapChart() {
       content: <GeographyDetail geo={selectedGeography} geographies={mapData.geographies} />,
     });
   };
+
+  if (mapDataStatus === "loading") {
+    return <p>Loading data for the map...</p>;
+  }
+
+  if (mapDataStatus === "error") {
+    return <p>There was an error loading the data for the map.</p>;
+  }
 
   return (
     <>
@@ -286,6 +296,7 @@ export default function MapChart() {
                   if (!showUnifiedEU && geo.value === "EUR") return null;
                   if (showUnifiedEU && GEO_EU_COUNTRIES.includes(geo.value)) return null;
                   if (geo.value === "ESH") return null; // Western Sahara (disputed territory)
+                  if (!geo.markers[selectedDocType]) return null;
                   return (
                     <Marker
                       key={geo.slug}
@@ -340,7 +351,9 @@ export default function MapChart() {
           </label>
         </div>
       </div>
-      <Legend max={selectedDocType === "lawsPolicies" ? mapData.maxLawsPolicies : mapData.maxUnfccc} />
+      {!!mapData.maxLawsPolicies && !!mapData.maxUnfccc && (
+        <Legend max={selectedDocType === "lawsPolicies" ? mapData.maxLawsPolicies : mapData.maxUnfccc} />
+      )}
     </>
   );
 }

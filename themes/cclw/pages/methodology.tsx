@@ -20,10 +20,10 @@ const Methodology = () => {
             <h2 id="introduction">Introduction</h2>
             <p className="italic">This page was last updated on 1 June 2023.</p>
             <p>
-              This page outlines the definitions, scope and principles used to collect and categorise the{" "}
-              <b className="font-bold">laws and policies</b> contained in the Climate Change Laws of the World dataset. This dataset originates from a
-              collaboration between the Grantham Research Institute at LSE and GLOBE International on a series of Climate Legislation Studies. The
-              dataset is currently maintained by LSE, in partnership with Climate Policy Radar.
+              This page outlines the definitions, scope and principles used to collect and categorise the <b>laws and policies</b> contained in the
+              Climate Change Laws of the World dataset. This dataset originates from a collaboration between the Grantham Research Institute at LSE
+              and GLOBE International on a series of Climate Legislation Studies. The dataset is currently maintained by LSE, in partnership with
+              Climate Policy Radar.
             </p>
             <p>
               In addition to the Climate Change Laws of the World dataset, this database includes documents from UNFCCC portals. These documents are

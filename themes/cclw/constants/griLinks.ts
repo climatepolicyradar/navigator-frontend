@@ -38,7 +38,7 @@ const navLinks: TFooterItem = {
       external: true,
     },
     {
-      text: "Sign up to Grantham Research Institute's newsletter",
+      text: "Newsletter",
       href: "https://www.lse.ac.uk/granthaminstitute/mailing-list/ ",
       external: true,
     },

@@ -1,4 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
+import { Fragment } from "react";
+
+import { Card } from "@components/card/Card";
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 
@@ -11,6 +13,30 @@ type TArticle = {
   countryCode?: string;
   meta?: string;
   external?: boolean;
+  customMetaKey?: string;
+};
+
+// We must define a function to handle the custom meta data
+const getCustomMeta = (key: string) => {
+  switch (key) {
+    case "customAfrica":
+      return (
+        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
+          <div className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
+            <span className="rounded-sm border border-black flag-icon-background flag-icon-ken inline-block" /> Kenya
+          </div>
+          <div className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
+            <span className="rounded-sm border border-black flag-icon-background flag-icon-uga inline-block" /> Uganda
+          </div>
+
+          <div className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
+            <span className="rounded-sm border border-black flag-icon-background flag-icon-nga inline-block" /> Nigeria
+          </div>
+        </div>
+      );
+    default:
+      return null;
+  }
 };
 
 const ARTICLES: TArticle[] = [
@@ -19,7 +45,7 @@ const ARTICLES: TArticle[] = [
     external: true,
     type: "Policy publication",
     title: "Governance pathways to credible implementation of net zero targets",
-    imageUrl: "/images/cclw/images/storm_damage_fiji.jpg",
+    imageUrl: "/images/cclw/images/articles/article_fiji.jpg",
     imageAlt: "Storm damage in Fiji",
   },
   {
@@ -27,13 +53,17 @@ const ARTICLES: TArticle[] = [
     external: true,
     type: "Research publication",
     title: "Comparative analysis of legal mechanisms to net-zero: lessons from Germany, the United States, Brazil, and China",
+    imageUrl: "/images/cclw/images/articles/article_windmills.jpg",
+    imageAlt: "Windmills on a hill",
   },
   {
     url: "https://www.lse.ac.uk/granthaminstitute/news/innovations-in-climate-change-legislation-kenya-uganda-and-nigeria-in-focus/",
     external: true,
-    type: "External site",
+    type: "Article",
     title: "Innovations in climate change legislation: Kenya, Uganda and Nigeria in focus",
-    meta: "Kenya · Uganda · Nigeria",
+    customMetaKey: "customAfrica",
+    imageUrl: "/images/cclw/images/articles/article_bunyonyi.jpg",
+    imageAlt: "Lake Bunyonyi, Uganda",
   },
   {
     url: "https://www.lse.ac.uk/granthaminstitute/news/philippines-climate-accountability-bill-loss-and-damage-in-domestic-legislation/",
@@ -41,8 +71,8 @@ const ARTICLES: TArticle[] = [
     type: "Commentary",
     title: "Philippines Climate Accountability Bill: loss and damage in domestic legislation",
     countryCode: "phl",
-    meta: "Philippines · 2023",
-    imageUrl: "/images/cclw/images/typhoon_yolanda_philippines.jpg",
+    meta: "Philippines",
+    imageUrl: "/images/cclw/images/articles/article_philippines.jpg",
     imageAlt: "Aftermath of Typhoon Yolanda in the Philippines, 2013",
   },
   {
@@ -50,7 +80,7 @@ const ARTICLES: TArticle[] = [
     external: true,
     type: "Commentary",
     title: "What the UN climate regime can learn from the Open Government Partnership",
-    imageUrl: "/images/cclw/images/cop_28.jpg",
+    imageUrl: "/images/cclw/images/articles/article_cop.jpg",
     imageAlt: "COP 28",
   },
   {
@@ -58,51 +88,66 @@ const ARTICLES: TArticle[] = [
     type: "Framework laws",
     title: "Climate change framework laws",
     meta: "View the list here",
+    imageUrl: "/images/cclw/images/articles/article_courthouse.jpg",
+    imageAlt: "Courthouse",
   },
 ];
 
-export const Articles = () => {
-  const renderArticleContent = (article: TArticle) => {
-    return (
-      <>
-        <div className="absolute top-0 left-0 p-2 px-4 bg-cclw-dark rounded text-sm font-bold text-white z-10">{article.type}</div>
-        <div className={`text-center flex flex-wrap min-h-[180px] h-full ${article.imageUrl ? "content-start" : "content-center"}`}>
-          {article.imageUrl && (
-            <div className="w-full h-[120px] overflow-hidden relative self-start">
-              <img src={article.imageUrl} alt={article.imageAlt} />
-            </div>
-          )}
-          <div className={`article-title p-4 basis-full text-center text-lg font-bold ${article.imageUrl ? "" : "pt-10"}`}>{article.title}</div>
-          {article.meta && (
-            <div className="mb-2 px-2 basis-full text-center">
-              <div className="flex flex-wrap items-center content-center justify-center gap-2">
-                {article.countryCode && (
-                  <span className={`rounded-sm border border-black flag-icon-background flag-icon-${article.countryCode} inline-block`} />
-                )}
-                <div className="">{article.meta}</div>
-              </div>
-            </div>
-          )}
+const renderArticleContent = (article: TArticle) => {
+  const customMeta = getCustomMeta(article.customMetaKey);
+  return (
+    <>
+      {customMeta && customMeta}
+      {article.meta && (
+        <div className="py-2 pt-0">
+          <div className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
+            {article.countryCode && (
+              <span className={`rounded-sm border border-black flag-icon-background flag-icon-${article.countryCode} inline-block`} />
+            )}
+            <div className="">{article.meta || customMeta}</div>
+          </div>
         </div>
-      </>
-    );
-  };
+      )}
+    </>
+  );
+};
+
+export const Articles = () => {
+  const cssClasses = "group sm:basis-1/2-gap-4 md:basis-1/3-gap-4 xl:basis-1/6-gap-4 hover:no-underline text-gray-800";
 
   return (
-    <div className="md:flex flex-wrap justify-center">
+    <div className="sm:flex flex-wrap justify-center items-stretch gap-4">
       {ARTICLES.map((article) => {
         return (
-          <div className="p-4 md:basis-1/2 lg:basis-1/3" key={article.title}>
+          <Fragment key={article.title}>
             {article.external ? (
-              <ExternalLink url={article.url} className="block relative border border-grey-400 rounded h-full shadow-md">
-                {renderArticleContent(article)}
+              <ExternalLink url={article.url} className={cssClasses}>
+                <Card
+                  key={article.title}
+                  heading={article.title}
+                  img={article.imageUrl}
+                  imgAlt={article.imageAlt}
+                  type={article.type}
+                  extraClasses="mb-8 sm:mb-0"
+                >
+                  {renderArticleContent(article)}
+                </Card>
               </ExternalLink>
             ) : (
-              <LinkWithQuery href={article.url} className="block relative border border-grey-400 rounded h-full shadow-md">
-                {renderArticleContent(article)}
+              <LinkWithQuery href={article.url} className={cssClasses}>
+                <Card
+                  key={article.title}
+                  heading={article.title}
+                  img={article.imageUrl}
+                  imgAlt={article.imageAlt}
+                  type={article.type}
+                  extraClasses="mb-8 sm:mb-0"
+                >
+                  {renderArticleContent(article)}
+                </Card>
               </LinkWithQuery>
             )}
-          </div>
+          </Fragment>
         );
       })}
     </div>
