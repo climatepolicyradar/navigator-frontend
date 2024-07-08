@@ -22,7 +22,6 @@ import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { PASSAGES_PER_CONTINUATION_TOKEN } from "@constants/paging";
 
 import { TDocumentPage, TFamilyPage, TGeographySummary, TPassage } from "@types";
-import { set } from "react-hook-form";
 
 type TProps = {
   document: TDocumentPage;
@@ -49,7 +48,7 @@ const scrollToPassage = (index: number) => {
 };
 
 const renderPassageCount = (count: number) => {
-  return count > PASSAGES_PER_CONTINUATION_TOKEN ? `${PASSAGES_PER_CONTINUATION_TOKEN} / ${count}` : count;
+  return count > PASSAGES_PER_CONTINUATION_TOKEN ? `top ${PASSAGES_PER_CONTINUATION_TOKEN}` : count;
 };
 
 /*
@@ -105,14 +104,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
       queryObj[QUERY_PARAMS.exact_match] = isExact;
     }
     queryObj[QUERY_PARAMS.query_string] = router.query[QUERY_PARAMS.query_string] as string;
-    router.push({ pathname: `/documents/${document.slug}`, query: queryObj });
-  };
-
-  // TODO: confirm we need this or delete
-  const handleLoadMorePassages = () => {
-    if (families.length === 0) return;
-    const queryObj = router.query;
-    queryObj[QUERY_PARAMS.active_passage_token] = families[0].continuation_token;
     router.push({ pathname: `/documents/${document.slug}`, query: queryObj });
   };
 
@@ -194,13 +185,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                         id="document-passage-matches"
                         className="relative pr-4 overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500"
                       >
-                        <PassageMatches
-                          passages={passageMatches}
-                          onClick={handlePassageClick}
-                          activeIndex={passageIndex ?? startingPassage}
-                          showLoadMore={totalNoOfMatches > PASSAGES_PER_CONTINUATION_TOKEN}
-                          loadMore={handleLoadMorePassages}
-                        />
+                        <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
                       </div>
                     </>
                   )}
