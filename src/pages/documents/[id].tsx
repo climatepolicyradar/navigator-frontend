@@ -19,9 +19,10 @@ import { EmptyDocument } from "@components/documents/EmptyDocument";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { getDocumentDescription } from "@constants/metaDescriptions";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
-import { PASSAGES_PER_CONTINUATION_TOKEN } from "@constants/paging";
+import { PASSAGES_PER_CONTINUATION_TOKEN, MAX_RESULTS } from "@constants/paging";
 
 import { TDocumentPage, TFamilyPage, TGeographySummary, TPassage } from "@types";
+import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
 
 type TProps = {
   document: TDocumentPage;
@@ -178,6 +179,11 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                         <p>
                           Displaying {renderPassageCount(totalNoOfMatches)} matches for "<b>{`${router.query[QUERY_PARAMS.query_string]}`}</b>"
                           {!searchQuery.exact_match && ` and related phrases`}
+                          {totalNoOfMatches >= MAX_RESULTS && (
+                            <div className="ml-1 inline-block">
+                              <SearchLimitTooltip colour="grey" />
+                            </div>
+                          )}
                         </p>
                         <p>Sorted by search relevance</p>
                       </div>

@@ -1,4 +1,4 @@
-import Tooltip from "@components/tooltip";
+import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
 
 import { MAX_RESULTS } from "@constants/paging";
 
@@ -22,17 +22,7 @@ export const NoOfResults = ({ hits, queryString }: TProps) => {
           for "<span className="font-medium">{queryString}</span>"
           {hits >= MAX_RESULTS && (
             <div className="ml-2 inline-block">
-              <Tooltip
-                id="search-results-number"
-                tooltip={
-                  <>
-                    We limit the number of search results to {MAX_RESULTS} so that you get the best performance from our tool. We're working on a way
-                    to remove this limit.
-                  </>
-                }
-                icon="i"
-                place="bottom"
-              />
+              <SearchLimitTooltip />
             </div>
           )}
         </>

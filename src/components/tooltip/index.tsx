@@ -6,15 +6,21 @@ interface TooltipProps {
   icon?: "?" | "!" | "i";
   place?: "top" | "right" | "bottom" | "left";
   interactableContent?: boolean;
+  colour?: string;
 }
 
-const Tooltip = ({ id, tooltip, icon = "?", place, interactableContent }: TooltipProps) => {
+const Tooltip = ({ id, tooltip, icon = "?", place, interactableContent, colour }: TooltipProps) => {
+  let colourCss = "";
+  switch (colour) {
+    case "grey":
+      colourCss = "text-gray-600 border-gray-600";
+      break;
+    default:
+      colourCss = "text-blue-600 border-blue-600";
+  }
   return (
     <div>
-      <button
-        data-tooltip-id={id}
-        className={`circle-sm rounded-full border border-blue-600 bg-white text-blue-600 flex justify-center items-center text-xs`}
-      >
+      <button data-tooltip-id={id} className={`circle-sm rounded-full border bg-white flex justify-center items-center text-xs ${colourCss}`}>
         {icon}
       </button>
       <ToolTipSSR id={id} place={place} tooltip={tooltip} interactableContent={interactableContent} />
