@@ -48,8 +48,8 @@ const scrollToPassage = (index: number) => {
   }, 100);
 };
 
-const renderPassageCount = (count: number) => {
-  return count > MAX_PASSAGES ? `top ${MAX_PASSAGES}` : count;
+const renderPassageCount = (count: number): string => {
+  return count > MAX_PASSAGES ? `top ${MAX_PASSAGES} matches` : count + ` match${count > 1 ? "es" : ""}`;
 };
 
 /*
@@ -183,7 +183,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                     <>
                       <div className="my-4 text-sm pr-4 pb-4 border-b" data-cy="document-matches-description">
                         <p>
-                          Displaying {renderPassageCount(totalNoOfMatches)} matches for "<b>{`${router.query[QUERY_PARAMS.query_string]}`}</b>"
+                          Displaying {renderPassageCount(totalNoOfMatches)} for "<b>{`${router.query[QUERY_PARAMS.query_string]}`}</b>"
                           {!searchQuery.exact_match && ` and related phrases`}
                           {totalNoOfMatches >= MAX_RESULTS && (
                             <div className="ml-1 inline-block">
