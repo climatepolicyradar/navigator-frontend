@@ -19,7 +19,7 @@ import { EmptyDocument } from "@components/documents/EmptyDocument";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { getDocumentDescription } from "@constants/metaDescriptions";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
-import { PASSAGES_PER_CONTINUATION_TOKEN, MAX_RESULTS } from "@constants/paging";
+import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 
 import { TDocumentPage, TFamilyPage, TGeographySummary, TPassage } from "@types";
 import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
@@ -49,7 +49,7 @@ const scrollToPassage = (index: number) => {
 };
 
 const renderPassageCount = (count: number) => {
-  return count > PASSAGES_PER_CONTINUATION_TOKEN ? `top ${PASSAGES_PER_CONTINUATION_TOKEN}` : count;
+  return count > MAX_PASSAGES ? `top ${MAX_PASSAGES}` : count;
 };
 
 /*
@@ -66,7 +66,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
   const router = useRouter();
   const startingPassage = Number(router.query.passage) || 0;
-  const { status, families, searchQuery } = useSearch(router.query, null, document.import_id, !!router.query[QUERY_PARAMS.query_string], 500);
+  const { status, families, searchQuery } = useSearch(
+    router.query,
+    null,
+    document.import_id,
+    !!router.query[QUERY_PARAMS.query_string],
+    MAX_PASSAGES
+  );
 
   const canPreview = document.content_type === "application/pdf";
 

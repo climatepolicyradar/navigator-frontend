@@ -41,6 +41,7 @@ import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary } from "@types"
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
+import { MAX_PASSAGES } from "@constants/paging";
 
 type TProps = {
   page: TFamilyPage;
@@ -76,7 +77,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
 
   let searchFamily: TMatchedFamily = null;
-  const { status, families } = useSearch(router.query, page.import_id, null, !!router.query[QUERY_PARAMS.query_string], 500);
+  const { status, families } = useSearch(router.query, page.import_id, null, !!router.query[QUERY_PARAMS.query_string], MAX_PASSAGES);
   if (!!router.query[QUERY_PARAMS.query_string]) {
     families.forEach((family) => {
       if (page.slug === family.family_slug) {
