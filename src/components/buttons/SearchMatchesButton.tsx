@@ -1,5 +1,7 @@
 import { DocumentMagnifyIcon } from "@components/svg/Icons";
 
+import { MAX_RESULTS } from "@constants/paging";
+
 type TProps = {
   dataAttribute: string;
   count: number;
@@ -9,7 +11,7 @@ type TProps = {
 };
 
 const formatCount = (count: number) => {
-  return count >= 500 ? "More than 500" : count;
+  return count >= MAX_RESULTS ? `More than ${MAX_RESULTS}` : count;
 };
 
 export const SearchMatchesButton = ({ count, dataAttribute, overideText, active, onClick }: TProps) => {
