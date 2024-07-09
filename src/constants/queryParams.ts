@@ -10,5 +10,4 @@ export const QUERY_PARAMS = {
   offset: "o",
   active_continuation_token: "act",
   continuation_tokens: "cts",
-  active_passage_token: "apt", // TODO: confirm we need this or delete
 };
