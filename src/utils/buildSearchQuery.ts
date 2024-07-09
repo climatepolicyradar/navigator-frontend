@@ -97,17 +97,16 @@ export default function buildSearchQuery(
     query.family_ids = [familyId];
     // Some query params are causing issues when we are on a family page
     query.offset = 0;
+    // Clear continuation tokens
+    query.continuation_tokens = [];
   }
 
   if (documentId) {
     query.document_ids = [documentId];
     // Some query params are causing issues when we are on a document page
     query.offset = 0;
-    // TODO: confirm we need this or delete
-    // Only include the active passage token if we are on a document page
-    if (routerQuery[QUERY_PARAMS.active_passage_token]) {
-      query.continuation_tokens = [routerQuery[QUERY_PARAMS.active_passage_token] as string];
-    }
+    // Clear continuation tokens
+    query.continuation_tokens = [];
   }
 
   if (noOfPassagesPerDoc) {
