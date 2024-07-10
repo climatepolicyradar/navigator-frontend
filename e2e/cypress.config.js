@@ -8,6 +8,7 @@ module.exports = defineConfig({
   viewportWidth: 1280,
   viewportHeight: 800,
   chromeWebSecurity: false,
+  screenshotOnRunFailure: true,
   video: false,
   e2e: {
     baseUrl: "http://localhost:3000",
