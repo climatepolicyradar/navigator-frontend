@@ -1,9 +1,8 @@
-import { useMemo } from "react";
-import { TMatchedFamily } from "@types";
 import { FamilyListItem } from "@components/document/FamilyListItem";
 import { SearchMatchesButton } from "@components/buttons/SearchMatchesButton";
-import { matchesCount } from "@utils/matchesCount";
 import { ToolTipSSR } from "@components/tooltip/TooltipSSR";
+
+import { TMatchedFamily } from "@types";
 
 interface ISearchResultProps {
   family: TMatchedFamily;
@@ -12,14 +11,13 @@ interface ISearchResultProps {
 }
 
 const SearchResult = ({ family, active, onClick }: ISearchResultProps) => {
-  const { family_documents, family_slug } = family;
-  const numberOfMatches = useMemo(() => matchesCount(family_documents), [family_documents]);
+  const { family_documents, total_passage_hits, family_slug } = family;
 
   return (
     <FamilyListItem family={family}>
-      {numberOfMatches > 0 && (
+      {family_documents.length > 0 && (
         <div data-tooltip-content="View passages in this document that match your search" data-tooltip-id={family_slug}>
-          <SearchMatchesButton count={numberOfMatches} dataAttribute={family_slug} onClick={onClick} active={active} />
+          <SearchMatchesButton count={total_passage_hits} dataAttribute={family_slug} onClick={onClick} active={active} />
           <ToolTipSSR id={family_slug} place={"top"} />
         </div>
       )}

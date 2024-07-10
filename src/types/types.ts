@@ -19,6 +19,7 @@ export type TSearchCriteria = {
   offset: number;
   family_ids?: string[] | null;
   document_ids?: string[] | null;
+  continuation_tokens?: string[] | null;
 };
 
 type TErrorDetail = {
@@ -281,6 +282,8 @@ export type TFamilyMetadata = {
 export type TMatchedFamily = TFamily & {
   family_description_match: boolean;
   family_title_match: boolean;
+  total_passage_hits: number;
+  continuation_token?: string; // represents a token for requesting more passage matches
 };
 
 export type TSearch = {

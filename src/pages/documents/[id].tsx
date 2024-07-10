@@ -1,21 +1,28 @@
 import { useEffect, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
+
 import { ApiClient } from "@api/http-common";
+
 import useSearch from "@hooks/useSearch";
+
 import { DocumentHead } from "@components/document/DocumentHead";
 import Layout from "@components/layouts/Main";
 import EmbeddedPDF from "@components/EmbeddedPDF";
 import PassageMatches from "@components/PassageMatches";
 import Loader from "@components/Loader";
-import { ExternalLink } from "@components/ExternalLink";
-import { BookOpenIcon, FindInDocIcon } from "@components/svg/Icons";
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { getDocumentDescription } from "@constants/metaDescriptions";
-import { TDocumentPage, TFamilyPage, TGeographySummary, TPassage } from "@types";
 import SearchForm from "@components/forms/SearchForm";
 import BySemanticSearch from "@components/filters/BySemanticSearch";
+import { EmptyPassages } from "@components/documents/EmptyPassages";
+import { EmptyDocument } from "@components/documents/EmptyDocument";
+
+import { QUERY_PARAMS } from "@constants/queryParams";
+import { getDocumentDescription } from "@constants/metaDescriptions";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
+import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
+
+import { TDocumentPage, TFamilyPage, TGeographySummary, TPassage } from "@types";
+import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
 
 type TProps = {
   document: TDocumentPage;
@@ -35,10 +42,14 @@ const scrollToPassage = (index: number) => {
     const passage = window.document.getElementById(`passage-${index}`);
     if (!passage) return;
     const topPos = passage.offsetTop;
-    const container = window.document.getElementById("document-sidebar");
+    const container = window.document.getElementById("document-passage-matches");
     if (!container) return;
     container.scrollTo({ top: topPos - 10, behavior: "smooth" });
   }, 100);
+};
+
+const renderPassageCount = (count: number): string => {
+  return count > MAX_PASSAGES ? `top ${MAX_PASSAGES} matches` : count + ` match${count > 1 ? "es" : ""}`;
 };
 
 /*
@@ -52,11 +63,17 @@ const scrollToPassage = (index: number) => {
 const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family }: TProps) => {
   const [passageIndex, setPassageIndex] = useState(null);
   const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
+  const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
   const router = useRouter();
   const startingPassage = Number(router.query.passage) || 0;
-  const { status, families, searchQuery } = useSearch(router.query, null, document.import_id, !!router.query[QUERY_PARAMS.query_string]);
+  const { status, families, searchQuery } = useSearch(
+    router.query,
+    null,
+    document.import_id,
+    !!router.query[QUERY_PARAMS.query_string],
+    MAX_PASSAGES
+  );
 
-  const hasPassageMatches = passageMatches.length > 0;
   const canPreview = document.content_type === "application/pdf";
 
   const handlePassageClick = (index: number) => {
@@ -99,14 +116,17 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
 
   useEffect(() => {
     let passageMatches: TPassage[] = [];
+    let totalNoOfMatches = 0;
     families.forEach((family) => {
       family.family_documents.forEach((cacheDoc) => {
         if (document.slug === cacheDoc.document_slug) {
           passageMatches.push(...cacheDoc.document_passage_matches);
+          totalNoOfMatches = family.total_passage_hits;
         }
       });
     });
     setPassageMatches(passageMatches);
+    setTotalNoOfMatches(totalNoOfMatches);
     // comparing families as objects will cause an infinite loop as each collection is a new instance of an object
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(families), document.slug]);
@@ -141,13 +161,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
           <section className="flex-1 flex" id="document-viewer">
             <div className="container flex-1">
               <div id="document-container" className="md:flex md:h-[80vh]">
-                <div
-                  id="document-sidebar"
-                  className={`pr-4 py-4 max-h-[30vh] md:block md:max-h-full ${passageClasses(
-                    document.content_type
-                  )} relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500`}
-                >
-                  <div id="document-search" className="flex flex-col gap-2">
+                <div id="document-sidebar" className={`py-4 max-h-[30vh] md:max-h-full flex flex-col ${passageClasses(document.content_type)}`}>
+                  <div id="document-search" className="flex flex-col gap-2 pr-4">
                     <SearchForm
                       placeholder="Search the full text of the document"
                       handleSearchInput={handleSearchInput}
@@ -164,41 +179,33 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                       </div>
                     )}
                   </div>
-                  {hasPassageMatches && (
+                  {totalNoOfMatches > 0 && (
                     <>
-                      <div className="my-4 text-sm" data-cy="document-matches-description">
+                      <div className="my-4 text-sm pr-4 pb-4 border-b" data-cy="document-matches-description">
                         <p>
-                          {passageMatches.length} matches for "<b>{`${router.query[QUERY_PARAMS.query_string]}`}</b>"
+                          Displaying {renderPassageCount(totalNoOfMatches)} for "<b>{`${router.query[QUERY_PARAMS.query_string]}`}</b>"
                           {!searchQuery.exact_match && ` and related phrases`}
+                          {totalNoOfMatches >= MAX_RESULTS && (
+                            <div className="ml-1 inline-block">
+                              <SearchLimitTooltip colour="grey" />
+                            </div>
+                          )}
                         </p>
                         <p>Sorted by search relevance</p>
                       </div>
-                      <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
-                    </>
-                  )}
-                  {!hasPassageMatches && (
-                    <>
-                      <div className="flex flex-col gap-4 flex-1 mt-4 pt-10 border-t text-center text-gray-600 px-4">
-                        <div className="text-blue-800 flex justify-center items-center">
-                          <div className="rounded-full bg-blue-50 p-6 mb-2">
-                            <FindInDocIcon width="48" height="48" />
-                          </div>
-                        </div>
-                        <p className="text-xl font-medium">No {router.query[QUERY_PARAMS.query_string] ? "results" : "searches yet"}</p>
-                        {router.query[QUERY_PARAMS.query_string] && <p>No results found for that search, please try a different term</p>}
-                        {!router.query[QUERY_PARAMS.query_string] && (
-                          <>
-                            <p>We'll search for the meaning of your phrase. You'll see exact matches and related phrases highlighted in the text.</p>
-                            <p>For example, a search for 'electric cars' will also show results for 'electric vehicles' and 'EVs'.</p>
-                          </>
-                        )}
+                      <div
+                        id="document-passage-matches"
+                        className="relative pr-4 overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500"
+                      >
+                        <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
                       </div>
                     </>
                   )}
+                  {totalNoOfMatches === 0 && <EmptyPassages hasQueryString={!!router.query[QUERY_PARAMS.query_string]} />}
                 </div>
                 <div
                   id="document-preview"
-                  className={`pt-4 flex-1 h-[400px] md:block md:h-full ${hasPassageMatches ? "md:border-l md:border-l-gray-200" : ""}`}
+                  className={`pt-4 flex-1 h-[400px] md:block md:h-full ${totalNoOfMatches ? "md:border-l md:border-l-gray-200" : ""}`}
                 >
                   {canPreview && (
                     <EmbeddedPDF
@@ -208,23 +215,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                       startingPassageIndex={startingPassage}
                     />
                   )}
-                  {!canPreview && (
-                    <div className="ml-4 text-center text-gray-600">
-                      <div className="mb-2 flex justify-center">
-                        <BookOpenIcon />
-                      </div>
-                      <p className="mb-2">Document Preview</p>
-                      <p className="mb-2 text-sm">
-                        You’ll soon be able to view the full-text of the document here, along with any English translation.
-                      </p>
-                      <p className="text-sm">
-                        <ExternalLink className="underline" url="https://form.jotform.com/233293886694373">
-                          Sign up here
-                        </ExternalLink>{" "}
-                        to be notified when it’s available.
-                      </p>
-                    </div>
-                  )}
+                  {!canPreview && <EmptyDocument />}
                 </div>
               </div>
             </div>

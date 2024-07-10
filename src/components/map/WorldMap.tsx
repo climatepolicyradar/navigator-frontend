@@ -99,10 +99,10 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
   return (
     <>
       <p className="font-medium">{geography.display_value}</p>
-      {geography.familyCounts?.EXECUTIVE && (
-        <p>Laws and policies: {(geography.familyCounts?.EXECUTIVE || 0) + (geography.familyCounts.LEGISLATIVE || 0)}</p>
+      {(geography.familyCounts?.EXECUTIVE || geography.familyCounts?.LEGISLATIVE) && (
+        <p>Laws and policies: {(geography.familyCounts?.EXECUTIVE || 0) + (geography.familyCounts?.LEGISLATIVE || 0)}</p>
       )}
-      {geography.familyCounts?.LEGISLATIVE && <p>UNFCCC documents: {geography.familyCounts?.UNFCCC || 0}</p>}
+      {geography.familyCounts?.UNFCCC > 0 && <p>UNFCCC documents: {geography.familyCounts?.UNFCCC || 0}</p>}
       <p>
         <LinkWithQuery href={`/geographies/${geography.slug}`}>View more</LinkWithQuery>
       </p>

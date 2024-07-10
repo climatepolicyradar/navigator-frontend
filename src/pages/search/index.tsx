@@ -1,11 +1,14 @@
 import { useEffect, useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
+import { ParsedUrlQueryInput } from "querystring";
+
 import useSearch from "@hooks/useSearch";
 import { useDownloadCsv } from "@hooks/useDownloadCsv";
 import useUpdateCountries from "@hooks/useUpdateCountries";
 import useConfig from "@hooks/useConfig";
 import useFilteredCountries from "@hooks/useFilteredCountries";
+
 import Layout from "@components/layouts/Main";
 import SearchForm from "@components/forms/SearchForm";
 import SearchFilters from "@components/blocks/SearchFilters";
@@ -23,10 +26,12 @@ import { ExternalLink } from "@components/ExternalLink";
 import { NoOfResults } from "@components/NoOfResults";
 import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
 import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
-import { calculatePageCount } from "@utils/paging";
+
+import { getCurrentPage } from "@utils/getCurrentPage";
+
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { PER_PAGE } from "@constants/paging";
+import { RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN } from "@constants/paging";
 
 const Search = () => {
   const router = useRouter();
@@ -35,16 +40,14 @@ const Search = () => {
   const { t } = useTranslation(["searchStart", "searchResults"]);
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
-  const [pageCount, setPageCount] = useState(1);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
 
   const updateCountries = useUpdateCountries();
 
-  const { status, families, hits, searchQuery } = useSearch(router.query);
+  const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
   const configQuery = useConfig();
   const { data: { regions = [], countries = [] } = {} } = configQuery;
-
   const { data: filteredCountries } = useFilteredCountries(countries);
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
@@ -61,10 +64,29 @@ const Search = () => {
     setShowFilters(!showFilters);
   };
 
-  const handlePageChange = (page: number) => {
-    const offSet = (page - 1) * PER_PAGE;
-    router.query[QUERY_PARAMS.offset] = offSet.toString();
-    router.push({ query: router.query });
+  // page changes involve 2 things:
+  // 1. managing the collection of continuation tokens
+  // 2. triggering a new search
+  const handlePageChange = (ct: string, offSet: number) => {
+    const query = { ...router.query };
+    const continuationTokens: string[] = JSON.parse((query[QUERY_PARAMS.continuation_tokens] as string) || "[]");
+
+    if (ct && ct !== "") {
+      query[QUERY_PARAMS.active_continuation_token] = ct;
+      // if ct is new token, it is added to the continuation tokens array
+      // if ct is in the array = we are navigating 'back' to a previous token's page so we don't need to alter array
+      if (!continuationTokens.includes(ct)) {
+        continuationTokens.push(ct);
+      }
+      query[QUERY_PARAMS.continuation_tokens] = JSON.stringify(continuationTokens);
+    } else {
+      // if ct is empty string (or not provided), we can assume we are navigating to the first 5 pages
+      delete query[QUERY_PARAMS.active_continuation_token];
+    }
+
+    query[QUERY_PARAMS.offset] = offSet.toString();
+
+    router.push({ query: query });
     resetCSVStatus();
   };
 
@@ -83,8 +105,10 @@ const Search = () => {
   };
 
   const handleFilterChange = (type: string, value: string) => {
-    // reset to page 1 when changing filters
+    // Clear pagination controls and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
+    delete router.query[QUERY_PARAMS.active_continuation_token];
+    delete router.query[QUERY_PARAMS.continuation_tokens];
 
     let queryCollection: string[] = [];
 
@@ -107,21 +131,27 @@ const Search = () => {
   };
 
   const handleSuggestion = (term: string, filter?: string, filterValue?: string) => {
-    router.query[QUERY_PARAMS.query_string] = term;
+    const suggestedQuery: ParsedUrlQueryInput = {};
+    suggestedQuery[QUERY_PARAMS.query_string] = term;
     if (filter && filterValue && filter.length && filterValue.length) {
-      router.query[filter] = [filterValue.toLowerCase()];
+      suggestedQuery[filter] = [filterValue.toLowerCase()];
     }
-    router.push({ query: router.query });
+    router.push({ query: suggestedQuery });
     resetCSVStatus();
   };
 
   const handleSearchChange = (type: string, value: any) => {
-    if (type !== QUERY_PARAMS.offset) delete router.query[QUERY_PARAMS.offset];
-    // Clear ordering on new query search
+    if (type !== QUERY_PARAMS.offset) {
+      delete router.query[QUERY_PARAMS.offset];
+    }
+    // Clear query controls on new query search
     if (type === QUERY_PARAMS.query_string) {
       delete router.query[QUERY_PARAMS.sort_field];
       delete router.query[QUERY_PARAMS.sort_order];
     }
+    // Clear any continuation tokens when a new search query is made
+    delete router.query[QUERY_PARAMS.active_continuation_token];
+    delete router.query[QUERY_PARAMS.continuation_tokens];
     router.query[type] = value;
     if (!value) {
       delete router.query[type];
@@ -135,7 +165,10 @@ const Search = () => {
   };
 
   const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement>, _?: number, value?: string) => {
+    // Clear pagination controls and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
+    delete router.query[QUERY_PARAMS.active_continuation_token];
+    delete router.query[QUERY_PARAMS.continuation_tokens];
     const val = value ?? e.currentTarget.textContent;
     let category = val;
     router.query[QUERY_PARAMS.category] = category;
@@ -148,7 +181,10 @@ const Search = () => {
   };
 
   const handleSortClick = (e: ChangeEvent<HTMLSelectElement>) => {
+    // Clear pagination controls and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
+    delete router.query[QUERY_PARAMS.active_continuation_token];
+    delete router.query[QUERY_PARAMS.continuation_tokens];
     const val = e.currentTarget.value;
     let field = null;
     let order = null;
@@ -203,9 +239,18 @@ const Search = () => {
     return index === -1 ? 0 : index;
   };
 
-  const getCurrentPage = () => {
+  const calcCurrentPage = () => {
     const offSet = isNaN(parseInt(router.query[QUERY_PARAMS.offset]?.toString())) ? 0 : parseInt(router.query[QUERY_PARAMS.offset]?.toString());
-    return offSet / PER_PAGE + 1;
+    const cts: string[] = JSON.parse((router.query[QUERY_PARAMS.continuation_tokens] as string) || "[]");
+    // empty string represents the first 'set' of pages (as these do not require a continuation token)
+    cts.splice(0, 0, "");
+    return getCurrentPage(
+      offSet,
+      RESULTS_PER_PAGE,
+      PAGES_PER_CONTINUATION_TOKEN,
+      cts,
+      router.query[QUERY_PARAMS.active_continuation_token] as string
+    );
   };
 
   const handleDownloadCsvClick = () => {
@@ -224,12 +269,6 @@ const Search = () => {
       setDrawerFamily(index);
     }, 150);
   };
-
-  useEffect(() => {
-    if (hits !== undefined) {
-      setPageCount(calculatePageCount(hits));
-    }
-  }, [hits]);
 
   // Concerned only with preventing scrolling when either the drawer or the CSV download popup is open
   useEffect(() => {
@@ -361,10 +400,16 @@ const Search = () => {
             </div>
           </div>
         </section>
-        {pageCount > 1 && (
+        {hits > 1 && (
           <section>
             <div className="mb-12">
-              <Pagination pageNumber={getCurrentPage()} pageCount={pageCount} onChange={handlePageChange} />
+              <Pagination
+                currentPage={calcCurrentPage()}
+                onChange={handlePageChange}
+                totalHits={hits}
+                continuationToken={continuationToken}
+                continuationTokens={router.query[QUERY_PARAMS.continuation_tokens] as string}
+              />
             </div>
           </section>
         )}

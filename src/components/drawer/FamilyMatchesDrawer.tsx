@@ -19,13 +19,6 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
 
   if (!family) return null;
   const { family_geography, family_name, family_category, family_date, family_documents } = family;
-  const numberOfMatches = matchesCount(family_documents);
-  const numberOfDocsWithMatches = family_documents.filter((document) => document.document_passage_matches.length > 0).length;
-  const matchesDescription = `${numberOfMatches} ${pluralise(numberOfMatches, "match", "matches")} in ${numberOfDocsWithMatches} ${pluralise(
-    numberOfDocsWithMatches,
-    "document",
-    "documents"
-  )}`;
 
   const onPassageClick = (passageIndex: number, documentIndex: number) => {
     const document = family_documents[documentIndex];
@@ -67,7 +60,6 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
                 View document overview
               </LinkWithQuery>
             </div>
-            <div className="text-sm">{matchesDescription}</div>
           </div>
           <div className="flex-grow pr-1 overflow-y-scroll scrollbar-narrow">
             {family_documents.map((document, docIndex) => (
@@ -80,8 +72,7 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
                   onClick={(e) => handleViewOtherDocsClick(e, document.document_slug)}
                   extraClasses="text-sm text-blue-600"
                 >
-                  View {document.document_passage_matches.length} {pluralise(document.document_passage_matches.length, "match", "matches")}{" "}
-                  highlighted in document
+                  View all matches highlighted in document
                 </Button>
               </div>
             ))}

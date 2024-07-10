@@ -4,7 +4,12 @@ import Script from "next/script";
 import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
 import axios from "axios";
+
 import { ApiClient } from "@api/http-common";
+
+import useSearch from "@hooks/useSearch";
+import useConfig from "@hooks/useConfig";
+
 import Layout from "@components/layouts/Main";
 import { Timeline } from "@components/blocks/Timeline";
 import Event from "@components/blocks/Event";
@@ -14,26 +19,29 @@ import { ExternalLink } from "@components/ExternalLink";
 import { Targets } from "@components/Targets";
 import { ShowHide } from "@components/controls/ShowHide";
 import { Divider } from "@components/dividers/Divider";
-import { QUERY_PARAMS } from "@constants/queryParams";
 import { DownChevronIcon, TargetIcon, AlertCircleIcon } from "@components/svg/Icons";
 import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { SingleCol } from "@components/SingleCol";
-import useSearch from "@hooks/useSearch";
-import useConfig from "@hooks/useConfig";
-import { truncateString } from "@helpers/index";
-import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
-import { getCorpusInfo } from "@helpers/getCorpusInfo";
-import { sortFilterTargets } from "@utils/sortFilterTargets";
-import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
-import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary } from "@types";
 import Tooltip from "@components/tooltip";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 import { Alert } from "@components/Alert";
-import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
+
+import { truncateString } from "@helpers/index";
+import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
+import { getCorpusInfo } from "@helpers/getCorpusInfo";
 import { getMainDocuments } from "@helpers/getMainDocuments";
+
+import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { pluralise } from "@utils/pluralise";
+
+import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary } from "@types";
+
+import { QUERY_PARAMS } from "@constants/queryParams";
+import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
+import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
+import { MAX_PASSAGES } from "@constants/paging";
 
 type TProps = {
   page: TFamilyPage;
@@ -69,7 +77,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
 
   let searchFamily: TMatchedFamily = null;
-  const { status, families } = useSearch(router.query, page.import_id, null, !!router.query[QUERY_PARAMS.query_string]);
+  const { status, families } = useSearch(router.query, page.import_id, null, !!router.query[QUERY_PARAMS.query_string], MAX_PASSAGES);
   if (!!router.query[QUERY_PARAMS.query_string]) {
     families.forEach((family) => {
       if (page.slug === family.family_slug) {
@@ -186,7 +194,13 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
             <h2 className="text-base">Main {pluralise(mainDocuments.length, "document", "documents")}</h2>
             <div data-cy="main-documents">
               {mainDocuments.map((doc) => (
-                <FamilyDocument matches={getDocumentMatches(doc.slug)} document={doc} key={doc.import_id} status={status} />
+                <FamilyDocument
+                  matches={getDocumentMatches(doc.slug)}
+                  document={doc}
+                  key={doc.import_id}
+                  status={status}
+                  familyMatches={searchFamily?.total_passage_hits}
+                />
               ))}
             </div>
           </section>
@@ -206,7 +220,12 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                 <div data-cy="related-documents">
                   {otherDocuments.map((doc) => (
                     <div key={doc.import_id} className="mt-4">
-                      <FamilyDocument matches={getDocumentMatches(doc.slug)} document={doc} status={status} />
+                      <FamilyDocument
+                        matches={getDocumentMatches(doc.slug)}
+                        document={doc}
+                        status={status}
+                        familyMatches={searchFamily?.total_passage_hits}
+                      />
                     </div>
                   ))}
                 </div>

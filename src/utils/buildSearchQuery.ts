@@ -8,7 +8,13 @@ export type TRouterQuery = {
 
 // We are storing the search object in the query using aliases
 // This function converts the query string to the search object
-export default function buildSearchQuery(routerQuery: TRouterQuery, familyId = "", documentId = ""): TSearchCriteria {
+export default function buildSearchQuery(
+  routerQuery: TRouterQuery,
+  familyId = "",
+  documentId = "",
+  includeAllTokens = false,
+  noOfPassagesPerDoc: number = undefined
+): TSearchCriteria {
   const keyword_filters: TSearchKeywordFilters = {};
   let query = { ...initialSearchCriteria };
 
@@ -64,16 +70,50 @@ export default function buildSearchQuery(routerQuery: TRouterQuery, familyId = "
     keyword_filters.countries = Array.isArray(countries) ? countries : [countries];
   }
 
+  if (routerQuery[QUERY_PARAMS.active_continuation_token]) {
+    // Array containing only 1 token - the active token
+    query.continuation_tokens = [routerQuery[QUERY_PARAMS.active_continuation_token] as string];
+  }
+
+  if (includeAllTokens) {
+    let allContinuationTokens: string[] = [];
+    const routerQueryToken = routerQuery[QUERY_PARAMS.active_continuation_token] as string;
+    const routerQueryTokens = routerQuery[QUERY_PARAMS.continuation_tokens] as string;
+    if (routerQueryTokens) {
+      const continuationTokens: string[] = JSON.parse(routerQueryTokens);
+      if (Array.isArray(continuationTokens) && continuationTokens.length > 0) {
+        allContinuationTokens.push(...continuationTokens);
+      }
+    }
+    if (routerQueryToken) {
+      if (!allContinuationTokens.includes(routerQueryToken)) {
+        allContinuationTokens.push(routerQueryToken);
+      }
+    }
+    query.continuation_tokens = allContinuationTokens;
+  }
+
   if (familyId) {
     query.family_ids = [familyId];
     // Some query params are causing issues when we are on a family page
     query.offset = 0;
+    // Clear continuation tokens
+    query.continuation_tokens = [];
   }
 
   if (documentId) {
     query.document_ids = [documentId];
     // Some query params are causing issues when we are on a document page
     query.offset = 0;
+    // Clear continuation tokens
+    query.continuation_tokens = [];
+  }
+
+  if (noOfPassagesPerDoc) {
+    // ensure that the number of passages per doc is a positive integer
+    if (Number.isInteger(noOfPassagesPerDoc) && noOfPassagesPerDoc > 0) {
+      query.max_passages_per_doc = noOfPassagesPerDoc;
+    }
   }
 
   query = {
