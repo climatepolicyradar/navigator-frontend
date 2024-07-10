@@ -27,8 +27,8 @@ describe("Browse Flow", () => {
     cy.get(searchResultsSelector, { timeout: 10000 }).should("be.visible");
   });
 
-  it("should display a list of 10 search results", () => {
-    cy.get(searchResultsSelector).children({ timeout: 10000 }).should("have.length", 10);
+  it("should display a list of 20 search results", () => {
+    cy.get(searchResultsSelector).children({ timeout: 10000 }).should("have.length", 20);
   });
 
   it("should have a clickable header, which navigates to the document family view", () => {
