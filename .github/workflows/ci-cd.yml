@@ -72,7 +72,7 @@ jobs:
           filename=infra/Pulumi.staging.yaml
           docker_tag=${{ needs.check-auto-tagging-will-work.outputs.new_tag }}
           docker_tag=${docker_tag#v}
-          sed -i -e 's/DOCKER_TAG/${docker_tag}/g' ${filename}
+          sed -i -e 's/DOCKER_TAG/"${docker_tag}"/g' ${filename}
           cat ${filename}
           if grep -wq "${docker_tag}" ${filename}; then
             echo "${docker_tag} found in file"
