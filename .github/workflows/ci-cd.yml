@@ -69,15 +69,14 @@ jobs:
 
       - run: |
           echo "${{ needs.check-auto-tagging-will-work.outputs.new_tag }}"
-          pwd
-          tree -d .
-          tree -d ..
-          tree -d ../navigator-frontend
-          sed -i -e 's/DOCKER_TAG/${{ needs.check-auto-tagging-will-work.outputs.new_tag }}/g' infra/Pulumi.staging.yaml
-          if grep -wq "329," myfile; then
-            echo "${{ needs.check-auto-tagging-will-work.outputs.new_tag }} found in file"
+          filename=infra/Pulumi.staging.yaml
+          docker_tag=${{ needs.check-auto-tagging-will-work.outputs.new_tag }}
+          docker_tag=${docker_tag#v}
+          sed -i -e 's/DOCKER_TAG/${docker_tag}/g' ${filename}
+          if grep -wq "${docker_tag}" ${filename}; then
+            echo "${docker_tag} found in file"
           else 
-            echo "${{ needs.check-auto-tagging-will-work.outputs.new_tag }} not found in file"
+            echo "${docker_tag} not found in file"
             exit 1
           fi
 
