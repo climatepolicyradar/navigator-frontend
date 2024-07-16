@@ -7,7 +7,7 @@ config:
   frontend:apprunner_frontend_max_concurrency: "50"
   frontend:apprunner_frontend_max_instance_count: "10"
   frontend:apprunner_frontend_min_instance_count: "1"
-  frontend:docker_tag: 1.5.7-beta
+  frontend:docker_tag: DOCKER_TAG-beta
   frontend:ecr_uri:
     secure: AAABANNvsEOTtIGJJd7EgdU8mzOe2CpU7VBDo7SCYly9JU0lGfePDxMEZ9VNp9mtKGMGs7cQRW02Q3nCnLmB1MJUwAp1NpO0dFkzsGUMP108ZOG6EJG8NhqX04w3xlWD1pON
   frontend:hostname: https://app.dev.climatepolicyradar.org
