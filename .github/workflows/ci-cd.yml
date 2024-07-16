@@ -73,12 +73,44 @@ jobs:
           docker_tag=${{ needs.check-auto-tagging-will-work.outputs.new_tag }}
           docker_tag=${docker_tag#v}
           sed -i -e 's/DOCKER_TAG/${docker_tag}/g' ${filename}
+          cat ${filename}
           if grep -wq "${docker_tag}" ${filename}; then
             echo "${docker_tag} found in file"
           else 
             echo "${docker_tag} not found in file"
             exit 1
           fi
+
+  deploy:
+    if: |
+      ! cancelled() && always() && (needs.update-pulumi-config.result == 'success')
+    needs:
+      - update-pulumi-config
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - run: pip install -r requirements.txt
+
+      - uses: pulumi/actions@v3
+        with:
+          command: up
+          stack-name: org-name/stack-name # When using an individual account, only use stack-name.
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
   release:
     if: ${{ ! cancelled() && always() && needs.theme-factory.result == 'success' && needs.theme-factory.outputs.new_tag != 'Skip' }}
