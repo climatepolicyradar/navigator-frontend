@@ -108,7 +108,7 @@ jobs:
       - uses: pulumi/actions@v3
         with:
           command: up
-          stack-name: climate-policy-radar/frontend/staging # When using an individual account, only use stack-name.
+          stack-name: climatepolicyradar/frontend/staging # When using an individual account, only use stack-name.
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
