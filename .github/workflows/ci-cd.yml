@@ -50,7 +50,7 @@ jobs:
     permissions:
       contents: write
     secrets: inherit
-    uses: climatepolicyradar/reusable-workflows/.github/workflows/theme-factory.yml@v6
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/theme-factory.yml@v8-ci-cd
     with:
       repo-name: navigator-frontend
       theme: ${{ matrix.theme }}
@@ -66,6 +66,13 @@ jobs:
     steps:
       - run: |
           echo "${{ needs.theme-factory.outputs.new_tag }}"
+          sed -i -e 's/DOCKER_TAG/${{ needs.theme-factory.outputs.new_tag }}/g' ./infra/Pulumi.staging.yaml
+          if grep -wq "329," myfile; then
+            echo "${{ needs.theme-factory.outputs.new_tag }} found in file"
+          else 
+            echo "${{ needs.theme-factory.outputs.new_tag }} not found in file"
+            exit 1
+          fi
 
   release:
     if: ${{ ! cancelled() && always() && needs.theme-factory.result == 'success' && needs.theme-factory.outputs.new_tag != 'Skip' }}
