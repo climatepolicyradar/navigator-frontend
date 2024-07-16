@@ -67,7 +67,7 @@ jobs:
     steps:
       - run: |
           echo "${{ needs.check-auto-tagging-will-work.outputs.new_tag }}"
-          sed -i -e 's/DOCKER_TAG/${{ needs.check-auto-tagging-will-work.outputs.new_tag }}/g' ./infra/Pulumi.staging.yaml
+          sed -i -e 's/DOCKER_TAG/${{ needs.check-auto-tagging-will-work.outputs.new_tag }}/g' ../infra/Pulumi.staging.yaml
           if grep -wq "329," myfile; then
             echo "${{ needs.check-auto-tagging-will-work.outputs.new_tag }} found in file"
           else 
