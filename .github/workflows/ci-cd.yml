@@ -19,7 +19,7 @@ jobs:
     if: |
       github.event_name == 'pull_request' &&
       (! startsWith(github.ref, 'refs/tags') && ! startsWith(github.ref, 'refs/heads/main'))
-    uses: climatepolicyradar/reusable-workflows/.github/workflows/check-auto-tagging-will-work.yml@v3
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/check-auto-tagging-will-work.yml@v8
 
   code-quality:
     if: |
@@ -59,18 +59,19 @@ jobs:
     if: |
       ! cancelled() && always() && (needs.theme-factory.result == 'success')
     needs:
+      - check-auto-tagging-will-work
       - theme-factory
     permissions:
       contents: write
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "${{ needs.theme-factory.outputs.new_tag }}"
-          sed -i -e 's/DOCKER_TAG/${{ needs.theme-factory.outputs.new_tag }}/g' ./infra/Pulumi.staging.yaml
+          echo "${{ needs.check-auto-tagging-will-work.outputs.new_tag }}"
+          sed -i -e 's/DOCKER_TAG/${{ needs.check-auto-tagging-will-work.outputs.new_tag }}/g' ./infra/Pulumi.staging.yaml
           if grep -wq "329," myfile; then
-            echo "${{ needs.theme-factory.outputs.new_tag }} found in file"
+            echo "${{ needs.check-auto-tagging-will-work.outputs.new_tag }} found in file"
           else 
-            echo "${{ needs.theme-factory.outputs.new_tag }} not found in file"
+            echo "${{ needs.check-auto-tagging-will-work.outputs.new_tag }} not found in file"
             exit 1
           fi
 
