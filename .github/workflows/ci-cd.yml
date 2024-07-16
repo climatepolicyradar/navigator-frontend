@@ -103,7 +103,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
 
-      - run: pip install -r infra/requirements.txt
+      - run: cd infra
+      - run: pip install -r requirements.txt
 
       - uses: pulumi/actions@v3
         with:
