@@ -55,6 +55,18 @@ jobs:
       repo-name: navigator-frontend
       theme: ${{ matrix.theme }}
 
+  update-pulumi-config:
+    if: |
+      ! cancelled() && always() && (needs.theme-factory.result == 'success')
+    needs:
+      - theme-factory
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "${{ needs.theme-factory.outputs.new_tag }}"
+
   release:
     if: ${{ ! cancelled() && always() && needs.theme-factory.result == 'success' && needs.theme-factory.outputs.new_tag != 'Skip' }}
     needs: theme-factory
