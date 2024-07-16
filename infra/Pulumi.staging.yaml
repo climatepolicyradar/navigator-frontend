@@ -1,0 +1,20 @@
+config:
+  aws:region: eu-west-1
+  frontend:adobe_api_key:
+    secure: AAABAKauGfzg2y9/oQUPzDm6PSX4ubW/sa+WOH1ryNMBG8ZcgXCYWJq0U4/cVPnRnU9p9w+htMqzgCBFZuvClQ==
+  frontend:api_url:
+    secure: AAABAE38WmXZ3m1RIJK9mRNJ/A8S6hVInMhHR0BqRr5omLZnbM5XRl7elWRC1jLqRUag6ryQoLZk4MkZp/j/53lCYSmwDCth2Td9+FY=
+  frontend:apprunner_frontend_max_concurrency: "50"
+  frontend:apprunner_frontend_max_instance_count: "10"
+  frontend:apprunner_frontend_min_instance_count: "1"
+  frontend:docker_tag: 1.5.7-beta
+  frontend:ecr_uri:
+    secure: AAABANNvsEOTtIGJJd7EgdU8mzOe2CpU7VBDo7SCYly9JU0lGfePDxMEZ9VNp9mtKGMGs7cQRW02Q3nCnLmB1MJUwAp1NpO0dFkzsGUMP108ZOG6EJG8NhqX04w3xlWD1pON
+  frontend:hostname: https://app.dev.climatepolicyradar.org
+  frontend:redirect_file: default.json
+  frontend:robots: "false"
+  frontend:s3-path:
+    secure: AAABACIWGJWEQwy3ui4MmS/Nz2T3J+PPt3GrI5lt6d12RY42TRxandSLzvRGbWqwKUf/9Wxvn2aTsFKi8PUYcO3zpltsCUnXhOQubdNHnizcZ5vn1v/fWXDCMEkgSGD38w==
+  frontend:theme: cpr
+  frontend:validation_account_id:
+    secure: AAABAJG8Ebvu1cowGYvA4ZM4URe9Ldz7/1cSZB8/BY8Vr2F1MA9jABLAwkI=
