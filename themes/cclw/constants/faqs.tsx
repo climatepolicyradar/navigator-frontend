@@ -263,7 +263,10 @@ export const FAQS: TFAQ[] = [
     title: "Why is the number of search results limited?",
     content: (
       <>
-        <p>The number of search results is currently limited to 100 to optimise system performance. We’re working to remove this limit.</p>
+        <p>
+          The number of search results is currently limited to 500 to optimise system performance. We’re working to remove this limit. Please note
+          that the actual number of entries returned may be 1 or 2 below the total indicated on the search results page.
+        </p>
       </>
     ),
   },
@@ -383,8 +386,8 @@ export const FAQS: TFAQ[] = [
           <ExternalLink url="https://form.jotform.com/233294135296359">data contribution form</ExternalLink>.
         </p>
         <p>
-          We also limit the number of matches you can see in a document to 10 so that you get the best performance from the tool. This means you might
-          miss some matches. We’re working on a way to remove this limit.
+          We also limit the number of matches you can see in a document to 500, so that you get the best performance from the tool. This means that
+          for very long documents or very broad search terms, you might miss some matches. We’re working to remove this limit.
         </p>
       </>
     ),
@@ -472,9 +475,8 @@ export const FAQS: TFAQ[] = [
       <>
         <p>You can download a csv of data for "this search" or the "whole database" from the top right of the search results page.</p>
         <p>
-          If you download a csv for “this search” and you used the “related phrases” search function this will contain all documents related to the
-          top 100 entries returned by your search. If you use the “exact match” search function, fewer than 100 entries may be returned for some
-          search terms where these appear less than 100 times within the dataset searched.
+          If you download a csv for “this search” it will contain all documents related to the top 500 entries returned by your search. Note that the
+          actual number of entries returned may be 1 or 2 below the total indicated on the search results page.
         </p>
       </>
     ),
