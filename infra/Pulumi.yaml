@@ -1,0 +1,6 @@
+name: frontend
+description: The frontend for CPR
+runtime:
+  name: python
+  options:
+    virtualenv: venv
