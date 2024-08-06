@@ -208,15 +208,15 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           {otherDocuments.length > 0 && (
             <>
               <section className="mt-8">
-                <h2 className="flex items-center gap-2 text-base">
-                  Other documents in this entry{" "}
+                <div className="flex items-center gap-2">
+                  <h2 className="text-base">Other documents in this entry </h2>
                   <Tooltip
                     id="related-documents-info"
                     place="right"
                     icon="i"
                     tooltip="Other documents can be previous versions, amendments, annexes, supporting legislation, and more."
                   />
-                </h2>
+                </div>
                 <div data-cy="related-documents">
                   {otherDocuments.map((doc) => (
                     <div key={doc.import_id} className="mt-4">
