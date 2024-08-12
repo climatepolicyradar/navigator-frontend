@@ -31,3 +31,36 @@ See the `.env.example` file for details of configuration environment variables.
 ## Testing
 
 This project is tested with BrowserStack.
+
+## Running the project
+
+If you have not yet run an install for the repo
+
+```bash
+npm install
+```
+
+Create a .env file
+
+```bash
+cp .env.example .env
+```
+
+Run project locally
+
+```bash
+npm run dev
+```
+
+or
+
+```bash
+yarn dev
+```
+
+Set the 'theme' to run the appropriate environment/app i.e to run the cclw app
+locally update the .env file to 'THEME=cclw' or..
+
+```bash
+THEME=cclw npm run dev
+```
