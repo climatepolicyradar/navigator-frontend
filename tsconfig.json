@@ -16,6 +16,7 @@
     "jsx": "preserve",
     "incremental": true,
     "baseUrl": "",
+    "types": ["node", "jest"],
     "paths": {
       "@api/*": ["src/api/*"],
       "@components/*": ["src/components/*"],
