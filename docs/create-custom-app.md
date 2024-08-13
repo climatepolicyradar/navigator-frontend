@@ -16,6 +16,8 @@ You will need a few required files/folders :
   This file is required - this can set to return an empty array initially
 - `tailwind.config.js` : controls our default configs within the tailwind system
 - `homepage.tsx`: a bespoke homepage component
+- `MethodologyLink.tsx` : controls how the behaviour of the methodology link
+  works in the search filters
 
 Update `type TTheme` to include new custom app alias
 
