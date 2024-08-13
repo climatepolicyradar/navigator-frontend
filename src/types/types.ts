@@ -1,4 +1,4 @@
-export type TTheme = "cpr" | "cclw";
+export type TTheme = "cpr" | "cclw" | "mcf";
 
 export type TSearchKeywordFilters = {
   categories?: string[];

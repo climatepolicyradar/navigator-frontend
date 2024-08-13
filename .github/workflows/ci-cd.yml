@@ -46,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        theme: [cpr, cclw]
+        theme: [cpr, cclw, mcf]
     permissions:
       contents: write
     secrets: inherit

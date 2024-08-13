@@ -18,6 +18,8 @@ export const CookieConsent = () => {
     if (cc === "true") setEnableAnalytics(true);
   }, []);
 
+  const gtag = (...args: any) => window.dataLayer.push(...args);
+
   useEffect(() => {
     // If the user has accepted cookies, update the consent options for Google Tag Manager
     if (enableAnalytics) {
