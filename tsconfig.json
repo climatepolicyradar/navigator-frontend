@@ -29,7 +29,8 @@
       "@pages/*": ["src/pages/*"],
       "@utils/*": ["src/utils/*"],
       "@cclw/*": ["themes/cclw/*"],
-      "@cpr/*": ["themes/cpr/*"]
+      "@cpr/*": ["themes/cpr/*"],
+      "@mcf/*": ["themes/mcf/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/api/pdf.js"],
