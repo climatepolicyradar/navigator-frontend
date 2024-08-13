@@ -4,8 +4,8 @@ type TProps = {
 
 const TEST_CUSTOM_APP_ID = "TEST-ID";
 
-const Analytics = ({ enableAnalytics = false }: TProps) => {
-  return null;
+const Analytics = ({ enableAnalytics }: TProps) => {
+  if (enableAnalytics) return null;
 };
 
 export default Analytics;
