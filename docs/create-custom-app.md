@@ -10,9 +10,10 @@ You will need a few required files/folders :
   but you can set the return value to null whilst developing.
 - `main.tsx` :controls the display of a standard page, including
   the header and footer components
-- `redirects.json` : controls which server-side redirects,
-  required by next at build time to configure redirects - can set to
-  return an empty array whilst developing
+- `redirects.json` : controls the server-side redirects,
+  our `next.config.js` file configures our redirects across the site, it parses
+  the array of redirects and sets them up when next is building the application.
+  This file is required - this can set to return an empty array initially
 - `tailwind.config.js` : controls our default configs within the tailwind system
 - `homepage.tsx`: a bespoke homepage component
 
