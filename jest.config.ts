@@ -5,7 +5,6 @@ const config: Config = {
   verbose: true,
 
   moduleNameMapper: {
-    // Map `@mcf/components` to the correct directory
     "^@constants/(.*)$": "<rootDir>/src/constants/$1",
     "^@components/(.*)$": "<rootDir>/src/components/$1",
     "^@hooks/(.*)$": "<rootDir>/src/hooks/$1",
