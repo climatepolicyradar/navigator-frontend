@@ -33,7 +33,7 @@
       "@mcf/*": ["themes/mcf/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/api/pdf.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/api/pdf.js", "jest.config.ts"],
   "exclude": ["node_modules"],
   "types": ["cypress", "cypress-file-upload"]
 }
