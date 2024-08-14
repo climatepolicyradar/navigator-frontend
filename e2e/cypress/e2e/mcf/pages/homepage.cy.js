@@ -6,6 +6,6 @@ describe("Landing page", () => {
   });
 
   it("should display the placeholder homepage", () => {
-    cy.contains("MCF Custom App").should("be.visible");
+    cy.contains("Multilateral Climate Funds").should("be.visible");
   });
 });

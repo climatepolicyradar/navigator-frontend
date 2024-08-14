@@ -21,6 +21,6 @@ jest.mock("react-query", () => ({
 describe("Landing Page: ", () => {
   it("should render MCF Landing Page", () => {
     render(<LandingPage handleSearchInput={mockHandleSearchInput} searchInput={mockSearchInput} />);
-    expect(screen.getByText("MCF Custom App : Search over 5000 climate laws and policies worldwide")).toBeInTheDocument();
+    expect(screen.getByText("MCFs: Multilateral Climate Funds")).toBeInTheDocument();
   });
 });

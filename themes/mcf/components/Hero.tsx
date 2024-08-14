@@ -10,7 +10,7 @@ const Hero = ({ handleSearchInput, searchInput }: TProps) => (
     <div className="container">
       <div className="mx-auto text-center">
         <p className="font-medium tracking-slight text-lg lg:text-3xl" data-cy="intro-message">
-          MCF Custom App : Search over 5000 climate laws and policies worldwide
+          MCFs: Multilateral Climate Funds
         </p>
       </div>
       <div className="max-w-screen-md mx-auto mt-6">
