@@ -1,8 +1,5 @@
 import React from "react";
 
-// generic layer component
-import Layout from "@components/layouts/LandingPage";
-
 import { Hero } from "@mcf/components";
 
 type TProps = {
@@ -12,13 +9,11 @@ type TProps = {
 
 const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
   return (
-    <Layout title="MCF">
-      <main id="main" className="relative h-full">
-        <div className="bg-cclw-dark text-white h-full">
-          <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
-        </div>
-      </main>
-    </Layout>
+    <main id="main" className="relative h-full">
+      <div className="bg-cclw-dark text-white h-full">
+        <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
+      </div>
+    </main>
   );
 };
 
