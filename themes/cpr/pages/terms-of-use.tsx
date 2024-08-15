@@ -157,9 +157,7 @@ const TermsOfUse = () => {
             <p>
               The CPR Database and App contains data that were created by third parties. The data includes document summaries that were written by
               third parties and/or information about the documents (”meta-data”) assigned by third parties, e.g. classifications to sector or legal
-              principle, and Law and Policy document curation and summaries; document metadata from{" "}
-              <ExternalLink url="https://newclimate.org/about-us/legal-notice">Climate Policy Database </ExternalLink> has been adapted by Climate
-              Policy Radar and the Grantham Research Institute LSE.
+              principle.
             </p>
             <p>
               Data that are sourced from third parties are clearly marked on the CPR Database and App. Climate Policy Radar strongly advises you to
