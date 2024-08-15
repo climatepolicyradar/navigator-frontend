@@ -255,6 +255,17 @@ const TermsOfUse = () => {
                   </td>
                 </tr>
                 <tr>
+                  <td>Climate Policy Database</td>
+                  <td>
+                    Law and Policy document curation and summaries; document metadata from Climate Policy Database has been adapted by Climate Policy
+                    Radar and the Grantham Research Institute LSE
+                  </td>
+                  <td>TBC</td>
+                  <td>
+                    <ExternalLink url="https://newclimate.org/about-us/legal-notice">View</ExternalLink>
+                  </td>
+                </tr>
+                <tr>
                   <td>Additional data sources will be added here as they are added to the CPR database and app</td>
                   <td></td>
                   <td></td>
