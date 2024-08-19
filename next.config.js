@@ -14,6 +14,7 @@ const nextConfig = {
   // TODO: confirm this is necessary
   env: {
     THEME: process.env.THEME,
+    NEXT_PUBLIC_APP_TOKEN: process.env.APP_CONFIG_TOKEN,
   },
   // Supports dynamic component imports
   webpack(config) {
