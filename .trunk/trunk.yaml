@@ -35,9 +35,6 @@ lint:
     - linters: [markdownlint]
       paths:
         - LICENSE.md
-    - linters: [checkov, trivy]
-      paths:
-        - e2e/Dockerfile
 
   enabled:
     - actionlint@1.6.27

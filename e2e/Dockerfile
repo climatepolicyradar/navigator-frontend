@@ -17,6 +17,10 @@ WORKDIR /tests
 COPY . /tests
 RUN npm install
 
+# Switch to the built-in  "node" user that comes from the base Node layer of the
+# Cypress image.
+USER node
+
 ARG THEME
 ENV THEME=${THEME}
 
