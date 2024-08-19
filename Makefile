@@ -49,5 +49,5 @@ uninstall_trunk:
 	rm -ifr ${HOME}/.cache/trunk
 
 
-create_custom_app: ## Creates a directory for the custom app with the required files
+build_custom_app: ## Creates a directory for the custom app with the required files
 	. "${PWD}"/build-scripts/build-custom-app.sh
