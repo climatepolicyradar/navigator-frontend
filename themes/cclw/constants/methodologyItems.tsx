@@ -208,14 +208,24 @@ export const METHODOLOGY: TDataListItem[] = [
           The Climate Change Laws of the World Database started life in 2010 as a printed publication, comprising an overview of climate change laws
           and policies in just 16 countries. Since then, it has expanded to include all countries in the present scope and has moved online to enable
           users to access relevant information when it becomes available. Updates to the data are now collected on a rolling basis from official
-          sources such as government websites, parliamentary records and court documents. Some of our key strategies for identifying new documents
-          include: review of documentation submitted to UNFCCC processes, such as NDCs; country-specific research (focused on the G20); thematic
-          reviews of legislation (e.g. net zero laws); and media and social media alerts. The efforts of the CCLW team are regularly supplemented by
-          contributions from lawyers, scholars, policymakers and other colleagues from around the world, who alert us to new data. Please use{" "}
-          <ExternalLink url="https://docs.google.com/forms/d/e/1FAIpQLSdBdX2mLzFdeP8sTd_K7dsv8oylX6EBQucR_HhiXYZm1GA6gg/viewform">
-            this link
-          </ExternalLink>{" "}
-          or email us at <ExternalLink url="mailto:gri.cgl@lse.ac.uk">gri.cgl@lse.ac.uk</ExternalLink> if you wish to contribute.
+          sources such as government websites and parliamentary records.
+        </p>
+        <p>
+          Some of our key strategies for identifying new documents include: review of documentation submitted to UNFCCC processes, such as NDCs;
+          country-specific research; thematic reviews of different types of legislation (e.g. net zero laws, coal phase out laws); and media and
+          social media alerts. Data collection is overseen by LSE, supported by Climate Policy Radar and other partners. These efforts are regularly
+          supplemented by contributions from lawyers, scholars, policymakers and other colleagues from around the world, who alert us to new data.
+          Please use 
+          <ExternalLink url="https://form.jotform.com/233294135296359">this link</ExternalLink> or email us at 
+          <ExternalLink url="mailto:support@climatepolicyradar.org">support@climatepolicyradar.org</ExternalLink> if you wish to contribute.
+        </p>
+        <p>
+          In July 2024, a large volume of data not previously included in the database was ingested from the 
+          <ExternalLink url="https://climatepolicydatabase.org/">Climate Policy Database</ExternalLink>. Prior to their ingest into the database,
+          entries were reviewed by researchers at Climate Policy Radar to ensure that no duplicate entries were added. Entries were also reviewed to
+          ensure they fell within scope of this methodology (for example international treaties were excluded) and metadata from the Climate Policy
+          Database was converted to match values in the metadata schema of the CCLW dataset. Relevant entries are identified by the Climate Policy
+          Database logo.
         </p>
       </>
     ),
