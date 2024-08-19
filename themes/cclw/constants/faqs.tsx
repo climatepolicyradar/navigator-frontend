@@ -502,9 +502,9 @@ export const FAQS: TFAQ[] = [
         the NewClimate Institute and its partners for the{" "}
         <ExternalLink url="https://climatepolicydatabase.org/">Climate Policy Database</ExternalLink> project. Prior to their ingest into the
         database, documents were reviewed by researchers at Climate Policy Radar to ensure that no duplicate entries were added and that entries fell
-        within the scope of the Climate Change Laws of the World <ExternalLink url="https://climate-laws.org/methodology">methodology</ExternalLink>.
-        This data has been ingested with permission from NewClimate Institute, in order to advance efforts by Climate Policy Radar and LSE to provide
-        users with the most comprehensive dataset possible.
+        within the scope of the Climate Change Laws of the World 
+        <LinkWithQuery href="/methodology">methodology</LinkWithQuery>. This data has been ingested with permission from NewClimate Institute, in
+        order to advance efforts by Climate Policy Radar and LSE to provide users with the most comprehensive dataset possible.
       </p>
     ),
   },
