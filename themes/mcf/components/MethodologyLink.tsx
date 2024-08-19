@@ -1,7 +1,5 @@
-import { ExternalLink } from "@components/ExternalLink";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
-// TODO : Update to correct methodology link
-
-const MethodologyLink = () => <ExternalLink url="https://github.com/climatepolicyradar/methodology">our methodology page</ExternalLink>;
+const MethodologyLink = () => <LinkWithQuery href="/methodology">our methodology page</LinkWithQuery>;
 
 export default MethodologyLink;
