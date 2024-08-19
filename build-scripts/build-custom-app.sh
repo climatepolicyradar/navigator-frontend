@@ -36,16 +36,42 @@ const Analytics = ({enableAnalytics}: {enableAnalytics: boolean}) => {
 export default Analytics;
 
 EOM
+
 # Define the content for MethodologyLink.tsx
 read -r -d '' METHODOLOGY_LINK_CONTENT <<EOM
 
-import { ExternalLink } from "@components/ExternalLink";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
-// TODO : Update to correct methodology link
-
-const MethodologyLink = () => <ExternalLink url="https://github.com/climatepolicyradar/methodology">our methodology page</ExternalLink>;
+const MethodologyLink = () => <LinkWithQuery href="/methodology">our methodology page</LinkWithQuery>;
 
 export default MethodologyLink;
+
+EOM
+
+# Define the content for methodology.tsx
+read -r -d '' METHODOLOGY_PAGE_CONTENT <<EOM
+
+import Layout from "@components/layouts/Main";
+
+import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
+
+const Methodology = () => {
+  return (
+    <Layout title="Methodology" description="">
+      <section>
+        <div className="container px-4">
+          <BreadCrumbs label={"Methodology"} />
+          <div className="text-content mb-12">
+            <h1 className="my-8">Methodology</h1>
+            <h2 id="introduction">Introduction</h2>
+          </div>
+        </div>
+      </section>
+    </Layout>
+  );
+};
+
+export default Methodology;
 
 EOM
 
@@ -56,6 +82,20 @@ const LandingPage = ({}) => <h1> Hello World </h1>;
 
 export default LandingPage;
 
+
+EOM
+
+# Define the content for the routes.json
+
+read -r -d '' ROUTES_JSON_CONTENT <<EOM
+
+[
+  {
+    "title": "Methodology",
+    "path": "methodology",
+    "contentPath": "methodology"
+  }
+]
 
 EOM
 
@@ -86,9 +126,9 @@ if [[ -d ${new_dir} ]]; then
 else
 	printf "The custom app does not exist, creating it now with the required sub-directories and files..."
 	mkdir -p "${new_dir}" "${components_dir}" "${layouts_dir}" "${pages_dir}" "${styles_dir}" "${tests_dir}"
-	printf "Created custom app directory for %s: %s\n\n" "${custom_app_name}" "${new_dir}"
+	printf " -> Created custom app directory for %s: %s\n\n" "${custom_app_name}" "${new_dir}"
 
-	# Create the required file
+	# Create the required files
 	touch "${components_dir}/index.ts"
 	touch "${components_dir}/Analytics.tsx"
 	echo "${ANALYTICS_CONTENT}" >"${components_dir}/Analytics.tsx"
@@ -97,7 +137,9 @@ else
 	echo "${METHODOLOGY_LINK_CONTENT}" >"${components_dir}/MethodologyLink.tsx"
 
 	touch "${pages_dir}/homepage.tsx"
+	touch "${pages_dir}/methodology.tsx"
 	echo "${HOMEPAGE_CONTENT}" >"${pages_dir}/homepage.tsx"
+	echo "${METHODOLOGY_PAGE_CONTENT}" >"${pages_dir}/methodology.tsx"
 
 	touch "${layouts_dir}/main.tsx"
 	echo "${MAIN_CONTENT}" >"${layouts_dir}/main.tsx"
@@ -111,11 +153,13 @@ else
 	printf "Copied tailwind.config.js file from %s to %s.\n\n" "${themes_path}/cpr" "${new_dir}"
 
 	# Create the redirects.json file
-	redirect_json_file="${new_dir}/redirects.json"
-	touch "${redirect_json_file}"
-	echo "[]" >"${redirect_json_file}"
-	printf "Created redirects.json file : %s.\n\n" "${redirect_json_file}"
+	touch "${new_dir}/redirects.json"
+	echo "[]" >"${new_dir}/redirects.json"
 
-	printf "Set the environment variable by running : THEME=%s\n\n" "${custom_app_name}"
-	printf "\033[1;34mNow that's done, you will need to update the e2e tests, include the new custom app in the ci-cd.yml file, the types.ts file and the tsconfig.js file.\033[0m\n"
+	# Create the routes.json file
+	touch "${new_dir}/routes.json"
+	echo "${ROUTES_JSON_CONTENT}" >"${new_dir}/routes.json"
+
+	printf "\033[1;34mNow that's done, you will need to update the e2e tests, include the new custom app in the ci-cd.yml file, the types.ts file and the tsconfig.js file.\033[0m\n\n"
+	printf "\033[1;34mSet the environment variable by running : THEME=%s\n \033[0m\n" "${custom_app_name}"
 fi
