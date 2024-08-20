@@ -37,38 +37,11 @@ export default Analytics;
 
 EOM
 
-# Define the content for MethodologyLink.tsx
-read -r -d '' METHODOLOGY_LINK_CONTENT <<EOM
-
-import { LinkWithQuery } from "@components/LinkWithQuery";
-
-const MethodologyLink = () => <LinkWithQuery href="/methodology">our methodology page</LinkWithQuery>;
-
-export default MethodologyLink;
-
-EOM
-
 # Define the content for methodology.tsx
 read -r -d '' METHODOLOGY_PAGE_CONTENT <<EOM
 
-import Layout from "@components/layouts/Main";
-
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-
 const Methodology = () => {
-  return (
-    <Layout title="Methodology" description="">
-      <section>
-        <div className="container px-4">
-          <BreadCrumbs label={"Methodology"} />
-          <div className="text-content mb-12">
-            <h1 className="my-8">Methodology</h1>
-            <h2 id="introduction">Introduction</h2>
-          </div>
-        </div>
-      </section>
-    </Layout>
-  );
+  return null;
 };
 
 export default Methodology;
@@ -136,9 +109,7 @@ else
 	touch "${components_dir}/index.ts"
 	touch "${components_dir}/Analytics.tsx"
 	echo "${ANALYTICS_CONTENT}" >"${components_dir}/Analytics.tsx"
-
-	touch "${components_dir}/MethodologyLink.tsx"
-	echo "${METHODOLOGY_LINK_CONTENT}" >"${components_dir}/MethodologyLink.tsx"
+	echo "export { default as Analytics } from './Analytics';" >"${components_dir}/index.ts"
 
 	touch "${pages_dir}/homepage.tsx"
 	touch "${pages_dir}/methodology.tsx"
