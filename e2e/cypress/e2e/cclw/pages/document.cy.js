@@ -16,6 +16,9 @@ const breadcrumbSelectors = [
 describe("Document Page", () => {
   before(() => {
     cy.visit(URL);
+    cy.intercept(URL, (req) => {
+      req.headers["app-token"] = process.env.NEXT_PUBLIC_APP_TOKEN;
+    });
     clickCookiePolicy();
   });
 
