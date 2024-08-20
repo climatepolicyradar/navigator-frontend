@@ -105,6 +105,9 @@ read -r -p "Enter the name of the new custom app (use camel-case if required): "
 # Define the path to the themes directory
 themes_path="themes"
 
+# Define the path to the e2e directory
+e2e_path="e2e"
+
 # Check if the themes directory exists
 if [[ ! -d ${themes_path} ]]; then
 	echo "The themes directory does not exist. Creating it now..."
@@ -119,13 +122,14 @@ layouts_dir="${new_dir}/layouts"
 pages_dir="${new_dir}/pages"
 styles_dir="${new_dir}/styles"
 tests_dir="${new_dir}/tests"
+e2e_test_dir="${e2e_path}/cypress/e2e/${custom_app_name}"
 
 # Check if the directory already exists
 if [[ -d ${new_dir} ]]; then
 	echo "You are trying to duplicate a Custom App, ${new_dir} already exists."
 else
 	printf "The custom app does not exist, creating it now with the required sub-directories and files..."
-	mkdir -p "${new_dir}" "${components_dir}" "${layouts_dir}" "${pages_dir}" "${styles_dir}" "${tests_dir}"
+	mkdir -p "${new_dir}" "${components_dir}" "${layouts_dir}" "${pages_dir}" "${styles_dir}" "${tests_dir}" "${e2e_test_dir}"
 	printf " -> Created custom app directory for %s: %s\n\n" "${custom_app_name}" "${new_dir}"
 
 	# Create the required files
@@ -160,6 +164,11 @@ else
 	touch "${new_dir}/routes.json"
 	echo "${ROUTES_JSON_CONTENT}" >"${new_dir}/routes.json"
 
+	# Create the e2e test file
+	e2e_test_pages_dir="${e2e_test_dir}/pages"
+	mkdir "${e2e_test_pages_dir}"
+	touch "${e2e_test_pages_dir}/homepage.cy.js"
+
 	printf "\033[1;34mNow that's done, you will need to update the e2e tests, include the new custom app in the ci-cd.yml file, the types.ts file and the tsconfig.js file.\033[0m\n\n"
-	printf "\033[1;34mSet the environment variable by running : THEME=%s\n \033[0m\n" "${custom_app_name}"
+	printf "\033[1;34mSet the environment variable by running : export THEME=%s\n \033[0m\n" "${custom_app_name}"
 fi
