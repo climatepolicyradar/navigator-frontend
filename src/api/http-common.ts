@@ -15,7 +15,8 @@ class ApiClient {
     } else {
       this.baseUrl = process.env.API_URL;
     }
-    this.axiosClient = axios.create({ baseURL: this.baseUrl });
+
+    this.axiosClient = axios.create({ baseURL: this.baseUrl, headers: { "app-token": process.env.NEXT_PUBLIC_APP_TOKEN } });
   }
 
   /**
