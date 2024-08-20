@@ -15,10 +15,10 @@ const breadcrumbSelectors = [
 
 describe("Document Page", () => {
   before(() => {
-    cy.visit(URL, { timeout: 10000 });
-    cy.intercept(URL, (req) => {
+    cy.intercept("/*", (req) => {
       req.headers["app-token"] = process.env.NEXT_PUBLIC_APP_TOKEN;
     });
+    cy.visit(URL, { timeout: 10000 });
     clickCookiePolicy();
   });
 
