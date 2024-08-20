@@ -119,13 +119,13 @@ else
 	touch "${layouts_dir}/main.tsx"
 	echo "${MAIN_CONTENT}" >"${layouts_dir}/main.tsx"
 
-	# Copy the styles.scss file from the cpr theme directory
+	# Copy the styles.scss file from the cclw theme directory
 	cp -r "${themes_path}/cpr/styles/styles.scss" "${styles_dir}/styles.scss"
-	printf "Copied styles.scss file from %s to %s.\n\n" "${themes_path}/cpr" "${styles_dir}"
+	printf "Copied styles.scss file from %s to %s.\n\n" "${themes_path}/cclw" "${styles_dir}"
 
-	# Copy the tailwind.config.ts file from the cpr theme directory
+	# Copy the tailwind.config.ts file from the cclw theme directory
 	cp -r "${themes_path}/cpr/tailwind.config.js" "${new_dir}/tailwind.config.js"
-	printf "Copied tailwind.config.js file from %s to %s.\n\n" "${themes_path}/cpr" "${new_dir}"
+	printf "Copied tailwind.config.js file from %s to %s.\n\n" "${themes_path}/cclw" "${new_dir}"
 
 	# Create the redirects.json file
 	touch "${new_dir}/redirects.json"
