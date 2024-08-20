@@ -15,8 +15,8 @@ const breadcrumbSelectors = [
 
 describe("Document Page", () => {
   before(() => {
-    cy.visit("documents/jet-zero-strategy_a6a6?q=2050&l=united-kingdom&y=2022&y=2023");
-    cy.intercept("documents/jet-zero-strategy_a6a6?q=2050&l=united-kingdom&y=2022&y=2023", (req) => {
+    cy.visit(URL, { timeout: 10000 });
+    cy.intercept(URL, (req) => {
       req.headers["app-token"] = process.env.NEXT_PUBLIC_APP_TOKEN;
     });
     clickCookiePolicy();
