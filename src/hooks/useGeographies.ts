@@ -17,7 +17,7 @@ export default function useGeographies() {
     "geographies",
     async () => {
       const { data } = await getEnvFromServer();
-      const client = new ApiClient(data?.env?.api_url);
+      const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
       const query_response = await client.get("/geographies", null);
       const mapData: TMapGeographyStats[] = query_response.data;
 
