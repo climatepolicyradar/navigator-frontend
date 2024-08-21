@@ -50,4 +50,7 @@ uninstall_trunk:
 
 
 build_custom_app: ## Creates a directory for the custom app with the required files
-	. "${PWD}"/build-scripts/build-custom-app.sh
+	. "${PWD}"/scripts/build-custom-app.sh
+
+delete_custom_app: ## Deletes a custom app and its related files / directories
+	. "${PWD}"/scripts/delete-custom-app.sh
