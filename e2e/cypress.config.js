@@ -19,6 +19,7 @@ module.exports = defineConfig({
     },
     env: {
       THEME: process.env.THEME,
+      NEXT_PUBLIC_APP_TOKEN: some_token,
     },
     specPattern: `cypress/e2e/${process.env.THEME}/**/*.{js,jsx,ts,tsx}`,
     excludeSpecPattern: ["**/1-getting-started/*.js", "**/2-advanced-examples/*.js"],
