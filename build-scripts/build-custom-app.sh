@@ -136,6 +136,30 @@ else
 	mkdir "${e2e_test_pages_dir}"
 	touch "${e2e_test_pages_dir}/homepage.cy.js"
 
-	printf "\033[1;34mNow that's done, you will need to update the e2e tests, include the new custom app in the ci-cd.yml file, the types.ts file and the tsconfig.js file.\033[0m\n\n"
-	printf "\033[1;34mSet the environment variable by running : export THEME=%s\n \033[0m\n" "${custom_app_name}"
+	# Add the new custom app to ci-cd.yml file
+	sed -i.bak "s/theme: \[cpr, cclw, mcf\]/theme: [cpr, cclw, mcf, ${custom_app_name}]/" .github/workflows/ci-cd.yml && rm .github/workflows/ci-cd.yml.bak
+	echo "Added ${custom_app_name} to the theme list in ci-cd.yml"
+
+	# Add the new custom app path to tsconfig.json
+	tsconfig_file="tsconfig.json"
+	temp_tsconfig="temp_tsconfig.json"
+
+	awk -v app="${custom_app_name}" '
+	BEGIN { in_paths = 0; added = 0 }
+	/"paths":/  { in_paths = 1 }
+	in_paths && /}/ && !added {
+		sub(/}/, ",\n    \"@" app "/*\": [\"themes/" app "/*\"]\n  }")
+		added = 1
+	}
+	{ print }
+	' "${tsconfig_file}" >"${temp_tsconfig}" && mv "${temp_tsconfig}" "${tsconfig_file}"
+
+	echo "Added @${custom_app_name}/* path to tsconfig.json"
+
+	# Update TTheme type in types.ts
+	sed -i.bak "s/export type TTheme = \"cpr\" | \"cclw\" | \"mcf\";/export type TTheme = \"cpr\" | \"cclw\" | \"mcf\" | \"${custom_app_name}\";/" src/types/types.ts
+
+	echo "Added ${custom_app_name} to the TTheme type in types.ts"
+
+	printf "\033[1;34mNow that's done,set the environment variable by running : export THEME=%s\n \033[0m\n" "${custom_app_name}"
 fi
