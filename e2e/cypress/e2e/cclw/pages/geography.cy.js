@@ -21,9 +21,6 @@ const pageSelectors = [
 describe("Geography Page", () => {
   before(() => {
     cy.visit(geoUrl);
-    cy.intercept("/*", (req) => {
-      req.headers["app-token"] = process.env.NEXT_PUBLIC_APP_TOKEN;
-    });
     clickCookiePolicy();
   });
 
