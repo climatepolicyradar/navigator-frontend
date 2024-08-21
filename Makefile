@@ -12,7 +12,6 @@ build:
 run: build
 	docker run --rm -it \
 		-p 3000:3000 \
-		-e APP_CONFIG_TOKEN=$(APP_CONFIG_TOKEN) \
 		-e THEME=$(THEME) \
 		-e API_URL=$(API_URL) \
 		-e ADOBE_API_KEY=$(ADOBE_API_KEY) \
@@ -30,7 +29,6 @@ run_ci:
 	docker run --rm -d \
 		-p 3000:3000 \
 		-e THEME=$(THEME) \
-		-e APP_CONFIG_TOKEN=$(APP_CONFIG_TOKEN) \
 		-e API_URL=$(API_URL) \
 		-e ADOBE_API_KEY=$(ADOBE_API_KEY) \
 		-e S3_PATH=$(S3_PATH) \
