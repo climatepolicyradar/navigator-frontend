@@ -21,7 +21,7 @@ export default function useConfig() {
     "config",
     async () => {
       const { data } = await getEnvFromServer();
-      const client = new ApiClient(data?.env?.api_url);
+      const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
       const query_response = await client.get("/config", null);
       const geographies = query_response.data.geographies;
       const response_geo = extractNestedData<TGeography>(geographies, 2, "");
