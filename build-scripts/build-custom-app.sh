@@ -157,9 +157,9 @@ else
 	echo "Added @${custom_app_name}/* path to tsconfig.json"
 
 	# Update TTheme type in types.ts
-	sed -i.bak "s/export type TTheme = \"cpr\" | \"cclw\" | \"mcf\";/export type TTheme = \"cpr\" | \"cclw\" | \"mcf\" | \"${custom_app_name}\";/" src/types/types.ts
+	sed -i.bak "s/export type TTheme = /export type TTheme = \"${custom_app_name}\" | /" src/types/types.ts
 
 	echo "Added ${custom_app_name} to the TTheme type in types.ts"
 
-	printf "\033[1;34mNow that's done,set the environment variable by running : export THEME=%s\n \033[0m\n" "${custom_app_name}"
+	printf "\033[1;34mNow that's done, set the environment variable by running : export THEME=%s\n \033[0m\n" "${custom_app_name}"
 fi
