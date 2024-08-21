@@ -1,5 +1,18 @@
 #!/bin/bash
 
+###############################################################################
+# Delete a custom app
+#
+# This script is designed to work on POSIX-compliant systems, including Linux and macOS
+#
+# This script will:
+# 1. Delete the theme folder from the themes directory
+# 2. Delete the e2e test folder from the e2e/cypress/e2e directory
+# 3. Remove the theme path from the tsconfig.json file
+# 4. Remove the theme from the ci-cd.yml file
+# 5. Remove the theme from the types.ts file
+###############################################################################
+
 read -r -p "Please enter the theme name of the custom app you want to delete, this is usually an acronym (e.g. CPR, CCLW, OEP, MCF...): " theme
 
 if [[ ! -d "themes/${theme}" ]]; then
