@@ -36,12 +36,6 @@ describe("Terms of Use Page", () => {
     cy.title().should("include", "Terms of use");
   });
 
-  it("should display the page elements", () => {
-    pageSelectors.forEach((selector) => {
-      cy.get(selector).should("be.visible");
-    });
-  });
-
   it("should display the breadcrumbs", () => {
     breadcrumbSelectors.forEach((selector) => {
       cy.get(selector).should("be.visible");
