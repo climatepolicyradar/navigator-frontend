@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Prompt the user for the name of the new directory
+read -r -p "Enter the name of the new custom app (use camel-case if required): " custom_app_name
+
 # Define the content for the main.tsx file
 read -r -d '' MAIN_CONTENT <<EOM
 
@@ -51,12 +54,65 @@ EOM
 # Define the content for homepage.tsx
 read -r -d '' HOMEPAGE_CONTENT <<EOM
 
-const LandingPage = ({}) => <h1> Hello World </h1>;
+import React from "react";
+// generic layer component
+import Layout from "@components/layouts/LandingPage";
+
+import { Hero } from "@${custom_app_name}/components/Hero";
+
+type TProps = {
+  handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
+  searchInput: string;
+};
+
+const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
+  return (
+    <Layout title="">
+      <main id="main" className="flex flex-col flex-1">
+        <div className="bg-cclw-dark">
+          <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
+        </div>
+      </main>
+    </Layout>
+  );
+};
 
 export default LandingPage;
 
 
 EOM
+
+# Define the content for the hero.
+
+read -r -d '' HERO_CONTENT <<EOF
+
+import LandingSearchForm from "./LandingSearchForm";
+
+
+type TProps = {
+  handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
+  searchInput: string;
+};
+
+export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
+  return (
+    <div className="pb-6 text-white pt-[28px] sm:pt-[48px] md:pt-[80px] lg:pt-[100px] xl:pt-[140px]">
+      <div className="container">
+        <div className="flex flex-col items-center justify-center mb-6">
+		  <p className="font-medium tracking-slight text-lg lg:text-3xl" data-cy="intro-message">
+          ${custom_app_name} custom app
+        </p>
+        </div>
+        <div className="max-w-screen-md mx-auto mt-6">
+          <LandingSearchForm handleSearchInput={handleSearchInput} placeholder="Search full text of any document" input={searchInput} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+EOF
 
 # Define the content for the routes.json
 
@@ -72,8 +128,14 @@ read -r -d '' ROUTES_JSON_CONTENT <<EOM
 
 EOM
 
-# Prompt the user for the name of the new directory
-read -r -p "Enter the name of the new custom app (use camel-case if required): " custom_app_name
+# Define the content for the index.ts file
+
+read -r -d '' INDEX_TS_CONTENT <<EOM
+
+export { default as Analytics } from "./Analytics";
+export { default as Hero } from "./Hero";
+
+EOM
 
 # Define the path to the themes directory
 themes_path="themes"
@@ -108,8 +170,11 @@ else
 	# Create the required files
 	touch "${components_dir}/index.ts"
 	touch "${components_dir}/Analytics.tsx"
+
 	echo "${ANALYTICS_CONTENT}" >"${components_dir}/Analytics.tsx"
-	echo "export { default as Analytics } from './Analytics';" >"${components_dir}/index.ts"
+	echo "${INDEX_TS_CONTENT}" >"${components_dir}/index.ts"
+	cp -r "${themes_path}/cclw/components/LandingSearchForm.tsx" "${components_dir}/LandingSearchForm.tsx"
+	printf "%s" "${HERO_CONTENT}" >"${components_dir}/Hero.tsx"
 
 	touch "${pages_dir}/homepage.tsx"
 	touch "${pages_dir}/methodology.tsx"
@@ -120,8 +185,12 @@ else
 	echo "${MAIN_CONTENT}" >"${layouts_dir}/main.tsx"
 
 	# Copy the tailwind.config.ts file from the cclw theme directory
-	cp -r "${themes_path}/cpr/tailwind.config.js" "${new_dir}/tailwind.config.js"
+	cp -r "${themes_path}/cclw/tailwind.config.js" "${new_dir}/tailwind.config.js"
 	printf "Copied tailwind.config.js file from %s to %s.\n\n" "${themes_path}/cclw" "${new_dir}"
+
+	# Copy the styles.scss file from the cclw theme directory
+	cp -r "${themes_path}/cpr/styles/styles.scss" "${styles_dir}/styles.scss"
+	printf "Copied styles.scss file from %s to %s.\n\n" "${themes_path}/cclw" "${styles_dir}"
 
 	# Create the redirects.json file
 	touch "${new_dir}/redirects.json"
