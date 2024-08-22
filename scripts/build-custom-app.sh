@@ -119,7 +119,7 @@ export default LandingPage;
 
 EOM
 
-# Define the content for Hero.tsx file, this component contains our search form which powers all of the custom apps, and
+# Define the content for Hero.tsx file, this component which lives on the homepage.tsx page contains our search form which powers all of the custom apps, and
 # adds some custom styling so that the hero component slots nicely into the landing page and you don't have to worry about css tweaks on the initial setup
 read -r -d '' HERO_CONTENT <<EOM
 
