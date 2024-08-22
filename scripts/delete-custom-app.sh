@@ -11,9 +11,15 @@
 # 3. Remove the theme path from the tsconfig.json file
 # 4. Remove the theme from the ci-cd.yml file
 # 5. Remove the theme from the types.ts file
+#
+#
+# Prerequisites:
+# - trunk (https://trunk.io/)
+#
 ###############################################################################
 
 read -r -p "Please enter the theme name of the custom app you want to delete, this is usually an acronym (e.g. CPR, CCLW, OEP, MCF...): " theme
+theme="$(tr "[:upper:]" "[:lower:]" <<<"${theme}")"
 
 if [[ ! -d "themes/${theme}" ]]; then
 	echo "Error: Theme '${theme}' does not exist in the themes directory."
@@ -48,3 +54,11 @@ sed -e '/export type TTheme/s/[[:space:]]*"'"${theme}"'"[[:space:]]*|*//g' \
 	src/types/types.ts >temp.ts && mv temp.ts src/types/types.ts
 
 echo "Custom app '${theme}' has been deleted."
+
+# Check trunk.io is installed
+if ! command -v trunk &>/dev/null; then
+	echo "trunk not installed. Please install trunk CLI..."
+	exit 1
+fi
+
+trunk fmt
