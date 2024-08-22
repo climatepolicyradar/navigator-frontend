@@ -58,8 +58,8 @@ or
 yarn dev
 ```
 
-Set the 'theme' to run the appropriate environment/app i.e to run the cclw app
-locally update the .env file to 'THEME=cclw' or..
+Set the 'theme' to run the appropriate environment/app i.e. to run the cclw app
+locally update the .env file to 'THEME=cclw' or run the following:
 
 ```bash
 THEME=cclw npm run dev

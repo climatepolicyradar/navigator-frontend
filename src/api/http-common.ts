@@ -7,15 +7,23 @@ export async function getEnvFromServer() {
 
 class ApiClient {
   private baseUrl: string;
+  private appToken: string;
   private axiosClient: AxiosInstance;
 
-  constructor(baseUrl = "") {
+  constructor(baseUrl = "", appToken = "") {
     if (baseUrl) {
       this.baseUrl = baseUrl;
     } else {
       this.baseUrl = process.env.API_URL;
     }
-    this.axiosClient = axios.create({ baseURL: this.baseUrl });
+
+    if (appToken) {
+      this.appToken = appToken;
+    } else {
+      this.appToken = process.env.NEXT_PUBLIC_APP_TOKEN;
+    }
+
+    this.axiosClient = axios.create({ baseURL: this.baseUrl, headers: { "app-token": this.appToken } });
   }
 
   /**
