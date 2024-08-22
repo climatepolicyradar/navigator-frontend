@@ -50,3 +50,9 @@ endif
 uninstall_trunk:
 	sudo rm -if `which trunk`
 	rm -ifr ${HOME}/.cache/trunk
+
+build_custom_app: ## Creates a directory for the custom app with the required files
+	. "${PWD}"/scripts/build-custom-app.sh
+
+delete_custom_app: ## Deletes a custom app and its related files / directories
+	. "${PWD}"/scripts/delete-custom-app.sh
