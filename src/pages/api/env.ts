@@ -5,6 +5,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     env: {
       theme: process.env.THEME,
       api_url: process.env.API_URL,
+      app_token: process.env.NEXT_PUBLIC_APP_TOKEN,
     },
   });
 }

@@ -12,4 +12,4 @@
 # review when someone opens a pull request. Teams should
 # be identified in the format @org/team-name. Teams must have
 # explicit write access to the repository.
-* @climatepolicyradar/tech-devs
+* @climatepolicyradar/software
