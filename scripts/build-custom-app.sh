@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################################################################
-# Generate frontend skeleton for a new custom app, creating the requisite files and directories
+# Generate frontend skeleton for a new custom app, creating the required files and directories
 # This script is designed to work on POSIX-compliant systems, including Linux and macOS
 #
 # The script will create the following files and directories:
@@ -18,6 +18,10 @@
 # update the ci-cd.yml file for the new theme, ensuring that ci checks can be run on the new custom app
 # update the tsconfig.json file with the new theme path, creating aliases that make imports cleaner and more manageable
 # update the exported theme types in the types.ts file so that the app does not fail the type check when compiling
+#
+# Prerequisites:
+# - trunk (https://trunk.io/)
+#
 ###############################################################################
 
 read -r -p "Enter the name of the new custom app website (use camel-case if required): " custom_app_name
@@ -104,7 +108,7 @@ type TProps = {
 
 const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
   return (
-    <Layout title="">
+    <Layout title="${custom_app_name}">
       <main id="main" className="flex flex-col flex-1">
         <div className="bg-cclw-dark">
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
@@ -115,6 +119,23 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
 };
 
 export default LandingPage;
+
+EOM
+
+read -r -d '' E2E_TEST_PAGE_CONTENT <<EOM
+
+/// <reference types="cypress" />
+
+
+describe("Landing page", () => {
+  before(() => {
+    cy.visit("/");
+  });
+
+  it("should display the placeholder homepage", () => {
+    cy.contains("${custom_app_name}").should("be.visible");
+  });
+});
 
 
 EOM
@@ -149,7 +170,6 @@ const Hero = ({ handleSearchInput, searchInput }: TProps) => {
 };
 
 export default Hero;
-
 
 EOM
 
@@ -189,6 +209,7 @@ echo "${MAIN_CONTENT}" >"${layouts_dir}/main.tsx"
 e2e_test_pages_dir="${e2e_test_dir}/pages"
 mkdir "${e2e_test_pages_dir}"
 touch "${e2e_test_pages_dir}/homepage.cy.js"
+echo "${E2E_TEST_PAGE_CONTENT}" >"${e2e_test_pages_dir}/homepage.cy.js"
 
 # Copy the tailwind.config.ts and styles.scss from the cclw theme directory
 cp -r "${themes_path}/cclw/tailwind.config.js" "${new_dir}/tailwind.config.js"
@@ -200,7 +221,7 @@ printf "Copied styles.scss file from %s to %s.\n\n" "${themes_path}/cclw" "${sty
 touch "${new_dir}/redirects.json"
 echo "[]" >"${new_dir}/redirects.json"
 
-#Update the ci-cd.yml, tsconfig.json and types.ts files accordingly
+# Update the ci-cd.yml, tsconfig.json and types.ts files accordingly
 sed -e "s/theme: \[\(.*\)\]/theme: [\1, ${theme}]/" .github/workflows/ci-cd.yml >.github/workflows/ci-cd.yml.tmp && mv .github/workflows/ci-cd.yml.tmp .github/workflows/ci-cd.yml
 
 sed -e '/"paths":/,/}/{
@@ -210,3 +231,11 @@ sed -e '/"paths":/,/}/{
 sed -e "s/export type TTheme = /export type TTheme = \"${theme}\" | /" src/types/types.ts >src/types/types.ts.tmp && mv src/types/types.ts.tmp src/types/types.ts
 
 printf "\033[1;34mNow that's done, set the environment variable by running: export THEME=%s\n \033[0m\n" "${theme}"
+
+# Check trunk.io is installed
+if ! command -v trunk &>/dev/null; then
+	echo "trunk not installed. Please install trunk CLI..."
+	exit 1
+fi
+
+trunk fmt
