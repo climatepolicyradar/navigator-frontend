@@ -4,12 +4,11 @@
 # Generate frontend skeleton for a new custom app, creating the requisite files and directories
 # This script is designed to work on POSIX-compliant systems, including Linux and macOS
 #
-#The script will create the following files and directories:
+# The script will create the following files and directories:
 # Tailwind theme settings (`tailwind.config.js`) - controls things like colours and default spacing within the tailwind system
 # Homepage (`homepage.tsx`) - a bespoke homepage component
 # Page layout (`main.tsx`) - controls the display of a standard page, including the header and footer components
 # e2e tests (folder in `e2e/[theme]/`) - runs the required e2e tests. Adding a test file in this directory is required but its contents can be empty (^)
-# Environment variables (`.env`) - to control the 'secret' configurations related to the environment where the app lives, for example the URL of the API we want the app to use
 # Methodology link component (`MethodologyLink.tsx`) - controls how the behaviour of the methodology link works in the search filters. Although this file is required - its contents can be empty (^).
 # Analytics (`Analytics.tsx`) - controls what (if any) analytics should be activated when the user consents to cookies. Although this file is required - its contents can be empty (^).
 # Custom css styles (`styles.scss`) - controls any custom css styling, e.g. custom fonts, components with classes or IDs that need styling, this is required - so that the app actually compiles
@@ -42,6 +41,17 @@ if [[ -d ${new_dir} ]]; then
 	echo "Please delete this folder and its contents and try again if you want to create a new custom app at this path"
 	exit 1
 fi
+
+components_dir="${new_dir}/components"
+layouts_dir="${new_dir}/layouts"
+pages_dir="${new_dir}/pages"
+styles_dir="${new_dir}/styles"
+tests_dir="${new_dir}/tests"
+e2e_test_dir="${e2e_path}/cypress/e2e/${theme}"
+
+printf "The custom app does not exist, creating it now with the required sub-directories and files..."
+mkdir -p "${new_dir}" "${components_dir}" "${layouts_dir}" "${pages_dir}" "${styles_dir}" "${tests_dir}" "${e2e_test_dir}"
+printf " -> Created custom app directory for %s: %s\n\n" "${theme}" "${new_dir}"
 
 # Define the content for relevant required files
 read -r -d '' MAIN_CONTENT <<EOM
@@ -158,17 +168,6 @@ export { default as Analytics } from "./Analytics";
 export { default as Hero } from "./Hero";
 
 EOM
-
-components_dir="${new_dir}/components"
-layouts_dir="${new_dir}/layouts"
-pages_dir="${new_dir}/pages"
-styles_dir="${new_dir}/styles"
-tests_dir="${new_dir}/tests"
-e2e_test_dir="${e2e_path}/cypress/e2e/${theme}"
-
-printf "The custom app does not exist, creating it now with the required sub-directories and files..."
-mkdir -p "${new_dir}" "${components_dir}" "${layouts_dir}" "${pages_dir}" "${styles_dir}" "${tests_dir}" "${e2e_test_dir}"
-printf " -> Created custom app directory for %s: %s\n\n" "${theme}" "${new_dir}"
 
 touch "${components_dir}/index.ts"
 touch "${components_dir}/Analytics.tsx"
