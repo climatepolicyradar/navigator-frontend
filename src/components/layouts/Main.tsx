@@ -13,9 +13,10 @@ type TProps = {
   description?: string;
   heading?: string;
   children?: ReactNode;
+  canonical?: string;
 };
 
-const Layout: FC<TProps> = ({ children, title = "", description = null }) => {
+const Layout: FC<TProps> = ({ children, title = "", description = null, canonical }) => {
   const theme = useContext(ThemeContext);
 
   return (
@@ -25,6 +26,7 @@ const Layout: FC<TProps> = ({ children, title = "", description = null }) => {
         <meta property="og:title" content={`${title} - ${getPageTitle(theme)}`} />
         <meta name="description" content={description ?? getPageDescription(theme)} key="desc" />
         <meta property="og:description" content={description ?? getPageDescription(theme)} />
+        {canonical && <link rel="canonical" href={canonical} />}
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
