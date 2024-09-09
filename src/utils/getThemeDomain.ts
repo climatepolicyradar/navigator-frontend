@@ -1,6 +1,6 @@
 import { TTheme } from "@types";
 
-const CPR_DOMAIN = "climatepolicyradar.org";
+const CPR_DOMAIN = "app.climatepolicyradar.org";
 const CCLW_DOMAIN = "climate-laws.org";
 
 export default function getThemeDomain(site: TTheme): string {
