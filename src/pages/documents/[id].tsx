@@ -16,14 +16,12 @@ import BySemanticSearch from "@components/filters/BySemanticSearch";
 import { EmptyPassages } from "@components/documents/EmptyPassages";
 import { EmptyDocument } from "@components/documents/EmptyDocument";
 
-import { getCanonicalUrl } from "@utils/getCanonicalUrl";
-
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { getDocumentDescription } from "@constants/metaDescriptions";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 
-import { TDocumentPage, TFamilyPage, TGeographySummary, TPassage, TTheme } from "@types";
+import { TDocumentPage, TFamilyPage, TGeographySummary, TPassage } from "@types";
 import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
 
 type TProps = {
@@ -141,11 +139,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   }, [startingPassage]);
 
   return (
-    <Layout
-      title={`${document.title}`}
-      description={getDocumentDescription(document.title)}
-      canonical={getCanonicalUrl(router, process.env.THEME as TTheme)}
-    >
+    <Layout title={`${document.title}`} description={getDocumentDescription(document.title)}>
       <section
         className="pb-8 flex-1 flex flex-col"
         data-analytics-date={family.published_date}

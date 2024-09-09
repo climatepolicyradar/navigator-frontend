@@ -35,9 +35,8 @@ import { getMainDocuments } from "@helpers/getMainDocuments";
 
 import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { pluralise } from "@utils/pluralise";
-import { getCanonicalUrl } from "@utils/getCanonicalUrl";
 
-import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary, TTheme } from "@types";
+import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary } from "@types";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
@@ -155,7 +154,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   };
 
   return (
-    <Layout title={`${page.title}`} description={page.summary.substring(0, 164)} canonical={getCanonicalUrl(router, process.env.THEME as TTheme)}>
+    <Layout title={`${page.title}`} description={page.summary.substring(0, 164)}>
       <Script id="analytics">
         analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "{page.geography}";
       </Script>

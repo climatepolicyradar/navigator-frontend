@@ -1,10 +1,11 @@
-import React, { FC, ReactNode } from "react";
+import React, { FC, ReactNode, useContext } from "react";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import getPageTitle from "@utils/getPageTitle";
 
-import { useContext } from "react";
 import { ThemeContext } from "@context/ThemeContext";
 import getPageDescription from "@utils/getPageDescription";
+import { getCanonicalUrl } from "@utils/getCanonicalUrl";
 
 const { default: Wrapper } = await import(`/themes/${process.env.THEME}/layouts/main`);
 
@@ -16,7 +17,8 @@ type TProps = {
   canonical?: string;
 };
 
-const Layout: FC<TProps> = ({ children, title = "", description = null, canonical }) => {
+const Layout: FC<TProps> = ({ children, title = "", description = null }) => {
+  const router = useRouter();
   const theme = useContext(ThemeContext);
 
   return (
@@ -26,7 +28,7 @@ const Layout: FC<TProps> = ({ children, title = "", description = null, canonica
         <meta property="og:title" content={`${title} - ${getPageTitle(theme)}`} />
         <meta name="description" content={description ?? getPageDescription(theme)} key="desc" />
         <meta property="og:description" content={description ?? getPageDescription(theme)} />
-        {canonical && <link rel="canonical" href={canonical} />}
+        <link rel="canonical" href={getCanonicalUrl(router, theme)} />
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
