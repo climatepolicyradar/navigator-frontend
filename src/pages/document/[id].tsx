@@ -170,6 +170,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
         <SingleCol>
           <FamilyHead family={page} geographyName={geographyName} onCollectionClick={handleCollectionClick} />
           <section className="mt-6">
+            {/* SSR summary */}
+            <div className={`text-content mt-4 ${summary && "hidden"}`} dangerouslySetInnerHTML={{ __html: page.summary }} />
             <div className="text-content mt-4" dangerouslySetInnerHTML={{ __html: summary }} />
             {page.summary.length > MAX_FAMILY_SUMMARY_LENGTH && (
               <div className="mt-4">
