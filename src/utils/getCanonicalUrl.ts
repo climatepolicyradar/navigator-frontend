@@ -19,5 +19,10 @@ export const getCanonicalUrl = (router: NextRouter, theme: TTheme): string => {
 
   const canonicalUrl = `https://${themeDomain}${router.asPath.substring(0, _pathSliceLength)}`;
 
+  // Remove trailing slash to avoid duplicate content being indexed
+  if (canonicalUrl.endsWith("/")) {
+    return canonicalUrl.slice(0, -1);
+  }
+
   return canonicalUrl;
 };
