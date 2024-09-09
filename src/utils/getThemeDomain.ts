@@ -1,4 +1,5 @@
 import { TTheme } from "@types";
+
 const CPR_DOMAIN = "climatepolicyradar.org";
 const CCLW_DOMAIN = "climate-laws.org";
 
