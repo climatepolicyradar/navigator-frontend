@@ -14,7 +14,6 @@ type TProps = {
   description?: string;
   heading?: string;
   children?: ReactNode;
-  canonical?: string;
 };
 
 const Layout: FC<TProps> = ({ children, title = "", description = null }) => {
