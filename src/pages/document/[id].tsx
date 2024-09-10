@@ -8,7 +8,6 @@ import axios from "axios";
 import { ApiClient } from "@api/http-common";
 
 import useSearch from "@hooks/useSearch";
-import useConfig from "@hooks/useConfig";
 
 import Layout from "@components/layouts/Main";
 import { Timeline } from "@components/blocks/Timeline";
@@ -35,18 +34,21 @@ import { getMainDocuments } from "@helpers/getMainDocuments";
 
 import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { pluralise } from "@utils/pluralise";
+import { getFamilyMetaDescription } from "@utils/getFamilyMetaDescription";
 
-import { TFamilyPage, TMatchedFamily, TTarget, TGeographySummary } from "@types";
+import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TOrganisationDictionary } from "@types";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
+import { extractNestedData } from "@utils/extractNestedData";
 
 type TProps = {
   page: TFamilyPage;
   targets: TTarget[];
-  geographySummary: TGeographySummary;
+  countries: TGeography[];
+  organisations: TOrganisationDictionary;
 };
 
 /*
@@ -56,7 +58,7 @@ type TProps = {
   - The 'physical document' view is within the folder: src/pages/documents/[id].tsx.
 */
 
-const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page, targets = [] }: TProps) => {
+const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page, targets = [], countries = [], organisations = null }: TProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const startingNumberOfTargetsToDisplay = 5;
@@ -69,8 +71,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
 
-  const configQuery = useConfig();
-  const { data: { countries = [], organisations = null } = {} } = configQuery;
   const geographyName = getCountryName(page.geography, countries);
   const geographySlug = getCountrySlug(page.geography, countries);
   const breadcrumbCategory = { label: "Search results", href: "/search" };
@@ -154,7 +154,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   };
 
   return (
-    <Layout title={`${page.title}`} description={page.summary.substring(0, 164)}>
+    <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyName, page.category)}>
       <Script id="analytics">
         analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "{page.geography}";
       </Script>
@@ -170,6 +170,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
         <SingleCol>
           <FamilyHead family={page} geographyName={geographyName} onCollectionClick={handleCollectionClick} />
           <section className="mt-6">
+            {/* SSR summary */}
+            <div className={`text-content mt-4 ${summary && "hidden"}`} dangerouslySetInnerHTML={{ __html: page.summary }} />
             <div className="text-content mt-4" dangerouslySetInnerHTML={{ __html: summary }} />
             {page.summary.length > MAX_FAMILY_SUMMARY_LENGTH && (
               <div className="mt-4">
@@ -357,6 +359,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   let familyData: TFamilyPage;
   let targetsData: TTarget[] = [];
+  let countriesData: TGeography[] = [];
+  let organisationsData: TOrganisationDictionary;
 
   try {
     const { data: returnedData } = await client.get(`/documents/${id}`);
@@ -372,6 +376,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     } catch (error) {}
   }
 
+  if (familyData) {
+    try {
+      const configRaw = await client.get(`/config`, null);
+      const response_geo = extractNestedData<TGeography>(configRaw.data.geographies, 2, "");
+      countriesData = response_geo.level2;
+      organisationsData = configRaw.data.organisations;
+    } catch (error) {}
+  }
+
   if (!familyData) {
     return {
       notFound: true,
@@ -382,6 +395,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       page: familyData,
       targets: targetsData,
+      countries: countriesData,
+      organisations: organisationsData,
     },
   };
 };

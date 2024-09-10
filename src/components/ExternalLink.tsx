@@ -9,7 +9,7 @@ type TProps = {
 
 export const ExternalLink: FC<TProps> = ({ url, className, children, cy }) => {
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer nofollow" className={className} data-cy={cy}>
+    <a href={url} target="_blank" rel="noopener noreferrer" className={className} data-cy={cy}>
       {children}
     </a>
   );

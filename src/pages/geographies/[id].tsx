@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 
 import { ApiClient } from "@api/http-common";
+
+import { ThemeContext } from "@context/ThemeContext";
 
 import Layout from "@components/layouts/Main";
 import { SingleCol } from "@components/SingleCol";
@@ -27,6 +29,7 @@ import { getCountryCode } from "@helpers/getCountryFields";
 
 import { extractNestedData } from "@utils/extractNestedData";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
+import { getGeoMetaTitle } from "@utils/getGeoMetaTitle";
 
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
@@ -56,6 +59,7 @@ const FEATURED_SEARCHES = ["Resilient infrastructure", "Fossil fuel divestment",
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets }: TProps) => {
   const router = useRouter();
+  const theme = useContext(ThemeContext);
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
   const [selectedCategoryIndex, setselectedCategoryIndex] = useState(0);
@@ -192,7 +196,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   };
 
   return (
-    <Layout title={geography.name} description={getGeoDescription(geography.name)}>
+    <Layout title={getGeoMetaTitle(geography.name, theme)} description={getGeoDescription(geography.name)}>
       {!geography ? (
         <SingleCol>
           <TextLink onClick={() => router.back()}>Go back</TextLink>
