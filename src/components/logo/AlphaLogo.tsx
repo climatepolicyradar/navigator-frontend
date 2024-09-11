@@ -1,4 +1,3 @@
-import { LinkWithQuery } from "@components/LinkWithQuery";
 import LargeLogo from "../svg/LargeLogo";
 
 const AlphaLogo = () => {
