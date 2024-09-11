@@ -13,6 +13,13 @@ type TProps = {
   familyMatches?: number;
 };
 
+const loadingIndicator = (
+  <span className="flex gap-2 items-center">
+    <Loading />
+    Searching...
+  </span>
+);
+
 export const FamilyDocument = ({ document, matches, status, familyMatches }: TProps) => {
   const { title, slug, document_role, language, content_type, variant } = document;
   const configQuery = useConfig();
@@ -23,13 +30,6 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
   // If we have matches or the document is a pdf - and we have the document, we can preview it
   const canPreview = hasMatches || (document.content_type === "application/pdf" && !!document.cdn_object);
   const canViewSource = !canPreview && !!document.source_url;
-
-  const loadingIndicator = (
-    <span className="flex gap-2 items-center">
-      <Loading />
-      Searching...
-    </span>
-  );
 
   const renderDocumentInfo = (): string | JSX.Element => {
     if (status === "loading") return loadingIndicator;
