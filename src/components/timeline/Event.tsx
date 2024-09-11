@@ -7,7 +7,7 @@ interface EventProps {
   index: number;
 }
 
-const Event = ({ event, last, index }: EventProps) => {
+export const Event = ({ event, last, index }: EventProps) => {
   const { title, date } = event;
   const [year, _, month] = convertDate(date);
 
@@ -37,4 +37,3 @@ const Event = ({ event, last, index }: EventProps) => {
     </div>
   );
 };
-export default Event;

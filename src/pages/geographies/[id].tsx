@@ -9,8 +9,8 @@ import { ThemeContext } from "@context/ThemeContext";
 
 import Layout from "@components/layouts/Main";
 import { SingleCol } from "@components/SingleCol";
-import Event from "@components/blocks/Event";
-import { Timeline } from "@components/blocks/Timeline";
+import { Timeline } from "@components/timeline/Timeline";
+import { Event } from "@components/timeline/Event";
 import { CountryHeader } from "@components/blocks/CountryHeader";
 import { Divider } from "@components/dividers/Divider";
 import { DownChevronIcon, LegislativeIcon, AlertCircleIcon } from "@components/svg/Icons";

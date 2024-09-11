@@ -10,8 +10,8 @@ import { ApiClient } from "@api/http-common";
 import useSearch from "@hooks/useSearch";
 
 import Layout from "@components/layouts/Main";
-import { Timeline } from "@components/blocks/Timeline";
-import Event from "@components/blocks/Event";
+import { Timeline } from "@components/timeline/Timeline";
+import { Event } from "@components/timeline/Event";
 import { FamilyHead } from "@components/document/FamilyHead";
 import { FamilyDocument } from "@components/document/FamilyDocument";
 import { ExternalLink } from "@components/ExternalLink";
@@ -296,9 +296,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               {showTimeline && (
                 <Timeline>
                   {page.events.map((event, index: number) => (
-                    <React.Fragment key={`event-${index}`}>
-                      <Event event={event} index={index} last={index === page.events.length - 1 ? true : false} />
-                    </React.Fragment>
+                    <Event event={event} index={index} last={index === page.events.length - 1 ? true : false} key={`event-${index}`} />
                   ))}
                 </Timeline>
               )}
