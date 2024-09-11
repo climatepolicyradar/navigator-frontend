@@ -6,13 +6,14 @@ import { ApiClient } from "@api/http-common";
 
 import useSearch from "@hooks/useSearch";
 
-import { DocumentHead } from "@components/document/DocumentHead";
 import Layout from "@components/layouts/Main";
 import EmbeddedPDF from "@components/EmbeddedPDF";
 import PassageMatches from "@components/PassageMatches";
 import Loader from "@components/Loader";
 import SearchForm from "@components/forms/SearchForm";
 import BySemanticSearch from "@components/filters/BySemanticSearch";
+import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
+import { DocumentHead } from "@components/documents/DocumentHead";
 import { EmptyPassages } from "@components/documents/EmptyPassages";
 import { EmptyDocument } from "@components/documents/EmptyDocument";
 
@@ -22,7 +23,6 @@ import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 
 import { TDocumentPage, TFamilyPage, TGeographySummary, TPassage } from "@types";
-import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
 
 type TProps = {
   document: TDocumentPage;
