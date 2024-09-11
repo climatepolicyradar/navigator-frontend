@@ -1,14 +1,16 @@
 import { useRouter } from "next/router";
 import { TMatchedFamily } from "@types";
+
 import { FamilyMeta } from "@components/document/FamilyMeta";
 import PassageMatches from "@components/PassageMatches";
 import { LinkWithQuery } from "@components/LinkWithQuery";
-import { matchesCount } from "@utils/matchesCount";
-import { CleanRouterQuery } from "@utils/cleanRouterQuery";
-import { truncateString } from "@helpers/index";
-import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
 import Button from "@components/buttons/Button";
-import { pluralise } from "@utils/pluralise";
+
+import { CleanRouterQuery } from "@utils/cleanRouterQuery";
+
+import { truncateString } from "@helpers/index";
+
+import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
 
 type TProps = {
   family?: TMatchedFamily;
