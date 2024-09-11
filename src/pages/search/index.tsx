@@ -19,7 +19,7 @@ import Close from "@components/buttons/Close";
 import FilterToggle from "@components/buttons/FilterToggle";
 import Pagination from "@components/pagination";
 import Drawer from "@components/drawer/Drawer";
-import SearchResultList from "@components/blocks/SearchResultList";
+import SearchResultList from "@components/search/SearchResultList";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { Loading } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
