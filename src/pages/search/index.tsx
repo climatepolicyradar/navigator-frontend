@@ -186,6 +186,16 @@ const Search = () => {
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
     const val = e.currentTarget.value;
+
+    // No sort selected
+    if (val === "null") {
+      delete router.query[QUERY_PARAMS.sort_field];
+      delete router.query[QUERY_PARAMS.sort_order];
+      router.push({ query: router.query });
+      resetCSVStatus();
+      return;
+    }
+
     let field = null;
     let order = null;
     if (val !== "relevance") {
@@ -224,7 +234,7 @@ const Search = () => {
     const field = router.query[QUERY_PARAMS.sort_field];
     const order = router.query[QUERY_PARAMS.sort_order];
     if (field === undefined && order === undefined) {
-      if (isBrowsing) return "date:desc";
+      if (isBrowsing) return "null";
       return "relevance";
     }
     return `${field}:${order}`;
