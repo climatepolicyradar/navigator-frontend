@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+
 import { TMatchedFamily } from "@types";
 
 import { FamilyMeta } from "@components/document/FamilyMeta";
@@ -7,8 +8,7 @@ import { LinkWithQuery } from "@components/LinkWithQuery";
 import Button from "@components/buttons/Button";
 
 import { CleanRouterQuery } from "@utils/cleanRouterQuery";
-
-import { truncateString } from "@helpers/index";
+import { truncateString } from "@utils/truncateString";
 
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
 
