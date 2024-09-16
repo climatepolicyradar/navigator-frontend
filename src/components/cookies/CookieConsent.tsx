@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
 import Script from "next/script";
+
 import Button from "@components/buttons/Button";
-import { getCookie, setCookie } from "@utils/cookies";
-import { COOKIE_CONSENT_NAME } from "@constants/cookies";
 import { ExternalLink } from "@components/ExternalLink";
+
+import { getCookie, setCookie } from "@utils/cookies";
 import getDomain from "@utils/getDomain";
 
+import { COOKIE_CONSENT_NAME } from "@constants/cookies";
+
 const { default: ThemeAnalytics } = await import(`/themes/${process.env.THEME}/components/Analytics`);
+
+declare let gtag: Function;
 
 export const CookieConsent = () => {
   const [hide, setHide] = useState(true);
@@ -18,14 +23,14 @@ export const CookieConsent = () => {
     if (cc === "true") setEnableAnalytics(true);
   }, []);
 
-  const gtag = (...args: any) => window.dataLayer.push(...args);
-
   useEffect(() => {
     // If the user has accepted cookies, update the consent options for Google Tag Manager
     if (enableAnalytics) {
       gtag("consent", "update", {
         ad_storage: "granted",
         analytics_storage: "granted",
+        ad_user_data: "granted",
+        ad_personalization: "granted",
       });
     }
   }, [enableAnalytics]);
@@ -76,6 +81,8 @@ export const CookieConsent = () => {
             gtag("consent", "default", {
               ad_storage: "denied",
               analytics_storage: "denied",
+              ad_user_data: "denied",
+              ad_personalization: "denied",
             });
           `}
       </Script>
