@@ -121,11 +121,10 @@ module.exports = {
       spacing: {
         global: "20px", // spacing around the edge of website
         divider: "48px", // spacing between sections
-        150: "150%",
       },
       maxWidth: {
-        maxSiteWidth: "1440px",
-        maxContent: "800px", // central content are
+        maxSiteWidth: "1440px", // max width of the site
+        maxContent: "800px", // central content area
         maxSidebar: "300px",
       },
     },
