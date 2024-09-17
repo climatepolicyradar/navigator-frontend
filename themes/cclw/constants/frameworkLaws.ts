@@ -138,7 +138,7 @@ export const FRAMEWORK_LAWS = [
     url: "https://climate-laws.org/document/federal-climate-adaptation-act-kang-6100",
   },
   {
-    title: 'Federal Climate Protection Act ("Bundesklimaschutzgesetz‚Äù or ‚ÄúKSG")',
+    title: 'Federal Climate Protection Act ("Bundesklimaschutzgesetz” or “KSG")',
     geo_iso: "DEU",
     geography: "Germany",
     url: "https://climate-laws.org/document/federal-climate-protection-act-and-to-change-further-regulations-bundesklimaschutzgesetz-or-ksg_c1c2",
