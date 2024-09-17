@@ -9,8 +9,8 @@ import { ThemeContext } from "@context/ThemeContext";
 
 import Layout from "@components/layouts/Main";
 import { SingleCol } from "@components/SingleCol";
-import Event from "@components/blocks/Event";
-import { Timeline } from "@components/blocks/Timeline";
+import { Timeline } from "@components/timeline/Timeline";
+import { Event } from "@components/timeline/Event";
 import { CountryHeader } from "@components/blocks/CountryHeader";
 import { Divider } from "@components/dividers/Divider";
 import { DownChevronIcon, LegislativeIcon, AlertCircleIcon } from "@components/svg/Icons";
@@ -18,7 +18,6 @@ import { FamilyListItem } from "@components/document/FamilyListItem";
 import { Targets } from "@components/Targets";
 import Button from "@components/buttons/Button";
 import TabbedNav from "@components/nav/TabbedNav";
-import TextLink from "@components/nav/TextLink";
 import { TargetIcon } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
@@ -199,7 +198,12 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     <Layout title={getGeoMetaTitle(geography.name, theme)} description={getGeoDescription(geography.name)}>
       {!geography ? (
         <SingleCol>
-          <TextLink onClick={() => router.back()}>Go back</TextLink>
+          <button
+            className="text-blue-500 underline text-sm text-left mt-2 hover:text-indigo-600 transition duration-300"
+            onClick={() => router.back()}
+          >
+            Go back
+          </button>
           <p>We were not able to load the data for the country.</p>
         </SingleCol>
       ) : (

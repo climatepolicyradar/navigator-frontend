@@ -23,6 +23,10 @@ export const sortOptions = [
 
 export const sortOptionsBrowse = [
   {
+    label: "Sort by",
+    value: "null",
+  },
+  {
     label: "Date: latest first",
     value: "date:desc",
   },

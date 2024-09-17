@@ -1,15 +1,16 @@
 import { MouseEvent } from "react";
 import dynamic from "next/dynamic";
-import { Hero } from "@components/blocks/Hero";
+
 import AlphaLogo from "@components/logo/AlphaLogo";
 import ExactMatch from "@components/filters/ExactMatch";
-import LandingPageLinks from "@components/blocks/LandingPageLinks";
 import Header from "@components/headers/LandingPage";
 import Banner from "@components/banner/FullHeight";
-import Summary from "@components/blocks/Summary";
-import Partners from "@components/blocks/Partners";
 import Footer from "@components/footer/Footer";
 import Layout from "@components/layouts/LandingPage";
+
+import LandingPageLinks from "@cpr/components/LandingPageLinks";
+import Partners from "@cpr/components/Partners";
+import Summary from "@cpr/components/Summary";
 import LandingSearchForm from "@cpr/components/LandingSearchForm";
 
 const WorldMap = dynamic(() => import("@components/map/WorldMap"), {
@@ -37,7 +38,7 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
         <Header />
         <main className="relative h-full">
           <Banner />
-          <Hero>
+          <section className="absolute inset-0 z-10 flex flex-col items-center justify-center min-h-[800px]">
             <AlphaLogo />
             <div className="container mt-24 md:mt-48 max-w-screen-lg mx-auto">
               <LandingSearchForm handleSearchInput={handleSearchInput} input={searchInput} />
@@ -48,7 +49,7 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
                 <LandingPageLinks handleLinkClick={handleLinkClick} />
               </div>
             </div>
-          </Hero>
+          </section>
         </main>
         <div className="container hidden my-6 md:block">
           <WorldMap />

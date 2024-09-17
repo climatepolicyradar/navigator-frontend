@@ -1,8 +1,10 @@
 import { FC, ReactNode } from "react";
 import { TFamily } from "@types";
-import { truncateString } from "@helpers/index";
+
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { FamilyMeta } from "./FamilyMeta";
+
+import { truncateString } from "@utils/truncateString";
 
 type TProps = {
   family: TFamily;

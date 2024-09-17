@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
+import useConfig from "@hooks/useConfig";
+
 import { CountryLink } from "@components/CountryLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import useConfig from "@hooks/useConfig";
-import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
-import { getLanguage } from "@helpers/getLanguage";
-import { isSystemGeo } from "@utils/isSystemGeo";
-import { TDocumentPage, TFamilyPage } from "@types";
 import Button from "@components/buttons/Button";
 import { ExternalLinkIcon, AlertCircleIcon } from "@components/svg/Icons";
 import { Alert } from "@components/Alert";
 import { ExternalLink } from "@components/ExternalLink";
-import { truncateString } from "@helpers/index";
+
+import { getLanguage } from "@helpers/getLanguage";
+import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
+
+import { truncateString } from "@utils/truncateString";
+import { isSystemGeo } from "@utils/isSystemGeo";
+
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
+
+import { TDocumentPage, TFamilyPage } from "@types";
 
 type TProps = {
   document: TDocumentPage;

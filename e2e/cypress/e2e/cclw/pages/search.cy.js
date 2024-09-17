@@ -81,6 +81,6 @@ describe("Search Page", () => {
   });
 
   it("should contain the correct number of sort options", () => {
-    cy.get(sortSelector).children("select").children().should("have.length", 4);
+    cy.get(sortSelector).children("select").children().should("have.length", 5);
   });
 });
