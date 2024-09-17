@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from "react";
-import Header from "@components/headers/Main";
+import { PageHeader } from "@components/headers/PageHeader";
 import Footer from "@components/footer/Footer";
 
 type TProps = {
@@ -8,7 +8,7 @@ type TProps = {
 
 const Main: FC<TProps> = ({ children }) => (
   <>
-    <Header />
+    <PageHeader />
     <main id="main" className="flex flex-col flex-1">
       {children}
     </main>
