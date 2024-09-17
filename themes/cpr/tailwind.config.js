@@ -95,11 +95,17 @@ module.exports = {
       padding: "1rem",
     },
     extend: {
-      spacing: {
-        150: "150%",
+      borderRadius: {
+        "4xl": "30px",
       },
       boxShadow: {
         xs: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
+      },
+      flexBasis: {
+        "1/2-gap-4": "calc(50% - (1/2 * 1rem))",
+        "1/3-gap-4": "calc(33.3% - (2/3 * 1rem))",
+        "1/4-gap-4": "calc(25% - (3/4 * 1rem))",
+        "1/6-gap-4": "calc(16.6% - (5/6 * 1rem))",
       },
       fontSize: {
         h1: "48px",
@@ -109,17 +115,17 @@ module.exports = {
         h5: "18px",
         h6: "16px",
       },
-      borderRadius: {
-        "4xl": "30px",
-      },
       letterSpacing: {
         slight: "0.015em",
       },
-      flexBasis: {
-        "1/2-gap-4": "calc(50% - (1/2 * 1rem))",
-        "1/3-gap-4": "calc(33.3% - (2/3 * 1rem))",
-        "1/4-gap-4": "calc(25% - (3/4 * 1rem))",
-        "1/6-gap-4": "calc(16.6% - (5/6 * 1rem))",
+      spacing: {
+        global: "20px", // spacing around the edge of website
+        150: "150%",
+      },
+      width: {
+        maxSiteWidth: "1440px",
+        maxContent: "800px",
+        maxSidebar: "300px",
       },
     },
   },
