@@ -39,7 +39,7 @@ export const FRAMEWORK_LAWS = [
     title: "Law on the governance of federal climate policy",
     geo_iso: "BEL",
     geography: "Belgium",
-    url: "https://climate-laws.org/document/law-on-the-governance-of-federal-climate-policy_b052?l=belgium&c=Legislation",
+    url: "https://climate-laws.org/document/law-on-the-governance-of-federal-climate-policy_b052",
   },
   {
     title: "Law no 2018/18 regulating climate change actions",
@@ -364,7 +364,7 @@ export const FRAMEWORK_LAWS = [
     title: "Climate Change Act, 2024",
     geo_iso: "ZAR",
     geography: "South Africa",
-    url: "https://climate-laws.org/document/climate-change-act_6e08?q=climate+change+act",
+    url: "https://climate-laws.org/document/climate-change-act_6e08",
   },
   {
     title: "Carbon Neutral Green Growth Framework Act to tackle the Climate Crisis",
