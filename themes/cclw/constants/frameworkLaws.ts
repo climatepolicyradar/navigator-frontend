@@ -36,6 +36,12 @@ export const FRAMEWORK_LAWS = [
     url: "https://climate-laws.org/document/climate-change-and-carbon-market-initiatives-act-2022_db37",
   },
   {
+    title: "Law on the governance of federal climate policy",
+    geo_iso: "BEL",
+    geography: "Belgium",
+    url: "https://climate-laws.org/document/law-on-the-governance-of-federal-climate-policy_b052?l=belgium&c=Legislation",
+  },
+  {
     title: "Law no 2018/18 regulating climate change actions",
     geo_iso: "BEN",
     geography: "Benin",
@@ -199,6 +205,12 @@ export const FRAMEWORK_LAWS = [
     url: "https://climate-laws.org/document/climate-change-act-2016_7078",
   },
   {
+    title: "Disaster Risk Management and Climate Change Act",
+    geo_iso: "KIR",
+    geography: "Kiribati",
+    url: "https://climate-laws.org/document/disaster-risk-management-and-climate-change-act_1110",
+  },
+  {
     title: "Law on Climate Change",
     geo_iso: "XKX",
     geography: "Kosovo",
@@ -347,6 +359,12 @@ export const FRAMEWORK_LAWS = [
     geo_iso: "SVN",
     geography: "Slovenia",
     url: "https://climate-laws.org/document/environmental-protection-act_1297",
+  },
+  {
+    title: "Climate Change Act, 2024",
+    geo_iso: "ZAR",
+    geography: "South Africa",
+    url: "https://climate-laws.org/document/climate-change-act_6e08?q=climate+change+act",
   },
   {
     title: "Carbon Neutral Green Growth Framework Act to tackle the Climate Crisis",
