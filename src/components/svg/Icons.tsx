@@ -3,6 +3,7 @@ interface IconProps {
   height?: string;
   color?: string;
 }
+
 export function CloseIcon({ width = "20", height = "20", color = "currentColor" }: IconProps) {
   return (
     <svg
@@ -214,19 +215,6 @@ export function DownArrowIcon({ height = "16", width = "12", color = "currentCol
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 16" fill="none" style={{ width: `${width}px`, height: `${height}px` }}>
       <path d="M11.2 10.4L10.072 9.272L6.4 12.936V0H4.8V12.936L1.128 9.264L0 10.4L5.6 16L11.2 10.4Z" fill={color} />
-    </svg>
-  );
-}
-
-export function KebabMenuIcon({ height = "23", width = "5", color = "currentColor" }: IconProps) {
-  return (
-    <svg style={{ width: `${width}px`, height: `${height}px` }} viewBox="0 0 5 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M2.5 4.9375C3.70812 4.9375 4.6875 3.95812 4.6875 2.75C4.6875 1.54188 3.70812 0.5625 2.5 0.5625C1.29188 0.5625 0.3125 1.54188 0.3125 2.75C0.3125 3.95812 1.29188 4.9375 2.5 4.9375ZM2.5 13.6875C3.70812 13.6875 4.6875 12.7081 4.6875 11.5C4.6875 10.2919 3.70812 9.3125 2.5 9.3125C1.29188 9.3125 0.3125 10.2919 0.3125 11.5C0.3125 12.7081 1.29188 13.6875 2.5 13.6875ZM4.6875 20.25C4.6875 21.4581 3.70812 22.4375 2.5 22.4375C1.29188 22.4375 0.3125 21.4581 0.3125 20.25C0.3125 19.0419 1.29188 18.0625 2.5 18.0625C3.70812 18.0625 4.6875 19.0419 4.6875 20.25Z"
-        fill={color}
-      />
     </svg>
   );
 }

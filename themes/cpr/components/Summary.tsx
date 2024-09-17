@@ -1,5 +1,5 @@
 import { ExternalLink } from "@components/ExternalLink";
-import { ReadMoreIcon } from "../svg/Icons";
+import { ReadMoreIcon } from "@components/svg/Icons";
 
 const Summary = () => {
   return (
