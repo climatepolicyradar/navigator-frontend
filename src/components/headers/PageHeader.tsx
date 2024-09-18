@@ -17,7 +17,7 @@ export function PageHeader() {
   const showSearch = !NON_SEARCH_PAGES.includes(router.pathname);
 
   return (
-    <header data-cy="header" className="w-full py-global banner">
+    <header data-cy="header" className="w-full py-5 banner">
       <SiteWidth>
         <div className="flex items-center justify-between">
           <div className="flex items-center">

@@ -122,10 +122,6 @@ module.exports = {
       letterSpacing: {
         slight: "0.015em",
       },
-      spacing: {
-        global: "20px", // spacing around the edge of website
-        divider: "48px", // spacing between sections
-      },
       maxWidth: {
         maxSiteWidth: MAX_SITE_WIDTH, // max width of the site
         maxContent: MAX_CONTENT_WIDTH, // central content area
