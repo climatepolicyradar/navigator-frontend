@@ -9,7 +9,7 @@ import { ApiClient } from "@api/http-common";
 
 import useSearch from "@hooks/useSearch";
 
-import { FullWidth } from "@components/panels/FullWidth";
+import { SiteWidth } from "@components/panels/SiteWidth";
 import { SingleCol } from "@components/panels/SingleCol";
 
 import Layout from "@components/layouts/Main";
@@ -167,11 +167,11 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
         data-analytics-geography={page.geography}
       >
         <div className="border-b border-grey-200">
-          <FullWidth>
+          <SiteWidth>
             <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={page.title} />
-          </FullWidth>
+          </SiteWidth>
         </div>
-        <FullWidth>
+        <SiteWidth>
           <SingleCol extraClasses="mt-8">
             <FamilyHead family={page} geographyName={geographyName} onCollectionClick={handleCollectionClick} />
             <section className="mt-6">
@@ -348,7 +348,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               </section>
             ))}
           </SingleCol>
-        </FullWidth>
+        </SiteWidth>
       </section>
     </Layout>
   );

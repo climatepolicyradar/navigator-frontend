@@ -1,5 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 
+const MAX_SITE_WIDTH = "1440px";
+const MAX_CONTENT_WIDTH = "800px";
+const MAX_SIDEBAR_WIDTH = "300px";
+
 module.exports = {
   content: [
     "./src/components/**/*.{ts,tsx,js,jsx}",
@@ -123,9 +127,14 @@ module.exports = {
         divider: "48px", // spacing between sections
       },
       maxWidth: {
-        maxSiteWidth: "1440px", // max width of the site
-        maxContent: "800px", // central content area
-        maxSidebar: "300px",
+        maxSiteWidth: MAX_SITE_WIDTH, // max width of the site
+        maxContent: MAX_CONTENT_WIDTH, // central content area
+        maxSidebar: MAX_SIDEBAR_WIDTH,
+      },
+      width: {
+        maxSiteWidth: MAX_SITE_WIDTH, // max width of the site
+        maxContent: MAX_CONTENT_WIDTH, // central content area
+        maxSidebar: MAX_SIDEBAR_WIDTH,
       },
     },
   },

@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import Image from "next/image";
 
-import { FullWidth } from "@components/panels/FullWidth";
+import { SiteWidth } from "@components/panels/SiteWidth";
 
 import MainMenu from "../menus/MainMenu";
 import Button from "@components/buttons/Button";
@@ -18,7 +18,7 @@ export function PageHeader() {
 
   return (
     <header data-cy="header" className="w-full py-global banner">
-      <FullWidth>
+      <SiteWidth>
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <LinkWithQuery href="/">
@@ -41,7 +41,7 @@ export function PageHeader() {
             </div>
           </div>
         </div>
-      </FullWidth>
+      </SiteWidth>
     </header>
   );
 }

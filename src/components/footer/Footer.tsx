@@ -1,11 +1,12 @@
+import { SiteWidth } from "@components/panels/SiteWidth";
+
 import { ExternalLink } from "@components/ExternalLink";
 import FooterLinks from "./FooterLinks";
-import { FullWidth } from "@components/panels/FullWidth";
 
 const Footer = () => {
   return (
     <footer className="py-12 dark-gradient">
-      <FullWidth>
+      <SiteWidth>
         <p className="font-medium text-lg mb-6 text-white md:text-center">
           To report a problem email us at support@climatepolicyradar.org <br /> Spotted missing or inaccurate data?{" "}
           <ExternalLink url="https://form.jotform.com/233294135296359" className="text-white underline hover:text-white">
@@ -13,7 +14,7 @@ const Footer = () => {
           </ExternalLink>
         </p>
         <FooterLinks />
-      </FullWidth>
+      </SiteWidth>
     </footer>
   );
 };

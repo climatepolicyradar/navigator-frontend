@@ -3,7 +3,7 @@ type TProps = {
   children?: React.ReactNode;
 };
 
-export function FullWidth({ extraClasses = "", children, ...props }: TProps) {
+export function SiteWidth({ extraClasses = "", children, ...props }: TProps) {
   return (
     <div className={`max-w-maxSiteWidth px-global mx-auto ${extraClasses}`} {...props}>
       {children}

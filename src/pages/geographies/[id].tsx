@@ -7,6 +7,7 @@ import { ApiClient } from "@api/http-common";
 
 import { ThemeContext } from "@context/ThemeContext";
 
+import { SiteWidth } from "@components/panels/SiteWidth";
 import { SingleCol } from "@components/panels/SingleCol";
 
 import Layout from "@components/layouts/Main";
@@ -38,7 +39,6 @@ import { systemGeoNames } from "@constants/systemGeos";
 
 import { TGeographyStats, TGeographySummary } from "@types";
 import { TTarget, TEvent, TGeography } from "@types";
-import { FullWidth } from "@components/panels/FullWidth";
 
 type TProps = {
   geography: TGeographyStats;
@@ -211,11 +211,11 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       ) : (
         <section className="mb-8">
           <div className="border-b border-grey-200">
-            <FullWidth>
+            <SiteWidth>
               <BreadCrumbs label={geography.name} />
-            </FullWidth>
+            </SiteWidth>
           </div>
-          <FullWidth>
+          <SiteWidth>
             <SingleCol extraClasses="mt-8">
               <CountryHeader country={geography} targetCount={hasTargets ? publishedTargets?.length : 0} onTargetClick={handleTargetClick} />
               <section className="mt-8" data-cy="country-search">
@@ -325,7 +325,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                 </section>
               )}
             </SingleCol>
-          </FullWidth>
+          </SiteWidth>
         </section>
       )}
     </Layout>

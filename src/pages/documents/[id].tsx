@@ -159,7 +159,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
           </div>
         ) : (
           <section className="flex-1 flex" id="document-viewer">
-            <div className="container flex-1">
+            <div className="px-5 flex-1">
               <div id="document-container" className="md:flex md:h-[80vh]">
                 <div id="document-sidebar" className={`py-4 max-h-[30vh] md:max-h-full flex flex-col ${passageClasses(document.content_type)}`}>
                   <div id="document-search" className="flex flex-col gap-2 pr-4">
