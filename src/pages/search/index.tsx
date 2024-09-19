@@ -9,13 +9,17 @@ import useUpdateCountries from "@hooks/useUpdateCountries";
 import useConfig from "@hooks/useConfig";
 import useFilteredCountries from "@hooks/useFilteredCountries";
 
+import { SiteWidth } from "@components/panels/SiteWidth";
+import { SingleCol } from "@components/panels/SingleCol";
+import { MultiCol } from "@components/panels/MultiCol";
+import { SideCol } from "@components/panels/SideCol";
+
 import Layout from "@components/layouts/Main";
 import SearchForm from "@components/forms/SearchForm";
 import SearchFilters from "@components/blocks/SearchFilters";
 import TabbedNav from "@components/nav/TabbedNav";
 import Loader from "@components/Loader";
 import Sort from "@components/filters/Sort";
-import Close from "@components/buttons/Close";
 import FilterToggle from "@components/buttons/FilterToggle";
 import Pagination from "@components/pagination";
 import Drawer from "@components/drawer/Drawer";
@@ -300,28 +304,141 @@ const Search = () => {
       title={t("Law and Policy Search")}
       description="Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country."
     >
-      <div>
-        <section>
-          <SubNav>
-            <BreadCrumbs label={"Search results"} />
-          </SubNav>
-          <div className="px-4 mb-4 container">
-            <div className="pt-4 md:hidden">
-              <SearchForm
-                placeholder={placeholder}
-                handleSearchInput={handleSearchInput}
-                input={qQueryString ? qQueryString.toString() : ""}
-                handleSuggestion={handleSuggestion}
-              />
-            </div>
+      <section>
+        <SubNav>
+          <BreadCrumbs label={"Search results"} />
+        </SubNav>
+        {/* MOBILE ONLY */}
+        <SiteWidth extraClasses="md:hidden">
+          <div className="pt-4">
+            <SearchForm
+              placeholder={placeholder}
+              handleSearchInput={handleSearchInput}
+              input={qQueryString ? qQueryString.toString() : ""}
+              handleSuggestion={handleSuggestion}
+            />
           </div>
-          <div className="px-4 md:flex container border-b">
-            <div className="md:w-1/4 lg:w-[30%] xl:w-1/4 md:border-r md:pr-8 flex-shrink-0">
-              <div className="flex md:hidden items-center justify-center w-full mt-4">
-                <FilterToggle toggle={toggleFilters} isOpen={showFilters} />
+          <div className="flex items-center justify-center w-full mt-4">
+            <FilterToggle toggle={toggleFilters} isOpen={showFilters} />
+          </div>
+          <div className={`${showFilters ? "" : "hidden"}`}>
+            {configQuery.isFetching ? (
+              <p>Loading filters...</p>
+            ) : (
+              <SearchFilters
+                handleFilterChange={handleFilterChange}
+                searchCriteria={searchQuery}
+                handleYearChange={handleYearChange}
+                handleRegionChange={handleRegionChange}
+                handleClearSearch={handleClearSearch}
+                handleSearchChange={handleSearchChange}
+                regions={regions}
+                filteredCountries={filteredCountries}
+              />
+            )}
+          </div>
+        </SiteWidth>
+        {/* END MOBILE ONLY */}
+        <MultiCol>
+          <SideCol extraClasses="hidden md:block border-r pt-5">
+            <SearchFilters
+              handleFilterChange={handleFilterChange}
+              searchCriteria={searchQuery}
+              handleYearChange={handleYearChange}
+              handleRegionChange={handleRegionChange}
+              handleClearSearch={handleClearSearch}
+              handleSearchChange={handleSearchChange}
+              regions={regions}
+              filteredCountries={filteredCountries}
+            />
+          </SideCol>
+          <SingleCol extraClasses="px-5 pt-5">
+            <div>
+              {/* NON MOBILE SEARCH */}
+              <div className="hidden md:block mb-4">
+                <SearchForm
+                  placeholder={placeholder}
+                  handleSearchInput={handleSearchInput}
+                  input={qQueryString ? qQueryString.toString() : ""}
+                  handleSuggestion={handleSuggestion}
+                />
               </div>
+              {/* NON MOBILE SEARCH END */}
+              <div className="lg:flex justify-between">
+                <div className="text-xs my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
+                  {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
+                </div>
+                <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
+                  <span>Download data (.csv): </span>
+                  <a
+                    href="#"
+                    className="flex gap-2 items-center justify-end"
+                    data-cy="download-search-csv"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowCSVDownloadPopup(true);
+                    }}
+                  >
+                    {downloadCSVStatus === "loading" ? <Loading /> : "this search"}
+                  </a>
+                  <span>|</span>
+                  <ExternalLink url="https://form.jotform.com/233131638610347" cy="download-entire-search-csv">
+                    whole database
+                  </ExternalLink>
+                </span>
+              </div>
+              <div className="text-sm md:text-right">
+                {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
+                {downloadCSVStatus === "success" && (
+                  <span className="text-green-600">CSV downloaded successfully, please check your downloads folder</span>
+                )}
+              </div>
+            </div>
+            <div className="mt-4">
+              <TabbedNav activeIndex={getCategoryIndex()} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
+            </div>
 
-              <div className={`${showFilters ? "" : "hidden"} relative md:block mb-12 md:mb-0`}>
+            <div className="mt-4 relative">
+              {status === "loading" ? (
+                <div className="w-full flex justify-center h-96">
+                  <Loader />
+                </div>
+              ) : (
+                <>
+                  <div className="flex justify-end">
+                    {router.query[QUERY_PARAMS.category]?.toString() !== "Litigation" && (
+                      <div>
+                        <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
+                      </div>
+                    )}
+                  </div>
+                  <div data-cy="search-results">
+                    <SearchResultList
+                      category={router.query[QUERY_PARAMS.category]?.toString()}
+                      families={families}
+                      onClick={handleMatchesButtonClick}
+                      activeFamilyIndex={drawerFamily}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+            {hits > 1 && (
+              <div className="mb-12">
+                <Pagination
+                  currentPage={calcCurrentPage()}
+                  onChange={handlePageChange}
+                  totalHits={hits}
+                  continuationToken={continuationToken}
+                  continuationTokens={router.query[QUERY_PARAMS.continuation_tokens] as string}
+                />
+              </div>
+            )}
+          </SingleCol>
+        </MultiCol>
+        {/* <div className="px-4 md:flex container border-b">
+          <div className="md:w-1/4 lg:w-[30%] xl:w-1/4 md:border-r md:pr-8 flex-shrink-0">
+            <div className={`${showFilters ? "" : "hidden"} relative md:block mb-12 md:mb-0`}>
                 <div className="md:hidden absolute right-0 top-0">
                   <Close onClick={() => setShowFilters(false)} size="16" />
                 </div>
@@ -340,93 +457,90 @@ const Search = () => {
                   />
                 )}
               </div>
-            </div>
-            <div className="md:w-3/4">
-              <div className="md:pl-3">
-                <div className="hidden md:block mb-4 xl:w-3/4">
-                  <SearchForm
-                    placeholder={placeholder}
-                    handleSearchInput={handleSearchInput}
-                    input={qQueryString ? qQueryString.toString() : ""}
-                    handleSuggestion={handleSuggestion}
-                  />
-                </div>
-                <div className="lg:flex justify-between">
-                  <div className="text-xs my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
-                    {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
-                  </div>
-                  <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
-                    <span>Download data (.csv): </span>
-                    <a
-                      href="#"
-                      className="flex gap-2 items-center justify-end"
-                      data-cy="download-search-csv"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setShowCSVDownloadPopup(true);
-                      }}
-                    >
-                      {downloadCSVStatus === "loading" ? <Loading /> : "this search"}
-                    </a>
-                    <span>|</span>
-                    <ExternalLink url="https://form.jotform.com/233131638610347" cy="download-entire-search-csv">
-                      whole database
-                    </ExternalLink>
-                  </span>
-                </div>
-                <div className="text-sm md:text-right">
-                  {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
-                  {downloadCSVStatus === "success" && (
-                    <span className="text-green-600">CSV downloaded successfully, please check your downloads folder</span>
-                  )}
-                </div>
+          </div>
+          <div className="md:w-3/4">
+            <div className="md:pl-3">
+              <div className="hidden md:block mb-4 xl:w-3/4">
+                <SearchForm
+                  placeholder={placeholder}
+                  handleSearchInput={handleSearchInput}
+                  input={qQueryString ? qQueryString.toString() : ""}
+                  handleSuggestion={handleSuggestion}
+                />
               </div>
-              <div className="mt-4">
-                <TabbedNav activeIndex={getCategoryIndex()} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
+              <div className="lg:flex justify-between">
+                <div className="text-xs my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
+                  {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
+                </div>
+                <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
+                  <span>Download data (.csv): </span>
+                  <a
+                    href="#"
+                    className="flex gap-2 items-center justify-end"
+                    data-cy="download-search-csv"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowCSVDownloadPopup(true);
+                    }}
+                  >
+                    {downloadCSVStatus === "loading" ? <Loading /> : "this search"}
+                  </a>
+                  <span>|</span>
+                  <ExternalLink url="https://form.jotform.com/233131638610347" cy="download-entire-search-csv">
+                    whole database
+                  </ExternalLink>
+                </span>
               </div>
-
-              <div className="mt-4 md:pl-8 relative">
-                {status === "loading" ? (
-                  <div className="w-full flex justify-center h-96">
-                    <Loader />
-                  </div>
-                ) : (
-                  <>
-                    <div className="flex justify-end">
-                      {router.query[QUERY_PARAMS.category]?.toString() !== "Litigation" && (
-                        <div>
-                          <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
-                        </div>
-                      )}
-                    </div>
-                    <div data-cy="search-results">
-                      <SearchResultList
-                        category={router.query[QUERY_PARAMS.category]?.toString()}
-                        families={families}
-                        onClick={handleMatchesButtonClick}
-                        activeFamilyIndex={drawerFamily}
-                      />
-                    </div>
-                  </>
+              <div className="text-sm md:text-right">
+                {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
+                {downloadCSVStatus === "success" && (
+                  <span className="text-green-600">CSV downloaded successfully, please check your downloads folder</span>
                 )}
               </div>
             </div>
-          </div>
-        </section>
-        {hits > 1 && (
-          <section>
-            <div className="mb-12">
-              <Pagination
-                currentPage={calcCurrentPage()}
-                onChange={handlePageChange}
-                totalHits={hits}
-                continuationToken={continuationToken}
-                continuationTokens={router.query[QUERY_PARAMS.continuation_tokens] as string}
-              />
+            <div className="mt-4">
+              <TabbedNav activeIndex={getCategoryIndex()} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
             </div>
-          </section>
-        )}
-      </div>
+
+            <div className="mt-4 md:pl-8 relative">
+              {status === "loading" ? (
+                <div className="w-full flex justify-center h-96">
+                  <Loader />
+                </div>
+              ) : (
+                <>
+                  <div className="flex justify-end">
+                    {router.query[QUERY_PARAMS.category]?.toString() !== "Litigation" && (
+                      <div>
+                        <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
+                      </div>
+                    )}
+                  </div>
+                  <div data-cy="search-results">
+                    <SearchResultList
+                      category={router.query[QUERY_PARAMS.category]?.toString()}
+                      families={families}
+                      onClick={handleMatchesButtonClick}
+                      activeFamilyIndex={drawerFamily}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+        {hits > 1 && (
+          <div className="mb-12">
+            <Pagination
+              currentPage={calcCurrentPage()}
+              onChange={handlePageChange}
+              totalHits={hits}
+              continuationToken={continuationToken}
+              continuationTokens={router.query[QUERY_PARAMS.continuation_tokens] as string}
+            />
+          </div>
+        )} */}
+      </section>
       <Drawer show={drawerFamily !== false} setShow={setDrawerFamily}>
         <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
       </Drawer>

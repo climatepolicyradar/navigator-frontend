@@ -83,6 +83,7 @@ module.exports = {
         "1/3-gap-4": "calc(33.3% - (2/3 * 1rem))",
         "1/4-gap-4": "calc(25% - (3/4 * 1rem))",
         "1/6-gap-4": "calc(16.6% - (5/6 * 1rem))",
+        maxContent: MAX_CONTENT_WIDTH,
       },
       fontSize: {
         h1: "48px",

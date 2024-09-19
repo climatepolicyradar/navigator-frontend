@@ -5,7 +5,7 @@ type TProps = {
 
 export function SingleCol({ extraClasses = "", children, ...props }: TProps) {
   return (
-    <div className={`max-w-maxContent mx-auto ${extraClasses}`} {...props}>
+    <div className={`max-w-maxContent basis-maxContent mx-auto ${extraClasses}`} {...props}>
       {children}
     </div>
   );
