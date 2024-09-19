@@ -28,6 +28,7 @@ import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import Tooltip from "@components/tooltip";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 import { Alert } from "@components/Alert";
+import { SubNav } from "@components/nav/SubNav";
 
 import { truncateString } from "@utils/truncateString";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
@@ -166,11 +167,9 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
         data-analytics-type={getDocumentCategories().join(",")}
         data-analytics-geography={page.geography}
       >
-        <div className="border-b border-grey-200">
-          <SiteWidth>
-            <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={page.title} />
-          </SiteWidth>
-        </div>
+        <SubNav>
+          <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={page.title} />
+        </SubNav>
         <SiteWidth>
           <SingleCol extraClasses="mt-8">
             <FamilyHead family={page} geographyName={geographyName} onCollectionClick={handleCollectionClick} />

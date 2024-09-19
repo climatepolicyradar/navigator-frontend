@@ -32,6 +32,7 @@ import { getCurrentPage } from "@utils/getCurrentPage";
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN } from "@constants/paging";
+import { SubNav } from "@components/nav/SubNav";
 
 const Search = () => {
   const router = useRouter();
@@ -301,8 +302,10 @@ const Search = () => {
     >
       <div>
         <section>
-          <div className="px-4 mb-4 container">
+          <SubNav>
             <BreadCrumbs label={"Search results"} />
+          </SubNav>
+          <div className="px-4 mb-4 container">
             <div className="pt-4 md:hidden">
               <SearchForm
                 placeholder={placeholder}

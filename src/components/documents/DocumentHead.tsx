@@ -3,6 +3,7 @@ import useConfig from "@hooks/useConfig";
 
 import { SiteWidth } from "@components/panels/SiteWidth";
 
+import { SubNav } from "@components/nav/SubNav";
 import { CountryLink } from "@components/CountryLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import Button from "@components/buttons/Button";
@@ -59,16 +60,14 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
 
   return (
     <div className="bg-white border-solid border-lineBorder border-b">
-      <div className="border-b border-grey-200">
-        <SiteWidth>
-          <BreadCrumbs
-            geography={breadcrumbGeography}
-            category={breadcrumbCategory}
-            family={breadcrumbFamily}
-            label={<span className="capitalize">{breadcrumbLabel}</span>}
-          />
-        </SiteWidth>
-      </div>
+      <SubNav>
+        <BreadCrumbs
+          geography={breadcrumbGeography}
+          category={breadcrumbCategory}
+          family={breadcrumbFamily}
+          label={<span className="capitalize">{breadcrumbLabel}</span>}
+        />
+      </SubNav>
       <SiteWidth>
         <div className="flex flex-col lg:flex-row">
           <div className="flex-1 my-4">

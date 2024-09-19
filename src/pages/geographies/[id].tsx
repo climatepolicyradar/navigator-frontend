@@ -25,6 +25,7 @@ import { ExternalLink } from "@components/ExternalLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 import { Alert } from "@components/Alert";
+import { SubNav } from "@components/nav/SubNav";
 
 import { getCountryCode } from "@helpers/getCountryFields";
 
@@ -210,11 +211,9 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
         </SingleCol>
       ) : (
         <section className="mb-8">
-          <div className="border-b border-grey-200">
-            <SiteWidth>
-              <BreadCrumbs label={geography.name} />
-            </SiteWidth>
-          </div>
+          <SubNav>
+            <BreadCrumbs label={geography.name} />
+          </SubNav>
           <SiteWidth>
             <SingleCol extraClasses="mt-8">
               <CountryHeader country={geography} targetCount={hasTargets ? publishedTargets?.length : 0} onTargetClick={handleTargetClick} />
