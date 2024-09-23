@@ -1,12 +1,14 @@
 import { MouseEvent } from "react";
 import dynamic from "next/dynamic";
 
+import Layout from "@components/layouts/LandingPage";
+import { FullWidth } from "@components/panels/FullWidth";
+
 import AlphaLogo from "@components/logo/AlphaLogo";
 import ExactMatch from "@components/filters/ExactMatch";
 import Header from "@components/headers/LandingPage";
 import Banner from "@components/banner/FullHeight";
 import Footer from "@components/footer/Footer";
-import Layout from "@components/layouts/LandingPage";
 
 import LandingPageLinks from "@cpr/components/LandingPageLinks";
 import Partners from "@cpr/components/Partners";
@@ -51,9 +53,9 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
             </div>
           </section>
         </main>
-        <div className="container hidden my-6 md:block">
+        <FullWidth extraClasses="hidden my-6 md:block">
           <WorldMap />
-        </div>
+        </FullWidth>
         <Summary />
         <Partners />
         <Footer />
