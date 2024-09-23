@@ -1,6 +1,7 @@
 type TProps = {
   extraClasses?: string;
   children?: React.ReactNode;
+  [x: string]: any;
 };
 
 export function SiteWidth({ extraClasses = "", children, ...props }: TProps) {
