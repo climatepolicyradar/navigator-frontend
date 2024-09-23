@@ -18,9 +18,6 @@ const breadcrumbSelectors = ["[data-cy='breadcrumbs']", "[data-cy='breadcrumb ho
 describe("Terms of Use Page", () => {
   before(() => {
     cy.visit(URL);
-    cy.intercept(URL, (req) => {
-      req.headers["app-token"] = process.env.NEXT_PUBLIC_APP_TOKEN;
-    });
     clickCookiePolicy();
   });
 

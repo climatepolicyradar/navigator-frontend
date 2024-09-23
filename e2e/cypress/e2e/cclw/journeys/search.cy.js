@@ -49,4 +49,11 @@ describe("Search Flow", () => {
       cy.get('[data-cy="country-link"]').should("be.visible");
     });
   });
+
+  it("should display no results if an invalid token is prvided", () => {
+    cy.intercept("searches", (req) => {
+      req.headers["app-token"] = "hard coded";
+    });
+    cy.get(searchResultsSelector).children(searchResultSelector).should("have.length", 0);
+  });
 });
