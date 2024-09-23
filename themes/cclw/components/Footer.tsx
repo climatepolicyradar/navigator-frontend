@@ -1,9 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
+
+import { SiteWidth } from "@components/panels/SiteWidth";
+
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { Feedback } from "./Feedback";
 import MENU_LINKS from "../constants/menuLinks";
+
 import GRI_LINKS, { TLinkItem } from "@cclw/constants/griLinks";
 
 const Footer = () => {
@@ -17,7 +21,7 @@ const Footer = () => {
   return (
     <footer className="flex flex-col bg-grey-400">
       <div className="py-12">
-        <div className="container">
+        <SiteWidth>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="footer__section" data-cy="footer-cclw">
               <div className="font-medium text-base">Climate Change Laws of the World</div>
@@ -101,10 +105,10 @@ const Footer = () => {
               </div>
             </div>
           </div>
-        </div>
+        </SiteWidth>
       </div>
       <div className="footer__base">
-        <div className="container flex flex-1 items-end h-full pt-[114px] flex-wrap text-sm lg:text-base lg:pt-0 lg:gap-6">
+        <SiteWidth extraClasses="flex flex-1 items-end h-full pt-[114px] flex-wrap text-sm lg:text-base lg:pt-0 lg:gap-6">
           <p className="lg:mb-6">Copyright © LSE {new Date().getFullYear()}</p>
           <div className="ml-6 flex flex-wrap gap-6 lg:mb-6 lg:ml-0">
             <ExternalLink url="https://www.climatepolicyradar.org/privacy-policy" className="text-secondary-700 underline">
@@ -131,7 +135,7 @@ const Footer = () => {
               </span>
             </ExternalLink>
           </div>
-        </div>
+        </SiteWidth>
       </div>
     </footer>
   );
