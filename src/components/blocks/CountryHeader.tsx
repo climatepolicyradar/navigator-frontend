@@ -26,7 +26,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick }: TProps) =
 
   return (
     <div>
-      <h1 className="text-4xl">{name}</h1>
+      <h1 className="text-3xl lg:smaller">{name}</h1>
       <div className="flex items-start justify-between overflow-hidden">
         <div className="mt-4 shrink-0 md:basis-4/6">
           <div className="grid grid-cols-2 gap-6 items-center text-indigo-700 md:grid-cols-5">
