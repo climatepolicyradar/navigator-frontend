@@ -54,7 +54,7 @@ html,
   height: 100%;
 }
 body {
-  @apply text-gray-700;
+  @apply text-textNormal;
   font-family: Arial, Helvetica, sans-serif;
 }
 a,
@@ -62,7 +62,7 @@ a,
   @apply text-blue-600 transition duration-300 hover:underline hover:text-blue-800;
 
   &.alt {
-    @apply underline text-gray-800 hover:text-blue-800;
+    @apply underline text-textNormal hover:text-blue-800;
   }
 }
 h1,
@@ -99,7 +99,7 @@ textarea,
 select,
 option {
   font-family: Arial, Helvetica, sans-serif;
-  @apply p-3 rounded-lg text-lg w-full text-cpr-dark;
+  @apply p-3 rounded-lg text-lg w-full text-textNormal;
   &.small {
     @apply p-2 text-base;
   }
@@ -324,7 +324,7 @@ ul li.selected {
   }
   a {
     &.accordian-item {
-      @apply text-cpr-dark text-lg cursor-pointer flex items-center no-underline hover:no-underline md:text-h3;
+      @apply text-textNormal text-lg cursor-pointer flex items-center no-underline hover:no-underline md:text-xl;
     }
   }
   p {
@@ -593,7 +593,7 @@ ul li.selected {
 }
 
 #mapToolTip {
-  @apply text-cpr-dark bg-white p-4 rounded-lg drop-shadow border opacity-100;
+  @apply text-textNormal bg-white p-4 rounded-lg drop-shadow border opacity-100;
 }
 
 .middot-between {
