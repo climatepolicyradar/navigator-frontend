@@ -1,5 +1,6 @@
-import { TTarget } from "@types";
 import { LinkWithQuery } from "./LinkWithQuery";
+
+import { TTarget } from "@types";
 
 type TTargets = {
   targets: TTarget[];
@@ -28,18 +29,15 @@ export const Targets = ({ targets = [], showFamilyInfo = false }: TTargets) => {
   return (
     <ul className="" data-cy="targets">
       {targets.map((target) => (
-        <li className="mt-6 flex flex-col gap-2 border-b pb-2 last:border-0" key={target.ID}>
-          <span dangerouslySetInnerHTML={{ __html: target.Description }} className="" />
-          <span className="text-gray-700 text-sm">
+        <li className="mt-5 flex flex-col gap-2 border-b pb-5 last:border-0" key={target.ID}>
+          <span dangerouslySetInnerHTML={{ __html: target.Description }} className="font-medium text-textDark" />
+          <span className="text-sm">
             {`${target.Sector}${target.Scopes !== "" ? `: ${target.Scopes}` : ""}`}
             {showTargetYear(target)}
           </span>
           {showSourceLink(target) && (
-            <span className="text-gray-700 text-sm">
-              Source:{" "}
-              <LinkWithQuery href={`/document/${target["family-slug"]}`} className="underline text-gray-700">
-                {target["family-name"]}
-              </LinkWithQuery>
+            <span className="text-sm">
+              Source: <LinkWithQuery href={`/document/${target["family-slug"]}`}>{target["family-name"]}</LinkWithQuery>
             </span>
           )}
         </li>
