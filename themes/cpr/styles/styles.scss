@@ -30,15 +30,6 @@ option {
   font-family: "Inter", Arial, Helvetica, sans-serif !important;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  @apply text-cpr-dark font-medium #{!important};
-}
-
 #landingPage-searchInput {
   @screen md {
     &::-webkit-input-placeholder {
