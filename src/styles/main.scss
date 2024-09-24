@@ -71,7 +71,7 @@ h3,
 h4,
 h5,
 h6 {
-  @apply text-cpr-dark font-medium;
+  @apply text-textDark font-medium;
 }
 h1 {
   @apply text-3xl md:text-h1;
@@ -310,10 +310,9 @@ ul li.selected {
   @include dark-gradient;
 }
 
-/* text content on text pages such as 'methodology' and search results */
+/* text-content represents any wrapper to a chunk of text, sometimes dynamic */
 .text-content,
 .search-results {
-  @apply font-light;
   b,
   strong,
   .bold {
@@ -329,7 +328,7 @@ ul li.selected {
     }
   }
   p {
-    @apply my-6 font-light;
+    @apply my-6;
   }
   ul {
     @apply list-disc my-2;
