@@ -56,8 +56,6 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
           <ErrorBoundary level="top">
             <Head>
               <link rel="icon" href={favicon} />
-              <link rel="preconnect" href="https://rsms.me/" />
-              <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
             </Head>
             <div id={dynamicTheme} className="h-full">
               <Component {...pageProps} />
