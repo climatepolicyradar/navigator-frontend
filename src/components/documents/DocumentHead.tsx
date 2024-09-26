@@ -10,6 +10,7 @@ import Button from "@components/buttons/Button";
 import { ExternalLinkIcon, AlertCircleIcon } from "@components/svg/Icons";
 import { Alert } from "@components/Alert";
 import { ExternalLink } from "@components/ExternalLink";
+import { Heading } from "@components/typography/Heading";
 
 import { getLanguage } from "@helpers/getLanguage";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
@@ -71,12 +72,12 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
       <SiteWidth>
         <div className="flex flex-col lg:flex-row">
           <div className="flex-1 my-4">
-            <h1 className="text-3xl lg:smaller">{document.title}</h1>
+            <Heading level={1}>{document.title}</Heading>
             <div className="my-4 md:my-2 md:flex justify-between items-center">
-              <div className="flex text-sm text-grey-700 items-center font-medium gap-2 middot-between">
+              <div className="flex text-sm items-center gap-2 middot-between">
                 {!isSystemGeo(family.geography) && (
                   <span className="flex gap-1">
-                    <CountryLink countryCode={family.geography} className="text-gray-700">
+                    <CountryLink countryCode={family.geography} className="text-textDark font-medium">
                       <span>{geoName}</span>
                     </CountryLink>
                   </span>

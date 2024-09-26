@@ -18,6 +18,7 @@ import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
 import { DocumentHead } from "@components/documents/DocumentHead";
 import { EmptyPassages } from "@components/documents/EmptyPassages";
 import { EmptyDocument } from "@components/documents/EmptyDocument";
+import { Heading } from "@components/typography/Heading";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { getDocumentDescription } from "@constants/metaDescriptions";

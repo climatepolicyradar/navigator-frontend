@@ -26,6 +26,7 @@ import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 import { Alert } from "@components/Alert";
 import { SubNav } from "@components/nav/SubNav";
+import { Heading } from "@components/typography/Heading";
 
 import { getCountryCode } from "@helpers/getCountryFields";
 
@@ -40,7 +41,6 @@ import { systemGeoNames } from "@constants/systemGeos";
 
 import { TGeographyStats, TGeographySummary } from "@types";
 import { TTarget, TEvent, TGeography } from "@types";
-import { Heading } from "@components/typography/Heading";
 
 type TProps = {
   geography: TGeographyStats;
