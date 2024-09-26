@@ -1,10 +1,12 @@
+import { SiteWidth } from "@components/panels/SiteWidth";
+
 import { ExternalLink } from "@components/ExternalLink";
 import { ReadMoreIcon } from "@components/svg/Icons";
 
 const Summary = () => {
   return (
     <section className="bg-blue-200">
-      <div className="max-w-screen-lg mx-auto py-24 px-4 xl:px-0 md:flex items-center">
+      <SiteWidth extraClasses="py-24 md:flex items-center">
         <div>
           <h2 className="text-indigo-500 mb-4">Read our methodology</h2>
 
@@ -23,7 +25,7 @@ const Summary = () => {
           </div>
           <span>Read more</span>
         </ExternalLink>
-      </div>
+      </SiteWidth>
     </section>
   );
 };

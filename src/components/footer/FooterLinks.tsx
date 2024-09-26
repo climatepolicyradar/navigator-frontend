@@ -1,10 +1,10 @@
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 
-const FooterLinks = ({ landing = false }) => {
+const FooterLinks = () => {
   return (
     <nav>
-      <div data-cy="footer-nav" className={`flex flex-col md:flex-row justify-center gap-8 md:gap-16 ${landing ? "text-white" : "text-indigo-500"}`}>
+      <div data-cy="footer-nav" className="flex flex-col gap-2 md:flex-row justify-center md:gap-8 md:gap-16">
         <ExternalLink url="https://github.com/climatepolicyradar/methodology" className="text-white underline hover:text-blue-500">
           Methodology
         </ExternalLink>

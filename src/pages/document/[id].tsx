@@ -9,6 +9,9 @@ import { ApiClient } from "@api/http-common";
 
 import useSearch from "@hooks/useSearch";
 
+import { SiteWidth } from "@components/panels/SiteWidth";
+import { SingleCol } from "@components/panels/SingleCol";
+
 import Layout from "@components/layouts/Main";
 import { Timeline } from "@components/timeline/Timeline";
 import { Event } from "@components/timeline/Event";
@@ -22,10 +25,10 @@ import { DownChevronIcon, TargetIcon, AlertCircleIcon } from "@components/svg/Ic
 import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import { SingleCol } from "@components/SingleCol";
 import Tooltip from "@components/tooltip";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 import { Alert } from "@components/Alert";
+import { SubNav } from "@components/nav/SubNav";
 
 import { truncateString } from "@utils/truncateString";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
@@ -164,185 +167,187 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
         data-analytics-type={getDocumentCategories().join(",")}
         data-analytics-geography={page.geography}
       >
-        <div className="container">
+        <SubNav>
           <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={page.title} />
-        </div>
-        <SingleCol>
-          <FamilyHead family={page} geographyName={geographyName} onCollectionClick={handleCollectionClick} />
-          <section className="mt-6">
-            {/* SSR summary */}
-            <div className={`text-content mt-4 ${summary && "hidden"}`} dangerouslySetInnerHTML={{ __html: page.summary }} />
-            <div className="text-content mt-4" dangerouslySetInnerHTML={{ __html: summary }} />
-            {page.summary.length > MAX_FAMILY_SUMMARY_LENGTH && (
-              <div className="mt-4">
-                <button onClick={() => setShowFullSummary(!showFullSummary)} className="anchor alt text-sm">
-                  {showFullSummary ? "Hide full summary" : "View full summary"}
-                </button>
-              </div>
-            )}
-          </section>
-
-          <section className="mt-8" data-cy="top-documents">
-            <DocumentSearchForm
-              placeholder={`Search the full text of the ${page.title}`}
-              handleSearchInput={handleSearchInput}
-              input={router.query[QUERY_PARAMS.query_string] as string}
-              featuredSearches={EXAMPLE_SEARCHES}
-              showSuggestions
-            />
-          </section>
-
-          <section className="mt-8">
-            <h2 className="text-base">Main {pluralise(mainDocuments.length, "document", "documents")}</h2>
-            <div data-cy="main-documents">
-              {mainDocuments.map((doc) => (
-                <FamilyDocument
-                  matches={getDocumentMatches(doc.slug)}
-                  document={doc}
-                  key={doc.import_id}
-                  status={status}
-                  familyMatches={searchFamily?.total_passage_hits}
-                />
-              ))}
-            </div>
-          </section>
-
-          {otherDocuments.length > 0 && (
-            <>
-              <section className="mt-8">
-                <div className="flex items-center gap-2">
-                  <h2 className="text-base">Other documents in this entry </h2>
-                  <Tooltip
-                    id="related-documents-info"
-                    place="right"
-                    icon="i"
-                    tooltip="Other documents can be previous versions, amendments, annexes, supporting legislation, and more."
-                  />
+        </SubNav>
+        <SiteWidth>
+          <SingleCol extraClasses="mt-8">
+            <FamilyHead family={page} geographyName={geographyName} onCollectionClick={handleCollectionClick} />
+            <section className="mt-6">
+              {/* SSR summary */}
+              <div className={`text-content mt-4 ${summary && "hidden"}`} dangerouslySetInnerHTML={{ __html: page.summary }} />
+              <div className="text-content mt-4" dangerouslySetInnerHTML={{ __html: summary }} />
+              {page.summary.length > MAX_FAMILY_SUMMARY_LENGTH && (
+                <div className="mt-4">
+                  <button onClick={() => setShowFullSummary(!showFullSummary)} className="anchor alt text-sm">
+                    {showFullSummary ? "Hide full summary" : "View full summary"}
+                  </button>
                 </div>
-                <div data-cy="related-documents">
-                  {otherDocuments.map((doc) => (
-                    <div key={doc.import_id} className="mt-4">
-                      <FamilyDocument
-                        matches={getDocumentMatches(doc.slug)}
-                        document={doc}
-                        status={status}
-                        familyMatches={searchFamily?.total_passage_hits}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </section>
-            </>
-          )}
-
-          {hasTargets && (
-            <>
-              <section className="mt-8">
-                <div>
-                  <div className="lg:flex justify-between items-center">
-                    <h2 className="flex items-center text-base">
-                      <span className="mr-2">
-                        <TargetIcon />
-                      </span>
-                      Targets ({publishedTargets.length})
-                    </h2>
-                    <ExternalLink url="https://form.jotform.com/233542296946365" className="block text-sm my-4 md:my-0" cy="download-target-csv">
-                      Request to download all target data (.csv)
-                    </ExternalLink>
-                  </div>
-                  <div className="flex mt-4">
-                    <Alert
-                      message={
-                        <>
-                          We are developing the ability to detect targets in documents.{" "}
-                          <ExternalLink url="https://form.jotform.com/233294139336358">Get notified when this is ready</ExternalLink>.
-                        </>
-                      }
-                      icon={<AlertCircleIcon height="16" width="16" />}
-                    />
-                  </div>
-                  <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} />
-                </div>
-              </section>
-              {publishedTargets.length > numberOfTargetsToDisplay && (
-                <div data-cy="more-targets-button">
-                  <Button
-                    color="secondary"
-                    extraClasses="flex gap-2 items-center my-6"
-                    onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
-                  >
-                    <DownChevronIcon /> View more targets
-                  </Button>
-                </div>
-              )}
-
-              {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
-                <div>
-                  <Button color="secondary" extraClasses="flex gap-2 items-center my-6" onClick={() => setNumberOfTargetsToDisplay(5)}>
-                    <div className="rotate-180">
-                      <DownChevronIcon />
-                    </div>{" "}
-                    Hide targets
-                  </Button>
-                </div>
-              )}
-            </>
-          )}
-
-          {page.events.length > 0 && (
-            <section className="mt-8">
-              <h2 className="text-base">Timeline</h2>
-              <ShowHide show={showTimeline} onClick={() => setShowTimeline(!showTimeline)} className="mt-4" />
-              {showTimeline && (
-                <Timeline>
-                  {page.events.map((event, index: number) => (
-                    <Event event={event} index={index} last={index === page.events.length - 1 ? true : false} key={`event-${index}`} />
-                  ))}
-                </Timeline>
               )}
             </section>
-          )}
 
-          <section className="mt-8">
-            <h2 className="my-4 text-base">Note</h2>
-            <div className="flex text-sm">
-              {corpusImage && (
-                <div className="relative max-w-[144px] mt-1 mr-2">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={`${corpusImage}`} alt={corpusAltImage} />
-                </div>
-              )}
-              <span dangerouslySetInnerHTML={{ __html: corpusNote }} className="" />
-            </div>
-          </section>
+            <section className="mt-8" data-cy="top-documents">
+              <DocumentSearchForm
+                placeholder={`Search the full text of the ${page.title}`}
+                handleSearchInput={handleSearchInput}
+                input={router.query[QUERY_PARAMS.query_string] as string}
+                featuredSearches={EXAMPLE_SEARCHES}
+                showSuggestions
+              />
+            </section>
 
-          {page.collections.length > 0 && (
-            <div className="mt-8">
-              <Divider />
-            </div>
-          )}
+            <section className="mt-8">
+              <h2 className="text-base">Main {pluralise(mainDocuments.length, "document", "documents")}</h2>
+              <div data-cy="main-documents">
+                {mainDocuments.map((doc) => (
+                  <FamilyDocument
+                    matches={getDocumentMatches(doc.slug)}
+                    document={doc}
+                    key={doc.import_id}
+                    status={status}
+                    familyMatches={searchFamily?.total_passage_hits}
+                  />
+                ))}
+              </div>
+            </section>
 
-          {page.collections.map((collection, i) => (
-            <section className="pt-12" id={`collection-${i}`} key={collection.import_id}>
-              <h2 className="text-base">About the {collection.title}</h2>
-              <ShowHide show={showCollectionDetail} onClick={() => setShowCollectionDetail(!showCollectionDetail)} className="mt-4" />
-              {showCollectionDetail && (
-                <div>
-                  <div className="mb-8 text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
-                  <h4>Other documents in the {collection.title}</h4>
-                  <div className="divide-solid divide-y">
-                    {collection.families.map((collFamily, i) => (
-                      <div key={collFamily.slug} className="pt-4 pb-4">
-                        <LinkWithQuery href={`/document/${collFamily.slug}`}>{collFamily.title}</LinkWithQuery>
-                        <p className="mt-2">{collFamily.description}</p>
+            {otherDocuments.length > 0 && (
+              <>
+                <section className="mt-8">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-base">Other documents in this entry </h2>
+                    <Tooltip
+                      id="related-documents-info"
+                      place="right"
+                      icon="i"
+                      tooltip="Other documents can be previous versions, amendments, annexes, supporting legislation, and more."
+                    />
+                  </div>
+                  <div data-cy="related-documents">
+                    {otherDocuments.map((doc) => (
+                      <div key={doc.import_id} className="mt-4">
+                        <FamilyDocument
+                          matches={getDocumentMatches(doc.slug)}
+                          document={doc}
+                          status={status}
+                          familyMatches={searchFamily?.total_passage_hits}
+                        />
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
+                </section>
+              </>
+            )}
+
+            {hasTargets && (
+              <>
+                <section className="mt-8">
+                  <div>
+                    <div className="lg:flex justify-between items-center">
+                      <h2 className="flex items-center text-base">
+                        <span className="mr-2">
+                          <TargetIcon />
+                        </span>
+                        Targets ({publishedTargets.length})
+                      </h2>
+                      <ExternalLink url="https://form.jotform.com/233542296946365" className="block text-sm my-4 md:my-0" cy="download-target-csv">
+                        Request to download all target data (.csv)
+                      </ExternalLink>
+                    </div>
+                    <div className="flex mt-4">
+                      <Alert
+                        message={
+                          <>
+                            We are developing the ability to detect targets in documents.{" "}
+                            <ExternalLink url="https://form.jotform.com/233294139336358">Get notified when this is ready</ExternalLink>.
+                          </>
+                        }
+                        icon={<AlertCircleIcon height="16" width="16" />}
+                      />
+                    </div>
+                    <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} />
+                  </div>
+                </section>
+                {publishedTargets.length > numberOfTargetsToDisplay && (
+                  <div data-cy="more-targets-button">
+                    <Button
+                      color="secondary"
+                      extraClasses="flex gap-2 items-center my-6"
+                      onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
+                    >
+                      <DownChevronIcon /> View more targets
+                    </Button>
+                  </div>
+                )}
+
+                {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
+                  <div>
+                    <Button color="secondary" extraClasses="flex gap-2 items-center my-6" onClick={() => setNumberOfTargetsToDisplay(5)}>
+                      <div className="rotate-180">
+                        <DownChevronIcon />
+                      </div>{" "}
+                      Hide targets
+                    </Button>
+                  </div>
+                )}
+              </>
+            )}
+
+            {page.events.length > 0 && (
+              <section className="mt-8">
+                <h2 className="text-base">Timeline</h2>
+                <ShowHide show={showTimeline} onClick={() => setShowTimeline(!showTimeline)} className="mt-4" />
+                {showTimeline && (
+                  <Timeline>
+                    {page.events.map((event, index: number) => (
+                      <Event event={event} index={index} last={index === page.events.length - 1 ? true : false} key={`event-${index}`} />
+                    ))}
+                  </Timeline>
+                )}
+              </section>
+            )}
+
+            <section className="mt-8">
+              <h2 className="my-4 text-base">Note</h2>
+              <div className="flex text-sm">
+                {corpusImage && (
+                  <div className="relative max-w-[144px] mt-1 mr-2">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={`${corpusImage}`} alt={corpusAltImage} />
+                  </div>
+                )}
+                <span dangerouslySetInnerHTML={{ __html: corpusNote }} className="" />
+              </div>
             </section>
-          ))}
-        </SingleCol>
+
+            {page.collections.length > 0 && (
+              <div className="mt-8">
+                <Divider />
+              </div>
+            )}
+
+            {page.collections.map((collection, i) => (
+              <section className="pt-12" id={`collection-${i}`} key={collection.import_id}>
+                <h2 className="text-base">About the {collection.title}</h2>
+                <ShowHide show={showCollectionDetail} onClick={() => setShowCollectionDetail(!showCollectionDetail)} className="mt-4" />
+                {showCollectionDetail && (
+                  <div>
+                    <div className="mb-8 text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
+                    <h4>Other documents in the {collection.title}</h4>
+                    <div className="divide-solid divide-y">
+                      {collection.families.map((collFamily, i) => (
+                        <div key={collFamily.slug} className="pt-4 pb-4">
+                          <LinkWithQuery href={`/document/${collFamily.slug}`}>{collFamily.title}</LinkWithQuery>
+                          <p className="mt-2">{collFamily.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </section>
+            ))}
+          </SingleCol>
+        </SiteWidth>
       </section>
     </Layout>
   );

@@ -1,5 +1,7 @@
 import dynamic from "next/dynamic";
 
+import { SiteWidth } from "@components/panels/SiteWidth";
+
 import LandingSearchForm from "./LandingSearchForm";
 import { LogoLarge } from "./LogoLarge";
 
@@ -16,7 +18,7 @@ type TProps = {
 export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
   return (
     <div className="pb-6 text-white pt-[28px] sm:pt-[48px] md:pt-[80px] lg:pt-[100px] xl:pt-[140px]">
-      <div className="container">
+      <SiteWidth>
         <div className="flex flex-col items-center justify-center mb-6">
           <LogoLarge />
           <h1 className="visually-hidden">Climate Change Laws of the World</h1>
@@ -32,7 +34,7 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
         <div className="mt-6 mt-[48px] sm:mt-[88px] md:mt-[188px] lg:mt-[208px] xl:mt-[248px]">
           <Instructions />
         </div>
-      </div>
+      </SiteWidth>
     </div>
   );
 };
