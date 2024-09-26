@@ -9,8 +9,8 @@ type TProps = {
 export const coreClasses = "text-textDark font-medium";
 export const h1Classes = "text-4xl";
 export const h2Classes = "text-2xl mb-5";
-export const h3Classes = "text-xl";
-export const h4Classes = "text-lg";
+export const h3Classes = "text-xl mb-5";
+export const h4Classes = "text-lg mb-5";
 
 export const Heading = ({ level, extraClasses = "", children }: TProps) => {
   switch (level) {

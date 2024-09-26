@@ -46,6 +46,7 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
+import { Heading } from "@components/typography/Heading";
 
 type TProps = {
   page: TFamilyPage;
@@ -197,7 +198,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
             </section>
 
             <section className="mt-8">
-              <h2 className="text-base">Main {pluralise(mainDocuments.length, "document", "documents")}</h2>
+              <Heading level={2}>Main {pluralise(mainDocuments.length, "document", "documents")}</Heading>
               <div data-cy="main-documents">
                 {mainDocuments.map((doc) => (
                   <FamilyDocument
@@ -215,7 +216,9 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               <>
                 <section className="mt-8">
                   <div className="flex items-center gap-2">
-                    <h2 className="text-base">Other documents in this entry </h2>
+                    <Heading level={2} extraClasses="mb-0">
+                      Other documents in this entry
+                    </Heading>
                     <Tooltip
                       id="related-documents-info"
                       place="right"
@@ -243,13 +246,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               <>
                 <section className="mt-8">
                   <div>
-                    <div className="lg:flex justify-between items-center">
-                      <h2 className="flex items-center text-base">
-                        <span className="mr-2">
-                          <TargetIcon />
-                        </span>
-                        Targets ({publishedTargets.length})
-                      </h2>
+                    <div>
+                      <Heading level={2}>Targets</Heading>
                       <ExternalLink url="https://form.jotform.com/233542296946365" className="block text-sm my-4 md:my-0" cy="download-target-csv">
                         Request to download all target data (.csv)
                       </ExternalLink>
@@ -295,7 +293,9 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
             {page.events.length > 0 && (
               <section className="mt-8">
-                <h2 className="text-base">Timeline</h2>
+                <Heading level={3} extraClasses="mb-0">
+                  Timeline
+                </Heading>
                 <ShowHide show={showTimeline} onClick={() => setShowTimeline(!showTimeline)} className="mt-4" />
                 {showTimeline && (
                   <Timeline>
@@ -308,7 +308,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
             )}
 
             <section className="mt-8">
-              <h2 className="my-4 text-base">Note</h2>
+              <Heading level={4}>Note</Heading>
               <div className="flex text-sm">
                 {corpusImage && (
                   <div className="relative max-w-[144px] mt-1 mr-2">
@@ -328,17 +328,21 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
             {page.collections.map((collection, i) => (
               <section className="pt-12" id={`collection-${i}`} key={collection.import_id}>
-                <h2 className="text-base">About the {collection.title}</h2>
-                <ShowHide show={showCollectionDetail} onClick={() => setShowCollectionDetail(!showCollectionDetail)} className="mt-4" />
+                <div className="mb-5">
+                  <Heading level={4} extraClasses="mb-0">
+                    About the {collection.title}
+                  </Heading>
+                  <ShowHide show={showCollectionDetail} onClick={() => setShowCollectionDetail(!showCollectionDetail)} />
+                </div>
                 {showCollectionDetail && (
                   <div>
                     <div className="mb-8 text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
-                    <h4>Other documents in the {collection.title}</h4>
+                    <Heading level={4}>Other documents in the {collection.title}</Heading>
                     <div className="divide-solid divide-y">
                       {collection.families.map((collFamily, i) => (
                         <div key={collFamily.slug} className="pt-4 pb-4">
                           <LinkWithQuery href={`/document/${collFamily.slug}`}>{collFamily.title}</LinkWithQuery>
-                          <p className="mt-2">{collFamily.description}</p>
+                          <div className="text-content" dangerouslySetInnerHTML={{ __html: collFamily.description }}></div>
                         </div>
                       ))}
                     </div>

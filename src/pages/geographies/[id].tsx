@@ -254,9 +254,8 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   <section className="mt-10" id="targets">
                     <div>
                       <div>
-                        <Heading level={2} extraClasses="flex items-center gap-2">
-                          <TargetIcon width="20" height="20" />
-                          Targets <span className="text-gray-700 font-normal">({publishedTargets.length})</span>
+                        <Heading level={2}>
+                          Targets <span className="font-normal">({publishedTargets.length})</span>
                         </Heading>
 
                         <ExternalLink url="https://form.jotform.com/233542296946365" className="text-sm underline" cy="download-target-csv">
