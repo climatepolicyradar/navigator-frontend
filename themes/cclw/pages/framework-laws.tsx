@@ -130,7 +130,7 @@ const FrameworkLaws = () => {
               of our global stakeholders to support our efforts to keep the database up to date.
             </p>
             <p>
-              <em>This page was last updated on 22 April 2024</em>.
+              <em>This page was last updated on 26 September 2024</em>.
             </p>
           </div>
         </div>
