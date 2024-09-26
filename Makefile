@@ -5,7 +5,7 @@ THEME ?= cclw
 API_URL ?= https://app.dev.climatepolicyradar.org/api/v1
 S3_PATH ?= https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
 ADOBE_API_KEY ?= dca9187b65294374a6367824df902fdf
-NEXT_PUBLIC_APP_TOKEN ?= some_token
+
 
 build:
 	docker build --build-arg THEME=${THEME} -t ${TAG}-${THEME} .
@@ -14,7 +14,6 @@ run: build
 	docker run --rm -it \
 		-p 3000:3000 \
 		-e THEME=$(THEME) \
-		-e NEXT_PUBLIC_APP_TOKEN=$(NEXT_PUBLIC_APP_TOKEN) \
 		-e API_URL=$(API_URL) \
 		-e ADOBE_API_KEY=$(ADOBE_API_KEY) \
 		-e S3_PATH=$(S3_PATH) \
