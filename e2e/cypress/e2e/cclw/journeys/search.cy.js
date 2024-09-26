@@ -54,6 +54,7 @@ describe("Search Flow", () => {
     cy.intercept("searches", (req) => {
       req.headers["app-token"] = "hard coded";
     });
+    cy.visit("/search");
     cy.get(searchResultsSelector).children(searchResultSelector).should("have.length", 0);
   });
 });
