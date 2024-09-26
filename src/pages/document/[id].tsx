@@ -270,7 +270,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
                   <div data-cy="more-targets-button">
                     <Button
                       color="secondary"
-                      extraClasses="flex gap-2 items-center my-6"
+                      extraClasses="flex gap-2 items-center my-5"
                       onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
                     >
                       <DownChevronIcon /> View more targets
@@ -280,7 +280,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
 
                 {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
                   <div>
-                    <Button color="secondary" extraClasses="flex gap-2 items-center my-6" onClick={() => setNumberOfTargetsToDisplay(5)}>
+                    <Button color="secondary" extraClasses="flex gap-2 items-center my-5" onClick={() => setNumberOfTargetsToDisplay(5)}>
                       <div className="rotate-180">
                         <DownChevronIcon />
                       </div>{" "}
