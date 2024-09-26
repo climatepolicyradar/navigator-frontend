@@ -45,8 +45,8 @@ const FrameworkLaws = () => {
               </ul>
               <p>
                 The laws are tagged to indicate the policy response area(s) to which they relate, whether mitigation, adaptation and/or disaster risk
-                management. <strong>There are currently 67 climate change framework laws in our database</strong>. Please see these listed
-                alphabetically by country below. You can search within each document though their links below.
+                management. <strong>There are currently {totalFrameworkLaws} climate change framework laws in our database</strong>. Please see these
+                listed alphabetically by country below. You can search within each document though their links below.
               </p>
               <table>
                 <thead>
