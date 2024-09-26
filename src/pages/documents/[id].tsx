@@ -6,6 +6,8 @@ import { ApiClient } from "@api/http-common";
 
 import useSearch from "@hooks/useSearch";
 
+import { FullWidth } from "@components/panels/FullWidth";
+
 import Layout from "@components/layouts/Main";
 import EmbeddedPDF from "@components/EmbeddedPDF";
 import PassageMatches from "@components/PassageMatches";
@@ -159,7 +161,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
           </div>
         ) : (
           <section className="flex-1 flex" id="document-viewer">
-            <div className="container flex-1">
+            <FullWidth extraClasses="flex-1">
               <div id="document-container" className="md:flex md:h-[80vh]">
                 <div id="document-sidebar" className={`py-4 max-h-[30vh] md:max-h-full flex flex-col ${passageClasses(document.content_type)}`}>
                   <div id="document-search" className="flex flex-col gap-2 pr-4">
@@ -218,7 +220,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                   {!canPreview && <EmptyDocument />}
                 </div>
               </div>
-            </div>
+            </FullWidth>
           </section>
         )}
       </section>

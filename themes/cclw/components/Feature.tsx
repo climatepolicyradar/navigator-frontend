@@ -1,6 +1,8 @@
 import { ReactNode } from "react";
 import Image from "next/image";
 
+import { SiteWidth } from "@components/panels/SiteWidth";
+
 type TProps = {
   heading?: string;
   contentSide?: "left" | "right";
@@ -12,7 +14,7 @@ type TProps = {
 export const Feature = ({ heading, contentSide = "left", image, imageAlt, children }: TProps) => {
   return (
     <div className="bg-cclw-dark text-white py-12">
-      <div className="container md:flex gap-8">
+      <SiteWidth extraClasses="md:flex gap-8">
         <div className={`basis-1/2 ${contentSide === "right" ? "order-last" : ""}`}>
           {heading && <h3 className="text-3xl md:text-h2 xl:text-h1 xl:leading-[72px] text-white">{heading}</h3>}
           {children}
@@ -32,7 +34,7 @@ export const Feature = ({ heading, contentSide = "left", image, imageAlt, childr
             </div>
           </div>
         )}
-      </div>
+      </SiteWidth>
     </div>
   );
 };

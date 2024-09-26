@@ -1,9 +1,10 @@
 import React, { FC, ReactNode, useContext } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import getPageTitle from "@utils/getPageTitle";
 
 import { ThemeContext } from "@context/ThemeContext";
+
+import getPageTitle from "@utils/getPageTitle";
 import getPageDescription from "@utils/getPageDescription";
 import { getCanonicalUrl } from "@utils/getCanonicalUrl";
 

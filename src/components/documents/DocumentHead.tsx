@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import useConfig from "@hooks/useConfig";
 
+import { SiteWidth } from "@components/panels/SiteWidth";
+
+import { SubNav } from "@components/nav/SubNav";
 import { CountryLink } from "@components/CountryLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import Button from "@components/buttons/Button";
@@ -57,13 +60,15 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
 
   return (
     <div className="bg-white border-solid border-lineBorder border-b">
-      <div className="container">
+      <SubNav>
         <BreadCrumbs
           geography={breadcrumbGeography}
           category={breadcrumbCategory}
           family={breadcrumbFamily}
           label={<span className="capitalize">{breadcrumbLabel}</span>}
         />
+      </SubNav>
+      <SiteWidth>
         <div className="flex flex-col lg:flex-row">
           <div className="flex-1 my-4">
             <h1 className="text-3xl lg:smaller">{document.title}</h1>
@@ -71,7 +76,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
               <div className="flex text-sm text-grey-700 items-center font-medium gap-2 middot-between">
                 {!isSystemGeo(family.geography) && (
                   <span className="flex gap-1">
-                    <CountryLink countryCode={family.geography} className="text-primary-400 hover:text-indigo-600 duration-300">
+                    <CountryLink countryCode={family.geography} className="text-gray-700">
                       <span>{geoName}</span>
                     </CountryLink>
                   </span>
@@ -96,7 +101,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
             )}
           </div>
           <div>
-            <div className="my-4 flex flex-col gap-2 xl:flex-row">
+            <div className="my-4 flex flex-row gap-2 lg:flex-col">
               {family.documents.length > 1 && (
                 <Button color="clear" data-cy="view-source" onClick={handleViewOtherDocsClick} extraClasses="flex items-center text-sm">
                   Other documents in this entry ({family.documents.length})
@@ -124,7 +129,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
             />
           </div>
         )}
-      </div>
+      </SiteWidth>
     </div>
   );
 };

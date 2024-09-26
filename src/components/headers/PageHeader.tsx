@@ -1,21 +1,24 @@
+import { useRouter } from "next/router";
+import Image from "next/image";
+
+import { SiteWidth } from "@components/panels/SiteWidth";
+
 import MainMenu from "../menus/MainMenu";
 import Button from "@components/buttons/Button";
-import Image from "next/image";
 import { LinkWithQuery } from "@components/LinkWithQuery";
-import { useRouter } from "next/router";
 import { FloatingSearch } from "@components/FloatingSearch";
 
 const NON_SEARCH_PAGES = ["/", "/search"];
 
-const Header = () => {
+export function PageHeader() {
   const router = useRouter();
 
   // Do not show search on specific pages
   const showSearch = !NON_SEARCH_PAGES.includes(router.pathname);
 
   return (
-    <header data-cy="header" className="bg-transparent w-full transition duration-300 banner">
-      <div className="container my-4">
+    <header data-cy="header" className="w-full py-5 banner">
+      <SiteWidth>
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <LinkWithQuery href="/">
@@ -38,8 +41,7 @@ const Header = () => {
             </div>
           </div>
         </div>
-      </div>
+      </SiteWidth>
     </header>
   );
-};
-export default Header;
+}

@@ -20,7 +20,7 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
 
   return (
     <div>
-      <h1 className="text-2xl">{family.title}</h1>
+      <h1 className="text-3xl lg:smaller">{family.title}</h1>
       {family.collections.length > 0 && (
         <div className="md:flex text-sm text-indigo-400 mt-4 items-center w-full mb-2">
           <span>Part of the&nbsp;</span>

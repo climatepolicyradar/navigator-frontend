@@ -1,6 +1,10 @@
 import { useRouter } from "next/router";
+
+import { SiteWidth } from "@components/panels/SiteWidth";
+
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { FloatingSearch } from "@components/FloatingSearch";
+
 import { Menu } from "@cclw/components/Menu";
 import { Logo } from "@cclw/components/Logo";
 
@@ -15,7 +19,7 @@ const Header = ({ background = true }) => {
 
   return (
     <header data-cy="header" className={`${background ? "bg-cclw-dark" : ""} w-full`}>
-      <div className="container">
+      <SiteWidth>
         <div className="flex flex-nowrap my-2">
           <div className="items-center flex flex-nowrap flex-1">
             {showLogo && (
@@ -33,7 +37,7 @@ const Header = ({ background = true }) => {
             <Menu />
           </div>
         </div>
-      </div>
+      </SiteWidth>
     </header>
   );
 };

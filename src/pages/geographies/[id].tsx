@@ -7,8 +7,10 @@ import { ApiClient } from "@api/http-common";
 
 import { ThemeContext } from "@context/ThemeContext";
 
+import { SiteWidth } from "@components/panels/SiteWidth";
+import { SingleCol } from "@components/panels/SingleCol";
+
 import Layout from "@components/layouts/Main";
-import { SingleCol } from "@components/SingleCol";
 import { Timeline } from "@components/timeline/Timeline";
 import { Event } from "@components/timeline/Event";
 import { CountryHeader } from "@components/blocks/CountryHeader";
@@ -23,6 +25,7 @@ import { ExternalLink } from "@components/ExternalLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 import { Alert } from "@components/Alert";
+import { SubNav } from "@components/nav/SubNav";
 
 import { getCountryCode } from "@helpers/getCountryFields";
 
@@ -208,118 +211,120 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
         </SingleCol>
       ) : (
         <section className="mb-8">
-          <div className="container">
+          <SubNav>
             <BreadCrumbs label={geography.name} />
-          </div>
-          <SingleCol>
-            <CountryHeader country={geography} targetCount={hasTargets ? publishedTargets?.length : 0} onTargetClick={handleTargetClick} />
-            <section className="mt-8" data-cy="country-search">
-              <h3 className="mb-4">Documents</h3>
-              <DocumentSearchForm
-                placeholder={`Search the full text of ${allDocumentsCount} documents from ${geography.name}`}
-                handleSearchInput={handleSearchInput}
-                input={""}
-                featuredSearches={FEATURED_SEARCHES}
-                showSuggestions
-                suggestionsAsLinks
-              />
-            </section>
-            {hasFamilies && (
-              <>
-                <section className="mt-10" data-cy="top-documents">
-                  <div className="mt-4 md:flex">
-                    <div className="flex-grow">
-                      <TabbedNav activeIndex={selectedCategoryIndex} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
+          </SubNav>
+          <SiteWidth>
+            <SingleCol extraClasses="mt-8">
+              <CountryHeader country={geography} targetCount={hasTargets ? publishedTargets?.length : 0} onTargetClick={handleTargetClick} />
+              <section className="mt-8" data-cy="country-search">
+                <h3 className="mb-4">Documents</h3>
+                <DocumentSearchForm
+                  placeholder={`Search the full text of ${allDocumentsCount} documents from ${geography.name}`}
+                  handleSearchInput={handleSearchInput}
+                  input={""}
+                  featuredSearches={FEATURED_SEARCHES}
+                  showSuggestions
+                  suggestionsAsLinks
+                />
+              </section>
+              {hasFamilies && (
+                <>
+                  <section className="mt-10" data-cy="top-documents">
+                    <div className="mt-4 md:flex">
+                      <div className="flex-grow">
+                        <TabbedNav activeIndex={selectedCategoryIndex} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
+                      </div>
                     </div>
-                  </div>
-                  {renderDocuments()}
-                </section>
-                {selectedCategoryIndex !== 4 && (
-                  <div data-cy="see-more-button">
-                    <Button color="secondary" extraClasses="my-6" onClick={handleDocumentSeeMoreClick}>
-                      View more documents
-                    </Button>
-                    <Divider />
-                  </div>
-                )}
-              </>
-            )}
-            {hasTargets && (
-              <>
-                <section className="mt-10" id="targets">
-                  <div>
-                    <div className="justify-between items-end lg:flex">
-                      <h3 className="flex items-center gap-2">
-                        <TargetIcon width="20" height="20" />
-                        Targets <span className="text-gray-700 font-normal">({publishedTargets.length})</span>
-                      </h3>
+                    {renderDocuments()}
+                  </section>
+                  {selectedCategoryIndex !== 4 && (
+                    <div data-cy="see-more-button">
+                      <Button color="secondary" extraClasses="my-6" onClick={handleDocumentSeeMoreClick}>
+                        View more documents
+                      </Button>
+                      <Divider />
+                    </div>
+                  )}
+                </>
+              )}
+              {hasTargets && (
+                <>
+                  <section className="mt-10" id="targets">
+                    <div>
+                      <div className="justify-between items-end lg:flex">
+                        <h3 className="flex items-center gap-2">
+                          <TargetIcon width="20" height="20" />
+                          Targets <span className="text-gray-700 font-normal">({publishedTargets.length})</span>
+                        </h3>
 
-                      <ExternalLink
-                        url="https://form.jotform.com/233542296946365"
-                        className="text-sm block mt-4 underline md:mt-0"
-                        cy="download-target-csv"
+                        <ExternalLink
+                          url="https://form.jotform.com/233542296946365"
+                          className="text-sm block mt-4 underline md:mt-0"
+                          cy="download-target-csv"
+                        >
+                          Request to download all target data (.csv)
+                        </ExternalLink>
+                      </div>
+                      <div className="flex mt-4">
+                        <Alert
+                          message={
+                            <>
+                              We are developing the ability to detect targets in documents.{" "}
+                              <ExternalLink url="https://form.jotform.com/233294139336358">Get notified when this is ready</ExternalLink>.
+                            </>
+                          }
+                          icon={<AlertCircleIcon height="16" width="16" />}
+                        />
+                      </div>
+                      <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
+                    </div>
+                  </section>
+                  {publishedTargets.length > numberOfTargetsToDisplay && (
+                    <div data-cy="more-targets-button">
+                      <Button
+                        color="secondary"
+                        extraClasses="flex gap-2 items-center my-6"
+                        onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
                       >
-                        Request to download all target data (.csv)
-                      </ExternalLink>
+                        <DownChevronIcon /> View more targets
+                      </Button>
+                      <Divider />
                     </div>
-                    <div className="flex mt-4">
-                      <Alert
-                        message={
-                          <>
-                            We are developing the ability to detect targets in documents.{" "}
-                            <ExternalLink url="https://form.jotform.com/233294139336358">Get notified when this is ready</ExternalLink>.
-                          </>
-                        }
-                        icon={<AlertCircleIcon height="16" width="16" />}
-                      />
+                  )}
+                  {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
+                    <div>
+                      <Button color="secondary" extraClasses="flex gap-2 items-center my-6" onClick={() => setNumberOfTargetsToDisplay(5)}>
+                        <div className="rotate-180">
+                          <DownChevronIcon />
+                        </div>{" "}
+                        Hide targets
+                      </Button>
+                      <Divider />
                     </div>
-                    <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
-                  </div>
+                  )}
+                </>
+              )}
+              {hasEvents && (
+                <section className="mt-10 hidden">
+                  <h3 className="mb-4">Events</h3>
+                  <Timeline>
+                    {summary.events.map((event: TEvent, index: number) => (
+                      <Event event={event} key={`event-${index}`} index={index} last={index === summary.events.length - 1 ? true : false} />
+                    ))}
+                  </Timeline>
                 </section>
-                {publishedTargets.length > numberOfTargetsToDisplay && (
-                  <div data-cy="more-targets-button">
-                    <Button
-                      color="secondary"
-                      extraClasses="flex gap-2 items-center my-6"
-                      onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
-                    >
-                      <DownChevronIcon /> View more targets
-                    </Button>
-                    <Divider />
-                  </div>
-                )}
-                {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
-                  <div>
-                    <Button color="secondary" extraClasses="flex gap-2 items-center my-6" onClick={() => setNumberOfTargetsToDisplay(5)}>
-                      <div className="rotate-180">
-                        <DownChevronIcon />
-                      </div>{" "}
-                      Hide targets
-                    </Button>
-                    <Divider />
-                  </div>
-                )}
-              </>
-            )}
-            {hasEvents && (
-              <section className="mt-10 hidden">
-                <h3 className="mb-4">Events</h3>
-                <Timeline>
-                  {summary.events.map((event: TEvent, index: number) => (
-                    <Event event={event} key={`event-${index}`} index={index} last={index === summary.events.length - 1 ? true : false} />
-                  ))}
-                </Timeline>
-              </section>
-            )}
-            {geography.legislative_process && (
-              <section className="mt-10" data-cy="legislative-process">
-                <h3 className="mb-4 flex items-center gap-2">
-                  <LegislativeIcon width="20" height="20" /> Legislative Process
-                </h3>
-                <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
-              </section>
-            )}
-          </SingleCol>
+              )}
+              {geography.legislative_process && (
+                <section className="mt-10" data-cy="legislative-process">
+                  <h3 className="mb-4 flex items-center gap-2">
+                    <LegislativeIcon width="20" height="20" /> Legislative Process
+                  </h3>
+                  <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
+                </section>
+              )}
+            </SingleCol>
+          </SiteWidth>
         </section>
       )}
     </Layout>

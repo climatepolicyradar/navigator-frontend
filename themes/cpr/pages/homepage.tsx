@@ -1,12 +1,15 @@
 import { MouseEvent } from "react";
 import dynamic from "next/dynamic";
 
+import Layout from "@components/layouts/LandingPage";
+import { FullWidth } from "@components/panels/FullWidth";
+import { SiteWidth } from "@components/panels/SiteWidth";
+
 import AlphaLogo from "@components/logo/AlphaLogo";
 import ExactMatch from "@components/filters/ExactMatch";
 import Header from "@components/headers/LandingPage";
 import Banner from "@components/banner/FullHeight";
 import Footer from "@components/footer/Footer";
-import Layout from "@components/layouts/LandingPage";
 
 import LandingPageLinks from "@cpr/components/LandingPageLinks";
 import Partners from "@cpr/components/Partners";
@@ -40,7 +43,7 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
           <Banner />
           <section className="absolute inset-0 z-10 flex flex-col items-center justify-center min-h-[800px]">
             <AlphaLogo />
-            <div className="container mt-24 md:mt-48 max-w-screen-lg mx-auto">
+            <SiteWidth extraClasses="mt-24 md:mt-48 max-w-screen-lg mx-auto">
               <LandingSearchForm handleSearchInput={handleSearchInput} input={searchInput} />
               <div className="mt-4 flex justify-end">
                 <ExactMatch landing={true} checked={exactMatch} id="exact-match" handleSearchChange={handleSearchChange} />
@@ -48,12 +51,12 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
               <div className="mt-12">
                 <LandingPageLinks handleLinkClick={handleLinkClick} />
               </div>
-            </div>
+            </SiteWidth>
           </section>
         </main>
-        <div className="container hidden my-6 md:block">
+        <FullWidth extraClasses="hidden my-6 md:block">
           <WorldMap />
-        </div>
+        </FullWidth>
         <Summary />
         <Partners />
         <Footer />
