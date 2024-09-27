@@ -20,7 +20,7 @@ class ApiClient {
     if (appToken) {
       this.appToken = appToken;
     } else {
-      this.appToken = process.env.APP_TOKEN;
+      this.appToken = process.env.NEXT_PUBLIC_APP_TOKEN;
     }
 
     this.axiosClient = axios.create({ baseURL: this.baseUrl, headers: { "app-token": this.appToken } });
