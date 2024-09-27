@@ -30,7 +30,7 @@ const Slideout = ({ children, show, setShow }: SlideoutProps) => {
         show ? "translate-x-0" : "translate-x-[110%]"
       }`}
     >
-      <div className="flex absolute z-20 top-6 right-8 md:top-10">
+      <div className="flex absolute z-20 top-5 right-5 mt-2 md:top-5">
         <Close size="14" onClick={() => setShow(false)} />
       </div>
 

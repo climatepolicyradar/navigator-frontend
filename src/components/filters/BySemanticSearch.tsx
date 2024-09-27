@@ -9,7 +9,7 @@ const BySemanticSearch = ({ handleSearchChange, checked }) => {
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-2 md:flex-col">
       <div>
         <label
           className="checkbox-input flex items-center border py-2 px-1 rounded-md cursor-pointer border-gray-300 bg-white"

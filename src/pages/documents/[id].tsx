@@ -186,7 +186,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                     <>
                       <div className="my-4 text-sm pr-4 pb-4 border-b" data-cy="document-matches-description">
                         <p>
-                          Displaying {renderPassageCount(totalNoOfMatches)} for "<b>{`${router.query[QUERY_PARAMS.query_string]}`}</b>"
+                          Displaying {renderPassageCount(totalNoOfMatches)} for "
+                          <span className="text-textDark font-medium">{`${router.query[QUERY_PARAMS.query_string]}`}</span>"
                           {!searchQuery.exact_match && ` and related phrases`}
                           {totalNoOfMatches >= MAX_RESULTS && (
                             <div className="ml-1 inline-block">
