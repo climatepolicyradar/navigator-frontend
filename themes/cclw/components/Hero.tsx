@@ -4,6 +4,7 @@ import { SiteWidth } from "@components/panels/SiteWidth";
 
 import LandingSearchForm from "./LandingSearchForm";
 import { LogoLarge } from "./LogoLarge";
+import { Heading } from "@components/typography/Heading";
 
 const Instructions = dynamic(() => import("./Instructions"), {
   loading: () => <p>Loading document stats...</p>,
@@ -21,7 +22,9 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
       <SiteWidth>
         <div className="flex flex-col items-center justify-center mb-6">
           <LogoLarge />
-          <h1 className="visually-hidden">Climate Change Laws of the World</h1>
+          <Heading level={1} extraClasses="visually-hidden">
+            Climate Change Laws of the World
+          </Heading>
         </div>
         <div className="mx-auto text-center">
           <p className="font-medium tracking-slight text-lg lg:text-3xl" data-cy="intro-message">
