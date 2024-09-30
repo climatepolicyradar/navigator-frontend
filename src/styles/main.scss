@@ -65,32 +65,7 @@ a,
     @apply underline text-textNormal hover:text-blue-800;
   }
 }
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  @apply text-textDark font-medium;
-}
-h1 {
-  @apply text-3xl md:text-h1;
-}
-h2 {
-  @apply text-xl font-medium md:text-h2;
-}
-h3 {
-  @apply text-lg font-medium md:text-h3;
-}
-h4 {
-  @apply text-h4 font-medium;
-}
-h5 {
-  @apply text-h5;
-}
-h6 {
-  @apply text-h6;
-}
+
 input[type="text"],
 input[type="number"],
 input[type="password"],
