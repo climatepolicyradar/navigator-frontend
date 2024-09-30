@@ -5,6 +5,7 @@ import { SubNav } from "@components/nav/SubNav";
 
 import { ExternalLink } from "@components/ExternalLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
+import { Heading } from "@components/typography/Heading";
 
 const Contact = () => {
   return (
@@ -19,7 +20,9 @@ const Contact = () => {
         <SiteWidth>
           <SingleCol>
             <div className="text-content mb-12">
-              <h1 className="my-8">Contact</h1>
+              <Heading level={1} extraClasses="my-5">
+                Contact
+              </Heading>
               <p>
                 Please get in touch with the Climate Change Laws of the World team with any questions or comments by emailing{" "}
                 <ExternalLink url="mailto:gri.cgl@lse.co.uk">gri.cgl@lse.ac.uk</ExternalLink>

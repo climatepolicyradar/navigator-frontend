@@ -6,6 +6,7 @@ import { SubNav } from "@components/nav/SubNav";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
+import { Heading } from "@components/typography/Heading";
 
 import { FRAMEWORK_LAWS } from "@cclw/constants/frameworkLaws";
 
@@ -24,7 +25,9 @@ const FrameworkLaws = () => {
         <SiteWidth>
           <SingleCol>
             <div className="text-content mb-12">
-              <h1 className="my-8">Climate Change Framework Laws</h1>
+              <Heading level={1} extraClasses="my-5">
+                Climate Change Framework Laws
+              </Heading>
               <p>
                 We assign a number of classifications and categories to laws and policies in the Climate Change Laws of the World database to enhance
                 the usability and searchability of the data. The system of classifications has evolved to remain in step with developments in climate

@@ -8,6 +8,8 @@ import { SubNav } from "@components/nav/SubNav";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { AccordianItem } from "@cclw/components/AccordianItem";
 
+import { Heading } from "@components/typography/Heading";
+
 import { FAQS } from "@cclw/constants/faqs";
 
 const FAQ = () => {
@@ -23,7 +25,9 @@ const FAQ = () => {
         <SiteWidth>
           <SingleCol>
             <div className="text-content mb-12">
-              <h1 className="my-8">How to use this resource</h1>
+              <Heading level={1} extraClasses="my-5">
+                How to use this resource
+              </Heading>
               <p>You can use this resource to:</p>
               <ul>
                 <li>Search the full text of over 5000 laws, policies and UNFCCC submissions from every country.</li>
@@ -43,7 +47,7 @@ const FAQ = () => {
             </div>
 
             <div className="text-content mb-12">
-              <h2 className="my-6">FAQs</h2>
+              <Heading level={2}>FAQs</Heading>
               {FAQS.map((faq, i) => (
                 <Fragment key={faq.title}>
                   <AccordianItem id={faq.id} title={faq.title} startOpen={i === 0}>
