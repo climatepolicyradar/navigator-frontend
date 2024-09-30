@@ -1,7 +1,8 @@
 import { ExternalLink } from "@components/ExternalLink";
 import Button from "@components/buttons/Button";
-import Popup from "./Popup";
 import { LinkWithQuery } from "@components/LinkWithQuery";
+import { Heading } from "@components/typography/Heading";
+import Popup from "./Popup";
 
 type TProps = {
   active: boolean;
@@ -13,7 +14,7 @@ export const DownloadCsvPopup = ({ active, onCancelClick, onConfirmClick }: TPro
   return (
     <Popup active={active} onCloseClick={onCancelClick}>
       <div className="flex flex-col items-center">
-        <h3 className="mb-4 block">Download CSV</h3>
+        <Heading level={3}>Download CSV</Heading>
         <p className="mb-4">
           Please read our <LinkWithQuery href="/terms-of-use">terms of use</LinkWithQuery>, including any specific terms relevant to commercial use.
           Please contact <ExternalLink url="mailto:partners@climatepolicyradar.org">partners@climatepolicyradar.org</ExternalLink> with any questions.
