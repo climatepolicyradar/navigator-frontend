@@ -3,6 +3,8 @@ import Image from "next/image";
 
 import { SiteWidth } from "@components/panels/SiteWidth";
 
+import { Heading } from "@components/typography/Heading";
+
 type TProps = {
   heading?: string;
   contentSide?: "left" | "right";
@@ -16,7 +18,11 @@ export const Feature = ({ heading, contentSide = "left", image, imageAlt, childr
     <div className="bg-cclw-dark text-white py-12">
       <SiteWidth extraClasses="md:flex gap-8">
         <div className={`basis-1/2 ${contentSide === "right" ? "order-last" : ""}`}>
-          {heading && <h3 className="text-3xl md:text-h2 xl:text-h1 xl:leading-[72px] text-white">{heading}</h3>}
+          {heading && (
+            <Heading level={2} extraClasses="text-3xl xl:text-5xl xl:leading-[72px] !text-white">
+              {heading}
+            </Heading>
+          )}
           {children}
         </div>
         {image && (
