@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
-import { FC, ReactNode } from "react";
+import { ReactNode } from "react";
+
 import { ExternalLink } from "@components/ExternalLink";
+import { Heading } from "@components/typography/Heading";
 
 type TAcknowledgement = {
   partnerImage?: {
@@ -28,8 +30,8 @@ const Acknowledgement = ({ partnerImage, children }: TAcknowledgement) => {
 
 export const Acknowledgements = () => {
   return (
-    <div className="">
-      <h2 className="my-8">Acknowledgements</h2>
+    <div>
+      <Heading level={2}>Acknowledgements</Heading>
       <p className="mb-8">
         The Climate Change Laws of the World project is made possible through the work of many contributors. In particular, the Grantham Research
         Institute at LSE would like to acknowledge the contributions of the following key partners:
