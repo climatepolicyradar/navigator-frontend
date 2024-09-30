@@ -16,7 +16,7 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
 
   return (
     <div className="family-list-item relative">
-      <div className="flex flex-wrap text-sm gap-1 mb-2 items-center middot-between">
+      <div className="flex flex-wrap text-[13px] gap-1 mb-2 items-center middot-between">
         <FamilyMeta category={family_category} date={family_date} geography={family_geography} />
         {children}
       </div>
