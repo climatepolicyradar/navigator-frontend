@@ -16,21 +16,18 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
 
   return (
     <div className="family-list-item relative">
-      <div className="flex justify-between items-start">
-        <h2 className="leading-none flex items-start" data-cy="family-title">
-          <LinkWithQuery
-            href={`/document/${family_slug}`}
-            className="text-left text-blue-500 font-medium text-lg transition duration-300 leading-tight hover:underline"
-            passHref
-          >
-            {family_name}
-          </LinkWithQuery>
-        </h2>
-      </div>
-      <div className="flex flex-wrap text-sm gap-1 text-gray-700 mt-2 items-center font-medium middot-between">
+      <div className="flex flex-wrap text-sm gap-1 mb-2 items-center middot-between">
         <FamilyMeta category={family_category} date={family_date} geography={family_geography} />
         {children}
       </div>
+      <LinkWithQuery
+        href={`/document/${family_slug}`}
+        className="result-title text-left text-blue-500 font-medium text-lg transition duration-300 leading-tight hover:underline flex items-start"
+        passHref
+        data-cy="family-title"
+      >
+        {family_name}
+      </LinkWithQuery>
       <p
         className="mt-2 text-content"
         data-cy="family-description"
