@@ -5,10 +5,11 @@ import { SubNav } from "@components/nav/SubNav";
 
 import { ExternalLink } from "@components/ExternalLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
+import { Heading } from "@components/typography/Heading";
 
 const TermsOfUse = () => {
   return (
-    <Layout title={`Terms of use`}>
+    <Layout title="Terms of use">
       <SubNav>
         <BreadCrumbs label={"Terms of use"} />
       </SubNav>
@@ -16,8 +17,10 @@ const TermsOfUse = () => {
         <SiteWidth>
           <SingleCol extraClasses="mt-8">
             <div className="text-content mb-12">
-              <h1 className="my-8">Terms of use</h1>
-              <h2>Introduction</h2>
+              <Heading level={1} extraClasses="mb-5">
+                Terms of use
+              </Heading>
+              <Heading level={2}>Introduction</Heading>
               <p>Welcome to Climate Policy Radar, a leading resource on global climate law and policy. </p>
               <p>
                 This website provides a user interface for the Climate Policy Radar Database and the Climate Policy Radar Application ("CPR Database
@@ -39,7 +42,7 @@ const TermsOfUse = () => {
                 To access the methodology and code book for the CPR Database and its third party data providers, please{" "}
                 <ExternalLink url="https://github.com/climatepolicyradar/methodology">click here</ExternalLink>.
               </p>
-              <h2>Using the CPR Database and App</h2>
+              <Heading level={2}>Using the CPR Database and App</Heading>
               <ul>
                 <li>
                   Climate Policy Radar actively encourages and supports the use of information from the CPR Database and App for a wide range of
@@ -51,7 +54,7 @@ const TermsOfUse = () => {
                   selection, coordination, arrangement and enhancement of the CPR Database and App, as well as in the content original to it.
                 </li>
               </ul>
-              <h3>Open data under the CC-BY Licence</h3>
+              <Heading level={3}>Open data under the CC-BY Licence</Heading>
               <ul>
                 <li>
                   Climate Policy Radar is pleased to make the content of the CPR Database available as open data under the Creative Commons
@@ -98,7 +101,7 @@ const TermsOfUse = () => {
                   </ul>
                 </li>
               </ul>
-              <h3>Recommended citation</h3>
+              <Heading level={3}>Recommended citation</Heading>
               <ul>
                 <li>
                   <p>When citing use of the Database, you may use this text:</p>
@@ -124,14 +127,14 @@ const TermsOfUse = () => {
                 </li>
               </ul>
 
-              <h2>Commercial Licensing</h2>
+              <Heading level={2}>Commercial Licensing</Heading>
               <p>
                 If you wish to use, copy, redistribute, publish, or exploit a substantial amount of the information from the CPR Database for
                 commercial purposes, please contact us by emailing{" "}
                 <ExternalLink url="mailto:partners@climatepolicyradar.org">partners@climatepolicyradar.org</ExternalLink> to discuss the best way to
                 address your specific needs.
               </p>
-              <h2>Disclaimer</h2>
+              <Heading level={2}>Disclaimer</Heading>
               <ul>
                 <li>
                   Climate Policy Radar gives no warranty or assurance about the content of the CPR Database. As the CPR Database is under constant
@@ -149,19 +152,19 @@ const TermsOfUse = () => {
                   endeavour to complete or correct it, as soon as practicable.
                 </li>
               </ul>
-              <h2>Our trade marks</h2>
+              <Heading level={2}>Our trade marks</Heading>
               <p>
                 "Climate Policy Radar” and its associated logo are unregistered trade marks of Climate Policy Radar CIC. The use of these trade marks
                 is strictly prohibited unless you have our prior written permission.
               </p>
-              <h2>Links to other sites</h2>
+              <Heading level={2}>Links to other sites</Heading>
               <p>
                 The CPR Database and App may contain links to third-party sites that are not owned or controlled by Climate Policy Radar. Climate
                 Policy Radar has no control over, and assumes no responsibility for, the content, privacy policies, or practices of any third party
                 sites or services. Climate Policy Radar strongly advises you to read the terms and conditions and privacy policy of any third-party
                 site that you visit.
               </p>
-              <h3>Data from Third Party Sources</h3>
+              <Heading level={3}>Data from Third Party Sources</Heading>
               <p>
                 The CPR Database and App contains data that were created by third parties. The data includes document summaries that were written by
                 third parties and/or information about the documents (”meta-data”) assigned by third parties, e.g. classifications to sector or legal
@@ -283,7 +286,7 @@ const TermsOfUse = () => {
                   </tr>
                 </tbody>
               </table>
-              <h2>Changes To This Agreement</h2>
+              <Heading level={2}>Changes To This Agreement</Heading>
               <p>
                 Climate Policy Radar reserves the right, at our sole discretion, to modify or replace these Terms and Conditions by posting the
                 updated terms on the Site. Your continued use of the Site after any such changes constitutes your acceptance of the new Terms and
@@ -293,7 +296,7 @@ const TermsOfUse = () => {
                 Please review this Agreement periodically for changes. If you do not agree to any of this Agreement or any changes to this Agreement,
                 do not use, access or continue to access the Site or discontinue any use of the Site immediately.
               </p>
-              <h2>Questions?</h2>
+              <Heading level={2}>Questions?</Heading>
               <p>If you have any questions about this Agreement, please send an email to support@climatepolicyradar.org</p>
             </div>
           </SingleCol>
