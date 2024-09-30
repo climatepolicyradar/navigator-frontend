@@ -98,7 +98,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
   }
   return (
     <>
-      <p className="font-medium">{geography.display_value}</p>
+      <p className="text-textDark font-medium">{geography.display_value}</p>
       {(geography.familyCounts?.EXECUTIVE || geography.familyCounts?.LEGISLATIVE) && (
         <p>Laws and policies: {(geography.familyCounts?.EXECUTIVE || 0) + (geography.familyCounts?.LEGISLATIVE || 0)}</p>
       )}
