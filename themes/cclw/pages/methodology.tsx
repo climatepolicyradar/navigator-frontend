@@ -8,6 +8,7 @@ import { SubNav } from "@components/nav/SubNav";
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
+import { Heading } from "@components/typography/Heading";
 import { AccordianItem } from "@cclw/components/AccordianItem";
 
 import { METHODOLOGY } from "@cclw/constants/methodologyItems";
@@ -25,8 +26,12 @@ const Methodology = () => {
         <SiteWidth>
           <SingleCol>
             <div className="text-content mb-12">
-              <h1 className="my-8">Methodology</h1>
-              <h2 id="introduction">Introduction</h2>
+              <Heading level={1} extraClasses="my-5">
+                Methodology
+              </Heading>
+              <Heading level={2} id="introduction">
+                Introduction
+              </Heading>
               <p className="italic">This page was last updated on 19 August 2024.</p>
               <p>
                 This page outlines the definitions, scope and principles used to collect and categorise the <b>laws and policies</b> contained in the
