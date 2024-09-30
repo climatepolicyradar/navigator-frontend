@@ -1,6 +1,8 @@
 import Layout from "@components/layouts/Main";
+
 import { ExternalLink } from "@components/ExternalLink";
 import Button from "@components/buttons/Button";
+import { Heading } from "@components/typography/Heading";
 
 type TProps = {
   resetError: () => void;
@@ -11,7 +13,7 @@ const PageLevel = ({ resetError }: TProps) => {
     <Layout title={"Application Error"}>
       <section>
         <div className="text-content px-4 container mb-12">
-          <h1 className="my-8">Sorry, the app has encountered an error</h1>
+          <Heading level={1}>Sorry, the app has encountered an error</Heading>
           <p>Restarting the app might fix the problem. Click the button below to restart</p>
           <div>
             <Button thin onClick={resetError}>
