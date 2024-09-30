@@ -174,6 +174,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                     <BySemanticSearch
                       checked={(router.query[QUERY_PARAMS.exact_match] as string) === "true"}
                       handleSearchChange={handleSemanticSearchChange}
+                      parentPage="physical-document"
                     />
                     {!router.query[QUERY_PARAMS.query_string] && (
                       <div className="flex text-sm text-gray-600">
