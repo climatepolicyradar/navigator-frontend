@@ -39,13 +39,13 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
           <PoweredBy />
         </SiteWidth>
         <FullWidth id="world-map" extraClasses="hidden pt-6 md:block">
-          <Heading level={2} extraClasses="text-center text-3xl xl:text-5xl">
+          <Heading level={2} extraClasses="text-center text-3xl xl:text-4xl">
             Explore by country
           </Heading>
           <WorldMap />
         </FullWidth>
         <SiteWidth extraClasses="my-12" data-cy="featured-content">
-          <Heading level={2} extraClasses="text-center text-3xl xl:text-5xl">
+          <Heading level={2} extraClasses="text-center text-3xl xl:text-4xl">
             Featured content
           </Heading>
           <Articles />
@@ -60,7 +60,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
           <HelpUs />
         </div>
         <SiteWidth extraClasses="my-12" data-cy="partners">
-          <Heading level={2} extraClasses="text-center text-3xl xl:text-5xl">
+          <Heading level={2} extraClasses="text-center text-3xl xl:text-4xl">
             Our partners
           </Heading>
           <Partners />

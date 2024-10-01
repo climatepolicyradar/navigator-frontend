@@ -19,7 +19,7 @@ export const Feature = ({ heading, contentSide = "left", image, imageAlt, childr
       <SiteWidth extraClasses="md:flex gap-8">
         <div className={`basis-1/2 ${contentSide === "right" ? "order-last" : ""}`}>
           {heading && (
-            <Heading level={2} extraClasses="text-3xl xl:text-5xl xl:leading-[72px] !text-white">
+            <Heading level={2} extraClasses="text-3xl xl:text-4xl xl:leading-[52px] !text-white">
               {heading}
             </Heading>
           )}

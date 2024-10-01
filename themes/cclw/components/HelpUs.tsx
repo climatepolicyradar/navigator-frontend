@@ -13,7 +13,7 @@ const linkClasses = getButtonClasses("secondary");
 export const HelpUs = () => (
   <div className="bg-cclw-dark">
     <SiteWidth extraClasses="text-white py-12 pb-24">
-      <Heading level={2} extraClasses="text-3xl xl:text-5xl xl:leading-[72px] !text-white text-center">
+      <Heading level={2} extraClasses="text-3xl xl:text-4xl xl:leading-[52px] !text-white text-center">
         Help us improve this tool
       </Heading>
       <p className="text-center text-xl">Here's a variety of ways you can contribute or collaborate with us.</p>
