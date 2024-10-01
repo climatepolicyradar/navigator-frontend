@@ -8,7 +8,9 @@ const relatedDocsSelector = '[data-cy="related-documents"]';
 const targetsSelector = '[data-cy="targets"]';
 
 const pageSelectors = ["h1", '[data-cy="country-link"]', '[data-cy="download-target-csv"]', mainDocsSelector, relatedDocsSelector, targetsSelector];
-const pageHeadings = ["Main document", "Other documents in this entry", "Targets", "Timeline", "Note"];
+const h2PageHeadings = ["Main document", "Other documents in this entry", "Targets"];
+const h3PageHeadings = ["Timeline"];
+const h4PageHeadings = ["Note"];
 const metaData = [
   '[data-cy="family-metadata-category"], [data-cy="family-metadata-year"], [data-cy="country-link"], [data-cy="family-metadata-topics"]',
 ];
@@ -51,8 +53,14 @@ describe("Family Page", () => {
   });
 
   it("should display the page headings", () => {
-    pageHeadings.forEach((heading) => {
+    h2PageHeadings.forEach((heading) => {
       cy.contains("h2", heading).should("be.visible");
+    });
+    h3PageHeadings.forEach((heading) => {
+      cy.contains("h3", heading).should("be.visible");
+    });
+    h4PageHeadings.forEach((heading) => {
+      cy.contains("h4", heading).should("be.visible");
     });
   });
 
