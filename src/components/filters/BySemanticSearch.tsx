@@ -2,7 +2,7 @@ import { ChangeEvent } from "react";
 import { QUERY_PARAMS } from "@constants/queryParams";
 
 type TProps = {
-  handleSearchChange: (key: string, value: boolean) => void;
+  handleSearchChange: (key: string, value: string) => void;
   checked: boolean;
   parentPage?: string;
 };
@@ -11,7 +11,7 @@ const BySemanticSearch = ({ handleSearchChange, checked, parentPage = "search" }
   const handleClick = (e: ChangeEvent<HTMLInputElement>) => {
     // Note: the value of the radio is a string, not a boolean
     const isExact = !!parseInt(e.target.value);
-    handleSearchChange(QUERY_PARAMS.exact_match, isExact);
+    handleSearchChange(QUERY_PARAMS.exact_match, isExact.toString());
   };
 
   return (
