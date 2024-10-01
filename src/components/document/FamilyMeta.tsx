@@ -25,7 +25,7 @@ export const FamilyMeta = ({ category, date, geography, topics, author }: TProps
     <>
       {!isSystemGeo(geography) && (
         <span className="flex gap-1">
-          <CountryLink countryCode={geography} className="text-textDark font-medium no-underline">
+          <CountryLink countryCode={geography} className="text-textDark no-underline">
             <span>{country_name}</span>
           </CountryLink>
         </span>
