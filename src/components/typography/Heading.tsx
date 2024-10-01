@@ -7,6 +7,7 @@ type TProps = {
   [x: string]: any;
 };
 
+// Dev note: because we have dynamic content that we may not have control over, please update the style.css with the corresponding html heading tags
 export const coreClasses = "text-textDark font-medium";
 export const h1Classes = "text-4xl";
 export const h2Classes = "text-2xl mb-5";
