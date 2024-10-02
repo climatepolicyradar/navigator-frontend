@@ -54,7 +54,7 @@ html,
   height: 100%;
 }
 body {
-  @apply text-gray-700;
+  @apply text-textNormal;
   font-family: Arial, Helvetica, sans-serif;
 }
 a,
@@ -62,35 +62,10 @@ a,
   @apply text-blue-600 transition duration-300 hover:underline hover:text-blue-800;
 
   &.alt {
-    @apply underline text-gray-800 hover:text-blue-800;
+    @apply underline text-textNormal hover:text-blue-800;
   }
 }
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  @apply text-cpr-dark font-medium;
-}
-h1 {
-  @apply text-3xl md:text-h1;
-}
-h2 {
-  @apply text-xl font-medium md:text-h2;
-}
-h3 {
-  @apply text-lg font-medium md:text-h3;
-}
-h4 {
-  @apply text-h4 font-medium;
-}
-h5 {
-  @apply text-h5;
-}
-h6 {
-  @apply text-h6;
-}
+
 input[type="text"],
 input[type="number"],
 input[type="password"],
@@ -99,7 +74,7 @@ textarea,
 select,
 option {
   font-family: Arial, Helvetica, sans-serif;
-  @apply p-3 rounded-lg text-lg w-full text-cpr-dark;
+  @apply p-3 rounded-lg text-lg w-full text-textNormal;
   &.small {
     @apply p-2 text-base;
   }
@@ -310,14 +285,13 @@ ul li.selected {
   @include dark-gradient;
 }
 
-/* text content on text pages such as 'methodology' and search results */
+/* text-content represents any wrapper to a chunk of text, sometimes dynamic */
 .text-content,
 .search-results {
-  @apply font-light;
   b,
   strong,
   .bold {
-    @apply font-medium;
+    @apply font-medium text-textDark;
   }
   i,
   em {
@@ -325,27 +299,27 @@ ul li.selected {
   }
   a {
     &.accordian-item {
-      @apply text-cpr-dark text-lg cursor-pointer flex items-center no-underline hover:no-underline md:text-h3;
+      @apply text-textNormal text-lg cursor-pointer flex items-center no-underline hover:no-underline md:text-xl;
     }
   }
   p {
-    @apply my-6 font-light;
+    @apply my-5;
   }
   ul {
     @apply list-disc my-2;
     li {
-      @apply my-4 ml-4 pl-2;
+      @apply my-5 ml-4 pl-2;
     }
   }
   .m-table {
-    @apply border border-gray-200 my-6;
+    @apply border border-gray-200 my-5;
     .row {
       @apply flex w-full border-b border-gray-200;
       &:last-child {
         border: none;
       }
       &.heading {
-        @apply bg-gray-200 font-medium;
+        @apply text-textDark font-medium;
       }
       .term {
         @apply p-4 font-medium w-1/3 md:w-1/4 grow-0 shrink-0;
@@ -358,11 +332,11 @@ ul li.selected {
   ol {
     @apply list-decimal list-inside;
     li {
-      @apply my-6 font-light;
+      @apply my-5;
     }
   }
   table {
-    @apply text-left my-6;
+    @apply text-left my-5;
     th {
       @apply border border-gray-300 p-2;
     }
@@ -371,7 +345,27 @@ ul li.selected {
     }
   }
   hr {
-    @apply my-6;
+    @apply my-5;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-medium text-textDark;
+  }
+  h1 {
+    @apply text-4xl;
+  }
+  h2 {
+    @apply text-2xl mb-5;
+  }
+  h3 {
+    @apply text-xl mb-5;
+  }
+  h4 {
+    @apply text-lg mb-5;
   }
 }
 
@@ -594,7 +588,7 @@ ul li.selected {
 }
 
 #mapToolTip {
-  @apply text-cpr-dark bg-white p-4 rounded-lg drop-shadow border opacity-100;
+  @apply text-textNormal bg-white p-4 rounded-lg drop-shadow border opacity-100;
 }
 
 .middot-between {

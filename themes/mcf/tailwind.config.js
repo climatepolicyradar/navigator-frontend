@@ -1,11 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 
+const MAX_SITE_WIDTH = "1440px";
+const MAX_CONTENT_WIDTH = "800px";
+const MAX_SIDEBAR_WIDTH = "300px";
+
 module.exports = {
   content: [
     "./src/components/**/*.{ts,tsx,js,jsx}",
     "./src/pages/**/*.{ts,tsx,js,jsx}",
     "./src/sites/**/*.{ts,tsx,js,jsx}",
-    "./themes/mcf/**/*.{ts,tsx,js,jsx}",
+    "./themes/cpr/**/*.{ts,tsx,js,jsx}",
   ],
   theme: {
     colors: {
@@ -13,6 +17,8 @@ module.exports = {
       black: "#000000",
       transparent: "transparent",
       current: "currentColor",
+      textDark: "#202020",
+      textNormal: "#505050",
       cpr: {
         dark: "#071e4a",
       },
@@ -53,24 +59,6 @@ module.exports = {
         700: "#B42318",
         800: "#912018",
       },
-      orange: {
-        50: "#FFF6ED",
-        100: "#FFEAD5",
-        200: "#FDDCAB",
-        300: "#FEB273",
-        600: "#EC4A0A",
-        700: "#C4320A",
-        800: "#9C2A10",
-      },
-      yellow: {
-        50: "#FFFAEB",
-        100: "#FEF0C7",
-        200: "#FEDF89",
-        300: "#FEC84B",
-        600: "#DC6803",
-        700: "#B54708",
-        800: "#93370D",
-      },
       green: {
         50: "#ECFDF3",
         100: "#D1FADF",
@@ -80,46 +68,37 @@ module.exports = {
         700: "#027A48",
         800: "#05603A",
       },
-      purple: {
-        50: "#F4F3FF",
-        100: "#E7DEFE",
-        200: "#cebefc",
-        300: "#b69dfb",
-        600: "#855CF8",
-        700: "#9B8AFB",
-        800: "#9B8AFB",
-      },
     },
     container: {
       center: true,
       padding: "1rem",
     },
     extend: {
-      spacing: {
-        150: "150%",
-      },
-      boxShadow: {
-        xs: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
-      },
-      fontSize: {
-        h1: "48px",
-        h2: "30px",
-        h3: "20px",
-        h4: "21px",
-        h5: "18px",
-        h6: "16px",
-      },
       borderRadius: {
         "4xl": "30px",
       },
-      letterSpacing: {
-        slight: "0.015em",
+      boxShadow: {
+        xs: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
       },
       flexBasis: {
         "1/2-gap-4": "calc(50% - (1/2 * 1rem))",
         "1/3-gap-4": "calc(33.3% - (2/3 * 1rem))",
         "1/4-gap-4": "calc(25% - (3/4 * 1rem))",
         "1/6-gap-4": "calc(16.6% - (5/6 * 1rem))",
+        maxContent: MAX_CONTENT_WIDTH,
+      },
+      letterSpacing: {
+        slight: "0.015em",
+      },
+      maxWidth: {
+        maxSiteWidth: MAX_SITE_WIDTH, // max width of the site
+        maxContent: MAX_CONTENT_WIDTH, // central content area
+        maxSidebar: MAX_SIDEBAR_WIDTH,
+      },
+      width: {
+        maxSiteWidth: MAX_SITE_WIDTH, // max width of the site
+        maxContent: MAX_CONTENT_WIDTH, // central content area
+        maxSidebar: MAX_SIDEBAR_WIDTH,
       },
     },
   },

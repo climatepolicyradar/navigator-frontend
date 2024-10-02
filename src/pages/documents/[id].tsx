@@ -106,7 +106,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   };
 
   // Semantic search / exact match handler
-  const handleSemanticSearchChange = (_: string, isExact: boolean) => {
+  const handleSemanticSearchChange = (_: string, isExact: string) => {
     setPassageIndex(0);
     const queryObj = {};
     if (isExact) {
@@ -162,9 +162,28 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
         ) : (
           <section className="flex-1 flex" id="document-viewer">
             <FullWidth extraClasses="flex-1">
-              <div id="document-container" className="md:flex md:h-[80vh]">
-                <div id="document-sidebar" className={`py-4 max-h-[30vh] md:max-h-full flex flex-col ${passageClasses(document.content_type)}`}>
-                  <div id="document-search" className="flex flex-col gap-2 pr-4">
+              <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
+                <div
+                  id="document-preview"
+                  className={`pt-4 flex-1 h-[400px] basis-[400px] md:block md:h-full ${totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""}`}
+                >
+                  {canPreview && (
+                    <EmbeddedPDF
+                      document={document}
+                      documentPassageMatches={passageMatches}
+                      passageIndex={passageIndex}
+                      startingPassageIndex={startingPassage}
+                    />
+                  )}
+                  {!canPreview && <EmptyDocument />}
+                </div>
+                <div
+                  id="document-sidebar"
+                  className={`py-4 order-first max-h-[90vh] md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
+                    document.content_type
+                  )}`}
+                >
+                  <div id="document-search" className="flex flex-col gap-2 md:pl-4">
                     <SearchForm
                       placeholder="Search the full text of the document"
                       handleSearchInput={handleSearchInput}
@@ -173,6 +192,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                     <BySemanticSearch
                       checked={(router.query[QUERY_PARAMS.exact_match] as string) === "true"}
                       handleSearchChange={handleSemanticSearchChange}
+                      parentPage="physical-document"
                     />
                     {!router.query[QUERY_PARAMS.query_string] && (
                       <div className="flex text-sm text-gray-600">
@@ -183,9 +203,10 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                   </div>
                   {totalNoOfMatches > 0 && (
                     <>
-                      <div className="my-4 text-sm pr-4 pb-4 border-b" data-cy="document-matches-description">
+                      <div className="my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
                         <p>
-                          Displaying {renderPassageCount(totalNoOfMatches)} for "<b>{`${router.query[QUERY_PARAMS.query_string]}`}</b>"
+                          Displaying {renderPassageCount(totalNoOfMatches)} for "
+                          <span className="text-textDark font-medium">{`${router.query[QUERY_PARAMS.query_string]}`}</span>"
                           {!searchQuery.exact_match && ` and related phrases`}
                           {totalNoOfMatches >= MAX_RESULTS && (
                             <div className="ml-1 inline-block">
@@ -197,27 +218,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                       </div>
                       <div
                         id="document-passage-matches"
-                        className="relative pr-4 overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500"
+                        className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
                       >
                         <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
                       </div>
                     </>
                   )}
                   {totalNoOfMatches === 0 && <EmptyPassages hasQueryString={!!router.query[QUERY_PARAMS.query_string]} />}
-                </div>
-                <div
-                  id="document-preview"
-                  className={`pt-4 flex-1 h-[400px] md:block md:h-full ${totalNoOfMatches ? "md:border-l md:border-l-gray-200" : ""}`}
-                >
-                  {canPreview && (
-                    <EmbeddedPDF
-                      document={document}
-                      documentPassageMatches={passageMatches}
-                      passageIndex={passageIndex}
-                      startingPassageIndex={startingPassage}
-                    />
-                  )}
-                  {!canPreview && <EmptyDocument />}
                 </div>
               </div>
             </FullWidth>

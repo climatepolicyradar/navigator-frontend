@@ -26,6 +26,7 @@ import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
 import { Alert } from "@components/Alert";
 import { SubNav } from "@components/nav/SubNav";
+import { Heading } from "@components/typography/Heading";
 
 import { getCountryCode } from "@helpers/getCountryFields";
 
@@ -218,7 +219,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
             <SingleCol extraClasses="mt-8">
               <CountryHeader country={geography} targetCount={hasTargets ? publishedTargets?.length : 0} onTargetClick={handleTargetClick} />
               <section className="mt-8" data-cy="country-search">
-                <h3 className="mb-4">Documents</h3>
+                <Heading level={2}>Documents</Heading>
                 <DocumentSearchForm
                   placeholder={`Search the full text of ${allDocumentsCount} documents from ${geography.name}`}
                   handleSearchInput={handleSearchInput}
@@ -252,17 +253,12 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                 <>
                   <section className="mt-10" id="targets">
                     <div>
-                      <div className="justify-between items-end lg:flex">
-                        <h3 className="flex items-center gap-2">
-                          <TargetIcon width="20" height="20" />
-                          Targets <span className="text-gray-700 font-normal">({publishedTargets.length})</span>
-                        </h3>
+                      <div>
+                        <Heading level={2}>
+                          Targets <span className="font-normal">({publishedTargets.length})</span>
+                        </Heading>
 
-                        <ExternalLink
-                          url="https://form.jotform.com/233542296946365"
-                          className="text-sm block mt-4 underline md:mt-0"
-                          cy="download-target-csv"
-                        >
+                        <ExternalLink url="https://form.jotform.com/233542296946365" className="text-sm underline" cy="download-target-csv">
                           Request to download all target data (.csv)
                         </ExternalLink>
                       </div>
@@ -307,7 +303,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
               )}
               {hasEvents && (
                 <section className="mt-10 hidden">
-                  <h3 className="mb-4">Events</h3>
+                  <Heading level={2}>Events</Heading>
                   <Timeline>
                     {summary.events.map((event: TEvent, index: number) => (
                       <Event event={event} key={`event-${index}`} index={index} last={index === summary.events.length - 1 ? true : false} />
@@ -317,9 +313,9 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
               )}
               {geography.legislative_process && (
                 <section className="mt-10" data-cy="legislative-process">
-                  <h3 className="mb-4 flex items-center gap-2">
+                  <Heading level={2} extraClasses="flex items-center gap-2">
                     <LegislativeIcon width="20" height="20" /> Legislative Process
-                  </h3>
+                  </Heading>
                   <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
                 </section>
               )}

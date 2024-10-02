@@ -30,13 +30,13 @@ import { ExternalLink } from "@components/ExternalLink";
 import { NoOfResults } from "@components/NoOfResults";
 import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
 import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
+import { SubNav } from "@components/nav/SubNav";
 
 import { getCurrentPage } from "@utils/getCurrentPage";
 
 import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN } from "@constants/paging";
-import { SubNav } from "@components/nav/SubNav";
 
 const Search = () => {
   const router = useRouter();
@@ -149,7 +149,7 @@ const Search = () => {
     if (type !== QUERY_PARAMS.offset) {
       delete router.query[QUERY_PARAMS.offset];
     }
-    // Clear query controls on new query search
+    // Clear sorting when a new search query is made
     if (type === QUERY_PARAMS.query_string) {
       delete router.query[QUERY_PARAMS.sort_field];
       delete router.query[QUERY_PARAMS.sort_order];
@@ -170,14 +170,14 @@ const Search = () => {
   };
 
   const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement>, _?: number, value?: string) => {
-    // Clear pagination controls and continuation tokens
+    // Reset pagination and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
     const val = value ?? e.currentTarget.textContent;
     let category = val;
     router.query[QUERY_PARAMS.category] = category;
-    // Default search is all categories
+    // Default search is all categories, so we do not need to provide any category if we want all
     if (val === "All") {
       delete router.query[QUERY_PARAMS.category];
     }
@@ -186,7 +186,7 @@ const Search = () => {
   };
 
   const handleSortClick = (e: ChangeEvent<HTMLSelectElement>) => {
-    // Clear pagination controls and continuation tokens
+    // Reset pagination and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
@@ -211,6 +211,7 @@ const Search = () => {
 
     router.query[QUERY_PARAMS.sort_field] = field;
     router.query[QUERY_PARAMS.sort_order] = order;
+
     // Delete the query params if they are null
     if (!field) {
       delete router.query[QUERY_PARAMS.sort_field];

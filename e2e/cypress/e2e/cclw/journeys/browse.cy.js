@@ -32,7 +32,7 @@ describe("Browse Flow", () => {
   });
 
   it("should have a clickable header, which navigates to the document family view", () => {
-    cy.get(searchResultsSelector).children().eq(0).find(familyTitleSelector).children("a").should("be.visible").click();
+    cy.get(searchResultsSelector).children().eq(0).find(familyTitleSelector).should("be.visible").click();
   });
 
   it("should now be on the document family page", () => {

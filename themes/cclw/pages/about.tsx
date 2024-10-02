@@ -8,6 +8,7 @@ import { SubNav } from "@components/nav/SubNav";
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
+import { Heading } from "@components/typography/Heading";
 
 import { Acknowledgements } from "@cclw/components/Acknowledgements";
 
@@ -24,7 +25,9 @@ const About = () => {
         <SiteWidth>
           <SingleCol>
             <div className="text-content mb-12">
-              <h1 className="my-8">About</h1>
+              <Heading level={1} extraClasses="mt-5">
+                About
+              </Heading>
               <div className="mb-12">
                 <div>
                   <p>
@@ -72,7 +75,7 @@ const About = () => {
                   ></iframe>
                 </div>
               </div>
-              <h2>Contribute to our dataset</h2>
+              <Heading level={2}>Contribute to our dataset</Heading>
               <p>
                 We aim for the datasets to be as comprehensive and accurate as possible. However, there is no claim to have identified every relevant
                 law, policy or court case in the countries covered. We invite anyone to draw our attention to any information we may have missed or

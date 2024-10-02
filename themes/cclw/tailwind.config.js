@@ -17,6 +17,8 @@ module.exports = {
       black: "#000000",
       transparent: "transparent",
       current: "currentColor",
+      textDark: "#202020",
+      textNormal: "#505050",
       cpr: {
         dark: "#071e4a",
       },

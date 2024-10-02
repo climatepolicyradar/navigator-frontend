@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import SuggestList from "./SuggestList";
 import { useTranslation } from "react-i18next";
+
+import SuggestList from "./SuggestList";
+
 import { sortData } from "@utils/sorting";
 
 interface ByTextInputProps {
@@ -39,7 +41,7 @@ const ByTextInput = ({ title, list, selectedList, keyField, keyFieldDisplay, fil
       <div>{title}</div>
       <input
         type="text"
-        className="border border-gray-300 mt-2 small outline-none placeholder:text-gray-300"
+        className="border border-gray-300 mt-2 small outline-none"
         placeholder={t("Start typing")}
         value={input}
         onChange={handleChange}

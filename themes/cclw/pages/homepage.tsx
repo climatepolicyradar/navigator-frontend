@@ -15,6 +15,8 @@ import { FeatureDiscover } from "@cclw/components/FeatureDiscover";
 import { HelpUs } from "@cclw/components/HelpUs";
 import { FeatureSearch } from "@cclw/components/FeatureSearch";
 
+import { Heading } from "@components/typography/Heading";
+
 const WorldMap = dynamic(() => import("@components/map/WorldMap"), {
   loading: () => <p>Loading world map...</p>,
   ssr: false,
@@ -37,11 +39,15 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
           <PoweredBy />
         </SiteWidth>
         <FullWidth id="world-map" extraClasses="hidden pt-6 md:block">
-          <h2 className="text-center mb-6">Explore by country</h2>
+          <Heading level={2} extraClasses="text-center text-3xl xl:text-4xl">
+            Explore by country
+          </Heading>
           <WorldMap />
         </FullWidth>
         <SiteWidth extraClasses="my-12" data-cy="featured-content">
-          <h2 className="text-center mb-6">Featured content</h2>
+          <Heading level={2} extraClasses="text-center text-3xl xl:text-4xl">
+            Featured content
+          </Heading>
           <Articles />
         </SiteWidth>
         <div data-cy="homepage-feature-1">
@@ -54,7 +60,9 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
           <HelpUs />
         </div>
         <SiteWidth extraClasses="my-12" data-cy="partners">
-          <h2 className="text-center mb-6">Our partners</h2>
+          <Heading level={2} extraClasses="text-center text-3xl xl:text-4xl">
+            Our partners
+          </Heading>
           <Partners />
         </SiteWidth>
         <Footer />

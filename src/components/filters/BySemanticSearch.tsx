@@ -1,15 +1,21 @@
 import { ChangeEvent } from "react";
 import { QUERY_PARAMS } from "@constants/queryParams";
 
-const BySemanticSearch = ({ handleSearchChange, checked }) => {
+type TProps = {
+  handleSearchChange: (key: string, value: string) => void;
+  checked: boolean;
+  parentPage?: string;
+};
+
+const BySemanticSearch = ({ handleSearchChange, checked, parentPage = "search" }: TProps) => {
   const handleClick = (e: ChangeEvent<HTMLInputElement>) => {
     // Note: the value of the radio is a string, not a boolean
     const isExact = !!parseInt(e.target.value);
-    handleSearchChange(QUERY_PARAMS.exact_match, isExact);
+    handleSearchChange(QUERY_PARAMS.exact_match, isExact.toString());
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className={`flex flex-wrap gap-2 ${parentPage === "search" ? "md:flex-col" : ""}`}>
       <div>
         <label
           className="checkbox-input flex items-center border py-2 px-1 rounded-md cursor-pointer border-gray-300 bg-white"

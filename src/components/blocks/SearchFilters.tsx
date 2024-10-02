@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+
 import ByTextInput from "../filters/ByTextInput";
 import BySelect from "../filters/BySelect";
 import MultiList from "../filters/MultiList";
 import ByDateRange from "../filters/ByDateRange";
-import { currentYear, minYear } from "@constants/timedate";
-import { TSearchCriteria } from "@types";
-import { QUERY_PARAMS } from "@constants/queryParams";
 import BySemanticSearch from "@components/filters/BySemanticSearch";
 import Tooltip from "@components/tooltip";
-import { sortGeos } from "@utils/sorting";
 import { ExternalLink } from "@components/ExternalLink";
+
+import { sortGeos } from "@utils/sorting";
+
+import { currentYear, minYear } from "@constants/timedate";
+import { QUERY_PARAMS } from "@constants/queryParams";
+
+import { TGeography, TSearchCriteria } from "@types";
 
 const { default: MethodologyLink } = await import(`/themes/${process.env.THEME}/components/MethodologyLink`);
 
@@ -21,8 +25,8 @@ type TSearchFiltersProps = {
   handleClearSearch(): void;
   handleSearchChange(type: string, value: string): void;
   searchCriteria: TSearchCriteria;
-  regions: object[];
-  filteredCountries: object[];
+  regions: TGeography[];
+  filteredCountries: TGeography[];
 };
 
 const SearchFilters: React.FC<TSearchFiltersProps> = ({
@@ -78,11 +82,11 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
         </div>
       </div>
 
-      <div className="my-4 text-sm">
+      <div className="my-5 text-sm">
         <div data-cy="exact-match">
           <BySemanticSearch checked={searchCriteria.exact_match} handleSearchChange={handleSearchChange} />
         </div>
-        <div className="relative mt-6" data-cy="regions">
+        <div className="relative mt-5" data-cy="regions">
           <BySelect
             list={regions}
             defaultValue={searchCriteria.keyword_filters?.regions ? searchCriteria.keyword_filters.regions[0] : ""}
@@ -94,7 +98,7 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
             sortFunc={sortGeos}
           />
         </div>
-        <div className="relative mt-6" data-cy="countries">
+        <div className="relative mt-5" data-cy="countries">
           <ByTextInput
             title={t("By country")}
             list={filteredCountries}
@@ -106,7 +110,7 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
           />
           <MultiList list={countryFilters} removeFilter={handleFilterChange} type={QUERY_PARAMS.country} dataCy="selected-countries" />
         </div>
-        <div className="relative mt-8 mb-8">
+        <div className="relative mt-5 mb-5">
           <div data-cy="date-range">
             <ByDateRange
               title={t("By date range")}
@@ -126,7 +130,7 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
             </button>
           )}
         </div>
-        <div className="my-8 pt-8 border-t" data-cy="methodology-notice">
+        <div className="my-5 pt-5 border-t" data-cy="methodology-notice">
           <p className="text-center mb-6">
             <ExternalLink url="https://form.jotform.com/233132076355350">Get notified when we add new filters</ExternalLink>
           </p>

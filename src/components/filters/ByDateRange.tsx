@@ -103,7 +103,7 @@ const ByDateRange = ({ title, handleChange, defaultValues, min, max, clear }: By
   return (
     <div>
       <div>{title}</div>
-      <div className="mt-2 grid lg:grid-cols-2 gap-2">
+      <div className="mt-2 flex flex-col gap-2">
         <DateRangeOption id="last1" label="in last year" name="date_range" value="1" onChange={selectRange} checked={isChecked(1)} />
         <DateRangeOption id="last5" label="in last 5 years" name="date_range" value="5" onChange={selectRange} checked={isChecked(5)} />
         <DateRangeOption id="specify" label="specify range" name="date_range" value="specify" onChange={setDateInputVisible} checked={isChecked()} />

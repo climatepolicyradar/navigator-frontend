@@ -1,5 +1,8 @@
 import { Fragment, useState } from "react";
+
+import { Heading } from "@components/typography/Heading";
 import { FamilyMeta } from "./FamilyMeta";
+
 import { TFamilyPage } from "@types";
 
 type TProps = {
@@ -20,9 +23,9 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
 
   return (
     <div>
-      <h1 className="text-3xl lg:smaller">{family.title}</h1>
+      <Heading level={1}>{family.title}</Heading>
       {family.collections.length > 0 && (
-        <div className="md:flex text-sm text-indigo-400 mt-4 items-center w-full mb-2">
+        <div className="md:flex text-sm mt-4 items-center w-full mb-2">
           <span>Part of the&nbsp;</span>
           {family.collections.length > 0 &&
             family.collections.map((collection, i) => (
@@ -35,7 +38,7 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
             ))}
         </div>
       )}
-      <div className="flex flex-wrap text-sm gap-1 text-gray-700 mt-2 items-center font-medium middot-between" data-cy="family-metadata">
+      <div className="flex flex-wrap text-sm gap-1 mt-2 items-center middot-between" data-cy="family-metadata">
         <FamilyMeta
           category={family.category}
           date={family.published_date}
@@ -44,22 +47,22 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
           author={family.metadata.author_type}
         />
         {!showMoreDetails && (
-          <a href="#more-details" className="text-gray-700 underline" onClick={handleMoreDetailsClick} data-cy="family-metadata-moreDetails">
+          <a href="#more-details" className="underline" onClick={handleMoreDetailsClick} data-cy="family-metadata-moreDetails">
             More details
           </a>
         )}
       </div>
-      <div data-cy="family-extra-metadata" className="text-sm text-gray-700">
+      <div data-cy="family-extra-metadata" className="text-sm">
         {family.metadata.sector && family.metadata.sector.length > 0 && (
           <div className="mt-2">
-            <span className="text-gray-600">Sectors:</span> {family.metadata.sector.join(", ")}
+            <span>Sectors:</span> {family.metadata.sector.join(", ")}
           </div>
         )}
         {showMoreDetails && (
           <>
             {family.metadata.keyword && family.metadata.keyword.length > 0 && (
               <div className="mt-2">
-                <span className="text-gray-600">Keywords:</span> {family.metadata.keyword.join(", ")}
+                <span>Keywords:</span> {family.metadata.keyword.join(", ")}
               </div>
             )}
           </>

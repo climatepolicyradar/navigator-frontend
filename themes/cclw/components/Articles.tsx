@@ -21,15 +21,15 @@ const getCustomMeta = (key: string) => {
   switch (key) {
     case "customAfrica":
       return (
-        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
-          <div className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
+        <div className="flex flex-wrap items-center gap-2 text-sm text-textNormal">
+          <div className="flex flex-wrap items-center gap-1">
             <span className="rounded-sm border border-black flag-icon-background flag-icon-ken inline-block" /> Kenya
           </div>
-          <div className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
+          <div className="flex flex-wrap items-center gap-1">
             <span className="rounded-sm border border-black flag-icon-background flag-icon-uga inline-block" /> Uganda
           </div>
 
-          <div className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
+          <div className="flex flex-wrap items-center gap-1">
             <span className="rounded-sm border border-black flag-icon-background flag-icon-nga inline-block" /> Nigeria
           </div>
         </div>
@@ -100,7 +100,7 @@ const renderArticleContent = (article: TArticle) => {
       {customMeta && customMeta}
       {article.meta && (
         <div className="py-2 pt-0">
-          <div className="flex flex-wrap items-center gap-1 text-sm text-gray-600">
+          <div className="flex flex-wrap items-center gap-1 text-sm text-textNormal">
             {article.countryCode && (
               <span className={`rounded-sm border border-black flag-icon-background flag-icon-${article.countryCode} inline-block`} />
             )}
@@ -113,7 +113,7 @@ const renderArticleContent = (article: TArticle) => {
 };
 
 export const Articles = () => {
-  const cssClasses = "group sm:basis-1/2-gap-4 md:basis-1/3-gap-4 xl:basis-1/6-gap-4 hover:no-underline text-gray-800";
+  const cssClasses = "group sm:basis-1/2-gap-4 md:basis-1/3-gap-4 xl:basis-1/6-gap-4 hover:no-underline text-textNormal";
 
   return (
     <div className="sm:flex flex-wrap justify-center items-stretch gap-4">
