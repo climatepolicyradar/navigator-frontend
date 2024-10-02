@@ -19,6 +19,9 @@ module.exports = {
       current: "currentColor",
       textDark: "#202020",
       textNormal: "#505050",
+      borderNormal: "#dedede",
+      input: "#f5f5f5",
+      inputSelected: "#005EEB", // blue
       cpr: {
         dark: "#071e4a",
       },

@@ -15,6 +15,7 @@ import { currentYear, minYear } from "@constants/timedate";
 import { QUERY_PARAMS } from "@constants/queryParams";
 
 import { TGeography, TSearchCriteria } from "@types";
+import Pill from "@components/Pill";
 
 const { default: MethodologyLink } = await import(`/themes/${process.env.THEME}/components/MethodologyLink`);
 
@@ -48,6 +49,10 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
 
   const thisYear = currentYear();
 
+  const handleClearFilter = () => {
+    return false;
+  };
+
   useEffect(() => {
     if (searchCriteria.year_range[0] !== minYear || searchCriteria.year_range[1] !== thisYear) {
       setShowClear(true);
@@ -61,7 +66,20 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
   }, [thisYear, searchCriteria]);
 
   return (
-    <>
+    <div id="search_filters" data-cy="seach-filters" className="text-xs text-textNormal">
+      <div className="flex justify-between">
+        <p className="uppercase">Filters</p>
+        {showClear && (
+          <button className="anchor underline text-[13px]" onClick={handleClearSearch}>
+            Clear all
+          </button>
+        )}
+      </div>
+      <div className="mt-5 flex flex-wrap gap-2">
+        <Pill onClick={handleClearFilter}>Europe</Pill>
+        <Pill onClick={handleClearFilter}>Different phrase</Pill>
+        <Pill onClick={handleClearFilter}>United Kingdom</Pill>
+      </div>
       <div className="mt-2 md:mt-0">
         <div className="mr-2 md:mr-0">
           Find documents containing
@@ -141,7 +159,7 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
           </p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
