@@ -21,7 +21,7 @@ const { default: MethodologyLink } = await import(`/themes/${process.env.THEME}/
 type TSearchFiltersProps = {
   handleFilterChange(type: string, value: string): void;
   handleYearChange(values: number[]): void;
-  handleRegionChange(type: any, regionName: any): void;
+  handleRegionChange(type: string, regionName: any): void;
   handleClearSearch(): void;
   handleSearchChange(type: string, value: string): void;
   searchCriteria: TSearchCriteria;

@@ -320,3 +320,17 @@ export interface TDictionary<T> {
 }
 
 export type TOrganisationDictionary = TDictionary<TOrganisation>;
+
+export type TQueryStrings = {
+  query_string: string;
+  exact_match: string;
+  region: string;
+  country: string;
+  category: string;
+  year_range: string;
+  sort_field: string;
+  sort_order: string;
+  offset: string;
+  active_continuation_token: string;
+  continuation_tokens: string;
+};
