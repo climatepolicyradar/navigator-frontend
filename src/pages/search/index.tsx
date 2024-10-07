@@ -169,16 +169,14 @@ const Search = () => {
     handleSearchChange(QUERY_PARAMS.query_string, term);
   };
 
-  const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement>, _?: number, value?: string) => {
+  const handleDocumentCategoryClick = (category: string) => {
     // Reset pagination and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
-    const val = value ?? e.currentTarget.textContent;
-    let category = val;
     router.query[QUERY_PARAMS.category] = category;
     // Default search is all categories, so we do not need to provide any category if we want all
-    if (val === "All") {
+    if (category === "All") {
       delete router.query[QUERY_PARAMS.category];
     }
     router.push({ query: router.query });
@@ -244,15 +242,6 @@ const Search = () => {
       return "relevance";
     }
     return `${field}:${order}`;
-  };
-
-  const getCategoryIndex = () => {
-    const categories = router.query[QUERY_PARAMS.category]?.toString();
-    if (!categories) {
-      return 0;
-    }
-    let index = DOCUMENT_CATEGORIES.indexOf(categories);
-    return index === -1 ? 0 : index;
   };
 
   const calcCurrentPage = () => {
@@ -333,6 +322,7 @@ const Search = () => {
                 handleRegionChange={handleRegionChange}
                 handleClearSearch={handleClearSearch}
                 handleSearchChange={handleSearchChange}
+                handleDocumentCategoryClick={handleDocumentCategoryClick}
                 regions={regions}
                 filteredCountries={filteredCountries}
               />
@@ -349,6 +339,7 @@ const Search = () => {
               handleRegionChange={handleRegionChange}
               handleClearSearch={handleClearSearch}
               handleSearchChange={handleSearchChange}
+              handleDocumentCategoryClick={handleDocumentCategoryClick}
               regions={regions}
               filteredCountries={filteredCountries}
             />
@@ -394,9 +385,6 @@ const Search = () => {
                   <span className="text-green-600">CSV downloaded successfully, please check your downloads folder</span>
                 )}
               </div>
-            </div>
-            <div className="mt-4">
-              <TabbedNav activeIndex={getCategoryIndex()} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
             </div>
 
             <div className="mt-4 relative">
