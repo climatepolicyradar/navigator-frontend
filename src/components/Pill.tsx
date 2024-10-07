@@ -17,7 +17,7 @@ const Pill = ({ children, onClick }: TProps) => {
   return (
     <>
       <button
-        className="bg-inputSelected/[.07] text-xs font-medium py-2 px-4 text-inputSelected rounded-full flex gap-2 items-center transition hover:bg-inputSelected/[.1] active:bg-inputSelected/[.2]"
+        className="bg-inputSelected/[.07] text-xs font-medium py-1 px-3 text-inputSelected rounded-full flex gap-2 items-center transition hover:bg-inputSelected/[.1] active:bg-inputSelected/[.2]"
         onClick={handleClick}
         data-tooltip-id="tooltip"
         data-toltip-content="Remove filter"
