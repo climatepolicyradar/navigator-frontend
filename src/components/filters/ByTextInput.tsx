@@ -41,7 +41,7 @@ const ByTextInput = ({ title, list, selectedList, keyField, keyFieldDisplay, fil
       <div>{title}</div>
       <input
         type="text"
-        className="border border-gray-300 mt-2 small outline-none"
+        className="border border-gray-300 mt-2 small outline-none w-full"
         placeholder={t("Start typing")}
         value={input}
         onChange={handleChange}
