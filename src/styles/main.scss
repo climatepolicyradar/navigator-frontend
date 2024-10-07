@@ -5,8 +5,10 @@
 /* Tailwind specific styles for special radio and checkbox styles */
 @layer components {
   [type="checkbox"],
-  [type="radio"] {
-    @apply rounded border-borderNormal cursor-pointer text-inputSelected;
+  [type="radio"],
+  [type="text"],
+  [type="number"] {
+    @apply rounded border-borderNormal cursor-pointer text-inputSelected text-inputSelected;
 
     &:hover {
       @apply border-inputSelected;

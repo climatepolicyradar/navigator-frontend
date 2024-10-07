@@ -8,43 +8,76 @@ import ByDateRange from "../filters/ByDateRange";
 import BySemanticSearch from "@components/filters/BySemanticSearch";
 import Tooltip from "@components/tooltip";
 import { ExternalLink } from "@components/ExternalLink";
+import Pill from "@components/Pill";
+import { Heading } from "@components/accordian/Heading";
+import { InputListContainer } from "@components/filters/InputListContainer";
+import { InputCheck } from "@components/forms/Checkbox";
+import { InputRadio } from "@components/forms/Radio";
 
 import { sortGeos } from "@utils/sorting";
 
 import { currentYear, minYear } from "@constants/timedate";
 import { QUERY_PARAMS } from "@constants/queryParams";
+import { DOCUMENT_CATEGORIES, TDocumentCategory } from "@constants/documentCategories";
+import { LAWS, POLICIES, UNFCCC, LITIGATION } from "@constants/categoryAliases";
 
 import { TGeography, TSearchCriteria } from "@types";
-import Pill from "@components/Pill";
 
 const { default: MethodologyLink } = await import(`/themes/${process.env.THEME}/components/MethodologyLink`);
 
+const isCategoryChecked = (selectedCatgeory: string, category: TDocumentCategory) => {
+  if (!category) {
+    return false;
+  }
+
+  if (selectedCatgeory) {
+    if (category === "Legislation") {
+      return LAWS.includes(selectedCatgeory);
+    }
+    if (category === "Policies") {
+      return POLICIES.includes(selectedCatgeory);
+    }
+    if (category === "UNFCCC") {
+      return UNFCCC.includes(selectedCatgeory);
+    }
+    if (category === "Litigation") {
+      return LITIGATION.includes(selectedCatgeory);
+    }
+  } else if (category === "All") {
+    return true;
+  }
+
+  // All
+  return false;
+};
+
 type TSearchFiltersProps = {
   handleFilterChange(type: string, value: string): void;
-  handleYearChange(values: number[]): void;
+  handleYearChange(values: number[], reset?: boolean): void;
   handleRegionChange(type: string, regionName: any): void;
   handleClearSearch(): void;
   handleSearchChange(type: string, value: string): void;
+  handleDocumentCategoryClick(value: string): void;
   searchCriteria: TSearchCriteria;
   regions: TGeography[];
   filteredCountries: TGeography[];
 };
 
-const SearchFilters: React.FC<TSearchFiltersProps> = ({
+const SearchFilters = ({
   handleFilterChange,
   handleYearChange,
   searchCriteria,
   handleRegionChange,
   handleClearSearch,
   handleSearchChange,
+  handleDocumentCategoryClick,
   regions,
   filteredCountries,
-}) => {
+}: TSearchFiltersProps) => {
   const [showClear, setShowClear] = useState(false);
-  const { t } = useTranslation("searchResults");
 
   const {
-    keyword_filters: { countries: countryFilters = [] },
+    keyword_filters: { countries: countryFilters = [], regions: regionFilters = [], categories: categoryFilters = [] },
   } = searchCriteria;
 
   const thisYear = currentYear();
@@ -66,98 +99,102 @@ const SearchFilters: React.FC<TSearchFiltersProps> = ({
   }, [thisYear, searchCriteria]);
 
   return (
-    <div id="search_filters" data-cy="seach-filters" className="text-xs text-textNormal">
+    <div id="search_filters" data-cy="seach-filters" className="text-sm text-textNormal flex flex-col gap-5">
       <div className="flex justify-between">
-        <p className="uppercase">Filters</p>
+        <div className=" flex gap-1">
+          <p className="text-xs uppercase">Filters </p>
+          <Tooltip
+            id="filter-by"
+            tooltip={
+              <>
+                Selecting exact phrases only will narrow down your search to only show documents that contain the precise words you typed in the
+                search bar. Our enhanced search will look for similar and related terms, so you’ll get more results, with the most relevant ones
+                automatically appearing at the top. See our FAQs for more information.
+              </>
+            }
+            icon="i"
+            place="right"
+          />
+        </div>
         {showClear && (
           <button className="anchor underline text-[13px]" onClick={handleClearSearch}>
             Clear all
           </button>
         )}
       </div>
-      <div className="mt-5 flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2" data-cy="applied-filters">
         <Pill onClick={handleClearFilter}>Europe</Pill>
-        <Pill onClick={handleClearFilter}>Different phrase</Pill>
+        <Pill onClick={handleClearFilter}>Long topic name</Pill>
         <Pill onClick={handleClearFilter}>United Kingdom</Pill>
       </div>
-      <div className="mt-2 md:mt-0">
-        <div className="mr-2 md:mr-0">
-          Find documents containing
-          <div className="ml-2 inline-block">
-            <Tooltip
-              id="filter-by"
-              tooltip={
-                <>
-                  Selecting exact phrases only will narrow down your search to only show documents that contain the precise words you typed in the
-                  search bar. Our enhanced search will look for similar and related terms, so you’ll get more results, with the most relevant ones
-                  automatically appearing at the top. See our FAQs for more information.
-                </>
-              }
-              icon="i"
-              place="right"
+      <div data-cy="exact-match">
+        <BySemanticSearch checked={searchCriteria.exact_match} handleSearchChange={handleSearchChange} />
+      </div>
+      <div>
+        <Heading>Category</Heading>
+        <InputListContainer>
+          {DOCUMENT_CATEGORIES.map((category, i) => (
+            <InputRadio
+              key={category}
+              label={category}
+              checked={categoryFilters && isCategoryChecked(categoryFilters[0], category)}
+              onChange={() => {
+                handleDocumentCategoryClick(category);
+              }}
             />
-          </div>
-        </div>
+          ))}
+        </InputListContainer>
+      </div>
+      <div>
+        <Heading>Region</Heading>
+        <InputListContainer>
+          {regions.map((region) => (
+            <InputCheck
+              key={region.slug}
+              label={region.display_value}
+              checked={regionFilters && regionFilters[0] === region.slug}
+              onChange={() => {
+                handleRegionChange(QUERY_PARAMS.region, region.slug);
+              }}
+            />
+          ))}
+        </InputListContainer>
       </div>
 
-      <div className="my-5 text-sm">
-        <div data-cy="exact-match">
-          <BySemanticSearch checked={searchCriteria.exact_match} handleSearchChange={handleSearchChange} />
-        </div>
-        <div className="relative mt-5" data-cy="regions">
-          <BySelect
-            list={regions}
-            defaultValue={searchCriteria.keyword_filters?.regions ? searchCriteria.keyword_filters.regions[0] : ""}
-            onChange={handleRegionChange}
-            title={t("By region")}
-            keyField="slug"
-            keyFieldDisplay="display_value"
-            filterType={QUERY_PARAMS.region}
-            sortFunc={sortGeos}
-          />
-        </div>
-        <div className="relative mt-5" data-cy="countries">
-          <ByTextInput
-            title={t("By country")}
-            list={filteredCountries}
-            selectedList={countryFilters}
-            keyField="slug"
-            keyFieldDisplay="display_value"
-            filterType={QUERY_PARAMS.country}
-            handleFilterChange={handleFilterChange}
-          />
-          <MultiList list={countryFilters} removeFilter={handleFilterChange} type={QUERY_PARAMS.country} dataCy="selected-countries" />
-        </div>
-        <div className="relative mt-5 mb-5">
-          <div data-cy="date-range">
-            <ByDateRange
-              title={t("By date range")}
-              type="year_range"
-              handleChange={handleYearChange}
-              defaultValues={searchCriteria.year_range}
-              min={minYear}
-              max={thisYear}
-              clear={showClear}
-            />
-          </div>
-        </div>
-        <div>
-          {showClear && (
-            <button className="anchor text-sm" onClick={handleClearSearch}>
-              Clear all filters
-            </button>
-          )}
-        </div>
-        <div className="my-5 pt-5 border-t" data-cy="methodology-notice">
-          <p className="text-center mb-6">
-            <ExternalLink url="https://form.jotform.com/233132076355350">Get notified when we add new filters</ExternalLink>
-          </p>
-          <p className="text-center">
-            For more info see
-            <br />
-            <MethodologyLink />
-          </p>
-        </div>
+      <div className="relative" data-cy="countries">
+        <ByTextInput
+          title="By country"
+          list={filteredCountries}
+          selectedList={countryFilters}
+          keyField="slug"
+          keyFieldDisplay="display_value"
+          filterType={QUERY_PARAMS.country}
+          handleFilterChange={handleFilterChange}
+        />
+        <MultiList list={countryFilters} removeFilter={handleFilterChange} type={QUERY_PARAMS.country} dataCy="selected-countries" />
+      </div>
+
+      <div data-cy="date-range">
+        <Heading>Date</Heading>
+        <ByDateRange
+          type="year_range"
+          handleChange={handleYearChange}
+          defaultValues={searchCriteria.year_range}
+          min={minYear}
+          max={thisYear}
+          clear={showClear}
+        />
+      </div>
+
+      <div className="my-5 pt-5 border-t" data-cy="methodology-notice">
+        <p className="text-center mb-6">
+          <ExternalLink url="https://form.jotform.com/233132076355350">Get notified when we add new filters</ExternalLink>
+        </p>
+        <p className="text-center">
+          For more info see
+          <br />
+          <MethodologyLink />
+        </p>
       </div>
     </div>
   );

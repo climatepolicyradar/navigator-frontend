@@ -135,7 +135,7 @@ const Search = () => {
     resetCSVStatus();
   };
 
-  const handleSearchChange = (type: string, value: any) => {
+  const handleSearchChange = (type: string, value: any, reset = false) => {
     if (type !== QUERY_PARAMS.offset) {
       delete router.query[QUERY_PARAMS.offset];
     }
@@ -148,7 +148,7 @@ const Search = () => {
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
     router.query[type] = value;
-    if (!value) {
+    if (!value || reset) {
       delete router.query[type];
     }
     router.push({ query: router.query });
@@ -211,9 +211,9 @@ const Search = () => {
     resetCSVStatus();
   };
 
-  const handleYearChange = (values: number[]) => {
+  const handleYearChange = (values: number[], reset = false) => {
     const newVals = values.map((value: number) => Number(value).toFixed(0));
-    handleSearchChange(QUERY_PARAMS.year_range, newVals);
+    handleSearchChange(QUERY_PARAMS.year_range, newVals, reset);
   };
 
   const handleClearSearch = () => {
@@ -306,15 +306,15 @@ const Search = () => {
               <p>Loading filters...</p>
             ) : (
               <SearchFilters
-                handleFilterChange={handleFilterChange}
                 searchCriteria={searchQuery}
+                regions={regions}
+                filteredCountries={filteredCountries}
+                handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
                 handleClearSearch={handleClearSearch}
                 handleSearchChange={handleSearchChange}
                 handleDocumentCategoryClick={handleDocumentCategoryClick}
-                regions={regions}
-                filteredCountries={filteredCountries}
               />
             )}
           </div>
@@ -323,15 +323,15 @@ const Search = () => {
         <MultiCol>
           <SideCol extraClasses="hidden md:block border-r pt-5">
             <SearchFilters
-              handleFilterChange={handleFilterChange}
               searchCriteria={searchQuery}
+              regions={regions}
+              filteredCountries={filteredCountries}
+              handleFilterChange={handleFilterChange}
               handleYearChange={handleYearChange}
               handleRegionChange={handleRegionChange}
               handleClearSearch={handleClearSearch}
               handleSearchChange={handleSearchChange}
               handleDocumentCategoryClick={handleDocumentCategoryClick}
-              regions={regions}
-              filteredCountries={filteredCountries}
             />
           </SideCol>
           <SingleCol extraClasses="px-5 pt-5">

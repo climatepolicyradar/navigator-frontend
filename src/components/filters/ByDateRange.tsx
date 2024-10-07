@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { currentYear } from "../../constants/timedate";
+
 import DateRangeInput from "./DateRangeInput";
 import DateRangeOption from "./DateRangeOption";
-import Error from "../blocks/Error";
+import { FormError } from "../forms/FormError";
+import { InputListContainer } from "@components/filters/InputListContainer";
+import { InputCheck } from "@components/forms/Checkbox";
+import { InputRadio } from "@components/forms/Radio";
+
 import { QUERY_PARAMS } from "@constants/queryParams";
+import { currentYear, minYear } from "../../constants/timedate";
 
 interface ByDateRangeProps {
-  title: string;
   type: string;
-  handleChange(values: number[]): void;
+  handleChange(values: number[], reset?: boolean): void;
   defaultValues: number[];
   min: number;
   max: number;
   clear: boolean;
 }
 
-const ByDateRange = ({ title, handleChange, defaultValues, min, max, clear }: ByDateRangeProps) => {
+const ByDateRange = ({ handleChange, defaultValues, min, max, clear }: ByDateRangeProps) => {
   const router = useRouter();
   const [startYear, endYear] = defaultValues;
   const [showDateInput, setShowDateInput] = useState(false);
@@ -24,17 +28,13 @@ const ByDateRange = ({ title, handleChange, defaultValues, min, max, clear }: By
   const [endInput, setEndInput] = useState(endYear);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (!clear) setShowDateInput(false);
-  }, [clear]);
-
   // Ensure the custom inputs stay in sync with the search criteria
   useEffect(() => {
     setStartInput(startYear);
     setEndInput(endYear);
   }, [startYear, endYear]);
 
-  // Listen to the qury string to determine if the custom inputs should be shown
+  // Display the custom inputs if the range is not 1 or 5 years
   useEffect(() => {
     const start = Number(router.query[QUERY_PARAMS.year_range]?.[0]);
     const end = Number(router.query[QUERY_PARAMS.year_range]?.[1]);
@@ -48,6 +48,7 @@ const ByDateRange = ({ title, handleChange, defaultValues, min, max, clear }: By
 
   const isChecked = (range?: number): boolean => {
     if (range) {
+      if (showDateInput) return false;
       return Number(endYear) === currentYear() && Number(startYear) === endYear - range;
     }
 
@@ -60,13 +61,12 @@ const ByDateRange = ({ title, handleChange, defaultValues, min, max, clear }: By
     handleChange([startYear, endYear]);
   };
 
-  // Fixed selectors
-  const selectRange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDateSelect = (range: number, reset = false) => {
     setError("");
     setShowDateInput(false);
     const thisYear = currentYear();
-    const calculatedStart = thisYear - Number(e.target.value);
-    handleChange([calculatedStart, thisYear]);
+    const calculatedStart = thisYear - range;
+    handleChange([calculatedStart, thisYear], reset);
   };
 
   // Custom date selectors
@@ -101,43 +101,22 @@ const ByDateRange = ({ title, handleChange, defaultValues, min, max, clear }: By
   };
 
   return (
-    <div>
-      <div>{title}</div>
-      <div className="mt-2 flex flex-col gap-2">
-        <DateRangeOption id="last1" label="in last year" name="date_range" value="1" onChange={selectRange} checked={isChecked(1)} />
-        <DateRangeOption id="last5" label="in last 5 years" name="date_range" value="5" onChange={selectRange} checked={isChecked(5)} />
-        <DateRangeOption id="specify" label="specify range" name="date_range" value="specify" onChange={setDateInputVisible} checked={isChecked()} />
-      </div>
+    <InputListContainer>
+      <InputRadio label="All time" onChange={() => handleDateSelect(0, true)} checked={isChecked(max - min)} />
+      <InputRadio label="In last year" onChange={() => handleDateSelect(1)} checked={isChecked(1)} />
+      <InputRadio label="In last 5 years" onChange={() => handleDateSelect(5)} checked={isChecked(5)} />
+      <InputRadio label="Specify range" onChange={setDateInputVisible} checked={isChecked()} />
+
       {showDateInput && (
         <>
-          <div className="block lg:grid lg:grid-cols-2 gap-2 mt-2">
-            <DateRangeInput
-              label="Earliest year"
-              name="From"
-              value={startInput}
-              min={min}
-              max={endYear}
-              handleSubmit={submitCustomRange}
-              handleChange={setStartInput}
-            />
-            <DateRangeInput
-              label="Latest year"
-              name="To"
-              value={endInput}
-              min={startYear}
-              max={max}
-              handleSubmit={submitCustomRange}
-              handleChange={setEndInput}
-            />
+          <div className="block lg:grid lg:grid-cols-2 gap-2">
+            <DateRangeInput label="Earliest year" name="From" value={startInput} handleSubmit={submitCustomRange} handleChange={setStartInput} />
+            <DateRangeInput label="Latest year" name="To" value={endInput} handleSubmit={submitCustomRange} handleChange={setEndInput} />
           </div>
-          {error && (
-            <div className="text-center">
-              <Error message={error} />
-            </div>
-          )}
+          {error && <FormError message={error} />}
         </>
       )}
-    </div>
+    </InputListContainer>
   );
 };
 

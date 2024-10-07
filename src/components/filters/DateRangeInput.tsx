@@ -1,13 +1,14 @@
-interface DateRangeInputProps {
+import { InputListContainer } from "./InputListContainer";
+
+type TProps = {
   label: string;
   name: string;
   value: string | number;
-  max: number;
-  min: number;
   handleSubmit(updatedDate: number, name: string): void;
   handleChange(value: number): void;
-}
-const DateRangeInput = ({ label, name, value, handleSubmit, handleChange }: DateRangeInputProps) => {
+};
+
+const DateRangeInput = ({ label, name, value, handleSubmit, handleChange }: TProps) => {
   const onBlur = () => {
     handleSubmit(Number(value), name);
   };
@@ -19,20 +20,18 @@ const DateRangeInput = ({ label, name, value, handleSubmit, handleChange }: Date
   };
 
   return (
-    <div>
+    <InputListContainer>
       <label>{label}</label>
-      <div className="relative">
-        <input
-          name={name}
-          value={value}
-          onChange={(e) => handleChange(Number(e.target.value))}
-          onBlur={onBlur}
-          onKeyDown={onKeyDown}
-          type="number"
-          className="border border-gray-300 mt-2 small outline-none placeholder:text-gray-600"
-        />
-      </div>
-    </div>
+      <input
+        name={name}
+        value={value}
+        onChange={(e) => handleChange(Number(e.target.value))}
+        onBlur={onBlur}
+        onKeyDown={onKeyDown}
+        type="number"
+        className="w-full"
+      />
+    </InputListContainer>
   );
 };
 export default DateRangeInput;
