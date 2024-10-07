@@ -1,6 +1,5 @@
 import { useEffect, useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
-import { useTranslation } from "react-i18next";
 import { ParsedUrlQueryInput } from "querystring";
 
 import useSearch from "@hooks/useSearch";
@@ -17,7 +16,6 @@ import { SideCol } from "@components/panels/SideCol";
 import Layout from "@components/layouts/Main";
 import SearchForm from "@components/forms/SearchForm";
 import SearchFilters from "@components/blocks/SearchFilters";
-import TabbedNav from "@components/nav/TabbedNav";
 import Loader from "@components/Loader";
 import Sort from "@components/filters/Sort";
 import FilterToggle from "@components/buttons/FilterToggle";
@@ -34,7 +32,6 @@ import { SubNav } from "@components/nav/SubNav";
 
 import { getCurrentPage } from "@utils/getCurrentPage";
 
-import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN } from "@constants/paging";
 
@@ -42,7 +39,6 @@ const Search = () => {
   const router = useRouter();
   const qQueryString = router.query[QUERY_PARAMS.query_string];
   const isBrowsing = !qQueryString || qQueryString?.toString().trim() === "";
-  const { t } = useTranslation(["searchStart", "searchResults"]);
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
@@ -57,13 +53,7 @@ const Search = () => {
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 
-  const placeholder = t("Search for something, e.g. 'carbon taxes'");
-
-  const documentCategories = DOCUMENT_CATEGORIES.map((category) => {
-    return {
-      title: category,
-    };
-  });
+  const placeholder = "Search for something, e.g. 'carbon taxes'";
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
@@ -291,7 +281,7 @@ const Search = () => {
 
   return (
     <Layout
-      title={t("Law and Policy Search")}
+      title="Law and Policy Search"
       description="Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country."
     >
       <section>
