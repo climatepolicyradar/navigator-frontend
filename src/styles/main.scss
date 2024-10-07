@@ -6,7 +6,7 @@
 @layer components {
   [type="checkbox"],
   [type="radio"] {
-    @apply rounded border-borderNormal cursor-pointer;
+    @apply rounded border-borderNormal cursor-pointer text-inputSelected;
 
     &:hover {
       @apply border-inputSelected;
