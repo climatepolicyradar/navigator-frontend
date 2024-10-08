@@ -85,17 +85,34 @@ const Search = () => {
     resetCSVStatus();
   };
 
-  const handleRegionChange = (type: string, regionName: string) => {
+  const handleRegionChange = (regionName: string) => {
     delete router.query[QUERY_PARAMS.offset];
+    const query = { ...router.query };
+    const regions = (query[QUERY_PARAMS.region] as string[]) || [];
 
-    updateCountries.mutate({
-      regionName,
-      regions,
-      countries,
-    });
+    // query string is a string if only one region is selected, else it is an array of strings
+    if (regions.includes(regionName)) {
+      if (typeof regions === "string") {
+        delete query[QUERY_PARAMS.region];
+      } else {
+        query[QUERY_PARAMS.region] = regions.filter((region) => region !== regionName);
+      }
+    } else {
+      if (typeof regions === "string") {
+        query[QUERY_PARAMS.region] = [regions, regionName];
+      } else {
+        query[QUERY_PARAMS.region] = [...regions, regionName];
+      }
+    }
 
-    router.query[type] = regionName;
-    router.push({ query: router.query });
+    // TODO: filter countries based on selected regions
+    // updateCountries.mutate({
+    //   regionName,
+    //   regions,
+    //   countries,
+    // });
+
+    router.push({ query: query });
     resetCSVStatus();
   };
 
@@ -322,17 +339,21 @@ const Search = () => {
         {/* END MOBILE ONLY */}
         <MultiCol>
           <SideCol extraClasses="hidden md:block border-r pt-5">
-            <SearchFilters
-              searchCriteria={searchQuery}
-              regions={regions}
-              filteredCountries={filteredCountries}
-              handleFilterChange={handleFilterChange}
-              handleYearChange={handleYearChange}
-              handleRegionChange={handleRegionChange}
-              handleClearSearch={handleClearSearch}
-              handleSearchChange={handleSearchChange}
-              handleDocumentCategoryClick={handleDocumentCategoryClick}
-            />
+            {configQuery.isFetching ? (
+              <p className="text-sm">Loading filters...</p>
+            ) : (
+              <SearchFilters
+                searchCriteria={searchQuery}
+                regions={regions}
+                filteredCountries={filteredCountries}
+                handleFilterChange={handleFilterChange}
+                handleYearChange={handleYearChange}
+                handleRegionChange={handleRegionChange}
+                handleClearSearch={handleClearSearch}
+                handleSearchChange={handleSearchChange}
+                handleDocumentCategoryClick={handleDocumentCategoryClick}
+              />
+            )}
           </SideCol>
           <SingleCol extraClasses="px-5 pt-5">
             <div>

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 
 import SuggestList from "./SuggestList";
 
@@ -18,7 +17,6 @@ interface ByTextInputProps {
 const ByTextInput = ({ title, list, selectedList, keyField, keyFieldDisplay, filterType, handleFilterChange }: ByTextInputProps) => {
   const [input, setInput] = useState("");
   const [suggestList, setSuggestList] = useState([]);
-  const { t } = useTranslation("searchResults");
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
     setInput(e.currentTarget.value);
@@ -42,7 +40,7 @@ const ByTextInput = ({ title, list, selectedList, keyField, keyFieldDisplay, fil
       <input
         type="text"
         className="border border-gray-300 mt-2 small outline-none w-full"
-        placeholder={t("Start typing")}
+        placeholder="Start typing"
         value={input}
         onChange={handleChange}
         aria-label="Search for a jurisdiction"

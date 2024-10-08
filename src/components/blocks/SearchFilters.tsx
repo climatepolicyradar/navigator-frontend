@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 
 import ByTextInput from "../filters/ByTextInput";
 import BySelect from "../filters/BySelect";
@@ -52,27 +51,27 @@ const isCategoryChecked = (selectedCatgeory: string, category: TDocumentCategory
 };
 
 type TSearchFiltersProps = {
-  handleFilterChange(type: string, value: string): void;
-  handleYearChange(values: number[], reset?: boolean): void;
-  handleRegionChange(type: string, regionName: any): void;
-  handleClearSearch(): void;
-  handleSearchChange(type: string, value: string): void;
-  handleDocumentCategoryClick(value: string): void;
   searchCriteria: TSearchCriteria;
   regions: TGeography[];
   filteredCountries: TGeography[];
+  handleFilterChange(type: string, value: string): void;
+  handleYearChange(values: number[], reset?: boolean): void;
+  handleRegionChange(region: string): void;
+  handleClearSearch(): void;
+  handleSearchChange(type: string, value: string): void;
+  handleDocumentCategoryClick(value: string): void;
 };
 
 const SearchFilters = ({
+  searchCriteria,
+  regions,
+  filteredCountries,
   handleFilterChange,
   handleYearChange,
-  searchCriteria,
   handleRegionChange,
   handleClearSearch,
   handleSearchChange,
   handleDocumentCategoryClick,
-  regions,
-  filteredCountries,
 }: TSearchFiltersProps) => {
   const [showClear, setShowClear] = useState(false);
 
@@ -101,7 +100,7 @@ const SearchFilters = ({
   return (
     <div id="search_filters" data-cy="seach-filters" className="text-sm text-textNormal flex flex-col gap-5">
       <div className="flex justify-between">
-        <div className=" flex gap-1">
+        <div className="flex gap-2">
           <p className="text-xs uppercase">Filters </p>
           <Tooltip
             id="filter-by"
@@ -123,6 +122,7 @@ const SearchFilters = ({
         )}
       </div>
       <div className="flex flex-wrap gap-2" data-cy="applied-filters">
+        {/* TODO: Add logic to display applied filters */}
         <Pill onClick={handleClearFilter}>Europe</Pill>
         <Pill onClick={handleClearFilter}>Long topic name</Pill>
         <Pill onClick={handleClearFilter}>United Kingdom</Pill>
@@ -152,9 +152,9 @@ const SearchFilters = ({
             <InputCheck
               key={region.slug}
               label={region.display_value}
-              checked={regionFilters && regionFilters[0] === region.slug}
+              checked={regionFilters && regionFilters.includes(region.slug)}
               onChange={() => {
-                handleRegionChange(QUERY_PARAMS.region, region.slug);
+                handleRegionChange(region.slug);
               }}
             />
           ))}
