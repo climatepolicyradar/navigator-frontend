@@ -8,11 +8,21 @@
   [type="radio"],
   [type="text"],
   [type="number"] {
-    @apply rounded border-borderNormal cursor-pointer text-inputSelected text-inputSelected;
+    @apply rounded border-borderNormal cursor-pointer text-sm;
 
     &:hover {
       @apply border-inputSelected;
     }
+  }
+
+  [type="checkbox"],
+  [type="radio"] {
+    @apply text-inputSelected;
+  }
+
+  [type="text"],
+  [type="number"] {
+    @apply text-textDark p-2 bg-input leading-[1.4];
   }
 
   [type="radio"] {
@@ -64,17 +74,6 @@ a,
   }
 }
 
-input[type="text"],
-input[type="number"],
-input[type="password"],
-input[type="email"],
-textarea,
-select,
-option {
-  font-family: Arial, Helvetica, sans-serif;
-  @apply p-2 rounded text-textNormal;
-}
-
 b,
 strong,
 .bold {
@@ -85,6 +84,18 @@ strong,
   @apply my-6;
   &__border {
     @apply border-b border-cpr-dark py-6;
+  }
+}
+
+.input-icon {
+  @apply absolute top-1/2 transform -translate-y-1/2;
+
+  &.icon-left {
+    @apply left-2;
+  }
+
+  &.icon-right {
+    @apply right-2;
   }
 }
 

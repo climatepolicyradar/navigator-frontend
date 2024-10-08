@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import ByTextInput from "../filters/ByTextInput";
 import BySelect from "../filters/BySelect";
 import MultiList from "../filters/MultiList";
 import ByDateRange from "../filters/ByDateRange";
@@ -10,6 +9,7 @@ import { ExternalLink } from "@components/ExternalLink";
 import Pill from "@components/Pill";
 import { Heading } from "@components/accordian/Heading";
 import { InputListContainer } from "@components/filters/InputListContainer";
+import { TypeAhead } from "../forms/TypeAhead";
 import { InputCheck } from "@components/forms/Checkbox";
 import { InputRadio } from "@components/forms/Radio";
 
@@ -145,7 +145,7 @@ const SearchFilters = ({
           ))}
         </InputListContainer>
       </div>
-      <div>
+      <div data-cy="regions">
         <Heading>Region</Heading>
         <InputListContainer>
           {regions.map((region) => (
@@ -161,17 +161,22 @@ const SearchFilters = ({
         </InputListContainer>
       </div>
 
-      <div className="relative" data-cy="countries">
-        <ByTextInput
-          title="By country"
-          list={filteredCountries}
-          selectedList={countryFilters}
-          keyField="slug"
-          keyFieldDisplay="display_value"
-          filterType={QUERY_PARAMS.country}
-          handleFilterChange={handleFilterChange}
-        />
-        <MultiList list={countryFilters} removeFilter={handleFilterChange} type={QUERY_PARAMS.country} dataCy="selected-countries" />
+      <div data-cy="countries">
+        <Heading>Published jurisdiction</Heading>
+
+        <InputListContainer>
+          <TypeAhead
+            list={filteredCountries}
+            selectedList={countryFilters}
+            keyField="slug"
+            keyFieldDisplay="display_value"
+            filterType={QUERY_PARAMS.country}
+            handleFilterChange={handleFilterChange}
+          />
+          {/* {countryFilters.length > 0 && (
+            <MultiList list={countryFilters} removeFilter={handleFilterChange} type={QUERY_PARAMS.country} dataCy="selected-countries" />
+          )} */}
+        </InputListContainer>
       </div>
 
       <div data-cy="date-range">
