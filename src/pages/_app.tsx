@@ -1,4 +1,3 @@
-import "../../i18n";
 import { useEffect, useState } from "react";
 import App, { AppProps } from "next/app";
 import Head from "next/head";

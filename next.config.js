@@ -28,11 +28,6 @@ const nextConfig = {
   redirects: async () => {
     return configureRedirects(process.env.THEME);
   },
-  // Translations
-  i18n: {
-    locales: ["en"],
-    defaultLocale: "en",
-  },
   // TypeScript
   pageExtensions: ["tsx", "ts"],
   // Cache control
