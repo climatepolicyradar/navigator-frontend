@@ -3,11 +3,14 @@ import { PageButton } from "./pageButton";
 
 import { MAX_PAGES, RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN } from "@constants/paging";
 
+import { getCurrentPage } from "@utils/getCurrentPage";
+
 interface PaginationProps {
-  currentPage: number;
   onChange(ct: string, offSet: number): void;
+  offset?: string | number;
   maxNeighbourDistance?: number;
   totalHits?: number;
+  activeContinuationToken?: string;
   continuationToken?: string;
   continuationTokens?: string;
 }
@@ -25,7 +28,22 @@ const calculateOffset = (page: number) => {
   return ((page - 1) % PAGES_PER_CONTINUATION_TOKEN) * RESULTS_PER_PAGE;
 };
 
-const Pagination = ({ currentPage, onChange, totalHits = 0, continuationToken = null, continuationTokens = "[]" }: PaginationProps) => {
+const calcCurrentPage = (offset: string | number = 0, continuationTokens: string = "[]", activeContinuationToken: string) => {
+  const offSet = parseInt(offset.toString());
+  const cts: string[] = JSON.parse(continuationTokens);
+  // empty string represents the first 'set' of pages (as these do not require a continuation token)
+  cts.splice(0, 0, "");
+  return getCurrentPage(offSet, RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN, cts, activeContinuationToken);
+};
+
+const Pagination = ({
+  onChange,
+  offset,
+  totalHits = 0,
+  continuationToken = null,
+  continuationTokens = "[]",
+  activeContinuationToken,
+}: PaginationProps) => {
   const parsedTokens: string[] = JSON.parse(continuationTokens);
   // empty string to the beginning of the array accounts for the first set of pages that do not require a token
   parsedTokens.splice(0, 0, "");
@@ -50,7 +68,7 @@ const Pagination = ({ currentPage, onChange, totalHits = 0, continuationToken = 
                 ct={calculateToken(pageNumber, parsedTokens)}
                 offSet={calculateOffset(pageNumber)}
                 clickHandler={onChange}
-                isCurrentPage={pageNumber === currentPage}
+                isCurrentPage={pageNumber === calcCurrentPage(offset, continuationTokens, activeContinuationToken)}
               />
             </Fragment>
           );

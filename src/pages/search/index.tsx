@@ -30,10 +30,7 @@ import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
 import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
 import { SubNav } from "@components/nav/SubNav";
 
-import { getCurrentPage } from "@utils/getCurrentPage";
-
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN } from "@constants/paging";
 
 const Search = () => {
   const router = useRouter();
@@ -251,20 +248,6 @@ const Search = () => {
     return `${field}:${order}`;
   };
 
-  const calcCurrentPage = () => {
-    const offSet = isNaN(parseInt(router.query[QUERY_PARAMS.offset]?.toString())) ? 0 : parseInt(router.query[QUERY_PARAMS.offset]?.toString());
-    const cts: string[] = JSON.parse((router.query[QUERY_PARAMS.continuation_tokens] as string) || "[]");
-    // empty string represents the first 'set' of pages (as these do not require a continuation token)
-    cts.splice(0, 0, "");
-    return getCurrentPage(
-      offSet,
-      RESULTS_PER_PAGE,
-      PAGES_PER_CONTINUATION_TOKEN,
-      cts,
-      router.query[QUERY_PARAMS.active_continuation_token] as string
-    );
-  };
-
   const handleDownloadCsvClick = () => {
     if (downloadCSVStatus === "loading") return;
     setShowCSVDownloadPopup(false);
@@ -426,11 +409,12 @@ const Search = () => {
             {hits > 1 && (
               <div className="mb-12">
                 <Pagination
-                  currentPage={calcCurrentPage()}
                   onChange={handlePageChange}
                   totalHits={hits}
+                  activeContinuationToken={router.query[QUERY_PARAMS.active_continuation_token] as string}
                   continuationToken={continuationToken}
                   continuationTokens={router.query[QUERY_PARAMS.continuation_tokens] as string}
+                  offset={router.query[QUERY_PARAMS.offset] as string}
                 />
               </div>
             )}
