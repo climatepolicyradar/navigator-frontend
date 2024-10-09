@@ -17,6 +17,7 @@
     "axios": "^0.24.0",
     "babel-loader": "^9.1.0",
     "cypress-pseudo-localization": "^1.0.0",
+    "framer-motion": "^11.11.7",
     "jest-environment-jsdom": "^29.7.0",
     "leaflet": "^1.9.3",
     "next": "^13.5.6",

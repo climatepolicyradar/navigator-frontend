@@ -3,5 +3,5 @@ type TProps = {
 };
 
 export const Heading = ({ children }: TProps) => {
-  return <div className="text-[15px] font-medium text-textDark mb-5">{children}</div>;
+  return <div className="text-[15px] font-medium text-textDark">{children}</div>;
 };

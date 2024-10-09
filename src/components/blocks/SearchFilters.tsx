@@ -7,7 +7,7 @@ import BySemanticSearch from "@components/filters/BySemanticSearch";
 import Tooltip from "@components/tooltip";
 import { ExternalLink } from "@components/ExternalLink";
 import Pill from "@components/Pill";
-import { Heading } from "@components/accordian/Heading";
+import { Accordian } from "@components/accordian/Accordian";
 import { InputListContainer } from "@components/filters/InputListContainer";
 import { TypeAhead } from "../forms/TypeAhead";
 import { InputCheck } from "@components/forms/Checkbox";
@@ -130,8 +130,8 @@ const SearchFilters = ({
       <div data-cy="exact-match">
         <BySemanticSearch checked={searchCriteria.exact_match} handleSearchChange={handleSearchChange} />
       </div>
-      <div>
-        <Heading>Category</Heading>
+
+      <Accordian title="Category" data-cy="categories" startOpen>
         <InputListContainer>
           {DOCUMENT_CATEGORIES.map((category, i) => (
             <InputRadio
@@ -144,9 +144,9 @@ const SearchFilters = ({
             />
           ))}
         </InputListContainer>
-      </div>
-      <div data-cy="regions">
-        <Heading>Region</Heading>
+      </Accordian>
+
+      <Accordian title="Region" data-cy="regions">
         <InputListContainer>
           {regions.map((region) => (
             <InputCheck
@@ -159,11 +159,9 @@ const SearchFilters = ({
             />
           ))}
         </InputListContainer>
-      </div>
+      </Accordian>
 
-      <div data-cy="countries">
-        <Heading>Published jurisdiction</Heading>
-
+      <Accordian title="Published jurisdiction" data-cy="countries">
         <InputListContainer>
           <TypeAhead
             list={filteredCountries}
@@ -177,10 +175,9 @@ const SearchFilters = ({
             <MultiList list={countryFilters} removeFilter={handleFilterChange} type={QUERY_PARAMS.country} dataCy="selected-countries" />
           )} */}
         </InputListContainer>
-      </div>
+      </Accordian>
 
-      <div data-cy="date-range">
-        <Heading>Date</Heading>
+      <Accordian title="Date" data-cy="date-range">
         <ByDateRange
           type="year_range"
           handleChange={handleYearChange}
@@ -189,7 +186,7 @@ const SearchFilters = ({
           max={thisYear}
           clear={showClear}
         />
-      </div>
+      </Accordian>
 
       <div className="my-5 pt-5 border-t" data-cy="methodology-notice">
         <p className="text-center mb-6">
