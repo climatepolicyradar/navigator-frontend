@@ -203,7 +203,7 @@ export type TFamily = {
   family_category: TCategory;
   family_description: string;
   family_documents: TFamilyDocument[];
-  family_geography: string;
+  family_geographies: string[];
   family_metadata: {}; // TODO: type this
   family_name: string;
   family_slug: string;
