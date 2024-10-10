@@ -1,9 +1,10 @@
 import React from "react";
+import { Heading } from "@components/typography/Heading";
 
 const ClimatePolicyRadarBannerHolder = () => {
   return (
-    <div className="bg-[#005EEB] py-36">
-      <h2 className="text-center text-white text-3xl xl:text-4xl">Climate Policy Radar Banner Holder</h2>
+    <div className="bg-[#005EEB] py-36  text-center">
+      <Heading level={1}>Climate Policy Radar Banner Holder</Heading>
     </div>
   );
 };
