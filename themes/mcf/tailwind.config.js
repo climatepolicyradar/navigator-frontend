@@ -9,7 +9,7 @@ module.exports = {
     "./src/components/**/*.{ts,tsx,js,jsx}",
     "./src/pages/**/*.{ts,tsx,js,jsx}",
     "./src/sites/**/*.{ts,tsx,js,jsx}",
-    "./themes/cpr/**/*.{ts,tsx,js,jsx}",
+    "./themes/mcf/**/*.{ts,tsx,js,jsx}",
   ],
   theme: {
     colors: {
@@ -19,8 +19,12 @@ module.exports = {
       current: "currentColor",
       textDark: "#202020",
       textNormal: "#505050",
+      accentLink: "#0171B8",
+      headingText: "#082C43",
+      subheadingText: "rgba(8, 44, 67, 0.64)",
       cpr: {
         dark: "#071e4a",
+        banner: "#005EEB",
       },
       cclw: {
         dark: "#2E3152",
@@ -89,6 +93,7 @@ module.exports = {
       },
       letterSpacing: {
         slight: "0.015em",
+        xtraLargeHeading: "-0.04em",
       },
       maxWidth: {
         maxSiteWidth: MAX_SITE_WIDTH, // max width of the site

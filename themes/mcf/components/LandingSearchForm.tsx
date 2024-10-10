@@ -9,9 +9,8 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 // See the method handleSearchInput in the index.tsx file for the processing of the example searches
 const EXAMPLE_SEARCHES = [
   { id: 1, term: "Adaptation" },
-  { id: 2, filterValue: "Brazil", filterType: QUERY_PARAMS.country },
-  { id: 3, term: "Climate framework laws" },
-  { id: 4, term: "Coastal zones" },
+  { id: 2, term: "Biodiversity" },
+  { id: 3, filterValue: "Phillipines", filterType: QUERY_PARAMS.country },
 ];
 
 interface SearchFormProps {
@@ -57,7 +56,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
             data-analytics="landingPage-searchInput"
             data-cy="search-input"
             type="search"
-            className="text-xl leading-5 py-3 h-[48px] pl-6 pr-3 mr-[72px] w-full text-cpr-dark focus:ring-0 rounded-l-4xl border-0"
+            className="text-xl leading-5 py-3 h-[48px] pl-6 pr-3 mr-[72px] w-full text-cpr-dark focus:ring-0 rounded-l-4xl border-blue-500"
             value={term}
             onChange={onChange}
             placeholder={displayPlaceholder}
@@ -75,8 +74,8 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
           <SearchDropdown term={term} show={formFocus} handleSearchClick={handleSearchInput} largeSpacing />
         </div>
       </form>
-      <div className="hidden mt-4 md:flex flex-wrap items-center gap-2">
-        <span className="text-gray-200">Search by:</span>
+      <div className="hidden mt-4 md:flex flex-wrap items-center gap-2 justify-center">
+        <span className="text-blue-500">Suggestions:</span>
         {EXAMPLE_SEARCHES.map((example) => (
           <Button
             key={example.id}
