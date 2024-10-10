@@ -5,7 +5,7 @@ import Layout from "@components/layouts/LandingPage";
 import { FullWidth } from "@components/panels/FullWidth";
 import { Heading } from "@components/typography/Heading";
 
-import { CustomAppHeader, CustomAppFooter, Hero, ClimatePolicyRadarBannerHolder } from "@mcf/components";
+import { Header, Footer, Hero, ClimatePolicyRadarBannerHolder } from "@mcf/components";
 
 const WorldMap = dynamic(() => import("@components/map/WorldMap"), {
   loading: () => <p>Loading world map...</p>,
@@ -22,7 +22,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
     <Layout title="Law and Policy Search">
       <main id="main" className="flex flex-col flex-1">
         <div>
-          <CustomAppHeader background={false} />
+          <Header background={false} />
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
         </div>
         <FullWidth id="world-map" extraClasses="hidden pt-6 md:block">
@@ -33,7 +33,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
         </FullWidth>
 
         <ClimatePolicyRadarBannerHolder />
-        <CustomAppFooter />
+        <Footer />
       </main>
     </Layout>
   );

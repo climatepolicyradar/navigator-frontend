@@ -10,7 +10,7 @@ import { Logo } from "./HeaderComponents/Logo";
 
 const NON_SEARCH_PAGES = ["/", "/search"];
 
-const CustomAppHeader = ({ background = true }) => {
+const Header = ({ background = true }) => {
   const router = useRouter();
 
   // Do not show search on specific pages
@@ -39,4 +39,4 @@ const CustomAppHeader = ({ background = true }) => {
   );
 };
 
-export default CustomAppHeader;
+export default Header;
