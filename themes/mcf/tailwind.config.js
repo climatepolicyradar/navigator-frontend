@@ -9,7 +9,7 @@ module.exports = {
     "./src/components/**/*.{ts,tsx,js,jsx}",
     "./src/pages/**/*.{ts,tsx,js,jsx}",
     "./src/sites/**/*.{ts,tsx,js,jsx}",
-    "./themes/cpr/**/*.{ts,tsx,js,jsx}",
+    "./themes/mcf/**/*.{ts,tsx,js,jsx}",
   ],
   theme: {
     colors: {
