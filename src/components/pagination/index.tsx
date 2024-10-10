@@ -57,7 +57,7 @@ const Pagination = ({
   const displayElipsis = totalPagesForHits > MAX_PAGES && numberOfPagesToDisplay < MAX_PAGES;
 
   return (
-    <div id="pagination" className="pagination w-full px-5 m-auto flex flex-wrap justify-center mt-5 gap-1" data-cy="pagination">
+    <div id="pagination" className="pagination m-auto flex flex-wrap mt-5 gap-1" data-cy="pagination">
       <>
         {new Array(numberOfPagesToDisplay).fill(0).map((_, itemIndex) => {
           const pageNumber = itemIndex + 1;
