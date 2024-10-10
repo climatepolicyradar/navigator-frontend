@@ -2,8 +2,8 @@ import React from "react";
 import { ExternalLink } from "@components/ExternalLink";
 import { FacebookIcon, InstagramIcon, LinkedInIcon, TwitterIcon } from "@components/svg/Icons";
 
-const SocialMediaContent: React.FC = () => {
-  const multilateralClimateFunds = {
+const SocialMediaContent = () => {
+  const multilateralClimateFundSocialMedia = {
     "Adaptation Fund": [
       { url: "https://twitter.com/adaptationfund", icon: <TwitterIcon /> },
       { url: "https://www.facebook.com/adaptationfund", icon: <FacebookIcon /> },
@@ -39,15 +39,13 @@ const SocialMediaContent: React.FC = () => {
     ],
   };
 
-  const fundHeadingColour = "#202020";
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {Object.entries(multilateralClimateFunds).map(([fundType, fundLogos]) => (
+      {Object.entries(multilateralClimateFundSocialMedia).map(([fundType, fundSocialMedia]) => (
         <div key={fundType}>
           <h2 className="font-inter-variable text-base font-medium leading-[22.4px] text-left">{fundType}</h2>
           <div className="flex flex-wrap gap-2 pt-2">
-            {fundLogos.map((logo, index) => (
+            {fundSocialMedia.map((logo, index) => (
               <ExternalLink key={index} url={logo.url}>
                 {logo.icon}
               </ExternalLink>
