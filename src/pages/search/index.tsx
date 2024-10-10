@@ -50,7 +50,7 @@ const Search = () => {
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 
-  const placeholder = "Search for something, e.g. 'carbon taxes'";
+  const placeholder = "Search for something...";
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
