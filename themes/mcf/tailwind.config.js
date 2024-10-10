@@ -19,6 +19,9 @@ module.exports = {
       current: "currentColor",
       textDark: "#202020",
       textNormal: "#505050",
+      accentLink: "#0171B8",
+      headingText: "#082C43",
+      subheadingText: "rgba(8, 44, 67, 0.64)",
       cpr: {
         dark: "#071e4a",
       },
@@ -89,6 +92,9 @@ module.exports = {
       },
       letterSpacing: {
         slight: "0.015em",
+        normalHeading: "-0.01em",
+        xtraLargeHeading: "-0.04em",
+        subheading: "0.04em",
       },
       maxWidth: {
         maxSiteWidth: MAX_SITE_WIDTH, // max width of the site
