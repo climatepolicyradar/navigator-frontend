@@ -3,38 +3,40 @@ import { ExternalLink } from "@components/ExternalLink";
 import { FacebookIcon, InstagramIcon, LinkedInIcon, TwitterIcon } from "@components/svg/Icons";
 
 const SocialMediaContent = () => {
+  const iconColor = "#0171B8";
+
   const multilateralClimateFundSocialMedia = {
     "Adaptation Fund": [
-      { url: "https://twitter.com/adaptationfund", icon: <TwitterIcon /> },
-      { url: "https://www.facebook.com/adaptationfund", icon: <FacebookIcon /> },
+      { url: "https://twitter.com/adaptationfund", icon: <TwitterIcon color={iconColor} /> },
+      { url: "https://www.facebook.com/adaptationfund", icon: <FacebookIcon color={iconColor} /> },
       {
-        icon: <LinkedInIcon />,
+        icon: <LinkedInIcon color={iconColor} />,
         url: "https://www.linkedin.com/company/adaptation-fund",
       },
       {
         url: "https://www.instagram.com/adaptationfund/?hl=en",
-        icon: <InstagramIcon />,
+        icon: <InstagramIcon color={iconColor} />,
       },
     ],
     "Green Climate Fund": [
-      { url: "https://twitter.com/theGCF", icon: <TwitterIcon /> },
-      { url: "https://facebook.com/GCFOfficial", icon: <FacebookIcon /> },
+      { url: "https://twitter.com/theGCF", icon: <TwitterIcon color={iconColor} /> },
+      { url: "https://facebook.com/GCFOfficial", icon: <FacebookIcon color={iconColor} /> },
       {
         url: "https://www.linkedin.com/company/green-climate-fund/",
-        icon: <LinkedInIcon />,
+        icon: <LinkedInIcon color={iconColor} />,
       },
     ],
     "Climate Investment Funds": [
-      { url: "https://twitter.com/CIF_Action", icon: <TwitterIcon /> },
-      { url: "https://www.facebook.com/CIFaction/", icon: <FacebookIcon /> },
-      { url: "https://www.linkedin.com/company/cifaction", icon: <LinkedInIcon /> },
+      { url: "https://twitter.com/CIF_Action", icon: <TwitterIcon color={iconColor} /> },
+      { url: "https://www.facebook.com/CIFaction/", icon: <FacebookIcon color={iconColor} /> },
+      { url: "https://www.linkedin.com/company/cifaction", icon: <LinkedInIcon color={iconColor} /> },
     ],
     "Global Environment Facility": [
-      { url: "https://twitter.com/theGEF", icon: <TwitterIcon /> },
-      { url: "https://www.facebook.com/TheGEF1/", icon: <FacebookIcon /> },
+      { url: "https://twitter.com/theGEF", icon: <TwitterIcon color={iconColor} /> },
+      { url: "https://www.facebook.com/TheGEF1/", icon: <FacebookIcon color={iconColor} /> },
       {
         url: "https://www.linkedin.com/company/global-environment-facility",
-        icon: <LinkedInIcon />,
+        icon: <LinkedInIcon color={iconColor} />,
       },
     ],
   };

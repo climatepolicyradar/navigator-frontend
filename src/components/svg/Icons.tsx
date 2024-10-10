@@ -661,7 +661,7 @@ export const ManyDocumentsIcon = ({ height = "24", width = "24", color = "curren
   );
 };
 
-export const FacebookIcon = ({ height = "20", width = "24", color = "#0171B8" }: IconProps) => {
+export const FacebookIcon = ({ height = "20", width = "24", color = "currentColor" }: IconProps) => {
   return (
     <svg
       aria-label="Facebook Icon"
@@ -669,7 +669,7 @@ export const FacebookIcon = ({ height = "20", width = "24", color = "#0171B8" }:
       xmlns="http://www.w3.org/2000/svg"
       width={width}
       height={height}
-      viewBox={`0 0 ${height} ${width}`}
+      viewBox="0 0 24 24"
       fill="none"
       stroke={color}
       strokeWidth="2"
@@ -681,7 +681,7 @@ export const FacebookIcon = ({ height = "20", width = "24", color = "#0171B8" }:
   );
 };
 
-export const InstagramIcon = ({ height = "20", width = "24", color = "#0171B8" }: IconProps) => {
+export const InstagramIcon = ({ height = "20", width = "24", color = "currentColor" }: IconProps) => {
   return (
     <svg
       aria-label="Instagram Icon"
@@ -689,7 +689,7 @@ export const InstagramIcon = ({ height = "20", width = "24", color = "#0171B8" }
       xmlns="http://www.w3.org/2000/svg"
       width={width}
       height={height}
-      viewBox={`0 0 ${height} ${width}`}
+      viewBox="0 0 24 24"
       fill="none"
       stroke={color}
       strokeWidth="2"
@@ -703,7 +703,7 @@ export const InstagramIcon = ({ height = "20", width = "24", color = "#0171B8" }
   );
 };
 
-export const LinkedInIcon = ({ height = "20", width = "24", color = "#0171B8" }: IconProps) => {
+export const LinkedInIcon = ({ height = "20", width = "24", color = "currentColor" }: IconProps) => {
   return (
     <svg
       aria-label="LinkedIn Icon"
@@ -711,7 +711,7 @@ export const LinkedInIcon = ({ height = "20", width = "24", color = "#0171B8" }:
       xmlns="http://www.w3.org/2000/svg"
       width={width}
       height={height}
-      viewBox={`0 0 ${height} ${width}`}
+      viewBox="0 0 24 24"
       fill="none"
       stroke={color}
       strokeWidth="2"
@@ -725,7 +725,7 @@ export const LinkedInIcon = ({ height = "20", width = "24", color = "#0171B8" }:
   );
 };
 
-export const TwitterIcon = ({ height = "20", width = "24", color = "#0171B8" }: IconProps) => {
+export const TwitterIcon = ({ height = "20", width = "24", color = "currentColor" }: IconProps) => {
   return (
     <svg
       aria-label="Twitter Icon"
@@ -733,7 +733,7 @@ export const TwitterIcon = ({ height = "20", width = "24", color = "#0171B8" }: 
       xmlns="http://www.w3.org/2000/svg"
       width={width}
       height={height}
-      viewBox={`0 0 ${height} ${width}`}
+      viewBox="0 0 24 24"
       fill="none"
       stroke={color}
       strokeWidth="2"
