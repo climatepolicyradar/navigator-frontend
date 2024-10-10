@@ -2,8 +2,10 @@ import React from "react";
 import dynamic from "next/dynamic";
 
 import Layout from "@components/layouts/LandingPage";
+import { FullWidth } from "@components/panels/FullWidth";
+import { Heading } from "@components/typography/Heading";
 
-import { Hero } from "@mcf/components";
+import { CustomAppHeader, CustomAppFooter, Hero, ClimatePolicyRadarBannerHolder } from "@mcf/components";
 
 const WorldMap = dynamic(() => import("@components/map/WorldMap"), {
   loading: () => <p>Loading world map...</p>,
@@ -20,12 +22,18 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
     <Layout title="Law and Policy Search">
       <main id="main" className="flex flex-col flex-1">
         <div>
+          <CustomAppHeader background={false} />
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
         </div>
-        <div id="world-map" className="container hidden pt-6 md:block">
-          <h2 className="text-center mb-6">Explore by country</h2>
+        <FullWidth id="world-map" extraClasses="hidden pt-6 md:block">
+          <Heading level={2} extraClasses="text-center text-3xl xl:text-4xl">
+            Explore by country
+          </Heading>
           <WorldMap />
-        </div>
+        </FullWidth>
+
+        <ClimatePolicyRadarBannerHolder />
+        <CustomAppFooter />
       </main>
     </Layout>
   );
