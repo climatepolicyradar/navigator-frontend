@@ -76,3 +76,15 @@ option {
     @apply mb-4;
   }
 }
+
+.custom-header,
+h1.custom-header,
+h2.custom-header {
+  font-family: "Greycliff", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+  text-align: left;
+  color: #082c43;
+}

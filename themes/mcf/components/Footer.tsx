@@ -3,6 +3,7 @@ import { SiteWidth } from "@components/panels/SiteWidth";
 import { ExternalLink } from "@components/ExternalLink";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import SocialMediaContent from "./FooterComponents/SocialMediaContent";
+import { Heading } from "@components/typography/Heading";
 
 const Footer = () => {
   return (
@@ -11,9 +12,9 @@ const Footer = () => {
         <SiteWidth>
           <div className="flex flex-col md:flex-row gap-4">
             <div className="footer__section w-full md:w-1/2 lg:w-2/3" data-cy="footer-mcf">
-              <h2 className="font-greycliff text-2xl font-bold leading-[24px] tracking-[-0.01em] text-left text-headingText text-headingText">
+              <Heading level={2} extraClasses="custom-header">
                 About
-              </h2>
+              </Heading>
               <p>Climate Project Explorer is a project to reveal all of the data about Multilateral Climate Funds.</p>
               <div className="footer__section">
                 <p>
@@ -25,15 +26,17 @@ const Footer = () => {
             </div>
 
             <div className="footer__section">
-              <h2 className="font-greycliff text-2xl font-bold leading-[24px] tracking-[-0.01em] text-left text-headingText text-headingText">
+              <Heading level={2} extraClasses="custom-header">
                 Contact
-              </h2>
+              </Heading>
               <p>
                 Get in touch with the Climate Project Explorer team by emailing:{" "}
                 <ExternalLink url="mailto:partners@climatepolicyradar.org">partners@climatepolicyradar.org</ExternalLink>
               </p>
               <div className="footer__section">
-                <h2 className="font-greycliff text-2xl font-bold leading-[24px] tracking-[-0.01em] text-left text-headingText">Feedback</h2>
+                <Heading level={2} extraClasses="custom-header">
+                  Feedback
+                </Heading>
                 <p>
                   Help us improve this tool. <ExternalLink url="https://www.climatepolicyradar.org">Report missing or inaccurate data</ExternalLink>{" "}
                   or <ExternalLink url="https://www.climatepolicyradar.org">provide feedback </ExternalLink> on your experience.
