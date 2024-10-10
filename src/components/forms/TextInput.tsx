@@ -1,22 +1,26 @@
 import { useState } from "react";
 
 type TProps = {
+  type?: string;
   className?: string;
   placeholder?: string;
   side?: "left" | "right";
   children?: React.ReactNode;
+  size?: "small" | "large" | "default";
   onChange?: (value: string) => void;
 };
 
-const inputClasses = (side: "left" | "right") => {
-  if (side === "left") {
-    return "pl-8";
-  } else {
-    return "pr-8";
+const iconClasses = (side: "left" | "right", children?: React.ReactNode) => {
+  if (children) {
+    if (side === "left") {
+      return "extra-content-left";
+    } else {
+      return "extra-content-right";
+    }
   }
 };
 
-export const TextInput = ({ className = "", onChange, children, side = "left", ...props }: TProps) => {
+export const TextInput = ({ type = "text", size = "default", className = "", placeholder, onChange, children, side = "left", ...props }: TProps) => {
   const [input, setInput] = useState("");
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
@@ -27,9 +31,16 @@ export const TextInput = ({ className = "", onChange, children, side = "left", .
   };
 
   return (
-    <div className="relative">
+    <div className={`relative ${size}`}>
       {side === "left" && <span className="input-icon icon-left">{children}</span>}
-      <input type="text" value={input} onChange={handleChange} className={`w-full ${inputClasses(side)} ${className}`} {...props} />
+      <input
+        type={type}
+        value={input}
+        onChange={handleChange}
+        className={` ${size} ${iconClasses(side, children)} ${className}`}
+        placeholder={placeholder}
+        {...props}
+      />
       {side === "right" && <span className="input-icon icon-right">{children}</span>}
     </div>
   );

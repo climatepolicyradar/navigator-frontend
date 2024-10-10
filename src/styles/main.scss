@@ -7,8 +7,9 @@
   [type="checkbox"],
   [type="radio"],
   [type="text"],
+  [type="search"],
   [type="number"] {
-    @apply rounded border-borderNormal cursor-pointer text-sm;
+    @apply rounded border-borderNormal text-sm;
 
     &:hover {
       @apply border-inputSelected;
@@ -17,12 +18,33 @@
 
   [type="checkbox"],
   [type="radio"] {
-    @apply text-inputSelected;
+    @apply text-inputSelected cursor-pointer;
   }
 
   [type="text"],
+  [type="search"],
   [type="number"] {
-    @apply text-textDark p-2 bg-input leading-[1.4];
+    @apply text-textDark p-2 bg-input leading-[1.4] w-full;
+
+    &.extra-content-left {
+      @apply pl-8;
+    }
+
+    &.extra-content-right {
+      @apply pr-8;
+    }
+
+    &.large {
+      @apply text-[15px] p-4 rounded-lg;
+
+      &.extra-content-left {
+        @apply pl-11;
+      }
+
+      &.extra-content-right {
+        @apply pr-11;
+      }
+    }
   }
 
   [type="radio"] {
@@ -87,18 +109,6 @@ strong,
   }
 }
 
-.input-icon {
-  @apply absolute top-1/2 transform -translate-y-1/2;
-
-  &.icon-left {
-    @apply left-2;
-  }
-
-  &.icon-right {
-    @apply right-2;
-  }
-}
-
 select {
   appearance: none;
   position: relative;
@@ -113,6 +123,28 @@ select {
     background-position-y: 14px;
     background-position-x: calc(100% - 12px);
     background-size: 12px 12px;
+  }
+}
+
+.input-icon {
+  @apply absolute top-1/2 transform -translate-y-1/2;
+
+  &.icon-left {
+    @apply left-2;
+  }
+
+  &.icon-right {
+    @apply right-2;
+  }
+
+  .large & {
+    &.icon-left {
+      @apply left-4;
+    }
+
+    &.icon-right {
+      @apply right-4;
+    }
   }
 }
 
@@ -420,9 +452,6 @@ ul li.selected {
 }
 
 .search-dropdown {
-  top: 20px;
-  padding-top: 20px;
-
   &.search-dropdown_large {
     padding-top: 0;
     top: 60px;
