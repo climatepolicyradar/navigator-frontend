@@ -24,6 +24,7 @@ module.exports = {
       subheadingText: "rgba(8, 44, 67, 0.64)",
       cpr: {
         dark: "#071e4a",
+        banner: "#005EEB",
       },
       cclw: {
         dark: "#2E3152",
