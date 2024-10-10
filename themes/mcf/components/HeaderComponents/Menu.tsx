@@ -6,6 +6,7 @@ import DropdownMenuItem from "@components/menus/DropdownMenuItem";
 import DropdownMenuWrapper from "@components/menus/DropdownMenuWrapper";
 
 import menuLinks from "../../constants/menuLinks";
+import { mainAppColour } from "@mcf/constants/colors";
 
 export const Menu = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -16,8 +17,6 @@ export const Menu = () => {
     e.preventDefault();
     setShowMenu((prev) => !prev);
   }, []);
-
-  const mainAppColour = "#082C43";
 
   return (
     <div ref={menuRef} className="flex items-center relative z-[41]">
