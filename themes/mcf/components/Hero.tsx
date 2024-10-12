@@ -1,6 +1,9 @@
+import { Heading } from "@components/typography/Heading";
 import LandingSearchForm from "./LandingSearchForm";
 
 import { SiteWidth } from "@components/panels/SiteWidth";
+import { VerticalSpacing } from "@components/utility/VerticalSpacing";
+import { MultilateralClimateFundLogos } from "./HeroComponents/MultilateralClimateFundsLogos";
 
 const Instructions = () => <p>Loading document stats...</p>;
 
@@ -14,12 +17,18 @@ const Hero = ({ handleSearchInput, searchInput }: TProps) => (
     <SiteWidth>
       <div className="mx-auto text-center">
         <p className="font-medium tracking-slight text-lg lg:text-3xl text-blue-500" data-cy="intro-message">
-          Multilateral Climate Funds
+          SEARCH ALL
         </p>
+        <Heading extraClasses="custom-hero" level={1}>
+          Multilateral Climate Funds
+        </Heading>
       </div>
+      <VerticalSpacing size="lg" />
       <div className="max-w-screen-md mx-auto mt-6">
         <LandingSearchForm handleSearchInput={handleSearchInput} placeholder="Search the full text of any document" input={searchInput} />
       </div>
+      <VerticalSpacing size="xxl" />
+      <MultilateralClimateFundLogos />
       <div className="mt-6 mt-[48px] sm:mt-[88px] md:mt-[188px] lg:mt-[208px] xl:mt-[248px]">
         <Instructions />
       </div>
