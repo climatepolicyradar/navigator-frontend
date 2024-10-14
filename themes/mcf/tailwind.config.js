@@ -99,7 +99,6 @@ module.exports = {
       },
       letterSpacing: {
         slight: "0.015em",
-        xtraLargeHeading: "-0.04em",
       },
       maxWidth: {
         maxSiteWidth: MAX_SITE_WIDTH, // max width of the site
