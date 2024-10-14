@@ -31,6 +31,10 @@ module.exports = {
         light: "#414466",
         molten: "#ED3D48",
       },
+      mcf: {
+        blue: "#082C43",
+        iconBlue: "#0171B8",
+      },
       gray: {
         25: "#FCFCFD",
         50: "#F9FAFB",
@@ -91,9 +95,11 @@ module.exports = {
         "1/6-gap-4": "calc(16.6% - (5/6 * 1rem))",
         maxContent: MAX_CONTENT_WIDTH,
       },
+      fontFamily: {
+        greycliff: ["Greycliff", "sans-serif"],
+      },
       letterSpacing: {
         slight: "0.015em",
-        xtraLargeHeading: "-0.04em",
       },
       maxWidth: {
         maxSiteWidth: MAX_SITE_WIDTH, // max width of the site
