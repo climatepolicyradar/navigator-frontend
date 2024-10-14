@@ -1,5 +1,7 @@
 import { FacebookIcon, InstagramIcon, LinkedInIcon, TwitterIcon } from "@components/svg/Icons";
-import { iconColor } from "@mcf/constants/colors";
+import { colors } from "@mcf/constants/colors";
+
+const iconColor = colors.mcf.iconColor;
 
 export const multilateralClimateFundSocialMedia = {
   "Adaptation Fund": [

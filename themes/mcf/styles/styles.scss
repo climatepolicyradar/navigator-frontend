@@ -26,7 +26,6 @@ body {
   font-weight: 400;
   line-height: 22.4px;
   text-align: left;
-  // background: linear-gradient(to right, #e0f7fa, #e6ffed, #fff8e1, #fff5f5);
 }
 
 input[type="text"],
@@ -69,23 +68,6 @@ option {
   }
 }
 
-.footer__section {
-  > * {
-    @apply mb-4;
-  }
-  h5 {
-    @apply mb-4;
-  }
-}
-
-.custom-header,
-h1.custom-header,
-h2.custom-header {
-  font-family: "Greycliff", sans-serif;
-  text-align: left;
-  color: #082c43;
-}
-
 .custom-hero,
 h1.custom-hero {
   font-family: "Greycliff CF", sans-serif;
@@ -112,17 +94,6 @@ button.custom-button {
 .custom-button:hover,
 button.custom-button:hover {
   background-color: #f7fafc; /* hover:bg-gray-100 */
-}
-
-h1.custom-header {
-  letter-spacing: -0.01em;
-}
-
-h2.custom-header {
-  letter-spacing: 0.04em;
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 24px;
 }
 
 .custom-search-button {
@@ -219,4 +190,27 @@ h2.custom-header {
   transform: translate3d(-3px, -4px, -1px);
   border-radius: inherit;
   pointer-events: none;
+}
+
+.footer__section {
+  > * {
+    @apply mb-4;
+  }
+  h5 {
+    @apply mb-4;
+  }
+}
+
+.custom-header,
+h1.custom-header,
+h2.custom-header {
+  @apply font-greycliff text-mcf-blue;
+}
+
+h1.custom-header {
+  @apply tracking-[-0.01em];
+}
+
+h2.custom-header {
+  @apply leading-6 font-bold tracking-[0.04em];
 }

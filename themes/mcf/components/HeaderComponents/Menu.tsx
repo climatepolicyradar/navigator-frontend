@@ -6,7 +6,7 @@ import DropdownMenuItem from "@components/menus/DropdownMenuItem";
 import DropdownMenuWrapper from "@components/menus/DropdownMenuWrapper";
 
 import menuLinks from "../../constants/menuLinks";
-import { mainAppColour } from "@mcf/constants/colors";
+import { colors } from "@mcf/constants/colors";
 
 export const Menu = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -21,7 +21,7 @@ export const Menu = () => {
   return (
     <div ref={menuRef} className="flex items-center relative z-[41]">
       <button data-cy="menu-icon" onClick={toggleMenu} aria-label="Toggle menu">
-        <MenuIcon color={mainAppColour} width="32" height="32" />
+        <MenuIcon color={colors.mcf.mainApp} width="32" height="32" />
       </button>
       {showMenu && (
         <div className="absolute right-0 top-[100%] z-50">

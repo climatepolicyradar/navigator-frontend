@@ -20,8 +20,6 @@ module.exports = {
       textDark: "#202020",
       textNormal: "#505050",
       accentLink: "#0171B8",
-      headingText: "#082C43",
-      subheadingText: "rgba(8, 44, 67, 0.64)",
       cpr: {
         dark: "#071e4a",
         banner: "#005EEB",
@@ -30,6 +28,11 @@ module.exports = {
         dark: "#2E3152",
         light: "#414466",
         molten: "#ED3D48",
+      },
+      mcf: {
+        blue: "#082C43",
+        iconBlue: "#0171B8",
+        blueOpacity64: "rgba(8, 44, 67, 0.64)",
       },
       gray: {
         25: "#FCFCFD",
@@ -90,6 +93,9 @@ module.exports = {
         "1/4-gap-4": "calc(25% - (3/4 * 1rem))",
         "1/6-gap-4": "calc(16.6% - (5/6 * 1rem))",
         maxContent: MAX_CONTENT_WIDTH,
+      },
+      fontFamily: {
+        greycliff: ["Greycliff", "sans-serif"],
       },
       letterSpacing: {
         slight: "0.015em",
