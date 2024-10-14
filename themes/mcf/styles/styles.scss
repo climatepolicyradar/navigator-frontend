@@ -80,18 +80,13 @@ option {
 .custom-header,
 h1.custom-header,
 h2.custom-header {
-  font-family: "Greycliff", sans-serif;
-  text-align: left;
-  color: #082c43;
+  @apply font-greycliff text-mcf-blue;
 }
 
 h1.custom-header {
-  letter-spacing: -0.01em;
+  @apply tracking-[-0.01em];
 }
 
 h2.custom-header {
-  letter-spacing: 0.04em;
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 24px;
+  @apply leading-6 font-bold tracking-[0.04em];
 }

@@ -20,8 +20,6 @@ module.exports = {
       textDark: "#202020",
       textNormal: "#505050",
       accentLink: "#0171B8",
-      headingText: "#082C43",
-      subheadingText: "rgba(8, 44, 67, 0.64)",
       cpr: {
         dark: "#071e4a",
         banner: "#005EEB",
@@ -34,6 +32,7 @@ module.exports = {
       mcf: {
         blue: "#082C43",
         iconBlue: "#0171B8",
+        blueOpacity64: "rgba(8, 44, 67, 0.64)",
       },
       gray: {
         25: "#FCFCFD",
