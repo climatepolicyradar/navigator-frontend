@@ -50,7 +50,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
   return (
     <>
       <form data-cy="search-form" ref={formRef} onSubmit={(e) => e.preventDefault()}>
-        <div className="max-w-screen-lg mx-auto flex items-stretch relative text-indigo-400 custom-background">
+        <div className="max-w-screen-lg mx-auto flex items-stretch relative text-indigo-400 custom-gradient-background">
           <input
             id="landingPage-searchInput-cclw"
             data-analytics="landingPage-searchInput"
@@ -71,12 +71,12 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
         </div>
       </form>
       <div className="hidden mt-4 md:flex flex-wrap items-center gap-2 justify-center">
-        <span className="text-headingText">Suggestions:</span>
+        <span className="text-mcf-blue">Suggestions:</span>
         {EXAMPLE_SEARCHES.map((example) => (
           <Button
             key={example.id}
             thin
-            color="mcf-custom"
+            color="clear-underline"
             onClick={() => handleSearchInput(example.term, example.filterType, example.filterValue)}
             data-cy={`example-search-${example.id}`}
           >
