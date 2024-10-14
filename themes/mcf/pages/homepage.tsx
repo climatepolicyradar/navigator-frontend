@@ -19,7 +19,7 @@ type TProps = {
 
 const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
   return (
-    <Layout title="Law and Policy Search">
+    <Layout title="Multilateral climate fund search">
       <main id="main" className="flex flex-col flex-1">
         <div>
           <Header background={false} />
