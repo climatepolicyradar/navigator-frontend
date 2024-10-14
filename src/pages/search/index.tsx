@@ -1,6 +1,7 @@
 import { useEffect, useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import { ParsedUrlQueryInput } from "querystring";
+import { MdOutlineTune } from "react-icons/md";
 
 import useSearch from "@hooks/useSearch";
 import { useDownloadCsv } from "@hooks/useDownloadCsv";
@@ -348,6 +349,7 @@ const Search = () => {
                   input={qQueryString ? qQueryString.toString() : ""}
                   handleSuggestion={handleSuggestion}
                 />
+                {/* <MdOutlineTune /> */}
               </div>
               {/* NON MOBILE SEARCH END */}
               <div className="lg:flex justify-between">
