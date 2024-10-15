@@ -127,9 +127,6 @@ const SearchFilters = ({
         <Pill onClick={handleClearFilter}>Long topic name</Pill>
         <Pill onClick={handleClearFilter}>United Kingdom</Pill>
       </div>
-      <div data-cy="exact-match">
-        <BySemanticSearch checked={searchCriteria.exact_match} handleSearchChange={handleSearchChange} />
-      </div>
 
       <Accordian title="Category" data-cy="categories" startOpen>
         <InputListContainer>

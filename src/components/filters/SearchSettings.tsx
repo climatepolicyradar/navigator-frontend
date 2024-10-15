@@ -1,0 +1,88 @@
+import { useEffect, useState } from "react";
+import { ParsedUrlQuery } from "querystring";
+
+import { SearchSettingsList } from "./SearchSettingsList";
+import { SearchSettingsItem } from "./SearchSettingsItem";
+
+import { QUERY_PARAMS } from "@constants/queryParams";
+import { sortOptions, sortOptionsBrowse } from "@constants/sortOptions";
+
+type TProps = {
+  queryParams: ParsedUrlQuery;
+  handleSortClick: (sortOption: string) => void;
+  handleSearchChange: (key: string, value: string) => void;
+};
+
+const getCurrentSortChoice = (queryParams: ParsedUrlQuery, isBrowsing: boolean) => {
+  const field = queryParams[QUERY_PARAMS.sort_field];
+  const order = queryParams[QUERY_PARAMS.sort_order];
+  if (field === undefined && order === undefined) {
+    if (isBrowsing) return "null";
+    return "relevance";
+  }
+  return `${field}:${order}`;
+};
+
+const getCurrentSemanticSearchChoice = (queryParams: ParsedUrlQuery) => {
+  const exactMatch = queryParams[QUERY_PARAMS.exact_match];
+  if (exactMatch === undefined) {
+    return "false";
+  }
+  return exactMatch as string;
+};
+
+export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChange }: TProps) => {
+  const [options, setOptions] = useState(sortOptions);
+
+  const isBrowsing = !queryParams[QUERY_PARAMS.query_string] || queryParams[QUERY_PARAMS.query_string]?.toString().trim() === "";
+
+  const handleSemanticSearchClick = (e: React.MouseEvent<HTMLAnchorElement>, value: string) => {
+    e.preventDefault();
+    handleSearchChange(QUERY_PARAMS.exact_match, value);
+  };
+
+  const handleSortOptionClick = (e: React.MouseEvent<HTMLAnchorElement>, sortOption: string) => {
+    e.preventDefault();
+    handleSortClick(sortOption);
+  };
+
+  useEffect(() => {
+    setOptions(isBrowsing ? sortOptionsBrowse : sortOptions);
+  }, [isBrowsing]);
+
+  return (
+    <div className="absolute top-full right-0 bg-nearBlack rounded-lg p-4 z-10 text-white text-sm w-[180px]">
+      {queryParams[QUERY_PARAMS.category]?.toString() !== "Litigation" && (
+        <>
+          <div className="border-b border-white/[0.24] pb-4 mb-4">
+            <SearchSettingsList data-cy="Semantic search" aria-label="Semantic search">
+              <SearchSettingsItem
+                onClick={(e) => handleSemanticSearchClick(e, "false")}
+                isActive={getCurrentSemanticSearchChoice(queryParams) === "false"}
+              >
+                Related phrases
+              </SearchSettingsItem>
+              <SearchSettingsItem
+                onClick={(e) => handleSemanticSearchClick(e, "true")}
+                isActive={getCurrentSemanticSearchChoice(queryParams) === "true"}
+              >
+                Exact phrases only
+              </SearchSettingsItem>
+            </SearchSettingsList>
+          </div>
+          <SearchSettingsList data-cy="sort" aria-label="Sort">
+            {options.map((item) => (
+              <SearchSettingsItem
+                key={item.value}
+                onClick={(e) => handleSortOptionClick(e, item.value)}
+                isActive={item.value === getCurrentSortChoice(queryParams, isBrowsing)}
+              >
+                {item.label}
+              </SearchSettingsItem>
+            ))}
+          </SearchSettingsList>
+        </>
+      )}
+    </div>
+  );
+};

@@ -1,4 +1,4 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ParsedUrlQueryInput } from "querystring";
 import { MdOutlineTune } from "react-icons/md";
@@ -18,7 +18,6 @@ import Layout from "@components/layouts/Main";
 import SearchForm from "@components/forms/SearchForm";
 import SearchFilters from "@components/blocks/SearchFilters";
 import Loader from "@components/Loader";
-import Sort from "@components/filters/Sort";
 import FilterToggle from "@components/buttons/FilterToggle";
 import Pagination from "@components/pagination";
 import Drawer from "@components/drawer/Drawer";
@@ -32,13 +31,15 @@ import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
 import { SubNav } from "@components/nav/SubNav";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
+import { SearchSettings } from "@components/filters/SearchSettings";
 
 const Search = () => {
   const router = useRouter();
   const qQueryString = router.query[QUERY_PARAMS.query_string];
-  const isBrowsing = !qQueryString || qQueryString?.toString().trim() === "";
+  // const isBrowsing = !qQueryString || qQueryString?.toString().trim() === "";
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
 
   const updateCountries = useUpdateCountries();
@@ -188,15 +189,14 @@ const Search = () => {
     resetCSVStatus();
   };
 
-  const handleSortClick = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleSortClick = (sortOption: string) => {
     // Reset pagination and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
-    const val = e.currentTarget.value;
 
     // No sort selected
-    if (val === "null") {
+    if (sortOption === "null") {
       delete router.query[QUERY_PARAMS.sort_field];
       delete router.query[QUERY_PARAMS.sort_order];
       router.push({ query: router.query });
@@ -206,8 +206,8 @@ const Search = () => {
 
     let field = null;
     let order = null;
-    if (val !== "relevance") {
-      const valArray = val.split(":");
+    if (sortOption !== "relevance") {
+      const valArray = sortOption.split(":");
       field = valArray[0];
       order = valArray[1];
     }
@@ -237,16 +237,6 @@ const Search = () => {
       return router.push({ query: { [QUERY_PARAMS.query_string]: previousSearchQuery } });
     }
     return router.push({ query: {} });
-  };
-
-  const getCurrentSortChoice = () => {
-    const field = router.query[QUERY_PARAMS.sort_field];
-    const order = router.query[QUERY_PARAMS.sort_order];
-    if (field === undefined && order === undefined) {
-      if (isBrowsing) return "null";
-      return "relevance";
-    }
-    return `${field}:${order}`;
   };
 
   const handleDownloadCsvClick = () => {
@@ -343,13 +333,22 @@ const Search = () => {
             <div>
               {/* NON MOBILE SEARCH */}
               <div className="hidden md:block mb-4">
-                <SearchForm
-                  placeholder={placeholder}
-                  handleSearchInput={handleSearchInput}
-                  input={qQueryString ? qQueryString.toString() : ""}
-                  handleSuggestion={handleSuggestion}
-                />
-                {/* <MdOutlineTune /> */}
+                <div className="flex gap-3">
+                  <div className="flex-1">
+                    <SearchForm
+                      placeholder={placeholder}
+                      handleSearchInput={handleSearchInput}
+                      input={qQueryString ? qQueryString.toString() : ""}
+                      handleSuggestion={handleSuggestion}
+                    />
+                  </div>
+                  <div className="relative flex justify-center">
+                    <button className="px-4 flex justify-center items-center text-textDark text-xl">
+                      <MdOutlineTune />
+                    </button>
+                    <SearchSettings queryParams={router.query} handleSortClick={handleSortClick} handleSearchChange={handleSearchChange} />
+                  </div>
+                </div>
               </div>
               {/* NON MOBILE SEARCH END */}
               <div className="lg:flex justify-between">
@@ -389,23 +388,14 @@ const Search = () => {
                   <Loader />
                 </div>
               ) : (
-                <>
-                  <div className="flex justify-end">
-                    {router.query[QUERY_PARAMS.category]?.toString() !== "Litigation" && (
-                      <div>
-                        <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
-                      </div>
-                    )}
-                  </div>
-                  <div data-cy="search-results">
-                    <SearchResultList
-                      category={router.query[QUERY_PARAMS.category]?.toString()}
-                      families={families}
-                      onClick={handleMatchesButtonClick}
-                      activeFamilyIndex={drawerFamily}
-                    />
-                  </div>
-                </>
+                <div data-cy="search-results">
+                  <SearchResultList
+                    category={router.query[QUERY_PARAMS.category]?.toString()}
+                    families={families}
+                    onClick={handleMatchesButtonClick}
+                    activeFamilyIndex={drawerFamily}
+                  />
+                </div>
               )}
             </div>
             {hits > 1 && (
