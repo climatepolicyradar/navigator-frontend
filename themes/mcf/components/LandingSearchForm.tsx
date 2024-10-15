@@ -50,23 +50,19 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
   return (
     <>
       <form data-cy="search-form" ref={formRef} onSubmit={(e) => e.preventDefault()}>
-        <div className="max-w-screen-lg mx-auto flex items-stretch relative text-indigo-400">
+        <div className="max-w-screen-lg mx-auto flex items-stretch relative text-indigo-400 custom-gradient-background">
           <input
             id="landingPage-searchInput-cclw"
             data-analytics="landingPage-searchInput"
             data-cy="search-input"
             type="search"
-            className="text-xl leading-5 py-3 h-[48px] pl-6 pr-3 mr-[72px] w-full text-cpr-dark focus:ring-0 rounded-l-4xl border-blue-500"
+            className="text-xl leading-5 py-3 h-[50px] px-6 w-full text-gray-800 focus:ring-0 rounded-full border-none"
             value={term}
             onChange={onChange}
             placeholder={displayPlaceholder}
             aria-label="Search term"
           />
-          <button
-            className="absolute right-0 h-full px-6 text-white bg-blue-400 rounded-r-4xl hover:bg-blue-300 active:bg-blue-700"
-            onClick={() => handleSearchInput(term)}
-            aria-label="Search"
-          >
+          <button className="custom-search-button" onClick={() => handleSearchInput(term)} aria-label="Search">
             <span className="block">
               <Search2Icon height="24" width="24" />
             </span>
@@ -75,12 +71,12 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
         </div>
       </form>
       <div className="hidden mt-4 md:flex flex-wrap items-center gap-2 justify-center">
-        <span className="text-blue-500">Suggestions:</span>
+        <span className="text-mcf-blue">Suggestions:</span>
         {EXAMPLE_SEARCHES.map((example) => (
           <Button
             key={example.id}
             thin
-            color="dark"
+            color="clear-underline"
             onClick={() => handleSearchInput(example.term, example.filterType, example.filterValue)}
             data-cy={`example-search-${example.id}`}
           >
