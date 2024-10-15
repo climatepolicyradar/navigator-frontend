@@ -1,6 +1,6 @@
 import React from "react";
 
-type TButtonColours = "light" | "clear" | "ghost" | "secondary" | "dark" | "dark-dark";
+type TButtonColours = "light" | "clear" | "ghost" | "secondary" | "dark" | "dark-dark" | "clear-underline";
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -47,6 +47,9 @@ export const getButtonClasses = (
       classes += !disabled
         ? "clear bg-transparent border border-gray-300 hover:border-gray-600 text-gray-600 disabled:border-gray-300 disabled:text-gray-300 disabled:hover:bg-white"
         : "";
+      break;
+    case "clear-underline":
+      classes += "bg-transparent text-sm text-gray-500 hover:bg-gray-100 !underline";
       break;
   }
   classes += " " + (thin ? "py-1" : "py-2");
