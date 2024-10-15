@@ -2,7 +2,7 @@ import { CloseIcon } from "./svg/Icons";
 import { ToolTipSSR } from "@components/tooltip/TooltipSSR";
 
 type TProps = {
-  onClick: () => void;
+  onClick?: () => void;
   children: React.ReactNode;
 };
 

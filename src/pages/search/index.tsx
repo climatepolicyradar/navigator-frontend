@@ -324,7 +324,6 @@ const Search = () => {
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
                 handleClearSearch={handleClearSearch}
-                handleSearchChange={handleSearchChange}
                 handleDocumentCategoryClick={handleDocumentCategoryClick}
               />
             )}
@@ -344,7 +343,6 @@ const Search = () => {
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
                 handleClearSearch={handleClearSearch}
-                handleSearchChange={handleSearchChange}
                 handleDocumentCategoryClick={handleDocumentCategoryClick}
               />
             )}

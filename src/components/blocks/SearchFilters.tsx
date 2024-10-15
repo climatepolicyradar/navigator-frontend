@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import MultiList from "../filters/MultiList";
 import Tooltip from "@components/tooltip";
-import Pill from "@components/Pill";
 import { ExternalLink } from "@components/ExternalLink";
 import { DateRange } from "../filters/DateRange";
 import { Accordian } from "@components/accordian/Accordian";
@@ -10,6 +8,7 @@ import { InputListContainer } from "@components/filters/InputListContainer";
 import { TypeAhead } from "../forms/TypeAhead";
 import { InputCheck } from "@components/forms/Checkbox";
 import { InputRadio } from "@components/forms/Radio";
+import { AppliedFilters } from "@components/filters/AppliedFilters";
 
 import { currentYear, minYear } from "@constants/timedate";
 import { QUERY_PARAMS } from "@constants/queryParams";
@@ -54,7 +53,6 @@ type TSearchFiltersProps = {
   handleYearChange(values: number[], reset?: boolean): void;
   handleRegionChange(region: string): void;
   handleClearSearch(): void;
-  handleSearchChange(type: string, value: string): void;
   handleDocumentCategoryClick(value: string): void;
 };
 
@@ -66,7 +64,6 @@ const SearchFilters = ({
   handleYearChange,
   handleRegionChange,
   handleClearSearch,
-  handleSearchChange,
   handleDocumentCategoryClick,
 }: TSearchFiltersProps) => {
   const [showClear, setShowClear] = useState(false);
@@ -76,10 +73,6 @@ const SearchFilters = ({
   } = searchCriteria;
 
   const thisYear = currentYear();
-
-  const handleClearFilter = () => {
-    return false;
-  };
 
   // Show clear button if there are filters applied
   useEffect(() => {
@@ -119,10 +112,7 @@ const SearchFilters = ({
         )}
       </div>
       <div className="flex flex-wrap gap-2" data-cy="applied-filters">
-        {/* TODO: Add logic to display applied filters */}
-        <Pill onClick={handleClearFilter}>Europe</Pill>
-        <Pill onClick={handleClearFilter}>Long topic name</Pill>
-        <Pill onClick={handleClearFilter}>United Kingdom</Pill>
+        <AppliedFilters filterChange={handleFilterChange} />
       </div>
 
       <Accordian title="Category" data-cy="categories" startOpen>
@@ -165,9 +155,6 @@ const SearchFilters = ({
             filterType={QUERY_PARAMS.country}
             handleFilterChange={handleFilterChange}
           />
-          {/* {countryFilters.length > 0 && (
-            <MultiList list={countryFilters} removeFilter={handleFilterChange} type={QUERY_PARAMS.country} dataCy="selected-countries" />
-          )} */}
         </InputListContainer>
       </Accordian>
 
