@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ParsedUrlQuery } from "querystring";
 
 import { SearchSettingsList } from "./SearchSettingsList";
@@ -11,6 +11,7 @@ type TProps = {
   queryParams: ParsedUrlQuery;
   handleSortClick: (sortOption: string) => void;
   handleSearchChange: (key: string, value: string) => void;
+  setShowOptions?: (value: boolean) => void;
 };
 
 const getCurrentSortChoice = (queryParams: ParsedUrlQuery, isBrowsing: boolean) => {
@@ -31,7 +32,8 @@ const getCurrentSemanticSearchChoice = (queryParams: ParsedUrlQuery) => {
   return exactMatch as string;
 };
 
-export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChange }: TProps) => {
+export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChange, setShowOptions }: TProps) => {
+  const searchOptionsRef = useRef(null);
   const [options, setOptions] = useState(sortOptions);
 
   const isBrowsing = !queryParams[QUERY_PARAMS.query_string] || queryParams[QUERY_PARAMS.query_string]?.toString().trim() === "";
@@ -50,8 +52,21 @@ export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChang
     setOptions(isBrowsing ? sortOptionsBrowse : sortOptions);
   }, [isBrowsing]);
 
+  // Clicking outside the search options will close them
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchOptionsRef.current && !searchOptionsRef.current.contains(event.target)) {
+        setShowOptions && setShowOptions(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [searchOptionsRef, setShowOptions]);
+
   return (
-    <div className="absolute top-full right-0 bg-nearBlack rounded-lg p-4 z-10 text-white text-sm w-[180px]">
+    <div className="absolute top-full right-0 bg-nearBlack rounded-lg p-4 z-10 text-white text-sm w-[180px]" ref={searchOptionsRef}>
       {queryParams[QUERY_PARAMS.category]?.toString() !== "Litigation" && (
         <>
           <div className="border-b border-white/[0.24] pb-4 mb-4">

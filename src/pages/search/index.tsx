@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { ParsedUrlQueryInput } from "querystring";
+import { motion, AnimatePresence } from "framer-motion";
 import { MdOutlineTune } from "react-icons/md";
 
 import useSearch from "@hooks/useSearch";
@@ -36,7 +37,6 @@ import { SearchSettings } from "@components/filters/SearchSettings";
 const Search = () => {
   const router = useRouter();
   const qQueryString = router.query[QUERY_PARAMS.query_string];
-  // const isBrowsing = !qQueryString || qQueryString?.toString().trim() === "";
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
@@ -342,11 +342,32 @@ const Search = () => {
                       handleSuggestion={handleSuggestion}
                     />
                   </div>
-                  <div className="relative flex justify-center">
-                    <button className="px-4 flex justify-center items-center text-textDark text-xl">
+                  <div className="relative z-10 flex justify-center">
+                    <button className="px-4 flex justify-center items-center text-textDark text-xl" onClick={() => setShowOptions(!showOptions)}>
                       <MdOutlineTune />
                     </button>
-                    <SearchSettings queryParams={router.query} handleSortClick={handleSortClick} handleSearchChange={handleSearchChange} />
+                    <AnimatePresence initial={false}>
+                      {showOptions && (
+                        <motion.section
+                          key="content"
+                          initial="collapsed"
+                          animate="open"
+                          exit="collapsed"
+                          variants={{
+                            collapsed: { opacity: 0 },
+                            open: { opacity: 1 },
+                          }}
+                          transition={{ duration: 0.35, ease: [0.04, 0.62, 0.23, 0.98] }}
+                        >
+                          <SearchSettings
+                            queryParams={router.query}
+                            handleSortClick={handleSortClick}
+                            handleSearchChange={handleSearchChange}
+                            setShowOptions={setShowOptions}
+                          />
+                        </motion.section>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
               </div>
@@ -382,7 +403,7 @@ const Search = () => {
               </div>
             </div>
 
-            <div className="mt-4 relative">
+            <div className="mt-4">
               {status === "loading" ? (
                 <div className="w-full flex justify-center h-96">
                   <Loader />
