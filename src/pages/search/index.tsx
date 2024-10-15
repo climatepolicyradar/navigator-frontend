@@ -348,16 +348,15 @@ const Search = () => {
                     </button>
                     <AnimatePresence initial={false}>
                       {showOptions && (
-                        <motion.section
+                        <motion.div
                           key="content"
                           initial="collapsed"
                           animate="open"
                           exit="collapsed"
                           variants={{
-                            collapsed: { opacity: 0 },
-                            open: { opacity: 1 },
+                            collapsed: { opacity: 0, transition: { duration: 0.1 } },
+                            open: { opacity: 1, transition: { duration: 0.25 } },
                           }}
-                          transition={{ duration: 0.35, ease: [0.04, 0.62, 0.23, 0.98] }}
                         >
                           <SearchSettings
                             queryParams={router.query}
@@ -365,7 +364,7 @@ const Search = () => {
                             handleSearchChange={handleSearchChange}
                             setShowOptions={setShowOptions}
                           />
-                        </motion.section>
+                        </motion.div>
                       )}
                     </AnimatePresence>
                   </div>

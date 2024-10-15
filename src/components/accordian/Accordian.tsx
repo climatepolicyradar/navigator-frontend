@@ -22,7 +22,7 @@ export const Accordian = ({ title, startOpen = false, children, ...props }: TPro
       </div>
       <AnimatePresence initial={false}>
         {isOpen && (
-          <motion.section
+          <motion.div
             key="content"
             initial="collapsed"
             animate="open"
@@ -39,7 +39,7 @@ export const Accordian = ({ title, startOpen = false, children, ...props }: TPro
                 <span className="h-[34px] sticky block bottom-0 w-full bg-gradient-to-b from-transparent to-white"></span>
               </>
             </div>
-          </motion.section>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
