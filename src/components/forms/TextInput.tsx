@@ -1,6 +1,5 @@
-import { useState } from "react";
-
 type TProps = {
+  value?: string;
   type?: string;
   className?: string;
   placeholder?: string;
@@ -20,11 +19,18 @@ const iconClasses = (side: "left" | "right", children?: React.ReactNode) => {
   }
 };
 
-export const TextInput = ({ type = "text", size = "default", className = "", placeholder, onChange, children, side = "left", ...props }: TProps) => {
-  const [input, setInput] = useState("");
-
+export const TextInput = ({
+  value = "",
+  type = "text",
+  size = "default",
+  className = "",
+  placeholder,
+  onChange,
+  children,
+  side = "left",
+  ...props
+}: TProps) => {
   const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
-    setInput(e.currentTarget.value);
     if (onChange) {
       onChange(e.currentTarget.value);
     }
@@ -35,7 +41,7 @@ export const TextInput = ({ type = "text", size = "default", className = "", pla
       {side === "left" && <span className="input-icon icon-left">{children}</span>}
       <input
         type={type}
-        value={input}
+        value={value}
         onChange={handleChange}
         className={` ${size} ${iconClasses(side, children)} ${className}`}
         placeholder={placeholder}

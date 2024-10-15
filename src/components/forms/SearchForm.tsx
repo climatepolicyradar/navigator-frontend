@@ -60,6 +60,7 @@ const SearchForm = ({ input, placeholder, handleSearchInput, handleSuggestion }:
       <div className="relative z-40">
         <div className="relative z-20">
           <TextInput
+            value={term}
             onChange={onChange}
             data-cy="search-input"
             data-analytics="seachPage-searchInput"

@@ -44,6 +44,7 @@ export const TypeAhead = ({ list, selectedList, keyField, keyFieldDisplay, filte
             : ""
         }
         onChange={handleChange}
+        value={input}
         placeholder="Start typing..."
         aria-label="Search for a jurisdiction"
       >
