@@ -5,7 +5,7 @@ import Layout from "@components/layouts/LandingPage";
 import { FullWidth } from "@components/panels/FullWidth";
 import { Heading } from "@components/typography/Heading";
 
-import { Header, Footer, Hero, ClimatePolicyRadarBannerHolder } from "@mcf/components";
+import { Header, Footer, Hero, ClimatePolicyRadarBanner } from "@mcf/components";
 
 const WorldMap = dynamic(() => import("@components/map/WorldMap"), {
   loading: () => <p>Loading world map...</p>,
@@ -32,7 +32,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
           <WorldMap />
         </FullWidth>
 
-        <ClimatePolicyRadarBannerHolder />
+        <ClimatePolicyRadarBanner />
         <Footer />
       </main>
     </Layout>
