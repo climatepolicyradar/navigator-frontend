@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ParsedUrlQueryInput } from "querystring";
 import { motion, AnimatePresence } from "framer-motion";
@@ -278,6 +278,26 @@ const Search = () => {
       <section>
         <SubNav>
           <BreadCrumbs label={"Search results"} />
+          <div>
+            <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
+              <span>Download data (.csv): </span>
+              <a
+                href="#"
+                className="flex gap-2 items-center justify-end"
+                data-cy="download-search-csv"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowCSVDownloadPopup(true);
+                }}
+              >
+                {downloadCSVStatus === "loading" ? <Loading /> : "this search"}
+              </a>
+              <span>|</span>
+              <ExternalLink url="https://form.jotform.com/233131638610347" cy="download-entire-search-csv">
+                whole database
+              </ExternalLink>
+            </span>
+          </div>
         </SubNav>
         {/* MOBILE ONLY */}
         <SiteWidth extraClasses="md:hidden">
@@ -371,28 +391,10 @@ const Search = () => {
                 </div>
               </div>
               {/* NON MOBILE SEARCH END */}
-              <div className="lg:flex justify-between">
+              <div>
                 <div className="text-xs my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
                   {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
                 </div>
-                <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
-                  <span>Download data (.csv): </span>
-                  <a
-                    href="#"
-                    className="flex gap-2 items-center justify-end"
-                    data-cy="download-search-csv"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setShowCSVDownloadPopup(true);
-                    }}
-                  >
-                    {downloadCSVStatus === "loading" ? <Loading /> : "this search"}
-                  </a>
-                  <span>|</span>
-                  <ExternalLink url="https://form.jotform.com/233131638610347" cy="download-entire-search-csv">
-                    whole database
-                  </ExternalLink>
-                </span>
               </div>
               <div className="text-sm md:text-right">
                 {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
