@@ -158,7 +158,7 @@ const SearchFilters = ({
         </InputListContainer>
       </Accordian>
 
-      <Accordian title="Published jurisdiction" data-cy="countries">
+      <Accordian title="Published jurisdiction" data-cy="countries" overflowOverride>
         <InputListContainer>
           <TypeAhead
             list={filteredCountries}

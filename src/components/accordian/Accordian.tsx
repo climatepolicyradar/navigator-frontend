@@ -8,10 +8,11 @@ import { AccordianCloseIcon, AccordianOpenIcon } from "@components/svg/Icons";
 type TProps = {
   title: string;
   startOpen?: boolean;
+  overflowOverride?: boolean;
   children: React.ReactNode;
 };
 
-export const Accordian = ({ title, startOpen = false, children, ...props }: TProps) => {
+export const Accordian = ({ title, startOpen = false, overflowOverride, children, ...props }: TProps) => {
   const [isOpen, setIsOpen] = useState(startOpen);
 
   return (
@@ -33,7 +34,13 @@ export const Accordian = ({ title, startOpen = false, children, ...props }: TPro
             }}
             transition={{ duration: 0.35, ease: [0.04, 0.62, 0.23, 0.98] }}
           >
-            <div className="relative max-h-[300px] overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
+            <div
+              className={`relative max-h-[300px] ${
+                overflowOverride
+                  ? "overflow-visible"
+                  : "overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500"
+              } `}
+            >
               <>
                 {children}
                 <span className="h-[34px] sticky block bottom-0 w-full bg-gradient-to-b from-transparent to-white"></span>
