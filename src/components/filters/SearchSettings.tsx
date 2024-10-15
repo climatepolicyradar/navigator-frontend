@@ -9,8 +9,8 @@ import { sortOptions, sortOptionsBrowse } from "@constants/sortOptions";
 
 type TProps = {
   queryParams: ParsedUrlQuery;
-  handleSortClick: (sortOption: string) => void;
-  handleSearchChange: (key: string, value: string) => void;
+  handleSortClick?: (sortOption: string) => void;
+  handleSearchChange?: (key: string, value: string) => void;
   setShowOptions?: (value: boolean) => void;
 };
 
@@ -40,12 +40,12 @@ export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChang
 
   const handleSemanticSearchClick = (e: React.MouseEvent<HTMLAnchorElement>, value: string) => {
     e.preventDefault();
-    handleSearchChange(QUERY_PARAMS.exact_match, value);
+    if (handleSearchChange) handleSearchChange(QUERY_PARAMS.exact_match, value);
   };
 
   const handleSortOptionClick = (e: React.MouseEvent<HTMLAnchorElement>, sortOption: string) => {
     e.preventDefault();
-    handleSortClick(sortOption);
+    if (handleSortClick) handleSortClick(sortOption);
   };
 
   useEffect(() => {
@@ -69,33 +69,37 @@ export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChang
     <div className="absolute top-full right-0 bg-nearBlack rounded-lg p-4 z-10 text-white text-sm w-[180px]" ref={searchOptionsRef}>
       {queryParams[QUERY_PARAMS.category]?.toString() !== "Litigation" && (
         <>
-          <div className="border-b border-white/[0.24] pb-4 mb-4">
-            <SearchSettingsList data-cy="Semantic search" aria-label="Semantic search">
-              <SearchSettingsItem
-                onClick={(e) => handleSemanticSearchClick(e, "false")}
-                isActive={getCurrentSemanticSearchChoice(queryParams) === "false"}
-              >
-                Related phrases
-              </SearchSettingsItem>
-              <SearchSettingsItem
-                onClick={(e) => handleSemanticSearchClick(e, "true")}
-                isActive={getCurrentSemanticSearchChoice(queryParams) === "true"}
-              >
-                Exact phrases only
-              </SearchSettingsItem>
+          {handleSearchChange && (
+            <div className={`${handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
+              <SearchSettingsList data-cy="Semantic search" aria-label="Semantic search">
+                <SearchSettingsItem
+                  onClick={(e) => handleSemanticSearchClick(e, "false")}
+                  isActive={getCurrentSemanticSearchChoice(queryParams) === "false"}
+                >
+                  Related phrases
+                </SearchSettingsItem>
+                <SearchSettingsItem
+                  onClick={(e) => handleSemanticSearchClick(e, "true")}
+                  isActive={getCurrentSemanticSearchChoice(queryParams) === "true"}
+                >
+                  Exact phrases only
+                </SearchSettingsItem>
+              </SearchSettingsList>
+            </div>
+          )}
+          {handleSortClick && (
+            <SearchSettingsList data-cy="sort" aria-label="Sort">
+              {options.map((item) => (
+                <SearchSettingsItem
+                  key={item.value}
+                  onClick={(e) => handleSortOptionClick(e, item.value)}
+                  isActive={item.value === getCurrentSortChoice(queryParams, isBrowsing)}
+                >
+                  {item.label}
+                </SearchSettingsItem>
+              ))}
             </SearchSettingsList>
-          </div>
-          <SearchSettingsList data-cy="sort" aria-label="Sort">
-            {options.map((item) => (
-              <SearchSettingsItem
-                key={item.value}
-                onClick={(e) => handleSortOptionClick(e, item.value)}
-                isActive={item.value === getCurrentSortChoice(queryParams, isBrowsing)}
-              >
-                {item.label}
-              </SearchSettingsItem>
-            ))}
-          </SearchSettingsList>
+          )}
         </>
       )}
     </div>

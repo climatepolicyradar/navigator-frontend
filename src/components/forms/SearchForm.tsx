@@ -4,14 +4,15 @@ import { SearchDropdown } from "./SearchDropdown";
 import { TextInput } from "./TextInput";
 import { Search2Icon } from "@components/svg/Icons";
 
-interface SearchFormProps {
+type TProps = {
   input?: string;
   placeholder: string;
+  size?: "small" | "large" | "default";
   handleSearchInput(term: string): void;
   handleSuggestion?(term: string, filter?: string, filterValue?: string): void;
-}
+};
 
-const SearchForm = ({ input, placeholder, handleSearchInput, handleSuggestion }: SearchFormProps) => {
+const SearchForm = ({ input, placeholder, size = "large", handleSearchInput, handleSuggestion }: TProps) => {
   const [term, setTerm] = useState("");
   const [formFocus, setFormFocus] = useState(false);
   const formRef = useRef(null);
@@ -66,7 +67,7 @@ const SearchForm = ({ input, placeholder, handleSearchInput, handleSuggestion }:
             data-analytics="seachPage-searchInput"
             placeholder={placeholder}
             type="search"
-            size="large"
+            size={size}
           >
             <button type="submit" className="flex cursor-pointer text-textDark" onClick={() => handleSearchButtonClick()} title="Click to search">
               <Search2Icon width="20" height="20" />
