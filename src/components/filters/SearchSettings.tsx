@@ -67,6 +67,7 @@ export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChang
 
   return (
     <div className="absolute top-full right-0 bg-nearBlack rounded-lg p-4 z-10 text-white text-sm w-[180px]" ref={searchOptionsRef}>
+      {queryParams[QUERY_PARAMS.category]?.toString() === "Litigation" && <p>No filters available</p>}
       {queryParams[QUERY_PARAMS.category]?.toString() !== "Litigation" && (
         <>
           {handleSearchChange && (
