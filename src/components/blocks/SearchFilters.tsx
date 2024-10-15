@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from "react";
 
-import BySelect from "../filters/BySelect";
 import MultiList from "../filters/MultiList";
-import ByDateRange from "../filters/ByDateRange";
-import BySemanticSearch from "@components/filters/BySemanticSearch";
 import Tooltip from "@components/tooltip";
-import { ExternalLink } from "@components/ExternalLink";
 import Pill from "@components/Pill";
+import { ExternalLink } from "@components/ExternalLink";
+import { DateRange } from "../filters/DateRange";
 import { Accordian } from "@components/accordian/Accordian";
 import { InputListContainer } from "@components/filters/InputListContainer";
 import { TypeAhead } from "../forms/TypeAhead";
 import { InputCheck } from "@components/forms/Checkbox";
 import { InputRadio } from "@components/forms/Radio";
-
-import { sortGeos } from "@utils/sorting";
 
 import { currentYear, minYear } from "@constants/timedate";
 import { QUERY_PARAMS } from "@constants/queryParams";
@@ -85,6 +81,7 @@ const SearchFilters = ({
     return false;
   };
 
+  // Show clear button if there are filters applied
   useEffect(() => {
     if (searchCriteria.year_range[0] !== minYear || searchCriteria.year_range[1] !== thisYear) {
       setShowClear(true);
@@ -175,14 +172,7 @@ const SearchFilters = ({
       </Accordian>
 
       <Accordian title="Date" data-cy="date-range">
-        <ByDateRange
-          type="year_range"
-          handleChange={handleYearChange}
-          defaultValues={searchCriteria.year_range}
-          min={minYear}
-          max={thisYear}
-          clear={showClear}
-        />
+        <DateRange type="year_range" handleChange={handleYearChange} defaultValues={searchCriteria.year_range} min={minYear} max={thisYear} />
       </Accordian>
 
       <div className="my-5 pt-5 border-t" data-cy="methodology-notice">

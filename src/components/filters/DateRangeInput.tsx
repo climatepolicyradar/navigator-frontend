@@ -8,7 +8,7 @@ type TProps = {
   handleChange(value: number): void;
 };
 
-const DateRangeInput = ({ label, name, value, handleSubmit, handleChange }: TProps) => {
+export const DateRangeInput = ({ label, name, value, handleSubmit, handleChange }: TProps) => {
   const onBlur = () => {
     handleSubmit(Number(value), name);
   };
@@ -34,4 +34,3 @@ const DateRangeInput = ({ label, name, value, handleSubmit, handleChange }: TPro
     </InputListContainer>
   );
 };
-export default DateRangeInput;

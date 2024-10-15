@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
-import DateRangeInput from "./DateRangeInput";
-import DateRangeOption from "./DateRangeOption";
+import { DateRangeInput } from "./DateRangeInput";
 import { FormError } from "../forms/FormError";
 import { InputListContainer } from "@components/filters/InputListContainer";
-import { InputCheck } from "@components/forms/Checkbox";
 import { InputRadio } from "@components/forms/Radio";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { currentYear, minYear } from "../../constants/timedate";
+import { currentYear } from "../../constants/timedate";
 
 interface ByDateRangeProps {
   type: string;
@@ -17,10 +15,9 @@ interface ByDateRangeProps {
   defaultValues: number[];
   min: number;
   max: number;
-  clear: boolean;
 }
 
-const ByDateRange = ({ handleChange, defaultValues, min, max, clear }: ByDateRangeProps) => {
+export const DateRange = ({ handleChange, defaultValues, min, max }: ByDateRangeProps) => {
   const router = useRouter();
   const [startYear, endYear] = defaultValues;
   const [showDateInput, setShowDateInput] = useState(false);
@@ -119,5 +116,3 @@ const ByDateRange = ({ handleChange, defaultValues, min, max, clear }: ByDateRan
     </InputListContainer>
   );
 };
-
-export default ByDateRange;
