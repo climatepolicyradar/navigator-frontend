@@ -133,6 +133,18 @@ const Search = () => {
 
     if (queryCollection.includes(value)) {
       queryCollection = queryCollection.filter((item) => item !== value);
+      // If we are removing a sort field, we should also remove the sort order
+      // and visa versa
+      if (type === QUERY_PARAMS.sort_field) {
+        delete router.query[QUERY_PARAMS.sort_order];
+      }
+      if (type === QUERY_PARAMS.sort_order) {
+        delete router.query[QUERY_PARAMS.sort_field];
+      }
+      // If we are removing a year range, we should also remove the other year range
+      if (type === QUERY_PARAMS.year_range) {
+        queryCollection = [];
+      }
     } else {
       queryCollection.push(value);
     }
@@ -402,7 +414,7 @@ const Search = () => {
               </div>
             </div>
 
-            <div className="mt-4">
+            <div className="mt-10">
               {status === "loading" ? (
                 <div className="w-full flex justify-center h-96">
                   <Loader />
