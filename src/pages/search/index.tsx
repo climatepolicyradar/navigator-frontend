@@ -6,9 +6,7 @@ import { MdOutlineTune } from "react-icons/md";
 
 import useSearch from "@hooks/useSearch";
 import { useDownloadCsv } from "@hooks/useDownloadCsv";
-import useUpdateCountries from "@hooks/useUpdateCountries";
 import useConfig from "@hooks/useConfig";
-import useFilteredCountries from "@hooks/useFilteredCountries";
 
 import { SiteWidth } from "@components/panels/SiteWidth";
 import { SingleCol } from "@components/panels/SingleCol";
@@ -42,13 +40,10 @@ const Search = () => {
   const [showOptions, setShowOptions] = useState(false);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
 
-  const updateCountries = useUpdateCountries();
-
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
   const configQuery = useConfig();
   const { data: { regions = [], countries = [] } = {} } = configQuery;
-  const { data: filteredCountries } = useFilteredCountries(countries);
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 
@@ -331,7 +326,7 @@ const Search = () => {
               <SearchFilters
                 searchCriteria={searchQuery}
                 regions={regions}
-                filteredCountries={filteredCountries}
+                filteredCountries={countries}
                 handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
@@ -350,7 +345,7 @@ const Search = () => {
               <SearchFilters
                 searchCriteria={searchQuery}
                 regions={regions}
-                filteredCountries={filteredCountries}
+                filteredCountries={countries}
                 handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}

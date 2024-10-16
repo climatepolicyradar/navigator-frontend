@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 import Tooltip from "@components/tooltip";
 import { ExternalLink } from "@components/ExternalLink";
@@ -16,6 +16,7 @@ import { DOCUMENT_CATEGORIES, TDocumentCategory } from "@constants/documentCateg
 import { LAWS, POLICIES, UNFCCC, LITIGATION } from "@constants/categoryAliases";
 
 import { TGeography, TSearchCriteria } from "@types";
+import { getCountriesFromRegions } from "@helpers/getCountriesFromRegions";
 
 const { default: MethodologyLink } = await import(`/themes/${process.env.THEME}/components/MethodologyLink`);
 
@@ -73,6 +74,11 @@ const SearchFilters = ({
   } = searchCriteria;
 
   const thisYear = currentYear();
+
+  // memoize the filtered countries
+  const availableCountries = useMemo(() => {
+    return getCountriesFromRegions({ regions, countries: filteredCountries, selectedRegions: regionFilters });
+  }, [regionFilters, regions, filteredCountries]);
 
   // Show clear button if there are filters applied
   useEffect(() => {
@@ -148,7 +154,7 @@ const SearchFilters = ({
       <Accordian title="Published jurisdiction" data-cy="countries" overflowOverride>
         <InputListContainer>
           <TypeAhead
-            list={filteredCountries}
+            list={availableCountries}
             selectedList={countryFilters}
             keyField="slug"
             keyFieldDisplay="display_value"
