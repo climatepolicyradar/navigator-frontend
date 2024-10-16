@@ -49,7 +49,7 @@ const isCategoryChecked = (selectedCatgeory: string, category: TDocumentCategory
 type TSearchFiltersProps = {
   searchCriteria: TSearchCriteria;
   regions: TGeography[];
-  filteredCountries: TGeography[];
+  countries: TGeography[];
   handleFilterChange(type: string, value: string): void;
   handleYearChange(values: number[], reset?: boolean): void;
   handleRegionChange(region: string): void;
@@ -60,7 +60,7 @@ type TSearchFiltersProps = {
 const SearchFilters = ({
   searchCriteria,
   regions,
-  filteredCountries,
+  countries,
   handleFilterChange,
   handleYearChange,
   handleRegionChange,
@@ -77,8 +77,8 @@ const SearchFilters = ({
 
   // memoize the filtered countries
   const availableCountries = useMemo(() => {
-    return getCountriesFromRegions({ regions, countries: filteredCountries, selectedRegions: regionFilters });
-  }, [regionFilters, regions, filteredCountries]);
+    return getCountriesFromRegions({ regions, countries, selectedRegions: regionFilters });
+  }, [regionFilters, regions, countries]);
 
   // Show clear button if there are filters applied
   useEffect(() => {

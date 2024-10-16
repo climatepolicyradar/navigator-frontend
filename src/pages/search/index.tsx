@@ -326,7 +326,7 @@ const Search = () => {
               <SearchFilters
                 searchCriteria={searchQuery}
                 regions={regions}
-                filteredCountries={countries}
+                countries={countries}
                 handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
@@ -345,7 +345,7 @@ const Search = () => {
               <SearchFilters
                 searchCriteria={searchQuery}
                 regions={regions}
-                filteredCountries={countries}
+                countries={countries}
                 handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
