@@ -22,44 +22,6 @@ export type TSearchCriteria = {
   continuation_tokens?: string[] | null;
 };
 
-type TErrorDetail = {
-  loc: string[];
-  msg: string;
-  type: string;
-};
-
-export type TError = {
-  detail: TErrorDetail[];
-};
-
-export type TDocumentType = {
-  id: number;
-  name: string;
-  description: string;
-};
-
-export type TMeta = {
-  description: string;
-  id: number;
-  name: string;
-  parent_id?: number;
-  source_id: number;
-};
-
-export type TSector = {
-  description: string;
-  id: number;
-  name: string;
-  parent_id?: number;
-  source_id: number;
-};
-
-export type TRedirect = {
-  source: string;
-  destination: string;
-  permanent: boolean;
-};
-
 export type TPassageBlockCoords = [number, number];
 
 export type TPassage = {
@@ -67,27 +29,6 @@ export type TPassage = {
   text_block_coords: TPassageBlockCoords[];
   text_block_id: string;
   text_block_page: number;
-};
-
-export type TDocument = {
-  document_category: TEventCategory;
-  document_content_type: string;
-  document_geography: string;
-  document_country_english_shortname: string;
-  document_date: string;
-  document_description: string;
-  document_description_match: boolean;
-  document_slug: string;
-  document_name: string;
-  document_postfix: string;
-  document_passage_matches: TPassage[];
-  document_source_name: string;
-  document_source_url: string;
-  document_title_match: boolean;
-  document_type: string;
-  document_url: string;
-  document_id: string;
-  document_fileid?: string;
 };
 
 export type TGeography = {
@@ -243,16 +184,6 @@ export type TDocumentPage = {
   languages: string[];
   document_type: string | null;
   document_role: string;
-};
-
-export type TDocumentFamily = {
-  title: string;
-  import_id: string;
-  geography: string;
-  category: TCategory;
-  slug: string;
-  published_date: string;
-  last_updated_date: string;
 };
 
 export type TCollection = {
