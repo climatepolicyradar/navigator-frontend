@@ -250,6 +250,7 @@ export type TDocumentFamily = {
   title: string;
   import_id: string;
   geography: string;
+  geographies: string[];
   category: TCategory;
   slug: string;
   published_date: string;
