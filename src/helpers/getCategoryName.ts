@@ -1,6 +1,6 @@
-import { TCategory } from "@types";
+import { TCategory, TCorpusTypeSubCategory } from "@types";
 
-export const getCategoryName = (category: TCategory) => {
+export const getCategoryName = (category: TCategory, subCategory?: TCorpusTypeSubCategory) => {
   let name = "";
   switch (category) {
     case "Litigation":
@@ -16,6 +16,9 @@ export const getCategoryName = (category: TCategory) => {
       break;
     case "UNFCCC":
       name = "UNFCCC";
+      break;
+    case "MCF":
+      name = subCategory ? subCategory.toUpperCase() : "MCF";
       break;
   }
   return name;
