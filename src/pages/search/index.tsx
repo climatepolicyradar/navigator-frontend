@@ -368,7 +368,11 @@ const Search = () => {
                     />
                   </div>
                   <div className="relative z-10 flex justify-center">
-                    <button className="px-4 flex justify-center items-center text-textDark text-xl" onClick={() => setShowOptions(!showOptions)}>
+                    <button
+                      className="px-4 flex justify-center items-center text-textDark text-xl"
+                      onClick={() => setShowOptions(!showOptions)}
+                      data-cy="search-options"
+                    >
                       <MdOutlineTune />
                     </button>
                     <AnimatePresence initial={false}>

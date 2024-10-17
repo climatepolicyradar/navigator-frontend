@@ -17,7 +17,7 @@ export const Accordian = ({ title, startOpen = false, overflowOverride, children
 
   return (
     <div className="" {...props}>
-      <div className={`flex justify-between cursor-pointer group`} onClick={() => setIsOpen(!isOpen)}>
+      <div className={`flex justify-between cursor-pointer group`} onClick={() => setIsOpen(!isOpen)} data-cy="accordian-control">
         <Heading>{title}</Heading>
         <span className={`opacity-40 group-hover:opacity-100 ${isOpen ? "" : ""}`}>{isOpen ? <AccordianCloseIcon /> : <AccordianOpenIcon />}</span>
       </div>
