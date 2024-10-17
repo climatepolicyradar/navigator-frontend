@@ -4,17 +4,18 @@ import { getCountryName } from "@helpers/getCountryFields";
 import { getCategoryName } from "@helpers/getCategoryName";
 import { isSystemGeo } from "@utils/isSystemGeo";
 import { convertDate } from "@utils/timedate";
-import { TCategory } from "@types";
+import { TCategory, TCorpusTypeSubCategory } from "@types";
 
 type TProps = {
   category: TCategory;
+  corpus_type_name: TCorpusTypeSubCategory;
   date: string;
   geography: string;
   topics?: string[];
   author?: string[];
 };
 
-export const FamilyMeta = ({ category, date, geography, topics, author }: TProps) => {
+export const FamilyMeta = ({ category, date, geography, topics, author, corpus_type_name }: TProps) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
 
@@ -30,10 +31,10 @@ export const FamilyMeta = ({ category, date, geography, topics, author }: TProps
           </CountryLink>
         </span>
       )}
-      {!isNaN(year) && <span data-cy="family-metadata-year">{year}</span>}
+      {!isNaN(year) && <span data-cy="family-metadata-year">Approval FY {year}</span>}
       {category && (
         <span className="capitalize" data-cy="family-metadata-category">
-          {getCategoryName(category)}
+          {getCategoryName(category, corpus_type_name)}
         </span>
       )}
       {topics && topics.length > 0 && (
