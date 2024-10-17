@@ -42,7 +42,7 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
         <FamilyMeta
           category={family.category}
           date={family.published_date}
-          geography={family.geography}
+          geography={family.geographies[0]}
           topics={family.metadata.topic}
           author={family.metadata.author_type}
         />
