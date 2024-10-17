@@ -1,25 +1,29 @@
 import { TCategory, TCorpusTypeSubCategory } from "@types";
 
-export const getCategoryName = (category: TCategory, subCategory?: TCorpusTypeSubCategory) => {
-  let name = "";
-  switch (category) {
-    case "Litigation":
-      name = "Litigation";
-      break;
-    case "Legislative":
-    case "Law":
-      name = "Legislative";
-      break;
-    case "Executive":
-    case "Policy":
-      name = "Policy";
-      break;
-    case "UNFCCC":
-      name = "UNFCCC";
-      break;
-    case "MCF":
-      name = subCategory ? subCategory.toUpperCase() : "MCF";
-      break;
-  }
-  return name;
+const subCategories: Record<TCorpusTypeSubCategory, string> = {
+  AF: "Adaptation Fund",
+  CIF: "Climate Investment Funds",
+  GCF: "Green Climate Fund",
+  GEF: "Global Environment Facility",
+  "Intl. agreements": "Intl. agreements",
+  "Laws and Policies": "Laws and Policies",
+};
+
+const categories: Record<TCategory, string> = {
+  Litigation: "Litigation",
+  Legislative: "Legislative",
+  Law: "Legislative",
+  Executive: "Policy",
+  Policy: "Policy",
+  UNFCCC: "UNFCCC",
+  MCF: "MCF",
+};
+
+const getSubCategoryName = (subCategory: TCorpusTypeSubCategory): string => {
+  return subCategories[subCategory as TCorpusTypeSubCategory];
+};
+
+export const getCategoryName = (category: TCategory, subCategory?: TCorpusTypeSubCategory): string => {
+  const name = categories[category as TCategory];
+  return category === "MCF" && subCategory ? getSubCategoryName(subCategory) : name;
 };
