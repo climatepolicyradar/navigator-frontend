@@ -307,14 +307,46 @@ const Search = () => {
           </div>
         </SubNav>
         {/* MOBILE ONLY */}
-        <SiteWidth extraClasses="md:hidden">
-          <div className="pt-4">
-            <SearchForm
-              placeholder={placeholder}
-              handleSearchInput={handleSearchInput}
-              input={qQueryString ? qQueryString.toString() : ""}
-              handleSuggestion={handleSuggestion}
-            />
+        <SiteWidth extraClasses="pt-4 md:hidden">
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <SearchForm
+                placeholder={placeholder}
+                handleSearchInput={handleSearchInput}
+                input={qQueryString ? qQueryString.toString() : ""}
+                handleSuggestion={handleSuggestion}
+              />
+            </div>
+            <div className="relative z-10 flex justify-center">
+              <button
+                className="px-4 flex justify-center items-center text-textDark text-xl"
+                onClick={() => setShowOptions(!showOptions)}
+                data-cy="search-options"
+              >
+                <MdOutlineTune />
+              </button>
+              <AnimatePresence initial={false}>
+                {showOptions && (
+                  <motion.div
+                    key="content"
+                    initial="collapsed"
+                    animate="open"
+                    exit="collapsed"
+                    variants={{
+                      collapsed: { opacity: 0, transition: { duration: 0.1 } },
+                      open: { opacity: 1, transition: { duration: 0.25 } },
+                    }}
+                  >
+                    <SearchSettings
+                      queryParams={router.query}
+                      handleSortClick={handleSortClick}
+                      handleSearchChange={handleSearchChange}
+                      setShowOptions={setShowOptions}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
           <div className="flex items-center justify-center w-full mt-4">
             <FilterToggle toggle={toggleFilters} isOpen={showFilters} />
