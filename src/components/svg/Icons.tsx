@@ -760,3 +760,33 @@ export const ContextSearchIcon = ({ height = "24", width = "24", color = "curren
     </svg>
   );
 };
+
+export const AccordianOpenIcon = ({ height = "20", width = "20", color = "currentColor" }: IconProps) => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" style={{ width: `${width}px`, height: `${height}px` }}>
+      <g>
+        <mask id="mask0_48_5358" maskUnits="userSpaceOnUse" x="0" y="0" width="20" height="20" style={{ maskType: "alpha" }}>
+          <rect width="20" height="20" fill="none" />
+        </mask>
+        <g mask="url(#mask0_48_5358)">
+          <path d="M9.25 10.75H5V9.25H9.25V5H10.75V9.25H15V10.75H10.75V15H9.25V10.75Z" fill={color} />
+        </g>
+      </g>
+    </svg>
+  );
+};
+
+export const AccordianCloseIcon = ({ height = "20", width = "20", color = "currentColor" }: IconProps) => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" style={{ width: `${width}px`, height: `${height}px` }}>
+      <g>
+        <mask id="mask0_48_5358" maskUnits="userSpaceOnUse" x="0" y="0" width="20" height="20" style={{ maskType: "alpha" }}>
+          <rect width="20" height="20" fill="none" />
+        </mask>
+        <g mask="url(#mask0_48_5380)">
+          <path d="M4.83203 10.75V9.25H15.1654V10.75H4.83203Z" fill={color} />
+        </g>
+      </g>
+    </svg>
+  );
+};

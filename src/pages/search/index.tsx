@@ -1,13 +1,12 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useTranslation } from "react-i18next";
 import { ParsedUrlQueryInput } from "querystring";
+import { motion, AnimatePresence } from "framer-motion";
+import { MdOutlineTune } from "react-icons/md";
 
 import useSearch from "@hooks/useSearch";
 import { useDownloadCsv } from "@hooks/useDownloadCsv";
-import useUpdateCountries from "@hooks/useUpdateCountries";
 import useConfig from "@hooks/useConfig";
-import useFilteredCountries from "@hooks/useFilteredCountries";
 
 import { SiteWidth } from "@components/panels/SiteWidth";
 import { SingleCol } from "@components/panels/SingleCol";
@@ -17,9 +16,7 @@ import { SideCol } from "@components/panels/SideCol";
 import Layout from "@components/layouts/Main";
 import SearchForm from "@components/forms/SearchForm";
 import SearchFilters from "@components/blocks/SearchFilters";
-import TabbedNav from "@components/nav/TabbedNav";
 import Loader from "@components/Loader";
-import Sort from "@components/filters/Sort";
 import FilterToggle from "@components/buttons/FilterToggle";
 import Pagination from "@components/pagination";
 import Drawer from "@components/drawer/Drawer";
@@ -32,38 +29,25 @@ import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
 import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
 import { SubNav } from "@components/nav/SubNav";
 
-import { getCurrentPage } from "@utils/getCurrentPage";
-
-import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN } from "@constants/paging";
+import { SearchSettings } from "@components/filters/SearchSettings";
 
 const Search = () => {
   const router = useRouter();
   const qQueryString = router.query[QUERY_PARAMS.query_string];
-  const isBrowsing = !qQueryString || qQueryString?.toString().trim() === "";
-  const { t } = useTranslation(["searchStart", "searchResults"]);
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
-
-  const updateCountries = useUpdateCountries();
 
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
   const configQuery = useConfig();
   const { data: { regions = [], countries = [] } = {} } = configQuery;
-  const { data: filteredCountries } = useFilteredCountries(countries);
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 
-  const placeholder = t("Search for something, e.g. 'carbon taxes'");
-
-  const documentCategories = DOCUMENT_CATEGORIES.map((category) => {
-    return {
-      title: category,
-    };
-  });
+  const placeholder = "Search for something...";
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
@@ -95,17 +79,34 @@ const Search = () => {
     resetCSVStatus();
   };
 
-  const handleRegionChange = (type: string, regionName: string) => {
+  const handleRegionChange = (regionName: string) => {
     delete router.query[QUERY_PARAMS.offset];
+    const query = { ...router.query };
+    const regions = (query[QUERY_PARAMS.region] as string[]) || [];
 
-    updateCountries.mutate({
-      regionName,
-      regions,
-      countries,
-    });
+    // query string is a string if only one region is selected, else it is an array of strings
+    if (regions.includes(regionName)) {
+      if (typeof regions === "string") {
+        delete query[QUERY_PARAMS.region];
+      } else {
+        query[QUERY_PARAMS.region] = regions.filter((region) => region !== regionName);
+      }
+    } else {
+      if (typeof regions === "string") {
+        query[QUERY_PARAMS.region] = [regions, regionName];
+      } else {
+        query[QUERY_PARAMS.region] = [...regions, regionName];
+      }
+    }
 
-    router.query[type] = regionName;
-    router.push({ query: router.query });
+    // TODO: filter countries based on selected regions
+    // updateCountries.mutate({
+    //   regionName,
+    //   regions,
+    //   countries,
+    // });
+
+    router.push({ query: query });
     resetCSVStatus();
   };
 
@@ -127,6 +128,18 @@ const Search = () => {
 
     if (queryCollection.includes(value)) {
       queryCollection = queryCollection.filter((item) => item !== value);
+      // If we are removing a sort field, we should also remove the sort order
+      // and visa versa
+      if (type === QUERY_PARAMS.sort_field) {
+        delete router.query[QUERY_PARAMS.sort_order];
+      }
+      if (type === QUERY_PARAMS.sort_order) {
+        delete router.query[QUERY_PARAMS.sort_field];
+      }
+      // If we are removing a year range, we should also remove the other year range
+      if (type === QUERY_PARAMS.year_range) {
+        queryCollection = [];
+      }
     } else {
       queryCollection.push(value);
     }
@@ -145,7 +158,7 @@ const Search = () => {
     resetCSVStatus();
   };
 
-  const handleSearchChange = (type: string, value: any) => {
+  const handleSearchChange = (type: string, value: any, reset = false) => {
     if (type !== QUERY_PARAMS.offset) {
       delete router.query[QUERY_PARAMS.offset];
     }
@@ -158,7 +171,7 @@ const Search = () => {
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
     router.query[type] = value;
-    if (!value) {
+    if (!value || reset) {
       delete router.query[type];
     }
     router.push({ query: router.query });
@@ -169,31 +182,28 @@ const Search = () => {
     handleSearchChange(QUERY_PARAMS.query_string, term);
   };
 
-  const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement>, _?: number, value?: string) => {
+  const handleDocumentCategoryClick = (category: string) => {
     // Reset pagination and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
-    const val = value ?? e.currentTarget.textContent;
-    let category = val;
     router.query[QUERY_PARAMS.category] = category;
     // Default search is all categories, so we do not need to provide any category if we want all
-    if (val === "All") {
+    if (category === "All") {
       delete router.query[QUERY_PARAMS.category];
     }
     router.push({ query: router.query });
     resetCSVStatus();
   };
 
-  const handleSortClick = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleSortClick = (sortOption: string) => {
     // Reset pagination and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
-    const val = e.currentTarget.value;
 
     // No sort selected
-    if (val === "null") {
+    if (sortOption === "null") {
       delete router.query[QUERY_PARAMS.sort_field];
       delete router.query[QUERY_PARAMS.sort_order];
       router.push({ query: router.query });
@@ -203,8 +213,8 @@ const Search = () => {
 
     let field = null;
     let order = null;
-    if (val !== "relevance") {
-      const valArray = val.split(":");
+    if (sortOption !== "relevance") {
+      const valArray = sortOption.split(":");
       field = valArray[0];
       order = valArray[1];
     }
@@ -223,9 +233,9 @@ const Search = () => {
     resetCSVStatus();
   };
 
-  const handleYearChange = (values: number[]) => {
+  const handleYearChange = (values: number[], reset = false) => {
     const newVals = values.map((value: number) => Number(value).toFixed(0));
-    handleSearchChange(QUERY_PARAMS.year_range, newVals);
+    handleSearchChange(QUERY_PARAMS.year_range, newVals, reset);
   };
 
   const handleClearSearch = () => {
@@ -234,39 +244,6 @@ const Search = () => {
       return router.push({ query: { [QUERY_PARAMS.query_string]: previousSearchQuery } });
     }
     return router.push({ query: {} });
-  };
-
-  const getCurrentSortChoice = () => {
-    const field = router.query[QUERY_PARAMS.sort_field];
-    const order = router.query[QUERY_PARAMS.sort_order];
-    if (field === undefined && order === undefined) {
-      if (isBrowsing) return "null";
-      return "relevance";
-    }
-    return `${field}:${order}`;
-  };
-
-  const getCategoryIndex = () => {
-    const categories = router.query[QUERY_PARAMS.category]?.toString();
-    if (!categories) {
-      return 0;
-    }
-    let index = DOCUMENT_CATEGORIES.indexOf(categories);
-    return index === -1 ? 0 : index;
-  };
-
-  const calcCurrentPage = () => {
-    const offSet = isNaN(parseInt(router.query[QUERY_PARAMS.offset]?.toString())) ? 0 : parseInt(router.query[QUERY_PARAMS.offset]?.toString());
-    const cts: string[] = JSON.parse((router.query[QUERY_PARAMS.continuation_tokens] as string) || "[]");
-    // empty string represents the first 'set' of pages (as these do not require a continuation token)
-    cts.splice(0, 0, "");
-    return getCurrentPage(
-      offSet,
-      RESULTS_PER_PAGE,
-      PAGES_PER_CONTINUATION_TOKEN,
-      cts,
-      router.query[QUERY_PARAMS.active_continuation_token] as string
-    );
   };
 
   const handleDownloadCsvClick = () => {
@@ -302,22 +279,74 @@ const Search = () => {
 
   return (
     <Layout
-      title={t("Law and Policy Search")}
+      title="Law and Policy Search"
       description="Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country."
     >
       <section>
         <SubNav>
           <BreadCrumbs label={"Search results"} />
+          <div>
+            <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
+              <span>Download data (.csv): </span>
+              <a
+                href="#"
+                className="flex gap-2 items-center justify-end"
+                data-cy="download-search-csv"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowCSVDownloadPopup(true);
+                }}
+              >
+                {downloadCSVStatus === "loading" ? <Loading /> : "this search"}
+              </a>
+              <span>|</span>
+              <ExternalLink url="https://form.jotform.com/233131638610347" cy="download-entire-search-csv">
+                whole database
+              </ExternalLink>
+            </span>
+          </div>
         </SubNav>
         {/* MOBILE ONLY */}
-        <SiteWidth extraClasses="md:hidden">
-          <div className="pt-4">
-            <SearchForm
-              placeholder={placeholder}
-              handleSearchInput={handleSearchInput}
-              input={qQueryString ? qQueryString.toString() : ""}
-              handleSuggestion={handleSuggestion}
-            />
+        <SiteWidth extraClasses="pt-4 md:hidden">
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <SearchForm
+                placeholder={placeholder}
+                handleSearchInput={handleSearchInput}
+                input={qQueryString ? qQueryString.toString() : ""}
+                handleSuggestion={handleSuggestion}
+              />
+            </div>
+            <div className="relative z-10 flex justify-center">
+              <button
+                className="px-4 flex justify-center items-center text-textDark text-xl"
+                onClick={() => setShowOptions(!showOptions)}
+                data-cy="search-options-mobile"
+              >
+                <MdOutlineTune />
+              </button>
+              <AnimatePresence initial={false}>
+                {showOptions && (
+                  <motion.div
+                    key="content"
+                    initial="collapsed"
+                    animate="open"
+                    exit="collapsed"
+                    variants={{
+                      collapsed: { opacity: 0, transition: { duration: 0.1 } },
+                      open: { opacity: 1, transition: { duration: 0.25 } },
+                    }}
+                  >
+                    <SearchSettings
+                      queryParams={router.query}
+                      handleSortClick={handleSortClick}
+                      handleSearchChange={handleSearchChange}
+                      setShowOptions={setShowOptions}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
           <div className="flex items-center justify-center w-full mt-4">
             <FilterToggle toggle={toggleFilters} isOpen={showFilters} />
@@ -327,14 +356,14 @@ const Search = () => {
               <p>Loading filters...</p>
             ) : (
               <SearchFilters
-                handleFilterChange={handleFilterChange}
                 searchCriteria={searchQuery}
+                regions={regions}
+                countries={countries}
+                handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
                 handleClearSearch={handleClearSearch}
-                handleSearchChange={handleSearchChange}
-                regions={regions}
-                filteredCountries={filteredCountries}
+                handleDocumentCategoryClick={handleDocumentCategoryClick}
               />
             )}
           </div>
@@ -342,51 +371,71 @@ const Search = () => {
         {/* END MOBILE ONLY */}
         <MultiCol>
           <SideCol extraClasses="hidden md:block border-r pt-5">
-            <SearchFilters
-              handleFilterChange={handleFilterChange}
-              searchCriteria={searchQuery}
-              handleYearChange={handleYearChange}
-              handleRegionChange={handleRegionChange}
-              handleClearSearch={handleClearSearch}
-              handleSearchChange={handleSearchChange}
-              regions={regions}
-              filteredCountries={filteredCountries}
-            />
+            {configQuery.isFetching ? (
+              <p className="text-sm">Loading filters...</p>
+            ) : (
+              <SearchFilters
+                searchCriteria={searchQuery}
+                regions={regions}
+                countries={countries}
+                handleFilterChange={handleFilterChange}
+                handleYearChange={handleYearChange}
+                handleRegionChange={handleRegionChange}
+                handleClearSearch={handleClearSearch}
+                handleDocumentCategoryClick={handleDocumentCategoryClick}
+              />
+            )}
           </SideCol>
           <SingleCol extraClasses="px-5 pt-5">
             <div>
               {/* NON MOBILE SEARCH */}
               <div className="hidden md:block mb-4">
-                <SearchForm
-                  placeholder={placeholder}
-                  handleSearchInput={handleSearchInput}
-                  input={qQueryString ? qQueryString.toString() : ""}
-                  handleSuggestion={handleSuggestion}
-                />
+                <div className="flex gap-3">
+                  <div className="flex-1">
+                    <SearchForm
+                      placeholder={placeholder}
+                      handleSearchInput={handleSearchInput}
+                      input={qQueryString ? qQueryString.toString() : ""}
+                      handleSuggestion={handleSuggestion}
+                    />
+                  </div>
+                  <div className="relative z-10 flex justify-center">
+                    <button
+                      className="px-4 flex justify-center items-center text-textDark text-xl"
+                      onClick={() => setShowOptions(!showOptions)}
+                      data-cy="search-options"
+                    >
+                      <MdOutlineTune />
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {showOptions && (
+                        <motion.div
+                          key="content"
+                          initial="collapsed"
+                          animate="open"
+                          exit="collapsed"
+                          variants={{
+                            collapsed: { opacity: 0, transition: { duration: 0.1 } },
+                            open: { opacity: 1, transition: { duration: 0.25 } },
+                          }}
+                        >
+                          <SearchSettings
+                            queryParams={router.query}
+                            handleSortClick={handleSortClick}
+                            handleSearchChange={handleSearchChange}
+                            setShowOptions={setShowOptions}
+                          />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
               </div>
               {/* NON MOBILE SEARCH END */}
-              <div className="lg:flex justify-between">
+              <div>
                 <div className="text-xs my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
                   {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
                 </div>
-                <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
-                  <span>Download data (.csv): </span>
-                  <a
-                    href="#"
-                    className="flex gap-2 items-center justify-end"
-                    data-cy="download-search-csv"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setShowCSVDownloadPopup(true);
-                    }}
-                  >
-                    {downloadCSVStatus === "loading" ? <Loading /> : "this search"}
-                  </a>
-                  <span>|</span>
-                  <ExternalLink url="https://form.jotform.com/233131638610347" cy="download-entire-search-csv">
-                    whole database
-                  </ExternalLink>
-                </span>
               </div>
               <div className="text-sm md:text-right">
                 {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
@@ -395,43 +444,32 @@ const Search = () => {
                 )}
               </div>
             </div>
-            <div className="mt-4">
-              <TabbedNav activeIndex={getCategoryIndex()} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
-            </div>
 
-            <div className="mt-4 relative">
+            <div className="mt-10">
               {status === "loading" ? (
                 <div className="w-full flex justify-center h-96">
                   <Loader />
                 </div>
               ) : (
-                <>
-                  <div className="flex justify-end">
-                    {router.query[QUERY_PARAMS.category]?.toString() !== "Litigation" && (
-                      <div>
-                        <Sort defaultValue={getCurrentSortChoice()} updateSort={handleSortClick} isBrowsing={isBrowsing} />
-                      </div>
-                    )}
-                  </div>
-                  <div data-cy="search-results">
-                    <SearchResultList
-                      category={router.query[QUERY_PARAMS.category]?.toString()}
-                      families={families}
-                      onClick={handleMatchesButtonClick}
-                      activeFamilyIndex={drawerFamily}
-                    />
-                  </div>
-                </>
+                <div data-cy="search-results">
+                  <SearchResultList
+                    category={router.query[QUERY_PARAMS.category]?.toString()}
+                    families={families}
+                    onClick={handleMatchesButtonClick}
+                    activeFamilyIndex={drawerFamily}
+                  />
+                </div>
               )}
             </div>
             {hits > 1 && (
               <div className="mb-12">
                 <Pagination
-                  currentPage={calcCurrentPage()}
                   onChange={handlePageChange}
                   totalHits={hits}
+                  activeContinuationToken={router.query[QUERY_PARAMS.active_continuation_token] as string}
                   continuationToken={continuationToken}
                   continuationTokens={router.query[QUERY_PARAMS.continuation_tokens] as string}
+                  offset={router.query[QUERY_PARAMS.offset] as string}
                 />
               </div>
             )}

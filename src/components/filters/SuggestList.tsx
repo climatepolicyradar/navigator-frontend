@@ -59,7 +59,7 @@ const SuggestList = ({ list, setList, keyField, keyFieldDisplay, type, setInput,
     [liSelected, index, list]
   );
 
-  const handleClick = (item) => {
+  const handleClick = (item: Object) => {
     handleFilterChange(type, item[keyField]);
     setList([]);
     setInput("");
@@ -80,16 +80,16 @@ const SuggestList = ({ list, setList, keyField, keyFieldDisplay, type, setInput,
   }, [list, navigateList]);
 
   return (
-    <ul ref={ulRef} className="bg-white rounded-b-lg border border-t-0 border-gray-300 text-gray-500">
+    <ul ref={ulRef} className="bg-white rounded-b-xl border border-borderNormal border-t-0 m-0">
       {list.map(
-        (item, index: number) =>
+        (item: Object, index: number) =>
           index < 10 && (
             <li
               key={index}
               onClick={() => {
                 handleClick(item);
               }}
-              className="cursor-pointer my-1 p-2 hover:text-cpr-dark hover:bg-blue-100"
+              className="cursor-pointer p-2 hover:text-textDark hover:font-medium hover:bg-blue-100 last:rounded-b-xl"
             >
               {item[keyFieldDisplay ?? keyField]}
             </li>

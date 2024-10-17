@@ -1,27 +1,26 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 
-import SuggestList from "./SuggestList";
+import SuggestList from "../filters/SuggestList";
+import { TextInput } from "./TextInput";
 
 import { sortData } from "@utils/sorting";
+import { Search2Icon } from "@components/svg/Icons";
 
-interface ByTextInputProps {
-  title: string;
+type TProps = {
   list: Object[];
   selectedList: string[];
   keyField: string;
   keyFieldDisplay?: string;
   filterType: string;
   handleFilterChange(filterType: string, value: string): void;
-}
+};
 
-const ByTextInput = ({ title, list, selectedList, keyField, keyFieldDisplay, filterType, handleFilterChange }: ByTextInputProps) => {
+export const TypeAhead = ({ list, selectedList, keyField, keyFieldDisplay, filterType, handleFilterChange }: TProps) => {
   const [input, setInput] = useState("");
-  const [suggestList, setSuggestList] = useState([]);
-  const { t } = useTranslation("searchResults");
+  const [suggestList, setSuggestList] = useState<Object[]>([]);
 
-  const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
-    setInput(e.currentTarget.value);
+  const handleChange = (value: string): void => {
+    setInput(value);
   };
 
   useEffect(() => {
@@ -38,18 +37,21 @@ const ByTextInput = ({ title, list, selectedList, keyField, keyFieldDisplay, fil
 
   return (
     <div className="relative">
-      <div>{title}</div>
-      <input
-        type="text"
-        className="border border-gray-300 mt-2 small outline-none"
-        placeholder={t("Start typing")}
-        value={input}
+      <TextInput
+        className={
+          suggestList.length
+            ? "!rounded-t-xl !border-b-transparent !rounded-b-none !outline-none !ring-0 hover:!border-borderNormal focus:!border-borderNormal !bg-white"
+            : ""
+        }
         onChange={handleChange}
+        value={input}
+        placeholder="Start typing..."
         aria-label="Search for a jurisdiction"
-      />
-
+      >
+        <Search2Icon width="16" height="16" />
+      </TextInput>
       {suggestList.length > 0 && (
-        <div className="absolute top-full mt-[-10px] left-0 w-full z-30">
+        <div className="absolute top-full left-0 w-full z-30 mt-[-1px]">
           <SuggestList
             list={suggestList}
             setList={setSuggestList}
@@ -64,4 +66,3 @@ const ByTextInput = ({ title, list, selectedList, keyField, keyFieldDisplay, fil
     </div>
   );
 };
-export default ByTextInput;

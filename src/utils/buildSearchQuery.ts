@@ -1,5 +1,7 @@
 import { initialSearchCriteria } from "@constants/searchCriteria";
 import { QUERY_PARAMS } from "@constants/queryParams";
+import { LAWS, POLICIES, UNFCCC, LITIGATION } from "@constants/categoryAliases";
+
 import { TSearchCriteria, TSearchKeywordFilters } from "@types";
 
 export type TRouterQuery = {
@@ -48,14 +50,17 @@ export default function buildSearchQuery(
   if (routerQuery[QUERY_PARAMS.category]) {
     const qCategory = routerQuery[QUERY_PARAMS.category] as string;
     let category: string;
-    if (["Legislation", "Law", "Legislative"].includes(qCategory)) {
+    if (LAWS.includes(qCategory)) {
       category = "Legislative";
     }
-    if (["Policies", "Policy", "Executive"].includes(qCategory)) {
+    if (POLICIES.includes(qCategory)) {
       category = "Executive";
     }
-    if (["UNFCCC"].includes(qCategory)) {
+    if (UNFCCC.includes(qCategory)) {
       category = "UNFCCC";
+    }
+    if (LITIGATION.includes(qCategory)) {
+      category = "Litigation";
     }
     keyword_filters.categories = [category];
   }

@@ -19,7 +19,7 @@ const DocumentSearchForm = ({
   suggestionsAsLinks,
 }: DocumentSearchFormProps) => {
   return (
-    <div className="p-4 rounded-[20px] bg-blue-100">
+    <div className="my-10">
       <SearchForm placeholder={placeholder} handleSearchInput={handleSearchInput} input={input} />
       {showSuggestions && (
         <div className="mt-4 md:flex gap-2 text-sm items-center">

@@ -15,10 +15,14 @@ module.exports = {
     colors: {
       white: "#FFFFFF",
       black: "#000000",
+      nearBlack: "#101010",
       transparent: "transparent",
       current: "currentColor",
       textDark: "#202020",
       textNormal: "#505050",
+      borderNormal: "#dedede",
+      input: "#f5f5f5",
+      inputSelected: "#005EEB", // blue
       cpr: {
         dark: "#071e4a",
       },

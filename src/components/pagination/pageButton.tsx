@@ -7,7 +7,7 @@ type TProps = {
 };
 
 export const PageButton = ({ pageNumber, ct, offSet, isCurrentPage, clickHandler }: TProps) => {
-  const baseCssClasses = "mx-1 rounded px-3 py-1 transition duration-300 text-sm md:text-base";
+  const baseCssClasses = "rounded px-3 py-1 transition duration-300 text-sm md:text-base";
   const colorCssClasses = isCurrentPage ? "bg-blue-400 text-white pointer-events-none" : "hover:bg-gray-100";
   return (
     <button
