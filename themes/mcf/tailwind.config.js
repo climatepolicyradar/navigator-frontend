@@ -26,7 +26,7 @@ module.exports = {
       inputSelected: "#005EEB", // blue
       cpr: {
         dark: "#071e4a",
-        banner: "#005EEB",
+        banner: "#00244D",
       },
       cclw: {
         dark: "#2E3152",
@@ -36,6 +36,7 @@ module.exports = {
       mcf: {
         blue: "#082C43",
         iconBlue: "#0171B8",
+        iconGrey: "#7A7A7A",
         blueOpacity64: "rgba(8, 44, 67, 0.64)",
       },
       gray: {
