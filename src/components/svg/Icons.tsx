@@ -670,7 +670,7 @@ export const FacebookIcon = ({ height = "20", width = "24", color = "currentColo
       width={width}
       height={height}
       viewBox="0 0 24 24"
-      fill="none"
+      fill={color}
       stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
@@ -712,7 +712,7 @@ export const LinkedInIcon = ({ height = "20", width = "24", color = "currentColo
       width={width}
       height={height}
       viewBox="0 0 24 24"
-      fill="none"
+      fill={color}
       stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
@@ -734,7 +734,7 @@ export const TwitterIcon = ({ height = "20", width = "24", color = "currentColor
       width={width}
       height={height}
       viewBox="0 0 24 24"
-      fill="none"
+      fill={color}
       stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
