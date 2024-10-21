@@ -4,8 +4,7 @@ import dynamic from "next/dynamic";
 import Layout from "@components/layouts/LandingPage";
 import { Heading } from "@components/typography/Heading";
 
-import { Header, Footer, Hero, ClimatePolicyRadarBanner } from "@mcf/components";
-import AboutTheFunds from "@mcf/components/AboutTheFunds";
+import { Header, Footer, Hero, ClimatePolicyRadarBanner, AboutTheFunds } from "@mcf/components";
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
