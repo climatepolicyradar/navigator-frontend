@@ -253,6 +253,7 @@ export interface TDictionary<T> {
 export type TOrganisationDictionary = TDictionary<TOrganisation>;
 
 export type TQueryStrings = {
+  // Core
   query_string: string;
   exact_match: string;
   region: string;
@@ -264,4 +265,7 @@ export type TQueryStrings = {
   offset: string;
   active_continuation_token: string;
   continuation_tokens: string;
+  // Multilater Climate Funds (MCF)
+  status: string;
+  implementing_agency: string;
 };

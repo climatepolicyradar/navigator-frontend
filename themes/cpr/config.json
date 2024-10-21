@@ -1,0 +1,80 @@
+{
+  "corpusIds": [
+    "UNFCCC.corpus.i00000001.n0000",
+    "CCLW.corpus.i00000001.n0000",
+    "CPR.corpus.i00000001.n0000",
+    "MCF.corpus.GCF.n0000",
+    "MCF.corpus.GEF.n0000"
+  ],
+  "categories": [
+    {
+      "label": "Genre",
+      "options": [
+        {
+          "label": "All",
+          "value": ""
+        },
+        {
+          "label": "Intl. agreements",
+          "value": ["UNFCCC.corpus.i00000001.n0000"]
+        },
+        {
+          "label": "Policies",
+          "value": ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000001.n0000"],
+          "category": ["Executive"]
+        },
+        {
+          "label": "Laws",
+          "value": ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000001.n0000"],
+          "category": ["Legislative"]
+        },
+        {
+          "label": "Multilateral Climate Funds",
+          "value": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+        },
+        {
+          "label": "Litigation",
+          "value": null
+        }
+      ]
+    },
+    {
+      "label": "Funds",
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"],
+      "options": [
+        {
+          "label": "Green Climate Fund",
+          "value": ["MCF.corpus.GCF.n0000"]
+        },
+        {
+          "label": "Global Environment Facility",
+          "value": ["MCF.corpus.GEF.n0000"]
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "label": "Status",
+      "corporaTypeKey": "GCF",
+      "taxonomyKey": "status",
+      "apiMetaDataKey": "family.status",
+      "type": "checkbox",
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+    },
+    {
+      "label": "Implementating agency",
+      "corporaTypeKey": "GCF",
+      "taxonomyKey": "implementing_agency",
+      "apiMetaDataKey": "family.implementing_agency",
+      "type": "checkbox",
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+    }
+  ],
+  "labelVariations": [
+    {
+      "date": "First published",
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+    }
+  ]
+}
