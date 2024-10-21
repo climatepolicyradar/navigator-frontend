@@ -1,5 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 
+import useGetThemeConfig from "@hooks/useThemeConfig";
+
 import Tooltip from "@components/tooltip";
 import { ExternalLink } from "@components/ExternalLink";
 import { DateRange } from "../filters/DateRange";
@@ -15,8 +17,9 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 import { DOCUMENT_CATEGORIES, TDocumentCategory } from "@constants/documentCategories";
 import { LAWS, POLICIES, UNFCCC, LITIGATION } from "@constants/categoryAliases";
 
-import { TGeography, TSearchCriteria } from "@types";
 import { getCountriesFromRegions } from "@helpers/getCountriesFromRegions";
+
+import { TGeography, TSearchCriteria } from "@types";
 
 const { default: MethodologyLink } = await import(`/themes/${process.env.THEME}/components/MethodologyLink`);
 
@@ -67,6 +70,7 @@ const SearchFilters = ({
   handleClearSearch,
   handleDocumentCategoryClick,
 }: TSearchFiltersProps) => {
+  const { status: themeConfigStatus, themeConfig } = useGetThemeConfig();
   const [showClear, setShowClear] = useState(false);
 
   const {
