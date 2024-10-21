@@ -107,7 +107,8 @@ export type TGeographySummary = {
   top_families: TGeoFamilys;
 };
 
-export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC";
+export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC" | "MCF";
+export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements";
 export type TDisplayCategory = "All" | TCategory;
 export type TEventCategory = TCategory | "Target";
 
@@ -141,6 +142,7 @@ export type TFamilyDocument = {
 };
 
 export type TFamily = {
+  corpus_type_name: TCorpusTypeSubCategory;
   family_category: TCategory;
   family_description: string;
   family_documents: TFamilyDocument[];
@@ -159,6 +161,7 @@ export type TFamilyPage = {
   geography: string;
   import_id: string;
   category: TCategory;
+  corpus_type_name: TCorpusTypeSubCategory;
   metadata: TFamilyMetadata;
   slug: string;
   corpus_id: string;
