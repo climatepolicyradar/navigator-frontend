@@ -2,7 +2,7 @@ export const FRAMEWORK_LAWS = [
   {
     title: "Law no 155/2020 on climate change",
     geo_iso: "ALB",
-    geography: "Albania ",
+    geography: "Albania",
     url: "https://climate-laws.org/document/law-no-155-2020-on-climate-change_1817",
   },
   {
