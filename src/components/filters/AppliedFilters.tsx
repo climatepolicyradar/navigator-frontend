@@ -107,5 +107,13 @@ export const AppliedFilters = ({ filterChange }: TProps) => {
     [router.query, filterChange, countries, regions]
   );
 
-  return <>{appliedFilters}</>;
+  if (appliedFilters.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="flex flex-wrap gap-2" data-cy="applied-filters">
+      {appliedFilters}
+    </div>
+  );
 };

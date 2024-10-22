@@ -353,7 +353,7 @@ const Search = () => {
           </div>
           <div className={`${showFilters ? "" : "hidden"}`}>
             {configQuery.isFetching ? (
-              <p>Loading filters...</p>
+              <Loader size="20px" />
             ) : (
               <SearchFilters
                 searchCriteria={searchQuery}
@@ -372,7 +372,7 @@ const Search = () => {
         <MultiCol>
           <SideCol extraClasses="hidden md:block border-r pt-5">
             {configQuery.isFetching ? (
-              <p className="text-sm">Loading filters...</p>
+              <Loader size="20px" />
             ) : (
               <SearchFilters
                 searchCriteria={searchQuery}

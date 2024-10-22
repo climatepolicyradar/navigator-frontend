@@ -266,6 +266,41 @@ export type TQueryStrings = {
   active_continuation_token: string;
   continuation_tokens: string;
   // Multilater Climate Funds (MCF)
+  funds: string;
   status: string;
   implementing_agency: string;
+};
+
+// Theme configuration types
+interface ILabelVariation {
+  [key: string]: string;
+}
+
+type TThemeConfigOption = {
+  label: string;
+  slug: string;
+  value: string[];
+};
+
+type TThemeConfigCategory = {
+  label: string;
+  category: string[];
+  options: TThemeConfigOption[];
+};
+
+type TThemeConfigFilter = {
+  label: string;
+  corporaTypeKey?: string;
+  taxonomyKey: string;
+  apiMetaDataKey?: string;
+  type: string;
+  category: string[];
+  options?: TThemeConfigOption[];
+};
+
+export type TThemeConfig = {
+  corpusIds: string[];
+  categories: TThemeConfigCategory[];
+  filters: TThemeConfigFilter[];
+  labelVariations: ILabelVariation & { categories: string[] }[];
 };

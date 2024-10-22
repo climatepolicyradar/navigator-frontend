@@ -11,6 +11,7 @@ import { TypeAhead } from "../forms/TypeAhead";
 import { InputCheck } from "@components/forms/Checkbox";
 import { InputRadio } from "@components/forms/Radio";
 import { AppliedFilters } from "@components/filters/AppliedFilters";
+import Loader from "@components/Loader";
 
 import { currentYear, minYear } from "@constants/timedate";
 import { QUERY_PARAMS } from "@constants/queryParams";
@@ -99,9 +100,10 @@ const SearchFilters = ({
 
   return (
     <div id="search_filters" data-cy="seach-filters" className="text-sm text-textNormal flex flex-col gap-5">
+      {themeConfigStatus === "loading" && <Loader size="20px" />}
       <div className="flex justify-between">
         <div className="flex gap-2">
-          <p className="text-xs uppercase">Filters </p>
+          <p className="text-xs uppercase">Filters</p>
           <Tooltip
             id="filter-by"
             tooltip={
@@ -121,11 +123,28 @@ const SearchFilters = ({
           </button>
         )}
       </div>
-      <div className="flex flex-wrap gap-2" data-cy="applied-filters">
-        <AppliedFilters filterChange={handleFilterChange} />
-      </div>
 
-      <Accordian title="Category" data-cy="categories" startOpen>
+      <AppliedFilters filterChange={handleFilterChange} />
+
+      {themeConfigStatus === "success" &&
+        themeConfig.categories.map((category) => (
+          <Accordian title={category.label} data-cy={category.label} key={category.label} startOpen>
+            <InputListContainer>
+              {category.options.map((option) => (
+                <InputRadio
+                  key={option.slug}
+                  label={option.label}
+                  checked={categoryFilters && isCategoryChecked(categoryFilters[0], category.label)}
+                  onChange={() => {
+                    handleDocumentCategoryClick(option.slug);
+                  }}
+                />
+              ))}
+            </InputListContainer>
+          </Accordian>
+        ))}
+
+      {/* <Accordian title="Category" data-cy="categories" startOpen>
         <InputListContainer>
           {DOCUMENT_CATEGORIES.map((category, i) => (
             <InputRadio
@@ -138,7 +157,7 @@ const SearchFilters = ({
             />
           ))}
         </InputListContainer>
-      </Accordian>
+      </Accordian> */}
 
       <Accordian title="Region" data-cy="regions">
         <InputListContainer>

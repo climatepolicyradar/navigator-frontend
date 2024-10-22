@@ -14,6 +14,7 @@ export const QUERY_PARAMS: TQueryStrings = {
   active_continuation_token: "act",
   continuation_tokens: "cts",
   // Multilater Climate Funds (MCF)
+  funds: "fd",
   status: "st",
   implementing_agency: "ia",
 };
