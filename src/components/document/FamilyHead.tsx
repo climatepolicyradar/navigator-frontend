@@ -41,6 +41,7 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
       <div className="flex flex-wrap text-sm gap-1 mt-2 items-center middot-between" data-cy="family-metadata">
         <FamilyMeta
           category={family.category}
+          corpus_type_name={family.corpus_type_name}
           date={family.published_date}
           geography={family.geographies[0]}
           topics={family.metadata.topic}

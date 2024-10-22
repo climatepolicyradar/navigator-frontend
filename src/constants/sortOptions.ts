@@ -23,16 +23,8 @@ export const sortOptions = [
 
 export const sortOptionsBrowse = [
   {
-    label: "Sort by",
+    label: "Unordered",
     value: "null",
-  },
-  {
-    label: "Date: latest first",
-    value: "date:desc",
-  },
-  {
-    label: "Date: oldest first",
-    value: "date:asc",
   },
   {
     label: "Title: A - Z",
@@ -41,5 +33,13 @@ export const sortOptionsBrowse = [
   {
     label: "Title: Z - A",
     value: "title:desc",
+  },
+  {
+    label: "Date: latest first",
+    value: "date:desc",
+  },
+  {
+    label: "Date: oldest first",
+    value: "date:asc",
   },
 ];

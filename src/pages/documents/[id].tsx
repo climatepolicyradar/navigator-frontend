@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
+import { AnimatePresence, motion } from "framer-motion";
+import { MdOutlineTune } from "react-icons/md";
 
 import { ApiClient } from "@api/http-common";
 
@@ -13,11 +15,11 @@ import EmbeddedPDF from "@components/EmbeddedPDF";
 import PassageMatches from "@components/PassageMatches";
 import Loader from "@components/Loader";
 import SearchForm from "@components/forms/SearchForm";
-import BySemanticSearch from "@components/filters/BySemanticSearch";
 import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
 import { DocumentHead } from "@components/documents/DocumentHead";
 import { EmptyPassages } from "@components/documents/EmptyPassages";
 import { EmptyDocument } from "@components/documents/EmptyDocument";
+import { SearchSettings } from "@components/filters/SearchSettings";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { getDocumentDescription } from "@constants/metaDescriptions";
@@ -63,6 +65,7 @@ const renderPassageCount = (count: number): string => {
 */
 
 const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family }: TProps) => {
+  const [showOptions, setShowOptions] = useState(false);
   const [passageIndex, setPassageIndex] = useState(null);
   const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
   const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
@@ -184,16 +187,41 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                   )}`}
                 >
                   <div id="document-search" className="flex flex-col gap-2 md:pl-4">
-                    <SearchForm
-                      placeholder="Search the full text of the document"
-                      handleSearchInput={handleSearchInput}
-                      input={router.query[QUERY_PARAMS.query_string] as string}
-                    />
-                    <BySemanticSearch
-                      checked={(router.query[QUERY_PARAMS.exact_match] as string) === "true"}
-                      handleSearchChange={handleSemanticSearchChange}
-                      parentPage="physical-document"
-                    />
+                    <div className="flex gap-2">
+                      <div className="flex-1">
+                        <SearchForm
+                          placeholder="Search the full text of the document"
+                          handleSearchInput={handleSearchInput}
+                          input={router.query[QUERY_PARAMS.query_string] as string}
+                          size="default"
+                        />
+                      </div>
+                      <div className="relative z-10 flex justify-center">
+                        <button className="px-4 flex justify-center items-center text-textDark text-xl" onClick={() => setShowOptions(!showOptions)}>
+                          <MdOutlineTune />
+                        </button>
+                        <AnimatePresence initial={false}>
+                          {showOptions && (
+                            <motion.div
+                              key="content"
+                              initial="collapsed"
+                              animate="open"
+                              exit="collapsed"
+                              variants={{
+                                collapsed: { opacity: 0, transition: { duration: 0.1 } },
+                                open: { opacity: 1, transition: { duration: 0.25 } },
+                              }}
+                            >
+                              <SearchSettings
+                                queryParams={router.query}
+                                handleSearchChange={handleSemanticSearchChange}
+                                setShowOptions={setShowOptions}
+                              />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </div>
                     {!router.query[QUERY_PARAMS.query_string] && (
                       <div className="flex text-sm text-gray-600">
                         <div className="mr-2 flex-shrink-0 font-medium">Examples:</div>

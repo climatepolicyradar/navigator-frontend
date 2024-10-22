@@ -670,7 +670,7 @@ export const FacebookIcon = ({ height = "20", width = "24", color = "currentColo
       width={width}
       height={height}
       viewBox="0 0 24 24"
-      fill="none"
+      fill={color}
       stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
@@ -712,7 +712,7 @@ export const LinkedInIcon = ({ height = "20", width = "24", color = "currentColo
       width={width}
       height={height}
       viewBox="0 0 24 24"
-      fill="none"
+      fill={color}
       stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
@@ -734,7 +734,7 @@ export const TwitterIcon = ({ height = "20", width = "24", color = "currentColor
       width={width}
       height={height}
       viewBox="0 0 24 24"
-      fill="none"
+      fill={color}
       stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
@@ -756,6 +756,36 @@ export const ContextSearchIcon = ({ height = "24", width = "24", color = "curren
           d="M2 19V17H12V19H2ZM2 14V12H7V14H2ZM2 9V7H7V9H2ZM20.6 19L16.75 15.15C16.35 15.4333 15.9125 15.6458 15.4375 15.7875C14.9625 15.9292 14.4833 16 14 16C12.6167 16 11.4375 15.5125 10.4625 14.5375C9.4875 13.5625 9 12.3833 9 11C9 9.61667 9.4875 8.4375 10.4625 7.4625C11.4375 6.4875 12.6167 6 14 6C15.3833 6 16.5625 6.4875 17.5375 7.4625C18.5125 8.4375 19 9.61667 19 11C19 11.4833 18.9292 11.9625 18.7875 12.4375C18.6458 12.9125 18.4333 13.35 18.15 13.75L22 17.6L20.6 19ZM14 14C14.8333 14 15.5417 13.7083 16.125 13.125C16.7083 12.5417 17 11.8333 17 11C17 10.1667 16.7083 9.45833 16.125 8.875C15.5417 8.29167 14.8333 8 14 8C13.1667 8 12.4583 8.29167 11.875 8.875C11.2917 9.45833 11 10.1667 11 11C11 11.8333 11.2917 12.5417 11.875 13.125C12.4583 13.7083 13.1667 14 14 14Z"
           fill={color}
         />
+      </g>
+    </svg>
+  );
+};
+
+export const AccordianOpenIcon = ({ height = "20", width = "20", color = "currentColor" }: IconProps) => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" style={{ width: `${width}px`, height: `${height}px` }}>
+      <g>
+        <mask id="mask0_48_5358" maskUnits="userSpaceOnUse" x="0" y="0" width="20" height="20" style={{ maskType: "alpha" }}>
+          <rect width="20" height="20" fill="none" />
+        </mask>
+        <g mask="url(#mask0_48_5358)">
+          <path d="M9.25 10.75H5V9.25H9.25V5H10.75V9.25H15V10.75H10.75V15H9.25V10.75Z" fill={color} />
+        </g>
+      </g>
+    </svg>
+  );
+};
+
+export const AccordianCloseIcon = ({ height = "20", width = "20", color = "currentColor" }: IconProps) => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" style={{ width: `${width}px`, height: `${height}px` }}>
+      <g>
+        <mask id="mask0_48_5358" maskUnits="userSpaceOnUse" x="0" y="0" width="20" height="20" style={{ maskType: "alpha" }}>
+          <rect width="20" height="20" fill="none" />
+        </mask>
+        <g mask="url(#mask0_48_5380)">
+          <path d="M4.83203 10.75V9.25H15.1654V10.75H4.83203Z" fill={color} />
+        </g>
       </g>
     </svg>
   );

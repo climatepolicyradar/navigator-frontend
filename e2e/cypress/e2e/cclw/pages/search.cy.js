@@ -3,18 +3,21 @@ import { clickCookiePolicy } from "../../../utils/cookiePolicy";
 const inputSelector = '[data-cy="search-input"]';
 const searchResultsSelector = '[data-cy="search-results"]';
 
+const categoryFilterSelector = '[data-cy="categories"]';
 const filterSelectors = [
-  '[data-cy="exact-match"]',
+  categoryFilterSelector,
   '[data-cy="regions"]',
   '[data-cy="countries"]',
   '[data-cy="date-range"]',
   '[data-cy="methodology-notice"]',
 ];
 
-const selectedCountries = '[data-cy="selected-countries"]';
-const tabbedNavSelector = '[data-cy="tabbed-nav"]';
-const tabbedNavItem = '[data-cy="tabbed-nav-item"]';
-const sortSelector = '[data-cy="sort"]';
+const appliedFiltersSelector = '[data-cy="applied-filters"]';
+
+const searchOptionsSelector = '[data-cy="search-options"]';
+const searchSettingsSelector = '[data-cy="search-settings"]';
+
+const searchSettingsSelectors = ['[data-cy="semantic-search"]', '[data-cy="sort"]'];
 
 const pageSelectors = [
   inputSelector,
@@ -22,11 +25,11 @@ const pageSelectors = [
   '[data-cy="download-search-csv"]',
   '[data-cy="download-entire-search-csv"]',
   '[data-cy="number-of-results"]',
-  tabbedNavSelector,
-  sortSelector,
 ];
 
 const breadcrumbSelectors = ["[data-cy='breadcrumbs']", "[data-cy='breadcrumb home']", "[data-cy='breadcrumb current']"];
+
+const accordianControlSelector = '[data-cy="accordian-control"]';
 
 describe("Search Page", () => {
   before(() => {
@@ -48,8 +51,24 @@ describe("Search Page", () => {
     });
   });
 
-  it("should not display the selected countries", () => {
-    cy.get(selectedCountries).should("not.be.visible");
+  it("should display the search options", () => {
+    cy.get(searchOptionsSelector).should("be.visible");
+  });
+
+  it("should display the search settings when options is clicked", () => {
+    cy.get(searchOptionsSelector).click();
+    cy.get(searchSettingsSelector).should("be.visible");
+  });
+
+  it("should display the correct search settings", () => {
+    searchSettingsSelectors.forEach((selector) => {
+      cy.get(selector).should("be.visible");
+    });
+  });
+
+  it("should hide the search settings when clicking outside", () => {
+    cy.get("body").click();
+    cy.get(searchSettingsSelector).should("not.exist");
   });
 
   it("should display the container for list of search results", () => {
@@ -72,15 +91,17 @@ describe("Search Page", () => {
     cy.get(inputSelector).should("have.value", "");
   });
 
-  it("should display the correct number of category tabs", () => {
-    cy.get(tabbedNavSelector).children(tabbedNavItem).should("have.length", 5);
+  it("should allow typing into the search field", () => {
+    cy.get(inputSelector).eq(1).type("cypress automated test");
+    cy.get(inputSelector).eq(1).should("have.value", "cypress automated test");
+    cy.get(inputSelector).eq(1).type("{enter}");
   });
 
-  it("should display one tab selected, and be 'All' by default", () => {
-    cy.get(tabbedNavSelector).children(".tabbed-nav__active").should("have.length", 1).contains("All");
+  it("the first category filter should be 'All'", () => {
+    cy.get(`${categoryFilterSelector} label`).eq(0).should("contain", "All");
   });
 
-  it("should contain the correct number of sort options", () => {
-    cy.get(sortSelector).children("select").children().should("have.length", 5);
+  it("should display the applied filters", () => {
+    cy.get(appliedFiltersSelector).should("be.visible");
   });
 });
