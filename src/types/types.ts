@@ -6,6 +6,11 @@ export type TSearchKeywordFilters = {
   countries?: string[];
 };
 
+export type TSearchCriteriaMeta = {
+  name: string;
+  value: string;
+};
+
 export type TSearchCriteria = {
   query_string: string;
   exact_match: boolean;
@@ -20,6 +25,8 @@ export type TSearchCriteria = {
   family_ids?: string[] | null;
   document_ids?: string[] | null;
   continuation_tokens?: string[] | null;
+  corpus_import_ids: string[];
+  metadata: TSearchCriteriaMeta[];
 };
 
 export type TPassageBlockCoords = [number, number];
@@ -276,15 +283,15 @@ interface ILabelVariation {
   [key: string]: string;
 }
 
-type TThemeConfigOption = {
+export type TThemeConfigOption = {
   label: string;
   slug: string;
-  value: string[];
+  value?: string[];
+  category?: string[];
 };
 
 type TThemeConfigCategory = {
   label: string;
-  category: string[];
   options: TThemeConfigOption[];
 };
 
@@ -300,7 +307,7 @@ type TThemeConfigFilter = {
 
 export type TThemeConfig = {
   corpusIds: string[];
-  categories: TThemeConfigCategory[];
+  categories: TThemeConfigCategory;
   filters: TThemeConfigFilter[];
   labelVariations: ILabelVariation & { categories: string[] }[];
 };

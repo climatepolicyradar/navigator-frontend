@@ -15,43 +15,29 @@ import Loader from "@components/Loader";
 
 import { currentYear, minYear } from "@constants/timedate";
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { DOCUMENT_CATEGORIES, TDocumentCategory } from "@constants/documentCategories";
-import { LAWS, POLICIES, UNFCCC, LITIGATION } from "@constants/categoryAliases";
 
 import { getCountriesFromRegions } from "@helpers/getCountriesFromRegions";
 
-import { TGeography, TSearchCriteria } from "@types";
+import { TGeography, TSearchCriteria, TThemeConfigOption } from "@types";
+import { ParsedUrlQuery } from "querystring";
 
 const { default: MethodologyLink } = await import(`/themes/${process.env.THEME}/components/MethodologyLink`);
 
-const isCategoryChecked = (selectedCatgeory: string, category: TDocumentCategory) => {
-  if (!category) {
-    return false;
-  }
-
+const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption) => {
   if (selectedCatgeory) {
-    if (category === "Legislation") {
-      return LAWS.includes(selectedCatgeory);
+    if (selectedCatgeory === themeConfigCategory.slug) {
+      return true;
     }
-    if (category === "Policies") {
-      return POLICIES.includes(selectedCatgeory);
-    }
-    if (category === "UNFCCC") {
-      return UNFCCC.includes(selectedCatgeory);
-    }
-    if (category === "Litigation") {
-      return LITIGATION.includes(selectedCatgeory);
-    }
-  } else if (category === "All") {
-    return true;
   }
 
-  // All
+  if (!selectedCatgeory && themeConfigCategory.slug.toLowerCase() === "all") return true;
+
   return false;
 };
 
 type TSearchFiltersProps = {
   searchCriteria: TSearchCriteria;
+  query: ParsedUrlQuery;
   regions: TGeography[];
   countries: TGeography[];
   handleFilterChange(type: string, value: string): void;
@@ -63,6 +49,7 @@ type TSearchFiltersProps = {
 
 const SearchFilters = ({
   searchCriteria,
+  query,
   regions,
   countries,
   handleFilterChange,
@@ -75,7 +62,7 @@ const SearchFilters = ({
   const [showClear, setShowClear] = useState(false);
 
   const {
-    keyword_filters: { countries: countryFilters = [], regions: regionFilters = [], categories: categoryFilters = [] },
+    keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
   } = searchCriteria;
 
   const thisYear = currentYear();
@@ -126,23 +113,22 @@ const SearchFilters = ({
 
       <AppliedFilters filterChange={handleFilterChange} />
 
-      {themeConfigStatus === "success" &&
-        themeConfig.categories.map((category) => (
-          <Accordian title={category.label} data-cy={category.label} key={category.label} startOpen>
-            <InputListContainer>
-              {category.options.map((option) => (
-                <InputRadio
-                  key={option.slug}
-                  label={option.label}
-                  checked={categoryFilters && isCategoryChecked(categoryFilters[0], category.label)}
-                  onChange={() => {
-                    handleDocumentCategoryClick(option.slug);
-                  }}
-                />
-              ))}
-            </InputListContainer>
-          </Accordian>
-        ))}
+      {themeConfigStatus === "success" && (
+        <Accordian title={themeConfig.categories.label} data-cy={themeConfig.categories.label} key={themeConfig.categories.label} startOpen>
+          <InputListContainer>
+            {themeConfig.categories.options.map((option) => (
+              <InputRadio
+                key={option.slug}
+                label={option.label}
+                checked={query && isCategoryChecked(query[QUERY_PARAMS.category] as string, option)}
+                onChange={() => {
+                  handleDocumentCategoryClick(option.slug);
+                }}
+              />
+            ))}
+          </InputListContainer>
+        </Accordian>
+      )}
 
       {/* <Accordian title="Category" data-cy="categories" startOpen>
         <InputListContainer>

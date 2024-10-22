@@ -357,6 +357,7 @@ const Search = () => {
             ) : (
               <SearchFilters
                 searchCriteria={searchQuery}
+                query={router.query}
                 regions={regions}
                 countries={countries}
                 handleFilterChange={handleFilterChange}
@@ -376,6 +377,7 @@ const Search = () => {
             ) : (
               <SearchFilters
                 searchCriteria={searchQuery}
+                query={router.query}
                 regions={regions}
                 countries={countries}
                 handleFilterChange={handleFilterChange}

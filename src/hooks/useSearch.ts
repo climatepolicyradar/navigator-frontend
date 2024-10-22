@@ -1,9 +1,14 @@
 import { useEffect, useState, useMemo } from "react";
 import { ApiClient, getEnvFromServer } from "../api/http-common";
-import { initialSearchCriteria } from "../constants/searchCriteria";
-import { getCachedSearch, updateCacheSearch, TCacheResult } from "@utils/searchCache";
-import { TMatchedFamily, TSearch, TLoadingStatus } from "../types";
+
+import useGetThemeConfig from "./useThemeConfig";
+
 import buildSearchQuery, { TRouterQuery } from "@utils/buildSearchQuery";
+import { getCachedSearch, updateCacheSearch, TCacheResult } from "@utils/searchCache";
+
+import { initialSearchCriteria } from "../constants/searchCriteria";
+
+import { TMatchedFamily, TSearch, TLoadingStatus } from "../types";
 
 const CACHE_ENABLED = false;
 
@@ -30,14 +35,15 @@ async function getSearch(query = initialSearchCriteria) {
 }
 
 const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFreshSearch: boolean = true, noOfPassagesPerDoc: number = undefined) => {
+  const { themeConfig } = useGetThemeConfig();
   const [status, setStatus] = useState<TLoadingStatus>("idle");
   const [families, setFamilies] = useState<TMatchedFamily[]>([]);
   const [hits, setHits] = useState<number>(null);
   const [continuationToken, setContinuationToken] = useState<string | null>(null);
 
   const searchQuery = useMemo(() => {
-    return buildSearchQuery({ ...query }, familyId, documentId, undefined, noOfPassagesPerDoc);
-  }, [query, familyId, documentId, noOfPassagesPerDoc]);
+    return buildSearchQuery({ ...query }, themeConfig, familyId, documentId, undefined, noOfPassagesPerDoc);
+  }, [query, themeConfig, familyId, documentId, noOfPassagesPerDoc]);
 
   useEffect(() => {
     setStatus("loading");

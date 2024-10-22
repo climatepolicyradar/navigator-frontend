@@ -1,8 +1,7 @@
 import { initialSearchCriteria } from "@constants/searchCriteria";
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { LAWS, POLICIES, UNFCCC, LITIGATION } from "@constants/categoryAliases";
 
-import { TSearchCriteria, TSearchKeywordFilters } from "@types";
+import { TSearchCriteria, TSearchKeywordFilters, TThemeConfig } from "@types";
 
 export type TRouterQuery = {
   [key: string]: string | string[];
@@ -12,6 +11,7 @@ export type TRouterQuery = {
 // This function converts the query string to the search object
 export default function buildSearchQuery(
   routerQuery: TRouterQuery,
+  themeConfig: TThemeConfig,
   familyId = "",
   documentId = "",
   includeAllTokens = false,
@@ -49,20 +49,17 @@ export default function buildSearchQuery(
 
   if (routerQuery[QUERY_PARAMS.category]) {
     const qCategory = routerQuery[QUERY_PARAMS.category] as string;
-    let category: string;
-    if (LAWS.includes(qCategory)) {
-      category = "Legislative";
+    let category: string[];
+    let corpusIds: string[] = [];
+    if (themeConfig?.categories) {
+      const configCategory = themeConfig.categories.options.find((c) => c.slug === qCategory);
+      category = configCategory?.category;
+      if (configCategory?.value) corpusIds = configCategory.value;
     }
-    if (POLICIES.includes(qCategory)) {
-      category = "Executive";
-    }
-    if (UNFCCC.includes(qCategory)) {
-      category = "UNFCCC";
-    }
-    if (LITIGATION.includes(qCategory)) {
-      category = "Litigation";
-    }
-    keyword_filters.categories = [category];
+    // Set the category if we have one (TODO: remove this at some point)
+    keyword_filters.categories = category;
+    // Set the corpus import ids if we have them
+    query.corpus_import_ids = corpusIds;
   }
 
   if (routerQuery[QUERY_PARAMS.region]) {
