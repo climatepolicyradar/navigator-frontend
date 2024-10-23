@@ -15,10 +15,10 @@ export const MetadataRenderer = ({ family }: TProps) => {
   const { metadata, organisation, category, geographies, corpus_type_name, published_date } = family || {};
 
   const mcfFamilyMetadata: TFamilyMetadataUnion = {
+    geographies,
     ...metadata,
     organisation,
     category,
-    geographies,
   };
 
   if (category !== MultilateralClimateFunds) {
