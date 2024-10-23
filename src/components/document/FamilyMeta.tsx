@@ -10,26 +10,28 @@ type TProps = {
   category: TCategory;
   corpus_type_name: TCorpusTypeSubCategory;
   date: string;
-  geography: string;
+  geographies: string[] | null;
   topics?: string[];
   author?: string[];
 };
 
-export const FamilyMeta = ({ category, date, geography, topics, author, corpus_type_name }: TProps) => {
+export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name }: TProps) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
 
   const [year] = convertDate(date);
-  const country_name = getCountryName(geography, countries);
 
   return (
     <>
-      {!isSystemGeo(geography) && (
-        <span className="flex gap-1">
-          <CountryLink countryCode={geography} className="text-textDark no-underline">
-            <span>{country_name}</span>
-          </CountryLink>
-        </span>
+      {geographies?.map(
+        (geography, index) =>
+          !isSystemGeo(geography) && (
+            <span key={index} className="flex gap-1">
+              <CountryLink countryCode={geography} className="text-textDark no-underline">
+                <span>{getCountryName(geography, countries)}</span>
+              </CountryLink>
+            </span>
+          )
       )}
       {!isNaN(year) && <span data-cy="family-metadata-year">Approval FY: {year}</span>}
       {category && (
