@@ -1,4 +1,3 @@
-import { FC } from "react";
 import { CountryLink } from "@components/CountryLink";
 import { getCountryName } from "@helpers/getCountryFields";
 import { isSystemGeo } from "@utils/isSystemGeo";
@@ -9,7 +8,7 @@ type TCountriesLink = {
   countries: TGeography[];
 };
 
-export const CountriesLink: FC<TCountriesLink> = ({ geographies, countries }) => (
+export const CountriesLink = ({ geographies, countries }: TCountriesLink) => (
   <>
     {geographies?.map(
       (geography, index) =>
