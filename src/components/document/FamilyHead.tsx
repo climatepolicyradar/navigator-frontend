@@ -7,7 +7,6 @@ import { MetadataRenderer } from "./renderers/MetadataRenderer";
 
 type TProps = {
   family: TFamilyPage;
-  geographyName: string;
   onCollectionClick?: (e: any, i: number) => void;
 };
 

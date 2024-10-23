@@ -75,10 +75,12 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
 
-  const geographyName = getCountryName(page.geographies[0], countries);
-  const geographySlug = getCountrySlug(page.geographies[0], countries);
+  const geographyNames = page.geographies ? page.geographies.map((geo) => getCountryName(geo, countries)) : null;
+  const geographyName = geographyNames ? geographyNames[0] : "";
+  const geographySlug = page.geographies ? getCountrySlug(page.geographies[0], countries) : "";
   const breadcrumbCategory = { label: "Search results", href: "/search" };
-  const breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
+  const breadcrumbGeography =
+    page.geographies && page.geographies.length > 1 ? null : { label: geographyName, href: `/geographies/${geographySlug}` };
 
   let searchFamily: TMatchedFamily = null;
   const { status, families } = useSearch(router.query, page.import_id, null, !!router.query[QUERY_PARAMS.query_string], MAX_PASSAGES);
@@ -158,22 +160,23 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   };
 
   return (
-    <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyName, page.category)}>
+    <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)}>
       <Script id="analytics">
-        analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "{page.geographies[0]}";
+        analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "
+        {page.geographies?.join(",")}";
       </Script>
       <section
         className="mb-8"
         data-analytics-category={page.category}
         data-analytics-type={getDocumentCategories().join(",")}
-        data-analytics-geography={page.geographies[0]}
+        data-analytics-geography={page.geographies?.join(",")}
       >
         <SubNav>
           <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={page.title} />
         </SubNav>
         <SiteWidth>
           <SingleCol extraClasses="mt-8">
-            <FamilyHead family={page} geographyName={geographyName} onCollectionClick={handleCollectionClick} />
+            <FamilyHead family={page} onCollectionClick={handleCollectionClick} />
             <section className="mt-6">
               {/* SSR summary */}
               <div className={`text-content mt-4 ${summary && "hidden"}`} dangerouslySetInnerHTML={{ __html: page.summary }} />
