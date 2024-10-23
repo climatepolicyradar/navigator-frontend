@@ -162,13 +162,14 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
   return (
     <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)}>
       <Script id="analytics">
-        analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "{page.geographies[0]}";
+        analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "
+        {page.geographies?.join(",")}";
       </Script>
       <section
         className="mb-8"
         data-analytics-category={page.category}
         data-analytics-type={getDocumentCategories().join(",")}
-        data-analytics-geography={page.geographies[0]}
+        data-analytics-geography={page.geographies?.join(",")}
       >
         <SubNav>
           <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={page.title} />
