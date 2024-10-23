@@ -10,7 +10,7 @@ const CheckBox = ({ checked, onChange }: TProps) => {
 
 export const InputCheck = ({ label, checked, onChange }: TProps) => {
   return (
-    <label className={`flex gap-2 items-center cursor-pointer ${checked ? "font-medium text-textDark" : ""}`}>
+    <label className={`flex gap-2 cursor-pointer ${checked ? "font-medium text-textDark" : ""}`}>
       <CheckBox checked={checked} onChange={onChange} />
       <span>{label}</span>
     </label>

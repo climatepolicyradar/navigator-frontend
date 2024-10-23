@@ -46,7 +46,7 @@
   "filters": [
     {
       "label": "Funds",
-      "taxonomyKey": "funds",
+      "taxonomyKey": "fund",
       "options": [
         {
           "label": "Green Climate Fund",

@@ -43,7 +43,7 @@ const Search = () => {
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
   const configQuery = useConfig();
-  const { data: { regions = [], countries = [] } = {} } = configQuery;
+  const { data: { regions = [], countries = [], organisations = {} } = {} } = configQuery;
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 
@@ -360,6 +360,7 @@ const Search = () => {
                 query={router.query}
                 regions={regions}
                 countries={countries}
+                organisations={organisations}
                 handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
@@ -380,6 +381,7 @@ const Search = () => {
                 query={router.query}
                 regions={regions}
                 countries={countries}
+                organisations={organisations}
                 handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}

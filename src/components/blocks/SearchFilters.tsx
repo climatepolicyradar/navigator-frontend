@@ -18,7 +18,7 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 
 import { getCountriesFromRegions } from "@helpers/getCountriesFromRegions";
 
-import { TGeography, TSearchCriteria, TThemeConfigOption } from "@types";
+import { TGeography, TOrganisationDictionary, TSearchCriteria, TThemeConfigFilter, TThemeConfigOption } from "@types";
 import { ParsedUrlQuery } from "querystring";
 
 const { default: MethodologyLink } = await import(`/themes/${process.env.THEME}/components/MethodologyLink`);
@@ -35,11 +35,49 @@ const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCate
   return false;
 };
 
+const renderFilterOptions = (
+  filter: TThemeConfigFilter,
+  query: ParsedUrlQuery,
+  handleFilterChange: Function,
+  organisations: TOrganisationDictionary
+) => {
+  if (filter.options && filter.options.length > 0) {
+    return filter.options.map((option) => (
+      <InputCheck
+        key={option.slug}
+        label={option.label}
+        checked={query && query[filter.taxonomyKey] && query[filter.taxonomyKey].includes(option.slug)}
+        onChange={() => {
+          handleFilterChange(filter.taxonomyKey, option.slug);
+        }}
+      />
+    ));
+  }
+  if (filter.corporaTypeKey && organisations && organisations[filter.corporaTypeKey]) {
+    // check our organisation contains the filter
+    const corpus = organisations[filter.corporaTypeKey].corpora.find((corpus) => corpus.taxonomy.hasOwnProperty(filter.taxonomyKey));
+    if (corpus) {
+      return corpus.taxonomy[filter.taxonomyKey]?.allowed_values.map((option: string) => (
+        <InputCheck
+          key={option}
+          label={option}
+          checked={query && query[filter.taxonomyKey] && query[filter.taxonomyKey].includes(option)}
+          onChange={() => {
+            handleFilterChange(filter.taxonomyKey, option);
+          }}
+        />
+      ));
+    }
+  }
+  return null;
+};
+
 type TSearchFiltersProps = {
   searchCriteria: TSearchCriteria;
   query: ParsedUrlQuery;
   regions: TGeography[];
   countries: TGeography[];
+  organisations: TOrganisationDictionary;
   handleFilterChange(type: string, value: string): void;
   handleYearChange(values: number[], reset?: boolean): void;
   handleRegionChange(region: string): void;
@@ -52,6 +90,7 @@ const SearchFilters = ({
   query,
   regions,
   countries,
+  organisations,
   handleFilterChange,
   handleYearChange,
   handleRegionChange,
@@ -130,20 +169,15 @@ const SearchFilters = ({
         </Accordian>
       )}
 
-      {/* <Accordian title="Category" data-cy="categories" startOpen>
-        <InputListContainer>
-          {DOCUMENT_CATEGORIES.map((category, i) => (
-            <InputRadio
-              key={category}
-              label={category}
-              checked={categoryFilters && isCategoryChecked(categoryFilters[0], category)}
-              onChange={() => {
-                handleDocumentCategoryClick(category);
-              }}
-            />
-          ))}
-        </InputListContainer>
-      </Accordian> */}
+      {/* TODO: loop over array of filters from the config and display based on whether their "category" is in the selected category's list of corpusIds */}
+      {themeConfigStatus === "success" &&
+        themeConfig.filters.map((filter) => {
+          return (
+            <Accordian title={filter.label} data-cy={filter.label} key={filter.label}>
+              <InputListContainer>{renderFilterOptions(filter, query, handleFilterChange, organisations)}</InputListContainer>
+            </Accordian>
+          );
+        })}
 
       <Accordian title="Region" data-cy="regions">
         <InputListContainer>

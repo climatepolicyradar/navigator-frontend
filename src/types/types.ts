@@ -250,10 +250,19 @@ export type TCorpus = {
   corpus_import_id: string;
   image_url: string;
   text: string;
+  // taxonomies
+  taxonomy: {
+    [key: string]: {
+      allow_any: boolean;
+      allow_blanks: boolean;
+      allowed_values: string[];
+    };
+  };
 };
 
 export type TOrganisation = {
   corpora: TCorpus[];
+  total: number;
   count_by_category: {
     [key: string]: number;
   };
@@ -279,7 +288,7 @@ export type TQueryStrings = {
   active_continuation_token: string;
   continuation_tokens: string;
   // Multilater Climate Funds (MCF)
-  funds: string;
+  fund: string;
   status: string;
   implementing_agency: string;
 };
@@ -301,7 +310,7 @@ type TThemeConfigCategory = {
   options: TThemeConfigOption[];
 };
 
-type TThemeConfigFilter = {
+export type TThemeConfigFilter = {
   label: string;
   corporaTypeKey?: string;
   taxonomyKey: string;
