@@ -2,7 +2,7 @@ import useConfig from "@hooks/useConfig";
 import { getCategoryName } from "@helpers/getCategoryName";
 import { convertDate } from "@utils/timedate";
 import { TCategory, TCorpusTypeSubCategory } from "@types";
-import { CountriesLinks } from "@components/CountriesLinks";
+import { CountriesLink } from "@components/CountriesLink";
 
 type TProps = {
   category: TCategory;
@@ -21,7 +21,7 @@ export const FamilyMeta = ({ category, date, geographies, topics, author, corpus
 
   return (
     <>
-      <CountriesLinks geographies={geographies} countries={countries} />
+      <CountriesLink geographies={geographies} countries={countries} />
       {!isNaN(year) && <span data-cy="family-metadata-year">Approval FY: {year}</span>}
       {category && (
         <span className="capitalize" data-cy="family-metadata-category">

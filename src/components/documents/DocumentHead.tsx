@@ -13,7 +13,7 @@ import { Heading } from "@components/typography/Heading";
 
 import { getLanguage } from "@helpers/getLanguage";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
-import { CountriesLinks } from "@components/CountriesLinks";
+import { CountriesLink } from "@components/CountriesLink";
 import { truncateString } from "@utils/truncateString";
 
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
@@ -75,7 +75,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
             <Heading level={1}>{document.title}</Heading>
             <div className="my-4 md:my-2 md:flex justify-between items-center">
               <div className="flex text-sm items-center gap-2 middot-between">
-                <CountriesLinks geographies={family.geographies} countries={countries} />
+                <CountriesLink geographies={family.geographies} countries={countries} />
                 {!isMain && <span className="capitalize">{document.document_role.toLowerCase()}</span>}
                 {family.category && <span className="capitalize">{family.category}</span>}
                 {!!document.language && (
