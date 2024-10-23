@@ -7,7 +7,6 @@ import { TFamilyPage } from "@types";
 
 type TProps = {
   family: TFamilyPage;
-  geographyName: string;
   onCollectionClick?: (e: any, i: number) => void;
 };
 
@@ -43,7 +42,7 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
           category={family.category}
           corpus_type_name={family.corpus_type_name}
           date={family.published_date}
-          geography={family.geographies[0]}
+          geographies={family.geographies}
           topics={family.metadata.topic}
           author={family.metadata.author_type}
         />
