@@ -1,9 +1,10 @@
 import { metadataLabelMappings } from "@constants/familyMetadataMappings";
-import { getSumUSD } from "@helpers/getSumUSD";
 import { getSubCategoryName } from "@helpers/getCategoryName";
+import { getSumUSD } from "@helpers/getSumUSD";
+import { TCorpusTypeSubCategory } from "@types";
 
 interface Metadata {
-  [key: string]: string[];
+  [key: string]: string[] | TCorpusTypeSubCategory | string;
 }
 
 type ResultItem = {
@@ -27,7 +28,7 @@ export const mapFamilyMetadata = (metadata: Metadata) => {
       } else if (key.includes("project_value") && values[0] !== "0") {
         result.push({ label: mapping.label, iconLabel: mapping.iconLabel, value: getSumUSD(values as string[]) });
       } else if (key === "organisation") {
-        result.push({ label: mapping.label, iconLabel: mapping.iconLabel, value: getSubCategoryName(values) });
+        result.push({ label: mapping.label, iconLabel: mapping.iconLabel, value: getSubCategoryName(values as TCorpusTypeSubCategory) });
       } else {
         result.push({
           label: mapping.label,

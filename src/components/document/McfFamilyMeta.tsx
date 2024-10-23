@@ -1,7 +1,20 @@
-import { getIcon } from "@helpers/getMetadataIcon";
-import { mapFamilyMetadata } from "@helpers/mapFamilyMetadata";
 import { ExternalLink } from "@components/ExternalLink";
 import { CountryLink } from "@components/CountryLink";
+import { getIcon } from "@helpers/getMetadataIcon";
+import { mapFamilyMetadata } from "@helpers/mapFamilyMetadata";
+import { TFamilyMetadata, TMCFFamilyMetadata } from "@types";
+
+interface MetadataItemProps {
+  label: string;
+  icon: string;
+  value: string | string[];
+}
+
+type TFamilyMetadataUnion = TFamilyMetadata | TMCFFamilyMetadata;
+
+interface McfFamilyMetaProps {
+  metadata: TFamilyMetadataUnion;
+}
 
 const getCountryLinks = (countryCodes: string[]): JSX.Element[] => {
   const countries = countryCodes.map((code, index) => (
@@ -18,20 +31,20 @@ const getCountryLinks = (countryCodes: string[]): JSX.Element[] => {
   return countries;
 };
 
-const MetadataItem = ({ label, icon, value }) => {
+const MetadataItem = ({ label, icon, value }: MetadataItemProps) => {
   const isUrl = label === "Source";
   const isCountry = label === "Geography";
   const IconComponent = getIcon(icon);
 
   const getValueContent = () => {
-    if (isUrl) {
+    if (isUrl && typeof value === "string") {
       return (
         <ExternalLink url={value} className="text-blue-600 underline truncate text-xs">
           {" "}
           Visit project page
         </ExternalLink>
       );
-    } else if (isCountry) {
+    } else if (isCountry && Array.isArray(value)) {
       return getCountryLinks(value);
     } else {
       return <span className=" text-xs">{value}</span>;
@@ -51,7 +64,7 @@ const MetadataItem = ({ label, icon, value }) => {
   );
 };
 
-export const McfFamilyMeta = ({ metadata }) => {
+export const McfFamilyMeta = ({ metadata }: McfFamilyMetaProps) => {
   const mappedMetadata = mapFamilyMetadata(metadata);
 
   return (

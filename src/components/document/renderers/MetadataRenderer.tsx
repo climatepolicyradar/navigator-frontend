@@ -1,22 +1,37 @@
+import { TFamilyMetadata, TMCFFamilyMetadata, TFamilyPage } from "@types";
+
 import { FamilyMeta } from "../FamilyMeta";
 import { McfFamilyMeta } from "../McfFamilyMeta";
 
 const MultilateralClimateFunds = "MCF";
 
-export const MetadataRenderer = ({ family }) => {
-  const family_metadata = { ...family?.metadata, organisation: family.organisation, category: family.category, geographies: family.geographies };
+interface TProps {
+  family: TFamilyPage;
+}
 
-  if (family?.category !== MultilateralClimateFunds) {
+type TFamilyMetadataUnion = TFamilyMetadata | TMCFFamilyMetadata;
+
+export const MetadataRenderer = ({ family }: TProps) => {
+  const { metadata, organisation, category, geographies, corpus_type_name, published_date } = family || {};
+
+  const mcfFamilyMetadata: TFamilyMetadataUnion = {
+    ...metadata,
+    organisation,
+    category,
+    geographies,
+  };
+
+  if (category !== MultilateralClimateFunds) {
     return (
       <FamilyMeta
-        category={family.category}
-        corpus_type_name={family.corpus_type_name}
-        date={family.published_date}
-        geography={family.geography}
-        topics={family.metadata?.topic}
-        author={family.metadata?.author_type}
+        category={category}
+        corpus_type_name={corpus_type_name}
+        date={published_date}
+        geography={geographies?.[0]}
+        topics={metadata?.topic}
+        author={metadata?.author_type}
       />
     );
   }
-  return <McfFamilyMeta metadata={family_metadata} />;
+  return <McfFamilyMeta metadata={mcfFamilyMetadata} />;
 };

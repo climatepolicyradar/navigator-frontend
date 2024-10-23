@@ -13,6 +13,6 @@ const metadataIcons = {
   Layers,
 };
 
-export const getIcon = (iconName) => {
+export const getIcon = (iconName: string) => {
   return metadataIcons[iconName];
 };
