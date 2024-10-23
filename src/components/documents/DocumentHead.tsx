@@ -39,10 +39,12 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
 
   const configQuery = useConfig();
   const { data: { countries = [], languages = {} } = {} } = configQuery;
-  const geoName = getCountryName(family.geographies[0], countries);
-  const geoSlug = getCountrySlug(family.geographies[0], countries);
+
+  const geographyNames = family.geographies ? family.geographies.map((geo) => getCountryName(geo, countries)) : null;
+  const geoName = geographyNames ? geographyNames[0] : "";
+  const geoSlug = family.geographies ? getCountrySlug(family.geographies[0], countries) : "";
   const isMain = document.document_role.toLowerCase().includes("main");
-  const breadcrumbGeography = { label: geoName, href: `/geographies/${geoSlug}` };
+  const breadcrumbGeography = family.geographies && family.geographies.length > 1 ? null : { label: geoName, href: `/geographies/${geoSlug}` };
   const breadcrumbFamily = { label: family.title, href: `/document/${family.slug}` };
   const breadcrumbLabel = isMain ? "Document" : document.document_role.toLowerCase();
   const breadcrumbCategory = { label: "Search results", href: "/search" };
