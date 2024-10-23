@@ -1,33 +1,29 @@
-import React from "react";
-
 import { ExternalLink } from "@components/ExternalLink";
 
-import { AdaptationFundLogo, GlobalEnvironmentFacilityLogo, GreenClimateFundLogo, ClimateInvestmentFundsLogo } from "./logos/logos";
-
 interface FundData {
-  logo: JSX.Element;
+  imgSrc: string;
   name: string;
   url: string;
 }
 
 const fundInformation: FundData[] = [
   {
-    logo: <AdaptationFundLogo />,
+    imgSrc: "/images/mcf/AF.png",
     name: "Adaptation Fund",
     url: "https://www.adaptation-fund.org/",
   },
   {
-    logo: <ClimateInvestmentFundsLogo />,
+    imgSrc: "/images/mcf/CIF.png",
     name: "Climate Investment Funds",
     url: "https://www.cif.org/",
   },
   {
-    logo: <GreenClimateFundLogo />,
+    imgSrc: "/images/mcf/GCF.png",
     name: "Green Climate Fund",
     url: "https://www.greenclimate.fund/",
   },
   {
-    logo: <GlobalEnvironmentFacilityLogo />,
+    imgSrc: "/images/mcf/GEF.png",
     name: "Global Environment Facility",
     url: "https://www.thegef.org/",
   },
@@ -39,7 +35,8 @@ export const MultilateralClimateFundLogos = () => {
       {fundInformation.map((fund) => (
         <div key={fund.name} className="w-[120px] h-[60px]">
           <ExternalLink url={fund.url} className="block w-full h-full">
-            {fund.logo}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={fund.imgSrc} alt={`${fund.name} logo`} className="object-contain w-full h-full" />
           </ExternalLink>
         </div>
       ))}

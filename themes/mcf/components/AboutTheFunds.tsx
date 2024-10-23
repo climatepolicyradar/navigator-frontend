@@ -53,7 +53,8 @@ const AboutTheFundsContent = () => {
           </p>
         </div>
         <div className="hidden xl:block xl:h-full">
-          <Image src="/images/mcf/mcf-fund-logos.png" alt="Multilateral Climate Fund Logos" width={400} height={200} />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/mcf/mcf-fund-logos.png" alt="Multilateral Climate Fund Logos" className="h-[34rem]" />
         </div>
       </div>
     </SiteWidth>

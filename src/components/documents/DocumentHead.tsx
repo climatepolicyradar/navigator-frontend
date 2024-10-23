@@ -39,8 +39,8 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
 
   const configQuery = useConfig();
   const { data: { countries = [], languages = {} } = {} } = configQuery;
-  const geoName = getCountryName(family.geography, countries);
-  const geoSlug = getCountrySlug(family.geography, countries);
+  const geoName = getCountryName(family.geographies[0], countries);
+  const geoSlug = getCountrySlug(family.geographies[0], countries);
   const isMain = document.document_role.toLowerCase().includes("main");
   const breadcrumbGeography = { label: geoName, href: `/geographies/${geoSlug}` };
   const breadcrumbFamily = { label: family.title, href: `/document/${family.slug}` };
@@ -75,9 +75,9 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
             <Heading level={1}>{document.title}</Heading>
             <div className="my-4 md:my-2 md:flex justify-between items-center">
               <div className="flex text-sm items-center gap-2 middot-between">
-                {!isSystemGeo(family.geography) && (
+                {!isSystemGeo(family.geographies[0]) && (
                   <span className="flex gap-1">
-                    <CountryLink countryCode={family.geography} className="text-textDark font-medium">
+                    <CountryLink countryCode={family.geographies[0]} className="text-textDark font-medium">
                       <span>{geoName}</span>
                     </CountryLink>
                   </span>
