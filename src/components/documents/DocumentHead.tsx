@@ -4,7 +4,6 @@ import useConfig from "@hooks/useConfig";
 import { SiteWidth } from "@components/panels/SiteWidth";
 
 import { SubNav } from "@components/nav/SubNav";
-import { CountryLink } from "@components/CountryLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import Button from "@components/buttons/Button";
 import { ExternalLinkIcon, AlertCircleIcon } from "@components/svg/Icons";
@@ -14,9 +13,8 @@ import { Heading } from "@components/typography/Heading";
 
 import { getLanguage } from "@helpers/getLanguage";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
-
+import { CountriesLinks } from "@components/CountriesLinks";
 import { truncateString } from "@utils/truncateString";
-import { isSystemGeo } from "@utils/isSystemGeo";
 
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
 
@@ -77,16 +75,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
             <Heading level={1}>{document.title}</Heading>
             <div className="my-4 md:my-2 md:flex justify-between items-center">
               <div className="flex text-sm items-center gap-2 middot-between">
-                {family.geographies?.map(
-                  (geography, index) =>
-                    !isSystemGeo(geography) && (
-                      <span key={index} className="flex gap-1">
-                        <CountryLink countryCode={geography} className="text-textDark no-underline">
-                          <span>{getCountryName(geography, countries)}</span>
-                        </CountryLink>
-                      </span>
-                    )
-                )}
+                <CountriesLinks geographies={family.geographies} countries={countries} />
                 {!isMain && <span className="capitalize">{document.document_role.toLowerCase()}</span>}
                 {family.category && <span className="capitalize">{family.category}</span>}
                 {!!document.language && (

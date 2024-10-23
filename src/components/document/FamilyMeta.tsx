@@ -1,10 +1,8 @@
 import useConfig from "@hooks/useConfig";
-import { CountryLink } from "@components/CountryLink";
-import { getCountryName } from "@helpers/getCountryFields";
 import { getCategoryName } from "@helpers/getCategoryName";
-import { isSystemGeo } from "@utils/isSystemGeo";
 import { convertDate } from "@utils/timedate";
 import { TCategory, TCorpusTypeSubCategory } from "@types";
+import { CountriesLinks } from "@components/CountriesLinks";
 
 type TProps = {
   category: TCategory;
@@ -23,16 +21,7 @@ export const FamilyMeta = ({ category, date, geographies, topics, author, corpus
 
   return (
     <>
-      {geographies?.map(
-        (geography, index) =>
-          !isSystemGeo(geography) && (
-            <span key={index} className="flex gap-1">
-              <CountryLink countryCode={geography} className="text-textDark no-underline">
-                <span>{getCountryName(geography, countries)}</span>
-              </CountryLink>
-            </span>
-          )
-      )}
+      <CountriesLinks geographies={geographies} countries={countries} />
       {!isNaN(year) && <span data-cy="family-metadata-year">Approval FY: {year}</span>}
       {category && (
         <span className="capitalize" data-cy="family-metadata-category">
