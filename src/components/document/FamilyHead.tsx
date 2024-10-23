@@ -7,7 +7,6 @@ import { TFamilyPage } from "@types";
 
 type TProps = {
   family: TFamilyPage;
-  geographyName: string;
   onCollectionClick?: (e: any, i: number) => void;
 };
 
