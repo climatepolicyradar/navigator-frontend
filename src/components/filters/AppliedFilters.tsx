@@ -11,7 +11,8 @@ import { getCountryName } from "@helpers/getCountryFields";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { sortOptions } from "@constants/sortOptions";
 
-import { TGeography } from "@types";
+import { TGeography, TThemeConfig } from "@types";
+import useGetThemeConfig from "@hooks/useThemeConfig";
 
 type TFilterChange = (type: string, value: string) => void;
 
@@ -29,13 +30,15 @@ const handleFilterDisplay = (
   key: string,
   value: string,
   countries: TGeography[],
-  regions: TGeography[]
+  regions: TGeography[],
+  themeConfig: TThemeConfig
 ) => {
   let filterLabel: string | null | undefined = null;
   let filterValue = value;
   switch (key) {
     case "category":
-      filterLabel = value;
+      const configCategory = themeConfig?.categories.options.find((c) => c.slug === value);
+      filterLabel = configCategory ? configCategory.label : value;
       break;
     case "country":
       filterLabel = handleCountryRegion(value, countries);
@@ -62,6 +65,7 @@ const handleFilterDisplay = (
     case "query_string":
       filterLabel = `Search: ${value}`;
       break;
+    //TODO: write a case for any remainding key that loops through the filters array on the config and then searches within the options where the key === taxonomyKey
   }
 
   if (!filterLabel) {
@@ -76,19 +80,26 @@ const handleFilterDisplay = (
 
 // loop over the keys in QUERY_PARAMS and check if they are in the query string, if they are, display them as pills
 // if the key is not in the query string, don't display it
-const generatePills = (queryParams: ParsedUrlQuery, filterChange: TFilterChange, countries: TGeography[], regions: TGeography[]) => {
+const generatePills = (
+  queryParams: ParsedUrlQuery,
+  filterChange: TFilterChange,
+  countries: TGeography[],
+  regions: TGeography[],
+  themeConfig: TThemeConfig
+) => {
   let pills: JSX.Element[] = [];
 
   Object.keys(QUERY_PARAMS).map((key) => {
     const value = queryParams[QUERY_PARAMS[key]];
     if (value) {
-      if (key === "year_range") return pills.push(handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions));
+      if (key === "year_range")
+        return pills.push(handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions, themeConfig));
       if (Array.isArray(value)) {
         return value.map((v: string) => {
-          return pills.push(handleFilterDisplay(filterChange, queryParams, key, v, countries, regions));
+          return pills.push(handleFilterDisplay(filterChange, queryParams, key, v, countries, regions, themeConfig));
         });
       }
-      return pills.push(handleFilterDisplay(filterChange, queryParams, key, value, countries, regions));
+      return pills.push(handleFilterDisplay(filterChange, queryParams, key, value, countries, regions, themeConfig));
     } else {
       return;
     }
@@ -100,11 +111,12 @@ const generatePills = (queryParams: ParsedUrlQuery, filterChange: TFilterChange,
 export const AppliedFilters = ({ filterChange }: TProps) => {
   const router = useRouter();
   const configQuery = useConfig();
+  const { themeConfig } = useGetThemeConfig();
   const { data: { countries = [], regions = [] } = {} } = configQuery;
 
   const appliedFilters = useMemo(
-    () => generatePills(router.query, filterChange, countries, regions).map((pill) => pill),
-    [router.query, filterChange, countries, regions]
+    () => generatePills(router.query, filterChange, countries, regions, themeConfig).map((pill) => pill),
+    [router.query, filterChange, countries, regions, themeConfig]
   );
 
   if (appliedFilters.length === 0) {
