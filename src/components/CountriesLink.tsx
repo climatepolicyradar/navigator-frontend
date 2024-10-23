@@ -11,9 +11,9 @@ type TCountriesLink = {
 export const CountriesLink = ({ geographies, countries }: TCountriesLink) => (
   <>
     {geographies?.map(
-      (geography, index) =>
+      (geography) =>
         !isSystemGeo(geography) && (
-          <span key={index} className="flex gap-1">
+          <span key={geography} className="flex gap-1">
             <CountryLink countryCode={geography} className="text-textDark no-underline">
               <span>{getCountryName(geography, countries)}</span>
             </CountryLink>
