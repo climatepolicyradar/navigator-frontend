@@ -42,12 +42,7 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
         <div className="p-5 pb-0 pr-10 md:pr-12">
           <Heading level={2}>{family_name}</Heading>
           <div className="flex flex-wrap text-sm gap-1 mt-2 items-center middot-between">
-            <FamilyMeta
-              category={family_category}
-              corpus_type_name={corpus_type_name}
-              geographies={family_geographies} // FIXME family_geographies.length > 0 ? family_geographies[0] : ""
-              date={family_date}
-            />
+            <FamilyMeta category={family_category} corpus_type_name={corpus_type_name} geographies={family_geographies} date={family_date} />
           </div>
           <div className="mt-5">
             <Heading level={3}>Summary</Heading>
