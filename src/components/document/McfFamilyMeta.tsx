@@ -23,7 +23,7 @@ const getCountryLinks = (countryCodes: string[]): JSX.Element[] => {
         countryCode={code}
         showFlag={false}
         showSlugAsChildren={true}
-        className="text-blue-600 underline truncate text-xs text-transform: capitalize"
+        className="text-blue-600 underline truncate text-sm text-transform: capitalize"
       />
       {index !== countryCodes.length - 1 && <span>,</span>}
     </div>
@@ -39,7 +39,7 @@ const MetadataItem = ({ label, icon, value }: MetadataItemProps) => {
   const getValueContent = () => {
     if (isUrl && typeof value === "string") {
       return (
-        <ExternalLink url={value} className="text-blue-600 underline truncate text-xs">
+        <ExternalLink url={value} className="text-blue-600 underline truncate text-sm">
           {" "}
           Visit project page
         </ExternalLink>
@@ -47,7 +47,7 @@ const MetadataItem = ({ label, icon, value }: MetadataItemProps) => {
     } else if (isCountry && Array.isArray(value)) {
       return getCountryLinks(value);
     } else {
-      return <span className=" text-xs">{value}</span>;
+      return <span className=" text-sm">{value}</span>;
     }
   };
 
@@ -55,7 +55,7 @@ const MetadataItem = ({ label, icon, value }: MetadataItemProps) => {
     <div className="flex items-center gap-1 pt-1 pr-1 pb-1">
       <IconComponent className="w-[16px] h-[16px]" />
       <div className="flex flex-row gap-1 items-center">
-        <span className="text-xs font-bold">
+        <span className="text-sm font-bold">
           <strong>{label}</strong>
         </span>
         {getValueContent()}
