@@ -10,7 +10,7 @@ type TProps = {
   category: TCategory;
   corpus_type_name: TCorpusTypeSubCategory;
   date: string;
-  geographies: string[] | null;
+  geographies: string[];
   topics?: string[];
   author?: string[];
 };
