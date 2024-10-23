@@ -21,7 +21,7 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
           category={family_category}
           corpus_type_name={corpus_type_name}
           date={family_date}
-          geography={family_geographies.length > 0 ? family_geographies[0] : ""}
+          geographies={family_geographies} // FIXME family_geographies.length > 0 ? family_geographies[0] : ""
         />
         {children}
       </div>

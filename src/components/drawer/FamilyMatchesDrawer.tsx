@@ -45,7 +45,7 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
             <FamilyMeta
               category={family_category}
               corpus_type_name={corpus_type_name}
-              geography={family_geographies.length > 0 ? family_geographies[0] : ""}
+              geographies={family_geographies} // FIXME family_geographies.length > 0 ? family_geographies[0] : ""
               date={family_date}
             />
           </div>
