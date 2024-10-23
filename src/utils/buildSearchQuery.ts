@@ -18,7 +18,10 @@ export default function buildSearchQuery(
   noOfPassagesPerDoc: number = undefined
 ): TSearchCriteria {
   const keyword_filters: TSearchKeywordFilters = {};
-  let query = { ...initialSearchCriteria };
+  let query = { ...initialSearchCriteria, runSearch: true };
+
+  // don't build a query object if we are not provided with a config
+  if (!themeConfig) return { ...query, runSearch: false };
 
   if (routerQuery[QUERY_PARAMS.query_string]) {
     query.query_string = routerQuery[QUERY_PARAMS.query_string]?.toString();

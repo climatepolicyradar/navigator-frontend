@@ -27,6 +27,8 @@ export type TSearchCriteria = {
   continuation_tokens?: string[] | null;
   corpus_import_ids: string[];
   metadata: TSearchCriteriaMeta[];
+  // for internal use
+  runSearch?: boolean;
 };
 
 export type TPassageBlockCoords = [number, number];

@@ -49,7 +49,7 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
     setStatus("loading");
 
     // If we don't want to trigger an API call, return early
-    if (!runFreshSearch) {
+    if (!runFreshSearch || !searchQuery.runSearch) {
       setStatus("success");
       return;
     }
