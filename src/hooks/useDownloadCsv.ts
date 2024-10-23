@@ -1,4 +1,4 @@
-import { ApiClient, getEnvFromServer } from "../api/http-common";
+import { ApiClient, getEnvFromServer, getFilters } from "../api/http-common";
 import buildSearchQuery, { TRouterQuery } from "@utils/buildSearchQuery";
 import { TLoadingStatus, TSearch } from "@types";
 import { useState } from "react";
@@ -34,9 +34,10 @@ async function getDownloadCsv(query: TRouterQuery) {
   };
 
   const { data } = await getEnvFromServer();
+  const { themeConfig } = await getFilters();
   const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
 
-  const searchQuery = buildSearchQuery(query, "", "", true, 0);
+  const searchQuery = buildSearchQuery(query, themeConfig, "", "", true, 0);
   // Manually set this to 500, overriding the default 10 which is used for pagination
   searchQuery.page_size = 500;
   searchQuery.limit = 500;
