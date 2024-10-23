@@ -27,7 +27,7 @@ export const MetadataRenderer = ({ family }: TProps) => {
         category={category}
         corpus_type_name={corpus_type_name}
         date={published_date}
-        geography={geographies?.[0]}
+        geographies={geographies}
         topics={metadata?.topic}
         author={metadata?.author_type}
       />
