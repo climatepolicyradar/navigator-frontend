@@ -22,7 +22,7 @@ export const FamilyMeta = ({ category, date, geographies, topics, author, corpus
   return (
     <>
       <CountriesLink geographies={geographies} countries={countries} />
-      {!isNaN(year) && <span data-cy="family-metadata-year">Approval FY: {year}</span>}
+      {!isNaN(year) && <span data-cy="family-metadata-year">{`${category === "MCF" ? "Approval FY: " + year : year}`}</span>}
       {category && (
         <span className="capitalize" data-cy="family-metadata-category">
           {getCategoryName(category, corpus_type_name)}
