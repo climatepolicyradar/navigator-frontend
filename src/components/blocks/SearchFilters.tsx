@@ -46,24 +46,24 @@ const renderFilterOptions = (
       <InputCheck
         key={option.slug}
         label={option.label}
-        checked={query && query[filter.taxonomyKey] && query[filter.taxonomyKey].includes(option.slug)}
+        checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option.slug)}
         onChange={() => {
-          handleFilterChange(filter.taxonomyKey, option.slug);
+          handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug);
         }}
       />
     ));
   }
   if (filter.corporaTypeKey && organisations && organisations[filter.corporaTypeKey]) {
-    // check our organisation contains the filter
+    // check our organisation contains the filter in its list of taxonomies
     const corpus = organisations[filter.corporaTypeKey].corpora.find((corpus) => corpus.taxonomy.hasOwnProperty(filter.taxonomyKey));
     if (corpus) {
       return corpus.taxonomy[filter.taxonomyKey]?.allowed_values.map((option: string) => (
         <InputCheck
           key={option}
           label={option}
-          checked={query && query[filter.taxonomyKey] && query[filter.taxonomyKey].includes(option)}
+          checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option)}
           onChange={() => {
-            handleFilterChange(filter.taxonomyKey, option);
+            handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option);
           }}
         />
       ));
@@ -152,10 +152,10 @@ const SearchFilters = ({
 
       <AppliedFilters filterChange={handleFilterChange} />
 
-      {themeConfigStatus === "success" && (
+      {themeConfigStatus === "success" && themeConfig.categories && (
         <Accordian title={themeConfig.categories.label} data-cy={themeConfig.categories.label} key={themeConfig.categories.label} startOpen>
           <InputListContainer>
-            {themeConfig.categories.options.map((option) => (
+            {themeConfig.categories?.options?.map((option) => (
               <InputRadio
                 key={option.slug}
                 label={option.label}

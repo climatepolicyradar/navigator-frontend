@@ -1,11 +1,5 @@
 {
-  "corpusIds": [
-    "UNFCCC.corpus.i00000001.n0000",
-    "CCLW.corpus.i00000001.n0000",
-    "CPR.corpus.i00000001.n0000",
-    "MCF.corpus.GCF.n0000",
-    "MCF.corpus.GEF.n0000"
-  ],
+  "defaultCorpora": [],
   "categories": {
     "label": "Genre",
     "options": [

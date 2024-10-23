@@ -65,6 +65,8 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
       family_ids: searchQuery.family_ids,
       document_ids: searchQuery.document_ids,
       continuation_tokens: searchQuery.continuation_tokens,
+      corpus_import_ids: searchQuery.corpus_import_ids,
+      metadata: searchQuery.metadata,
     };
 
     // Check if we have a cached result before calling the API

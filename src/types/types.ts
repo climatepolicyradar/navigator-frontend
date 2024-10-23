@@ -321,8 +321,8 @@ export type TThemeConfigFilter = {
 };
 
 export type TThemeConfig = {
-  corpusIds: string[];
-  categories: TThemeConfigCategory;
+  defaultCorpora: string[];
+  categories?: TThemeConfigCategory;
   filters: TThemeConfigFilter[];
   labelVariations: ILabelVariation & { categories: string[] }[];
 };

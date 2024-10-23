@@ -65,6 +65,25 @@ export default function buildSearchQuery(
     query.corpus_import_ids = corpusIds;
   }
 
+  if (routerQuery[QUERY_PARAMS.fund]) {
+    let corpusIds: string[] = [];
+    const funds = routerQuery[QUERY_PARAMS.fund];
+    const configFunds = themeConfig.filters.find((f) => f.taxonomyKey === "fund");
+    if (configFunds) {
+      const fundOptions = configFunds.options;
+      if (Array.isArray(funds)) {
+        funds.forEach((fund) => {
+          const fundOption = fundOptions.find((o) => o.slug === fund);
+          if (fundOption?.value) corpusIds.push(...fundOption.value);
+        });
+      } else {
+        const fundOption = fundOptions.find((o) => o.slug === funds);
+        if (fundOption?.value) corpusIds.push(...fundOption.value);
+      }
+    }
+    query.corpus_import_ids = corpusIds;
+  }
+
   if (routerQuery[QUERY_PARAMS.region]) {
     const regions = routerQuery[QUERY_PARAMS.region];
     keyword_filters.regions = Array.isArray(regions) ? regions : [regions];
