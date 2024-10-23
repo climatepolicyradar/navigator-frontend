@@ -42,7 +42,7 @@ export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
           category={family.category}
           corpus_type_name={family.corpus_type_name}
           date={family.published_date}
-          geography={family.geographies[0]}
+          geographies={family.geographies} // FIXME family_geographies.length > 0 ? family_geographies[0] : ""
           topics={family.metadata.topic}
           author={family.metadata.author_type}
         />
