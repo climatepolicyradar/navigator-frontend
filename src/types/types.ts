@@ -158,7 +158,7 @@ export type TFamilyPage = {
   organisation: string;
   title: string;
   summary: string;
-  geography: string;
+  geographies: string[];
   import_id: string;
   category: TCategory;
   corpus_type_name: TCorpusTypeSubCategory;
