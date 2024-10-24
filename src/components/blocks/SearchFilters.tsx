@@ -48,7 +48,8 @@ const renderFilterOptions = (
           key={option.slug}
           label={option.label}
           checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option.slug)}
-          onChange={() => {
+          onChange={() => null} // supress normal radio behaviour to allow to deselection
+          onClick={() => {
             handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug, true);
           }}
         />
@@ -66,6 +67,7 @@ const renderFilterOptions = (
   }
   if (filter.corporaTypeKey && organisations && organisations[filter.corporaTypeKey]) {
     // check our organisation contains the filter in its list of taxonomies
+    // we  do not want to attempt to render if our config is unaligned or our taxonomy does not exist
     const corpus = organisations[filter.corporaTypeKey].corpora.find((corpus) => corpus.taxonomy.hasOwnProperty(filter.taxonomyKey));
     if (corpus) {
       return corpus.taxonomy[filter.taxonomyKey]?.allowed_values.map((option: string) =>
@@ -74,7 +76,8 @@ const renderFilterOptions = (
             key={option}
             label={option}
             checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option)}
-            onChange={() => {
+            onChange={() => null} // supress normal radio behaviour to allow to deselection
+            onClick={() => {
               handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option, true);
             }}
           />

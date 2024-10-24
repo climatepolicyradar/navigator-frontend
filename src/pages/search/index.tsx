@@ -118,10 +118,6 @@ const Search = () => {
 
     let queryCollection: string[] = [];
 
-    if (clearOthersOfType) {
-      delete router.query[type];
-    }
-
     if (router.query[type]) {
       if (Array.isArray(router.query[type])) {
         queryCollection = router.query[type] as string[];
@@ -145,8 +141,14 @@ const Search = () => {
         queryCollection = [];
       }
     } else {
-      queryCollection.push(value);
+      // If we want the filter to be exclusive, we clear all other filters of the same type
+      if (clearOthersOfType) {
+        queryCollection = [value];
+      } else {
+        queryCollection.push(value);
+      }
     }
+
     router.query[type] = queryCollection;
     router.push({ query: router.query });
     resetCSVStatus();
