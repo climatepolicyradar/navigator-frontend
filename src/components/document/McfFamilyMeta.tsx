@@ -4,6 +4,9 @@ import { getIcon } from "@helpers/getMetadataIcon";
 import { mapFamilyMetadata } from "@helpers/mapFamilyMetadata";
 import { TFamilyMetadata, TMCFFamilyMetadata } from "@types";
 
+import useConfig from "@hooks/useConfig";
+import { CountryLinksAsList } from "@components/CountryLinks";
+
 interface MetadataItemProps {
   label: string;
   icon: string;
@@ -16,19 +19,10 @@ interface McfFamilyMetaProps {
   metadata: TFamilyMetadataUnion;
 }
 
-const getCountryLinks = (countryCodes: string[]): JSX.Element[] => {
-  const countries = countryCodes.map((code, index) => (
-    <div className="flex" key={code}>
-      <CountryLink
-        countryCode={code}
-        showFlag={false}
-        showSlugAsChildren={true}
-        className="text-blue-600 underline truncate text-sm text-transform: capitalize"
-      />
-      {index !== countryCodes.length - 1 && <span>,</span>}
-    </div>
-  ));
-  return countries;
+const ListOfCountries = ({ countryCodes }) => {
+  const configQuery = useConfig();
+  const { data: { countries = [] } = {} } = configQuery;
+  return <CountryLinksAsList geographies={countryCodes} countries={countries} showFlag={false} />;
 };
 
 const MetadataItem = ({ label, icon, value }: MetadataItemProps) => {
@@ -44,7 +38,11 @@ const MetadataItem = ({ label, icon, value }: MetadataItemProps) => {
         </ExternalLink>
       );
     } else if (isCountry && Array.isArray(value)) {
-      return <div className="overflow-hidden max-w-full flex">{getCountryLinks(value)}</div>;
+      return (
+        <div className="overflow-hidden max-w-full flex gap-1">
+          <ListOfCountries countryCodes={value} />
+        </div>
+      );
     } else {
       return <span className="text-sm whitespace-nowrap overflow-hidden text-ellipsis">{value}</span>;
     }
