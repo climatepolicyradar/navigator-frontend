@@ -51,9 +51,9 @@ const MetadataItem = ({ label, icon, value }: MetadataItemProps) => {
   };
 
   return (
-    <div className={`flex items-center gap-1 pt-1 pr-1 pb-1 max-w-full`}>
+    <div className="flex items-center gap-1 pt-1 pr-1 pb-1 max-w-full">
       <IconComponent className="min-w-[16px] min-h-[16px]" />
-      <div className={`flex flex-row gap-1 items-center max-w-full`}>
+      <div className="flex flex-row gap-1 items-center max-w-full">
         <span className="text-sm font-bold whitespace-nowrap">
           <strong>{label}</strong>
         </span>
