@@ -140,6 +140,46 @@ export default function buildSearchQuery(
     }
   }
 
+  // ---- MCF specific ----
+  // These are the filters that are specific to the MCF theme
+  // TODO: handle this more elegantly and scaleably
+  if (routerQuery[QUERY_PARAMS.status]) {
+    let statusForApi: string[];
+    const statuses = routerQuery[QUERY_PARAMS.status];
+    const configStatus = themeConfig.filters.find((f) => f.taxonomyKey === "status");
+    if (configStatus) {
+      // remove existing status filters from the metadata
+      query.metadata = query.metadata.filter((m) => m.name !== configStatus.apiMetaDataKey);
+      if (Array.isArray(statuses)) {
+        statusForApi = statuses;
+      } else {
+        statusForApi = [statuses];
+      }
+      statusForApi.map((s) => {
+        query.metadata.push({ name: configStatus.apiMetaDataKey, value: decodeURI(s) });
+      });
+    }
+  }
+
+  if (routerQuery[QUERY_PARAMS.implementing_agency]) {
+    let implementingAgencyForApi: string[];
+    const implementingAgencies = routerQuery[QUERY_PARAMS.implementing_agency];
+    const configIplementingAgency = themeConfig.filters.find((f) => f.taxonomyKey === "implementing_agency");
+    if (configIplementingAgency) {
+      // remove existing status filters from the metadata
+      query.metadata = query.metadata.filter((m) => m.name !== configIplementingAgency.apiMetaDataKey);
+      if (Array.isArray(implementingAgencies)) {
+        implementingAgencyForApi = implementingAgencies;
+      } else {
+        implementingAgencyForApi = [implementingAgencies];
+      }
+      implementingAgencyForApi.map((ia) => {
+        query.metadata.push({ name: configIplementingAgency.apiMetaDataKey, value: decodeURI(ia) });
+      });
+    }
+  }
+  // ---- End of MCF specific ----
+
   query = {
     ...query,
     keyword_filters,

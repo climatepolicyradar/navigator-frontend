@@ -110,13 +110,17 @@ const Search = () => {
     resetCSVStatus();
   };
 
-  const handleFilterChange = (type: string, value: string) => {
+  const handleFilterChange = (type: string, value: string, clearOthersOfType: boolean = false) => {
     // Clear pagination controls and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
 
     let queryCollection: string[] = [];
+
+    if (clearOthersOfType) {
+      delete router.query[type];
+    }
 
     if (router.query[type]) {
       if (Array.isArray(router.query[type])) {

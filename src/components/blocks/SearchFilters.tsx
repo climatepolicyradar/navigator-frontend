@@ -42,31 +42,53 @@ const renderFilterOptions = (
   organisations: TOrganisationDictionary
 ) => {
   if (filter.options && filter.options.length > 0) {
-    return filter.options.map((option) => (
-      <InputCheck
-        key={option.slug}
-        label={option.label}
-        checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option.slug)}
-        onChange={() => {
-          handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug);
-        }}
-      />
-    ));
+    return filter.options.map((option) =>
+      filter.type === "radio" ? (
+        <InputRadio
+          key={option.slug}
+          label={option.label}
+          checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option.slug)}
+          onChange={() => {
+            handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug, true);
+          }}
+        />
+      ) : (
+        <InputCheck
+          key={option.slug}
+          label={option.label}
+          checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option.slug)}
+          onChange={() => {
+            handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug);
+          }}
+        />
+      )
+    );
   }
   if (filter.corporaTypeKey && organisations && organisations[filter.corporaTypeKey]) {
     // check our organisation contains the filter in its list of taxonomies
     const corpus = organisations[filter.corporaTypeKey].corpora.find((corpus) => corpus.taxonomy.hasOwnProperty(filter.taxonomyKey));
     if (corpus) {
-      return corpus.taxonomy[filter.taxonomyKey]?.allowed_values.map((option: string) => (
-        <InputCheck
-          key={option}
-          label={option}
-          checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option)}
-          onChange={() => {
-            handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option);
-          }}
-        />
-      ));
+      return corpus.taxonomy[filter.taxonomyKey]?.allowed_values.map((option: string) =>
+        filter.type === "radio" ? (
+          <InputRadio
+            key={option}
+            label={option}
+            checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option)}
+            onChange={() => {
+              handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option, true);
+            }}
+          />
+        ) : (
+          <InputCheck
+            key={option}
+            label={option}
+            checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option)}
+            onChange={() => {
+              handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option);
+            }}
+          />
+        )
+      );
     }
   }
   return null;
@@ -78,7 +100,7 @@ type TSearchFiltersProps = {
   regions: TGeography[];
   countries: TGeography[];
   organisations: TOrganisationDictionary;
-  handleFilterChange(type: string, value: string): void;
+  handleFilterChange(type: string, value: string, clearOthersOfType?: boolean): void;
   handleYearChange(values: number[], reset?: boolean): void;
   handleRegionChange(region: string): void;
   handleClearSearch(): void;
