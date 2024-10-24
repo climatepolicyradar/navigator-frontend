@@ -2,6 +2,7 @@ import { TFamilyMetadata, TMCFFamilyMetadata, TFamilyPage } from "@types";
 
 import { FamilyMeta } from "../FamilyMeta";
 import { McfFamilyMeta } from "../McfFamilyMeta";
+import { getApprovedYearFromEvents } from "@helpers/getApprovedYearFromEvents";
 
 const MultilateralClimateFunds = "MCF";
 
@@ -16,6 +17,7 @@ export const MetadataRenderer = ({ family }: TProps) => {
 
   const mcfFamilyMetadata: TFamilyMetadataUnion = {
     geographies,
+    approval_date: getApprovedYearFromEvents(family.events),
     ...metadata,
     organisation,
     category,

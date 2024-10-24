@@ -214,7 +214,7 @@ export type TFamilyMetadata = {
 };
 
 export type TMCFFamilyMetadata = {
-  approval_date?: string[];
+  approval_date?: string;
   category?: TCorpusTypeSubCategory | TCategory;
   organisation?: string;
   theme?: string[];

@@ -18,7 +18,7 @@ export const mapFamilyMetadata = (metadata: Metadata) => {
 
   for (const [key, values] of Object.entries(metadata)) {
     const mapping = metadataLabelMappings[key];
-    if (mapping) {
+    if (mapping && values) {
       if (key === "geographies") {
         result.push({
           label: mapping.label,
@@ -33,7 +33,7 @@ export const mapFamilyMetadata = (metadata: Metadata) => {
         result.push({
           label: mapping.label,
           iconLabel: mapping.iconLabel,
-          value: (values as string[]).slice(0, 3).join(", "),
+          value: Array.isArray(values) ? (values as string[]).slice(0, 3).join(", ") : values,
         });
       }
     }
