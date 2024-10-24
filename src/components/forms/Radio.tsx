@@ -11,9 +11,9 @@ const Radio = ({ checked, onChange, onClick }: TProps) => {
 
 export const InputRadio = ({ label, checked, onChange, onClick }: TProps) => {
   return (
-    <label className={`flex gap-2 items-center cursor-pointer ${checked ? "font-medium text-textDark" : ""}`}>
+    <label className={`flex gap-2 cursor-pointer ${checked ? "font-medium text-textDark" : ""}`}>
       <Radio checked={checked} onChange={onChange} onClick={onClick} />
-      <span>{label}</span>
+      <span className="flex items-center">{label}</span>
     </label>
   );
 };
