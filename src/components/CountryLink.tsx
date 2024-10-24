@@ -10,17 +10,9 @@ type TCountryLink = {
   emptyContentFallback?: ReactNode;
   children?: ReactNode;
   showFlag?: boolean;
-  showSlugAsChildren?: boolean;
 };
 
-export const CountryLink: FC<TCountryLink> = ({
-  countryCode,
-  className = "",
-  emptyContentFallback,
-  children,
-  showFlag = true,
-  showSlugAsChildren = false,
-}) => {
+export const CountryLink: FC<TCountryLink> = ({ countryCode, className = "", emptyContentFallback, children, showFlag = true }) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
 
@@ -33,7 +25,7 @@ export const CountryLink: FC<TCountryLink> = ({
   return (
     <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center gap-1 ${className}`} passHref cypress="country-link">
       {showFlag && <span className={`rounded-sm border border-black flag-icon-background flag-icon-${countryCode.toLowerCase()}`} />}
-      {showSlugAsChildren ? slug : children}
+      {children}
     </LinkWithQuery>
   );
 };
