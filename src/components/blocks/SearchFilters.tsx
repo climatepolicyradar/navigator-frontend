@@ -195,10 +195,10 @@ const SearchFilters = ({
         </Accordian>
       )}
 
-      {/* TODO: loop over array of filters from the config and display based on whether their "category" is in the selected category's list of corpusIds */}
       {themeConfigStatus === "success" &&
         themeConfig.filters.map((filter) => {
-          if (!canDisplayFilter(filter, query, themeConfig)) return null;
+          // If the filter is not in the selected category, don't display it
+          if (!canDisplayFilter(filter, query, themeConfig)) return;
           return (
             <Accordian title={filter.label} data-cy={filter.label} key={filter.label}>
               <InputListContainer>{renderFilterOptions(filter, query, handleFilterChange, organisations)}</InputListContainer>
