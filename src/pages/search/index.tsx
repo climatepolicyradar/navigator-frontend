@@ -193,6 +193,12 @@ const Search = () => {
     delete router.query[QUERY_PARAMS.offset];
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
+    // Reset any other filters
+    // MCF filters
+    delete router.query[QUERY_PARAMS.fund];
+    delete router.query[QUERY_PARAMS.status];
+    delete router.query[QUERY_PARAMS.implementing_agency];
+
     router.query[QUERY_PARAMS.category] = category;
     // Default search is all categories, so we do not need to provide any category if we want all
     if (category === "All") {

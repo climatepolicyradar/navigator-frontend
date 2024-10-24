@@ -20,6 +20,7 @@ import { getCountriesFromRegions } from "@helpers/getCountriesFromRegions";
 
 import { TGeography, TOrganisationDictionary, TSearchCriteria, TThemeConfigFilter, TThemeConfigOption } from "@types";
 import { ParsedUrlQuery } from "querystring";
+import { canDisplayFilter } from "@utils/canDisplayFilter";
 
 const { default: MethodologyLink } = await import(`/themes/${process.env.THEME}/components/MethodologyLink`);
 
@@ -197,6 +198,7 @@ const SearchFilters = ({
       {/* TODO: loop over array of filters from the config and display based on whether their "category" is in the selected category's list of corpusIds */}
       {themeConfigStatus === "success" &&
         themeConfig.filters.map((filter) => {
+          if (!canDisplayFilter(filter, query, themeConfig)) return null;
           return (
             <Accordian title={filter.label} data-cy={filter.label} key={filter.label}>
               <InputListContainer>{renderFilterOptions(filter, query, handleFilterChange, organisations)}</InputListContainer>
