@@ -21,6 +21,7 @@ import { isSystemGeo } from "@utils/isSystemGeo";
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
 
 import { TDocumentPage, TFamilyPage } from "@types";
+import { DocumentMetaRenderer } from "./renderers/DocumentMetaRenderer";
 
 type TProps = {
   document: TDocumentPage;
@@ -73,25 +74,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
         <div className="flex flex-col lg:flex-row">
           <div className="flex-1 my-4">
             <Heading level={1}>{document.title}</Heading>
-            <div className="my-4 md:my-2 md:flex justify-between items-center">
-              <div className="flex text-sm items-center gap-2 middot-between">
-                {!isSystemGeo(family.geography) && (
-                  <span className="flex gap-1">
-                    <CountryLink countryCode={family.geography} className="text-textDark font-medium">
-                      <span>{geoName}</span>
-                    </CountryLink>
-                  </span>
-                )}
-                {!isMain && <span className="capitalize">{document.document_role.toLowerCase()}</span>}
-                {family.category && <span className="capitalize">{family.category}</span>}
-                {!!document.language && (
-                  <span>
-                    {getLanguage(document.language, languages)}
-                    {!!document.variant && ` (${document.variant})`}
-                  </span>
-                )}
-              </div>
-            </div>
+            <DocumentMetaRenderer family={family} isMain={isMain} document={document} />
             <div className="text-content" dangerouslySetInnerHTML={{ __html: summary }} />
             {family.summary.length > MAX_FAMILY_SUMMARY_LENGTH_BRIEF && (
               <div className="mt-4">
