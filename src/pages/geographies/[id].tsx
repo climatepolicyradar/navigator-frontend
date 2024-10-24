@@ -34,7 +34,7 @@ import { extractNestedData } from "@utils/extractNestedData";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { getGeoMetaTitle } from "@utils/getGeoMetaTitle";
 
-import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
+import { DOCUMENT_CATEGORIES, MCF_DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { getGeoDescription } from "@constants/metaDescriptions";
 import { systemGeoNames } from "@constants/systemGeos";
@@ -72,26 +72,20 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
   const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
-  const allDocumentsCount = summary.family_counts.Legislative + summary.family_counts.Executive + summary.family_counts.UNFCCC;
+  const allDocumentsCount = Object.values(summary.family_counts).reduce((acc, count) => acc + (count || 0), 0);
 
-  const documentCategories = DOCUMENT_CATEGORIES.map((category) => {
-    let count = null;
-    switch (category) {
-      case "All":
-        count = allDocumentsCount;
-        break;
-      case "Legislation":
-        count = summary.family_counts.Legislative;
-        break;
-      case "Policies":
-        count = summary.family_counts.Executive;
-        break;
-      case "UNFCCC":
-        count = summary.family_counts.UNFCCC;
-        break;
-      case "Litigation":
-        count = 0;
-        break;
+  const isMCFTheme = process.env.THEME === "mcf";
+  const filteredCategoryArray = isMCFTheme ? MCF_DOCUMENT_CATEGORIES : DOCUMENT_CATEGORIES;
+
+  const documentCategories = filteredCategoryArray.map((category) => {
+    let count: number | null;
+
+    if (category === "All") {
+      count = allDocumentsCount;
+    } else if (category === "Litigation") {
+      count = 0;
+    } else {
+      count = summary.family_counts[category] ?? 0;
     }
 
     return {
@@ -135,10 +129,9 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geography.name}`}</p>;
 
   const renderDocuments = () => {
-    // const executiveFamilies = summary.top_families.Executive;
-    // All
+    // All || All MCF docs if theme is MCF
     if (selectedCategoryIndex === 0) {
-      let allFamilies = summary.top_families.Executive.concat(summary.top_families.Legislative).concat(summary.top_families.UNFCCC);
+      let allFamilies = Object.values(summary.top_families).reduce((acc, curr) => acc.concat(curr), []);
       if (allFamilies.length === 0) {
         return renderEmpty();
       }
@@ -157,44 +150,46 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
           );
       });
     }
-    // Legislative
-    if (selectedCategoryIndex === 1) {
-      return summary.top_families.Legislative.length === 0
-        ? renderEmpty("Legislative")
-        : summary.top_families.Legislative.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <div key={family.family_slug} className="mt-6">
-              <FamilyListItem family={family} />
-            </div>
-          ));
-    }
-    // Executive
-    if (selectedCategoryIndex === 2) {
-      return summary.top_families.Executive.length === 0
-        ? renderEmpty("Executive")
-        : summary.top_families.Executive.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <div key={family.family_slug} className="mt-6">
-              <FamilyListItem family={family} />
-            </div>
-          ));
-    }
-    // UNFCCC
-    if (selectedCategoryIndex === 3) {
-      return summary.top_families.UNFCCC.length === 0
-        ? renderEmpty("UNFCCC")
-        : summary.top_families.UNFCCC.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <div key={family.family_slug} className="mt-6">
-              <FamilyListItem family={family} />
-            </div>
-          ));
-    }
-    // Litigation
-    if (selectedCategoryIndex === 4) {
-      return (
-        <div className="mt-4 pb-4 border-b">
-          Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center’s{" "}
-          <ExternalLink url="http://climatecasechart.com/">Climate Change Litigation Databases</ExternalLink>.
-        </div>
-      );
+    if (!isMCFTheme) {
+      // Legislative
+      if (selectedCategoryIndex === 1) {
+        return summary.top_families.Legislative.length === 0
+          ? renderEmpty("Legislative")
+          : summary.top_families.Legislative.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
+              <div key={family.family_slug} className="mt-6">
+                <FamilyListItem family={family} />
+              </div>
+            ));
+      }
+      // Executive
+      if (selectedCategoryIndex === 2) {
+        return summary.top_families.Executive.length === 0
+          ? renderEmpty("Executive")
+          : summary.top_families.Executive.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
+              <div key={family.family_slug} className="mt-6">
+                <FamilyListItem family={family} />
+              </div>
+            ));
+      }
+      // UNFCCC
+      if (selectedCategoryIndex === 3) {
+        return summary.top_families.UNFCCC.length === 0
+          ? renderEmpty("UNFCCC")
+          : summary.top_families.UNFCCC.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
+              <div key={family.family_slug} className="mt-6">
+                <FamilyListItem family={family} />
+              </div>
+            ));
+      }
+      // Litigation
+      if (selectedCategoryIndex === 4) {
+        return (
+          <div className="mt-4 pb-4 border-b">
+            Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center’s{" "}
+            <ExternalLink url="http://climatecasechart.com/">Climate Change Litigation Databases</ExternalLink>.
+          </div>
+        );
+      }
     }
   };
 
@@ -340,6 +335,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const client = new ApiClient();
+  const isMCFTheme = process.env.THEME === "mcf";
 
   let geographyData: TGeographyStats;
   let summaryData: TGeographySummary;
@@ -377,11 +373,32 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
+  const filterSummaryData = (summaryInformation) => {
+    if (isMCFTheme) {
+      const mcfSummaryData = {
+        family_counts: { MCF: summaryInformation.family_counts.MCF },
+        top_families: { MCF: summaryInformation.top_families.MCF },
+        targets: [],
+      };
+      return mcfSummaryData;
+    } else {
+      const { MCF, ...family_counts } = summaryInformation.family_counts;
+      const { MCF: mcfTopFamilies, ...top_families } = summaryInformation.top_families;
+
+      const summaryDataWithoutMcf = {
+        family_counts,
+        top_families,
+        targets: summaryInformation.targets,
+      };
+      return summaryDataWithoutMcf;
+    }
+  };
+
   return {
     props: {
       geography: geographyData,
-      summary: summaryData,
-      targets: targetsData,
+      summary: filterSummaryData(summaryData),
+      targets: isMCFTheme ? [] : targetsData,
     },
   };
 };
