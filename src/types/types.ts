@@ -213,6 +213,21 @@ export type TFamilyMetadata = {
   author?: string[];
 };
 
+export type TMCFFamilyMetadata = {
+  approval_date?: string;
+  category?: TCorpusTypeSubCategory | TCategory;
+  organisation?: string;
+  theme?: string[];
+  geographies?: string[];
+  sector?: string[];
+  implementing_agency?: string[];
+  project_value_fund_spend?: string[];
+  project_value_co_financing?: string[];
+  result_area?: string[];
+  status?: string[];
+  project_url?: string[];
+};
+
 export type TMatchedFamily = TFamily & {
   family_description_match: boolean;
   family_title_match: boolean;
