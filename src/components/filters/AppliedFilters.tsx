@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 
 import useConfig from "@hooks/useConfig";
+import useGetThemeConfig from "@hooks/useThemeConfig";
 
 import Pill from "@components/Pill";
 
@@ -11,8 +12,7 @@ import { getCountryName } from "@helpers/getCountryFields";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { sortOptions } from "@constants/sortOptions";
 
-import { TGeography, TThemeConfig } from "@types";
-import useGetThemeConfig from "@hooks/useThemeConfig";
+import { TGeography, TQueryStrings, TThemeConfig } from "@types";
 
 type TFilterChange = (type: string, value: string) => void;
 
@@ -24,10 +24,14 @@ const handleCountryRegion = (slug: string, dataSet: TGeography[]) => {
   return getCountryName(slug, dataSet);
 };
 
+type TFilterKeys = keyof TQueryStrings;
+
+const MAX_FILTER_CHARACTERS = 50;
+
 const handleFilterDisplay = (
   filterChange: TFilterChange,
   queryParams: ParsedUrlQuery,
-  key: string,
+  key: TFilterKeys,
   value: string,
   countries: TGeography[],
   regions: TGeography[],
@@ -66,6 +70,12 @@ const handleFilterDisplay = (
       filterLabel = `Search: ${value}`;
       break;
     //TODO: write a case for any remainding key that loops through the filters array on the config and then searches within the options where the key === taxonomyKey
+    case "status":
+      filterLabel = decodeURI(value);
+      break;
+    case "implementing_agency":
+      filterLabel = value.length > MAX_FILTER_CHARACTERS ? `${decodeURI(value).substring(0, MAX_FILTER_CHARACTERS)}...` : decodeURI(value);
+      break;
   }
 
   if (!filterLabel) {
@@ -89,7 +99,7 @@ const generatePills = (
 ) => {
   let pills: JSX.Element[] = [];
 
-  Object.keys(QUERY_PARAMS).map((key) => {
+  Object.keys(QUERY_PARAMS).map((key: TFilterKeys) => {
     const value = queryParams[QUERY_PARAMS[key]];
     if (value) {
       if (key === "year_range")
