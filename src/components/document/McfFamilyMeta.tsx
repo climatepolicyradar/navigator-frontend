@@ -40,7 +40,6 @@ const MetadataItem = ({ label, icon, value }: MetadataItemProps) => {
     if (isUrl && typeof value === "string") {
       return (
         <ExternalLink url={value} className="text-blue-600 underline truncate text-sm">
-          {" "}
           Visit project page
         </ExternalLink>
       );
