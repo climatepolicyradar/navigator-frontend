@@ -44,17 +44,17 @@ const MetadataItem = ({ label, icon, value }: MetadataItemProps) => {
         </ExternalLink>
       );
     } else if (isCountry && Array.isArray(value)) {
-      return getCountryLinks(value);
+      return <div className="overflow-hidden max-w-full flex">{getCountryLinks(value)}</div>;
     } else {
-      return <span className=" text-sm">{value}</span>;
+      return <span className="text-sm whitespace-nowrap overflow-hidden text-ellipsis">{value}</span>;
     }
   };
 
   return (
-    <div className="flex items-center gap-1 pt-1 pr-1 pb-1">
-      <IconComponent className="w-[16px] h-[16px]" />
-      <div className="flex flex-row gap-1 items-center">
-        <span className="text-sm font-bold">
+    <div className={`flex items-center gap-1 pt-1 pr-1 pb-1 max-w-full`}>
+      <IconComponent className="min-w-[16px] min-h-[16px]" />
+      <div className={`flex flex-row gap-1 items-center max-w-full`}>
+        <span className="text-sm font-bold whitespace-nowrap">
           <strong>{label}</strong>
         </span>
         {getValueContent()}
