@@ -26,7 +26,7 @@ const handleCountryRegion = (slug: string, dataSet: TGeography[]) => {
 
 type TFilterKeys = keyof TQueryStrings;
 
-const MAX_FILTER_CHARACTERS = 50;
+const MAX_FILTER_CHARACTERS = 32;
 
 const handleFilterDisplay = (
   filterChange: TFilterChange,
@@ -75,6 +75,9 @@ const handleFilterDisplay = (
       break;
     case "implementing_agency":
       filterLabel = value.length > MAX_FILTER_CHARACTERS ? `${decodeURI(value).substring(0, MAX_FILTER_CHARACTERS)}...` : decodeURI(value);
+      break;
+    case "fund":
+      filterLabel = value;
       break;
   }
 
