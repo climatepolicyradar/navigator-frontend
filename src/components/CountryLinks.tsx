@@ -15,7 +15,7 @@ export const CountryLinks = ({ geographies, countries, showFlag = true }: TCount
       (geography) =>
         !isSystemGeo(geography) && (
           <span key={geography} className="flex gap-1">
-            <CountryLink countryCode={geography} showFlag={true} className="text-textDark no-underline">
+            <CountryLink countryCode={geography} showFlag={showFlag} className="text-textDark no-underline">
               <span>{getCountryName(geography, countries)}</span>
             </CountryLink>
           </span>
