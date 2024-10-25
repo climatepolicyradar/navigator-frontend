@@ -4,7 +4,6 @@ import useConfig from "@hooks/useConfig";
 import { SiteWidth } from "@components/panels/SiteWidth";
 
 import { SubNav } from "@components/nav/SubNav";
-import { CountryLink } from "@components/CountryLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import Button from "@components/buttons/Button";
 import { ExternalLinkIcon, AlertCircleIcon } from "@components/svg/Icons";
@@ -14,9 +13,8 @@ import { Heading } from "@components/typography/Heading";
 
 import { getLanguage } from "@helpers/getLanguage";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
-
+import { CountryLinks } from "@components/CountryLinks";
 import { truncateString } from "@utils/truncateString";
-import { isSystemGeo } from "@utils/isSystemGeo";
 
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
 
@@ -40,10 +38,12 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
 
   const configQuery = useConfig();
   const { data: { countries = [], languages = {} } = {} } = configQuery;
-  const geoName = getCountryName(family.geography, countries);
-  const geoSlug = getCountrySlug(family.geography, countries);
+
+  const geographyNames = family.geographies ? family.geographies.map((geo) => getCountryName(geo, countries)) : null;
+  const geoName = geographyNames ? geographyNames[0] : "";
+  const geoSlug = family.geographies ? getCountrySlug(family.geographies[0], countries) : "";
   const isMain = document.document_role.toLowerCase().includes("main");
-  const breadcrumbGeography = { label: geoName, href: `/geographies/${geoSlug}` };
+  const breadcrumbGeography = family.geographies && family.geographies.length > 1 ? null : { label: geoName, href: `/geographies/${geoSlug}` };
   const breadcrumbFamily = { label: family.title, href: `/document/${family.slug}` };
   const breadcrumbLabel = isMain ? "Document" : document.document_role.toLowerCase();
   const breadcrumbCategory = { label: "Search results", href: "/search" };

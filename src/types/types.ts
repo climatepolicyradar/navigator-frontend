@@ -107,7 +107,8 @@ export type TGeographySummary = {
   top_families: TGeoFamilys;
 };
 
-export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC";
+export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC" | "MCF";
+export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements";
 export type TDisplayCategory = "All" | TCategory;
 export type TEventCategory = TCategory | "Target";
 
@@ -141,6 +142,7 @@ export type TFamilyDocument = {
 };
 
 export type TFamily = {
+  corpus_type_name: TCorpusTypeSubCategory;
   family_category: TCategory;
   family_description: string;
   family_documents: TFamilyDocument[];
@@ -156,9 +158,10 @@ export type TFamilyPage = {
   organisation: string;
   title: string;
   summary: string;
-  geography: string;
+  geographies: string[];
   import_id: string;
   category: TCategory;
+  corpus_type_name: TCorpusTypeSubCategory;
   metadata: TFamilyMetadata;
   slug: string;
   corpus_id: string;
@@ -208,6 +211,21 @@ export type TFamilyMetadata = {
   instrument?: string[];
   author_type?: string[];
   author?: string[];
+};
+
+export type TMCFFamilyMetadata = {
+  approval_date?: string;
+  category?: TCorpusTypeSubCategory | TCategory;
+  organisation?: string;
+  theme?: string[];
+  geographies?: string[];
+  sector?: string[];
+  implementing_agency?: string[];
+  project_value_fund_spend?: string[];
+  project_value_co_financing?: string[];
+  result_area?: string[];
+  status?: string[];
+  project_url?: string[];
 };
 
 export type TMatchedFamily = TFamily & {

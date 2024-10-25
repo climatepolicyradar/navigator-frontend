@@ -1,7 +1,8 @@
+import Image from "next/image";
 import React from "react";
+
 import { Heading } from "@components/typography/Heading";
 import { ExternalLink } from "@components/ExternalLink";
-import ClimatePolicyRadarLogoWhite from "@components/svg/ClimatePolicyRadarLogoWhite";
 
 import { SiteWidth } from "@components/panels/SiteWidth";
 
@@ -10,7 +11,7 @@ const ClimatePolicyRadarBannerHolder = () => {
     <div className={`bg-cpr-banner py-36 text-white relative`}>
       <SiteWidth>
         <div className="max-w-sm">
-          <p className="font-medium tracking-slight text-sm lg:text-md text-white text-opacity-50 mb-2" data-cy="search-all">
+          <p className="font-medium tracking-slight text-sm lg:text-md text-[#3399FF] mb-2" data-cy="search-all">
             POWERED BY
           </p>
           <Heading level={1} extraClasses="!text-white font-bold text-4xl">
@@ -28,8 +29,9 @@ const ClimatePolicyRadarBannerHolder = () => {
         </div>
         <div></div>
       </SiteWidth>
-      <div className="hidden sm:block sm:absolute sm:right-0 sm:top-0 sm:h-full">
-        <ClimatePolicyRadarLogoWhite />
+      <div className="hidden sm:block sm:absolute sm:right-28 sm:top-10 sm:h-full">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/images/cpr-logo-faded.png" alt="Climate Policy Radar Logo" className="w-[800px] h-[400px]" />
       </div>
     </div>
   );
