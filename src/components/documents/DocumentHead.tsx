@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { LuMoveUpRight } from "react-icons/lu";
+
 import useConfig from "@hooks/useConfig";
 
 import { SiteWidth } from "@components/panels/SiteWidth";
@@ -6,14 +8,12 @@ import { SiteWidth } from "@components/panels/SiteWidth";
 import { SubNav } from "@components/nav/SubNav";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import Button from "@components/buttons/Button";
-import { ExternalLinkIcon, AlertCircleIcon } from "@components/svg/Icons";
+import { AlertCircleIcon } from "@components/svg/Icons";
 import { Alert } from "@components/Alert";
 import { ExternalLink } from "@components/ExternalLink";
 import { Heading } from "@components/typography/Heading";
 
-import { getLanguage } from "@helpers/getLanguage";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
-import { CountryLinks } from "@components/CountryLinks";
 import { truncateString } from "@utils/truncateString";
 
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
@@ -71,8 +71,8 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
         />
       </SubNav>
       <SiteWidth>
-        <div className="flex flex-col lg:flex-row">
-          <div className="flex-1 my-4">
+        <div className="flex flex-col justify-between lg:flex-row">
+          <div className="flex-1 my-4 max-w-[1100px]">
             <Heading level={1}>{document.title}</Heading>
             <DocumentMetaRenderer family={family} isMain={isMain} document={document} />
             <div className="text-content" dangerouslySetInnerHTML={{ __html: summary }} />
@@ -93,7 +93,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
               )}
               <Button color="clear" data-cy="view-source" onClick={handleViewSourceClick} extraClasses="flex items-center text-sm">
                 <span className="mr-2">View source document</span>
-                <ExternalLinkIcon height="16" width="16" />
+                <LuMoveUpRight height="16" width="16" />
               </Button>
             </div>
           </div>
