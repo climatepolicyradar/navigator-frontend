@@ -1,5 +1,7 @@
 import { ParsedUrlQuery } from "querystring";
 
+import { containsAny } from "./containsAny";
+
 import { QUERY_PARAMS } from "@constants/queryParams";
 
 import { TThemeConfig, TThemeConfigFilter } from "@types";
@@ -11,10 +13,6 @@ export const canDisplayFilter = (filter: TThemeConfigFilter, query: ParsedUrlQue
   const selectedCategoryValue = themeConfig.categories.options.find((c) => c.slug === selectedCategory);
   if (!selectedCategoryValue) return false;
   let canDisplay = false;
-  filter.category.forEach((fc) => {
-    if (selectedCategoryValue?.value?.includes(fc)) {
-      canDisplay = true;
-    }
-  });
+  if (containsAny(filter.category, selectedCategoryValue.value)) return true;
   return canDisplay;
 };

@@ -21,6 +21,7 @@ import { getCountriesFromRegions } from "@helpers/getCountriesFromRegions";
 import { TGeography, TOrganisationDictionary, TSearchCriteria, TThemeConfigFilter, TThemeConfigOption } from "@types";
 import { ParsedUrlQuery } from "querystring";
 import { canDisplayFilter } from "@utils/canDisplayFilter";
+import { getFilterLabel } from "@utils/getFilterLabel";
 
 const { default: MethodologyLink } = await import(`/themes/${process.env.THEME}/components/MethodologyLink`);
 
@@ -234,7 +235,7 @@ const SearchFilters = ({
         </InputListContainer>
       </Accordian>
 
-      <Accordian title="Date" data-cy="date-range">
+      <Accordian title={getFilterLabel("Date", "date", query[QUERY_PARAMS.category], themeConfig)} data-cy="date-range">
         <DateRange type="year_range" handleChange={handleYearChange} defaultValues={searchCriteria.year_range} min={minYear} max={thisYear} />
       </Accordian>
 

@@ -294,9 +294,11 @@ export type TQueryStrings = {
 };
 
 // Theme configuration types
-interface ILabelVariation {
-  [key: string]: string;
-}
+export type TLabelVariation = {
+  category: string[];
+  label: string;
+  key: string;
+};
 
 export type TThemeConfigOption = {
   label: string;
@@ -324,5 +326,5 @@ export type TThemeConfig = {
   defaultCorpora: string[];
   categories?: TThemeConfigCategory;
   filters: TThemeConfigFilter[];
-  labelVariations: ILabelVariation & { categories: string[] }[];
+  labelVariations: TLabelVariation[];
 };

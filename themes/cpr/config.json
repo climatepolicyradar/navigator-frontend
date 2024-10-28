@@ -75,7 +75,8 @@
   ],
   "labelVariations": [
     {
-      "date": "First published",
+      "key": "date",
+      "label": "First published",
       "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
     }
   ]
