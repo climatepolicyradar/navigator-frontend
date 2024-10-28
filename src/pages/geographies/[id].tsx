@@ -129,7 +129,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geography.name}`}</p>;
 
   const renderDocuments = () => {
-    // All || All MCF docs if theme is MCF
+    // All docs || All MCF docs if theme is MCF
     if (selectedCategoryIndex === 0) {
       let allFamilies = Object.values(summary.top_families).reduce((acc, curr) => acc.concat(curr), []);
       if (allFamilies.length === 0) {
