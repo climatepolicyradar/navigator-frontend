@@ -207,7 +207,7 @@ const SearchFilters = ({
           );
         })}
 
-      <Accordian title="Region" data-cy="regions">
+      <Accordian title={getFilterLabel("Region", "region", query[QUERY_PARAMS.category], themeConfig)} data-cy="regions">
         <InputListContainer>
           {regions.map((region) => (
             <InputCheck
@@ -222,7 +222,11 @@ const SearchFilters = ({
         </InputListContainer>
       </Accordian>
 
-      <Accordian title="Published jurisdiction" data-cy="countries" overflowOverride>
+      <Accordian
+        title={getFilterLabel("Published jurisdiction", "country", query[QUERY_PARAMS.category], themeConfig)}
+        data-cy="countries"
+        overflowOverride
+      >
         <InputListContainer>
           <TypeAhead
             list={availableCountries}
