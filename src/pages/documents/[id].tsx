@@ -232,16 +232,16 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                   {totalNoOfMatches > 0 && (
                     <>
                       <div className="my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
-                        <p>
+                        <div className="mb-2">
                           Displaying {renderPassageCount(totalNoOfMatches)} for "
                           <span className="text-textDark font-medium">{`${router.query[QUERY_PARAMS.query_string]}`}</span>"
                           {!searchQuery.exact_match && ` and related phrases`}
                           {totalNoOfMatches >= MAX_RESULTS && (
-                            <div className="ml-1 inline-block">
+                            <span className="ml-1 inline-block">
                               <SearchLimitTooltip colour="grey" />
-                            </div>
+                            </span>
                           )}
-                        </p>
+                        </div>
                         <p>Sorted by search relevance</p>
                       </div>
                       <div
