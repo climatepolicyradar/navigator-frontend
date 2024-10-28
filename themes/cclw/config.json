@@ -1,0 +1,32 @@
+{
+  "defaultCorpora": [],
+  "categories": {
+    "label": "Category",
+    "options": [
+      {
+        "label": "All",
+        "slug": "All"
+      },
+      {
+        "label": "Intl. agreements",
+        "slug": "intl-agreements",
+        "value": ["UNFCCC.corpus.i00000001.n0000"],
+        "category": ["UNFCCC"]
+      },
+      {
+        "label": "Policies",
+        "slug": "policies",
+        "value": ["CCLW.corpus.i00000001.n0000"],
+        "category": ["Executive"]
+      },
+      {
+        "label": "Laws",
+        "slug": "laws",
+        "value": ["CCLW.corpus.i00000001.n0000"],
+        "category": ["Legislative"]
+      }
+    ]
+  },
+  "filters": [],
+  "labelVariations": []
+}

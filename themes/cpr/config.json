@@ -1,7 +1,7 @@
 {
   "defaultCorpora": [],
   "categories": {
-    "label": "Genre",
+    "label": "Category",
     "options": [
       {
         "label": "All",
