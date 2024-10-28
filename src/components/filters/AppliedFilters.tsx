@@ -78,6 +78,8 @@ const handleFilterDisplay = (
       break;
     case "fund":
       filterLabel = value;
+      const fund = themeConfig?.filters.find((f) => f.taxonomyKey === "fund").options.find((f) => f.slug === value);
+      filterLabel = fund ? fund.label : value;
       break;
   }
 
