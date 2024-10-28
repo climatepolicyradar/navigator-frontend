@@ -29,7 +29,7 @@ export const CountryLinksAsList = ({ geographies, countries, showFlag = true }: 
     {geographies?.map(
       (geography, index) =>
         !isSystemGeo(geography) && (
-          <div key={geography} className="flex">
+          <div key={geography} className="flex pl-1">
             <CountryLink countryCode={geography} showFlag={showFlag} className="text-blue-600 underline truncate text-sm text-transform: capitalize">
               <span>{getCountryName(geography, countries)}</span>
             </CountryLink>

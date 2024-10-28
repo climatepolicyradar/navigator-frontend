@@ -71,7 +71,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
         />
       </SubNav>
       <SiteWidth>
-        <div className="flex flex-col justify-between sm:flex-row flex-wrap">
+        <div className="flex flex-col justify-between md:flex-row flex-wrap">
           <div className="flex-1 my-4">
             <Heading level={1}>{document.title}</Heading>
             <DocumentMetaRenderer family={family} isMain={isMain} document={document} />
