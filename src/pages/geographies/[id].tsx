@@ -306,7 +306,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   </Timeline>
                 </section>
               )}
-              {geography.legislative_process && (
+              {geography.legislative_process && !isMCFTheme && (
                 <section className="mt-10" data-cy="legislative-process">
                   <Heading level={2} extraClasses="flex items-center gap-2">
                     <LegislativeIcon width="20" height="20" /> Legislative Process
