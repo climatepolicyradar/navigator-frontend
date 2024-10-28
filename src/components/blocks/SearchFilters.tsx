@@ -180,7 +180,7 @@ const SearchFilters = ({
       <AppliedFilters filterChange={handleFilterChange} />
 
       {themeConfigStatus === "success" && themeConfig.categories && (
-        <Accordian title={themeConfig.categories.label} data-cy={themeConfig.categories.label} key={themeConfig.categories.label} startOpen>
+        <Accordian title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
           <InputListContainer>
             {themeConfig.categories?.options?.map((option) => (
               <InputRadio
