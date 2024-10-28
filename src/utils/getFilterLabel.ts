@@ -3,7 +3,7 @@ import { containsAny } from "./containsAny";
 import { TThemeConfig } from "@types";
 
 export const getFilterLabel = (fallbackLabel: string, key: string, queryCategories: string | string[], themeConfig: TThemeConfig) => {
-  if (!themeConfig) {
+  if (!themeConfig || !themeConfig.labelVariations) {
     return fallbackLabel;
   }
 

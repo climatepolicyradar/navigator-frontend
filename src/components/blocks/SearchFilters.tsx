@@ -201,7 +201,12 @@ const SearchFilters = ({
           // If the filter is not in the selected category, don't display it
           if (!canDisplayFilter(filter, query, themeConfig)) return;
           return (
-            <Accordian title={filter.label} data-cy={filter.label} key={filter.label} startOpen={!!query[QUERY_PARAMS[filter.taxonomyKey]]}>
+            <Accordian
+              title={filter.label}
+              data-cy={filter.label}
+              key={filter.label}
+              startOpen={filter.startOpen === "true" || !!query[QUERY_PARAMS[filter.taxonomyKey]]}
+            >
               <InputListContainer>{renderFilterOptions(filter, query, handleFilterChange, organisations)}</InputListContainer>
             </Accordian>
           );

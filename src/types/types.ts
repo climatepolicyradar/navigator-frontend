@@ -319,6 +319,7 @@ export type TThemeConfigFilter = {
   apiMetaDataKey?: string;
   type: string;
   category: string[];
+  startOpen?: "true" | "false";
   options?: TThemeConfigOption[];
 };
 

@@ -8,6 +8,8 @@ import { TThemeConfig, TThemeConfigFilter } from "@types";
 
 export const canDisplayFilter = (filter: TThemeConfigFilter, query: ParsedUrlQuery, themeConfig: TThemeConfig) => {
   if (!filter.category) return false;
+  // No defied categories means it is for all
+  if (filter.category.length === 0) return true;
   const selectedCategory = query[QUERY_PARAMS.category] as string;
   if (!selectedCategory) return false;
   const selectedCategoryValue = themeConfig.categories.options.find((c) => c.slug === selectedCategory);
