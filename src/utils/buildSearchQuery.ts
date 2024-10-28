@@ -124,6 +124,10 @@ export default function buildSearchQuery(
   // ---- MCF specific ----
   // These are the filters that are specific to the MCF theme
   // TODO: handle this more elegantly and scaleably
+  if (themeConfig.defaultCorpora) {
+    query.corpus_import_ids = themeConfig.defaultCorpora;
+  }
+
   if (routerQuery[QUERY_PARAMS.fund]) {
     let corpusIds: string[] = [];
     const funds = routerQuery[QUERY_PARAMS.fund];
@@ -140,7 +144,7 @@ export default function buildSearchQuery(
         if (fundOption?.value) corpusIds.push(...fundOption.value);
       }
     }
-    query.corpus_import_ids = corpusIds;
+    query.corpus_import_ids = corpusIds; // this will overrite the defaultCorpora - which is fine
   }
 
   if (routerQuery[QUERY_PARAMS.status]) {
