@@ -324,7 +324,7 @@ export type TThemeConfigFilter = {
 };
 
 export type TThemeConfig = {
-  defaultCorpora: string[];
+  defaultCorpora?: string[];
   categories?: TThemeConfigCategory;
   filters: TThemeConfigFilter[];
   labelVariations: TLabelVariation[];
