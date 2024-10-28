@@ -10,7 +10,7 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 const EXAMPLE_SEARCHES = [
   { id: 1, term: "Adaptation" },
   { id: 2, term: "Biodiversity" },
-  { id: 3, filterValue: "Phillipines", filterType: QUERY_PARAMS.country },
+  { id: 3, filterValue: "Philippines", filterType: QUERY_PARAMS.country },
 ];
 
 interface SearchFormProps {
