@@ -32,6 +32,10 @@ const About = () => {
               </Heading>
               <div>
                 <p>
+                  <div className="border border-gray-300 p-4 rounded-lg flex justify-center items-center h-[304px]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={"/images/mcf/AF.png"} alt={`Adaptation Fund logo`} className="h-20 w-auto" />
+                  </div>
                   <strong>The Adaptation Fund</strong> (AF) finances projects and programmes that help vulnerable communities in developing countries
                   adapt to climate change.
                 </p>
@@ -50,6 +54,10 @@ const About = () => {
                 </p>
               </div>
               <div>
+                <div className="border border-gray-300 p-4 rounded-lg flex justify-center items-center h-[304px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={"/images/mcf/CIF.png"} alt={`Climate Investment Funds logo`} className="h-20 w-auto" />
+                </div>
                 <p>
                   <strong>The Climate Investment Funds</strong> (CIF) is a major multilateral climate fund established in 2008 to finance
                   climate-smart solutions in developing countries.
@@ -68,6 +76,10 @@ const About = () => {
                 </p>
               </div>
               <div>
+                <div className="border border-gray-300 p-4 rounded-lg flex justify-center items-center h-[304px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={"/images/mcf/GEF.png"} alt={`Global Environment Facility logo`} className="h-20 w-auto" />
+                </div>
                 <p>
                   <strong>Global Environment Facility</strong> (GEF) projects and programmes that help vulnerable communities in developing countries
                   adapt to climate change
@@ -88,11 +100,9 @@ const About = () => {
                 </p>
               </div>
               <div>
-                <div className="border border-gray-300 p-4 rounded-lg flex justify-center w-64 h-64">
-                  <div className="relative h-48 sm:h-64 md:h-80 lg:h-96 xl:h-112">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={"/images/mcf/GCF.png"} alt={`Green Climate Fund logo`} className="h-full w-full" />
-                  </div>
+                <div className="border border-gray-300 p-4 rounded-lg flex justify-center items-center h-[304px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={"/images/mcf/GCF.png"} alt={`Green Climate Fund logo`} className="h-20 w-auto" />
                 </div>
                 <p>
                   <strong>The Green Climate Fund</strong> (GEF) is the world’s largest dedicated climate fund with a mandate to foster a paradigm
