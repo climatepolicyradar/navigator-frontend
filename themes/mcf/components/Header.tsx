@@ -25,7 +25,7 @@ const Header = ({ background = true, showBottomBorder = true }) => {
               <Logo />
             </LinkWithQuery>
             {showSearch && (
-              <div className="hidden ml-6 md:block md:w-[340px] m-auto">
+              <div className="hidden ml-6 md:block md:w-[340px]">
                 <FloatingSearch />
               </div>
             )}
