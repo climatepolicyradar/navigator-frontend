@@ -25,10 +25,15 @@ interface ListOfCountriesProps {
   label: string;
 }
 
+interface MultipleValuesContentProps {
+  label: string;
+  icon: string;
+  values: string[];
+}
+
 const ListOfCountries = ({ countryCodes, icon, label }: ListOfCountriesProps) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
-
   const GeographyIconComponent = getIcon(icon);
 
   return (
@@ -42,7 +47,7 @@ const ListOfCountries = ({ countryCodes, icon, label }: ListOfCountriesProps) =>
   );
 };
 
-const MultipleValuesContentComponent = ({ label, values, icon }) => {
+const MultipleValuesContentComponent = ({ label, values, icon }: MultipleValuesContentProps) => {
   const IconComponent = getIcon(icon);
 
   return (
@@ -66,7 +71,6 @@ const MultipleValuesContentComponent = ({ label, values, icon }) => {
 const MetadataItem = ({ label, icon, values }: MetadataItemProps) => {
   const isUrl = label === "Source";
   const isCountry = label === "Geography";
-
   const IconComponent = getIcon(icon);
 
   const getValueContent = () => {
