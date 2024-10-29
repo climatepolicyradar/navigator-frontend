@@ -9,6 +9,7 @@ import { SubNav } from "@components/nav/SubNav";
 import { Heading } from "@components/typography/Heading";
 
 import { FAQS, PLATFORMFAQS } from "@mcf/constants/faqs";
+import { VerticalSpacing } from "@components/utility/VerticalSpacing";
 
 const FAQ = () => {
   return (
@@ -23,9 +24,10 @@ const FAQ = () => {
         <SiteWidth>
           <SingleCol>
             <div className="text-content mb-12">
-              <Heading level={2} extraClasses="custom-header">
+              <Heading level={1} extraClasses="custom-header">
                 FAQs
               </Heading>
+              <VerticalSpacing size="md" />
               {FAQS.map((faq, i) => (
                 <Fragment key={faq.title}>
                   <Accordian title={faq.title} startOpen={i === 0}>
@@ -38,9 +40,10 @@ const FAQ = () => {
           </SingleCol>
           <SingleCol>
             <div className="text-content mb-12">
-              <Heading level={2} extraClasses="custom-header">
+              <Heading level={1} extraClasses="custom-header">
                 Platform FAQs
               </Heading>
+              <VerticalSpacing size="md" />
               {PLATFORMFAQS.map((faq, i) => (
                 <Fragment key={faq.title}>
                   <Accordian title={faq.title} startOpen={i === 0}>

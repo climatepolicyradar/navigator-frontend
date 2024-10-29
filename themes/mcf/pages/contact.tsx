@@ -19,7 +19,7 @@ const Contact = () => {
         <SiteWidth>
           <SingleCol>
             <div className="text-content mb-12">
-              <Heading level={2} extraClasses="custom-header">
+              <Heading level={1} extraClasses="custom-header">
                 Contact
               </Heading>
               <p>
