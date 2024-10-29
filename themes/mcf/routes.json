@@ -1,5 +1,20 @@
 [
   {
+    "title": "About",
+    "path": "about",
+    "contentPath": "about"
+  },
+  {
+    "title": "Contact",
+    "path": "contact",
+    "contentPath": "contact"
+  },
+  {
+    "title": "FAQ",
+    "path": "faq",
+    "contentPath": "faq"
+  },
+  {
     "title": "Methodology",
     "path": "methodology",
     "contentPath": "methodology"
