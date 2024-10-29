@@ -38,10 +38,12 @@ const ListOfCountries = ({ countryCodes, icon, label }: ListOfCountriesProps) =>
 
   return (
     <>
-      <GeographyIconComponent className="min-w-[16px] min-h-[16px]" />
-      <span className="text-sm font-bold pl-1">
-        <strong>{label}</strong>
-      </span>
+      <div className="flex row items-center">
+        <GeographyIconComponent className="min-w-[16px] min-h-[16px]" />
+        <span className="text-sm font-bold pl-1">
+          <strong>{label}</strong>
+        </span>
+      </div>
       <CountryLinksAsList geographies={countryCodes} countries={countries} showFlag={false} />
     </>
   );
@@ -52,12 +54,14 @@ const MultipleValuesContentComponent = ({ label, values, icon }: MultipleValuesC
 
   return (
     <>
-      <IconComponent className="min-w-[16px] min-h-[16px]" />
-      <span className="text-sm font-bold px-1">
-        <strong>{label}</strong>
-      </span>
+      <div className="flex row items-center">
+        <IconComponent className="min-w-[16px] min-h-[16px]" />
+        <span className="text-sm font-bold px-1">
+          <strong>{label}</strong>
+        </span>
+      </div>
       {values.map((item, index) => (
-        <div key={item} className="flex items-center pr-2">
+        <div key={item} className="flex items-center">
           <span key={item} className="text-sm">
             {item}
           </span>
@@ -76,12 +80,12 @@ const MetadataItem = ({ label, icon, values }: MetadataItemProps) => {
   const getValueContent = () => {
     if (isUrl && typeof values === "string") {
       return (
-        <ExternalLink url={values} className="text-blue-600 underline truncate text-sm">
+        <ExternalLink url={values} className="text-blue-600 underline truncate text-sm pl-1">
           Visit project page
         </ExternalLink>
       );
     } else {
-      return <span className="text-sm">{values}</span>;
+      return <span className="pl-1 text-sm">{values}</span>;
     }
   };
 
@@ -94,10 +98,10 @@ const MetadataItem = ({ label, icon, values }: MetadataItemProps) => {
   }
 
   return (
-    <div className="flex items-center gap-1 pt-1 pr-2 pb-1 max-w-full">
+    <div className="flex items-center row">
       <IconComponent className="min-w-[16px] min-h-[16px]" />
-      <div className="flex flex-row gap-1 items-center max-w-full">
-        <span className="text-sm font-bold ">
+      <div className="pl-1">
+        <span className="text-sm font-bold">
           <strong>{label}</strong>
         </span>
         {getValueContent()}
@@ -111,7 +115,7 @@ export const McfFamilyMeta = ({ metadata }: McfFamilyMetaProps) => {
 
   return (
     <div className="w-full bg-white py-4">
-      <div className="flex flex-wrap items-center">
+      <div className="flex flex-wrap items-center gap-y-1 gap-x-1.5">
         {mappedMetadata.map((item, index) => (
           <MetadataItem key={index} label={item.label} icon={item.iconLabel} values={item.value} />
         ))}
