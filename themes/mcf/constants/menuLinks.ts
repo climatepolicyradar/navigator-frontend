@@ -11,6 +11,12 @@ const menuLinks = [
     external: false,
     cy: "search",
   },
+  {
+    text: "FAQ",
+    href: "/faq",
+    external: false,
+    cy: "faq",
+  },
 ];
 
 export default menuLinks;
