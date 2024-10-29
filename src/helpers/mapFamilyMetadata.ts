@@ -13,8 +13,6 @@ type ResultItem = {
   value: string[] | string;
 };
 
-const maxValuesToDisplay = 3;
-
 export const mapFamilyMetadata = (metadata: Metadata) => {
   const result: ResultItem[] = [];
 
@@ -35,7 +33,7 @@ export const mapFamilyMetadata = (metadata: Metadata) => {
         result.push({
           label: mapping.label,
           iconLabel: mapping.iconLabel,
-          value: Array.isArray(values) ? (values as string[]).slice(0, maxValuesToDisplay).join(", ") : values,
+          value: Array.isArray(values) && values.length > 1 ? values : values.toString(),
         });
       }
     }
