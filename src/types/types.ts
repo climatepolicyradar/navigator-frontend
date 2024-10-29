@@ -101,12 +101,14 @@ type TGeoFamilyCounts = {
   Legislative: number;
   Executive: number;
   UNFCCC: number;
+  MCF: number;
 };
 
 type TGeoFamilys = {
   Legislative: TFamily[];
   Executive: TFamily[];
   UNFCCC: TFamily[];
+  MCF: TFamily[];
 };
 
 export type TGeographySummary = {
@@ -167,7 +169,6 @@ export type TFamilyPage = {
   organisation: string;
   title: string;
   summary: string;
-  geography: string;
   geographies: string[];
   import_id: string;
   category: TCategory;
@@ -221,6 +222,21 @@ export type TFamilyMetadata = {
   instrument?: string[];
   author_type?: string[];
   author?: string[];
+};
+
+export type TMCFFamilyMetadata = {
+  approval_date?: string;
+  category?: TCorpusTypeSubCategory | TCategory;
+  organisation?: string;
+  theme?: string[];
+  geographies?: string[];
+  sector?: string[];
+  implementing_agency?: string[];
+  project_value_fund_spend?: string[];
+  project_value_co_financing?: string[];
+  result_area?: string[];
+  status?: string[];
+  project_url?: string[];
 };
 
 export type TMatchedFamily = TFamily & {

@@ -4,7 +4,6 @@ import useConfig from "@hooks/useConfig";
 import { SiteWidth } from "@components/panels/SiteWidth";
 
 import { SubNav } from "@components/nav/SubNav";
-import { CountryLink } from "@components/CountryLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import Button from "@components/buttons/Button";
 import { ExternalLinkIcon, AlertCircleIcon } from "@components/svg/Icons";
@@ -14,9 +13,8 @@ import { Heading } from "@components/typography/Heading";
 
 import { getLanguage } from "@helpers/getLanguage";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
-
+import { CountryLinks } from "@components/CountryLinks";
 import { truncateString } from "@utils/truncateString";
-import { isSystemGeo } from "@utils/isSystemGeo";
 
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
 
@@ -39,10 +37,12 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
 
   const configQuery = useConfig();
   const { data: { countries = [], languages = {} } = {} } = configQuery;
-  const geoName = getCountryName(family.geographies[0], countries);
-  const geoSlug = getCountrySlug(family.geographies[0], countries);
+
+  const geographyNames = family.geographies ? family.geographies.map((geo) => getCountryName(geo, countries)) : null;
+  const geoName = geographyNames ? geographyNames[0] : "";
+  const geoSlug = family.geographies ? getCountrySlug(family.geographies[0], countries) : "";
   const isMain = document.document_role.toLowerCase().includes("main");
-  const breadcrumbGeography = { label: geoName, href: `/geographies/${geoSlug}` };
+  const breadcrumbGeography = family.geographies && family.geographies.length > 1 ? null : { label: geoName, href: `/geographies/${geoSlug}` };
   const breadcrumbFamily = { label: family.title, href: `/document/${family.slug}` };
   const breadcrumbLabel = isMain ? "Document" : document.document_role.toLowerCase();
   const breadcrumbCategory = { label: "Search results", href: "/search" };
@@ -75,13 +75,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
             <Heading level={1}>{document.title}</Heading>
             <div className="my-4 md:my-2 md:flex justify-between items-center">
               <div className="flex text-sm items-center gap-2 middot-between">
-                {!isSystemGeo(family.geographies[0]) && (
-                  <span className="flex gap-1">
-                    <CountryLink countryCode={family.geographies[0]} className="text-textDark font-medium">
-                      <span>{geoName}</span>
-                    </CountryLink>
-                  </span>
-                )}
+                <CountryLinks geographies={family.geographies} countries={countries} />
                 {!isMain && <span className="capitalize">{document.document_role.toLowerCase()}</span>}
                 {family.category && <span className="capitalize">{family.category}</span>}
                 {!!document.language && (
