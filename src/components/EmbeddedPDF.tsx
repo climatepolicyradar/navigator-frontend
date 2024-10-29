@@ -13,7 +13,7 @@ type TProps = {
 };
 
 const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = null, startingPassageIndex = 0 }: TProps) => {
-  const containerRef = useRef();
+  const containerRef = useRef(null);
   const adobeKey = useContext(AdobeContext);
 
   const pdfPreview = usePDFPreview(document, documentPassageMatches, adobeKey);
@@ -24,7 +24,7 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = nul
   const { createPDFClient, passageIndexChangeHandler } = useMemo(() => pdfPreview, [document, documentPassageMatches, adobeKey]);
 
   useEffect(() => {
-    if (containerRef?.current) {
+    if (containerRef?.current !== null) {
       createPDFClient(startingPassageIndex);
     }
   }, [containerRef, document, createPDFClient, startingPassageIndex]);

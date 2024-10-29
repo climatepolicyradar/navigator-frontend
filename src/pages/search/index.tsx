@@ -43,7 +43,7 @@ const Search = () => {
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
   const configQuery = useConfig();
-  const { data: { regions = [], countries = [] } = {} } = configQuery;
+  const { data: { regions = [], countries = [], organisations = {} } = {} } = configQuery;
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 
@@ -110,7 +110,7 @@ const Search = () => {
     resetCSVStatus();
   };
 
-  const handleFilterChange = (type: string, value: string) => {
+  const handleFilterChange = (type: string, value: string, clearOthersOfType: boolean = false) => {
     // Clear pagination controls and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
     delete router.query[QUERY_PARAMS.active_continuation_token];
@@ -141,8 +141,14 @@ const Search = () => {
         queryCollection = [];
       }
     } else {
-      queryCollection.push(value);
+      // If we want the filter to be exclusive, we clear all other filters of the same type
+      if (clearOthersOfType) {
+        queryCollection = [value];
+      } else {
+        queryCollection.push(value);
+      }
     }
+
     router.query[type] = queryCollection;
     router.push({ query: router.query });
     resetCSVStatus();
@@ -187,6 +193,12 @@ const Search = () => {
     delete router.query[QUERY_PARAMS.offset];
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
+    // Reset any other filters
+    // MCF filters
+    delete router.query[QUERY_PARAMS.fund];
+    delete router.query[QUERY_PARAMS.status];
+    delete router.query[QUERY_PARAMS.implementing_agency];
+
     router.query[QUERY_PARAMS.category] = category;
     // Default search is all categories, so we do not need to provide any category if we want all
     if (category === "All") {
@@ -334,7 +346,7 @@ const Search = () => {
                     exit="collapsed"
                     variants={{
                       collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                      open: { opacity: 1, transition: { duration: 0.25 } },
+                      open: { opacity: 1, transition: { duration: 0.1 } },
                     }}
                   >
                     <SearchSettings
@@ -353,12 +365,14 @@ const Search = () => {
           </div>
           <div className={`${showFilters ? "" : "hidden"}`}>
             {configQuery.isFetching ? (
-              <p>Loading filters...</p>
+              <Loader size="20px" />
             ) : (
               <SearchFilters
                 searchCriteria={searchQuery}
+                query={router.query}
                 regions={regions}
                 countries={countries}
+                organisations={organisations}
                 handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
@@ -372,12 +386,14 @@ const Search = () => {
         <MultiCol>
           <SideCol extraClasses="hidden md:block border-r pt-5">
             {configQuery.isFetching ? (
-              <p className="text-sm">Loading filters...</p>
+              <Loader size="20px" />
             ) : (
               <SearchFilters
                 searchCriteria={searchQuery}
+                query={router.query}
                 regions={regions}
                 countries={countries}
+                organisations={organisations}
                 handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}

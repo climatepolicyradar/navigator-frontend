@@ -54,7 +54,7 @@ function generateHighlights(document: TDocumentPage, documentPassageMatches: TPa
   });
 }
 
-export default function usePDFPreview(document: TDocumentPage, documentPassageMatches: TPassage[], adobeKey: string) {
+export default function usePDFPreview(physicalDocument: TDocumentPage, documentPassageMatches: TPassage[], adobeKey: string) {
   const viewerConfig = {
     showDownloadPDF: false,
     showPrintPDF: false,
@@ -74,7 +74,10 @@ export default function usePDFPreview(document: TDocumentPage, documentPassageMa
   const createPDFClient = (startingPassage: number, onLoadCallback?: Function) => {
     viewSDKClient = new ViewSDKClient();
     viewSDKClient.ready().then(() => {
-      const previewFilePromise = viewSDKClient.previewFile(document, adobeKey, "pdf-div", viewerConfig);
+      // Prevent attaching preview to non-existent div
+      const pdfDiv = document.getElementById("pdf-div");
+      if (!pdfDiv) return;
+      const previewFilePromise = viewSDKClient.previewFile(physicalDocument, adobeKey, "pdf-div", viewerConfig);
       previewFilePromise.then((adobeViewer: any) => {
         // PDF PREVIEW -- SHOULD BE VISIBLE NOW
         adobeViewer.getAPIs().then((api: any) => {
@@ -115,7 +118,7 @@ export default function usePDFPreview(document: TDocumentPage, documentPassageMa
     }
     // await annotationManagerApi.deleteAnnotations({});
     if (documentPassageMatches.length > 0) {
-      await annotationManagerApi.addAnnotations(generateHighlights(document, documentPassageMatches));
+      await annotationManagerApi.addAnnotations(generateHighlights(physicalDocument, documentPassageMatches));
     }
   };
 

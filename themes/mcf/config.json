@@ -1,0 +1,47 @@
+{
+  "defaultCorpora": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"],
+  "filters": [
+    {
+      "label": "Funds",
+      "taxonomyKey": "fund",
+      "startOpen": "true",
+      "options": [
+        {
+          "label": "Green Climate Fund",
+          "slug": "green-climate-fund",
+          "value": ["MCF.corpus.GCF.n0000"]
+        },
+        {
+          "label": "Global Environment Facility",
+          "slug": "global-environment-facility",
+          "value": ["MCF.corpus.GEF.n0000"]
+        }
+      ],
+      "type": "checkbox",
+      "category": []
+    },
+    {
+      "label": "Status",
+      "corporaTypeKey": "GCF",
+      "taxonomyKey": "status",
+      "apiMetaDataKey": "family.status",
+      "type": "radio",
+      "category": []
+    },
+    {
+      "label": "Implementing agency",
+      "corporaTypeKey": "GCF",
+      "taxonomyKey": "implementing_agency",
+      "apiMetaDataKey": "family.implementing_agency",
+      "type": "radio",
+      "category": []
+    }
+  ],
+  "labelVariations": [
+    {
+      "key": "date",
+      "label": "First published",
+      "category": []
+    }
+  ]
+}

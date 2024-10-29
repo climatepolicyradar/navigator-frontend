@@ -1,0 +1,82 @@
+{
+  "categories": {
+    "label": "Category",
+    "options": [
+      {
+        "label": "All",
+        "slug": "All"
+      },
+      {
+        "label": "Intl. agreements",
+        "slug": "intl-agreements",
+        "value": ["UNFCCC.corpus.i00000001.n0000"],
+        "category": ["UNFCCC"]
+      },
+      {
+        "label": "Policies",
+        "slug": "policies",
+        "value": ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000001.n0000"],
+        "category": ["Executive"]
+      },
+      {
+        "label": "Laws",
+        "slug": "laws",
+        "value": ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000001.n0000"],
+        "category": ["Legislative"]
+      },
+      {
+        "label": "Multilateral Climate Funds",
+        "slug": "multilateral-climate-funds",
+        "value": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+      },
+      {
+        "label": "Litigation",
+        "slug": "Litigation",
+        "category": ["Litigation"]
+      }
+    ]
+  },
+  "filters": [
+    {
+      "label": "Funds",
+      "taxonomyKey": "fund",
+      "options": [
+        {
+          "label": "Green Climate Fund",
+          "slug": "green-climate-fund",
+          "value": ["MCF.corpus.GCF.n0000"]
+        },
+        {
+          "label": "Global Environment Facility",
+          "slug": "global-environment-facility",
+          "value": ["MCF.corpus.GEF.n0000"]
+        }
+      ],
+      "type": "checkbox",
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+    },
+    {
+      "label": "Status",
+      "corporaTypeKey": "GCF",
+      "taxonomyKey": "status",
+      "apiMetaDataKey": "family.status",
+      "type": "radio",
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+    },
+    {
+      "label": "Implementing agency",
+      "corporaTypeKey": "GCF",
+      "taxonomyKey": "implementing_agency",
+      "apiMetaDataKey": "family.implementing_agency",
+      "type": "radio",
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+    }
+  ],
+  "labelVariations": [
+    {
+      "key": "date",
+      "label": "First published",
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+    }
+  ]
+}

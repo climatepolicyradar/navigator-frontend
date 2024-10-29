@@ -409,12 +409,6 @@ ul li.selected {
   }
 }
 
-.search-results {
-  a {
-    @apply visited:text-blue-300 visited:hover:text-blue-800;
-  }
-}
-
 .pdf-container {
   height: 440px;
   margin-bottom: 16px;
@@ -508,12 +502,6 @@ ul li.selected {
     &:nth-child(5n + 4) {
       @apply rounded-none rounded-bl-lg;
     }
-  }
-}
-
-@layer utilities {
-  h1.smaller {
-    font-size: 32px;
   }
 }
 

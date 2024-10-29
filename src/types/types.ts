@@ -6,6 +6,11 @@ export type TSearchKeywordFilters = {
   countries?: string[];
 };
 
+export type TSearchCriteriaMeta = {
+  name: string;
+  value: string;
+};
+
 export type TSearchCriteria = {
   query_string: string;
   exact_match: boolean;
@@ -20,6 +25,10 @@ export type TSearchCriteria = {
   family_ids?: string[] | null;
   document_ids?: string[] | null;
   continuation_tokens?: string[] | null;
+  corpus_import_ids: string[];
+  metadata: TSearchCriteriaMeta[];
+  // for internal use
+  runSearch?: boolean;
 };
 
 export type TPassageBlockCoords = [number, number];
@@ -257,10 +266,19 @@ export type TCorpus = {
   corpus_import_id: string;
   image_url: string;
   text: string;
+  // taxonomies
+  taxonomy: {
+    [key: string]: {
+      allow_any: boolean;
+      allow_blanks: boolean;
+      allowed_values: string[];
+    };
+  };
 };
 
 export type TOrganisation = {
   corpora: TCorpus[];
+  total: number;
   count_by_category: {
     [key: string]: number;
   };
@@ -273,6 +291,7 @@ export interface TDictionary<T> {
 export type TOrganisationDictionary = TDictionary<TOrganisation>;
 
 export type TQueryStrings = {
+  // Core
   query_string: string;
   exact_match: string;
   region: string;
@@ -284,4 +303,45 @@ export type TQueryStrings = {
   offset: string;
   active_continuation_token: string;
   continuation_tokens: string;
+  // Multilater Climate Funds (MCF)
+  fund: string;
+  status: string;
+  implementing_agency: string;
+};
+
+// Theme configuration types
+export type TLabelVariation = {
+  category: string[];
+  label: string;
+  key: string;
+};
+
+export type TThemeConfigOption = {
+  label: string;
+  slug: string;
+  value?: string[];
+  category?: string[];
+};
+
+type TThemeConfigCategory = {
+  label: string;
+  options: TThemeConfigOption[];
+};
+
+export type TThemeConfigFilter = {
+  label: string;
+  corporaTypeKey?: string;
+  taxonomyKey: string;
+  apiMetaDataKey?: string;
+  type: string;
+  category: string[];
+  startOpen?: "true" | "false";
+  options?: TThemeConfigOption[];
+};
+
+export type TThemeConfig = {
+  defaultCorpora?: string[];
+  categories?: TThemeConfigCategory;
+  filters: TThemeConfigFilter[];
+  labelVariations: TLabelVariation[];
 };
