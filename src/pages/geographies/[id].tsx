@@ -78,14 +78,26 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   const filteredCategoryArray = isMCFTheme ? MCF_DOCUMENT_CATEGORIES : DOCUMENT_CATEGORIES;
 
   const documentCategories = filteredCategoryArray.map((category) => {
-    let count: number | null;
-
-    if (category === "All") {
-      count = allDocumentsCount;
-    } else if (category === "Litigation") {
-      count = 0;
-    } else {
-      count = summary.family_counts[category] ?? 0;
+    let count = null;
+    switch (category) {
+      case "All":
+        count = allDocumentsCount;
+        break;
+      case "Legislation":
+        count = summary.family_counts.Legislative;
+        break;
+      case "Policies":
+        count = summary.family_counts.Executive;
+        break;
+      case "UNFCCC":
+        count = summary.family_counts.UNFCCC;
+        break;
+      case "Litigation":
+        count = 0;
+        break;
+      case "MCF":
+        count = summary.family_counts.MCF;
+        break;
     }
 
     return {
