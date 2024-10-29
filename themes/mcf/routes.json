@@ -1,5 +1,10 @@
 [
   {
+    "title": "Contact",
+    "path": "contact",
+    "contentPath": "contact"
+  },
+  {
     "title": "FAQ",
     "path": "faq",
     "contentPath": "faq"

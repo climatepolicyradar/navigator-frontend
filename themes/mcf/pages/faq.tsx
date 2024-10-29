@@ -23,7 +23,9 @@ const FAQ = () => {
         <SiteWidth>
           <SingleCol>
             <div className="text-content mb-12">
-              <Heading level={2}>FAQs</Heading>
+              <Heading level={2} extraClasses="custom-header">
+                FAQs
+              </Heading>
               {FAQS.map((faq, i) => (
                 <Fragment key={faq.title}>
                   <Accordian title={faq.title} startOpen={i === 0}>
@@ -36,7 +38,9 @@ const FAQ = () => {
           </SingleCol>
           <SingleCol>
             <div className="text-content mb-12">
-              <Heading level={2}>Platform FAQs</Heading>
+              <Heading level={2} extraClasses="custom-header">
+                Platform FAQs
+              </Heading>
               {PLATFORMFAQS.map((faq, i) => (
                 <Fragment key={faq.title}>
                   <Accordian title={faq.title} startOpen={i === 0}>

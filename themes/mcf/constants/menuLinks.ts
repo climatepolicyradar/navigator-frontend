@@ -17,6 +17,12 @@ const menuLinks = [
     external: false,
     cy: "faq",
   },
+  {
+    text: "Contact",
+    href: "/contact",
+    external: false,
+    cy: "contact",
+  },
 ];
 
 export default menuLinks;
