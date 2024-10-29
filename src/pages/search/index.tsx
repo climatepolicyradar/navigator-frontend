@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { ParsedUrlQueryInput } from "querystring";
 import { motion, AnimatePresence } from "framer-motion";
@@ -39,6 +39,7 @@ const Search = () => {
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
+  const settingsButtonRef = useRef(null);
 
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
@@ -420,6 +421,7 @@ const Search = () => {
                       className="px-4 flex justify-center items-center text-textDark text-xl"
                       onClick={() => setShowOptions(!showOptions)}
                       data-cy="search-options"
+                      ref={settingsButtonRef}
                     >
                       <MdOutlineTune />
                     </button>
@@ -440,6 +442,7 @@ const Search = () => {
                             handleSortClick={handleSortClick}
                             handleSearchChange={handleSearchChange}
                             setShowOptions={setShowOptions}
+                            settingsButtonRef={settingsButtonRef}
                           />
                         </motion.div>
                       )}

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { ParsedUrlQuery } from "querystring";
 
 import { SearchSettingsList } from "./SearchSettingsList";
@@ -12,6 +12,7 @@ type TProps = {
   handleSortClick?: (sortOption: string) => void;
   handleSearchChange?: (key: string, value: string) => void;
   setShowOptions?: (value: boolean) => void;
+  settingsButtonRef?: MutableRefObject<any>;
 };
 
 const getCurrentSortChoice = (queryParams: ParsedUrlQuery, isBrowsing: boolean) => {
@@ -32,7 +33,7 @@ const getCurrentSemanticSearchChoice = (queryParams: ParsedUrlQuery) => {
   return exactMatch as string;
 };
 
-export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChange, setShowOptions }: TProps) => {
+export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChange, setShowOptions, settingsButtonRef }: TProps) => {
   const searchOptionsRef = useRef(null);
   const [options, setOptions] = useState(sortOptions);
 
@@ -55,7 +56,12 @@ export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChang
   // Clicking outside the search options will close them
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchOptionsRef.current && !searchOptionsRef.current.contains(event.target)) {
+      if (
+        searchOptionsRef?.current &&
+        !searchOptionsRef.current.contains(event.target) &&
+        settingsButtonRef?.current &&
+        !settingsButtonRef.current.contains(event.target)
+      ) {
         setShowOptions && setShowOptions(false);
       }
     };
@@ -63,7 +69,7 @@ export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChang
     return () => {
       document.removeEventListener("click", handleClickOutside, true);
     };
-  }, [searchOptionsRef, setShowOptions]);
+  }, [searchOptionsRef, settingsButtonRef, setShowOptions]);
 
   return (
     <div
