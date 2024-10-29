@@ -16,7 +16,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
     <Layout title="Multilateral climate fund search">
       <main id="main" className="flex flex-col flex-1">
         <div>
-          <Header background={false} />
+          <Header background={false} showBottomBorder={false} />
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
         </div>
         <div className={`bg-white border-slate-700 py-60 border-solid  border-2 text-center`}>

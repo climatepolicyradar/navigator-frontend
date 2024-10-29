@@ -1,5 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 
+import useGetThemeConfig from "@hooks/useThemeConfig";
+
 import Tooltip from "@components/tooltip";
 import { ExternalLink } from "@components/ExternalLink";
 import { DateRange } from "../filters/DateRange";
@@ -9,48 +11,101 @@ import { TypeAhead } from "../forms/TypeAhead";
 import { InputCheck } from "@components/forms/Checkbox";
 import { InputRadio } from "@components/forms/Radio";
 import { AppliedFilters } from "@components/filters/AppliedFilters";
+import Loader from "@components/Loader";
 
 import { currentYear, minYear } from "@constants/timedate";
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { DOCUMENT_CATEGORIES, TDocumentCategory } from "@constants/documentCategories";
-import { LAWS, POLICIES, UNFCCC, LITIGATION } from "@constants/categoryAliases";
 
-import { TGeography, TSearchCriteria } from "@types";
 import { getCountriesFromRegions } from "@helpers/getCountriesFromRegions";
+
+import { TGeography, TOrganisationDictionary, TSearchCriteria, TThemeConfigFilter, TThemeConfigOption } from "@types";
+import { ParsedUrlQuery } from "querystring";
+import { canDisplayFilter } from "@utils/canDisplayFilter";
+import { getFilterLabel } from "@utils/getFilterLabel";
 
 const { default: MethodologyLink } = await import(`/themes/${process.env.THEME}/components/MethodologyLink`);
 
-const isCategoryChecked = (selectedCatgeory: string, category: TDocumentCategory) => {
-  if (!category) {
-    return false;
-  }
-
+const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption) => {
   if (selectedCatgeory) {
-    if (category === "Legislation") {
-      return LAWS.includes(selectedCatgeory);
+    if (selectedCatgeory === themeConfigCategory.slug) {
+      return true;
     }
-    if (category === "Policies") {
-      return POLICIES.includes(selectedCatgeory);
-    }
-    if (category === "UNFCCC") {
-      return UNFCCC.includes(selectedCatgeory);
-    }
-    if (category === "Litigation") {
-      return LITIGATION.includes(selectedCatgeory);
-    }
-  } else if (category === "All") {
-    return true;
   }
 
-  // All
+  if (!selectedCatgeory && themeConfigCategory.slug.toLowerCase() === "all") return true;
+
   return false;
+};
+
+const renderFilterOptions = (
+  filter: TThemeConfigFilter,
+  query: ParsedUrlQuery,
+  handleFilterChange: Function,
+  organisations: TOrganisationDictionary
+) => {
+  if (filter.options && filter.options.length > 0) {
+    return filter.options.map((option) =>
+      filter.type === "radio" ? (
+        <InputRadio
+          key={option.slug}
+          label={option.label}
+          checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option.slug)}
+          onChange={() => null} // supress normal radio behaviour to allow to deselection
+          onClick={() => {
+            handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug, true);
+          }}
+        />
+      ) : (
+        <InputCheck
+          key={option.slug}
+          label={option.label}
+          checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option.slug)}
+          onChange={() => {
+            handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug);
+          }}
+        />
+      )
+    );
+  }
+  if (filter.corporaTypeKey && organisations && organisations[filter.corporaTypeKey]) {
+    // check our organisation contains the filter in its list of taxonomies
+    // we  do not want to attempt to render if our config is unaligned or our taxonomy does not exist
+    const corpus = organisations[filter.corporaTypeKey].corpora.find((corpus) => corpus.taxonomy.hasOwnProperty(filter.taxonomyKey));
+    if (corpus) {
+      return corpus.taxonomy[filter.taxonomyKey]?.allowed_values.map((option: string) =>
+        filter.type === "radio" ? (
+          <InputRadio
+            key={option}
+            label={option}
+            checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option)}
+            onChange={() => null} // supress normal radio behaviour to allow to deselection
+            onClick={() => {
+              handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option, true);
+            }}
+          />
+        ) : (
+          <InputCheck
+            key={option}
+            label={option}
+            checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option)}
+            onChange={() => {
+              handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option);
+            }}
+          />
+        )
+      );
+    }
+  }
+  return null;
 };
 
 type TSearchFiltersProps = {
   searchCriteria: TSearchCriteria;
+  query: ParsedUrlQuery;
   regions: TGeography[];
   countries: TGeography[];
-  handleFilterChange(type: string, value: string): void;
+  organisations: TOrganisationDictionary;
+  handleFilterChange(type: string, value: string, clearOthersOfType?: boolean): void;
   handleYearChange(values: number[], reset?: boolean): void;
   handleRegionChange(region: string): void;
   handleClearSearch(): void;
@@ -59,18 +114,21 @@ type TSearchFiltersProps = {
 
 const SearchFilters = ({
   searchCriteria,
+  query,
   regions,
   countries,
+  organisations,
   handleFilterChange,
   handleYearChange,
   handleRegionChange,
   handleClearSearch,
   handleDocumentCategoryClick,
 }: TSearchFiltersProps) => {
+  const { status: themeConfigStatus, themeConfig } = useGetThemeConfig();
   const [showClear, setShowClear] = useState(false);
 
   const {
-    keyword_filters: { countries: countryFilters = [], regions: regionFilters = [], categories: categoryFilters = [] },
+    keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
   } = searchCriteria;
 
   const thisYear = currentYear();
@@ -95,9 +153,10 @@ const SearchFilters = ({
 
   return (
     <div id="search_filters" data-cy="seach-filters" className="text-sm text-textNormal flex flex-col gap-5">
+      {themeConfigStatus === "loading" && <Loader size="20px" />}
       <div className="flex justify-between">
         <div className="flex gap-2">
-          <p className="text-xs uppercase">Filters </p>
+          <p className="text-xs uppercase">Filters</p>
           <Tooltip
             id="filter-by"
             tooltip={
@@ -117,26 +176,43 @@ const SearchFilters = ({
           </button>
         )}
       </div>
-      <div className="flex flex-wrap gap-2" data-cy="applied-filters">
-        <AppliedFilters filterChange={handleFilterChange} />
-      </div>
 
-      <Accordian title="Category" data-cy="categories" startOpen>
-        <InputListContainer>
-          {DOCUMENT_CATEGORIES.map((category, i) => (
-            <InputRadio
-              key={category}
-              label={category}
-              checked={categoryFilters && isCategoryChecked(categoryFilters[0], category)}
-              onChange={() => {
-                handleDocumentCategoryClick(category);
-              }}
-            />
-          ))}
-        </InputListContainer>
-      </Accordian>
+      <AppliedFilters filterChange={handleFilterChange} />
 
-      <Accordian title="Region" data-cy="regions">
+      {themeConfigStatus === "success" && themeConfig.categories && (
+        <Accordian title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
+          <InputListContainer>
+            {themeConfig.categories?.options?.map((option) => (
+              <InputRadio
+                key={option.slug}
+                label={option.label}
+                checked={query && isCategoryChecked(query[QUERY_PARAMS.category] as string, option)}
+                onChange={() => {
+                  handleDocumentCategoryClick(option.slug);
+                }}
+              />
+            ))}
+          </InputListContainer>
+        </Accordian>
+      )}
+
+      {themeConfigStatus === "success" &&
+        themeConfig.filters.map((filter) => {
+          // If the filter is not in the selected category, don't display it
+          if (!canDisplayFilter(filter, query, themeConfig)) return;
+          return (
+            <Accordian
+              title={filter.label}
+              data-cy={filter.label}
+              key={filter.label}
+              startOpen={filter.startOpen === "true" || !!query[QUERY_PARAMS[filter.taxonomyKey]]}
+            >
+              <InputListContainer>{renderFilterOptions(filter, query, handleFilterChange, organisations)}</InputListContainer>
+            </Accordian>
+          );
+        })}
+
+      <Accordian title={getFilterLabel("Region", "region", query[QUERY_PARAMS.category], themeConfig)} data-cy="regions">
         <InputListContainer>
           {regions.map((region) => (
             <InputCheck
@@ -151,7 +227,11 @@ const SearchFilters = ({
         </InputListContainer>
       </Accordian>
 
-      <Accordian title="Published jurisdiction" data-cy="countries" overflowOverride>
+      <Accordian
+        title={getFilterLabel("Published jurisdiction", "country", query[QUERY_PARAMS.category], themeConfig)}
+        data-cy="countries"
+        overflowOverride
+      >
         <InputListContainer>
           <TypeAhead
             list={availableCountries}
@@ -164,7 +244,7 @@ const SearchFilters = ({
         </InputListContainer>
       </Accordian>
 
-      <Accordian title="Date" data-cy="date-range">
+      <Accordian title={getFilterLabel("Date", "date", query[QUERY_PARAMS.category], themeConfig)} data-cy="date-range">
         <DateRange type="year_range" handleChange={handleYearChange} defaultValues={searchCriteria.year_range} min={minYear} max={thisYear} />
       </Accordian>
 

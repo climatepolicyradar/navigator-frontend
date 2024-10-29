@@ -13,4 +13,6 @@ export const initialSearchCriteria: TSearchCriteria = {
   page_size: RESULTS_PER_PAGE,
   limit: 100,
   offset: 0,
+  corpus_import_ids: [],
+  metadata: [],
 };

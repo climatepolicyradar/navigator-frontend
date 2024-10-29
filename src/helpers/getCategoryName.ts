@@ -19,7 +19,7 @@ const categories: Record<TCategory, string> = {
   MCF: "MCF",
 };
 
-const getSubCategoryName = (subCategory: TCorpusTypeSubCategory): string => {
+export const getSubCategoryName = (subCategory: TCorpusTypeSubCategory): string => {
   return subCategories[subCategory as TCorpusTypeSubCategory];
 };
 

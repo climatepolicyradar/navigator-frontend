@@ -10,14 +10,14 @@ import { Logo } from "./HeaderComponents/Logo";
 
 const NON_SEARCH_PAGES = ["/", "/search"];
 
-const Header = ({ background = true }) => {
+const Header = ({ background = true, showBottomBorder = true }) => {
   const router = useRouter();
 
   // Do not show search on specific pages
   const showSearch = !NON_SEARCH_PAGES.includes(router.pathname);
 
   return (
-    <header data-cy="header" className="w-full">
+    <header data-cy="header" className={`w-full  ${showBottomBorder ? "border-b border-gray-200 border-solid" : ""}`}>
       <SiteWidth>
         <div className="flex flex-nowrap my-2">
           <div className="items-center flex flex-nowrap flex-1">
@@ -25,8 +25,12 @@ const Header = ({ background = true }) => {
               <Logo />
             </LinkWithQuery>
             {showSearch && (
-              <div className="hidden ml-6 md:block md:w-[340px]">
-                <FloatingSearch />
+              <div className="hidden md:block md:w-[340px] m-auto">
+                <FloatingSearch
+                  extended={false}
+                  placeholder={"Full text of over 5,000 multilateral climate fund projects"}
+                  extraButtonClasses={"!hover:bg-mcf-blue"}
+                />
               </div>
             )}
           </div>
