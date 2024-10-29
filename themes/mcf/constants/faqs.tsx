@@ -250,9 +250,8 @@ export const PLATFORMFAQS: TFAQ[] = [
       <>
         <p>
           The database is not exhaustive. We don’t have access to some MCFs documents. Others aren’t currently machine-readable:we can’t yet extract
-          the text from them. If you think we’re missing some data, you can tell us about it using the data contribution form: LINK We also limit the
-          number of matches you can see in a document to 500, so you get quickest, most accurate results. For very long documents, or very broad
-          search terms, you might miss some matches.
+          the text from them. We also limit the number of matches you can see in a document to 500, so you get quickest, most accurate results. For
+          very long documents, or very broad search terms, you might miss some matches.
         </p>
       </>
     ),
