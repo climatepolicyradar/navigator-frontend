@@ -16,7 +16,7 @@ type TProps = {
   extraButtonClasses?: string;
 };
 
-export const FloatingSearch = ({ extended = false, placeholder, extraButtonClasses }: TProps) => {
+export const FloatingSearch = ({ extended = true, placeholder, extraButtonClasses }: TProps) => {
   const ref = useRef(null);
   const router = useRouter();
   const qQueryString = router.query[QUERY_PARAMS.query_string] as string;
@@ -115,7 +115,7 @@ export const FloatingSearch = ({ extended = false, placeholder, extraButtonClass
               ))}
             </ul>
           </div>
-          {!extended && (
+          {extended && (
             <a
               className="block bg-blue-50 rounded-xl p-2 text-gray-600 mt-4 border border-blue-50 hover:border-blue-600 hover:no-underline"
               onClick={handleTryThisClick}
@@ -135,7 +135,7 @@ export const FloatingSearch = ({ extended = false, placeholder, extraButtonClass
           )}
         </div>
       )}
-      {!extended && (
+      {extended && (
         <div
           data-cy="search-highlight"
           className={`absolute left-[40px] top-full mt-3 p-4 bg-blue-800 w-[320px] text-white rounded-lg transition opacity-0 ${

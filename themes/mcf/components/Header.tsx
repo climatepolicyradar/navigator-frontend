@@ -27,7 +27,7 @@ const Header = ({ background = true, showBottomBorder = true }) => {
             {showSearch && (
               <div className="hidden md:block md:w-[340px] m-auto">
                 <FloatingSearch
-                  extended={true}
+                  extended={false}
                   placeholder={"Full text of over 5,000 multilateral climate fund projects"}
                   extraButtonClasses={"!hover:bg-mcf-blue"}
                 />
