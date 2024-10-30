@@ -4,15 +4,13 @@ import { VerticalSpacing } from "@components/utility/VerticalSpacing";
 
 const ContextualSearchContent = () => {
   return (
-    <SiteWidth>
+    <SiteWidth extraClasses="!max-w-[1024px]">
       <div className="flex flex-col md:flex-row justify-center">
-        <div className="border-slate-700 border-solid border-t-2 pt-16 pb-16 pr-16 flex-1">
+        <div className="border-slate-700 border-solid border-t-2 pt-16 pb-16 md:pr-16 flex-1">
           <Heading level={2} extraClasses="custom-header">
             Central knowledge-base for MCFs
           </Heading>
-          <p>
-            Find information from 4 different funds projects and policies <br /> in more than 130 countries.
-          </p>
+          <p>Find information from 4 different funds projects and policies in more than 130 countries.</p>
           <VerticalSpacing size="sm" />
           <div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -23,7 +21,7 @@ const ContextualSearchContent = () => {
             />
           </div>
         </div>
-        <div className=" border-slate-700 border-solid border-t-2 md:border-l-2 md:pl-16 pt-16 pb-16 pr-16 flex-1">
+        <div className=" border-slate-700 border-solid border-t-2 md:border-l-2 md:pl-16 pt-16 pb-16 md:pr-16 flex-1">
           <Heading level={2} extraClasses="custom-header">
             Contextual search
           </Heading>

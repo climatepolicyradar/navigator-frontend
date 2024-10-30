@@ -31,7 +31,7 @@ const fundDescriptions: FundDescription[] = [
 
 const AboutTheFundsContent = () => {
   return (
-    <SiteWidth>
+    <SiteWidth extraClasses="!max-w-[1024px]">
       <div className="flex justify-between">
         <div className="content-center xl:max-w-screen-md py-16">
           <Heading level={2} extraClasses="custom-header">
@@ -51,7 +51,7 @@ const AboutTheFundsContent = () => {
         </div>
         <div className="hidden xl:block xl:h-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/mcf/mcf-fund-logos.png" alt="Multilateral Climate Fund Logos" className="h-[34rem]" />
+          <img src="/images/mcf/mcf-fund-logos.png" alt="Multilateral Climate Fund Logos" className="h-[28 rem]" />
         </div>
       </div>
     </SiteWidth>

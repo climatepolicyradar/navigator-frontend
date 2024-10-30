@@ -4,17 +4,17 @@ import { LinkWithQuery } from "@components/LinkWithQuery";
 
 const AboutClimateProjectExplorer = () => {
   return (
-    <SiteWidth extraClasses="">
-      <div className="relative h-auto w-auto md:h-[1280px] md:w-[1440px] pb-16 md:pb-0">
-        <div className="absolute z-0 w-full h-full hidden md:block">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={"/images/climate-project-explorer/cpe-search-page.png"}
-            alt={`Green Climate Fund logo`}
-            className="h-full w-full object-cover"
-          />{" "}
-        </div>
-        <div className="max-w-xl relative z-10">
+    <SiteWidth extraClasses="!max-w-[1024px]">
+      <div className="absolute lg:z-0 hidden lg:block">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={"/images/climate-project-explorer/cpe-hp-1.png"}
+          alt={`Green Climate Fund logo`}
+          className="max-h-[824px] max-w-[1024px] object-cover"
+        />{" "}
+      </div>
+      <div className="relative lg:h-[824px] w-auto pb-16 lg:pb-0">
+        <div className="max-w-xl relative lg:z-10 ">
           <Heading level={2} extraClasses="custom-header">
             About Climate Project Explorer
           </Heading>

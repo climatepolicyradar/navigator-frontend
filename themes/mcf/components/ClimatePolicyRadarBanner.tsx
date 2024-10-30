@@ -6,7 +6,7 @@ import { SiteWidth } from "@components/panels/SiteWidth";
 const ClimatePolicyRadarBannerHolder = () => {
   return (
     <div className={`bg-cpr-banner py-36 text-white relative`}>
-      <SiteWidth>
+      <SiteWidth extraClasses="!max-w-[1024px]">
         <div className="max-w-sm">
           <p className="font-medium tracking-slight text-sm lg:text-md text-[#3399FF] mb-2" data-cy="search-all">
             POWERED BY
@@ -26,9 +26,9 @@ const ClimatePolicyRadarBannerHolder = () => {
         </div>
         <div></div>
       </SiteWidth>
-      <div className="hidden sm:block sm:absolute sm:right-28 sm:top-10 sm:h-full">
+      <div className="hidden sm:block sm:absolute sm:right-1/4 sm:top-10 sm:h-full">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/cpr-logo-faded.png" alt="Climate Policy Radar Logo" className="w-[800px] h-[400px]" />
+        <img src="/images/cpr-logo-faded.png" alt="Climate Policy Radar Logo" className="w-[600px] h-[280px]" />
       </div>
     </div>
   );
