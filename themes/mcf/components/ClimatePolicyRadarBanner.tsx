@@ -26,9 +26,9 @@ const ClimatePolicyRadarBannerHolder = () => {
         </div>
         <div></div>
       </SiteWidth>
-      <div className="hidden sm:block sm:absolute sm:right-1/4 sm:top-10 sm:h-full">
+      <div className="hidden sm:block sm:absolute sm:right-[20%] sm:top-10 sm:h-full">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/cpr-logo-faded.png" alt="Climate Policy Radar Logo" className="w-[600px] h-[280px]" />
+        <img src="/images/cpr-logo-faded.png" alt="Climate Policy Radar Logo" className="w-[580px] h-[300px]" />
       </div>
     </div>
   );
