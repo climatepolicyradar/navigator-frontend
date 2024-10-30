@@ -5,3 +5,5 @@ export { default as Header } from "./Header";
 export { default as Footer } from "./Footer";
 export { default as ClimatePolicyRadarBanner } from "./ClimatePolicyRadarBanner";
 export { default as AboutTheFunds } from "./AboutTheFunds";
+export { default as AboutClimateProjectExplorer } from "./AboutClimateProjectExplorer";
+export { default as ContextualSearchContent } from "./ContextualSearchContent";
