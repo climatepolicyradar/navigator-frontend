@@ -67,7 +67,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
           geography={breadcrumbGeography}
           category={breadcrumbCategory}
           family={breadcrumbFamily}
-          label={<span className="capitalize">{breadcrumbLabel}</span>}
+          label={breadcrumbLabel ? <span className="capitalize">{breadcrumbLabel}</span> : document.title}
         />
       </SubNav>
       <SiteWidth>
