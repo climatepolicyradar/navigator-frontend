@@ -90,7 +90,7 @@ export const FloatingSearch = ({ extended = true, placeholder, extraButtonClasse
           placeholder={`${placeholder ? placeholder : "Full text of over 5,000 climate laws and policies"}`}
           onChange={(e) => setSearch(e.target.value)}
           onFocus={() => handleInputFocus()}
-          className={`pl-[34px] rounded-[20px] text-sm w-full bg-white text-gray-800 border-1 focus:ring-0 focus:ring-offset-0 focus:ring-white ${
+          className={`pl-[34px] rounded-[20px] text-sm w-full bg-white text-gray-800 border-1 focus:ring-0 focus:ring-offset-0 focus:ring-white focus:outline-none focus:border-none ${
             showFloatingSearch ? inputFocusStyles : ""
           }`}
         />
