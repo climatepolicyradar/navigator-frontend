@@ -2,7 +2,7 @@
   "defaultCorpora": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"],
   "filters": [
     {
-      "label": "Funds",
+      "label": "Climate funds",
       "taxonomyKey": "fund",
       "startOpen": "true",
       "options": [
@@ -40,7 +40,7 @@
   "labelVariations": [
     {
       "key": "date",
-      "label": "First published",
+      "label": "Approval FY",
       "category": []
     }
   ]
