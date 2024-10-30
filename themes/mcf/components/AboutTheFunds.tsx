@@ -13,7 +13,7 @@ type FundDescription = {
 const fundDescriptions: FundDescription[] = [
   {
     name: "Adaptation Fund",
-    description: "finances projects and programmes that help vulnerable communities in developing countries adapt to climate change.",
+    description: "(AF) finances projects and programmes that help vulnerable communities in developing countries adapt to climate change.",
   },
   {
     name: "Climate Investment Funds",
@@ -21,7 +21,7 @@ const fundDescriptions: FundDescription[] = [
   },
   {
     name: "Global Environment Facility",
-    description: "projects and programmes that help vulnerable communities in developing countries adapt to climate change.",
+    description: "(GEF) projects and programmes that help vulnerable communities in developing countries adapt to climate change.",
   },
   {
     name: "Green Climate Fund",

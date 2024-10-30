@@ -31,11 +31,11 @@ const About = () => {
                 The Funds
               </Heading>
               <div>
+                <div className="border border-gray-300 p-4 rounded-lg flex justify-center items-center h-[304px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={"/images/mcf/AF.png"} alt={`Adaptation Fund logo`} className="h-20 w-auto" />
+                </div>
                 <p>
-                  <div className="border border-gray-300 p-4 rounded-lg flex justify-center items-center h-[304px]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={"/images/mcf/AF.png"} alt={`Adaptation Fund logo`} className="h-20 w-auto" />
-                  </div>
                   <strong>The Adaptation Fund</strong> (AF) finances projects and programmes that help vulnerable communities in developing countries
                   adapt to climate change.
                 </p>
