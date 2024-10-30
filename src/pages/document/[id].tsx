@@ -219,7 +219,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               <>
                 <section className="mt-8">
                   <div className="flex items-center gap-2">
-                    <Heading level={2} extraClasses="mb-0">
+                    <Heading level={2} extraClasses="!mb-0">
                       Other documents in this entry
                     </Heading>
                     <Tooltip
