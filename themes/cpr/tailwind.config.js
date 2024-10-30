@@ -91,6 +91,9 @@ module.exports = {
         "1/6-gap-4": "calc(16.6% - (5/6 * 1rem))",
         maxContent: MAX_CONTENT_WIDTH,
       },
+      fontWeight: {
+        medium: 540,
+      },
       letterSpacing: {
         slight: "0.015em",
       },

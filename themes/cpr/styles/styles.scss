@@ -1,34 +1,3 @@
-// The tailwind imports are imported as part of the base styles loaded into the _app.tsx file at the root of the application
-:root {
-  font-family: Inter, sans-serif;
-  font-feature-settings:
-    "liga" 1,
-    "calt" 1,
-    "cv05" on;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-@supports (font-variation-settings: normal) {
-  :root {
-    font-family: InterVariable, sans-serif;
-  }
-}
-
-body {
-  font-family: "Inter", Arial, Helvetica, sans-serif !important;
-}
-
-input[type="text"],
-input[type="number"],
-input[type="password"],
-input[type="email"],
-textarea,
-select,
-option {
-  font-family: "Inter", Arial, Helvetica, sans-serif !important;
-}
-
 #landingPage-searchInput {
   @screen md {
     &::-webkit-input-placeholder {

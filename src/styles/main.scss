@@ -83,6 +83,35 @@
 
 @import "mixins";
 
+// FONT
+// The tailwind imports are imported as part of the base styles loaded into the _app.tsx file at the root of the application
+:root {
+  font-family: "InterVariable", sans-serif;
+  font-feature-settings:
+    "liga" 1,
+    "calt" 1,
+    "cv05" on;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@supports (font-variation-settings: normal) {
+  :root {
+    font-family: InterVariable, sans-serif;
+  }
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="email"],
+textarea,
+select,
+option {
+  font-family: "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji" !important;
+}
+
 body,
 html,
 #__next {
@@ -90,7 +119,8 @@ html,
 }
 body {
   @apply text-textNormal;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji" !important;
 }
 
 a,

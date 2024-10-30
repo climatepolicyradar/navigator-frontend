@@ -102,6 +102,9 @@ module.exports = {
       fontFamily: {
         greycliff: ["Greycliff", "sans-serif"],
       },
+      fontWeight: {
+        medium: 540,
+      },
       letterSpacing: {
         slight: "0.015em",
       },
