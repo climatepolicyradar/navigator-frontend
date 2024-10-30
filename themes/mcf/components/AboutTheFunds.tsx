@@ -2,6 +2,7 @@ import React from "react";
 
 import { SiteWidth } from "@components/panels/SiteWidth";
 import { Heading } from "@components/typography/Heading";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 type FundDescription = {
   name: string;
@@ -44,9 +45,9 @@ const AboutTheFundsContent = () => {
               <br />
             </p>
           ))}
-          <a href="/about" className="underline">
+          <LinkWithQuery className="underline" href="/about">
             Find out more
-          </a>
+          </LinkWithQuery>
         </div>
         <div className="hidden xl:block xl:h-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
