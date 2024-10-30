@@ -385,24 +385,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const filterSummaryData = (summaryInformation) => {
+  const filterSummaryData = (summaryInformation: TGeographySummary) => {
     if (isMCFTheme) {
-      const mcfSummaryData = {
+      return {
         family_counts: { MCF: summaryInformation.family_counts.MCF },
         top_families: { MCF: summaryInformation.top_families.MCF },
         targets: [],
       };
-      return mcfSummaryData;
     } else {
-      const { MCF, ...family_counts } = summaryInformation.family_counts;
-      const { MCF: mcfTopFamilies, ...top_families } = summaryInformation.top_families;
-
-      const summaryDataWithoutMcf = {
-        family_counts,
-        top_families,
+      return {
+        family_counts: summaryInformation.family_counts,
+        top_families: summaryInformation.top_families,
         targets: summaryInformation.targets,
       };
-      return summaryDataWithoutMcf;
     }
   };
 
