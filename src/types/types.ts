@@ -337,6 +337,7 @@ export type TThemeConfigFilter = {
   category: string[];
   startOpen?: "true" | "false";
   options?: TThemeConfigOption[];
+  showFade?: "true" | "false";
 };
 
 type TThemeLink = {

@@ -206,6 +206,7 @@ const SearchFilters = ({
               data-cy={filter.label}
               key={filter.label}
               startOpen={filter.startOpen === "true" || !!query[QUERY_PARAMS[filter.taxonomyKey]]}
+              showFade={filter.showFade}
             >
               <InputListContainer>{renderFilterOptions(filter, query, handleFilterChange, organisations)}</InputListContainer>
             </Accordian>
