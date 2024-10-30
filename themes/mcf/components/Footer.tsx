@@ -38,7 +38,7 @@ const Footer = () => {
                   Feedback
                 </Heading>
                 <p>
-                  Help us improve this tool by <ExternalLink url="https://www.climatepolicyradar.org/">providing feedback</ExternalLink> on your
+                  Help us improve this tool by <ExternalLink url="https://form.jotform.com/243033093255349">providing feedback</ExternalLink> on your
                   experience.
                 </p>
               </div>

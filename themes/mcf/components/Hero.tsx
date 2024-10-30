@@ -29,9 +29,7 @@ const Hero = ({ handleSearchInput, searchInput }: TProps) => (
       </div>
       <VerticalSpacing size="lg" />
       <MultilateralClimateFundLogos />
-      <div className="mt-6 mt-[48px] sm:mt-[88px] md:mt-[188px] lg:mt-[208px] xl:mt-[248px]">
-        <Instructions />
-      </div>
+      <div className="mt-6 mt-[48px] sm:mt-[88px] md:mt-[188px] lg:mt-[208px] xl:mt-[248px]"></div>
     </SiteWidth>
   </div>
 );

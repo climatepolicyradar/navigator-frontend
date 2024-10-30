@@ -1,7 +1,5 @@
 import React from "react";
-import Image from "next/image";
 
-import { ExternalLink } from "@components/ExternalLink";
 import { SiteWidth } from "@components/panels/SiteWidth";
 import { Heading } from "@components/typography/Heading";
 
@@ -46,11 +44,9 @@ const AboutTheFundsContent = () => {
               <br />
             </p>
           ))}
-          <p>
-            <ExternalLink className="!underline" url="https://www.climatepolicyradar.org">
-              Find out more
-            </ExternalLink>
-          </p>
+          <a href="/about" className="underline">
+            Find out more
+          </a>
         </div>
         <div className="hidden xl:block xl:h-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -1,6 +1,3 @@
-import Image from "next/image";
-import React from "react";
-
 import { Heading } from "@components/typography/Heading";
 import { ExternalLink } from "@components/ExternalLink";
 
