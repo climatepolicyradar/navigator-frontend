@@ -339,9 +339,15 @@ export type TThemeConfigFilter = {
   options?: TThemeConfigOption[];
 };
 
+type TThemeLink = {
+  key: string;
+  url: string;
+};
+
 export type TThemeConfig = {
   defaultCorpora?: string[];
   categories?: TThemeConfigCategory;
   filters: TThemeConfigFilter[];
   labelVariations: TLabelVariation[];
+  links: TThemeLink[];
 };

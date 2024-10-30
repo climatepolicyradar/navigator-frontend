@@ -7,6 +7,7 @@ import { MdOutlineTune } from "react-icons/md";
 import useSearch from "@hooks/useSearch";
 import { useDownloadCsv } from "@hooks/useDownloadCsv";
 import useConfig from "@hooks/useConfig";
+import useGetThemeConfig from "@hooks/useThemeConfig";
 
 import { SiteWidth } from "@components/panels/SiteWidth";
 import { SingleCol } from "@components/panels/SingleCol";
@@ -28,9 +29,11 @@ import { NoOfResults } from "@components/NoOfResults";
 import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
 import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
 import { SubNav } from "@components/nav/SubNav";
+import { SearchSettings } from "@components/filters/SearchSettings";
+
+import { getThemeConfigLink } from "@utils/getThemeConfigLink";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { SearchSettings } from "@components/filters/SearchSettings";
 
 const SETTINGS_ANIMATION_VARIANTS = {
   hidden: { opacity: 0, transition: { duration: 0.1 } },
@@ -39,6 +42,7 @@ const SETTINGS_ANIMATION_VARIANTS = {
 
 const Search = () => {
   const router = useRouter();
+  const { themeConfig } = useGetThemeConfig();
   const qQueryString = router.query[QUERY_PARAMS.query_string];
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
@@ -103,13 +107,6 @@ const Search = () => {
         query[QUERY_PARAMS.region] = [...regions, regionName];
       }
     }
-
-    // TODO: filter countries based on selected regions
-    // updateCountries.mutate({
-    //   regionName,
-    //   regions,
-    //   countries,
-    // });
 
     router.push({ query: query });
     resetCSVStatus();
@@ -316,10 +313,14 @@ const Search = () => {
               >
                 {downloadCSVStatus === "loading" ? <Loading /> : "this search"}
               </a>
-              <span>|</span>
-              <ExternalLink url="https://form.jotform.com/233131638610347" cy="download-entire-search-csv">
-                whole database
-              </ExternalLink>
+              {getThemeConfigLink(themeConfig, "download-database") && (
+                <>
+                  <span>|</span>
+                  <ExternalLink url={getThemeConfigLink(themeConfig, "download-database").url} cy="download-entire-search-csv">
+                    whole database
+                  </ExternalLink>
+                </>
+              )}
             </span>
           </div>
         </SubNav>
