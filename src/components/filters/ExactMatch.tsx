@@ -17,7 +17,7 @@ const ExactMatch = ({ id, handleSearchChange, checked, landing = false }) => {
           checked={checked}
           onChange={handleClick}
         />
-        <span className={`${landing ? "text-lg text-white" : "text-sm"} pl-2 leading-none`}>Show only exact matches</span>
+        <span className={`${landing ? "text-lg text-white" : "text-sm"} pl-2 leading-none`}>Only show exact matches</span>
       </label>
     </div>
   );

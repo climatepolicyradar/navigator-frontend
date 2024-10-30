@@ -347,7 +347,7 @@ export default function MapChart() {
               checked={showUnifiedEU}
               onChange={() => setShowUnifiedEU(!showUnifiedEU)}
             />
-            <span className="px-2 text-sm">Show EU aggregated data</span>
+            <span className="px-2 text-sm">Show aggregated EU data</span>
           </label>
         </div>
       </div>

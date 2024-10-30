@@ -48,7 +48,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
     };
   }, [formRef]);
 
-  const displayPlaceholder = placeholder ?? "Search full text of 5000+ laws and policies";
+  const displayPlaceholder = placeholder ?? "Search the full text of 5000+ laws and policies";
 
   return (
     <form data-cy="search-form" ref={formRef} onSubmit={(e) => e.preventDefault()}>
