@@ -46,7 +46,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
     };
   }, [formRef]);
 
-  const displayPlaceholder = placeholder ?? "Search full text of any document";
+  const displayPlaceholder = placeholder ?? "Search the full text of any document";
 
   return (
     <>

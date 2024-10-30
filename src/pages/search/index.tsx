@@ -7,6 +7,7 @@ import { MdOutlineTune } from "react-icons/md";
 import useSearch from "@hooks/useSearch";
 import { useDownloadCsv } from "@hooks/useDownloadCsv";
 import useConfig from "@hooks/useConfig";
+import useGetThemeConfig from "@hooks/useThemeConfig";
 
 import { SiteWidth } from "@components/panels/SiteWidth";
 import { SingleCol } from "@components/panels/SingleCol";
@@ -28,12 +29,20 @@ import { NoOfResults } from "@components/NoOfResults";
 import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
 import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
 import { SubNav } from "@components/nav/SubNav";
+import { SearchSettings } from "@components/filters/SearchSettings";
+
+import { getThemeConfigLink } from "@utils/getThemeConfigLink";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { SearchSettings } from "@components/filters/SearchSettings";
+
+const SETTINGS_ANIMATION_VARIANTS = {
+  hidden: { opacity: 0, transition: { duration: 0.1 } },
+  visible: { opacity: 1, transition: { duration: 0 } },
+};
 
 const Search = () => {
   const router = useRouter();
+  const { themeConfig } = useGetThemeConfig();
   const qQueryString = router.query[QUERY_PARAMS.query_string];
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
@@ -99,13 +108,6 @@ const Search = () => {
         query[QUERY_PARAMS.region] = [...regions, regionName];
       }
     }
-
-    // TODO: filter countries based on selected regions
-    // updateCountries.mutate({
-    //   regionName,
-    //   regions,
-    //   countries,
-    // });
 
     router.push({ query: query });
     resetCSVStatus();
@@ -312,10 +314,14 @@ const Search = () => {
               >
                 {downloadCSVStatus === "loading" ? <Loading /> : "this search"}
               </a>
-              <span>|</span>
-              <ExternalLink url="https://form.jotform.com/233131638610347" cy="download-entire-search-csv">
-                whole database
-              </ExternalLink>
+              {getThemeConfigLink(themeConfig, "download-database") && (
+                <>
+                  <span>|</span>
+                  <ExternalLink url={getThemeConfigLink(themeConfig, "download-database").url} cy="download-entire-search-csv">
+                    whole database
+                  </ExternalLink>
+                </>
+              )}
             </span>
           </div>
         </SubNav>
@@ -340,16 +346,7 @@ const Search = () => {
               </button>
               <AnimatePresence initial={false}>
                 {showOptions && (
-                  <motion.div
-                    key="content"
-                    initial="collapsed"
-                    animate="open"
-                    exit="collapsed"
-                    variants={{
-                      collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                      open: { opacity: 1, transition: { duration: 0.1 } },
-                    }}
-                  >
+                  <motion.div key="content" initial="collapsed" animate="open" exit="collapsed" variants={SETTINGS_ANIMATION_VARIANTS}>
                     <SearchSettings
                       queryParams={router.query}
                       handleSortClick={handleSortClick}
@@ -427,16 +424,7 @@ const Search = () => {
                     </button>
                     <AnimatePresence initial={false}>
                       {showOptions && (
-                        <motion.div
-                          key="content"
-                          initial="collapsed"
-                          animate="open"
-                          exit="collapsed"
-                          variants={{
-                            collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                            open: { opacity: 1, transition: { duration: 0.25 } },
-                          }}
-                        >
+                        <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
                           <SearchSettings
                             queryParams={router.query}
                             handleSortClick={handleSortClick}
