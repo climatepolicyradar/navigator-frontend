@@ -14,30 +14,34 @@ const Methodology = () => {
       <section className="pt-8">
         <SiteWidth>
           <SingleCol>
-            <div className="text-content mb-12">
-              <Heading level={1} extraClasses="custom-header">
+            <div>
+              <Heading level={1} extraClasses="custom-header mb-2">
                 What documents are included
               </Heading>
-              <p>
+              <p className="text-content mb-12">
                 The platform contains publicly available policies and project documents (such as concept notes, full proposals, implementation
                 reports) of the four Multilateral Climate Funds.
               </p>
               <Heading level={2} extraClasses="custom-header">
                 Definitions and classifications that are currently in use
               </Heading>
-              <p>
-                Each one of the four funds has its own nomenclature to indicate project status. To improve search results, we standardised the project
-                status list across all the funds (please see the list below):
-              </p>
-              <ul>
-                <li>Concept Approved</li>
-                <li>Project Approved</li>
-                <li>Under Implementation</li>
-                <li>Project Completed</li>
-                <li>Cancelled</li>
-              </ul>
-              <p>This table shows how standardised project status relates to each fund project status.</p>
-              <table className="text-left">
+              <div className="text-content mb-12">
+                <p>
+                  Each one of the four funds has its own nomenclature to indicate project status. To improve search results, we standardised the
+                  project status list across all the funds (please see the list below):
+                </p>
+                <ul>
+                  <li>Concept Approved</li>
+                  <li>Project Approved</li>
+                  <li>Under Implementation</li>
+                  <li>Project Completed</li>
+                  <li>Cancelled</li>
+                </ul>
+                <p>This table shows how standardised project status relates to each fund project status.</p>
+              </div>
+            </div>
+            <div className="text-content mb-12">
+              <table className="text-left text-content mb-12">
                 <thead>
                   <tr>
                     <th>Fund</th>
@@ -158,10 +162,12 @@ const Methodology = () => {
                   </tr>
                 </tbody>
               </table>
+            </div>
+            <div>
               <Heading level={2} extraClasses="custom-header">
                 Data collection process and frequency of updates
               </Heading>
-              <p>
+              <p className="text-content mb-12">
                 We will publish new and relevant documents from the Multilateral Climate Funds’ individual public databases on the Climate Project
                 Explorer. The Climate Project Explorer will be updated regularly based on the publication date of new or updated documents from
                 individual MCFs. Each Climate Project Explorer project page will also be linked to the original project page on the MCFs’ website.
@@ -169,14 +175,14 @@ const Methodology = () => {
               <Heading level={2} extraClasses="custom-header">
                 Country profile data
               </Heading>
-              <p>
+              <p className="text-content mb-12">
                 A country profile page is a snapshot view of all the projects across all 4 funds. Here, you can see the 5 most recent projects
                 uploaded to the CPE platform. Click on ‘View more projects’ to see the complete list of all projects in a specific geography.
               </p>
               <Heading level={2} extraClasses="custom-header">
                 Principles and limitations
               </Heading>
-              <p>
+              <p className="text-content mb-12">
                 You can find the most relevant project documentation on CPE. In some cases, you can find more information on the original project page
                 on the MCFs’ website.
               </p>
