@@ -231,6 +231,7 @@ const SearchFilters = ({
         title={getFilterLabel("Published jurisdiction", "country", query[QUERY_PARAMS.category], themeConfig)}
         data-cy="countries"
         overflowOverride
+        className="relative z-10"
       >
         <InputListContainer>
           <TypeAhead
