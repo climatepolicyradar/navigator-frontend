@@ -17,10 +17,12 @@ const TermsOfUse = () => {
         <SiteWidth>
           <SingleCol>
             <div className="text-content mb-12">
-              <Heading level={1} extraClasses="my-5">
+              <Heading level={1} extraClasses="my-5 custom-header">
                 Terms of use
               </Heading>
-              <Heading level={2}>Introduction</Heading>
+              <Heading level={2} extraClasses="custom-header">
+                Introduction
+              </Heading>
               <>
                 <p>
                   Welcome to Climate Project Explorer, a platform from the four Multilateral Climate Funds (MCFs) - Adaptation Fund (AF), Climate
@@ -39,7 +41,9 @@ const TermsOfUse = () => {
                 MCFs in the table below (see ‘Data from Third Party Sources’).
               </p>
 
-              <Heading level={2}>Using the CPR Database and App</Heading>
+              <Heading level={2} extraClasses="custom-header">
+                Using the CPR Database and App
+              </Heading>
               <ul>
                 <li>
                   Climate Policy Radar actively encourages and supports the use of information from the CPR Database and App via the CCLW Interface
@@ -51,7 +55,9 @@ const TermsOfUse = () => {
                   selection, coordination, arrangement and enhancement of the CPR Database and App, as well as in the content original to it.
                 </li>
               </ul>
-              <Heading level={3}>Open data under the CC-BY Licence</Heading>
+              <Heading level={3} extraClasses="custom-header">
+                Open data under the CC-BY Licence
+              </Heading>
               <ul>
                 <li>
                   Climate Policy Radar is pleased to make the content of the CPR Database available as open data under the Creative Commons
@@ -98,7 +104,9 @@ const TermsOfUse = () => {
                   </ul>
                 </li>
               </ul>
-              <Heading level={3}>Recommended citation</Heading>
+              <Heading level={3} extraClasses="custom-header">
+                Recommended citation
+              </Heading>
               <ul>
                 <li>
                   <p>When citing use of the Database, you may use this text:</p>
@@ -117,14 +125,18 @@ const TermsOfUse = () => {
                   </p>
                 </li>
               </ul>
-              <Heading level={2}>Commercial Licensing</Heading>
+              <Heading level={2} extraClasses="custom-header">
+                Commercial Licensing
+              </Heading>
               <p>
                 If you wish to use, copy, redistribute, publish, or exploit a substantial amount of the information from the CPR Database for
                 commercial purposes, please contact us by emailing{" "}
                 <ExternalLink url="mailto:partners@climatepolicyradar.org">partners@climatepolicyradar.org</ExternalLink> to discuss the best way to
                 address your specific needs.
               </p>
-              <Heading level={2}>Disclaimer</Heading>
+              <Heading level={2} extraClasses="custom-header">
+                Disclaimer
+              </Heading>
               <ul>
                 <li>
                   Climate Policy Radar gives no warranty or assurance about the content of the CPR Database. As the CPR Database is under constant
@@ -137,19 +149,25 @@ const TermsOfUse = () => {
                   completeness is made.
                 </li>
               </ul>
-              <Heading level={2}>Our trade marks</Heading>
+              <Heading level={2} extraClasses="custom-header">
+                Our trade marks
+              </Heading>
               <p>
                 "Climate Policy Radar” and its associated logo are unregistered trade marks of Climate Policy Radar CIC. The use of these trade marks
                 is strictly prohibited unless you have our prior written permission.
               </p>
-              <Heading level={2}>Links to other sites</Heading>
+              <Heading level={2} extraClasses="custom-header">
+                Links to other sites
+              </Heading>
               <p>
                 The CPR Database and App may contain links to third-party sites that are not owned or controlled by Climate Policy Radar. Climate
                 Policy Radar has no control over, and assumes no responsibility for, the content, privacy policies, or practices of any third party
                 sites or services. Climate Policy Radar strongly advises you to read the terms and conditions and privacy policy of any third-party
                 site that you visit.
               </p>
-              <Heading level={3}>Data from Third Party Sources</Heading>
+              <Heading level={3} extraClasses="custom-header">
+                Data from Third Party Sources
+              </Heading>
               <p>
                 The Climate Project Explorer contains data provided by the MCFs. The data includes document summaries that were written by third
                 parties and/or information about the documents (”meta-data”) assigned by third parties, e.g. classifications to sector or legal
@@ -218,7 +236,9 @@ const TermsOfUse = () => {
                   </tr>
                 </tbody>
               </table>
-              <Heading level={2}>Changes To This Agreement</Heading>
+              <Heading level={2} extraClasses="custom-header">
+                Changes To This Agreement
+              </Heading>
               <p>
                 Climate Policy Radar reserves the right, at our sole discretion, to modify or replace these Terms of Use by posting the updated terms
                 on the site. Your continued use of the site after any such changes constitutes your acceptance of the new Terms of Use.
@@ -227,7 +247,9 @@ const TermsOfUse = () => {
                 Please review this Agreement periodically for changes. If you disagree with it, or any future changes,do not use, access or continue
                 to access the site, and discontinue any use of the Site immediately.
               </p>
-              <Heading level={2}>Questions?</Heading>
+              <Heading level={2} extraClasses="custom-header">
+                Questions?
+              </Heading>
               <p>
                 If you have any questions about this agreement, please contact us by
                 <ExternalLink url="https://form.jotform.com/242902819253357"> filling out our form</ExternalLink>.
