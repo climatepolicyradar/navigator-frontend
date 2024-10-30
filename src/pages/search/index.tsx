@@ -32,6 +32,11 @@ import { SubNav } from "@components/nav/SubNav";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { SearchSettings } from "@components/filters/SearchSettings";
 
+const SETTINGS_ANIMATION_VARIANTS = {
+  hidden: { opacity: 0, transition: { duration: 0.1 } },
+  visible: { opacity: 1, transition: { duration: 0 } },
+};
+
 const Search = () => {
   const router = useRouter();
   const qQueryString = router.query[QUERY_PARAMS.query_string];
@@ -339,16 +344,7 @@ const Search = () => {
               </button>
               <AnimatePresence initial={false}>
                 {showOptions && (
-                  <motion.div
-                    key="content"
-                    initial="collapsed"
-                    animate="open"
-                    exit="collapsed"
-                    variants={{
-                      collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                      open: { opacity: 1, transition: { duration: 0.1 } },
-                    }}
-                  >
+                  <motion.div key="content" initial="collapsed" animate="open" exit="collapsed" variants={SETTINGS_ANIMATION_VARIANTS}>
                     <SearchSettings
                       queryParams={router.query}
                       handleSortClick={handleSortClick}
@@ -425,16 +421,7 @@ const Search = () => {
                     </button>
                     <AnimatePresence initial={false}>
                       {showOptions && (
-                        <motion.div
-                          key="content"
-                          initial="collapsed"
-                          animate="open"
-                          exit="collapsed"
-                          variants={{
-                            collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                            open: { opacity: 1, transition: { duration: 0.25 } },
-                          }}
-                        >
+                        <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
                           <SearchSettings
                             queryParams={router.query}
                             handleSortClick={handleSortClick}
