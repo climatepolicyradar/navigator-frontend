@@ -41,7 +41,7 @@ import { pluralise } from "@utils/pluralise";
 import { getFamilyMetaDescription } from "@utils/getFamilyMetaDescription";
 import { extractNestedData } from "@utils/extractNestedData";
 
-import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TOrganisationDictionary } from "@types";
+import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TOrganisationDictionary, TTheme } from "@types";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
@@ -53,6 +53,7 @@ type TProps = {
   targets: TTarget[];
   countries: TGeography[];
   organisations: TOrganisationDictionary;
+  theme: TTheme;
 };
 
 /*
@@ -62,7 +63,13 @@ type TProps = {
   - The 'physical document' view is within the folder: src/pages/documents/[id].tsx.
 */
 
-const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page, targets = [], countries = [], organisations = null }: TProps) => {
+const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
+  page,
+  targets = [],
+  countries = [],
+  organisations = null,
+  theme,
+}: TProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const startingNumberOfTargetsToDisplay = 5;
@@ -200,34 +207,38 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
               />
             </section>
 
-            <section className="mt-8">
-              <Heading level={2}>Main {pluralise(mainDocuments.length, "document", "documents")}</Heading>
-              <div data-cy="main-documents">
-                {mainDocuments.map((doc) => (
-                  <FamilyDocument
-                    matches={getDocumentMatches(doc.slug)}
-                    document={doc}
-                    key={doc.import_id}
-                    status={status}
-                    familyMatches={searchFamily?.total_passage_hits}
-                  />
-                ))}
-              </div>
-            </section>
+            {mainDocuments.length > 0 && theme !== "mcf" && (
+              <section className="mt-8">
+                <Heading level={2}>Main {pluralise(mainDocuments.length, "document", "documents")}</Heading>
+                <div data-cy="main-documents">
+                  {mainDocuments.map((doc) => (
+                    <FamilyDocument
+                      matches={getDocumentMatches(doc.slug)}
+                      document={doc}
+                      key={doc.import_id}
+                      status={status}
+                      familyMatches={searchFamily?.total_passage_hits}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
 
             {otherDocuments.length > 0 && (
               <>
                 <section className="mt-8">
                   <div className="flex items-center gap-2">
                     <Heading level={2} extraClasses="mb-0">
-                      Other documents in this entry
+                      {theme === "mcf" ? "Project documents" : "Other documents in this entry"}
                     </Heading>
-                    <Tooltip
-                      id="related-documents-info"
-                      place="right"
-                      icon="i"
-                      tooltip="Other documents can be previous versions, amendments, annexes, supporting legislation, and more."
-                    />
+                    {theme !== "mcf" && (
+                      <Tooltip
+                        id="related-documents-info"
+                        place="right"
+                        icon="i"
+                        tooltip="Other documents can be previous versions, amendments, annexes, supporting legislation, and more."
+                      />
+                    )}
                   </div>
                   <div data-cy="related-documents">
                     {otherDocuments.map((doc) => (
@@ -364,6 +375,7 @@ export default FamilyPage;
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
+  const theme = process.env.THEME;
   const id = context.params.id;
   const client = new ApiClient(process.env.API_URL);
 
@@ -407,6 +419,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       targets: targetsData,
       countries: countriesData,
       organisations: organisationsData,
+      theme: theme,
     },
   };
 };
