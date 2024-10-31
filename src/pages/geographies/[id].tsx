@@ -40,12 +40,13 @@ import { getGeoDescription } from "@constants/metaDescriptions";
 import { systemGeoNames } from "@constants/systemGeos";
 
 import { TGeographyStats, TGeographySummary } from "@types";
-import { TTarget, TEvent, TGeography } from "@types";
+import { TTarget, TEvent, TGeography, TTheme } from "@types";
 
 type TProps = {
   geography: TGeographyStats;
   summary: TGeographySummary;
   targets: TTarget[];
+  theme: TTheme;
 };
 
 const categoryByIndex = {
@@ -60,7 +61,7 @@ const MAX_NUMBER_OF_FAMILIES = 3;
 
 const FEATURED_SEARCHES = ["Resilient infrastructure", "Fossil fuel divestment", "Net zero growth plan", "Sustainable fishing"];
 
-const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets }: TProps) => {
+const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets, theme: appTheme }: TProps) => {
   const router = useRouter();
   const theme = useContext(ThemeContext);
   const startingNumberOfTargetsToDisplay = 5;
@@ -74,7 +75,8 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
   const allDocumentsCount = Object.values(summary.family_counts).reduce((acc, count) => acc + (count || 0), 0);
 
-  const isMCFTheme = process.env.THEME === "mcf";
+  const isMCFTheme = appTheme === "mcf";
+
   const filteredCategoryArray = isMCFTheme ? MCF_DOCUMENT_CATEGORIES : DOCUMENT_CATEGORIES;
 
   const documentCategories = filteredCategoryArray.map((category) => {
@@ -347,7 +349,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const client = new ApiClient();
-  const isMCFTheme = process.env.THEME === "mcf";
+  const theme = process.env.THEME;
 
   let geographyData: TGeographyStats;
   let summaryData: TGeographySummary;
@@ -385,6 +387,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
+  const isMCFTheme = theme === "mcf";
+
   const filterSummaryData = (summaryInformation: TGeographySummary) => {
     if (isMCFTheme) {
       return {
@@ -393,19 +397,24 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         targets: [],
       };
     } else {
+      const { MCF, ...familyCountsWithoutMCF } = summaryInformation.family_counts;
+      const { MCF: mcfTopFamilies, ...topFamiliesWithoutMCF } = summaryInformation.top_families;
       return {
-        family_counts: summaryInformation.family_counts,
-        top_families: summaryInformation.top_families,
+        family_counts: familyCountsWithoutMCF,
+        top_families: topFamiliesWithoutMCF,
         targets: summaryInformation.targets,
       };
     }
   };
 
+  const filteredTargetsData = isMCFTheme ? [] : targetsData;
+
   return {
     props: {
       geography: geographyData,
       summary: filterSummaryData(summaryData),
-      targets: isMCFTheme ? [] : targetsData,
+      targets: filteredTargetsData,
+      theme: theme,
     },
   };
 };
