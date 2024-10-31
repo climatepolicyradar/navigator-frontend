@@ -9,7 +9,7 @@ const LandingPageLinks = ({ handleLinkClick }) => {
           <EyeIcon />
         </div>
         <div>
-          <div className="font-medium text-2xl">Suggested searches</div>
+          <div className="font-medium text-2xl">Try these searches</div>
           <ul className="text-lg mt-4">
             {terms.map((term) => (
               <li className="my-2" key={term}>

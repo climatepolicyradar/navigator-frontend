@@ -231,6 +231,7 @@ const SearchFilters = ({
         title={getFilterLabel("Published jurisdiction", "country", query[QUERY_PARAMS.category], themeConfig)}
         data-cy="countries"
         overflowOverride
+        className="relative z-10"
       >
         <InputListContainer>
           <TypeAhead
@@ -249,13 +250,8 @@ const SearchFilters = ({
       </Accordian>
 
       <div className="my-5 pt-5 border-t" data-cy="methodology-notice">
-        <p className="text-center mb-6">
-          <ExternalLink url="https://form.jotform.com/233132076355350">Get notified when we add new filters</ExternalLink>
-        </p>
-        <p className="text-center">
-          For more info see
-          <br />
-          <MethodologyLink />
+        <p>
+          Read <MethodologyLink /> for more information on how we collect and analyse our data.
         </p>
       </div>
     </div>

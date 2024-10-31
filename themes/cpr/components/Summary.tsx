@@ -11,8 +11,7 @@ const Summary = () => {
         <div>
           <Heading level={2}>Read our methodology</Heading>
           <p className="text-lg md:mr-8">
-            Please refer to this page for information about the scope and structure of our database, our data collection methods and terminology,
-            updates to the database and planned future developments.
+            Find out more about the scope and structure of our database, our data collection methods, terminology, updates and future developments.
           </p>
         </div>
         <ExternalLink

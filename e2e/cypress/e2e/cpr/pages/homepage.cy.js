@@ -9,7 +9,7 @@ describe.skip("Landing page", () => {
     cy.get('[data-cy="search-input"]')
       .invoke("attr", "placeholder")
       .then((text) => {
-        expect(text).to.equal("Search full text of 3000+ laws and policies");
+        expect(text).to.equal("Search the full text of 3000+ laws and policies");
       });
   });
 
