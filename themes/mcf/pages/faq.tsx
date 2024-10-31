@@ -23,11 +23,11 @@ const FAQ = () => {
       <section className="pt-8">
         <SiteWidth>
           <SingleCol>
-            <div className="text-content mb-12">
-              <Heading level={1} extraClasses="custom-header">
-                FAQs
-              </Heading>
-              <VerticalSpacing size="md" />
+            <Heading level={1} extraClasses="custom-header">
+              FAQs
+            </Heading>
+            <VerticalSpacing size="md" />
+            <div className="text-content mb-14">
               {FAQS.map((faq, i) => (
                 <Fragment key={faq.title}>
                   <Accordian title={faq.title} startOpen={i === 0}>
@@ -39,11 +39,11 @@ const FAQ = () => {
             </div>
           </SingleCol>
           <SingleCol>
-            <div className="text-content mb-12">
-              <Heading level={1} extraClasses="custom-header">
-                Platform FAQs
-              </Heading>
-              <VerticalSpacing size="md" />
+            <Heading level={1} extraClasses="custom-header">
+              Platform FAQs
+            </Heading>
+            <VerticalSpacing size="md" />
+            <div className="text-content mb-14">
               {PLATFORMFAQS.map((faq, i) => (
                 <Fragment key={faq.title}>
                   <Accordian title={faq.title} startOpen={i === 0}>

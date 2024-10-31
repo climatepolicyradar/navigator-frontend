@@ -18,11 +18,11 @@ const About = () => {
       <section className="pt-8">
         <SiteWidth>
           <SingleCol>
-            <div className="text-content mb-12">
-              <Heading level={1} extraClasses="custom-header">
+            <div>
+              <Heading level={1} extraClasses="custom-header mb-4">
                 About
               </Heading>
-              <p>
+              <p className="text-content mb-12">
                 The MCFs have agreed to jointly develop and launch this platform as a single point of entry for navigating and exploring the MCF’s
                 documents (including project documents and policies). This platform will serve as a knowledge tool to raise awareness of the value and
                 impact of the MCFs, facilitate the exchange of information to enhance access to the funds, and promote transparency.
@@ -30,12 +30,12 @@ const About = () => {
               <Heading level={2} extraClasses="custom-header">
                 The Funds
               </Heading>
-              <div>
+              <div className="text-content mb-12">
+                <div className="border border-gray-300 p-4 rounded-lg flex justify-center items-center h-[304px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={"/images/mcf/AF.png"} alt={`Adaptation Fund logo`} className="h-20 w-auto" />
+                </div>
                 <p>
-                  <div className="border border-gray-300 p-4 rounded-lg flex justify-center items-center h-[304px]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={"/images/mcf/AF.png"} alt={`Adaptation Fund logo`} className="h-20 w-auto" />
-                  </div>
                   <strong>The Adaptation Fund</strong> (AF) finances projects and programmes that help vulnerable communities in developing countries
                   adapt to climate change.
                 </p>
@@ -53,7 +53,7 @@ const About = () => {
                   Find more details on: <ExternalLink url="https://www.adaptation-fund.org/">adaptation-fund.org</ExternalLink>
                 </p>
               </div>
-              <div>
+              <div className="text-content mb-12">
                 <div className="border border-gray-300 p-4 rounded-lg flex justify-center items-center h-[304px]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={"/images/mcf/CIF.png"} alt={`Climate Investment Funds logo`} className="h-20 w-auto" />
@@ -75,7 +75,7 @@ const About = () => {
                   Find more details on: <ExternalLink url="https://www.cif.org/">cif.org</ExternalLink>
                 </p>
               </div>
-              <div>
+              <div className="text-content mb-12">
                 <div className="border border-gray-300 p-4 rounded-lg flex justify-center items-center h-[304px]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={"/images/mcf/GEF.png"} alt={`Global Environment Facility logo`} className="h-20 w-auto" />
@@ -99,7 +99,7 @@ const About = () => {
                   Find more details on: <ExternalLink url="https://www.thegef.org/">thegef.org</ExternalLink>
                 </p>
               </div>
-              <div>
+              <div className="text-content mb-12">
                 <div className="border border-gray-300 p-4 rounded-lg flex justify-center items-center h-[304px]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={"/images/mcf/GCF.png"} alt={`Green Climate Fund logo`} className="h-20 w-auto" />
