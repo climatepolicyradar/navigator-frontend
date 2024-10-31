@@ -55,7 +55,6 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
           <ErrorBoundary level="top">
             <Head>
               <link rel="icon" href={favicon} />
-              <link rel="stylesheet" href="https://use.typekit.net/ifw7ubm.css" />
             </Head>
             <div id={dynamicTheme} className="h-full">
               <Component {...pageProps} />

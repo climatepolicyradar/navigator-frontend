@@ -100,7 +100,18 @@ module.exports = {
         maxContent: MAX_CONTENT_WIDTH,
       },
       fontFamily: {
-        greycliff: ["greycliff-cf", "sans-serif"],
+        greycliff: [
+          "greycliff-cf",
+          "InterVariable",
+          "Inter",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif",
+          "Apple Color Emoji",
+          "Segoe UI Emoji",
+          "Segoe UI Symbol",
+          "Noto Color Emoji",
+        ],
       },
       letterSpacing: {
         slight: "0.015em",
