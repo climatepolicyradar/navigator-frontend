@@ -8,8 +8,8 @@ const AboutClimateProjectExplorer = () => {
       <div className="absolute lg:z-0 hidden lg:block">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={"/images/climate-project-explorer/cpe-hp-1.png"}
-          alt={`Green Climate Fund logo`}
+          src={"/images/climate-project-explorer/cpe-hp-1.jpg"}
+          alt={`Climate Project Explorer Search Page Snapshot`}
           className="max-h-[824px] max-w-[1024px] object-cover"
         />{" "}
       </div>

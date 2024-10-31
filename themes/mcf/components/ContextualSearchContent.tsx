@@ -11,12 +11,12 @@ const ContextualSearchContent = () => {
             Central knowledge-base for MCFs
           </Heading>
           <p>Find information from 4 different funds projects and policies in more than 130 countries.</p>
-          <VerticalSpacing size="sm" />
+          <VerticalSpacing size="md" />
           <div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={"/images/climate-project-explorer/cpe-search-results.png"}
-              alt={`Green Climate Fund logo`}
+              src={"/images/climate-project-explorer/cpe-search-results.jpg"}
+              alt={`Climate Project Explorer Search Filters Snapshot`}
               className="h-auto w-auto md:h-[354px] md:w-[516px]"
             />
           </div>
@@ -31,8 +31,8 @@ const ContextualSearchContent = () => {
           <div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={"/images/climate-project-explorer/cpe-contextual-search.png"}
-              alt={`Green Climate Fund logo`}
+              src={"/images/climate-project-explorer/cpe-contextual-search.jpg"}
+              alt={`Climate Project Explorer Contextual Search Snapshot`}
               className="h-auto w-auto md:h-[354px] md:w-[516px]"
             />
           </div>
