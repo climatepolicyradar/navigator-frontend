@@ -23,7 +23,7 @@ export const sortOptions = [
 
 export const sortOptionsBrowse = [
   {
-    label: "Unordered",
+    label: "Default",
     value: "null",
   },
   {

@@ -78,7 +78,7 @@ export const FloatingSearch = ({ extended = true, placeholder, extraButtonClasse
 
   return (
     <div className="relative" ref={ref}>
-      <form onSubmit={(e) => e.preventDefault()} className={`${showFloatingSearch ? "w-[425px] lg:w-[625px]" : ""}`}>
+      <form onSubmit={(e) => e.preventDefault()} className={`${showFloatingSearch || !extended ? "w-[425px] lg:w-[625px]" : ""}`}>
         <button className="absolute left-0 h-full px-3 text-grey-500" onClick={() => handleSearch(search)} aria-label="Search">
           <span className="block">
             <SearchIcon height="12" width="12" color="gray-500" />
@@ -90,13 +90,13 @@ export const FloatingSearch = ({ extended = true, placeholder, extraButtonClasse
           placeholder={`${placeholder ? placeholder : "Full text of over 5,000 climate laws and policies"}`}
           onChange={(e) => setSearch(e.target.value)}
           onFocus={() => handleInputFocus()}
-          className={`pl-[34px] rounded-[20px] text-sm w-full bg-white text-gray-800 border-1 focus:ring-0 focus:ring-offset-0 focus:ring-white ${
+          className={`pl-[34px] rounded-[20px] text-sm w-full bg-white text-gray-800 border-1 border-borderNormal focus:ring-0 focus:ring-offset-0 focus:ring-white focus:outline-none focus:border-borderNormal ${
             showFloatingSearch ? inputFocusStyles : ""
           }`}
         />
       </form>
       {showFloatingSearch && (
-        <div className="absolute bg-white px-4 pb-4 left-0 top-[36px] w-[425px] shadow-md rounded-bl-[20px] rounded-br-[20px] lg:w-[625px]">
+        <div className="absolute bg-white border-borderNormal border border-t-0 px-4 pb-4 left-0 top-[36px] w-[425px] shadow-md rounded-bl-[20px] rounded-br-[20px] lg:w-[625px]">
           <Divider />
           <div className="text-sm mt-4">
             <p className="text-xs text-gray-500 mb-1">Featured searches</p>

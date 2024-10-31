@@ -34,7 +34,8 @@
       "taxonomyKey": "implementing_agency",
       "apiMetaDataKey": "family.implementing_agency",
       "type": "radio",
-      "category": []
+      "category": [],
+      "showFade": "true"
     }
   ],
   "labelVariations": [

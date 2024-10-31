@@ -11,9 +11,10 @@ type TProps = {
   overflowOverride?: boolean;
   children: React.ReactNode;
   className?: string;
+  showFade?: "true" | "false";
 };
 
-export const Accordian = ({ title, startOpen = false, overflowOverride, children, ...props }: TProps) => {
+export const Accordian = ({ title, startOpen = false, overflowOverride, children, showFade = "false", ...props }: TProps) => {
   const [isOpen, setIsOpen] = useState(startOpen);
 
   return (
@@ -44,7 +45,7 @@ export const Accordian = ({ title, startOpen = false, overflowOverride, children
             >
               <>
                 {children}
-                <span className="h-[34px] sticky block bottom-0 w-full bg-gradient-to-b from-transparent to-white"></span>
+                {showFade === "true" && <span className="h-[34px] sticky block bottom-0 w-full bg-gradient-to-b from-transparent to-white"></span>}
               </>
             </div>
           </motion.div>
