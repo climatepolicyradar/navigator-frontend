@@ -104,7 +104,7 @@ module.exports = {
         h6: "16px",
       },
       fontWeight: {
-        medium: 700,
+        medium: 540,
       },
       letterSpacing: {
         slight: "0.015em",

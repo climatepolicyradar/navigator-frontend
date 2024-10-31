@@ -1,11 +1,12 @@
-import { ExternalLink } from "@components/ExternalLink";
-import { CountryLink } from "@components/CountryLink";
-import { getIcon } from "@helpers/getMetadataIcon";
-import { mapFamilyMetadata } from "@helpers/mapFamilyMetadata";
-import { TFamilyMetadata, TMCFFamilyMetadata } from "@types";
-
 import useConfig from "@hooks/useConfig";
+
+import { ExternalLink } from "@components/ExternalLink";
 import { CountryLinksAsList } from "@components/CountryLinks";
+
+import { mapFamilyMetadata } from "@helpers/mapFamilyMetadata";
+import { getIcon } from "@helpers/getMetadataIcon";
+
+import { TFamilyMetadata, TMCFFamilyMetadata } from "@types";
 
 interface MetadataItemProps {
   label: string;
@@ -114,12 +115,12 @@ export const McfFamilyMeta = ({ metadata }: McfFamilyMetaProps) => {
   const mappedMetadata = mapFamilyMetadata(metadata);
 
   return (
-    <div className="w-full bg-white py-4">
-      <div className="flex flex-wrap items-center gap-y-1 gap-x-1.5">
-        {mappedMetadata.map((item, index) => (
+    <div className="w-full bg-white py-4 flex flex-col gap-2">
+      {mappedMetadata.map((item, index) => (
+        <div className="flex flex-wrap gap-1" key={item.label}>
           <MetadataItem key={index} label={item.label} icon={item.iconLabel} values={item.value} />
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 };
