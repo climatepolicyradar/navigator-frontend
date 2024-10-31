@@ -337,6 +337,12 @@ export type TThemeConfigFilter = {
   category: string[];
   startOpen?: "true" | "false";
   options?: TThemeConfigOption[];
+  showFade?: "true" | "false";
+};
+
+type TThemeLink = {
+  key: string;
+  url: string;
 };
 
 export type TThemeConfig = {
@@ -344,4 +350,5 @@ export type TThemeConfig = {
   categories?: TThemeConfigCategory;
   filters: TThemeConfigFilter[];
   labelVariations: TLabelVariation[];
+  links: TThemeLink[];
 };

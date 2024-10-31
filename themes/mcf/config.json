@@ -2,7 +2,7 @@
   "defaultCorpora": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"],
   "filters": [
     {
-      "label": "Funds",
+      "label": "Climate funds",
       "taxonomyKey": "fund",
       "startOpen": "true",
       "options": [
@@ -34,14 +34,21 @@
       "taxonomyKey": "implementing_agency",
       "apiMetaDataKey": "family.implementing_agency",
       "type": "radio",
-      "category": []
+      "category": [],
+      "showFade": "true"
     }
   ],
   "labelVariations": [
     {
       "key": "date",
-      "label": "First published",
+      "label": "Approval FY",
       "category": []
+    }
+  ],
+  "links": [
+    {
+      "key": "download-database",
+      "url": "https://form.jotform.com/242902819253357"
     }
   ]
 }

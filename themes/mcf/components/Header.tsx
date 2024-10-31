@@ -25,7 +25,7 @@ const Header = ({ background = true, showBottomBorder = true }) => {
               <Logo />
             </LinkWithQuery>
             {showSearch && (
-              <div className="hidden md:block md:w-[340px] m-auto">
+              <div className="hidden md:block m-auto">
                 <FloatingSearch
                   extended={false}
                   placeholder={"Full text of over 5,000 multilateral climate fund projects"}

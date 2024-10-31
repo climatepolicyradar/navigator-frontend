@@ -41,7 +41,7 @@ const handleFilterDisplay = (
   let filterValue = value;
   switch (key) {
     case "category":
-      const configCategory = themeConfig?.categories.options.find((c) => c.slug === value);
+      const configCategory = themeConfig?.categories?.options.find((c) => c.slug === value);
       filterLabel = configCategory ? configCategory.label : value;
       break;
     case "country":

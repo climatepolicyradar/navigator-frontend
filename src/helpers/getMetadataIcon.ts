@@ -1,3 +1,4 @@
+import { IconType } from "react-icons";
 import {
   LuBuilding as Building,
   LuGlobe as Globe,
@@ -24,6 +25,6 @@ const metadataIcons = {
   Layers,
 };
 
-export const getIcon = (iconName: string) => {
+export const getIcon = (iconName: string): IconType => {
   return metadataIcons[iconName];
 };

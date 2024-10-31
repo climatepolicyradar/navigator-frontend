@@ -10,13 +10,15 @@ type TProps = {
   startOpen?: boolean;
   overflowOverride?: boolean;
   children: React.ReactNode;
+  className?: string;
+  showFade?: "true" | "false";
 };
 
-export const Accordian = ({ title, startOpen = false, overflowOverride, children, ...props }: TProps) => {
+export const Accordian = ({ title, startOpen = false, overflowOverride, children, showFade = "false", ...props }: TProps) => {
   const [isOpen, setIsOpen] = useState(startOpen);
 
   return (
-    <div className="" {...props}>
+    <div {...props}>
       <div className={`flex justify-between cursor-pointer group`} onClick={() => setIsOpen(!isOpen)} data-cy="accordian-control">
         <Heading>{title}</Heading>
         <span className={`opacity-40 group-hover:opacity-100 ${isOpen ? "" : ""}`}>{isOpen ? <AccordianCloseIcon /> : <AccordianOpenIcon />}</span>
@@ -43,7 +45,7 @@ export const Accordian = ({ title, startOpen = false, overflowOverride, children
             >
               <>
                 {children}
-                <span className="h-[34px] sticky block bottom-0 w-full bg-gradient-to-b from-transparent to-white"></span>
+                {showFade === "true" && <span className="h-[34px] sticky block bottom-0 w-full bg-gradient-to-b from-transparent to-white"></span>}
               </>
             </div>
           </motion.div>

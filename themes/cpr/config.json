@@ -69,7 +69,8 @@
       "taxonomyKey": "implementing_agency",
       "apiMetaDataKey": "family.implementing_agency",
       "type": "radio",
-      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"],
+      "showFade": "true"
     }
   ],
   "labelVariations": [
@@ -77,6 +78,12 @@
       "key": "date",
       "label": "First published",
       "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+    }
+  ],
+  "links": [
+    {
+      "key": "download-database",
+      "url": "https://form.jotform.com/233131638610347"
     }
   ]
 }
