@@ -100,7 +100,7 @@ module.exports = {
         maxContent: MAX_CONTENT_WIDTH,
       },
       fontFamily: {
-        greycliff: ["Greycliff", "sans-serif"],
+        greycliff: ["greycliff-cf", "sans-serif"],
       },
       letterSpacing: {
         slight: "0.015em",
