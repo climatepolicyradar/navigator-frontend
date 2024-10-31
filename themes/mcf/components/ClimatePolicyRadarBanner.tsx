@@ -8,10 +8,10 @@ const ClimatePolicyRadarBannerHolder = () => {
     <div className={`bg-cpr-banner py-36 text-white relative`}>
       <SiteWidth extraClasses="!max-w-[1024px]">
         <div className="max-w-sm">
-          <p className="font-medium tracking-slight text-sm lg:text-md text-[#3399FF] mb-2" data-cy="search-all">
+          <p className="font-medium tracking-slight text-sm lg:text-md text-[#3399FF] mb-2 " data-cy="search-all">
             POWERED BY
           </p>
-          <Heading level={1} extraClasses="!text-white font-bold text-4xl">
+          <Heading level={1} extraClasses="!text-white font-bold text-4xl !font-greycliff">
             Climate Policy Radar
           </Heading>
           <br />
