@@ -213,7 +213,11 @@ const SearchFilters = ({
           );
         })}
 
-      <Accordian title={getFilterLabel("Region", "region", query[QUERY_PARAMS.category], themeConfig)} data-cy="regions">
+      <Accordian
+        title={getFilterLabel("Region", "region", query[QUERY_PARAMS.category], themeConfig)}
+        data-cy="regions"
+        startOpen={!!query[QUERY_PARAMS.region]}
+      >
         <InputListContainer>
           {regions.map((region) => (
             <InputCheck
@@ -246,7 +250,11 @@ const SearchFilters = ({
         </InputListContainer>
       </Accordian>
 
-      <Accordian title={getFilterLabel("Date", "date", query[QUERY_PARAMS.category], themeConfig)} data-cy="date-range">
+      <Accordian
+        title={getFilterLabel("Date", "date", query[QUERY_PARAMS.category], themeConfig)}
+        data-cy="date-range"
+        startOpen={!!query[QUERY_PARAMS.year_range]}
+      >
         <DateRange type="year_range" handleChange={handleYearChange} defaultValues={searchCriteria.year_range} min={minYear} max={thisYear} />
       </Accordian>
 
