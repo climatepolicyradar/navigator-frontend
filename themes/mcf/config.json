@@ -43,7 +43,8 @@
       "type": "radio",
       "category": [],
       "showFade": "true",
-      "dependantFilterKey": "fund"
+      "dependantFilterKey": "fund",
+      "quickSearch": "true"
     }
   ],
   "labelVariations": [
