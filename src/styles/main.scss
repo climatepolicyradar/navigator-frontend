@@ -49,6 +49,18 @@
         @apply pr-11;
       }
     }
+
+    &.small {
+      @apply text-[13px] py-1;
+
+      &.extra-content-left {
+        @apply pl-6;
+      }
+
+      &.extra-content-right {
+        @apply pr-6;
+      }
+    }
   }
 
   [type="radio"] {

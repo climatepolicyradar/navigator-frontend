@@ -78,7 +78,8 @@
       "type": "radio",
       "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"],
       "showFade": "true",
-      "dependantFilterKey": "fund"
+      "dependantFilterKey": "fund",
+      "quickSearch": "true"
     }
   ],
   "labelVariations": [
