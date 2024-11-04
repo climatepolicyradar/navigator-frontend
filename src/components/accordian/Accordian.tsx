@@ -12,9 +12,10 @@ type TProps = {
   children: React.ReactNode;
   className?: string;
   showFade?: "true" | "false";
+  fixedHeight?: string;
 };
 
-export const Accordian = ({ title, startOpen = false, overflowOverride, children, showFade = "false", ...props }: TProps) => {
+export const Accordian = ({ title, startOpen = false, overflowOverride, fixedHeight = "300px", children, showFade = "false", ...props }: TProps) => {
   const [isOpen, setIsOpen] = useState(startOpen);
 
   return (
@@ -37,7 +38,7 @@ export const Accordian = ({ title, startOpen = false, overflowOverride, children
             transition={{ duration: 0.35, ease: [0.04, 0.62, 0.23, 0.98] }}
           >
             <div
-              className={`relative max-h-[300px] ${
+              className={`relative max-h-[${fixedHeight}] ${
                 overflowOverride
                   ? "overflow-visible"
                   : "overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500"
