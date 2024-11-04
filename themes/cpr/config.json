@@ -27,7 +27,7 @@
       {
         "label": "Multilateral Climate Funds",
         "slug": "multilateral-climate-funds",
-        "value": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+        "value": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"]
       },
       {
         "label": "Litigation",
@@ -50,10 +50,15 @@
           "label": "Global Environment Facility",
           "slug": "global-environment-facility",
           "value": ["MCF.corpus.GEF.n0000"]
+        },
+        {
+          "label": "Adaptation Fund",
+          "slug": "adaptation-fund",
+          "value": ["MCF.corpus.AF.n0000"]
         }
       ],
       "type": "checkbox",
-      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"]
     },
     {
       "label": "Status",
@@ -61,7 +66,7 @@
       "taxonomyKey": "status",
       "apiMetaDataKey": "family.status",
       "type": "radio",
-      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"]
     },
     {
       "label": "Implementing agency",
@@ -69,7 +74,7 @@
       "taxonomyKey": "implementing_agency",
       "apiMetaDataKey": "family.implementing_agency",
       "type": "radio",
-      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"],
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"],
       "showFade": "true"
     }
   ],
@@ -77,7 +82,7 @@
     {
       "key": "date",
       "label": "First published",
-      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"]
     }
   ],
   "links": [

@@ -1,5 +1,5 @@
 {
-  "defaultCorpora": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"],
+  "defaultCorpora": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"],
   "filters": [
     {
       "label": "Climate funds",
@@ -15,6 +15,11 @@
           "label": "Global Environment Facility",
           "slug": "global-environment-facility",
           "value": ["MCF.corpus.GEF.n0000"]
+        },
+        {
+          "label": "Adaptation Fund",
+          "slug": "adaptation-fund",
+          "value": ["MCF.corpus.AF.n0000"]
         }
       ],
       "type": "checkbox",
