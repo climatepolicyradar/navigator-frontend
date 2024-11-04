@@ -66,7 +66,7 @@
       "taxonomyKey": "status",
       "apiMetaDataKey": "family.status",
       "type": "radio",
-      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"]
     },
     {
       "label": "Implementing agency",
@@ -74,7 +74,7 @@
       "taxonomyKey": "implementing_agency",
       "apiMetaDataKey": "family.implementing_agency",
       "type": "radio",
-      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"],
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"],
       "showFade": "true"
     }
   ],
@@ -82,7 +82,7 @@
     {
       "key": "date",
       "label": "First published",
-      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"]
     }
   ],
   "links": [
