@@ -321,6 +321,7 @@ export type TThemeConfigOption = {
   slug: string;
   value?: string[];
   category?: string[];
+  corporaKey?: string;
 };
 
 type TThemeConfigCategory = {
@@ -330,7 +331,6 @@ type TThemeConfigCategory = {
 
 export type TThemeConfigFilter = {
   label: string;
-  corporaTypeKey?: string;
   taxonomyKey: string;
   apiMetaDataKey?: string;
   type: string;
@@ -338,6 +338,7 @@ export type TThemeConfigFilter = {
   startOpen?: "true" | "false";
   options?: TThemeConfigOption[];
   showFade?: "true" | "false";
+  dependantFilterKey?: string;
 };
 
 type TThemeLink = {

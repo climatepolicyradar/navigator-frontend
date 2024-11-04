@@ -11,31 +11,33 @@ type TCountriesLink = {
 
 export const CountryLinks = ({ geographies, countries, showFlag = true }: TCountriesLink) => (
   <>
-    {geographies?.map(
-      (geography) =>
-        !isSystemGeo(geography) && (
-          <span key={geography} className="flex gap-1">
-            <CountryLink countryCode={geography} showFlag={showFlag} className="text-textDark no-underline">
-              <span>{getCountryName(geography, countries)}</span>
-            </CountryLink>
-          </span>
-        )
-    )}
+    {geographies?.map((geography) => (
+      <span key={geography} className="flex gap-1">
+        {isSystemGeo(geography) ? (
+          <>{getCountryName(geography, countries)}</>
+        ) : (
+          <CountryLink countryCode={geography} showFlag={showFlag} className="text-textDark no-underline">
+            <span>{getCountryName(geography, countries)}</span>
+          </CountryLink>
+        )}
+      </span>
+    ))}
   </>
 );
 
 export const CountryLinksAsList = ({ geographies, countries, showFlag = true }: TCountriesLink) => (
   <>
-    {geographies?.map(
-      (geography, index) =>
-        !isSystemGeo(geography) && (
-          <div key={geography} className="flex">
-            <CountryLink countryCode={geography} showFlag={showFlag} className="text-blue-600 underline truncate text-sm text-transform: capitalize">
-              <span>{getCountryName(geography, countries)}</span>
-            </CountryLink>
-            {index !== geographies.length - 1 && <span>,</span>}
-          </div>
-        )
-    )}
+    {geographies?.map((geography, index) => (
+      <div key={geography} className="flex">
+        {isSystemGeo(geography) ? (
+          <>{getCountryName(geography, countries)}</>
+        ) : (
+          <CountryLink countryCode={geography} showFlag={showFlag} className="text-blue-600 underline truncate text-sm text-transform: capitalize">
+            <span>{getCountryName(geography, countries)}</span>
+          </CountryLink>
+        )}
+        {index !== geographies.length - 1 && <span>,</span>}
+      </div>
+    ))}
   </>
 );
