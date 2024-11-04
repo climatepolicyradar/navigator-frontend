@@ -113,8 +113,8 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
     optionsAsComponents.splice(
       0,
       0,
-      <div className="mb-2">
-        <TextInput key="search-box" size="small" onChange={(v) => setSearch(v)} value={search} placeholder="Quick search" />
+      <div className="mb-2" key="quick-search-box">
+        <TextInput size="small" onChange={(v) => setSearch(v)} value={search} placeholder="Quick search" />
       </div>
     );
 
