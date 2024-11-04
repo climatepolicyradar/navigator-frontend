@@ -4,27 +4,28 @@ import Head from "next/head";
 
 import { ThemeContext } from "@context/ThemeContext";
 
-import getPageTitle from "@utils/getPageTitle";
+import getAppName from "@utils/getAppName";
 import getPageDescription from "@utils/getPageDescription";
 import { getCanonicalUrl } from "@utils/getCanonicalUrl";
 
 type TProps = {
   children?: ReactNode;
   title?: string;
+  appName?: string;
   description?: string;
 };
 
-const Layout = ({ children, title = "", description = null }: TProps) => {
+const Layout = ({ children, title = "", appName = null, description = null }: TProps) => {
   const router = useRouter();
   const theme = useContext(ThemeContext);
 
   return (
     <>
       <Head>
-        <title>{`${title} - ${getPageTitle(theme)}`}</title>
-        <meta property="og:title" content={`${title} - ${getPageTitle(theme)}`} />
-        <meta name="description" content={description ?? getPageDescription(theme)} key="desc" />
-        <meta property="og:description" content={description ?? getPageDescription(theme)} />
+        <title>{`${title} - ${getAppName(appName)}`}</title>
+        <meta property="og:title" content={`${title} - ${getAppName(appName)}`} />
+        <meta name="description" content={description ?? getPageDescription(description)} key="desc" />
+        <meta property="og:description" content={description ?? getPageDescription(description)} />
         <link rel="canonical" href={getCanonicalUrl(router, theme)} />
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />

@@ -10,7 +10,7 @@ import ExactMatch from "@components/filters/ExactMatch";
 import Header from "@components/headers/LandingPage";
 import Banner from "@components/banner/FullHeight";
 import Footer from "@components/footer/Footer";
-
+import { PAGE_DESCRIPTION, APP_NAME } from "@cpr/constants/description";
 import LandingPageLinks from "@cpr/components/LandingPageLinks";
 import Partners from "@cpr/components/Partners";
 import Summary from "@cpr/components/Summary";
@@ -36,7 +36,7 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
   };
 
   return (
-    <Layout title="Law and Policy Search">
+    <Layout title="Law and Policy Search" appName={APP_NAME} description={PAGE_DESCRIPTION}>
       <div className="relative">
         <Header />
         <main className="relative h-full">
