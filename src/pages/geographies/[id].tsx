@@ -226,7 +226,13 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
           </SubNav>
           <SiteWidth>
             <SingleCol extraClasses="mt-8">
-              <CountryHeader country={geography} targetCount={hasTargets ? publishedTargets?.length : 0} onTargetClick={handleTargetClick} />
+              <CountryHeader
+                country={geography}
+                targetCount={hasTargets ? publishedTargets?.length : 0}
+                onTargetClick={handleTargetClick}
+                theme={appTheme}
+                totalProjects={allDocumentsCount}
+              />
               <section className="mt-8" data-cy="country-search">
                 <Heading level={2}>Documents</Heading>
                 <DocumentSearchForm

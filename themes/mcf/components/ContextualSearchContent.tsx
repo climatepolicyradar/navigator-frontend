@@ -16,7 +16,7 @@ const ContextualSearchContent = () => {
             <img
               src={"/images/climate-project-explorer/cpe-search-results.jpg"}
               alt={`Climate Project Explorer Search Filters Snapshot`}
-              className="h-auto w-auto md:h-[354px] md:w-[516px]"
+              className="h-auto w-auto"
             />
           </div>
         </div>
@@ -31,7 +31,7 @@ const ContextualSearchContent = () => {
             <img
               src={"/images/climate-project-explorer/cpe-contextual-search.jpg"}
               alt={`Climate Project Explorer Contextual Search Snapshot`}
-              className="h-auto w-auto md:h-[354px] md:w-[516px]"
+              className="h-auto w-auto"
             />
           </div>
         </div>
