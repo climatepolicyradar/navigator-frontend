@@ -14,7 +14,7 @@ import { PoweredBy } from "@cclw/components/PoweredBy";
 import { FeatureDiscover } from "@cclw/components/FeatureDiscover";
 import { HelpUs } from "@cclw/components/HelpUs";
 import { FeatureSearch } from "@cclw/components/FeatureSearch";
-
+import { PAGE_DESCRIPTION, APP_NAME } from "@cclw/constants/pageMetadata";
 import { Heading } from "@components/typography/Heading";
 
 const WorldMap = dynamic(() => import("@components/map/WorldMap"), {
@@ -29,7 +29,7 @@ type TProps = {
 
 const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
   return (
-    <Layout title="Law and Policy Search">
+    <Layout title="Law and Policy Search" appName={APP_NAME} description={PAGE_DESCRIPTION}>
       <main id="main" className="flex flex-col flex-1">
         <div className="bg-cclw-dark">
           <Header background={false} />
