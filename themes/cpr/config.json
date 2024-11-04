@@ -27,7 +27,7 @@
       {
         "label": "Multilateral Climate Funds",
         "slug": "multilateral-climate-funds",
-        "value": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+        "value": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"]
       },
       {
         "label": "Litigation",
@@ -44,40 +44,48 @@
         {
           "label": "Green Climate Fund",
           "slug": "green-climate-fund",
-          "value": ["MCF.corpus.GCF.n0000"]
+          "value": ["MCF.corpus.GCF.n0000"],
+          "corporaKey": "GCF"
         },
         {
           "label": "Global Environment Facility",
           "slug": "global-environment-facility",
-          "value": ["MCF.corpus.GEF.n0000"]
+          "value": ["MCF.corpus.GEF.n0000"],
+          "corporaKey": "GEF"
+        },
+        {
+          "label": "Adaptation Fund",
+          "slug": "adaptation-fund",
+          "value": ["MCF.corpus.AF.n0000"],
+          "corporaKey": "AF"
         }
       ],
       "type": "checkbox",
-      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"]
     },
     {
       "label": "Status",
-      "corporaTypeKey": "GCF",
       "taxonomyKey": "status",
       "apiMetaDataKey": "family.status",
       "type": "radio",
-      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"],
+      "dependantFilterKey": "fund"
     },
     {
       "label": "Implementing agency",
-      "corporaTypeKey": "GCF",
       "taxonomyKey": "implementing_agency",
       "apiMetaDataKey": "family.implementing_agency",
       "type": "radio",
-      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"],
-      "showFade": "true"
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"],
+      "showFade": "true",
+      "dependantFilterKey": "fund"
     }
   ],
   "labelVariations": [
     {
       "key": "date",
       "label": "First published",
-      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000"]
+      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"]
     }
   ],
   "links": [

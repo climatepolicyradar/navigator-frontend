@@ -12,10 +12,11 @@ export const getCountriesFromRegions = ({ regions, countries, selectedRegions }:
   let newList = countries;
 
   if (selectedRegionsGeo.length > 0) {
+    newList = [];
     // for each selected region, filter the countries
     for (let i = 0; i < selectedRegionsGeo.length; i++) {
       const region = selectedRegionsGeo[i];
-      newList = countries.filter((item: any) => item.parent_id === region.id);
+      newList = newList.concat(countries.filter((item: any) => item.parent_id === region.id));
     }
   }
 

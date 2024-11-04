@@ -1,9 +1,8 @@
 import React from "react";
-import Image from "next/image";
 
-import { ExternalLink } from "@components/ExternalLink";
 import { SiteWidth } from "@components/panels/SiteWidth";
 import { Heading } from "@components/typography/Heading";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 type FundDescription = {
   name: string;
@@ -13,7 +12,7 @@ type FundDescription = {
 const fundDescriptions: FundDescription[] = [
   {
     name: "Adaptation Fund",
-    description: "finances projects and programmes that help vulnerable communities in developing countries adapt to climate change.",
+    description: "(AF) finances projects and programmes that help vulnerable communities in developing countries adapt to climate change.",
   },
   {
     name: "Climate Investment Funds",
@@ -21,7 +20,7 @@ const fundDescriptions: FundDescription[] = [
   },
   {
     name: "Global Environment Facility",
-    description: "projects and programmes that help vulnerable communities in developing countries adapt to climate change.",
+    description: "(GEF) projects and programmes that help vulnerable communities in developing countries adapt to climate change.",
   },
   {
     name: "Green Climate Fund",
@@ -32,7 +31,7 @@ const fundDescriptions: FundDescription[] = [
 
 const AboutTheFundsContent = () => {
   return (
-    <SiteWidth>
+    <SiteWidth extraClasses="!max-w-[1024px]">
       <div className="flex justify-between">
         <div className="content-center xl:max-w-screen-md py-16">
           <Heading level={2} extraClasses="custom-header">
@@ -46,15 +45,13 @@ const AboutTheFundsContent = () => {
               <br />
             </p>
           ))}
-          <p>
-            <ExternalLink className="!underline" url="https://www.climatepolicyradar.org">
-              Find out more
-            </ExternalLink>
-          </p>
+          <LinkWithQuery className="underline" href="/about">
+            Find out more
+          </LinkWithQuery>
         </div>
-        <div className="hidden xl:block xl:h-full">
+        <div className="hidden xl:flex xl:h-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/mcf/mcf-fund-logos.png" alt="Multilateral Climate Fund Logos" className="h-[34rem]" />
+          <img src="/images/mcf/mcf-fund-logos.png" alt="Multilateral Climate Fund Logos" className="h-auto max-w-[306px]" />
         </div>
       </div>
     </SiteWidth>

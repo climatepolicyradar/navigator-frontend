@@ -18,10 +18,10 @@ const Contact = () => {
       <section className="pt-8">
         <SiteWidth>
           <SingleCol>
+            <Heading level={1} extraClasses="custom-header">
+              Contact
+            </Heading>
             <div className="text-content mb-12">
-              <Heading level={1} extraClasses="custom-header">
-                Contact
-              </Heading>
               <p>
                 If you have any questions or need further information, don't hesitate to reach out to us by
                 <ExternalLink url="https://form.jotform.com/242955027856365"> filling out this form</ExternalLink>.

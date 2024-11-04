@@ -29,6 +29,12 @@ const menuLinks = [
     external: false,
     cy: "about",
   },
+  {
+    text: "Methodology",
+    href: "/methodology",
+    external: false,
+    cy: "methodology",
+  },
 ];
 
 export default menuLinks;

@@ -18,7 +18,7 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 
 import { getCountriesFromRegions } from "@helpers/getCountriesFromRegions";
 
-import { TGeography, TOrganisationDictionary, TSearchCriteria, TThemeConfigFilter, TThemeConfigOption } from "@types";
+import { TGeography, TOrganisationDictionary, TSearchCriteria, TThemeConfig, TThemeConfigFilter, TThemeConfigOption } from "@types";
 import { ParsedUrlQuery } from "querystring";
 import { canDisplayFilter } from "@utils/canDisplayFilter";
 import { getFilterLabel } from "@utils/getFilterLabel";
@@ -37,12 +37,21 @@ const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCate
   return false;
 };
 
+const getTaxonomyAllowedValues = (corporaKey: string, taxonomyKey: string, organisations: TOrganisationDictionary) => {
+  const allowedValues = organisations[corporaKey].corpora.find((corpus) => corpus.taxonomy.hasOwnProperty(taxonomyKey))?.taxonomy[taxonomyKey]
+    ?.allowed_values;
+
+  return allowedValues;
+};
+
 const renderFilterOptions = (
   filter: TThemeConfigFilter,
   query: ParsedUrlQuery,
   handleFilterChange: Function,
-  organisations: TOrganisationDictionary
+  organisations: TOrganisationDictionary,
+  themeConfig: TThemeConfig
 ) => {
+  // If the filter has its own options defined, display them
   if (filter.options && filter.options.length > 0) {
     return filter.options.map((option) =>
       filter.type === "radio" ? (
@@ -67,34 +76,59 @@ const renderFilterOptions = (
       )
     );
   }
-  if (filter.corporaTypeKey && organisations && organisations[filter.corporaTypeKey]) {
-    // check our organisation contains the filter in its list of taxonomies
-    // we  do not want to attempt to render if our config is unaligned or our taxonomy does not exist
-    const corpus = organisations[filter.corporaTypeKey].corpora.find((corpus) => corpus.taxonomy.hasOwnProperty(filter.taxonomyKey));
-    if (corpus) {
-      return corpus.taxonomy[filter.taxonomyKey]?.allowed_values.map((option: string) =>
-        filter.type === "radio" ? (
-          <InputRadio
-            key={option}
-            label={option}
-            checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option)}
-            onChange={() => null} // supress normal radio behaviour to allow to deselection
-            onClick={() => {
-              handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option, true);
-            }}
-          />
-        ) : (
-          <InputCheck
-            key={option}
-            label={option}
-            checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option)}
-            onChange={() => {
-              handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option);
-            }}
-          />
-        )
-      );
+  // Check the dependancy filter key for which filters to load the taxonomy for
+  let options = [];
+  const dependantFilter = themeConfig.filters.find((f) => f.taxonomyKey === filter.dependantFilterKey);
+  const queryDependantFilter = query[QUERY_PARAMS[dependantFilter?.taxonomyKey]] || [];
+
+  // If no filter of a given dependancy is selected, load all dependancy taxonomy values
+  if (queryDependantFilter.length === 0) {
+    for (let index = 0; index < dependantFilter.options.length; index++) {
+      const option = dependantFilter.options[index];
+      const taxonomyAllowedValues = getTaxonomyAllowedValues(option.corporaKey, filter.taxonomyKey, organisations);
+      options = options.concat(taxonomyAllowedValues);
     }
+  } else {
+    // Otherwise, load the taxonomy values for the selected dependancy filter(s)
+    if (typeof queryDependantFilter === "string") {
+      const filterCoporaKey = dependantFilter.options.find((option) => option.slug === queryDependantFilter)?.corporaKey;
+      const taxonomyAllowedValues = getTaxonomyAllowedValues(filterCoporaKey, filter.taxonomyKey, organisations);
+      options = options.concat(taxonomyAllowedValues);
+    } else {
+      for (let index = 0; index < queryDependantFilter.length; index++) {
+        const filterCoporaKey = dependantFilter.options.find((option) => option.slug === queryDependantFilter[index])?.corporaKey;
+        const taxonomyAllowedValues = getTaxonomyAllowedValues(filterCoporaKey, filter.taxonomyKey, organisations);
+        options = options.concat(taxonomyAllowedValues);
+      }
+    }
+  }
+
+  // De-duplicate and sort the options
+  const optionsDeDuped: string[] = [...new Set(options.sort())];
+
+  if (optionsDeDuped.length) {
+    return optionsDeDuped.map((option: string) =>
+      filter.type === "radio" ? (
+        <InputRadio
+          key={option}
+          label={option}
+          checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option)}
+          onChange={() => null} // supress normal radio behaviour to allow to deselection
+          onClick={() => {
+            handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option, true);
+          }}
+        />
+      ) : (
+        <InputCheck
+          key={option}
+          label={option}
+          checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option)}
+          onChange={() => {
+            handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option);
+          }}
+        />
+      )
+    );
   }
   return null;
 };
@@ -208,12 +242,16 @@ const SearchFilters = ({
               startOpen={filter.startOpen === "true" || !!query[QUERY_PARAMS[filter.taxonomyKey]]}
               showFade={filter.showFade}
             >
-              <InputListContainer>{renderFilterOptions(filter, query, handleFilterChange, organisations)}</InputListContainer>
+              <InputListContainer>{renderFilterOptions(filter, query, handleFilterChange, organisations, themeConfig)}</InputListContainer>
             </Accordian>
           );
         })}
 
-      <Accordian title={getFilterLabel("Region", "region", query[QUERY_PARAMS.category], themeConfig)} data-cy="regions">
+      <Accordian
+        title={getFilterLabel("Region", "region", query[QUERY_PARAMS.category], themeConfig)}
+        data-cy="regions"
+        startOpen={!!query[QUERY_PARAMS.region]}
+      >
         <InputListContainer>
           {regions.map((region) => (
             <InputCheck
@@ -246,7 +284,11 @@ const SearchFilters = ({
         </InputListContainer>
       </Accordian>
 
-      <Accordian title={getFilterLabel("Date", "date", query[QUERY_PARAMS.category], themeConfig)} data-cy="date-range">
+      <Accordian
+        title={getFilterLabel("Date", "date", query[QUERY_PARAMS.category], themeConfig)}
+        data-cy="date-range"
+        startOpen={!!query[QUERY_PARAMS.year_range]}
+      >
         <DateRange type="year_range" handleChange={handleYearChange} defaultValues={searchCriteria.year_range} min={minYear} max={thisYear} />
       </Accordian>
 

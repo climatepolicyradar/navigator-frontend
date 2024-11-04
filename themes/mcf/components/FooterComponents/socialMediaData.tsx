@@ -16,6 +16,15 @@ export const multilateralClimateFundSocialMedia = {
       icon: <InstagramIcon color={iconColor} />,
     },
   ],
+  "Climate Investment Funds": [
+    { url: "https://twitter.com/CIF_Action", icon: <TwitterIcon color={iconColor} /> },
+    { url: "https://www.facebook.com/CIFaction/", icon: <FacebookIcon color={iconColor} /> },
+    { url: "https://www.linkedin.com/company/cifaction", icon: <LinkedInIcon color={iconColor} /> },
+    {
+      url: "https://www.instagram.com/cif_action/",
+      icon: <InstagramIcon color={iconColor} />,
+    },
+  ],
   "Green Climate Fund": [
     { url: "https://twitter.com/theGCF", icon: <TwitterIcon color={iconColor} /> },
     { url: "https://facebook.com/GCFOfficial", icon: <FacebookIcon color={iconColor} /> },
@@ -23,11 +32,10 @@ export const multilateralClimateFundSocialMedia = {
       url: "https://www.linkedin.com/company/green-climate-fund/",
       icon: <LinkedInIcon color={iconColor} />,
     },
-  ],
-  "Climate Investment Funds": [
-    { url: "https://twitter.com/CIF_Action", icon: <TwitterIcon color={iconColor} /> },
-    { url: "https://www.facebook.com/CIFaction/", icon: <FacebookIcon color={iconColor} /> },
-    { url: "https://www.linkedin.com/company/cifaction", icon: <LinkedInIcon color={iconColor} /> },
+    {
+      url: "https://www.instagram.com/greenclimatefund/",
+      icon: <InstagramIcon color={iconColor} />,
+    },
   ],
   "Global Environment Facility": [
     { url: "https://twitter.com/theGEF", icon: <TwitterIcon color={iconColor} /> },
@@ -35,6 +43,10 @@ export const multilateralClimateFundSocialMedia = {
     {
       url: "https://www.linkedin.com/company/global-environment-facility",
       icon: <LinkedInIcon color={iconColor} />,
+    },
+    {
+      url: "https://www.instagram.com/gef_global_environment/?hl=en",
+      icon: <InstagramIcon color={iconColor} />,
     },
   ],
 };

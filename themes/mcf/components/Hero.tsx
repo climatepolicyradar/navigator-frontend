@@ -14,9 +14,9 @@ type TProps = {
 
 const Hero = ({ handleSearchInput, searchInput }: TProps) => (
   <div className="pb-6 text-white pt-[28px] sm:pt-[48px] md:pt-[80px] lg:pt-[100px] xl:pt-[140px]">
-    <SiteWidth>
+    <SiteWidth extraClasses="!max-w-[1024px]">
       <div className="mx-auto text-center">
-        <p className="font-medium tracking-slight text-lg lg:text-xl text-mcf-blueOpacity64 mb-2" data-cy="search-all">
+        <p className="font-medium tracking-slight text-lg lg:text-xl text-mcf-blueOpacity64 mb-2 !font-greycliff" data-cy="search-all">
           SEARCH ALL
         </p>
         <Heading extraClasses="custom-hero" level={1}>
@@ -29,9 +29,7 @@ const Hero = ({ handleSearchInput, searchInput }: TProps) => (
       </div>
       <VerticalSpacing size="lg" />
       <MultilateralClimateFundLogos />
-      <div className="mt-6 mt-[48px] sm:mt-[88px] md:mt-[188px] lg:mt-[208px] xl:mt-[248px]">
-        <Instructions />
-      </div>
+      <div className="mt-6 mt-[48px] sm:mt-[88px] md:mt-[188px] lg:mt-[208px] xl:mt-[248px]"></div>
     </SiteWidth>
   </div>
 );

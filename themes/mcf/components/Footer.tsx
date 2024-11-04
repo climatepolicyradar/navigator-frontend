@@ -30,16 +30,16 @@ const Footer = () => {
                 Contact
               </Heading>
               <p>
-                Get in touch with the Climate Project Explorer team by emailing:{" "}
-                <ExternalLink url="mailto:partners@climatepolicyradar.org">partners@climatepolicyradar.org</ExternalLink>
+                Get in touch with the Climate Project Explorer team by{" "}
+                <ExternalLink url="https://form.jotform.com/242955027856365">filling out this form</ExternalLink>.
               </p>
               <div className="footer__section">
                 <Heading level={2} extraClasses="custom-header">
                   Feedback
                 </Heading>
                 <p>
-                  Help us improve this tool. <ExternalLink url="https://www.climatepolicyradar.org">Report missing or inaccurate data</ExternalLink>{" "}
-                  or <ExternalLink url="https://www.climatepolicyradar.org">provide feedback </ExternalLink> on your experience.
+                  Help us improve this tool by <ExternalLink url="https://form.jotform.com/243033093255349">providing feedback</ExternalLink> on your
+                  experience.
                 </p>
               </div>
             </div>

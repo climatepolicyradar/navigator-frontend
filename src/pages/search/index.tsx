@@ -91,6 +91,9 @@ const Search = () => {
 
   const handleRegionChange = (regionName: string) => {
     delete router.query[QUERY_PARAMS.offset];
+    delete router.query[QUERY_PARAMS.active_continuation_token];
+    delete router.query[QUERY_PARAMS.continuation_tokens];
+    delete router.query[QUERY_PARAMS.country];
     const query = { ...router.query };
     const regions = (query[QUERY_PARAMS.region] as string[]) || [];
 
@@ -150,6 +153,10 @@ const Search = () => {
       } else {
         queryCollection.push(value);
       }
+    }
+
+    if (type === QUERY_PARAMS.fund) {
+      delete router.query[QUERY_PARAMS.implementing_agency];
     }
 
     router.query[type] = queryCollection;
