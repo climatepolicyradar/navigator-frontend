@@ -155,6 +155,10 @@ const Search = () => {
       }
     }
 
+    if (type === QUERY_PARAMS.fund) {
+      delete router.query[QUERY_PARAMS.implementing_agency];
+    }
+
     router.query[type] = queryCollection;
     router.push({ query: router.query });
     resetCSVStatus();

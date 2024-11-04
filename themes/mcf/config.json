@@ -9,17 +9,20 @@
         {
           "label": "Green Climate Fund",
           "slug": "green-climate-fund",
-          "value": ["MCF.corpus.GCF.n0000"]
+          "value": ["MCF.corpus.GCF.n0000"],
+          "corporaKey": "GCF"
         },
         {
           "label": "Global Environment Facility",
           "slug": "global-environment-facility",
-          "value": ["MCF.corpus.GEF.n0000"]
+          "value": ["MCF.corpus.GEF.n0000"],
+          "corporaKey": "GEF"
         },
         {
           "label": "Adaptation Fund",
           "slug": "adaptation-fund",
-          "value": ["MCF.corpus.AF.n0000"]
+          "value": ["MCF.corpus.AF.n0000"],
+          "corporaKey": "AF"
         }
       ],
       "type": "checkbox",
@@ -27,20 +30,20 @@
     },
     {
       "label": "Status",
-      "corporaTypeKey": "GCF",
       "taxonomyKey": "status",
       "apiMetaDataKey": "family.status",
       "type": "radio",
-      "category": []
+      "category": [],
+      "dependantFilterKey": "fund"
     },
     {
       "label": "Implementing agency",
-      "corporaTypeKey": "GCF",
       "taxonomyKey": "implementing_agency",
       "apiMetaDataKey": "family.implementing_agency",
       "type": "radio",
       "category": [],
-      "showFade": "true"
+      "showFade": "true",
+      "dependantFilterKey": "fund"
     }
   ],
   "labelVariations": [
