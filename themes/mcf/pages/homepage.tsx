@@ -20,7 +20,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
         </div>
         <AboutClimateProjectExplorer />
         <ContextualSearchContent />
-        <div className={`bg-white border-slate-700 border-solid border-2`}>
+        <div className={`bg-white border-slate-700 border-solid border-t-2`}>
           <AboutTheFunds />
         </div>
         <ClimatePolicyRadarBanner />
