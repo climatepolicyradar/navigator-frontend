@@ -55,7 +55,7 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
             </LinkWithQuery>
           </div>
         </div>
-        <div className="p-5 pt-0 flex-grow flex flex-col overflow-hidden">
+        <div className="p-5 pt-0 flex-grow flex flex-col">
           <div className="my-5">
             <div className="flex justify-between items-baseline">
               <Heading level={3} extraClasses="mb-0">
@@ -66,7 +66,7 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
               </LinkWithQuery>
             </div>
           </div>
-          <div className="flex-grow pr-1 overflow-y-scroll scrollbar-narrow">
+          <div className="flex-grow pr-1">
             {family_documents.map((document, docIndex) => (
               <div key={document.document_slug} className="mb-5">
                 <LinkWithQuery href={`/documents/${document.document_slug}`}>{document.document_title}</LinkWithQuery>
