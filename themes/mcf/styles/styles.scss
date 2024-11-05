@@ -174,4 +174,8 @@ body {
     border-radius: inherit;
     pointer-events: none;
   }
+
+  input:placeholder-shown {
+    text-overflow: ellipsis;
+  }
 }
