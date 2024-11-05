@@ -19,7 +19,7 @@ jobs:
     if: |
       github.event_name == 'pull_request' &&
       (! startsWith(github.ref, 'refs/tags') && ! startsWith(github.ref, 'refs/heads/main'))
-    uses: climatepolicyradar/reusable-workflows/.github/workflows/check-auto-tagging-will-work.yml@v8
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/check-auto-tagging-will-work.yml@v17
 
   code-quality:
     if: |
@@ -33,7 +33,7 @@ jobs:
       checks: write
       # For repo checkout
       contents: read
-    uses: climatepolicyradar/reusable-workflows/.github/workflows/node-precommit-validator.yml@v5
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/node-precommit-validator.yml@v17
     with:
       node-version: 20.11.0
       package-manager: npm
@@ -50,7 +50,7 @@ jobs:
     permissions:
       contents: write
     secrets: inherit
-    uses: climatepolicyradar/reusable-workflows/.github/workflows/theme-factory.yml@v6
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/theme-factory.yml@v17
     with:
       repo-name: navigator-frontend
       theme: ${{ matrix.theme }}
