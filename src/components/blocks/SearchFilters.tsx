@@ -96,18 +96,6 @@ const SearchFilters = ({
       <div className="flex justify-between">
         <div className="flex gap-2">
           <p className="text-xs uppercase">Filters</p>
-          <Tooltip
-            id="filter-by"
-            tooltip={
-              <>
-                Selecting exact phrases only will narrow down your search to only show documents that contain the precise words you typed in the
-                search bar. Our enhanced search will look for similar and related terms, so you’ll get more results, with the most relevant ones
-                automatically appearing at the top. See our FAQs for more information.
-              </>
-            }
-            icon="i"
-            place="right"
-          />
         </div>
         {showClear && (
           <button className="anchor underline text-[13px]" onClick={handleClearSearch}>
