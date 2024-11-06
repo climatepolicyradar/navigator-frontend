@@ -157,7 +157,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       return allFamilies.map((family) => {
         if (family)
           return (
-            <div key={family.family_slug} className="mt-6">
+            <div key={family.family_slug} className="mb-10">
               <FamilyListItem family={family} />
             </div>
           );
@@ -169,7 +169,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
         return summary.top_families.Legislative.length === 0
           ? renderEmpty("Legislative")
           : summary.top_families.Legislative.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-              <div key={family.family_slug} className="mt-6">
+              <div key={family.family_slug} className="mb-10">
                 <FamilyListItem family={family} />
               </div>
             ));
@@ -179,7 +179,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
         return summary.top_families.Executive.length === 0
           ? renderEmpty("Executive")
           : summary.top_families.Executive.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-              <div key={family.family_slug} className="mt-6">
+              <div key={family.family_slug} className="mb-10">
                 <FamilyListItem family={family} />
               </div>
             ));
@@ -189,7 +189,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
         return summary.top_families.UNFCCC.length === 0
           ? renderEmpty("UNFCCC")
           : summary.top_families.UNFCCC.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-              <div key={family.family_slug} className="mt-6">
+              <div key={family.family_slug} className="mb-10">
                 <FamilyListItem family={family} />
               </div>
             ));
@@ -246,7 +246,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
               {hasFamilies && (
                 <>
                   <section className="mt-10" data-cy="top-documents">
-                    <div className="mt-4 md:flex">
+                    <div className="my-4 md:flex">
                       <div className="flex-grow">
                         <TabbedNav activeIndex={selectedCategoryIndex} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
                       </div>
