@@ -79,16 +79,14 @@ const SearchFilters = ({
 
   // Show clear button if there are filters applied
   useEffect(() => {
-    if (searchCriteria.year_range[0] !== minYear || searchCriteria.year_range[1] !== thisYear) {
-      setShowClear(true);
-    } else if (Object.keys(searchCriteria.keyword_filters).length > 0) {
-      setShowClear(true);
-    } else if (searchCriteria.exact_match) {
-      setShowClear(true);
+    if (query && Object.keys(query).length > 0) {
+      if (Object.keys(query).length === 1 && query[QUERY_PARAMS.query_string]) {
+        setShowClear(false);
+      } else setShowClear(true);
     } else {
       setShowClear(false);
     }
-  }, [thisYear, searchCriteria]);
+  }, [query]);
 
   return (
     <div id="search_filters" data-cy="seach-filters" className="text-sm text-textNormal flex flex-col gap-5">
