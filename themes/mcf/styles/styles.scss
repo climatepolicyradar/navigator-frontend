@@ -134,7 +134,7 @@ body {
 
   .custom-hero,
   h1.custom-hero {
-    @apply font-greycliff text-[72px] font-bold leading-[72px] tracking-[-0.04em] text-center text-mcf-blue;
+    @apply font-greycliff text-[56px] leading-none md:text-[72px] font-bold md:leading-[72px] tracking-[-0.04em] text-center text-mcf-blue;
   }
 
   .custom-search-button {
