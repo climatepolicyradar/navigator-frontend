@@ -345,7 +345,9 @@ const Search = () => {
             </div>
             <div className="relative z-10 flex justify-center">
               <button
-                className={`w-[55px] flex justify-center items-center text-textDark text-xl ${showOptions ? "bg-nearBlack text-white rounded-full" : ""}`}
+                className={`w-[55px] flex justify-center items-center text-textDark text-xl ${
+                  showOptions ? "bg-nearBlack text-white rounded-full" : ""
+                }`}
                 onClick={() => setShowOptions(!showOptions)}
                 data-cy="search-options-mobile"
                 ref={settingsButtonRef}
@@ -424,7 +426,9 @@ const Search = () => {
                   </div>
                   <div className="relative z-10 flex justify-center">
                     <button
-                      className={`w-[55px] flex justify-center items-center text-textDark text-xl ${showOptions ? "bg-nearBlack text-white rounded-full" : ""}`}
+                      className={`w-[55px] flex justify-center items-center text-textDark text-xl ${
+                        showOptions ? "bg-nearBlack text-white rounded-full" : ""
+                      }`}
                       onClick={() => setShowOptions(!showOptions)}
                       data-cy="search-options"
                       ref={settingsButtonRef}
