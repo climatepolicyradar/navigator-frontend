@@ -9,7 +9,7 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 // See the method handleSearchInput in the index.tsx file for the processing of the example searches
 const EXAMPLE_SEARCHES = [
   { id: 1, term: "Adaptation" },
-  { id: 2, term: "Biodiversity" },
+  { id: 2, term: "Extreme Weather" },
   { id: 3, filterValue: "Philippines", filterType: QUERY_PARAMS.country },
 ];
 
