@@ -670,7 +670,7 @@ export const FacebookIcon = ({ height = "20", width = "24", color = "currentColo
       width={width}
       height={height}
       viewBox="0 0 24 24"
-      fill={color}
+      fill="none"
       stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
@@ -712,7 +712,7 @@ export const LinkedInIcon = ({ height = "20", width = "24", color = "currentColo
       width={width}
       height={height}
       viewBox="0 0 24 24"
-      fill={color}
+      fill="none"
       stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
