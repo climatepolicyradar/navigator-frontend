@@ -42,10 +42,10 @@
       "taxonomyKey": "fund",
       "options": [
         {
-          "label": "Green Climate Fund",
-          "slug": "green-climate-fund",
-          "value": ["MCF.corpus.GCF.n0000"],
-          "corporaKey": "GCF"
+          "label": "Adaptation Fund",
+          "slug": "adaptation-fund",
+          "value": ["MCF.corpus.AF.n0000"],
+          "corporaKey": "AF"
         },
         {
           "label": "Global Environment Facility",
@@ -54,10 +54,10 @@
           "corporaKey": "GEF"
         },
         {
-          "label": "Adaptation Fund",
-          "slug": "adaptation-fund",
-          "value": ["MCF.corpus.AF.n0000"],
-          "corporaKey": "AF"
+          "label": "Green Climate Fund",
+          "slug": "green-climate-fund",
+          "value": ["MCF.corpus.GCF.n0000"],
+          "corporaKey": "GCF"
         }
       ],
       "type": "checkbox",
