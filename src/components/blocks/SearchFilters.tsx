@@ -3,7 +3,6 @@ import { ParsedUrlQuery } from "querystring";
 
 import useGetThemeConfig from "@hooks/useThemeConfig";
 
-import Tooltip from "@components/tooltip";
 import { DateRange } from "../filters/DateRange";
 import { Accordian } from "@components/accordian/Accordian";
 import { InputListContainer } from "@components/filters/InputListContainer";
