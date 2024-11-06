@@ -6,6 +6,7 @@ type TProps = {
   side?: "left" | "right";
   children?: React.ReactNode;
   size?: "small" | "large" | "default";
+  name?: string;
   onChange?: (value: string) => void;
 };
 
@@ -28,6 +29,7 @@ export const TextInput = ({
   onChange,
   children,
   side = "left",
+  name,
   ...props
 }: TProps) => {
   const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
@@ -45,6 +47,7 @@ export const TextInput = ({
         onChange={handleChange}
         className={` ${size} ${iconClasses(side, children)} ${className}`}
         placeholder={placeholder}
+        name={name}
         {...props}
       />
       {side === "right" && <span className="input-icon icon-right">{children}</span>}

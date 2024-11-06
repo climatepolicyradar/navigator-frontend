@@ -73,7 +73,7 @@ export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChang
 
   return (
     <div
-      className="absolute top-full right-0 bg-nearBlack rounded-lg p-4 z-10 text-white text-sm w-[180px]"
+      className="absolute top-full right-0 bg-nearBlack rounded-lg p-4 mt-2 z-10 text-white text-sm w-[180px]"
       ref={searchOptionsRef}
       data-cy="search-settings"
     >

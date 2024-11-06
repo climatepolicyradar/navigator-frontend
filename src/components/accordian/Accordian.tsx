@@ -22,7 +22,9 @@ export const Accordian = ({ title, startOpen = false, overflowOverride, fixedHei
     <div {...props}>
       <div className={`flex justify-between cursor-pointer group`} onClick={() => setIsOpen(!isOpen)} data-cy="accordian-control">
         <Heading>{title}</Heading>
-        <span className={`opacity-40 group-hover:opacity-100 ${isOpen ? "" : ""}`}>{isOpen ? <AccordianCloseIcon /> : <AccordianOpenIcon />}</span>
+        <span className={`text-textDark opacity-40 group-hover:opacity-100 ${isOpen ? "" : ""}`}>
+          {isOpen ? <AccordianCloseIcon /> : <AccordianOpenIcon />}
+        </span>
       </div>
       <AnimatePresence initial={false}>
         {isOpen && (

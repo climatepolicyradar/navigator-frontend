@@ -41,6 +41,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
               onClick={() => {
                 handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug, true);
               }}
+              name={`${filter.taxonomyKey}=${option.slug}`}
             />
           ) : (
             <InputCheck
@@ -50,6 +51,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
               onChange={() => {
                 handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug);
               }}
+              name={`${filter.taxonomyKey}=${option.slug}`}
             />
           )
         )}
@@ -96,6 +98,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
         onClick={() => {
           handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option, true);
         }}
+        name={`${filter.taxonomyKey}=${option}`}
       />
     ) : (
       <InputCheck
@@ -105,6 +108,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
         onChange={() => {
           handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option);
         }}
+        name={`${filter.taxonomyKey}=${option}`}
       />
     )
   );

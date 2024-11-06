@@ -55,6 +55,7 @@ const GeographySelect = ({ title, list, keyField, keyFieldDisplay, filterType, h
           value={input}
           onChange={handleChange}
           aria-label="Search for a country or territory"
+          name="Country Search"
         />
       </div>
 
