@@ -129,7 +129,7 @@ body {
   }
 
   h2.custom-header {
-    @apply leading-6 font-bold tracking-[0.04em];
+    @apply leading-6 font-bold tracking-[0.04em] tracking-tight;
   }
 
   .custom-hero,
