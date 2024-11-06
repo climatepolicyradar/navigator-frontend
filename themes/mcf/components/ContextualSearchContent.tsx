@@ -11,7 +11,7 @@ const ContextualSearchContent = () => {
             Central knowledge-base for MCFs
           </Heading>
           <p>Find information from 4 different funds projects and policies in more than 130 countries.</p>
-          <div className="md:pt-2">
+          <div className="pt-9">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={"/images/climate-project-explorer/cpe-search-results.jpg"}
@@ -24,9 +24,9 @@ const ContextualSearchContent = () => {
           <Heading level={2} extraClasses="custom-header">
             Contextual search
           </Heading>
-          <p>Quickly find exact matches and highlighted related phrases.</p>
-          <p>Get English translations of relevant passages.</p>
-          <div className="pt-2">
+          <p>Quickly find exact matches and highlighted related phrases. Get English translations of relevant passages.</p>
+
+          <div className="pt-9">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={"/images/climate-project-explorer/cpe-contextual-search.jpg"}
