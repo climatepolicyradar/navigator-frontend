@@ -11,7 +11,7 @@ type TProps = {
 };
 
 const formatCount = (count: number) => {
-  return count >= MAX_RESULTS ? `More than ${MAX_RESULTS}` : count;
+  return count >= MAX_RESULTS ? `${MAX_RESULTS}+` : count;
 };
 
 export const SearchMatchesButton = ({ count, dataAttribute, overideText, active, onClick }: TProps) => {
@@ -20,7 +20,7 @@ export const SearchMatchesButton = ({ count, dataAttribute, overideText, active,
       data-analytics="search-result-matches-button"
       data-slug={dataAttribute}
       onClick={onClick}
-      className={`flex gap-1 items-center rounded-full border border-gray-200 py-1 px-2 transition hover:bg-blue-100 hover:border-blue-200 active:bg-blue-600 active:text-white ${
+      className={`flex gap-1 items-center text-[13px] rounded-full border py-1 px-2 transition hover:text-textNormal hover:bg-blue-100 hover:border-blue-200 active:bg-blue-600 active:text-white ${
         active && "bg-blue-600 text-white"
       }`}
       aria-label={`View ${formatCount(count)} match${count > 1 ? "es" : ""} in documents`}
