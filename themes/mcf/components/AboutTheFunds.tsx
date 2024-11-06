@@ -32,14 +32,14 @@ const fundDescriptions: FundDescription[] = [
 const AboutTheFundsContent = () => {
   return (
     <SiteWidth extraClasses="!max-w-[1024px]">
-      <div className="flex justify-between">
+      <div className="flex justify-between gap-20">
         <div className="content-center xl:max-w-screen-md py-16">
           <Heading level={2} extraClasses="custom-header">
             The Funds
           </Heading>
           {fundDescriptions.map((fund) => (
             <p key={fund.name}>
-              <strong>{fund.name} </strong>
+              <strong>{fund.name}</strong>
               {fund.description}
               <br />
               <br />

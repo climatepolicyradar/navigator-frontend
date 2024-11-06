@@ -10,16 +10,16 @@ const Footer = () => {
     <footer className="flex flex-col bg-grey-400">
       <div className="py-12">
         <SiteWidth>
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-32">
             <div className="footer__section w-full md:w-1/2 lg:w-2/3" data-cy="footer-mcf">
               <Heading level={2} extraClasses="custom-header">
                 About
               </Heading>
-              <p>Climate Project Explorer is a project to reveal all of the data about Multilateral Climate Funds.</p>
               <div className="footer__section">
                 <p>
-                  The tool is powered by <ExternalLink url="https://www.climatepolicyradar.org">Climate Policy Radar</ExternalLink> who use AI and
-                  data science to map the world's climate policies.
+                  Climate Project Explorer is a project to reveal all of the data about Multilateral Climate Funds. The tool is powered by{" "}
+                  <ExternalLink url="https://www.climatepolicyradar.org">Climate Policy Radar</ExternalLink> who use AI and data science to map the
+                  world's climate policies.
                 </p>
               </div>
               <SocialMediaContent />
@@ -48,8 +48,8 @@ const Footer = () => {
       </div>
       <div className="footer__base">
         <SiteWidth extraClasses="flex flex-1 items-end h-full pt-[20px] flex-wrap text-sm lg:text-base lg:pt-0 lg:gap-6">
-          <p className="lg:mb-6">Copyright © {new Date().getFullYear()} Climate Project Explorer</p>
-          <div className="ml-6 flex flex-wrap gap-6 lg:mb-6 lg:ml-0">
+          <p className="lg:mb-6 text-sm">Copyright © {new Date().getFullYear()} Climate Project Explorer</p>
+          <div className="ml-6 flex flex-wrap gap-6 lg:mb-6 lg:ml-0 text-sm">
             <ExternalLink url="https://www.climatepolicyradar.org/privacy-policy" className="text-textNormal underline">
               Privacy policy
             </ExternalLink>

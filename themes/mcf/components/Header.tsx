@@ -17,7 +17,7 @@ const Header = ({ background = true, showBottomBorder = true }) => {
   const showSearch = !NON_SEARCH_PAGES.includes(router.pathname);
 
   return (
-    <header data-cy="header" className={`w-full  ${showBottomBorder ? "border-b border-gray-200 border-solid" : ""}`}>
+    <header data-cy="header" className={`w-full py-2 ${showBottomBorder ? "border-b border-gray-200 border-solid" : ""}`}>
       <SiteWidth>
         <div className="flex flex-nowrap my-2">
           <div className="items-center flex flex-nowrap flex-1">
