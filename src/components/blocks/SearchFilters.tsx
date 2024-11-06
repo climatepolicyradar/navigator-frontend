@@ -98,7 +98,7 @@ const SearchFilters = ({
           <p className="text-xs uppercase">Filters</p>
         </div>
         {showClear && (
-          <button className="anchor underline text-[13px]" onClick={handleClearSearch}>
+          <button className="anchor underline text-sm" onClick={handleClearSearch}>
             Clear all
           </button>
         )}
