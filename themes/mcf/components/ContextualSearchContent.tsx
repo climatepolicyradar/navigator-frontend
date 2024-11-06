@@ -6,7 +6,7 @@ const ContextualSearchContent = () => {
   return (
     <SiteWidth extraClasses="!max-w-[1024px]">
       <div className="flex flex-col md:flex-row justify-center">
-        <div className="border-slate-700 border-solid border-t-2 pt-16 pb-16 md:pr-8 flex-1">
+        <div className="border-slate-700 border-solid border-t pt-16 pb-16 md:pr-8 flex-1">
           <Heading level={2} extraClasses="custom-header">
             Central knowledge-base for MCFs
           </Heading>
@@ -20,7 +20,7 @@ const ContextualSearchContent = () => {
             />
           </div>
         </div>
-        <div className=" border-slate-700 border-solid border-t-2 md:border-l-2 md:pl-8 pt-16 pb-16 flex-1">
+        <div className=" border-slate-700 border-solid border-t md:border-l md:pl-8 pt-16 pb-16 flex-1">
           <Heading level={2} extraClasses="custom-header">
             Contextual search
           </Heading>
