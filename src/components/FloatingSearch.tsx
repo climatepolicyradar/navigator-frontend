@@ -93,6 +93,7 @@ export const FloatingSearch = ({ extended = true, placeholder, extraButtonClasse
           className={`pl-[34px] rounded-[20px] text-sm w-full bg-white text-gray-800 border-1 border-borderNormal focus:ring-0 focus:ring-offset-0 focus:ring-white focus:outline-none focus:border-borderNormal ${
             showFloatingSearch ? inputFocusStyles : ""
           }`}
+          name="new-search"
         />
       </form>
       {showFloatingSearch && (
