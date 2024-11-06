@@ -47,6 +47,7 @@ export const TypeAhead = ({ list, selectedList, keyField, keyFieldDisplay, filte
         value={input}
         placeholder="Start typing..."
         aria-label="Search for a jurisdiction"
+        name="jurisdiction-search"
       >
         <Search2Icon width="16" height="16" />
       </TextInput>

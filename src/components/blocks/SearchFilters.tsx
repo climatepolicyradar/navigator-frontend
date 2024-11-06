@@ -117,6 +117,7 @@ const SearchFilters = ({
                 onChange={() => {
                   handleDocumentCategoryClick(option.slug);
                 }}
+                name={`${themeConfig.categories.label}-${option.slug}`}
               />
             ))}
           </InputListContainer>
@@ -162,6 +163,7 @@ const SearchFilters = ({
               onChange={() => {
                 handleRegionChange(region.slug);
               }}
+              name={`region-${region.slug}`}
             />
           ))}
         </InputListContainer>

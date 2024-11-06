@@ -68,6 +68,7 @@ const SearchForm = ({ input, placeholder, size = "large", handleSearchInput, han
             placeholder={placeholder}
             type="search"
             size={size}
+            name="search-input"
           >
             <button type="submit" className="flex cursor-pointer text-textDark" onClick={() => handleSearchButtonClick()} title="Click to search">
               <Search2Icon width="20" height="20" />
