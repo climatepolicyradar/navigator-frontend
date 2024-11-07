@@ -11,7 +11,7 @@ the CPR application deployment.
 
 Run `make` or `make THEME=cclw`
 
-## Requirements
+## Requirements 
 
 - make
 - Docker
