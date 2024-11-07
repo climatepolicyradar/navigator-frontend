@@ -16,6 +16,7 @@ Run `make` or `make THEME=cclw`
 - make
 - Docker
 - Trunk.io (for code quality)
+- Node
 
 If you do not already have trunk.io installed on your machine, run `make install_trunk`
 to install.
