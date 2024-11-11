@@ -135,7 +135,8 @@ const TermsOfUse = () => {
                 <li>
                   <p>Recommended media citation for citing the database:</p>
                   <p className="italic">
-                    "Climate Change Laws of the World. Grantham Research Institute at the London School of Economics, Climate Policy Radar. 2023."
+                    "Climate Change Laws of the World. Grantham Research Institute at the London School of Economics, Climate Policy Radar.{" "}
+                    {new Date().getFullYear()}"
                   </p>
                 </li>
               </ul>
