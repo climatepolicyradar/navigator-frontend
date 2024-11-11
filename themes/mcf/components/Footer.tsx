@@ -10,7 +10,7 @@ const Footer = () => {
     <footer className="flex flex-col bg-grey-400">
       <div className="py-12">
         <SiteWidth>
-          <div className="flex flex-col md:flex-row gap-32">
+          <div className="flex flex-col md:flex-row sm:gap-32">
             <div className="footer__section w-full md:w-1/2 lg:w-2/3" data-cy="footer-mcf">
               <Heading level={2} extraClasses="custom-header">
                 About
