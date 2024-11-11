@@ -18,6 +18,7 @@ export const mapFamilyMetadata = (metadata: Metadata) => {
 
   for (const [key, values] of Object.entries(metadata)) {
     const mapping = metadataLabelMappings[key];
+
     if (mapping && values) {
       if (key === "geographies") {
         result.push({
@@ -25,8 +26,10 @@ export const mapFamilyMetadata = (metadata: Metadata) => {
           iconLabel: mapping.iconLabel,
           value: values as string | string[],
         });
-      } else if (key.includes("project_value") && values[0] !== "0") {
-        result.push({ label: mapping.label, iconLabel: mapping.iconLabel, value: getSumUSD(values as string[]) });
+      } else if (key.includes("project_value")) {
+        if (values[0] !== "0") {
+          result.push({ label: mapping.label, iconLabel: mapping.iconLabel, value: getSumUSD(values as string[]) });
+        }
       } else if (key === "organisation") {
         result.push({ label: mapping.label, iconLabel: mapping.iconLabel, value: getSubCategoryName(values as TCorpusTypeSubCategory) });
       } else {
