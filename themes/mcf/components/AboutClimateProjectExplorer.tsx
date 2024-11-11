@@ -13,8 +13,8 @@ const AboutClimateProjectExplorer = () => {
           className="max-h-[824px] max-w-[1024px] object-cover"
         />{" "}
       </div>
-      <div className="relative lg:h-[824px] w-auto pb-16 lg:pb-0">
-        <div className="max-w-xl relative lg:z-10 ">
+      <div className="lg:relative lg:h-[824px] w-auto pb-16 lg:pb-0">
+        <div className="max-w-xl lg:relative lg:z-10 ">
           <Heading level={2} extraClasses="custom-header">
             About Climate Project Explorer
           </Heading>

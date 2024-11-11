@@ -20,7 +20,6 @@ import { FamilyListItem } from "@components/document/FamilyListItem";
 import { Targets } from "@components/Targets";
 import Button from "@components/buttons/Button";
 import TabbedNav from "@components/nav/TabbedNav";
-import { TargetIcon } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import DocumentSearchForm from "@components/forms/DocumentSearchForm";
@@ -51,10 +50,10 @@ type TProps = {
 
 const categoryByIndex = {
   0: "All",
-  1: "Legislation",
-  2: "Policies",
-  3: "UNFCCC",
-  4: "Litigation",
+  1: "laws",
+  2: "policies",
+  3: "intl-agreements",
+  4: "laws",
 };
 
 const MAX_NUMBER_OF_FAMILIES = 3;
@@ -91,7 +90,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       case "Policies":
         count = summary.family_counts.Executive;
         break;
-      case "UNFCCC":
+      case "Intl. agreements":
         count = summary.family_counts.UNFCCC;
         break;
       case "Litigation":
@@ -158,7 +157,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       return allFamilies.map((family) => {
         if (family)
           return (
-            <div key={family.family_slug} className="mt-6">
+            <div key={family.family_slug} className="mb-10">
               <FamilyListItem family={family} />
             </div>
           );
@@ -170,7 +169,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
         return summary.top_families.Legislative.length === 0
           ? renderEmpty("Legislative")
           : summary.top_families.Legislative.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-              <div key={family.family_slug} className="mt-6">
+              <div key={family.family_slug} className="mb-10">
                 <FamilyListItem family={family} />
               </div>
             ));
@@ -180,7 +179,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
         return summary.top_families.Executive.length === 0
           ? renderEmpty("Executive")
           : summary.top_families.Executive.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-              <div key={family.family_slug} className="mt-6">
+              <div key={family.family_slug} className="mb-10">
                 <FamilyListItem family={family} />
               </div>
             ));
@@ -190,7 +189,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
         return summary.top_families.UNFCCC.length === 0
           ? renderEmpty("UNFCCC")
           : summary.top_families.UNFCCC.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-              <div key={family.family_slug} className="mt-6">
+              <div key={family.family_slug} className="mb-10">
                 <FamilyListItem family={family} />
               </div>
             ));
@@ -247,7 +246,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
               {hasFamilies && (
                 <>
                   <section className="mt-10" data-cy="top-documents">
-                    <div className="mt-4 md:flex">
+                    <div className="my-4 md:flex">
                       <div className="flex-grow">
                         <TabbedNav activeIndex={selectedCategoryIndex} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
                       </div>

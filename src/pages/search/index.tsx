@@ -345,20 +345,24 @@ const Search = () => {
             </div>
             <div className="relative z-10 flex justify-center">
               <button
-                className="px-4 flex justify-center items-center text-textDark text-xl"
+                className={`w-[55px] flex justify-center items-center text-textDark text-xl ${
+                  showOptions ? "bg-nearBlack text-white rounded-full" : ""
+                }`}
                 onClick={() => setShowOptions(!showOptions)}
                 data-cy="search-options-mobile"
+                ref={settingsButtonRef}
               >
                 <MdOutlineTune />
               </button>
               <AnimatePresence initial={false}>
                 {showOptions && (
-                  <motion.div key="content" initial="collapsed" animate="open" exit="collapsed" variants={SETTINGS_ANIMATION_VARIANTS}>
+                  <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
                     <SearchSettings
                       queryParams={router.query}
                       handleSortClick={handleSortClick}
                       handleSearchChange={handleSearchChange}
                       setShowOptions={setShowOptions}
+                      settingsButtonRef={settingsButtonRef}
                     />
                   </motion.div>
                 )}
@@ -422,7 +426,9 @@ const Search = () => {
                   </div>
                   <div className="relative z-10 flex justify-center">
                     <button
-                      className="px-4 flex justify-center items-center text-textDark text-xl"
+                      className={`w-[55px] flex justify-center items-center text-textDark text-xl ${
+                        showOptions ? "bg-nearBlack text-white rounded-full" : ""
+                      }`}
                       onClick={() => setShowOptions(!showOptions)}
                       data-cy="search-options"
                       ref={settingsButtonRef}

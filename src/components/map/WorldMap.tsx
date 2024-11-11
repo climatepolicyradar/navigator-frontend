@@ -225,6 +225,7 @@ export default function MapChart() {
             }}
             value={selectedDocType}
             aria-label="Select a docuement type to display on the map"
+            name="Document type selector"
           >
             <option value="lawsPolicies">Laws and policies</option>
             <option value="unfccc">UNFCCC</option>

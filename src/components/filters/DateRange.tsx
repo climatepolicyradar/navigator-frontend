@@ -99,10 +99,10 @@ export const DateRange = ({ handleChange, defaultValues, min, max }: ByDateRange
 
   return (
     <InputListContainer>
-      <InputRadio label="All time" onChange={() => handleDateSelect(0, true)} checked={isChecked(max - min)} />
-      <InputRadio label="In last year" onChange={() => handleDateSelect(1)} checked={isChecked(1)} />
-      <InputRadio label="In last 5 years" onChange={() => handleDateSelect(5)} checked={isChecked(5)} />
-      <InputRadio label="Specify range" onChange={setDateInputVisible} checked={isChecked()} />
+      <InputRadio label="All time" onChange={() => handleDateSelect(0, true)} checked={isChecked(max - min)} name="all-time" />
+      <InputRadio label="In last year" onChange={() => handleDateSelect(1)} checked={isChecked(1)} name="in-last-year" />
+      <InputRadio label="In last 5 years" onChange={() => handleDateSelect(5)} checked={isChecked(5)} name="in-last-five-years" />
+      <InputRadio label="Specify range" onChange={setDateInputVisible} checked={isChecked()} name="specify-custom-range" />
 
       {showDateInput && (
         <>

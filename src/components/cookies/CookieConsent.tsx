@@ -54,7 +54,7 @@ export const CookieConsent = () => {
       >
         <div className="py-4 px-6">
           <div className="text-xl mb-2">Cookies and your privacy</div>
-          <p className="text-content text-sm">
+          <p className="text-content text-sm mb-2">
             We take your trust and privacy seriously. Climate Policy Radar uses cookies to make our site work optimally, analyse traffic to our
             website and improve your experience. Read our{" "}
             <ExternalLink url="https://climatepolicyradar.org/privacy-policy">privacy and cookie policy</ExternalLink> to learn more. By accepting

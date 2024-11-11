@@ -9,7 +9,7 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 // See the method handleSearchInput in the index.tsx file for the processing of the example searches
 const EXAMPLE_SEARCHES = [
   { id: 1, term: "Adaptation" },
-  { id: 2, term: "Biodiversity" },
+  { id: 2, term: "Extreme Weather" },
   { id: 3, filterValue: "Philippines", filterType: QUERY_PARAMS.country },
 ];
 
@@ -56,7 +56,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
             data-analytics="landingPage-searchInput"
             data-cy="search-input"
             type="search"
-            className="text-xl leading-5 py-3 h-[50px] px-6 w-full text-gray-800 focus:ring-0 rounded-full border-neutral-900 border-2"
+            className="text-base leading-5 py-3 h-[50px] px-6 w-full text-gray-800 focus:ring-0 rounded-full border-white border-2"
             value={term}
             onChange={onChange}
             placeholder={displayPlaceholder}
