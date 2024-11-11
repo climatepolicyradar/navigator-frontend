@@ -19,7 +19,7 @@ COPY --chmod=0755  . .
 # Install dependencies.
 RUN npm ci && npm cache clean --force
 
-ENV PATH /home/node/app/node_modules/.bin:$PATH
+ENV PATH=/home/node/app/node_modules/.bin:$PATH
 
 RUN npm run build
 
