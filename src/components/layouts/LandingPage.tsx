@@ -17,7 +17,7 @@ type TProps = {
   description?: string;
 };
 
-const Layout = ({ children, title = "", appName = null, description = null }: TProps) => {
+const Layout = ({ children, title = "", appName, description }: TProps) => {
   const router = useRouter();
   const theme = useContext(ThemeContext);
 
