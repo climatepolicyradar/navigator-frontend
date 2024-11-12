@@ -1,5 +1,5 @@
 {
-  "defaultCorpora": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000"],
+  "defaultCorpora": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"],
   "filters": [
     {
       "label": "Climate funds",
@@ -11,6 +11,12 @@
           "slug": "adaptation-fund",
           "value": ["MCF.corpus.AF.n0000"],
           "corporaKey": "AF"
+        },
+        {
+          "label": "Climate Investment Funds",
+          "slug": "climate-investment-funds",
+          "value": ["MCF.corpus.CIF.n0000"],
+          "corporaKey": "CIF"
         },
         {
           "label": "Global Environment Facility",
