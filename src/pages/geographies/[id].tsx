@@ -1,11 +1,9 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 
 import { ApiClient } from "@api/http-common";
-
-import { ThemeContext } from "@context/ThemeContext";
 
 import { SiteWidth } from "@components/panels/SiteWidth";
 import { SingleCol } from "@components/panels/SingleCol";
@@ -60,9 +58,8 @@ const MAX_NUMBER_OF_FAMILIES = 3;
 
 const FEATURED_SEARCHES = ["Resilient infrastructure", "Fossil fuel divestment", "Net zero growth plan", "Sustainable fishing"];
 
-const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets, theme: appTheme }: TProps) => {
+const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets, theme }: TProps) => {
   const router = useRouter();
-  const theme = useContext(ThemeContext);
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
   const [selectedCategoryIndex, setselectedCategoryIndex] = useState(0);
@@ -74,7 +71,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
   const allDocumentsCount = Object.values(summary.family_counts).reduce((acc, count) => acc + (count || 0), 0);
 
-  const isMCFTheme = appTheme === "mcf";
+  const isMCFTheme = theme === "mcf";
 
   const filteredCategoryArray = isMCFTheme ? MCF_DOCUMENT_CATEGORIES : DOCUMENT_CATEGORIES;
 
@@ -207,7 +204,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   };
 
   return (
-    <Layout title={getGeoMetaTitle(geography.name, theme)} description={getGeoDescription(geography.name)}>
+    <Layout title={getGeoMetaTitle(geography.name, theme)} description={getGeoDescription(geography.name)} appName={theme}>
       {!geography ? (
         <SingleCol>
           <button
@@ -229,7 +226,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                 country={geography}
                 targetCount={hasTargets ? publishedTargets?.length : 0}
                 onTargetClick={handleTargetClick}
-                theme={appTheme}
+                theme={theme}
                 totalProjects={allDocumentsCount}
               />
               <section className="mt-8" data-cy="country-search">

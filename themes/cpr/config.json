@@ -94,5 +94,17 @@
       "key": "download-database",
       "url": "https://form.jotform.com/233131638610347"
     }
+  ],
+  "metadata": [
+    {
+      "key": "default",
+      "title": "Climate Policy Radar",
+      "description": "Use Climate Policy Radar's data science and AI-powered platform to search and explore thousands of climate change laws, policies and legal cases worldwide."
+    },
+    {
+      "key": "search",
+      "title": "Law and Policy Search",
+      "description": "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country."
+    }
   ]
 }

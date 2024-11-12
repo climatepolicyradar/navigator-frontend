@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { ParsedUrlQueryInput } from "querystring";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdOutlineTune } from "react-icons/md";
+
+import { ApiClient, getFilters } from "@api/http-common";
 
 import useSearch from "@hooks/useSearch";
 import { useDownloadCsv } from "@hooks/useDownloadCsv";
@@ -35,14 +38,21 @@ import { getThemeConfigLink } from "@utils/getThemeConfigLink";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 
+import { TTheme, TThemeConfig } from "@types";
+import { readConfigFile } from "@utils/readConfigFile";
+
+type TProps = {
+  theme: TTheme;
+  themeConfig: TThemeConfig;
+};
+
 const SETTINGS_ANIMATION_VARIANTS = {
   hidden: { opacity: 0, transition: { duration: 0.1 } },
   visible: { opacity: 1, transition: { duration: 0 } },
 };
 
-const Search = () => {
+const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig }: TProps) => {
   const router = useRouter();
-  const { themeConfig } = useGetThemeConfig();
   const qQueryString = router.query[QUERY_PARAMS.query_string];
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
@@ -300,10 +310,7 @@ const Search = () => {
   }, [drawerFamily, showCSVDownloadPopup]);
 
   return (
-    <Layout
-      title="Law and Policy Search"
-      description="Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country."
-    >
+    <Layout appName={theme} themeConfig={themeConfig} metadataKey="search">
       <section>
         <SubNav>
           <BreadCrumbs label={"Search results"} />
@@ -509,3 +516,17 @@ const Search = () => {
 };
 
 export default Search;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+
+  const theme = process.env.THEME;
+  let themeConfig = {};
+  try {
+    themeConfig = await readConfigFile(theme);
+  } catch (error) {}
+
+  return {
+    props: { theme, themeConfig },
+  };
+};

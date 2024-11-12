@@ -1,6 +1,8 @@
+import { TTheme } from "@types";
+
 const DEFAULT_APP_NAME = "Climate Policy Radar";
 
-export default function getPageTitle(site: string): string {
+export default function getPageTitle(site: TTheme): string {
   let title = DEFAULT_APP_NAME;
   switch (site) {
     case "cclw":

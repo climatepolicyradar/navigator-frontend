@@ -8,10 +8,12 @@ import getAppName from "@utils/getAppName";
 import getPageDescription from "@utils/getPageDescription";
 import { getCanonicalUrl } from "@utils/getCanonicalUrl";
 
+import { TTheme } from "@types";
+
 type TProps = {
   children?: ReactNode;
   title?: string;
-  appName?: string;
+  appName?: TTheme;
   description?: string;
 };
 
@@ -24,8 +26,8 @@ const Layout = ({ children, title = "", appName = null, description = null }: TP
       <Head>
         <title>{`${title} - ${getAppName(appName)}`}</title>
         <meta property="og:title" content={`${title} - ${getAppName(appName)}`} />
-        <meta name="description" content={description ?? getPageDescription(description)} key="desc" />
-        <meta property="og:description" content={description ?? getPageDescription(description)} />
+        <meta name="description" content={description ?? getPageDescription(appName)} key="desc" />
+        <meta property="og:description" content={description ?? getPageDescription(appName)} />
         <link rel="canonical" href={getCanonicalUrl(router, theme)} />
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />

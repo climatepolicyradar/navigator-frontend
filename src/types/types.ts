@@ -347,10 +347,17 @@ type TThemeLink = {
   url: string;
 };
 
+type TThemeMetadata = {
+  key: string;
+  title: string;
+  description: string;
+};
+
 export type TThemeConfig = {
   defaultCorpora?: string[];
   categories?: TThemeConfigCategory;
   filters: TThemeConfigFilter[];
   labelVariations: TLabelVariation[];
   links: TThemeLink[];
+  metadata: TThemeMetadata[];
 };

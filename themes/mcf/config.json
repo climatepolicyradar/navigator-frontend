@@ -59,5 +59,17 @@
       "key": "download-database",
       "url": "https://form.jotform.com/242902819253357"
     }
+  ],
+  "metadata": [
+    {
+      "key": "default",
+      "title": "Climate Project Explorer",
+      "description": "Climate Project Explorer is a single point of entry for navigating and exploring the MCF's documents (including project documents and policies)."
+    },
+    {
+      "key": "search",
+      "title": "Search",
+      "description": "Quickly and easily search through the complete text of thousands of project documents."
+    }
   ]
 }
