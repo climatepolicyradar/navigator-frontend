@@ -28,7 +28,7 @@ export const DateRangeInput = ({ label, name, value, handleSubmit, handleChange 
         onChange={(e) => handleChange(Number(e.target.value))}
         onBlur={onBlur}
         onKeyDown={onKeyDown}
-        type="number"
+        type="text"
         className="w-full"
       />
     </InputListContainer>
