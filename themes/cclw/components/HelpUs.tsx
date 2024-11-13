@@ -6,7 +6,7 @@ import { getButtonClasses } from "@components/buttons/Button";
 import { Heading } from "@components/typography/Heading";
 
 const EMAIL_SUBJECT = "Joining the NLP community";
-const EMAIL_BODY = "Hi, I am interested in joining the climate NLP community. Please provide me with more information.";
+const EMAIL_BODY = "Hi, I am interested in joining the climate NLP community. It is relevant to me because...";
 
 const linkClasses = getButtonClasses("secondary");
 
