@@ -5,11 +5,11 @@ import Head from "next/head";
 import { ThemeContext } from "@context/ThemeContext";
 
 import getAppName from "@utils/getAppName";
-import getPageDescription from "@utils/getPageDescription";
+import { getPageDescription } from "@utils/getPageDescription";
+import { getPageTitle } from "@utils/getPageTitle";
 import { getCanonicalUrl } from "@utils/getCanonicalUrl";
 
 import { TTheme, TThemeConfig } from "@types";
-import { getPageTitle } from "@utils/getPageTitle";
 
 const { default: Wrapper } = await import(`/themes/${process.env.THEME}/layouts/main`);
 
@@ -19,20 +19,21 @@ type TProps = {
   description?: string;
   themeConfig?: TThemeConfig;
   metadataKey?: string;
+  text?: string;
   children?: ReactNode;
 };
 
-const Layout: FC<TProps> = ({ children, title, appName, description, themeConfig, metadataKey }) => {
+const Layout: FC<TProps> = ({ children, title, appName, description, themeConfig, metadataKey, text }) => {
   const router = useRouter();
   const theme = useContext(ThemeContext);
 
   return (
     <div className="h-full flex flex-col">
       <Head>
-        <title>{`${title ?? getPageTitle(themeConfig, metadataKey)} - ${getAppName(appName)}`}</title>
-        <meta property="og:title" content={`${title ?? getPageTitle(themeConfig, metadataKey)} - ${getAppName(appName)}`} />
-        <meta name="description" content={description ?? getPageDescription(appName, themeConfig, metadataKey)} key="desc" />
-        <meta property="og:description" content={description ?? getPageDescription(appName, themeConfig, metadataKey)} />
+        <title>{`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppName(appName)}`}</title>
+        <meta property="og:title" content={`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppName(appName)}`} />
+        <meta name="description" content={description ?? getPageDescription(themeConfig, metadataKey, text)} key="desc" />
+        <meta property="og:description" content={description ?? getPageDescription(themeConfig, metadataKey, text)} />
         <link rel="canonical" href={getCanonicalUrl(router, theme)} />
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />

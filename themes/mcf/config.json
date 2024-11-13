@@ -67,8 +67,13 @@
       "description": "Climate Project Explorer is a single point of entry for navigating and exploring the MCF's documents (including project documents and policies)."
     },
     {
+      "key": "geography",
+      "title": "{text} climate projects",
+      "description": "Find climate projects for {text}."
+    },
+    {
       "key": "search",
-      "title": "Search",
+      "title": "Climate Project Search",
       "description": "Quickly and easily search through the complete text of thousands of project documents."
     }
   ]

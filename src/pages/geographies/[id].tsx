@@ -29,14 +29,13 @@ import { getCountryCode } from "@helpers/getCountryFields";
 
 import { extractNestedData } from "@utils/extractNestedData";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
-import { getGeoMetaTitle } from "@utils/getGeoMetaTitle";
+import { readConfigFile } from "@utils/readConfigFile";
 
 import { DOCUMENT_CATEGORIES, MCF_DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { getGeoDescription } from "@constants/metaDescriptions";
 import { systemGeoNames } from "@constants/systemGeos";
 
-import { TGeographyStats, TGeographySummary } from "@types";
+import { TGeographyStats, TGeographySummary, TThemeConfig } from "@types";
 import { TTarget, TEvent, TGeography, TTheme } from "@types";
 
 type TProps = {
@@ -44,6 +43,7 @@ type TProps = {
   summary: TGeographySummary;
   targets: TTarget[];
   theme: TTheme;
+  themeConfig: TThemeConfig;
 };
 
 const categoryByIndex = {
@@ -58,7 +58,7 @@ const MAX_NUMBER_OF_FAMILIES = 3;
 
 const FEATURED_SEARCHES = ["Resilient infrastructure", "Fossil fuel divestment", "Net zero growth plan", "Sustainable fishing"];
 
-const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets, theme }: TProps) => {
+const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets, theme, themeConfig }: TProps) => {
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
@@ -204,7 +204,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   };
 
   return (
-    <Layout title={getGeoMetaTitle(geography.name, theme)} description={getGeoDescription(geography.name)} appName={theme}>
+    <Layout appName={theme} themeConfig={themeConfig} metadataKey="geography" text={geography.name}>
       {!geography ? (
         <SingleCol>
           <button
@@ -356,6 +356,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let geographyData: TGeographyStats;
   let summaryData: TGeographySummary;
   let targetsData: TTarget[] = [];
+  let themeConfig = {};
 
   try {
     const { data: returnedData }: { data: TGeographyStats } = await client.get(`/geo_stats/${id}`);
@@ -411,12 +412,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const filteredTargetsData = isMCFTheme ? [] : targetsData;
 
+  try {
+    themeConfig = await readConfigFile(theme);
+  } catch {
+    // TODO: handler error more elegantly
+  }
+
   return {
     props: {
       geography: geographyData,
       summary: filterSummaryData(summaryData),
       targets: filteredTargetsData,
       theme: theme,
+      themeConfig,
     },
   };
 };
