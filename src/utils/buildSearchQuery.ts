@@ -46,7 +46,7 @@ export default function buildSearchQuery(
   if (routerQuery[QUERY_PARAMS.year_range]) {
     const yearRange = routerQuery[QUERY_PARAMS.year_range];
     if (Array.isArray(yearRange)) {
-      query.year_range = [Number(yearRange[0]), Number(yearRange[1])];
+      query.year_range = [yearRange[0], yearRange[1]];
     }
   }
 
