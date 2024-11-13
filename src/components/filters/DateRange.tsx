@@ -44,6 +44,10 @@ export const DateRange = ({ handleChange, defaultValues, min, max }: TProps) => 
     }
   }, [router.query]);
 
+  useEffect(() => {
+    setError("");
+  }, [startInput, endInput]);
+
   const isChecked = (range?: number): boolean => {
     if (range) {
       if (showDateInput) return false;
