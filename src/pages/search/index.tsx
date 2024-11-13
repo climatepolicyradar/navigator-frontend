@@ -481,7 +481,7 @@ const Search = () => {
                 </div>
               )}
             </div>
-            {hits > 1 && (
+            {status !== "loading" && hits > 1 && (
               <div className="mb-12">
                 <Pagination
                   onChange={handlePageChange}
