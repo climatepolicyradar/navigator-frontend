@@ -11,8 +11,8 @@ import { currentYear } from "../../constants/timedate";
 
 interface ByDateRangeProps {
   type: string;
-  handleChange(values: number[], reset?: boolean): void;
-  defaultValues: number[];
+  handleChange(values: string[], reset?: boolean): void;
+  defaultValues: string[];
   min: number;
   max: number;
 }
@@ -46,7 +46,7 @@ export const DateRange = ({ handleChange, defaultValues, min, max }: ByDateRange
   const isChecked = (range?: number): boolean => {
     if (range) {
       if (showDateInput) return false;
-      return Number(endYear) === currentYear() && Number(startYear) === endYear - range;
+      return Number(endYear) === currentYear() && Number(startYear) === Number(endYear) - range;
     }
 
     return showDateInput;
@@ -63,37 +63,40 @@ export const DateRange = ({ handleChange, defaultValues, min, max }: ByDateRange
     setShowDateInput(false);
     const thisYear = currentYear();
     const calculatedStart = thisYear - range;
-    handleChange([calculatedStart, thisYear], reset);
+    handleChange([calculatedStart.toString(), thisYear.toString()], reset);
   };
 
   // Custom date selectors
-  const submitCustomRange = (updatedDate: number, name: string) => {
+  const submitCustomRange = (updatedDate: string, name: string) => {
+    const updatedDateInt = Number(updatedDate);
+    const startInputInt = Number(startInput);
+    const endInputInt = Number(endInput);
     // Validate
     setError("");
-    if (typeof updatedDate !== "number") {
+    if (typeof updatedDateInt !== "number" || isNaN(updatedDateInt)) {
       setError("Please enter a valid year");
       return;
     }
     if (name === "From") {
-      if (updatedDate > endInput) {
+      if (updatedDateInt > endInputInt) {
         setError("Please enter a year on or before " + endInput);
         return;
       }
-      if (updatedDate < min) {
+      if (updatedDateInt < min) {
         setError("Please enter a year on or after " + min);
         return;
       }
-      handleChange([updatedDate, Number(endInput)]);
+      handleChange([updatedDateInt.toString(), endInput]);
     } else {
-      if (updatedDate > max) {
+      if (updatedDateInt > max) {
         setError("Please enter a year on or before " + max);
         return;
       }
-      if (updatedDate < startInput) {
-        setError("Please enter a year on or after " + startInput);
+      if (updatedDateInt < startInputInt) {
+        setError("Please enter a year on or after " + startInputInt);
         return;
       }
-      handleChange([Number(startInput), updatedDate]);
+      handleChange([startInput, updatedDateInt.toString()]);
     }
   };
 

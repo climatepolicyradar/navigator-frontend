@@ -44,7 +44,7 @@ type TSearchFiltersProps = {
   countries: TGeography[];
   organisations: TOrganisationDictionary;
   handleFilterChange(type: string, value: string, clearOthersOfType?: boolean): void;
-  handleYearChange(values: number[], reset?: boolean): void;
+  handleYearChange(values: string[], reset?: boolean): void;
   handleRegionChange(region: string): void;
   handleClearSearch(): void;
   handleDocumentCategoryClick(value: string): void;
