@@ -6,7 +6,7 @@ export async function getEnvFromServer() {
 }
 
 export async function getFilters() {
-  return await axios.get("/api/filters").then((res: any) => res);
+  return await axios.get("/api/theme-config").then((res: any) => res);
 }
 
 class ApiClient {

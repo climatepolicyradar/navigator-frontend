@@ -33,5 +33,22 @@
       "key": "download-database",
       "url": "https://form.jotform.com/233131638610347"
     }
+  ],
+  "metadata": [
+    {
+      "key": "default",
+      "title": "Climate Change Laws of the World",
+      "description": "The Climate Change Laws of the World database gives you access to national-level climate change legislation and policies from around the world."
+    },
+    {
+      "key": "geography",
+      "title": "{text} climate laws and policies",
+      "description": "Find climate change laws, policies, targets and other climate policy data and indicators for {text}, alongside information about their legislative process."
+    },
+    {
+      "key": "search",
+      "title": "Law and Policy Search",
+      "description": "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country."
+    }
   ]
 }

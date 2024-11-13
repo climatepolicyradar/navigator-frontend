@@ -29,7 +29,7 @@ type TProps = {
 
 const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
   return (
-    <Layout title="Law and Policy Search" appName={APP_NAME} description={PAGE_DESCRIPTION}>
+    <Layout title="Law and Policy Search" theme={APP_NAME} description={PAGE_DESCRIPTION}>
       <main id="main" className="flex flex-col flex-1">
         <div className="bg-cclw-dark">
           <Header background={false} />

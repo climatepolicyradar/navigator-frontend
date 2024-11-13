@@ -26,12 +26,12 @@ import { getDocumentDescription } from "@constants/metaDescriptions";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 
-import { TDocumentPage, TFamilyPage, TGeographySummary, TPassage } from "@types";
+import { TDocumentPage, TFamilyPage, TPassage, TTheme } from "@types";
 
 type TProps = {
   document: TDocumentPage;
   family: TFamilyPage;
-  geographySummary: TGeographySummary;
+  theme: TTheme;
 };
 
 const passageClasses = (docType: string) => {
@@ -64,7 +64,7 @@ const renderPassageCount = (count: number): string => {
   - If the document is an HTML, the passages will be displayed in a list on the left side of the page but the document will not be displayed.
 */
 
-const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family }: TProps) => {
+const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family, theme }: TProps) => {
   const [showOptions, setShowOptions] = useState(false);
   const [passageIndex, setPassageIndex] = useState(null);
   const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
@@ -144,7 +144,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   }, [startingPassage]);
 
   return (
-    <Layout title={`${document.title}`} description={getDocumentDescription(document.title)}>
+    <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
       <section
         className="pb-8 flex-1 flex flex-col"
         data-analytics-date={family.published_date}
@@ -268,6 +268,7 @@ export default DocumentPage;
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
+  const theme = process.env.THEME;
   const id = context.params.id;
   const client = new ApiClient(process.env.API_URL);
 
@@ -294,6 +295,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       document: documentData,
       family: familyData,
+      theme: theme,
     },
   };
 };

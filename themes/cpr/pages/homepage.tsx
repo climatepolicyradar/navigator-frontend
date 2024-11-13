@@ -36,7 +36,7 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
   };
 
   return (
-    <Layout title="Law and Policy Search" appName={APP_NAME} description={PAGE_DESCRIPTION}>
+    <Layout title="Law and Policy Search" theme={APP_NAME} description={PAGE_DESCRIPTION}>
       <div className="relative">
         <Header />
         <main className="relative h-full">

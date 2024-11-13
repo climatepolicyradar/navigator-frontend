@@ -9,6 +9,7 @@ export default function useGetThemeConfig() {
   const [themeConfig, setThemeConfig] = useState<TThemeConfig | null>(null);
 
   useEffect(() => {
+    setStatus("loading");
     getFilters().then((res) => {
       if (res.status === 200) {
         setThemeConfig(res.data);
