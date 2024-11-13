@@ -16,7 +16,7 @@ export type TSearchCriteria = {
   exact_match: boolean;
   max_passages_per_doc: number;
   keyword_filters?: TSearchKeywordFilters;
-  year_range: [number, number];
+  year_range: [string, string];
   sort_field: string | null;
   sort_order: string;
   page_size: number;

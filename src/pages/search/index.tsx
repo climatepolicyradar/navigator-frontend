@@ -255,8 +255,8 @@ const Search = () => {
     resetCSVStatus();
   };
 
-  const handleYearChange = (values: number[], reset = false) => {
-    const newVals = values.map((value: number) => Number(value).toFixed(0));
+  const handleYearChange = (values: string[], reset = false) => {
+    const newVals = values.map((value) => Number(value).toFixed(0));
     handleSearchChange(QUERY_PARAMS.year_range, newVals, reset);
   };
 
@@ -481,7 +481,7 @@ const Search = () => {
                 </div>
               )}
             </div>
-            {hits > 1 && (
+            {status !== "loading" && hits > 1 && (
               <div className="mb-12">
                 <Pagination
                   onChange={handlePageChange}

@@ -21,7 +21,7 @@ export type TCacheIdentifier = {
   query_string: string;
   exact_match: boolean;
   keyword_filters?: TSearchKeywordFilters;
-  year_range: [number, number];
+  year_range: [string, string];
   sort_field: string | null;
   sort_order: string;
   offset: number;

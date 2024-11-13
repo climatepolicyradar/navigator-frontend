@@ -5,19 +5,20 @@ import { DateRangeInput } from "./DateRangeInput";
 import { FormError } from "../forms/FormError";
 import { InputListContainer } from "@components/filters/InputListContainer";
 import { InputRadio } from "@components/forms/Radio";
+import Button from "@components/buttons/Button";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { currentYear } from "../../constants/timedate";
+import { currentYear } from "@constants/timedate";
 
-interface ByDateRangeProps {
+type TProps = {
   type: string;
-  handleChange(values: number[], reset?: boolean): void;
-  defaultValues: number[];
+  handleChange(values: string[], reset?: boolean): void;
+  defaultValues: string[];
   min: number;
   max: number;
-}
+};
 
-export const DateRange = ({ handleChange, defaultValues, min, max }: ByDateRangeProps) => {
+export const DateRange = ({ handleChange, defaultValues, min, max }: TProps) => {
   const router = useRouter();
   const [startYear, endYear] = defaultValues;
   const [showDateInput, setShowDateInput] = useState(false);
@@ -43,10 +44,14 @@ export const DateRange = ({ handleChange, defaultValues, min, max }: ByDateRange
     }
   }, [router.query]);
 
+  useEffect(() => {
+    setError("");
+  }, [startInput, endInput]);
+
   const isChecked = (range?: number): boolean => {
     if (range) {
       if (showDateInput) return false;
-      return Number(endYear) === currentYear() && Number(startYear) === endYear - range;
+      return Number(endYear) === currentYear() && Number(startYear) === Number(endYear) - range;
     }
 
     return showDateInput;
@@ -63,38 +68,32 @@ export const DateRange = ({ handleChange, defaultValues, min, max }: ByDateRange
     setShowDateInput(false);
     const thisYear = currentYear();
     const calculatedStart = thisYear - range;
-    handleChange([calculatedStart, thisYear], reset);
+    handleChange([calculatedStart.toString(), thisYear.toString()], reset);
   };
 
   // Custom date selectors
-  const submitCustomRange = (updatedDate: number, name: string) => {
+  const submitCustomRange = () => {
+    const startInputInt = Number(startInput);
+    const endInputInt = Number(endInput);
     // Validate
     setError("");
-    if (typeof updatedDate !== "number") {
+    if (isNaN(startInputInt) || isNaN(endInputInt)) {
       setError("Please enter a valid year");
       return;
     }
-    if (name === "From") {
-      if (updatedDate > endInput) {
-        setError("Please enter a year on or before " + endInput);
-        return;
-      }
-      if (updatedDate < min) {
-        setError("Please enter a year on or after " + min);
-        return;
-      }
-      handleChange([updatedDate, Number(endInput)]);
-    } else {
-      if (updatedDate > max) {
-        setError("Please enter a year on or before " + max);
-        return;
-      }
-      if (updatedDate < startInput) {
-        setError("Please enter a year on or after " + startInput);
-        return;
-      }
-      handleChange([Number(startInput), updatedDate]);
+    if (startInputInt > endInputInt) {
+      setError("Please enter a start date before the end date");
+      return;
     }
+    if (startInputInt < min) {
+      setError("Please enter a year on or after " + min);
+      return;
+    }
+    if (endInputInt > max) {
+      setError("Please enter a year on or before " + max);
+      return;
+    }
+    handleChange([startInput, endInput]);
   };
 
   return (
@@ -111,6 +110,13 @@ export const DateRange = ({ handleChange, defaultValues, min, max }: ByDateRange
             <DateRangeInput label="Latest year" name="To" value={endInput} handleSubmit={submitCustomRange} handleChange={setEndInput} />
           </div>
           {error && <FormError message={error} />}
+          {!error && (defaultValues[0] !== startInput || defaultValues[1] !== endInput) && (
+            <div>
+              <Button onClick={submitCustomRange} extraClasses="w-auto !inline">
+                Apply
+              </Button>
+            </div>
+          )}
         </>
       )}
     </InputListContainer>

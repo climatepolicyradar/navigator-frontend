@@ -7,7 +7,7 @@ export const initialSearchCriteria: TSearchCriteria = {
   exact_match: false,
   max_passages_per_doc: PASSAGES_PER_DOC,
   keyword_filters: {},
-  year_range: [minYear, currentYear()],
+  year_range: [minYear.toString(), currentYear().toString()],
   sort_field: null,
   sort_order: "desc",
   page_size: RESULTS_PER_PAGE,
