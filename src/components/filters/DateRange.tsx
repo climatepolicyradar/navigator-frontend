@@ -9,15 +9,15 @@ import { InputRadio } from "@components/forms/Radio";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { currentYear } from "../../constants/timedate";
 
-interface ByDateRangeProps {
+type TProps = {
   type: string;
   handleChange(values: string[], reset?: boolean): void;
   defaultValues: string[];
   min: number;
   max: number;
-}
+};
 
-export const DateRange = ({ handleChange, defaultValues, min, max }: ByDateRangeProps) => {
+export const DateRange = ({ handleChange, defaultValues, min, max }: TProps) => {
   const router = useRouter();
   const [startYear, endYear] = defaultValues;
   const [showDateInput, setShowDateInput] = useState(false);
