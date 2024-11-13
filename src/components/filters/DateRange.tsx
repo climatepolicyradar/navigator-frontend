@@ -77,7 +77,7 @@ export const DateRange = ({ handleChange, defaultValues, min, max }: TProps) => 
     const endInputInt = Number(endInput);
     // Validate
     setError("");
-    if (typeof startInputInt !== "number" || typeof endInputInt !== "number" || isNaN(startInputInt) || isNaN(endInputInt)) {
+    if (isNaN(startInputInt) || isNaN(endInputInt)) {
       setError("Please enter a valid year");
       return;
     }
