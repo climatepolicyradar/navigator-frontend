@@ -5,9 +5,10 @@ import { DateRangeInput } from "./DateRangeInput";
 import { FormError } from "../forms/FormError";
 import { InputListContainer } from "@components/filters/InputListContainer";
 import { InputRadio } from "@components/forms/Radio";
+import Button from "@components/buttons/Button";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { currentYear } from "../../constants/timedate";
+import { currentYear } from "@constants/timedate";
 
 type TProps = {
   type: string;
@@ -67,37 +68,28 @@ export const DateRange = ({ handleChange, defaultValues, min, max }: TProps) => 
   };
 
   // Custom date selectors
-  const submitCustomRange = (updatedDate: string, name: string) => {
-    const updatedDateInt = Number(updatedDate);
+  const submitCustomRange = () => {
     const startInputInt = Number(startInput);
     const endInputInt = Number(endInput);
     // Validate
     setError("");
-    if (typeof updatedDateInt !== "number" || isNaN(updatedDateInt)) {
+    if (typeof startInputInt !== "number" || typeof endInputInt !== "number" || isNaN(startInputInt) || isNaN(endInputInt)) {
       setError("Please enter a valid year");
       return;
     }
-    if (name === "From") {
-      if (updatedDateInt > endInputInt) {
-        setError("Please enter a year on or before " + endInput);
-        return;
-      }
-      if (updatedDateInt < min) {
-        setError("Please enter a year on or after " + min);
-        return;
-      }
-      handleChange([updatedDateInt.toString(), endInput]);
-    } else {
-      if (updatedDateInt > max) {
-        setError("Please enter a year on or before " + max);
-        return;
-      }
-      if (updatedDateInt < startInputInt) {
-        setError("Please enter a year on or after " + startInputInt);
-        return;
-      }
-      handleChange([startInput, updatedDateInt.toString()]);
+    if (startInputInt > endInputInt) {
+      setError("Please enter a start date before the end date");
+      return;
     }
+    if (startInputInt < min) {
+      setError("Please enter a year on or after " + min);
+      return;
+    }
+    if (endInputInt > max) {
+      setError("Please enter a year on or before " + max);
+      return;
+    }
+    handleChange([startInput, endInput]);
   };
 
   return (
@@ -114,6 +106,13 @@ export const DateRange = ({ handleChange, defaultValues, min, max }: TProps) => 
             <DateRangeInput label="Latest year" name="To" value={endInput} handleSubmit={submitCustomRange} handleChange={setEndInput} />
           </div>
           {error && <FormError message={error} />}
+          {!error && (defaultValues[0] !== startInput || defaultValues[1] !== endInput) && (
+            <div>
+              <Button onClick={submitCustomRange} extraClasses="w-auto !inline">
+                Search
+              </Button>
+            </div>
+          )}
         </>
       )}
     </InputListContainer>

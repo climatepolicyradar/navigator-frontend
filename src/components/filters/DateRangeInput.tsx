@@ -4,14 +4,14 @@ type TProps = {
   label: string;
   name: string;
   value: string;
-  handleSubmit(updatedDate: string, name: string): void;
+  handleSubmit(): void;
   handleChange(value: string): void;
 };
 
 export const DateRangeInput = ({ label, name, value, handleSubmit, handleChange }: TProps) => {
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleSubmit(value, name);
+      handleSubmit();
     }
   };
 
