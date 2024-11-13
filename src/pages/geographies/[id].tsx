@@ -204,7 +204,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   };
 
   return (
-    <Layout appName={theme} themeConfig={themeConfig} metadataKey="geography" text={geography.name}>
+    <Layout theme={theme} themeConfig={themeConfig} metadataKey="geography" text={geography.name}>
       {!geography ? (
         <SingleCol>
           <button

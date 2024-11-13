@@ -310,7 +310,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   }, [drawerFamily, showCSVDownloadPopup]);
 
   return (
-    <Layout appName={theme} themeConfig={themeConfig} metadataKey="search">
+    <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
       <section>
         <SubNav>
           <BreadCrumbs label={"Search results"} />

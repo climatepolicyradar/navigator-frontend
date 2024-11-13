@@ -167,7 +167,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   };
 
   return (
-    <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)} appName={theme}>
+    <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)} theme={theme}>
       <Script id="analytics">
         analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "
         {page.geographies?.join(",")}";

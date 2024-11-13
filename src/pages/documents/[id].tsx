@@ -144,7 +144,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   }, [startingPassage]);
 
   return (
-    <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} appName={theme}>
+    <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
       <section
         className="pb-8 flex-1 flex flex-col"
         data-analytics-date={family.published_date}

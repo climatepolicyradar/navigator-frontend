@@ -2,7 +2,7 @@ import { TTheme } from "@types";
 
 const DEFAULT_APP_NAME = "Climate Policy Radar";
 
-export default function getPageTitle(site: TTheme): string {
+export const getAppTitle = (site: TTheme) => {
   let title = DEFAULT_APP_NAME;
   switch (site) {
     case "cclw":
@@ -13,4 +13,4 @@ export default function getPageTitle(site: TTheme): string {
       break;
   }
   return title;
-}
+};
