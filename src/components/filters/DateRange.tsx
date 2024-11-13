@@ -113,7 +113,7 @@ export const DateRange = ({ handleChange, defaultValues, min, max }: TProps) => 
           {!error && (defaultValues[0] !== startInput || defaultValues[1] !== endInput) && (
             <div>
               <Button onClick={submitCustomRange} extraClasses="w-auto !inline">
-                Search
+                Apply
               </Button>
             </div>
           )}
