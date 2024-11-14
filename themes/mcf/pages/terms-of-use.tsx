@@ -203,10 +203,7 @@ const TermsOfUse = () => {
                       <td>Adaptation Fund (AF) projects and guidance</td>
                       <td>November 2024</td>
                       <td>
-                        <ExternalLink url="https://www.adaptation-fund.org/legal/">Terms and Conditions - AF</ExternalLink> <br />
-                        <ExternalLink url="https://www.worldbank.org/en/about/legal/terms-and-conditions">
-                          Terms and Conditions - World Bank
-                        </ExternalLink>
+                        <ExternalLink url="https://www.adaptation-fund.org/legal/">Terms and Conditions</ExternalLink> <br />
                       </td>
                     </tr>
                     <tr>
