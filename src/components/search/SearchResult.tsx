@@ -16,9 +16,11 @@ const SearchResult = ({ family, active, onClick }: ISearchResultProps) => {
   return (
     <FamilyListItem family={family}>
       {family_documents.length > 0 && (
-        <div data-tooltip-content="View passages in this document that match your search" data-tooltip-id={family_slug}>
-          <SearchMatchesButton count={total_passage_hits} dataAttribute={family_slug} onClick={onClick} active={active} />
-          <ToolTipSSR id={family_slug} place={"top"} />
+        <div>
+          <div className="inline-block" data-tooltip-content="View passages in this document that match your search" data-tooltip-id={family_slug}>
+            <SearchMatchesButton count={total_passage_hits} dataAttribute={family_slug} onClick={onClick} active={active} />
+            <ToolTipSSR id={family_slug} place={"top"} />
+          </div>
         </div>
       )}
     </FamilyListItem>
