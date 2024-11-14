@@ -102,7 +102,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
       {(geography.familyCounts?.EXECUTIVE || geography.familyCounts?.LEGISLATIVE) && (
         <p>Laws and policies: {(geography.familyCounts?.EXECUTIVE || 0) + (geography.familyCounts?.LEGISLATIVE || 0)}</p>
       )}
-      {geography.familyCounts?.UNFCCC > 0 && <p>UNFCCC documents: {geography.familyCounts?.UNFCCC || 0}</p>}
+      {geography.familyCounts?.UNFCCC > 0 && <p>Intl. agreements: {geography.familyCounts?.UNFCCC || 0}</p>}
       <p>
         <LinkWithQuery href={`/geographies/${geography.slug}`}>View more</LinkWithQuery>
       </p>
@@ -228,7 +228,7 @@ export default function MapChart() {
             name="Document type selector"
           >
             <option value="lawsPolicies">Laws and policies</option>
-            <option value="unfccc">UNFCCC</option>
+            <option value="unfccc">Intl. agreements</option>
           </select>
         </div>
         <div>
