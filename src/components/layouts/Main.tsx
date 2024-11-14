@@ -30,8 +30,8 @@ const Layout: FC<TProps> = ({ children, title, theme, description, themeConfig, 
   return (
     <div className="h-full flex flex-col">
       <Head>
-        <title>{`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppTitle(theme)}`}</title>
-        <meta property="og:title" content={`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppTitle(theme)}`} />
+        <title>{`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppTitle(theme, contextTheme)}`}</title>
+        <meta property="og:title" content={`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppTitle(theme, contextTheme)}`} />
         <meta name="description" content={description ?? getPageDescription(themeConfig, metadataKey, text)} key="desc" />
         <meta property="og:description" content={description ?? getPageDescription(themeConfig, metadataKey, text)} />
         <link rel="canonical" href={getCanonicalUrl(router, contextTheme)} />
