@@ -15,7 +15,7 @@ export const INSTRUCTIONS = (documentTotals: TDocumentTotals) => [
     content: (
       <ul>
         <li>
-          <Link href="/search?c=Legislation" className={heroLinkClasses}>
+          <Link href="/search?c=laws" className={heroLinkClasses}>
             <b>{documentTotals.laws}</b> laws{" "}
             <span className="self-center">
               <ExternalLinkIcon height="12" width="12" />
@@ -23,7 +23,7 @@ export const INSTRUCTIONS = (documentTotals: TDocumentTotals) => [
           </Link>
         </li>
         <li>
-          <Link href="/search?c=Policies" className={heroLinkClasses}>
+          <Link href="/search?c=policies" className={heroLinkClasses}>
             <b>{documentTotals.policies}</b> policies{" "}
             <span className="self-center">
               <ExternalLinkIcon height="12" width="12" />
@@ -31,8 +31,8 @@ export const INSTRUCTIONS = (documentTotals: TDocumentTotals) => [
           </Link>
         </li>
         <li>
-          <Link href="/search?c=UNFCCC" className={heroLinkClasses}>
-            <b>{documentTotals.unfccc}</b> UNFCCC submissions{" "}
+          <Link href="/search?c=intl-agreements" className={heroLinkClasses}>
+            <b>{documentTotals.unfccc}</b> Intl. agreements{" "}
             <span className="self-center">
               <ExternalLinkIcon height="12" width="12" />
             </span>
