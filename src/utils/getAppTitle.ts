@@ -2,9 +2,12 @@ import { TTheme } from "@types";
 
 const DEFAULT_APP_NAME = "Climate Policy Radar";
 
-export const getAppTitle = (site: TTheme) => {
+export const getAppTitle = (site: TTheme, contextTheme?: TTheme) => {
   let title = DEFAULT_APP_NAME;
-  switch (site) {
+
+  const theme = site ?? contextTheme;
+
+  switch (theme) {
     case "cclw":
       title = "Climate Change Laws of the World";
       break;
