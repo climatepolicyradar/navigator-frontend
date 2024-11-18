@@ -1,0 +1,29 @@
+# trunk-ignore-all(checkov/CKV2_GHA_1)
+name: Pulumi
+on:
+  push:
+    branches:
+      - pulumi-deploy
+  pull_request:
+    branches:
+      - pulumi-deploy
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.NAVIGATOR_INFRA_GITHUB_PAT }}
+          script: |
+            const result = await github.rest.actions.createWorkflowDispatch({
+                owner: 'climatepolicyradar',
+                repo: 'navigator-infra',
+                workflow_id: 'deploy.yml',
+                ref: 'pulumi-deploy',
+                inputs: {
+                    'docker-tag': '1.7.6-beta',
+                    'stack': 'frontend/staging'
+                }
+            })
+            console.log(result)
