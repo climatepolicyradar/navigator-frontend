@@ -1,0 +1,28 @@
+# trunk-ignore-all(checkov/CKV2_GHA_1)
+name: Deploy AWS
+on:
+  push:
+    branches:
+      - aws-deploy
+  pull_request:
+    branches:
+      - aws-deploy
+permissions:
+  id-token: write
+  contents: read
+env:
+  AWS_REGION: eu-west-1
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID_STAGING }}:role/navigator-infra-github-actions
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
+      - name: aws
+        run: |
+          aws apprunner update-service --service-arn ${{ secrets.AWS_APPRUNNER_ARN }} \
+          --source-configuration '{ "ImageRepository": { "ImageIdentifier": "${{ secrets.AWS_ACCOUNT_ID_PROD }}.dkr.ecr.eu-west-1.amazonaws.com/navigator-frontend-cpr:1.7.6-beta", "ImageRepositoryType": "ECR" } }'
