@@ -25,7 +25,7 @@ const Contact = () => {
               </Heading>
               <p>
                 Please get in touch with the Climate Change Laws of the World team with any questions or comments by emailing{" "}
-                <ExternalLink url="mailto:gri.cgl@lse.co.uk">gri.cgl@lse.ac.uk</ExternalLink>
+                <ExternalLink url="mailto:gri.cgl@lse.ac.uk">gri.cgl@lse.ac.uk</ExternalLink>
               </p>
               <p>
                 We particularly welcome comments and inputs about the content of the database, including laws and policies we may have missed. We are
@@ -57,7 +57,7 @@ const Contact = () => {
                 <ExternalLink url="tel:+44 (0)20 7107 5442">+44 (0)20 7107 5442</ExternalLink>
               </p>
               <p>
-                Email: <ExternalLink url="mailto:gri.cgl@lse.co.uk">gri.cgl@lse.ac.uk</ExternalLink>
+                Email: <ExternalLink url="mailto:gri.cgl@lse.ac.uk">gri.cgl@lse.ac.uk</ExternalLink>
               </p>
               <Heading level={2}>Finding specific contact information</Heading>
               <p>

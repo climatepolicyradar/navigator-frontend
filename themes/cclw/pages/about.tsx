@@ -81,7 +81,7 @@ const About = () => {
                 law, policy or court case in the countries covered. We invite anyone to draw our attention to any information we may have missed or
                 any errors or updates to existing data. Please{" "}
                 <ExternalLink url="https://form.jotform.com/233294135296359">fill out our form</ExternalLink> or email{" "}
-                <ExternalLink url="mailto:gri.cgl@lse.co.uk">gri.cgl@lse.ac.uk</ExternalLink> to contribute.
+                <ExternalLink url="mailto:gri.cgl@lse.ac.uk">gri.cgl@lse.ac.uk</ExternalLink> to contribute.
               </p>
               <p>
                 For information about using and referencing the data, please see our <LinkWithQuery href="/terms-of-use">Terms of Use</LinkWithQuery>.
