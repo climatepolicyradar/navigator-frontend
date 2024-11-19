@@ -10,7 +10,7 @@ export const getCategoryTooltip = (category: TDocumentCategory): string => {
       return "For example: Policies, strategies, decrees, action plans (from executive branch)";
     case "Litigation":
       return "For example: Court cases and tribunal proceedings";
-    case "Intl. agreements":
+    case "UNFCCC":
       return "Documents submitted to the UNFCCC (including NDCs)";
     default:
       return "";
