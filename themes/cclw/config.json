@@ -7,8 +7,8 @@
         "slug": "All"
       },
       {
-        "label": "Intl. agreements",
-        "slug": "intl-agreements",
+        "label": "UNFCCC",
+        "slug": "UNFCCC",
         "value": ["UNFCCC.corpus.i00000001.n0000"],
         "category": ["UNFCCC"]
       },

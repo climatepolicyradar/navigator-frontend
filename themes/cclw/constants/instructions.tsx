@@ -31,8 +31,8 @@ export const INSTRUCTIONS = (documentTotals: TDocumentTotals) => [
           </Link>
         </li>
         <li>
-          <Link href="/search?c=intl-agreements" className={heroLinkClasses}>
-            <b>{documentTotals.unfccc}</b> Intl. agreements{" "}
+          <Link href="/search?c=UNFCCC" className={heroLinkClasses}>
+            <b>{documentTotals.unfccc}</b> UNFCCC submissions{" "}
             <span className="self-center">
               <ExternalLinkIcon height="12" width="12" />
             </span>
