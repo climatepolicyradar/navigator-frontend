@@ -478,7 +478,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                   <Loader />
                 </div>
               ) : (
-                <div data-cy="search-results">
+                <div data-cy="search-results" role="main">
                   <SearchResultList
                     category={router.query[QUERY_PARAMS.category]?.toString()}
                     families={families}
