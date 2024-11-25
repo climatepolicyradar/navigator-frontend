@@ -58,14 +58,13 @@ const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: TP
     return <div className="h-96 mt-4 md:mt-0">Your search returned no results.</div>;
   }
   return (
-    <section>
-      <h2 className="sr-only">Search results</h2>
+    <>
       {families?.map((family, index: number) => (
         <div key={index} className={`my-10 ${index === 0 && "md:mt-0"}`} data-cy="search-result">
           <SearchResult family={family} onClick={() => onClick(index)} active={activeFamilyIndex === index} />
         </div>
       ))}
-    </section>
+    </>
   );
 };
 
