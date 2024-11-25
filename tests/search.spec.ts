@@ -1,9 +1,12 @@
 import { test, expect } from "@playwright/test";
 
 test("search", async ({ page }) => {
-  /** Reject the consent banner */
   await page.goto("/");
-  await page.getByRole("button", { name: "Reject" }).click();
+
+  /** Reject the consent banner */
+  const consentHeading = page.getByText("Cookies and your privacy");
+  const consentBanner = page.locator("div").filter({ has: consentHeading });
+  await consentBanner.getByRole("button", { name: "Reject" }).click();
 
   /** Homepage */
   await expect(page.getByLabel("Search").first()).toBeVisible();
