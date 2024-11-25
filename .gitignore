@@ -36,3 +36,9 @@ e2e/cypress/fixtures/importData.csv
 
 # tsconfig
 tsconfig.tsbuildinfo
+/test-results/
+
+# playwright
+/playwright-report/
+/blob-report/
+/playwright/.cache/

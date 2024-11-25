@@ -10,7 +10,8 @@
     "add": "docker-compose exec -w /opt/node_app frontend npm install -S",
     "add-dev": "docker-compose exec -w /opt/node_app frontend npm install -D",
     "remove": "docker-compose exec -w /opt/node_app frontend npm uninstall",
-    "test": "jest"
+    "test": "jest",
+    "test-e2e": "npx playwright test"
   },
   "dependencies": {
     "@hookform/resolvers": "^2.8.8",
@@ -40,6 +41,7 @@
   "devDependencies": {
     "@babel/core": "^7.16.5",
     "@babel/preset-env": "^7.16.5",
+    "@playwright/test": "^1.49.0",
     "@tailwindcss/forms": "^0.5.0",
     "@testing-library/jest-dom": "^6.2.0",
     "@testing-library/react": "^14.1.2",
