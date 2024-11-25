@@ -2,6 +2,7 @@
 import { clickCookiePolicy } from "../../../utils/cookiePolicy";
 
 const searchResultsSelector = '[data-cy="search-results"]';
+const searchResultSelector = '[data-cy="search-result"]';
 const countryLinkSelector = '[data-cy="country-link"]';
 const familyTitleSelector = '[data-cy="family-title"]';
 
@@ -28,11 +29,11 @@ describe("Browse Flow", () => {
   });
 
   it("should display a list of 20 search results", () => {
-    cy.get(searchResultsSelector).children({ timeout: 10000 }).should("have.length", 20);
+    cy.get(searchResultsSelector).children(searchResultSelector).children({ timeout: 10000 }).should("have.length", 20);
   });
 
   it("should have a clickable header, which navigates to the document family view", () => {
-    cy.get(searchResultsSelector).children().eq(0).find(familyTitleSelector).should("be.visible").click();
+    cy.get(searchResultsSelector).children(searchResultSelector).children().eq(0).find(familyTitleSelector).should("be.visible").click();
   });
 
   it("should now be on the document family page", () => {
