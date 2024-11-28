@@ -359,7 +359,11 @@ export default function MapChart() {
         </div>
       </div>
       {!!mapData.maxLawsPolicies && !!mapData.maxUnfccc && (
-        <Legend max={selectedFamCategory === "lawsPolicies" ? mapData.maxLawsPolicies : mapData.maxUnfccc} />
+        <Legend
+          max={
+            selectedFamCategory === "lawsPolicies" ? mapData.maxLawsPolicies : selectedFamCategory === "unfccc" ? mapData.maxUnfccc : mapData.maxMcf
+          }
+        />
       )}
     </>
   );
