@@ -231,7 +231,7 @@ export default function MapChart() {
           >
             <option value="lawsPolicies">Laws and policies</option>
             <option value="unfccc">UNFCCC</option>
-            <option value="mcf">Multilateral Climate Fund projects</option>
+            <option value="mcf">MCF projects</option>
           </select>
         </div>
         <div>
