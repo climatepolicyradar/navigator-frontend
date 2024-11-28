@@ -50,7 +50,7 @@ const categoryByIndex = {
   0: "All",
   1: "laws",
   2: "policies",
-  3: "intl-agreements",
+  3: "UNFCCC",
   4: "laws",
 };
 
@@ -87,7 +87,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       case "Policies":
         count = summary.family_counts.Executive;
         break;
-      case "Intl. agreements":
+      case "UNFCCC":
         count = summary.family_counts.UNFCCC;
         break;
       case "Litigation":

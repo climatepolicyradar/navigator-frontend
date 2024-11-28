@@ -115,7 +115,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
 export default function MapChart() {
   const configQuery = useConfig();
   const geographiesQuery = useGeographies();
-  const { data: { countries: configContries = [] } = {} } = configQuery;
+  const { data: { countries: configCountries = [] } = {} } = configQuery;
   const { data: mapDataRaw = [], status: mapDataStatus } = geographiesQuery;
   const geographyInfoTooltipRef = useRef<TooltipRefProps>(null);
   const mapRef = useRef(null);
@@ -142,7 +142,7 @@ export default function MapChart() {
       geographies: {},
     };
 
-    mapDataConstructor.geographies = configContries.reduce((acc, country) => {
+    mapDataConstructor.geographies = configCountries.reduce((acc, country) => {
       const geoStats = mapDataRaw.find((geo) => geo.slug === country.slug);
       acc[country.value] = {
         ...country,
@@ -159,7 +159,7 @@ export default function MapChart() {
       return acc;
     }, {});
     return mapDataConstructor;
-  }, [configContries, mapDataRaw]);
+  }, [configCountries, mapDataRaw]);
 
   const handleGeoClick = (e: React.MouseEvent<SVGPathElement>, geo: TSvgGeo) => {
     setActiveGeography(geo.properties.name);
@@ -226,11 +226,11 @@ export default function MapChart() {
               setSelectedDocType(e.currentTarget.value as "lawsPolicies" | "unfccc");
             }}
             value={selectedDocType}
-            aria-label="Select a docuement type to display on the map"
+            aria-label="Select a document type to display on the map"
             name="Document type selector"
           >
             <option value="lawsPolicies">Laws and policies</option>
-            <option value="unfccc">Intl. agreements</option>
+            <option value="unfccc">UNFCCC</option>
             <option value="mcf">Multilateral Climate Funds</option>
           </select>
         </div>
