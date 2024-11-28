@@ -26,6 +26,7 @@ type TGeoFamilyCounts = {
   UNFCCC: number;
   EXECUTIVE: number;
   LEGISLATIVE: number;
+  MCF: number;
 };
 
 type TGeoMarkers = {
@@ -103,6 +104,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
         <p>Laws and policies: {(geography.familyCounts?.EXECUTIVE || 0) + (geography.familyCounts?.LEGISLATIVE || 0)}</p>
       )}
       {geography.familyCounts?.UNFCCC > 0 && <p>UNFCCC: {geography.familyCounts?.UNFCCC || 0}</p>}
+      {geography.familyCounts?.MCF > 0 && <p>MCF projects: {geography.familyCounts?.MCF || 0}</p>}
       <p>
         <LinkWithQuery href={`/geographies/${geography.slug}`}>View more</LinkWithQuery>
       </p>
@@ -229,6 +231,7 @@ export default function MapChart() {
           >
             <option value="lawsPolicies">Laws and policies</option>
             <option value="unfccc">UNFCCC</option>
+            <option value="mcf">MCF projects</option>
           </select>
         </div>
         <div>
