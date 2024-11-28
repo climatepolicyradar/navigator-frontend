@@ -9,6 +9,7 @@ type TMapGeographyStats = {
     UNFCCC: number;
     EXECUTIVE: number;
     LEGISLATIVE: number;
+    MCF: number;
   };
 };
 
