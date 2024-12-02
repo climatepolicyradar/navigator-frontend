@@ -38,7 +38,7 @@ type TGeographyWithCoords = TGeography & { coords: TPoint; familyCounts: TGeoFam
 
 type TGeographiesWithCoords = { [key: string]: TGeographyWithCoords };
 
-type TMapData = { maxLawsPolicies: number; maxUnfccc: number; geographies: TGeographiesWithCoords };
+type TMapData = { maxLawsPolicies: number; maxUnfccc: number; maxMcf: number; geographies: TGeographiesWithCoords };
 
 const geoStyle = (isActive: boolean) => {
   return {
@@ -123,7 +123,7 @@ export default function MapChart() {
   const [mapCenter, setMapCenter] = useState<TPoint>([0, 0]);
   const [mapZoom, setMapZoom] = useState(1);
   const [showUnifiedEU, setShowUnifiedEU] = useState(false);
-  const [selectedDocType, setSelectedDocType] = useState<"lawsPolicies" | "unfccc">("lawsPolicies");
+  const [selectedFamCategory, setSelectedFamCategory] = useState<"lawsPolicies" | "unfccc" | "mcf">("lawsPolicies");
 
   // Combine the data from the coordinates and the map data from the API into a unified object
   const mapData: TMapData = useMemo(() => {
@@ -131,6 +131,7 @@ export default function MapChart() {
     const maxLawsPolicies = mapDataRaw.length
       ? Math.max(...mapDataRaw.map((g) => (g.family_counts?.EXECUTIVE || 0) + (g.family_counts?.LEGISLATIVE || 0)))
       : 0;
+    const maxMcf = mapDataRaw.length ? Math.max(...mapDataRaw.map((g) => g.family_counts?.MCF || 0)) : 0;
     // Only take UNFCCC counts for countries that are not XAA or XAB (international, no geography)
     const maxUnfccc = mapDataRaw.length
       ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.UNFCCC || 0)))
@@ -139,6 +140,7 @@ export default function MapChart() {
     const mapDataConstructor: TMapData = {
       maxLawsPolicies,
       maxUnfccc,
+      maxMcf,
       geographies: {},
     };
 
@@ -154,6 +156,7 @@ export default function MapChart() {
             (((geoStats?.family_counts?.EXECUTIVE || 0) + (geoStats?.family_counts?.LEGISLATIVE || 0)) / maxLawsPolicies) * maxMarkerSize
           ),
           unfccc: Math.max(minMarkerSize, ((geoStats?.family_counts?.UNFCCC || 0) / maxUnfccc) * maxMarkerSize),
+          mcf: Math.max(minMarkerSize, ((geoStats?.family_counts?.MCF || 0) / maxMcf) * maxMarkerSize),
         },
       };
       return acc;
@@ -223,9 +226,9 @@ export default function MapChart() {
           <select
             className="border border-gray-300 small rounded-full !pl-4"
             onChange={(e) => {
-              setSelectedDocType(e.currentTarget.value as "lawsPolicies" | "unfccc");
+              setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc");
             }}
-            value={selectedDocType}
+            value={selectedFamCategory}
             aria-label="Select a document type to display on the map"
             name="Document type selector"
           >
@@ -300,7 +303,7 @@ export default function MapChart() {
                   if (!showUnifiedEU && geo.value === "EUR") return null;
                   if (showUnifiedEU && GEO_EU_COUNTRIES.includes(geo.value)) return null;
                   if (geo.value === "ESH") return null; // Western Sahara (disputed territory)
-                  if (!geo.markers[selectedDocType]) return null;
+                  if (!geo.markers[selectedFamCategory]) return null;
                   return (
                     <Marker
                       key={geo.slug}
@@ -316,8 +319,8 @@ export default function MapChart() {
                       style={markerStyle}
                     >
                       <circle
-                        r={geo.markers[selectedDocType]}
-                        fill={getMarkerColour(geo.markers[selectedDocType], minMarkerSize, maxMarkerSize, activeGeography === geo.display_value)}
+                        r={geo.markers[selectedFamCategory]}
+                        fill={getMarkerColour(geo.markers[selectedFamCategory], minMarkerSize, maxMarkerSize, activeGeography === geo.display_value)}
                         stroke={getMarketStroke(activeGeography === geo.display_value)}
                         strokeWidth={0.25}
                       />
@@ -356,7 +359,11 @@ export default function MapChart() {
         </div>
       </div>
       {!!mapData.maxLawsPolicies && !!mapData.maxUnfccc && (
-        <Legend max={selectedDocType === "lawsPolicies" ? mapData.maxLawsPolicies : mapData.maxUnfccc} />
+        <Legend
+          max={
+            selectedFamCategory === "lawsPolicies" ? mapData.maxLawsPolicies : selectedFamCategory === "unfccc" ? mapData.maxUnfccc : mapData.maxMcf
+          }
+        />
       )}
     </>
   );
