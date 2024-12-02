@@ -3,11 +3,11 @@ FROM node:20-alpine3.17
 ARG THEME
 ENV THEME=$THEME
 
-# Make sure the latest npm is installed for speed and fixes.
-RUN npm i npm@latest -g
+# Install yarn globally
+RUN corepack enable && corepack prepare yarn@stable --activate
 
 # The official Node image provides an unprivileged user as a security best
-# practice, but it needs to be manually enabled. We put it here so npm installs
+# practice, but it needs to be manually enabled. We put it here so yarn installs
 # dependencies as the same user who runs the app.
 USER node
 
@@ -16,11 +16,11 @@ USER node
 WORKDIR /home/node/app
 COPY --chmod=0755  . .
 
-# Install dependencies.
-RUN npm ci && npm cache clean --force
+# Install dependencies
+RUN yarn install --frozen-lockfile && yarn cache clean
 
 ENV PATH=/home/node/app/node_modules/.bin:$PATH
 
-RUN npm run build
+RUN yarn build
 
-CMD [ "npm", "run", "start" ]
+CMD [ "yarn", "start" ]
