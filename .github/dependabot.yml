@@ -1,12 +1,11 @@
 version: 2
 updates:
-  # Enable version updates for npm
+  # Enable version updates for npm/yarn
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
     labels:
-      - npm
       - dependencies
     versioning-strategy: increase
     groups:
@@ -14,6 +13,7 @@ updates:
         patterns:
           - "*"
     open-pull-requests-limit: 10
+    package-manager: yarn
 
   # Enable version updates for GitHub Actions
   - package-ecosystem: github-actions
@@ -21,7 +21,6 @@ updates:
     schedule:
       interval: weekly
     labels:
-      - github-actions
       - dependencies
     groups:
       actions:
