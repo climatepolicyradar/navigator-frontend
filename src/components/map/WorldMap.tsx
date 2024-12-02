@@ -1,8 +1,10 @@
-import React, { useRef, useState, useMemo } from "react";
+import React, { useRef, useState, useMemo, useEffect } from "react";
 import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
 import { Tooltip, TooltipRefProps } from "react-tooltip";
 import useConfig from "@hooks/useConfig";
 import useGeographies from "@hooks/useGeographies";
+import { getEnvFromServer } from "@api/http-common";
+import { hasMcfAccess } from "@utils/checkCorpusAccess";
 import { GEO_CENTER_POINTS } from "@constants/mapCentres";
 import { GEO_EU_COUNTRIES } from "@constants/mapEUCountries";
 import { TGeography } from "@types";
@@ -32,6 +34,7 @@ type TGeoFamilyCounts = {
 type TGeoMarkers = {
   lawsPolicies: number;
   unfccc: number;
+  mcf: number;
 };
 
 type TGeographyWithCoords = TGeography & { coords: TPoint; familyCounts: TGeoFamilyCounts; markers: TGeoMarkers };
@@ -124,6 +127,21 @@ export default function MapChart() {
   const [mapZoom, setMapZoom] = useState(1);
   const [showUnifiedEU, setShowUnifiedEU] = useState(false);
   const [selectedFamCategory, setSelectedFamCategory] = useState<"lawsPolicies" | "unfccc" | "mcf">("lawsPolicies");
+  const [showMcf, setShowMcf] = useState(true);
+
+  useEffect(() => {
+    const checkAccess = async () => {
+      const { data } = await getEnvFromServer();
+      setShowMcf(hasMcfAccess(data?.env?.app_token));
+    };
+    checkAccess();
+  }, []);
+
+  useEffect(() => {
+    if (!showMcf && selectedFamCategory === "mcf") {
+      setSelectedFamCategory("lawsPolicies");
+    }
+  }, [showMcf, selectedFamCategory]);
 
   // Combine the data from the coordinates and the map data from the API into a unified object
   const mapData: TMapData = useMemo(() => {
@@ -146,17 +164,18 @@ export default function MapChart() {
 
     mapDataConstructor.geographies = configCountries.reduce((acc, country) => {
       const geoStats = mapDataRaw.find((geo) => geo.slug === country.slug);
+      const lawsPoliciesCount = (geoStats?.family_counts?.EXECUTIVE || 0) + (geoStats?.family_counts?.LEGISLATIVE || 0);
+      const unfcccCount = ["XAA", "XAB"].includes(country.value) ? 0 : geoStats?.family_counts?.UNFCCC || 0;
+      const mcfCount = geoStats?.family_counts?.MCF || 0;
+
       acc[country.value] = {
         ...country,
         coords: GEO_CENTER_POINTS[country.value],
         familyCounts: geoStats?.family_counts,
         markers: {
-          lawsPolicies: Math.max(
-            minMarkerSize,
-            (((geoStats?.family_counts?.EXECUTIVE || 0) + (geoStats?.family_counts?.LEGISLATIVE || 0)) / maxLawsPolicies) * maxMarkerSize
-          ),
-          unfccc: Math.max(minMarkerSize, ((geoStats?.family_counts?.UNFCCC || 0) / maxUnfccc) * maxMarkerSize),
-          mcf: Math.max(minMarkerSize, ((geoStats?.family_counts?.MCF || 0) / maxMcf) * maxMarkerSize),
+          lawsPolicies: maxLawsPolicies > 0 ? Math.max(minMarkerSize, (lawsPoliciesCount / maxLawsPolicies) * maxMarkerSize) : 0,
+          unfccc: maxUnfccc > 0 ? Math.max(minMarkerSize, (unfcccCount / maxUnfccc) * maxMarkerSize) : 0,
+          mcf: maxMcf > 0 ? Math.max(minMarkerSize, (mcfCount / maxMcf) * maxMarkerSize) : 0,
         },
       };
       return acc;
@@ -226,7 +245,7 @@ export default function MapChart() {
           <select
             className="border border-gray-300 small rounded-full !pl-4"
             onChange={(e) => {
-              setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc");
+              setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc" | "mcf");
             }}
             value={selectedFamCategory}
             aria-label="Select a document type to display on the map"
@@ -234,7 +253,7 @@ export default function MapChart() {
           >
             <option value="lawsPolicies">Laws and policies</option>
             <option value="unfccc">UNFCCC</option>
-            <option value="mcf">MCF projects</option>
+            {showMcf && <option value="mcf">MCF projects</option>}
           </select>
         </div>
         <div>
