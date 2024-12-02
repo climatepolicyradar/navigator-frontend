@@ -131,8 +131,8 @@ export default function MapChart() {
     const maxLawsPolicies = mapDataRaw.length
       ? Math.max(...mapDataRaw.map((g) => (g.family_counts?.EXECUTIVE || 0) + (g.family_counts?.LEGISLATIVE || 0)))
       : 0;
-    const maxMcf = mapDataRaw.length ? Math.max(...mapDataRaw.map((g) => g.family_counts?.MCF || 0)) : 0;
-    // Only take UNFCCC counts for countries that are not XAA or XAB (international, no geography)
+    // Only take UNFCCC and MCF counts for countries that are not XAA or XAB (international, no geography)
+    const maxMcf = mapDataRaw.length ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.MCF || 0))) : 0;
     const maxUnfccc = mapDataRaw.length
       ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.UNFCCC || 0)))
       : 0;
