@@ -1,0 +1,29 @@
+version: 2
+updates:
+  # Enable version updates for npm
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    labels:
+      - npm
+      - dependencies
+    versioning-strategy: increase
+    groups:
+      dependencies:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 10
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    labels:
+      - github-actions
+      - dependencies
+    groups:
+      actions:
+        patterns:
+          - "*"
