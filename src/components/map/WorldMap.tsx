@@ -159,7 +159,7 @@ export default function MapChart() {
       const geoStats = mapDataRaw.find((geo) => geo.slug === country.slug);
       const lawsPoliciesCount = (geoStats?.family_counts?.EXECUTIVE || 0) + (geoStats?.family_counts?.LEGISLATIVE || 0);
       const unfcccCount = ["XAA", "XAB"].includes(country.value) ? 0 : geoStats?.family_counts?.UNFCCC || 0;
-      const mcfCount = geoStats?.family_counts?.MCF || 0;
+      const mcfCount = ["XAA", "XAB"].includes(country.value) ? 0 : geoStats?.family_counts?.MCF || 0;
 
       acc[country.value] = {
         ...country,
