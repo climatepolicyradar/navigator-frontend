@@ -142,8 +142,8 @@ export default function MapChart() {
     const maxLawsPolicies = mapDataRaw.length
       ? Math.max(...mapDataRaw.map((g) => (g.family_counts?.EXECUTIVE || 0) + (g.family_counts?.LEGISLATIVE || 0)))
       : 0;
-    const maxMcf = mapDataRaw.length ? Math.max(...mapDataRaw.map((g) => g.family_counts?.MCF || 0)) : 0;
-    // Only take UNFCCC counts for countries that are not XAA or XAB (international, no geography)
+    // Only take UNFCCC and MCF counts for countries that are not XAA or XAB (international, no geography)
+    const maxMcf = mapDataRaw.length ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.MCF || 0))) : 0;
     const maxUnfccc = mapDataRaw.length
       ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.UNFCCC || 0)))
       : 0;
@@ -158,7 +158,9 @@ export default function MapChart() {
     mapDataConstructor.geographies = configCountries.reduce((acc, country) => {
       const geoStats = mapDataRaw.find((geo) => geo.slug === country.slug);
       const lawsPoliciesCount = (geoStats?.family_counts?.EXECUTIVE || 0) + (geoStats?.family_counts?.LEGISLATIVE || 0);
-      const unfcccCount = ["XAA", "XAB"].includes(country.value) ? 0 : geoStats?.family_counts?.UNFCCC || 0;
+
+      // As the map has no where to display XAA or XAB data we don't need to fiddle with the count.
+      const unfcccCount = geoStats?.family_counts?.UNFCCC || 0;
       const mcfCount = geoStats?.family_counts?.MCF || 0;
 
       acc[country.value] = {
