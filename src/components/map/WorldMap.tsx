@@ -12,6 +12,7 @@ import { LinkWithQuery } from "@components/LinkWithQuery";
 import GeographySelect from "./GeographySelect";
 import { ZoomControls } from "./ZoomControls";
 import { Legend } from "./Legend";
+import { useMcfData } from "@hooks/useMcfData";
 
 const geoUrl = "/data/map/world-countries-50m.json";
 
@@ -127,15 +128,7 @@ export default function MapChart() {
   const [mapZoom, setMapZoom] = useState(1);
   const [showUnifiedEU, setShowUnifiedEU] = useState(false);
   const [selectedFamCategory, setSelectedFamCategory] = useState<"lawsPolicies" | "unfccc" | "mcf">("lawsPolicies");
-  const [showMcf, setShowMcf] = useState(true);
-
-  useEffect(() => {
-    const checkAccess = async () => {
-      const { data } = await getEnvFromServer();
-      setShowMcf(hasMcfAccess(data?.env?.app_token));
-    };
-    checkAccess();
-  }, []);
+  const showMcf = useMcfData();
 
   useEffect(() => {
     if (!showMcf && selectedFamCategory === "mcf") {

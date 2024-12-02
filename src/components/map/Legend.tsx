@@ -1,17 +1,7 @@
-import { useEffect, useState } from "react";
-import { getEnvFromServer } from "@api/http-common";
-import { hasMcfAccess } from "@utils/checkCorpusAccess";
+import { useMcfData } from "@hooks/useMcfData";
 
 export const Legend = ({ max }: { max: number }) => {
-  const [showMcf, setShowMcf] = useState(true);
-
-  useEffect(() => {
-    const checkAccess = async () => {
-      const { data } = await getEnvFromServer();
-      setShowMcf(hasMcfAccess(data?.env?.app_token));
-    };
-    checkAccess();
-  }, []);
+  const showMcf = useMcfData();
 
   const scale = [1, Math.round(max * 0.25), Math.round(max * 0.5), Math.round(max * 0.75), max];
 
