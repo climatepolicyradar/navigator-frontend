@@ -8,8 +8,8 @@
 
 # These owners will be the default owners for everything in
 # the repo. Unless a later match takes precedence, members
-# of @climatepolicyradar/tech-devs will be requested for
+# of @climatepolicyradar/frontend will be requested for
 # review when someone opens a pull request. Teams should
 # be identified in the format @org/team-name. Teams must have
 # explicit write access to the repository.
-* @climatepolicyradar/software
+* @climatepolicyradar/frontend
