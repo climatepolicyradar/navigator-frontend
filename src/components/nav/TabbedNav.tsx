@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
+
 import TabbedNavItem from "./TabbedNavItem";
+
 import { getCategoryTooltip } from "@helpers/getCategoryTooltip";
 
+import { TDocumentCategory } from "@types";
+
 type TTabItems = {
-  title: string;
+  title: TDocumentCategory;
   count?: number;
 };
 

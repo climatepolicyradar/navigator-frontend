@@ -1,12 +1,10 @@
 import { ExternalLink } from "@components/ExternalLink";
 import SearchResult from "./SearchResult";
 
-import { TMatchedFamily } from "@types";
-
-import { DOCUMENT_CATEGORIES } from "@constants/documentCategories";
+import { TDocumentCategory, TMatchedFamily } from "@types";
 
 type TProps = {
-  category?: (typeof DOCUMENT_CATEGORIES)[number];
+  category?: TDocumentCategory;
   families: TMatchedFamily[];
   activeFamilyIndex?: number | boolean;
   onClick?: (index: number) => void;
@@ -45,7 +43,7 @@ const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: TP
       </>
     );
   }
-  if (category && category === "Legislation" && families.length === 0) {
+  if (category && category === "Laws" && families.length === 0) {
     return emptyMessage(category);
   }
   if (category && category === "Policies" && families.length === 0) {
@@ -53,6 +51,9 @@ const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: TP
   }
   if (category && category === "UNFCCC" && families.length === 0) {
     return emptyMessage(category);
+  }
+  if (category && category === "MCF" && families.length === 0) {
+    return emptyMessage("multilateral climate funds");
   }
   if (families.length === 0) {
     return <div className="h-96 mt-4 md:mt-0">Your search returned no results.</div>;

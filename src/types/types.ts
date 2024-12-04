@@ -309,6 +309,8 @@ export type TQueryStrings = {
   implementing_agency: string;
 };
 
+export type TDocumentCategory = "All" | "Laws" | "Policies" | "UNFCCC" | "Litigation" | "MCF";
+
 // Theme configuration types
 export type TLabelVariation = {
   category: string[];
@@ -360,4 +362,5 @@ export type TThemeConfig = {
   labelVariations: TLabelVariation[];
   links: TThemeLink[];
   metadata: TThemeMetadata[];
+  documentCategories: TDocumentCategory[];
 };

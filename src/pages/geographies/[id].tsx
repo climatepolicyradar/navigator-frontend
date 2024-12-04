@@ -31,7 +31,6 @@ import { extractNestedData } from "@utils/extractNestedData";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { readConfigFile } from "@utils/readConfigFile";
 
-import { DOCUMENT_CATEGORIES, MCF_DOCUMENT_CATEGORIES } from "@constants/documentCategories";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { systemGeoNames } from "@constants/systemGeos";
 
@@ -46,12 +45,14 @@ type TProps = {
   themeConfig: TThemeConfig;
 };
 
+// Mapping of category index to category name in search
 const categoryByIndex = {
   0: "All",
   1: "laws",
   2: "policies",
   3: "UNFCCC",
   4: "laws",
+  5: "multilateral-climate-funds",
 };
 
 const MAX_NUMBER_OF_FAMILIES = 3;
@@ -73,15 +74,13 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
   const isMCFTheme = theme === "mcf";
 
-  const filteredCategoryArray = isMCFTheme ? MCF_DOCUMENT_CATEGORIES : DOCUMENT_CATEGORIES;
-
-  const documentCategories = filteredCategoryArray.map((category) => {
+  const documentCategories = themeConfig.documentCategories.map((category) => {
     let count = null;
     switch (category) {
       case "All":
         count = allDocumentsCount;
         break;
-      case "Legislation":
+      case "Laws":
         count = summary.family_counts.Legislative;
         break;
       case "Policies":
@@ -199,6 +198,16 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
             <ExternalLink url="http://climatecasechart.com/">Climate Change Litigation Databases</ExternalLink>.
           </div>
         );
+      }
+      // MCF
+      if (selectedCategoryIndex === 5) {
+        return summary.top_families.MCF.length === 0
+          ? renderEmpty("multilateral climate funds")
+          : summary.top_families.MCF.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
+              <div key={family.family_slug} className="mb-10">
+                <FamilyListItem family={family} />
+              </div>
+            ));
       }
     }
   };
@@ -400,11 +409,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         targets: [],
       };
     } else {
-      const { MCF, ...familyCountsWithoutMCF } = summaryInformation.family_counts;
-      const { MCF: mcfTopFamilies, ...topFamiliesWithoutMCF } = summaryInformation.top_families;
+      // const { MCF, ...familyCountsWithoutMCF } = summaryInformation.family_counts;
+      // const { MCF: mcfTopFamilies, ...topFamiliesWithoutMCF } = summaryInformation.top_families;
       return {
-        family_counts: familyCountsWithoutMCF,
-        top_families: topFamiliesWithoutMCF,
+        family_counts: summaryInformation.family_counts,
+        top_families: summaryInformation.top_families,
         targets: summaryInformation.targets,
       };
     }

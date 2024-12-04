@@ -38,7 +38,7 @@ import { getThemeConfigLink } from "@utils/getThemeConfigLink";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 
-import { TTheme, TThemeConfig } from "@types";
+import { TDocumentCategory, TTheme, TThemeConfig } from "@types";
 import { readConfigFile } from "@utils/readConfigFile";
 
 type TProps = {
@@ -481,7 +481,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 <section data-cy="search-results">
                   <h2 className="sr-only">Search results</h2>
                   <SearchResultList
-                    category={router.query[QUERY_PARAMS.category]?.toString()}
+                    category={router.query[QUERY_PARAMS.category]?.toString() as TDocumentCategory}
                     families={families}
                     onClick={handleMatchesButtonClick}
                     activeFamilyIndex={drawerFamily}
