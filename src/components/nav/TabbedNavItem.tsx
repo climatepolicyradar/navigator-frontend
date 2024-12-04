@@ -17,7 +17,7 @@ const TabbedNavItem = ({ title, count, index, activeTab, onClick }: TabbedNavIte
   const tooltipId = `${index}-tooltip`;
   const tooltipText = getCategoryTooltip(title);
   const isActive = activeTab === index;
-  const cssClass = `flex items-center gap-2 text-left mt-4 text-sm hover:text-blue-600 md:px-4 md:mt-0 ${isActive && "tabbed-nav__active"} ${
+  const cssClass = `flex items-center gap-2 text-textDark text-left mt-4 text-sm transition hover:text-blue-600 md:px-4 md:mt-0 ${isActive && "tabbed-nav__active"} ${
     index === 0 && "md:pl-3"
   }`;
 
