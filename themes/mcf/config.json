@@ -82,5 +82,6 @@
       "title": "Climate Project Search",
       "description": "Quickly and easily search through the complete text of thousands of project documents."
     }
-  ]
+  ],
+  "documentCategories": ["All"]
 }

@@ -38,7 +38,7 @@ import { getThemeConfigLink } from "@utils/getThemeConfigLink";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 
-import { TTheme, TThemeConfig } from "@types";
+import { TDocumentCategory, TTheme, TThemeConfig } from "@types";
 import { readConfigFile } from "@utils/readConfigFile";
 
 type TProps = {
