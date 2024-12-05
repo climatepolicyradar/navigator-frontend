@@ -1,10 +1,10 @@
 import { ExternalLink } from "@components/ExternalLink";
 import SearchResult from "./SearchResult";
 
-import { TDocumentCategory, TMatchedFamily } from "@types";
+import { TMatchedFamily } from "@types";
 
 type TProps = {
-  category?: TDocumentCategory;
+  category?: string;
   families: TMatchedFamily[];
   activeFamilyIndex?: number | boolean;
   onClick?: (index: number) => void;
