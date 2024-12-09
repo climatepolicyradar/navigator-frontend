@@ -30,7 +30,7 @@
   "filters": [
     {
       "label": "Type",
-      "taxonomyKey": "framework-laws",
+      "taxonomyKey": "framework_laws",
       "apiMetaDataKey": "family.framework",
       "type": "checkbox",
       "category": ["CCLW_LAWS"],
@@ -39,7 +39,7 @@
         {
           "label": "Framework laws",
           "slug": "framework-laws",
-          "value": ""
+          "value": "true"
         }
       ]
     },
