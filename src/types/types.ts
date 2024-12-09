@@ -324,6 +324,7 @@ export type TThemeConfigOption = {
   value?: string[];
   category?: string[];
   corporaKey?: string;
+  alias?: string;
 };
 
 type TThemeConfigCategory = {
@@ -341,6 +342,7 @@ export type TThemeConfigFilter = {
   options?: TThemeConfigOption[];
   showFade?: "true" | "false";
   dependantFilterKey?: string;
+  corporaKey?: string;
   quickSearch?: string;
 };
 
