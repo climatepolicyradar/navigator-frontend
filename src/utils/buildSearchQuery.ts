@@ -121,6 +121,50 @@ export default function buildSearchQuery(
     }
   }
 
+  // ---- Laws and Policies specific ----
+  if (routerQuery[QUERY_PARAMS.framework_laws]) {
+    const configFrameworkLaws = themeConfig.filters.find((f) => f.taxonomyKey === "framework_laws");
+    query.metadata = query.metadata.filter((m) => m.name !== configFrameworkLaws.apiMetaDataKey);
+    if (routerQuery[QUERY_PARAMS.framework_laws] === "true") {
+      query.metadata.push({ name: configFrameworkLaws.apiMetaDataKey, value: "Mitigation" });
+    }
+  }
+  if (routerQuery[QUERY_PARAMS.topic]) {
+    let topicsForApi: string[];
+    const topics = routerQuery[QUERY_PARAMS.topic];
+    const configTopics = themeConfig.filters.find((f) => f.taxonomyKey === "topic");
+    if (configTopics) {
+      // remove existing topic filters from the metadata
+      query.metadata = query.metadata.filter((m) => m.name !== configTopics.apiMetaDataKey);
+      if (Array.isArray(topics)) {
+        topicsForApi = topics;
+      } else {
+        topicsForApi = [topics];
+      }
+      topicsForApi.map((t) => {
+        query.metadata.push({ name: configTopics.apiMetaDataKey, value: decodeURI(t) });
+      });
+    }
+  }
+  if (routerQuery[QUERY_PARAMS.sector]) {
+    let sectorsForApi: string[];
+    const sectors = routerQuery[QUERY_PARAMS.sector];
+    const configSectors = themeConfig.filters.find((f) => f.taxonomyKey === "sector");
+    if (configSectors) {
+      // remove existing sector filters from the metadata
+      query.metadata = query.metadata.filter((m) => m.name !== configSectors.apiMetaDataKey);
+      if (Array.isArray(sectors)) {
+        sectorsForApi = sectors;
+      } else {
+        sectorsForApi = [sectors];
+      }
+      sectorsForApi.map((t) => {
+        query.metadata.push({ name: configSectors.apiMetaDataKey, value: decodeURI(t) });
+      });
+    }
+  }
+  // ---- End of Laws and Policies specific ----
+
   // ---- MCF specific ----
   // These are the filters that are specific to the MCF theme
   // TODO: handle this more elegantly and scaleably

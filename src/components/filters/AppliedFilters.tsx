@@ -74,12 +74,19 @@ const handleFilterDisplay = (
       filterLabel = decodeURI(value);
       break;
     case "implementing_agency":
+    case "topic":
+    case "sector":
       filterLabel = value.length > MAX_FILTER_CHARACTERS ? `${decodeURI(value).substring(0, MAX_FILTER_CHARACTERS)}...` : decodeURI(value);
       break;
     case "fund":
       filterLabel = value;
       const fund = themeConfig?.filters.find((f) => f.taxonomyKey === "fund").options.find((f) => f.slug === value);
       filterLabel = fund ? fund.label : value;
+      break;
+    case "framework_laws":
+      filterLabel = value;
+      const framework = themeConfig?.filters.find((f) => f.taxonomyKey === "framework_laws").options.find((f) => f.slug === value);
+      filterLabel = framework ? framework.label : value;
       break;
   }
 

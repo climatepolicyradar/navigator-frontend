@@ -15,6 +15,6 @@ export const canDisplayFilter = (filter: TThemeConfigFilter, query: ParsedUrlQue
   const selectedCategoryValue = themeConfig.categories.options.find((c) => c.slug === selectedCategory);
   if (!selectedCategoryValue) return false;
   let canDisplay = false;
-  if (containsAny(filter.category, selectedCategoryValue.value)) return true;
+  if (containsAny(filter.category, selectedCategoryValue.value) || containsAny(filter.category, [selectedCategoryValue.alias])) return true;
   return canDisplay;
 };
