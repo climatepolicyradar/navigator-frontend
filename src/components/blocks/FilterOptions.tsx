@@ -52,6 +52,9 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
                 handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug);
               }}
               name={`${filter.taxonomyKey}=${option.slug}`}
+              additionalInfo={option.additionalInfo}
+              learnMoreUrl={option.learnMoreUrl}
+              learnMoreExternal={option.learnMoreExternal === "true"}
             />
           )
         )}

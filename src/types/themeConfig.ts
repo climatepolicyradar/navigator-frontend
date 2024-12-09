@@ -13,6 +13,9 @@ export type TThemeConfigOption = {
   category?: string[];
   corporaKey?: string;
   alias?: string;
+  additionalInfo?: string;
+  learnMoreUrl?: string;
+  learnMoreExternal?: string;
 };
 
 type TThemeConfigCategory = {
