@@ -38,7 +38,7 @@
       "options": [
         {
           "label": "Framework laws",
-          "slug": "framework-laws",
+          "slug": "true",
           "value": "true",
           "additionalInfo": "Framework laws create overarching governance structures for countries' climate policy responses.",
           "learnMoreUrl": "/framework-laws"
