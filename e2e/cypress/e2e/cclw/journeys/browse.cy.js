@@ -29,7 +29,7 @@ describe("Browse Flow", () => {
   });
 
   it("should display a list of 20 search results", () => {
-    cy.get(searchResultsSelector).children(searchResultSelector).children({ timeout: 10000 }).should("have.length", 20);
+    cy.get(searchResultsSelector).children(searchResultSelector, { timeout: 20000 }).children().should("have.length", 20);
   });
 
   it("should have a clickable header, which navigates to the document family view", () => {

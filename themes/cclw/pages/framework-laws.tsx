@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import Layout from "@components/layouts/Main";
 import { SiteWidth } from "@components/panels/SiteWidth";
 import { SingleCol } from "@components/panels/SingleCol";
@@ -5,14 +7,10 @@ import { SubNav } from "@components/nav/SubNav";
 
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { ExternalLink } from "@components/ExternalLink";
-import { LinkWithQuery } from "@components/LinkWithQuery";
 import { Heading } from "@components/typography/Heading";
-
-import { FRAMEWORK_LAWS } from "@cclw/constants/frameworkLaws";
+import { QUERY_PARAMS } from "@constants/queryParams";
 
 const FrameworkLaws = () => {
-  const totalFrameworkLaws: number = FRAMEWORK_LAWS.length;
-
   return (
     <Layout
       title="Climate Change Framework Laws"
@@ -48,31 +46,18 @@ const FrameworkLaws = () => {
               </ul>
               <p>
                 The laws are tagged to indicate the policy response area(s) to which they relate, whether mitigation, adaptation and/or disaster risk
-                management. <strong>There are currently {totalFrameworkLaws} climate change framework laws in our database</strong>. Please see these
-                listed alphabetically by country below. You can search within each document though their links below.
+                management.
               </p>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Climate change framework law</th>
-                    <th>Country</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {FRAMEWORK_LAWS.map((law) => (
-                    <tr key={law.title}>
-                      <td>
-                        <LinkWithQuery href={law.url} cypress={`framework-law-${law.geography}`}>
-                          {law.title}
-                        </LinkWithQuery>
-                      </td>
-                      <td>{law.geography}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              If you are interested to learn more about climate change framework laws, the Grantham Research Institute at the London School of
-              Economics and others have published or contributed to the following open-access resources:
+              <Link
+                className="button inline-block"
+                href={{ pathname: "/search", query: { [QUERY_PARAMS.category]: "laws", [QUERY_PARAMS.framework_laws]: "true" } }}
+              >
+                Click here to view the list of Framework Laws
+              </Link>
+              <p>
+                If you are interested to learn more about climate change framework laws, the Grantham Research Institute at the London School of
+                Economics and others have published or contributed to the following open-access resources:
+              </p>
               <ul>
                 <li>
                   <strong>What are climate change framework laws?</strong>
@@ -142,7 +127,7 @@ const FrameworkLaws = () => {
                 collaboration of our global stakeholders to support our efforts to keep the database up to date.
               </p>
               <p>
-                <em>This page was last updated on 26 September 2024</em>.
+                <em>This page was last updated on 10 December 2024</em>.
               </p>
             </div>
           </SingleCol>

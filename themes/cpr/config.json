@@ -22,7 +22,8 @@
         "label": "Laws",
         "slug": "laws",
         "value": ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000001.n0000"],
-        "category": ["Legislative"]
+        "category": ["Legislative"],
+        "alias": "LAWS"
       },
       {
         "label": "Multilateral Climate Funds",
@@ -85,6 +86,43 @@
       "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"],
       "showFade": "true",
       "dependantFilterKey": "fund",
+      "quickSearch": "true"
+    },
+    {
+      "label": "Type",
+      "taxonomyKey": "framework_laws",
+      "apiMetaDataKey": "family.framework",
+      "type": "checkbox",
+      "category": ["LAWS"],
+      "startOpen": "true",
+      "options": [
+        {
+          "label": "Framework laws",
+          "slug": "true",
+          "value": "true",
+          "additionalInfo": "Framework laws create overarching governance structures for countries' climate policy responses.",
+          "learnMoreUrl": "/framework-laws"
+        }
+      ]
+    },
+    {
+      "label": "Topic",
+      "taxonomyKey": "topic",
+      "apiMetaDataKey": "family.topic",
+      "type": "radio",
+      "category": ["CPR.corpus.i00000001.n0000", "CCLW.corpus.i00000001.n0000"],
+      "dependantFilterKey": "",
+      "corporaKey": "CPR"
+    },
+    {
+      "label": "Sector",
+      "taxonomyKey": "sector",
+      "apiMetaDataKey": "family.sector",
+      "type": "radio",
+      "category": ["CPR.corpus.i00000001.n0000", "CCLW.corpus.i00000001.n0000"],
+      "dependantFilterKey": "",
+      "showFade": "true",
+      "corporaKey": "CPR",
       "quickSearch": "true"
     }
   ],
