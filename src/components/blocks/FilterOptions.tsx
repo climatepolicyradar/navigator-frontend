@@ -82,13 +82,13 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
     } else {
       // Otherwise, load the taxonomy values for the selected dependency filter(s)
       if (typeof queryDependentFilter === "string") {
-        const filterCoporaKey = dependentFilter.options.find((option) => option.slug === queryDependentFilter)?.corporaKey;
-        const taxonomyAllowedValues = getTaxonomyAllowedValues(filterCoporaKey, filter.taxonomyKey, organisations);
+        const filterCorporaKey = dependentFilter.options.find((option) => option.slug === queryDependentFilter)?.corporaKey;
+        const taxonomyAllowedValues = getTaxonomyAllowedValues(filterCorporaKey, filter.taxonomyKey, organisations);
         options = options.concat(taxonomyAllowedValues);
       } else {
         for (let index = 0; index < queryDependentFilter.length; index++) {
-          const filterCoporaKey = dependentFilter.options.find((option) => option.slug === queryDependentFilter[index])?.corporaKey;
-          const taxonomyAllowedValues = getTaxonomyAllowedValues(filterCoporaKey, filter.taxonomyKey, organisations);
+          const filterCorporaKey = dependentFilter.options.find((option) => option.slug === queryDependentFilter[index])?.corporaKey;
+          const taxonomyAllowedValues = getTaxonomyAllowedValues(filterCorporaKey, filter.taxonomyKey, organisations);
           options = options.concat(taxonomyAllowedValues);
         }
       }
