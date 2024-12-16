@@ -144,6 +144,10 @@ a,
   }
 }
 
+a.button {
+  @apply transition duration-300 px-4 py-2 rounded-full pointer-events-auto font-medium no-underline hover:no-underline bg-blue-500 border border-blue-500 text-white hover:bg-blue-700 hover:border-blue-700 hover:text-white group-hover:bg-blue-700 group-hover:border-blue-700 group-hover:text-white;
+}
+
 b,
 strong,
 .bold {
