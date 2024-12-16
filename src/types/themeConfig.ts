@@ -32,7 +32,7 @@ export type TThemeConfigFilter = {
   startOpen?: "true" | "false";
   options?: TThemeConfigOption[];
   showFade?: "true" | "false";
-  dependantFilterKey?: string;
+  dependentFilterKey?: string;
   corporaKey?: string;
   quickSearch?: string;
 };

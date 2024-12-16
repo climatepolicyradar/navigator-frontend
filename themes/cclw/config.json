@@ -51,7 +51,7 @@
       "apiMetaDataKey": "family.topic",
       "type": "radio",
       "category": ["CCLW.corpus.i00000001.n0000"],
-      "dependantFilterKey": "",
+      "dependentFilterKey": "",
       "corporaKey": "CCLW"
     },
     {
@@ -60,7 +60,7 @@
       "apiMetaDataKey": "family.sector",
       "type": "radio",
       "category": ["CCLW.corpus.i00000001.n0000"],
-      "dependantFilterKey": "",
+      "dependentFilterKey": "",
       "showFade": "true",
       "corporaKey": "CCLW",
       "quickSearch": "true"

@@ -76,7 +76,7 @@
       "apiMetaDataKey": "family.status",
       "type": "radio",
       "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"],
-      "dependantFilterKey": "fund"
+      "dependentFilterKey": "fund"
     },
     {
       "label": "Implementing agency",
@@ -85,7 +85,7 @@
       "type": "radio",
       "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"],
       "showFade": "true",
-      "dependantFilterKey": "fund",
+      "dependentFilterKey": "fund",
       "quickSearch": "true"
     },
     {
@@ -111,7 +111,7 @@
       "apiMetaDataKey": "family.topic",
       "type": "radio",
       "category": ["CPR.corpus.i00000001.n0000", "CCLW.corpus.i00000001.n0000"],
-      "dependantFilterKey": "",
+      "dependentFilterKey": "",
       "corporaKey": "CPR"
     },
     {
@@ -120,7 +120,7 @@
       "apiMetaDataKey": "family.sector",
       "type": "radio",
       "category": ["CPR.corpus.i00000001.n0000", "CCLW.corpus.i00000001.n0000"],
-      "dependantFilterKey": "",
+      "dependentFilterKey": "",
       "showFade": "true",
       "corporaKey": "CPR",
       "quickSearch": "true"

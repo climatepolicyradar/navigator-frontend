@@ -64,30 +64,30 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
   let options: string[] = [];
   // If a filter does not have preset options defined, we need to load the taxonomy values from our config
   // The taxonomy options are nested under a corpora in our config
-  // The filter will be chcecked for either have a corporaKey or a dependantFilterKey, which will contain the corporaKey
+  // The filter will be chcecked for either have a corporaKey or a dependentFilterKey, which will contain the corporaKey
   if (filter.corporaKey) {
     // Load filter options based on corporaKey, if provided
     options = getTaxonomyAllowedValues(filter.corporaKey, filter.taxonomyKey, organisations);
-  } else if (filter.dependantFilterKey) {
-    // Check whether the filter has a dependanct filter, if it does load the taxonomy values for the dependant filter
-    const dependantFilter = themeConfig.filters.find((f) => f.taxonomyKey === filter.dependantFilterKey);
-    const queryDependantFilter = query[QUERY_PARAMS[dependantFilter?.taxonomyKey]] || [];
+  } else if (filter.dependentFilterKey) {
+    // Check whether the filter has a dependanct filter, if it does load the taxonomy values for the dependent filter
+    const dependentFilter = themeConfig.filters.find((f) => f.taxonomyKey === filter.dependentFilterKey);
+    const queryDependentFilter = query[QUERY_PARAMS[dependentFilter?.taxonomyKey]] || [];
     // If no filter of a given dependancy is selected, load all dependancy taxonomy values
-    if (queryDependantFilter.length === 0) {
-      for (let index = 0; index < dependantFilter.options.length; index++) {
-        const option = dependantFilter.options[index];
+    if (queryDependentFilter.length === 0) {
+      for (let index = 0; index < dependentFilter.options.length; index++) {
+        const option = dependentFilter.options[index];
         const taxonomyAllowedValues = getTaxonomyAllowedValues(option.corporaKey, filter.taxonomyKey, organisations);
         options = options.concat(taxonomyAllowedValues);
       }
     } else {
       // Otherwise, load the taxonomy values for the selected dependancy filter(s)
-      if (typeof queryDependantFilter === "string") {
-        const filterCoporaKey = dependantFilter.options.find((option) => option.slug === queryDependantFilter)?.corporaKey;
+      if (typeof queryDependentFilter === "string") {
+        const filterCoporaKey = dependentFilter.options.find((option) => option.slug === queryDependentFilter)?.corporaKey;
         const taxonomyAllowedValues = getTaxonomyAllowedValues(filterCoporaKey, filter.taxonomyKey, organisations);
         options = options.concat(taxonomyAllowedValues);
       } else {
-        for (let index = 0; index < queryDependantFilter.length; index++) {
-          const filterCoporaKey = dependantFilter.options.find((option) => option.slug === queryDependantFilter[index])?.corporaKey;
+        for (let index = 0; index < queryDependentFilter.length; index++) {
+          const filterCoporaKey = dependentFilter.options.find((option) => option.slug === queryDependentFilter[index])?.corporaKey;
           const taxonomyAllowedValues = getTaxonomyAllowedValues(filterCoporaKey, filter.taxonomyKey, organisations);
           options = options.concat(taxonomyAllowedValues);
         }
