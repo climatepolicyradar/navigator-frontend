@@ -80,7 +80,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
         options = options.concat(taxonomyAllowedValues);
       }
     } else {
-      // Otherwise, load the taxonomy values for the selected dependancy filter(s)
+      // Otherwise, load the taxonomy values for the selected dependency filter(s)
       if (typeof queryDependentFilter === "string") {
         const filterCoporaKey = dependentFilter.options.find((option) => option.slug === queryDependentFilter)?.corporaKey;
         const taxonomyAllowedValues = getTaxonomyAllowedValues(filterCoporaKey, filter.taxonomyKey, organisations);
