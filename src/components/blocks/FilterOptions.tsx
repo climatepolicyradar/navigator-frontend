@@ -72,7 +72,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
     // Check whether the filter has a dependanct filter, if it does load the taxonomy values for the dependent filter
     const dependentFilter = themeConfig.filters.find((f) => f.taxonomyKey === filter.dependentFilterKey);
     const queryDependentFilter = query[QUERY_PARAMS[dependentFilter?.taxonomyKey]] || [];
-    // If no filter of a given dependancy is selected, load all dependancy taxonomy values
+    // If no filter of a given dependency is selected, load all dependency taxonomy values
     if (queryDependentFilter.length === 0) {
       for (let index = 0; index < dependentFilter.options.length; index++) {
         const option = dependentFilter.options[index];
