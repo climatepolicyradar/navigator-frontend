@@ -26,7 +26,10 @@ test("search", async ({ page }) => {
 
   /** Document page */
   await page.waitForURL("/document/*");
-  await page.getByText(/View \d+ matches/).click();
+  await page
+    .getByText(/View \d+ matches/)
+    .first()
+    .click();
 
   /** Documents Page */
   await page.waitForURL("/documents/*");
