@@ -17,4 +17,8 @@ export const QUERY_PARAMS: TQueryStrings = {
   fund: "fd",
   status: "st",
   implementing_agency: "ia",
+  // Laws and Policies
+  framework_laws: "fl",
+  topic: "tp",
+  sector: "sc",
 };

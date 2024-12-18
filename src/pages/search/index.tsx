@@ -38,7 +38,7 @@ import { getThemeConfigLink } from "@utils/getThemeConfigLink";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 
-import { TTheme, TThemeConfig } from "@types";
+import { TDocumentCategory, TTheme, TThemeConfig } from "@types";
 import { readConfigFile } from "@utils/readConfigFile";
 
 type TProps = {
@@ -218,6 +218,13 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     delete router.query[QUERY_PARAMS.fund];
     delete router.query[QUERY_PARAMS.status];
     delete router.query[QUERY_PARAMS.implementing_agency];
+    // Law and policy filters
+    delete router.query[QUERY_PARAMS.framework_laws];
+    // Only reset the topic and sector filters if we are not moving between laws or policies categories
+    if (category !== "policies" && category !== "laws") {
+      delete router.query[QUERY_PARAMS.topic];
+      delete router.query[QUERY_PARAMS.sector];
+    }
 
     router.query[QUERY_PARAMS.category] = category;
     // Default search is all categories, so we do not need to provide any category if we want all

@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
+
 import TabbedNavItem from "./TabbedNavItem";
+
 import { getCategoryTooltip } from "@helpers/getCategoryTooltip";
 
+import { TDocumentCategory } from "@types";
+
 type TTabItems = {
-  title: string;
+  title: TDocumentCategory;
   count?: number;
 };
 
@@ -44,7 +48,7 @@ const TabbedNav = ({ handleTabClick, items, activeIndex = 0, showBorder = true }
           />
         ))}
       </div>
-      {helpText(activeIndex) && <div className="pl-2 text-sm my-1 text-gray-600">{helpText(activeIndex)}</div>}
+      {helpText(activeIndex) && <div className="pl-2 text-sm my-1">{helpText(activeIndex)}</div>}
     </>
   );
 };

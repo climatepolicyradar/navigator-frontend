@@ -40,7 +40,7 @@
       "apiMetaDataKey": "family.status",
       "type": "radio",
       "category": [],
-      "dependantFilterKey": "fund"
+      "dependentFilterKey": "fund"
     },
     {
       "label": "Implementing agency",
@@ -49,7 +49,7 @@
       "type": "radio",
       "category": [],
       "showFade": "true",
-      "dependantFilterKey": "fund",
+      "dependentFilterKey": "fund",
       "quickSearch": "true"
     }
   ],
@@ -82,5 +82,6 @@
       "title": "Climate Project Search",
       "description": "Quickly and easily search through the complete text of thousands of project documents."
     }
-  ]
+  ],
+  "documentCategories": ["All"]
 }
