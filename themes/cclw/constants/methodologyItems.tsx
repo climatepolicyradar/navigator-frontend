@@ -97,7 +97,7 @@ export const METHODOLOGY: TDataListItem[] = [
           government guidance note.
         </p>
 
-        <h4>Responses</h4>
+        <h4>Topics</h4>
         <p>
           <b>Laws and policies are categorised according to the climate policy response to which they are most relevant</b>: mitigation, adaptation,
           loss and damage, or disaster risk management. Where appropriate, laws may be tagged as relevant to more than one policy response.
