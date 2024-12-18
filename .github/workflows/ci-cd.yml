@@ -35,7 +35,7 @@ jobs:
       contents: read
     uses: climatepolicyradar/reusable-workflows/.github/workflows/node-precommit-validator.yml@v17
     with:
-      node-version: 20.11.0
+      node-version: 22.12.0
       package-manager: npm
 
   theme-factory:
