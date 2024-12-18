@@ -1,4 +1,4 @@
-FROM node:20-alpine3.17
+FROM node:22.12.0-alpine3.21
 
 ARG THEME
 ENV THEME=$THEME
