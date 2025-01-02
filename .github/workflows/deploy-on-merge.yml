@@ -1,0 +1,63 @@
+# Deploys the app to staging or production when a PR is labelled with 'deploy-to-${env}-on-merge' and merged into main
+name: Deploy on merge
+on:
+  workflow_call: {}
+permissions: read-all
+jobs:
+  deploy-on-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get PR information
+        id: pr-info
+        run: |
+          PR_NUMBER=$(curl -s ${{ github.event.repository.url }}/commits/${{ github.sha }}/pulls \
+            -H "Accept: application/vnd.github.groot-preview+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            | jq '.[0].number')
+
+          if [ "$PR_NUMBER" != "null" ]; then
+            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+            echo "is_pr=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_pr=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Check PR labels
+        if: steps.pr-info.outputs.is_pr == 'true'
+        id: check-deploy-on-merge-label
+        run: |
+          LABELS=$(curl -s ${{ github.event.repository.url }}/pulls/${{ steps.pr-info.outputs.pr_number }} \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            | jq '.labels[].name')
+
+          if echo "$LABELS" | grep -q '"deploy-to-staging-on-merge"'; then
+            echo "deploy_to_staging=true" >> $GITHUB_OUTPUT
+          else
+            echo "deploy_to_staging=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout code
+        if: steps.check-deploy-on-merge-label.outputs.deploy_to_staging == 'true'
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        uses: actions/github-script@v6
+        if: steps.check-deploy-on-merge-label.outputs.deploy_to_staging == 'true'
+        with:
+          # This is currently from the user jamesgorrie
+          # TODO: use tech@climatepolicyradar.org user for this
+          github-token: ${{ secrets.NAVIGATOR_INFRA_GITHUB_PAT }}
+          script: |
+            // This is set in https://github.com/climatepolicyradar/retag-and-push-to-ecr/blob/3b721c9d6c0bc2785d4b8290d11c07c2abf59d25/retag-and-push.sh#L70
+            const shortSha = "${{ github.sha }}".slice(0, 8);
+            const result = await github.rest.actions.createWorkflowDispatch({
+                owner: 'climatepolicyradar',
+                repo: 'navigator-infra',
+                workflow_id: 'deploy.yml',
+                ref: 'navigator-frontend',
+                inputs: {
+                    'docker-tag': `main-${shortSha}`,
+                    'stack': 'frontend/staging'
+                }
+            })
+            console.log(result)

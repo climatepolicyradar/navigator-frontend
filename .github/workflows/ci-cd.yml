@@ -61,3 +61,8 @@ jobs:
     permissions:
       contents: write
     uses: climatepolicyradar/reusable-workflows/.github/workflows/release.yml@v6
+
+  deploy:
+    needs: release
+    uses: ./.github/workflows/deploy-on-merge.yml
+    secrets: inherit
