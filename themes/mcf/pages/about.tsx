@@ -40,9 +40,9 @@ const About = () => {
                   adapt to climate change.
                 </p>
                 <p>
-                  Since 2010, the Adaptation Fund has committed over US$ 1.2 billion for climate change adaptation and resilience projects and
-                  programs, including over 175 concrete, localized projects in the most vulnerable communities of developing countries around the
-                  world with over 43 million total beneficiaries.
+                  Since 2010, the Adaptation Fund has committed over $1.2 billion for climate change adaptation and resilience projects and programs,
+                  including over 175 concrete, localized projects in the most vulnerable communities of developing countries around the world with
+                  over 43 million total beneficiaries.
                 </p>
                 <p>
                   About half of its projects are in Least Developed Countries or Small Island Developing States. It also pioneered Direct Access and
@@ -81,8 +81,8 @@ const About = () => {
                   <img src={"/images/mcf/GEF.png"} alt={`Global Environment Facility logo`} className="h-20 w-auto" />
                 </div>
                 <p>
-                  <strong>Global Environment Facility</strong> (GEF) projects and programmes that help vulnerable communities in developing countries
-                  adapt to climate change
+                  <strong>The Global Environment Facility</strong> (GEF) is a multilateral family of funds dedicated to confronting biodiversity loss,
+                  climate change, and pollution, and supporting land and ocean health.
                 </p>
                 <p>
                   Its financing enables developing countries to address complex challenges and work towards international environmental goals. The
@@ -91,9 +91,23 @@ const About = () => {
                 </p>
                 <p>
                   Over the past three decades, the GEF has provided more than $25 billion in financing and mobilized $145 billion for country-driven
-                  priority projects. The family of funds includes the Global Environment Facility Trust Fund, Global Biodiversity Framework Fund
-                  (GBFF), Least Developed Countries Fund (LDCF), Special Climate Change Fund (SCCF), Nagoya Protocol Implementation Fund (NPIF), and
-                  Capacity-building Initiative for Transparency Trust Fund (CBIT).
+                  priority projects. The family of funds includes the Global Environment Facility Trust Fund, 
+                  <ExternalLink url="https://www.thegef.org/what-we-do/topics/global-biodiversity-framework-fund">
+                    Global Biodiversity Framework Fund 
+                  </ExternalLink>
+                  (GBFF), 
+                  <ExternalLink url="https://www.thegef.org/what-we-do/topics/least-developed-countries-fund-ldcf">
+                    Least Developed Countries Fund
+                  </ExternalLink>
+                   (LDCF),
+                  <ExternalLink url="https://www.thegef.org/what-we-do/topics/special-climate-change-fund-sccf">
+                     Special Climate Change Fund 
+                  </ExternalLink>
+                  (SCCF),
+                  <ExternalLink url="https://www.thegef.org/what-we-do/topics/biodiversity/access-and-benefit-sharing">
+                     Nagoya Protocol Implementation Fund 
+                  </ExternalLink>
+                  (NPIF), and Capacity-building Initiative for Transparency Trust Fund (CBIT).
                 </p>
                 <p>
                   Find more details on: <ExternalLink url="https://www.thegef.org/">thegef.org</ExternalLink>
@@ -109,8 +123,8 @@ const About = () => {
                   shift towards low emission, climate-resilient development pathways in developing countries.
                 </p>
                 <p>
-                  GCF has a portfolio of USD 15 billion (USD 58.7 billion including co-financing) delivering transformative climate action in more
-                  than 130 countries. The GCF readiness programme builds capacity and helps countries develop long-term plans to fight climate change.
+                  GCF has a portfolio of $15 billion ($58.7 billion including co-financing) delivering transformative climate action in more than 130
+                  countries. The GCF readiness programme builds capacity and helps countries develop long-term plans to fight climate change.
                 </p>
                 <p>
                   GCF is an operating entity of the financial mechanism of the United Nations Framework Convention on Climate Change (UNFCCC) and
