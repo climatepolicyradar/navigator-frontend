@@ -487,12 +487,14 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               ) : (
                 <section data-cy="search-results">
                   <h2 className="sr-only">Search results</h2>
-                  <SearchResultList
-                    category={router.query[QUERY_PARAMS.category]?.toString()}
-                    families={families}
-                    onClick={handleMatchesButtonClick}
-                    activeFamilyIndex={drawerFamily}
-                  />
+                  <ol>
+                    <SearchResultList
+                      category={router.query[QUERY_PARAMS.category]?.toString()}
+                      families={families}
+                      onClick={handleMatchesButtonClick}
+                      activeFamilyIndex={drawerFamily}
+                    />
+                  </ol>
                 </section>
               )}
             </div>
