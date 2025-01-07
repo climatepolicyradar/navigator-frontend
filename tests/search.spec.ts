@@ -39,7 +39,7 @@ test("search", async ({ page }) => {
   /** Document (AKA Family) page */
   await page.waitForURL("/document/*");
   await page
-    .getByText(/View more than \d+ matches/)
+    .getByText(/View (more than )?\d+ matches/)
     .first()
     .click();
 
