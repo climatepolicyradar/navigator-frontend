@@ -21,13 +21,25 @@ test("search", async ({ page }) => {
    */
   const searchResultsHeading = page.getByRole("heading", { name: "Search results" });
   const searchResults = page.locator("div").filter({ has: searchResultsHeading }).last();
-  await expect(searchResults).toBeVisible();
+  await expect(searchResults).toBeVisible({ timeout: 10000 });
+
+  /** Check the structure of the search result */
+  const firstSearchResult = searchResults.locator('[data-cy="search-result"]').first();
+  await expect(firstSearchResult).toBeVisible({ timeout: 10000 });
+
+  /** TODO: Make the markup more semantic */
+  await expect(firstSearchResult.locator('[data-cy="family-title"]')).toBeVisible();
+  await expect(firstSearchResult.locator('[data-cy="family-metadata-category"]')).toBeVisible();
+  await expect(firstSearchResult.locator('[data-cy="family-metadata-year"]')).toBeVisible();
+  await expect(firstSearchResult.locator('[data-cy="family-description"]')).toBeVisible();
+  await expect(firstSearchResult.locator('[data-cy="country-link"]')).toBeVisible();
+
   await searchResults.getByRole("link").first().click();
 
-  /** Document page */
+  /** Document (AKA Family) page */
   await page.waitForURL("/document/*");
   await page
-    .getByText(/View \d+ matches/)
+    .getByText(/View (more than )?\d+ matches/)
     .first()
     .click();
 
