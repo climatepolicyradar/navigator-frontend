@@ -19,8 +19,9 @@ const fundDescriptions: FundDescription[] = [
     description: "(CIF) is a major multilateral climate fund established in 2008 to finance climate-smart solutions in developing countries.",
   },
   {
-    name: "Global Environment Facility",
-    description: "(GEF) projects and programmes that help vulnerable communities in developing countries adapt to climate change.",
+    name: "The Global Environment Facility",
+    description:
+      "(GEF) is a multilateral family of funds dedicated to confronting biodiversity loss, climate change, and pollution, and supporting land and ocean health.",
   },
   {
     name: "Green Climate Fund",
@@ -35,12 +36,11 @@ const AboutTheFundsContent = () => {
       <div className="flex justify-between gap-20">
         <div className="content-center xl:max-w-screen-md py-16">
           <Heading level={2} extraClasses="custom-header">
-            The Funds
+            Funds
           </Heading>
           {fundDescriptions.map((fund) => (
             <p key={fund.name}>
-              <strong>{fund.name}</strong>
-              {fund.description}
+              <strong>{fund.name}</strong> {fund.description}
               <br />
               <br />
             </p>
