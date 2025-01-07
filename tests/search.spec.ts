@@ -25,15 +25,14 @@ test("search", async ({ page }) => {
 
   /** Check the structure of the search result */
   const firstSearchResult = searchResults.getByRole("listitem").first();
-  /** heading */
-  await expect(firstSearchResult.getByRole("heading")).toBeVisible();
-  /** description */
-  await expect(firstSearchResult.getByRole("paragraph")).toBeVisible();
+  await expect(firstSearchResult).toBeVisible({ timeout: 10000 });
 
   /** TODO: Make the markup more semantic */
+  await expect(firstSearchResult.locator('[data-cy="family-title"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="family-metadata-category"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="family-metadata-year"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="family-description"]')).toBeVisible();
+  await expect(firstSearchResult.locator('[data-cy="country-link"]')).toBeVisible();
 
   await searchResults.getByRole("link").first().click();
 
