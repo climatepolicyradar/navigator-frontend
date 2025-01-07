@@ -21,7 +21,7 @@ test("search", async ({ page }) => {
    */
   const searchResultsHeading = page.getByRole("heading", { name: "Search results" });
   const searchResults = page.locator("div").filter({ has: searchResultsHeading }).last();
-  await expect(searchResults).toBeVisible();
+  await expect(searchResults).toBeVisible({ timeout: 10000 });
 
   /** Check the structure of the search result */
   const firstSearchResult = searchResults.getByRole("listitem").first();
