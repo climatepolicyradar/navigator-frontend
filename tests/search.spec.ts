@@ -24,7 +24,7 @@ test("search", async ({ page }) => {
   await expect(searchResults).toBeVisible({ timeout: 10000 });
 
   /** Check the structure of the search result */
-  const firstSearchResult = searchResults.getByRole("listitem").first();
+  const firstSearchResult = searchResults.locator('[data-cy="search-result"]').first();
   await expect(firstSearchResult).toBeVisible({ timeout: 10000 });
 
   /** TODO: Make the markup more semantic */
