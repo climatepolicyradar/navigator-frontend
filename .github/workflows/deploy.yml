@@ -1,0 +1,52 @@
+# trunk-ignore-all(checkov)
+name: Deploy on merge
+on:
+  workflow_call:
+    inputs:
+      theme:
+        description: Theme
+        type: string
+        required: true
+      docker-tag:
+        description: Docker tag
+        type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      theme:
+        description: Theme
+        type: string
+        required: true
+      docker-tag:
+        description: Docker tag
+        type: string
+        required: true
+permissions: read-all
+jobs:
+  deploy-on-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        uses: actions/github-script@v7
+        with:
+          # This is currently from the user jamesgorrie
+          # TODO: use tech@climatepolicyradar.org user for this
+          github-token: ${{ secrets.NAVIGATOR_INFRA_GITHUB_PAT }}
+          script: |
+            // This is because we did not prefix CPR as it was theme no. 1
+            const stack = "${{ inputs.theme }}" === "cpr" ? "frontend/production" : "frontend/${{ inputs.theme }}-production";
+            const result = await github.rest.actions.createWorkflowDispatch({
+                owner: "climatepolicyradar",
+                repo: "navigator-infra",
+                workflow_id: "deploy.yml",
+                ref: "main",
+                inputs: {
+                    "docker-tag": `main-${{ inputs.docker-tag }}`,
+                    stack: stack
+                }
+            })
+            // TODO: extend logging and reporting
+            console.log(result)
