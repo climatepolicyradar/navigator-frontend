@@ -7,7 +7,9 @@ const mockHandleSearchInput = jest.fn();
 const mockSearchInput = "mockSearchInput";
 
 jest.mock("next/router", () => ({
-  useRouter: jest.fn(),
+  useRouter() {
+    return { asPath: "", query: "" };
+  },
 }));
 
 jest.mock("react-query", () => ({
@@ -21,6 +23,6 @@ jest.mock("react-query", () => ({
 describe("Landing Page: ", () => {
   it("should render MCF Landing Page", () => {
     render(<LandingPage handleSearchInput={mockHandleSearchInput} searchInput={mockSearchInput} />);
-    expect(screen.getByText("MCFs: Multilateral Climate Funds")).toBeInTheDocument();
+    expect(screen.getByText("Multilateral Climate Funds")).toBeInTheDocument();
   });
 });

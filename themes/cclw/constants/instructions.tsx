@@ -17,9 +17,9 @@ export const INSTRUCTIONS = (documentTotals: TDocumentTotals) => [
         <li>
           <Link href="/search?c=laws" className={heroLinkClasses}>
             <b>{documentTotals.laws}</b> laws{" "}
-            <span className="self-center">
+            {/* <span className="self-center">
               <ExternalLinkIcon height="12" width="12" />
-            </span>
+            </span> */}
           </Link>
         </li>
         <li>
