@@ -5,6 +5,7 @@ const config: Config = {
   verbose: true,
 
   moduleNameMapper: {
+    "^@api/(.*)$": "<rootDir>/src/api/$1",
     "^@constants/(.*)$": "<rootDir>/src/constants/$1",
     "^@components/(.*)$": "<rootDir>/src/components/$1",
     "^@hooks/(.*)$": "<rootDir>/src/hooks/$1",
