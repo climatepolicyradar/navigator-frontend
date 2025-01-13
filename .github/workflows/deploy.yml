@@ -1,8 +1,15 @@
 # trunk-ignore-all(checkov)
+
 name: Deploy on merge
 on:
   workflow_call:
     inputs:
+      environment:
+        # workflow_call does not support options
+        # this is OK though as the values are generated via code
+        description: Environment
+        type: string
+        required: true
       theme:
         description: Theme
         type: string
@@ -13,6 +20,13 @@ on:
         required: true
   workflow_dispatch:
     inputs:
+      environment:
+        description: Environment
+        type: choice
+        required: true
+        options:
+          - staging
+          - production
       theme:
         description: Theme
         type: string
@@ -37,7 +51,7 @@ jobs:
           github-token: ${{ secrets.NAVIGATOR_INFRA_GITHUB_PAT }}
           script: |
             // This is because we did not prefix CPR as it was theme no. 1
-            const stack = "${{ inputs.theme }}" === "cpr" ? "frontend/production" : "frontend/${{ inputs.theme }}-production";
+            const stack = "${{ inputs.theme }}" === "cpr" ? "frontend/${{ inputs.environment }}" : "frontend/${{ inputs.theme }}-${{ inputs.environment }}";
             const result = await github.rest.actions.createWorkflowDispatch({
                 owner: "climatepolicyradar",
                 repo: "navigator-infra",
