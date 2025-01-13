@@ -4,14 +4,5 @@
 // Currently this is the only way to make dynamic imports work with Next.js, SWC does not work using them
 {
   "presets": ["next/babel"],
-  "plugins": ["babel-plugin-dynamic-import-node"]
+  "plugins": []
 }
-
-// For jest tests that require a dynamically imported component we need to add the following import and beforeAll block
-// to force the loading of all components (NOTE: the import must go at the top of the page)
-
-// import preloadAll from "jest-next-dynamic";
-
-// beforeAll(async () => {
-//   await preloadAll();
-// });
