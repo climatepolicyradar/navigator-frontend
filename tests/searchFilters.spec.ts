@@ -29,7 +29,7 @@ test("search filters", async ({ page }) => {
         },
       ],
       organisations: {
-        CCLW: {
+        CPR: {
           corpora: [
             {
               taxonomy: {
@@ -71,6 +71,13 @@ test("search filters", async ({ page }) => {
   await policiesRadioButton.click();
   expect(policiesRadioButton.isChecked()).toBeTruthy();
 
-  await expect(page.locator('[data-cy="Topic"]:has-text("Topic")').last()).toBeVisible();
-  await expect(page.locator('[data-cy="Sector"]:has-text("Sector")').last()).toBeVisible();
+  const topicAccordion = page.locator('[data-cy="Topic"]:has-text("Topic")').last();
+  await expect(topicAccordion).toBeVisible();
+  await topicAccordion.click();
+  await expect(page.getByRole("radio", { name: "Mitigation" })).toBeVisible();
+
+  const sectorAccordion = page.locator('[data-cy="Sector"]:has-text("Sector")').last();
+  await expect(sectorAccordion).toBeVisible();
+  sectorAccordion.click();
+  await expect(page.getByRole("radio", { name: "Energy" })).toBeVisible();
 });
