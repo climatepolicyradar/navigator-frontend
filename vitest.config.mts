@@ -3,6 +3,11 @@ import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      "tailwind.config.js": "/themes/mcf/tailwind.config.js",
+    },
+  },
   plugins: [tsconfigPaths(), react()],
   test: {
     globals: true,
