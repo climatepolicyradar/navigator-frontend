@@ -19,9 +19,9 @@ const scrollToMap = () => {
 const Instructions = () => {
   const [isAnimated, setIsAnimated] = useState(false);
   const configQuery = useConfig();
-  const { data: { organisations } = {} } = configQuery;
+  const { data: { corpus_types } = {} } = configQuery;
 
-  const totalDocuments = calculateTotalDocuments(organisations);
+  const totalDocuments = calculateTotalDocuments(corpus_types);
 
   useEffect(() => {
     const timer = setTimeout(() => {

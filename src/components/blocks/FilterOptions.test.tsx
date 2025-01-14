@@ -10,7 +10,7 @@ describe("FilterOptions", () => {
       type: "radio",
       category: [],
       dependentFilterKey: "",
-      corporaKey: "CPR",
+      corporaKey: "Laws and Policies",
     };
 
     const testThemeConfig = {
@@ -22,9 +22,16 @@ describe("FilterOptions", () => {
     };
 
     const testTaxonomy = {
-      CPR: {
-        total: 0,
-        count_by_category: {},
+      "Laws and Policies": {
+        taxonomy: {
+          topic: {
+            allow_any: false,
+            allow_blanks: true,
+            allowed_values: ["Allowed topic"],
+          },
+        },
+        corpus_type_name: "",
+        corpus_type_description: "",
         corpora: [
           {
             title: "",
@@ -34,19 +41,17 @@ describe("FilterOptions", () => {
             corpus_import_id: "",
             image_url: "",
             text: "",
-            taxonomy: {
-              topic: {
-                allow_any: false,
-                allow_blanks: true,
-                allowed_values: ["Allowed topic"],
-              },
-            },
+
+            total: 0,
+            count_by_category: {},
+            organisation_id: 1,
+            organisation_name: "",
           },
         ],
       },
     };
 
-    render(<FilterOptions filter={testFilter} query={{}} handleFilterChange={() => {}} organisations={testTaxonomy} themeConfig={testThemeConfig} />);
+    render(<FilterOptions filter={testFilter} query={{}} handleFilterChange={() => {}} corpus_types={testTaxonomy} themeConfig={testThemeConfig} />);
 
     expect(screen.getByText("Allowed topic")).toBeDefined();
   });

@@ -124,7 +124,7 @@
       "type": "radio",
       "category": ["CPR.corpus.i00000001.n0000", "CCLW.corpus.i00000001.n0000"],
       "dependentFilterKey": "",
-      "corporaKey": "CPR"
+      "corporaKey": "Laws and Policies"
     },
     {
       "label": "Sector",
@@ -134,7 +134,7 @@
       "category": ["CPR.corpus.i00000001.n0000", "CCLW.corpus.i00000001.n0000"],
       "dependentFilterKey": "",
       "showFade": "true",
-      "corporaKey": "CPR",
+      "corporaKey": "Laws and Policies",
       "quickSearch": "true"
     }
   ],
