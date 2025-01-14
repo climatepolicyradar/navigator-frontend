@@ -10,9 +10,6 @@ import { TCorpusTypeDictionary, TThemeConfig, TThemeConfigFilter } from "@types"
 import { TextInput } from "@components/forms/TextInput";
 
 const getTaxonomyAllowedValues = (corporaKey: string, taxonomyKey: string, corpus_types: TCorpusTypeDictionary) => {
-  // const allowedValues = organisations[corporaKey].corpora.find((corpus) => corpus.taxonomy.hasOwnProperty(taxonomyKey))?.taxonomy[taxonomyKey]
-  //   ?.allowed_values;
-
   const allowedValues = corpus_types[corporaKey].taxonomy[taxonomyKey]?.allowed_values;
 
   return allowedValues;

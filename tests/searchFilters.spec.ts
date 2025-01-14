@@ -28,39 +28,26 @@ test("search filters", async ({ page }) => {
           ],
         },
       ],
-      organisations: {
-        CPR: {
-          corpora: [
-            {
-              taxonomy: {
-                topic: {
-                  allow_any: false,
-                  allow_blanks: true,
-                  allowed_values: ["Mitigation"],
-                },
-                sector: {
-                  allow_any: false,
-                  allow_blanks: true,
-                  allowed_values: ["Energy"],
-                },
-              },
-            },
-          ],
-        },
-      },
       corpus_types: {
         // add more corpus types and different taxonomies
         "Laws and Policies": {
           taxonomy: {
             topic: {
-              allow_any: false,
-              allow_blanks: true,
               allowed_values: ["Mitigation"],
             },
             sector: {
-              allow_any: false,
-              allow_blanks: true,
               allowed_values: ["Energy"],
+            },
+          },
+          corpora: [],
+        },
+        "Intl. agreements": {
+          taxonomy: {
+            author: {
+              allowed_values: [],
+            },
+            author_type: {
+              allowed_values: ["Party"],
             },
           },
           corpora: [],
