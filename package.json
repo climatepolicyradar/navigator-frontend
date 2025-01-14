@@ -11,7 +11,8 @@
     "add-dev": "docker-compose exec -w /opt/node_app frontend npm install -D",
     "remove": "docker-compose exec -w /opt/node_app frontend npm uninstall",
     "test": "vitest",
-    "test-e2e": "npx playwright test"
+    "test-e2e": "npx playwright test",
+    "test-e2e-ui": "npx playwright test --ui"
   },
   "dependencies": {
     "@hookform/resolvers": "^2.8.8",
