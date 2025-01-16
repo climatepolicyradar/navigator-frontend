@@ -55,7 +55,7 @@ jobs:
         env:
           NODE_ENV: production
       - name: Run tests
-        run: vitest
+        run: npm run test
 
   test-e2e:
     timeout-minutes: 60
