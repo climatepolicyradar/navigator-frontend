@@ -52,7 +52,7 @@
       "type": "radio",
       "category": ["CCLW.corpus.i00000001.n0000"],
       "dependentFilterKey": "",
-      "corporaKey": "CCLW"
+      "corporaKey": "Laws and Policies"
     },
     {
       "label": "Sector",
@@ -62,7 +62,7 @@
       "category": ["CCLW.corpus.i00000001.n0000"],
       "dependentFilterKey": "",
       "showFade": "true",
-      "corporaKey": "CCLW",
+      "corporaKey": "Laws and Policies",
       "quickSearch": "true"
     }
   ],

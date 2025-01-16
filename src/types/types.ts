@@ -276,6 +276,19 @@ export type TCorpus = {
   };
 };
 
+export type TCorpusWithStats = {
+  title: string;
+  description: string;
+  image_url: string;
+  text: string;
+  organisation_name: string;
+  organisation_id: number;
+  total: number;
+  count_by_category: {
+    [key: string]: number;
+  };
+};
+
 export type TOrganisation = {
   corpora: TCorpus[];
   total: number;
@@ -284,8 +297,22 @@ export type TOrganisation = {
   };
 };
 
+export type TCorpusType = {
+  corpus_type_name: string;
+  corpus_type_description: string;
+  taxonomy: {
+    [key: string]: {
+      allow_any: boolean;
+      allow_blanks: boolean;
+      allowed_values: string[];
+    };
+  };
+  corpora: TCorpusWithStats[];
+};
+
 export interface TDictionary<T> {
   [Key: string]: T;
 }
 
 export type TOrganisationDictionary = TDictionary<TOrganisation>;
+export type TCorpusTypeDictionary = TDictionary<TCorpusType>;

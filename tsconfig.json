@@ -16,7 +16,7 @@
     "jsx": "preserve",
     "incremental": true,
     "baseUrl": "",
-    "types": ["node", "jest"],
+    "types": ["node", "vitest/globals"],
     "paths": {
       "@api/*": ["src/api/*"],
       "@components/*": ["src/components/*"],
@@ -33,7 +33,7 @@
       "@mcf/*": ["themes/mcf/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/api/pdf.js", "jest.config.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/api/pdf.js", "vitest.config.mts"],
   "exclude": ["node_modules"],
   "types": ["cypress", "cypress-file-upload"]
 }

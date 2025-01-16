@@ -5,12 +5,9 @@ import { ParsedUrlQueryInput } from "querystring";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdOutlineTune } from "react-icons/md";
 
-import { ApiClient, getFilters } from "@api/http-common";
-
 import useSearch from "@hooks/useSearch";
 import { useDownloadCsv } from "@hooks/useDownloadCsv";
 import useConfig from "@hooks/useConfig";
-import useGetThemeConfig from "@hooks/useThemeConfig";
 
 import { SiteWidth } from "@components/panels/SiteWidth";
 import { SingleCol } from "@components/panels/SingleCol";
@@ -38,7 +35,7 @@ import { getThemeConfigLink } from "@utils/getThemeConfigLink";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 
-import { TDocumentCategory, TTheme, TThemeConfig } from "@types";
+import { TTheme, TThemeConfig } from "@types";
 import { readConfigFile } from "@utils/readConfigFile";
 
 type TProps = {
@@ -63,7 +60,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
   const configQuery = useConfig();
-  const { data: { regions = [], countries = [], organisations = {} } = {} } = configQuery;
+  const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 
@@ -395,7 +392,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 query={router.query}
                 regions={regions}
                 countries={countries}
-                organisations={organisations}
+                corpus_types={corpus_types}
                 handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
@@ -416,7 +413,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 query={router.query}
                 regions={regions}
                 countries={countries}
-                organisations={organisations}
+                corpus_types={corpus_types}
                 handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
