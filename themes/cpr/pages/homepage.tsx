@@ -21,7 +21,7 @@ const WorldMap = dynamic(() => import("@components/map/WorldMap"), {
   ssr: false,
 });
 
-type TProps = {
+export type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   handleSearchChange: (type: string, value: any) => void;
   searchInput: string;

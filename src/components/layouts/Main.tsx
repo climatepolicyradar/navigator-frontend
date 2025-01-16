@@ -10,8 +10,10 @@ import { getPageTitle } from "@utils/getPageTitle";
 import { getCanonicalUrl } from "@utils/getCanonicalUrl";
 
 import { TTheme, TThemeConfig } from "@types";
+import dynamic from "next/dynamic";
 
-const { default: Wrapper } = await import(`/themes/${process.env.THEME}/layouts/main`);
+const Header = dynamic(() => import(`../../../themes/${process.env.THEME}/components/Header`));
+const Footer = dynamic(() => import(`../../../themes/${process.env.THEME}/components/Footer`));
 
 type TProps = {
   title?: string;
@@ -41,7 +43,9 @@ const Layout: FC<TProps> = ({ children, title, theme, description, themeConfig, 
       <a className="sr-only" href="#main">
         Skip to content
       </a>
-      <Wrapper>{children}</Wrapper>
+      <Header />
+      <main className="flex flex-col flex-1">{children}</main>
+      <Footer />
     </div>
   );
 };
