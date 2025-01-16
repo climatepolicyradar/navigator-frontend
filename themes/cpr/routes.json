@@ -3,5 +3,10 @@
     "title": "Terms of use",
     "path": "terms-of-use",
     "contentPath": "terms-of-use"
+  },
+  {
+    "title": "Ocean Energy Pathway",
+    "path": "oep",
+    "contentPath": "oep"
   }
 ]
