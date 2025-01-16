@@ -9,25 +9,25 @@
         {
           "label": "Adaptation Fund",
           "slug": "adaptation-fund",
-          "value": ["MCF.corpus.AF.n0000"],
+          "value": ["MCF.corpus.AF.n0000", "MCF.corpus.AF.Guidance"],
           "corporaKey": "AF"
         },
         {
           "label": "Climate Investment Funds",
           "slug": "climate-investment-funds",
-          "value": ["MCF.corpus.CIF.n0000"],
+          "value": ["MCF.corpus.CIF.n0000", "MCF.corpus.CIF.Guidance"],
           "corporaKey": "CIF"
         },
         {
           "label": "Global Environment Facility",
           "slug": "global-environment-facility",
-          "value": ["MCF.corpus.GEF.n0000"],
+          "value": ["MCF.corpus.GEF.n0000", "MCF.corpus.GEF.Guidance"],
           "corporaKey": "GEF"
         },
         {
           "label": "Green Climate Fund",
           "slug": "green-climate-fund",
-          "value": ["MCF.corpus.GCF.n0000"],
+          "value": ["MCF.corpus.GCF.n0000", "MCF.corpus.GCF.Guidance"],
           "corporaKey": "GCF"
         }
       ],
