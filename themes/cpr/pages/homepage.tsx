@@ -21,6 +21,10 @@ const WorldMap = dynamic(() => import("@components/map/WorldMap"), {
   ssr: false,
 });
 
+/**
+ * GOTCHA: we export this to be used in the src/pages/index.tsx file.
+ * It's a generic passed to `dynamic` so we can't rely on generic type checking.
+ */
 export type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   handleSearchChange: (type: string, value: any) => void;
