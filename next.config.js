@@ -22,7 +22,7 @@ const nextConfig = {
   },
   // Loads in theme styles
   sassOptions: {
-    additionalData: `@import "./themes/${process.env.THEME}/styles/styles.scss";`,
+    additionalData: `@use "./themes/${process.env.THEME}/styles/styles.scss";`,
   },
   // Redirects
   redirects: async () => {
