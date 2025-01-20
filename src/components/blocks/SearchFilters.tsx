@@ -22,8 +22,9 @@ import { canDisplayFilter } from "@utils/canDisplayFilter";
 import { getFilterLabel } from "@utils/getFilterLabel";
 
 import { TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@types";
+import dynamic from "next/dynamic";
 
-const { default: MethodologyLink } = await import(`/themes/${process.env.THEME}/components/MethodologyLink`);
+const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/components/MethodologyLink`));
 
 const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption) => {
   if (selectedCatgeory) {
