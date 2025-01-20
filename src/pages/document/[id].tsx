@@ -47,6 +47,8 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
+import { PostHog } from "posthog-node";
+import { getFeatureFlags } from "@utils/featureFlags";
 
 type TProps = {
   page: TFamilyPage;
@@ -367,6 +369,7 @@ export default FamilyPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+  console.info(getFeatureFlags(context.req.cookies));
 
   const theme = process.env.THEME;
   const id = context.params.id;

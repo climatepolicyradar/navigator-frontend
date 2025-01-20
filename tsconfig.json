@@ -17,6 +17,7 @@
     "incremental": true,
     "baseUrl": "",
     "types": ["node", "vitest/globals"],
+    "noUncheckedIndexedAccess": true,
     "paths": {
       "@api/*": ["src/api/*"],
       "@components/*": ["src/components/*"],

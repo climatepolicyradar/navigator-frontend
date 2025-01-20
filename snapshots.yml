@@ -1,0 +1,4 @@
+serve: .
+snapshots:
+  - name: Document page
+    url: http://localhost:3000/document/farming-forest-and-alimentation-framework-law-no-2014-1170_deba
