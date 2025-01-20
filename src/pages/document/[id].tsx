@@ -41,7 +41,7 @@ import { pluralise } from "@utils/pluralise";
 import { getFamilyMetaDescription } from "@utils/getFamilyMetaDescription";
 import { extractNestedData } from "@utils/extractNestedData";
 
-import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TOrganisationDictionary, TTheme } from "@types";
+import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TOrganisationDictionary, TTheme, TCorpusTypeDictionary } from "@types";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
@@ -52,7 +52,7 @@ type TProps = {
   page: TFamilyPage;
   targets: TTarget[];
   countries: TGeography[];
-  organisations: TOrganisationDictionary;
+  corpus_types: TCorpusTypeDictionary;
   theme: TTheme;
 };
 
@@ -63,13 +63,7 @@ type TProps = {
   - The 'physical document' view is within the folder: src/pages/documents/[id].tsx.
 */
 
-const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
-  page,
-  targets = [],
-  countries = [],
-  organisations = null,
-  theme,
-}: TProps) => {
+const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page, targets = [], countries = [], corpus_types, theme }: TProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const startingNumberOfTargetsToDisplay = 5;
@@ -118,9 +112,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   };
 
   const { corpusImage, corpusAltImage, corpusNote } = getCorpusInfo({
-    organisations,
-    organisation: page?.organisation,
-    corpus_id: page?.corpus_id,
+    corpus_types,
+    corpus_id: page.corpus_id,
   });
 
   const [mainDocuments, otherDocuments] = getMainDocuments(page.documents);
@@ -382,7 +375,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let familyData: TFamilyPage;
   let targetsData: TTarget[] = [];
   let countriesData: TGeography[] = [];
-  let organisationsData: TOrganisationDictionary;
+  let corpus_types: TCorpusTypeDictionary;
 
   try {
     const { data: returnedData } = await client.get(`/documents/${id}`);
@@ -400,10 +393,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   if (familyData) {
     try {
-      const configRaw = await client.get(`/config`, null);
+      const configRaw = await client.getConfig();
       const response_geo = extractNestedData<TGeography>(configRaw.data.geographies, 2, "");
       countriesData = response_geo.level2;
-      organisationsData = configRaw.data.organisations;
+      corpus_types = configRaw.data.corpus_types;
     } catch (error) {}
   }
 
@@ -418,7 +411,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       page: familyData,
       targets: targetsData,
       countries: countriesData,
-      organisations: organisationsData,
+      corpus_types,
       theme: theme,
     },
   };

@@ -268,6 +268,7 @@ export type TCorpus = {
 };
 
 export type TCorpusWithStats = {
+  corpus_import_id: string;
   title: string;
   description: string;
   image_url: string;
