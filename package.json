@@ -18,6 +18,9 @@
     {
       "name": "Next app",
       "path": ".next/static/chunks/**/*.js",
+      "ignore": [
+        ".next/static/chunks/pages/_feature-flags-*.js"
+      ],
       "limit": "275 KB"
     }
   ],
