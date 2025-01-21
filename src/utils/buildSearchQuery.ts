@@ -1,6 +1,8 @@
 import { initialSearchCriteria } from "@constants/searchCriteria";
 import { QUERY_PARAMS } from "@constants/queryParams";
 
+import { buildSearchQueryMetadata } from "./buildSearchQueryMetadata";
+
 import { TSearchCriteria, TSearchKeywordFilters, TThemeConfig } from "@types";
 
 export type TRouterQuery = {
@@ -130,43 +132,15 @@ export default function buildSearchQuery(
     }
   }
   if (routerQuery[QUERY_PARAMS.topic]) {
-    let topicsForApi: string[];
-    const topics = routerQuery[QUERY_PARAMS.topic];
-    const configTopics = themeConfig.filters.find((f) => f.taxonomyKey === "topic");
-    if (configTopics) {
-      // remove existing topic filters from the metadata
-      query.metadata = query.metadata.filter((m) => m.name !== configTopics.apiMetaDataKey);
-      if (Array.isArray(topics)) {
-        topicsForApi = topics;
-      } else {
-        topicsForApi = [topics];
-      }
-      topicsForApi.map((t) => {
-        query.metadata.push({ name: configTopics.apiMetaDataKey, value: decodeURI(t) });
-      });
-    }
+    buildSearchQueryMetadata(query, routerQuery[QUERY_PARAMS.topic], "topic", themeConfig);
   }
   if (routerQuery[QUERY_PARAMS.sector]) {
-    let sectorsForApi: string[];
-    const sectors = routerQuery[QUERY_PARAMS.sector];
-    const configSectors = themeConfig.filters.find((f) => f.taxonomyKey === "sector");
-    if (configSectors) {
-      // remove existing sector filters from the metadata
-      query.metadata = query.metadata.filter((m) => m.name !== configSectors.apiMetaDataKey);
-      if (Array.isArray(sectors)) {
-        sectorsForApi = sectors;
-      } else {
-        sectorsForApi = [sectors];
-      }
-      sectorsForApi.map((t) => {
-        query.metadata.push({ name: configSectors.apiMetaDataKey, value: decodeURI(t) });
-      });
-    }
+    buildSearchQueryMetadata(query, routerQuery[QUERY_PARAMS.sector], "sector", themeConfig);
   }
   // ---- End of Laws and Policies specific ----
 
   // ---- MCF specific ----
-  // These are the filters that are specific to the MCF theme
+  // These are the filters that are specific to the MCFs corpus types
   // TODO: handle this more elegantly and scaleably
   if (themeConfig.defaultCorpora) {
     query.corpus_import_ids = themeConfig.defaultCorpora;
@@ -192,41 +166,19 @@ export default function buildSearchQuery(
   }
 
   if (routerQuery[QUERY_PARAMS.status]) {
-    let statusForApi: string[];
-    const statuses = routerQuery[QUERY_PARAMS.status];
-    const configStatus = themeConfig.filters.find((f) => f.taxonomyKey === "status");
-    if (configStatus) {
-      // remove existing status filters from the metadata
-      query.metadata = query.metadata.filter((m) => m.name !== configStatus.apiMetaDataKey);
-      if (Array.isArray(statuses)) {
-        statusForApi = statuses;
-      } else {
-        statusForApi = [statuses];
-      }
-      statusForApi.map((s) => {
-        query.metadata.push({ name: configStatus.apiMetaDataKey, value: decodeURI(s) });
-      });
-    }
+    buildSearchQueryMetadata(query, routerQuery[QUERY_PARAMS.status], "status", themeConfig);
   }
 
   if (routerQuery[QUERY_PARAMS.implementing_agency]) {
-    let implementingAgencyForApi: string[];
-    const implementingAgencies = routerQuery[QUERY_PARAMS.implementing_agency];
-    const configIplementingAgency = themeConfig.filters.find((f) => f.taxonomyKey === "implementing_agency");
-    if (configIplementingAgency) {
-      // remove existing status filters from the metadata
-      query.metadata = query.metadata.filter((m) => m.name !== configIplementingAgency.apiMetaDataKey);
-      if (Array.isArray(implementingAgencies)) {
-        implementingAgencyForApi = implementingAgencies;
-      } else {
-        implementingAgencyForApi = [implementingAgencies];
-      }
-      implementingAgencyForApi.map((ia) => {
-        query.metadata.push({ name: configIplementingAgency.apiMetaDataKey, value: decodeURI(ia) });
-      });
-    }
+    buildSearchQueryMetadata(query, routerQuery[QUERY_PARAMS.implementing_agency], "implementing_agency", themeConfig);
   }
   // ---- End of MCF specific ----
+
+  // ---- Reports specific ----
+  // These are the filters that are specific to the Reports corpus type
+  if (routerQuery[QUERY_PARAMS.author_type]) {
+    buildSearchQueryMetadata(query, routerQuery[QUERY_PARAMS.author_type], "author_type", themeConfig);
+  }
 
   query = {
     ...query,
