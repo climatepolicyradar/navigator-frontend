@@ -102,7 +102,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
       <InputRadio
         key={option}
         label={option}
-        checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option)}
+        checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]] === option}
         onChange={() => null} // supress normal radio behaviour to allow to deselection
         onClick={() => {
           handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option, true);
@@ -113,7 +113,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
       <InputCheck
         key={option}
         label={option}
-        checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option)}
+        checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]] === option}
         onChange={() => {
           handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option);
         }}
