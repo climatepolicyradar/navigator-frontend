@@ -56,6 +56,7 @@ type TProps = {
   countries: TGeography[];
   corpus_types: TCorpusTypeDictionary;
   theme: TTheme;
+  featureFlags: Record<string, string | boolean>;
 };
 
 /*
@@ -65,7 +66,14 @@ type TProps = {
   - The 'physical document' view is within the folder: src/pages/documents/[id].tsx.
 */
 
-const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ page, targets = [], countries = [], corpus_types, theme }: TProps) => {
+const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
+  page,
+  targets = [],
+  countries = [],
+  corpus_types,
+  theme,
+  featureFlags,
+}: TProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const startingNumberOfTargetsToDisplay = 5;
@@ -362,6 +370,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ pa
           </SingleCol>
         </SiteWidth>
       </section>
+      {/* This is here in the short term for us to test features flags with our cache settings */}
+      <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
     </Layout>
   );
 };
@@ -369,7 +379,7 @@ export default FamilyPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-  console.info(getFeatureFlags(context.req.cookies));
+  const featureFlags = await getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
   const id = context.params.id;
@@ -416,6 +426,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       countries: countriesData,
       corpus_types,
       theme: theme,
+      featureFlags,
     },
   };
 };
