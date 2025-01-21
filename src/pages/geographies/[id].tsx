@@ -377,7 +377,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
   try {
     let countries: TGeography[] = [];
-    const configData = await client.get(`/config`, null);
+    const configData = await client.getConfig();
     const response_geo = extractNestedData<TGeography>(configData.data?.geographies, 2, "");
     countries = response_geo.level2;
     const country = getCountryCode(id as string, countries);

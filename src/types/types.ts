@@ -40,6 +40,11 @@ export type TPassage = {
   text_block_page: number;
 };
 
+export type TDataNode<T> = {
+  node: T;
+  children: TDataNode<T>[];
+};
+
 export type TGeography = {
   id: number;
   display_value: string;
@@ -68,20 +73,6 @@ export type TTarget = {
   "Net zero target?": "TRUE" | "FALSE";
   "family-slug": string;
   "family-name": string;
-};
-
-export type TGeographyConfigNode = {
-  id: number;
-  display_value: string;
-  value: string;
-  type: string;
-  parent_id: number;
-  slug: string;
-};
-
-export type TGeographyConfig = {
-  node: TGeographyConfigNode;
-  children: TGeographyConfig[];
 };
 
 export type TGeographyStats = {
@@ -277,6 +268,7 @@ export type TCorpus = {
 };
 
 export type TCorpusWithStats = {
+  corpus_import_id: string;
   title: string;
   description: string;
   image_url: string;

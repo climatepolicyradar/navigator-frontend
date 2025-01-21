@@ -1,27 +1,22 @@
 import { ApiClient } from "@api/http-common";
-import { TGeographyConfig } from "@types";
+import { TDataNode, TGeography } from "@types";
 
 function Sitemap() {}
 
-function extractGeographyIds(config: TGeographyConfig): number[] {
-  const children_ids: number[] = config.children.flatMap((node): number[] => extractGeographyIds(node));
-  return [config.node.id].concat(children_ids);
-}
-
-function extractGeographySlugs(config: TGeographyConfig): string[] {
+function extractGeographySlugs(config: TDataNode<TGeography>): string[] {
   const children_slugs: string[] = config.children.flatMap((node): string[] => extractGeographySlugs(node));
   return [config.node.slug].concat(children_slugs);
 }
 
-async function fetchGeographies(): Promise<TGeographyConfig[]> {
+async function fetchGeographies(): Promise<TDataNode<TGeography>[]> {
   const client = new ApiClient();
-  const { data: data } = await client.get(`/config`, null);
+  const { data: data } = await client.getConfig();
   return data.geographies;
 }
 
 async function getGeographyIds(): Promise<string[]> {
-  const geographyData: TGeographyConfig[] = await fetchGeographies();
-  return geographyData.flatMap((item: TGeographyConfig) => extractGeographySlugs(item));
+  const geographyData: TDataNode<TGeography>[] = await fetchGeographies();
+  return geographyData.flatMap((item: TDataNode<TGeography>) => extractGeographySlugs(item));
 }
 
 async function getGeographyPages(res: any, hostname: string): Promise<string[]> {

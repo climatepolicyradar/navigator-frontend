@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { TCorpusTypeDictionary, TDataNode, TGeography, TLanguages } from "@types";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 export async function getEnvFromServer() {
@@ -33,10 +34,10 @@ class ApiClient {
   /**
    * Submit a GET request and return the response as a mapped promise.
    */
-  get(url: string, params?: any): Promise<AxiosResponse> {
+  get<T = any>(url: string, params?: any): Promise<AxiosResponse<T>> {
     // console.log(`GET: ${this.baseUrl}${url}`);
     return this.axiosClient
-      .get(url, { params })
+      .get<T>(url, { params })
       .then((res: any) => res)
       .catch((err) => {
         console.log(err);
@@ -68,6 +69,10 @@ class ApiClient {
         console.log(err);
         return Promise.reject(err);
       });
+  }
+
+  getConfig() {
+    return this.get<{ geographies: TDataNode<TGeography>[]; corpus_types: TCorpusTypeDictionary; languages: TLanguages }>("/config");
   }
 }
 
