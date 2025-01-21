@@ -14,16 +14,6 @@
     "test-e2e": "npx playwright test",
     "test-e2e-ui": "npx playwright test --ui"
   },
-  "size-limit": [
-    {
-      "name": "Next app",
-      "path": ".next/static/chunks/**/*.js",
-      "ignore": [
-        ".next/static/chunks/pages/_feature-flags-*.js"
-      ],
-      "limit": "275 KB"
-    }
-  ],
   "dependencies": {
     "@hookform/resolvers": "^2.8.8",
     "axios": "^0.24.0",
