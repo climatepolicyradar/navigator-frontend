@@ -1,5 +1,5 @@
 import Button from "@components/buttons/Button";
-import { deleteFeatureFlagCookie, enableFeatureFlagCookie } from "@utils/featureFlags";
+import { setFeatureFlags } from "@utils/featureFlags";
 import { usePostHog } from "posthog-js/react";
 
 export default function FeatureFlags() {
@@ -19,17 +19,17 @@ export default function FeatureFlags() {
       <Button id="beta-button">Feature Flags</Button>
       <Button
         onClick={() => {
-          posthog.getEarlyAccessFeatures((featureFlags) => {
-            featureFlags.map((featureFlag) => {
-              const { flagKey } = featureFlag;
+          posthog.getEarlyAccessFeatures((posthogFeatureFlags) => {
+            const featureFlags = {};
+            posthogFeatureFlags.map((posthogFeatureFlag) => {
+              const { flagKey } = posthogFeatureFlag;
               const enabled = posthog.isFeatureEnabled(flagKey);
 
               if (enabled) {
-                enableFeatureFlagCookie(flagKey);
-              } else {
-                deleteFeatureFlagCookie(flagKey);
+                featureFlags[flagKey] = true;
               }
             });
+            setFeatureFlags(featureFlags);
           });
         }}
       >

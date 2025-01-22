@@ -1,11 +1,8 @@
 import { deleteCookie, setCookie } from "./cookies";
 import getDomain from "./getDomain";
 
-export function enableFeatureFlagCookie(flagKey: string) {
-  setCookie(`feature_flag_${flagKey}`, "true", getDomain());
-}
-export function deleteFeatureFlagCookie(flagKey: string) {
-  deleteCookie(`feature_flag_${flagKey}`, getDomain());
+export function setFeatureFlags(featureFlags: Partial<{ [key: string]: true }>) {
+  setCookie(`feature_flags`, JSON.stringify(featureFlags), getDomain());
 }
 
 export async function getFeatureFlags(
@@ -14,15 +11,15 @@ export async function getFeatureFlags(
     [key: string]: string | string[];
   }>
 ) {
-  const flags: Partial<{ [key: string]: true }> = {};
-
-  Object.entries(cookies).map(([key, value]) => {
-    if (key.startsWith("feature_flag_")) {
-      const flagKey = key.replace("feature_flag_", "");
-      if (value === "true") {
-        flags[flagKey] = true;
-      }
+  let featureFlags: Partial<{ [key: string]: true }> = {};
+  if (cookies.feature_flags) {
+    try {
+      const featureFlagsCookie = Array.isArray(cookies.feature_flags) ? cookies.feature_flags[0] : cookies.feature_flags;
+      featureFlags = JSON.parse(featureFlagsCookie);
+    } catch (e) {
+      /** it would be nice to alert to a beacon service, but we have none 😢 */
     }
-  });
-  return flags;
+  }
+
+  return featureFlags;
 }
