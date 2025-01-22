@@ -309,7 +309,7 @@ export interface TDictionary<T> {
 export type TOrganisationDictionary = TDictionary<TOrganisation>;
 export type TCorpusTypeDictionary = TDictionary<TCorpusType>;
 
-export type Concept = {
+export type TConcept = {
   id: string;
   name: string;
   parent_concepts: Record<string, string>[];
@@ -328,7 +328,7 @@ export type TSearchResponse = {
   families: {
     id: string;
     hits: (TFamily & {
-      concepts: Concept[];
+      concepts: TConcept[];
     })[];
   };
   continuation_token?: string;
