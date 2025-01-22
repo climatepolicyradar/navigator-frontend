@@ -415,7 +415,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const conceptsV1 = featureFlags["concepts-v1"];
     if (conceptsV1) {
       // fetch the families
-      const { vespaFamilyData: returnedData } = await client.get(`/families/${familyData.import_id}`);
+      const { data: vespaFamilyDataRepsonse } = await client.get(`/families/${familyData.import_id}`);
+      vespaFamilyData = vespaFamilyDataRepsonse;
     }
   } catch (error) {
     // TODO: handle error more elegantly
