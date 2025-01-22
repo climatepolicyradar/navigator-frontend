@@ -41,7 +41,7 @@ import { pluralise } from "@utils/pluralise";
 import { getFamilyMetaDescription } from "@utils/getFamilyMetaDescription";
 import { extractNestedData } from "@utils/extractNestedData";
 
-import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TOrganisationDictionary, TTheme, TCorpusTypeDictionary } from "@types";
+import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TOrganisationDictionary, TTheme, TCorpusTypeDictionary, TSearchResponse } from "@types";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
@@ -57,6 +57,7 @@ type TProps = {
   corpus_types: TCorpusTypeDictionary;
   theme: TTheme;
   featureFlags: Record<string, string | boolean>;
+  vespaFamilyData: TSearchResponse;
 };
 
 /*
@@ -73,6 +74,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   corpus_types,
   theme,
   featureFlags,
+  vespaFamilyData,
 }: TProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -337,6 +339,21 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               </div>
             </section>
 
+            {vespaFamilyData && (
+              <section className="mt-8">
+                <Heading level={4}>Concepts</Heading>
+                <div className="flex text-sm">
+                  <ul>
+                    {vespaFamilyData.families.hits.map((family) => {
+                      return family.concepts.map((concept) => {
+                        return <li key={concept.id}>{concept.name}</li>;
+                      });
+                    })}
+                  </ul>
+                </div>
+              </section>
+            )}
+
             {page.collections.length > 0 && (
               <div className="mt-8">
                 <Divider />
@@ -386,6 +403,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const client = new ApiClient(process.env.API_URL);
 
   let familyData: TFamilyPage;
+  let vespaFamilyData: TSearchResponse;
   let targetsData: TTarget[] = [];
   let countriesData: TGeography[] = [];
   let corpus_types: TCorpusTypeDictionary;
@@ -393,6 +411,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const { data: returnedData } = await client.get(`/documents/${id}`);
     familyData = returnedData;
+
+    const conceptsV1 = featureFlags["concepts-v1"];
+    if (conceptsV1) {
+      // fetch the families
+      const { vespaFamilyData: returnedData } = await client.get(`/families/${familyData.import_id}`);
+    }
   } catch (error) {
     // TODO: handle error more elegantly
   }
@@ -427,6 +451,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       corpus_types,
       theme: theme,
       featureFlags,
+      vespaFamilyData,
     },
   };
 };

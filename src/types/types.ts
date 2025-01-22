@@ -308,3 +308,30 @@ export interface TDictionary<T> {
 
 export type TOrganisationDictionary = TDictionary<TOrganisation>;
 export type TCorpusTypeDictionary = TDictionary<TCorpusType>;
+
+export type Concept = {
+  id: string;
+  name: string;
+  parent_concepts: Record<string, string>[];
+  parent_concept_ids_flat: string;
+  model: string;
+  end: number;
+  start: number;
+  timestamp: string;
+};
+
+export type TSearchResponse = {
+  total_hits: number;
+  total_family_hits: number;
+  query_time_ms?: number;
+  total_time_ms?: number;
+  families: {
+    id: string;
+    hits: (TFamily & {
+      concepts: Concept[];
+    })[];
+  };
+  continuation_token?: string;
+  this_continuation_token: string;
+  prev_continuation_token: string;
+};
