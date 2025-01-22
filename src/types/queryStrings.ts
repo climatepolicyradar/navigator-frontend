@@ -15,7 +15,7 @@ export type TQueryStrings = {
   fund: string;
   status: string;
   implementing_agency: string;
-  fund_type: string;
+  fund_doc_type: string;
   // Laws and Policies
   framework_laws: string;
   topic: string;

@@ -114,7 +114,7 @@
     },
     {
       "label": "Type",
-      "taxonomyKey": "fund_type",
+      "taxonomyKey": "fund_doc_type",
       "apiMetaDataKey": "",
       "type": "radio",
       "options": [
@@ -169,7 +169,7 @@
       "apiMetaDataKey": "family.implementing_agency",
       "type": "radio",
       "category": ["projects"],
-      "categoryKey": "fund_type",
+      "categoryKey": "fund_doc_type",
       "showFade": "true",
       "dependentFilterKey": "fund",
       "quickSearch": "true"
