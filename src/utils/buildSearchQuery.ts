@@ -132,10 +132,10 @@ export default function buildSearchQuery(
     }
   }
   if (routerQuery[QUERY_PARAMS.topic]) {
-    buildSearchQueryMetadata(query, routerQuery[QUERY_PARAMS.topic], "topic", themeConfig);
+    query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS.topic], "topic", themeConfig);
   }
   if (routerQuery[QUERY_PARAMS.sector]) {
-    buildSearchQueryMetadata(query, routerQuery[QUERY_PARAMS.sector], "sector", themeConfig);
+    query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS.sector], "sector", themeConfig);
   }
   // ---- End of Laws and Policies specific ----
 
@@ -166,18 +166,18 @@ export default function buildSearchQuery(
   }
 
   if (routerQuery[QUERY_PARAMS.status]) {
-    buildSearchQueryMetadata(query, routerQuery[QUERY_PARAMS.status], "status", themeConfig);
+    query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS.status], "status", themeConfig);
   }
 
   if (routerQuery[QUERY_PARAMS.implementing_agency]) {
-    buildSearchQueryMetadata(query, routerQuery[QUERY_PARAMS.implementing_agency], "implementing_agency", themeConfig);
+    query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS.implementing_agency], "implementing_agency", themeConfig);
   }
   // ---- End of MCF specific ----
 
   // ---- Reports specific ----
   // These are the filters that are specific to the Reports corpus type
   if (routerQuery[QUERY_PARAMS.author_type]) {
-    buildSearchQueryMetadata(query, routerQuery[QUERY_PARAMS.author_type], "author_type", themeConfig);
+    query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS.author_type], "author_type", themeConfig);
   }
 
   query = {
