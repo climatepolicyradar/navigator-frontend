@@ -2,7 +2,12 @@ import { deleteCookie, setCookie } from "./cookies";
 import getDomain from "./getDomain";
 
 export function setFeatureFlags(featureFlags: Partial<{ [key: string]: true }>) {
-  setCookie(`feature_flags`, JSON.stringify(featureFlags), getDomain());
+  if (Object.keys(featureFlags).length === 0) {
+    deleteCookie(`feature_flags`, getDomain());
+    return;
+  } else {
+    setCookie(`feature_flags`, JSON.stringify(featureFlags), getDomain());
+  }
 }
 
 export async function getFeatureFlags(
