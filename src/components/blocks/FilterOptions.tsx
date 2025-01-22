@@ -23,6 +23,17 @@ type TProps = {
   themeConfig: TThemeConfig;
 };
 
+const filterIsSelected = (queryValue: string | string[] | undefined, option: string) => {
+  if (!queryValue) {
+    return false;
+  }
+  if (typeof queryValue === "string") {
+    return queryValue === option;
+  } else {
+    return queryValue.includes(option);
+  }
+};
+
 export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types, themeConfig }: TProps) => {
   const [search, setSearch] = useState("");
 
@@ -35,7 +46,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
             <InputRadio
               key={option.slug}
               label={option.label}
-              checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option.slug)}
+              checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option.slug)}
               onChange={() => null} // supress normal radio behaviour to allow to deselection
               onClick={() => {
                 handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug, true);
@@ -46,7 +57,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
             <InputCheck
               key={option.slug}
               label={option.label}
-              checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option.slug)}
+              checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option.slug)}
               onChange={() => {
                 handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug);
               }}
@@ -102,7 +113,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
       <InputRadio
         key={option}
         label={option}
-        checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]] === option}
+        checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option)}
         onChange={() => null} // supress normal radio behaviour to allow to deselection
         onClick={() => {
           handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option, true);
@@ -113,7 +124,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
       <InputCheck
         key={option}
         label={option}
-        checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]] === option}
+        checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option)}
         onChange={() => {
           handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option);
         }}
