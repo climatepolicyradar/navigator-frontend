@@ -1,6 +1,5 @@
 import Button from "@components/buttons/Button";
-import { deleteCookie, setCookie } from "@utils/cookies";
-import getDomain from "@utils/getDomain";
+import { deleteFeatureFlagCookie, enableFeatureFlagCookie } from "@utils/featureFlags";
 import { usePostHog } from "posthog-js/react";
 
 export default function FeatureFlags() {
@@ -24,10 +23,11 @@ export default function FeatureFlags() {
             featureFlags.map((featureFlag) => {
               const { flagKey } = featureFlag;
               const enabled = posthog.isFeatureEnabled(flagKey);
+
               if (enabled) {
-                setCookie(`feature_flag_${flagKey}`, "true", getDomain());
+                enableFeatureFlagCookie(flagKey);
               } else {
-                deleteCookie(`feature_flag_${flagKey}`, getDomain());
+                deleteFeatureFlagCookie(flagKey);
               }
             });
           });

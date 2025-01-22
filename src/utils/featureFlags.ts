@@ -1,12 +1,12 @@
-import { PostHog } from "posthog-node";
+import { deleteCookie, setCookie } from "./cookies";
+import getDomain from "./getDomain";
 
-/**
- * This key is a public key.
- * @see: https://posthog.com/docs/privacy#is-it-ok-for-my-api-key-to-be-exposed-and-public
- */
-const posthog = new PostHog("phc_zaZYaLxsAeMjCLPsU2YvFqu4oaXRJ8uAkgXY8DancyL", {
-  host: "https://eu.i.posthog.com",
-});
+export function enableFeatureFlagCookie(flagKey: string) {
+  setCookie(`feature_flag_${flagKey}`, "true", getDomain());
+}
+export function deleteFeatureFlagCookie(flagKey: string) {
+  deleteCookie(`feature_flag_${flagKey}`, getDomain());
+}
 
 export async function getFeatureFlags(
   // This is a replica of `NextApiRequestCookies`
@@ -14,18 +14,15 @@ export async function getFeatureFlags(
     [key: string]: string | string[];
   }>
 ) {
-  /**
-   * There was no documentation found for this, nor for a standard way to do this.
-   * It was taken from the implemtation we could see in the browser, so might be brittle.
-   */
-  const posthogCookieValue = Object.entries(cookies).find(([name]) => name.startsWith("ph_phc_") && name.endsWith("_posthog"))?.[1];
-  let distinctId: string;
-  if (posthogCookieValue) {
-    try {
-      const posthogCookiesJson = typeof posthogCookieValue === "string" ? posthogCookieValue : posthogCookieValue[0];
-      distinctId = JSON.parse(posthogCookiesJson)?.distinct_id;
-    } catch (error) {}
-  }
-  const flags = await posthog.getAllFlags(distinctId);
+  const flags: Partial<{ [key: string]: true }> = {};
+
+  Object.entries(cookies).map(([key, value]) => {
+    if (key.startsWith("feature_flag_")) {
+      const flagKey = key.replace("feature_flag_", "");
+      if (value === "true") {
+        flags[flagKey] = true;
+      }
+    }
+  });
   return flags;
 }
