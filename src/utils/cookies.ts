@@ -22,10 +22,7 @@ export function setCookie(cname: string, cvalue: string, domain: string) {
 }
 
 export function deleteCookie(cname: string, domain: string) {
-  let ca = document.cookie.split(";");
-  if (!!cname && ca.includes(cname)) {
-    document.cookie = `${cname}=; domain=${domain}; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
-  }
+  document.cookie = `${cname}=; domain=${domain}; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
 }
 
 export function deleteCookies() {
