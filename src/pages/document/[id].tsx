@@ -373,11 +373,13 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               <section className="mt-8">
                 <Heading level={4}>Concepts</Heading>
                 <div className="flex text-sm">
-                  <ul>
+                  <ul className="flex flex-wrap gap-2">
                     {concepts.map((concept, i) => {
                       return (
                         <li key={i}>
-                          <LinkWithQuery href={`/concepts/${concept.wikibase_id}`}>{concept.preferred_label}</LinkWithQuery>
+                          <LinkWithQuery className="capitalize" href={`/concepts/${concept.wikibase_id}`}>
+                            <Button>{concept.preferred_label}</Button>
+                          </LinkWithQuery>
                         </li>
                       );
                     })}
