@@ -310,14 +310,8 @@ export type TOrganisationDictionary = TDictionary<TOrganisation>;
 export type TCorpusTypeDictionary = TDictionary<TCorpusType>;
 
 export type TConcept = {
-  id: string;
-  name: string;
-  parent_concepts: Record<string, string>[];
-  parent_concept_ids_flat: string;
-  model: string;
-  end: number;
-  start: number;
-  timestamp: string;
+  preferred_label: string;
+  wikibase_id: string;
 };
 
 export type TSearchResponse = {
@@ -328,9 +322,9 @@ export type TSearchResponse = {
   families: {
     id: string;
     hits: (TFamily & {
-      concepts: TConcept[];
+      concept_counts: Record<string, number>;
     })[];
-  };
+  }[];
   continuation_token?: string;
   this_continuation_token: string;
   prev_continuation_token: string;

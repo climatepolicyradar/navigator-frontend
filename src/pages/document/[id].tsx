@@ -41,13 +41,12 @@ import { pluralise } from "@utils/pluralise";
 import { getFamilyMetaDescription } from "@utils/getFamilyMetaDescription";
 import { extractNestedData } from "@utils/extractNestedData";
 
-import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TOrganisationDictionary, TTheme, TCorpusTypeDictionary, TSearchResponse } from "@types";
+import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept } from "@types";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
-import { PostHog } from "posthog-node";
 import { getFeatureFlags } from "@utils/featureFlags";
 
 type TProps = {
@@ -57,7 +56,7 @@ type TProps = {
   corpus_types: TCorpusTypeDictionary;
   theme: TTheme;
   featureFlags: Record<string, string | boolean>;
-  vespaFamilyData: TSearchResponse;
+  vespaFamilyData?: TSearchResponse;
 };
 
 /*
@@ -170,6 +169,37 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
       router.push({ pathname: `/document/${page.slug}`, query: queryObj });
     }
   };
+
+  /**
+   * Beta concepts work - this work is all behind the concepts-v1 feature flag.
+   *
+   * Currently the family only returns a { [conceptId: string]: count: number }.
+   * This isn't enough to give a useful rendering. So we are:
+   * - getting a list of those IDs
+   * - creating promises to the S3 file that has more data about the concept
+   * - resolving that promise and treating that as the concept data.
+   *
+   * Not ideal, but we are working on getting more useful data on the family response.
+   */
+  const [concepts, setConcepts] = useState<TConcept[]>([]);
+
+  useEffect(() => {
+    // [conceptId, count]
+    const conceptsData: [string, number][] = vespaFamilyData
+      ? vespaFamilyData.families.flatMap((family) => {
+          return family.hits.flatMap((hit) => {
+            return Object.entries(hit.concept_counts);
+          });
+        })
+      : [];
+    const conceptsS3Promises = conceptsData.map(([conceptId, count]) => {
+      const url = `https://cdn.dev.climatepolicyradar.org/concepts/${conceptId}.json`;
+      return fetch(url).then((response) => response.json());
+    });
+    Promise.all(conceptsS3Promises).then((conceptsS3Data) => {
+      setConcepts(conceptsS3Data);
+    });
+  }, [vespaFamilyData]);
 
   return (
     <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)} theme={theme}>
@@ -339,15 +369,17 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               </div>
             </section>
 
-            {vespaFamilyData && (
+            {concepts.length > 0 && (
               <section className="mt-8">
                 <Heading level={4}>Concepts</Heading>
                 <div className="flex text-sm">
                   <ul>
-                    {vespaFamilyData.families.hits.map((family) => {
-                      return family.concepts.map((concept) => {
-                        return <li key={concept.id}>{concept.name}</li>;
-                      });
+                    {concepts.map((concept, i) => {
+                      return (
+                        <li key={i}>
+                          <LinkWithQuery href={`/concepts/${concept.wikibase_id}`}>{concept.preferred_label}</LinkWithQuery>
+                        </li>
+                      );
                     })}
                   </ul>
                 </div>
@@ -416,7 +448,30 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if (conceptsV1) {
       // fetch the families
       const { data: vespaFamilyDataRepsonse } = await client.get(`/families/${familyData.import_id}`);
-      vespaFamilyData = vespaFamilyDataRepsonse;
+
+      /**
+       * currently the pipeline doesn't attach this data to the response
+       * this is the right shape of the data, just not the right data.
+       *
+       * This should help us move forward with the interface and rendering logic.
+       *
+       * TODO: undo this once the response from the API is fully implemented.
+       */
+      const testingConceptCounts = { Q10: 1543, Q100: 15, Q1000: 101 };
+      vespaFamilyData = {
+        ...vespaFamilyDataRepsonse,
+        families: vespaFamilyDataRepsonse.families.map((family) => {
+          return {
+            ...family,
+            hits: family.hits.map((hit) => {
+              return {
+                ...hit,
+                concept_counts: { ...testingConceptCounts },
+              };
+            }),
+          };
+        }),
+      };
     }
   } catch (error) {
     // TODO: handle error more elegantly
@@ -452,7 +507,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       corpus_types,
       theme: theme,
       featureFlags,
-      vespaFamilyData,
+      vespaFamilyData: vespaFamilyData ?? null,
     },
   };
 };
