@@ -76,6 +76,7 @@ const handleFilterDisplay = (
     case "implementing_agency":
     case "topic":
     case "sector":
+    case "author_type":
       filterLabel = value.length > MAX_FILTER_CHARACTERS ? `${decodeURI(value).substring(0, MAX_FILTER_CHARACTERS)}...` : decodeURI(value);
       break;
     case "fund":
