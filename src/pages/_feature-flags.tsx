@@ -1,6 +1,7 @@
 import Button from "@components/buttons/Button";
 import { setFeatureFlags } from "@utils/featureFlags";
 import { usePostHog } from "posthog-js/react";
+import { useEffect } from "react";
 
 export default function FeatureFlags() {
   const posthog = usePostHog();
@@ -14,27 +15,20 @@ export default function FeatureFlags() {
     opt_in_site_apps: true,
   });
 
-  return (
-    <div className="h-screen flex items-center justify-center">
-      <Button id="beta-button">Feature Flags</Button>
-      <Button
-        onClick={() => {
-          posthog.getEarlyAccessFeatures((posthogFeatureFlags) => {
-            const featureFlags = {};
-            posthogFeatureFlags.map((posthogFeatureFlag) => {
-              const { flagKey } = posthogFeatureFlag;
-              const enabled = posthog.isFeatureEnabled(flagKey);
+  useEffect(() => {
+    /** This runs when the feature flags on changed in the posthog UI */
+    posthog.onFeatureFlags((posthogFeatureFlags) => {
+      const featureFlags = {};
+      posthogFeatureFlags.map((posthogFeatureFlag) => {
+        featureFlags[posthogFeatureFlag] = true;
+      });
+      setFeatureFlags(featureFlags);
+    });
+  }, [posthog]);
 
-              if (enabled) {
-                featureFlags[flagKey] = true;
-              }
-            });
-            setFeatureFlags(featureFlags);
-          });
-        }}
-      >
-        Save
-      </Button>
+  return (
+    <div className="h-screen flex items-center justify-center gap-4">
+      <Button id="beta-button">Set My Feature Flags</Button>
     </div>
   );
 }
