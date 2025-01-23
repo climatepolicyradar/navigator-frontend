@@ -8,15 +8,20 @@ import { TThemeConfig, TThemeConfigFilter } from "@types";
 
 export const canDisplayFilter = (filter: TThemeConfigFilter, query: ParsedUrlQuery, themeConfig: TThemeConfig) => {
   if (!filter.category) return false;
-  // No defied categories means it is for all
+  // Check whether the filter has a category it is associated with
+  // No defined categories on the filter means it is for all
   if (filter.category.length === 0) return true;
+  // Check whether we have a selected category
   const selectedCategory = query[QUERY_PARAMS.category] as string;
   if (!selectedCategory) return false;
+  // Check whether the selected category is in theme's categories (someone might manipulate the query)
   const selectedCategoryValue = themeConfig.categories.options.find((c) => c.slug === selectedCategory);
   if (!selectedCategoryValue) return false;
   let canDisplay = false;
+  // Check whether the selected category is in the filter's category, and check the alias field too
   if (containsAny(filter.category, selectedCategoryValue.value) || containsAny(filter.category, [selectedCategoryValue.alias])) return true;
   if (!filter.categoryKey) return false;
+  // Check whether the filter has a dependent category key (such as another filter)
   const selectedCategoryKey = query[QUERY_PARAMS[filter.categoryKey]] as string;
   if (containsAny(filter.category, [selectedCategoryKey])) return true;
   return canDisplay;
