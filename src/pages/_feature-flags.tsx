@@ -1,8 +1,10 @@
-"use client";
+import Button from "@components/buttons/Button";
+import { setFeatureFlags } from "@utils/featureFlags";
 import { usePostHog } from "posthog-js/react";
 
-function FeatureFlags() {
+export default function FeatureFlags() {
   const posthog = usePostHog();
+
   /**
    * This key is a public key.
    * @see: https://posthog.com/docs/privacy#is-it-ok-for-my-api-key-to-be-exposed-and-public
@@ -13,10 +15,26 @@ function FeatureFlags() {
   });
 
   return (
-    <div>
-      <button id="beta-button">Public Betas</button>
+    <div className="h-screen flex items-center justify-center">
+      <Button id="beta-button">Feature Flags</Button>
+      <Button
+        onClick={() => {
+          posthog.getEarlyAccessFeatures((posthogFeatureFlags) => {
+            const featureFlags = {};
+            posthogFeatureFlags.map((posthogFeatureFlag) => {
+              const { flagKey } = posthogFeatureFlag;
+              const enabled = posthog.isFeatureEnabled(flagKey);
+
+              if (enabled) {
+                featureFlags[flagKey] = true;
+              }
+            });
+            setFeatureFlags(featureFlags);
+          });
+        }}
+      >
+        Save
+      </Button>
     </div>
   );
 }
-
-export default FeatureFlags;
