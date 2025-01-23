@@ -48,6 +48,7 @@
       "taxonomyKey": "fund_doc_type",
       "apiMetaDataKey": "",
       "type": "radio",
+      "startOpen": "true",
       "options": [
         {
           "label": "All",
