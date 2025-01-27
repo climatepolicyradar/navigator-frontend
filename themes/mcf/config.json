@@ -83,7 +83,7 @@
       "apiMetaDataKey": "family.status",
       "type": "radio",
       "category": ["projects"],
-      "categoryKey": "fund_type",
+      "categoryKey": "fund_doc_type",
       "dependentFilterKey": "fund"
     },
     {
@@ -92,7 +92,7 @@
       "apiMetaDataKey": "family.implementing_agency",
       "type": "radio",
       "category": ["projects"],
-      "categoryKey": "fund_type",
+      "categoryKey": "fund_doc_type",
       "showFade": "true",
       "dependentFilterKey": "fund",
       "quickSearch": "true"
