@@ -279,6 +279,56 @@ const TermsOfUse = () => {
                     </td>
                   </tr>
                   <tr>
+                    <td>
+                      <ExternalLink url="https://www.adaptation-fund.org/">Adaption Fund</ExternalLink>
+                    </td>
+                    <td>Adaptation Fund (AF) projects and guidance</td>
+                    <td>November 2024</td>
+                    <td>
+                      <ExternalLink url="https://www.adaptation-fund.org/legal/">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://www.cif.org/">Climate Investment Funds</ExternalLink>
+                    </td>
+                    <td>Climate Investment Funds (CIF) projects and guidance</td>
+                    <td>November 2024</td>
+                    <td>
+                      <ExternalLink url="https://www.cif.org/disclaimer">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://www.greenclimate.fund/">Green Climate Fund</ExternalLink>
+                    </td>
+                    <td>Green Climate Fund (GCF) projects and guidance</td>
+                    <td>November 2024</td>
+                    <td>
+                      <ExternalLink url="https://www.greenclimate.fund/terms-and-conditions">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://www.thegef.org/">Global Environment Facility (GEF)</ExternalLink>
+                    </td>
+                    <td>Global Environment Facility (GEF) projects and guidance</td>
+                    <td>November 2024</td>
+                    <td>
+                      <ExternalLink url="https://www.thegef.org/legal">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://www.preventionweb.net/">PreventionWeb</ExternalLink>
+                    </td>
+                    <td>Climate disaster risk reduction and management policies</td>
+                    <td>December 2024</td>
+                    <td>
+                      <ExternalLink url="https://www.preventionweb.net/terms-and-conditions-use-preventionweb">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
                     <td>Additional data sources will be added here as they are added to the CPR database and app</td>
                     <td></td>
                     <td></td>
