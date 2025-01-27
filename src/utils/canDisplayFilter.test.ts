@@ -28,12 +28,23 @@ const testThemeConfig: TThemeConfig = {
   },
   filters: [
     {
-      label: "Status",
-      taxonomyKey: "status",
-      apiMetaDataKey: "family.status",
+      label: "TEST FILTER",
+      taxonomyKey: "fund_doc_type",
+      apiMetaDataKey: "test.filter",
       type: "radio",
       category: ["corpus1", "corpus2", "corpus3", "corpus4"],
-      dependentFilterKey: "fund",
+      options: [
+        {
+          label: "TEST OPTION 1",
+          slug: "test_option_1",
+          value: [],
+        },
+        {
+          label: "TEST OPTION 2",
+          slug: "test_option_2",
+          value: [],
+        },
+      ],
     },
   ],
   labelVariations: [],
@@ -66,5 +77,35 @@ describe("canDisplayFilter: ", () => {
     const canDisplay = canDisplayFilter(filter, { [QUERY_PARAMS.category]: "test_category_2" }, testThemeConfig);
 
     expect(canDisplay).toBe(false);
+  });
+
+  it("should return true if the selected category is in the filter's category", () => {
+    const filter = { label: "TEST FILTER", category: ["test_category_2"], taxonomyKey: "test_filter", type: "radio" };
+
+    const canDisplay = canDisplayFilter(filter, { [QUERY_PARAMS.category]: "test_category_2" }, testThemeConfig);
+
+    expect(canDisplay).toBe(true);
+  });
+
+  it("should return true if the selected category is in the filter's category alias", () => {
+    const filter = { label: "TEST FILTER", category: ["test_category_3_alias"], taxonomyKey: "test_filter", type: "radio" };
+
+    const canDisplay = canDisplayFilter(filter, { [QUERY_PARAMS.category]: "test_category_3" }, testThemeConfig);
+
+    expect(canDisplay).toBe(true);
+  });
+
+  it("should return true if the selected category is in the filter's category and the category key is set", () => {
+    const filter = {
+      label: "TEST DEPENDANT FILTER",
+      taxonomyKey: "test_depdndant_filter",
+      type: "radio",
+      category: ["test_option_2"],
+      categoryKey: "fund_doc_type",
+    };
+
+    const canDisplay = canDisplayFilter(filter, { [QUERY_PARAMS[filter.categoryKey]]: "test_option_2" }, testThemeConfig);
+
+    expect(canDisplay).toBe(true);
   });
 });
