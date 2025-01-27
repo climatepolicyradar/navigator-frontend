@@ -184,15 +184,17 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const [concepts, setConcepts] = useState<TConcept[]>([]);
 
   useEffect(() => {
-    // [conceptId, count]
-    const conceptsData: [string, number][] = vespaFamilyData
+    const conceptsData: { conceptId: string; count: number }[] = vespaFamilyData
       ? vespaFamilyData.families.flatMap((family) => {
           return family.hits.flatMap((hit) => {
-            return Object.entries(hit.concept_counts);
+            return Object.entries(hit.concept_counts).map(([conceptId, count]) => ({
+              conceptId,
+              count,
+            }));
           });
         })
       : [];
-    const conceptsS3Promises = conceptsData.map(([conceptId, count]) => {
+    const conceptsS3Promises = conceptsData.map(({ conceptId, count }) => {
       const url = `https://cdn.dev.climatepolicyradar.org/concepts/${conceptId}.json`;
       return fetch(url).then((response) => response.json());
     });
