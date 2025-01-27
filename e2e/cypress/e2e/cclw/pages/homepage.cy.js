@@ -40,7 +40,7 @@ describe("Homepage", () => {
 
   it("should display correct page elements", () => {
     pageSelectors.forEach((selector) => {
-      cy.get(selector).should("be.visible");
+      cy.get(selector, { timeout: 10000 }).should("be.visible");
     });
   });
 

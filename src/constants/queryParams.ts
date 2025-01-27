@@ -21,4 +21,6 @@ export const QUERY_PARAMS: TQueryStrings = {
   framework_laws: "fl",
   topic: "tp",
   sector: "sc",
+  // Reports
+  author_type: "at",
 };

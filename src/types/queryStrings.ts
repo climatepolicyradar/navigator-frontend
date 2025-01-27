@@ -19,4 +19,6 @@ export type TQueryStrings = {
   framework_laws: string;
   topic: string;
   sector: string;
+  // Reports
+  author_type: string;
 };
