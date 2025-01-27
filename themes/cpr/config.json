@@ -40,13 +40,11 @@
       {
         "label": "Multilateral Climate Funds",
         "slug": "multilateral-climate-funds",
-        "value": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"]
-      },
-      {
-        "label": "Reports",
-        "slug": "Reports",
         "value": [
-          "OEP.corpus.i00000001.n0000",
+          "MCF.corpus.GCF.n0000",
+          "MCF.corpus.GEF.n0000",
+          "MCF.corpus.AF.n0000",
+          "MCF.corpus.CIF.n0000",
           "MCF.corpus.AF.Guidance",
           "MCF.corpus.CIF.Guidance",
           "MCF.corpus.GEF.Guidance",
@@ -56,13 +54,7 @@
       {
         "label": "Reports",
         "slug": "Reports",
-        "value": [
-          "OEP.corpus.i00000001.n0000",
-          "MCF.corpus.AF.Guidance",
-          "MCF.corpus.CIF.Guidance",
-          "MCF.corpus.GEF.Guidance",
-          "MCF.corpus.GCF.Guidance"
-        ]
+        "value": ["OEP.corpus.i00000001.n0000"]
       },
       {
         "label": "Litigation",
@@ -218,13 +210,7 @@
       "taxonomyKey": "author_type",
       "apiMetaDataKey": "family.author_type",
       "type": "radio",
-      "category": [
-        "OEP.corpus.i00000001.n0000",
-        "MCF.corpus.AF.Guidance",
-        "MCF.corpus.CIF.Guidance",
-        "MCF.corpus.GEF.Guidance",
-        "MCF.corpus.GCF.Guidance"
-      ],
+      "category": ["OEP.corpus.i00000001.n0000"],
       "corporaKey": "Reports"
     }
   ],
