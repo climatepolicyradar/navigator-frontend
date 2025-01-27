@@ -162,7 +162,7 @@
       "apiMetaDataKey": "family.status",
       "type": "radio",
       "category": ["projects"],
-      "categoryKey": "fund_type",
+      "categoryKey": "fund_doc_type",
       "dependentFilterKey": "fund"
     },
     {
