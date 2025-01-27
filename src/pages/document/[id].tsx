@@ -181,7 +181,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
    *
    * Not ideal, but we are working on getting more useful data on the family response.
    */
-  const [concepts, setConcepts] = useState<TConcept[]>([]);
+  const [concepts, setConcepts] = useState<(TConcept & { count: number })[]>([]);
 
   useEffect(() => {
     const conceptsData: { conceptId: string; count: number }[] = vespaFamilyData
@@ -199,7 +199,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
       return fetch(url).then((response) => response.json());
     });
     Promise.all(conceptsS3Promises).then((conceptsS3Data) => {
-      setConcepts(conceptsS3Data);
+      const conceptsWithCounts = conceptsS3Data.map((concept, i) => ({ ...concept, count: conceptsData[i].count }));
+      setConcepts(conceptsWithCounts);
     });
   }, [vespaFamilyData]);
 
@@ -380,7 +381,9 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       return (
                         <li key={i}>
                           <LinkWithQuery className="capitalize" href={`/concepts/${concept.wikibase_id}`}>
-                            <Button>{concept.preferred_label}</Button>
+                            <Button color="clear" data-cy="view-source" extraClasses="flex items-center text-sm">
+                              {concept.preferred_label} ({concept.count})
+                            </Button>
                           </LinkWithQuery>
                         </li>
                       );

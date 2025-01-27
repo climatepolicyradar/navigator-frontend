@@ -312,6 +312,14 @@ export type TCorpusTypeDictionary = TDictionary<TCorpusType>;
 export type TConcept = {
   preferred_label: string;
   wikibase_id: string;
+  alternative_labels: string[];
+  negative_labels: string[];
+  description: string;
+  subconcept_of: string[];
+  has_subconcept: string[];
+  related_concepts: string[];
+  definition?: string;
+  labelled_passages?: [];
 };
 
 export type TSearchResponse = {
