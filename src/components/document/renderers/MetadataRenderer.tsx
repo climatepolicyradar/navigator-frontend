@@ -31,7 +31,7 @@ export const MetadataRenderer = ({ family }: TProps) => {
         date={published_date}
         geographies={geographies}
         topics={metadata?.topic}
-        author={metadata?.author_type}
+        author={category === "Reports" ? metadata?.author : metadata?.author_type}
       />
     );
   }
