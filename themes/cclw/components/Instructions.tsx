@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import useConfig from "@hooks/useConfig";
 
-import { calculateTotalFamilies } from "@helpers/getDocumentCounts";
+import { calculateTotalFamilies } from "@helpers/getFamilyCounts";
 
 import Button from "@components/buttons/Button";
 import { DownArrowIcon } from "@components/svg/Icons";
