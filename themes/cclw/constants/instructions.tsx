@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { ContextSearchIcon, ManyDocumentsIcon, ExternalLinkIcon, TranslationIcon } from "@components/svg/Icons";
 
-type TDocumentTotals = {
+type TFamilyTotals = {
   laws: number;
   policies: number;
   unfccc: number;
@@ -10,13 +10,13 @@ type TDocumentTotals = {
 
 const heroLinkClasses = "text-white hover:text-white flex items-start gap-1";
 
-export const INSTRUCTIONS = (documentTotals: TDocumentTotals) => [
+export const INSTRUCTIONS = (familyTotals: TFamilyTotals) => [
   {
     content: (
       <ul>
         <li>
           <Link href="/search?c=laws" className={heroLinkClasses}>
-            <b>{documentTotals.laws}</b> laws{" "}
+            <b>{familyTotals.laws}</b> laws{" "}
             <span className="self-center">
               <ExternalLinkIcon height="12" width="12" />
             </span>
@@ -24,7 +24,7 @@ export const INSTRUCTIONS = (documentTotals: TDocumentTotals) => [
         </li>
         <li>
           <Link href="/search?c=policies" className={heroLinkClasses}>
-            <b>{documentTotals.policies}</b> policies{" "}
+            <b>{familyTotals.policies}</b> policies{" "}
             <span className="self-center">
               <ExternalLinkIcon height="12" width="12" />
             </span>
@@ -32,7 +32,7 @@ export const INSTRUCTIONS = (documentTotals: TDocumentTotals) => [
         </li>
         <li>
           <Link href="/search?c=UNFCCC" className={heroLinkClasses}>
-            <b>{documentTotals.unfccc}</b> UNFCCC submissions{" "}
+            <b>{familyTotals.unfccc}</b> UNFCCC submissions{" "}
             <span className="self-center">
               <ExternalLinkIcon height="12" width="12" />
             </span>
