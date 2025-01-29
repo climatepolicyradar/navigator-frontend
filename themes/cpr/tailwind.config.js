@@ -31,6 +31,11 @@ module.exports = {
         light: "#414466",
         molten: "#ED3D48",
       },
+      oep: {
+        "dark-blue": "#080840",
+        "royal-blue": "#08084C",
+        salmon: "#FF4F58",
+      },
       gray: {
         25: "#FCFCFD",
         50: "#F9FAFB",
