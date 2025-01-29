@@ -1,5 +1,4 @@
 import Layout from "@components/layouts/LandingPage";
-import { SiteWidth } from "@components/panels/SiteWidth";
 
 import { Hero } from "@cpr/components/oep/Hero";
 import { Header } from "@cpr/components/oep/Header";
@@ -10,12 +9,8 @@ const OceanEnergyPathwayPage = () => {
     <>
       <Layout title="Ocean Energy Pathway">
         <Header />
-        <main>
-          <section>
-            <SiteWidth>
-              <Hero />
-            </SiteWidth>
-          </section>
+        <main id="oep">
+          <Hero />
         </main>
         <Footer />
       </Layout>
