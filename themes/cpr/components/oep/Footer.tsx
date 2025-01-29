@@ -6,7 +6,7 @@ import { LinkWithQuery } from "@components/LinkWithQuery";
 
 export const Footer = () => {
   return (
-    <footer className="py-12 bg-white border-t">
+    <footer className="py-12 bg-white">
       <SiteWidth extraClasses="flex flex-col gap-9">
         <div className="flex">
           <LinkWithQuery href="/">

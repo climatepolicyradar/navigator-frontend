@@ -10,7 +10,7 @@ const OceanEnergyPathwayPage = () => {
     <>
       <Layout title="Ocean Energy Pathway">
         <Header />
-        <main className="flex flex-col flex-1">
+        <main>
           <section>
             <SiteWidth>
               <Hero />
