@@ -4,13 +4,11 @@ import { ExternalLink } from "@components/ExternalLink";
 import { CountryLinksAsList } from "@components/CountryLinks";
 
 import { mapFamilyMetadata } from "@helpers/mapFamilyMetadata";
-import { getIcon } from "@helpers/getMetadataIcon";
 
 import { TFamilyMetadata, TMCFFamilyMetadata } from "@types";
 
 interface MetadataItemProps {
   label: string;
-  icon: string;
   values: string | string[];
 }
 
@@ -22,25 +20,21 @@ interface McfFamilyMetaProps {
 
 interface ListOfCountriesProps {
   countryCodes: string[];
-  icon: string;
   label: string;
 }
 
 interface MultipleValuesContentProps {
   label: string;
-  icon: string;
   values: string[];
 }
 
-const ListOfCountries = ({ countryCodes, icon, label }: ListOfCountriesProps) => {
+const ListOfCountries = ({ countryCodes, label }: ListOfCountriesProps) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
-  const GeographyIconComponent = getIcon(icon);
 
   return (
     <>
       <div className="flex row items-center">
-        <GeographyIconComponent className="min-w-[16px] min-h-[16px]" />
         <span className="text-sm font-bold pl-1">
           <strong>{label}</strong>
         </span>
@@ -50,13 +44,10 @@ const ListOfCountries = ({ countryCodes, icon, label }: ListOfCountriesProps) =>
   );
 };
 
-const MultipleValuesContentComponent = ({ label, values, icon }: MultipleValuesContentProps) => {
-  const IconComponent = getIcon(icon);
-
+const MultipleValuesContentComponent = ({ label, values }: MultipleValuesContentProps) => {
   return (
     <>
       <div className="flex row items-center">
-        <IconComponent className="min-w-[16px] min-h-[16px]" />
         <span className="text-sm font-bold px-1">
           <strong>{label}</strong>
         </span>
@@ -73,10 +64,9 @@ const MultipleValuesContentComponent = ({ label, values, icon }: MultipleValuesC
   );
 };
 
-const MetadataItem = ({ label, icon, values }: MetadataItemProps) => {
+const MetadataItem = ({ label, values }: MetadataItemProps) => {
   const isUrl = label === "Source";
   const isCountry = label === "Geography";
-  const IconComponent = getIcon(icon);
 
   const getValueContent = () => {
     if (isUrl && typeof values === "string") {
@@ -91,16 +81,15 @@ const MetadataItem = ({ label, icon, values }: MetadataItemProps) => {
   };
 
   if (isCountry && Array.isArray(values)) {
-    return <ListOfCountries countryCodes={values} icon={icon} label={label} />;
+    return <ListOfCountries countryCodes={values} label={label} />;
   }
 
   if (Array.isArray(values)) {
-    return <MultipleValuesContentComponent values={values} icon={icon} label={label} />;
+    return <MultipleValuesContentComponent values={values} label={label} />;
   }
 
   return (
     <div className="flex items-center row">
-      <IconComponent className="min-w-[16px] min-h-[16px]" />
       <div className="pl-1">
         <span className="text-sm font-bold">
           <strong>{label}</strong>
@@ -118,7 +107,7 @@ export const McfFamilyMeta = ({ metadata }: McfFamilyMetaProps) => {
     <div className="w-full bg-white py-4 flex flex-col gap-2">
       {mappedMetadata.map((item, index) => (
         <div className="flex flex-wrap gap-1" key={item.label}>
-          <MetadataItem key={index} label={item.label} icon={item.iconLabel} values={item.value} />
+          <MetadataItem key={index} label={item.label} values={item.value} />
         </div>
       ))}
     </div>

@@ -213,6 +213,7 @@ export type TFamilyMetadata = {
   instrument?: string[];
   author_type?: string[];
   author?: string[];
+  document_type?: string;
 };
 
 export type TMCFFamilyMetadata = {

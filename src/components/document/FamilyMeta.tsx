@@ -11,9 +11,10 @@ type TProps = {
   geographies: string[];
   topics?: string[];
   author?: string[];
+  document_type?: string;
 };
 
-export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name }: TProps) => {
+export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name, document_type }: TProps) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
 
@@ -37,6 +38,11 @@ export const FamilyMeta = ({ category, date, geographies, topics, author, corpus
       {author && author.length > 0 && (
         <span className="capitalize" data-cy="family-metadata-author">
           {author.join(", ")}
+        </span>
+      )}
+      {document_type && (
+        <span className="capitalize" data-cy="family-metadata-document_type">
+          {document_type}
         </span>
       )}
     </>

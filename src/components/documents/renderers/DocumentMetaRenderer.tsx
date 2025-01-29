@@ -2,10 +2,10 @@ import { McfFamilyMeta } from "@components/document/McfFamilyMeta";
 import { DocumentMeta } from "../DocumentMeta";
 import { getApprovedYearFromEvents } from "@helpers/getApprovedYearFromEvents";
 
-const MULTILATERALCLIMATEFUNDSCATEGORY = "MCF";
+export const MULTILATERALCLIMATEFUNDSCATEGORY = "MCF";
 
 export const DocumentMetaRenderer = ({ family, isMain, document }) => {
-  const { metadata, organisation, category, geographies } = family || {};
+  const { metadata, organisation, category, geographies, documents } = family || {};
 
   const mcfFamilyMetadata = {
     geographies,
@@ -13,10 +13,11 @@ export const DocumentMetaRenderer = ({ family, isMain, document }) => {
     ...metadata,
     organisation,
     category,
+    document_type: documents[0].document_type,
   };
 
   if (category !== MULTILATERALCLIMATEFUNDSCATEGORY) {
-    return <DocumentMeta family={family} isMain={isMain} document={document} />;
+    return <DocumentMeta family={family} isMain={isMain} document={document} document_type={documents[0].document_type} />;
   }
 
   return <McfFamilyMeta metadata={mcfFamilyMetadata} />;

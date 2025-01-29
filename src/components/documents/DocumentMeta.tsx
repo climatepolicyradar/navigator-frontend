@@ -4,7 +4,7 @@ import { getLanguage } from "@helpers/getLanguage";
 import { CountryLinks } from "@components/CountryLinks";
 import { convertDate } from "@utils/timedate";
 
-export const DocumentMeta = ({ family, isMain, document }) => {
+export const DocumentMeta = ({ family, isMain, document, document_type }) => {
   const configQuery = useConfig();
   const { data: { countries = [], languages = {} } = {} } = configQuery;
   const [year] = convertDate(family.published_date);
@@ -23,6 +23,11 @@ export const DocumentMeta = ({ family, isMain, document }) => {
           <span>
             {getLanguage(document.language, languages)}
             {!!document.variant && ` (${document.variant})`}
+          </span>
+        )}
+        {document_type && (
+          <span className="capitalize" data-cy="family-metadata-document_type">
+            {document_type}
           </span>
         )}
       </div>
