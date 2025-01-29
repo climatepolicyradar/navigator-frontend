@@ -15,19 +15,19 @@ export const DocumentMeta = ({ family, isMain, document, document_type }) => {
         <CountryLinks geographies={family.geographies} countries={countries} />
         {family.category === "Reports" && year && <span>{year}</span>}
         {!isMain && document.document_role && <span className="capitalize">{document.document_role.toLowerCase()}</span>}
-        {family.category && <span className="capitalize">{family.category}</span>}
         {family.category === "Reports" && family.metadata.author && family.metadata.author.length > 0 && (
           <span className="capitalize">{family.metadata.author.join(", ")}</span>
+        )}
+        {family.category && <span className="capitalize">{family.category}</span>}
+        {document_type && (
+          <span className="capitalize" data-cy="family-metadata-document_type">
+            {document_type}
+          </span>
         )}
         {!!document.language && (
           <span>
             {getLanguage(document.language, languages)}
             {!!document.variant && ` (${document.variant})`}
-          </span>
-        )}
-        {document_type && (
-          <span className="capitalize" data-cy="family-metadata-document_type">
-            {document_type}
           </span>
         )}
       </div>
