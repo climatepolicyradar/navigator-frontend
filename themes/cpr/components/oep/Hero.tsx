@@ -47,7 +47,7 @@ export const Hero = () => {
               <div className="mb-6">
                 <Image src="/images/oep/oep-logo-small.png" width={155} height={54} alt="Ocean Energy Pathway logo" data-cy="oep-logo" />
               </div>
-              <h1 className="font-['tenez'] italic text-oep-royal-blue text-8xl tracking-[-0.96px] leading-[0.8]">
+              <h1 className="font-['tenez'] font-bold italic text-oep-royal-blue text-8xl tracking-[-0.96px] leading-[0.8]">
                 <span className="not-italic">POWER</span> library
               </h1>
               <p className="my-9 text-2xl text-textDark">Helping the offshore wind sector design effective strategies</p>
