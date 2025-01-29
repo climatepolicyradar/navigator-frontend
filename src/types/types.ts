@@ -308,3 +308,32 @@ export interface TDictionary<T> {
 
 export type TOrganisationDictionary = TDictionary<TOrganisation>;
 export type TCorpusTypeDictionary = TDictionary<TCorpusType>;
+
+export type TConcept = {
+  preferred_label: string;
+  wikibase_id: string;
+  alternative_labels: string[];
+  negative_labels: string[];
+  description: string;
+  subconcept_of: string[];
+  has_subconcept: string[];
+  related_concepts: string[];
+  definition?: string;
+  labelled_passages?: [];
+};
+
+export type TSearchResponse = {
+  total_hits: number;
+  total_family_hits: number;
+  query_time_ms?: number;
+  total_time_ms?: number;
+  families: {
+    id: string;
+    hits: (TFamily & {
+      concept_counts: Record<string, number>;
+    })[];
+  }[];
+  continuation_token?: string;
+  this_continuation_token: string;
+  prev_continuation_token: string;
+};
