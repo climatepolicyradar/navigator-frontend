@@ -29,6 +29,7 @@ export type TThemeConfigFilter = {
   apiMetaDataKey?: string;
   type: string;
   category: string[];
+  categoryKey?: string;
   startOpen?: "true" | "false";
   options?: TThemeConfigOption[];
   showFade?: "true" | "false";
