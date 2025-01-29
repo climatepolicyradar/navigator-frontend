@@ -6,6 +6,7 @@ export const MULTILATERALCLIMATEFUNDSCATEGORY = "MCF";
 
 export const DocumentMetaRenderer = ({ family, isMain, document }) => {
   const { metadata, organisation, category, geographies, documents } = family || {};
+  const document_type = documents && documents.length > 0 ? documents[0].document_type : undefined;
 
   const mcfFamilyMetadata = {
     geographies,
@@ -13,11 +14,11 @@ export const DocumentMetaRenderer = ({ family, isMain, document }) => {
     ...metadata,
     organisation,
     category,
-    document_type: documents[0].document_type,
+    document_type: document_type,
   };
 
   if (category !== MULTILATERALCLIMATEFUNDSCATEGORY) {
-    return <DocumentMeta family={family} isMain={isMain} document={document} document_type={documents[0].document_type} />;
+    return <DocumentMeta family={family} isMain={isMain} document={document} document_type={document_type} />;
   }
 
   return <McfFamilyMeta metadata={mcfFamilyMetadata} />;
