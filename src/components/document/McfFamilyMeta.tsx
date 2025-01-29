@@ -133,7 +133,7 @@ export const McfFamilyMeta = ({ metadata, concepts }: McfFamilyMetaProps) => {
             </span>
             {concepts.map((concept, index) => (
               <span key={concept.wikibase_id} className="flex items-center">
-                <LinkWithQuery className="pl-1 text-sm" href={`/concepts/${concept.wikibase_id}`}>
+                <LinkWithQuery className="capitalize pl-1 text-sm" href={`/concepts/${concept.wikibase_id}`}>
                   {concept.preferred_label}
                 </LinkWithQuery>
                 {index < concepts.length - 1 && ", "}
