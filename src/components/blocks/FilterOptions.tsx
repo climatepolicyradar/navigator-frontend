@@ -6,12 +6,11 @@ import { InputRadio } from "@components/forms/Radio";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 
-import { TOrganisationDictionary, TThemeConfig, TThemeConfigFilter } from "@types";
+import { TCorpusTypeDictionary, TThemeConfig, TThemeConfigFilter } from "@types";
 import { TextInput } from "@components/forms/TextInput";
 
-const getTaxonomyAllowedValues = (corporaKey: string, taxonomyKey: string, organisations: TOrganisationDictionary) => {
-  const allowedValues = organisations[corporaKey].corpora.find((corpus) => corpus.taxonomy.hasOwnProperty(taxonomyKey))?.taxonomy[taxonomyKey]
-    ?.allowed_values;
+const getTaxonomyAllowedValues = (corporaKey: string, taxonomyKey: string, corpus_types: TCorpusTypeDictionary) => {
+  const allowedValues = corpus_types[corporaKey].taxonomy[taxonomyKey]?.allowed_values;
 
   return allowedValues;
 };
@@ -20,11 +19,22 @@ type TProps = {
   filter: TThemeConfigFilter;
   query: ParsedUrlQuery;
   handleFilterChange: Function;
-  organisations: TOrganisationDictionary;
+  corpus_types: TCorpusTypeDictionary;
   themeConfig: TThemeConfig;
 };
 
-export const FilterOptions = ({ filter, query, handleFilterChange, organisations, themeConfig }: TProps) => {
+const filterIsSelected = (queryValue: string | string[] | undefined, option: string) => {
+  if (!queryValue) {
+    return false;
+  }
+  if (typeof queryValue === "string") {
+    return queryValue === option;
+  } else {
+    return queryValue.includes(option);
+  }
+};
+
+export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types, themeConfig }: TProps) => {
   const [search, setSearch] = useState("");
 
   // If the filter has its own options defined, display them
@@ -36,7 +46,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
             <InputRadio
               key={option.slug}
               label={option.label}
-              checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option.slug)}
+              checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option.slug)}
               onChange={() => null} // supress normal radio behaviour to allow to deselection
               onClick={() => {
                 handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug, true);
@@ -47,7 +57,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
             <InputCheck
               key={option.slug}
               label={option.label}
-              checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option.slug)}
+              checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option.slug)}
               onChange={() => {
                 handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug);
               }}
@@ -67,7 +77,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
   // The filter will be chcecked for either have a corporaKey or a dependentFilterKey, which will contain the corporaKey
   if (filter.corporaKey) {
     // Load filter options based on corporaKey, if provided
-    options = getTaxonomyAllowedValues(filter.corporaKey, filter.taxonomyKey, organisations);
+    options = getTaxonomyAllowedValues(filter.corporaKey, filter.taxonomyKey, corpus_types);
   } else if (filter.dependentFilterKey) {
     // Check whether the filter has a dependanct filter, if it does load the taxonomy values for the dependent filter
     const dependentFilter = themeConfig.filters.find((f) => f.taxonomyKey === filter.dependentFilterKey);
@@ -76,19 +86,19 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
     if (queryDependentFilter.length === 0) {
       for (let index = 0; index < dependentFilter.options.length; index++) {
         const option = dependentFilter.options[index];
-        const taxonomyAllowedValues = getTaxonomyAllowedValues(option.corporaKey, filter.taxonomyKey, organisations);
+        const taxonomyAllowedValues = getTaxonomyAllowedValues(option.corporaKey, filter.taxonomyKey, corpus_types);
         options = options.concat(taxonomyAllowedValues);
       }
     } else {
       // Otherwise, load the taxonomy values for the selected dependency filter(s)
       if (typeof queryDependentFilter === "string") {
         const filterCorporaKey = dependentFilter.options.find((option) => option.slug === queryDependentFilter)?.corporaKey;
-        const taxonomyAllowedValues = getTaxonomyAllowedValues(filterCorporaKey, filter.taxonomyKey, organisations);
+        const taxonomyAllowedValues = getTaxonomyAllowedValues(filterCorporaKey, filter.taxonomyKey, corpus_types);
         options = options.concat(taxonomyAllowedValues);
       } else {
         for (let index = 0; index < queryDependentFilter.length; index++) {
           const filterCorporaKey = dependentFilter.options.find((option) => option.slug === queryDependentFilter[index])?.corporaKey;
-          const taxonomyAllowedValues = getTaxonomyAllowedValues(filterCorporaKey, filter.taxonomyKey, organisations);
+          const taxonomyAllowedValues = getTaxonomyAllowedValues(filterCorporaKey, filter.taxonomyKey, corpus_types);
           options = options.concat(taxonomyAllowedValues);
         }
       }
@@ -103,7 +113,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
       <InputRadio
         key={option}
         label={option}
-        checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option)}
+        checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option)}
         onChange={() => null} // supress normal radio behaviour to allow to deselection
         onClick={() => {
           handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option, true);
@@ -114,7 +124,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, organisations
       <InputCheck
         key={option}
         label={option}
-        checked={query && query[QUERY_PARAMS[filter.taxonomyKey]] && query[QUERY_PARAMS[filter.taxonomyKey]].includes(option)}
+        checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option)}
         onChange={() => {
           handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option);
         }}

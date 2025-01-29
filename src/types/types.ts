@@ -40,6 +40,11 @@ export type TPassage = {
   text_block_page: number;
 };
 
+export type TDataNode<T> = {
+  node: T;
+  children: TDataNode<T>[];
+};
+
 export type TGeography = {
   id: number;
   display_value: string;
@@ -68,20 +73,6 @@ export type TTarget = {
   "Net zero target?": "TRUE" | "FALSE";
   "family-slug": string;
   "family-name": string;
-};
-
-export type TGeographyConfigNode = {
-  id: number;
-  display_value: string;
-  value: string;
-  type: string;
-  parent_id: number;
-  slug: string;
-};
-
-export type TGeographyConfig = {
-  node: TGeographyConfigNode;
-  children: TGeographyConfig[];
 };
 
 export type TGeographyStats = {
@@ -276,6 +267,20 @@ export type TCorpus = {
   };
 };
 
+export type TCorpusWithStats = {
+  corpus_import_id: string;
+  title: string;
+  description: string;
+  image_url: string;
+  text: string;
+  organisation_name: string;
+  organisation_id: number;
+  total: number;
+  count_by_category: {
+    [key: string]: number;
+  };
+};
+
 export type TOrganisation = {
   corpora: TCorpus[];
   total: number;
@@ -284,8 +289,51 @@ export type TOrganisation = {
   };
 };
 
+export type TCorpusType = {
+  corpus_type_name: string;
+  corpus_type_description: string;
+  taxonomy: {
+    [key: string]: {
+      allow_any: boolean;
+      allow_blanks: boolean;
+      allowed_values: string[];
+    };
+  };
+  corpora: TCorpusWithStats[];
+};
+
 export interface TDictionary<T> {
   [Key: string]: T;
 }
 
 export type TOrganisationDictionary = TDictionary<TOrganisation>;
+export type TCorpusTypeDictionary = TDictionary<TCorpusType>;
+
+export type TConcept = {
+  preferred_label: string;
+  wikibase_id: string;
+  alternative_labels: string[];
+  negative_labels: string[];
+  description: string;
+  subconcept_of: string[];
+  has_subconcept: string[];
+  related_concepts: string[];
+  definition?: string;
+  labelled_passages?: [];
+};
+
+export type TSearchResponse = {
+  total_hits: number;
+  total_family_hits: number;
+  query_time_ms?: number;
+  total_time_ms?: number;
+  families: {
+    id: string;
+    hits: (TFamily & {
+      concept_counts: Record<string, number>;
+    })[];
+  }[];
+  continuation_token?: string;
+  this_continuation_token: string;
+  prev_continuation_token: string;
+};

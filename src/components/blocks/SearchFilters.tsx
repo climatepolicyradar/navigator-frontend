@@ -21,9 +21,10 @@ import { getCountriesFromRegions } from "@helpers/getCountriesFromRegions";
 import { canDisplayFilter } from "@utils/canDisplayFilter";
 import { getFilterLabel } from "@utils/getFilterLabel";
 
-import { TGeography, TOrganisationDictionary, TSearchCriteria, TThemeConfigOption } from "@types";
+import { TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@types";
+import dynamic from "next/dynamic";
 
-const { default: MethodologyLink } = await import(`/themes/${process.env.THEME}/components/MethodologyLink`);
+const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/components/MethodologyLink`));
 
 const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption) => {
   if (selectedCatgeory) {
@@ -42,7 +43,7 @@ type TSearchFiltersProps = {
   query: ParsedUrlQuery;
   regions: TGeography[];
   countries: TGeography[];
-  organisations: TOrganisationDictionary;
+  corpus_types: TCorpusTypeDictionary;
   handleFilterChange(type: string, value: string, clearOthersOfType?: boolean): void;
   handleYearChange(values: string[], reset?: boolean): void;
   handleRegionChange(region: string): void;
@@ -55,7 +56,7 @@ const SearchFilters = ({
   query,
   regions,
   countries,
-  organisations,
+  corpus_types,
   handleFilterChange,
   handleYearChange,
   handleRegionChange,
@@ -138,7 +139,7 @@ const SearchFilters = ({
                   filter={filter}
                   query={query}
                   handleFilterChange={handleFilterChange}
-                  organisations={organisations}
+                  corpus_types={corpus_types}
                   themeConfig={themeConfig}
                 />
               </InputListContainer>

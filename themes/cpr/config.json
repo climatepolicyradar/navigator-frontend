@@ -43,6 +43,11 @@
         "value": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"]
       },
       {
+        "label": "Reports",
+        "slug": "Reports",
+        "value": ["OEP.corpus.i00000001.n0000"]
+      },
+      {
         "label": "Litigation",
         "slug": "Litigation",
         "category": ["Litigation"]
@@ -124,7 +129,7 @@
       "type": "radio",
       "category": ["CPR.corpus.i00000001.n0000", "CCLW.corpus.i00000001.n0000"],
       "dependentFilterKey": "",
-      "corporaKey": "CPR"
+      "corporaKey": "Laws and Policies"
     },
     {
       "label": "Sector",
@@ -134,8 +139,16 @@
       "category": ["CPR.corpus.i00000001.n0000", "CCLW.corpus.i00000001.n0000"],
       "dependentFilterKey": "",
       "showFade": "true",
-      "corporaKey": "CPR",
+      "corporaKey": "Laws and Policies",
       "quickSearch": "true"
+    },
+    {
+      "label": "Author Type",
+      "taxonomyKey": "author_type",
+      "apiMetaDataKey": "family.author_type",
+      "type": "radio",
+      "category": ["OEP.corpus.i00000001.n0000"],
+      "corporaKey": "Reports"
     }
   ],
   "labelVariations": [
@@ -148,7 +161,7 @@
   "links": [
     {
       "key": "download-database",
-      "url": "https://form.jotform.com/233131638610347"
+      "url": "https://form.jotform.com/250202141318339"
     }
   ],
   "metadata": [

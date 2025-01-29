@@ -38,6 +38,25 @@ jobs:
       node-version: 22.12.0
       package-manager: npm
 
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies
+        run: npm ci
+      - name: Copy .env
+        run: cp .env.example .env
+      - name: Build app
+        run: npm run build
+        env:
+          NODE_ENV: production
+      - name: Run tests
+        run: npm run test
+
   test-e2e:
     timeout-minutes: 60
     runs-on: ubuntu-latest

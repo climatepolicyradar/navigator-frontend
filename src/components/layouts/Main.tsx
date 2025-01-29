@@ -10,8 +10,9 @@ import { getPageTitle } from "@utils/getPageTitle";
 import { getCanonicalUrl } from "@utils/getCanonicalUrl";
 
 import { TTheme, TThemeConfig } from "@types";
+import dynamic from "next/dynamic";
 
-const { default: Wrapper } = await import(`/themes/${process.env.THEME}/layouts/main`);
+const Wrapper = dynamic<{ children: ReactNode }>(() => import(`/themes/${process.env.THEME}/layouts/main`));
 
 type TProps = {
   title?: string;

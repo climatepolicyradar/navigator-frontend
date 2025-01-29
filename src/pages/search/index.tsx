@@ -60,7 +60,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
   const configQuery = useConfig();
-  const { data: { regions = [], countries = [], organisations = {} } = {} } = configQuery;
+  const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 
@@ -217,6 +217,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     delete router.query[QUERY_PARAMS.implementing_agency];
     // Law and policy filters
     delete router.query[QUERY_PARAMS.framework_laws];
+    // Reports filters
+    delete router.query[QUERY_PARAMS.author_type];
     // Only reset the topic and sector filters if we are not moving between laws or policies categories
     if (category !== "policies" && category !== "laws") {
       delete router.query[QUERY_PARAMS.topic];
@@ -392,7 +394,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 query={router.query}
                 regions={regions}
                 countries={countries}
-                organisations={organisations}
+                corpus_types={corpus_types}
                 handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
@@ -413,7 +415,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 query={router.query}
                 regions={regions}
                 countries={countries}
-                organisations={organisations}
+                corpus_types={corpus_types}
                 handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
