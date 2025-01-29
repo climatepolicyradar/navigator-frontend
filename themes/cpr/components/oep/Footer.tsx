@@ -7,11 +7,13 @@ import { LinkWithQuery } from "@components/LinkWithQuery";
 export const Footer = () => {
   return (
     <footer className="py-12 bg-white border-t">
-      <SiteWidth>
-        <LinkWithQuery href="/">
-          <Image src="/images/cpr-logo-horizontal-dark.svg" width={228} height={35} alt="Climate Policy Radar logo" data-cy="cpr-logo" />
-        </LinkWithQuery>
-        <p className="text-lg my-9 text-textNormal">
+      <SiteWidth extraClasses="flex flex-col gap-9">
+        <div className="flex">
+          <LinkWithQuery href="/">
+            <Image src="/images/cpr-logo-horizontal-dark.svg" width={228} height={35} alt="Climate Policy Radar logo" data-cy="cpr-logo" />
+          </LinkWithQuery>
+        </div>
+        <p className="text-lg text-textNormal">
           To report a problem, email us at support@climatepolicyradar.org <br /> Spotted missing or inaccurate data?{" "}
           <ExternalLink url="https://form.jotform.com/233294135296359" className="text-textDark underline">
             Let us know
