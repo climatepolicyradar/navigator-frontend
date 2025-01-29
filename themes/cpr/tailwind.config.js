@@ -31,6 +31,11 @@ module.exports = {
         light: "#414466",
         molten: "#ED3D48",
       },
+      oep: {
+        "dark-blue": "#080840",
+        "royal-blue": "#08084C",
+        salmon: "#FF4F58",
+      },
       gray: {
         25: "#FCFCFD",
         50: "#F9FAFB",
@@ -90,6 +95,9 @@ module.exports = {
         "1/4-gap-4": "calc(25% - (3/4 * 1rem))",
         "1/6-gap-4": "calc(16.6% - (5/6 * 1rem))",
         maxContent: MAX_CONTENT_WIDTH,
+      },
+      fontFamily: {
+        tenez: ["tenez", "system-ui", "serif"],
       },
       fontWeight: {
         medium: 540,
