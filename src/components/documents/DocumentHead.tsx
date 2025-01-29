@@ -12,27 +12,30 @@ import { AlertCircleIcon } from "@components/svg/Icons";
 import { Alert } from "@components/Alert";
 import { ExternalLink } from "@components/ExternalLink";
 import { Heading } from "@components/typography/Heading";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
 import { truncateString } from "@utils/truncateString";
 
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
 
-import { TDocumentPage, TFamilyPage } from "@types";
+import { TDocumentPage, TFamilyPage, TConcept, TSearchResponse } from "@types";
 import { DocumentMetaRenderer } from "./renderers/DocumentMetaRenderer";
+import { getFeatureFlags } from "@utils/featureFlags";
 
 type TProps = {
   document: TDocumentPage;
   family: TFamilyPage;
   handleViewOtherDocsClick: (e: React.FormEvent<HTMLButtonElement>) => void;
   handleViewSourceClick: (e: React.FormEvent<HTMLButtonElement>) => void;
+  concepts?: (TConcept & { count: number })[];
 };
 
 const containsNonEnglish = (languages: string[]) => {
   return languages.some((lang) => lang !== "eng");
 };
 
-export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handleViewSourceClick }: TProps) => {
+export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handleViewSourceClick, concepts }: TProps) => {
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [summary, setSummary] = useState("");
 
@@ -74,7 +77,8 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
         <div className="flex flex-col justify-between md:flex-row flex-wrap">
           <div className="flex-1 my-4">
             <Heading level={1}>{document.title}</Heading>
-            <DocumentMetaRenderer family={family} isMain={isMain} document={document} />
+            <DocumentMetaRenderer family={family} isMain={isMain} document={document} concepts={concepts} />
+
             <div className="text-content" dangerouslySetInnerHTML={{ __html: summary }} />
             {family.summary.length > MAX_FAMILY_SUMMARY_LENGTH_BRIEF && (
               <div className="mt-4">

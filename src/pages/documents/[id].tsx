@@ -26,12 +26,14 @@ import { getDocumentDescription } from "@constants/metaDescriptions";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 
-import { TDocumentPage, TFamilyPage, TPassage, TTheme } from "@types";
+import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@types";
+import { getFeatureFlags } from "@utils/featureFlags";
 
 type TProps = {
   document: TDocumentPage;
   family: TFamilyPage;
   theme: TTheme;
+  vespaFamilyData?: TSearchResponse;
 };
 
 const passageClasses = (docType: string) => {
@@ -64,7 +66,7 @@ const renderPassageCount = (count: number): string => {
   - If the document is an HTML, the passages will be displayed in a list on the left side of the page but the document will not be displayed.
 */
 
-const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family, theme }: TProps) => {
+const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family, theme, vespaFamilyData }: TProps) => {
   const [showOptions, setShowOptions] = useState(false);
   const [passageIndex, setPassageIndex] = useState(null);
   const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
@@ -143,6 +145,44 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     }
   }, [startingPassage]);
 
+  const [concepts, setConcepts] = useState<(TConcept & { count: number })[]>([]);
+  useEffect(() => {
+    const conceptsData: { conceptId: string; count: number }[] = vespaFamilyData
+      ? vespaFamilyData.families.flatMap((family) => {
+          return family.hits.flatMap((hit) => {
+            return Object.entries(hit.concept_counts).map(([conceptId, count]) => ({
+              conceptId,
+              count,
+            }));
+          });
+        })
+      : [];
+
+    // Create a Map to ensure unique concept IDs.
+    const uniqueConceptsMap = new Map<string, number>();
+    conceptsData.forEach(({ conceptId, count }) => {
+      uniqueConceptsMap.set(conceptId, count);
+    });
+
+    // Convert Map to array and sort by count in descending order
+    const uniqueConceptsData = Array.from(uniqueConceptsMap.entries())
+      .map(([conceptId, count]) => ({ conceptId, count }))
+      .sort((a, b) => b.count - a.count);
+
+    const conceptsS3Promises = uniqueConceptsData.map(({ conceptId }) => {
+      const url = `https://cdn.dev.climatepolicyradar.org/concepts/${conceptId}.json`;
+      return fetch(url).then((response) => response.json());
+    });
+
+    Promise.all(conceptsS3Promises).then((conceptsS3Data) => {
+      const conceptsWithCounts = conceptsS3Data.map((concept, i) => ({
+        ...concept,
+        count: uniqueConceptsData[i].count,
+      }));
+      setConcepts(conceptsWithCounts);
+    });
+  }, [vespaFamilyData]);
+
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
       <section
@@ -157,6 +197,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
           family={family}
           handleViewOtherDocsClick={handleViewOtherDocsClick}
           handleViewSourceClick={handleViewSourceClick}
+          concepts={concepts}
         />
         {status !== "success" ? (
           <div className="w-full flex justify-center flex-1 bg-white">
@@ -267,6 +308,7 @@ export default DocumentPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+  const featureFlags = await getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
   const id = context.params.id;
@@ -274,6 +316,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   let documentData: TDocumentPage;
   let familyData: TFamilyPage;
+  let vespaFamilyData: TSearchResponse | null = null;
 
   try {
     const { data: returnedDocumentData } = await client.get(`/documents/${id}`);
@@ -281,8 +324,31 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const familySlug = returnedDocumentData.family?.slug;
     const { data: returnedFamilyData } = await client.get(`/documents/${familySlug}`);
     familyData = returnedFamilyData;
+
+    // Fetch Vespa family data for concepts (similar to document/[id].tsx)
+    const conceptsV1 = featureFlags["concepts-v1"];
+    if (conceptsV1) {
+      const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
+
+      // TODO: Remove this testing data once the API response is fully implemented
+      const testingConceptCounts = { Q10: 1543, Q100: 15, Q1000: 101 };
+      vespaFamilyData = {
+        ...vespaFamilyDataResponse,
+        families: vespaFamilyDataResponse.families.map((family) => {
+          return {
+            ...family,
+            hits: family.hits.map((hit) => {
+              return {
+                ...hit,
+                concept_counts: { ...testingConceptCounts },
+              };
+            }),
+          };
+        }),
+      };
+    }
   } catch {
-    // TODO: Handle error more gracefully
+    // TODO: Handle error more elegantly
   }
 
   if (!documentData || !familyData) {
@@ -296,6 +362,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       document: documentData,
       family: familyData,
       theme: theme,
+      vespaFamilyData: vespaFamilyData ?? null,
     },
   };
 };
