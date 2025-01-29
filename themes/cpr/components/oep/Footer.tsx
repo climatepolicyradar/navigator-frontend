@@ -17,18 +17,18 @@ export const Footer = () => {
             Let us know
           </ExternalLink>
         </p>
-        <ul className="flex gap-9">
-          <li>
+        <ul className="md:flex gap-9">
+          <li className="mb-4 md:mb-0">
             <ExternalLink url="https://github.com/climatepolicyradar/methodology" className="text-textNormal underline opacity-60 hover:opacity-100">
               Methodology
             </ExternalLink>
           </li>
-          <li>
+          <li className="mb-4 md:mb-0">
             <LinkWithQuery href="/terms-of-use" className="text-textNormal underline opacity-60 hover:opacity-100">
               Terms &amp; conditions
             </LinkWithQuery>
           </li>
-          <li>
+          <li className="mb-4 md:mb-0">
             <ExternalLink url="https://www.climatepolicyradar.org/privacy-policy" className="text-textNormal underline opacity-60 hover:opacity-100">
               Privacy policy
             </ExternalLink>
