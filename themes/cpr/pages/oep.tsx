@@ -16,19 +16,17 @@ const OceanEnergyPathwayPage = () => {
       <main id="oep">
         <Hero />
 
-        <Section>
-          <div className="mt-[120px]">
-            <Narrow>
-              <p className="font-medium text-2xl">
-                The POWER <span className="italic">(Publications on Offshore Wind Energy Research)</span> Library is a project run in partnership
-                between Climate Policy Radar and Ocean Energy Pathway, aimed at providing an accessible and reliable reference on offshore wind energy
-                and helping policymakers and stakeholders around the world design more effective strategies.
-              </p>
-            </Narrow>
-          </div>
-          <ColumnAndImage extraClasses="my-[80px] max-w-[420px] min-h-[400px]">
+        <Section containerClasses="py-12 md:pt-[120px] md:pb-[80px]">
+          <Narrow extraClasses="mb-9 md:mb-[80px]">
+            <p className="font-medium text-2xl">
+              The POWER <span className="italic">(Publications on Offshore Wind Energy Research)</span> Library is a project run in partnership
+              between Climate Policy Radar and Ocean Energy Pathway, aimed at providing an accessible and reliable reference on offshore wind energy
+              and helping policymakers and stakeholders around the world design more effective strategies.
+            </p>
+          </Narrow>
+          <ColumnAndImage extraClasses="md:max-w-[420px] min-h-[400px]">
             <Image
-              className="absolute right-0 max-w-[50%]"
+              className="lg:absolute lg:right-0 order-1 max-w-full lg:max-w-[50%] mx-auto md:mx-0 mt-9 lg:mt-0"
               alt="An offshore wind farm"
               src="/images/oep/OEP-wind-farm.jpg"
               height={398}
@@ -42,10 +40,11 @@ const OceanEnergyPathwayPage = () => {
           </ColumnAndImage>
         </Section>
 
-        <Section sectionClasses="bg-oep-royal-blue" containerClasses="text-4xl text-[40px] font-bold font-tenez text-white">
-          <EqualColumns extraClasses="py-[135px]">
+        <Section sectionClasses="bg-oep-royal-blue" containerClasses="py-12 md:py-[135px] text-4xl text-[40px] font-bold font-tenez text-white">
+          <EqualColumns reverseColumn>
             <EqualColumn>
               <Image
+                className="mx-auto md:mx-0 mt-9 lg:mt-0"
                 alt="An offshore wind turbine and maintenance ship seen from above"
                 src="/images/oep/OEP-wind-turbine.jpg"
                 height={416}
@@ -53,7 +52,7 @@ const OceanEnergyPathwayPage = () => {
               />
             </EqualColumn>
             <EqualColumn>
-              <p className="mb-[280px]">
+              <p className="mb-9 md:mb-[280px]">
                 <span className="text-oep-salmon">Understand</span> best practices and learnings from different regions of the world
               </p>
               <p>
@@ -64,8 +63,8 @@ const OceanEnergyPathwayPage = () => {
           </EqualColumns>
         </Section>
 
-        <Section containerClasses="text-lg">
-          <Narrow extraClasses="mt-[120px] mb-[160px]">
+        <Section containerClasses="text-lg py-12 md:pt-[120px] md:pb-[160px]">
+          <Narrow extraClasses="mb-9 md:mb-[160px]">
             <h1 className="mb-[50px] text-oep-dark-blue text-6xl text-[64px] font-bold font-tenez">Why offshore wind</h1>
             <p className="font-medium text-2xl">
               Offshore wind energy is a key technology for meeting the global target to triple renewables by 2030, keeping the Paris-aligned 1.5
@@ -73,55 +72,52 @@ const OceanEnergyPathwayPage = () => {
               bringing benefits to local communities.
             </p>
           </Narrow>
-          <ColumnAndImage extraClasses="mb-[160px]">
-            <div className="mb-[90px]">
-              <h2 className="text-oep-dark-blue text-5xl font-bold font-tenez">But there are challenges to scale...</h2>
-            </div>
-            <div>
-              <Image
-                className="absolute right-0 max-w-[50%]"
-                alt="A wind turbine under construction"
-                src="/images/oep/OEP-wind-turbine-construction.jpg"
-                height={410}
-                width={620}
-              />
-              <p className="mb-9">To achieve sustainable growth and meet the immense potential of offshore wind, countries must:</p>
-              <ul className="mb-9">
-                <li className="ml-6 list-disc">
-                  Establish new policy and regulatory framework that can unlock investment and accelerate development;
-                </li>
-                <li className="ml-6 list-disc">
-                  Recognise the potential of offshore wind as a transformative blue economy solution with opportunities for job creation, industrial
-                  decarbonisation, and coastal community revitalisation;
-                </li>
-                <li className="ml-6 list-disc">Secure social and political support for offshore wind;</li>
-                <li className="ml-6 list-disc">Adapt to the needs and circumstances of the local communities and economies; and</li>
-                <li className="ml-6 list-disc">
-                  Work in harmony with nature, recognising that a biodiversity crisis exists alongside the climate crisis.
-                </li>
-              </ul>
-              <p className="mb-9">
-                To design and implement effective strategies for rapid, sustainable, high-ambition deployment of offshore wind, decision-makers need
-                access to reliable and relevant information.
-              </p>
-              <p>
-                Offshore wind is a quickly-evolving sector, with an ever-growing influx of data, policy documents, and industry expertise.
-                Policymakers, researchers, and others seeking information on offshore wind often find identifying and selecting relevant information
-                challenging, time-consuming, and expensive, as resources and data are spread across different sources and platforms.
-              </p>
-            </div>
+          <ColumnAndImage extraClasses="mb-9 md:mb-[90px]">
+            <h2 className="text-oep-dark-blue text-5xl font-bold font-tenez">But there are challenges to scale...</h2>
+          </ColumnAndImage>
+          <ColumnAndImage>
+            <Image
+              className="lg:absolute lg:right-0 order-1 max-w-full lg:max-w-[50%] mx-auto md:mx-0 mt-9 lg:mt-0"
+              alt="A wind turbine under construction"
+              src="/images/oep/OEP-wind-turbine-construction.jpg"
+              height={410}
+              width={620}
+            />
+            <p className="mb-9">To achieve sustainable growth and meet the immense potential of offshore wind, countries must:</p>
+            <ul className="mb-9">
+              <li className="ml-6 list-disc">Establish new policy and regulatory framework that can unlock investment and accelerate development;</li>
+              <li className="ml-6 list-disc">
+                Recognise the potential of offshore wind as a transformative blue economy solution with opportunities for job creation, industrial
+                decarbonisation, and coastal community revitalisation;
+              </li>
+              <li className="ml-6 list-disc">Secure social and political support for offshore wind;</li>
+              <li className="ml-6 list-disc">Adapt to the needs and circumstances of the local communities and economies; and</li>
+              <li className="ml-6 list-disc">
+                Work in harmony with nature, recognising that a biodiversity crisis exists alongside the climate crisis.
+              </li>
+            </ul>
+            <p className="mb-9">
+              To design and implement effective strategies for rapid, sustainable, high-ambition deployment of offshore wind, decision-makers need
+              access to reliable and relevant information.
+            </p>
+            <p>
+              Offshore wind is a quickly-evolving sector, with an ever-growing influx of data, policy documents, and industry expertise. Policymakers,
+              researchers, and others seeking information on offshore wind often find identifying and selecting relevant information challenging,
+              time-consuming, and expensive, as resources and data are spread across different sources and platforms.
+            </p>
           </ColumnAndImage>
         </Section>
 
-        <Section containerClasses="text-lg">
-          <div className="max-w-[780px] mx-auto py-[120px]">
-            <h1 className="text-oep-dark-blue text-6xl text-[56px] font-bold font-tenez">
+        <Section containerClasses="text-lg py-12 md:pt-[120px] md:pb-[200px]">
+          <div className="md:max-w-[780px] mx-auto">
+            <h1 className="text-oep-dark-blue text-6xl text-[56px] font-bold font-tenez mb-9 md:mb-[120px]">
               The POWER Library addresses this challenge and provides an accessible, one-stop search tool for offshore wind resources.
             </h1>
           </div>
-          <EqualColumns extraClasses="mb-[200px]">
+          <EqualColumns reverseColumn>
             <EqualColumn>
               <Image
+                className="mx-auto md:mx-0 mt-9 lg:mt-0"
                 alt="A wind farm worker stands on an assembled wind turbine's blade"
                 src="/images/oep/OEP-wind-farm-worker.jpg"
                 height={328}
@@ -140,10 +136,10 @@ const OceanEnergyPathwayPage = () => {
           </EqualColumns>
         </Section>
 
-        <Section sectionClasses="bg-oep-royal-blue" containerClasses="py-[160px] text-white">
+        <Section sectionClasses="bg-oep-royal-blue" containerClasses="py-12 md:py-[160px] text-white">
           <EqualColumns>
             <EqualColumn>
-              <h2 className="mb-12 items-end text-oep-salmon text-5xl font-bold font-tenez">Contribute to our growing our database</h2>
+              <h2 className="mb-9 md:mb-12 items-end text-oep-salmon text-5xl font-bold font-tenez">Contribute to our growing database</h2>
               <p className="text-lg">
                 If you’ve spotted missing data or would like to contribute materials to our POWER Library,{" "}
                 <Link className="text-white underline hover:text-white" href="#">
@@ -152,7 +148,7 @@ const OceanEnergyPathwayPage = () => {
                 .
               </p>
             </EqualColumn>
-            <EqualColumn extraClasses="self-end flex flex-row justify-end gap-8">
+            <EqualColumn extraClasses="mt-9 md:mt-0 md:self-end flex flex-row flex-wrap md:justify-end gap-y-4 gap-x-8">
               <Image src="/images/cpr-logo-horizontal-dark.svg" width={215} height={35} alt="Climate Policy Radar logo" data-cy="cpr-logo" />
               <Image src="/images/oep/OEP-logo.svg" width={155} height={100} alt="Ocean Energy Pathway logo" data-cy="oep-logo" className="invert" />
             </EqualColumn>

@@ -5,4 +5,6 @@ type TColumnAndImageProp = {
   extraClasses?: string;
 };
 
-export const ColumnAndImage = ({ children, extraClasses = "" }: TColumnAndImageProp) => <div className={`w-[440px] ${extraClasses}`}>{children}</div>;
+export const ColumnAndImage = ({ children, extraClasses = "" }: TColumnAndImageProp) => (
+  <div className={`flex flex-col max-w-[775px] lg:max-w-[440px] ${extraClasses}`}>{children}</div>
+);
