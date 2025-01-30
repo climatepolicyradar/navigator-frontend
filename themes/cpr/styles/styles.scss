@@ -29,6 +29,11 @@
 }
 
 #oep {
+  // TODO: make this work!
+  :root {
+    @apply scrollbar-thumb-oep-salmon scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-oep-salmon;
+  }
+
   .oep-hero-background {
     position: relative;
   }
@@ -49,11 +54,13 @@
       content: "";
       position: absolute;
       top: 0;
-      right: 0;
+      right: -72px;
       width: 100%;
       height: 800px;
       background: url(/images/oep/oep-background-right.svg) top right / contain no-repeat;
       z-index: 1;
+
+      @apply md:right-0;
     }
   }
   .oep-hero-bg {
