@@ -22,7 +22,7 @@ const nextConfig = {
   },
   // Loads in theme styles
   sassOptions: {
-    additionalData: `@import "./themes/${process.env.THEME}/styles/styles.scss";`,
+    additionalData: `@use "./themes/${process.env.THEME}/styles/styles.scss";`,
   },
   // Redirects
   redirects: async () => {
@@ -32,6 +32,15 @@ const nextConfig = {
   pageExtensions: ["tsx", "ts"],
   // Cache control
   headers: async () => {
+    const env = process.env.NODE_ENV;
+
+    /**
+     * We see a whole lot of problems arising when caching files and webpack's
+     * HMR - so it's easier just to disable this in dev.
+     */
+    if (env !== "production") {
+      return [];
+    }
     return [
       {
         source: "/",

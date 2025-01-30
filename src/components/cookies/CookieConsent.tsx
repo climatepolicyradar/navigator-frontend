@@ -8,8 +8,9 @@ import { getCookie, setCookie } from "@utils/cookies";
 import getDomain from "@utils/getDomain";
 
 import { COOKIE_CONSENT_NAME } from "@constants/cookies";
+import dynamic from "next/dynamic";
 
-const { default: ThemeAnalytics } = await import(`/themes/${process.env.THEME}/components/Analytics`);
+const ThemeAnalytics = dynamic<{ enableAnalytics: boolean }>(() => import(`/themes/${process.env.THEME}/components/Analytics`));
 
 declare let gtag: Function;
 

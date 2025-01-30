@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import useConfig from "@hooks/useConfig";
 
-import { calculateTotalDocuments } from "@helpers/getDocumentCounts";
+import { calculateTotalFamilies } from "@helpers/getFamilyCounts";
 
 import Button from "@components/buttons/Button";
 import { DownArrowIcon } from "@components/svg/Icons";
@@ -19,9 +19,9 @@ const scrollToMap = () => {
 const Instructions = () => {
   const [isAnimated, setIsAnimated] = useState(false);
   const configQuery = useConfig();
-  const { data: { organisations } = {} } = configQuery;
+  const { data: { corpus_types } = {} } = configQuery;
 
-  const totalDocuments = calculateTotalDocuments(organisations);
+  const totalFamilies = calculateTotalFamilies(corpus_types);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -34,7 +34,7 @@ const Instructions = () => {
   return (
     <div className="xl:max-w-[880px] mx-auto relative">
       <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-4">
-        {INSTRUCTIONS(totalDocuments).map((instruction, index) => (
+        {INSTRUCTIONS(totalFamilies).map((instruction, index) => (
           <div key={index} className="p-3 flex gap-4 items-center bg-cclw-light rounded-lg text-sm" data-cy={instruction.cy}>
             <div className="flex items-center justify-center">{instruction.icon}</div>
             <div>{instruction.content}</div>

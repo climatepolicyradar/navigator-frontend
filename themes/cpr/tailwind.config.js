@@ -88,6 +88,7 @@ module.exports = {
       },
       boxShadow: {
         xs: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
+        oep: "0px 8px 44px 0px rgba(32, 32, 32, 0.16)",
       },
       flexBasis: {
         "1/2-gap-4": "calc(50% - (1/2 * 1rem))",

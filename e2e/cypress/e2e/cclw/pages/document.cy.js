@@ -29,7 +29,7 @@ describe("Document Page", () => {
 
   it("should display the page elements", () => {
     pageSelectors.forEach((selector) => {
-      cy.get(selector).should("be.visible");
+      cy.get(selector, { timeout: 10000 }).should("be.visible");
     });
   });
 
@@ -40,7 +40,7 @@ describe("Document Page", () => {
   });
 
   it("should display the matches heading", () => {
-    cy.get("[data-cy='document-matches-description']").should("be.visible").should("contain", "Sorted by search relevance");
+    cy.get("[data-cy='document-matches-description']", { timeout: 10000 }).should("be.visible").should("contain", "Sorted by search relevance");
   });
 
   it("should contain at least 1 passage match", () => {

@@ -27,3 +27,45 @@
     @apply underline;
   }
 }
+
+#oep {
+  .oep-hero-background {
+    position: relative;
+  }
+  .oep-hero-left {
+    &:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -40px;
+      width: 326px;
+      height: 800px;
+      background: url(/images/oep/oep-background-left.svg) center / contain no-repeat;
+      z-index: 1;
+    }
+  }
+  .oep-hero-right {
+    &:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 800px;
+      background: url(/images/oep/oep-background-right.svg) top right / contain no-repeat;
+      z-index: 1;
+    }
+  }
+  .oep-hero-bg {
+    &:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 1150px;
+      background: url(/images/oep/oep-wave-lines.svg) left / cover no-repeat;
+      z-index: 1;
+    }
+  }
+}
