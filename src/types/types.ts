@@ -27,6 +27,7 @@ export type TSearchCriteria = {
   continuation_tokens?: string[] | null;
   corpus_import_ids: string[];
   metadata: TSearchCriteriaMeta[];
+  concept_filters: { name: string }[];
   // for internal use
   runSearch?: boolean;
 };
