@@ -13,9 +13,9 @@ const SearchIcon = () => (
       <path
         d="M17.5 17.5L13.9167 13.9167M15.8333 9.16667C15.8333 12.8486 12.8486 15.8333 9.16667 15.8333C5.48477 15.8333 2.5 12.8486 2.5 9.16667C2.5 5.48477 5.48477 2.5 9.16667 2.5C12.8486 2.5 15.8333 5.48477 15.8333 9.16667Z"
         stroke="#202020"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </g>
   </svg>
@@ -47,7 +47,7 @@ export const Hero = () => {
               <div className="mb-6">
                 <Image src="/images/oep/oep-logo-small.png" width={155} height={54} alt="Ocean Energy Pathway logo" data-cy="oep-logo" />
               </div>
-              <h1 className="font-['tenez'] font-bold italic text-oep-royal-blue text-8xl tracking-[-0.96px] leading-[0.8]">
+              <h1 className="font-['tenez'] font-bold italic text-oep-royal-blue text-8xl tracking-[-0.96px] leading-[80%]">
                 <span className="not-italic">POWER</span> library
               </h1>
               <p className="my-9 text-2xl text-textDark">Helping the offshore wind sector design effective strategies</p>
