@@ -26,19 +26,32 @@ const OceanEnergyPathwayPage = () => {
               </p>
             </Narrow>
           </div>
-          <div className="my-[80px]">
+          <ColumnAndImage extraClasses="my-[80px] max-w-[420px] min-h-[400px]">
+            <Image
+              className="absolute right-0 max-w-[50%]"
+              alt="An offshore wind farm"
+              src="/images/oep/OEP-wind-farm.jpg"
+              height={398}
+              width={708}
+            />
             <p className="text-lg">
               With this tool, you can find information on offshore wind from around the globe, including legislation, government policies, strategies,
               industry reports, analyses and policy recommendations from researchers and civil society. You can search for keywords and policy
               concepts across the full text of all documents, viewing your search term and related phrases highlighted in the search results.
             </p>
-            {/* image: wind farm */}
-          </div>
+          </ColumnAndImage>
         </Section>
 
         <Section sectionClasses="bg-oep-royal-blue" containerClasses="text-4xl text-[40px] font-bold font-tenez text-white">
-          <EqualColumns extraClasses="my-[135px]">
-            <EqualColumn>img</EqualColumn>
+          <EqualColumns extraClasses="py-[135px]">
+            <EqualColumn>
+              <Image
+                alt="An offshore wind turbine and maintenance ship seen from above"
+                src="/images/oep/OEP-wind-turbine.jpg"
+                height={416}
+                width={416}
+              />
+            </EqualColumn>
             <EqualColumn>
               <p className="mb-[280px]">
                 <span className="text-oep-salmon">Understand</span> best practices and learnings from different regions of the world
@@ -65,6 +78,13 @@ const OceanEnergyPathwayPage = () => {
               <h2 className="text-oep-dark-blue text-5xl font-bold font-tenez">But there are challenges to scale...</h2>
             </div>
             <div>
+              <Image
+                className="absolute right-0 max-w-[50%]"
+                alt="A wind turbine under construction"
+                src="/images/oep/OEP-wind-turbine-construction.jpg"
+                height={410}
+                width={620}
+              />
               <p className="mb-9">To achieve sustainable growth and meet the immense potential of offshore wind, countries must:</p>
               <ul className="mb-9">
                 <li className="ml-6 list-disc">
@@ -94,14 +114,19 @@ const OceanEnergyPathwayPage = () => {
         </Section>
 
         <Section containerClasses="text-lg">
-          <div className="max-w-[780px] mx-auto my-[120px]">
+          <div className="max-w-[780px] mx-auto py-[120px]">
             <h1 className="text-oep-dark-blue text-6xl text-[56px] font-bold font-tenez">
               The POWER Library addresses this challenge and provides an accessible, one-stop search tool for offshore wind resources.
             </h1>
           </div>
           <EqualColumns extraClasses="mb-[200px]">
             <EqualColumn>
-              <Image alt="TODO" src="/images/oep/wind-farm-worker.jpg" height={328} width={328} />
+              <Image
+                alt="A wind farm worker stands on an assembled wind turbine's blade"
+                src="/images/oep/OEP-wind-farm-worker.jpg"
+                height={328}
+                width={328}
+              />
             </EqualColumn>
             <EqualColumn>
               <p>
@@ -115,7 +140,7 @@ const OceanEnergyPathwayPage = () => {
           </EqualColumns>
         </Section>
 
-        <Section sectionClasses="bg-oep-royal-blue" containerClasses="my-[160px] text-white">
+        <Section sectionClasses="bg-oep-royal-blue" containerClasses="py-[160px] text-white">
           <EqualColumns>
             <EqualColumn>
               <h2 className="mb-12 items-end text-oep-salmon text-5xl font-bold font-tenez">Contribute to our growing our database</h2>
