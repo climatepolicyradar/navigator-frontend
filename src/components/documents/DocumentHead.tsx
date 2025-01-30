@@ -12,7 +12,6 @@ import { AlertCircleIcon } from "@components/svg/Icons";
 import { Alert } from "@components/Alert";
 import { ExternalLink } from "@components/ExternalLink";
 import { Heading } from "@components/typography/Heading";
-import { LinkWithQuery } from "@components/LinkWithQuery";
 
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
 import { truncateString } from "@utils/truncateString";
@@ -21,7 +20,6 @@ import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
 
 import { TDocumentPage, TFamilyPage, TConcept, TSearchResponse } from "@types";
 import { DocumentMetaRenderer } from "./renderers/DocumentMetaRenderer";
-import { getFeatureFlags } from "@utils/featureFlags";
 
 type TProps = {
   document: TDocumentPage;

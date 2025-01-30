@@ -4,7 +4,6 @@ import { getLanguage } from "@helpers/getLanguage";
 import { CountryLinks } from "@components/CountryLinks";
 import { TConcept } from "@types";
 import { LinkWithQuery } from "@components/LinkWithQuery";
-import { getIcon } from "@helpers/getMetadataIcon";
 import { convertDate } from "@utils/timedate";
 
 export const DocumentMeta = ({
