@@ -12,7 +12,8 @@ type TProps = {
 };
 
 export const FamilyListItem: FC<TProps> = ({ family, children }) => {
-  const { corpus_type_name, family_slug, family_geographies, family_description, family_name, family_date, family_category } = family;
+  const { corpus_type_name, family_slug, family_geographies, family_description, family_name, family_date, family_category, family_metadata } =
+    family;
 
   return (
     <div className="family-list-item relative">
@@ -25,7 +26,13 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
         {family_name}
       </LinkWithQuery>
       <div className="flex flex-wrap text-sm gap-1 my-3 items-center middot-between">
-        <FamilyMeta category={family_category} corpus_type_name={corpus_type_name} date={family_date} geographies={family_geographies} />
+        <FamilyMeta
+          category={family_category}
+          corpus_type_name={corpus_type_name}
+          date={family_date}
+          geographies={family_geographies}
+          {...(corpus_type_name === "Reports" ? { author: (family_metadata as { author: string[] }).author } : {})}
+        />
       </div>
       <p
         className="my-3 text-content"
