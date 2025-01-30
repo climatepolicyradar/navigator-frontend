@@ -5,7 +5,8 @@ import { CountryLinksAsList } from "@components/CountryLinks";
 
 import { mapFamilyMetadata } from "@helpers/mapFamilyMetadata";
 
-import { TFamilyMetadata, TMCFFamilyMetadata } from "@types";
+import { TConcept, TFamilyMetadata, TMCFFamilyMetadata } from "@types";
+import { LinkWithQuery } from "@components/LinkWithQuery";
 
 interface MetadataItemProps {
   label: string;
@@ -16,6 +17,7 @@ type TFamilyMetadataUnion = TFamilyMetadata | TMCFFamilyMetadata;
 
 interface McfFamilyMetaProps {
   metadata: TFamilyMetadataUnion;
+  concepts?: (TConcept & { count: number })[];
 }
 
 interface ListOfCountriesProps {
@@ -100,7 +102,7 @@ const MetadataItem = ({ label, values }: MetadataItemProps) => {
   );
 };
 
-export const McfFamilyMeta = ({ metadata }: McfFamilyMetaProps) => {
+export const McfFamilyMeta = ({ metadata, concepts }: McfFamilyMetaProps) => {
   const mappedMetadata = mapFamilyMetadata(metadata);
 
   return (
@@ -110,6 +112,25 @@ export const McfFamilyMeta = ({ metadata }: McfFamilyMetaProps) => {
           <MetadataItem key={index} label={item.label} values={item.value} />
         </div>
       ))}
+      {concepts && concepts.length > 0 && (
+        <>
+          <div className="flex items-center row">
+            <span className="pl-1">
+              <span className="text-sm font-bold">
+                <strong>Concepts</strong>
+              </span>
+            </span>
+            {concepts.map((concept, index) => (
+              <span key={concept.wikibase_id} className="flex items-center">
+                <LinkWithQuery className="capitalize pl-1 text-sm" href={`/concepts/${concept.wikibase_id}`}>
+                  {concept.preferred_label}
+                </LinkWithQuery>
+                {index < concepts.length - 1 && ", "}
+              </span>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };
