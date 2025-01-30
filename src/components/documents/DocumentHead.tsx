@@ -28,7 +28,7 @@ type TProps = {
   family: TFamilyPage;
   handleViewOtherDocsClick: (e: React.FormEvent<HTMLButtonElement>) => void;
   handleViewSourceClick: (e: React.FormEvent<HTMLButtonElement>) => void;
-  concepts?: (TConcept & { count: number })[];
+  concepts: (TConcept & { count: number })[];
 };
 
 const containsNonEnglish = (languages: string[]) => {
