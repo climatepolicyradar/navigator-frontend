@@ -53,6 +53,7 @@ const categoryByIndex = {
   3: "UNFCCC",
   4: "laws",
   5: "multilateral-climate-funds",
+  6: "reports",
 };
 
 const MAX_NUMBER_OF_FAMILIES = 3;
@@ -92,6 +93,9 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
         break;
       case "MCF":
         count = summary.family_counts.MCF;
+        break;
+      case "Reports":
+        count = summary.family_counts.Reports;
         break;
     }
 
@@ -201,6 +205,16 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       return summary.top_families.MCF.length === 0
         ? renderEmpty("multilateral climate funds")
         : summary.top_families.MCF.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
+            <div key={family.family_slug} className="mb-10">
+              <FamilyListItem family={family} />
+            </div>
+          ));
+    }
+    // Reports
+    if (selectedCategoryIndex === 6) {
+      return summary.top_families.Reports.length === 0
+        ? renderEmpty("reports")
+        : summary.top_families.Reports.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
             <div key={family.family_slug} className="mb-10">
               <FamilyListItem family={family} />
             </div>

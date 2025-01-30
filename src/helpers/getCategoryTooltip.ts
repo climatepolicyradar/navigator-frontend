@@ -14,6 +14,8 @@ export const getCategoryTooltip = (category: TDocumentCategory): string => {
       return "Documents submitted to the UNFCCC (including NDCs)";
     case "MCF":
       return "Multilateral climate fund projects and policies";
+    case "Reports":
+      return "For example: Documents from national bodies, corporations, NGOs, and academia";
     default:
       return "";
   }

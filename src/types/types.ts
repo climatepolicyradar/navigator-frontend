@@ -93,6 +93,7 @@ type TGeoFamilyCounts = {
   Executive: number;
   UNFCCC: number;
   MCF: number;
+  Reports: number;
 };
 
 type TGeoFamilys = {
@@ -100,6 +101,7 @@ type TGeoFamilys = {
   Executive: TFamily[];
   UNFCCC: TFamily[];
   MCF: TFamily[];
+  Reports: TFamily[];
 };
 
 export type TGeographySummary = {
