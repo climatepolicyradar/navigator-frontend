@@ -29,11 +29,6 @@
 }
 
 #oep {
-  // TODO: make this work!
-  :root {
-    @apply scrollbar-thumb-oep-salmon scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-oep-salmon;
-  }
-
   .oep-hero-background {
     position: relative;
   }
