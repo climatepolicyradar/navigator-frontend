@@ -15,7 +15,7 @@ const OceanEnergyPathwayPage = () => {
   return (
     <>
       <Head>
-        {/* trunk-ignore(eslint/@next/next/no-css-tags) */}
+        {/* eslint-disable-next-line @next/next/no-css-tags */}
         <link rel="stylesheet" href="/css/oep/oep.css" />
       </Head>
       <Layout title="Ocean Energy Pathway">
