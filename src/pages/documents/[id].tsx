@@ -204,6 +204,26 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     });
   };
 
+  const handleRemoveConceptFilter = (conceptToRemove: string) => {
+    const currentConceptFilters = conceptFilters || [];
+    const updatedConceptFilters = currentConceptFilters.filter((concept) => concept !== conceptToRemove);
+
+    const queryObj = { ...router.query };
+
+    // If no concept filters remain, remove the concept_filters.name query param entirely
+    if (updatedConceptFilters.length === 0) {
+      delete queryObj[QUERY_PARAMS["concept_filters.name"]];
+    } else {
+      // Otherwise, update the concept filters
+      queryObj[QUERY_PARAMS["concept_filters.name"]] = updatedConceptFilters;
+    }
+
+    router.push({
+      pathname: `/documents/${document.slug}`,
+      query: queryObj,
+    });
+  };
+
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
       <section
@@ -294,7 +314,9 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                       <div className="flex text-sm text-gray-600 gap-2">
                         <div className="mr-2 flex-shrink-0 font-medium">Concepts:</div>
                         {conceptFilters.map((filter) => (
-                          <Pill key={filter}>{filter}</Pill>
+                          <Pill key={filter} onClick={() => handleRemoveConceptFilter(filter)}>
+                            {filter}
+                          </Pill>
                         ))}
                       </div>
                     )}

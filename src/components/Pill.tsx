@@ -20,7 +20,7 @@ const Pill = ({ children, onClick }: TProps) => {
         className="bg-inputSelected/[.07] text-xs font-medium py-1 px-3 text-inputSelected rounded-full flex gap-2 text-left items-center transition hover:bg-inputSelected/[.1] active:bg-inputSelected/[.2]"
         onClick={handleClick}
         data-tooltip-id="tooltip"
-        data-toltip-content="Remove filter"
+        data-tooltip-content="Remove filter"
       >
         {children}{" "}
         <span className="">
