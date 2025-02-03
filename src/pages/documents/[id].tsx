@@ -28,6 +28,7 @@ import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 
 import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@types";
 import { getFeatureFlags } from "@utils/featureFlags";
+import Pill from "@components/Pill";
 
 type TProps = {
   document: TDocumentPage;
@@ -73,13 +74,22 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
   const router = useRouter();
   const startingPassage = Number(router.query.passage) || 0;
+
   const { status, families, searchQuery } = useSearch(
     router.query,
     null,
     document.import_id,
-    !!router.query[QUERY_PARAMS.query_string],
+    !!(
+      router.query[QUERY_PARAMS.query_string] ||
+      router.query[QUERY_PARAMS["concept_filters.id"]] ||
+      router.query[QUERY_PARAMS["concept_filters.name"]]
+    ),
     MAX_PASSAGES
   );
+  const conceptFiltersQuery = router.query[QUERY_PARAMS["concept_filters.name"]];
+  const conceptFilters = conceptFiltersQuery ? (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]) : undefined;
+
+  const qsSearchString = router.query[QUERY_PARAMS.query_string];
 
   const canPreview = document.content_type === "application/pdf";
 
@@ -228,41 +238,54 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                   )}`}
                 >
                   <div id="document-search" className="flex flex-col gap-2 md:pl-4">
-                    <div className="flex gap-2">
-                      <div className="flex-1">
-                        <SearchForm
-                          placeholder="Search the full text of the document"
-                          handleSearchInput={handleSearchInput}
-                          input={router.query[QUERY_PARAMS.query_string] as string}
-                          size="default"
-                        />
+                    {!conceptFilters && (
+                      <div className="flex gap-2">
+                        <div className="flex-1">
+                          <SearchForm
+                            placeholder="Search the full text of the document"
+                            handleSearchInput={handleSearchInput}
+                            input={qsSearchString as string}
+                            size="default"
+                          />
+                        </div>
+                        <div className="relative z-10 flex justify-center">
+                          <button
+                            className="px-4 flex justify-center items-center text-textDark text-xl"
+                            onClick={() => setShowOptions(!showOptions)}
+                          >
+                            <MdOutlineTune />
+                          </button>
+                          <AnimatePresence initial={false}>
+                            {showOptions && (
+                              <motion.div
+                                key="content"
+                                initial="collapsed"
+                                animate="open"
+                                exit="collapsed"
+                                variants={{
+                                  collapsed: { opacity: 0, transition: { duration: 0.1 } },
+                                  open: { opacity: 1, transition: { duration: 0.25 } },
+                                }}
+                              >
+                                <SearchSettings
+                                  queryParams={router.query}
+                                  handleSearchChange={handleSemanticSearchChange}
+                                  setShowOptions={setShowOptions}
+                                />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
                       </div>
-                      <div className="relative z-10 flex justify-center">
-                        <button className="px-4 flex justify-center items-center text-textDark text-xl" onClick={() => setShowOptions(!showOptions)}>
-                          <MdOutlineTune />
-                        </button>
-                        <AnimatePresence initial={false}>
-                          {showOptions && (
-                            <motion.div
-                              key="content"
-                              initial="collapsed"
-                              animate="open"
-                              exit="collapsed"
-                              variants={{
-                                collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                                open: { opacity: 1, transition: { duration: 0.25 } },
-                              }}
-                            >
-                              <SearchSettings
-                                queryParams={router.query}
-                                handleSearchChange={handleSemanticSearchChange}
-                                setShowOptions={setShowOptions}
-                              />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
+                    )}
+                    {conceptFilters && (
+                      <div className="flex text-sm text-gray-600 gap-2">
+                        <div className="mr-2 flex-shrink-0 font-medium">Concepts:</div>
+                        {conceptFilters.map((filter) => (
+                          <Pill key={filter}>{filter}</Pill>
+                        ))}
                       </div>
-                    </div>
+                    )}
                     {!router.query[QUERY_PARAMS.query_string] && (
                       <div className="flex text-sm text-gray-600">
                         <div className="mr-2 flex-shrink-0 font-medium">Examples:</div>
@@ -273,16 +296,24 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                   {totalNoOfMatches > 0 && (
                     <>
                       <div className="my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
-                        <div className="mb-2">
-                          Displaying {renderPassageCount(totalNoOfMatches)} for "
-                          <span className="text-textDark font-medium">{`${router.query[QUERY_PARAMS.query_string]}`}</span>"
-                          {!searchQuery.exact_match && ` and related phrases`}
-                          {totalNoOfMatches >= MAX_RESULTS && (
-                            <span className="ml-1 inline-block">
-                              <SearchLimitTooltip colour="grey" />
-                            </span>
-                          )}
-                        </div>
+                        {!conceptFilters && (
+                          <div className="mb-2">
+                            Displaying {renderPassageCount(totalNoOfMatches)} for "
+                            <span className="text-textDark font-medium">{`${qsSearchString}`}</span>"
+                            {!searchQuery.exact_match && ` and related phrases`}
+                            {totalNoOfMatches >= MAX_RESULTS && (
+                              <span className="ml-1 inline-block">
+                                <SearchLimitTooltip colour="grey" />
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        {conceptFilters && (
+                          <div className="mb-2">
+                            Displaying {renderPassageCount(totalNoOfMatches)} for the "
+                            <span className="text-textDark font-medium">{`${conceptFilters}`}</span>" concept
+                          </div>
+                        )}
                         <p>Sorted by search relevance</p>
                       </div>
                       <div

@@ -23,4 +23,7 @@ export const QUERY_PARAMS: TQueryStrings = {
   sector: "sc",
   // Reports
   author_type: "at",
+  // Passthrough
+  "concept_filters.id": "concept_filters.id",
+  "concept_filters.name": "concept_filters.name",
 };
