@@ -51,7 +51,10 @@ export const DocumentMeta = ({
             </span>
             {concepts.map((concept, index) => (
               <span key={concept.wikibase_id} className="flex items-center">
-                <LinkWithQuery className="capitalize text-blue-600 hover:underline" href={`/concepts/${concept.wikibase_id}`}>
+                <LinkWithQuery
+                  className="capitalize text-blue-600 hover:underline"
+                  href={`https://climatepolicyradar.wikibase.cloud/wiki/Item:${concept.wikibase_id}`}
+                >
                   {concept.preferred_label}
                 </LinkWithQuery>
                 {index < concepts.length - 1 && ", "}

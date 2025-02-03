@@ -48,6 +48,7 @@ import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
 import { getFeatureFlags } from "@utils/featureFlags";
+import { processConcepts, ROOT_LEVEL_CONCEPT_LINKS } from "@utils/processConcepts";
 
 type TProps = {
   page: TFamilyPage;
@@ -181,26 +182,46 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
    *
    * Not ideal, but we are working on getting more useful data on the family response.
    */
-  const [concepts, setConcepts] = useState<(TConcept & { count: number })[]>([]);
+  const [rootLevelConcepts, setRootLevelConcepts] = useState<[string, number][]>([]);
 
   useEffect(() => {
-    const conceptsData: { conceptId: string; count: number }[] = vespaFamilyData
-      ? vespaFamilyData.families.flatMap((family) => {
-          return family.hits.flatMap((hit) => {
-            return Object.entries(hit.concept_counts).map(([conceptId, count]) => ({
-              conceptId,
-              count,
-            }));
-          });
-        })
-      : [];
-    const conceptsS3Promises = conceptsData.map(({ conceptId, count }) => {
+    if (!vespaFamilyData) return;
+
+    // Extract and deduplicate concept data
+    const conceptsData: { conceptId: string; count: number }[] = vespaFamilyData.families.flatMap((family) =>
+      family.hits.flatMap((hit) => Object.entries(hit.concept_counts).map(([conceptId, count]) => ({ conceptId, count })))
+    );
+
+    // Create a Map to ensure unique concept IDs
+    const uniqueConceptsMap = new Map<string, number>();
+    conceptsData.forEach(({ conceptId, count }) => {
+      uniqueConceptsMap.set(conceptId, count);
+    });
+
+    // Convert Map to array and sort by count in descending order
+    const uniqueConceptsData = Array.from(uniqueConceptsMap.entries())
+      .map(([conceptId, count]) => ({ conceptId, count }))
+      .sort((a, b) => b.count - a.count);
+
+    const conceptsS3Promises = uniqueConceptsData.map(({ conceptId }) => {
       const url = `https://cdn.dev.climatepolicyradar.org/concepts/${conceptId}.json`;
       return fetch(url).then((response) => response.json());
     });
+
     Promise.all(conceptsS3Promises).then((conceptsS3Data) => {
-      const conceptsWithCounts = conceptsS3Data.map((concept, i) => ({ ...concept, count: conceptsData[i].count }));
-      setConcepts(conceptsWithCounts);
+      const conceptsWithCounts = conceptsS3Data.map((concept, i) => ({
+        ...concept,
+        count: uniqueConceptsData[i].count,
+      }));
+
+      // Group concepts by root level concepts
+      const processedConceptCounts = processConcepts(conceptsWithCounts);
+      const sortedConcepts = Object.entries(processedConceptCounts).sort(([conceptA, countA], [conceptB, countB]) => {
+        if (countB !== countA) return countB - countA;
+        return conceptA.localeCompare(conceptB);
+      });
+
+      setRootLevelConcepts(sortedConcepts);
     });
   }, [vespaFamilyData]);
 
@@ -372,17 +393,24 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               </div>
             </section>
 
-            {concepts.length > 0 && (
+            {rootLevelConcepts.length > 0 && (
               <section className="mt-8">
                 <Heading level={4}>Concepts</Heading>
                 <div className="flex text-sm">
                   <ul className="flex flex-wrap gap-2">
-                    {concepts.map((concept, i) => {
+                    {rootLevelConcepts.map(([conceptName, count]) => {
                       return (
-                        <li key={i}>
-                          <LinkWithQuery className="capitalize" href={`/concepts/${concept.wikibase_id}`}>
+                        <li key={conceptName}>
+                          <LinkWithQuery
+                            className="capitalize"
+                            href={
+                              conceptName !== "Other"
+                                ? ROOT_LEVEL_CONCEPT_LINKS[conceptName]
+                                : "https://climatepolicyradar.wikibase.cloud/wiki/Main_Page"
+                            }
+                          >
                             <Button color="clear" data-cy="view-source" extraClasses="flex items-center text-sm">
-                              {concept.preferred_label} ({concept.count})
+                              {conceptName} ({count})
                             </Button>
                           </LinkWithQuery>
                         </li>
@@ -464,7 +492,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
        *
        * TODO: undo this once the response from the API is fully implemented.
        */
-      const testingConceptCounts = { Q10: 1543, Q100: 15, Q1000: 101 };
+      const testingConceptCounts = { Q218: 1, Q100: 15, Q1651: 101, Q1652: 100, Q638: 115 };
       vespaFamilyData = {
         ...vespaFamilyDataRepsonse,
         families: vespaFamilyDataRepsonse.families.map((family) => {
