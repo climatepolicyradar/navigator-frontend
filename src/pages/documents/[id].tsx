@@ -196,8 +196,14 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const handleConceptClick = (conceptLabel: string) => {
     setPassageIndex(0);
     if (conceptLabel === "") return false;
-    const queryObj = {};
-    queryObj[QUERY_PARAMS["concept_filters.name"]] = conceptLabel;
+    const currentConceptFilters = conceptFilters || [];
+
+    // Prevent adding duplicate concept filters
+    if (currentConceptFilters.includes(conceptLabel)) return false;
+    const updatedConceptFilters = [...currentConceptFilters, conceptLabel];
+
+    const queryObj = { ...router.query };
+    queryObj[QUERY_PARAMS["concept_filters.name"]] = updatedConceptFilters;
     router.push({
       pathname: `/documents/${document.slug}`,
       query: queryObj,
@@ -314,7 +320,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                       <div className="flex text-sm text-gray-600 gap-2">
                         <div className="mr-2 flex-shrink-0 font-medium">Concepts:</div>
                         {conceptFilters.map((filter) => (
-                          <Pill key={filter} onClick={() => handleRemoveConceptFilter(filter)}>
+                          <Pill key={filter} extraClasses="capitalize" onClick={() => handleRemoveConceptFilter(filter)}>
                             {filter}
                           </Pill>
                         ))}
