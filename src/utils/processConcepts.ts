@@ -25,22 +25,22 @@ export const processConcepts = (concepts: (TConcept & { count: number })[]): { [
   concepts.forEach((concept) => {
     let isRootOrSubconcept = false;
 
-    // Check if it's a root level concept (no subconcepts, but has subconcept_of)
-    const isRootLevelConcept = concept.subconcept_of.length === 0 && concept.has_subconcept && concept.has_subconcept.length > 0;
-
+    // Check if concept is one of our preset root level concepts
+    const isRootLevelConcept = concept.wikibase_id in ROOT_LEVEL_CONCEPTS;
     if (isRootLevelConcept) {
-      conceptMap[concept.wikibase_id] = (conceptMap[concept.wikibase_id] || 0) + concept.count;
+      const rootConceptName = ROOT_LEVEL_CONCEPTS[concept.wikibase_id];
+      conceptMap[rootConceptName] = (conceptMap[rootConceptName] || 0) + concept.count;
       isRootOrSubconcept = true;
     }
 
-    // Check if any of its parent concepts are root level concepts
-    const hasRootLevelParent = concept.subconcept_of.some((parentId) => ROOT_LEVEL_CONCEPTS[parentId]);
-
+    // Check if any of the current concept's parent concepts are root level concepts
+    const hasRootLevelParent = concept.subconcept_of.some((parentId) => parentId in ROOT_LEVEL_CONCEPTS);
     if (hasRootLevelParent) {
       // Find and increment all root level parent concepts
       concept.subconcept_of.forEach((parentId) => {
         if (ROOT_LEVEL_CONCEPTS[parentId]) {
-          conceptMap[parentId] = (conceptMap[parentId] || 0) + concept.count;
+          const rootConceptName = ROOT_LEVEL_CONCEPTS[parentId];
+          conceptMap[rootConceptName] = (conceptMap[rootConceptName] || 0) + concept.count;
         }
       });
       isRootOrSubconcept = true;
