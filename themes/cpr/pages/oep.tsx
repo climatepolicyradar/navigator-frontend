@@ -70,7 +70,7 @@ const OceanEnergyPathwayPage = () => {
             </EqualColumns>
           </Section>
 
-          <Section containerClasses="text-lg py-12 md:pt-[120px] md:pb-[160px]">
+          <Section containerClasses="text-lg py-12 md:pt-[120px] md:pb-[160px] oep-feature-line-bg" sectionClasses="oep-feature-wave-bg">
             <Narrow extraClasses="mb-9 md:mb-[160px]">
               <h1 className="mb-[50px] text-oep-dark-blue text-6xl text-[64px] font-bold font-tenez">Why offshore wind</h1>
               <p className="font-medium text-2xl">
@@ -84,7 +84,7 @@ const OceanEnergyPathwayPage = () => {
             </ColumnAndImage>
             <ColumnAndImage>
               <Image
-                className="lg:absolute lg:right-0 order-1 max-w-full lg:max-w-[50%] mx-auto md:mx-0 mt-9 lg:mt-0"
+                className="lg:absolute lg:right-0 order-1 max-w-full lg:max-w-[50%] mx-auto md:mx-0 mt-9 lg:mt-0 z-10"
                 alt="A wind turbine under construction"
                 src="/images/oep/OEP-wind-turbine-construction.jpg"
                 height={410}
@@ -145,7 +145,7 @@ const OceanEnergyPathwayPage = () => {
             </EqualColumns>
           </Section>
 
-          <Section sectionClasses="bg-oep-royal-blue" containerClasses="py-12 md:py-[160px] text-white">
+          <Section sectionClasses="bg-oep-royal-blue oep-feature-wave-dark" containerClasses="py-12 md:py-[160px] text-white relative z-10">
             <EqualColumns>
               <EqualColumn>
                 <h2 className="mb-9 md:mb-12 items-end text-oep-salmon text-5xl font-bold font-tenez">Contribute to our growing database</h2>
