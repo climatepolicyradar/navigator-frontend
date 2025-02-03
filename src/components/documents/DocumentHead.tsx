@@ -76,7 +76,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
         <div className="flex flex-col justify-between md:flex-row flex-wrap">
           <div className="flex-1 my-4">
             <Heading level={1}>{document.title}</Heading>
-            <DocumentMetaRenderer family={family} isMain={isMain} document={document} concepts={concepts} handleConceptClick={handleConceptClick} />
+            <DocumentMetaRenderer family={family} isMain={isMain} document={document} />
 
             <div className="text-content" dangerouslySetInnerHTML={{ __html: summary }} />
             {family.summary.length > MAX_FAMILY_SUMMARY_LENGTH_BRIEF && (
@@ -87,6 +87,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
               </div>
             )}
           </div>
+
           <div>
             <div className="my-4 flex flex-row gap-2 lg:flex-col">
               {family.documents.length > 1 && (
@@ -101,6 +102,42 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
             </div>
           </div>
         </div>
+
+        <div className="flex my-4">
+          {concepts && concepts.length > 0 && (
+            <section>
+              <Heading level={4} extraClasses="mb-4">
+                Concepts
+              </Heading>
+              <div className="flex text-sm">
+                <ul className="flex flex-wrap gap-2">
+                  {concepts.map((concept, index) => (
+                    <span key={concept.wikibase_id} className="flex items-center">
+                      {handleConceptClick ? (
+                        <Button
+                          data-cy="view-document-concept"
+                          onClick={() => handleConceptClick(concept.preferred_label)}
+                          color="clear"
+                          extraClasses="capitalize flex items-center text-sm"
+                        >
+                          {concept.preferred_label}
+                        </Button>
+                      ) : (
+                        <ExternalLink
+                          className="capitalize text-blue-600 hover:underline"
+                          url={`https://climatepolicyradar.wikibase.cloud/wiki/Item:${concept.wikibase_id}`}
+                        >
+                          {concept.preferred_label}
+                        </ExternalLink>
+                      )}
+                    </span>
+                  ))}
+                </ul>
+              </div>
+            </section>
+          )}
+        </div>
+
         {translated && (
           <div className="flex my-4">
             <Alert
