@@ -20,7 +20,7 @@ const OceanEnergyPathwayPage = () => {
       </Head>
       <Layout title="Ocean Energy Pathway">
         <Header />
-        <main id="oep">
+        <main id="oep" className="relative">
           <Hero />
 
           <Section containerClasses="py-12 md:pt-[120px] md:pb-[80px]">
@@ -47,27 +47,37 @@ const OceanEnergyPathwayPage = () => {
             </ColumnAndImage>
           </Section>
 
-          <Section sectionClasses="bg-oep-royal-blue" containerClasses="py-12 md:py-[135px] text-4xl text-[40px] font-bold font-tenez text-white">
-            <EqualColumns reverseColumn>
-              <EqualColumn>
-                <Image
-                  className="mx-auto md:mx-0 mt-9 lg:mt-0"
-                  alt="An offshore wind turbine and maintenance ship seen from above"
-                  src="/images/oep/OEP-wind-turbine.jpg"
-                  height={416}
-                  width={416}
-                />
-              </EqualColumn>
-              <EqualColumn>
-                <p className="mb-9 md:mb-[280px]">
-                  <span className="text-oep-salmon">Understand</span> best practices and learnings from different regions of the world
-                </p>
-                <p>
-                  <span className="text-oep-salmon">Stay updated</span> on recent trends and expert analyses on a wide variety of topics related to
-                  offshore wind
-                </p>
-              </EqualColumn>
-            </EqualColumns>
+          <Section sectionClasses="bg-oep-royal-blue" containerClasses="py-12 text-4xl text-[40px] font-bold font-tenez text-white">
+            <div className="md:flex gap-8 relative">
+              <div className="hidden md:block flex-1 relative">
+                <div className="h-screen sticky top-0 flex items-center justify-center">
+                  <Image
+                    className="mx-auto md:mx-0 mt-9 lg:mt-0"
+                    alt="An offshore wind turbine and maintenance ship seen from above"
+                    src="/images/oep/OEP-wind-turbine.jpg"
+                    height={416}
+                    width={416}
+                  />
+                </div>
+              </div>
+              <div className="flex-1 relative">
+                <div className="md:flex flex-col md:mt-[45vh] md:mb-[45vh] items-center justify-center">
+                  <p className="mb-9 md:mb-[280px]">
+                    <span className="text-oep-salmon">Understand</span> best practices and learnings from different regions of the world
+                  </p>
+                  <p className="mb-9 md:mb-[280px]">
+                    <span className="text-oep-salmon">Stay updated</span> on recent trends and expert analyses on a wide variety of topics related to
+                    offshore wind
+                  </p>
+                  <p className="mb-9 md:mb-[280px]">
+                    <span className="text-oep-salmon">Identify</span> stakeholders and experts with best-in-class information
+                  </p>
+                  <p className="">
+                    <span className="text-oep-salmon">Help</span> design and implement effective strategies for sustainable offshore wind development
+                  </p>
+                </div>
+              </div>
+            </div>
           </Section>
 
           <Section containerClasses="text-lg py-12 md:pt-[120px] md:pb-[160px] oep-feature-line-bg" sectionClasses="oep-feature-wave-bg">
