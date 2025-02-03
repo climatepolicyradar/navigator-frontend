@@ -10,11 +10,13 @@ export const DocumentMetaRenderer = ({
   isMain,
   document,
   concepts,
+  handleConceptClick,
 }: {
   family: any;
   isMain: boolean;
   document: any;
   concepts?: (TConcept & { count: number })[];
+  handleConceptClick?: (label: string) => void;
 }) => {
   const { metadata, organisation, category, geographies, documents } = family || {};
   const document_type = documents && documents.length > 0 ? documents[0].document_type : undefined;
@@ -29,7 +31,16 @@ export const DocumentMetaRenderer = ({
   };
 
   if (category !== MULTILATERALCLIMATEFUNDSCATEGORY) {
-    return <DocumentMeta family={family} isMain={isMain} document={document} document_type={document_type} concepts={concepts} />;
+    return (
+      <DocumentMeta
+        family={family}
+        isMain={isMain}
+        document={document}
+        document_type={document_type}
+        concepts={concepts}
+        handleConceptClick={handleConceptClick}
+      />
+    );
   }
 
   return <McfFamilyMeta metadata={mcfFamilyMetadata} concepts={concepts} />;

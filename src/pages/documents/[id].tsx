@@ -193,6 +193,17 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     });
   }, [vespaFamilyData]);
 
+  const handleConceptClick = (conceptLabel: string) => {
+    setPassageIndex(0);
+    if (conceptLabel === "") return false;
+    const queryObj = {};
+    queryObj[QUERY_PARAMS["concept_filters.name"]] = conceptLabel;
+    router.push({
+      pathname: `/documents/${document.slug}`,
+      query: queryObj,
+    });
+  };
+
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
       <section
@@ -208,6 +219,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
           handleViewOtherDocsClick={handleViewOtherDocsClick}
           handleViewSourceClick={handleViewSourceClick}
           concepts={concepts}
+          handleConceptClick={handleConceptClick}
         />
         {status !== "success" ? (
           <div className="w-full flex justify-center flex-1 bg-white">

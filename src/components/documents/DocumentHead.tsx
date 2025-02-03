@@ -27,13 +27,14 @@ type TProps = {
   handleViewOtherDocsClick: (e: React.FormEvent<HTMLButtonElement>) => void;
   handleViewSourceClick: (e: React.FormEvent<HTMLButtonElement>) => void;
   concepts: (TConcept & { count: number })[];
+  handleConceptClick?: (label: string) => void;
 };
 
 const containsNonEnglish = (languages: string[]) => {
   return languages.some((lang) => lang !== "eng");
 };
 
-export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handleViewSourceClick, concepts }: TProps) => {
+export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handleViewSourceClick, concepts, handleConceptClick }: TProps) => {
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [summary, setSummary] = useState("");
 
@@ -75,7 +76,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
         <div className="flex flex-col justify-between md:flex-row flex-wrap">
           <div className="flex-1 my-4">
             <Heading level={1}>{document.title}</Heading>
-            <DocumentMetaRenderer family={family} isMain={isMain} document={document} concepts={concepts} />
+            <DocumentMetaRenderer family={family} isMain={isMain} document={document} concepts={concepts} handleConceptClick={handleConceptClick} />
 
             <div className="text-content" dangerouslySetInnerHTML={{ __html: summary }} />
             {family.summary.length > MAX_FAMILY_SUMMARY_LENGTH_BRIEF && (
