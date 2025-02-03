@@ -182,21 +182,17 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
    *
    * Not ideal, but we are working on getting more useful data on the family response.
    */
-  const [concepts, setConcepts] = useState<(TConcept & { count: number })[]>([]);
+  const [rootLevelConcepts, setRootLevelConcepts] = useState<[string, number][]>([]);
 
   useEffect(() => {
-    const conceptsData: { conceptId: string; count: number }[] = vespaFamilyData
-      ? vespaFamilyData.families.flatMap((family) => {
-          return family.hits.flatMap((hit) => {
-            return Object.entries(hit.concept_counts).map(([conceptId, count]) => ({
-              conceptId,
-              count,
-            }));
-          });
-        })
-      : [];
+    if (!vespaFamilyData) return;
 
-    // Create a Map to ensure unique concept IDs.
+    // Extract and deduplicate concept data
+    const conceptsData: { conceptId: string; count: number }[] = vespaFamilyData.families.flatMap((family) =>
+      family.hits.flatMap((hit) => Object.entries(hit.concept_counts).map(([conceptId, count]) => ({ conceptId, count })))
+    );
+
+    // Create a Map to ensure unique concept IDs
     const uniqueConceptsMap = new Map<string, number>();
     conceptsData.forEach(({ conceptId, count }) => {
       uniqueConceptsMap.set(conceptId, count);
@@ -217,23 +213,17 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
         ...concept,
         count: uniqueConceptsData[i].count,
       }));
-      setConcepts(conceptsWithCounts);
+
+      // Group concepts by root level concepts
+      const processedConceptCounts = processConcepts(conceptsWithCounts);
+      const sortedConcepts = Object.entries(processedConceptCounts).sort(([conceptA, countA], [conceptB, countB]) => {
+        if (countB !== countA) return countB - countA;
+        return conceptA.localeCompare(conceptB);
+      });
+
+      setRootLevelConcepts(sortedConcepts);
     });
   }, [vespaFamilyData]);
-
-  const [rootLevelConcepts, setRootLevelConcepts] = useState<[string, number][]>([]);
-  useEffect(() => {
-    // Process concepts
-    const processedConceptCounts = processConcepts(concepts);
-
-    // Sort concepts by count, descending, and then alphabetically if counts are the same
-    const sortedConcepts = Object.entries(processedConceptCounts).sort(([conceptA, countA], [conceptB, countB]) => {
-      if (countB !== countA) return countB - countA;
-      return conceptA.localeCompare(conceptB);
-    });
-
-    setRootLevelConcepts(sortedConcepts);
-  }, [concepts]);
 
   return (
     <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)} theme={theme}>
