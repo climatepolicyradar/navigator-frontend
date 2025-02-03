@@ -1,3 +1,4 @@
+import { MULTILATERALCLIMATEFUNDSCATEGORY } from "@components/documents/renderers/DocumentMetaRenderer";
 import { metadataLabelMappings } from "@constants/familyMetadataMappings";
 import { getSubCategoryName } from "@helpers/getCategoryName";
 import { getSumUSD } from "@helpers/getSumUSD";
@@ -9,7 +10,6 @@ interface Metadata {
 
 type ResultItem = {
   label: string;
-  iconLabel: string;
   value: string[] | string;
 };
 
@@ -23,19 +23,19 @@ export const mapFamilyMetadata = (metadata: Metadata) => {
       if (key === "geographies") {
         result.push({
           label: mapping.label,
-          iconLabel: mapping.iconLabel,
           value: values as string | string[],
         });
       } else if (key.includes("project_value")) {
         if (values[0] !== "0") {
-          result.push({ label: mapping.label, iconLabel: mapping.iconLabel, value: getSumUSD(values as string[]) });
+          result.push({ label: mapping.label, value: getSumUSD(values as string[]) });
         }
       } else if (key === "organisation") {
-        result.push({ label: mapping.label, iconLabel: mapping.iconLabel, value: getSubCategoryName(values as TCorpusTypeSubCategory) });
+        result.push({ label: mapping.label, value: getSubCategoryName(values as TCorpusTypeSubCategory) });
+      } else if (key === "category" && metadata.category === MULTILATERALCLIMATEFUNDSCATEGORY) {
+        result.push({ label: mapping.label, value: "Projects" });
       } else {
         result.push({
           label: mapping.label,
-          iconLabel: mapping.iconLabel,
           value: Array.isArray(values) && values.length > 1 ? values : values.toString(),
         });
       }
