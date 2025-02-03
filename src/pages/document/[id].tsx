@@ -226,11 +226,10 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     // Process concepts
     const processedConceptCounts = processConcepts(concepts);
 
-    // Sort concepts by count, descending (with 'Other' always at the end if present)
-    const sortedConcepts = Object.entries(processedConceptCounts).sort(([a], [b]) => {
-      if (a === "Other") return 1;
-      if (b === "Other") return -1;
-      return processedConceptCounts[b] - processedConceptCounts[a];
+    // Sort concepts by count, descending, and then alphabetically if counts are the same
+    const sortedConcepts = Object.entries(processedConceptCounts).sort(([conceptA, countA], [conceptB, countB]) => {
+      if (countB !== countA) return countB - countA;
+      return conceptA.localeCompare(conceptB);
     });
 
     setRootLevelConcepts(sortedConcepts);
@@ -406,11 +405,10 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
             {rootLevelConcepts.length > 0 && (
               <section className="mt-8">
-                <Heading level={4}>Root Level Concepts</Heading>
+                <Heading level={4}>Concepts</Heading>
                 <div className="flex text-sm">
                   <ul className="flex flex-wrap gap-2">
                     {rootLevelConcepts.map(([conceptName, count]) => {
-                      // For root level concepts
                       return (
                         <li key={conceptName}>
                           <LinkWithQuery
@@ -423,27 +421,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           >
                             <Button color="clear" data-cy="view-source" extraClasses="flex items-center text-sm">
                               {conceptName} ({count})
-                            </Button>
-                          </LinkWithQuery>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              </section>
-            )}
-
-            {concepts.length > 0 && (
-              <section className="mt-8">
-                <Heading level={4}>Concepts</Heading>
-                <div className="flex text-sm">
-                  <ul className="flex flex-wrap gap-2">
-                    {concepts.map((concept, i) => {
-                      return (
-                        <li key={i}>
-                          <LinkWithQuery className="capitalize" href={`/concepts/${concept.wikibase_id}`}>
-                            <Button color="clear" data-cy="view-source" extraClasses="flex items-center text-sm">
-                              {concept.preferred_label} ({concept.count})
                             </Button>
                           </LinkWithQuery>
                         </li>
@@ -525,7 +502,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
        *
        * TODO: undo this once the response from the API is fully implemented.
        */
-      const testingConceptCounts = { Q218: 1, Q100: 15, Q1651: 101, Q1652: 100 };
+      const testingConceptCounts = { Q218: 1, Q100: 15, Q1651: 101, Q1652: 100, Q638: 115 };
       vespaFamilyData = {
         ...vespaFamilyDataRepsonse,
         families: vespaFamilyDataRepsonse.families.map((family) => {
