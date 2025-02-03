@@ -67,7 +67,7 @@ export const Hero = () => {
                   data-analytics="oep-searchInput"
                   data-cy="search-input"
                   type="search"
-                  className="w-full text-textDark py-5 pl-[52px] text-normal bg-white rounded-xl shadow-oep border-[#f1f1f1] focus:border-white focus:ring-0 placeholder:text-textNormal"
+                  className="w-full text-textDark py-5 pl-[52px] text-normal text-base bg-white rounded-xl shadow-oep border-[#f1f1f1] focus:border-oep-salmon focus:ring-0 placeholder:text-textNormal"
                   value={term}
                   onChange={(e) => setTerm(e.currentTarget.value)}
                   onKeyDown={handleKeydown}
@@ -80,17 +80,17 @@ export const Hero = () => {
                 <ul className="flex flex-col md:flex-row gap-2 md:gap-4">
                   <li>
                     <a href="" onClick={handleSuggestionClick} className="text-textDark opacity-60 hover:opacity-100">
-                      Offshore wind
+                      Offshore wind development
                     </a>
                   </li>
                   <li>
                     <a href="" onClick={handleSuggestionClick} className="text-textDark opacity-60 hover:opacity-100">
-                      Energy security
+                      Floating offshore wind
                     </a>
                   </li>
                   <li>
                     <a href="" onClick={handleSuggestionClick} className="text-textDark opacity-60 hover:opacity-100">
-                      Renewables
+                      Offshore wind communities
                     </a>
                   </li>
                 </ul>
