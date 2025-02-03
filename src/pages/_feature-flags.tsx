@@ -1,6 +1,7 @@
 import Button from "@components/buttons/Button";
 import { setFeatureFlags } from "@utils/featureFlags";
 import { usePostHog } from "posthog-js/react";
+import { useEffect } from "react";
 
 export default function FeatureFlags() {
   const posthog = usePostHog();
@@ -14,27 +15,23 @@ export default function FeatureFlags() {
     opt_in_site_apps: true,
   });
 
+  useEffect(() => {
+    posthog.onFeatureFlags((featureFlags) => {
+      const newFeatureFlags = {};
+      for (const featureFlag of featureFlags) {
+        newFeatureFlags[featureFlag] = true;
+      }
+
+      setFeatureFlags(newFeatureFlags);
+    });
+  }, [posthog]);
+
   return (
     <div className="h-screen flex items-center justify-center">
-      <Button id="beta-button">Feature Flags</Button>
-      <Button
-        onClick={() => {
-          posthog.getEarlyAccessFeatures((posthogFeatureFlags) => {
-            const featureFlags = {};
-            posthogFeatureFlags.map((posthogFeatureFlag) => {
-              const { flagKey } = posthogFeatureFlag;
-              const enabled = posthog.isFeatureEnabled(flagKey);
-
-              if (enabled) {
-                featureFlags[flagKey] = true;
-              }
-            });
-            setFeatureFlags(featureFlags);
-          });
-        }}
-      >
-        Save
-      </Button>
+      <div className="flex flex-col items-center gap-4">
+        <Button id="beta-button">Feature Flags</Button>
+        <p className="text-sm">You will need to have consented to cookies and have your ad-blocker disabled</p>
+      </div>
     </div>
   );
 }
