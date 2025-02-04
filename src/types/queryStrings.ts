@@ -21,4 +21,7 @@ export type TQueryStrings = {
   sector: string;
   // Reports
   author_type: string;
+  // passthrough
+  "concept_filters.id": string;
+  "concept_filters.name": string;
 };

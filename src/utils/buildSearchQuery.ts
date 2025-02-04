@@ -52,6 +52,25 @@ export default function buildSearchQuery(
     }
   }
 
+  if (routerQuery[QUERY_PARAMS["concept_filters.id"]]) {
+    const conceptFilters = routerQuery[QUERY_PARAMS["concept_filters.id"]];
+    query.concept_filters = Array.isArray(conceptFilters)
+      ? conceptFilters.map((id) => ({
+          name: "id",
+          value: id,
+        }))
+      : [{ name: "id", value: conceptFilters }];
+  }
+  if (routerQuery[QUERY_PARAMS["concept_filters.name"]]) {
+    const conceptFilters = routerQuery[QUERY_PARAMS["concept_filters.name"]];
+    query.concept_filters = Array.isArray(conceptFilters)
+      ? conceptFilters.map((name) => ({
+          name: "name",
+          value: name,
+        }))
+      : [{ name: "name", value: conceptFilters }];
+  }
+
   if (routerQuery[QUERY_PARAMS.category]) {
     const qCategory = routerQuery[QUERY_PARAMS.category] as string;
     let category: string[];
@@ -184,5 +203,6 @@ export default function buildSearchQuery(
     ...query,
     keyword_filters,
   };
+
   return query;
 }
