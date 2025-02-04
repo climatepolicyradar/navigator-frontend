@@ -103,8 +103,8 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
           </div>
         </div>
 
-        <div className="flex my-4">
-          {concepts && concepts.length > 0 && (
+        {concepts && concepts.length > 0 && (
+          <div className="flex my-4">
             <section>
               <Heading level={4} extraClasses="mb-4">
                 Concepts
@@ -135,8 +135,8 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
                 </ul>
               </div>
             </section>
-          )}
-        </div>
+          </div>
+        )}
 
         {translated && (
           <div className="flex my-4">

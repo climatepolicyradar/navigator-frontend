@@ -24,6 +24,6 @@ export const QUERY_PARAMS: TQueryStrings = {
   // Reports
   author_type: "at",
   // Pass through
-  "concept_filters.id": "concept_filters.id",
-  "concept_filters.name": "concept_filters.name",
+  "concept_filters.id": "cfi",
+  "concept_filters.name": "cfn",
 };
