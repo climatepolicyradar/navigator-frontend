@@ -37,7 +37,7 @@ export const Hero = () => {
   };
 
   const handleSubmit = (query?: string) => {
-    router.push({ pathname: "/search", query: { [QUERY_PARAMS.query_string]: query ?? term, [QUERY_PARAMS.category]: "Reports" } });
+    router.push({ pathname: "/search", query: { [QUERY_PARAMS.query_string]: query ?? term, [QUERY_PARAMS.category]: "reports" } });
   };
 
   return (
@@ -50,7 +50,7 @@ export const Hero = () => {
           <SingleCol>
             <div className="relative z-10 pb-[100px] pt-[100px] md:pt-[218px]">
               <div className="mb-6">
-                <Image src="/images/oep/oep-logo-small.png" width={155} height={54} alt="Ocean Energy Pathway logo" data-cy="oep-logo" />
+                <Image src="/images/oep/OEP-logo-small.png" width={155} height={54} alt="Ocean Energy Pathway logo" data-cy="oep-logo" />
               </div>
               <h1 className="font-['tenez'] font-bold italic text-oep-royal-blue tracking-[-0.96px] leading-[80%] text-7xl md:text-8xl">
                 <span className="not-italic">POWER</span> library

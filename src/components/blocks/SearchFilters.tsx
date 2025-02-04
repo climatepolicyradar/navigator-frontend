@@ -28,7 +28,7 @@ const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/compo
 
 const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption) => {
   if (selectedCatgeory) {
-    if (selectedCatgeory === themeConfigCategory.slug) {
+    if (selectedCatgeory.toLowerCase() === themeConfigCategory.slug.toLowerCase()) {
       return true;
     }
   }

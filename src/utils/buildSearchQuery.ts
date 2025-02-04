@@ -76,7 +76,7 @@ export default function buildSearchQuery(
     let category: string[];
     let corpusIds: string[] = [];
     if (themeConfig?.categories) {
-      const configCategory = themeConfig.categories.options.find((c) => c.slug === qCategory);
+      const configCategory = themeConfig.categories.options.find((c) => c.slug.toLowerCase() === qCategory.toLowerCase());
       category = configCategory?.category;
       if (configCategory?.value) corpusIds = configCategory.value;
     }
