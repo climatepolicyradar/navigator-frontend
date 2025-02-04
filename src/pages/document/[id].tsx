@@ -171,39 +171,30 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     }
   };
 
-  /**
-   * Beta concepts work - this work is all behind the concepts-v1 feature flag.
-   *
-   * Currently the family only returns a { [conceptId: string]: count: number }.
-   * This isn't enough to give a useful rendering. So we are:
-   * - getting a list of those IDs
-   * - creating promises to the S3 file that has more data about the concept
-   * - resolving that promise and treating that as the concept data.
-   *
-   * Not ideal, but we are working on getting more useful data on the family response.
-   */
   const [rootLevelConcepts, setRootLevelConcepts] = useState<[string, number][]>([]);
 
   useEffect(() => {
     if (!vespaFamilyData) return;
 
     // Extract and deduplicate concept data
-    const conceptsData: { conceptId: string; count: number }[] = vespaFamilyData.families.flatMap((family) =>
-      family.hits.flatMap((hit) => Object.entries(hit.concept_counts).map(([conceptId, count]) => ({ conceptId, count })))
+    const conceptsData: { conceptKey: string; count: number }[] = vespaFamilyData.families.flatMap((family) =>
+      family.hits.flatMap((hit) => Object.entries(hit.concept_counts ?? {}).map(([conceptKey, count]) => ({ conceptKey, count })))
     );
 
     // Create a Map to ensure unique concept IDs
     const uniqueConceptsMap = new Map<string, number>();
-    conceptsData.forEach(({ conceptId, count }) => {
-      uniqueConceptsMap.set(conceptId, count);
+    conceptsData.forEach(({ conceptKey, count }) => {
+      uniqueConceptsMap.set(conceptKey, count);
     });
 
     // Convert Map to array and sort by count in descending order
     const uniqueConceptsData = Array.from(uniqueConceptsMap.entries())
-      .map(([conceptId, count]) => ({ conceptId, count }))
+      .map(([conceptKey, count]) => ({ conceptKey, count }))
       .sort((a, b) => b.count - a.count);
 
-    const conceptsS3Promises = uniqueConceptsData.map(({ conceptId }) => {
+    const conceptsS3Promises = uniqueConceptsData.map(({ conceptKey }) => {
+      // the concept ID is in the shape of `Q100:concept name`
+      const conceptId = conceptKey.split(":")[0];
       const url = `https://cdn.dev.climatepolicyradar.org/concepts/${conceptId}.json`;
       return fetch(url).then((response) => response.json());
     });
@@ -482,31 +473,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const conceptsV1 = featureFlags["concepts-v1"];
     if (conceptsV1) {
       // fetch the families
-      const { data: vespaFamilyDataRepsonse } = await client.get(`/families/${familyData.import_id}`);
-
-      /**
-       * currently the pipeline doesn't attach this data to the response
-       * this is the right shape of the data, just not the right data.
-       *
-       * This should help us move forward with the interface and rendering logic.
-       *
-       * TODO: undo this once the response from the API is fully implemented.
-       */
-      const testingConceptCounts = { Q218: 1, Q100: 15, Q1651: 101, Q1652: 100, Q638: 115 };
-      vespaFamilyData = {
-        ...vespaFamilyDataRepsonse,
-        families: vespaFamilyDataRepsonse.families.map((family) => {
-          return {
-            ...family,
-            hits: family.hits.map((hit) => {
-              return {
-                ...hit,
-                concept_counts: { ...testingConceptCounts },
-              };
-            }),
-          };
-        }),
-      };
+      const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
+      vespaFamilyData = vespaFamilyDataResponse;
     }
   } catch (error) {
     // TODO: handle error more elegantly
