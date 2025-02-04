@@ -198,8 +198,28 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     if (conceptLabel === "") return false;
     const currentConceptFilters = conceptFilters || [];
 
-    // Prevent adding duplicate concept filters
-    if (currentConceptFilters.includes(conceptLabel)) return false;
+    // If the concept is already in filters, remove it
+    if (currentConceptFilters.includes(conceptLabel)) {
+      const updatedConceptFilters = currentConceptFilters.filter((concept) => concept !== conceptLabel);
+
+      const queryObj = { ...router.query };
+
+      // If no concept filters remain, remove the concept_filters.name query param entirely
+      if (updatedConceptFilters.length === 0) {
+        delete queryObj[QUERY_PARAMS["concept_filters.name"]];
+      } else {
+        // Otherwise, update the concept filters
+        queryObj[QUERY_PARAMS["concept_filters.name"]] = updatedConceptFilters;
+      }
+
+      router.push({
+        pathname: `/documents/${document.slug}`,
+        query: queryObj,
+      });
+      return;
+    }
+
+    // If the concept is not in filters, add it
     const updatedConceptFilters = [...currentConceptFilters, conceptLabel];
 
     const queryObj = { ...router.query };
