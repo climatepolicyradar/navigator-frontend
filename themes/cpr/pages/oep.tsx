@@ -1,8 +1,8 @@
 import Head from "next/head";
 import Image from "next/image";
-import Link from "next/link";
 
 import Layout from "@components/layouts/LandingPage";
+import { ExternalLink } from "@components/ExternalLink";
 import { ColumnAndImage } from "@cpr/components/oep/ColumnAndImage";
 import { EqualColumn, EqualColumns } from "@cpr/components/oep/EqualColumns";
 import { Footer } from "@cpr/components/oep/Footer";
@@ -10,7 +10,6 @@ import { Header } from "@cpr/components/oep/Header";
 import { Hero } from "@cpr/components/oep/Hero";
 import { Narrow } from "@cpr/components/oep/Narrow";
 import { Section } from "@cpr/components/oep/Section";
-import { ExternalLink } from "@components/ExternalLink";
 
 const OceanEnergyPathwayPage = () => {
   return (
@@ -166,15 +165,19 @@ const OceanEnergyPathwayPage = () => {
                 </p>
               </EqualColumn>
               <EqualColumn extraClasses="mt-9 md:mt-0 md:self-end flex flex-row flex-wrap md:justify-end gap-y-4 gap-x-8">
-                <Image src="/images/cpr-logo-horizontal-dark.svg" width={215} height={35} alt="Climate Policy Radar logo" data-cy="cpr-logo" />
-                <Image
-                  src="/images/oep/OEP-logo.svg"
-                  width={155}
-                  height={100}
-                  alt="Ocean Energy Pathway logo"
-                  data-cy="oep-logo"
-                  className="invert"
-                />
+                <ExternalLink url="https://www.climatepolicyradar.org" className="flex">
+                  <Image src="/images/cpr-logo-horizontal-dark.svg" width={215} height={35} alt="Climate Policy Radar logo" data-cy="cpr-logo" />
+                </ExternalLink>
+                <ExternalLink url="https://www.oceanenergypathway.org" className="flex">
+                  <Image
+                    src="/images/oep/OEP-logo.svg"
+                    width={155}
+                    height={100}
+                    alt="Ocean Energy Pathway logo"
+                    data-cy="oep-logo"
+                    className="invert"
+                  />
+                </ExternalLink>
               </EqualColumn>
             </EqualColumns>
           </Section>

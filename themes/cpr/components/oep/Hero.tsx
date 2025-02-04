@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 
 import { SingleCol } from "@components/panels/SingleCol";
 import { SiteWidth } from "@components/panels/SiteWidth";
+import { ExternalLink } from "@components/ExternalLink";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 
@@ -49,8 +50,10 @@ export const Hero = () => {
         <SiteWidth>
           <SingleCol>
             <div className="relative z-10 pb-[100px] pt-[100px] md:pt-[218px]">
-              <div className="mb-6">
-                <Image src="/images/oep/OEP-logo-small.png" width={155} height={54} alt="Ocean Energy Pathway logo" data-cy="oep-logo" />
+              <div className="mb-6 flex">
+                <ExternalLink url="https://www.oceanenergypathway.org" className="flex">
+                  <Image src="/images/oep/OEP-logo-small.png" width={155} height={54} alt="Ocean Energy Pathway logo" data-cy="oep-logo" />
+                </ExternalLink>
               </div>
               <h1 className="font-['tenez'] font-bold italic text-oep-royal-blue tracking-[-0.96px] leading-[80%] text-7xl md:text-8xl">
                 <span className="not-italic">POWER</span> library
