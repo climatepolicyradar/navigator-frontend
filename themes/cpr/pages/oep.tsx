@@ -10,6 +10,7 @@ import { Header } from "@cpr/components/oep/Header";
 import { Hero } from "@cpr/components/oep/Hero";
 import { Narrow } from "@cpr/components/oep/Narrow";
 import { Section } from "@cpr/components/oep/Section";
+import { ExternalLink } from "@components/ExternalLink";
 
 const OceanEnergyPathwayPage = () => {
   return (
@@ -18,7 +19,7 @@ const OceanEnergyPathwayPage = () => {
         {/* eslint-disable-next-line @next/next/no-css-tags */}
         <link rel="stylesheet" href="/css/oep/oep.css" />
       </Head>
-      <Layout title="Ocean Energy Pathway">
+      <Layout title="Ocean Energy Pathway" description="Helping the offshore wind sector design effective strategies">
         <Header />
         <main id="oep" className="relative">
           <Hero />
@@ -26,9 +27,9 @@ const OceanEnergyPathwayPage = () => {
           <Section containerClasses="py-12 md:pt-[120px] md:pb-[80px]">
             <Narrow extraClasses="mb-9 md:mb-[80px]">
               <p className="font-medium text-2xl">
-                The POWER <span className="italic">(Publications on Offshore Wind Energy Research)</span> Library is a project run in partnership
-                between Climate Policy Radar and Ocean Energy Pathway, aimed at providing an accessible and reliable reference on offshore wind energy
-                and helping policymakers and stakeholders around the world design more effective strategies.
+                The POWER <span className="italic">(Publications on Offshore Wind Energy Research)</span> Library, developed by Climate Policy Radar
+                and curated by Ocean Energy Pathway, is a new resource for offshore wind energy, designed to underpin more effective offshore wind
+                energy strategies worldwide.
               </p>
             </Narrow>
             <ColumnAndImage extraClasses="md:max-w-[420px] min-h-[400px]">
@@ -103,7 +104,7 @@ const OceanEnergyPathwayPage = () => {
               <p className="mb-9">To achieve sustainable growth and meet the immense potential of offshore wind, countries must:</p>
               <ul className="mb-9">
                 <li className="ml-6 list-disc">
-                  Establish new policy and regulatory framework that can unlock investment and accelerate development;
+                  Establish new policy and regulatory frameworks that can unlock investment and accelerate development;
                 </li>
                 <li className="ml-6 list-disc">
                   Recognise the potential of offshore wind as a transformative blue economy solution with opportunities for job creation, industrial
@@ -115,13 +116,10 @@ const OceanEnergyPathwayPage = () => {
                   Work in harmony with nature, recognising that a biodiversity crisis exists alongside the climate crisis.
                 </li>
               </ul>
-              <p className="mb-9">
-                To design and implement effective strategies for rapid, sustainable, high-ambition deployment of offshore wind, decision-makers need
-                access to reliable and relevant information.
-              </p>
               <p>
-                Offshore wind is a quickly-evolving sector, with an ever-growing influx of data, policy documents, and industry expertise.
-                Policymakers, researchers, and others seeking information on offshore wind often find identifying and selecting relevant information
+                Offshore wind is a quickly-evolving sector, with an ever-growing influx of data, policy documents, and industry expertise. To design
+                and implement effective strategies for rapid, sustainable, high-ambition deployment of offshore wind, decision-makers need access to
+                reliable information. Stakeholders seeking information on offshore wind often find identifying and selecting relevant information
                 challenging, time-consuming, and expensive, as resources and data are spread across different sources and platforms.
               </p>
             </ColumnAndImage>
@@ -161,9 +159,9 @@ const OceanEnergyPathwayPage = () => {
                 <h2 className="mb-9 md:mb-12 items-end text-oep-salmon text-5xl font-bold font-tenez">Contribute to our growing database</h2>
                 <p className="text-lg">
                   If you’ve spotted missing data or would like to contribute materials to our POWER Library,{" "}
-                  <Link className="text-white underline hover:text-white" href="#">
+                  <ExternalLink className="text-white underline hover:text-white" url="https://form.jotform.com/233294135296359">
                     please let us know here
-                  </Link>
+                  </ExternalLink>
                   .
                 </p>
               </EqualColumn>
