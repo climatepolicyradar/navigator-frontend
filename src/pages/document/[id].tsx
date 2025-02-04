@@ -401,18 +401,18 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                     {rootLevelConcepts.map(([conceptName, count]) => {
                       return (
                         <li key={conceptName}>
-                          <LinkWithQuery
+                          <ExternalLink
                             className="capitalize"
-                            href={
+                            url={
                               conceptName !== "Other"
                                 ? ROOT_LEVEL_CONCEPT_LINKS[conceptName]
                                 : "https://climatepolicyradar.wikibase.cloud/wiki/Main_Page"
                             }
                           >
-                            <Button color="clear" data-cy="view-source" extraClasses="flex items-center text-sm">
+                            <Button color="clear" data-cy="view-family-concept" extraClasses="flex items-center text-sm">
                               {conceptName} ({count})
                             </Button>
-                          </LinkWithQuery>
+                          </ExternalLink>
                         </li>
                       );
                     })}
