@@ -180,10 +180,9 @@ export const METHODOLOGY: TDataListItem[] = [
           <b>Each document is assessed to determine the most relevant sector or sectors to which it relates</b>. The following sectors are currently
           considered: Agriculture, Transport, Energy, Waste, Environment, Tourism, Land Use, Land-Use Change and Forestry (LULUCF), Industry,
           Buildings, Water, Health, Public Sector, and Other. Where a document relates to multiple sectors or appears cross-cutting in intention, we
-          assign the labels ‘economy-wide’ or ‘cross-cutting area’. In some instances, multi-sectoral documents may also be categorised as related to
-          Disaster Risk Management (DRM), Adaptation, or Social Development. We also consider whether laws relate primarily to urban or rural sectors
-          of the economy and/or to coastal zones. We currently only cover waste laws that explicitly mention methane, another greenhouse gas, or if
-          they deal with waste-to-energy schemes.
+          assign the labels ‘economy-wide’ or ‘cross-cutting area’. We also consider whether laws relate primarily to urban or rural sectors of the
+          economy and/or to coastal zones. We currently only cover waste laws that explicitly mention methane, another greenhouse gas, or if they deal
+          with waste-to-energy schemes.
         </p>
 
         <h4>Targets</h4>

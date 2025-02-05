@@ -1,42 +1,42 @@
-import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { ParsedUrlQueryInput } from "querystring";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { MdOutlineTune } from "react-icons/md";
 
-import useSearch from "@hooks/useSearch";
-import { useDownloadCsv } from "@hooks/useDownloadCsv";
 import useConfig from "@hooks/useConfig";
+import { useDownloadCsv } from "@hooks/useDownloadCsv";
+import useSearch from "@hooks/useSearch";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
-import { SingleCol } from "@components/panels/SingleCol";
 import { MultiCol } from "@components/panels/MultiCol";
 import { SideCol } from "@components/panels/SideCol";
+import { SingleCol } from "@components/panels/SingleCol";
+import { SiteWidth } from "@components/panels/SiteWidth";
 
-import Layout from "@components/layouts/Main";
-import SearchForm from "@components/forms/SearchForm";
-import SearchFilters from "@components/blocks/SearchFilters";
-import Loader from "@components/Loader";
-import FilterToggle from "@components/buttons/FilterToggle";
-import Pagination from "@components/pagination";
-import Drawer from "@components/drawer/Drawer";
-import SearchResultList from "@components/search/SearchResultList";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import { Loading } from "@components/svg/Icons";
 import { ExternalLink } from "@components/ExternalLink";
+import Loader from "@components/Loader";
 import { NoOfResults } from "@components/NoOfResults";
+import SearchFilters from "@components/blocks/SearchFilters";
+import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
+import FilterToggle from "@components/buttons/FilterToggle";
+import Drawer from "@components/drawer/Drawer";
 import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
+import { SearchSettings } from "@components/filters/SearchSettings";
+import SearchForm from "@components/forms/SearchForm";
+import Layout from "@components/layouts/Main";
 import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
 import { SubNav } from "@components/nav/SubNav";
-import { SearchSettings } from "@components/filters/SearchSettings";
+import Pagination from "@components/pagination";
+import SearchResultList from "@components/search/SearchResultList";
+import { Loading } from "@components/svg/Icons";
 
 import { getThemeConfigLink } from "@utils/getThemeConfigLink";
+import { readConfigFile } from "@utils/readConfigFile";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 
 import { TTheme, TThemeConfig } from "@types";
-import { readConfigFile } from "@utils/readConfigFile";
 
 type TProps = {
   theme: TTheme;

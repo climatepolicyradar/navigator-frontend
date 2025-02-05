@@ -41,14 +41,14 @@ import { pluralise } from "@utils/pluralise";
 import { getFamilyMetaDescription } from "@utils/getFamilyMetaDescription";
 import { extractNestedData } from "@utils/extractNestedData";
 
-import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TOrganisationDictionary, TTheme, TCorpusTypeDictionary } from "@types";
+import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept } from "@types";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
-import { PostHog } from "posthog-node";
 import { getFeatureFlags } from "@utils/featureFlags";
+import { processConcepts, ROOT_LEVEL_CONCEPT_LINKS } from "@utils/processConcepts";
 
 type TProps = {
   page: TFamilyPage;
@@ -57,6 +57,7 @@ type TProps = {
   corpus_types: TCorpusTypeDictionary;
   theme: TTheme;
   featureFlags: Record<string, string | boolean>;
+  vespaFamilyData?: TSearchResponse;
 };
 
 /*
@@ -73,6 +74,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   corpus_types,
   theme,
   featureFlags,
+  vespaFamilyData,
 }: TProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -168,6 +170,51 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
       router.push({ pathname: `/document/${page.slug}`, query: queryObj });
     }
   };
+
+  const [rootLevelConcepts, setRootLevelConcepts] = useState<[string, number][]>([]);
+
+  useEffect(() => {
+    if (!vespaFamilyData) return;
+
+    // Extract and deduplicate concept data
+    const conceptsData: { conceptKey: string; count: number }[] = vespaFamilyData.families.flatMap((family) =>
+      family.hits.flatMap((hit) => Object.entries(hit.concept_counts ?? {}).map(([conceptKey, count]) => ({ conceptKey, count })))
+    );
+
+    // Create a Map to ensure unique concept IDs
+    const uniqueConceptsMap = new Map<string, number>();
+    conceptsData.forEach(({ conceptKey, count }) => {
+      uniqueConceptsMap.set(conceptKey, count);
+    });
+
+    // Convert Map to array and sort by count in descending order
+    const uniqueConceptsData = Array.from(uniqueConceptsMap.entries())
+      .map(([conceptKey, count]) => ({ conceptKey, count }))
+      .sort((a, b) => b.count - a.count);
+
+    const conceptsS3Promises = uniqueConceptsData.map(({ conceptKey }) => {
+      // the concept ID is in the shape of `Q100:concept name`
+      const conceptId = conceptKey.split(":")[0];
+      const url = `https://cdn.dev.climatepolicyradar.org/concepts/${conceptId}.json`;
+      return fetch(url).then((response) => response.json());
+    });
+
+    Promise.all(conceptsS3Promises).then((conceptsS3Data) => {
+      const conceptsWithCounts = conceptsS3Data.map((concept, i) => ({
+        ...concept,
+        count: uniqueConceptsData[i].count,
+      }));
+
+      // Group concepts by root level concepts
+      const processedConceptCounts = processConcepts(conceptsWithCounts);
+      const sortedConcepts = Object.entries(processedConceptCounts).sort(([conceptA, countA], [conceptB, countB]) => {
+        if (countB !== countA) return countB - countA;
+        return conceptA.localeCompare(conceptB);
+      });
+
+      setRootLevelConcepts(sortedConcepts);
+    });
+  }, [vespaFamilyData]);
 
   return (
     <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)} theme={theme}>
@@ -338,6 +385,34 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               </div>
             </section>
 
+            {rootLevelConcepts.length > 0 && (
+              <section className="mt-8">
+                <Heading level={4}>Concepts</Heading>
+                <div className="flex text-sm">
+                  <ul className="flex flex-wrap gap-2">
+                    {rootLevelConcepts.map(([conceptName, count]) => {
+                      return (
+                        <li key={conceptName}>
+                          <ExternalLink
+                            className="capitalize"
+                            url={
+                              conceptName !== "Other"
+                                ? ROOT_LEVEL_CONCEPT_LINKS[conceptName]
+                                : "https://climatepolicyradar.wikibase.cloud/wiki/Main_Page"
+                            }
+                          >
+                            <Button color="clear" data-cy="view-family-concept" extraClasses="flex items-center text-sm">
+                              {conceptName} ({count})
+                            </Button>
+                          </ExternalLink>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </section>
+            )}
+
             {page.collections.length > 0 && (
               <div className="mt-8">
                 <Divider />
@@ -387,6 +462,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const client = new ApiClient(process.env.API_URL);
 
   let familyData: TFamilyPage;
+  let vespaFamilyData: TSearchResponse;
   let targetsData: TTarget[] = [];
   let countriesData: TGeography[] = [];
   let corpus_types: TCorpusTypeDictionary;
@@ -394,6 +470,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const { data: returnedData } = await client.get(`/documents/${id}`);
     familyData = returnedData;
+
+    const conceptsV1 = featureFlags["concepts-v1"];
+    if (conceptsV1) {
+      // fetch the families
+      const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
+      vespaFamilyData = vespaFamilyDataResponse;
+    }
   } catch (error) {
     // TODO: handle error more elegantly
   }
@@ -428,6 +511,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       corpus_types,
       theme: theme,
       featureFlags,
+      vespaFamilyData: vespaFamilyData ?? null,
     },
   };
 };

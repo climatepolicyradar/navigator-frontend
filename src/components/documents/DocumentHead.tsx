@@ -18,7 +18,7 @@ import { truncateString } from "@utils/truncateString";
 
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
 
-import { TDocumentPage, TFamilyPage } from "@types";
+import { TDocumentPage, TFamilyPage, TConcept, TSearchResponse } from "@types";
 import { DocumentMetaRenderer } from "./renderers/DocumentMetaRenderer";
 
 type TProps = {
@@ -26,13 +26,15 @@ type TProps = {
   family: TFamilyPage;
   handleViewOtherDocsClick: (e: React.FormEvent<HTMLButtonElement>) => void;
   handleViewSourceClick: (e: React.FormEvent<HTMLButtonElement>) => void;
+  concepts: (TConcept & { count: number })[];
+  handleConceptClick?: (label: string) => void;
 };
 
 const containsNonEnglish = (languages: string[]) => {
   return languages.some((lang) => lang !== "eng");
 };
 
-export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handleViewSourceClick }: TProps) => {
+export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handleViewSourceClick, concepts, handleConceptClick }: TProps) => {
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [summary, setSummary] = useState("");
 
@@ -75,6 +77,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
           <div className="flex-1 my-4">
             <Heading level={1}>{document.title}</Heading>
             <DocumentMetaRenderer family={family} isMain={isMain} document={document} />
+
             <div className="text-content" dangerouslySetInnerHTML={{ __html: summary }} />
             {family.summary.length > MAX_FAMILY_SUMMARY_LENGTH_BRIEF && (
               <div className="mt-4">
@@ -84,6 +87,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
               </div>
             )}
           </div>
+
           <div>
             <div className="my-4 flex flex-row gap-2 lg:flex-col">
               {family.documents.length > 1 && (
@@ -98,6 +102,42 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
             </div>
           </div>
         </div>
+
+        {concepts && concepts.length > 0 && (
+          <div className="flex my-4">
+            <section>
+              <Heading level={4} extraClasses="mb-4">
+                Concepts
+              </Heading>
+              <div className="flex text-sm">
+                <ul className="flex flex-wrap gap-2">
+                  {concepts.map((concept, index) => (
+                    <span key={concept.wikibase_id} className="flex items-center">
+                      {handleConceptClick ? (
+                        <Button
+                          data-cy="view-document-concept"
+                          onClick={() => handleConceptClick(concept.preferred_label)}
+                          color="clear"
+                          extraClasses="capitalize flex items-center text-sm"
+                        >
+                          {concept.preferred_label}
+                        </Button>
+                      ) : (
+                        <ExternalLink
+                          className="capitalize text-blue-600 hover:underline"
+                          url={`https://climatepolicyradar.wikibase.cloud/wiki/Item:${concept.wikibase_id}`}
+                        >
+                          {concept.preferred_label}
+                        </ExternalLink>
+                      )}
+                    </span>
+                  ))}
+                </ul>
+              </div>
+            </section>
+          </div>
+        )}
+
         {translated && (
           <div className="flex my-4">
             <Alert

@@ -13,7 +13,8 @@ interface TProps {
 type TFamilyMetadataUnion = TFamilyMetadata | TMCFFamilyMetadata;
 
 export const MetadataRenderer = ({ family }: TProps) => {
-  const { metadata, organisation, category, geographies, corpus_type_name, published_date } = family || {};
+  const { metadata, organisation, category, geographies, corpus_type_name, published_date, documents } = family || {};
+  const document_type = documents && documents.length > 0 ? documents[0].document_type : undefined;
 
   const mcfFamilyMetadata: TFamilyMetadataUnion = {
     geographies,
@@ -21,6 +22,7 @@ export const MetadataRenderer = ({ family }: TProps) => {
     ...metadata,
     organisation,
     category,
+    document_type: document_type,
   };
 
   if (category !== MultilateralClimateFunds) {
@@ -31,7 +33,8 @@ export const MetadataRenderer = ({ family }: TProps) => {
         date={published_date}
         geographies={geographies}
         topics={metadata?.topic}
-        author={metadata?.author_type}
+        author={category === "Reports" ? metadata?.author : metadata?.author_type}
+        document_type={document_type}
       />
     );
   }

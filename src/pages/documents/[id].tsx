@@ -26,12 +26,15 @@ import { getDocumentDescription } from "@constants/metaDescriptions";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 
-import { TDocumentPage, TFamilyPage, TPassage, TTheme } from "@types";
+import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@types";
+import { getFeatureFlags } from "@utils/featureFlags";
+import Pill from "@components/Pill";
 
 type TProps = {
   document: TDocumentPage;
   family: TFamilyPage;
   theme: TTheme;
+  vespaFamilyData?: TSearchResponse;
 };
 
 const passageClasses = (docType: string) => {
@@ -64,20 +67,29 @@ const renderPassageCount = (count: number): string => {
   - If the document is an HTML, the passages will be displayed in a list on the left side of the page but the document will not be displayed.
 */
 
-const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family, theme }: TProps) => {
+const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family, theme, vespaFamilyData }: TProps) => {
   const [showOptions, setShowOptions] = useState(false);
   const [passageIndex, setPassageIndex] = useState(null);
   const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
   const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
   const router = useRouter();
   const startingPassage = Number(router.query.passage) || 0;
+
   const { status, families, searchQuery } = useSearch(
     router.query,
     null,
     document.import_id,
-    !!router.query[QUERY_PARAMS.query_string],
+    !!(
+      router.query[QUERY_PARAMS.query_string] ||
+      router.query[QUERY_PARAMS["concept_filters.id"]] ||
+      router.query[QUERY_PARAMS["concept_filters.name"]]
+    ),
     MAX_PASSAGES
   );
+  const conceptFiltersQuery = router.query[QUERY_PARAMS["concept_filters.name"]];
+  const conceptFilters = conceptFiltersQuery ? (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]) : undefined;
+
+  const qsSearchString = router.query[QUERY_PARAMS.query_string];
 
   const canPreview = document.content_type === "application/pdf";
 
@@ -143,6 +155,102 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     }
   }, [startingPassage]);
 
+  const [concepts, setConcepts] = useState<(TConcept & { count: number })[]>([]);
+  useEffect(() => {
+    const conceptsData: { conceptId: string; count: number }[] = vespaFamilyData
+      ? vespaFamilyData.families.flatMap((family) => {
+          return family.hits.flatMap((hit) => {
+            return Object.entries(hit.concept_counts ?? {}).map(([conceptId, count]) => ({
+              conceptId: conceptId.split(":")[0],
+              count,
+            }));
+          });
+        })
+      : [];
+
+    // Create a Map to ensure unique concept IDs.
+    const uniqueConceptsMap = new Map<string, number>();
+    conceptsData.forEach(({ conceptId, count }) => {
+      uniqueConceptsMap.set(conceptId, count);
+    });
+
+    // Convert Map to array and sort by count in descending order
+    const uniqueConceptsData = Array.from(uniqueConceptsMap.entries())
+      .map(([conceptId, count]) => ({ conceptId, count }))
+      .sort((a, b) => b.count - a.count);
+
+    const conceptsS3Promises = uniqueConceptsData.map(({ conceptId }) => {
+      const url = `https://cdn.dev.climatepolicyradar.org/concepts/${conceptId}.json`;
+      return fetch(url).then((response) => response.json());
+    });
+
+    Promise.all(conceptsS3Promises).then((conceptsS3Data) => {
+      const conceptsWithCounts = conceptsS3Data.map((concept, i) => ({
+        ...concept,
+        count: uniqueConceptsData[i].count,
+      }));
+
+      setConcepts(conceptsWithCounts);
+    });
+  }, [vespaFamilyData]);
+
+  const handleConceptClick = (conceptLabel: string) => {
+    setPassageIndex(0);
+    if (conceptLabel === "") return false;
+    const currentConceptFilters = conceptFilters || [];
+
+    // If the concept is already in filters, remove it
+    if (currentConceptFilters.includes(conceptLabel)) {
+      const updatedConceptFilters = currentConceptFilters.filter((concept) => concept !== conceptLabel);
+
+      const queryObj = { ...router.query };
+
+      // If no concept filters remain, remove the concept_filters.name query param entirely
+      if (updatedConceptFilters.length === 0) {
+        delete queryObj[QUERY_PARAMS["concept_filters.name"]];
+      } else {
+        // Otherwise, update the concept filters
+        queryObj[QUERY_PARAMS["concept_filters.name"]] = updatedConceptFilters;
+      }
+
+      router.push({
+        pathname: `/documents/${document.slug}`,
+        query: queryObj,
+      });
+      return;
+    }
+
+    // If the concept is not in filters, add it
+    const updatedConceptFilters = [...currentConceptFilters, conceptLabel];
+
+    const queryObj = { ...router.query };
+    queryObj[QUERY_PARAMS["concept_filters.name"]] = updatedConceptFilters;
+    router.push({
+      pathname: `/documents/${document.slug}`,
+      query: queryObj,
+    });
+  };
+
+  const handleRemoveConceptFilter = (conceptToRemove: string) => {
+    const currentConceptFilters = conceptFilters || [];
+    const updatedConceptFilters = currentConceptFilters.filter((concept) => concept !== conceptToRemove);
+
+    const queryObj = { ...router.query };
+
+    // If no concept filters remain, remove the concept_filters.name query param entirely
+    if (updatedConceptFilters.length === 0) {
+      delete queryObj[QUERY_PARAMS["concept_filters.name"]];
+    } else {
+      // Otherwise, update the concept filters
+      queryObj[QUERY_PARAMS["concept_filters.name"]] = updatedConceptFilters;
+    }
+
+    router.push({
+      pathname: `/documents/${document.slug}`,
+      query: queryObj,
+    });
+  };
+
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
       <section
@@ -157,6 +265,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
           family={family}
           handleViewOtherDocsClick={handleViewOtherDocsClick}
           handleViewSourceClick={handleViewSourceClick}
+          concepts={concepts}
+          handleConceptClick={handleConceptClick}
         />
         {status !== "success" ? (
           <div className="w-full flex justify-center flex-1 bg-white">
@@ -187,41 +297,56 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                   )}`}
                 >
                   <div id="document-search" className="flex flex-col gap-2 md:pl-4">
-                    <div className="flex gap-2">
-                      <div className="flex-1">
-                        <SearchForm
-                          placeholder="Search the full text of the document"
-                          handleSearchInput={handleSearchInput}
-                          input={router.query[QUERY_PARAMS.query_string] as string}
-                          size="default"
-                        />
+                    {!conceptFilters && (
+                      <div className="flex gap-2">
+                        <div className="flex-1">
+                          <SearchForm
+                            placeholder="Search the full text of the document"
+                            handleSearchInput={handleSearchInput}
+                            input={qsSearchString as string}
+                            size="default"
+                          />
+                        </div>
+                        <div className="relative z-10 flex justify-center">
+                          <button
+                            className="px-4 flex justify-center items-center text-textDark text-xl"
+                            onClick={() => setShowOptions(!showOptions)}
+                          >
+                            <MdOutlineTune />
+                          </button>
+                          <AnimatePresence initial={false}>
+                            {showOptions && (
+                              <motion.div
+                                key="content"
+                                initial="collapsed"
+                                animate="open"
+                                exit="collapsed"
+                                variants={{
+                                  collapsed: { opacity: 0, transition: { duration: 0.1 } },
+                                  open: { opacity: 1, transition: { duration: 0.25 } },
+                                }}
+                              >
+                                <SearchSettings
+                                  queryParams={router.query}
+                                  handleSearchChange={handleSemanticSearchChange}
+                                  setShowOptions={setShowOptions}
+                                />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
                       </div>
-                      <div className="relative z-10 flex justify-center">
-                        <button className="px-4 flex justify-center items-center text-textDark text-xl" onClick={() => setShowOptions(!showOptions)}>
-                          <MdOutlineTune />
-                        </button>
-                        <AnimatePresence initial={false}>
-                          {showOptions && (
-                            <motion.div
-                              key="content"
-                              initial="collapsed"
-                              animate="open"
-                              exit="collapsed"
-                              variants={{
-                                collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                                open: { opacity: 1, transition: { duration: 0.25 } },
-                              }}
-                            >
-                              <SearchSettings
-                                queryParams={router.query}
-                                handleSearchChange={handleSemanticSearchChange}
-                                setShowOptions={setShowOptions}
-                              />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
+                    )}
+                    {conceptFilters && (
+                      <div className="flex text-sm text-gray-600 gap-2">
+                        <div className="mr-2 flex-shrink-0 font-medium">Concepts:</div>
+                        {conceptFilters.map((filter) => (
+                          <Pill key={filter} extraClasses="capitalize" onClick={() => handleRemoveConceptFilter(filter)}>
+                            {filter}
+                          </Pill>
+                        ))}
                       </div>
-                    </div>
+                    )}
                     {!router.query[QUERY_PARAMS.query_string] && (
                       <div className="flex text-sm text-gray-600">
                         <div className="mr-2 flex-shrink-0 font-medium">Examples:</div>
@@ -232,16 +357,24 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                   {totalNoOfMatches > 0 && (
                     <>
                       <div className="my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
-                        <div className="mb-2">
-                          Displaying {renderPassageCount(totalNoOfMatches)} for "
-                          <span className="text-textDark font-medium">{`${router.query[QUERY_PARAMS.query_string]}`}</span>"
-                          {!searchQuery.exact_match && ` and related phrases`}
-                          {totalNoOfMatches >= MAX_RESULTS && (
-                            <span className="ml-1 inline-block">
-                              <SearchLimitTooltip colour="grey" />
-                            </span>
-                          )}
-                        </div>
+                        {!conceptFilters && (
+                          <div className="mb-2">
+                            Displaying {renderPassageCount(totalNoOfMatches)} for "
+                            <span className="text-textDark font-medium">{`${qsSearchString}`}</span>"
+                            {!searchQuery.exact_match && ` and related phrases`}
+                            {totalNoOfMatches >= MAX_RESULTS && (
+                              <span className="ml-1 inline-block">
+                                <SearchLimitTooltip colour="grey" />
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        {conceptFilters && (
+                          <div className="mb-2">
+                            Displaying {renderPassageCount(totalNoOfMatches)} for the "
+                            <span className="text-textDark font-medium">{`${conceptFilters}`}</span>" concept
+                          </div>
+                        )}
                         <p>Sorted by search relevance</p>
                       </div>
                       <div
@@ -267,6 +400,7 @@ export default DocumentPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+  const featureFlags = await getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
   const id = context.params.id;
@@ -274,6 +408,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   let documentData: TDocumentPage;
   let familyData: TFamilyPage;
+  let vespaFamilyData: TSearchResponse | null = null;
 
   try {
     const { data: returnedDocumentData } = await client.get(`/documents/${id}`);
@@ -281,8 +416,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const familySlug = returnedDocumentData.family?.slug;
     const { data: returnedFamilyData } = await client.get(`/documents/${familySlug}`);
     familyData = returnedFamilyData;
+
+    // Fetch Vespa family data for concepts (similar to document/[id].tsx)
+    const conceptsV1 = featureFlags["concepts-v1"];
+    if (conceptsV1) {
+      const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
+      vespaFamilyData = vespaFamilyDataResponse;
+    }
   } catch {
-    // TODO: Handle error more gracefully
+    // TODO: Handle error more elegantly
   }
 
   if (!documentData || !familyData) {
@@ -296,6 +438,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       document: documentData,
       family: familyData,
       theme: theme,
+      vespaFamilyData: vespaFamilyData ?? null,
     },
   };
 };

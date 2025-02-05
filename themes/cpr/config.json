@@ -44,14 +44,8 @@
       },
       {
         "label": "Reports",
-        "slug": "Reports",
-        "value": [
-          "OEP.corpus.i00000001.n0000",
-          "MCF.corpus.AF.Guidance",
-          "MCF.corpus.CIF.Guidance",
-          "MCF.corpus.GEF.Guidance",
-          "MCF.corpus.GCF.Guidance"
-        ]
+        "slug": "reports",
+        "value": ["OEP.corpus.i00000001.n0000"]
       },
       {
         "label": "Litigation",
@@ -153,13 +147,7 @@
       "taxonomyKey": "author_type",
       "apiMetaDataKey": "family.author_type",
       "type": "radio",
-      "category": [
-        "OEP.corpus.i00000001.n0000",
-        "MCF.corpus.AF.Guidance",
-        "MCF.corpus.CIF.Guidance",
-        "MCF.corpus.GEF.Guidance",
-        "MCF.corpus.GCF.Guidance"
-      ],
+      "category": ["OEP.corpus.i00000001.n0000"],
       "corporaKey": "Reports"
     }
   ],
@@ -193,5 +181,5 @@
       "description": "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country."
     }
   ],
-  "documentCategories": ["All", "Laws", "Policies", "UNFCCC", "Litigation", "MCF"]
+  "documentCategories": ["All", "Laws", "Policies", "UNFCCC", "Litigation", "MCF", "Reports"]
 }

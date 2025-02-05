@@ -11,9 +11,10 @@ type TProps = {
   geographies: string[];
   topics?: string[];
   author?: string[];
+  document_type?: string;
 };
 
-export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name }: TProps) => {
+export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name, document_type }: TProps) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
 
@@ -24,11 +25,6 @@ export const FamilyMeta = ({ category, date, geographies, topics, author, corpus
       <CountryLinks geographies={geographies} countries={countries} />
       {/* TODO: we need to revisit this once we have updated the config, so that we can determine this output based on the corpora */}
       {!isNaN(year) && <span data-cy="family-metadata-year">{`${category === "MCF" ? "Approval FY: " + year : year}`}</span>}
-      {category && (
-        <span className="capitalize" data-cy="family-metadata-category">
-          {getCategoryName(category, corpus_type_name)}
-        </span>
-      )}
       {topics && topics.length > 0 && (
         <span className="capitalize" data-cy="family-metadata-topics">
           {topics.join(", ")}
@@ -37,6 +33,16 @@ export const FamilyMeta = ({ category, date, geographies, topics, author, corpus
       {author && author.length > 0 && (
         <span className="capitalize" data-cy="family-metadata-author">
           {author.join(", ")}
+        </span>
+      )}
+      {category && (
+        <span className="capitalize" data-cy="family-metadata-category">
+          {getCategoryName(category, corpus_type_name)}
+        </span>
+      )}
+      {document_type && (
+        <span className="capitalize" data-cy="family-metadata-document_type">
+          {document_type}
         </span>
       )}
     </>

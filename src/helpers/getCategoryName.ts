@@ -7,6 +7,7 @@ const subCategories: Record<TCorpusTypeSubCategory, string> = {
   GEF: "Global Environment Facility",
   "Intl. agreements": "Intl. agreements",
   "Laws and Policies": "Laws and Policies",
+  Reports: "Reports",
 };
 
 const categories: Record<TCategory, string> = {
@@ -17,6 +18,7 @@ const categories: Record<TCategory, string> = {
   Policy: "Policy",
   UNFCCC: "UNFCCC",
   MCF: "MCF",
+  Reports: "Reports",
 };
 
 export const getSubCategoryName = (subCategory: TCorpusTypeSubCategory): string => {
