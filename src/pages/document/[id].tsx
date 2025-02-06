@@ -245,7 +245,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                   </button>
                 </div>
               )}
-              🐷
             </section>
 
             <section className="mt-8" data-cy="top-documents">
