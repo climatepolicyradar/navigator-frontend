@@ -160,8 +160,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     const conceptsData: { conceptId: string; count: number }[] = vespaFamilyData
       ? vespaFamilyData.families.flatMap((family) => {
           return family.hits.flatMap((hit) => {
-            return Object.entries(hit.concept_counts).map(([conceptId, count]) => ({
-              conceptId,
+            return Object.entries(hit.concept_counts ?? {}).map(([conceptId, count]) => ({
+              conceptId: conceptId.split(":")[0],
               count,
             }));
           });
@@ -189,6 +189,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
         ...concept,
         count: uniqueConceptsData[i].count,
       }));
+
       setConcepts(conceptsWithCounts);
     });
   }, [vespaFamilyData]);
@@ -420,23 +421,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const conceptsV1 = featureFlags["concepts-v1"];
     if (conceptsV1) {
       const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
-
-      // TODO: Remove this testing data once the API response is fully implemented
-      const testingConceptCounts = { Q10: 1543, Q100: 15, Q1000: 101 };
-      vespaFamilyData = {
-        ...vespaFamilyDataResponse,
-        families: vespaFamilyDataResponse.families.map((family) => {
-          return {
-            ...family,
-            hits: family.hits.map((hit) => {
-              return {
-                ...hit,
-                concept_counts: { ...testingConceptCounts },
-              };
-            }),
-          };
-        }),
-      };
+      vespaFamilyData = vespaFamilyDataResponse;
     }
   } catch {
     // TODO: Handle error more elegantly
