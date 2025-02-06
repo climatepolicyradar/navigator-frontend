@@ -12,11 +12,23 @@ const ROOT_LEVEL_CONCEPTS = {
   Q218: "Greenhouse gases",
 };
 
-export const processConcepts = (
-  concepts: (TConcept & { count: number })[]
-): { [rootConcept: string]: { [subconcept: string]: { name: string; count: number; wikibaseId: string } } } => {
-  const conceptMap: { [rootConcept: string]: { [subconcept: string]: { name: string; count: number; wikibaseId: string } } } = {};
-  let otherConcepts: { [subconcept: string]: { name: string; count: number; wikibaseId: string } } = {};
+interface Concept {
+  name: string;
+  count: number;
+  wikibaseId: string;
+}
+
+interface ConceptMap {
+  [subconcept: string]: Concept;
+}
+
+interface RootConceptsMapped {
+  [rootConcept: string]: ConceptMap;
+}
+
+export const processConcepts = (concepts: (TConcept & { count: number })[]): RootConceptsMapped => {
+  const conceptMap: RootConceptsMapped = {};
+  let otherConcepts: ConceptMap = {};
 
   concepts.forEach((concept) => {
     let isRootOrSubconcept = false;
