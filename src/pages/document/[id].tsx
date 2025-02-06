@@ -171,7 +171,9 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     }
   };
 
-  const [rootLevelConcepts, setRootLevelConcepts] = useState<{ [rootConcept: string]: { [subconcept: string]: number } }>({});
+  const [rootLevelConcepts, setRootLevelConcepts] = useState<{
+    [rootConcept: string]: { [subconcept: string]: { name: string; count: number; wikibaseId: string } };
+  }>({});
 
   useEffect(() => {
     if (!vespaFamilyData) return;
@@ -384,23 +386,29 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 <Heading level={4}>Concepts</Heading>
                 {Object.entries(rootLevelConcepts).map(([rootConcept, subconcepts]) => (
                   <div key={rootConcept} className="mb-4">
-                    <Heading level={5} extraClasses="mb-2 capitalize">
-                      {rootConcept}
-                    </Heading>
+                    {rootConcept !== "Other" && (
+                      <ExternalLink className="capitalize" url={ROOT_LEVEL_CONCEPT_LINKS[rootConcept]}>
+                        <Heading level={5} extraClasses="mb-2 capitalize">
+                          {rootConcept}
+                        </Heading>
+                      </ExternalLink>
+                    )}
+                    {rootConcept === "Other" && (
+                      <Heading level={5} extraClasses="mb-2 capitalize">
+                        {rootConcept}
+                      </Heading>
+                    )}
+
                     <div className="flex text-sm">
                       <ul className="flex flex-wrap gap-2">
-                        {Object.entries(subconcepts).map(([subconcept, count]) => (
+                        {Object.entries(subconcepts).map(([subconcept, { name, count, wikibaseId }]) => (
                           <li key={subconcept}>
                             <ExternalLink
                               className="capitalize"
-                              url={
-                                rootConcept !== "Other"
-                                  ? `${ROOT_LEVEL_CONCEPT_LINKS[rootConcept]}#${encodeURIComponent(subconcept)}`
-                                  : "https://climatepolicyradar.wikibase.cloud/wiki/Main_Page"
-                              }
+                              url={`https://climatepolicyradar.wikibase.cloud/wiki/Item:${wikibaseId}#${encodeURIComponent(name)}`}
                             >
                               <Button color="clear" data-cy="view-family-concept" extraClasses="flex items-center text-sm">
-                                {subconcept} ({count})
+                                {name} ({count})
                               </Button>
                             </ExternalLink>
                           </li>

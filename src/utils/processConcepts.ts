@@ -12,9 +12,11 @@ const ROOT_LEVEL_CONCEPTS = {
   Q218: "Greenhouse gases",
 };
 
-export const processConcepts = (concepts: (TConcept & { count: number })[]): { [rootConcept: string]: { [subconcept: string]: number } } => {
-  const conceptMap: { [rootConcept: string]: { [subconcept: string]: number } } = {};
-  let otherConcepts: { [subconcept: string]: number } = {};
+export const processConcepts = (
+  concepts: (TConcept & { count: number })[]
+): { [rootConcept: string]: { [subconcept: string]: { name: string; count: number; wikibaseId: string } } } => {
+  const conceptMap: { [rootConcept: string]: { [subconcept: string]: { name: string; count: number; wikibaseId: string } } } = {};
+  let otherConcepts: { [subconcept: string]: { name: string; count: number; wikibaseId: string } } = {};
 
   concepts.forEach((concept) => {
     let isRootOrSubconcept = false;
@@ -26,7 +28,11 @@ export const processConcepts = (concepts: (TConcept & { count: number })[]): { [
       if (!conceptMap[rootConceptName]) {
         conceptMap[rootConceptName] = {};
       }
-      conceptMap[rootConceptName][concept.preferred_label] = (conceptMap[rootConceptName][concept.name] || 0) + concept.count;
+      conceptMap[rootConceptName][concept.preferred_label] = {
+        name: concept.preferred_label,
+        count: (conceptMap[rootConceptName][concept.preferred_label]?.count || 0) + concept.count,
+        wikibaseId: concept.wikibase_id,
+      };
       isRootOrSubconcept = true;
     }
 
@@ -39,14 +45,22 @@ export const processConcepts = (concepts: (TConcept & { count: number })[]): { [
         if (!conceptMap[rootConceptName]) {
           conceptMap[rootConceptName] = {};
         }
-        conceptMap[rootConceptName][concept.preferred_label] = (conceptMap[rootConceptName][concept.name] || 0) + concept.count;
+        conceptMap[rootConceptName][concept.preferred_label] = {
+          name: concept.preferred_label,
+          count: (conceptMap[rootConceptName][concept.preferred_label]?.count || 0) + concept.count,
+          wikibaseId: concept.wikibase_id,
+        };
       });
       isRootOrSubconcept = true;
     }
 
     // If not a root or subconcept of a root, add to other
     if (!isRootOrSubconcept) {
-      otherConcepts[concept.preferred_label] = (otherConcepts[concept.preferred_label] || 0) + concept.count;
+      otherConcepts[concept.preferred_label] = {
+        name: concept.preferred_label,
+        count: (otherConcepts[concept.preferred_label]?.count || 0) + concept.count,
+        wikibaseId: concept.wikibase_id,
+      };
     }
   });
 
