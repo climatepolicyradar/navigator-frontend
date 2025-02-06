@@ -12,15 +12,9 @@ const ROOT_LEVEL_CONCEPTS = {
   Q218: "Greenhouse gases",
 };
 
-interface ProcessedConcept {
-  rootConcept: string;
-  count: number;
-  wikibaseId: string;
-}
-
-export const processConcepts = (concepts: (TConcept & { count: number })[]): { [key: string]: number } => {
-  const conceptMap: { [key: string]: number } = {};
-  let otherCount = 0;
+export const processConcepts = (concepts: (TConcept & { count: number })[]): { [rootConcept: string]: { [subconcept: string]: number } } => {
+  const conceptMap: { [rootConcept: string]: { [subconcept: string]: number } } = {};
+  let otherConcepts: { [subconcept: string]: number } = {};
 
   concepts.forEach((concept) => {
     let isRootOrSubconcept = false;
@@ -29,32 +23,36 @@ export const processConcepts = (concepts: (TConcept & { count: number })[]): { [
     const isRootLevelConcept = concept.wikibase_id in ROOT_LEVEL_CONCEPTS;
     if (isRootLevelConcept) {
       const rootConceptName = ROOT_LEVEL_CONCEPTS[concept.wikibase_id];
-      conceptMap[rootConceptName] = (conceptMap[rootConceptName] || 0) + concept.count;
+      if (!conceptMap[rootConceptName]) {
+        conceptMap[rootConceptName] = {};
+      }
+      conceptMap[rootConceptName][concept.preferred_label] = (conceptMap[rootConceptName][concept.name] || 0) + concept.count;
       isRootOrSubconcept = true;
     }
 
     // Check if any of the current concept's parent concepts are root level concepts
-    const hasRootLevelParent = concept.subconcept_of.some((parentId) => parentId in ROOT_LEVEL_CONCEPTS);
-    if (hasRootLevelParent) {
+    const rootLevelParents = concept.subconcept_of.filter((parentId) => parentId in ROOT_LEVEL_CONCEPTS);
+    if (rootLevelParents.length > 0) {
       // Find and increment all root level parent concepts
-      concept.subconcept_of.forEach((parentId) => {
-        if (ROOT_LEVEL_CONCEPTS[parentId]) {
-          const rootConceptName = ROOT_LEVEL_CONCEPTS[parentId];
-          conceptMap[rootConceptName] = (conceptMap[rootConceptName] || 0) + concept.count;
+      rootLevelParents.forEach((parentId) => {
+        const rootConceptName = ROOT_LEVEL_CONCEPTS[parentId];
+        if (!conceptMap[rootConceptName]) {
+          conceptMap[rootConceptName] = {};
         }
+        conceptMap[rootConceptName][concept.preferred_label] = (conceptMap[rootConceptName][concept.name] || 0) + concept.count;
       });
       isRootOrSubconcept = true;
     }
 
     // If not a root or subconcept of a root, add to other
     if (!isRootOrSubconcept) {
-      otherCount += concept.count;
+      otherConcepts[concept.preferred_label] = (otherConcepts[concept.preferred_label] || 0) + concept.count;
     }
   });
 
   // Add Other category if there are any other concepts
-  if (otherCount > 0) {
-    conceptMap["Other"] = otherCount;
+  if (Object.keys(otherConcepts).length > 0) {
+    conceptMap["Other"] = otherConcepts;
   }
 
   return conceptMap;

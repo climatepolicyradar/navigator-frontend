@@ -171,7 +171,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     }
   };
 
-  const [rootLevelConcepts, setRootLevelConcepts] = useState<[string, number][]>([]);
+  const [rootLevelConcepts, setRootLevelConcepts] = useState<{ [rootConcept: string]: { [subconcept: string]: number } }>({});
 
   useEffect(() => {
     if (!vespaFamilyData) return;
@@ -207,12 +207,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
       // Group concepts by root level concepts
       const processedConceptCounts = processConcepts(conceptsWithCounts);
-      const sortedConcepts = Object.entries(processedConceptCounts).sort(([conceptA, countA], [conceptB, countB]) => {
-        if (countB !== countA) return countB - countA;
-        return conceptA.localeCompare(conceptB);
-      });
-
-      setRootLevelConcepts(sortedConcepts);
+      setRootLevelConcepts(processedConceptCounts);
     });
   }, [vespaFamilyData]);
 
@@ -384,31 +379,36 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               </div>
             </section>
 
-            {rootLevelConcepts.length > 0 && (
+            {Object.entries(rootLevelConcepts).length > 0 && (
               <section className="mt-8">
                 <Heading level={4}>Concepts</Heading>
-                <div className="flex text-sm">
-                  <ul className="flex flex-wrap gap-2">
-                    {rootLevelConcepts.map(([conceptName, count]) => {
-                      return (
-                        <li key={conceptName}>
-                          <ExternalLink
-                            className="capitalize"
-                            url={
-                              conceptName !== "Other"
-                                ? ROOT_LEVEL_CONCEPT_LINKS[conceptName]
-                                : "https://climatepolicyradar.wikibase.cloud/wiki/Main_Page"
-                            }
-                          >
-                            <Button color="clear" data-cy="view-family-concept" extraClasses="flex items-center text-sm">
-                              {conceptName} ({count})
-                            </Button>
-                          </ExternalLink>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
+                {Object.entries(rootLevelConcepts).map(([rootConcept, subconcepts]) => (
+                  <div key={rootConcept} className="mb-4">
+                    <Heading level={5} extraClasses="mb-2 capitalize">
+                      {rootConcept}
+                    </Heading>
+                    <div className="flex text-sm">
+                      <ul className="flex flex-wrap gap-2">
+                        {Object.entries(subconcepts).map(([subconcept, count]) => (
+                          <li key={subconcept}>
+                            <ExternalLink
+                              className="capitalize"
+                              url={
+                                rootConcept !== "Other"
+                                  ? `${ROOT_LEVEL_CONCEPT_LINKS[rootConcept]}#${encodeURIComponent(subconcept)}`
+                                  : "https://climatepolicyradar.wikibase.cloud/wiki/Main_Page"
+                              }
+                            >
+                              <Button color="clear" data-cy="view-family-concept" extraClasses="flex items-center text-sm">
+                                {subconcept} ({count})
+                              </Button>
+                            </ExternalLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
               </section>
             )}
 
