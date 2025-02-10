@@ -1,4 +1,4 @@
-type THeadingLevels = 1 | 2 | 3 | 4;
+type THeadingLevels = 1 | 2 | 3 | 4 | 5;
 
 type TProps = {
   level?: THeadingLevels;
@@ -13,6 +13,7 @@ export const h1Classes = "text-4xl";
 export const h2Classes = "text-2xl mb-5";
 export const h3Classes = "text-xl mb-5";
 export const h4Classes = "text-lg mb-5";
+export const h5Classes = "text-l mb-5";
 
 export const Heading = ({ level, extraClasses = "", children, ...props }: TProps) => {
   switch (level) {
@@ -39,6 +40,12 @@ export const Heading = ({ level, extraClasses = "", children, ...props }: TProps
         <h4 className={`${coreClasses} ${h4Classes} ${extraClasses}`} {...props}>
           {children}
         </h4>
+      );
+    case 5:
+      return (
+        <h5 className={`${coreClasses} ${h5Classes} ${extraClasses}`} {...props}>
+          {children}
+        </h5>
       );
     default:
       return (
