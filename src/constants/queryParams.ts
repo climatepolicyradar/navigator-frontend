@@ -1,6 +1,4 @@
-import { TQueryStrings } from "@types";
-
-export const QUERY_PARAMS: TQueryStrings = {
+export const QUERY_PARAMS = {
   // Core
   query_string: "q",
   exact_match: "e",
