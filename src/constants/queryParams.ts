@@ -24,4 +24,4 @@ export const QUERY_PARAMS = {
   // Pass through
   "concept_filters.id": "cfi",
   "concept_filters.name": "cfn",
-} as const;
+};
