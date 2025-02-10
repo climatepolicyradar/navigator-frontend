@@ -329,6 +329,16 @@ const TermsOfUse = () => {
                     </td>
                   </tr>
                   <tr>
+                    <td>
+                      <ExternalLink url="https://www.oceanenergypathway.org">Ocean Energy Pathway</ExternalLink>
+                    </td>
+                    <td>Offshore Wind Reports</td>
+                    <td>January 2025</td>
+                    <td>
+                      <ExternalLink url="https://oceanenergypathway.org/terms-conditions/">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
                     <td>Additional data sources will be added here as they are added to the CPR database and app</td>
                     <td></td>
                     <td></td>

@@ -334,7 +334,7 @@ export type TSearchResponse = {
   families: {
     id: string;
     hits: (TFamily & {
-      concept_counts: Record<string, number>;
+      concept_counts?: Record<string, number>;
     })[];
   }[];
   continuation_token?: string;

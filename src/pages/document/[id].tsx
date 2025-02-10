@@ -171,39 +171,32 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     }
   };
 
-  /**
-   * Beta concepts work - this work is all behind the concepts-v1 feature flag.
-   *
-   * Currently the family only returns a { [conceptId: string]: count: number }.
-   * This isn't enough to give a useful rendering. So we are:
-   * - getting a list of those IDs
-   * - creating promises to the S3 file that has more data about the concept
-   * - resolving that promise and treating that as the concept data.
-   *
-   * Not ideal, but we are working on getting more useful data on the family response.
-   */
-  const [rootLevelConcepts, setRootLevelConcepts] = useState<[string, number][]>([]);
+  const [rootLevelConcepts, setRootLevelConcepts] = useState<{
+    [rootConcept: string]: { [subconcept: string]: { name: string; count: number; wikibaseId: string } };
+  }>({});
 
   useEffect(() => {
     if (!vespaFamilyData) return;
 
     // Extract and deduplicate concept data
-    const conceptsData: { conceptId: string; count: number }[] = vespaFamilyData.families.flatMap((family) =>
-      family.hits.flatMap((hit) => Object.entries(hit.concept_counts).map(([conceptId, count]) => ({ conceptId, count })))
+    const conceptsData: { conceptKey: string; count: number }[] = vespaFamilyData.families.flatMap((family) =>
+      family.hits.flatMap((hit) => Object.entries(hit.concept_counts ?? {}).map(([conceptKey, count]) => ({ conceptKey, count })))
     );
 
     // Create a Map to ensure unique concept IDs
     const uniqueConceptsMap = new Map<string, number>();
-    conceptsData.forEach(({ conceptId, count }) => {
-      uniqueConceptsMap.set(conceptId, count);
+    conceptsData.forEach(({ conceptKey, count }) => {
+      uniqueConceptsMap.set(conceptKey, count);
     });
 
     // Convert Map to array and sort by count in descending order
     const uniqueConceptsData = Array.from(uniqueConceptsMap.entries())
-      .map(([conceptId, count]) => ({ conceptId, count }))
+      .map(([conceptKey, count]) => ({ conceptKey, count }))
       .sort((a, b) => b.count - a.count);
 
-    const conceptsS3Promises = uniqueConceptsData.map(({ conceptId }) => {
+    const conceptsS3Promises = uniqueConceptsData.map(({ conceptKey }) => {
+      // the concept ID is in the shape of `Q100:concept name`
+      const conceptId = conceptKey.split(":")[0];
       const url = `https://cdn.dev.climatepolicyradar.org/concepts/${conceptId}.json`;
       return fetch(url).then((response) => response.json());
     });
@@ -216,12 +209,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
       // Group concepts by root level concepts
       const processedConceptCounts = processConcepts(conceptsWithCounts);
-      const sortedConcepts = Object.entries(processedConceptCounts).sort(([conceptA, countA], [conceptB, countB]) => {
-        if (countB !== countA) return countB - countA;
-        return conceptA.localeCompare(conceptB);
-      });
-
-      setRootLevelConcepts(sortedConcepts);
+      setRootLevelConcepts(processedConceptCounts);
     });
   }, [vespaFamilyData]);
 
@@ -393,31 +381,42 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               </div>
             </section>
 
-            {rootLevelConcepts.length > 0 && (
+            {Object.entries(rootLevelConcepts).length > 0 && (
               <section className="mt-8">
                 <Heading level={4}>Concepts</Heading>
-                <div className="flex text-sm">
-                  <ul className="flex flex-wrap gap-2">
-                    {rootLevelConcepts.map(([conceptName, count]) => {
-                      return (
-                        <li key={conceptName}>
-                          <ExternalLink
-                            className="capitalize"
-                            url={
-                              conceptName !== "Other"
-                                ? ROOT_LEVEL_CONCEPT_LINKS[conceptName]
-                                : "https://climatepolicyradar.wikibase.cloud/wiki/Main_Page"
-                            }
-                          >
-                            <Button color="clear" data-cy="view-family-concept" extraClasses="flex items-center text-sm">
-                              {conceptName} ({count})
-                            </Button>
-                          </ExternalLink>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
+                {Object.entries(rootLevelConcepts).map(([rootConcept, subconcepts]) => (
+                  <div key={rootConcept} className="mb-4">
+                    {rootConcept !== "Other" && (
+                      <ExternalLink className="capitalize" url={ROOT_LEVEL_CONCEPT_LINKS[rootConcept]}>
+                        <Heading level={5} extraClasses="mb-2 capitalize">
+                          {rootConcept}
+                        </Heading>
+                      </ExternalLink>
+                    )}
+                    {rootConcept === "Other" && (
+                      <Heading level={5} extraClasses="mb-2 capitalize">
+                        {rootConcept}
+                      </Heading>
+                    )}
+
+                    <div className="flex text-sm">
+                      <ul className="flex flex-wrap gap-2">
+                        {Object.entries(subconcepts).map(([subconcept, { name, count, wikibaseId }]) => (
+                          <li key={subconcept}>
+                            <ExternalLink
+                              className="capitalize"
+                              url={`https://climatepolicyradar.wikibase.cloud/wiki/Item:${wikibaseId}#${encodeURIComponent(name)}`}
+                            >
+                              <Button color="clear" data-cy="view-family-concept" extraClasses="flex items-center text-sm">
+                                {name} ({count})
+                              </Button>
+                            </ExternalLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
               </section>
             )}
 
@@ -482,31 +481,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const conceptsV1 = featureFlags["concepts-v1"];
     if (conceptsV1) {
       // fetch the families
-      const { data: vespaFamilyDataRepsonse } = await client.get(`/families/${familyData.import_id}`);
-
-      /**
-       * currently the pipeline doesn't attach this data to the response
-       * this is the right shape of the data, just not the right data.
-       *
-       * This should help us move forward with the interface and rendering logic.
-       *
-       * TODO: undo this once the response from the API is fully implemented.
-       */
-      const testingConceptCounts = { Q218: 1, Q100: 15, Q1651: 101, Q1652: 100, Q638: 115 };
-      vespaFamilyData = {
-        ...vespaFamilyDataRepsonse,
-        families: vespaFamilyDataRepsonse.families.map((family) => {
-          return {
-            ...family,
-            hits: family.hits.map((hit) => {
-              return {
-                ...hit,
-                concept_counts: { ...testingConceptCounts },
-              };
-            }),
-          };
-        }),
-      };
+      const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
+      vespaFamilyData = vespaFamilyDataResponse;
     }
   } catch (error) {
     // TODO: handle error more elegantly
