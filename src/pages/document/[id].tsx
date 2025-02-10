@@ -374,7 +374,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 {corpusImage && (
                   <div className="relative max-w-[144px] mt-1 mr-2">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`${corpusImage}`} alt={corpusAltImage} />
+                    <img src={`${corpusImage}`} alt={corpusAltImage} className="h-auto w-full" />
                   </div>
                 )}
                 <span dangerouslySetInnerHTML={{ __html: corpusNote }} className="" />
