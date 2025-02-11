@@ -180,7 +180,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
       .sort((a, b) => b.count - a.count);
 
     const conceptsS3Promises = uniqueConceptsData.map(({ conceptId }) => {
-      const url = `https://cdn.dev.climatepolicyradar.org/concepts/${conceptId}.json`;
+      const url = `${process.env.CDN_URL}/concepts/${conceptId}.json`;
       return fetch(url).then((response) => response.json());
     });
 

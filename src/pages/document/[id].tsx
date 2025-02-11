@@ -197,7 +197,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     const conceptsS3Promises = uniqueConceptsData.map(({ conceptKey }) => {
       // the concept ID is in the shape of `Q100:concept name`
       const conceptId = conceptKey.split(":")[0];
-      const url = `https://cdn.dev.climatepolicyradar.org/concepts/${conceptId}.json`;
+      const url = `${process.env.CDN_URL}/concepts/${conceptId}.json`;
       return fetch(url).then((response) => response.json());
     });
 
@@ -490,7 +490,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   if (familyData) {
     try {
-      const targetsRaw = await axios.get<TTarget[]>(`${process.env.S3_PATH}/families/${familyData.import_id}.json`);
+      const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/families/${familyData.import_id}.json`);
       targetsData = targetsRaw.data;
     } catch (error) {}
   }

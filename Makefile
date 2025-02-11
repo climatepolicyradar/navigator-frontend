@@ -1,11 +1,12 @@
 .PHONEY: build run run_ci with_production
 
 TAG = navigator-frontend
-THEME ?= cclw
-API_URL ?= https://app.dev.climatepolicyradar.org/api/v1
-S3_PATH ?= https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
+THEME ?= cpr
+API_URL ?= https://app.climatepolicyradar.org/api/v1
+CDN_URL ?= https://cdn.climatepolicyradar.org
+TARGETS_URL ?= https://cpr-production-targets-json-store.s3.eu-west-1.amazonaws.com
 ADOBE_API_KEY ?= dca9187b65294374a6367824df902fdf
-NEXT_PUBLIC_APP_TOKEN ?= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkX2NvcnBvcmFfaWRzIjpbIkNDTFcuY29ycHVzLmkwMDAwMDAwMS5uMDAwMCIsIkNQUi5jb3JwdXMuaTAwMDAwMDAxLm4wMDAwIiwiVU5GQ0NDLmNvcnB1cy5pMDAwMDAwMDEubjAwMDAiXSwiZXhwIjoyMDQyMTEzMzY5LCJpYXQiOjE3MjY1NzY5NjksImlzcyI6IkNsaW1hdGUgUG9saWN5IFJhZGFyIiwic3ViIjoiQ1BSIiwiYXVkIjoiaHR0cHM6Ly9hcHAuZGV2LmNsaW1hdGVwb2xpY3lyYWRhci5vcmcvIn0.mJ2qLJmMyPLGt0rM_tTXhlVv1glxooxmQV0bWrvPwKU
+NEXT_PUBLIC_APP_TOKEN ?= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkX2NvcnBvcmFfaWRzIjpbXSwiZXhwIjoyMDU0ODEzNDQ3LCJpYXQiOjE3MzkyODA2NDcsImlzcyI6IkNsaW1hdGUgUG9saWN5IFJhZGFyIiwic3ViIjoiY3ByIiwiYXVkIjoiYXBwLmNsaW1hdGVwb2xpY3lyYWRhci5vcmcifQ.hnCG-kx3mBhUfQxvFJHXmEDFfdME03TltUQFpDcW_qI
 
 build:
 	docker build --build-arg THEME=${THEME} -t ${TAG}-${THEME} .
@@ -17,7 +18,7 @@ run: build
 		-e NEXT_PUBLIC_APP_TOKEN=$(NEXT_PUBLIC_APP_TOKEN) \
 		-e API_URL=$(API_URL) \
 		-e ADOBE_API_KEY=$(ADOBE_API_KEY) \
-		-e S3_PATH=$(S3_PATH) \
+		-e TARGETS_URL=$(TARGETS_URL) \
 		-e NODE_ENV="development" \
 		-e ROBOTS="false" \
 		-e HOSTNAME="http://localhost:3000" \
