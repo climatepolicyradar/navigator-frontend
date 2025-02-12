@@ -1,18 +1,13 @@
-name: Pull request
-on: pull_request
+name: Merge to main
+on:
+  push:
+    branches:
+      - main
+
 permissions:
-  pull-requests: write
+  contents: read
+  actions: read
 jobs:
-  size:
-    runs-on: ubuntu-latest
-    env:
-      CI_JOB_NUMBER: 1
-      THEME: cpr
-    steps:
-      - uses: actions/checkout@v4
-      - uses: andresz1/size-limit-action@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
   percy:
     runs-on: ubuntu-latest
     env:
