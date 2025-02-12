@@ -11,6 +11,7 @@ const ROOT_LEVEL_CONCEPTS = {
   Q1171: "Instruments",
   Q218: "Greenhouse gases",
 };
+export const rootLevelConceptsIds = Object.keys(ROOT_LEVEL_CONCEPTS);
 
 interface Concept {
   name: string;
