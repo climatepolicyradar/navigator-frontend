@@ -406,7 +406,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
         </SiteWidth>
         {/* END MOBILE ONLY */}
         <MultiCol>
-          <SideCol extraClasses="hidden md:block border-r pt-5">
+          <SideCol extraClasses="hidden md:block border-r pt-5 sticky top-0 h-screen overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
             {configQuery.isFetching ? (
               <Loader size="20px" />
             ) : (
