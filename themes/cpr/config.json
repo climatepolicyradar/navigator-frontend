@@ -129,7 +129,7 @@
       "taxonomyKey": "topic",
       "apiMetaDataKey": "family.topic",
       "type": "radio",
-      "category": ["CPR.corpus.i00000001.n0000", "CCLW.corpus.i00000001.n0000"],
+      "category": ["CPR.corpus.i00000001.n0000", "CCLW.corpus.i00000001.n0000", "CPR.corpus.Goldstandard.n0000"],
       "dependentFilterKey": "",
       "corporaKey": "Laws and Policies"
     },
@@ -138,7 +138,7 @@
       "taxonomyKey": "sector",
       "apiMetaDataKey": "family.sector",
       "type": "radio",
-      "category": ["CPR.corpus.i00000001.n0000", "CCLW.corpus.i00000001.n0000"],
+      "category": ["CPR.corpus.i00000001.n0000", "CCLW.corpus.i00000001.n0000", "CPR.corpus.Goldstandard.n0000"],
       "dependentFilterKey": "",
       "showFade": "true",
       "corporaKey": "Laws and Policies",
