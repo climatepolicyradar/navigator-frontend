@@ -29,8 +29,8 @@ jobs:
       - run: |
           echo "Waiting for server to start..."
           npx wait-on http://localhost:3000 # Update the URL if your server runs on a different port
-      - run: npx percy snapshot snapshots.yml # Update `./snapshots` to the path where your snapshots are defined
+      - run: npx percy snapshot snapshots.js
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
       - if: always()
-        run: kill $(lsof -t -i:3000) || true # Update the port if needed
+        run: kill $(lsof -t -i:3000) || true
