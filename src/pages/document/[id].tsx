@@ -9,9 +9,8 @@ import { ApiClient } from "@api/http-common";
 
 import useSearch from "@hooks/useSearch";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
 import { SingleCol } from "@components/panels/SingleCol";
-
+import Link from "next/link";
 import Layout from "@components/layouts/Main";
 import { Timeline } from "@components/timeline/Timeline";
 import { Event } from "@components/timeline/Event";
@@ -449,9 +448,18 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                         .map((concept) => {
                           return (
                             <li key={concept.wikibase_id}>
-                              <Button color="clear" data-cy="view-family-concept" extraClasses="flex items-center text-[14px] font-normal pt-1 pb-1">
-                                {concept.preferred_label} ({conceptCountsById[concept.wikibase_id]})
-                              </Button>
+                              <Link
+                                className="capitalize hover:no-underline"
+                                href={`/documents/${mainDocuments[0].slug}?cfn=${concept.preferred_label}`}
+                              >
+                                <Button
+                                  color="clear"
+                                  data-cy="view-family-concept"
+                                  extraClasses="flex items-center text-[14px] font-normal pt-1 pb-1"
+                                >
+                                  {concept.preferred_label} ({conceptCountsById[concept.wikibase_id]})
+                                </Button>
+                              </Link>
                             </li>
                           );
                         })}
