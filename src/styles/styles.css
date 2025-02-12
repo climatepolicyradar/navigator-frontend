@@ -94,17 +94,6 @@
   }
 }
 
-input[type="text"],
-input[type="number"],
-input[type="password"],
-input[type="email"],
-textarea,
-select,
-option {
-  font-family: "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    "Noto Color Emoji" !important;
-}
-
 body,
 html,
 #__next {
@@ -113,6 +102,17 @@ html,
 
 body {
   @apply text-textNormal;
+  font-family: "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji" !important;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="email"],
+textarea,
+select,
+option {
   font-family: "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
     "Noto Color Emoji" !important;
 }
@@ -128,7 +128,11 @@ a.alt,
 }
 
 a.button {
-  @apply transition duration-300 px-4 py-2 rounded-full pointer-events-auto font-medium no-underline hover:no-underline bg-blue-500 border border-blue-500 text-white hover:bg-blue-700 hover:border-blue-700 hover:text-white group-hover:bg-blue-700 group-hover:border-blue-700 group-hover:text-white;
+  @apply transition cursor-pointer duration-300 px-4 py-2 rounded-full pointer-events-auto font-medium no-underline hover:no-underline bg-blue-500 border border-blue-500 text-white hover:bg-blue-700 hover:border-blue-700 hover:text-white group-hover:bg-blue-700 group-hover:border-blue-700 group-hover:text-white;
+}
+
+button {
+  @apply cursor-pointer;
 }
 
 b,
