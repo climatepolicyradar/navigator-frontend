@@ -22,7 +22,7 @@ export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
       <SiteWidth>
         <div className="flex flex-col items-center justify-center mb-6">
           <LogoLarge />
-          <Heading level={1} extraClasses="visually-hidden">
+          <Heading level={1} extraClasses="sr-only">
             Climate Change Laws of the World
           </Heading>
         </div>
