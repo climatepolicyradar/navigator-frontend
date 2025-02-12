@@ -224,7 +224,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={page.title} />
         </SubNav>
         <MultiCol>
-          <SingleCol extraClasses={`mt-8 px-5 ${concepts.length > 0 ? "px-5" : ""}`}>
+          <SingleCol extraClasses={`mt-8 px-5 w-full`}>
             <FamilyHead family={page} onCollectionClick={handleCollectionClick} />
             <section className="mt-6">
               {/* SSR summary */}
