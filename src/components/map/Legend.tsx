@@ -6,7 +6,7 @@ export const Legend = ({ max }: { max: number }) => {
   const scale = [1, Math.round(max * 0.25), Math.round(max * 0.5), Math.round(max * 0.75), max];
 
   return (
-    <div className="border border-t-0 p-4 flex gap-4 items-baseline text-gray-700">
+    <div className="border border-gray-300 border-t-0 p-4 flex gap-4 items-baseline text-gray-700">
       <div className="map-circles">
         <div className="scale-item">
           <div className="circle"></div>

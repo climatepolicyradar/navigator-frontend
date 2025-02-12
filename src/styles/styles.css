@@ -644,7 +644,7 @@ ul li.selected {
 }
 
 #mapToolTip {
-  @apply text-textNormal bg-white p-4 rounded-lg drop-shadow border opacity-100;
+  @apply text-textNormal bg-white p-4 rounded-lg drop-shadow border border-gray-300 opacity-100;
 }
 
 .middot-between > span:after {
