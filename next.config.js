@@ -20,10 +20,6 @@ const nextConfig = {
     config.experiments = { ...config.experiments, topLevelAwait: true };
     return config;
   },
-  // Loads in theme styles
-  sassOptions: {
-    additionalData: `@use "./themes/${process.env.THEME}/styles/styles.scss";`,
-  },
   // Redirects
   redirects: async () => {
     return configureRedirects(process.env.THEME);
