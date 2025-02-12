@@ -56,7 +56,7 @@ export const Hero = () => {
                 </ExternalLink>
               </div>
               <h1 className="font-['tenez'] font-bold italic text-oep-royal-blue tracking-[-0.96px] leading-[80%] text-7xl md:text-8xl">
-                <span className="not-italic">POWER</span> library
+                <span className="not-italic">POWER</span> Library
               </h1>
               <p className="my-6 text-xl text-textDark md:text-2xl">Helping the offshore wind sector design effective strategies</p>
               <div className="relative z-1 mb-4">
