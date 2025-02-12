@@ -202,25 +202,9 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     Promise.all([...rootConceptsS3Promises, ...conceptsS3Promises]).then((allConcepts) => {
       const rootConceptsResults = allConcepts.slice(0, rootConceptsS3Promises.length);
       const conceptsResults = allConcepts.slice(rootConceptsS3Promises.length);
-      /**
-       * TODO: remove this
-       * mega hack while we get relationships working in the S3 concept store
-       */
-      const hackConceptsResults = conceptsResults.map((concept) => {
-        if (concept.preferred_label.endsWith("sector")) {
-          concept.subconcept_of.push("Q709");
-        }
-        if (concept.preferred_label.endsWith("target")) {
-          concept.subconcept_of.push("Q1651");
-        }
-        if (concept.preferred_label.endsWith("risk") || concept.preferred_label.endsWith("impact") || concept.preferred_label.endsWith("events")) {
-          concept.subconcept_of.push("Q975");
-        }
-        return concept;
-      });
 
       setRootConcepts(rootConceptsResults);
-      setConcepts(hackConceptsResults);
+      setConcepts(conceptsResults);
     });
   }, [conceptCounts]);
 
