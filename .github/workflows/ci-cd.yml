@@ -96,7 +96,7 @@ jobs:
     permissions:
       contents: write
     secrets: inherit
-    uses: climatepolicyradar/reusable-workflows/.github/workflows/theme-factory.yml@v17
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/theme-factory.yml@testing
     with:
       repo-name: navigator-frontend
       theme: ${{ matrix.theme }}
