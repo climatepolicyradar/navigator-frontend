@@ -1,69 +1,9 @@
-// The tailwind imports are imported as part of the base styles loaded into the _app.tsx file at the root of the application
-@import "tailwindcss";
-@plugin "@tailwindcss/forms";
-@plugin "tailwind-scrollbar" {
-  nocompatible: true;
-}
-
-@theme {
-  --color-white: "#FFFFFF";
-  --color-black: "#000000";
-
-  --color-nearBlack: "#101010";
-  --color-transparent: "transparent";
-  --color-current: "currentColor";
-  --color-textDark: "#202020";
-  --color-textNormal: "#505050";
-  --color-borderNormal: "#dedede";
-  --color-input: "#f5f5f5";
-  --color-inputSelected: "#005EEB";
-
-  --color-cpr-dark: "#071e4a";
-
-  --color-cclw-dark: "#2E3152";
-  --color-cclw-light: "#414466";
-  --color-cclw-molten: "#ED3D48";
-
-  --color-gray-25: "#FCFCFD";
-  --color-gray-50: "#F9FAFB";
-  --color-gray-100: "#F2F4F7";
-  --color-gray-200: "#E4E7EC";
-  --color-gray-300: "#D0D5DD";
-  --color-gray-500: "#667085";
-  --color-gray-600: "#475467";
-  --color-gray-700: "#344054";
-  --color-gray-800: "#1D2939";
-
-  --color-blue-50: "#e9f4ff";
-  --color-blue-100: "#d2e9ff";
-  --color-blue-200: "#a5d4ff";
-  --color-blue-300: "#79beff";
-  --color-blue-400: "#1F93FF";
-  --color-blue-500: "#1F93FF";
-  --color-blue-600: "#1F93FF";
-  --color-blue-700: "#0075E3";
-  --color-blue-800: "#005CB2";
-  --color-blue-900: "#00417D";
-
-  --color-blueGray-700: "#394B6E";
-  --color-blueGray-800: "#071E4A";
-
-  --color-red-50: "#fef1ef";
-  --color-red-100: "#FEE4E2";
-  --color-red-200: "#FECEC7";
-  --color-red-300: "#FDA29B";
-  --color-red-600: "#D92D20";
-  --color-red-700: "#B42318";
-  --color-red-800: "#912018";
-
-  --color-green-50: "#ECFDF3";
-  --color-green-100: "#D1FADF";
-  --color-green-200: "#A6F4C5";
-  --color-green-500: "#6CE9A6";
-  --color-green-600: "#039855";
-  --color-green-700: "#027A48";
-  --color-green-800: "#05603A";
-}
+// ------------
+// IMPORTANT:
+// PLEASE NOTE -- THIS FILE IS NOT IN USE ANYMORE
+// If you want to view the cclw theme please look in:
+// public/css/cclw/theme.css
+// ------------
 
 @mixin cclw-dark-gradient() {
   background: linear-gradient(134.5deg, rgba(43, 47, 73, 1) 0%, rgba(43, 47, 73, 1) 33%, rgba(21, 116, 209, 1) 66%, rgba(21, 116, 209, 1) 100%);

@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 // import { ReactQueryDevtools } from "react-query/devtools";
 
 import "../styles/flag-icons.css";
-import "../styles/main.scss";
+import "../styles/main.css";
 
 import { ThemeContext } from "@context/ThemeContext";
 import { AdobeContext } from "@context/AdobeContext";
