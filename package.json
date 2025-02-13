@@ -44,7 +44,6 @@
   "devDependencies": {
     "@babel/core": "^7.16.5",
     "@babel/preset-env": "^7.16.5",
-    "@chromatic-com/storybook": "^3.2.4",
     "@percy/cli": "^1.30.6",
     "@playwright/test": "^1.49.0",
     "@size-limit/file": "^11.1.6",
