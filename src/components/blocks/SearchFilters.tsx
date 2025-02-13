@@ -193,7 +193,7 @@ const SearchFilters = ({
         <DateRange type="year_range" handleChange={handleYearChange} defaultValues={searchCriteria.year_range} min={minYear} max={thisYear} />
       </Accordian>
 
-      <div className="my-5 pt-5 border-t" data-cy="methodology-notice">
+      <div className="my-5 pt-5 border-t border-gray-300" data-cy="methodology-notice">
         <p>
           Read <MethodologyLink /> for more information on how we collect and analyse our data.
         </p>

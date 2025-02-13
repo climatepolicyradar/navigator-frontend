@@ -7,7 +7,7 @@ type TProps = {
 
 export const SubNav = ({ extraClasses = "", children, ...props }: TProps) => {
   return (
-    <div className={`border-b border-grey-200 py-4 ${extraClasses}`} {...props}>
+    <div className={`border-b border-gray-200 py-4 ${extraClasses}`} {...props}>
       <SiteWidth extraClasses="md:flex justify-between items-center">{children}</SiteWidth>
     </div>
   );
