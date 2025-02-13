@@ -19,7 +19,7 @@ export const FeatureDiscover = () => (
       </LinkWithQuery>
       <ExternalLink
         url="https://form.jotform.com/233131638610347"
-        className={getButtonClasses("ghost", false, "!text-blue-300 hover:!text-white hover:!underline")}
+        className={getButtonClasses("ghost", false, "!bg-transparent !border-0 !text-blue-300 hover:!text-white hover:!underline")}
       >
         Download our data
       </ExternalLink>
