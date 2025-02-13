@@ -12,7 +12,7 @@ export const ShowHide = ({ show, label, onClick, className }: TShowHideControlPr
   };
 
   return (
-    <a href="#" onClick={handleClick} className={`${className}`}>
+    <a href="#" onClick={handleClick} className={`text-blue-600 hover:text-blue-800 hover:underline ${className}`}>
       {label ?? show ? "Hide" : "Show"}
     </a>
   );
