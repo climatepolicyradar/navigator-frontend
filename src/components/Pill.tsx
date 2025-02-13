@@ -1,5 +1,5 @@
-import { CloseIcon } from "./svg/Icons";
 import { ToolTipSSR } from "@components/tooltip/TooltipSSR";
+import { CloseIcon } from "./svg/Icons";
 
 type TProps = {
   onClick?: () => void;
@@ -7,6 +7,9 @@ type TProps = {
   extraClasses?: string;
 };
 
+/**
+ * A pill with a remove button. Represents a search query parameter.
+ */
 const Pill = ({ children, onClick, extraClasses = "" }: TProps) => {
   const handleClick = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();
