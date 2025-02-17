@@ -28,14 +28,9 @@ import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 
 import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@types";
 import { getFeatureFlags } from "@utils/featureFlags";
-import Pill from "@components/Pill";
 import { rootLevelConceptsIds } from "@utils/processConcepts";
-import Link from "next/link";
-import Button from "@components/buttons/Button";
-import { Heading } from "@components/typography/Heading";
-import { ExternalLink } from "@components/ExternalLink";
 import { useEffectOnce } from "@hooks/useEffectOnce";
-import ConceptsDocumentViewer from "@components/documents/ConceptsDocumentViewer";
+import { ConceptsDocumentViewer } from "@components/documents/ConceptsDocumentViewer";
 
 type TProps = {
   document: TDocumentPage;
@@ -80,6 +75,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
   const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
   const router = useRouter();
+  const qsSearchString = router.query[QUERY_PARAMS.query_string];
+  const exactMatchQuery = !!router.query[QUERY_PARAMS.exact_match];
   const startingPassage = Number(router.query.passage) || 0;
 
   const { status, families, searchQuery } = useSearch(
@@ -93,9 +90,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     ),
     MAX_PASSAGES
   );
-
-  const qsSearchString = router.query[QUERY_PARAMS.query_string];
-  const exactMatchQuery = !!router.query[QUERY_PARAMS.exact_match];
 
   const canPreview = document.content_type === "application/pdf";
 
@@ -160,6 +154,18 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
         queryObj[QUERY_PARAMS.exact_match] = "true";
       }
 
+      router.push({
+        pathname: `/documents/${document.slug}`,
+        query: queryObj,
+      });
+    },
+    [router, document.slug]
+  );
+
+  const handlePassageChange = useCallback(
+    (passageIndex: number) => {
+      const queryObj = { ...router.query };
+      queryObj.passage = passageIndex.toString();
       router.push({
         pathname: `/documents/${document.slug}`,
         query: queryObj,
@@ -358,6 +364,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
           <ConceptsDocumentViewer
             initialQueryTerm={qsSearchString}
             initialExactMatch={exactMatchQuery}
+            initialPassage={startingPassage}
             concepts={concepts}
             selectedConcepts={selectedConcepts}
             rootConcepts={rootConcepts}
@@ -365,6 +372,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
             document={document}
             onQueryTermChange={handleQueryTermChange}
             onExactMatchChange={handleExactMatchChange}
+            onPassageChange={handlePassageChange}
           />
         )}
       </section>

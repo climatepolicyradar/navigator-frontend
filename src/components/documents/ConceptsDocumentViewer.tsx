@@ -17,13 +17,12 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { SearchSettings } from "@components/filters/SearchSettings";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
-import { useRouter } from "next/router";
 import useSearch from "@hooks/useSearch";
 
-// Define a new type for the state and callback props
-type TConceptsDocumentViewerProps = {
+type TProps = {
   initialQueryTerm?: string | string[];
   initialExactMatch?: boolean;
+  initialPassage?: number;
   concepts: TConcept[];
   selectedConcepts: TConcept[];
   rootConcepts: TConcept[];
@@ -33,6 +32,7 @@ type TConceptsDocumentViewerProps = {
   // Callback props for state changes
   onQueryTermChange?: (queryTerm: string) => void;
   onExactMatchChange?: (isExact: boolean) => void;
+  onPassageChange?: (passageIndex: number) => void;
 };
 
 const passageClasses = (docType: string) => {
@@ -57,9 +57,10 @@ const renderPassageCount = (count: number): string => {
   return count > MAX_PASSAGES ? `top ${MAX_PASSAGES} matches` : count + ` match${count > 1 ? "es" : ""}`;
 };
 
-export default function ConceptsDocumentViewer({
+export const ConceptsDocumentViewer = ({
   initialQueryTerm = "",
   initialExactMatch = false,
+  initialPassage = 0,
   concepts,
   selectedConcepts,
   rootConcepts,
@@ -67,16 +68,14 @@ export default function ConceptsDocumentViewer({
   document,
   onQueryTermChange,
   onExactMatchChange,
-}: TConceptsDocumentViewerProps) {
-  // Memoise initial values to prevent unnecessary rerenders
+  onPassageChange,
+}: TProps) => {
   const initialQueryTermString = useMemo(() => (Array.isArray(initialQueryTerm) ? initialQueryTerm[0] : initialQueryTerm || ""), [initialQueryTerm]);
 
   const [showOptions, setShowOptions] = useState(false);
-  const [passageIndex, setPassageIndex] = useState<number | null>(null);
+  const [passageIndex, setPassageIndex] = useState<number | null>(initialPassage);
   const [isExactSearch, setIsExactSearch] = useState(initialExactMatch);
   const [queryTerm, setQueryTerm] = useState(initialQueryTermString);
-  const router = useRouter();
-  const startingPassage = Number(router.query.passage) || 0;
 
   const searchQueryParams = useMemo(
     () => ({
@@ -87,10 +86,10 @@ export default function ConceptsDocumentViewer({
   );
 
   const { status, families, searchQuery } = useSearch(searchQueryParams, null, document.import_id, !!queryTerm, MAX_PASSAGES);
+
   const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
   const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
 
-  // Optimise passage matches calculation
   useEffect(() => {
     const calculatePassageMatches = () => {
       const matches: TPassage[] = [];
@@ -117,11 +116,10 @@ export default function ConceptsDocumentViewer({
   }, [families, document.slug, passageMatches.length, totalNoOfMatches]);
 
   useEffect(() => {
-    // Scroll to starting passage on page load
-    if (startingPassage) {
-      scrollToPassage(startingPassage);
+    if (initialPassage) {
+      scrollToPassage(initialPassage);
     }
-  }, [startingPassage]);
+  }, [initialPassage]);
 
   const canPreview = document.content_type === "application/pdf";
 
@@ -138,11 +136,15 @@ export default function ConceptsDocumentViewer({
     [conceptCounts]
   );
 
-  const handlePassageClick = (index: number) => {
-    if (!canPreview) return;
-    setPassageIndex(index);
-    scrollToPassage(index);
-  };
+  const handlePassageClick = useCallback(
+    (index: number) => {
+      if (!canPreview) return;
+      setPassageIndex(index);
+      scrollToPassage(index);
+      onPassageChange?.(index);
+    },
+    [canPreview, onPassageChange]
+  );
 
   const handleSearchInput = useCallback(
     (term: string) => {
@@ -175,7 +177,7 @@ export default function ConceptsDocumentViewer({
                     document={document}
                     documentPassageMatches={passageMatches}
                     passageIndex={passageIndex}
-                    startingPassageIndex={startingPassage}
+                    startingPassageIndex={initialPassage}
                   />
                 )}
                 {!canPreview && <EmptyDocument />}
@@ -228,7 +230,7 @@ export default function ConceptsDocumentViewer({
                               }}
                             >
                               <SearchSettings
-                                queryParams={router.query}
+                                queryParams={searchQueryParams}
                                 handleSearchChange={handleSemanticSearchChange}
                                 setShowOptions={setShowOptions}
                               />
@@ -306,7 +308,7 @@ export default function ConceptsDocumentViewer({
                           id="document-passage-matches"
                           className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
                         >
-                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
+                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? initialPassage} />
                         </div>
                       </>
                     )}
@@ -330,13 +332,13 @@ export default function ConceptsDocumentViewer({
                           id="document-passage-matches"
                           className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
                         >
-                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
+                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? initialPassage} />
                         </div>
                       </>
                     )}
                   </>
                 )}
-                {totalNoOfMatches === 0 && <EmptyPassages hasQueryString={!!router.query[QUERY_PARAMS.query_string]} />}
+                {totalNoOfMatches === 0 && <EmptyPassages hasQueryString={!!searchQueryParams[QUERY_PARAMS.query_string]} />}
               </div>
             </div>
           </FullWidth>
@@ -344,4 +346,4 @@ export default function ConceptsDocumentViewer({
       )}
     </>
   );
-}
+};
