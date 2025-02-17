@@ -1,10 +1,8 @@
-import { useRouter } from "next/router";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 import { SiteWidth } from "@components/panels/SiteWidth";
-
 import MainMenu from "../menus/MainMenu";
-import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { FloatingSearch } from "@components/FloatingSearch";
 
