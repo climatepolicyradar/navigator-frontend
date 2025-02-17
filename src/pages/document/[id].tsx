@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Script from "next/script";
 import { useRouter } from "next/router";
@@ -49,6 +49,7 @@ import { MAX_PASSAGES } from "@constants/paging";
 import { getFeatureFlags } from "@utils/featureFlags";
 import { rootLevelConceptsIds } from "@utils/processConcepts";
 import { MultiCol } from "@components/panels/MultiCol";
+import { useEffectOnce } from "@hooks/useEffectOnce";
 
 type TProps = {
   page: TFamilyPage;
@@ -177,13 +178,16 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const conceptCounts: { conceptKey: string; count: number }[] = (vespaFamilyData?.families ?? [])
     .flatMap((family) => family.hits.flatMap((hit) => Object.entries(hit.concept_counts ?? {}).map(([conceptKey, count]) => ({ conceptKey, count }))))
     .sort((a, b) => b.count - a.count);
+
+  const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
+
   const conceptCountsById = conceptCounts.reduce((acc, { conceptKey, count }) => {
     const conceptId = conceptKey.split(":")[0];
     acc[conceptId] = count;
     return acc;
   }, {});
 
-  useEffect(() => {
+  useEffectOnce(() => {
     /** Get `rootConcepts` */
     const rootConceptsS3Promises = rootLevelConceptsIds.map((conceptId) => {
       const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
@@ -191,9 +195,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     });
 
     /** Get concepts associated with the family */
-    const conceptsS3Promises = conceptCounts.map(({ conceptKey }) => {
-      // the concept ID is in the shape of `Q100:concept name`
-      const conceptId = conceptKey.split(":")[0];
+    const conceptsS3Promises = conceptIds.map((conceptId) => {
       const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
       return fetch(url).then((response) => response.json());
     });
@@ -206,7 +208,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
       setRootConcepts(rootConceptsResults);
       setConcepts(conceptsResults);
     });
-  }, [conceptCounts]);
+  });
 
   return (
     <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)} theme={theme}>
