@@ -344,7 +344,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
               {geography.legislative_process && theme !== "mcf" && (
                 <section className="mt-10" data-cy="legislative-process">
                   <Heading level={2} extraClasses="flex items-center gap-2">
-                    <LegislativeIcon width="20" height="20" /> Legislative Process
+                    Legislative Process
                   </Heading>
                   <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
                 </section>
