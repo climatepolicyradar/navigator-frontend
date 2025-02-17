@@ -141,6 +141,10 @@ strong,
   @apply font-medium;
 }
 
+hr {
+  @apply border-gray-200;
+}
+
 .form-row {
   @apply my-6;
 }
