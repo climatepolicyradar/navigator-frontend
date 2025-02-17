@@ -29,6 +29,13 @@ import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@types";
 import { getFeatureFlags } from "@utils/featureFlags";
 import Pill from "@components/Pill";
+import { rootLevelConceptsIds } from "@utils/processConcepts";
+import Link from "next/link";
+import Button from "@components/buttons/Button";
+import { Heading } from "@components/typography/Heading";
+import { ExternalLink } from "@components/ExternalLink";
+import { useEffectOnce } from "@hooks/useEffectOnce";
+import ConceptsDocumentViewer from "@components/documents/ConceptsDocumentViewer";
 
 type TProps = {
   document: TDocumentPage;
@@ -154,7 +161,48 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   }, [startingPassage]);
 
   /** Concepts: WIP */
-  const concepts = [];
+  const [concepts, setConcepts] = useState<TConcept[]>([]);
+  const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
+  const [selectedConcepts, setSelectedConceptsFilter] = useState<TConcept[]>([]);
+  const conceptCounts: { conceptKey: string; count: number }[] = (vespaFamilyData?.families ?? [])
+    .flatMap((family) => family.hits.flatMap((hit) => Object.entries(hit.concept_counts ?? {}).map(([conceptKey, count]) => ({ conceptKey, count }))))
+    .sort((a, b) => b.count - a.count);
+  const conceptCountsById = conceptCounts.reduce((acc, { conceptKey, count }) => {
+    const conceptId = conceptKey.split(":")[0];
+    acc[conceptId] = count;
+    return acc;
+  }, {});
+
+  useEffectOnce(() => {
+    /** Get `rootConcepts` */
+    const rootConceptsS3Promises = rootLevelConceptsIds.map((conceptId) => {
+      const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
+      return fetch(url).then((response) => response.json());
+    });
+
+    /** Get concepts associated with the family */
+    const conceptsS3Promises = conceptCounts.map(({ conceptKey }) => {
+      // the concept ID is in the shape of `Q100:concept name`
+      const conceptId = conceptKey.split(":")[0];
+      const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
+      return fetch(url).then((response) => response.json());
+    });
+
+    /** Get `rootConcepts` and `concepts` from S3 */
+    Promise.all([...rootConceptsS3Promises, ...conceptsS3Promises]).then((allConcepts) => {
+      const rootConceptsResults = allConcepts.slice(0, rootConceptsS3Promises.length);
+      const conceptsResults = allConcepts.slice(rootConceptsS3Promises.length);
+
+      /** Get the selected concept from the query string */
+      const conceptsFilterQuery = router.query[QUERY_PARAMS["concept_filters.name"]];
+      const conceptsFilters = conceptsFilterQuery ? (Array.isArray(conceptsFilterQuery) ? conceptsFilterQuery : [conceptsFilterQuery]) : undefined;
+      const selectedConcepts = conceptsResults.filter((concept) => conceptsFilters?.includes(concept.preferred_label));
+
+      setSelectedConceptsFilter(selectedConcepts);
+      setRootConcepts(rootConceptsResults);
+      setConcepts(conceptsResults);
+    });
+  });
 
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
@@ -277,6 +325,17 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
               )}
             </FullWidth>
           </section>
+        )}
+
+        {concepts.length > 0 && (
+          <ConceptsDocumentViewer
+            qsSearchString={qsSearchString}
+            concepts={concepts}
+            selectedConcepts={selectedConcepts}
+            rootConcepts={rootConcepts}
+            conceptCounts={conceptCounts}
+            document={document}
+          />
         )}
       </section>
     </Layout>
