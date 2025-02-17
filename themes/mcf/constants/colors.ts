@@ -1,8 +1,6 @@
-import { theme } from "tailwind.config.js";
-
 export const colors = {
   mcf: {
-    mainApp: theme.colors["mcf"].blue,
-    iconColor: theme.colors["mcf"].iconGrey,
+    mainApp: "#082C43",
+    iconColor: "#7A7A7A",
   },
 };
