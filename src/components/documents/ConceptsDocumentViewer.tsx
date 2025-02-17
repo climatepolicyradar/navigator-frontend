@@ -13,20 +13,26 @@ import PassageMatches from "@components/PassageMatches";
 import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
 import { EmptyPassages } from "./EmptyPassages";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { SearchSettings } from "@components/filters/SearchSettings";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 import { useRouter } from "next/router";
 import useSearch from "@hooks/useSearch";
 
-type TProps = {
-  qsSearchString: string | string[];
+// Define a new type for the state and callback props
+type TConceptsDocumentViewerProps = {
+  initialQueryTerm?: string | string[];
+  initialExactMatch?: boolean;
   concepts: TConcept[];
   selectedConcepts: TConcept[];
   rootConcepts: TConcept[];
   conceptCounts: { conceptKey: string; count: number }[];
   document: TDocumentPage;
+
+  // Callback props for state changes
+  onQueryTermChange?: (queryTerm: string) => void;
+  onExactMatchChange?: (isExact: boolean) => void;
 };
 
 const passageClasses = (docType: string) => {
@@ -51,42 +57,64 @@ const renderPassageCount = (count: number): string => {
   return count > MAX_PASSAGES ? `top ${MAX_PASSAGES} matches` : count + ` match${count > 1 ? "es" : ""}`;
 };
 
-export default function ConceptsDocumentViewer({ qsSearchString, concepts, selectedConcepts, rootConcepts, conceptCounts, document }: TProps) {
+export default function ConceptsDocumentViewer({
+  initialQueryTerm = "",
+  initialExactMatch = false,
+  concepts,
+  selectedConcepts,
+  rootConcepts,
+  conceptCounts,
+  document,
+  onQueryTermChange,
+  onExactMatchChange,
+}: TConceptsDocumentViewerProps) {
+  // Memoise initial values to prevent unnecessary rerenders
+  const initialQueryTermString = useMemo(() => (Array.isArray(initialQueryTerm) ? initialQueryTerm[0] : initialQueryTerm || ""), [initialQueryTerm]);
+
   const [showOptions, setShowOptions] = useState(false);
-  const [passageIndex, setPassageIndex] = useState(null);
-  const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
-  const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
+  const [passageIndex, setPassageIndex] = useState<number | null>(null);
+  const [isExactSearch, setIsExactSearch] = useState(initialExactMatch);
+  const [queryTerm, setQueryTerm] = useState(initialQueryTermString);
   const router = useRouter();
   const startingPassage = Number(router.query.passage) || 0;
 
-  const { status, families, searchQuery } = useSearch(
-    router.query,
-    null,
-    document.import_id,
-    !!(
-      router.query[QUERY_PARAMS.query_string] ||
-      router.query[QUERY_PARAMS["concept_filters.id"]] ||
-      router.query[QUERY_PARAMS["concept_filters.name"]]
-    ),
-    MAX_PASSAGES
+  const searchQueryParams = useMemo(
+    () => ({
+      [QUERY_PARAMS.query_string]: queryTerm,
+      [QUERY_PARAMS.exact_match]: isExactSearch ? "true" : undefined,
+    }),
+    [queryTerm, isExactSearch]
   );
 
+  const { status, families, searchQuery } = useSearch(searchQueryParams, null, document.import_id, !!queryTerm, MAX_PASSAGES);
+  const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
+  const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
+
+  // Optimise passage matches calculation
   useEffect(() => {
-    let passageMatches: TPassage[] = [];
-    let totalNoOfMatches = 0;
-    families.forEach((family) => {
-      family.family_documents.forEach((cacheDoc) => {
-        if (document.slug === cacheDoc.document_slug) {
-          passageMatches.push(...cacheDoc.document_passage_matches);
-          totalNoOfMatches = family.total_passage_hits;
+    const calculatePassageMatches = () => {
+      const matches: TPassage[] = [];
+      let totalMatches = 0;
+
+      for (const family of families) {
+        for (const cacheDoc of family.family_documents) {
+          if (document.slug === cacheDoc.document_slug) {
+            matches.push(...cacheDoc.document_passage_matches);
+            totalMatches = family.total_passage_hits;
+            break;
+          }
         }
-      });
-    });
-    setPassageMatches(passageMatches);
-    setTotalNoOfMatches(totalNoOfMatches);
-    // comparing families as objects will cause an infinite loop as each collection is a new instance of an object
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(families), document.slug]);
+        if (matches.length > 0) break;
+      }
+
+      if (matches.length !== passageMatches.length || totalMatches !== totalNoOfMatches) {
+        setPassageMatches(matches);
+        setTotalNoOfMatches(totalMatches);
+      }
+    };
+
+    calculatePassageMatches();
+  }, [families, document.slug, passageMatches.length, totalNoOfMatches]);
 
   useEffect(() => {
     // Scroll to starting passage on page load
@@ -97,11 +125,18 @@ export default function ConceptsDocumentViewer({ qsSearchString, concepts, selec
 
   const canPreview = document.content_type === "application/pdf";
 
-  const conceptCountsById = conceptCounts.reduce((acc, { conceptKey, count }) => {
-    const conceptId = conceptKey.split(":")[0];
-    acc[conceptId] = count;
-    return acc;
-  }, {});
+  const conceptCountsById = useMemo(
+    () =>
+      conceptCounts.reduce(
+        (acc, { conceptKey, count }) => {
+          const conceptId = conceptKey.split(":")[0];
+          acc[conceptId] = count;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
+    [conceptCounts]
+  );
 
   const handlePassageClick = (index: number) => {
     if (!canPreview) return;
@@ -109,25 +144,24 @@ export default function ConceptsDocumentViewer({ qsSearchString, concepts, selec
     scrollToPassage(index);
   };
 
-  // Search input handler
-  const handleSearchInput = (term: string) => {
-    setPassageIndex(0);
-    const queryObj = {};
-    queryObj[QUERY_PARAMS.query_string] = term;
-    if (term === "") return false;
-    router.push({ pathname: `/documents/${document.slug}`, query: queryObj });
-  };
+  const handleSearchInput = useCallback(
+    (term: string) => {
+      setPassageIndex(0);
+      setQueryTerm(term);
+      onQueryTermChange?.(term);
+    },
+    [onQueryTermChange]
+  );
 
-  // Semantic search / exact match handler
-  const handleSemanticSearchChange = (_: string, isExact: string) => {
-    setPassageIndex(0);
-    const queryObj = {};
-    if (isExact) {
-      queryObj[QUERY_PARAMS.exact_match] = isExact;
-    }
-    queryObj[QUERY_PARAMS.query_string] = router.query[QUERY_PARAMS.query_string] as string;
-    router.push({ pathname: `/documents/${document.slug}`, query: queryObj });
-  };
+  const handleSemanticSearchChange = useCallback(
+    (_: string, isExact: string) => {
+      setPassageIndex(0);
+      const exactMatchBool = !!isExact;
+      setIsExactSearch(exactMatchBool);
+      onExactMatchChange?.(exactMatchBool);
+    },
+    [onExactMatchChange]
+  );
 
   return (
     <>
@@ -153,7 +187,7 @@ export default function ConceptsDocumentViewer({ qsSearchString, concepts, selec
                 )}`}
               >
                 <div id="document-search" className="flex flex-col gap-2 md:pl-4">
-                  {(selectedConcepts.length > 0 || qsSearchString) && (
+                  {(selectedConcepts.length > 0 || initialQueryTerm) && (
                     <div className="flex gap-2">
                       <Link className="capitalize hover:no-underline" href={`/documents/${document.slug}`}>
                         <Button
@@ -173,7 +207,7 @@ export default function ConceptsDocumentViewer({ qsSearchString, concepts, selec
                         <SearchForm
                           placeholder="Search the full text of the document"
                           handleSearchInput={handleSearchInput}
-                          input={qsSearchString as string}
+                          input={queryTerm as string}
                           size="default"
                         />
                       </div>
@@ -205,8 +239,7 @@ export default function ConceptsDocumentViewer({ qsSearchString, concepts, selec
                     </div>
                   )}
 
-                  {/** This is lifted almost wholesale from document/[id].tsx */}
-                  {selectedConcepts.length === 0 && !qsSearchString && (
+                  {selectedConcepts.length === 0 && !initialQueryTerm && (
                     <div className="pb-4">
                       <div className="mt-4 grow-0 shrink-0">
                         <div className="mb-4">
@@ -277,12 +310,12 @@ export default function ConceptsDocumentViewer({ qsSearchString, concepts, selec
                         </div>
                       </>
                     )}
-                    {qsSearchString && (
+                    {initialQueryTerm && (
                       <>
                         <div className="my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
                           <div className="mb-2">
                             Displaying {renderPassageCount(totalNoOfMatches)} for "
-                            <span className="text-textDark font-medium">{`${qsSearchString}`}</span>"
+                            <span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
                             {!searchQuery.exact_match && ` and related phrases`}
                             {totalNoOfMatches >= MAX_RESULTS && (
                               <span className="ml-1 inline-block">

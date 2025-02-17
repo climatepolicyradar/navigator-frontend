@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
@@ -95,6 +95,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   );
 
   const qsSearchString = router.query[QUERY_PARAMS.query_string];
+  const exactMatchQuery = !!router.query[QUERY_PARAMS.exact_match];
 
   const canPreview = document.content_type === "application/pdf";
 
@@ -136,6 +137,37 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     router.push({ pathname: `/documents/${document.slug}`, query: queryObj });
   };
 
+  // Handlers to update router
+  const handleQueryTermChange = useCallback(
+    (queryTerm: string) => {
+      const queryObj = {};
+      queryObj[QUERY_PARAMS.query_string] = queryTerm;
+      router.push({
+        pathname: `/documents/${document.slug}`,
+        query: queryObj,
+      });
+    },
+    [router, document.slug]
+  );
+
+  const handleExactMatchChange = useCallback(
+    (isExact: boolean) => {
+      const queryObj = {
+        [QUERY_PARAMS.query_string]: router.query[QUERY_PARAMS.query_string],
+      };
+
+      if (isExact) {
+        queryObj[QUERY_PARAMS.exact_match] = "true";
+      }
+
+      router.push({
+        pathname: `/documents/${document.slug}`,
+        query: queryObj,
+      });
+    },
+    [router, document.slug]
+  );
+
   useEffect(() => {
     let passageMatches: TPassage[] = [];
     let totalNoOfMatches = 0;
@@ -167,11 +199,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const conceptCounts: { conceptKey: string; count: number }[] = (vespaFamilyData?.families ?? [])
     .flatMap((family) => family.hits.flatMap((hit) => Object.entries(hit.concept_counts ?? {}).map(([conceptKey, count]) => ({ conceptKey, count }))))
     .sort((a, b) => b.count - a.count);
-  const conceptCountsById = conceptCounts.reduce((acc, { conceptKey, count }) => {
-    const conceptId = conceptKey.split(":")[0];
-    acc[conceptId] = count;
-    return acc;
-  }, {});
 
   useEffectOnce(() => {
     /** Get `rootConcepts` */
@@ -329,12 +356,15 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
 
         {concepts.length > 0 && (
           <ConceptsDocumentViewer
-            qsSearchString={qsSearchString}
+            initialQueryTerm={qsSearchString}
+            initialExactMatch={exactMatchQuery}
             concepts={concepts}
             selectedConcepts={selectedConcepts}
             rootConcepts={rootConcepts}
             conceptCounts={conceptCounts}
             document={document}
+            onQueryTermChange={handleQueryTermChange}
+            onExactMatchChange={handleExactMatchChange}
           />
         )}
       </section>
