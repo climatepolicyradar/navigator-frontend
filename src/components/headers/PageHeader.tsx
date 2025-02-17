@@ -25,17 +25,12 @@ export function PageHeader() {
               <Image src="/images/cpr-logo-horizontal.png" width={228} height={35} alt="Climate Policy Radar logo" data-cy="cpr-logo" />
             </LinkWithQuery>
             {showSearch && (
-              <div className="hidden ml-2 lg:block md:w-[260px] lg:w-[340px]">
+              <div className="hidden ml-12 lg:block md:w-[260px] lg:w-[340px]">
                 <FloatingSearch />
               </div>
             )}
           </div>
           <div className="flex items-center justify-end">
-            <div className="hidden md:block mr-6">
-              <Button onClick={() => window.open("https://gst1.org")} extraClasses="rounded-full" thin>
-                Global Stocktake Explorer
-              </Button>
-            </div>
             <div>
               <MainMenu />
             </div>
