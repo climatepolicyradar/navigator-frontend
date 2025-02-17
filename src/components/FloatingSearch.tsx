@@ -93,7 +93,7 @@ export const FloatingSearch = ({ extended = true, placeholder, extraButtonClasse
                     onClick={() => {
                       handleSearch(searchTerm);
                     }}
-                    className={`text-gray-800 bg-white border border-gray-300 rounded-[40px] py-1 px-2 transition hover:bg-blue-600 hover:text-white ${extraButtonClasses}`}
+                    className={`bg-white border border-gray-200 rounded-[40px] py-1 px-2 transition hover:border-blue-600 hover:text-textDark ${extraButtonClasses}`}
                   >
                     {searchTerm}
                   </button>

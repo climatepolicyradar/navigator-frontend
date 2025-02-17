@@ -31,7 +31,7 @@ const DocumentSearchForm = ({
                   <li key={searchTerm}>
                     <button
                       onClick={() => handleSearchInput(searchTerm)}
-                      className="bg-white border rounded-[40px] py-1 px-2 transition hover:border-blue-600 hover:text-textDark"
+                      className="bg-white border border-gray-200 rounded-[40px] py-1 px-2 transition hover:border-blue-600 hover:text-textDark"
                     >
                       {searchTerm}
                     </button>
