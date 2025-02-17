@@ -288,7 +288,11 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                           Targets <span className="font-normal">({publishedTargets.length})</span>
                         </Heading>
 
-                        <ExternalLink url="https://form.jotform.com/233542296946365" className="text-sm underline" cy="download-target-csv">
+                        <ExternalLink
+                          url="https://form.jotform.com/233542296946365"
+                          className="text-sm underline hover:text-blue-600"
+                          cy="download-target-csv"
+                        >
                           Request to download all target data (.csv)
                         </ExternalLink>
                       </div>

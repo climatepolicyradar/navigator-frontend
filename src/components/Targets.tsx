@@ -37,7 +37,10 @@ export const Targets = ({ targets = [], showFamilyInfo = false }: TTargets) => {
           </span>
           {showSourceLink(target) && (
             <span className="text-sm">
-              Source: <LinkWithQuery href={`/document/${target["family-slug"]}`}>{target["family-name"]}</LinkWithQuery>
+              Source:{" "}
+              <LinkWithQuery href={`/document/${target["family-slug"]}`} className="underline hover:text-blue-600">
+                {target["family-name"]}
+              </LinkWithQuery>
             </span>
           )}
         </li>
