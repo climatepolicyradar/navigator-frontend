@@ -45,7 +45,7 @@ const AboutTheFundsContent = () => {
               <br />
             </p>
           ))}
-          <LinkWithQuery className="underline" href="/about">
+          <LinkWithQuery className="text-blue-600 underline hover:text-blue-800" href="/about">
             Find out more
           </LinkWithQuery>
         </div>
