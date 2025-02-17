@@ -207,12 +207,8 @@ select.small {
   left: -25%;
   background-image: url(/images/arc-bg.png);
   overflow: hidden;
-}
-@screen md {
-  .banner--full:before {
-    top: 360px;
-    left: 50%;
-  }
+
+  @apply md:top-[360px] md:left-[50%];
 }
 
 /* clears the 'X' in search input from Internet Explorer */
@@ -242,26 +238,18 @@ input[type="search"]::-webkit-search-results-decoration {
   position: relative;
 }
 
-@screen md {
-  .subnav-active:after,
-  .tabbed-nav__active:after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -16px;
-    height: 2px;
-    width: 100%;
-    @apply bg-blue-600;
-  }
+.subnav-active:after,
+.tabbed-nav__active:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  @apply invisible md:visible bg-blue-600 -bottom-2;
 }
 
 .tabbed-nav__active {
   @apply text-blue-600 font-medium;
-}
-@screen md {
-  .tabbed-nav__active:after {
-    bottom: -9px;
-  }
 }
 
 /* Tooltip button */
@@ -467,16 +455,6 @@ ul li.selected {
   @apply text-lg mb-5;
 }
 
-.pdf-container {
-  height: 440px;
-  margin-bottom: 16px;
-}
-@screen md {
-  .pdf-container {
-    height: 700px;
-  }
-}
-
 /* Circle icons used in timeline */
 .circle-container {
   height: 40px;
@@ -509,78 +487,25 @@ ul li.selected {
   top: 60px;
 }
 
-.key-detail:first-child {
-  @apply rounded-t-lg;
-}
-.key-detail:last-child {
-  @apply rounded-b-lg;
-}
-@screen md {
-  .key-detail:first-child {
-    @apply rounded-none;
-  }
-  .key-detail:nth-child(5n + 1) {
-    @apply rounded-tl-lg;
-  }
-  .key-detail:nth-child(5n + 2) {
-    @apply rounded-tr-lg;
-  }
-  .key-detail:nth-child(5n + 3) {
-    @apply rounded-bl-lg;
-  }
-  .key-detail:nth-child(5n + 4) {
-    @apply rounded-br-lg;
-  }
-}
-@screen lg {
-  .key-detail:first-child {
-    @apply rounded-none;
-  }
-  .key-detail:last-child {
-    @apply rounded-none;
-  }
-  .key-detail:nth-child(5n) {
-    @apply rounded-br-lg;
-  }
-  .key-detail:nth-child(5n + 1) {
-    @apply rounded-l-lg;
-  }
-  .key-detail:nth-child(5n + 2) {
-    @apply rounded-none;
-  }
-  .key-detail:nth-child(5n + 3) {
-    @apply rounded-none rounded-r-lg;
-  }
-  .key-detail:nth-child(5n + 4) {
-    @apply rounded-none rounded-bl-lg;
-  }
-}
-
 .accordian__content p {
   @apply mb-2;
 }
 
 .search-animated-placeholder {
-  display: none;
-}
-@screen md {
-  .search-animated-placeholder {
-    @apply pr-1 text-2xl bg-transparent;
-    overflow: hidden;
-    position: absolute;
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    z-index: -1;
-    height: 75%;
-    border-right: 2px solid;
-    white-space: nowrap;
-    padding-left: 0.75rem;
-    animation:
-      typing 3s steps(60, end),
-      blink-caret 0.75s step-end infinite;
-    max-width: 75%;
-  }
+  overflow: hidden;
+  position: absolute;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  z-index: -1;
+  height: 34px;
+  border-right: 2px solid;
+  white-space: nowrap;
+  animation:
+    typing 3s steps(60, end),
+    blink-caret 0.75s step-end infinite;
+  max-width: 75%;
+  @apply hidden pr-1 pl-2 text-2xl bg-transparent bottom-[17px] md:flex;
 }
 
 /* The typing effect */
