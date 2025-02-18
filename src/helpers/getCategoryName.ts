@@ -1,14 +1,12 @@
 import { TCategory, TCorpusTypeSubCategory } from "@types";
 
-const reportSubCategories: Record<TCorpusTypeSubCategory | "OEP", string> = {
+const reportSubCategories = {
   AF: "Guidance",
   CIF: "Guidance",
   GCF: "Guidance",
   GEF: "Guidance",
   Reports: "Reports",
   OEP: "Reports",
-  "Intl. agreements": "Intl. agreements",
-  "Laws and Policies": "Laws and Policies",
 };
 
 const subCategories: Record<TCorpusTypeSubCategory, string> = {
@@ -32,8 +30,8 @@ const categories: Record<TCategory, string> = {
   Reports: "Reports",
 };
 
-const getReportsCategory = (source: TCorpusTypeSubCategory): string => {
-  return reportSubCategories[source];
+const getReportsCategory = (source: string): string => {
+  return reportSubCategories[source] || "Reports";
 };
 
 export const getSubCategoryName = (subCategory: TCorpusTypeSubCategory): string => {
@@ -43,7 +41,7 @@ export const getSubCategoryName = (subCategory: TCorpusTypeSubCategory): string 
 export const getCategoryName = (category: TCategory, subCategory?: TCorpusTypeSubCategory, source?: string): string => {
   const name = categories[category as TCategory];
   if (category === "Reports" && source) {
-    return getReportsCategory(source as TCorpusTypeSubCategory);
+    return getReportsCategory(source);
   }
   return category === "MCF" && subCategory ? getSubCategoryName(subCategory) : name;
 };
