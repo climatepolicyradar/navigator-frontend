@@ -1,5 +1,5 @@
 export const getApprovedYearFromEvents = (events) => {
-  const approvalEvent = events.find((event) => event.event_type === "Project Approved");
+  const approvalEvent = events.find((event) => ["Project Approved", "Published"].includes(event.event_type));
 
   if (approvalEvent) {
     const date = new Date(approvalEvent.date);

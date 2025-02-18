@@ -18,7 +18,7 @@ import { truncateString } from "@utils/truncateString";
 
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
 
-import { TDocumentPage, TFamilyPage } from "@types";
+import { TDocumentPage, TFamilyPage, TConcept, TSearchResponse } from "@types";
 import { DocumentMetaRenderer } from "./renderers/DocumentMetaRenderer";
 
 type TProps = {
@@ -75,6 +75,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
           <div className="flex-1 my-4">
             <Heading level={1}>{document.title}</Heading>
             <DocumentMetaRenderer family={family} isMain={isMain} document={document} />
+
             <div className="text-content" dangerouslySetInnerHTML={{ __html: summary }} />
             {family.summary.length > MAX_FAMILY_SUMMARY_LENGTH_BRIEF && (
               <div className="mt-4">
@@ -84,6 +85,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
               </div>
             )}
           </div>
+
           <div>
             <div className="my-4 flex flex-row gap-2 lg:flex-col">
               {family.documents.length > 1 && (
@@ -98,6 +100,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
             </div>
           </div>
         </div>
+
         {translated && (
           <div className="flex my-4">
             <Alert

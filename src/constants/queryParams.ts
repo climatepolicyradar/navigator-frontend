@@ -1,6 +1,4 @@
-import { TQueryStrings } from "@types";
-
-export const QUERY_PARAMS: TQueryStrings = {
+export const QUERY_PARAMS = {
   // Core
   query_string: "q",
   exact_match: "e",
@@ -13,7 +11,7 @@ export const QUERY_PARAMS: TQueryStrings = {
   offset: "o",
   active_continuation_token: "act",
   continuation_tokens: "cts",
-  // Multilater Climate Funds (MCF)
+  // Multilateral Climate Funds (MCF)
   fund: "fd",
   status: "st",
   implementing_agency: "ia",
@@ -24,4 +22,7 @@ export const QUERY_PARAMS: TQueryStrings = {
   sector: "sc",
   // Reports
   author_type: "at",
+  // Pass through
+  "concept_filters.id": "cfi",
+  "concept_filters.name": "cfn",
 };

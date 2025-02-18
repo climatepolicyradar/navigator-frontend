@@ -4,19 +4,23 @@ import { MenuIcon } from "../svg/Icons";
 import DropdownMenuItem from "./DropdownMenuItem";
 import DropdownMenuWrapper from "./DropdownMenuWrapper";
 
-const MainMenu = () => {
+type TProps = {
+  iconClass?: string;
+};
+
+const MainMenu = ({ iconClass = "text-white" }: TProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
   useOutsideAlerter(menuRef, () => setShowMenu(false));
 
-  const toggleMenu = (e) => {
+  const toggleMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setShowMenu(!showMenu);
   };
 
   return (
     <div ref={menuRef} className="relative z-[41]">
-      <button data-cy="menu-icon" onClick={toggleMenu} className="text-white" aria-label="Toggle menu">
+      <button data-cy="menu-icon" onClick={toggleMenu} className={iconClass} aria-label="Toggle menu">
         <MenuIcon />
       </button>
       {showMenu && (

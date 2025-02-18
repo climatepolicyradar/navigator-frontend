@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Script from "next/script";
 import { useRouter } from "next/router";
@@ -9,9 +9,8 @@ import { ApiClient } from "@api/http-common";
 
 import useSearch from "@hooks/useSearch";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
 import { SingleCol } from "@components/panels/SingleCol";
-
+import Link from "next/link";
 import Layout from "@components/layouts/Main";
 import { Timeline } from "@components/timeline/Timeline";
 import { Event } from "@components/timeline/Event";
@@ -41,14 +40,16 @@ import { pluralise } from "@utils/pluralise";
 import { getFamilyMetaDescription } from "@utils/getFamilyMetaDescription";
 import { extractNestedData } from "@utils/extractNestedData";
 
-import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TOrganisationDictionary, TTheme, TCorpusTypeDictionary } from "@types";
+import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept } from "@types";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
-import { PostHog } from "posthog-node";
 import { getFeatureFlags } from "@utils/featureFlags";
+import { rootLevelConceptsIds } from "@utils/processConcepts";
+import { MultiCol } from "@components/panels/MultiCol";
+import { useEffectOnce } from "@hooks/useEffectOnce";
 
 type TProps = {
   page: TFamilyPage;
@@ -57,6 +58,7 @@ type TProps = {
   corpus_types: TCorpusTypeDictionary;
   theme: TTheme;
   featureFlags: Record<string, string | boolean>;
+  vespaFamilyData?: TSearchResponse;
 };
 
 /*
@@ -73,6 +75,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   corpus_types,
   theme,
   featureFlags,
+  vespaFamilyData,
 }: TProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -169,6 +172,44 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     }
   };
 
+  /** Concepts */
+  const [concepts, setConcepts] = useState<TConcept[]>([]);
+  const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
+  const conceptCounts: { conceptKey: string; count: number }[] = (vespaFamilyData?.families ?? [])
+    .flatMap((family) => family.hits.flatMap((hit) => Object.entries(hit.concept_counts ?? {}).map(([conceptKey, count]) => ({ conceptKey, count }))))
+    .sort((a, b) => b.count - a.count);
+
+  const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
+
+  const conceptCountsById = conceptCounts.reduce((acc, { conceptKey, count }) => {
+    const conceptId = conceptKey.split(":")[0];
+    acc[conceptId] = count;
+    return acc;
+  }, {});
+
+  useEffectOnce(() => {
+    /** Get `rootConcepts` */
+    const rootConceptsS3Promises = rootLevelConceptsIds.map((conceptId) => {
+      const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
+      return fetch(url).then((response) => response.json());
+    });
+
+    /** Get concepts associated with the family */
+    const conceptsS3Promises = conceptIds.map((conceptId) => {
+      const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
+      return fetch(url).then((response) => response.json());
+    });
+
+    /** Get `rootConcepts` and `concepts` from S3 */
+    Promise.all([...rootConceptsS3Promises, ...conceptsS3Promises]).then((allConcepts) => {
+      const rootConceptsResults = allConcepts.slice(0, rootConceptsS3Promises.length);
+      const conceptsResults = allConcepts.slice(rootConceptsS3Promises.length);
+
+      setRootConcepts(rootConceptsResults);
+      setConcepts(conceptsResults);
+    });
+  });
+
   return (
     <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)} theme={theme}>
       <Script id="analytics">
@@ -184,8 +225,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
         <SubNav>
           <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={page.title} />
         </SubNav>
-        <SiteWidth>
-          <SingleCol extraClasses="mt-8">
+        <MultiCol>
+          <SingleCol extraClasses={`mt-8 px-5 w-full`}>
             <FamilyHead family={page} onCollectionClick={handleCollectionClick} />
             <section className="mt-6">
               {/* SSR summary */}
@@ -330,7 +371,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 {corpusImage && (
                   <div className="relative max-w-[144px] mt-1 mr-2">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`${corpusImage}`} alt={corpusAltImage} />
+                    <img src={`${corpusImage}`} alt={corpusAltImage} className="h-auto w-full" />
                   </div>
                 )}
                 <span dangerouslySetInnerHTML={{ __html: corpusNote }} className="" />
@@ -368,7 +409,53 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               </section>
             ))}
           </SingleCol>
-        </SiteWidth>
+          {/* TODO: use a panel for this */}
+          {concepts.length > 0 && (
+            <div className="grow-0 shrink-0 px-5 border-l pt-5 w-[460px] text-sm">
+              <div className="mb-4">
+                <Heading level={4}>Structured data</Heading>
+                <div className="border-l border-inputSelected border-l-2px pt-1 pb-1 pl-4">
+                  <p>
+                    Our AI, trained by our in-house climate policy experts and data scientists, has identified these concepts in this document.{" "}
+                    <ExternalLink url="https://climatepolicyradar.org/concepts">Learn more</ExternalLink>
+                  </p>
+                </div>
+              </div>
+              {rootConcepts.map((rootConcept) => {
+                const hasConceptsInRootConcept = concepts.filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
+                if (hasConceptsInRootConcept.length === 0) return null;
+                return (
+                  <div key={rootConcept.wikibase_id} className="pt-6 pb-6">
+                    <p className="mb-2 capitalize text-[15px] font-bold">{rootConcept.preferred_label}</p>
+                    <p>{rootConcept.description}</p>
+                    <ul className="flex flex-wrap gap-2 mt-4">
+                      {concepts
+                        .filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id))
+                        .map((concept) => {
+                          return (
+                            <li key={concept.wikibase_id}>
+                              <Link
+                                className="capitalize hover:no-underline"
+                                href={`/documents/${mainDocuments[0].slug}?cfn=${concept.preferred_label}`}
+                              >
+                                <Button
+                                  color="clear"
+                                  data-cy="view-family-concept"
+                                  extraClasses="flex items-center text-[14px] font-normal pt-1 pb-1"
+                                >
+                                  {concept.preferred_label} ({conceptCountsById[concept.wikibase_id]})
+                                </Button>
+                              </Link>
+                            </li>
+                          );
+                        })}
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </MultiCol>
       </section>
       {/* This is here in the short term for us to test features flags with our cache settings */}
       <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
@@ -386,6 +473,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const client = new ApiClient(process.env.API_URL);
 
   let familyData: TFamilyPage;
+  let vespaFamilyData: TSearchResponse;
   let targetsData: TTarget[] = [];
   let countriesData: TGeography[] = [];
   let corpus_types: TCorpusTypeDictionary;
@@ -393,6 +481,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const { data: returnedData } = await client.get(`/documents/${id}`);
     familyData = returnedData;
+
+    const conceptsV1 = featureFlags["concepts-v1"];
+    if (conceptsV1) {
+      // fetch the families
+      const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
+      vespaFamilyData = vespaFamilyDataResponse;
+    }
   } catch (error) {
     // TODO: handle error more elegantly
   }
@@ -427,6 +522,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       corpus_types,
       theme: theme,
       featureFlags,
+      vespaFamilyData: vespaFamilyData ?? null,
     },
   };
 };

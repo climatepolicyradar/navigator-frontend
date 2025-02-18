@@ -20,7 +20,8 @@
           "CPR.corpus.i00000001.n0000",
           "CPR.corpus.i00000589.n0000",
           "CPR.corpus.i00000591.n0000",
-          "CPR.corpus.i00000592.n0000"
+          "CPR.corpus.i00000592.n0000",
+          "CPR.corpus.Goldstandard.n0000"
         ],
         "category": ["Executive"]
       },
@@ -32,7 +33,8 @@
           "CPR.corpus.i00000001.n0000",
           "CPR.corpus.i00000589.n0000",
           "CPR.corpus.i00000591.n0000",
-          "CPR.corpus.i00000592.n0000"
+          "CPR.corpus.i00000592.n0000",
+          "CPR.corpus.Goldstandard.n0000"
         ],
         "category": ["Legislative"],
         "alias": "LAWS"
@@ -190,7 +192,14 @@
       "taxonomyKey": "topic",
       "apiMetaDataKey": "family.topic",
       "type": "radio",
-      "category": ["CPR.corpus.i00000001.n0000", "CCLW.corpus.i00000001.n0000"],
+      "category": [
+        "CCLW.corpus.i00000001.n0000",
+        "CPR.corpus.i00000001.n0000",
+        "CPR.corpus.i00000589.n0000",
+        "CPR.corpus.i00000591.n0000",
+        "CPR.corpus.i00000592.n0000",
+        "CPR.corpus.Goldstandard.n0000"
+      ],
       "dependentFilterKey": "",
       "corporaKey": "Laws and Policies"
     },
@@ -199,7 +208,14 @@
       "taxonomyKey": "sector",
       "apiMetaDataKey": "family.sector",
       "type": "radio",
-      "category": ["CPR.corpus.i00000001.n0000", "CCLW.corpus.i00000001.n0000"],
+      "category": [
+        "CCLW.corpus.i00000001.n0000",
+        "CPR.corpus.i00000001.n0000",
+        "CPR.corpus.i00000589.n0000",
+        "CPR.corpus.i00000591.n0000",
+        "CPR.corpus.i00000592.n0000",
+        "CPR.corpus.Goldstandard.n0000"
+      ],
       "dependentFilterKey": "",
       "showFade": "true",
       "corporaKey": "Laws and Policies",
@@ -244,5 +260,5 @@
       "description": "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country."
     }
   ],
-  "documentCategories": ["All", "Laws", "Policies", "UNFCCC", "Litigation", "MCF"]
+  "documentCategories": ["All", "Laws", "Policies", "UNFCCC", "Litigation", "MCF", "Reports"]
 }

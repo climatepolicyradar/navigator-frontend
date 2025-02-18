@@ -12,7 +12,7 @@ import { getCountryName } from "@helpers/getCountryFields";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { sortOptions } from "@constants/sortOptions";
 
-import { TGeography, TQueryStrings, TThemeConfig } from "@types";
+import { TGeography, TThemeConfig } from "@types";
 
 type TFilterChange = (type: string, value: string) => void;
 
@@ -24,7 +24,7 @@ const handleCountryRegion = (slug: string, dataSet: TGeography[]) => {
   return getCountryName(slug, dataSet);
 };
 
-type TFilterKeys = keyof TQueryStrings;
+type TFilterKeys = keyof typeof QUERY_PARAMS;
 
 const MAX_FILTER_CHARACTERS = 32;
 

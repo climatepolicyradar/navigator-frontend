@@ -1,4 +1,4 @@
-export type TDocumentCategory = "All" | "Laws" | "Policies" | "UNFCCC" | "Litigation" | "MCF";
+export type TDocumentCategory = "All" | "Laws" | "Policies" | "UNFCCC" | "Litigation" | "MCF" | "Reports";
 
 export type TLabelVariation = {
   category: string[];

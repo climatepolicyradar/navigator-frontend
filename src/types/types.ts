@@ -27,6 +27,7 @@ export type TSearchCriteria = {
   continuation_tokens?: string[] | null;
   corpus_import_ids: string[];
   metadata: TSearchCriteriaMeta[];
+  concept_filters: { name: string }[];
   // for internal use
   runSearch?: boolean;
 };
@@ -93,6 +94,7 @@ type TGeoFamilyCounts = {
   Executive: number;
   UNFCCC: number;
   MCF: number;
+  Reports: number;
 };
 
 type TGeoFamilys = {
@@ -100,6 +102,7 @@ type TGeoFamilys = {
   Executive: TFamily[];
   UNFCCC: TFamily[];
   MCF: TFamily[];
+  Reports: TFamily[];
 };
 
 export type TGeographySummary = {
@@ -109,8 +112,8 @@ export type TGeographySummary = {
   top_families: TGeoFamilys;
 };
 
-export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC" | "MCF";
-export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements";
+export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC" | "MCF" | "Reports";
+export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Reports";
 export type TDisplayCategory = "All" | TCategory;
 export type TEventCategory = TCategory | "Target";
 
@@ -213,6 +216,7 @@ export type TFamilyMetadata = {
   instrument?: string[];
   author_type?: string[];
   author?: string[];
+  document_type?: string;
 };
 
 export type TMCFFamilyMetadata = {
@@ -308,3 +312,32 @@ export interface TDictionary<T> {
 
 export type TOrganisationDictionary = TDictionary<TOrganisation>;
 export type TCorpusTypeDictionary = TDictionary<TCorpusType>;
+
+export type TConcept = {
+  preferred_label: string;
+  wikibase_id: string;
+  alternative_labels: string[];
+  negative_labels: string[];
+  description: string;
+  subconcept_of: string[];
+  has_subconcept: string[];
+  related_concepts: string[];
+  definition?: string;
+  labelled_passages?: [];
+};
+
+export type TSearchResponse = {
+  total_hits: number;
+  total_family_hits: number;
+  query_time_ms?: number;
+  total_time_ms?: number;
+  families: {
+    id: string;
+    hits: (TFamily & {
+      concept_counts?: Record<string, number>;
+    })[];
+  }[];
+  continuation_token?: string;
+  this_continuation_token: string;
+  prev_continuation_token: string;
+};
