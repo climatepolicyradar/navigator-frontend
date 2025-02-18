@@ -63,13 +63,13 @@ export const ConceptsDocumentViewer = ({
   onPassageChange,
   onConceptClick,
 }: TProps) => {
+  const [showOptions, setShowOptions] = useState(false);
   const [state, setState] = useReducer((prev: any, next: Partial<any>) => ({ ...prev, ...next }), {
     passageIndex: initialPassage,
     isExactSearch: initialExactMatch,
     queryTerm: Array.isArray(initialQueryTerm) ? initialQueryTerm[0] : initialQueryTerm || "",
     passageMatches: [],
     totalNoOfMatches: 0,
-    showOptions: false,
   });
 
   const canPreview = document.content_type === "application/pdf";
@@ -216,14 +216,11 @@ export const ConceptsDocumentViewer = ({
                         />
                       </div>
                       <div className="relative z-10 flex justify-center">
-                        <button
-                          className="px-4 flex justify-center items-center text-textDark text-xl"
-                          onClick={() => state.setShowOptions(!state.showOptions)}
-                        >
+                        <button className="px-4 flex justify-center items-center text-textDark text-xl" onClick={() => setShowOptions(!showOptions)}>
                           <MdOutlineTune />
                         </button>
                         <AnimatePresence initial={false}>
-                          {state.showOptions && (
+                          {showOptions && (
                             <motion.div
                               key="content"
                               initial="collapsed"
@@ -237,7 +234,7 @@ export const ConceptsDocumentViewer = ({
                               <SearchSettings
                                 queryParams={searchQueryParams}
                                 handleSearchChange={handleSemanticSearchChange}
-                                setShowOptions={state.setShowOptions}
+                                setShowOptions={setShowOptions}
                               />
                             </motion.div>
                           )}
