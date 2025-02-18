@@ -281,9 +281,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     });
   });
 
-  console.log("Concept Filters:", conceptFilters);
-  console.log("Router Query:", router.query);
-
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
       <section

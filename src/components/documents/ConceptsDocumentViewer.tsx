@@ -13,7 +13,7 @@ import PassageMatches from "@components/PassageMatches";
 import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
 import { EmptyPassages } from "./EmptyPassages";
 import { motion } from "framer-motion";
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo, useReducer } from "react";
 import { SearchSettings } from "@components/filters/SearchSettings";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
@@ -44,17 +44,6 @@ const passageClasses = (docType: string) => {
   return "md:w-2/3";
 };
 
-const scrollToPassage = (index: number) => {
-  setTimeout(() => {
-    const passage = window.document.getElementById(`passage-${index}`);
-    if (!passage) return;
-    const topPos = passage.offsetTop;
-    const container = window.document.getElementById("document-passage-matches");
-    if (!container) return;
-    container.scrollTo({ top: topPos - 10, behavior: "smooth" });
-  }, 100);
-};
-
 const renderPassageCount = (count: number): string => {
   return count > MAX_PASSAGES ? `top ${MAX_PASSAGES} matches` : count + ` match${count > 1 ? "es" : ""}`;
 };
@@ -74,80 +63,16 @@ export const ConceptsDocumentViewer = ({
   onPassageChange,
   onConceptClick,
 }: TProps) => {
-  const initialQueryTermString = useMemo(() => (Array.isArray(initialQueryTerm) ? initialQueryTerm[0] : initialQueryTerm || ""), [initialQueryTerm]);
-
-  const [queryTerm, setQueryTerm] = useState(initialQueryTermString);
-  const [showOptions, setShowOptions] = useState(false);
-  const [passageIndex, setPassageIndex] = useState<number | null>(initialPassage);
-  const [isExactSearch, setIsExactSearch] = useState(initialExactMatch);
-
-  const selectedConcepts = useMemo(
-    () =>
-      initialConceptFilters
-        ? concepts.filter((concept) =>
-            (Array.isArray(initialConceptFilters) ? initialConceptFilters : [initialConceptFilters]).includes(concept.preferred_label)
-          )
-        : initialSelectedConcepts,
-    [initialConceptFilters, concepts, initialSelectedConcepts]
-  );
-
-  const searchQueryParams = useMemo(
-    () => ({
-      [QUERY_PARAMS.query_string]: queryTerm,
-      [QUERY_PARAMS.exact_match]: isExactSearch ? "true" : undefined,
-      [QUERY_PARAMS["concept_filters.name"]]: initialConceptFilters
-        ? Array.isArray(initialConceptFilters)
-          ? initialConceptFilters
-          : [initialConceptFilters]
-        : undefined,
-    }),
-    [queryTerm, isExactSearch, initialConceptFilters]
-  );
-
-  const { status, families, searchQuery } = useSearch(
-    searchQueryParams,
-    null,
-    document.import_id,
-    !!(queryTerm || initialConceptFilters),
-    MAX_PASSAGES
-  );
-
-  const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
-  const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
-
-  useEffect(() => {
-    const calculatePassageMatches = () => {
-      const matches: TPassage[] = [];
-      let totalMatches = 0;
-
-      for (const family of families) {
-        for (const cacheDoc of family.family_documents) {
-          if (document.slug === cacheDoc.document_slug) {
-            matches.push(...cacheDoc.document_passage_matches);
-            totalMatches = family.total_passage_hits;
-            break;
-          }
-        }
-        if (matches.length > 0) break;
-      }
-
-      if (matches.length !== passageMatches.length || totalMatches !== totalNoOfMatches) {
-        setPassageMatches(matches);
-        setTotalNoOfMatches(totalMatches);
-      }
-    };
-
-    calculatePassageMatches();
-  }, [families, document.slug, passageMatches.length, totalNoOfMatches]);
-
-  useEffect(() => {
-    if (initialPassage) {
-      scrollToPassage(initialPassage);
-    }
-  }, [initialPassage]);
+  const [state, setState] = useReducer((prev: any, next: Partial<any>) => ({ ...prev, ...next }), {
+    passageIndex: initialPassage,
+    isExactSearch: initialExactMatch,
+    queryTerm: Array.isArray(initialQueryTerm) ? initialQueryTerm[0] : initialQueryTerm || "",
+    passageMatches: [],
+    totalNoOfMatches: 0,
+    showOptions: false,
+  });
 
   const canPreview = document.content_type === "application/pdf";
-
   const conceptCountsById = useMemo(
     () =>
       conceptCounts.reduce(
@@ -161,20 +86,66 @@ export const ConceptsDocumentViewer = ({
     [conceptCounts]
   );
 
+  // Dynamically filter concepts based on router concept params.
+  const selectedConcepts = useMemo(
+    () =>
+      initialConceptFilters
+        ? concepts.filter((concept) =>
+            (Array.isArray(initialConceptFilters) ? initialConceptFilters : [initialConceptFilters]).includes(concept.preferred_label)
+          )
+        : initialSelectedConcepts,
+    [initialConceptFilters, concepts, initialSelectedConcepts]
+  );
+
+  // Prepare search.
+  const searchQueryParams = useMemo(
+    () => ({
+      [QUERY_PARAMS.query_string]: state.queryTerm,
+      [QUERY_PARAMS.exact_match]: state.isExactSearch ? "true" : undefined,
+      [QUERY_PARAMS["concept_filters.name"]]: initialConceptFilters
+        ? Array.isArray(initialConceptFilters)
+          ? initialConceptFilters
+          : [initialConceptFilters]
+        : undefined,
+    }),
+    [state.queryTerm, state.isExactSearch, initialConceptFilters]
+  );
+
+  const { families, searchQuery } = useSearch(
+    searchQueryParams,
+    null,
+    document.import_id,
+    !!(state.queryTerm || initialConceptFilters),
+    MAX_PASSAGES
+  );
+
+  // Calculate passage matches.
+  useEffect(() => {
+    const matches = families.flatMap((family) =>
+      family.family_documents.filter((cacheDoc) => cacheDoc.document_slug === document.slug).flatMap((cacheDoc) => cacheDoc.document_passage_matches)
+    );
+
+    const totalMatches =
+      families.find((family) => family.family_documents.some((cacheDoc) => cacheDoc.document_slug === document.slug))?.total_passage_hits || 0;
+
+    setState({
+      passageMatches: matches,
+      totalNoOfMatches: totalMatches,
+    });
+  }, [families, document.slug]);
+
   const handlePassageClick = useCallback(
     (index: number) => {
-      if (!canPreview) return;
-      setPassageIndex(index);
-      scrollToPassage(index);
+      if (document.content_type !== "application/pdf") return;
+      setState({ passageIndex: index });
       onPassageChange?.(index);
     },
-    [canPreview, onPassageChange]
+    [document.content_type, onPassageChange]
   );
 
   const handleSearchInput = useCallback(
     (term: string) => {
-      setPassageIndex(0);
-      setQueryTerm(term);
+      setState({ queryTerm: term });
       onQueryTermChange?.(term);
     },
     [onQueryTermChange]
@@ -182,17 +153,15 @@ export const ConceptsDocumentViewer = ({
 
   const handleSemanticSearchChange = useCallback(
     (_: string, isExact: string) => {
-      setPassageIndex(0);
-      const exactMatchBool = !!isExact;
-      setIsExactSearch(exactMatchBool);
-      onExactMatchChange?.(exactMatchBool);
+      setState({ isExactSearch: !!isExact });
+      onExactMatchChange?.(!!isExact);
     },
     [onExactMatchChange]
   );
 
   const handleConceptClick = useCallback(
     (conceptLabel: string) => {
-      setPassageIndex(0);
+      setState({ passageIndex: 0 });
       onConceptClick?.(conceptLabel);
     },
     [onConceptClick]
@@ -208,8 +177,8 @@ export const ConceptsDocumentViewer = ({
                 {canPreview && (
                   <EmbeddedPDF
                     document={document}
-                    documentPassageMatches={passageMatches}
-                    passageIndex={passageIndex}
+                    documentPassageMatches={state.passageMatches}
+                    passageIndex={state.passageIndex}
                     startingPassageIndex={initialPassage}
                   />
                 )}
@@ -242,16 +211,19 @@ export const ConceptsDocumentViewer = ({
                         <SearchForm
                           placeholder="Search the full text of the document"
                           handleSearchInput={handleSearchInput}
-                          input={queryTerm as string}
+                          input={state.queryTerm as string}
                           size="default"
                         />
                       </div>
                       <div className="relative z-10 flex justify-center">
-                        <button className="px-4 flex justify-center items-center text-textDark text-xl" onClick={() => setShowOptions(!showOptions)}>
+                        <button
+                          className="px-4 flex justify-center items-center text-textDark text-xl"
+                          onClick={() => state.setShowOptions(!state.showOptions)}
+                        >
                           <MdOutlineTune />
                         </button>
                         <AnimatePresence initial={false}>
-                          {showOptions && (
+                          {state.showOptions && (
                             <motion.div
                               key="content"
                               initial="collapsed"
@@ -265,7 +237,7 @@ export const ConceptsDocumentViewer = ({
                               <SearchSettings
                                 queryParams={searchQueryParams}
                                 handleSearchChange={handleSemanticSearchChange}
-                                setShowOptions={setShowOptions}
+                                setShowOptions={state.setShowOptions}
                               />
                             </motion.div>
                           )}
@@ -338,18 +310,22 @@ export const ConceptsDocumentViewer = ({
                   )}
                 </div>
 
-                {totalNoOfMatches > 0 && (
+                {state.totalNoOfMatches > 0 && (
                   <>
                     {selectedConcepts.length > 0 && (
                       <>
                         <div className="my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
-                          <div className="mb-2">{totalNoOfMatches} matches in this document</div>
+                          <div className="mb-2">{state.totalNoOfMatches} matches in this document</div>
                         </div>
                         <div
                           id="document-passage-matches"
                           className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
                         >
-                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? initialPassage} />
+                          <PassageMatches
+                            passages={state.passageMatches}
+                            onClick={handlePassageClick}
+                            activeIndex={state.passageIndex ?? initialPassage}
+                          />
                         </div>
                       </>
                     )}
@@ -357,10 +333,10 @@ export const ConceptsDocumentViewer = ({
                       <>
                         <div className="my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
                           <div className="mb-2">
-                            Displaying {renderPassageCount(totalNoOfMatches)} for "
+                            Displaying {renderPassageCount(state.totalNoOfMatches)} for "
                             <span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
                             {!searchQuery.exact_match && ` and related phrases`}
-                            {totalNoOfMatches >= MAX_RESULTS && (
+                            {state.totalNoOfMatches >= MAX_RESULTS && (
                               <span className="ml-1 inline-block">
                                 <SearchLimitTooltip colour="grey" />
                               </span>
@@ -373,13 +349,17 @@ export const ConceptsDocumentViewer = ({
                           id="document-passage-matches"
                           className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
                         >
-                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? initialPassage} />
+                          <PassageMatches
+                            passages={state.passageMatches}
+                            onClick={handlePassageClick}
+                            activeIndex={state.passageIndex ?? initialPassage}
+                          />
                         </div>
                       </>
                     )}
                   </>
                 )}
-                {totalNoOfMatches === 0 && (
+                {state.totalNoOfMatches === 0 && (
                   <EmptyPassages
                     hasQueryString={
                       !!searchQueryParams[QUERY_PARAMS.query_string] &&
