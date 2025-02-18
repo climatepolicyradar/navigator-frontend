@@ -61,7 +61,7 @@ export const ConceptsDocumentViewer = ({
   onPassageChange,
   onConceptClick,
 }: TProps) => {
-  const [showOptions, setShowOptions] = useState(false);
+  const [showSearchOptions, setShowSearchOptions] = useState(false);
   const [state, setState] = useReducer((prev: any, next: Partial<any>) => ({ ...prev, ...next }), {
     passageIndex: initialPassage,
     isExactSearch: initialExactMatch,
@@ -218,11 +218,14 @@ export const ConceptsDocumentViewer = ({
                         />
                       </div>
                       <div className="relative z-10 flex justify-center">
-                        <button className="px-4 flex justify-center items-center text-textDark text-xl" onClick={() => setShowOptions(!showOptions)}>
+                        <button
+                          className="px-4 flex justify-center items-center text-textDark text-xl"
+                          onClick={() => setShowSearchOptions(!showSearchOptions)}
+                        >
                           <MdOutlineTune />
                         </button>
                         <AnimatePresence initial={false}>
-                          {showOptions && (
+                          {showSearchOptions && (
                             <motion.div
                               key="content"
                               initial="collapsed"
@@ -236,7 +239,7 @@ export const ConceptsDocumentViewer = ({
                               <SearchSettings
                                 queryParams={searchQueryParams}
                                 handleSearchChange={handleSemanticSearchChange}
-                                setShowOptions={setShowOptions}
+                                setShowSearchOptions={setShowSearchOptions}
                               />
                             </motion.div>
                           )}
