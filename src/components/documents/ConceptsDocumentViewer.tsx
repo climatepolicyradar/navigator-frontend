@@ -24,7 +24,7 @@ type TProps = {
   initialExactMatch?: boolean;
   initialPassage?: number;
   concepts: TConcept[];
-  selectedConcepts: TConcept[];
+  initialSelectedConcepts: TConcept[];
   rootConcepts: TConcept[];
   conceptCounts: { conceptKey: string; count: number }[];
   document: TDocumentPage;
@@ -62,7 +62,7 @@ export const ConceptsDocumentViewer = ({
   initialExactMatch = false,
   initialPassage = 0,
   concepts,
-  selectedConcepts,
+  initialSelectedConcepts,
   rootConcepts,
   conceptCounts,
   document,
@@ -75,6 +75,7 @@ export const ConceptsDocumentViewer = ({
   const [showOptions, setShowOptions] = useState(false);
   const [passageIndex, setPassageIndex] = useState<number | null>(initialPassage);
   const [isExactSearch, setIsExactSearch] = useState(initialExactMatch);
+  const [selectedConcepts, setSelectedConcepts] = useState(initialSelectedConcepts);
   const [queryTerm, setQueryTerm] = useState(initialQueryTermString);
 
   const searchQueryParams = useMemo(
@@ -194,7 +195,7 @@ export const ConceptsDocumentViewer = ({
                       <Link className="capitalize hover:no-underline" href={`/documents/${document.slug}`}>
                         <Button
                           color="clear"
-                          data-cy="view-family-concept"
+                          data-cy="view-document-viewer-concept"
                           extraClasses="flex items-center text-[14px] font-normal pt-1 pb-1 bg-black text-white border-none"
                         >
                           Back
@@ -273,8 +274,8 @@ export const ConceptsDocumentViewer = ({
                                       >
                                         <Button
                                           color="clear"
-                                          data-cy="view-family-concept"
-                                          extraClasses="flex items-center text-[14px] font-normal pt-1 pb-1"
+                                          data-cy="view-document-viewer-concept"
+                                          extraClasses="capitalize flex items-center text-[14px] font-normal pt-1 pb-1"
                                         >
                                           {concept.preferred_label} ({conceptCountsById[concept.wikibase_id]})
                                         </Button>
