@@ -72,7 +72,7 @@ const MetadataItem = ({ label, values }: MetadataItemProps) => {
   const getValueContent = () => {
     if (isUrl && typeof values === "string") {
       return (
-        <ExternalLink url={values} className="text-blue-600 underline truncate text-sm pl-1">
+        <ExternalLink url={values} className="text-blue-600 underline truncate text-sm pl-1 hover:text-blue-800">
           Visit project page
         </ExternalLink>
       );
