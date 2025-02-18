@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Script from "next/script";
 import { useRouter } from "next/router";
@@ -9,9 +9,8 @@ import { ApiClient } from "@api/http-common";
 
 import useSearch from "@hooks/useSearch";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
 import { SingleCol } from "@components/panels/SingleCol";
-
+import Link from "next/link";
 import Layout from "@components/layouts/Main";
 import { Timeline } from "@components/timeline/Timeline";
 import { Event } from "@components/timeline/Event";
@@ -48,7 +47,9 @@ import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
 import { getFeatureFlags } from "@utils/featureFlags";
-import { processConcepts, ROOT_LEVEL_CONCEPT_LINKS } from "@utils/processConcepts";
+import { rootLevelConceptsIds } from "@utils/processConcepts";
+import { MultiCol } from "@components/panels/MultiCol";
+import { useEffectOnce } from "@hooks/useEffectOnce";
 
 type TProps = {
   page: TFamilyPage;
@@ -171,47 +172,43 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     }
   };
 
-  const [rootLevelConcepts, setRootLevelConcepts] = useState<{
-    [rootConcept: string]: { [subconcept: string]: { name: string; count: number; wikibaseId: string } };
-  }>({});
+  /** Concepts */
+  const [concepts, setConcepts] = useState<TConcept[]>([]);
+  const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
+  const conceptCounts: { conceptKey: string; count: number }[] = (vespaFamilyData?.families ?? [])
+    .flatMap((family) => family.hits.flatMap((hit) => Object.entries(hit.concept_counts ?? {}).map(([conceptKey, count]) => ({ conceptKey, count }))))
+    .sort((a, b) => b.count - a.count);
 
-  useEffect(() => {
-    if (!vespaFamilyData) return;
+  const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
 
-    // Extract and deduplicate concept data
-    const conceptsData: { conceptKey: string; count: number }[] = vespaFamilyData.families.flatMap((family) =>
-      family.hits.flatMap((hit) => Object.entries(hit.concept_counts ?? {}).map(([conceptKey, count]) => ({ conceptKey, count })))
-    );
+  const conceptCountsById = conceptCounts.reduce((acc, { conceptKey, count }) => {
+    const conceptId = conceptKey.split(":")[0];
+    acc[conceptId] = count;
+    return acc;
+  }, {});
 
-    // Create a Map to ensure unique concept IDs
-    const uniqueConceptsMap = new Map<string, number>();
-    conceptsData.forEach(({ conceptKey, count }) => {
-      uniqueConceptsMap.set(conceptKey, count);
-    });
-
-    // Convert Map to array and sort by count in descending order
-    const uniqueConceptsData = Array.from(uniqueConceptsMap.entries())
-      .map(([conceptKey, count]) => ({ conceptKey, count }))
-      .sort((a, b) => b.count - a.count);
-
-    const conceptsS3Promises = uniqueConceptsData.map(({ conceptKey }) => {
-      // the concept ID is in the shape of `Q100:concept name`
-      const conceptId = conceptKey.split(":")[0];
-      const url = `https://cdn.dev.climatepolicyradar.org/concepts/${conceptId}.json`;
+  useEffectOnce(() => {
+    /** Get `rootConcepts` */
+    const rootConceptsS3Promises = rootLevelConceptsIds.map((conceptId) => {
+      const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
       return fetch(url).then((response) => response.json());
     });
 
-    Promise.all(conceptsS3Promises).then((conceptsS3Data) => {
-      const conceptsWithCounts = conceptsS3Data.map((concept, i) => ({
-        ...concept,
-        count: uniqueConceptsData[i].count,
-      }));
-
-      // Group concepts by root level concepts
-      const processedConceptCounts = processConcepts(conceptsWithCounts);
-      setRootLevelConcepts(processedConceptCounts);
+    /** Get concepts associated with the family */
+    const conceptsS3Promises = conceptIds.map((conceptId) => {
+      const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
+      return fetch(url).then((response) => response.json());
     });
-  }, [vespaFamilyData]);
+
+    /** Get `rootConcepts` and `concepts` from S3 */
+    Promise.all([...rootConceptsS3Promises, ...conceptsS3Promises]).then((allConcepts) => {
+      const rootConceptsResults = allConcepts.slice(0, rootConceptsS3Promises.length);
+      const conceptsResults = allConcepts.slice(rootConceptsS3Promises.length);
+
+      setRootConcepts(rootConceptsResults);
+      setConcepts(conceptsResults);
+    });
+  });
 
   return (
     <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)} theme={theme}>
@@ -228,8 +225,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
         <SubNav>
           <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={page.title} />
         </SubNav>
-        <SiteWidth>
-          <SingleCol extraClasses="mt-8">
+        <MultiCol>
+          <SingleCol extraClasses={`mt-8 px-5 w-full`}>
             <FamilyHead family={page} onCollectionClick={handleCollectionClick} />
             <section className="mt-6">
               {/* SSR summary */}
@@ -385,45 +382,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               </div>
             </section>
 
-            {Object.entries(rootLevelConcepts).length > 0 && (
-              <section className="mt-8">
-                <Heading level={4}>Concepts</Heading>
-                {Object.entries(rootLevelConcepts).map(([rootConcept, subconcepts]) => (
-                  <div key={rootConcept} className="mb-4">
-                    {rootConcept !== "Other" && (
-                      <ExternalLink className="capitalize" url={ROOT_LEVEL_CONCEPT_LINKS[rootConcept]}>
-                        <Heading level={5} extraClasses="mb-2 capitalize">
-                          {rootConcept}
-                        </Heading>
-                      </ExternalLink>
-                    )}
-                    {rootConcept === "Other" && (
-                      <Heading level={5} extraClasses="mb-2 capitalize">
-                        {rootConcept}
-                      </Heading>
-                    )}
-
-                    <div className="flex text-sm">
-                      <ul className="flex flex-wrap gap-2">
-                        {Object.entries(subconcepts).map(([subconcept, { name, count, wikibaseId }]) => (
-                          <li key={subconcept}>
-                            <ExternalLink
-                              className="capitalize"
-                              url={`https://climatepolicyradar.wikibase.cloud/wiki/Item:${wikibaseId}#${encodeURIComponent(name)}`}
-                            >
-                              <Button color="clear" data-cy="view-family-concept" extraClasses="flex items-center text-sm">
-                                {name} ({count})
-                              </Button>
-                            </ExternalLink>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                ))}
-              </section>
-            )}
-
             {page.collections.length > 0 && (
               <div className="mt-8">
                 <Divider />
@@ -455,7 +413,53 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               </section>
             ))}
           </SingleCol>
-        </SiteWidth>
+          {/* TODO: use a panel for this */}
+          {concepts.length > 0 && (
+            <div className="grow-0 shrink-0 px-5 border-l pt-5 w-[460px] text-sm">
+              <div className="mb-4">
+                <Heading level={4}>Structured data</Heading>
+                <div className="border-l border-inputSelected border-l-2px pt-1 pb-1 pl-4">
+                  <p>
+                    Our AI, trained by our in-house climate policy experts and data scientists, has identified these concepts in this document.{" "}
+                    <ExternalLink url="https://climatepolicyradar.org/concepts">Learn more</ExternalLink>
+                  </p>
+                </div>
+              </div>
+              {rootConcepts.map((rootConcept) => {
+                const hasConceptsInRootConcept = concepts.filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
+                if (hasConceptsInRootConcept.length === 0) return null;
+                return (
+                  <div key={rootConcept.wikibase_id} className="pt-6 pb-6">
+                    <p className="mb-2 capitalize text-[15px] font-bold">{rootConcept.preferred_label}</p>
+                    <p>{rootConcept.description}</p>
+                    <ul className="flex flex-wrap gap-2 mt-4">
+                      {concepts
+                        .filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id))
+                        .map((concept) => {
+                          return (
+                            <li key={concept.wikibase_id}>
+                              <Link
+                                className="capitalize hover:no-underline"
+                                href={`/documents/${mainDocuments[0].slug}?cfn=${concept.preferred_label}`}
+                              >
+                                <Button
+                                  color="clear"
+                                  data-cy="view-family-concept"
+                                  extraClasses="flex items-center text-[14px] font-normal pt-1 pb-1"
+                                >
+                                  {concept.preferred_label} ({conceptCountsById[concept.wikibase_id]})
+                                </Button>
+                              </Link>
+                            </li>
+                          );
+                        })}
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </MultiCol>
       </section>
       {/* This is here in the short term for us to test features flags with our cache settings */}
       <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />

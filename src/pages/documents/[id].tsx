@@ -86,8 +86,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     ),
     MAX_PASSAGES
   );
-  const conceptFiltersQuery = router.query[QUERY_PARAMS["concept_filters.name"]];
-  const conceptFilters = conceptFiltersQuery ? (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]) : undefined;
 
   const qsSearchString = router.query[QUERY_PARAMS.query_string];
 
@@ -155,101 +153,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     }
   }, [startingPassage]);
 
-  const [concepts, setConcepts] = useState<(TConcept & { count: number })[]>([]);
-  useEffect(() => {
-    const conceptsData: { conceptId: string; count: number }[] = vespaFamilyData
-      ? vespaFamilyData.families.flatMap((family) => {
-          return family.hits.flatMap((hit) => {
-            return Object.entries(hit.concept_counts ?? {}).map(([conceptId, count]) => ({
-              conceptId: conceptId.split(":")[0],
-              count,
-            }));
-          });
-        })
-      : [];
-
-    // Create a Map to ensure unique concept IDs.
-    const uniqueConceptsMap = new Map<string, number>();
-    conceptsData.forEach(({ conceptId, count }) => {
-      uniqueConceptsMap.set(conceptId, count);
-    });
-
-    // Convert Map to array and sort by count in descending order
-    const uniqueConceptsData = Array.from(uniqueConceptsMap.entries())
-      .map(([conceptId, count]) => ({ conceptId, count }))
-      .sort((a, b) => b.count - a.count);
-
-    const conceptsS3Promises = uniqueConceptsData.map(({ conceptId }) => {
-      const url = `https://cdn.dev.climatepolicyradar.org/concepts/${conceptId}.json`;
-      return fetch(url).then((response) => response.json());
-    });
-
-    Promise.all(conceptsS3Promises).then((conceptsS3Data) => {
-      const conceptsWithCounts = conceptsS3Data.map((concept, i) => ({
-        ...concept,
-        count: uniqueConceptsData[i].count,
-      }));
-
-      setConcepts(conceptsWithCounts);
-    });
-  }, [vespaFamilyData]);
-
-  const handleConceptClick = (conceptLabel: string) => {
-    setPassageIndex(0);
-    if (conceptLabel === "") return false;
-    const currentConceptFilters = conceptFilters || [];
-
-    // If the concept is already in filters, remove it
-    if (currentConceptFilters.includes(conceptLabel)) {
-      const updatedConceptFilters = currentConceptFilters.filter((concept) => concept !== conceptLabel);
-
-      const queryObj = { ...router.query };
-
-      // If no concept filters remain, remove the concept_filters.name query param entirely
-      if (updatedConceptFilters.length === 0) {
-        delete queryObj[QUERY_PARAMS["concept_filters.name"]];
-      } else {
-        // Otherwise, update the concept filters
-        queryObj[QUERY_PARAMS["concept_filters.name"]] = updatedConceptFilters;
-      }
-
-      router.push({
-        pathname: `/documents/${document.slug}`,
-        query: queryObj,
-      });
-      return;
-    }
-
-    // If the concept is not in filters, add it
-    const updatedConceptFilters = [...currentConceptFilters, conceptLabel];
-
-    const queryObj = { ...router.query };
-    queryObj[QUERY_PARAMS["concept_filters.name"]] = updatedConceptFilters;
-    router.push({
-      pathname: `/documents/${document.slug}`,
-      query: queryObj,
-    });
-  };
-
-  const handleRemoveConceptFilter = (conceptToRemove: string) => {
-    const currentConceptFilters = conceptFilters || [];
-    const updatedConceptFilters = currentConceptFilters.filter((concept) => concept !== conceptToRemove);
-
-    const queryObj = { ...router.query };
-
-    // If no concept filters remain, remove the concept_filters.name query param entirely
-    if (updatedConceptFilters.length === 0) {
-      delete queryObj[QUERY_PARAMS["concept_filters.name"]];
-    } else {
-      // Otherwise, update the concept filters
-      queryObj[QUERY_PARAMS["concept_filters.name"]] = updatedConceptFilters;
-    }
-
-    router.push({
-      pathname: `/documents/${document.slug}`,
-      query: queryObj,
-    });
-  };
+  /** Concepts: WIP */
+  const concepts = [];
 
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
@@ -265,8 +170,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
           family={family}
           handleViewOtherDocsClick={handleViewOtherDocsClick}
           handleViewSourceClick={handleViewSourceClick}
-          concepts={concepts}
-          handleConceptClick={handleConceptClick}
         />
         {status !== "success" ? (
           <div className="w-full flex justify-center flex-1 bg-white">
@@ -275,29 +178,29 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
         ) : (
           <section className="flex-1 flex" id="document-viewer">
             <FullWidth extraClasses="flex-1">
-              <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
-                <div
-                  id="document-preview"
-                  className={`pt-4 flex-1 h-[400px] basis-[400px] md:block md:h-full ${totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""}`}
-                >
-                  {canPreview && (
-                    <EmbeddedPDF
-                      document={document}
-                      documentPassageMatches={passageMatches}
-                      passageIndex={passageIndex}
-                      startingPassageIndex={startingPassage}
-                    />
-                  )}
-                  {!canPreview && <EmptyDocument />}
-                </div>
-                <div
-                  id="document-sidebar"
-                  className={`py-4 order-first max-h-[90vh] md:pb-0 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
-                    document.content_type
-                  )}`}
-                >
-                  <div id="document-search" className="flex flex-col gap-2 md:pl-4">
-                    {!conceptFilters && (
+              {concepts.length === 0 && (
+                <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
+                  <div
+                    id="document-preview"
+                    className={`pt-4 flex-1 h-[400px] basis-[400px] md:block md:h-full ${totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""}`}
+                  >
+                    {canPreview && (
+                      <EmbeddedPDF
+                        document={document}
+                        documentPassageMatches={passageMatches}
+                        passageIndex={passageIndex}
+                        startingPassageIndex={startingPassage}
+                      />
+                    )}
+                    {!canPreview && <EmptyDocument />}
+                  </div>
+                  <div
+                    id="document-sidebar"
+                    className={`py-4 order-first max-h-[90vh] md:pb-0 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
+                      document.content_type
+                    )}`}
+                  >
+                    <div id="document-search" className="flex flex-col gap-2 md:pl-4">
                       <div className="flex gap-2">
                         <div className="flex-1">
                           <SearchForm
@@ -336,28 +239,17 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                           </AnimatePresence>
                         </div>
                       </div>
-                    )}
-                    {conceptFilters && (
-                      <div className="flex text-sm text-gray-600 gap-2">
-                        <div className="mr-2 flex-shrink-0 font-medium">Concepts:</div>
-                        {conceptFilters.map((filter) => (
-                          <Pill key={filter} extraClasses="capitalize" onClick={() => handleRemoveConceptFilter(filter)}>
-                            {filter}
-                          </Pill>
-                        ))}
-                      </div>
-                    )}
-                    {!router.query[QUERY_PARAMS.query_string] && (
-                      <div className="flex text-sm text-gray-600">
-                        <div className="mr-2 flex-shrink-0 font-medium">Examples:</div>
-                        <div className="">{EXAMPLE_SEARCHES.join(", ")}</div>
-                      </div>
-                    )}
-                  </div>
-                  {totalNoOfMatches > 0 && (
-                    <>
-                      <div className="my-4 text-sm pb-4 border-b border-gray-200 md:pl-4" data-cy="document-matches-description">
-                        {!conceptFilters && (
+
+                      {!router.query[QUERY_PARAMS.query_string] && (
+                        <div className="flex text-sm text-gray-600">
+                          <div className="mr-2 flex-shrink-0 font-medium">Examples:</div>
+                          <div className="">{EXAMPLE_SEARCHES.join(", ")}</div>
+                        </div>
+                      )}
+                    </div>
+                    {totalNoOfMatches > 0 && (
+                      <>
+                        <div className="my-4 text-sm pb-4 border-b border-gray-200 md:pl-4" data-cy="document-matches-description">
                           <div className="mb-2">
                             Displaying {renderPassageCount(totalNoOfMatches)} for "
                             <span className="text-textDark font-medium">{`${qsSearchString}`}</span>"
@@ -368,26 +260,21 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                               </span>
                             )}
                           </div>
-                        )}
-                        {conceptFilters && (
-                          <div className="mb-2">
-                            Displaying {renderPassageCount(totalNoOfMatches)} for the "
-                            <span className="text-textDark font-medium">{`${conceptFilters}`}</span>" concept
-                          </div>
-                        )}
-                        <p>Sorted by search relevance</p>
-                      </div>
-                      <div
-                        id="document-passage-matches"
-                        className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
-                      >
-                        <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
-                      </div>
-                    </>
-                  )}
-                  {totalNoOfMatches === 0 && <EmptyPassages hasQueryString={!!router.query[QUERY_PARAMS.query_string]} />}
+
+                          <p>Sorted by search relevance</p>
+                        </div>
+                        <div
+                          id="document-passage-matches"
+                          className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
+                        >
+                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
+                        </div>
+                      </>
+                    )}
+                    {totalNoOfMatches === 0 && <EmptyPassages hasQueryString={!!router.query[QUERY_PARAMS.query_string]} />}
+                  </div>
                 </div>
-              </div>
+              )}
             </FullWidth>
           </section>
         )}
