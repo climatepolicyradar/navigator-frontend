@@ -123,12 +123,17 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   // Semantic search / exact match handler
   const handleSemanticSearchChange = (_: string, isExact: string) => {
     setPassageIndex(0);
-    const queryObj = {};
-    if (isExact) {
-      queryObj[QUERY_PARAMS.exact_match] = isExact;
+    const queryObj = { ...router.query };
+    if (isExact === "false") {
+      delete queryObj[QUERY_PARAMS.exact_match];
+    } else if (isExact === "true") {
+      queryObj[QUERY_PARAMS.exact_match] = "true";
     }
     queryObj[QUERY_PARAMS.query_string] = router.query[QUERY_PARAMS.query_string] as string;
-    router.push({ pathname: `/documents/${document.slug}`, query: queryObj });
+    router.push({
+      pathname: `/documents/${document.slug}`,
+      query: queryObj,
+    });
   };
 
   // Handlers to update router

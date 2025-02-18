@@ -151,8 +151,12 @@ export const ConceptsDocumentViewer = ({
 
   const handleSemanticSearchChange = useCallback(
     (_: string, isExact: string) => {
-      setState({ isExactSearch: !!isExact });
-      onExactMatchChange?.(!!isExact);
+      const exactBool = isExact === "true";
+      setState({
+        isExactSearch: exactBool,
+        passageIndex: 0,
+      });
+      onExactMatchChange?.(exactBool);
     },
     [onExactMatchChange]
   );
