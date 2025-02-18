@@ -1,5 +1,3 @@
-@import "tailwindcss";
-
 #cclw {
   --text-h1: 48px;
   --text-h2: 36px;
@@ -9,22 +7,8 @@
   --text-h6: 16px;
 
   --font-weight-medium: 540;
-
-  /* @layer base {
-    h1 {
-      font-size: var(--text-2xl);
-    }
-    h2 {
-      font-size: var(--text-xl);
-    }
-  } */
 }
 
-/*
-  TODO: remove specific css styles and overrides by moving into their components
-
-  Collection of specific css styles and overrides for the CCLW theme
-*/
 #cclw .gradient-container {
   background: linear-gradient(134.5deg, rgb(43, 47, 73) 0%, rgb(43, 47, 73) 33%, rgb(21, 116, 209) 66%, rgb(21, 116, 209) 100%);
   background-repeat: no-repeat;
