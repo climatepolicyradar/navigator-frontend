@@ -23,6 +23,7 @@ type TProps = {
   initialQueryTerm?: string | string[];
   initialExactMatch?: boolean;
   initialPassage?: number;
+  initialConceptFilters?: string[];
   concepts: TConcept[];
   initialSelectedConcepts: TConcept[];
   rootConcepts: TConcept[];
@@ -33,6 +34,7 @@ type TProps = {
   onQueryTermChange?: (queryTerm: string) => void;
   onExactMatchChange?: (isExact: boolean) => void;
   onPassageChange?: (passageIndex: number) => void;
+  onConceptClick?: (conceptLabel: string) => void;
 };
 
 const passageClasses = (docType: string) => {
@@ -61,6 +63,7 @@ export const ConceptsDocumentViewer = ({
   initialQueryTerm = "",
   initialExactMatch = false,
   initialPassage = 0,
+  initialConceptFilters,
   concepts,
   initialSelectedConcepts,
   rootConcepts,
@@ -69,24 +72,55 @@ export const ConceptsDocumentViewer = ({
   onQueryTermChange,
   onExactMatchChange,
   onPassageChange,
+  onConceptClick,
 }: TProps) => {
   const initialQueryTermString = useMemo(() => (Array.isArray(initialQueryTerm) ? initialQueryTerm[0] : initialQueryTerm || ""), [initialQueryTerm]);
+  const initialConceptFiltersString = useMemo(
+    () => (Array.isArray(initialConceptFilters) ? initialConceptFilters[0] : initialConceptFilters || ""),
+    [initialConceptFilters]
+  );
 
   const [showOptions, setShowOptions] = useState(false);
   const [passageIndex, setPassageIndex] = useState<number | null>(initialPassage);
   const [isExactSearch, setIsExactSearch] = useState(initialExactMatch);
-  const [selectedConcepts, setSelectedConcepts] = useState(initialSelectedConcepts);
+  const [conceptFilters, setConceptFilters] = useState(initialConceptFiltersString);
   const [queryTerm, setQueryTerm] = useState(initialQueryTermString);
+
+  // Update selectedConcepts based on initialConceptFilters
+  const [selectedConcepts, setSelectedConcepts] = useState<TConcept[]>(() => {
+    // If initialConceptFilters is provided, filter concepts based on those filters
+    if (initialConceptFilters && initialConceptFilters.length > 0) {
+      return concepts.filter((concept) => initialConceptFilters.includes(concept.preferred_label));
+    }
+    // Otherwise, use initialSelectedConcepts
+    return initialSelectedConcepts;
+  });
+
+  // Add an effect to update selectedConcepts when initialConceptFilters change
+  useEffect(() => {
+    if (initialConceptFilters && initialConceptFilters.length > 0) {
+      const newSelectedConcepts = concepts.filter((concept) => initialConceptFilters.includes(concept.preferred_label));
+
+      // Only update if the selected concepts have actually changed
+      if (JSON.stringify(newSelectedConcepts) !== JSON.stringify(selectedConcepts)) {
+        setSelectedConcepts(newSelectedConcepts);
+      }
+    } else {
+      // If no concept filters, reset to initial selected concepts
+      setSelectedConcepts(initialSelectedConcepts);
+    }
+  }, [initialConceptFilters, concepts, initialSelectedConcepts, selectedConcepts]);
 
   const searchQueryParams = useMemo(
     () => ({
       [QUERY_PARAMS.query_string]: queryTerm,
       [QUERY_PARAMS.exact_match]: isExactSearch ? "true" : undefined,
+      [QUERY_PARAMS["concept_filters.name"]]: conceptFilters ? (Array.isArray(conceptFilters) ? conceptFilters : [conceptFilters]) : undefined,
     }),
-    [queryTerm, isExactSearch]
+    [queryTerm, isExactSearch, conceptFilters]
   );
 
-  const { status, families, searchQuery } = useSearch(searchQueryParams, null, document.import_id, !!queryTerm, MAX_PASSAGES);
+  const { status, families, searchQuery } = useSearch(searchQueryParams, null, document.import_id, !!(queryTerm || conceptFilters), MAX_PASSAGES);
 
   const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
   const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
@@ -126,14 +160,11 @@ export const ConceptsDocumentViewer = ({
 
   const conceptCountsById = useMemo(
     () =>
-      conceptCounts.reduce(
-        (acc, { conceptKey, count }) => {
-          const conceptId = conceptKey.split(":")[0];
-          acc[conceptId] = count;
-          return acc;
-        },
-        {} as Record<string, number>
-      ),
+      conceptCounts.reduce((acc, { conceptKey, count }) => {
+        const conceptId = conceptKey.split(":")[0];
+        acc[conceptId] = count;
+        return acc;
+      }, {} as Record<string, number>),
     [conceptCounts]
   );
 
@@ -166,6 +197,15 @@ export const ConceptsDocumentViewer = ({
     [onExactMatchChange]
   );
 
+  const handleConceptClick = useCallback(
+    (conceptLabel: string) => {
+      setPassageIndex(0);
+      setConceptFilters(conceptLabel);
+      onConceptClick?.(conceptLabel);
+    },
+    [onConceptClick]
+  );
+
   return (
     <>
       {concepts.length > 0 && (
@@ -194,11 +234,11 @@ export const ConceptsDocumentViewer = ({
                     <div className="flex gap-2">
                       <Link className="capitalize hover:no-underline" href={`/documents/${document.slug}`}>
                         <Button
-                          color="clear"
+                          color="dark-dark"
                           data-cy="view-document-viewer-concept"
                           extraClasses="flex items-center text-[14px] font-normal pt-1 pb-1 bg-black text-white border-none"
                         >
-                          Back
+                          ← Back
                         </Button>
                       </Link>
                     </div>
@@ -270,7 +310,11 @@ export const ConceptsDocumentViewer = ({
                                     <li key={concept.wikibase_id}>
                                       <Link
                                         className="capitalize hover:no-underline"
-                                        href={`/documents/${document.slug}?cfn=${concept.preferred_label}`}
+                                        href="#"
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          handleConceptClick?.(concept.preferred_label);
+                                        }}
                                       >
                                         <Button
                                           color="clear"
@@ -292,8 +336,12 @@ export const ConceptsDocumentViewer = ({
 
                   {selectedConcepts.length > 0 && (
                     <div className="pt-6 pb-6">
-                      <p className="mb-2 capitalize text-[15px] font-bold text-inputSelected">{selectedConcepts[0].preferred_label}</p>
-                      <p>{selectedConcepts[0].description}</p>
+                      <p className="mb-2 capitalize text-[15px] font-bold text-inputSelected">
+                        {selectedConcepts.map((concept) => concept.preferred_label).join(", ")}
+                      </p>
+                      {selectedConcepts.map((concept) => (
+                        <p key={concept.wikibase_id}>{concept.description}</p>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -339,7 +387,15 @@ export const ConceptsDocumentViewer = ({
                     )}
                   </>
                 )}
-                {totalNoOfMatches === 0 && <EmptyPassages hasQueryString={!!searchQueryParams[QUERY_PARAMS.query_string]} />}
+                {totalNoOfMatches === 0 && (
+                  <EmptyPassages
+                    hasQueryString={
+                      !!searchQueryParams[QUERY_PARAMS.query_string] &&
+                      !!searchQueryParams[QUERY_PARAMS["concept_filters.id"]] &&
+                      !!searchQueryParams[QUERY_PARAMS["concept_filters.name"]]
+                    }
+                  />
+                )}
               </div>
             </div>
           </FullWidth>

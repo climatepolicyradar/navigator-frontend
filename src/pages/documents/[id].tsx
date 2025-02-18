@@ -206,6 +206,50 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     .flatMap((family) => family.hits.flatMap((hit) => Object.entries(hit.concept_counts ?? {}).map(([conceptKey, count]) => ({ conceptKey, count }))))
     .sort((a, b) => b.count - a.count);
 
+  const conceptFiltersQuery = router.query[QUERY_PARAMS["concept_filters.name"]];
+  const conceptFilters = conceptFiltersQuery ? (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]) : undefined;
+
+  const handleConceptClick = useCallback(
+    (conceptLabel: string) => {
+      setPassageIndex(0);
+      if (conceptLabel === "") return false;
+
+      const currentConceptFilters = conceptFilters || [];
+
+      // If the concept is already in filters, remove it
+      if (currentConceptFilters.includes(conceptLabel)) {
+        const updatedConceptFilters = currentConceptFilters.filter((concept) => concept !== conceptLabel);
+
+        const queryObj = { ...router.query };
+
+        // If no concept filters remain, remove the concept_filters.name query param entirely
+        if (updatedConceptFilters.length === 0) {
+          delete queryObj[QUERY_PARAMS["concept_filters.name"]];
+        } else {
+          // Otherwise, update the concept filters
+          queryObj[QUERY_PARAMS["concept_filters.name"]] = updatedConceptFilters;
+        }
+
+        router.push({
+          pathname: `/documents/${document.slug}`,
+          query: queryObj,
+        });
+        return;
+      }
+
+      // If the concept is not in filters, add it
+      const updatedConceptFilters = [...currentConceptFilters, conceptLabel];
+
+      const queryObj = { ...router.query };
+      queryObj[QUERY_PARAMS["concept_filters.name"]] = updatedConceptFilters;
+      router.push({
+        pathname: `/documents/${document.slug}`,
+        query: queryObj,
+      });
+    },
+    [router, document.slug, conceptFilters]
+  );
+
   useEffectOnce(() => {
     /** Get `rootConcepts` */
     const rootConceptsS3Promises = rootLevelConceptsIds.map((conceptId) => {
@@ -236,6 +280,9 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
       setConcepts(conceptsResults);
     });
   });
+
+  console.log("Concept Filters:", conceptFilters);
+  console.log("Router Query:", router.query);
 
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
@@ -366,13 +413,15 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
             initialExactMatch={exactMatchQuery}
             initialPassage={startingPassage}
             concepts={concepts}
-            selectedConcepts={selectedConcepts}
+            initialSelectedConcepts={selectedConcepts}
+            initialConceptFilters={conceptFilters}
             rootConcepts={rootConcepts}
             conceptCounts={conceptCounts}
             document={document}
             onQueryTermChange={handleQueryTermChange}
             onExactMatchChange={handleExactMatchChange}
             onPassageChange={handlePassageChange}
+            onConceptClick={handleConceptClick}
           />
         )}
       </section>
