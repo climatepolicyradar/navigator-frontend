@@ -75,52 +75,42 @@ export const ConceptsDocumentViewer = ({
   onConceptClick,
 }: TProps) => {
   const initialQueryTermString = useMemo(() => (Array.isArray(initialQueryTerm) ? initialQueryTerm[0] : initialQueryTerm || ""), [initialQueryTerm]);
-  const initialConceptFiltersString = useMemo(
-    () => (Array.isArray(initialConceptFilters) ? initialConceptFilters[0] : initialConceptFilters || ""),
-    [initialConceptFilters]
-  );
 
+  const [queryTerm, setQueryTerm] = useState(initialQueryTermString);
   const [showOptions, setShowOptions] = useState(false);
   const [passageIndex, setPassageIndex] = useState<number | null>(initialPassage);
   const [isExactSearch, setIsExactSearch] = useState(initialExactMatch);
-  const [conceptFilters, setConceptFilters] = useState(initialConceptFiltersString);
-  const [queryTerm, setQueryTerm] = useState(initialQueryTermString);
 
-  // Update selectedConcepts based on initialConceptFilters
-  const [selectedConcepts, setSelectedConcepts] = useState<TConcept[]>(() => {
-    // If initialConceptFilters is provided, filter concepts based on those filters
-    if (initialConceptFilters && initialConceptFilters.length > 0) {
-      return concepts.filter((concept) => initialConceptFilters.includes(concept.preferred_label));
-    }
-    // Otherwise, use initialSelectedConcepts
-    return initialSelectedConcepts;
-  });
-
-  // Add an effect to update selectedConcepts when initialConceptFilters change
-  useEffect(() => {
-    if (initialConceptFilters && initialConceptFilters.length > 0) {
-      const newSelectedConcepts = concepts.filter((concept) => initialConceptFilters.includes(concept.preferred_label));
-
-      // Only update if the selected concepts have actually changed
-      if (JSON.stringify(newSelectedConcepts) !== JSON.stringify(selectedConcepts)) {
-        setSelectedConcepts(newSelectedConcepts);
-      }
-    } else {
-      // If no concept filters, reset to initial selected concepts
-      setSelectedConcepts(initialSelectedConcepts);
-    }
-  }, [initialConceptFilters, concepts, initialSelectedConcepts, selectedConcepts]);
+  const selectedConcepts = useMemo(
+    () =>
+      initialConceptFilters
+        ? concepts.filter((concept) =>
+            (Array.isArray(initialConceptFilters) ? initialConceptFilters : [initialConceptFilters]).includes(concept.preferred_label)
+          )
+        : initialSelectedConcepts,
+    [initialConceptFilters, concepts, initialSelectedConcepts]
+  );
 
   const searchQueryParams = useMemo(
     () => ({
       [QUERY_PARAMS.query_string]: queryTerm,
       [QUERY_PARAMS.exact_match]: isExactSearch ? "true" : undefined,
-      [QUERY_PARAMS["concept_filters.name"]]: conceptFilters ? (Array.isArray(conceptFilters) ? conceptFilters : [conceptFilters]) : undefined,
+      [QUERY_PARAMS["concept_filters.name"]]: initialConceptFilters
+        ? Array.isArray(initialConceptFilters)
+          ? initialConceptFilters
+          : [initialConceptFilters]
+        : undefined,
     }),
-    [queryTerm, isExactSearch, conceptFilters]
+    [queryTerm, isExactSearch, initialConceptFilters]
   );
 
-  const { status, families, searchQuery } = useSearch(searchQueryParams, null, document.import_id, !!(queryTerm || conceptFilters), MAX_PASSAGES);
+  const { status, families, searchQuery } = useSearch(
+    searchQueryParams,
+    null,
+    document.import_id,
+    !!(queryTerm || initialConceptFilters),
+    MAX_PASSAGES
+  );
 
   const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
   const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
@@ -203,7 +193,6 @@ export const ConceptsDocumentViewer = ({
   const handleConceptClick = useCallback(
     (conceptLabel: string) => {
       setPassageIndex(0);
-      setConceptFilters(conceptLabel);
       onConceptClick?.(conceptLabel);
     },
     [onConceptClick]
