@@ -25,7 +25,6 @@ type TProps = {
   initialPassage?: number;
   initialConceptFilters?: string[];
   concepts: TConcept[];
-  initialSelectedConcepts: TConcept[];
   rootConcepts: TConcept[];
   conceptCounts: { conceptKey: string; count: number }[];
   document: TDocumentPage;
@@ -54,7 +53,6 @@ export const ConceptsDocumentViewer = ({
   initialPassage = 0,
   initialConceptFilters,
   concepts,
-  initialSelectedConcepts,
   rootConcepts,
   conceptCounts,
   document,
@@ -93,8 +91,8 @@ export const ConceptsDocumentViewer = ({
         ? concepts.filter((concept) =>
             (Array.isArray(initialConceptFilters) ? initialConceptFilters : [initialConceptFilters]).includes(concept.preferred_label)
           )
-        : initialSelectedConcepts,
-    [initialConceptFilters, concepts, initialSelectedConcepts]
+        : [],
+    [initialConceptFilters, concepts]
   );
 
   // Prepare search.
