@@ -67,6 +67,8 @@
   --color-green-700: #027a48;
   --color-green-800: #05603a;
 
+  --font-inter: "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
   --font-tenez: "tenez", "system-ui", serif;
   --font-greycliff: "greycliff-cf", "InterVariable", "Inter", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol", "Noto Color Emoji";
