@@ -184,6 +184,30 @@ export default function buildSearchQuery(
     query.corpus_import_ids = corpusIds; // this will overrite the defaultCorpora - which is fine
   }
 
+  if (routerQuery[QUERY_PARAMS.fund_doc_type]) {
+    let corpusIds: string[] = [];
+    const funds = routerQuery[QUERY_PARAMS.fund_doc_type];
+    const configFundsFromTypes = themeConfig.filters.find((f) => f.taxonomyKey === "fund_doc_type");
+    if (configFundsFromTypes) {
+      const fundOptions = configFundsFromTypes.options;
+      if (Array.isArray(funds)) {
+        funds.forEach((fund) => {
+          const fundOption = fundOptions.find((o) => o.slug === fund);
+          if (fundOption?.value) corpusIds.push(...fundOption.value);
+        });
+      } else {
+        const fundOption = fundOptions.find((o) => o.slug === funds);
+        if (fundOption?.value) corpusIds.push(...fundOption.value);
+      }
+    }
+    if (routerQuery[QUERY_PARAMS.fund]) {
+      // If the user has also selected a fund, we only want to display the selected type of document for that fund
+      query.corpus_import_ids = query.corpus_import_ids.filter((id) => corpusIds.includes(id));
+    } else {
+      query.corpus_import_ids = corpusIds; // this will overrite the defaultCorpora - which is fine
+    }
+  }
+
   if (routerQuery[QUERY_PARAMS.status]) {
     query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS.status], "status", themeConfig);
   }
