@@ -12,8 +12,17 @@ type TProps = {
 };
 
 export const FamilyListItem: FC<TProps> = ({ family, children }) => {
-  const { corpus_type_name, family_slug, family_geographies, family_description, family_name, family_date, family_category, family_metadata } =
-    family;
+  const {
+    corpus_type_name,
+    family_slug,
+    family_geographies,
+    family_description,
+    family_name,
+    family_date,
+    family_category,
+    family_metadata,
+    family_source,
+  } = family;
 
   return (
     <div className="family-list-item relative">
@@ -29,6 +38,7 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
         <FamilyMeta
           category={family_category}
           corpus_type_name={corpus_type_name}
+          source={family_source}
           date={family_date}
           geographies={family_geographies}
           {...(corpus_type_name === "Reports" ? { author: (family_metadata as { author: string[] }).author } : {})}
