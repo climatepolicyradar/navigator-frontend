@@ -415,7 +415,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
             initialExactMatch={exactMatchQuery}
             initialPassage={startingPassage}
             concepts={concepts}
-            initialSelectedConcepts={selectedConcepts}
             initialConceptFilters={conceptFilters}
             rootConcepts={rootConcepts}
             conceptCounts={conceptCounts}
