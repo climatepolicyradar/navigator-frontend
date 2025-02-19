@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
@@ -212,7 +212,10 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     .sort((a, b) => b.count - a.count);
 
   const conceptFiltersQuery = router.query[QUERY_PARAMS["concept_filters.name"]];
-  const conceptFilters = conceptFiltersQuery ? (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]) : undefined;
+  const conceptFilters = useMemo(
+    () => (conceptFiltersQuery ? (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]) : undefined),
+    [conceptFiltersQuery]
+  );
 
   const handleConceptClick = useCallback(
     (conceptLabel: string) => {
