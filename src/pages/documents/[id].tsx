@@ -167,18 +167,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     [router, document.slug]
   );
 
-  const handlePassageChange = useCallback(
-    (passageIndex: number) => {
-      const queryObj = { ...router.query };
-      queryObj.passage = passageIndex.toString();
-      router.push({
-        pathname: `/documents/${document.slug}`,
-        query: queryObj,
-      });
-    },
-    [router, document.slug]
-  );
-
   useEffect(() => {
     let passageMatches: TPassage[] = [];
     let totalNoOfMatches = 0;
@@ -432,7 +420,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
             document={document}
             onQueryTermChange={handleQueryTermChange}
             onExactMatchChange={handleExactMatchChange}
-            onPassageChange={handlePassageChange}
             onConceptClick={handleConceptClick}
           />
         )}
