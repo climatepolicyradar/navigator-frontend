@@ -2,7 +2,7 @@ name: Merge to main
 on:
   push:
     branches:
-      - feature/APP-225-add-storybook
+      - main
 
 permissions:
   contents: read
@@ -10,6 +10,8 @@ permissions:
 jobs:
   storybook:
     runs-on: ubuntu-latest
+    env:
+      THEME: cpr
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
