@@ -62,4 +62,8 @@ module.exports = [
       },
     },
   },
+  {
+    name: "Feature flags page",
+    url: "http://localhost:3000/_feature-flags",
+  },
 ];
