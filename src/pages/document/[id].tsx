@@ -441,7 +441,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                 <Button
                                   color="clear"
                                   data-cy="view-family-concept"
-                                  extraClasses="flex items-center text-[14px] font-normal pt-1 pb-1"
+                                  extraClasses="capitalize flex items-center text-[14px] font-normal pt-1 pb-1"
                                 >
                                   {concept.preferred_label} ({conceptCountsById[concept.wikibase_id]})
                                 </Button>
