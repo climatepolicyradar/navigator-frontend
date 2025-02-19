@@ -1,7 +1,7 @@
 import { TConcept } from "@types";
 
 // Define the root level concepts
-const ROOT_LEVEL_CONCEPTS = {
+export const ROOT_LEVEL_CONCEPTS = {
   Q1651: "Targets",
   Q709: "Sectors",
   Q975: "Climate risk",

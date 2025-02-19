@@ -18,7 +18,7 @@ import { SearchSettings } from "@components/filters/SearchSettings";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 import useSearch from "@hooks/useSearch";
-import { ROOT_LEVEL_CONCEPT_LINKS } from "@utils/processConcepts";
+import { ROOT_LEVEL_CONCEPT_LINKS, ROOT_LEVEL_CONCEPTS } from "@utils/processConcepts";
 import { ExternalLinkIcon } from "@components/svg/Icons";
 
 type TProps = {
@@ -265,17 +265,19 @@ export const ConceptsDocumentViewer = ({
                         if (hasConceptsInRootConcept.length === 0) return null;
                         return (
                           <div key={rootConcept.wikibase_id} className="pt-6 pb-6">
-                            <p className="mb-2 capitalize text-[15px] font-bold">{rootConcept.preferred_label}</p>
-                            {ROOT_LEVEL_CONCEPT_LINKS[rootConcept.preferred_label] && (
-                              <a
-                                href={ROOT_LEVEL_CONCEPT_LINKS[rootConcept.preferred_label]}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-gray-500 hover:text-blue-600"
-                              >
-                                <ExternalLinkIcon height="12" width="12" />
-                              </a>
-                            )}
+                            <div className="flex items-center gap-2">
+                              <p className="capitalize text-[15px] font-bold">{rootConcept.preferred_label}</p>
+                              {ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]] && (
+                                <a
+                                  href={ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]]}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-gray-500 hover:text-blue-600 flex items-center"
+                                >
+                                  <ExternalLinkIcon height="12" width="12" />
+                                </a>
+                              )}
+                            </div>
                             <p>{rootConcept.description}</p>
                             <ul className="flex flex-wrap gap-2 mt-4">
                               {concepts
