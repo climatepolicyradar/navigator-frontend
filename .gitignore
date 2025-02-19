@@ -43,4 +43,6 @@ tsconfig.tsbuildinfo
 /blob-report/
 /playwright/.cache/
 
+# storybook
 *storybook.log
+storybook-static
