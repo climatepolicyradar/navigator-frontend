@@ -34,7 +34,7 @@
   font-family: "greycliff-cf", sans-serif;
 }
 
-body {
+body #mcf {
   font-size: 16px;
   @apply font-normal leading-[1.4];
 }
