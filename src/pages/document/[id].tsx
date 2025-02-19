@@ -175,11 +175,25 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   /** Concepts */
   const [concepts, setConcepts] = useState<TConcept[]>([]);
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
-  const conceptCounts: { conceptKey: string; count: number }[] = (vespaFamilyData?.families ?? [])
-    .flatMap((family) => family.hits.flatMap((hit) => Object.entries(hit.concept_counts ?? {}).map(([conceptKey, count]) => ({ conceptKey, count }))))
-    .sort((a, b) => b.count - a.count);
+  const conceptCounts: { conceptKey: string; count: number }[] = useMemo(() => {
+    const uniqueConceptMap = new Map<string, number>();
+
+    (vespaFamilyData?.families ?? []).forEach((family) => {
+      family.hits.forEach((hit) => {
+        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
+          const existingCount = uniqueConceptMap.get(conceptKey) || 0;
+          uniqueConceptMap.set(conceptKey, existingCount + count);
+        });
+      });
+    });
+
+    return Array.from(uniqueConceptMap.entries())
+      .map(([conceptKey, count]) => ({ conceptKey, count }))
+      .sort((a, b) => b.count - a.count);
+  }, [vespaFamilyData]);
 
   const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
+  // const conceptIds = [...new Set(conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]))];
 
   const conceptCountsById = conceptCounts.reduce((acc, { conceptKey, count }) => {
     const conceptId = conceptKey.split(":")[0];
