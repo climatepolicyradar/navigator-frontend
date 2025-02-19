@@ -239,7 +239,7 @@ export const ConceptsDocumentViewer = ({
                               <SearchSettings
                                 queryParams={searchQueryParams}
                                 handleSearchChange={handleSemanticSearchChange}
-                                setShowSearchOptions={setShowSearchOptions}
+                                setShowOptions={setShowSearchOptions}
                               />
                             </motion.div>
                           )}
