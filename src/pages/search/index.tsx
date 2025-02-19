@@ -205,6 +205,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     handleSearchChange(QUERY_PARAMS.query_string, term);
   };
 
+  // When we change category we don't want to keep the previous filters which are not applicable
   const handleDocumentCategoryClick = (category: string) => {
     // Reset pagination and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
@@ -215,6 +216,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     delete router.query[QUERY_PARAMS.fund];
     delete router.query[QUERY_PARAMS.status];
     delete router.query[QUERY_PARAMS.implementing_agency];
+    delete router.query[QUERY_PARAMS.fund_doc_type];
     // Law and policy filters
     delete router.query[QUERY_PARAMS.framework_laws];
     // Reports filters

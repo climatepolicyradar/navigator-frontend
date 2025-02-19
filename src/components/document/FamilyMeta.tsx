@@ -7,6 +7,7 @@ import { CountryLinks } from "@components/CountryLinks";
 type TProps = {
   category: TCategory;
   corpus_type_name: TCorpusTypeSubCategory;
+  source?: string;
   date: string;
   geographies: string[];
   topics?: string[];
@@ -14,7 +15,7 @@ type TProps = {
   document_type?: string;
 };
 
-export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name, document_type }: TProps) => {
+export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name, document_type, source }: TProps) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
 
@@ -37,7 +38,7 @@ export const FamilyMeta = ({ category, date, geographies, topics, author, corpus
       )}
       {category && (
         <span className="capitalize" data-cy="family-metadata-category">
-          {getCategoryName(category, corpus_type_name)}
+          {getCategoryName(category, corpus_type_name, source)}
         </span>
       )}
       {document_type && (

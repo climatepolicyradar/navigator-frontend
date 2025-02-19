@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
@@ -28,7 +28,9 @@ import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 
 import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@types";
 import { getFeatureFlags } from "@utils/featureFlags";
-import Pill from "@components/Pill";
+import { rootLevelConceptsIds } from "@utils/processConcepts";
+import { useEffectOnce } from "@hooks/useEffectOnce";
+import { ConceptsDocumentViewer } from "@components/documents/ConceptsDocumentViewer";
 
 type TProps = {
   document: TDocumentPage;
@@ -73,6 +75,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
   const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
   const router = useRouter();
+  const qsSearchString = router.query[QUERY_PARAMS.query_string];
+  const exactMatchQuery = !!router.query[QUERY_PARAMS.exact_match];
   const startingPassage = Number(router.query.passage) || 0;
 
   const { status, families, searchQuery } = useSearch(
@@ -86,8 +90,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     ),
     MAX_PASSAGES
   );
-
-  const qsSearchString = router.query[QUERY_PARAMS.query_string];
 
   const canPreview = document.content_type === "application/pdf";
 
@@ -121,13 +123,61 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   // Semantic search / exact match handler
   const handleSemanticSearchChange = (_: string, isExact: string) => {
     setPassageIndex(0);
-    const queryObj = {};
-    if (isExact) {
-      queryObj[QUERY_PARAMS.exact_match] = isExact;
+    const queryObj = { ...router.query };
+    if (isExact === "false") {
+      delete queryObj[QUERY_PARAMS.exact_match];
+    } else if (isExact === "true") {
+      queryObj[QUERY_PARAMS.exact_match] = "true";
     }
     queryObj[QUERY_PARAMS.query_string] = router.query[QUERY_PARAMS.query_string] as string;
-    router.push({ pathname: `/documents/${document.slug}`, query: queryObj });
+    router.push({
+      pathname: `/documents/${document.slug}`,
+      query: queryObj,
+    });
   };
+
+  // Handlers to update router
+  const handleQueryTermChange = useCallback(
+    (queryTerm: string) => {
+      const queryObj = {};
+      queryObj[QUERY_PARAMS.query_string] = queryTerm;
+      router.push({
+        pathname: `/documents/${document.slug}`,
+        query: queryObj,
+      });
+    },
+    [router, document.slug]
+  );
+
+  const handleExactMatchChange = useCallback(
+    (isExact: boolean) => {
+      const queryObj = {
+        [QUERY_PARAMS.query_string]: router.query[QUERY_PARAMS.query_string],
+      };
+
+      if (isExact) {
+        queryObj[QUERY_PARAMS.exact_match] = "true";
+      }
+
+      router.push({
+        pathname: `/documents/${document.slug}`,
+        query: queryObj,
+      });
+    },
+    [router, document.slug]
+  );
+
+  const handlePassageChange = useCallback(
+    (passageIndex: number) => {
+      const queryObj = { ...router.query };
+      queryObj.passage = passageIndex.toString();
+      router.push({
+        pathname: `/documents/${document.slug}`,
+        query: queryObj,
+      });
+    },
+    [router, document.slug]
+  );
 
   useEffect(() => {
     let passageMatches: TPassage[] = [];
@@ -154,7 +204,90 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   }, [startingPassage]);
 
   /** Concepts: WIP */
-  const concepts = [];
+  const [concepts, setConcepts] = useState<TConcept[]>([]);
+  const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
+  const [selectedConcepts, setSelectedConceptsFilter] = useState<TConcept[]>([]);
+  const conceptCounts: { conceptKey: string; count: number }[] = (vespaFamilyData?.families ?? [])
+    .flatMap((family) => family.hits.flatMap((hit) => Object.entries(hit.concept_counts ?? {}).map(([conceptKey, count]) => ({ conceptKey, count }))))
+    .sort((a, b) => b.count - a.count);
+
+  const conceptFiltersQuery = router.query[QUERY_PARAMS["concept_filters.name"]];
+  const conceptFilters = useMemo(
+    () => (conceptFiltersQuery ? (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]) : undefined),
+    [conceptFiltersQuery]
+  );
+
+  const handleConceptClick = useCallback(
+    (conceptLabel: string) => {
+      setPassageIndex(0);
+      if (conceptLabel === "") return false;
+
+      const currentConceptFilters = conceptFilters || [];
+
+      // If the concept is already in filters, remove it
+      if (currentConceptFilters.includes(conceptLabel)) {
+        const updatedConceptFilters = currentConceptFilters.filter((concept) => concept !== conceptLabel);
+
+        const queryObj = { ...router.query };
+
+        // If no concept filters remain, remove the concept_filters.name query param entirely
+        if (updatedConceptFilters.length === 0) {
+          delete queryObj[QUERY_PARAMS["concept_filters.name"]];
+        } else {
+          // Otherwise, update the concept filters
+          queryObj[QUERY_PARAMS["concept_filters.name"]] = updatedConceptFilters;
+        }
+
+        router.push({
+          pathname: `/documents/${document.slug}`,
+          query: queryObj,
+        });
+        return;
+      }
+
+      // If the concept is not in filters, add it
+      const updatedConceptFilters = [...currentConceptFilters, conceptLabel];
+
+      const queryObj = { ...router.query };
+      queryObj[QUERY_PARAMS["concept_filters.name"]] = updatedConceptFilters;
+      router.push({
+        pathname: `/documents/${document.slug}`,
+        query: queryObj,
+      });
+    },
+    [router, document.slug, conceptFilters]
+  );
+
+  useEffectOnce(() => {
+    /** Get `rootConcepts` */
+    const rootConceptsS3Promises = rootLevelConceptsIds.map((conceptId) => {
+      const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
+      return fetch(url).then((response) => response.json());
+    });
+
+    /** Get concepts associated with the family */
+    const conceptsS3Promises = conceptCounts.map(({ conceptKey }) => {
+      // the concept ID is in the shape of `Q100:concept name`
+      const conceptId = conceptKey.split(":")[0];
+      const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
+      return fetch(url).then((response) => response.json());
+    });
+
+    /** Get `rootConcepts` and `concepts` from S3 */
+    Promise.all([...rootConceptsS3Promises, ...conceptsS3Promises]).then((allConcepts) => {
+      const rootConceptsResults = allConcepts.slice(0, rootConceptsS3Promises.length);
+      const conceptsResults = allConcepts.slice(rootConceptsS3Promises.length);
+
+      /** Get the selected concept from the query string */
+      const conceptsFilterQuery = router.query[QUERY_PARAMS["concept_filters.name"]];
+      const conceptsFilters = conceptsFilterQuery ? (Array.isArray(conceptsFilterQuery) ? conceptsFilterQuery : [conceptsFilterQuery]) : undefined;
+      const selectedConcepts = conceptsResults.filter((concept) => conceptsFilters?.includes(concept.preferred_label));
+
+      setSelectedConceptsFilter(selectedConcepts);
+      setRootConcepts(rootConceptsResults);
+      setConcepts(conceptsResults);
+    });
+  });
 
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
@@ -277,6 +410,23 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
               )}
             </FullWidth>
           </section>
+        )}
+
+        {concepts.length > 0 && (
+          <ConceptsDocumentViewer
+            initialQueryTerm={qsSearchString}
+            initialExactMatch={exactMatchQuery}
+            initialPassage={startingPassage}
+            concepts={concepts}
+            initialConceptFilters={conceptFilters}
+            rootConcepts={rootConcepts}
+            conceptCounts={conceptCounts}
+            document={document}
+            onQueryTermChange={handleQueryTermChange}
+            onExactMatchChange={handleExactMatchChange}
+            onPassageChange={handlePassageChange}
+            onConceptClick={handleConceptClick}
+          />
         )}
       </section>
     </Layout>
