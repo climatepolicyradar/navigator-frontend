@@ -1,5 +1,14 @@
 {
-  "defaultCorpora": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"],
+  "defaultCorpora": [
+    "MCF.corpus.GCF.n0000",
+    "MCF.corpus.GEF.n0000",
+    "MCF.corpus.AF.n0000",
+    "MCF.corpus.CIF.n0000",
+    "MCF.corpus.AF.Guidance",
+    "MCF.corpus.CIF.Guidance",
+    "MCF.corpus.GEF.Guidance",
+    "MCF.corpus.GCF.Guidance"
+  ],
   "filters": [
     {
       "label": "Climate funds",
@@ -35,11 +44,46 @@
       "category": []
     },
     {
+      "label": "Type",
+      "taxonomyKey": "fund_doc_type",
+      "apiMetaDataKey": "",
+      "type": "radio",
+      "startOpen": "true",
+      "options": [
+        {
+          "label": "All",
+          "slug": "all",
+          "value": [
+            "MCF.corpus.GCF.n0000",
+            "MCF.corpus.GEF.n0000",
+            "MCF.corpus.AF.n0000",
+            "MCF.corpus.CIF.n0000",
+            "MCF.corpus.AF.Guidance",
+            "MCF.corpus.CIF.Guidance",
+            "MCF.corpus.GEF.Guidance",
+            "MCF.corpus.GCF.Guidance"
+          ]
+        },
+        {
+          "label": "Projects",
+          "slug": "projects",
+          "value": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"]
+        },
+        {
+          "label": "Guidance",
+          "slug": "guidance",
+          "value": ["MCF.corpus.AF.Guidance", "MCF.corpus.CIF.Guidance", "MCF.corpus.GEF.Guidance", "MCF.corpus.GCF.Guidance"]
+        }
+      ],
+      "category": []
+    },
+    {
       "label": "Status",
       "taxonomyKey": "status",
       "apiMetaDataKey": "family.status",
       "type": "radio",
-      "category": [],
+      "category": ["projects"],
+      "categoryKey": "fund_doc_type",
       "dependentFilterKey": "fund"
     },
     {
@@ -47,7 +91,8 @@
       "taxonomyKey": "implementing_agency",
       "apiMetaDataKey": "family.implementing_agency",
       "type": "radio",
-      "category": [],
+      "category": ["projects"],
+      "categoryKey": "fund_doc_type",
       "showFade": "true",
       "dependentFilterKey": "fund",
       "quickSearch": "true"

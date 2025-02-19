@@ -5,10 +5,12 @@ module.exports = [
   {
     name: "Home page - with cookie banner",
     url: "http://localhost:3000",
+    waitForSelector: "[data-cy='world-map']",
   },
   {
     name: "Home page - without cookie banner",
     url: "http://localhost:3000",
+    waitForSelector: "[data-cy='world-map']",
     execute: {
       beforeSnapshot() {
         document.querySelector("[data-cy='cookie-consent-accept']").click();
@@ -61,5 +63,9 @@ module.exports = [
         document.querySelector("[data-cy='cookie-consent-accept']").click();
       },
     },
+  },
+  {
+    name: "Feature flags page",
+    url: "http://localhost:3000/_feature-flags",
   },
 ];

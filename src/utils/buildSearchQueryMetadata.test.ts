@@ -8,7 +8,7 @@ const testThemeConfig: TThemeConfig = {
       taxonomyKey: "status",
       apiMetaDataKey: "family.status",
       type: "radio",
-      category: ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"],
+      category: ["corpus1", "corpus2", "corpus3", "corpus4"],
       dependentFilterKey: "fund",
     },
   ],

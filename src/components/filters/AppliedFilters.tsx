@@ -28,6 +28,11 @@ type TFilterKeys = keyof typeof QUERY_PARAMS;
 
 const MAX_FILTER_CHARACTERS = 32;
 
+const getFilterDisplayValue = (key: TFilterKeys, value: string, themeConfig: TThemeConfig) => {
+  const filterDisplayLabel = themeConfig?.filters.find((f) => f.taxonomyKey === key).options.find((f) => f.slug === value);
+  return filterDisplayLabel ? filterDisplayLabel.label : value;
+};
+
 const handleFilterDisplay = (
   filterChange: TFilterChange,
   queryParams: ParsedUrlQuery,
@@ -80,14 +85,9 @@ const handleFilterDisplay = (
       filterLabel = value.length > MAX_FILTER_CHARACTERS ? `${decodeURI(value).substring(0, MAX_FILTER_CHARACTERS)}...` : decodeURI(value);
       break;
     case "fund":
-      filterLabel = value;
-      const fund = themeConfig?.filters.find((f) => f.taxonomyKey === "fund").options.find((f) => f.slug === value);
-      filterLabel = fund ? fund.label : value;
-      break;
+    case "fund_doc_type":
     case "framework_laws":
-      filterLabel = value;
-      const framework = themeConfig?.filters.find((f) => f.taxonomyKey === "framework_laws").options.find((f) => f.slug === value);
-      filterLabel = framework ? framework.label : value;
+      filterLabel = getFilterDisplayValue(key, value, themeConfig);
       break;
   }
 

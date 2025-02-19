@@ -42,11 +42,20 @@
       {
         "label": "Multilateral Climate Funds",
         "slug": "multilateral-climate-funds",
-        "value": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"]
+        "value": [
+          "MCF.corpus.GCF.n0000",
+          "MCF.corpus.GEF.n0000",
+          "MCF.corpus.AF.n0000",
+          "MCF.corpus.CIF.n0000",
+          "MCF.corpus.AF.Guidance",
+          "MCF.corpus.CIF.Guidance",
+          "MCF.corpus.GEF.Guidance",
+          "MCF.corpus.GCF.Guidance"
+        ]
       },
       {
         "label": "Reports",
-        "slug": "reports",
+        "slug": "Reports",
         "value": ["OEP.corpus.i00000001.n0000"]
       },
       {
@@ -64,37 +73,90 @@
         {
           "label": "Adaptation Fund",
           "slug": "adaptation-fund",
-          "value": ["MCF.corpus.AF.n0000"],
+          "value": ["MCF.corpus.AF.n0000", "MCF.corpus.AF.Guidance"],
           "corporaKey": "AF"
         },
         {
           "label": "Climate Investment Funds",
           "slug": "climate-investment-funds",
-          "value": ["MCF.corpus.CIF.n0000"],
+          "value": ["MCF.corpus.CIF.n0000", "MCF.corpus.CIF.Guidance"],
           "corporaKey": "CIF"
         },
         {
           "label": "Global Environment Facility",
           "slug": "global-environment-facility",
-          "value": ["MCF.corpus.GEF.n0000"],
+          "value": ["MCF.corpus.GEF.n0000", "MCF.corpus.GEF.Guidance"],
           "corporaKey": "GEF"
         },
         {
           "label": "Green Climate Fund",
           "slug": "green-climate-fund",
-          "value": ["MCF.corpus.GCF.n0000"],
+          "value": ["MCF.corpus.GCF.n0000", "MCF.corpus.GCF.Guidance"],
           "corporaKey": "GCF"
         }
       ],
       "type": "checkbox",
-      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"]
+      "category": [
+        "MCF.corpus.GCF.n0000",
+        "MCF.corpus.GEF.n0000",
+        "MCF.corpus.AF.n0000",
+        "MCF.corpus.CIF.n0000",
+        "MCF.corpus.AF.Guidance",
+        "MCF.corpus.CIF.Guidance",
+        "MCF.corpus.GEF.Guidance",
+        "MCF.corpus.GCF.Guidance"
+      ],
+      "startOpen": "true"
+    },
+    {
+      "label": "Type",
+      "taxonomyKey": "fund_doc_type",
+      "apiMetaDataKey": "",
+      "type": "radio",
+      "options": [
+        {
+          "label": "All",
+          "slug": "all",
+          "value": [
+            "MCF.corpus.GCF.n0000",
+            "MCF.corpus.GEF.n0000",
+            "MCF.corpus.AF.n0000",
+            "MCF.corpus.CIF.n0000",
+            "MCF.corpus.AF.Guidance",
+            "MCF.corpus.CIF.Guidance",
+            "MCF.corpus.GEF.Guidance",
+            "MCF.corpus.GCF.Guidance"
+          ]
+        },
+        {
+          "label": "Projects",
+          "slug": "projects",
+          "value": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"]
+        },
+        {
+          "label": "Guidance",
+          "slug": "guidance",
+          "value": ["MCF.corpus.AF.Guidance", "MCF.corpus.CIF.Guidance", "MCF.corpus.GEF.Guidance", "MCF.corpus.GCF.Guidance"]
+        }
+      ],
+      "category": [
+        "MCF.corpus.GCF.n0000",
+        "MCF.corpus.GEF.n0000",
+        "MCF.corpus.AF.n0000",
+        "MCF.corpus.CIF.n0000",
+        "MCF.corpus.AF.Guidance",
+        "MCF.corpus.CIF.Guidance",
+        "MCF.corpus.GEF.Guidance",
+        "MCF.corpus.GCF.Guidance"
+      ]
     },
     {
       "label": "Status",
       "taxonomyKey": "status",
       "apiMetaDataKey": "family.status",
       "type": "radio",
-      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"],
+      "category": ["projects"],
+      "categoryKey": "fund_doc_type",
       "dependentFilterKey": "fund"
     },
     {
@@ -102,7 +164,8 @@
       "taxonomyKey": "implementing_agency",
       "apiMetaDataKey": "family.implementing_agency",
       "type": "radio",
-      "category": ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"],
+      "category": ["projects"],
+      "categoryKey": "fund_doc_type",
       "showFade": "true",
       "dependentFilterKey": "fund",
       "quickSearch": "true"

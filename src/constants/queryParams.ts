@@ -15,6 +15,7 @@ export const QUERY_PARAMS = {
   fund: "fd",
   status: "st",
   implementing_agency: "ia",
+  fund_doc_type: "fdt",
   // Laws and Policies
   framework_laws: "fl",
   topic: "tp",

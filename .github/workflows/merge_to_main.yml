@@ -1,0 +1,31 @@
+name: Merge to main
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  actions: read
+jobs:
+  percy:
+    runs-on: ubuntu-latest
+    env:
+      THEME: cpr
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: npm install
+      - run: cp .env.example .env
+      - run: npm run build
+      - run: npm run start &
+      - run: |
+          echo "Waiting for server to start..."
+          npx wait-on http://localhost:3000 # Update the URL if your server runs on a different port
+      - run: npx percy snapshot snapshots.js
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+      - if: always()
+        run: kill $(lsof -t -i:3000) || true
