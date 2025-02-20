@@ -21,6 +21,7 @@ import { ROOT_LEVEL_CONCEPT_LINKS, ROOT_LEVEL_CONCEPTS } from "@utils/processCon
 import { ExternalLinkIcon } from "@components/svg/Icons";
 import { ConceptsHead } from "@components/concepts/ConceptsHead";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { ConceptsPopover } from "@components/popover/ConceptsPopover";
 
 type TProps = {
   initialQueryTerm?: string | string[];
@@ -63,6 +64,8 @@ export const ConceptsDocumentViewer = ({
   onConceptClick,
 }: TProps) => {
   const [showSearchOptions, setShowSearchOptions] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
   const [state, setState] = useReducer((prev: any, next: Partial<any>) => ({ ...prev, ...next }), {
     passageIndex: initialPassage,
     isExactSearch: initialExactMatch,
@@ -273,16 +276,24 @@ export const ConceptsDocumentViewer = ({
                                 {rootConcept.preferred_label}
                               </p>
                               {ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]] && (
-                                <a
-                                  href={ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]]}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-neutral-500 flex items-center absolute right-3 top-6"
-                                >
-                                  <div className="text-xl">
-                                    <HiOutlineDotsHorizontal className="group-hover:border-neutral-200 border-transparent border-1 rounded-full p-0.5" />
-                                  </div>
-                                </a>
+                                <>
+                                  <a
+                                    href={ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]]}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-neutral-500 flex items-center absolute right-3 top-6"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setIsPopoverOpen(true);
+                                    }}
+                                  >
+                                    <div className="text-xl">
+                                      <HiOutlineDotsHorizontal className="group-hover:border-neutral-200 border-transparent border-1 rounded-full p-0.5" />
+                                    </div>
+                                  </a>
+
+                                  {isPopoverOpen && <ConceptsPopover concept={rootConcept} onClose={() => setIsPopoverOpen(false)} />}
+                                </>
                               )}
                             </div>
                             <p className="pt-1 pb-1 text-sm">{rootConcept.description}</p>
