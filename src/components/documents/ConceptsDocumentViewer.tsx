@@ -18,6 +18,8 @@ import { SearchSettings } from "@components/filters/SearchSettings";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 import useSearch from "@hooks/useSearch";
+import { ROOT_LEVEL_CONCEPT_LINKS } from "@utils/processConcepts";
+import { ExternalLinkIcon } from "@components/svg/Icons";
 
 type TProps = {
   initialQueryTerm?: string | string[];
@@ -32,7 +34,6 @@ type TProps = {
   // Callback props for state changes
   onQueryTermChange?: (queryTerm: string) => void;
   onExactMatchChange?: (isExact: boolean) => void;
-  onPassageChange?: (passageIndex: number) => void;
   onConceptClick?: (conceptLabel: string) => void;
 };
 
@@ -58,7 +59,6 @@ export const ConceptsDocumentViewer = ({
   document,
   onQueryTermChange,
   onExactMatchChange,
-  onPassageChange,
   onConceptClick,
 }: TProps) => {
   const [showSearchOptions, setShowSearchOptions] = useState(false);
@@ -136,9 +136,8 @@ export const ConceptsDocumentViewer = ({
     (index: number) => {
       if (document.content_type !== "application/pdf") return;
       setState({ passageIndex: index });
-      onPassageChange?.(index);
     },
-    [document.content_type, onPassageChange]
+    [document.content_type]
   );
 
   const handleSearchInput = useCallback(
@@ -267,6 +266,16 @@ export const ConceptsDocumentViewer = ({
                         return (
                           <div key={rootConcept.wikibase_id} className="pt-6 pb-6">
                             <p className="mb-2 capitalize text-[15px] font-bold">{rootConcept.preferred_label}</p>
+                            {ROOT_LEVEL_CONCEPT_LINKS[rootConcept.preferred_label] && (
+                              <a
+                                href={ROOT_LEVEL_CONCEPT_LINKS[rootConcept.preferred_label]}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-gray-500 hover:text-blue-600"
+                              >
+                                <ExternalLinkIcon height="12" width="12" />
+                              </a>
+                            )}
                             <p>{rootConcept.description}</p>
                             <ul className="flex flex-wrap gap-2 mt-4">
                               {concepts

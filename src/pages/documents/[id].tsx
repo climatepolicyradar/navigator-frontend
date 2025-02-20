@@ -167,18 +167,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     [router, document.slug]
   );
 
-  const handlePassageChange = useCallback(
-    (passageIndex: number) => {
-      const queryObj = { ...router.query };
-      queryObj.passage = passageIndex.toString();
-      router.push({
-        pathname: `/documents/${document.slug}`,
-        query: queryObj,
-      });
-    },
-    [router, document.slug]
-  );
-
   useEffect(() => {
     let passageMatches: TPassage[] = [];
     let totalNoOfMatches = 0;
@@ -206,10 +194,24 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   /** Concepts: WIP */
   const [concepts, setConcepts] = useState<TConcept[]>([]);
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
-  const [selectedConcepts, setSelectedConceptsFilter] = useState<TConcept[]>([]);
-  const conceptCounts: { conceptKey: string; count: number }[] = (vespaFamilyData?.families ?? [])
-    .flatMap((family) => family.hits.flatMap((hit) => Object.entries(hit.concept_counts ?? {}).map(([conceptKey, count]) => ({ conceptKey, count }))))
-    .sort((a, b) => b.count - a.count);
+
+  // Extract unique concept keys and their counts
+  const conceptCounts: { conceptKey: string; count: number }[] = useMemo(() => {
+    const uniqueConceptMap = new Map<string, number>();
+
+    (vespaFamilyData?.families ?? []).forEach((family) => {
+      family.hits.forEach((hit) => {
+        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
+          const existingCount = uniqueConceptMap.get(conceptKey) || 0;
+          uniqueConceptMap.set(conceptKey, existingCount + count);
+        });
+      });
+    });
+
+    return Array.from(uniqueConceptMap.entries())
+      .map(([conceptKey, count]) => ({ conceptKey, count }))
+      .sort((a, b) => b.count - a.count);
+  }, [vespaFamilyData]);
 
   const conceptFiltersQuery = router.query[QUERY_PARAMS["concept_filters.name"]];
   const conceptFilters = useMemo(
@@ -278,12 +280,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
       const rootConceptsResults = allConcepts.slice(0, rootConceptsS3Promises.length);
       const conceptsResults = allConcepts.slice(rootConceptsS3Promises.length);
 
-      /** Get the selected concept from the query string */
-      const conceptsFilterQuery = router.query[QUERY_PARAMS["concept_filters.name"]];
-      const conceptsFilters = conceptsFilterQuery ? (Array.isArray(conceptsFilterQuery) ? conceptsFilterQuery : [conceptsFilterQuery]) : undefined;
-      const selectedConcepts = conceptsResults.filter((concept) => conceptsFilters?.includes(concept.preferred_label));
-
-      setSelectedConceptsFilter(selectedConcepts);
       setRootConcepts(rootConceptsResults);
       setConcepts(conceptsResults);
     });
@@ -424,7 +420,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
             document={document}
             onQueryTermChange={handleQueryTermChange}
             onExactMatchChange={handleExactMatchChange}
-            onPassageChange={handlePassageChange}
             onConceptClick={handleConceptClick}
           />
         )}
