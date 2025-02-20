@@ -7,7 +7,6 @@ import Button from "@components/buttons/Button";
 import SearchForm from "@components/forms/SearchForm";
 import { MdOutlineTune } from "react-icons/md";
 import { AnimatePresence } from "framer-motion";
-import { ExternalLink } from "@components/ExternalLink";
 import PassageMatches from "@components/PassageMatches";
 import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
 import { EmptyPassages } from "./EmptyPassages";
@@ -17,8 +16,6 @@ import { SearchSettings } from "@components/filters/SearchSettings";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 import useSearch from "@hooks/useSearch";
-import { ROOT_LEVEL_CONCEPT_LINKS, ROOT_LEVEL_CONCEPTS } from "@utils/processConcepts";
-import { ExternalLinkIcon } from "@components/svg/Icons";
 import { ConceptsHead } from "@components/concepts/ConceptsHead";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { ConceptsPopover } from "@components/popover/ConceptsPopover";
@@ -181,10 +178,6 @@ export const ConceptsDocumentViewer = ({
     onExactMatchChange?.(false);
   }, [onQueryTermChange, onExactMatchChange]);
 
-  const togglePopover = useCallback((wikibaseId: string) => {
-    setOpenPopoverIds((current) => (current.includes(wikibaseId) ? current.filter((id) => id !== wikibaseId) : [...current, wikibaseId]));
-  }, []);
-
   return (
     <>
       {concepts.length > 0 && (
@@ -283,7 +276,11 @@ export const ConceptsDocumentViewer = ({
                                 <button
                                   onClick={(e) => {
                                     e.preventDefault();
-                                    togglePopover(rootConcept.wikibase_id);
+                                    setOpenPopoverIds(
+                                      openPopoverIds.includes(rootConcept.wikibase_id)
+                                        ? openPopoverIds.filter((id) => id !== rootConcept.wikibase_id)
+                                        : [...openPopoverIds, rootConcept.wikibase_id]
+                                    );
                                   }}
                                   className="text-neutral-500 flex items-center z-50"
                                 >
@@ -291,8 +288,11 @@ export const ConceptsDocumentViewer = ({
                                 </button>
 
                                 {openPopoverIds.includes(rootConcept.wikibase_id) && (
-                                  <div className="absolute z-50 top-full right-0 mt-2">
-                                    <ConceptsPopover concept={rootConcept} onClose={() => togglePopover(rootConcept.wikibase_id)} />
+                                  <div className="absolute z-50 top-full right-3 mt-2">
+                                    <ConceptsPopover
+                                      concept={rootConcept}
+                                      onClose={() => setOpenPopoverIds(openPopoverIds.filter((id) => id !== rootConcept.wikibase_id))}
+                                    />
                                   </div>
                                 )}
                               </div>
