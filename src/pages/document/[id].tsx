@@ -50,6 +50,7 @@ import { getFeatureFlags } from "@utils/featureFlags";
 import { ROOT_LEVEL_CONCEPTS, ROOT_LEVEL_CONCEPT_LINKS, rootLevelConceptsIds } from "@utils/processConcepts";
 import { MultiCol } from "@components/panels/MultiCol";
 import { useEffectOnce } from "@hooks/useEffectOnce";
+import { ConceptsHead } from "@components/concepts/ConceptsHead";
 
 type TProps = {
   page: TFamilyPage;
@@ -426,22 +427,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           {/* TODO: use a panel for this */}
           {concepts.length > 0 && (
             <div className="grow-0 shrink-0 px-5 border-l pt-5 w-[460px] text-sm">
-              <div className="mb-4">
-                <div className="h-6 rounded-md justify-start items-center gap-2 inline-flex">
-                  <div className="text-neutral-800 text-base font-medium leading-normal">Climate concepts</div>
-                  <div className="p-1 bg-blue-600 rounded-sm justify-center items-center gap-2 flex">
-                    <div className="text-white text-xs font-medium leading-3">Beta</div>
-                  </div>
-                </div>
-                <div className="border-l border-inputSelected border-l-2px pt-1 pb-1 pl-4">
-                  <p>
-                    This feature automatically detects climate concepts in documents. Accuracy is not 100%.{" "}
-                    <ExternalLink url="https://climatepolicyradar.org/concepts" className="text-gray-500 underline">
-                      Learn more
-                    </ExternalLink>
-                  </p>
-                </div>
-              </div>
+              <ConceptsHead></ConceptsHead>
               {rootConcepts.map((rootConcept) => {
                 const hasConceptsInRootConcept = concepts.filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
                 if (hasConceptsInRootConcept.length === 0) return null;
