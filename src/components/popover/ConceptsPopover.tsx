@@ -7,22 +7,19 @@ type TProps = {
 
 export const ConceptsPopover = ({ concept, onClose }: TProps) => {
   return (
-    <div className="w-64 p-4 bg-white rounded-lg shadow-[0px_4px_36px_0px_rgba(0,0,0,0.08)] border border-gray-200 justify-start items-center gap-2.5 inline-flex">
-      <div className="grow shrink basis-0 flex-col justify-start items-start gap-6 inline-flex">
-        <div className="self-stretch flex-col justify-start items-start gap-6 flex">
-          <div className="self-stretch flex-col justify-start items-start gap-1 flex">
-            <div className="self-stretch text-neutral-500 text-xs font-medium font-['Inter Variable'] leading-none">Description</div>
-            <div className="self-stretch text-neutral-800 text-sm font-normal font-['Inter Variable'] leading-tight">
-              {concept?.description || "No description available"}
-            </div>
-          </div>
-          <div className="self-stretch h-10 flex-col justify-start items-start gap-1 flex">
-            <div className="self-stretch text-neutral-500 text-xs font-medium font-['Inter Variable'] leading-none">Learn more</div>
-            <div className="self-stretch">
-              <span className="text-neutral-800 text-sm font-normal font-['Inter Variable'] underline leading-tight">View the structured data</span>
-              <span className="text-neutral-800 text-sm font-normal font-['Inter Variable'] leading-tight"> </span>
-              <span className="text-neutral-500 text-sm font-normal font-['Inter Variable'] leading-tight">↗</span>
-            </div>
+    <div className="w-64 p-4 bg-white rounded-lg shadow-md border border-gray-200 flex items-start">
+      <div className="space-y-6 w-full">
+        <div className="space-y-1">
+          <h3 className="text-xs font-medium text-neutral-500">Description</h3>
+          <p className="text-sm text-neutral-800">{concept?.description || "No description available"}</p>
+        </div>
+        <div className="space-y-1">
+          <h3 className="text-xs font-medium text-neutral-500">Learn more</h3>
+          <div className="text-sm">
+            <a href="#" className="text-neutral-800 underline">
+              View the structured data
+              <span className="text-neutral-500 ml-1">↗</span>
+            </a>
           </div>
         </div>
       </div>
