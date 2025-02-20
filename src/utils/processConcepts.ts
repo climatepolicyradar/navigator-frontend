@@ -85,11 +85,3 @@ export const processConcepts = (concepts: (TConcept & { count: number })[]): Roo
 
   return conceptMap;
 };
-
-export const ROOT_LEVEL_CONCEPT_LINKS = Object.entries(ROOT_LEVEL_CONCEPTS).reduce(
-  (acc, [qNum, name]) => {
-    acc[name] = `https://climatepolicyradar.wikibase.cloud/wiki/Item:${qNum}`;
-    return acc;
-  },
-  {} as { [key: string]: string }
-);

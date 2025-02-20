@@ -47,10 +47,11 @@ import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
 import { getFeatureFlags } from "@utils/featureFlags";
-import { ROOT_LEVEL_CONCEPTS, ROOT_LEVEL_CONCEPT_LINKS, rootLevelConceptsIds } from "@utils/processConcepts";
+import { rootLevelConceptsIds } from "@utils/processConcepts";
 import { MultiCol } from "@components/panels/MultiCol";
 import { useEffectOnce } from "@hooks/useEffectOnce";
 import { ConceptsHead } from "@components/concepts/ConceptsHead";
+import { getConceptStoreLink } from "@utils/getConceptStoreLink";
 
 type TProps = {
   page: TFamilyPage;
@@ -439,15 +440,13 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                   <div key={rootConcept.wikibase_id} className="pt-6 pb-6 relative">
                     <div className="flex items-center gap-2">
                       <p className="capitalize text-neutral-800 text-base font-medium leading-normal flex-grow">{rootConcept.preferred_label}</p>
-                      {ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]] && (
-                        <a
-                          href={ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]]}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                      {getConceptStoreLink(rootConcept.wikibase_id) && (
+                        <ExternalLink
+                          url={getConceptStoreLink(rootConcept.wikibase_id)}
                           className="text-gray-500 hover:text-blue-600 flex items-center absolute right-0 top-6"
                         >
                           <ExternalLinkIcon height="12" width="12" />
-                        </a>
+                        </ExternalLink>
                       )}
                     </div>
                     <p className="pt-1 pb-1">{rootConcept.description}</p>

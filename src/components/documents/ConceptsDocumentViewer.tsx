@@ -7,7 +7,6 @@ import Button from "@components/buttons/Button";
 import SearchForm from "@components/forms/SearchForm";
 import { MdOutlineTune } from "react-icons/md";
 import { AnimatePresence } from "framer-motion";
-import { ExternalLink } from "@components/ExternalLink";
 import PassageMatches from "@components/PassageMatches";
 import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
 import { EmptyPassages } from "./EmptyPassages";
@@ -17,9 +16,9 @@ import { SearchSettings } from "@components/filters/SearchSettings";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 import useSearch from "@hooks/useSearch";
-import { ROOT_LEVEL_CONCEPT_LINKS, ROOT_LEVEL_CONCEPTS } from "@utils/processConcepts";
-import { ExternalLinkIcon } from "@components/svg/Icons";
 import { ConceptsHead } from "@components/concepts/ConceptsHead";
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { ConceptsPopover } from "@components/popover/ConceptsPopover";
 
 type TProps = {
   initialQueryTerm?: string | string[];
@@ -62,6 +61,8 @@ export const ConceptsDocumentViewer = ({
   onConceptClick,
 }: TProps) => {
   const [showSearchOptions, setShowSearchOptions] = useState(false);
+  const [openPopoverIds, setOpenPopoverIds] = useState<string[]>([]);
+
   const [state, setState] = useReducer((prev: any, next: Partial<any>) => ({ ...prev, ...next }), {
     passageIndex: initialPassage,
     isExactSearch: initialExactMatch,
@@ -266,23 +267,36 @@ export const ConceptsDocumentViewer = ({
                         const hasConceptsInRootConcept = concepts.filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
                         if (hasConceptsInRootConcept.length === 0) return null;
                         return (
-                          <div key={rootConcept.wikibase_id} className="pt-6 pb-6 relative">
+                          <div key={rootConcept.wikibase_id} className="pt-6 pb-6 relative group">
                             <div className="flex items-center gap-2">
                               <p className="capitalize text-neutral-800 text-base font-medium leading-normal flex-grow">
                                 {rootConcept.preferred_label}
                               </p>
-                              {ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]] && (
-                                <a
-                                  href={ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]]}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-gray-500 hover:text-blue-600 flex items-center absolute right-3 top-6"
+                              <div className="relative pr-3">
+                                <button
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setOpenPopoverIds(
+                                      openPopoverIds.includes(rootConcept.wikibase_id)
+                                        ? openPopoverIds.filter((id) => id !== rootConcept.wikibase_id)
+                                        : [...openPopoverIds, rootConcept.wikibase_id]
+                                    );
+                                  }}
+                                  className="text-neutral-500 flex items-center z-50"
                                 >
-                                  <ExternalLinkIcon height="12" width="12" />
-                                </a>
-                              )}
+                                  <HiOutlineDotsHorizontal className="text-xl group-hover:border-neutral-200 border-transparent border-1 rounded-full p-0.5" />
+                                </button>
+
+                                {openPopoverIds.includes(rootConcept.wikibase_id) && (
+                                  <div className="absolute z-50 top-full right-3 mt-2">
+                                    <ConceptsPopover
+                                      concept={rootConcept}
+                                      onClose={() => setOpenPopoverIds(openPopoverIds.filter((id) => id !== rootConcept.wikibase_id))}
+                                    />
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                            <p className="pt-1 pb-1 text-sm">{rootConcept.description}</p>
                             <ul className="flex flex-wrap gap-2 mt-4">
                               {concepts
                                 .filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id))
@@ -298,7 +312,7 @@ export const ConceptsDocumentViewer = ({
                                         }}
                                       >
                                         <Button
-                                          color="clear"
+                                          color="clear-blue"
                                           data-cy="view-document-viewer-concept"
                                           extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
                                         >
