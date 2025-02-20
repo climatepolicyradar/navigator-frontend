@@ -324,7 +324,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       <Heading level={2}>Targets</Heading>
                       <ExternalLink
                         url="https://form.jotform.com/233542296946365"
-                        className="block text-sm my-4 md:my-0 hover:text-blue-600"
+                        className="block text-sm my-4 md:my-0 underline text-blue-600 hover:text-blue-800"
                         cy="download-target-csv"
                       >
                         Request to download all target data (.csv)
@@ -335,7 +335,10 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                         message={
                           <>
                             We are developing the ability to detect targets in documents.{" "}
-                            <ExternalLink url="https://form.jotform.com/233294139336358">Get notified when this is ready</ExternalLink>.
+                            <ExternalLink url="https://form.jotform.com/233294139336358" className="underline text-blue-600 hover:text-blue-800">
+                              Get notified when this is ready
+                            </ExternalLink>
+                            .
                           </>
                         }
                         icon={<AlertCircleIcon height="16" width="16" />}

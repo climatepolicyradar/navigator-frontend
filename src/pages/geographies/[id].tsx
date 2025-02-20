@@ -137,7 +137,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     router.push({ pathname: "/search", query: queryObj });
   };
 
-  const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geography.name}`}</p>;
+  const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geography.name}.`}</p>;
 
   const renderDocuments = () => {
     // All docs || All MCF docs if theme is MCF
@@ -196,7 +196,10 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       return (
         <div className="mt-4 pb-4 border-b">
           Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center’s{" "}
-          <ExternalLink url="http://climatecasechart.com/">Climate Change Litigation Databases</ExternalLink>.
+          <ExternalLink url="http://climatecasechart.com/" className="underline text-blue-600 hover:text-blue-800">
+            Climate Change Litigation Databases
+          </ExternalLink>
+          .
         </div>
       );
     }
@@ -290,7 +293,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
                         <ExternalLink
                           url="https://form.jotform.com/233542296946365"
-                          className="text-sm underline hover:text-blue-600"
+                          className="text-sm underline text-blue-600 hover:text-blue-800"
                           cy="download-target-csv"
                         >
                           Request to download all target data (.csv)
@@ -301,7 +304,10 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                           message={
                             <>
                               We are developing the ability to detect targets in documents.{" "}
-                              <ExternalLink url="https://form.jotform.com/233294139336358">Get notified when this is ready</ExternalLink>.
+                              <ExternalLink url="https://form.jotform.com/233294139336358" className="underline text-blue-600 hover:text-blue-800">
+                                Get notified when this is ready
+                              </ExternalLink>
+                              .
                             </>
                           }
                           icon={<AlertCircleIcon height="16" width="16" />}
