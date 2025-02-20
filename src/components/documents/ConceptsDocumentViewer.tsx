@@ -251,11 +251,13 @@ export const ConceptsDocumentViewer = ({
                     <div className="pb-4">
                       <div className="mt-4 grow-0 shrink-0">
                         <div className="mb-4">
-                          <Heading level={4}>Structured data</Heading>
+                          <Heading level={4}>Climate concepts</Heading>
                           <div className="border-l border-inputSelected border-l-2px pt-1 pb-1 pl-4">
                             <p>
-                              Our AI, trained by our in-house climate policy experts and data scientists, has identified these concepts in this
-                              document. <ExternalLink url="https://climatepolicyradar.org/concepts">Learn more</ExternalLink>
+                              This feature automatically detects climate concepts in documents. Accuracy is not 100%.{" "}
+                              <ExternalLink url="https://climatepolicyradar.org/concepts" className="text-gray-500 underline">
+                                Learn more
+                              </ExternalLink>
                             </p>
                           </div>
                         </div>
@@ -264,15 +266,15 @@ export const ConceptsDocumentViewer = ({
                         const hasConceptsInRootConcept = concepts.filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
                         if (hasConceptsInRootConcept.length === 0) return null;
                         return (
-                          <div key={rootConcept.wikibase_id} className="pt-6 pb-6">
+                          <div key={rootConcept.wikibase_id} className="pt-6 pb-6 relative">
                             <div className="flex items-center gap-2">
-                              <p className="capitalize text-[15px] font-bold">{rootConcept.preferred_label}</p>
+                              <p className="capitalize text-[15px] font-bold flex-grow">{rootConcept.preferred_label}</p>
                               {ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]] && (
                                 <a
                                   href={ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]]}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-gray-500 hover:text-blue-600 flex items-center"
+                                  className="text-gray-500 hover:text-blue-600 flex items-center absolute right-0 top-6"
                                 >
                                   <ExternalLinkIcon height="12" width="12" />
                                 </a>
