@@ -196,7 +196,7 @@ export const ConceptsDocumentViewer = ({
               </div>
               <div
                 id="document-sidebar"
-                className={`py-4 order-first max-h-[90vh] md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
+                className={`overflow-y-scroll py-4 order-first max-h-[90vh] md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
                   document.content_type
                 )}`}
               >
@@ -276,7 +276,7 @@ export const ConceptsDocumentViewer = ({
                                   href={ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]]}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-gray-500 hover:text-blue-600 flex items-center absolute right-0 top-6"
+                                  className="text-gray-500 hover:text-blue-600 flex items-center absolute right-3 top-6"
                                 >
                                   <ExternalLinkIcon height="12" width="12" />
                                 </a>
