@@ -20,6 +20,7 @@ import useSearch from "@hooks/useSearch";
 import { ROOT_LEVEL_CONCEPT_LINKS, ROOT_LEVEL_CONCEPTS } from "@utils/processConcepts";
 import { ExternalLinkIcon } from "@components/svg/Icons";
 import { ConceptsHead } from "@components/concepts/ConceptsHead";
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
 
 type TProps = {
   initialQueryTerm?: string | string[];
@@ -266,7 +267,7 @@ export const ConceptsDocumentViewer = ({
                         const hasConceptsInRootConcept = concepts.filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
                         if (hasConceptsInRootConcept.length === 0) return null;
                         return (
-                          <div key={rootConcept.wikibase_id} className="pt-6 pb-6 relative">
+                          <div key={rootConcept.wikibase_id} className="pt-6 pb-6 relative group">
                             <div className="flex items-center gap-2">
                               <p className="capitalize text-neutral-800 text-base font-medium leading-normal flex-grow">
                                 {rootConcept.preferred_label}
@@ -276,9 +277,11 @@ export const ConceptsDocumentViewer = ({
                                   href={ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]]}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-gray-500 hover:text-blue-600 flex items-center absolute right-3 top-6"
+                                  className="text-neutral-500 flex items-center absolute right-3 top-6"
                                 >
-                                  <ExternalLinkIcon height="12" width="12" />
+                                  <div className="text-xl">
+                                    <HiOutlineDotsHorizontal className="group-hover:border-neutral-200 border-transparent border-1 rounded-full p-0.5" />
+                                  </div>
                                 </a>
                               )}
                             </div>
