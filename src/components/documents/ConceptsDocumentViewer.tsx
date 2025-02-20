@@ -251,7 +251,12 @@ export const ConceptsDocumentViewer = ({
                     <div className="pb-4">
                       <div className="mt-4 grow-0 shrink-0">
                         <div className="mb-4">
-                          <Heading level={4}>Climate concepts</Heading>
+                          <div className="h-6 rounded-md justify-start items-center gap-2 inline-flex">
+                            <div className="text-neutral-800 text-base font-medium leading-normal">Climate concepts</div>
+                            <div className="p-1 bg-blue-600 rounded-sm justify-center items-center gap-2 flex">
+                              <div className="text-white text-xs font-medium leading-3">Beta</div>
+                            </div>
+                          </div>
                           <div className="border-l border-inputSelected border-l-2px pt-1 pb-1 pl-4">
                             <p>
                               This feature automatically detects climate concepts in documents. Accuracy is not 100%.{" "}
@@ -268,7 +273,9 @@ export const ConceptsDocumentViewer = ({
                         return (
                           <div key={rootConcept.wikibase_id} className="pt-6 pb-6 relative">
                             <div className="flex items-center gap-2">
-                              <p className="capitalize text-[15px] font-bold flex-grow">{rootConcept.preferred_label}</p>
+                              <p className="capitalize text-neutral-800 text-base font-medium leading-normal flex-grow">
+                                {rootConcept.preferred_label}
+                              </p>
                               {ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]] && (
                                 <a
                                   href={ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]]}
@@ -280,7 +287,7 @@ export const ConceptsDocumentViewer = ({
                                 </a>
                               )}
                             </div>
-                            <p>{rootConcept.description}</p>
+                            <p className="pt-1 pb-1">{rootConcept.description}</p>
                             <ul className="flex flex-wrap gap-2 mt-4">
                               {concepts
                                 .filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id))
@@ -298,9 +305,9 @@ export const ConceptsDocumentViewer = ({
                                         <Button
                                           color="clear"
                                           data-cy="view-document-viewer-concept"
-                                          extraClasses="capitalize flex items-center text-[14px] font-normal pt-1 pb-1"
+                                          extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
                                         >
-                                          {concept.preferred_label} ({conceptCountsById[concept.wikibase_id]})
+                                          {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
                                         </Button>
                                       </Link>
                                     </li>
