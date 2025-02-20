@@ -20,7 +20,7 @@ import { ExternalLink } from "@components/ExternalLink";
 import { Targets } from "@components/Targets";
 import { ShowHide } from "@components/controls/ShowHide";
 import { Divider } from "@components/dividers/Divider";
-import { DownChevronIcon, AlertCircleIcon } from "@components/svg/Icons";
+import { DownChevronIcon, AlertCircleIcon, ExternalLinkIcon } from "@components/svg/Icons";
 import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
@@ -47,9 +47,10 @@ import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
 import { getFeatureFlags } from "@utils/featureFlags";
-import { rootLevelConceptsIds } from "@utils/processConcepts";
+import { ROOT_LEVEL_CONCEPTS, ROOT_LEVEL_CONCEPT_LINKS, rootLevelConceptsIds } from "@utils/processConcepts";
 import { MultiCol } from "@components/panels/MultiCol";
 import { useEffectOnce } from "@hooks/useEffectOnce";
+import { ConceptsHead } from "@components/concepts/ConceptsHead";
 
 type TProps = {
   page: TFamilyPage;
@@ -430,22 +431,26 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           {/* TODO: use a panel for this */}
           {concepts.length > 0 && (
             <div className="grow-0 shrink-0 px-5 border-l pt-5 w-[460px] text-sm">
-              <div className="mb-4">
-                <Heading level={4}>Structured data</Heading>
-                <div className="border-l border-inputSelected border-l-2px pt-1 pb-1 pl-4">
-                  <p>
-                    Our AI, trained by our in-house climate policy experts and data scientists, has identified these concepts in this document.{" "}
-                    <ExternalLink url="https://climatepolicyradar.org/concepts">Learn more</ExternalLink>
-                  </p>
-                </div>
-              </div>
+              <ConceptsHead></ConceptsHead>
               {rootConcepts.map((rootConcept) => {
                 const hasConceptsInRootConcept = concepts.filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
                 if (hasConceptsInRootConcept.length === 0) return null;
                 return (
-                  <div key={rootConcept.wikibase_id} className="pt-6 pb-6">
-                    <p className="mb-2 capitalize text-[15px] font-bold">{rootConcept.preferred_label}</p>
-                    <p>{rootConcept.description}</p>
+                  <div key={rootConcept.wikibase_id} className="pt-6 pb-6 relative">
+                    <div className="flex items-center gap-2">
+                      <p className="capitalize text-neutral-800 text-base font-medium leading-normal flex-grow">{rootConcept.preferred_label}</p>
+                      {ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]] && (
+                        <a
+                          href={ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]]}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-gray-500 hover:text-blue-600 flex items-center absolute right-0 top-6"
+                        >
+                          <ExternalLinkIcon height="12" width="12" />
+                        </a>
+                      )}
+                    </div>
+                    <p className="pt-1 pb-1">{rootConcept.description}</p>
                     <ul className="flex flex-wrap gap-2 mt-4">
                       {concepts
                         .filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id))
@@ -458,10 +463,10 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                               >
                                 <Button
                                   color="clear"
-                                  data-cy="view-family-concept"
-                                  extraClasses="capitalize flex items-center text-[14px] font-normal pt-1 pb-1"
+                                  data-cy="view-document-viewer-concept"
+                                  extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
                                 >
-                                  {concept.preferred_label} ({conceptCountsById[concept.wikibase_id]})
+                                  {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
                                 </Button>
                               </Link>
                             </li>
