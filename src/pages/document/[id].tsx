@@ -47,7 +47,7 @@ import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
 import { getFeatureFlags } from "@utils/featureFlags";
-import { ROOT_LEVEL_CONCEPTS, ROOT_LEVEL_CONCEPT_LINKS, rootLevelConceptsIds } from "@utils/processConcepts";
+import { rootLevelConceptsIds } from "@utils/processConcepts";
 import { MultiCol } from "@components/panels/MultiCol";
 import { useEffectOnce } from "@hooks/useEffectOnce";
 import { ConceptsHead } from "@components/concepts/ConceptsHead";
