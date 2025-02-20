@@ -219,7 +219,7 @@ export const ConceptsDocumentViewer = ({
                     <div className="flex gap-2">
                       <div className="flex-1">
                         <SearchForm
-                          placeholder="Search the full text of the document"
+                          placeholder="Search document text"
                           handleSearchInput={handleSearchInput}
                           input={state.queryTerm as string}
                           size="default"
@@ -260,22 +260,34 @@ export const ConceptsDocumentViewer = ({
                     <div className="pb-4">
                       <div className="mt-4 grow-0 shrink-0">
                         <div className="mb-4">
-                          <div className="h-6 rounded-md justify-start items-center gap-2 inline-flex">
-                            <div className="text-neutral-800 text-base font-medium leading-normal">Climate concepts</div>
-                            <div className="p-1 bg-blue-600 rounded-sm justify-center items-center gap-2 flex">
-                              <div className="text-white text-xs font-medium leading-3">Beta</div>
+                          <div className="h-20 flex-col justify-start items-start gap-3 inline-flex">
+                            <div className="self-stretch h-6 flex-col justify-center items-start gap-4 flex">
+                              <div className="self-stretch rounded-md justify-start items-center gap-2 inline-flex">
+                                <div className="text-neutral-800 text-base font-medium font-['Inter Variable'] leading-normal">Climate concepts</div>
+                                <div className="p-1 bg-blue-600 rounded-sm justify-center items-center gap-2 flex">
+                                  <div className="text-white text-xs font-medium font-['Inter Variable'] leading-3">Beta</div>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                          <div className="border-l border-inputSelected border-l-2px pt-1 pb-1 pl-4">
-                            <p>
-                              This feature automatically detects climate concepts in documents. Accuracy is not 100%.{" "}
-                              <ExternalLink url="https://climatepolicyradar.org/concepts" className="text-gray-500 underline">
-                                Learn more
-                              </ExternalLink>
-                            </p>
+                            <div className="self-stretch h-12 flex-col justify-start items-start gap-4 flex">
+                              <div className="self-stretch pl-4 py-1 border-l-2 border-blue-600 justify-center items-center gap-2.5 inline-flex">
+                                <div className="grow shrink basis-0">
+                                  <p className="text-neutral-600 text-sm font-normal font-['Inter Variable'] leading-tight">
+                                    This feature automatically detects climate concepts in documents. Accuracy is not 100%.{" "}
+                                    <ExternalLink
+                                      url="https://climatepolicyradar.org/concepts"
+                                      className="text-gray-600 text-sm font-normal font-['Inter Variable'] underline leading-tight"
+                                    >
+                                      Learn more
+                                    </ExternalLink>
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
+
                       {rootConcepts.map((rootConcept) => {
                         const hasConceptsInRootConcept = concepts.filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
                         if (hasConceptsInRootConcept.length === 0) return null;
@@ -296,7 +308,7 @@ export const ConceptsDocumentViewer = ({
                                 </a>
                               )}
                             </div>
-                            <p className="pt-1 pb-1">{rootConcept.description}</p>
+                            <p className="pt-1 pb-1 text-sm">{rootConcept.description}</p>
                             <ul className="flex flex-wrap gap-2 mt-4">
                               {concepts
                                 .filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id))
@@ -331,11 +343,13 @@ export const ConceptsDocumentViewer = ({
 
                   {selectedConcepts.length > 0 && (
                     <div className="pt-6 pb-6">
-                      <p className="mb-2 capitalize text-[15px] font-bold text-inputSelected">
+                      <p className="mb-2 capitalize text-[15px] font-bold text-inputSelected text-neutral-800 text-base font-medium leading-normal flex-grow">
                         {selectedConcepts.map((concept) => concept.preferred_label).join(", ")}
                       </p>
                       {selectedConcepts.map((concept) => (
-                        <p key={concept.wikibase_id}>{concept.description}</p>
+                        <p key={concept.wikibase_id} className="pt-1 pb-1">
+                          {concept.description}
+                        </p>
                       ))}
                     </div>
                   )}
