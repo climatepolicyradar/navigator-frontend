@@ -441,14 +441,12 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                     <div className="flex items-center gap-2">
                       <p className="capitalize text-neutral-800 text-base font-medium leading-normal flex-grow">{rootConcept.preferred_label}</p>
                       {getConceptStoreLink(rootConcept.wikibase_id) && (
-                        <a
-                          href={getConceptStoreLink(rootConcept.wikibase_id)}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <ExternalLink
+                          url={getConceptStoreLink(rootConcept.wikibase_id)}
                           className="text-gray-500 hover:text-blue-600 flex items-center absolute right-0 top-6"
                         >
                           <ExternalLinkIcon height="12" width="12" />
-                        </a>
+                        </ExternalLink>
                       )}
                     </div>
                     <p className="pt-1 pb-1">{rootConcept.description}</p>
