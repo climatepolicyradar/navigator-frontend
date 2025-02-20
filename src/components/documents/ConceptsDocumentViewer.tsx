@@ -64,7 +64,7 @@ export const ConceptsDocumentViewer = ({
   onConceptClick,
 }: TProps) => {
   const [showSearchOptions, setShowSearchOptions] = useState(false);
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [openPopoverIds, setOpenPopoverIds] = useState<string[]>([]);
 
   const [state, setState] = useReducer((prev: any, next: Partial<any>) => ({ ...prev, ...next }), {
     passageIndex: initialPassage,
@@ -181,6 +181,10 @@ export const ConceptsDocumentViewer = ({
     onExactMatchChange?.(false);
   }, [onQueryTermChange, onExactMatchChange]);
 
+  const togglePopover = useCallback((wikibaseId: string) => {
+    setOpenPopoverIds((current) => (current.includes(wikibaseId) ? current.filter((id) => id !== wikibaseId) : [...current, wikibaseId]));
+  }, []);
+
   return (
     <>
       {concepts.length > 0 && (
@@ -275,28 +279,24 @@ export const ConceptsDocumentViewer = ({
                               <p className="capitalize text-neutral-800 text-base font-medium leading-normal flex-grow">
                                 {rootConcept.preferred_label}
                               </p>
-                              {ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]] && (
-                                <>
-                                  <a
-                                    href={ROOT_LEVEL_CONCEPT_LINKS[ROOT_LEVEL_CONCEPTS[rootConcept.wikibase_id]]}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-neutral-500 flex items-center absolute right-3 top-6"
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      setIsPopoverOpen(true);
-                                    }}
-                                  >
-                                    <div className="text-xl">
-                                      <HiOutlineDotsHorizontal className="group-hover:border-neutral-200 border-transparent border-1 rounded-full p-0.5" />
-                                    </div>
-                                  </a>
+                              <div className="relative pr-3">
+                                <button
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    togglePopover(rootConcept.wikibase_id);
+                                  }}
+                                  className="text-neutral-500 flex items-center z-50"
+                                >
+                                  <HiOutlineDotsHorizontal className="text-xl group-hover:border-neutral-200 border-transparent border-1 rounded-full p-0.5" />
+                                </button>
 
-                                  {isPopoverOpen && <ConceptsPopover concept={rootConcept} onClose={() => setIsPopoverOpen(false)} />}
-                                </>
-                              )}
+                                {openPopoverIds.includes(rootConcept.wikibase_id) && (
+                                  <div className="absolute z-50 top-full right-0 mt-2">
+                                    <ConceptsPopover concept={rootConcept} onClose={() => togglePopover(rootConcept.wikibase_id)} />
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                            <p className="pt-1 pb-1 text-sm">{rootConcept.description}</p>
                             <ul className="flex flex-wrap gap-2 mt-4">
                               {concepts
                                 .filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id))
