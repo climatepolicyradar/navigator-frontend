@@ -251,7 +251,7 @@ input[type="search"]::-webkit-search-results-decoration {
 
 /* Tooltips styles to override the default */
 .customTooltip {
-  @apply z-50 text-sm bg-nearBlack border-nearBlack rounded-lg leading-5 max-w-[300px] opacity-100 pointer-events-auto;
+  @apply z-50! text-sm! bg-nearBlack! border-nearBlack! rounded-lg! leading-5! max-w-[300px]! opacity-100! pointer-events-auto!;
 }
 .customTooltip:hover {
   visibility: visible !important;
