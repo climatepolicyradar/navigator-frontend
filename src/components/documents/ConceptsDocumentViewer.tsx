@@ -168,6 +168,15 @@ export const ConceptsDocumentViewer = ({
     [onConceptClick]
   );
 
+  const handleClearSearch = useCallback(() => {
+    setState({
+      queryTerm: "",
+      isExactSearch: false,
+    });
+    onQueryTermChange?.("");
+    onExactMatchChange?.(false);
+  }, [onQueryTermChange, onExactMatchChange]);
+
   return (
     <>
       {concepts.length > 0 && (
@@ -194,7 +203,7 @@ export const ConceptsDocumentViewer = ({
                 <div id="document-search" className="flex flex-col gap-2 md:pl-4">
                   {(selectedConcepts.length > 0 || initialQueryTerm) && (
                     <div className="flex gap-2">
-                      <Link className="capitalize hover:no-underline" href={`/documents/${document.slug}`}>
+                      <Link className="capitalize hover:no-underline" href={`/documents/${document.slug}`} onClick={handleClearSearch}>
                         <Button
                           color="dark-dark"
                           data-cy="view-document-viewer-concept"
