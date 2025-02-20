@@ -298,7 +298,7 @@ export const ConceptsDocumentViewer = ({
                                         }}
                                       >
                                         <Button
-                                          color="clear"
+                                          color="clear-blue"
                                           data-cy="view-document-viewer-concept"
                                           extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
                                         >
