@@ -288,7 +288,11 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                           Targets <span className="font-normal">({publishedTargets.length})</span>
                         </Heading>
 
-                        <ExternalLink url="https://form.jotform.com/233542296946365" className="text-sm underline" cy="download-target-csv">
+                        <ExternalLink
+                          url="https://form.jotform.com/233542296946365"
+                          className="text-sm underline hover:text-blue-600"
+                          cy="download-target-csv"
+                        >
                           Request to download all target data (.csv)
                         </ExternalLink>
                       </div>
@@ -344,7 +348,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
               {geography.legislative_process && theme !== "mcf" && (
                 <section className="mt-10" data-cy="legislative-process">
                   <Heading level={2} extraClasses="flex items-center gap-2">
-                    <LegislativeIcon width="20" height="20" /> Legislative Process
+                    Legislative Process
                   </Heading>
                   <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
                 </section>

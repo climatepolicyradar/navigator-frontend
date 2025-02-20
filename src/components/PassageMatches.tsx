@@ -41,7 +41,7 @@ const PassageMatches = ({ passages, onClick, activeIndex, pageColour = "textDark
             <div key={item.text_block_id} data-analytics="document-passage-result" id={`passage-${index}`} className="mb-2">
               <div
                 className={`p-4 cursor-pointer border border-gray-200 rounded-md bg-white hover:border-gray-500 ${
-                  activeIndex === index ? "border-gray-50 bg-gray-50 hover:!border-gray-50" : ""
+                  activeIndex === index ? "!border-blue-100 !bg-gray-50 hover:!border-gray-50" : ""
                 }`}
                 onClick={() => {
                   onClick(index);

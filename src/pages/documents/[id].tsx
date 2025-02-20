@@ -325,7 +325,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                   </div>
                   <div
                     id="document-sidebar"
-                    className={`py-4 order-first max-h-[90vh] md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
+                    className={`py-4 order-first max-h-[90vh] md:pb-0 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
                       document.content_type
                     )}`}
                   >
@@ -378,7 +378,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                     </div>
                     {totalNoOfMatches > 0 && (
                       <>
-                        <div className="my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
+                        <div className="my-4 text-sm pb-4 border-b border-gray-200 md:pl-4" data-cy="document-matches-description">
                           <div className="mb-2">
                             Displaying {renderPassageCount(totalNoOfMatches)} for "
                             <span className="text-textDark font-medium">{`${qsSearchString}`}</span>"

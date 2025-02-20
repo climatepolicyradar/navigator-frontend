@@ -1,18 +1,20 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
 import { Tooltip, TooltipRefProps } from "react-tooltip";
+
 import useConfig from "@hooks/useConfig";
 import useGeographies from "@hooks/useGeographies";
-import { getEnvFromServer } from "@api/http-common";
-import { hasMcfAccess } from "@utils/checkCorpusAccess";
-import { GEO_CENTER_POINTS } from "@constants/mapCentres";
-import { GEO_EU_COUNTRIES } from "@constants/mapEUCountries";
-import { TGeography } from "@types";
+import { useMcfData } from "@hooks/useMcfData";
+
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import GeographySelect from "./GeographySelect";
 import { ZoomControls } from "./ZoomControls";
 import { Legend } from "./Legend";
-import { useMcfData } from "@hooks/useMcfData";
+
+import { TGeography } from "@types";
+
+import { GEO_EU_COUNTRIES } from "@constants/mapEUCountries";
+import { GEO_CENTER_POINTS } from "@constants/mapCentres";
 
 const geoUrl = "/data/map/world-countries-50m.json";
 
@@ -268,7 +270,7 @@ export default function MapChart() {
           </div>
         </div>
       </div>
-      <div ref={mapRef} className="map-container relative border" data-cy="world-map">
+      <div ref={mapRef} className="map-container relative border border-gray-300" data-cy="world-map">
         <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 160 }} height={340}>
           <ZoomableGroup
             maxZoom={MAX_ZOOM}

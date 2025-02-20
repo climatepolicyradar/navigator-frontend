@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@import "./theme.css";
+@import "./styles.css";
+@import "./cpr.css";
+@import "./cclw.css";
+@import "./mcf.css";
+
+@plugin "@tailwindcss/forms";
+@plugin "tailwind-scrollbar" {
+  nocompatible: true;
+}
+
+:root {
+  --MAX_SITE_WIDTH: 1440px;
+  --MAX_CONTENT_WIDTH: 800px;
+  --MAX_SIDEBAR_WIDTH: 300px;
+
+  font-family: "InterVariable", sans-serif;
+  font-feature-settings:
+    "liga" 1,
+    "calt" 1,
+    "cv05" on;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@supports (font-variation-settings: normal) {
+  :root {
+    font-family: InterVariable, sans-serif;
+  }
+}

@@ -8,7 +8,7 @@ type TFamilyTotals = {
   unfccc: number;
 };
 
-const heroLinkClasses = "text-white hover:text-white flex items-start gap-1";
+const heroLinkClasses = "text-white flex items-start gap-1 hover:text-white hover:underline";
 
 export const INSTRUCTIONS = (familyTotals: TFamilyTotals) => [
   {

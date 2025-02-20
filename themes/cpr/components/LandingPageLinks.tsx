@@ -14,7 +14,7 @@ const LandingPageLinks = ({ handleLinkClick }) => {
             {terms.map((term) => (
               <li className="my-2" key={term}>
                 <a
-                  className="text-white hover:text-blue-500"
+                  className="text-white hover:text-blue-200 hover:underline"
                   href="/"
                   onClick={(e) => {
                     handleLinkClick(e);

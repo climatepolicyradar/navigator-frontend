@@ -321,7 +321,11 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                   <div>
                     <div>
                       <Heading level={2}>Targets</Heading>
-                      <ExternalLink url="https://form.jotform.com/233542296946365" className="block text-sm my-4 md:my-0" cy="download-target-csv">
+                      <ExternalLink
+                        url="https://form.jotform.com/233542296946365"
+                        className="block text-sm my-4 md:my-0 hover:text-blue-600"
+                        cy="download-target-csv"
+                      >
                         Request to download all target data (.csv)
                       </ExternalLink>
                     </div>
