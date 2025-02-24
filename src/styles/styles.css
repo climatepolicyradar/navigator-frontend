@@ -229,16 +229,6 @@ input[type="search"]::-webkit-search-results-decoration {
   position: relative;
 }
 
-.subnav-active:after,
-.tabbed-nav__active:after {
-  content: "";
-  position: absolute;
-  left: 0;
-  height: 2px;
-  width: 100%;
-  @apply invisible md:visible bg-blue-600 -bottom-2;
-}
-
 .tabbed-nav__active {
   @apply text-blue-600 font-medium;
 }
