@@ -248,6 +248,13 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     });
   });
 
+  let conceptDocumentLink: string | undefined;
+  if (mainDocuments.length === 1) {
+    conceptDocumentLink = `/documents/${mainDocuments[0].slug}`;
+  } else if (mainDocuments.length === 0 && otherDocuments.length === 1) {
+    conceptDocumentLink = `/documents/${otherDocuments[0].slug}`;
+  }
+
   return (
     <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)} theme={theme}>
       <Script id="analytics">
@@ -483,7 +490,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                             <li key={concept.wikibase_id}>
                               <Link
                                 className="capitalize hover:no-underline"
-                                href={`/documents/${mainDocuments[0].slug}?cfn=${concept.preferred_label}`}
+                                href={`/documents/${conceptDocumentLink}?cfn=${concept.preferred_label}`}
                               >
                                 <Button
                                   color="clear"
