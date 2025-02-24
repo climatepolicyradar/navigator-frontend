@@ -99,6 +99,8 @@ jobs:
         with:
           repo-name: navigator-frontend-${{ matrix.theme }}
           semver-tag: ${{ steps.determine_next_tag.outputs.new_tag }}
-      - name: Release to GitHub
-        uses: climatepolicyradar/reusable-workflows/.github/workflows/git.yml@main
+  create-git-release:
+    needs: [deploy]
+    uses:
+      climatepolicyradar/reusable-workflows/.github/workflows/git.yml@main
       # TODO: deploy
