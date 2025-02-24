@@ -11,7 +11,7 @@ export const ConceptsHead = () => {
           <Heading level={2} className="text-base font-medium text-neutral-800">
             Climate concepts
           </Heading>
-          <Label labelText="Beta"></Label>
+          <Label>Beta</Label>
         </div>
         <Quote>
           <>
