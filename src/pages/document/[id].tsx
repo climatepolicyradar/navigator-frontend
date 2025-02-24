@@ -209,9 +209,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
       const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
       return fetch(url)
         .then((response) => {
-          if (!response.ok) {
-            return null;
-          }
           return response.json();
         })
         .catch((error) => {
@@ -230,9 +227,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
       const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
       return fetch(url)
         .then((response) => {
-          if (!response.ok) {
-            return null;
-          }
           return response.json();
         })
         .catch((error) => {
