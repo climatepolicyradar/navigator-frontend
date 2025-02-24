@@ -40,6 +40,7 @@ jobs:
   code-quality:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: trunk-io/trunk-action@v1
         with:
           arguments: --ci
