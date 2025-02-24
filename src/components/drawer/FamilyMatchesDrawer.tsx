@@ -69,7 +69,9 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
           <div className="flex-grow pr-1">
             {family_documents.map((document, docIndex) => (
               <div key={document.document_slug} className="mb-5">
-                <LinkWithQuery href={`/documents/${document.document_slug}`}>{document.document_title}</LinkWithQuery>
+                <LinkWithQuery href={`/documents/${document.document_slug}`} className="underline text-blue-600 hover:text-blue-800">
+                  {document.document_title}
+                </LinkWithQuery>
                 <PassageMatches passages={document.document_passage_matches.slice(0, 5)} onClick={(index) => onPassageClick(index, docIndex)} />
                 <Button
                   color="clear"
