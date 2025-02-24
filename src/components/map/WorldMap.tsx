@@ -112,7 +112,9 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
       {geography.familyCounts?.UNFCCC > 0 && <p>UNFCCC: {geography.familyCounts?.UNFCCC || 0}</p>}
       {geography.familyCounts?.MCF > 0 && <p>MCF projects: {geography.familyCounts?.MCF || 0}</p>}
       <p>
-        <LinkWithQuery href={`/geographies/${geography.slug}`}>View more</LinkWithQuery>
+        <LinkWithQuery href={`/geographies/${geography.slug}`} className="text-blue-600 underline hover:text-blue-800">
+          View more
+        </LinkWithQuery>
       </p>
     </>
   );
