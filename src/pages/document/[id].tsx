@@ -47,11 +47,12 @@ import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
 import { getFeatureFlags } from "@utils/featureFlags";
-import { ROOT_LEVEL_CONCEPTS, rootLevelConceptsIds } from "@utils/processConcepts";
+import { fetchAndProcessConcepts, ROOT_LEVEL_CONCEPTS, rootLevelConceptsIds } from "@utils/processConcepts";
 import { MultiCol } from "@components/panels/MultiCol";
 import { useEffectOnce } from "@hooks/useEffectOnce";
 import { ConceptsHead } from "@components/concepts/ConceptsHead";
 import { getConceptStoreLink } from "@utils/getConceptStoreLink";
+import { fetchConcepts } from "@utils/processConcepts";
 
 type TProps = {
   page: TFamilyPage;
@@ -204,47 +205,12 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   }, {});
 
   useEffectOnce(() => {
-    /** Get `rootConcepts` */
-    const rootConceptsS3Promises = rootLevelConceptsIds.map((conceptId) => {
+    fetchAndProcessConcepts(conceptIds, (conceptId) => {
       const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
-      return fetch(url)
-        .then((response) => {
-          return response.json();
-        })
-        .catch((error) => {
-          // Return a minimal object to allow partial processing
-          return {
-            wikibase_id: conceptId,
-            preferred_label: ROOT_LEVEL_CONCEPTS[conceptId] || "Other",
-            description: "Concept data unavailable",
-            subconcept_of: [],
-          };
-        });
-    });
-
-    /** Get concepts associated with the family */
-    const conceptsS3Promises = conceptIds.map((conceptId) => {
-      const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
-      return fetch(url)
-        .then((response) => {
-          return response.json();
-        })
-        .catch((error) => {
-          // Return null to allow filtering out failed fetches
-          return null;
-        });
-    });
-
-    /** Get `rootConcepts` and `concepts` from S3 */
-    Promise.all([...rootConceptsS3Promises, ...conceptsS3Promises]).then((allConcepts) => {
-      // Filter out any null results from concept fetches
-      const filteredConcepts = allConcepts.filter(Boolean);
-
-      const rootConceptsResults = filteredConcepts.slice(0, rootConceptsS3Promises.length);
-      const conceptsResults = filteredConcepts.slice(rootConceptsS3Promises.length);
-
-      setRootConcepts(rootConceptsResults);
-      setConcepts(conceptsResults);
+      return fetch(url).then((response) => response.json());
+    }).then(({ rootConcepts, concepts }) => {
+      setRootConcepts(rootConcepts);
+      setConcepts(concepts);
     });
   });
 

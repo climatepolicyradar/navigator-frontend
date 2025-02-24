@@ -14,6 +14,26 @@ export const ROOT_LEVEL_CONCEPTS = {
 };
 export const rootLevelConceptsIds = Object.keys(ROOT_LEVEL_CONCEPTS);
 
+export const fetchAndProcessConcepts = async (conceptIds: string[], fetchConcept: (id: string) => Promise<TConcept>) => {
+  const rootConceptsS3Promises = rootLevelConceptsIds.map((conceptId) => {
+    return fetchConcept(conceptId).catch(() => ({
+      wikibase_id: conceptId,
+      preferred_label: ROOT_LEVEL_CONCEPTS[conceptId] || "Other",
+      description: "Concept data unavailable",
+      subconcept_of: [],
+    }));
+  });
+
+  const conceptsS3Promises = conceptIds.map((conceptId) => fetchConcept(conceptId).catch(() => null));
+
+  const allConcepts = await Promise.all([...rootConceptsS3Promises, ...conceptsS3Promises]);
+  const filteredConcepts = allConcepts.filter(Boolean);
+  const rootConceptsResults = filteredConcepts.slice(0, rootConceptsS3Promises.length);
+  const conceptsResults = filteredConcepts.slice(rootConceptsS3Promises.length);
+
+  return { rootConcepts: rootConceptsResults, concepts: conceptsResults };
+};
+
 interface Concept {
   name: string;
   count: number;
