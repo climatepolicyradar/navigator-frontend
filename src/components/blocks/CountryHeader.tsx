@@ -139,7 +139,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick, theme, tota
     <div>
       <Heading level={1}>{name}</Heading>
       <div className="flex items-start justify-between overflow-hidden">
-        <div className="mt-4 shrink-0 md:basis-4/6">
+        <div className="mt-4 md:shrink-0 md:basis-4/6">
           <div className="grid grid-cols-2 gap-6 items-center md:grid-cols-5">
             <div className="col-span-2 md:col-span-5">
               <div data-cy="region" data-analytics-region={countryRegion}>

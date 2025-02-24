@@ -4,9 +4,9 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
-  actions: read
+permissions: read-all
+env:
+  NODE_ENV: production
 jobs:
   percy:
     runs-on: ubuntu-latest
@@ -23,12 +23,88 @@ jobs:
       - run: npm run start &
       - run: |
           echo "Waiting for server to start..."
-          npx wait-on http://localhost:3000 # Update the URL if your server runs on a different port
+          npx wait-on http://localhost:3000
       - run: npx percy snapshot snapshots.js
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
       - if: always()
         run: kill $(lsof -t -i:3000) || true
+
+  # test
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: trunk-io/trunk-action@v1
+        with:
+          arguments: --ci
+
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: npm install
+      - run: cp .env.example .env
+      - run: npm run build
+      - run: npm run test
+
+  test-e2e:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: npm ci
+      - run: cp .env.example .env
+      - run: npm run build
+      - run: npx playwright install --with-deps
+      - run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+  # deploy
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [code-quality, test, test-e2e]
+    strategy:
+      fail-fast: false
+      matrix:
+        theme: [cpr, cclw, mcf]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      # build
+      - run: |
+          export THEME=${{ matrix.theme }}
+          make build
+      # release
+      - id: determine_next_tag
+        uses: climatepolicyradar/get-next-tag-from-pr-body@v4
+      - name: Release to ECR
+        uses: climatepolicyradar/retag-and-push-to-ecr@v1
+        env:
+          DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        with:
+          repo-name: navigator-frontend-${{ matrix.theme }}
+          semver-tag: ${{ steps.determine_next_tag.outputs.new_tag }}
+  create-git-release:
+    needs: [deploy]
+    uses:
+      climatepolicyradar/reusable-workflows/.github/workflows/git.yml@main
+      # TODO: deploy
   storybook:
     runs-on: ubuntu-latest
     env:
