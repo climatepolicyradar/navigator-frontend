@@ -42,8 +42,8 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
   };
 
   const getPreviewBehaviour = () => {
-    let cssClass = "family-document group mt-4 p-4 rounded-lg border bg-white border-gray-50 shadow-xs transition duration-300 flex flex-no-wrap ";
-    cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-gray-200 hover:bg-gray-50" : "";
+    let cssClass = "family-document group mt-4 p-4 rounded-lg border bg-gray-25 border-gray-100 shadow-xs transition duration-300 flex flex-no-wrap ";
+    cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-blue-100 hover:bg-gray-50" : "";
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.preventDefault();

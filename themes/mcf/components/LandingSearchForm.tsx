@@ -52,7 +52,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
       <form data-cy="search-form" ref={formRef} onSubmit={(e) => e.preventDefault()}>
         <div className="max-w-screen-lg mx-auto flex items-stretch relative text-indigo-400 custom-gradient-background">
           <input
-            id="landingPage-searchInput-cclw"
+            id="landingPage-searchInput-mcf"
             data-analytics="landingPage-searchInput"
             data-cy="search-input"
             type="search"

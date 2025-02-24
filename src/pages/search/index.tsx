@@ -327,7 +327,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               <span>Download data (.csv): </span>
               <a
                 href="#"
-                className="flex gap-2 items-center justify-end"
+                className="flex gap-2 items-center justify-end text-blue-600 hover:underline hover:text-blue-800"
                 data-cy="download-search-csv"
                 onClick={(e) => {
                   e.preventDefault();
@@ -339,7 +339,11 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               {getThemeConfigLink(themeConfig, "download-database") && (
                 <>
                   <span>|</span>
-                  <ExternalLink url={getThemeConfigLink(themeConfig, "download-database").url} cy="download-entire-search-csv">
+                  <ExternalLink
+                    url={getThemeConfigLink(themeConfig, "download-database").url}
+                    className="text-blue-600 hover:underline hover:text-blue-800"
+                    cy="download-entire-search-csv"
+                  >
                     whole database
                   </ExternalLink>
                 </>
@@ -408,7 +412,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
         </SiteWidth>
         {/* END MOBILE ONLY */}
         <MultiCol>
-          <SideCol extraClasses="hidden md:block border-r pt-5">
+          <SideCol extraClasses="hidden md:block border-r border-gray-300 pt-5 sticky top-0 h-screen overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
             {configQuery.isFetching ? (
               <Loader size="20px" />
             ) : (

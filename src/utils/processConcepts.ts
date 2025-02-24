@@ -1,15 +1,16 @@
 import { TConcept } from "@types";
 
 // Define the root level concepts
-const ROOT_LEVEL_CONCEPTS = {
+export const ROOT_LEVEL_CONCEPTS = {
   Q1651: "Targets",
   Q709: "Sectors",
   Q975: "Climate risk",
   Q638: "Fossil fuels",
   Q672: "Impacted groups",
-  Q1337: "Finance",
+  Q1343: "Climate finance",
   Q1171: "Instruments",
   Q218: "Greenhouse gases",
+  Q1367: "Public finance actors",
 };
 export const rootLevelConceptsIds = Object.keys(ROOT_LEVEL_CONCEPTS);
 
@@ -84,11 +85,3 @@ export const processConcepts = (concepts: (TConcept & { count: number })[]): Roo
 
   return conceptMap;
 };
-
-export const ROOT_LEVEL_CONCEPT_LINKS = Object.entries(ROOT_LEVEL_CONCEPTS).reduce(
-  (acc, [qNum, name]) => {
-    acc[name] = `https://climatepolicyradar.wikibase.cloud/wiki/Item:${qNum}`;
-    return acc;
-  },
-  {} as { [key: string]: string }
-);

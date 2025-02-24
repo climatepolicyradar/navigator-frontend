@@ -21,7 +21,7 @@ export const FeatureSearch = () => (
       </div>
       <Link
         href="/documents/adaptation-strategy-to-climate-change-in-the-czech-republic_213b?q=flood+defence"
-        className="text-white hover:text-gray-100"
+        className="text-white hover:text-gray-100 hover:underline"
       >
         See search results for “<b>Flood defence</b>” highlighted and translated in the document "<i>Adaptation strategy to climate change</i>"
       </Link>

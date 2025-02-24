@@ -7,8 +7,6 @@ import Button from "@components/buttons/Button";
 import SearchForm from "@components/forms/SearchForm";
 import { MdOutlineTune } from "react-icons/md";
 import { AnimatePresence } from "framer-motion";
-import { Heading } from "@components/typography/Heading";
-import { ExternalLink } from "@components/ExternalLink";
 import PassageMatches from "@components/PassageMatches";
 import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
 import { EmptyPassages } from "./EmptyPassages";
@@ -18,6 +16,9 @@ import { SearchSettings } from "@components/filters/SearchSettings";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 import useSearch from "@hooks/useSearch";
+import { ConceptsHead } from "@components/concepts/ConceptsHead";
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { ConceptsPopover } from "@components/popover/ConceptsPopover";
 
 type TProps = {
   initialQueryTerm?: string | string[];
@@ -32,7 +33,6 @@ type TProps = {
   // Callback props for state changes
   onQueryTermChange?: (queryTerm: string) => void;
   onExactMatchChange?: (isExact: boolean) => void;
-  onPassageChange?: (passageIndex: number) => void;
   onConceptClick?: (conceptLabel: string) => void;
 };
 
@@ -58,10 +58,11 @@ export const ConceptsDocumentViewer = ({
   document,
   onQueryTermChange,
   onExactMatchChange,
-  onPassageChange,
   onConceptClick,
 }: TProps) => {
   const [showSearchOptions, setShowSearchOptions] = useState(false);
+  const [openPopoverIds, setOpenPopoverIds] = useState<string[]>([]);
+
   const [state, setState] = useReducer((prev: any, next: Partial<any>) => ({ ...prev, ...next }), {
     passageIndex: initialPassage,
     isExactSearch: initialExactMatch,
@@ -136,9 +137,8 @@ export const ConceptsDocumentViewer = ({
     (index: number) => {
       if (document.content_type !== "application/pdf") return;
       setState({ passageIndex: index });
-      onPassageChange?.(index);
     },
-    [document.content_type, onPassageChange]
+    [document.content_type]
   );
 
   const handleSearchInput = useCallback(
@@ -169,6 +169,15 @@ export const ConceptsDocumentViewer = ({
     [onConceptClick]
   );
 
+  const handleClearSearch = useCallback(() => {
+    setState({
+      queryTerm: "",
+      isExactSearch: false,
+    });
+    onQueryTermChange?.("");
+    onExactMatchChange?.(false);
+  }, [onQueryTermChange, onExactMatchChange]);
+
   return (
     <>
       {concepts.length > 0 && (
@@ -188,14 +197,14 @@ export const ConceptsDocumentViewer = ({
               </div>
               <div
                 id="document-sidebar"
-                className={`py-4 order-first max-h-[90vh] md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
+                className={`overflow-y-scroll py-4 order-first max-h-[90vh] md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
                   document.content_type
                 )}`}
               >
                 <div id="document-search" className="flex flex-col gap-2 md:pl-4">
                   {(selectedConcepts.length > 0 || initialQueryTerm) && (
                     <div className="flex gap-2">
-                      <Link className="capitalize hover:no-underline" href={`/documents/${document.slug}`}>
+                      <Link className="capitalize hover:no-underline" href={`/documents/${document.slug}`} onClick={handleClearSearch}>
                         <Button
                           color="dark-dark"
                           data-cy="view-document-viewer-concept"
@@ -211,7 +220,7 @@ export const ConceptsDocumentViewer = ({
                     <div className="flex gap-2">
                       <div className="flex-1">
                         <SearchForm
-                          placeholder="Search the full text of the document"
+                          placeholder="Search document text"
                           handleSearchInput={handleSearchInput}
                           input={state.queryTerm as string}
                           size="default"
@@ -251,23 +260,43 @@ export const ConceptsDocumentViewer = ({
                   {selectedConcepts.length === 0 && !initialQueryTerm && (
                     <div className="pb-4">
                       <div className="mt-4 grow-0 shrink-0">
-                        <div className="mb-4">
-                          <Heading level={4}>Structured data</Heading>
-                          <div className="border-l border-inputSelected border-l-2px pt-1 pb-1 pl-4">
-                            <p>
-                              Our AI, trained by our in-house climate policy experts and data scientists, has identified these concepts in this
-                              document. <ExternalLink url="https://climatepolicyradar.org/concepts">Learn more</ExternalLink>
-                            </p>
-                          </div>
-                        </div>
+                        <ConceptsHead></ConceptsHead>
                       </div>
+
                       {rootConcepts.map((rootConcept) => {
                         const hasConceptsInRootConcept = concepts.filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
                         if (hasConceptsInRootConcept.length === 0) return null;
                         return (
-                          <div key={rootConcept.wikibase_id} className="pt-6 pb-6">
-                            <p className="mb-2 capitalize text-[15px] font-bold">{rootConcept.preferred_label}</p>
-                            <p>{rootConcept.description}</p>
+                          <div key={rootConcept.wikibase_id} className="pt-6 pb-6 relative group">
+                            <div className="flex items-center gap-2">
+                              <p className="capitalize text-neutral-800 text-base font-medium leading-normal flex-grow">
+                                {rootConcept.preferred_label}
+                              </p>
+                              <div className="relative pr-3">
+                                <button
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setOpenPopoverIds(
+                                      openPopoverIds.includes(rootConcept.wikibase_id)
+                                        ? openPopoverIds.filter((id) => id !== rootConcept.wikibase_id)
+                                        : [...openPopoverIds, rootConcept.wikibase_id]
+                                    );
+                                  }}
+                                  className="text-neutral-500 flex items-center z-50"
+                                >
+                                  <HiOutlineDotsHorizontal className="text-xl group-hover:border-neutral-200 border-transparent border-1 rounded-full p-0.5" />
+                                </button>
+
+                                {openPopoverIds.includes(rootConcept.wikibase_id) && (
+                                  <div className="absolute z-50 top-full right-3 mt-2">
+                                    <ConceptsPopover
+                                      concept={rootConcept}
+                                      onClose={() => setOpenPopoverIds(openPopoverIds.filter((id) => id !== rootConcept.wikibase_id))}
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            </div>
                             <ul className="flex flex-wrap gap-2 mt-4">
                               {concepts
                                 .filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id))
@@ -283,11 +312,11 @@ export const ConceptsDocumentViewer = ({
                                         }}
                                       >
                                         <Button
-                                          color="clear"
+                                          color="clear-blue"
                                           data-cy="view-document-viewer-concept"
-                                          extraClasses="capitalize flex items-center text-[14px] font-normal pt-1 pb-1"
+                                          extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
                                         >
-                                          {concept.preferred_label} ({conceptCountsById[concept.wikibase_id]})
+                                          {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
                                         </Button>
                                       </Link>
                                     </li>
@@ -302,11 +331,13 @@ export const ConceptsDocumentViewer = ({
 
                   {selectedConcepts.length > 0 && (
                     <div className="pt-6 pb-6">
-                      <p className="mb-2 capitalize text-[15px] font-bold text-inputSelected">
+                      <p className="mb-2 capitalize text-[15px] font-bold text-inputSelected text-neutral-800 text-base font-medium leading-normal flex-grow">
                         {selectedConcepts.map((concept) => concept.preferred_label).join(", ")}
                       </p>
                       {selectedConcepts.map((concept) => (
-                        <p key={concept.wikibase_id}>{concept.description}</p>
+                        <p key={concept.wikibase_id} className="pt-1 pb-1">
+                          {concept.description}
+                        </p>
                       ))}
                     </div>
                   )}

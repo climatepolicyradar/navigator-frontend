@@ -61,7 +61,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
   }, [family, showFullSummary]);
 
   return (
-    <div className="bg-white border-solid border-lineBorder border-b">
+    <div className="bg-white border-solid border-lineBorder border-b border-gray-200">
       <SubNav>
         <BreadCrumbs
           geography={breadcrumbGeography}

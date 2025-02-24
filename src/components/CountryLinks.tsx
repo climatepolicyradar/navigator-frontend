@@ -47,7 +47,11 @@ export const CountryLinksAsList = ({ geographies, countries, showFlag = true }: 
         )}
         {!isSystemGeo(geography) && (
           <div className="flex">
-            <CountryLink countryCode={geography} showFlag={showFlag} className="text-blue-600 underline truncate text-sm text-transform: capitalize">
+            <CountryLink
+              countryCode={geography}
+              showFlag={showFlag}
+              className="text-blue-600 underline truncate text-sm capitalize hover:text-blue-800"
+            >
               <span>{getCountryName(geography, countries)}</span>
             </CountryLink>
             {index !== geographies.length - 1 && <span>,</span>}
