@@ -29,3 +29,27 @@ jobs:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
       - if: always()
         run: kill $(lsof -t -i:3000) || true
+  storybook:
+    runs-on: ubuntu-latest
+    env:
+      THEME: cpr
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+      - run: npm install
+      - run: npm run build-storybook
+      - name: Upload to S3
+        run: |
+          aws s3 sync --delete ./storybook-static s3://storybook.climatepolicyradar.org
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-west-1
