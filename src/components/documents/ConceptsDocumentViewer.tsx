@@ -347,7 +347,7 @@ export const ConceptsDocumentViewer = ({
                   <>
                     {selectedConcepts.length > 0 && (
                       <>
-                        <div className="my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
+                        <div className="border-gray-200 my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
                           <div className="mb-2">{state.totalNoOfMatches} matches in this document</div>
                         </div>
                         <div
