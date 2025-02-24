@@ -18,7 +18,7 @@ export const ToolTipSSR = ({ id, place, tooltip, interactableContent }: TProps) 
   return (
     <>
       {isMounted && (
-        <Tooltip className="customTooltip" id={id} place={place} delayHide={interactableContent ? 500 : 0}>
+        <Tooltip className="customTooltip" id={id} place={place} delayHide={interactableContent ? 1000 : 0}>
           {tooltip}
         </Tooltip>
       )}

@@ -47,7 +47,7 @@ import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
 import { getFeatureFlags } from "@utils/featureFlags";
-import { rootLevelConceptsIds } from "@utils/processConcepts";
+import { ROOT_LEVEL_CONCEPTS, rootLevelConceptsIds } from "@utils/processConcepts";
 import { MultiCol } from "@components/panels/MultiCol";
 import { useEffectOnce } from "@hooks/useEffectOnce";
 import { ConceptsHead } from "@components/concepts/ConceptsHead";
@@ -207,19 +207,41 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     /** Get `rootConcepts` */
     const rootConceptsS3Promises = rootLevelConceptsIds.map((conceptId) => {
       const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
-      return fetch(url).then((response) => response.json());
+      return fetch(url)
+        .then((response) => {
+          return response.json();
+        })
+        .catch((error) => {
+          // Return a minimal object to allow partial processing
+          return {
+            wikibase_id: conceptId,
+            preferred_label: ROOT_LEVEL_CONCEPTS[conceptId] || "Other",
+            description: "Concept data unavailable",
+            subconcept_of: [],
+          };
+        });
     });
 
     /** Get concepts associated with the family */
     const conceptsS3Promises = conceptIds.map((conceptId) => {
       const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
-      return fetch(url).then((response) => response.json());
+      return fetch(url)
+        .then((response) => {
+          return response.json();
+        })
+        .catch((error) => {
+          // Return null to allow filtering out failed fetches
+          return null;
+        });
     });
 
     /** Get `rootConcepts` and `concepts` from S3 */
     Promise.all([...rootConceptsS3Promises, ...conceptsS3Promises]).then((allConcepts) => {
-      const rootConceptsResults = allConcepts.slice(0, rootConceptsS3Promises.length);
-      const conceptsResults = allConcepts.slice(rootConceptsS3Promises.length);
+      // Filter out any null results from concept fetches
+      const filteredConcepts = allConcepts.filter(Boolean);
+
+      const rootConceptsResults = filteredConcepts.slice(0, rootConceptsS3Promises.length);
+      const conceptsResults = filteredConcepts.slice(rootConceptsS3Promises.length);
 
       setRootConcepts(rootConceptsResults);
       setConcepts(conceptsResults);
@@ -324,7 +346,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       <Heading level={2}>Targets</Heading>
                       <ExternalLink
                         url="https://form.jotform.com/233542296946365"
-                        className="block text-sm my-4 md:my-0 hover:text-blue-600"
+                        className="block text-sm my-4 md:my-0 underline text-blue-600 hover:text-blue-800"
                         cy="download-target-csv"
                       >
                         Request to download all target data (.csv)
@@ -335,7 +357,10 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                         message={
                           <>
                             We are developing the ability to detect targets in documents.{" "}
-                            <ExternalLink url="https://form.jotform.com/233294139336358">Get notified when this is ready</ExternalLink>.
+                            <ExternalLink url="https://form.jotform.com/233294139336358" className="underline text-blue-600 hover:text-blue-800">
+                              Get notified when this is ready
+                            </ExternalLink>
+                            .
                           </>
                         }
                         icon={<AlertCircleIcon height="16" width="16" />}
@@ -431,7 +456,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           </SingleCol>
           {/* TODO: use a panel for this */}
           {concepts.length > 0 && (
-            <div className="grow-0 shrink-0 px-5 border-l pt-5 w-[460px] text-sm">
+            <div className="border-gray-200 grow-0 shrink-0 px-5 border-l pt-5 w-[460px] text-sm">
               <ConceptsHead></ConceptsHead>
               {rootConcepts.map((rootConcept) => {
                 const hasConceptsInRootConcept = concepts.filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id));

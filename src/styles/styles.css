@@ -229,16 +229,6 @@ input[type="search"]::-webkit-search-results-decoration {
   position: relative;
 }
 
-.subnav-active:after,
-.tabbed-nav__active:after {
-  content: "";
-  position: absolute;
-  left: 0;
-  height: 2px;
-  width: 100%;
-  @apply invisible md:visible bg-blue-600 -bottom-2;
-}
-
 .tabbed-nav__active {
   @apply text-blue-600 font-medium;
 }
@@ -251,7 +241,7 @@ input[type="search"]::-webkit-search-results-decoration {
 
 /* Tooltips styles to override the default */
 .customTooltip {
-  @apply z-50 text-sm bg-nearBlack border-nearBlack rounded-lg leading-5 max-w-[300px] opacity-100 pointer-events-auto;
+  @apply z-50! text-sm! bg-nearBlack! border-nearBlack! rounded-lg! leading-5! max-w-[300px]! opacity-100! pointer-events-auto!;
 }
 .customTooltip:hover {
   visibility: visible !important;

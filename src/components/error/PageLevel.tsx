@@ -22,7 +22,9 @@ const PageLevel = ({ resetError }: TProps) => {
           </div>
           <p>
             If this doesn't work, report a problem by emailing{" "}
-            <ExternalLink url="mailto:support@climatepolicyradar.org">support@climatepolicyradar.org</ExternalLink>
+            <ExternalLink url="mailto:support@climatepolicyradar.org" className="underline text-blue-600 hover:text-blue-800">
+              support@climatepolicyradar.org
+            </ExternalLink>
           </p>
         </div>
       </section>
