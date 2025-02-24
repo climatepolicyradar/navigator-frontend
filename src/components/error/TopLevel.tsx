@@ -18,11 +18,11 @@ const TopLevel = ({ resetError }: TProps) => {
       </div>
       <p>
         If this doesn't work,{" "}
-        <a className="underline" href="/">
+        <a className="underline text-blue-600 hover:text-blue-800" href="/">
           return to the homepage
         </a>{" "}
         or report a problem by emailing:{" "}
-        <ExternalLink className="underline" url="mailto:support@climatepolicyradar.org">
+        <ExternalLink className="underline text-blue-600 hover:text-blue-800" url="mailto:support@climatepolicyradar.org">
           support@climatepolicyradar.org
         </ExternalLink>
       </p>

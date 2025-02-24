@@ -107,7 +107,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
               message={
                 <>
                   Any English translations of this document have been provided by Google Cloud Translate. They may not be 100% accurate.{" "}
-                  <ExternalLink url="https://form.jotform.com/233293886694373">
+                  <ExternalLink url="https://form.jotform.com/233293886694373" className="underline text-blue-600 hover:text-blue-800">
                     Get notified when full document translations are available.
                   </ExternalLink>
                 </>
