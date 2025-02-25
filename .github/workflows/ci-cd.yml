@@ -1,0 +1,177 @@
+name: CI/CD
+
+on:
+  push:
+    tags: [v*]
+    branches:
+      - main
+  pull_request:
+    # By default, a workflow only runs when a pull_request event's activity type is opened,
+    # synchronize, or reopened.
+    types: [opened, synchronize, reopened, edited]
+    branches:
+      - main
+
+permissions: read-all
+
+jobs:
+  check-auto-tagging-will-work:
+    if: |
+      github.event_name == 'pull_request' &&
+      (! startsWith(github.ref, 'refs/tags') && ! startsWith(github.ref, 'refs/heads/main'))
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/check-auto-tagging-will-work.yml@v17
+
+  code-quality:
+    if: |
+      ! cancelled() && always() &&
+      (needs.check-auto-tagging-will-work.result == 'skipped' || needs.check-auto-tagging-will-work.result == 'success') &&
+      ! startsWith(github.ref, 'refs/tags')
+    needs:
+      - check-auto-tagging-will-work
+    permissions:
+      # For trunk to post annotations
+      checks: write
+      # For repo checkout
+      contents: read
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/node-precommit-validator.yml@v17
+    with:
+      node-version: 22.12.0
+      package-manager: npm
+
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies
+        run: npm ci
+      - name: Copy .env
+        run: cp .env.example .env
+      - name: Build app
+        run: npm run build
+        env:
+          NODE_ENV: production
+      - name: Run tests
+        run: npm run test
+
+  test-e2e:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - name: Install dependencies
+        run: npm ci
+      - name: Copy .env
+        run: cp .env.example .env
+      - name: Build app
+        run: npm run build
+        env:
+          NODE_ENV: production
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  theme-factory:
+    if: |
+      ! cancelled() && always() && (needs.code-quality.result == 'success')
+    needs:
+      - code-quality
+    strategy:
+      fail-fast: false
+      matrix:
+        theme: [cpr, cclw, mcf]
+    permissions:
+      contents: write
+    secrets: inherit
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/theme-factory.yml@main
+    with:
+      repo-name: navigator-frontend
+      theme: ${{ matrix.theme }}
+
+  release:
+    if: ${{ ! cancelled() && always() && needs.theme-factory.result == 'success' && needs.theme-factory.outputs.new_tag != 'Skip' }}
+    needs: theme-factory
+    permissions:
+      contents: write
+    uses: climatepolicyradar/reusable-workflows/.github/workflows/release.yml@v6
+
+  # everything below here is moving towards a new workflow
+  # and will superscede `release`
+  deploy:
+    needs: release
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        theme: [cpr, cclw, mcf]
+    steps:
+      - name: Build
+        run: |
+          export THEME=${{ matrix.theme }}
+          make build
+      # TODO: We need to run a test phase here - but for now we're relying on the previous deploy steps that run the tests
+      - name: Release
+        uses: climatepolicyradar/retag-and-push-to-ecr@v1
+        env:
+          DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        with:
+          # This is then used in navigator-infra
+          repo-name: navigator-frontend-${{ matrix.theme }}
+          semver-tag: ${{ github.sha }}
+      # TODO:👇 remove this block once we are happy with test coverage
+      # Checks to see if the commit was from a PR merge
+      # and that that PR was labelled `deploy`
+      - name: Get PR information
+        id: pr-info
+        run: |
+          PR_NUMBER=$(curl -s ${{ github.event.repository.url }}/commits/${{ github.sha }}/pulls \
+            -H "Accept: application/vnd.github.groot-preview+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            | jq '.[0].number')
+
+          if [ "$PR_NUMBER" != "null" ]; then
+            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+            echo "was_pr_merge=true" >> $GITHUB_OUTPUT
+          else
+            echo "was_pr_merge=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Check PR labels
+        if: steps.pr-info.outputs.was_pr_merge == 'true'
+        id: check-deploy-on-merge-label
+        run: |
+          LABELS=$(curl -s ${{ github.event.repository.url }}/pulls/${{ steps.pr-info.outputs.pr_number }} \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            | jq '.labels[].name')
+
+          if echo "$LABELS" | grep -q '"deploy"'; then
+            echo "deploy=true" >> $GITHUB_OUTPUT
+          else
+            echo "deploy=false" >> $GITHUB_OUTPUT
+          fi
+      # TODO:👆 remove this block once we are happy with test coverage
+      - name: Deploy
+        if: steps.check-deploy-on-merge-label.outputs.deploy == 'true'
+        uses: ./.github/workflows/deploy.yml
+        with:
+          # This is currently from the user jamesgorrie
+          # TODO: use tech@climatepolicyradar.org user for this
+          github-token: ${{ secrets.NAVIGATOR_INFRA_GITHUB_PAT }}
+          environment: production
+          docker-tag: ${{ github.sha }}
+          theme: ${{ matrix.theme }}
