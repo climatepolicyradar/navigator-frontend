@@ -65,7 +65,7 @@ const handleFilterDisplay = (
     case "region":
       filterLabel = handleCountryRegion(value, regions);
       break;
-    case "concept_filters.name":
+    case "concept_name":
       filterLabel = handleConceptName(value, concepts);
       break;
     case "exact_match":

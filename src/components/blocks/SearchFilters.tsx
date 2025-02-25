@@ -155,10 +155,10 @@ const SearchFilters = ({
       {conceptsData && (
         <>
           <Accordian
-            title={getFilterLabel("Concept", "concept", query[QUERY_PARAMS["concept_filters.name"]], themeConfig)}
+            title={getFilterLabel("Concept", "concept", query[QUERY_PARAMS.concept_name], themeConfig)}
             data-cy="concepts"
             key="Concepts"
-            startOpen={!!query[QUERY_PARAMS["concept_filters.name"]]}
+            startOpen={!!query[QUERY_PARAMS.concept_name]}
             overflowOverride
             className="relative z-11"
             isBeta={!!conceptsData}
@@ -169,7 +169,7 @@ const SearchFilters = ({
                 selectedList={conceptFilters}
                 keyField="preferred_label"
                 keyFieldDisplay="preferred_label"
-                filterType={QUERY_PARAMS["concept_filters.name"]}
+                filterType={QUERY_PARAMS.concept_name}
                 handleFilterChange={(type, value) => {
                   handleConceptChange(value);
                 }}

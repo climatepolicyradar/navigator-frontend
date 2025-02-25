@@ -101,7 +101,7 @@ export const ConceptsDocumentViewer = ({
     () => ({
       [QUERY_PARAMS.query_string]: state.queryTerm,
       [QUERY_PARAMS.exact_match]: state.isExactSearch ? "true" : undefined,
-      [QUERY_PARAMS["concept_filters.name"]]: initialConceptFilters
+      [QUERY_PARAMS.concept_name]: initialConceptFilters
         ? Array.isArray(initialConceptFilters)
           ? initialConceptFilters
           : [initialConceptFilters]
@@ -396,8 +396,8 @@ export const ConceptsDocumentViewer = ({
                   <EmptyPassages
                     hasQueryString={
                       !!searchQueryParams[QUERY_PARAMS.query_string] &&
-                      !!searchQueryParams[QUERY_PARAMS["concept_filters.id"]] &&
-                      !!searchQueryParams[QUERY_PARAMS["concept_filters.name"]]
+                      !!searchQueryParams[QUERY_PARAMS.concept_id] &&
+                      !!searchQueryParams[QUERY_PARAMS.concept_name]
                     }
                   />
                 )}

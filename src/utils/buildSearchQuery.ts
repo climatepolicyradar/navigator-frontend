@@ -3,7 +3,7 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 
 import { buildSearchQueryMetadata } from "./buildSearchQueryMetadata";
 
-import { TSearchCriteria, TSearchKeywordFilters, TThemeConfig } from "@types";
+import { TSearchConceptFilters, TSearchCriteria, TSearchKeywordFilters, TThemeConfig } from "@types";
 
 export type TRouterQuery = {
   [key: string]: string | string[];
@@ -20,6 +20,7 @@ export default function buildSearchQuery(
   noOfPassagesPerDoc: number = undefined
 ): TSearchCriteria {
   const keyword_filters: TSearchKeywordFilters = {};
+  const concept_filters: TSearchConceptFilters = {};
   let query = { ...initialSearchCriteria, runSearch: true };
 
   // don't build a query object if we are not provided with a config
@@ -52,23 +53,14 @@ export default function buildSearchQuery(
     }
   }
 
-  if (routerQuery[QUERY_PARAMS["concept_filters.id"]]) {
-    const conceptFilters = routerQuery[QUERY_PARAMS["concept_filters.id"]];
-    query.concept_filters = Array.isArray(conceptFilters)
-      ? conceptFilters.map((id) => ({
-          name: "id",
-          value: id,
-        }))
-      : [{ name: "id", value: conceptFilters }];
+  if (routerQuery[QUERY_PARAMS.concept_id]) {
+    const conceptIds = routerQuery[QUERY_PARAMS.concept_id];
+    concept_filters.ids = Array.isArray(conceptIds) ? conceptIds : [conceptIds];
   }
-  if (routerQuery[QUERY_PARAMS["concept_filters.name"]]) {
-    const conceptFilters = routerQuery[QUERY_PARAMS["concept_filters.name"]];
-    query.concept_filters = Array.isArray(conceptFilters)
-      ? conceptFilters.map((name) => ({
-          name: "name",
-          value: name,
-        }))
-      : [{ name: "name", value: conceptFilters }];
+
+  if (routerQuery[QUERY_PARAMS.concept_name]) {
+    const conceptNames = routerQuery[QUERY_PARAMS.concept_name];
+    concept_filters.names = Array.isArray(conceptNames) ? conceptNames : [conceptNames];
   }
 
   if (routerQuery[QUERY_PARAMS.category]) {

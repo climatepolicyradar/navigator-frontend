@@ -278,7 +278,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   };
 
   const handleConceptChange = (concept: string) => {
-    router.query[QUERY_PARAMS["concept_filters.name"]] = concept;
+    router.query[QUERY_PARAMS.concept_name] = concept;
     router.push({ query: router.query });
     resetCSVStatus();
   };

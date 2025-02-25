@@ -6,6 +6,11 @@ export type TSearchKeywordFilters = {
   countries?: string[];
 };
 
+export type TSearchConceptFilters = {
+  names?: string[];
+  ids?: string[];
+};
+
 export type TSearchCriteriaMeta = {
   name: string;
   value: string;
