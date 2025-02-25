@@ -46,9 +46,11 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
             <InputRadio
               key={option.slug}
               label={option.label}
+              // @ts-expect-error -- TODO(strict)
               checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option.slug)}
               onChange={() => null} // supress normal radio behaviour to allow to deselection
               onClick={() => {
+                // @ts-expect-error -- TODO(strict)
                 handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug, true);
               }}
               name={`${filter.taxonomyKey}=${option.slug}`}
@@ -57,8 +59,10 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
             <InputCheck
               key={option.slug}
               label={option.label}
+              // @ts-expect-error -- TODO(strict)
               checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option.slug)}
               onChange={() => {
+                // @ts-expect-error -- TODO(strict)
                 handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug);
               }}
               name={`${filter.taxonomyKey}=${option.slug}`}
@@ -81,23 +85,31 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
   } else if (filter.dependentFilterKey) {
     // Check whether the filter has a dependanct filter, if it does load the taxonomy values for the dependent filter
     const dependentFilter = themeConfig.filters.find((f) => f.taxonomyKey === filter.dependentFilterKey);
+    // @ts-expect-error -- TODO(strict)
     const queryDependentFilter = query[QUERY_PARAMS[dependentFilter?.taxonomyKey]] || [];
     // If no filter of a given dependency is selected, load all dependency taxonomy values
     if (queryDependentFilter.length === 0) {
+      // @ts-expect-error -- TODO(strict)
       for (let index = 0; index < dependentFilter.options.length; index++) {
+        // @ts-expect-error -- TODO(strict)
         const option = dependentFilter.options[index];
+        // @ts-expect-error -- TODO(strict)
         const taxonomyAllowedValues = getTaxonomyAllowedValues(option.corporaKey, filter.taxonomyKey, corpus_types);
         options = options.concat(taxonomyAllowedValues);
       }
     } else {
       // Otherwise, load the taxonomy values for the selected dependency filter(s)
       if (typeof queryDependentFilter === "string") {
+        // @ts-expect-error -- TODO(strict)
         const filterCorporaKey = dependentFilter.options.find((option) => option.slug === queryDependentFilter)?.corporaKey;
+        // @ts-expect-error -- TODO(strict)
         const taxonomyAllowedValues = getTaxonomyAllowedValues(filterCorporaKey, filter.taxonomyKey, corpus_types);
         options = options.concat(taxonomyAllowedValues);
       } else {
         for (let index = 0; index < queryDependentFilter.length; index++) {
+          // @ts-expect-error -- TODO(strict)
           const filterCorporaKey = dependentFilter.options.find((option) => option.slug === queryDependentFilter[index])?.corporaKey;
+          // @ts-expect-error -- TODO(strict)
           const taxonomyAllowedValues = getTaxonomyAllowedValues(filterCorporaKey, filter.taxonomyKey, corpus_types);
           options = options.concat(taxonomyAllowedValues);
         }
@@ -113,9 +125,11 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
       <InputRadio
         key={option}
         label={option}
+        // @ts-expect-error -- TODO(strict)
         checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option)}
         onChange={() => null} // supress normal radio behaviour to allow to deselection
         onClick={() => {
+          // @ts-expect-error -- TODO(strict)
           handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option, true);
         }}
         name={`${filter.taxonomyKey}=${option}`}
@@ -124,8 +138,10 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
       <InputCheck
         key={option}
         label={option}
+        // @ts-expect-error -- TODO(strict)
         checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option)}
         onChange={() => {
+          // @ts-expect-error -- TODO(strict)
           handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option);
         }}
         name={`${filter.taxonomyKey}=${option}`}
