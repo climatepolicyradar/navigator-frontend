@@ -95,8 +95,6 @@ jobs:
           export THEME=${{ matrix.theme }}
           make build
       # release
-      - id: determine_next_tag
-        uses: climatepolicyradar/get-next-tag-from-pr-body@v4
       - name: Release to ECR
         uses: climatepolicyradar/retag-and-push-to-ecr@v1
         env:
@@ -105,9 +103,21 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
           repo-name: navigator-frontend-${{ matrix.theme }}
-          semver-tag: ${{ steps.determine_next_tag.outputs.new_tag }}
+          semver-tag: ${{ github.sha }}
   create-git-release:
+    runs-on: ubuntu-latest
     needs: [deploy]
-    uses:
-      climatepolicyradar/reusable-workflows/.github/workflows/git.yml@main
+    steps:
+      - uses: actions/checkout@v4
+      - name: Release to GitHub
+        id: create-github-release
+        uses: ncipollo/release-action@v1.14.0
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          generateReleaseNotes: true
+          makeLatest: true
+          prerelease: false
+          tag: ${{ github.sha }}
+
+      - run: echo "upload_url=${{ steps.create-github-release.outputs.upload_url }}" >> "$GITHUB_OUTPUT"
       # TODO: deploy
