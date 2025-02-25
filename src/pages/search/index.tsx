@@ -567,7 +567,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const client = new ApiClient(process.env.CONCEPTS_API_URL);
     const conceptsV1 = featureFlags["concepts-v1"];
     if (conceptsV1) {
-      const { data: returnedData } = await client.get(`/concepts/search?q=`);
+      const { data: returnedData } = await client.get(`/concepts/search?limit=10000&q=`);
       conceptsData = returnedData;
     }
   } catch (error) {
