@@ -98,7 +98,9 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const breadcrumbGeography =
     page.geographies && page.geographies.length > 1 ? null : { label: geographyName, href: `/geographies/${geographySlug}` };
 
+  // @ts-expect-error -- TODO(strict)
   let searchFamily: TMatchedFamily = null;
+  // @ts-expect-error -- TODO(strict)
   const { status, families } = useSearch(router.query, page.import_id, null, !!router.query[QUERY_PARAMS.query_string], MAX_PASSAGES);
   if (!!router.query[QUERY_PARAMS.query_string]) {
     families.forEach((family) => {
@@ -161,6 +163,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   // Search handlers
   const handleSearchInput = (term: string) => {
     const queryObj = {};
+    // @ts-expect-error -- TODO(strict)
     queryObj[QUERY_PARAMS.query_string] = term;
     if (term === "") return false;
     // if the family only has one main document, redirect to that document
@@ -199,6 +202,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   const conceptCountsById = conceptCounts.reduce((acc, { conceptKey, count }) => {
     const conceptId = conceptKey.split(":")[0];
+    // @ts-expect-error -- TODO(strict)
     acc[conceptId] = count;
     return acc;
   }, {});
@@ -215,6 +219,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           // Return a minimal object to allow partial processing
           return {
             wikibase_id: conceptId,
+            // @ts-expect-error -- TODO(strict)
             preferred_label: ROOT_LEVEL_CONCEPTS[conceptId] || "Other",
             description: "Concept data unavailable",
             subconcept_of: [],
@@ -249,6 +254,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   });
 
   return (
+    // @ts-expect-error -- TODO(strict)
     <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)} theme={theme}>
       <Script id="analytics">
         analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "
@@ -261,6 +267,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
         data-analytics-geography={page.geographies?.join(",")}
       >
         <SubNav>
+          {/* @ts-expect-error -- TODO(strict) */}
           <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={page.title} />
         </SubNav>
         <MultiCol>
@@ -490,6 +497,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                   data-cy="view-document-viewer-concept"
                                   extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
                                 >
+                                  {/* @ts-expect-error -- TODO(strict) */}
                                   {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
                                 </Button>
                               </Link>
@@ -516,6 +524,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const featureFlags = await getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
+  // @ts-expect-error -- TODO(strict)
   const id = context.params.id;
   const client = new ApiClient(process.env.API_URL);
 
@@ -539,6 +548,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // TODO: handle error more elegantly
   }
 
+  // @ts-expect-error -- TODO(strict)
   if (familyData) {
     try {
       const targetsRaw = await axios.get<TTarget[]>(`${process.env.S3_PATH}/families/${familyData.import_id}.json`);
@@ -546,6 +556,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     } catch (error) {}
   }
 
+  // @ts-expect-error -- TODO(strict)
   if (familyData) {
     try {
       const configRaw = await client.getConfig();
@@ -554,7 +565,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       corpus_types = configRaw.data.corpus_types;
     } catch (error) {}
   }
-
+  // @ts-expect-error -- TODO(strict)
   if (!familyData) {
     return {
       notFound: true,
@@ -566,9 +577,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       page: familyData,
       targets: targetsData,
       countries: countriesData,
+      // @ts-expect-error -- TODO(strict)
       corpus_types,
       theme: theme,
       featureFlags,
+      // @ts-expect-error -- TODO(strict)
       vespaFamilyData: vespaFamilyData ?? null,
     },
   };

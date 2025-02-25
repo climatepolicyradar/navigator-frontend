@@ -67,6 +67,7 @@ const SearchFilters = ({
   const [showClear, setShowClear] = useState(false);
 
   const {
+    // @ts-expect-error -- TODO(strict)
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
   } = searchCriteria;
 
@@ -103,10 +104,12 @@ const SearchFilters = ({
       </div>
 
       <AppliedFilters filterChange={handleFilterChange} />
-
+      {/* @ts-expect-error -- TODO(strict) */}
       {themeConfigStatus === "success" && themeConfig.categories && (
+        // @ts-expect-error -- TODO(strict)
         <Accordian title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
           <InputListContainer>
+            {/* @ts-expect-error -- TODO(strict) */}
             {themeConfig.categories?.options?.map((option) => (
               <InputRadio
                 key={option.slug}
@@ -115,6 +118,7 @@ const SearchFilters = ({
                 onChange={() => {
                   handleDocumentCategoryClick(option.slug);
                 }}
+                // @ts-expect-error -- TODO(strict)
                 name={`${themeConfig.categories.label}-${option.slug}`}
               />
             ))}
@@ -123,14 +127,17 @@ const SearchFilters = ({
       )}
 
       {themeConfigStatus === "success" &&
+        // @ts-expect-error -- TODO(strict)
         themeConfig.filters.map((filter) => {
           // If the filter is not in the selected category, don't display it
+          // @ts-expect-error -- TODO(strict)
           if (!canDisplayFilter(filter, query, themeConfig)) return;
           return (
             <Accordian
               title={filter.label}
               data-cy={filter.label}
               key={filter.label}
+              // @ts-expect-error -- TODO(strict)
               startOpen={filter.startOpen === "true" || !!query[QUERY_PARAMS[filter.taxonomyKey]]}
               showFade={filter.showFade}
             >
@@ -140,6 +147,7 @@ const SearchFilters = ({
                   query={query}
                   handleFilterChange={handleFilterChange}
                   corpus_types={corpus_types}
+                  // @ts-expect-error -- TODO(strict)
                   themeConfig={themeConfig}
                 />
               </InputListContainer>
@@ -148,6 +156,7 @@ const SearchFilters = ({
         })}
 
       <Accordian
+        // @ts-expect-error -- TODO(strict)
         title={getFilterLabel("Region", "region", query[QUERY_PARAMS.category], themeConfig)}
         data-cy="regions"
         startOpen={!!query[QUERY_PARAMS.region]}
@@ -168,6 +177,7 @@ const SearchFilters = ({
       </Accordian>
 
       <Accordian
+        // @ts-expect-error -- TODO(strict)
         title={getFilterLabel("Published jurisdiction", "country", query[QUERY_PARAMS.category], themeConfig)}
         data-cy="countries"
         overflowOverride
@@ -186,6 +196,7 @@ const SearchFilters = ({
       </Accordian>
 
       <Accordian
+        // @ts-expect-error -- TODO(strict)
         title={getFilterLabel("Date", "date", query[QUERY_PARAMS.category], themeConfig)}
         data-cy="date-range"
         startOpen={!!query[QUERY_PARAMS.year_range]}
