@@ -52,7 +52,6 @@ import { MultiCol } from "@components/panels/MultiCol";
 import { useEffectOnce } from "@hooks/useEffectOnce";
 import { ConceptsHead } from "@components/concepts/ConceptsHead";
 import { getConceptStoreLink } from "@utils/getConceptStoreLink";
-import { fetchConcepts } from "@utils/processConcepts";
 
 type TProps = {
   page: TFamilyPage;
@@ -213,6 +212,15 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
       setConcepts(concepts);
     });
   });
+
+  let conceptDocumentLink: string | undefined;
+  if (mainDocuments.length > 0) {
+    conceptDocumentLink = `/documents/${mainDocuments[0].slug}`;
+  } else if (otherDocuments.length > 0) {
+    conceptDocumentLink = `/documents/${otherDocuments[0].slug}`;
+  } else {
+    conceptDocumentLink = undefined;
+  }
 
   return (
     <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)} theme={theme}>
@@ -447,18 +455,26 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                         .map((concept) => {
                           return (
                             <li key={concept.wikibase_id}>
-                              <Link
-                                className="capitalize hover:no-underline"
-                                href={`/documents/${mainDocuments[0].slug}?cfn=${concept.preferred_label}`}
-                              >
+                              {conceptDocumentLink ? (
+                                <Link className="capitalize hover:no-underline" href={`${conceptDocumentLink}?cfn=${concept.preferred_label}`}>
+                                  <Button
+                                    color="clear"
+                                    data-cy="view-document-viewer-concept"
+                                    extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
+                                  >
+                                    {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
+                                  </Button>
+                                </Link>
+                              ) : (
                                 <Button
                                   color="clear"
                                   data-cy="view-document-viewer-concept"
                                   extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
+                                  disabled
                                 >
                                   {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
                                 </Button>
-                              </Link>
+                              )}
                             </li>
                           );
                         })}
