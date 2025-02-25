@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { ParsedUrlQuery } from "querystring";
 
 import useGetThemeConfig from "@hooks/useThemeConfig";
-
+import { Label } from "@components/labels/Label";
 import { DateRange } from "../filters/DateRange";
 import { Accordian } from "@components/accordian/Accordian";
 import { InputListContainer } from "@components/filters/InputListContainer";
@@ -72,7 +72,7 @@ const SearchFilters = ({
 
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
-    concept_filters: conceptFilters = [],
+    concept_filters: { names: conceptFilters = [] },
   } = searchCriteria;
 
   const thisYear = currentYear();
@@ -161,7 +161,7 @@ const SearchFilters = ({
             startOpen={!!query[QUERY_PARAMS.concept_name]}
             overflowOverride
             className="relative z-11"
-            isBeta={!!conceptsData}
+            headContent={!!conceptsData && <Label>Beta</Label>}
           >
             <InputListContainer>
               <TypeAhead

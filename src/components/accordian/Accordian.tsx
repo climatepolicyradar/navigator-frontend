@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Heading } from "./Heading";
 
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
-import { Label } from "@components/labels/Label";
 
 type TProps = {
   title: string;
@@ -14,7 +13,7 @@ type TProps = {
   className?: string;
   showFade?: "true" | "false";
   fixedHeight?: string;
-  isBeta?: boolean;
+  headContent?: React.ReactNode;
 };
 
 export const Accordian = ({
@@ -24,7 +23,7 @@ export const Accordian = ({
   fixedHeight = "300px",
   children,
   showFade = "false",
-  isBeta = false,
+  headContent,
   ...props
 }: TProps) => {
   const [isOpen, setIsOpen] = useState(startOpen);
@@ -34,7 +33,7 @@ export const Accordian = ({
       <div className={`flex justify-between cursor-pointer group`} onClick={() => setIsOpen(!isOpen)} data-cy="accordian-control">
         <div className="flex items-center gap-2">
           <Heading>{title}</Heading>
-          {isBeta && <Label>Beta</Label>}
+          {headContent}
         </div>
         <span className={`text-textDark opacity-40 group-hover:opacity-100 ${isOpen ? "" : ""}`}>
           {isOpen ? <AiOutlineMinus /> : <AiOutlinePlus />}
