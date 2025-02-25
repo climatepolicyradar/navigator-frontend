@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { ParsedUrlQueryInput } from "querystring";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdOutlineTune } from "react-icons/md";
 
 import useConfig from "@hooks/useConfig";
