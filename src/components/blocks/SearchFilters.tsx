@@ -71,7 +71,6 @@ const SearchFilters = ({
 }: TSearchFiltersProps) => {
   const { status: themeConfigStatus, themeConfig } = useGetThemeConfig();
   const [showClear, setShowClear] = useState(false);
-  const [showConceptClear, setShowConceptClear] = useState(false);
 
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
@@ -96,17 +95,6 @@ const SearchFilters = ({
     }
   }, [query]);
 
-  // Show clear button if there are concepts applied
-  useEffect(() => {
-    if (query && Object.keys(query).length > 0) {
-      if (query[QUERY_PARAMS["concept_filters.id"]] || query[QUERY_PARAMS["concept_filters.name"]]) {
-        setShowConceptClear(true);
-      } else setShowConceptClear(false);
-    } else {
-      setShowConceptClear(false);
-    }
-  }, [query]);
-
   return (
     <div id="search_filters" data-cy="seach-filters" className="text-sm text-textNormal flex flex-col gap-5">
       {themeConfigStatus === "loading" && <Loader size="20px" />}
@@ -121,7 +109,7 @@ const SearchFilters = ({
         )}
       </div>
 
-      <AppliedFilters filterChange={handleFilterChange} />
+      <AppliedFilters filterChange={handleFilterChange} concepts={conceptsData} />
 
       {themeConfigStatus === "success" && themeConfig.categories && (
         <Accordian title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
@@ -189,16 +177,6 @@ const SearchFilters = ({
                 }}
               />
             </InputListContainer>
-            {showConceptClear && (
-              <div className="flex justify-end mt-2">
-                <button
-                  className="anchor underline text-sm"
-                  onClick={() => handleConceptRemove(query[QUERY_PARAMS["concept_filters.name"]] as string)}
-                >
-                  Clear
-                </button>
-              </div>
-            )}
           </Accordian>
         </>
       )}
