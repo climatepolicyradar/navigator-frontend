@@ -421,7 +421,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                   handleYearChange={handleYearChange}
                   handleRegionChange={handleRegionChange}
                   handleConceptChange={handleConceptChange}
-                  handleConceptRemove={handleConceptRemove}
                   handleClearSearch={handleClearSearch}
                   handleDocumentCategoryClick={handleDocumentCategoryClick}
                 />
@@ -446,7 +445,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
                 handleConceptChange={handleConceptChange}
-                handleConceptRemove={handleConceptRemove}
                 handleClearSearch={handleClearSearch}
                 handleDocumentCategoryClick={handleDocumentCategoryClick}
               />
