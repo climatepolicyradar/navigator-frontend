@@ -491,10 +491,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           return (
                             <li key={concept.wikibase_id}>
                               {conceptDocumentLink ? (
-                                <Link
-                                  className="capitalize hover:no-underline"
-                                  href={`/documents/${conceptDocumentLink}?cfn=${concept.preferred_label}`}
-                                >
+                                <Link className="capitalize hover:no-underline" href={`${conceptDocumentLink}?cfn=${concept.preferred_label}`}>
                                   <Button
                                     color="clear"
                                     data-cy="view-document-viewer-concept"
