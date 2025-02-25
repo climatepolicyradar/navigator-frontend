@@ -172,11 +172,6 @@ const SearchFilters = ({
             className="relative z-11"
             isBeta={!!conceptsData}
           >
-            {showClear && (
-              <button className="anchor underline text-sm" onClick={handleClearSearch}>
-                Clear
-              </button>
-            )}
             <InputListContainer>
               <TypeAhead
                 list={conceptsData}
@@ -189,6 +184,13 @@ const SearchFilters = ({
                 }}
               />
             </InputListContainer>
+            {showClear && (
+              <div className="flex justify-end mt-2">
+                <button className="anchor underline text-sm" onClick={handleClearSearch}>
+                  Clear
+                </button>
+              </div>
+            )}
           </Accordian>
         </>
       )}
