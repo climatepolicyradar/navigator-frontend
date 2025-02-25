@@ -287,14 +287,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     resetCSVStatus();
   };
 
-  const handleConceptRemove = (concept: string) => {
-    if (concept === "") return false;
-    const queryObj = { ...router.query };
-    delete queryObj[QUERY_PARAMS["concept_filters.name"]];
-    delete queryObj[QUERY_PARAMS["concept_filters.id"]];
-    router.push({ query: queryObj });
-  };
-
   const handleYearChange = (values: string[], reset = false) => {
     const newVals = values.map((value) => Number(value).toFixed(0));
     handleSearchChange(QUERY_PARAMS.year_range, newVals, reset);

@@ -48,7 +48,6 @@ type TSearchFiltersProps = {
   handleFilterChange(type: string, value: string, clearOthersOfType?: boolean): void;
   handleYearChange(values: string[], reset?: boolean): void;
   handleRegionChange(region: string): void;
-  handleConceptRemove(concept: string): void;
   handleConceptChange(concept: string): void;
   handleClearSearch(): void;
   handleDocumentCategoryClick(value: string): void;
@@ -65,7 +64,6 @@ const SearchFilters = ({
   handleYearChange,
   handleRegionChange,
   handleConceptChange,
-  handleConceptRemove,
   handleClearSearch,
   handleDocumentCategoryClick,
 }: TSearchFiltersProps) => {
