@@ -364,7 +364,7 @@ export const ConceptsDocumentViewer = ({
                     )}
                     {initialQueryTerm && (
                       <>
-                        <div className="my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
+                        <div className="border-gray-200 my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
                           <div className="mb-2">
                             Displaying {renderPassageCount(state.totalNoOfMatches)} for "
                             <span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
