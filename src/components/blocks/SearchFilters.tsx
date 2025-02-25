@@ -72,7 +72,7 @@ const SearchFilters = ({
 
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
-    concept_filters: { names: conceptFilters = [] },
+    concept_filters: conceptFilters = [],
   } = searchCriteria;
 
   const thisYear = currentYear();
@@ -166,7 +166,7 @@ const SearchFilters = ({
             <InputListContainer>
               <TypeAhead
                 list={conceptsData}
-                selectedList={conceptFilters}
+                selectedList={conceptFilters.map((concept) => concept.value)}
                 keyField="preferred_label"
                 keyFieldDisplay="preferred_label"
                 filterType={QUERY_PARAMS.concept_name}

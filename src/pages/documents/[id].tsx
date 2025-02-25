@@ -228,7 +228,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
 
         const queryObj = { ...router.query };
 
-        // If no concept filters remain, remove the concept_filters.name query param entirely
+        // If no concept filters remain, remove the concept_name query param entirely
         if (updatedConceptFilters.length === 0) {
           delete queryObj[QUERY_PARAMS.concept_name];
         } else {
