@@ -27,6 +27,9 @@ const handleCountryRegion = (slug: string, dataSet: TGeography[]) => {
 };
 
 const handleConceptName = (label: string, concepts: TConcept[]) => {
+  if (!concepts) {
+    return label;
+  }
   return getConceptName(label, concepts);
 };
 
