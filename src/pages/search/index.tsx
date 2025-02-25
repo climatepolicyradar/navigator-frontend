@@ -279,10 +279,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
 
   const handleConceptChange = (concept: string) => {
     router.query[QUERY_PARAMS["concept_filters.name"]] = concept;
-    // Default search is all categories, so we do not need to provide any concept if we want all
-    if (concept === "All") {
-      delete router.query[QUERY_PARAMS["concept_filters.name"]];
-    }
     router.push({ query: router.query });
     resetCSVStatus();
   };
