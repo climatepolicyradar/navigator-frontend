@@ -81,6 +81,7 @@ const SearchFilters = ({
 
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
+    concept_filters: conceptFilters = [],
   } = searchCriteria;
 
   const thisYear = currentYear();
@@ -161,28 +162,35 @@ const SearchFilters = ({
         })}
 
       {conceptsData && (
-        <Accordian
-          title={getFilterLabel("Concept", "concept", query[QUERY_PARAMS["concept_filters.name"]], themeConfig)}
-          data-cy="concepts"
-          key="Concepts"
-          startOpen={!!query[QUERY_PARAMS["concept_filters.name"]]}
-          isBeta={!!conceptsData}
-        >
-          <InputListContainer>
-            {conceptsData?.map((concept) => (
-              <InputRadio
-                key={concept.wikibase_id}
-                label={concept.preferred_label}
-                // checked={false}
-                checked={query && isConceptChecked(query[QUERY_PARAMS["concept_filters.name"]] as string, concept)}
-                onChange={() => {
-                  handleConceptChange(concept.preferred_label);
+        <>
+          <Accordian
+            title={getFilterLabel("Concept", "concept", query[QUERY_PARAMS["concept_filters.name"]], themeConfig)}
+            data-cy="concepts"
+            key="Concepts"
+            startOpen={!!query[QUERY_PARAMS["concept_filters.name"]]}
+            overflowOverride
+            className="relative z-11"
+            isBeta={!!conceptsData}
+          >
+            {showClear && (
+              <button className="anchor underline text-sm" onClick={handleClearSearch}>
+                Clear
+              </button>
+            )}
+            <InputListContainer>
+              <TypeAhead
+                list={conceptsData}
+                selectedList={conceptFilters}
+                keyField="preferred_label"
+                keyFieldDisplay="preferred_label"
+                filterType={QUERY_PARAMS["concept_filters.name"]}
+                handleFilterChange={(type, value) => {
+                  handleConceptChange(value);
                 }}
-                name={`concept-${concept.wikibase_id}`}
               />
-            ))}
-          </InputListContainer>
-        </Accordian>
+            </InputListContainer>
+          </Accordian>
+        </>
       )}
 
       <Accordian
