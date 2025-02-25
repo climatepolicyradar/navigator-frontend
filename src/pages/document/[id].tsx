@@ -249,10 +249,12 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   });
 
   let conceptDocumentLink: string | undefined;
-  if (mainDocuments.length === 1) {
+  if (mainDocuments.length > 0) {
     conceptDocumentLink = `/documents/${mainDocuments[0].slug}`;
-  } else if (mainDocuments.length === 0 && otherDocuments.length === 1) {
+  } else if (otherDocuments.length > 0) {
     conceptDocumentLink = `/documents/${otherDocuments[0].slug}`;
+  } else {
+    conceptDocumentLink = undefined;
   }
 
   return (
@@ -488,18 +490,29 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                         .map((concept) => {
                           return (
                             <li key={concept.wikibase_id}>
-                              <Link
-                                className="capitalize hover:no-underline"
-                                href={`/documents/${conceptDocumentLink}?cfn=${concept.preferred_label}`}
-                              >
+                              {conceptDocumentLink ? (
+                                <Link
+                                  className="capitalize hover:no-underline"
+                                  href={`/documents/${conceptDocumentLink}?cfn=${concept.preferred_label}`}
+                                >
+                                  <Button
+                                    color="clear"
+                                    data-cy="view-document-viewer-concept"
+                                    extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
+                                  >
+                                    {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
+                                  </Button>
+                                </Link>
+                              ) : (
                                 <Button
                                   color="clear"
                                   data-cy="view-document-viewer-concept"
                                   extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
+                                  disabled
                                 >
                                   {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
                                 </Button>
-                              </Link>
+                              )}
                             </li>
                           );
                         })}
