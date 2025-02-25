@@ -15,5 +15,5 @@ export const initialSearchCriteria: TSearchCriteria = {
   offset: 0,
   corpus_import_ids: [],
   metadata: [],
-  concept_filters: {},
+  concept_filters: [],
 };
