@@ -6,8 +6,6 @@ on:
 
 # trunk-ignore(checkov/CKV2_GHA_1)
 permissions: write-all
-env:
-  NODE_ENV: production
 jobs:
   percy:
     runs-on: ubuntu-latest
@@ -21,6 +19,8 @@ jobs:
       - run: npm install
       - run: cp .env.example .env
       - run: npm run build
+        env:
+          NODE_ENV: production
       - run: npm run start &
       - run: |
           echo "Waiting for server to start..."
@@ -51,6 +51,8 @@ jobs:
       - run: npm install
       - run: cp .env.example .env
       - run: npm run build
+        env:
+          NODE_ENV: production
       - run: npm run test
 
   test-e2e:
@@ -64,6 +66,8 @@ jobs:
       - run: npm ci
       - run: cp .env.example .env
       - run: npm run build
+        env:
+          NODE_ENV: production
       - run: npx playwright install --with-deps
       - run: npx playwright test
       - uses: actions/upload-artifact@v4
