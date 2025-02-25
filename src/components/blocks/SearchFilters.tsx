@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { ParsedUrlQuery } from "querystring";
 
 import useGetThemeConfig from "@hooks/useThemeConfig";
@@ -38,15 +38,6 @@ const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCate
   return false;
 };
 
-const isConceptChecked = (selectedConceptLabel: string | undefined, concept: TConcept) => {
-  if (selectedConceptLabel) {
-    if (selectedConceptLabel.toLowerCase() === concept.preferred_label.toLowerCase()) {
-      return true;
-    }
-  }
-  return false;
-};
-
 type TSearchFiltersProps = {
   searchCriteria: TSearchCriteria;
   query: ParsedUrlQuery;
@@ -57,6 +48,7 @@ type TSearchFiltersProps = {
   handleFilterChange(type: string, value: string, clearOthersOfType?: boolean): void;
   handleYearChange(values: string[], reset?: boolean): void;
   handleRegionChange(region: string): void;
+  handleConceptRemove(concept: string): void;
   handleConceptChange(concept: string): void;
   handleClearSearch(): void;
   handleDocumentCategoryClick(value: string): void;
@@ -73,11 +65,13 @@ const SearchFilters = ({
   handleYearChange,
   handleRegionChange,
   handleConceptChange,
+  handleConceptRemove,
   handleClearSearch,
   handleDocumentCategoryClick,
 }: TSearchFiltersProps) => {
   const { status: themeConfigStatus, themeConfig } = useGetThemeConfig();
   const [showClear, setShowClear] = useState(false);
+  const [showConceptClear, setShowConceptClear] = useState(false);
 
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
@@ -99,6 +93,17 @@ const SearchFilters = ({
       } else setShowClear(true);
     } else {
       setShowClear(false);
+    }
+  }, [query]);
+
+  // Show clear button if there are concepts applied
+  useEffect(() => {
+    if (query && Object.keys(query).length > 0) {
+      if (query[QUERY_PARAMS["concept_filters.id"]] || query[QUERY_PARAMS["concept_filters.name"]]) {
+        setShowConceptClear(true);
+      } else setShowConceptClear(false);
+    } else {
+      setShowConceptClear(false);
     }
   }, [query]);
 
@@ -184,9 +189,12 @@ const SearchFilters = ({
                 }}
               />
             </InputListContainer>
-            {showClear && (
+            {showConceptClear && (
               <div className="flex justify-end mt-2">
-                <button className="anchor underline text-sm" onClick={handleClearSearch}>
+                <button
+                  className="anchor underline text-sm"
+                  onClick={() => handleConceptRemove(query[QUERY_PARAMS["concept_filters.name"]] as string)}
+                >
                   Clear
                 </button>
               </div>

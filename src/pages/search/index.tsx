@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { ParsedUrlQueryInput } from "querystring";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MdOutlineTune } from "react-icons/md";
 
 import useConfig from "@hooks/useConfig";
@@ -287,6 +287,14 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     resetCSVStatus();
   };
 
+  const handleConceptRemove = (concept: string) => {
+    if (concept === "") return false;
+    const queryObj = { ...router.query };
+    delete queryObj[QUERY_PARAMS["concept_filters.name"]];
+    delete queryObj[QUERY_PARAMS["concept_filters.id"]];
+    router.push({ query: queryObj });
+  };
+
   const handleYearChange = (values: string[], reset = false) => {
     const newVals = values.map((value) => Number(value).toFixed(0));
     handleSearchChange(QUERY_PARAMS.year_range, newVals, reset);
@@ -421,6 +429,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                   handleYearChange={handleYearChange}
                   handleRegionChange={handleRegionChange}
                   handleConceptChange={handleConceptChange}
+                  handleConceptRemove={handleConceptRemove}
                   handleClearSearch={handleClearSearch}
                   handleDocumentCategoryClick={handleDocumentCategoryClick}
                 />
@@ -445,6 +454,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
                 handleConceptChange={handleConceptChange}
+                handleConceptRemove={handleConceptRemove}
                 handleClearSearch={handleClearSearch}
                 handleDocumentCategoryClick={handleDocumentCategoryClick}
               />
