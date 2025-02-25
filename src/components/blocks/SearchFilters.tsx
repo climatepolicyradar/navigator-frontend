@@ -21,7 +21,7 @@ import { getCountriesFromRegions } from "@helpers/getCountriesFromRegions";
 import { canDisplayFilter } from "@utils/canDisplayFilter";
 import { getFilterLabel } from "@utils/getFilterLabel";
 
-import { TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@types";
+import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@types";
 import dynamic from "next/dynamic";
 
 const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/components/MethodologyLink`));
@@ -38,15 +38,26 @@ const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCate
   return false;
 };
 
+const isConceptChecked = (selectedConceptLabel: string | undefined, concept: TConcept) => {
+  if (selectedConceptLabel) {
+    if (selectedConceptLabel.toLowerCase() === concept.preferred_label.toLowerCase()) {
+      return true;
+    }
+  }
+  return false;
+};
+
 type TSearchFiltersProps = {
   searchCriteria: TSearchCriteria;
   query: ParsedUrlQuery;
   regions: TGeography[];
   countries: TGeography[];
   corpus_types: TCorpusTypeDictionary;
+  conceptsData?: TConcept[];
   handleFilterChange(type: string, value: string, clearOthersOfType?: boolean): void;
   handleYearChange(values: string[], reset?: boolean): void;
   handleRegionChange(region: string): void;
+  handleConceptChange(concept: string): void;
   handleClearSearch(): void;
   handleDocumentCategoryClick(value: string): void;
 };
@@ -57,9 +68,11 @@ const SearchFilters = ({
   regions,
   countries,
   corpus_types,
+  conceptsData,
   handleFilterChange,
   handleYearChange,
   handleRegionChange,
+  handleConceptChange,
   handleClearSearch,
   handleDocumentCategoryClick,
 }: TSearchFiltersProps) => {
@@ -146,6 +159,30 @@ const SearchFilters = ({
             </Accordian>
           );
         })}
+
+      {conceptsData && (
+        <Accordian
+          title={getFilterLabel("Concept", "concept", query[QUERY_PARAMS["concept_filters.name"]], themeConfig)}
+          data-cy="concepts"
+          key="Concepts"
+          startOpen={!!query[QUERY_PARAMS["concept_filters.name"]]}
+        >
+          <InputListContainer>
+            {conceptsData?.map((concept) => (
+              <InputRadio
+                key={concept.wikibase_id}
+                label={concept.preferred_label}
+                // checked={false}
+                checked={query && isConceptChecked(query[QUERY_PARAMS["concept_filters.name"]] as string, concept)}
+                onChange={() => {
+                  handleConceptChange(concept.preferred_label);
+                }}
+                name={`concept-${concept.wikibase_id}`}
+              />
+            ))}
+          </InputListContainer>
+        </Accordian>
+      )}
 
       <Accordian
         title={getFilterLabel("Region", "region", query[QUERY_PARAMS.category], themeConfig)}
