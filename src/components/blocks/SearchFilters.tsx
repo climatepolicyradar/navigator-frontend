@@ -166,6 +166,7 @@ const SearchFilters = ({
           data-cy="concepts"
           key="Concepts"
           startOpen={!!query[QUERY_PARAMS["concept_filters.name"]]}
+          isBeta={!!conceptsData}
         >
           <InputListContainer>
             {conceptsData?.map((concept) => (
