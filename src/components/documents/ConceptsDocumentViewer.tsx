@@ -34,6 +34,7 @@ type TProps = {
   onQueryTermChange?: (queryTerm: string) => void;
   onExactMatchChange?: (isExact: boolean) => void;
   onConceptClick?: (conceptLabel: string) => void;
+  onClear?: () => void;
 };
 
 const passageClasses = (docType: string) => {
@@ -59,6 +60,7 @@ export const ConceptsDocumentViewer = ({
   onQueryTermChange,
   onExactMatchChange,
   onConceptClick,
+  onClear,
 }: TProps) => {
   const [showSearchOptions, setShowSearchOptions] = useState(false);
   const [showConceptFilter, setShowConceptFilter] = useState(false);
@@ -163,12 +165,14 @@ export const ConceptsDocumentViewer = ({
 
   const handleClearSearch = useCallback(() => {
     setState({
+      passageMatches: [],
+      totalNoOfMatches: 0,
+      passageIndex: 0,
       queryTerm: "",
       isExactSearch: false,
     });
-    onQueryTermChange?.("");
-    onExactMatchChange?.(false);
-  }, [onQueryTermChange, onExactMatchChange]);
+    onClear();
+  }, [onClear]);
 
   return (
     <>

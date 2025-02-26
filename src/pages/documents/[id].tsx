@@ -266,6 +266,17 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     });
   });
 
+  const handleClearSearch = useCallback(() => {
+    router.push({
+      pathname: `/documents/${document.slug}`,
+      query: {},
+    });
+
+    setPassageMatches([]);
+    setTotalNoOfMatches(0);
+    setPassageIndex(0);
+  }, [router, document.slug]);
+
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
       <section
@@ -402,6 +413,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
             onQueryTermChange={handleQueryTermChange}
             onExactMatchChange={handleExactMatchChange}
             onConceptClick={handleConceptClick}
+            onClear={handleClearSearch}
           />
         )}
       </section>
