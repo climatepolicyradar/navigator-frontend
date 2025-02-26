@@ -102,7 +102,7 @@ export const ConceptsDocumentViewer = ({
     () => ({
       [QUERY_PARAMS.query_string]: state.queryTerm,
       [QUERY_PARAMS.exact_match]: state.isExactSearch ? "true" : undefined,
-      [QUERY_PARAMS["concept_filters.name"]]: initialConceptFilters
+      [QUERY_PARAMS.concept_name]: initialConceptFilters
         ? Array.isArray(initialConceptFilters)
           ? initialConceptFilters
           : [initialConceptFilters]
@@ -294,7 +294,7 @@ export const ConceptsDocumentViewer = ({
                     )}
                     {initialQueryTerm && (
                       <>
-                        <div className="my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
+                        <div className="border-gray-200 my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
                           <div className="mb-2">
                             Displaying {renderPassageCount(state.totalNoOfMatches)} for "
                             <span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
@@ -326,8 +326,8 @@ export const ConceptsDocumentViewer = ({
                   <EmptyPassages
                     hasQueryString={
                       !!searchQueryParams[QUERY_PARAMS.query_string] &&
-                      !!searchQueryParams[QUERY_PARAMS["concept_filters.id"]] &&
-                      !!searchQueryParams[QUERY_PARAMS["concept_filters.name"]]
+                      !!searchQueryParams[QUERY_PARAMS.concept_id] &&
+                      !!searchQueryParams[QUERY_PARAMS.concept_name]
                     }
                   />
                 )}
