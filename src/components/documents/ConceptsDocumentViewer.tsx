@@ -264,22 +264,23 @@ export const ConceptsDocumentViewer = ({
                   )}
 
                   {selectedConcepts.length > 0 && (
-                    <div className="pt-6 pb-6">
+                    <div className="pt-4 pb-4">
                       <p className="mb-2 capitalize text-[15px] font-bold text-inputSelected text-neutral-800 text-base font-medium leading-normal flex-grow">
                         {selectedConcepts.map((concept) => concept.preferred_label).join(", ")}
                       </p>
-                      {selectedConcepts.map((concept) => (
-                        <p key={concept.wikibase_id} className="pt-1 pb-1">
-                          {concept.description}
-                        </p>
-                      ))}
+                      {selectedConcepts.length <= 1 &&
+                        selectedConcepts.map((concept) => (
+                          <p key={concept.wikibase_id} className="pt-1 pb-1">
+                            {concept.description}
+                          </p>
+                        ))}
                     </div>
                   )}
                 </div>
 
                 {state.totalNoOfMatches > 0 && (
                   <>
-                    <div className="border-gray-200 my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
+                    <div className="border-gray-200 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
                       <div className="mb-2">
                         Displaying {renderPassageCount(state.totalNoOfMatches)}{" "}
                         {initialQueryTerm && (
