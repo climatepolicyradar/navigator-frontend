@@ -20,7 +20,7 @@ import { ExternalLink } from "@components/ExternalLink";
 import { Targets } from "@components/Targets";
 import { ShowHide } from "@components/controls/ShowHide";
 import { Divider } from "@components/dividers/Divider";
-import { DownChevronIcon, AlertCircleIcon, ExternalLinkIcon } from "@components/svg/Icons";
+import { Icon } from "@components/icon/Icon";
 import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
@@ -343,7 +343,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                             .
                           </>
                         }
-                        icon={<AlertCircleIcon height="16" width="16" />}
+                        icon={<Icon name="alertCircle" height="16" width="16" />}
                       />
                     </div>
                     <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} />
@@ -356,7 +356,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       extraClasses="flex gap-2 items-center my-5"
                       onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
                     >
-                      <DownChevronIcon /> View more targets
+                      <Icon name="downChevron" /> View more targets
                     </Button>
                   </div>
                 )}
@@ -365,7 +365,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                   <div>
                     <Button color="secondary" extraClasses="flex gap-2 items-center my-5" onClick={() => setNumberOfTargetsToDisplay(5)}>
                       <div className="rotate-180">
-                        <DownChevronIcon />
+                        <Icon name="downChevron" />
                       </div>{" "}
                       Hide targets
                     </Button>

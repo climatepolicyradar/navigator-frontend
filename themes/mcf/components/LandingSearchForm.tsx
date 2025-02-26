@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 
-import { Search2Icon } from "@components/svg/Icons";
+import { Icon } from "@components/icon/Icon";
 import { SearchDropdown } from "@components/forms/SearchDropdown";
 import Button from "@components/buttons/Button";
 
@@ -64,7 +64,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
           />
           <button className="custom-search-button" onClick={() => handleSearchInput(term)} aria-label="Search">
             <span className="block">
-              <Search2Icon height="24" width="24" />
+              <Icon name="search2" height="24" width="24" />
             </span>
           </button>
           <SearchDropdown term={term} show={formFocus} handleSearchClick={handleSearchInput} largeSpacing />
