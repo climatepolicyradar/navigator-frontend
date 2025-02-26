@@ -102,7 +102,7 @@ export const ConceptsDocumentViewer = ({
   const searchQueryParams = useMemo(
     () => ({
       [QUERY_PARAMS.query_string]: state.queryTerm,
-      [QUERY_PARAMS.exact_match]: state.isExactSearch ? "true" : undefined,
+      [QUERY_PARAMS.exact_match]: state.isExactSearch ? "true" : "false",
       [QUERY_PARAMS.concept_name]: initialConceptFilters
         ? Array.isArray(initialConceptFilters)
           ? initialConceptFilters
@@ -158,6 +158,7 @@ export const ConceptsDocumentViewer = ({
         isExactSearch: exactBool,
         passageIndex: 0,
       });
+      setShowSearchOptions(false);
       onExactMatchChange?.(exactBool);
     },
     [onExactMatchChange]
