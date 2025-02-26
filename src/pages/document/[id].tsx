@@ -47,11 +47,10 @@ import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
 import { getFeatureFlags } from "@utils/featureFlags";
-import { ROOT_LEVEL_CONCEPTS, rootLevelConceptsIds } from "@utils/processConcepts";
+import { fetchAndProcessConcepts, ROOT_LEVEL_CONCEPTS, rootLevelConceptsIds } from "@utils/processConcepts";
 import { MultiCol } from "@components/panels/MultiCol";
 import { useEffectOnce } from "@hooks/useEffectOnce";
-import { ConceptsHead } from "@components/concepts/ConceptsHead";
-import { getConceptStoreLink } from "@utils/getConceptStoreLink";
+import { ConceptsPanel } from "@components/concepts/ConceptsPanel";
 
 type TProps = {
   page: TFamilyPage;
@@ -204,58 +203,30 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   }, {});
 
   useEffectOnce(() => {
-    /** Get `rootConcepts` */
-    const rootConceptsS3Promises = rootLevelConceptsIds.map((conceptId) => {
+    fetchAndProcessConcepts(conceptIds, (conceptId) => {
       const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
-      return fetch(url)
-        .then((response) => {
-          return response.json();
-        })
-        .catch((error) => {
-          // Return a minimal object to allow partial processing
-          return {
-            wikibase_id: conceptId,
-            preferred_label: ROOT_LEVEL_CONCEPTS[conceptId] || "Other",
-            description: "Concept data unavailable",
-            subconcept_of: [],
-          };
-        });
-    });
-
-    /** Get concepts associated with the family */
-    const conceptsS3Promises = conceptIds.map((conceptId) => {
-      const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
-      return fetch(url)
-        .then((response) => {
-          return response.json();
-        })
-        .catch((error) => {
-          // Return null to allow filtering out failed fetches
-          return null;
-        });
-    });
-
-    /** Get `rootConcepts` and `concepts` from S3 */
-    Promise.all([...rootConceptsS3Promises, ...conceptsS3Promises]).then((allConcepts) => {
-      // Filter out any null results from concept fetches
-      const filteredConcepts = allConcepts.filter(Boolean);
-
-      const rootConceptsResults = filteredConcepts.slice(0, rootConceptsS3Promises.length);
-      const conceptsResults = filteredConcepts.slice(rootConceptsS3Promises.length);
-
-      setRootConcepts(rootConceptsResults);
-      setConcepts(conceptsResults);
+      return fetch(url).then((response) => response.json());
+    }).then(({ rootConcepts, concepts }) => {
+      setRootConcepts(rootConcepts);
+      setConcepts(concepts);
     });
   });
 
-  let conceptDocumentLink: string | undefined;
-  if (mainDocuments.length > 0) {
-    conceptDocumentLink = `/documents/${mainDocuments[0].slug}`;
-  } else if (otherDocuments.length > 0) {
-    conceptDocumentLink = `/documents/${otherDocuments[0].slug}`;
-  } else {
-    conceptDocumentLink = undefined;
-  }
+  const handleConceptClick = (conceptLabel: string) => {
+    let conceptDocumentLink: string | undefined;
+    if (mainDocuments.length > 0) {
+      conceptDocumentLink = `/documents/${mainDocuments[0].slug}`;
+    } else if (otherDocuments.length > 0) {
+      conceptDocumentLink = `/documents/${otherDocuments[0].slug}`;
+    } else {
+      conceptDocumentLink = undefined;
+    }
+
+    if (conceptDocumentLink) {
+      const url = `${conceptDocumentLink}?cfn=${encodeURIComponent(conceptLabel)}`;
+      router.push(url);
+    }
+  };
 
   return (
     <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)} theme={theme}>
@@ -463,60 +434,14 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               </section>
             ))}
           </SingleCol>
-          {/* TODO: use a panel for this */}
           {concepts.length > 0 && (
             <div className="border-gray-200 grow-0 shrink-0 px-5 border-l pt-5 w-[460px] text-sm">
-              <ConceptsHead></ConceptsHead>
-              {rootConcepts.map((rootConcept) => {
-                const hasConceptsInRootConcept = concepts.filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
-                if (hasConceptsInRootConcept.length === 0) return null;
-                return (
-                  <div key={rootConcept.wikibase_id} className="pt-6 pb-6 relative">
-                    <div className="flex items-center gap-2">
-                      <p className="capitalize text-neutral-800 text-base font-medium leading-normal flex-grow">{rootConcept.preferred_label}</p>
-                      {getConceptStoreLink(rootConcept.wikibase_id) && (
-                        <ExternalLink
-                          url={getConceptStoreLink(rootConcept.wikibase_id)}
-                          className="text-gray-500 hover:text-blue-600 flex items-center absolute right-0 top-6"
-                        >
-                          <ExternalLinkIcon height="12" width="12" />
-                        </ExternalLink>
-                      )}
-                    </div>
-                    <p className="pt-1 pb-1">{rootConcept.description}</p>
-                    <ul className="flex flex-wrap gap-2 mt-4">
-                      {concepts
-                        .filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id))
-                        .map((concept) => {
-                          return (
-                            <li key={concept.wikibase_id}>
-                              {conceptDocumentLink ? (
-                                <Link className="capitalize hover:no-underline" href={`${conceptDocumentLink}?cfn=${concept.preferred_label}`}>
-                                  <Button
-                                    color="clear"
-                                    data-cy="view-document-viewer-concept"
-                                    extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
-                                  >
-                                    {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
-                                  </Button>
-                                </Link>
-                              ) : (
-                                <Button
-                                  color="clear"
-                                  data-cy="view-document-viewer-concept"
-                                  extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
-                                  disabled
-                                >
-                                  {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
-                                </Button>
-                              )}
-                            </li>
-                          );
-                        })}
-                    </ul>
-                  </div>
-                );
-              })}
+              <ConceptsPanel
+                rootConcepts={rootConcepts}
+                concepts={concepts}
+                conceptCountsById={conceptCountsById}
+                onConceptClick={handleConceptClick}
+              ></ConceptsPanel>
             </div>
           )}
         </MultiCol>
