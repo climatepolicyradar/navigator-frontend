@@ -7,6 +7,9 @@ type TProps = {
   extraClasses?: string;
 };
 
+/**
+ * A pill with a remove button. Represents a search query parameter.
+ */
 const Pill = ({ children, onClick, extraClasses = "" }: TProps) => {
   const handleClick = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();
