@@ -1,8 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react";
-import { Icon } from "./Icon";
-import { allIcons, IconName } from "@components/svg/Icons";
-
-const allIconNames = Object.keys(allIcons) as IconName[];
+import { Icon, iconNames } from "./Icon";
 
 const meta = {
   title: "New/Icon",
@@ -13,7 +10,7 @@ const meta = {
   argTypes: {
     name: {
       control: "select",
-      options: allIconNames,
+      options: iconNames,
     },
   },
 } satisfies Meta<typeof Icon>;
@@ -27,7 +24,7 @@ export const AllIcons: Story = {
   },
   render: () => (
     <div className="grid grid-cols-6 gap-y-10">
-      {allIconNames.map((name) => (
+      {iconNames.map((name) => (
         <div key={name} className="flex flex-col items-center gap-1">
           <Icon name={name} height="40" width="40" />
           <span>{name}</span>
