@@ -135,7 +135,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   // Handlers to update router
   const handleQueryTermChange = useCallback(
     (queryTerm: string) => {
-      const queryObj = {};
+      const queryObj = { ...router.query };
       queryObj[QUERY_PARAMS.query_string] = queryTerm;
       router.push({
         pathname: `/documents/${document.slug}`,
@@ -147,9 +147,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
 
   const handleExactMatchChange = useCallback(
     (isExact: boolean) => {
-      const queryObj = {
-        [QUERY_PARAMS.query_string]: router.query[QUERY_PARAMS.query_string],
-      };
+      const queryObj = { ...router.query };
 
       if (isExact) {
         queryObj[QUERY_PARAMS.exact_match] = "true";
