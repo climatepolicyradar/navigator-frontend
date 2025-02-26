@@ -104,20 +104,4 @@ jobs:
         with:
           repo-name: navigator-frontend-${{ matrix.theme }}
           semver-tag: ${{ github.sha }}
-  create-git-release:
-    runs-on: ubuntu-latest
-    needs: [deploy]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Release to GitHub
-        id: create-github-release
-        uses: ncipollo/release-action@v1.14.0
-        with:
-          token: "${{ secrets.GITHUB_TOKEN }}"
-          generateReleaseNotes: true
-          makeLatest: true
-          prerelease: false
-          tag: ${{ github.sha }}
-
-      - run: echo "upload_url=${{ steps.create-github-release.outputs.upload_url }}" >> "$GITHUB_OUTPUT"
       # TODO: deploy
