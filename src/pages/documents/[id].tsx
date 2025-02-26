@@ -83,11 +83,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     router.query,
     null,
     document.import_id,
-    !!(
-      router.query[QUERY_PARAMS.query_string] ||
-      router.query[QUERY_PARAMS["concept_filters.id"]] ||
-      router.query[QUERY_PARAMS["concept_filters.name"]]
-    ),
+    !!(router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]),
     MAX_PASSAGES
   );
 
@@ -213,7 +209,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
       .sort((a, b) => b.count - a.count);
   }, [vespaFamilyData]);
 
-  const conceptFiltersQuery = router.query[QUERY_PARAMS["concept_filters.name"]];
+  const conceptFiltersQuery = router.query[QUERY_PARAMS.concept_name];
   const conceptFilters = useMemo(
     () => (conceptFiltersQuery ? (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]) : undefined),
     [conceptFiltersQuery]
@@ -232,12 +228,12 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
 
         const queryObj = { ...router.query };
 
-        // If no concept filters remain, remove the concept_filters.name query param entirely
+        // If no concept filters remain, remove the concept_name query param entirely
         if (updatedConceptFilters.length === 0) {
-          delete queryObj[QUERY_PARAMS["concept_filters.name"]];
+          delete queryObj[QUERY_PARAMS.concept_name];
         } else {
           // Otherwise, update the concept filters
-          queryObj[QUERY_PARAMS["concept_filters.name"]] = updatedConceptFilters;
+          queryObj[QUERY_PARAMS.concept_name] = updatedConceptFilters;
         }
 
         router.push({
@@ -251,7 +247,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
       const updatedConceptFilters = [...currentConceptFilters, conceptLabel];
 
       const queryObj = { ...router.query };
-      queryObj[QUERY_PARAMS["concept_filters.name"]] = updatedConceptFilters;
+      queryObj[QUERY_PARAMS.concept_name] = updatedConceptFilters;
       router.push({
         pathname: `/documents/${document.slug}`,
         query: queryObj,

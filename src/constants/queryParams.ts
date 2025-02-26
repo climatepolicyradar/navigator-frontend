@@ -23,6 +23,6 @@ export const QUERY_PARAMS = {
   // Reports
   author_type: "at",
   // Pass through
-  "concept_filters.id": "cfi",
-  "concept_filters.name": "cfn",
+  concept_id: "cfi",
+  concept_name: "cfn",
 };
