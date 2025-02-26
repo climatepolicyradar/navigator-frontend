@@ -66,6 +66,7 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
       document_ids: searchQuery.document_ids,
       continuation_tokens: searchQuery.continuation_tokens,
       corpus_import_ids: searchQuery.corpus_import_ids,
+      concept_filters: searchQuery.concept_filters,
       metadata: searchQuery.metadata,
     };
 
