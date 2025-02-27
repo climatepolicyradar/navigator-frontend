@@ -10,7 +10,6 @@ import { ApiClient } from "@api/http-common";
 import useSearch from "@hooks/useSearch";
 
 import { SingleCol } from "@components/panels/SingleCol";
-import Link from "next/link";
 import Layout from "@components/layouts/Main";
 import { Timeline } from "@components/timeline/Timeline";
 import { Event } from "@components/timeline/Event";
@@ -20,7 +19,7 @@ import { ExternalLink } from "@components/ExternalLink";
 import { Targets } from "@components/Targets";
 import { ShowHide } from "@components/controls/ShowHide";
 import { Divider } from "@components/dividers/Divider";
-import { DownChevronIcon, AlertCircleIcon, ExternalLinkIcon } from "@components/svg/Icons";
+import { Icon } from "@components/icon/Icon";
 import Button from "@components/buttons/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
@@ -47,7 +46,7 @@ import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
 import { getFeatureFlags } from "@utils/featureFlags";
-import { fetchAndProcessConcepts, ROOT_LEVEL_CONCEPTS, rootLevelConceptsIds } from "@utils/processConcepts";
+import { fetchAndProcessConcepts } from "@utils/processConcepts";
 import { MultiCol } from "@components/panels/MultiCol";
 import { useEffectOnce } from "@hooks/useEffectOnce";
 import { ConceptsPanel } from "@components/concepts/ConceptsPanel";
@@ -343,7 +342,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                             .
                           </>
                         }
-                        icon={<AlertCircleIcon height="16" width="16" />}
+                        icon={<Icon name="alertCircle" height="16" width="16" />}
                       />
                     </div>
                     <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} />
@@ -356,7 +355,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       extraClasses="flex gap-2 items-center my-5"
                       onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
                     >
-                      <DownChevronIcon /> View more targets
+                      <Icon name="downChevron" /> View more targets
                     </Button>
                   </div>
                 )}
@@ -365,7 +364,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                   <div>
                     <Button color="secondary" extraClasses="flex gap-2 items-center my-5" onClick={() => setNumberOfTargetsToDisplay(5)}>
                       <div className="rotate-180">
-                        <DownChevronIcon />
+                        <Icon name="downChevron" />
                       </div>{" "}
                       Hide targets
                     </Button>
