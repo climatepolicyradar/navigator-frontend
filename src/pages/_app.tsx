@@ -12,7 +12,6 @@ import { AdobeContext } from "@context/AdobeContext";
 
 import { CookieConsent } from "@components/cookies/CookieConsent";
 import ErrorBoundary from "@components/error/ErrorBoundary";
-import { PostHogProvider } from "@context/PostHogProvider";
 
 const favicon = `/images/favicon/${process.env.THEME}.png`;
 
@@ -49,26 +48,19 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
   const dynamicTheme = theme ?? siteTheme;
   const dynamicAdobeKey = adobeApiKey ?? adobeKey;
 
-  const [consent, setConsent] = useState<boolean>();
-  const onConsentChange = (consent: boolean) => {
-    setConsent(consent);
-  };
-
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeContext.Provider value={dynamicTheme}>
         <AdobeContext.Provider value={dynamicAdobeKey}>
-          <PostHogProvider consent={consent}>
-            <ErrorBoundary level="top">
-              <Head>
-                <link rel="icon" href={favicon} />
-              </Head>
-              <div id={dynamicTheme} className="h-full">
-                <Component {...pageProps} />
-              </div>
-              <CookieConsent onConsentChange={onConsentChange} />
-            </ErrorBoundary>
-          </PostHogProvider>
+          <ErrorBoundary level="top">
+            <Head>
+              <link rel="icon" href={favicon} />
+            </Head>
+            <div id={dynamicTheme} className="h-full">
+              <Component {...pageProps} />
+            </div>
+            <CookieConsent />
+          </ErrorBoundary>
         </AdobeContext.Provider>
       </ThemeContext.Provider>
       {/* <ReactQueryDevtools initialIsOpen={false} /> */}
