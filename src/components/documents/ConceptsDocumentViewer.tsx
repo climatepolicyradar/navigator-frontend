@@ -63,7 +63,6 @@ export const ConceptsDocumentViewer = ({
   onClear,
 }: TProps) => {
   const [showSearchOptions, setShowSearchOptions] = useState(false);
-  const [showConceptFilter, setShowConceptFilter] = useState(false);
 
   const [state, setState] = useReducer((prev: any, next: Partial<any>) => ({ ...prev, ...next }), {
     passageIndex: initialPassage,
