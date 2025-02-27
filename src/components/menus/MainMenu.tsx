@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import useOutsideAlerter from "@hooks/useOutsideAlerter";
-import { MenuIcon } from "../svg/Icons";
+import { Icon } from "@components/icon/Icon";
 import DropdownMenuItem from "./DropdownMenuItem";
 import DropdownMenuWrapper from "./DropdownMenuWrapper";
 
@@ -21,7 +21,7 @@ const MainMenu = ({ iconClass = "text-white" }: TProps) => {
   return (
     <div ref={menuRef} className="relative z-[41]">
       <button data-cy="menu-icon" onClick={toggleMenu} className={iconClass} aria-label="Toggle menu">
-        <MenuIcon />
+        <Icon name="menu" />
       </button>
       {showMenu && (
         <div className="absolute right-0 z-50">

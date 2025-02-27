@@ -8,7 +8,7 @@ import { SiteWidth } from "@components/panels/SiteWidth";
 import { SubNav } from "@components/nav/SubNav";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import Button from "@components/buttons/Button";
-import { AlertCircleIcon } from "@components/svg/Icons";
+import { Icon } from "@components/icon/Icon";
 import { Alert } from "@components/Alert";
 import { ExternalLink } from "@components/ExternalLink";
 import { Heading } from "@components/typography/Heading";
@@ -112,7 +112,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
                   </ExternalLink>
                 </>
               }
-              icon={<AlertCircleIcon height="16" width="16" />}
+              icon={<Icon name="alertCircle" height="16" width="16" />}
             />
           </div>
         )}

@@ -13,7 +13,7 @@ import { Timeline } from "@components/timeline/Timeline";
 import { Event } from "@components/timeline/Event";
 import { CountryHeader } from "@components/blocks/CountryHeader";
 import { Divider } from "@components/dividers/Divider";
-import { DownChevronIcon, LegislativeIcon, AlertCircleIcon } from "@components/svg/Icons";
+import { Icon } from "@components/icon/Icon";
 import { FamilyListItem } from "@components/document/FamilyListItem";
 import { Targets } from "@components/Targets";
 import Button from "@components/buttons/Button";
@@ -310,7 +310,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                               .
                             </>
                           }
-                          icon={<AlertCircleIcon height="16" width="16" />}
+                          icon={<Icon name="alertCircle" height="16" width="16" />}
                         />
                       </div>
                       <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
@@ -323,7 +323,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                         extraClasses="flex gap-2 items-center my-6"
                         onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
                       >
-                        <DownChevronIcon /> View more targets
+                        <Icon name="downChevron" /> View more targets
                       </Button>
                       <Divider />
                     </div>
@@ -332,7 +332,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                     <div>
                       <Button color="secondary" extraClasses="flex gap-2 items-center my-6" onClick={() => setNumberOfTargetsToDisplay(5)}>
                         <div className="rotate-180">
-                          <DownChevronIcon />
+                          <Icon name="downChevron" />
                         </div>{" "}
                         Hide targets
                       </Button>

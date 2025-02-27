@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { SearchDropdown } from "./SearchDropdown";
 import { TextInput } from "./TextInput";
-import { Search2Icon } from "@components/svg/Icons";
+import { Icon } from "@components/icon/Icon";
 
 type TProps = {
   input?: string;
@@ -71,7 +71,7 @@ const SearchForm = ({ input, placeholder, size = "large", handleSearchInput, han
             name="search-input"
           >
             <button type="submit" className="flex cursor-pointer text-textDark" onClick={() => handleSearchButtonClick()} title="Click to search">
-              <Search2Icon width="20" height="20" />
+              <Icon name="search2" width="20" height="20" />
             </button>
           </TextInput>
         </div>

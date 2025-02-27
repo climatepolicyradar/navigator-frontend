@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import useConfig from "@hooks/useConfig";
-import { SearchIcon } from "@components/svg/Icons";
+import { Icon } from "@components/icon/Icon";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { TGeography } from "@types";
 import { systemGeoCodes } from "@constants/systemGeos";
@@ -88,7 +88,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
     >
       <a href="#" className={anchorClasses(!geographiesFiltered.length)} onClick={handleClick}>
         <span className="mr-2 w-[20px]">
-          <SearchIcon />
+          <Icon name="search" />
         </span>
         Search <span className="font-medium text-black mx-1">{term}</span> in all documents
       </a>

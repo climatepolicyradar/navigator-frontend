@@ -1,4 +1,4 @@
-import { CloseIcon } from "./svg/Icons";
+import { Icon } from "./icon/Icon";
 import { ToolTipSSR } from "@components/tooltip/TooltipSSR";
 
 type TProps = {
@@ -28,7 +28,7 @@ const Pill = ({ children, onClick, extraClasses = "" }: TProps) => {
       >
         {children}{" "}
         <span className="">
-          <CloseIcon width="8" height="8" />
+          <Icon name="close" width="8" height="8" />
         </span>
       </button>
       <ToolTipSSR id="tooltip" tooltip="Remove filter" />

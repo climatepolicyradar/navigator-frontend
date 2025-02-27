@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Loader from "./Loader";
 import { TPassage } from "@types";
-import { CopyIcon } from "./svg/Icons";
+import { Icon } from "./icon/Icon";
 
 type TProps = {
   passages: TPassage[];
@@ -50,7 +50,7 @@ const PassageMatches = ({ passages, onClick, activeIndex, pageColour = "textDark
                 <div className={`text-sm flex justify-between ${"text-" + pageColour}`}>
                   <span className="font-medium">{item.text_block_page !== null && <>Page {item.text_block_page}</>}</span>
                   <div className={`text-blue-400 ${hasCopied === index && "text-green-700"}`} onClick={(e) => copyOnClick(e, index, item.text)}>
-                    {hasCopied === index ? "Copied" : <CopyIcon width="16" height="16" />}
+                    {hasCopied === index ? "Copied" : <Icon name="copy" width="16" height="16" />}
                   </div>
                 </div>
                 <p className="mt-2 break-words">{item.text}</p>

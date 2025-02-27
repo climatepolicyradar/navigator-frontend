@@ -1,5 +1,5 @@
 import React from "react";
-import { CloseIcon } from "../svg/Icons";
+import { Icon } from "@components/icon/Icon";
 
 interface CloseProps {
   onClick(): void;
@@ -21,7 +21,7 @@ const Close = ({ onClick, size = "20" }: CloseProps) => {
       }}
       aria-label="Close"
     >
-      <CloseIcon height={size} width={size} />
+      <Icon name="close" height={size} width={size} />
     </button>
   );
 };

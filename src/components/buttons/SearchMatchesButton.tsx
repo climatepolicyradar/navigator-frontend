@@ -1,4 +1,4 @@
-import { DocumentMagnifyIcon } from "@components/svg/Icons";
+import { Icon } from "@components/icon/Icon";
 
 import { MAX_RESULTS } from "@constants/paging";
 
@@ -25,7 +25,7 @@ export const SearchMatchesButton = ({ count, dataAttribute, overideText, active,
       }`}
       aria-label={`View ${formatCount(count)} match${count > 1 ? "es" : ""} in documents`}
     >
-      <DocumentMagnifyIcon width="16" height="16" />
+      <Icon name="documentMagnify" width="16" height="16" />
       {overideText ? overideText : `${formatCount(count)} match${count > 1 ? "es" : ""} in documents`}
     </button>
   );

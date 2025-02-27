@@ -7,6 +7,7 @@ import { SiteWidth } from "@components/panels/SiteWidth";
 import { ExternalLink } from "@components/ExternalLink";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
+import { Icon } from "@components/icon/Icon";
 
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -62,7 +63,7 @@ export const Hero = () => {
               <div className="relative z-1 mb-4">
                 <button className="h-full absolute left-0 px-4" onClick={() => handleSubmit()} aria-label="Search">
                   <span className="block">
-                    <SearchIcon />
+                    <Icon name="search" />
                   </span>
                 </button>
                 <input

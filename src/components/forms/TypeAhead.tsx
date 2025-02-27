@@ -4,7 +4,7 @@ import SuggestList from "../filters/SuggestList";
 import { TextInput } from "./TextInput";
 
 import { sortData } from "@utils/sorting";
-import { Search2Icon } from "@components/svg/Icons";
+import { Icon } from "@components/icon/Icon";
 
 type TProps = {
   list: Object[];
@@ -49,7 +49,7 @@ export const TypeAhead = ({ list, selectedList, keyField, keyFieldDisplay, filte
         aria-label="Search for a jurisdiction"
         name="jurisdiction-search"
       >
-        <Search2Icon width="16" height="16" />
+        <Icon name="search2" width="16" height="16" />
       </TextInput>
       {suggestList.length > 0 && (
         <div className="absolute top-full left-0 w-full z-30 mt-[-1px]">

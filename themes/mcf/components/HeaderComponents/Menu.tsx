@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from "react";
 
 import useOutsideAlerter from "@hooks/useOutsideAlerter";
-import { MenuIcon } from "@components/svg/Icons";
+import { Icon } from "@components/icon/Icon";
 import DropdownMenuItem from "@components/menus/DropdownMenuItem";
 import DropdownMenuWrapper from "@components/menus/DropdownMenuWrapper";
 
@@ -21,7 +21,7 @@ export const Menu = () => {
   return (
     <div ref={menuRef} className="flex items-center relative z-[41]">
       <button data-cy="menu-icon" onClick={toggleMenu} aria-label="Toggle menu">
-        <MenuIcon color={colors.mcf.mainApp} width="32" height="32" />
+        <Icon name="menu" color={colors.mcf.mainApp} width="32" height="32" />
       </button>
       {showMenu && (
         <div className="absolute right-0 top-[100%] z-50">

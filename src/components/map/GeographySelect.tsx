@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SuggestList from "@components/filters/SuggestList";
 import { sortData } from "@utils/sorting";
-import { SearchIcon } from "@components/svg/Icons";
+import { Icon } from "@components/icon/Icon";
 
 interface ByTextInputProps {
   title: string;
@@ -41,7 +41,7 @@ const GeographySelect = ({ title, list, keyField, keyFieldDisplay, filterType, h
               suggestList.length > 0 ? "rounded-tl-lg" : "rounded-l-full"
             }`}
           >
-            <SearchIcon height="16" width="16" color="#475467" />
+            <Icon name="search" height="16" width="16" color="#475467" />
           </div>
         </div>
         <input
