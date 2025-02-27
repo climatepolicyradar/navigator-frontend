@@ -1,7 +1,3 @@
-import { ExternalLink } from "@components/ExternalLink";
-import { Heading } from "@components/typography/Heading";
-import { Label } from "@components/labels/Label";
-import { Quote } from "@components/typography/Quote";
 import { ConceptsHead } from "./ConceptsHead";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { ConceptsPopover } from "@components/popover/ConceptsPopover";
