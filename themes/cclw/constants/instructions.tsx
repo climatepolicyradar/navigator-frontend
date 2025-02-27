@@ -6,6 +6,7 @@ type TFamilyTotals = {
   laws: number;
   policies: number;
   unfccc: number;
+  reports: number;
 };
 
 const heroLinkClasses = "text-white flex items-start gap-1 hover:text-white hover:underline";
@@ -35,6 +36,14 @@ export const INSTRUCTIONS = (familyTotals: TFamilyTotals) => [
             <b>{familyTotals.unfccc}</b> UNFCCC submissions{" "}
             <span className="self-center">
               <Icon name="externalLink" height="12" width="12" />
+            </span>
+          </Link>
+        </li>
+        <li>
+          <Link href="/search?c=Reports" className={heroLinkClasses}>
+            <b>{familyTotals.reports}</b> Reports{" "}
+            <span className="self-center">
+              <ExternalLinkIcon height="12" width="12" />
             </span>
           </Link>
         </li>

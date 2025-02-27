@@ -5,6 +5,7 @@ export const calculateTotalFamilies = (corpus_types: TCorpusTypeDictionary) => {
     laws: 0,
     policies: 0,
     unfccc: 0,
+    reports: 0,
   };
 
   if (!corpus_types) return totals;
@@ -15,6 +16,7 @@ export const calculateTotalFamilies = (corpus_types: TCorpusTypeDictionary) => {
       totals.laws += corpus.count_by_category?.Legislative || 0;
       totals.policies += corpus.count_by_category?.Executive || 0;
       totals.unfccc += corpus.count_by_category?.UNFCCC || 0;
+      totals.reports += corpus.count_by_category?.Reports || 0;
     });
   });
 

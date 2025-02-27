@@ -10,7 +10,6 @@ import { ApiClient } from "@api/http-common";
 import useSearch from "@hooks/useSearch";
 
 import { SingleCol } from "@components/panels/SingleCol";
-import Link from "next/link";
 import Layout from "@components/layouts/Main";
 import { Timeline } from "@components/timeline/Timeline";
 import { Event } from "@components/timeline/Event";
@@ -47,7 +46,7 @@ import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
 import { getFeatureFlags } from "@utils/featureFlags";
-import { fetchAndProcessConcepts, ROOT_LEVEL_CONCEPTS, rootLevelConceptsIds } from "@utils/processConcepts";
+import { fetchAndProcessConcepts } from "@utils/processConcepts";
 import { MultiCol } from "@components/panels/MultiCol";
 import { useEffectOnce } from "@hooks/useEffectOnce";
 import { ConceptsPanel } from "@components/concepts/ConceptsPanel";

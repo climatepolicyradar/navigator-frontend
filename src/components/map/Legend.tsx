@@ -31,7 +31,7 @@ export const Legend = ({ max }: { max: number }) => {
           <p>{scale[4]}</p>
         </div>
       </div>
-      <p>Size and colour show the number of laws, policies{showMcf ? ", MCF projects" : ""} or UNFCCC submissions in our databases.</p>
+      <p>Size and colour show the number of laws, policies, reports{showMcf ? ", MCF projects" : ""} or UNFCCC submissions in our databases.</p>
     </div>
   );
 };
