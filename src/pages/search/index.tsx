@@ -170,6 +170,10 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
       delete router.query[QUERY_PARAMS.implementing_agency];
     }
 
+    if (type === QUERY_PARAMS.concept_name) {
+      queryCollection = Array.from(new Set(queryCollection)); // Remove duplicates
+    }
+
     router.query[type] = queryCollection;
     router.push({ query: router.query });
     resetCSVStatus();
@@ -230,7 +234,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
       delete router.query[QUERY_PARAMS.topic];
       delete router.query[QUERY_PARAMS.sector];
     }
-
+    delete router.query[QUERY_PARAMS.concept_id];
+    delete router.query[QUERY_PARAMS.concept_name];
     router.query[QUERY_PARAMS.category] = category;
     // Default search is all categories, so we do not need to provide any category if we want all
     if (category === "All") {
@@ -273,12 +278,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     if (!order) {
       delete router.query[QUERY_PARAMS.sort_order];
     }
-    router.push({ query: router.query });
-    resetCSVStatus();
-  };
-
-  const handleConceptChange = (concept: string) => {
-    router.query[QUERY_PARAMS.concept_name] = concept;
     router.push({ query: router.query });
     resetCSVStatus();
   };
@@ -416,7 +415,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                   handleFilterChange={handleFilterChange}
                   handleYearChange={handleYearChange}
                   handleRegionChange={handleRegionChange}
-                  handleConceptChange={handleConceptChange}
                   handleClearSearch={handleClearSearch}
                   handleDocumentCategoryClick={handleDocumentCategoryClick}
                 />
@@ -440,7 +438,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
-                handleConceptChange={handleConceptChange}
                 handleClearSearch={handleClearSearch}
                 handleDocumentCategoryClick={handleDocumentCategoryClick}
               />
