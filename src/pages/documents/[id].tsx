@@ -28,7 +28,7 @@ import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 
 import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@types";
 import { getFeatureFlags } from "@utils/featureFlags";
-import { fetchAndProcessConcepts, ROOT_LEVEL_CONCEPTS, rootLevelConceptsIds } from "@utils/processConcepts";
+import { fetchAndProcessConcepts } from "@utils/processConcepts";
 import { useEffectOnce } from "@hooks/useEffectOnce";
 import { ConceptsDocumentViewer } from "@components/documents/ConceptsDocumentViewer";
 
@@ -135,7 +135,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   // Handlers to update router
   const handleQueryTermChange = useCallback(
     (queryTerm: string) => {
-      const queryObj = {};
+      const queryObj = { ...router.query };
       queryObj[QUERY_PARAMS.query_string] = queryTerm;
       router.push({
         pathname: `/documents/${document.slug}`,
@@ -147,9 +147,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
 
   const handleExactMatchChange = useCallback(
     (isExact: boolean) => {
-      const queryObj = {
-        [QUERY_PARAMS.query_string]: router.query[QUERY_PARAMS.query_string],
-      };
+      const queryObj = { ...router.query };
 
       if (isExact) {
         queryObj[QUERY_PARAMS.exact_match] = "true";
@@ -267,6 +265,17 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
       setConcepts(concepts);
     });
   });
+
+  const handleClearSearch = useCallback(() => {
+    router.push({
+      pathname: `/documents/${document.slug}`,
+      query: {},
+    });
+
+    setPassageMatches([]);
+    setTotalNoOfMatches(0);
+    setPassageIndex(0);
+  }, [router, document.slug]);
 
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
@@ -404,6 +413,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
             onQueryTermChange={handleQueryTermChange}
             onExactMatchChange={handleExactMatchChange}
             onConceptClick={handleConceptClick}
+            onClear={handleClearSearch}
           />
         )}
       </section>
