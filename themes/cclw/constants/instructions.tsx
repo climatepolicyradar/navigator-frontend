@@ -43,7 +43,7 @@ export const INSTRUCTIONS = (familyTotals: TFamilyTotals) => [
           <Link href="/search?c=Reports" className={heroLinkClasses}>
             <b>{familyTotals.reports}</b> Reports{" "}
             <span className="self-center">
-              <ExternalLinkIcon height="12" width="12" />
+              <Icon name="externalLink" height="12" width="12" />
             </span>
           </Link>
         </li>
