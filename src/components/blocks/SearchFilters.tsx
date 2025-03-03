@@ -48,7 +48,6 @@ type TSearchFiltersProps = {
   handleFilterChange(type: string, value: string, clearOthersOfType?: boolean): void;
   handleYearChange(values: string[], reset?: boolean): void;
   handleRegionChange(region: string): void;
-  handleConceptChange(concept: string): void;
   handleClearSearch(): void;
   handleDocumentCategoryClick(value: string): void;
 };
@@ -63,7 +62,6 @@ const SearchFilters = ({
   handleFilterChange,
   handleYearChange,
   handleRegionChange,
-  handleConceptChange,
   handleClearSearch,
   handleDocumentCategoryClick,
 }: TSearchFiltersProps) => {
@@ -170,9 +168,7 @@ const SearchFilters = ({
                 keyField="preferred_label"
                 keyFieldDisplay="preferred_label"
                 filterType={QUERY_PARAMS.concept_name}
-                handleFilterChange={(type, value) => {
-                  handleConceptChange(value);
-                }}
+                handleFilterChange={handleFilterChange}
               />
             </InputListContainer>
           </Accordian>
