@@ -1,12 +1,12 @@
-import { Meta, StoryObj } from "@storybook/react/*";
-import { Button } from "./NewButton";
 import { Icon } from "@components/icon/Icon";
+import { Meta, StoryObj } from "@storybook/react/*";
 import { LuMoveUpRight } from "react-icons/lu";
 import OldButton from "./Button";
 import Close from "./Close";
 import FilterTag from "./FilterTag";
 import FilterToggle from "./FilterToggle";
 import MatchesButton from "./MatchesButton";
+import { Button } from "./NewButton";
 import { SearchMatchesButton } from "./SearchMatchesButton";
 
 const meta = {
