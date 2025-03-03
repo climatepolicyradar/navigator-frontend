@@ -24,23 +24,23 @@ type Story = StoryObj<typeof Button>;
 
 export default meta;
 
+export const Medium: Story = {
+  args: {
+    children: "Button",
+    color: "brand",
+    disabled: false,
+    size: "medium",
+    rounded: false,
+    variant: "solid",
+  },
+};
+
 export const Small: Story = {
   args: {
     children: "Small",
     color: "brand",
     disabled: false,
     size: "small",
-    rounded: false,
-    variant: "solid",
-  },
-};
-
-export const Medium: Story = {
-  args: {
-    children: "Medium",
-    color: "brand",
-    disabled: false,
-    size: "medium",
     rounded: false,
     variant: "solid",
   },
