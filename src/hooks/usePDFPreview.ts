@@ -1,6 +1,5 @@
 import ViewSDKClient from "@api/pdf";
 import { TPassage, TDocumentPage } from "@types";
-import { PDF_SCROLL_DELAY } from "@constants/document";
 
 function generateHighlights(document: TDocumentPage, documentPassageMatches: TPassage[]) {
   const date = new Date();
@@ -54,7 +53,7 @@ function generateHighlights(document: TDocumentPage, documentPassageMatches: TPa
   });
 }
 
-export default function usePDFPreview(physicalDocument: TDocumentPage, documentPassageMatches: TPassage[], adobeKey: string) {
+export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey: string) {
   const viewerConfig = {
     showDownloadPDF: false,
     showPrintPDF: false,
@@ -67,59 +66,58 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, documentP
 
   const annotationConfig = { showToolbar: false, showCommentsPanel: false, downloadWithAnnotations: true, printWithAnnotations: true };
 
-  let viewSDKClient = null;
-  let embedApi = null;
-  let annotationManagerApi = null;
+  let viewSDKClient_CACHE = null;
+  let embedApi_CACHE = null;
 
-  const createPDFClient = (startingPassage: number, onLoadCallback?: Function) => {
-    viewSDKClient = new ViewSDKClient();
-    viewSDKClient.ready().then(() => {
-      // Prevent attaching preview to non-existent div
-      const pdfDiv = document.getElementById("pdf-div");
-      if (!pdfDiv) return;
-      const previewFilePromise = viewSDKClient.previewFile(physicalDocument, adobeKey, "pdf-div", viewerConfig);
-      previewFilePromise.then((adobeViewer: any) => {
-        // PDF PREVIEW -- SHOULD BE VISIBLE NOW
-        adobeViewer.getAPIs().then((api: any) => {
-          embedApi = api;
-          // if we have a passage index, scroll to it
-          if (!isNaN(Number(startingPassage))) {
-            passageIndexChangeHandler(startingPassage);
-          }
-        });
-        adobeViewer.getAnnotationManager().then((annotationManager: any) => {
-          annotationManager.setConfig(annotationConfig);
-          annotationManagerApi = annotationManager;
-          if (documentPassageMatches.length > 0) {
-            // annotationManager.addAnnotations(generateHighlights(document, documentPassageMatches));
-            documentMatchesChangeHandler(documentPassageMatches);
-          }
-        });
-        if (onLoadCallback) {
-          onLoadCallback();
-        }
-      });
-    });
+  const createPDFClient = async () => {
+    let viewSDKClient = null;
+    if (viewSDKClient_CACHE) {
+      viewSDKClient = viewSDKClient_CACHE;
+    } else {
+      viewSDKClient = new ViewSDKClient();
+      viewSDKClient_CACHE = viewSDKClient;
+    }
+
+    await viewSDKClient.ready();
+    const adobeViewer = await viewSDKClient.previewFile(physicalDocument, adobeKey, "pdf-div", viewerConfig);
+    const embedApi = await adobeViewer.getAPIs();
+    embedApi_CACHE = embedApi;
+    const annotationManagerApi = await adobeViewer.getAnnotationManager();
+    annotationManagerApi.setConfig(annotationConfig);
+    return {
+      embedApi,
+      annotationManagerApi,
+    };
   };
 
-  const passageIndexChangeHandler = (passageIndex: number) => {
+  const passageIndexChangeHandler = async (passageIndex: number, documentPassageMatches: TPassage[]) => {
+    let embedApi = embedApi_CACHE;
+    if (!embedApi) {
+      const { embedApi: newEmbedApi } = await createPDFClient();
+      embedApi = newEmbedApi;
+    }
     if (!embedApi) {
       return;
     }
-    if (passageIndex === null || !documentPassageMatches[passageIndex]) return;
-    setTimeout(() => {
-      embedApi.gotoLocation(documentPassageMatches[passageIndex]?.text_block_page);
-    }, PDF_SCROLL_DELAY);
+    if (passageIndex === null || !documentPassageMatches[passageIndex]) {
+      return;
+    }
+    await embedApi.gotoLocation(documentPassageMatches[passageIndex]?.text_block_page);
   };
 
-  const documentMatchesChangeHandler = async (documentPassageMatches: TPassage[]) => {
+  // Sometimes the adobe PDF viewer runs out of memory so safer to recreate the PDF client
+  const documentMatchesChangeHandler = async (documentPassageMatches: TPassage[], startingPassageIndex = 0) => {
+    const { annotationManagerApi } = await createPDFClient();
     if (!annotationManagerApi) {
       return;
     }
-    // await annotationManagerApi.deleteAnnotations({});
+    passageIndexChangeHandler(startingPassageIndex, documentPassageMatches);
     if (documentPassageMatches.length > 0) {
-      await annotationManagerApi.addAnnotations(generateHighlights(physicalDocument, documentPassageMatches));
+      const highlights = generateHighlights(physicalDocument, documentPassageMatches);
+      await annotationManagerApi.addAnnotations(highlights);
     }
+    // If we ever need to remove annotations
+    // await annotationManagerApi.removeAnnotationsFromPDF()
   };
 
   return { createPDFClient, passageIndexChangeHandler, documentMatchesChangeHandler };

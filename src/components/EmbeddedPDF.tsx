@@ -1,9 +1,13 @@
-import { useRef, useMemo, useEffect, useContext } from "react";
+import { useRef, useState, useMemo, useEffect, useContext } from "react";
 import Script from "next/script";
-import { TDocumentPage, TPassage } from "@types";
-import usePDFPreview from "@hooks/usePDFPreview";
-import Loader from "./Loader";
+
 import { AdobeContext } from "@context/AdobeContext";
+
+import usePDFPreview from "@hooks/usePDFPreview";
+
+import Loader from "./Loader";
+
+import { TDocumentPage, TPassage } from "@types";
 
 type TProps = {
   document: TDocumentPage;
@@ -13,25 +17,32 @@ type TProps = {
 };
 
 const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = null, startingPassageIndex = 0 }: TProps) => {
+  const isLoading = useState(true);
   const containerRef = useRef(null);
   const adobeKey = useContext(AdobeContext);
 
-  const pdfPreview = usePDFPreview(document, documentPassageMatches, adobeKey);
+  const pdfPreview = usePDFPreview(document, adobeKey);
 
-  // Ensure the instance of the PDF client is not reset on render
+  // Ensure the instance of the PDF client is not reset on re-render
   // otherwise we lose the ability to interact with the pdf
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const { createPDFClient, passageIndexChangeHandler } = useMemo(() => pdfPreview, [document, documentPassageMatches, adobeKey]);
+  const { createPDFClient, passageIndexChangeHandler, documentMatchesChangeHandler } = useMemo(() => pdfPreview, [document, adobeKey]);
 
   useEffect(() => {
     if (containerRef?.current !== null) {
-      createPDFClient(startingPassageIndex);
+      createPDFClient();
     }
-  }, [containerRef, document, createPDFClient, startingPassageIndex]);
+  }, [containerRef, document, createPDFClient]);
 
   useEffect(() => {
-    passageIndexChangeHandler(passageIndex);
-  }, [passageIndexChangeHandler, passageIndex]);
+    passageIndexChangeHandler(passageIndex, documentPassageMatches);
+    /* trunk-ignore(eslint/react-hooks/exhaustive-deps) */
+  }, [passageIndexChangeHandler, passageIndex, JSON.stringify(documentPassageMatches)]);
+
+  useEffect(() => {
+    documentMatchesChangeHandler(documentPassageMatches, startingPassageIndex);
+    /* trunk-ignore(eslint/react-hooks/exhaustive-deps) */
+  }, [documentMatchesChangeHandler, JSON.stringify(documentPassageMatches)]);
 
   return (
     <>
@@ -48,4 +59,5 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = nul
     </>
   );
 };
+
 export default EmbeddedPDF;
