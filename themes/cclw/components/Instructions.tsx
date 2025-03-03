@@ -5,7 +5,7 @@ import useConfig from "@hooks/useConfig";
 import { calculateTotalFamilies } from "@helpers/getFamilyCounts";
 
 import Button from "@components/buttons/Button";
-import { DownArrowIcon } from "@components/svg/Icons";
+import { Icon } from "@components/icon/Icon";
 
 import { INSTRUCTIONS } from "@cclw/constants/instructions";
 
@@ -45,7 +45,7 @@ const Instructions = () => {
         <Button extraClasses="flex gap-2 items-center" color="dark-dark" onClick={scrollToMap}>
           Or try exploring by country{" "}
           <span className={`hover:animate-none ${isAnimated ? "animate-bounce" : ""}`}>
-            <DownArrowIcon />
+            <Icon name="downArrow" />
           </span>
         </Button>
       </div>

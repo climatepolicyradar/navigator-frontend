@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { LightblubIcon, SearchIcon } from "./svg/Icons";
+import { Icon } from "./icon/Icon";
 import { Divider } from "./dividers/Divider";
 import { CleanRouterQuery } from "@utils/cleanRouterQuery";
 import { QUERY_PARAMS } from "@constants/queryParams";
@@ -66,7 +66,7 @@ export const FloatingSearch = ({ extended = true, placeholder, extraButtonClasse
       <form onSubmit={(e) => e.preventDefault()} className={`${showFloatingSearch || !extended ? "w-[425px] lg:w-[625px]" : ""}`}>
         <button className="absolute left-0 h-full px-3 text-grey-500" onClick={() => handleSearch(search)} aria-label="Search">
           <span className="block">
-            <SearchIcon height="12" width="12" color="gray-500" />
+            <Icon name="search" height="12" width="12" color="gray-500" />
           </span>
         </button>
         <input
@@ -109,7 +109,7 @@ export const FloatingSearch = ({ extended = true, placeholder, extraButtonClasse
             >
               <p className="text-xs flex gap-1 items-center">
                 <span className="text-blue-300">
-                  <LightblubIcon />
+                  <Icon name="lightblub" />
                 </span>{" "}
                 Try this out
               </p>

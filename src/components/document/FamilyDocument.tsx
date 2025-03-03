@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import MatchesButton from "@components/buttons/MatchesButton";
-import { DocumentIcon, GlobeIcon, Loading } from "@components/svg/Icons";
+import { Icon } from "@components/icon/Icon";
 import useConfig from "@hooks/useConfig";
 import { getLanguage } from "@helpers/getLanguage";
 import { TDocumentPage, TLoadingStatus } from "@types";
@@ -15,7 +15,7 @@ type TProps = {
 
 const loadingIndicator = (
   <span className="flex gap-2 items-center">
-    <Loading />
+    <Icon name="loading" />
     Searching...
   </span>
 );
@@ -58,8 +58,8 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
   return (
     <div {...getPreviewBehaviour()}>
       <div className="flex-0 mr-2 hidden md:block">
-        {canViewSource && <GlobeIcon width="20" height="20" color="#1F93FF" />}
-        {canPreview && !canViewSource && <DocumentIcon width="20" height="20" color="#1F93FF" />}
+        {canViewSource && <Icon name="globe" width="20" height="20" color="#1F93FF" />}
+        {canPreview && !canViewSource && <Icon name="document" width="20" height="20" color="#1F93FF" />}
       </div>
       <div className="flex-1">
         <div className="mb-2 flex justify-between no-wrap">

@@ -29,7 +29,7 @@ import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
 import { SubNav } from "@components/nav/SubNav";
 import Pagination from "@components/pagination";
 import SearchResultList from "@components/search/SearchResultList";
-import { Loading } from "@components/svg/Icons";
+import { Icon } from "@components/icon/Icon";
 
 import { getThemeConfigLink } from "@utils/getThemeConfigLink";
 import { readConfigFile } from "@utils/readConfigFile";
@@ -343,7 +343,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                   setShowCSVDownloadPopup(true);
                 }}
               >
-                {downloadCSVStatus === "loading" ? <Loading /> : "this search"}
+                {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
               </a>
               {getThemeConfigLink(themeConfig, "download-database") && (
                 <>
