@@ -38,6 +38,9 @@ const BreadCrumb = ({ last = false, label, href = null, cy = "" }: TBreadcrumbLi
   );
 };
 
+/**
+ * Lists the page hierarchy back to the homepage so that the user can better understand where they are, and to easily go back to a previous page.
+ */
 export const BreadCrumbs = ({ geography = null, category = null, family = null, label }: TProps) => {
   return (
     <ul className="flex items-baseline flex-wrap gap-2 text-sm" data-cy="breadcrumbs">

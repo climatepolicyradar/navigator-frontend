@@ -16,9 +16,9 @@ import { SearchSettings } from "@components/filters/SearchSettings";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 import useSearch from "@hooks/useSearch";
-import { ConceptsHead } from "@components/concepts/ConceptsHead";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { ConceptsPopover } from "@components/popover/ConceptsPopover";
+import { HiOutlineFilter } from "react-icons/hi";
+import { ConceptsPanel } from "@components/concepts/ConceptsPanel";
+import { Popover } from "@components/popover/Popover";
 
 type TProps = {
   initialQueryTerm?: string | string[];
@@ -34,6 +34,7 @@ type TProps = {
   onQueryTermChange?: (queryTerm: string) => void;
   onExactMatchChange?: (isExact: boolean) => void;
   onConceptClick?: (conceptLabel: string) => void;
+  onClear?: () => void;
 };
 
 const passageClasses = (docType: string) => {
@@ -59,9 +60,9 @@ export const ConceptsDocumentViewer = ({
   onQueryTermChange,
   onExactMatchChange,
   onConceptClick,
+  onClear,
 }: TProps) => {
   const [showSearchOptions, setShowSearchOptions] = useState(false);
-  const [openPopoverIds, setOpenPopoverIds] = useState<string[]>([]);
 
   const [state, setState] = useReducer((prev: any, next: Partial<any>) => ({ ...prev, ...next }), {
     passageIndex: initialPassage,
@@ -100,8 +101,8 @@ export const ConceptsDocumentViewer = ({
   const searchQueryParams = useMemo(
     () => ({
       [QUERY_PARAMS.query_string]: state.queryTerm,
-      [QUERY_PARAMS.exact_match]: state.isExactSearch ? "true" : undefined,
-      [QUERY_PARAMS["concept_filters.name"]]: initialConceptFilters
+      [QUERY_PARAMS.exact_match]: state.isExactSearch ? "true" : "false",
+      [QUERY_PARAMS.concept_name]: initialConceptFilters
         ? Array.isArray(initialConceptFilters)
           ? initialConceptFilters
           : [initialConceptFilters]
@@ -156,27 +157,22 @@ export const ConceptsDocumentViewer = ({
         isExactSearch: exactBool,
         passageIndex: 0,
       });
+      setShowSearchOptions(false);
       onExactMatchChange?.(exactBool);
     },
     [onExactMatchChange]
   );
 
-  const handleConceptClick = useCallback(
-    (conceptLabel: string) => {
-      setState({ passageIndex: 0 });
-      onConceptClick?.(conceptLabel);
-    },
-    [onConceptClick]
-  );
-
   const handleClearSearch = useCallback(() => {
     setState({
+      passageMatches: [],
+      totalNoOfMatches: 0,
+      passageIndex: 0,
       queryTerm: "",
       isExactSearch: false,
     });
-    onQueryTermChange?.("");
-    onExactMatchChange?.(false);
-  }, [onQueryTermChange, onExactMatchChange]);
+    onClear();
+  }, [onClear]);
 
   return (
     <>
@@ -216,7 +212,7 @@ export const ConceptsDocumentViewer = ({
                     </div>
                   )}
 
-                  {selectedConcepts.length === 0 && (
+                  {
                     <div className="flex gap-2">
                       <div className="flex-1">
                         <SearchForm
@@ -255,78 +251,15 @@ export const ConceptsDocumentViewer = ({
                         </AnimatePresence>
                       </div>
                     </div>
-                  )}
+                  }
 
                   {selectedConcepts.length === 0 && !initialQueryTerm && (
-                    <div className="pb-4">
-                      <div className="mt-4 grow-0 shrink-0">
-                        <ConceptsHead></ConceptsHead>
-                      </div>
-
-                      {rootConcepts.map((rootConcept) => {
-                        const hasConceptsInRootConcept = concepts.filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
-                        if (hasConceptsInRootConcept.length === 0) return null;
-                        return (
-                          <div key={rootConcept.wikibase_id} className="pt-6 pb-6 relative group">
-                            <div className="flex items-center gap-2">
-                              <p className="capitalize text-neutral-800 text-base font-medium leading-normal flex-grow">
-                                {rootConcept.preferred_label}
-                              </p>
-                              <div className="relative pr-3">
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    setOpenPopoverIds(
-                                      openPopoverIds.includes(rootConcept.wikibase_id)
-                                        ? openPopoverIds.filter((id) => id !== rootConcept.wikibase_id)
-                                        : [...openPopoverIds, rootConcept.wikibase_id]
-                                    );
-                                  }}
-                                  className="text-neutral-500 flex items-center z-50"
-                                >
-                                  <HiOutlineDotsHorizontal className="text-xl group-hover:border-neutral-200 border-transparent border-1 rounded-full p-0.5" />
-                                </button>
-
-                                {openPopoverIds.includes(rootConcept.wikibase_id) && (
-                                  <div className="absolute z-50 top-full right-3 mt-2">
-                                    <ConceptsPopover
-                                      concept={rootConcept}
-                                      onClose={() => setOpenPopoverIds(openPopoverIds.filter((id) => id !== rootConcept.wikibase_id))}
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            <ul className="flex flex-wrap gap-2 mt-4">
-                              {concepts
-                                .filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id))
-                                .map((concept) => {
-                                  return (
-                                    <li key={concept.wikibase_id}>
-                                      <Link
-                                        className="capitalize hover:no-underline"
-                                        href="#"
-                                        onClick={(e) => {
-                                          e.preventDefault();
-                                          handleConceptClick?.(concept.preferred_label);
-                                        }}
-                                      >
-                                        <Button
-                                          color="clear-blue"
-                                          data-cy="view-document-viewer-concept"
-                                          extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
-                                        >
-                                          {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
-                                        </Button>
-                                      </Link>
-                                    </li>
-                                  );
-                                })}
-                            </ul>
-                          </div>
-                        );
-                      })}
-                    </div>
+                    <ConceptsPanel
+                      rootConcepts={rootConcepts}
+                      concepts={concepts}
+                      conceptCountsById={conceptCountsById}
+                      onConceptClick={onConceptClick}
+                    ></ConceptsPanel>
                   )}
 
                   {selectedConcepts.length > 0 && (
@@ -345,59 +278,47 @@ export const ConceptsDocumentViewer = ({
 
                 {state.totalNoOfMatches > 0 && (
                   <>
-                    {selectedConcepts.length > 0 && (
-                      <>
-                        <div className="border-gray-200 my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
-                          <div className="mb-2">{state.totalNoOfMatches} matches in this document</div>
-                        </div>
-                        <div
-                          id="document-passage-matches"
-                          className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
-                        >
-                          <PassageMatches
-                            passages={state.passageMatches}
-                            onClick={handlePassageClick}
-                            activeIndex={state.passageIndex ?? initialPassage}
-                          />
-                        </div>
-                      </>
-                    )}
-                    {initialQueryTerm && (
-                      <>
-                        <div className="my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
-                          <div className="mb-2">
-                            Displaying {renderPassageCount(state.totalNoOfMatches)} for "
-                            <span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
-                            {!searchQuery.exact_match && ` and related phrases`}
-                            {state.totalNoOfMatches >= MAX_RESULTS && (
-                              <span className="ml-1 inline-block">
-                                <SearchLimitTooltip colour="grey" />
-                              </span>
-                            )}
-                          </div>
-
-                          <p>Sorted by search relevance</p>
-                        </div>
-                        <div
-                          id="document-passage-matches"
-                          className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
-                        >
-                          <PassageMatches
-                            passages={state.passageMatches}
-                            onClick={handlePassageClick}
-                            activeIndex={state.passageIndex ?? initialPassage}
-                          />
-                        </div>
-                      </>
-                    )}
+                    <div className="border-gray-200 my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
+                      <div className="mb-2">
+                        Displaying {renderPassageCount(state.totalNoOfMatches)}{" "}
+                        {initialQueryTerm && (
+                          <>
+                            for "<span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
+                          </>
+                        )}
+                        {initialQueryTerm && !searchQuery.exact_match && ` and related phrases`}
+                        {selectedConcepts.length > 0 && (
+                          <>
+                            {" in "}
+                            <b>{selectedConcepts.map((concept) => concept.preferred_label).join(", ")}</b>
+                          </>
+                        )}
+                        {state.totalNoOfMatches >= MAX_RESULTS && (
+                          <span className="ml-1 inline-block">
+                            <SearchLimitTooltip colour="grey" />
+                          </span>
+                        )}
+                      </div>
+                      <p>Sorted by search relevance</p>
+                    </div>
+                    <div
+                      id="document-passage-matches"
+                      className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
+                    >
+                      <PassageMatches
+                        passages={state.passageMatches}
+                        onClick={handlePassageClick}
+                        activeIndex={state.passageIndex ?? initialPassage}
+                      />
+                    </div>
                   </>
                 )}
                 {state.totalNoOfMatches === 0 && (
                   <EmptyPassages
                     hasQueryString={
                       !!searchQueryParams[QUERY_PARAMS.query_string] &&
-                      !!searchQueryParams[QUERY_PARAMS["concept_filters.id"]] &&
-                      !!searchQueryParams[QUERY_PARAMS["concept_filters.name"]]
+                      !!searchQueryParams[QUERY_PARAMS.concept_id] &&
+                      !!searchQueryParams[QUERY_PARAMS.concept_name]
                     }
                   />
                 )}

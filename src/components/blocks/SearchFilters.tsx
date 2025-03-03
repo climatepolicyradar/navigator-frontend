@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { ParsedUrlQuery } from "querystring";
 
 import useGetThemeConfig from "@hooks/useThemeConfig";
-
+import { Label } from "@components/labels/Label";
 import { DateRange } from "../filters/DateRange";
 import { Accordian } from "@components/accordian/Accordian";
 import { InputListContainer } from "@components/filters/InputListContainer";
@@ -21,7 +21,7 @@ import { getCountriesFromRegions } from "@helpers/getCountriesFromRegions";
 import { canDisplayFilter } from "@utils/canDisplayFilter";
 import { getFilterLabel } from "@utils/getFilterLabel";
 
-import { TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@types";
+import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@types";
 import dynamic from "next/dynamic";
 
 const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/components/MethodologyLink`));
@@ -44,6 +44,7 @@ type TSearchFiltersProps = {
   regions: TGeography[];
   countries: TGeography[];
   corpus_types: TCorpusTypeDictionary;
+  conceptsData?: TConcept[];
   handleFilterChange(type: string, value: string, clearOthersOfType?: boolean): void;
   handleYearChange(values: string[], reset?: boolean): void;
   handleRegionChange(region: string): void;
@@ -57,6 +58,7 @@ const SearchFilters = ({
   regions,
   countries,
   corpus_types,
+  conceptsData,
   handleFilterChange,
   handleYearChange,
   handleRegionChange,
@@ -68,6 +70,7 @@ const SearchFilters = ({
 
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
+    concept_filters: conceptFilters = [],
   } = searchCriteria;
 
   const thisYear = currentYear();
@@ -102,7 +105,7 @@ const SearchFilters = ({
         )}
       </div>
 
-      <AppliedFilters filterChange={handleFilterChange} />
+      <AppliedFilters filterChange={handleFilterChange} concepts={conceptsData} />
 
       {themeConfigStatus === "success" && themeConfig.categories && (
         <Accordian title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
@@ -146,6 +149,31 @@ const SearchFilters = ({
             </Accordian>
           );
         })}
+
+      {conceptsData && (
+        <>
+          <Accordian
+            title={getFilterLabel("Concept", "concept", query[QUERY_PARAMS.concept_name], themeConfig)}
+            data-cy="concepts"
+            key="Concepts"
+            startOpen={!!query[QUERY_PARAMS.concept_name]}
+            overflowOverride
+            className="relative z-11"
+            headContent={!!conceptsData && <Label>Beta</Label>}
+          >
+            <InputListContainer>
+              <TypeAhead
+                list={conceptsData}
+                selectedList={conceptFilters.map((concept) => concept.value)}
+                keyField="preferred_label"
+                keyFieldDisplay="preferred_label"
+                filterType={QUERY_PARAMS.concept_name}
+                handleFilterChange={handleFilterChange}
+              />
+            </InputListContainer>
+          </Accordian>
+        </>
+      )}
 
       <Accordian
         title={getFilterLabel("Region", "region", query[QUERY_PARAMS.category], themeConfig)}

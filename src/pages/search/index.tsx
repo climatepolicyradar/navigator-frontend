@@ -29,18 +29,22 @@ import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
 import { SubNav } from "@components/nav/SubNav";
 import Pagination from "@components/pagination";
 import SearchResultList from "@components/search/SearchResultList";
-import { Loading } from "@components/svg/Icons";
+import { Icon } from "@components/icon/Icon";
 
 import { getThemeConfigLink } from "@utils/getThemeConfigLink";
 import { readConfigFile } from "@utils/readConfigFile";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 
-import { TTheme, TThemeConfig } from "@types";
+import { TConcept, TFamilyPage, TTheme, TThemeConfig } from "@types";
+import { getFeatureFlags } from "@utils/featureFlags";
+import { ApiClient } from "@api/http-common";
 
 type TProps = {
   theme: TTheme;
   themeConfig: TThemeConfig;
+  featureFlags: Record<string, string | boolean>;
+  conceptsData?: TConcept[];
 };
 
 const SETTINGS_ANIMATION_VARIANTS = {
@@ -48,7 +52,7 @@ const SETTINGS_ANIMATION_VARIANTS = {
   visible: { opacity: 1, transition: { duration: 0 } },
 };
 
-const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig }: TProps) => {
+const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig, featureFlags, conceptsData }: TProps) => {
   const router = useRouter();
   const qQueryString = router.query[QUERY_PARAMS.query_string];
   const [showFilters, setShowFilters] = useState(false);
@@ -168,6 +172,10 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
       delete router.query[QUERY_PARAMS.implementing_agency];
     }
 
+    if (type === QUERY_PARAMS.concept_name) {
+      queryCollection = Array.from(new Set(queryCollection)); // Remove duplicates
+    }
+
     router.query[type] = queryCollection;
     router.push({ query: router.query }, undefined, { shallow: true });
     scrollTo(0, 0);
@@ -231,7 +239,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
       delete router.query[QUERY_PARAMS.topic];
       delete router.query[QUERY_PARAMS.sector];
     }
-
+    delete router.query[QUERY_PARAMS.concept_id];
+    delete router.query[QUERY_PARAMS.concept_name];
     router.query[QUERY_PARAMS.category] = category;
     // Default search is all categories, so we do not need to provide any category if we want all
     if (category === "All") {
@@ -344,7 +353,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                   setShowCSVDownloadPopup(true);
                 }}
               >
-                {downloadCSVStatus === "loading" ? <Loading /> : "this search"}
+                {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
               </a>
               {getThemeConfigLink(themeConfig, "download-database") && (
                 <>
@@ -405,18 +414,21 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
             {configQuery.isFetching ? (
               <Loader size="20px" />
             ) : (
-              <SearchFilters
-                searchCriteria={searchQuery}
-                query={router.query}
-                regions={regions}
-                countries={countries}
-                corpus_types={corpus_types}
-                handleFilterChange={handleFilterChange}
-                handleYearChange={handleYearChange}
-                handleRegionChange={handleRegionChange}
-                handleClearSearch={handleClearSearch}
-                handleDocumentCategoryClick={handleDocumentCategoryClick}
-              />
+              <>
+                <SearchFilters
+                  searchCriteria={searchQuery}
+                  query={router.query}
+                  regions={regions}
+                  countries={countries}
+                  corpus_types={corpus_types}
+                  conceptsData={conceptsData}
+                  handleFilterChange={handleFilterChange}
+                  handleYearChange={handleYearChange}
+                  handleRegionChange={handleRegionChange}
+                  handleClearSearch={handleClearSearch}
+                  handleDocumentCategoryClick={handleDocumentCategoryClick}
+                />
+              </>
             )}
           </div>
         </SiteWidth>
@@ -432,6 +444,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 regions={regions}
                 countries={countries}
                 corpus_types={corpus_types}
+                conceptsData={conceptsData}
                 handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
@@ -534,6 +547,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
         onCancelClick={() => setShowCSVDownloadPopup(false)}
         onConfirmClick={() => handleDownloadCsvClick()}
       />
+      <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
     </Layout>
   );
 };
@@ -542,6 +556,7 @@ export default Search;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+  const featureFlags = await getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
   let themeConfig = {};
@@ -549,7 +564,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     themeConfig = await readConfigFile(theme);
   } catch (error) {}
 
+  let conceptsData: TConcept[];
+  try {
+    const client = new ApiClient(process.env.CONCEPTS_API_URL);
+    const conceptsV1 = featureFlags["concepts-v1"];
+    if (conceptsV1) {
+      const { data: returnedData } = await client.get(`/concepts/search?limit=10000&q=`);
+      conceptsData = returnedData;
+    }
+  } catch (error) {
+    // TODO: handle error more elegantly
+  }
+
   return {
-    props: { theme, themeConfig },
+    props: { theme, themeConfig, featureFlags, conceptsData: conceptsData ?? null },
   };
 };
