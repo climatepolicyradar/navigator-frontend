@@ -49,7 +49,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
   const dynamicTheme = theme ?? siteTheme;
   const dynamicAdobeKey = adobeApiKey ?? adobeKey;
 
-  const [consent, setConsent] = useState<boolean>();
+  const [consent, setConsent] = useState(false);
   const onConsentChange = (consent: boolean) => {
     setConsent(consent);
   };

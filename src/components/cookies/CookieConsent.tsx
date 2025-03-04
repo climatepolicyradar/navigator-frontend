@@ -18,7 +18,7 @@ type Props = {
 };
 export const CookieConsent = ({ onConsentChange }: Props) => {
   const [hide, setHide] = useState(true);
-  const [enableAnalytics, setEnableAnalytics] = useState<boolean>();
+  const [enableAnalytics, setEnableAnalytics] = useState(false);
 
   useEffect(() => {
     const cc = getCookie(COOKIE_CONSENT_NAME);
