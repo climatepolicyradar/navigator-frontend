@@ -15,6 +15,7 @@ export default function FeatureFlags() {
       api_host: "https://eu.i.posthog.com",
       opt_in_site_apps: true,
     });
+
     posthog.onFeatureFlags((featureFlags) => {
       const newFeatureFlags = {};
       for (const featureFlag of featureFlags) {
