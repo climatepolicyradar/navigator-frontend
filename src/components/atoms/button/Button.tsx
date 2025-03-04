@@ -18,23 +18,22 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const classes = useMemo(() => {
-    const baseClasses = "flex flex-row text-sm leading-3.5 font-medium";
+    const baseClasses = "flex flex-row text-sm leading-3.5 font-medium transition duration-200 focus:outline-2 focus:outline-offset-2";
 
     /* Colour */
 
-    // TODO theme support
-    let bgColor = color === "brand" ? "bg-cpr-blue" : "bg-text-primary";
-    let textColor = "text-text-white";
+    let bgColor = color === "brand" ? "bg-surface-brand hocus:bg-surface-brand-dark" : "bg-surface-mono hocus:bg-surface-mono-dark";
+    let textColor = "text-text-light";
 
     if (variant)
       switch (variant) {
         case "faded":
-          bgColor = color === "brand" ? "bg-cpr-blue/16" : "bg-text-primary/16";
+          bgColor = color === "brand" ? "bg-surface-brand/16 hocus:bg-surface-brand/32" : "bg-surface-mono/16 hocus:bg-surface-mono/32";
           textColor = color === "brand" ? "text-cpr-blue" : "text-text-primary";
           break;
         case "outlined":
         case "ghost":
-          bgColor = "bg-transparent";
+          bgColor = "bg-transparent hover:bg-surface-ui";
           textColor = color === "brand" ? "text-cpr-blue" : "text-text-primary";
           break;
       }
@@ -47,6 +46,7 @@ export const Button = ({
     /* Shape */
 
     const border = variant === "outlined" ? "border border-border-grey" : "";
+    const outlineColor = color === "brand" ? "outline-surface-brand-dark" : "outline-surface-mono-dark";
     const roundness = rounded ? "rounded-full" : "rounded-md";
 
     /* Size */
@@ -62,7 +62,11 @@ export const Button = ({
         break;
     }
 
-    return [baseClasses, padding, bgColor, border, roundness, textColor, className].filter((classes) => classes).join(" ");
+    /* Interaction */
+
+    const cursor = disabled ? "pointer-events-none" : "";
+
+    return [baseClasses, padding, bgColor, border, outlineColor, roundness, textColor, cursor, className].filter((classes) => classes).join(" ");
   }, [className, color, disabled, rounded, size, variant]);
 
   return (
