@@ -109,7 +109,7 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
   };
 
   const addAnnotations = async (documentPassageMatches: TPassage[], startingPassageIndex = 0) => {
-    // Sometimes the adobe PDF viewer runs out of memory so safer to always recreate the PDF client
+    // Sometimes the adobe PDF viewer runs out of memory so safer to always reload the PDF viewer
     const { annotationManagerApi } = await getAdobeApis();
     if (!annotationManagerApi) {
       return;
