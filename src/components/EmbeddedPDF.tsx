@@ -36,13 +36,11 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = nul
 
   useEffect(() => {
     passageIndexChangeHandler(passageIndex, documentPassageMatches);
-    /* trunk-ignore(eslint/react-hooks/exhaustive-deps) */
-  }, [passageIndexChangeHandler, passageIndex, JSON.stringify(documentPassageMatches)]);
+  }, [passageIndexChangeHandler, passageIndex, documentPassageMatches]);
 
   useEffect(() => {
     documentMatchesChangeHandler(documentPassageMatches, startingPassageIndex);
-    /* trunk-ignore(eslint/react-hooks/exhaustive-deps) */
-  }, [documentMatchesChangeHandler, JSON.stringify(documentPassageMatches)]);
+  }, [documentMatchesChangeHandler, documentPassageMatches, startingPassageIndex]);
 
   return (
     <>
