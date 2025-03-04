@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * Most of this is lifted from the official documentation
+ * @see: https://posthog.com/tutorials/nextjs-cookie-banner
+ */
+
 import { usePathname, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
@@ -15,7 +20,7 @@ function PostHogPageView() {
   const searchParams = useSearchParams();
   const posthog = usePostHog();
 
-  // Track pageviews
+  /** Track pageviews */
   useEffect(() => {
     if (pathname && posthog) {
       let url = window.origin + pathname;
@@ -29,9 +34,11 @@ function PostHogPageView() {
   return null;
 }
 
-// Wrap this in Suspense to avoid the `useSearchParams` usage above
-// from de-opting the whole app into client-side rendering
-// See: https://nextjs.org/docs/messages/deopted-into-client-rendering
+/**
+ * Wrap this in Suspense to avoid the `useSearchParams` usage above
+ * from de-opting the whole app into client-side rendering
+ * @see: https://nextjs.org/docs/messages/deopted-into-client-rendering
+ */
 export function SuspendedPostHogPageView() {
   return (
     <Suspense fallback={null}>
@@ -49,30 +56,21 @@ export function PostHogProvider({ children, consent }: Props) {
    * * The posthog keys are public
    * @see: https://posthog.com/docs/privacy#is-it-ok-for-my-api-key-to-be-exposed-and-public
    */
-
   useEffect(() => {
-    /** always init the cookieless instance */
-    posthog.init("phc_E0EO1Ocj859VDZ5yuTCgRXYQoYNjgm1xEMXttX0Vc6R", {
+    /** If consent is granted, initialize our cookied PostHog instance */
+    posthog.init("phc_zaZYaLxsAeMjCLPsU2YvFqu4oaXRJ8uAkgXY8DancyL", {
       api_host: "https://eu.i.posthog.com",
       capture_pageview: false,
       capture_pageleave: true,
       persistence: "memory",
     });
-
     window.sessionStorage.setItem("posthogLoaded", "true");
   }, []);
 
   useEffect(() => {
     if (consent) {
-      /** If consent is granted, initialize our cookied PostHog instance */
-      posthog.init("phc_E0EO1Ocj859VDZ5yuTCgRXYQoYNjgm1xEMXttX0Vc6R", {
-        api_host: "https://eu.i.posthog.com",
-        capture_pageview: false,
-        capture_pageleave: true,
-      });
+      posthog.set_config({ persistence: "localStorage+cookie" });
     }
-
-    window.sessionStorage.setItem("posthogLoaded", "true");
   }, [consent]);
 
   return (
