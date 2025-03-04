@@ -85,7 +85,7 @@ const OceanEnergyPathwayPage = () => {
               <h1 className="mb-[50px] text-oep-dark-blue text-6xl text-[64px] font-bold font-tenez">Why offshore wind</h1>
               <p className="font-medium text-2xl">
                 Offshore wind energy is a key technology for meeting the global target to triple renewables by 2030, keeping the Paris-aligned 1.5
-                degree scenario alive, and bolstering energy security — all while driving economic growth, supporting green industrialisation, and
+                degrees scenario alive, and bolstering energy security — all while driving economic growth, supporting green industrialisation, and
                 bringing benefits to local communities.
               </p>
             </Narrow>
