@@ -26,21 +26,15 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = nul
   // Ensure the instance of the PDF client is not reset on re-render
   // otherwise we lose the ability to interact with the pdf
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const { createPDFClient, passageIndexChangeHandler, documentMatchesChangeHandler } = useMemo(() => pdfPreview, [document, adobeKey]);
+  const { changePage, addAnnotations } = useMemo(() => pdfPreview, [document, adobeKey]);
 
   useEffect(() => {
-    if (containerRef?.current !== null) {
-      createPDFClient();
-    }
-  }, [containerRef, document, createPDFClient]);
+    changePage(passageIndex, documentPassageMatches);
+  }, [changePage, passageIndex, documentPassageMatches]);
 
   useEffect(() => {
-    passageIndexChangeHandler(passageIndex, documentPassageMatches);
-  }, [passageIndexChangeHandler, passageIndex, documentPassageMatches]);
-
-  useEffect(() => {
-    documentMatchesChangeHandler(documentPassageMatches, startingPassageIndex);
-  }, [documentMatchesChangeHandler, documentPassageMatches, startingPassageIndex]);
+    addAnnotations(documentPassageMatches, startingPassageIndex);
+  }, [addAnnotations, documentPassageMatches, startingPassageIndex]);
 
   return (
     <>

@@ -53,6 +53,11 @@ function generateHighlights(document: TDocumentPage, documentPassageMatches: TPa
   });
 }
 
+type TAdobeApis = {
+  viewerApi: any;
+  annotationManagerApi: any;
+};
+
 export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey: string) {
   const viewerConfig = {
     showDownloadPDF: false,
@@ -66,59 +71,57 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
 
   const annotationConfig = { showToolbar: false, showCommentsPanel: false, downloadWithAnnotations: true, printWithAnnotations: true };
 
-  let viewSDKClient_CACHE = null;
-  let embedApi_CACHE = null;
+  // Memoize the Adobe Viewer API - this is used to control the viewer, e.g. change page
+  let viewerApiMemo: any;
 
-  const createPDFClient = async () => {
-    let viewSDKClient = null;
-    if (viewSDKClient_CACHE) {
-      viewSDKClient = viewSDKClient_CACHE;
-    } else {
-      viewSDKClient = new ViewSDKClient();
-      viewSDKClient_CACHE = viewSDKClient;
-    }
-
+  const getAdobeApis = async (): Promise<TAdobeApis> => {
+    const viewSDKClient = new ViewSDKClient();
     await viewSDKClient.ready();
     const adobeViewer = await viewSDKClient.previewFile(physicalDocument, adobeKey, "pdf-div", viewerConfig);
-    const embedApi = await adobeViewer.getAPIs();
-    embedApi_CACHE = embedApi;
+
+    // Adobe viewer api
+    // https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/howtos_ui/#viewer-api
+    const viewerApi = await adobeViewer.getAPIs();
+    viewerApiMemo = viewerApi;
+
+    // Adobe annotation manager api
+    // https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/howtos_comments/#basic-apis-for-commenting
     const annotationManagerApi = await adobeViewer.getAnnotationManager();
     annotationManagerApi.setConfig(annotationConfig);
+
     return {
-      embedApi,
+      viewerApi,
       annotationManagerApi,
     };
   };
 
-  const passageIndexChangeHandler = async (passageIndex: number, documentPassageMatches: TPassage[]) => {
-    let embedApi = embedApi_CACHE;
-    if (!embedApi) {
-      const { embedApi: newEmbedApi } = await createPDFClient();
-      embedApi = newEmbedApi;
-    }
-    if (!embedApi) {
-      return;
+  const changePage = async (passageIndex: number, documentPassageMatches: TPassage[]) => {
+    // Use the memoized viewerApi if it exists
+    let viewerApi = viewerApiMemo;
+    if (!viewerApiMemo) {
+      const { viewerApi: newViewApi } = await getAdobeApis();
+      viewerApi = newViewApi;
     }
     if (passageIndex === null || !documentPassageMatches[passageIndex]) {
       return;
     }
-    await embedApi.gotoLocation(documentPassageMatches[passageIndex]?.text_block_page);
+    await viewerApi.gotoLocation(documentPassageMatches[passageIndex]?.text_block_page);
   };
 
-  // Sometimes the adobe PDF viewer runs out of memory so safer to recreate the PDF client
-  const documentMatchesChangeHandler = async (documentPassageMatches: TPassage[], startingPassageIndex = 0) => {
-    const { annotationManagerApi } = await createPDFClient();
+  const addAnnotations = async (documentPassageMatches: TPassage[], startingPassageIndex = 0) => {
+    // Sometimes the adobe PDF viewer runs out of memory so safer to always recreate the PDF client
+    const { annotationManagerApi } = await getAdobeApis();
     if (!annotationManagerApi) {
       return;
     }
-    passageIndexChangeHandler(startingPassageIndex, documentPassageMatches);
+    changePage(startingPassageIndex, documentPassageMatches);
     if (documentPassageMatches.length > 0) {
       const highlights = generateHighlights(physicalDocument, documentPassageMatches);
       await annotationManagerApi.addAnnotations(highlights);
     }
     // If we ever need to remove annotations
-    // await annotationManagerApi.removeAnnotationsFromPDF()
+    // await annotationManagerApi.removeAnnotationsFromPDF();
   };
 
-  return { createPDFClient, passageIndexChangeHandler, documentMatchesChangeHandler };
+  return { getAdobeApis, changePage, addAnnotations };
 }
