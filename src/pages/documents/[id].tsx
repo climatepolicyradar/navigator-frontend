@@ -169,7 +169,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   useEffect(() => {
     const [passageMatches, totalNoOfMatches] = getMatchedPassagesFromSearch(families, document);
 
-    setPassageMatches(passageMatches);
+    setPassageMatches(passageMatches.splice(0, 50));
     setTotalNoOfMatches(totalNoOfMatches);
     setCanPreview(document.content_type === "application/pdf");
     // comparing families as objects will cause an infinite loop as each collection is a new instance of an object
@@ -290,7 +290,9 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
               <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
                 <div
                   id="document-preview"
-                  className={`pt-4 flex-1 h-[400px] basis-[400px] md:block md:h-full ${totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""}`}
+                  className={`pt-4 flex-1 h-[400px] basis-[400px] md:block md:h-full relative ${
+                    totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""
+                  }`}
                 >
                   {canPreview && (
                     <EmbeddedPDF

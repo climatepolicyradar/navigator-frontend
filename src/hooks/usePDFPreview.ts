@@ -114,10 +114,10 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
     if (!annotationManagerApi) {
       return;
     }
-    changePage(startingPassageIndex, documentPassageMatches);
+    await changePage(startingPassageIndex, documentPassageMatches);
     if (documentPassageMatches.length > 0) {
       const highlights = generateHighlights(physicalDocument, documentPassageMatches);
-      await annotationManagerApi.addAnnotations(highlights);
+      return await annotationManagerApi.addAnnotations(highlights);
     }
     // If we ever need to remove annotations
     // await annotationManagerApi.removeAnnotationsFromPDF();
