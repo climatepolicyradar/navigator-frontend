@@ -4,9 +4,9 @@ export const getMatchedPassagesFromSearch = (families: TMatchedFamily[], documen
   let passageMatches: TPassage[] = [];
   let totalNoOfMatches = 0;
   families.forEach((family) => {
-    family.family_documents.forEach((cacheDoc) => {
-      if (document.slug === cacheDoc.document_slug) {
-        passageMatches.push(...cacheDoc.document_passage_matches);
+    family.family_documents.forEach((doc) => {
+      if (document.slug === doc.document_slug) {
+        passageMatches.push(...doc.document_passage_matches);
         totalNoOfMatches = family.total_passage_hits;
       }
     });
