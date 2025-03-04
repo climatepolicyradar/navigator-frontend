@@ -23,15 +23,47 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
     [onConceptClick]
   );
 
+  /** This is a little hackery to deal with the fact that
+   * - we only groupBy a set of root concepts which are at the top of the concept chain
+   * - some concepts might be a couple steps from a root concept
+   *
+   * e.g.
+   * - indigenous people (Q684)
+   * - is subconcept of marginalised ethnicity (Q676)
+   * - is subconcept of marginalised people (Q1170)
+   * - is subconcept of impacted group (Q672)
+   *
+   * We would like to show "indigenous people" as a subconcept of "impacted group" but the data doesn't allow it for now
+   */
+  const conceptsWithOtherRootConcept = concepts.map((concept) => {
+    const hasRootConcept = rootConcepts.find((rootConcept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
+    if (hasRootConcept) return concept;
+
+    return {
+      ...concept,
+      subconcept_of: [...concept.subconcept_of, "Q000"],
+    };
+  });
+  const otherRootConcept: TConcept = {
+    wikibase_id: "Q000",
+    preferred_label: "Other",
+    subconcept_of: [],
+    alternative_labels: [],
+    negative_labels: [],
+    description: "",
+    related_concepts: [],
+    has_subconcept: [],
+  };
+
   return (
     <div className="pb-4">
       <div className="mt-4 grow-0 shrink-0">
         <ConceptsHead></ConceptsHead>
       </div>
 
-      {rootConcepts.map((rootConcept) => {
-        const hasConceptsInRootConcept = concepts.filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
-        if (hasConceptsInRootConcept.length === 0) return null;
+      {rootConcepts.concat(otherRootConcept).map((rootConcept) => {
+        const hasConceptsInRootConcept = conceptsWithOtherRootConcept.find((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
+        if (!hasConceptsInRootConcept) return null;
         return (
           <div key={rootConcept.wikibase_id} className="pt-6 pb-6 relative group">
             <div className="flex items-center gap-2">
@@ -62,7 +94,7 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
               </div>
             </div>
             <ul className="flex flex-wrap gap-2 mt-4">
-              {concepts
+              {conceptsWithOtherRootConcept
                 .filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id))
                 .map((concept) => {
                   return (
