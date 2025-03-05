@@ -1,9 +1,13 @@
-import { useRef, useMemo, useEffect, useContext } from "react";
+import { useRef, useState, useMemo, useEffect, useContext } from "react";
 import Script from "next/script";
-import { TDocumentPage, TPassage } from "@types";
-import usePDFPreview from "@hooks/usePDFPreview";
-import Loader from "./Loader";
+
 import { AdobeContext } from "@context/AdobeContext";
+
+import usePDFPreview from "@hooks/usePDFPreview";
+
+import Loader from "./Loader";
+
+import { TDocumentPage, TPassage } from "@types";
 
 type TProps = {
   document: TDocumentPage;
@@ -13,25 +17,24 @@ type TProps = {
 };
 
 const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = null, startingPassageIndex = 0 }: TProps) => {
+  const isLoading = useState(true);
   const containerRef = useRef(null);
   const adobeKey = useContext(AdobeContext);
 
-  const pdfPreview = usePDFPreview(document, documentPassageMatches, adobeKey);
+  const pdfPreview = usePDFPreview(document, adobeKey);
 
-  // Ensure the instance of the PDF client is not reset on render
+  // Ensure the instance of the PDF client is not reset on re-render
   // otherwise we lose the ability to interact with the pdf
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const { createPDFClient, passageIndexChangeHandler } = useMemo(() => pdfPreview, [document, documentPassageMatches, adobeKey]);
+  const { changePage, addAnnotations } = useMemo(() => pdfPreview, [document, adobeKey]);
 
   useEffect(() => {
-    if (containerRef?.current !== null) {
-      createPDFClient(startingPassageIndex);
-    }
-  }, [containerRef, document, createPDFClient, startingPassageIndex]);
+    changePage(passageIndex, documentPassageMatches);
+  }, [changePage, passageIndex, documentPassageMatches]);
 
   useEffect(() => {
-    passageIndexChangeHandler(passageIndex);
-  }, [passageIndexChangeHandler, passageIndex]);
+    addAnnotations(documentPassageMatches, startingPassageIndex);
+  }, [addAnnotations, documentPassageMatches, startingPassageIndex]);
 
   return (
     <>
@@ -48,4 +51,5 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = nul
     </>
   );
 };
+
 export default EmbeddedPDF;

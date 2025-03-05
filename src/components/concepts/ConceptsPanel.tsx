@@ -23,31 +23,28 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
     [onConceptClick]
   );
 
-  /** This is a little hackery to deal with the fact that
-   * - we only groupBy a set of root concepts which are at the top of the concept chain
-   * - some concepts might be a couple steps from a root concept
-   *
-   * e.g.
-   * - indigenous people (Q684)
-   * - is subconcept of marginalised ethnicity (Q676)
-   * - is subconcept of marginalised people (Q1170)
-   * - is subconcept of impacted group (Q672)
-   *
-   * We would like to show "indigenous people" as a subconcept of "impacted group" but the data doesn't allow it for now
+  /**
+   * 1. adds "Other" as the root concept for concepts that aren't a subconcept of a root concept.
+   * 2. removes concepts that are a root concept as those are displayed as their own elements.
    */
-  const conceptsWithOtherRootConcept = concepts.map((concept) => {
-    const hasRootConcept = rootConcepts.find((rootConcept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
-    if (hasRootConcept) return concept;
+  const conceptsWithOtherRootConcept = concepts
+    .map((concept) => {
+      const hasRootConcept = rootConcepts.find((rootConcept) => concept.recursive_subconcept_of.includes(rootConcept.wikibase_id));
+      if (hasRootConcept) return concept;
 
-    return {
-      ...concept,
-      subconcept_of: [...concept.subconcept_of, "Q000"],
-    };
-  });
+      return {
+        ...concept,
+        subconcept_of: [...concept.subconcept_of, "Q000"],
+        recursive_subconcept_of: [...concept.recursive_subconcept_of, "Q000"],
+      };
+    })
+    /** 2. Remove any root concepts */
+    .filter((concept) => !rootConcepts.find((rootConcept) => rootConcept.wikibase_id === concept.wikibase_id));
   const otherRootConcept: TConcept = {
     wikibase_id: "Q000",
     preferred_label: "Other",
     subconcept_of: [],
+    recursive_subconcept_of: [],
     alternative_labels: [],
     negative_labels: [],
     description: "",
@@ -62,7 +59,9 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
       </div>
 
       {rootConcepts.concat(otherRootConcept).map((rootConcept) => {
-        const hasConceptsInRootConcept = conceptsWithOtherRootConcept.find((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id));
+        const hasConceptsInRootConcept = conceptsWithOtherRootConcept.find((concept) =>
+          concept.recursive_subconcept_of.includes(rootConcept.wikibase_id)
+        );
         if (!hasConceptsInRootConcept) return null;
         return (
           <div key={rootConcept.wikibase_id} className="pt-6 pb-6 relative group">
@@ -95,7 +94,7 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
             </div>
             <ul className="flex flex-wrap gap-2 mt-4">
               {conceptsWithOtherRootConcept
-                .filter((concept) => concept.subconcept_of.includes(rootConcept.wikibase_id))
+                .filter((concept) => concept.recursive_subconcept_of.includes(rootConcept.wikibase_id))
                 .map((concept) => {
                   return (
                     <li key={concept.wikibase_id}>

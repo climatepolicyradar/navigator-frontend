@@ -202,10 +202,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   }, {});
 
   useEffectOnce(() => {
-    fetchAndProcessConcepts(conceptIds, (conceptId) => {
-      const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
-      return fetch(url).then((response) => response.json());
-    }).then(({ rootConcepts, concepts }) => {
+    fetchAndProcessConcepts(conceptIds).then(({ rootConcepts, concepts }) => {
       setRootConcepts(rootConcepts);
       setConcepts(concepts);
     });

@@ -325,6 +325,7 @@ export type TConcept = {
   negative_labels: string[];
   description: string;
   subconcept_of: string[];
+  recursive_subconcept_of: string[];
   has_subconcept: string[];
   related_concepts: string[];
   definition?: string;
