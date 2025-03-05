@@ -5,7 +5,7 @@ import { TMatchedFamily } from "@types";
 import { FamilyMeta } from "@components/document/FamilyMeta";
 import PassageMatches from "@components/PassageMatches";
 import { LinkWithQuery } from "@components/LinkWithQuery";
-import Button from "@components/buttons/Button";
+import { Button } from "@components/atoms/button/Button";
 import { Heading } from "@components/typography/Heading";
 
 import { CleanRouterQuery } from "@utils/cleanRouterQuery";
@@ -74,10 +74,10 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
                 </LinkWithQuery>
                 <PassageMatches passages={document.document_passage_matches.slice(0, 5)} onClick={(index) => onPassageClick(index, docIndex)} />
                 <Button
-                  color="clear"
-                  data-cy="view-document-button"
+                  rounded
+                  variant="outlined"
                   onClick={(e) => handleViewOtherDocsClick(e, document.document_slug)}
-                  extraClasses="text-sm text-blue-600"
+                  data-cy="view-document-button"
                 >
                   View all matches highlighted in document
                 </Button>

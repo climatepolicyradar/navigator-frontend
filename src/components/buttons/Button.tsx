@@ -1,20 +1,4 @@
-import React from "react";
-
 type TButtonColours = "light" | "clear" | "clear-blue" | "ghost" | "secondary" | "dark" | "dark-dark" | "clear-underline";
-
-interface ButtonProps {
-  children: React.ReactNode;
-  type?: "button" | "submit" | "reset";
-  disabled?: boolean;
-  onClick?(event: React.FormEvent<HTMLButtonElement>): void;
-  color?: TButtonColours;
-  id?: string;
-  extraClasses?: string;
-  "data-cy"?: string;
-  fullWidth?: boolean;
-  thin?: boolean;
-  wider?: boolean;
-}
 
 export const getButtonClasses = (
   color: TButtonColours = "light",
@@ -66,33 +50,3 @@ export const getButtonClasses = (
   classes += " " + extraClasses;
   return classes;
 };
-
-const Button = ({
-  children,
-  type = "button",
-  disabled = false,
-  onClick = null,
-  color = "light",
-  id,
-  extraClasses = "",
-  fullWidth = false,
-  thin = false,
-  wider = false,
-  ...props
-}: ButtonProps) => {
-  return (
-    <button
-      id={id}
-      onClick={onClick}
-      type={type}
-      disabled={disabled}
-      data-cy={props["data-cy"]}
-      className={getButtonClasses(color, disabled, extraClasses, thin, wider, fullWidth)}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-};
-
-export default Button;

@@ -1,9 +1,9 @@
 import EmbeddedPDF from "@components/EmbeddedPDF";
 import { FullWidth } from "@components/panels/FullWidth";
-import { TConcept, TDocumentPage, TPassage } from "@types";
+import { TConcept, TDocumentPage } from "@types";
 import { EmptyDocument } from "./EmptyDocument";
 import Link from "next/link";
-import Button from "@components/buttons/Button";
+import { Button } from "@components/atoms/button/Button";
 import SearchForm from "@components/forms/SearchForm";
 import { MdOutlineTune } from "react-icons/md";
 import { AnimatePresence } from "framer-motion";
@@ -16,9 +16,7 @@ import { SearchSettings } from "@components/filters/SearchSettings";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 import useSearch from "@hooks/useSearch";
-import { HiOutlineFilter } from "react-icons/hi";
 import { ConceptsPanel } from "@components/concepts/ConceptsPanel";
-import { Popover } from "@components/popover/Popover";
 
 type TProps = {
   initialQueryTerm?: string | string[];
@@ -201,11 +199,7 @@ export const ConceptsDocumentViewer = ({
                   {(selectedConcepts.length > 0 || initialQueryTerm) && (
                     <div className="flex gap-2">
                       <Link className="capitalize hover:no-underline" href={`/documents/${document.slug}`} onClick={handleClearSearch}>
-                        <Button
-                          color="dark-dark"
-                          data-cy="view-document-viewer-concept"
-                          extraClasses="flex items-center text-[14px] font-normal pt-1 pb-1 bg-black text-white border-none"
-                        >
+                        <Button rounded color="mono" size="small" data-cy="view-document-viewer-concept">
                           ← Back
                         </Button>
                       </Link>

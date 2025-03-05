@@ -1,4 +1,3 @@
-import OldButton from "@components/buttons/Button";
 import Close from "@components/buttons/Close";
 import FilterTag from "@components/buttons/FilterTag";
 import FilterToggle from "@components/buttons/FilterToggle";
@@ -28,6 +27,7 @@ export const Medium: Story = {
   args: {
     children: "Button",
     color: "brand",
+    content: "text",
     disabled: false,
     size: "medium",
     rounded: false,
@@ -39,6 +39,7 @@ export const Small: Story = {
   args: {
     children: "Small",
     color: "brand",
+    content: "text",
     disabled: false,
     size: "small",
     rounded: false,
@@ -50,6 +51,7 @@ export const Large: Story = {
   args: {
     children: "Large",
     color: "brand",
+    content: "text",
     disabled: false,
     size: "large",
     rounded: false,
@@ -61,7 +63,9 @@ export const Rounded: Story = {
   args: {
     children: "Rounded",
     color: "brand",
+    content: "text",
     disabled: false,
+    icon: false,
     size: "medium",
     rounded: true,
     variant: "solid",
@@ -72,6 +76,7 @@ export const Faded: Story = {
   args: {
     children: "Faded",
     color: "brand",
+    content: "text",
     disabled: false,
     size: "medium",
     rounded: false,
@@ -83,6 +88,7 @@ export const Outlined: Story = {
   args: {
     children: "Outlined",
     color: "mono",
+    content: "text",
     disabled: false,
     size: "medium",
     rounded: false,
@@ -94,6 +100,7 @@ export const Ghost: Story = {
   args: {
     children: "Ghost",
     color: "mono",
+    content: "text",
     disabled: false,
     size: "medium",
     rounded: false,
@@ -105,6 +112,7 @@ export const Disabled: Story = {
   args: {
     children: "Disabled",
     color: "brand",
+    content: "text",
     disabled: true,
     size: "medium",
     rounded: false,
@@ -117,10 +125,11 @@ export const IconLeading: Story = {
     children: (
       <>
         <Icon name="download" height="16" width="16" />
-        <span className="ml-2">Download as PDF</span>
+        Download as PDF
       </>
     ),
     color: "brand",
+    content: "both",
     disabled: false,
     size: "medium",
     rounded: false,
@@ -132,11 +141,12 @@ export const IconTrailing: Story = {
   args: {
     children: (
       <>
-        <span>View source document</span>
+        View source document
         <LuMoveUpRight className="ml-2" height="16" width="16" />
       </>
     ),
     color: "mono",
+    content: "both",
     disabled: false,
     size: "medium",
     rounded: true,
@@ -157,185 +167,6 @@ type ButtonUsage = {
 
 const onClick = () => {};
 const buttonUsage: ButtonUsage[] = [
-  {
-    component: "Button",
-    filepath: "src/components/cookies/CookieConsent.tsx",
-    usage: (
-      <OldButton thin data-cy="cookie-consent-accept">
-        Accept
-      </OldButton>
-    ),
-  },
-  {
-    component: "Button",
-    filepath: "src/components/error/PageLevel.tsx",
-    usage: <OldButton thin>Restart</OldButton>,
-  },
-  {
-    component: "Button",
-    filepath: "src/components/error/TopLevel.tsx",
-    usage: <OldButton thin>Restart</OldButton>,
-  },
-  {
-    component: "Button",
-    filepath: "src/components/filters/DateRange.tsx",
-    usage: <OldButton extraClasses="w-auto !inline">Apply</OldButton>,
-  },
-  {
-    component: "Button",
-    filepath: "src/components/modals/DownloadCsv.tsx",
-    usage: <OldButton>Download</OldButton>,
-  },
-  {
-    component: "Button",
-    filepath: "src/pages/_feature-flags.tsx",
-    usage: <OldButton id="beta-button">Feature Flags</OldButton>,
-  },
-  {
-    component: "Button",
-    filepath: "src/components/documents/ConceptsDocumentViewer.tsx",
-    usage: (
-      <OldButton
-        color="dark-dark"
-        data-cy="view-document-viewer-concept"
-        extraClasses="flex items-center text-[14px] font-normal pt-1 pb-1 bg-black text-white border-none"
-      >
-        ← Back
-      </OldButton>
-    ),
-  },
-  {
-    component: "Button",
-    filepath: "src/components/concepts/ConceptsPanel.tsx",
-    usage: (
-      <OldButton
-        color="clear-blue"
-        data-cy="view-document-viewer-concept"
-        extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
-      >
-        Concept Label 10
-      </OldButton>
-    ),
-  },
-  {
-    component: "Button",
-    filepath: "src/components/documents/DocumentHead.tsx",
-    usage: (
-      <OldButton color="clear" data-cy="view-source" extraClasses="flex items-center text-sm">
-        Other documents in this entry (25)
-      </OldButton>
-    ),
-  },
-  {
-    component: "Button",
-    filepath: "src/components/documents/DocumentHead.tsx",
-    usage: (
-      <OldButton color="clear" data-cy="view-source" extraClasses="flex items-center text-sm">
-        <span className="mr-2">View source document</span>
-        <LuMoveUpRight height="16" width="16" />
-      </OldButton>
-    ),
-  },
-  {
-    component: "Button",
-    filepath: "src/components/drawer/FamilyMatchesDrawer.tsx",
-    usage: (
-      <OldButton color="clear" data-cy="view-document-button" extraClasses="text-sm text-blue-600">
-        View all matches highlighted in document
-      </OldButton>
-    ),
-  },
-  {
-    component: "Button",
-    filepath: "src/pages/document/[id].tsx",
-    usage: (
-      <OldButton color="secondary" extraClasses="flex gap-2 items-center">
-        <Icon name="downChevron" /> View more targets
-      </OldButton>
-    ),
-  },
-  {
-    component: "Button",
-    filepath: "src/pages/geographies/[id].tsx",
-    usage: (
-      <OldButton color="secondary" extraClasses="flex gap-2 items-center">
-        <Icon name="downChevron" /> View more targets
-      </OldButton>
-    ),
-  },
-  {
-    component: "Button",
-    filepath: "src/pages/document/[id].tsx",
-    usage: (
-      <OldButton color="secondary" extraClasses="flex gap-2 items-center">
-        <div className="rotate-180">
-          <Icon name="downChevron" />
-        </div>{" "}
-        Hide targets
-      </OldButton>
-    ),
-  },
-  {
-    component: "Button",
-    filepath: "src/pages/geographies/[id].tsx",
-    usage: (
-      <OldButton color="secondary" extraClasses="flex gap-2 items-center">
-        <div className="rotate-180">
-          <Icon name="downChevron" />
-        </div>{" "}
-        Hide targets
-      </OldButton>
-    ),
-  },
-  {
-    component: "Button",
-    filepath: "src/pages/geographies/[id].tsx",
-    usage: <OldButton color="secondary">View more documents</OldButton>,
-  },
-  {
-    component: "Button",
-    filepath: "src/components/cookies/CookieConsent.tsx",
-    usage: (
-      <OldButton color="ghost" thin data-cy="cookie-consent-reject">
-        Reject
-      </OldButton>
-    ),
-  },
-  {
-    component: "Button",
-    filepath: "src/components/modals/DownloadCsv.tsx",
-    usage: <OldButton color="ghost">Cancel</OldButton>,
-  },
-  {
-    component: "Button",
-    filepath: "themes/cclw/components/Instructions.tsx",
-    usage: (
-      <OldButton extraClasses="flex gap-2 items-center" color="dark-dark">
-        Or try exploring by country{" "}
-        <span className="hover:animate-none animate-bounce">
-          <Icon name="downArrow" />
-        </span>
-      </OldButton>
-    ),
-  },
-  {
-    component: "Button",
-    filepath: "themes/cclw/components/LandingSearchForm.tsx",
-    usage: (
-      <OldButton thin color="dark">
-        Term or Filter Value
-      </OldButton>
-    ),
-  },
-  {
-    component: "Button",
-    filepath: "themes/mcf/components/LandingSearchForm.tsx",
-    usage: (
-      <OldButton thin color="clear-underline">
-        Term or Filter Value
-      </OldButton>
-    ),
-  },
   {
     component: "Close",
     filepath: "src/components/drawer/Drawer.tsx",

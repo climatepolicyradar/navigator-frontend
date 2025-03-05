@@ -1,7 +1,7 @@
 import { ConceptsHead } from "./ConceptsHead";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { ConceptsPopover } from "@components/popover/ConceptsPopover";
-import Button from "@components/buttons/Button";
+import { Button } from "@components/atoms/button/Button";
 import Link from "next/link";
 import { TConcept } from "@types";
 import { useCallback, useState } from "react";
@@ -107,11 +107,7 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
                           handleConceptClick?.(concept.preferred_label);
                         }}
                       >
-                        <Button
-                          color="clear-blue"
-                          data-cy="view-document-viewer-concept"
-                          extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
-                        >
+                        <Button color="mono" rounded variant="outlined" className="capitalize" data-cy="view-document-viewer-concept">
                           {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
                         </Button>
                       </Link>
