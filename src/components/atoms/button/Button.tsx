@@ -5,7 +5,6 @@ interface ButtonClassArgs {
   color?: "brand" | "mono";
   content?: "text" | "icon" | "both";
   disabled?: boolean;
-  icon?: boolean;
   size?: "small" | "medium" | "large";
   rounded?: boolean;
   variant?: "solid" | "faded" | "outlined" | "ghost";
@@ -14,7 +13,8 @@ interface ButtonClassArgs {
 type ButtonProps = ButtonClassArgs & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const getButtonClasses = ({ className, color, content, disabled, rounded, size, variant }: ButtonClassArgs) => {
-  const baseClasses = "flex flex-row items-center text-sm leading-3.5 font-medium transition duration-200 focus-visible:outline-2 outline-offset-2";
+  const baseClasses =
+    "flex flex-row items-center justify-center text-sm leading-3.5 font-medium transition duration-200 focus-visible:outline-2 outline-offset-2";
 
   /* Colour */
 
@@ -47,24 +47,19 @@ export const getButtonClasses = ({ className, color, content, disabled, rounded,
 
   /* Size */
 
-  let padding = "px-4 py-3";
-  let layout = "";
+  const isIcon = content === "icon";
+  let layout = content === "both" ? "gap-2" : "";
+  let sizing = "";
 
   switch (size) {
     case "small":
-      padding = rounded ? "px-4 py-2.5" : "px-2 py-2.5";
+      sizing = isIcon ? "w-7 h-7" : rounded ? "px-4 py-2.5" : "px-2 py-2.5";
+      break;
+    case "medium":
+      sizing = isIcon ? "w-9 h-9" : "px-4 py-3";
       break;
     case "large":
-      padding = "px-4 py-5";
-      break;
-  }
-
-  switch (content) {
-    case "both":
-      layout = "gap-2";
-      break;
-    case "icon":
-      // TODO
+      sizing = isIcon ? "w-12 h-12" : "px-4 py-5";
       break;
   }
 
@@ -72,9 +67,7 @@ export const getButtonClasses = ({ className, color, content, disabled, rounded,
 
   const cursor = disabled ? "pointer-events-none" : "";
 
-  return [baseClasses, layout, padding, bgColor, border, outlineColor, roundness, textColor, cursor, className]
-    .filter((classes) => classes)
-    .join(" ");
+  return [baseClasses, layout, sizing, bgColor, border, outlineColor, roundness, textColor, cursor, className].filter((classes) => classes).join(" ");
 };
 
 export const Button = ({

@@ -39,7 +39,7 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
   return (
     <>
       <div className="h-full flex flex-col">
-        <div className="p-5 pb-0 pr-10 md:pr-12">
+        <div className="p-5 pb-0 pr-12">
           <Heading level={2}>{family_name}</Heading>
           <div className="flex flex-wrap text-sm gap-1 mt-2 items-center middot-between">
             <FamilyMeta category={family_category} corpus_type_name={corpus_type_name} geographies={family_geographies} date={family_date} />

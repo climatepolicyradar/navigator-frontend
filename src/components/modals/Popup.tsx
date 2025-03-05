@@ -1,4 +1,5 @@
-import Close from "../buttons/Close";
+import { Button } from "@components/atoms/button/Button";
+import { Icon } from "@components/icon/Icon";
 
 const Popup = ({ active, onCloseClick, children }) => {
   return (
@@ -10,8 +11,10 @@ const Popup = ({ active, onCloseClick, children }) => {
       <div
         className={`relative w-full rounded-lg bg-white p-4 pt-10 md:p-8 md:w-2/3 lg:1/2 ${active ? "pointer-events-auto" : "pointer-events-none"}`}
       >
-        <div className="absolute top-0 right-0 mt-4 mr-4">
-          <Close onClick={onCloseClick} size="20" />
+        <div className="absolute top-4 right-4">
+          <Button content="icon" color="mono" variant="ghost" className="text-text-secondary" onClick={onCloseClick}>
+            <Icon name="close" />
+          </Button>
         </div>
         {children}
       </div>

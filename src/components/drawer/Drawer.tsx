@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
-import Close from "@components/buttons/Close";
+import { Icon } from "@components/icon/Icon";
+import { Button } from "@components/atoms/button/Button";
 
 interface SlideoutProps {
   children: JSX.Element | string;
@@ -30,8 +31,10 @@ const Slideout = ({ children, show, setShow }: SlideoutProps) => {
         show ? "translate-x-0" : "translate-x-[110%]"
       }`}
     >
-      <div className="flex absolute z-20 top-5 right-5 mt-2 md:top-5">
-        <Close size="14" onClick={() => setShow(false)} />
+      <div className="flex absolute z-20 top-3 right-3">
+        <Button content="icon" color="mono" variant="ghost" className="text-text-secondary" onClick={() => setShow(false)}>
+          <Icon name="close" />
+        </Button>
       </div>
 
       {children}

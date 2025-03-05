@@ -1,4 +1,3 @@
-import Close from "@components/buttons/Close";
 import { Icon } from "@components/icon/Icon";
 import { Meta, StoryObj } from "@storybook/react/*";
 import { LuMoveUpRight } from "react-icons/lu";
@@ -61,7 +60,6 @@ export const Rounded: Story = {
     color: "brand",
     content: "text",
     disabled: false,
-    icon: false,
     size: "medium",
     rounded: true,
     variant: "solid",
@@ -116,14 +114,8 @@ export const Disabled: Story = {
   },
 };
 
-export const IconLeading: Story = {
+export const IconAndText: Story = {
   args: {
-    children: (
-      <>
-        <Icon name="download" height="16" width="16" />
-        Download as PDF
-      </>
-    ),
     color: "brand",
     content: "both",
     disabled: false,
@@ -131,22 +123,51 @@ export const IconLeading: Story = {
     rounded: false,
     variant: "solid",
   },
-};
-
-export const IconTrailing: Story = {
-  args: {
-    children: (
-      <>
+  argTypes: {
+    children: { control: false },
+    content: { control: false },
+  },
+  render: ({ children, ...props }) => (
+    <div className="flex flex-row gap-6">
+      <Button {...props}>
+        <Icon name="download" height="16" width="16" />
+        Download as PDF
+      </Button>
+      <Button {...props}>
         View source document
         <LuMoveUpRight className="ml-2" height="16" width="16" />
-      </>
-    ),
-    color: "mono",
-    content: "both",
+      </Button>
+    </div>
+  ),
+};
+
+export const IconOnly: Story = {
+  args: {
+    children: <Icon name="search2" height="16" width="16" />,
+    color: "brand",
+    content: "icon",
     disabled: false,
     size: "medium",
     rounded: true,
-    variant: "outlined",
+    variant: "faded",
+  },
+  argTypes: {
+    children: { control: false },
+  },
+};
+
+export const Close: Story = {
+  args: {
+    content: "icon",
+    children: <Icon name="close" />,
+    color: "mono",
+    disabled: false,
+    size: "medium",
+    rounded: false,
+    variant: "ghost",
+  },
+  argTypes: {
+    children: { control: false },
   },
 };
 
@@ -164,19 +185,13 @@ type ButtonUsage = {
 const onClick = () => {};
 const buttonUsage: ButtonUsage[] = [
   {
-    component: "Close",
-    filepath: "src/components/drawer/Drawer.tsx",
-    usage: <Close onClick={onClick} size="14" />,
-  },
-  {
-    component: "Close",
-    filepath: "themes/cpr/components/LandingSearchForm.tsx",
-    usage: <Close onClick={onClick} size="16" />,
-  },
-  {
-    component: "Close",
-    filepath: "src/components/modals/Popup.tsx",
-    usage: <Close onClick={onClick} size="20" />,
+    component: "Button",
+    filepath: "",
+    usage: (
+      <Button content="icon" color="mono" variant="ghost" className="text-text-secondary">
+        <Icon name="close"></Icon>
+      </Button>
+    ),
   },
 ];
 

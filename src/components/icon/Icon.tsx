@@ -117,7 +117,7 @@ const allIcons: Record<IconName, (IconProps) => JSX.Element> = {
     </svg>
   ),
 
-  close: ({ color = "currentColor", height = "20", width = "20" }) => (
+  close: ({ color = "currentColor", height = "16", width = "16" }) => (
     <svg
       style={{ width: `${width}px`, height: `${height}px` }}
       version="1.1"
