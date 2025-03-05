@@ -169,7 +169,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   useEffect(() => {
     const [passageMatches, totalNoOfMatches] = getMatchedPassagesFromSearch(families, document);
 
-    setPassageMatches(passageMatches.splice(0, 50));
+    setPassageMatches(passageMatches);
     setTotalNoOfMatches(totalNoOfMatches);
     setCanPreview(document.content_type === "application/pdf");
     // comparing families as objects will cause an infinite loop as each collection is a new instance of an object
@@ -300,6 +300,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                       documentPassageMatches={passageMatches}
                       passageIndex={passageIndex}
                       startingPassageIndex={startingPassage}
+                      searchStatus={status}
                     />
                   )}
                   {!canPreview && <EmptyDocument />}
