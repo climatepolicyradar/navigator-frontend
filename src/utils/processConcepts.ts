@@ -38,11 +38,12 @@ export const fetchAndProcessConcepts = async (conceptIds: string[]) => {
   /** We currently fail silently for some concepts, but we will see errors in the network panel */
   const rootConceptsResults = filteredConcepts
     .slice(0, rootConceptsS3Promises.length)
-    .filter((promiseSettledResult) => promiseSettledResult.status === "fulfilled")
+    .filter((promiseSettledResult): promiseSettledResult is PromiseFulfilledResult<TConcept> => promiseSettledResult.status === "fulfilled")
     .map((promiseSettledResult) => promiseSettledResult.value);
+
   const conceptsResults = filteredConcepts
     .slice(rootConceptsS3Promises.length)
-    .filter((promiseSettledResult) => promiseSettledResult.status === "fulfilled")
+    .filter((promiseSettledResult): promiseSettledResult is PromiseFulfilledResult<TConcept> => promiseSettledResult.status === "fulfilled")
     .map((promiseSettledResult) => promiseSettledResult.value);
 
   return { rootConcepts: rootConceptsResults, concepts: conceptsResults };
