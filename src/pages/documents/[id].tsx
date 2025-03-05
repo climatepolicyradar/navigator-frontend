@@ -15,6 +15,7 @@ import EmbeddedPDF from "@components/EmbeddedPDF";
 import PassageMatches from "@components/PassageMatches";
 import Loader from "@components/Loader";
 import SearchForm from "@components/forms/SearchForm";
+import { Button } from "@components/atoms/button/Button";
 import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
 import { DocumentHead } from "@components/documents/DocumentHead";
 import { EmptyPassages } from "@components/documents/EmptyPassages";
@@ -322,7 +323,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                     )}`}
                   >
                     <div id="document-search" className="flex flex-col gap-2 md:pl-4">
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 items-center">
                         <div className="flex-1">
                           <SearchForm
                             placeholder="Search the full text of the document"
@@ -332,12 +333,9 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                           />
                         </div>
                         <div className="relative z-10 flex justify-center">
-                          <button
-                            className="px-4 flex justify-center items-center text-textDark text-xl"
-                            onClick={() => setShowOptions(!showOptions)}
-                          >
+                          <Button content="icon" color="mono" variant="ghost" className="text-xl" onClick={() => setShowOptions(!showOptions)}>
                             <MdOutlineTune />
-                          </button>
+                          </Button>
                           <AnimatePresence initial={false}>
                             {showOptions && (
                               <motion.div

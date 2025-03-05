@@ -12,7 +12,15 @@ interface ButtonClassArgs {
 
 type ButtonProps = ButtonClassArgs & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-export const getButtonClasses = ({ className, color, content, disabled, rounded, size, variant }: ButtonClassArgs) => {
+export const getButtonClasses = ({
+  className,
+  color = "brand",
+  content = "text",
+  disabled = false,
+  rounded = false,
+  size = "medium",
+  variant = "solid",
+}: ButtonClassArgs) => {
   const baseClasses =
     "flex flex-row items-center justify-center text-sm leading-3.5 font-medium transition duration-200 focus-visible:outline-2 outline-offset-2";
 
@@ -53,7 +61,7 @@ export const getButtonClasses = ({ className, color, content, disabled, rounded,
 
   switch (size) {
     case "small":
-      sizing = isIcon ? "w-7 h-7" : rounded ? "px-4 py-2.5" : "px-2 py-2.5";
+      sizing = isIcon ? "w-7 h-7" : "px-2 py-2.5";
       break;
     case "medium":
       sizing = isIcon ? "w-9 h-9" : "px-4 py-3";

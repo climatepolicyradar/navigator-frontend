@@ -229,12 +229,9 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="geography" text={geography.name}>
       {!geography ? (
         <SingleCol>
-          <button
-            className="text-blue-500 underline text-sm text-left mt-2 hover:text-indigo-600 transition duration-300"
-            onClick={() => router.back()}
-          >
+          <Button variant="ghost" onClick={() => router.back()}>
             Go back
-          </button>
+          </Button>
           <p>We were not able to load the data for the country.</p>
         </SingleCol>
       ) : (

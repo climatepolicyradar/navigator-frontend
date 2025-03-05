@@ -182,16 +182,11 @@ type ButtonUsage = {
   usage: React.ReactNode;
 };
 
-const onClick = () => {};
 const buttonUsage: ButtonUsage[] = [
   {
-    component: "Button",
-    filepath: "",
-    usage: (
-      <Button content="icon" color="mono" variant="ghost" className="text-text-secondary">
-        <Icon name="close"></Icon>
-      </Button>
-    ),
+    component: "button",
+    filepath: "-",
+    usage: null,
   },
 ];
 
