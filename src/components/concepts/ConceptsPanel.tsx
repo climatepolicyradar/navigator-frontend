@@ -35,13 +35,13 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
     has_subconcept: [],
   };
 
-  const rootConceptIdToConceptsMap: { [rootConceptId: string]: TConcept[] } = Object.groupBy(concepts, (concept) => {
+  const conceptsGroupedByRootConcept: { [rootConceptId: string]: TConcept[] } = Object.groupBy(concepts, (concept) => {
     const rootConcept = rootConcepts.find((rootConcept) => concept.recursive_subconcept_of.includes(rootConcept.wikibase_id));
     const isRootConcept = rootConcepts.some((rootConcept) => rootConcept.wikibase_id === concept.wikibase_id);
 
     /**
      * 1. if it has a root concept, add to that list
-     * 2. if it is a root concept, add to is self
+     * 2. if it is a root concept, add to itself
      * 3. otherwise add to other
      */
     const rootConceptId = rootConcept?.wikibase_id ?? (isRootConcept ? concept.wikibase_id : otherRootConcept.wikibase_id);
@@ -55,7 +55,7 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
       </div>
 
       {rootConcepts.concat(otherRootConcept).map((rootConcept) => {
-        const hasConcepts = rootConceptIdToConceptsMap[rootConcept.wikibase_id]?.length > 0;
+        const hasConcepts = conceptsGroupedByRootConcept[rootConcept.wikibase_id]?.length > 0;
         if (!hasConcepts) return null;
 
         return (
@@ -88,7 +88,7 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
               </div>
             </div>
             <ul className="flex flex-wrap gap-2 mt-4">
-              {rootConceptIdToConceptsMap[rootConcept.wikibase_id].map((concept) => {
+              {conceptsGroupedByRootConcept[rootConcept.wikibase_id].map((concept) => {
                 return (
                   <li key={concept.wikibase_id}>
                     <Link
