@@ -96,7 +96,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
 
     query[QUERY_PARAMS.offset] = offSet.toString();
 
-    router.push({ query: query });
+    router.push({ query: query }, undefined, { shallow: true });
+    scrollTo(0, 0);
     resetCSVStatus();
   };
 
@@ -123,7 +124,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
       }
     }
 
-    router.push({ query: query });
+    router.push({ query: query }, undefined, { shallow: true });
+    scrollTo(0, 0);
     resetCSVStatus();
   };
 
@@ -175,7 +177,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     }
 
     router.query[type] = queryCollection;
-    router.push({ query: router.query });
+    router.push({ query: router.query }, undefined, { shallow: true });
+    scrollTo(0, 0);
     resetCSVStatus();
   };
 
@@ -185,7 +188,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     if (filter && filterValue && filter.length && filterValue.length) {
       suggestedQuery[filter] = [filterValue.toLowerCase()];
     }
-    router.push({ query: suggestedQuery });
+    router.push({ query: suggestedQuery }, undefined, { shallow: true });
+    scrollTo(0, 0);
     resetCSVStatus();
   };
 
@@ -205,7 +209,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     if (!value || reset) {
       delete router.query[type];
     }
-    router.push({ query: router.query });
+    router.push({ query: router.query }, undefined, { shallow: true });
+    scrollTo(0, 0);
     resetCSVStatus();
   };
 
@@ -241,7 +246,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     if (category === "All") {
       delete router.query[QUERY_PARAMS.category];
     }
-    router.push({ query: router.query });
+    router.push({ query: router.query }, undefined, { shallow: true });
+    scrollTo(0, 0);
     resetCSVStatus();
   };
 
@@ -255,7 +261,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     if (sortOption === "null") {
       delete router.query[QUERY_PARAMS.sort_field];
       delete router.query[QUERY_PARAMS.sort_order];
-      router.push({ query: router.query });
+      router.push({ query: router.query }, undefined, { shallow: true });
+      scrollTo(0, 0);
       resetCSVStatus();
       return;
     }
@@ -278,7 +285,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     if (!order) {
       delete router.query[QUERY_PARAMS.sort_order];
     }
-    router.push({ query: router.query });
+    router.push({ query: router.query }, undefined, { shallow: true });
+    scrollTo(0, 0);
     resetCSVStatus();
   };
 
@@ -290,9 +298,11 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const handleClearSearch = () => {
     const previousSearchQuery = router.query[QUERY_PARAMS.query_string] as string;
     if (previousSearchQuery && previousSearchQuery.length > 0) {
-      return router.push({ query: { [QUERY_PARAMS.query_string]: previousSearchQuery } });
+      router.push({ query: { [QUERY_PARAMS.query_string]: previousSearchQuery } }, undefined, { shallow: true });
+      return scrollTo(0, 0);
     }
-    return router.push({ query: {} });
+    router.push({ query: {} }, undefined, { shallow: true });
+    return scrollTo(0, 0);
   };
 
   const handleDownloadCsvClick = () => {
