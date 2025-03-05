@@ -142,10 +142,14 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     (queryTerm: string) => {
       const queryObj = { ...router.query };
       queryObj[QUERY_PARAMS.query_string] = queryTerm;
-      router.push({
-        pathname: `/documents/${document.slug}`,
-        query: queryObj,
-      });
+      router.push(
+        {
+          pathname: `/documents/${document.slug}`,
+          query: queryObj,
+        },
+        undefined,
+        { shallow: true }
+      );
     },
     [router, document.slug]
   );
@@ -158,10 +162,14 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
         queryObj[QUERY_PARAMS.exact_match] = "true";
       }
 
-      router.push({
-        pathname: `/documents/${document.slug}`,
-        query: queryObj,
-      });
+      router.push(
+        {
+          pathname: `/documents/${document.slug}`,
+          query: queryObj,
+        },
+        undefined,
+        { shallow: true }
+      );
     },
     [router, document.slug]
   );
@@ -210,37 +218,34 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
       if (conceptLabel === "") return false;
 
       const currentConceptFilters = conceptFilters || [];
+      const queryObj = { ...router.query };
+
+      let updatedConceptFilters;
 
       // If the concept is already in filters, remove it
       if (currentConceptFilters.includes(conceptLabel)) {
-        const updatedConceptFilters = currentConceptFilters.filter((concept) => concept !== conceptLabel);
-
-        const queryObj = { ...router.query };
-
-        // If no concept filters remain, remove the concept_name query param entirely
-        if (updatedConceptFilters.length === 0) {
-          delete queryObj[QUERY_PARAMS.concept_name];
-        } else {
-          // Otherwise, update the concept filters
-          queryObj[QUERY_PARAMS.concept_name] = updatedConceptFilters;
-        }
-
-        router.push({
-          pathname: `/documents/${document.slug}`,
-          query: queryObj,
-        });
-        return;
+        updatedConceptFilters = currentConceptFilters.filter((concept) => concept !== conceptLabel);
+      } else {
+        // If the concept is not in filters, add it
+        updatedConceptFilters = [...currentConceptFilters, conceptLabel];
       }
 
-      // If the concept is not in filters, add it
-      const updatedConceptFilters = [...currentConceptFilters, conceptLabel];
+      // If no concept filters remain, remove the concept_name query param entirely
+      if (updatedConceptFilters.length === 0) {
+        delete queryObj[QUERY_PARAMS.concept_name];
+      } else {
+        // Otherwise, update the concept filters
+        queryObj[QUERY_PARAMS.concept_name] = updatedConceptFilters;
+      }
 
-      const queryObj = { ...router.query };
-      queryObj[QUERY_PARAMS.concept_name] = updatedConceptFilters;
-      router.push({
-        pathname: `/documents/${document.slug}`,
-        query: queryObj,
-      });
+      router.push(
+        {
+          pathname: `/documents/${document.slug}`,
+          query: queryObj,
+        },
+        undefined,
+        { shallow: true }
+      );
     },
     [router, document.slug, conceptFilters]
   );
@@ -258,10 +263,14 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   });
 
   const handleClearSearch = useCallback(() => {
-    router.push({
-      pathname: `/documents/${document.slug}`,
-      query: {},
-    });
+    router.push(
+      {
+        pathname: `/documents/${document.slug}`,
+        query: {},
+      },
+      undefined,
+      { shallow: true }
+    );
 
     setPassageMatches([]);
     setTotalNoOfMatches(0);

@@ -200,15 +200,14 @@ export const ConceptsDocumentViewer = ({
                 <div id="document-search" className="flex flex-col gap-2 md:pl-4">
                   {(selectedConcepts.length > 0 || initialQueryTerm) && (
                     <div className="flex gap-2">
-                      <Link className="capitalize hover:no-underline" href={`/documents/${document.slug}`} onClick={handleClearSearch}>
-                        <Button
-                          color="dark-dark"
-                          data-cy="view-document-viewer-concept"
-                          extraClasses="flex items-center text-[14px] font-normal pt-1 pb-1 bg-black text-white border-none"
-                        >
-                          ← Back
-                        </Button>
-                      </Link>
+                      <Button
+                        color="dark-dark"
+                        data-cy="view-document-viewer-concept"
+                        extraClasses="flex items-center text-[14px] font-normal pt-1 pb-1 bg-black text-white border-none"
+                        onClick={handleClearSearch}
+                      >
+                        ← Back
+                      </Button>
                     </div>
                   )}
 
