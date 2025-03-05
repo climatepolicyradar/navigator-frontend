@@ -1,4 +1,4 @@
-import { Icon } from "@components/icon/Icon";
+import { Icon } from "@components/atoms/icon/Icon";
 
 const LandingPageLinks = ({ handleLinkClick }) => {
   const terms = ["Adaptation strategy", "Energy prices", "Flood defence", "Just transition"];

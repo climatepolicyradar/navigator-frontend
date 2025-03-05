@@ -28,7 +28,7 @@ import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
 import { SubNav } from "@components/nav/SubNav";
 import Pagination from "@components/pagination";
 import SearchResultList from "@components/search/SearchResultList";
-import { Icon } from "@components/icon/Icon";
+import { Icon } from "@components/atoms/icon/Icon";
 
 import { getThemeConfigLink } from "@utils/getThemeConfigLink";
 import { readConfigFile } from "@utils/readConfigFile";

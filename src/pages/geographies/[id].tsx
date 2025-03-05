@@ -13,7 +13,7 @@ import { Timeline } from "@components/timeline/Timeline";
 import { Event } from "@components/timeline/Event";
 import { CountryHeader } from "@components/blocks/CountryHeader";
 import { Divider } from "@components/dividers/Divider";
-import { Icon } from "@components/icon/Icon";
+import { Icon } from "@components/atoms/icon/Icon";
 import { FamilyListItem } from "@components/document/FamilyListItem";
 import { Targets } from "@components/Targets";
 import { Button } from "@components/atoms/button/Button";

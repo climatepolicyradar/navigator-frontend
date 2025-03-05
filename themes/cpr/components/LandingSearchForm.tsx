@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
-import { Icon } from "@components/icon/Icon";
+import { Icon } from "@components/atoms/icon/Icon";
 import { SearchDropdown } from "@components/forms/SearchDropdown";
 import { Button } from "@components/atoms/button/Button";
 

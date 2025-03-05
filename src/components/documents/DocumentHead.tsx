@@ -8,7 +8,7 @@ import { SiteWidth } from "@components/panels/SiteWidth";
 import { SubNav } from "@components/nav/SubNav";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { Button } from "@components/atoms/button/Button";
-import { Icon } from "@components/icon/Icon";
+import { Icon } from "@components/atoms/icon/Icon";
 import { Alert } from "@components/Alert";
 import { ExternalLink } from "@components/ExternalLink";
 import { Heading } from "@components/typography/Heading";

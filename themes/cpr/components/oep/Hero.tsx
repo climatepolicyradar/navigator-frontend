@@ -7,7 +7,7 @@ import { SiteWidth } from "@components/panels/SiteWidth";
 import { ExternalLink } from "@components/ExternalLink";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { Icon } from "@components/icon/Icon";
+import { Icon } from "@components/atoms/icon/Icon";
 
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">

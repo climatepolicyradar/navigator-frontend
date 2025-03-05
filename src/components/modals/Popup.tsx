@@ -1,5 +1,5 @@
 import { Button } from "@components/atoms/button/Button";
-import { Icon } from "@components/icon/Icon";
+import { Icon } from "@components/atoms/icon/Icon";
 
 const Popup = ({ active, onCloseClick, children }) => {
   return (

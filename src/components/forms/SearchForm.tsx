@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { SearchDropdown } from "./SearchDropdown";
 import { TextInput } from "./TextInput";
-import { Icon } from "@components/icon/Icon";
+import { Icon } from "@components/atoms/icon/Icon";
 
 type TProps = {
   input?: string;

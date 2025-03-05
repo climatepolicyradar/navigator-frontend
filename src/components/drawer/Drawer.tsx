@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { Icon } from "@components/icon/Icon";
+import { Icon } from "@components/atoms/icon/Icon";
 import { Button } from "@components/atoms/button/Button";
 
 interface SlideoutProps {
