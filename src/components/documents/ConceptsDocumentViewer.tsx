@@ -2,7 +2,6 @@ import EmbeddedPDF from "@components/EmbeddedPDF";
 import { FullWidth } from "@components/panels/FullWidth";
 import { TConcept, TDocumentPage, TPassage, TSearchResponse } from "@types";
 import { EmptyDocument } from "./EmptyDocument";
-import Link from "next/link";
 import Button from "@components/buttons/Button";
 import SearchForm from "@components/forms/SearchForm";
 import { MdOutlineTune } from "react-icons/md";
@@ -16,9 +15,7 @@ import { SearchSettings } from "@components/filters/SearchSettings";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
 import useSearch from "@hooks/useSearch";
-import { HiOutlineFilter } from "react-icons/hi";
 import { ConceptsPanel } from "@components/concepts/ConceptsPanel";
-import { Popover } from "@components/popover/Popover";
 import { fetchAndProcessConcepts } from "@utils/processConcepts";
 import { useEffectOnce } from "@hooks/useEffectOnce";
 import Loader from "@components/Loader";
@@ -110,10 +107,7 @@ export const ConceptsDocumentViewer = ({
   useEffectOnce(() => {
     const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
 
-    fetchAndProcessConcepts(conceptIds, (conceptId) => {
-      const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
-      return fetch(url).then((response) => response.json());
-    }).then(({ rootConcepts, concepts }) => {
+    fetchAndProcessConcepts(conceptIds).then(({ rootConcepts, concepts }) => {
       setRootConcepts(rootConcepts);
       setConcepts(concepts);
     });
