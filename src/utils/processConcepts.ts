@@ -14,22 +14,36 @@ export const ROOT_LEVEL_CONCEPTS = {
 };
 export const rootLevelConceptsIds = Object.keys(ROOT_LEVEL_CONCEPTS);
 
-export const fetchAndProcessConcepts = async (conceptIds: string[], fetchConcept: (id: string) => Promise<TConcept>) => {
-  const rootConceptsS3Promises = rootLevelConceptsIds.map((conceptId) => {
-    return fetchConcept(conceptId).catch(() => ({
-      wikibase_id: conceptId,
-      preferred_label: ROOT_LEVEL_CONCEPTS[conceptId] || "Other",
-      description: "Concept data unavailable",
-      subconcept_of: [],
-    }));
+const fetchConcept = async (conceptId: string): Promise<TConcept> => {
+  return fetch(`https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`).then((response) => response.json());
+};
+
+export const fetchAndProcessConcepts = async (conceptIds: string[]) => {
+  const rootConceptsS3Promises = rootLevelConceptsIds.map(async (conceptId) => {
+    try {
+      return await fetchConcept(conceptId);
+    } catch {
+      return {
+        wikibase_id: conceptId,
+        preferred_label: ROOT_LEVEL_CONCEPTS[conceptId] || "Other",
+        description: "Concept data unavailable",
+        subconcept_of: [],
+      } as TConcept;
+    }
   });
 
-  const conceptsS3Promises = conceptIds.map((conceptId) => fetchConcept(conceptId).catch(() => null));
-
-  const allConcepts = await Promise.all([...rootConceptsS3Promises, ...conceptsS3Promises]);
+  const conceptsS3Promises = conceptIds.map((conceptId) => fetchConcept(conceptId));
+  const allConcepts = await Promise.allSettled([...rootConceptsS3Promises, ...conceptsS3Promises]);
   const filteredConcepts = allConcepts.filter(Boolean);
-  const rootConceptsResults = filteredConcepts.slice(0, rootConceptsS3Promises.length);
-  const conceptsResults = filteredConcepts.slice(rootConceptsS3Promises.length);
+  /** We currently fail silently for some concepts, but we will see errors in the network panel */
+  const rootConceptsResults = filteredConcepts
+    .slice(0, rootConceptsS3Promises.length)
+    .filter((promiseSettledResult) => promiseSettledResult.status === "fulfilled")
+    .map((promiseSettledResult) => promiseSettledResult.value);
+  const conceptsResults = filteredConcepts
+    .slice(rootConceptsS3Promises.length)
+    .filter((promiseSettledResult) => promiseSettledResult.status === "fulfilled")
+    .map((promiseSettledResult) => promiseSettledResult.value);
 
   return { rootConcepts: rootConceptsResults, concepts: conceptsResults };
 };
