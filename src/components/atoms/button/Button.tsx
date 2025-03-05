@@ -14,7 +14,7 @@ interface ButtonClassArgs {
 type ButtonProps = ButtonClassArgs & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const getButtonClasses = ({ className, color, content, disabled, rounded, size, variant }: ButtonClassArgs) => {
-  const baseClasses = "flex flex-row items-center text-sm leading-3.5 font-medium transition duration-200 focus:outline-2 focus:outline-offset-2";
+  const baseClasses = "flex flex-row items-center text-sm leading-3.5 font-medium transition duration-200 focus-visible:outline-2 outline-offset-2";
 
   /* Colour */
 

@@ -19,7 +19,6 @@ import Loader from "@components/Loader";
 import { NoOfResults } from "@components/NoOfResults";
 import SearchFilters from "@components/blocks/SearchFilters";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import FilterToggle from "@components/buttons/FilterToggle";
 import Drawer from "@components/drawer/Drawer";
 import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
 import { SearchSettings } from "@components/filters/SearchSettings";
@@ -39,6 +38,7 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 import { TConcept, TFamilyPage, TTheme, TThemeConfig } from "@types";
 import { getFeatureFlags } from "@utils/featureFlags";
 import { ApiClient } from "@api/http-common";
+import { Button } from "@components/atoms/button/Button";
 
 type TProps = {
   theme: TTheme;
@@ -398,7 +398,12 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
             </div>
           </div>
           <div className="flex items-center justify-center w-full mt-4">
-            <FilterToggle toggle={toggleFilters} isOpen={showFilters} />
+            <Button content="both" className="mt-2 flex-nowrap md:hidden" onClick={toggleFilters}>
+              <span>{showFilters ? "Hide" : "Show"} filters</span>
+              <div className={showFilters && "rotate-180"}>
+                <Icon name="downChevron" />
+              </div>
+            </Button>
           </div>
           <div className={`${showFilters ? "" : "hidden"}`}>
             {configQuery.isFetching ? (

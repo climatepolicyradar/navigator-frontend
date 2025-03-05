@@ -1,8 +1,4 @@
 import Close from "@components/buttons/Close";
-import FilterTag from "@components/buttons/FilterTag";
-import FilterToggle from "@components/buttons/FilterToggle";
-import MatchesButton from "@components/buttons/MatchesButton";
-import { SearchMatchesButton } from "@components/buttons/SearchMatchesButton";
 import { Icon } from "@components/icon/Icon";
 import { Meta, StoryObj } from "@storybook/react/*";
 import { LuMoveUpRight } from "react-icons/lu";
@@ -181,26 +177,6 @@ const buttonUsage: ButtonUsage[] = [
     component: "Close",
     filepath: "src/components/modals/Popup.tsx",
     usage: <Close onClick={onClick} size="20" />,
-  },
-  {
-    component: "FilterTag",
-    filepath: "src/components/filters/MultiList.tsx",
-    usage: <FilterTag onClick={onClick} item="United Kingdom" />,
-  },
-  {
-    component: "FilterToggle",
-    filepath: "src/pages/search/index.tsx",
-    usage: <FilterToggle toggle={onClick} isOpen={true} />,
-  },
-  {
-    component: "MatchesButton",
-    filepath: "src/components/document/FamilyDocument.tsx",
-    usage: <MatchesButton dataAttribute={"foo"} count={12} familyMatches={20} />,
-  },
-  {
-    component: "SearchMatches",
-    filepath: "src/components/buttons/SearchMatchesButton.tsx",
-    usage: <SearchMatchesButton count={30} dataAttribute="test" onClick={onClick} active={true} />,
   },
 ];
 
