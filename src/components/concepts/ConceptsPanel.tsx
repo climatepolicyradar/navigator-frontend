@@ -35,7 +35,7 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
     has_subconcept: [],
   };
 
-  const rootConceptIdToConceptsMap: { [rootConceptId: string]: TConcept[] } = concepts.reduce((parentKeyToConceptsMap, concept) => {
+  const rootConceptIdToConceptsMap: { [rootConceptId: string]: TConcept[] } = Object.groupBy(concepts, (concept) => {
     const rootConcept = rootConcepts.find((rootConcept) => concept.recursive_subconcept_of.includes(rootConcept.wikibase_id));
     const isRootConcept = rootConcepts.some((rootConcept) => rootConcept.wikibase_id === concept.wikibase_id);
 
@@ -45,12 +45,8 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
      * 3. otherwise add to other
      */
     const rootConceptId = rootConcept?.wikibase_id ?? (isRootConcept ? concept.wikibase_id : otherRootConcept.wikibase_id);
-
-    return {
-      ...parentKeyToConceptsMap,
-      [rootConceptId]: [...(parentKeyToConceptsMap[rootConceptId] || []), concept],
-    };
-  }, {});
+    return rootConceptId;
+  });
 
   return (
     <div className="pb-4">
