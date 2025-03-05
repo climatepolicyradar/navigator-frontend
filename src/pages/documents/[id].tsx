@@ -81,13 +81,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const exactMatchQuery = !!router.query[QUERY_PARAMS.exact_match];
   const startingPassage = Number(router.query.passage) || 0;
 
-  const { status, families, searchQuery } = useSearch(
-    router.query,
-    null,
-    document.import_id,
-    !!(router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]),
-    MAX_PASSAGES
-  );
+  // const { status, families, searchQuery } = useSearch(
+  //   router.query,
+  //   null,
+  //   document.import_id,
+  //   !!(router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]),
+  //   MAX_PASSAGES
+  // );
 
   const handlePassageClick = (index: number) => {
     if (!canPreview) return;
@@ -174,37 +174,15 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     [router, document.slug]
   );
 
-  useEffect(() => {
-    const [passageMatches, totalNoOfMatches] = getMatchedPassagesFromSearch(families, document);
+  // useEffect(() => {
+  //   const [passageMatches, totalNoOfMatches] = getMatchedPassagesFromSearch(families, document);
 
-    setPassageMatches(passageMatches);
-    setTotalNoOfMatches(totalNoOfMatches);
-    setCanPreview(document.content_type === "application/pdf");
-    // comparing families as objects will cause an infinite loop as each collection is a new instance of an object
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(families), document.slug]);
-
-  /** Concepts: WIP */
-  const [concepts, setConcepts] = useState<TConcept[]>([]);
-  const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
-
-  // Extract unique concept keys and their counts
-  const conceptCounts: { conceptKey: string; count: number }[] = useMemo(() => {
-    const uniqueConceptMap = new Map<string, number>();
-
-    (vespaFamilyData?.families ?? []).forEach((family) => {
-      family.hits.forEach((hit) => {
-        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
-          const existingCount = uniqueConceptMap.get(conceptKey) || 0;
-          uniqueConceptMap.set(conceptKey, existingCount + count);
-        });
-      });
-    });
-
-    return Array.from(uniqueConceptMap.entries())
-      .map(([conceptKey, count]) => ({ conceptKey, count }))
-      .sort((a, b) => b.count - a.count);
-  }, [vespaFamilyData]);
+  //   setPassageMatches(passageMatches);
+  //   setTotalNoOfMatches(totalNoOfMatches);
+  //   setCanPreview(document.content_type === "application/pdf");
+  //   // comparing families as objects will cause an infinite loop as each collection is a new instance of an object
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [JSON.stringify(families), document.slug]);
 
   const conceptFiltersQuery = router.query[QUERY_PARAMS.concept_name];
   const conceptFilters = useMemo(
@@ -250,18 +228,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     [router, document.slug, conceptFilters]
   );
 
-  useEffectOnce(() => {
-    const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
-
-    fetchAndProcessConcepts(conceptIds, (conceptId) => {
-      const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
-      return fetch(url).then((response) => response.json());
-    }).then(({ rootConcepts, concepts }) => {
-      setRootConcepts(rootConcepts);
-      setConcepts(concepts);
-    });
-  });
-
   const handleClearSearch = useCallback(() => {
     router.push(
       {
@@ -293,7 +259,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
           handleViewSourceClick={handleViewSourceClick}
         />
 
-        <section className="flex-1 flex" id="document-viewer">
+        <>
+          {/* <section className="flex-1 flex" id="document-viewer">
           <FullWidth extraClasses="flex-1">
             {concepts.length === 0 && (
               <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
@@ -401,17 +368,16 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
               </div>
             )}
           </FullWidth>
-        </section>
+        </section> */}
+        </>
 
-        {concepts.length > 0 && (
+        {vespaFamilyData !== null && (
           <ConceptsDocumentViewer
             initialQueryTerm={qsSearchString}
             initialExactMatch={exactMatchQuery}
             initialPassage={startingPassage}
-            concepts={concepts}
+            vespaFamilyData={vespaFamilyData}
             initialConceptFilters={conceptFilters}
-            rootConcepts={rootConcepts}
-            conceptCounts={conceptCounts}
             document={document}
             onQueryTermChange={handleQueryTermChange}
             onExactMatchChange={handleExactMatchChange}

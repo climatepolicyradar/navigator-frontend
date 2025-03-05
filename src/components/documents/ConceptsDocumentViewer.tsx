@@ -1,6 +1,6 @@
 import EmbeddedPDF from "@components/EmbeddedPDF";
 import { FullWidth } from "@components/panels/FullWidth";
-import { TConcept, TDocumentPage, TPassage } from "@types";
+import { TConcept, TDocumentPage, TPassage, TSearchResponse } from "@types";
 import { EmptyDocument } from "./EmptyDocument";
 import Link from "next/link";
 import Button from "@components/buttons/Button";
@@ -19,15 +19,15 @@ import useSearch from "@hooks/useSearch";
 import { HiOutlineFilter } from "react-icons/hi";
 import { ConceptsPanel } from "@components/concepts/ConceptsPanel";
 import { Popover } from "@components/popover/Popover";
+import { fetchAndProcessConcepts } from "@utils/processConcepts";
+import { useEffectOnce } from "@hooks/useEffectOnce";
 
 type TProps = {
   initialQueryTerm?: string | string[];
   initialExactMatch?: boolean;
   initialPassage?: number;
   initialConceptFilters?: string[];
-  concepts: TConcept[];
-  rootConcepts: TConcept[];
-  conceptCounts: { conceptKey: string; count: number }[];
+  vespaFamilyData: TSearchResponse;
   document: TDocumentPage;
 
   // Callback props for state changes
@@ -53,10 +53,8 @@ export const ConceptsDocumentViewer = ({
   initialExactMatch = false,
   initialPassage = 0,
   initialConceptFilters,
-  concepts,
-  rootConcepts,
-  conceptCounts,
   document,
+  vespaFamilyData,
   onQueryTermChange,
   onExactMatchChange,
   onConceptClick,
@@ -72,6 +70,28 @@ export const ConceptsDocumentViewer = ({
     totalNoOfMatches: 0,
   });
 
+  /** Concepts: WIP */
+  const [concepts, setConcepts] = useState<TConcept[]>([]);
+  const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
+
+  // Extract unique concept keys and their counts
+  const conceptCounts: { conceptKey: string; count: number }[] = useMemo(() => {
+    const uniqueConceptMap = new Map<string, number>();
+
+    (vespaFamilyData?.families ?? []).forEach((family) => {
+      family.hits.forEach((hit) => {
+        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
+          const existingCount = uniqueConceptMap.get(conceptKey) || 0;
+          uniqueConceptMap.set(conceptKey, existingCount + count);
+        });
+      });
+    });
+
+    return Array.from(uniqueConceptMap.entries())
+      .map(([conceptKey, count]) => ({ conceptKey, count }))
+      .sort((a, b) => b.count - a.count);
+  }, [vespaFamilyData]);
+
   const canPreview = document.content_type === "application/pdf";
   const conceptCountsById = useMemo(
     () =>
@@ -85,6 +105,18 @@ export const ConceptsDocumentViewer = ({
       ),
     [conceptCounts]
   );
+
+  useEffectOnce(() => {
+    const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
+
+    fetchAndProcessConcepts(conceptIds, (conceptId) => {
+      const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
+      return fetch(url).then((response) => response.json());
+    }).then(({ rootConcepts, concepts }) => {
+      setRootConcepts(rootConcepts);
+      setConcepts(concepts);
+    });
+  });
 
   // Dynamically filter concepts based on router concept params.
   const selectedConcepts = useMemo(
