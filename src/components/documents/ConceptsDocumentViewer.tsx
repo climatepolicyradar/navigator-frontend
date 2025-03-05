@@ -264,7 +264,7 @@ export const ConceptsDocumentViewer = ({
 
                   {selectedConcepts.length > 0 && (
                     <div className="pt-6 pb-6">
-                      <p className="mb-2 capitalize text-[15px] font-bold text-inputSelected text-neutral-800 text-base font-medium leading-normal flex-grow">
+                      <p className="mb-2 capitalize text-[15px] font-medium text-neutral-800 text-base leading-normal flex-grow">
                         {selectedConcepts.map((concept) => concept.preferred_label).join(", ")}
                       </p>
                       {selectedConcepts.map((concept) => (
