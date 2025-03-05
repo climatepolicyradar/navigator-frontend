@@ -81,13 +81,14 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const exactMatchQuery = !!router.query[QUERY_PARAMS.exact_match];
   const startingPassage = Number(router.query.passage) || 0;
 
-  // const { status, families, searchQuery } = useSearch(
-  //   router.query,
-  //   null,
-  //   document.import_id,
-  //   !!(router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]),
-  //   MAX_PASSAGES
-  // );
+  // TODO: Remove this once we have hard launched concepts in product.
+  const { status, families, searchQuery } = useSearch(
+    router.query,
+    null,
+    document.import_id,
+    !!(router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]),
+    MAX_PASSAGES
+  );
 
   const handlePassageClick = (index: number) => {
     if (!canPreview) return;
@@ -174,15 +175,15 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     [router, document.slug]
   );
 
-  // useEffect(() => {
-  //   const [passageMatches, totalNoOfMatches] = getMatchedPassagesFromSearch(families, document);
+  useEffect(() => {
+    const [passageMatches, totalNoOfMatches] = getMatchedPassagesFromSearch(families, document);
 
-  //   setPassageMatches(passageMatches);
-  //   setTotalNoOfMatches(totalNoOfMatches);
-  //   setCanPreview(document.content_type === "application/pdf");
-  //   // comparing families as objects will cause an infinite loop as each collection is a new instance of an object
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [JSON.stringify(families), document.slug]);
+    setPassageMatches(passageMatches);
+    setTotalNoOfMatches(totalNoOfMatches);
+    setCanPreview(document.content_type === "application/pdf");
+    // comparing families as objects will cause an infinite loop as each collection is a new instance of an object
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(families), document.slug]);
 
   const conceptFiltersQuery = router.query[QUERY_PARAMS.concept_name];
   const conceptFilters = useMemo(
@@ -237,10 +238,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
       undefined,
       { shallow: true }
     );
-
-    setPassageMatches([]);
-    setTotalNoOfMatches(0);
-    setPassageIndex(0);
   }, [router, document.slug]);
 
   return (
@@ -259,10 +256,10 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
           handleViewSourceClick={handleViewSourceClick}
         />
 
-        <>
-          {/* <section className="flex-1 flex" id="document-viewer">
-          <FullWidth extraClasses="flex-1">
-            {concepts.length === 0 && (
+        {/* TODO: Remove this once we have hard launched concepts in product. */}
+        {vespaFamilyData === null && (
+          <section className="flex-1 flex" id="document-viewer">
+            <FullWidth extraClasses="flex-1">
               <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
                 <div
                   id="document-preview"
@@ -366,18 +363,17 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                   )}
                 </div>
               </div>
-            )}
-          </FullWidth>
-        </section> */}
-        </>
+            </FullWidth>
+          </section>
+        )}
 
         {vespaFamilyData !== null && (
           <ConceptsDocumentViewer
             initialQueryTerm={qsSearchString}
             initialExactMatch={exactMatchQuery}
             initialPassage={startingPassage}
-            vespaFamilyData={vespaFamilyData}
             initialConceptFilters={conceptFilters}
+            vespaFamilyData={vespaFamilyData}
             document={document}
             onQueryTermChange={handleQueryTermChange}
             onExactMatchChange={handleExactMatchChange}
