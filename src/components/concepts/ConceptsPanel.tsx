@@ -23,23 +23,6 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
     [onConceptClick]
   );
 
-  /**
-   * 1. adds "Other" as the root concept for concepts that aren't a subconcept of a root concept.
-   * 2. removes concepts that are a root concept as those are displayed as their own elements.
-   */
-  const conceptsWithOtherRootConcept = concepts
-    .map((concept) => {
-      const hasRootConcept = rootConcepts.find((rootConcept) => concept.recursive_subconcept_of.includes(rootConcept.wikibase_id));
-      if (hasRootConcept) return concept;
-
-      return {
-        ...concept,
-        subconcept_of: [...concept.subconcept_of, "Q000"],
-        recursive_subconcept_of: [...concept.recursive_subconcept_of, "Q000"],
-      };
-    })
-    /** 2. Remove any root concepts */
-    .filter((concept) => !rootConcepts.find((rootConcept) => rootConcept.wikibase_id === concept.wikibase_id));
   const otherRootConcept: TConcept = {
     wikibase_id: "Q000",
     preferred_label: "Other",
@@ -52,6 +35,23 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
     has_subconcept: [],
   };
 
+  const rootConceptIdToConceptsMap: { [rootConceptId: string]: TConcept[] } = concepts.reduce((parentKeyToConceptsMap, concept) => {
+    const rootConcept = rootConcepts.find((rootConcept) => concept.recursive_subconcept_of.includes(rootConcept.wikibase_id));
+    const isRootConcept = rootConcepts.some((rootConcept) => rootConcept.wikibase_id === concept.wikibase_id);
+
+    /**
+     * 1. if it has a root concept, add to that list
+     * 2. if it is a root concept, add to is self
+     * 3. otherwise add to other
+     */
+    const rootConceptId = rootConcept?.wikibase_id ?? (isRootConcept ? concept.wikibase_id : otherRootConcept.wikibase_id);
+
+    return {
+      ...parentKeyToConceptsMap,
+      [rootConceptId]: [...(parentKeyToConceptsMap[rootConceptId] || []), concept],
+    };
+  }, {});
+
   return (
     <div className="pb-4">
       <div className="mt-4 grow-0 shrink-0">
@@ -59,10 +59,9 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
       </div>
 
       {rootConcepts.concat(otherRootConcept).map((rootConcept) => {
-        const hasConceptsInRootConcept = conceptsWithOtherRootConcept.find((concept) =>
-          concept.recursive_subconcept_of.includes(rootConcept.wikibase_id)
-        );
-        if (!hasConceptsInRootConcept) return null;
+        const hasConcepts = rootConceptIdToConceptsMap[rootConcept.wikibase_id]?.length > 0;
+        if (!hasConcepts) return null;
+
         return (
           <div key={rootConcept.wikibase_id} className="pt-6 pb-6 relative group">
             <div className="flex items-center gap-2">
@@ -93,30 +92,28 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
               </div>
             </div>
             <ul className="flex flex-wrap gap-2 mt-4">
-              {conceptsWithOtherRootConcept
-                .filter((concept) => concept.recursive_subconcept_of.includes(rootConcept.wikibase_id))
-                .map((concept) => {
-                  return (
-                    <li key={concept.wikibase_id}>
-                      <Link
-                        className="capitalize hover:no-underline"
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleConceptClick?.(concept.preferred_label);
-                        }}
+              {rootConceptIdToConceptsMap[rootConcept.wikibase_id].map((concept) => {
+                return (
+                  <li key={concept.wikibase_id}>
+                    <Link
+                      className="capitalize hover:no-underline"
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleConceptClick?.(concept.preferred_label);
+                      }}
+                    >
+                      <Button
+                        color="clear-blue"
+                        data-cy="view-document-viewer-concept"
+                        extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
                       >
-                        <Button
-                          color="clear-blue"
-                          data-cy="view-document-viewer-concept"
-                          extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
-                        >
-                          {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
-                        </Button>
-                      </Link>
-                    </li>
-                  );
-                })}
+                        {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
+                      </Button>
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         );
