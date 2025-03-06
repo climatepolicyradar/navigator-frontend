@@ -1,17 +1,10 @@
-import { Fragment } from "react";
-
-import { Accordian } from "@components/accordian/Accordian";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import Layout from "@components/layouts/Main";
 import { SiteWidth } from "@components/panels/SiteWidth";
-import { SingleCol } from "@components/panels/SingleCol";
 import { SubNav } from "@components/nav/SubNav";
-import { Heading } from "@components/typography/Heading";
 
-import { VerticalSpacing } from "@components/utility/VerticalSpacing";
 import { CONCEPTS_FAQS } from "@constants/conceptsFaqs";
-
-const ACCORDIAN_MAX_HEIGHT = "464px";
+import FaqSection from "@components/typography/FaqSection";
 
 const FAQ = () => {
   return (
@@ -24,22 +17,7 @@ const FAQ = () => {
       </SubNav>
       <section className="pt-8">
         <SiteWidth>
-          <SingleCol>
-            <Heading level={1} extraClasses="custom-header">
-              FAQs
-            </Heading>
-            <VerticalSpacing size="md" />
-            <div className="text-content mb-14">
-              {CONCEPTS_FAQS.map((faq, i) => (
-                <Fragment key={faq.title}>
-                  <Accordian title={faq.title} headContent={faq.headContent ?? null} startOpen={i === 0} fixedHeight={ACCORDIAN_MAX_HEIGHT}>
-                    {faq.content}
-                  </Accordian>
-                  <hr />
-                </Fragment>
-              ))}
-            </div>
-          </SingleCol>
+          <FaqSection title="FAQs" faqs={CONCEPTS_FAQS} />
         </SiteWidth>
       </section>
     </Layout>
