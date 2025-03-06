@@ -92,11 +92,14 @@ export const ConceptsDocumentViewer = ({
   const canPreview = document.content_type === "application/pdf";
   const conceptCountsById = useMemo(
     () =>
-      conceptCounts.reduce((acc, { conceptKey, count }) => {
-        const conceptId = conceptKey.split(":")[0];
-        acc[conceptId] = count;
-        return acc;
-      }, {} as Record<string, number>),
+      conceptCounts.reduce(
+        (acc, { conceptKey, count }) => {
+          const conceptId = conceptKey.split(":")[0];
+          acc[conceptId] = count;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
     [conceptCounts]
   );
 
