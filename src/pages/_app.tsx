@@ -56,8 +56,10 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
             <Head>
               <link rel="icon" href={favicon} />
             </Head>
-            <div id={dynamicTheme} className="h-full">
-              <Component {...pageProps} />
+            <div id="Root">
+              <div id={dynamicTheme} className="h-full">
+                <Component {...pageProps} />
+              </div>
             </div>
             <CookieConsent />
           </ErrorBoundary>
