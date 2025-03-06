@@ -408,7 +408,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // Fetch Vespa family data for concepts (similar to document/[id].tsx)
     const conceptsV1 = featureFlags["concepts-v1"];
     if (conceptsV1) {
-      const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
+      const { data: vespaFamilyDataResponse } = await client.get(`/document/${documentData.import_id}`);
       vespaFamilyData = vespaFamilyDataResponse;
     }
   } catch {

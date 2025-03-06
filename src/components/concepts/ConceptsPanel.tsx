@@ -10,10 +10,11 @@ type TProps = {
   concepts: TConcept[];
   rootConcepts: TConcept[];
   conceptCountsById: Record<string, number>;
+  showCounts?: boolean;
   onConceptClick?: (conceptLabel: string) => void;
 };
 
-export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onConceptClick }: TProps) => {
+export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showCounts = true, onConceptClick }: TProps) => {
   const [openPopoverIds, setOpenPopoverIds] = useState<string[]>([]);
 
   const handleConceptClick = useCallback(
@@ -100,7 +101,8 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
                       }}
                     >
                       <Button color="mono" rounded variant="outlined" className="capitalize" data-cy="view-document-viewer-concept">
-                        {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
+                        {concept.preferred_label}
+                        {showCounts && ` (${conceptCountsById[concept.wikibase_id]})`}
                       </Button>
                     </Link>
                   </li>
