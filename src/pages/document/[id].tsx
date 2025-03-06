@@ -480,7 +480,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   if (familyData) {
     try {
-      const targetsRaw = await axios.get<TTarget[]>(`${process.env.S3_PATH}/families/${familyData.import_id}.json`);
+      const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/families/${familyData.import_id}.json`);
       targetsData = targetsRaw.data;
     } catch (error) {}
   }
