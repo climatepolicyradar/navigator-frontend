@@ -277,6 +277,7 @@ export const ConceptsDocumentViewer = ({
                       concepts={concepts}
                       conceptCountsById={conceptCountsById}
                       onConceptClick={onConceptClick}
+                      showCounts={true}
                     ></ConceptsPanel>
                   )}
 
