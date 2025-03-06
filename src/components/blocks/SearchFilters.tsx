@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { ParsedUrlQuery } from "querystring";
+import dynamic from "next/dynamic";
 
 import useGetThemeConfig from "@hooks/useThemeConfig";
 import { Label } from "@components/labels/Label";
@@ -22,7 +23,6 @@ import { canDisplayFilter } from "@utils/canDisplayFilter";
 import { getFilterLabel } from "@utils/getFilterLabel";
 
 import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@types";
-import dynamic from "next/dynamic";
 
 const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/components/MethodologyLink`));
 
