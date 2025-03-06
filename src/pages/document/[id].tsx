@@ -193,8 +193,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   }, [vespaFamilyData]);
 
   const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
-  // const conceptIds = [...new Set(conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]))];
-
   const conceptCountsById = conceptCounts.reduce((acc, { conceptKey, count }) => {
     const conceptId = conceptKey.split(":")[0];
     acc[conceptId] = count;
