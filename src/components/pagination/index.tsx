@@ -71,7 +71,7 @@ const Pagination = ({
               value={pageNumber}
               type="button"
               variant={isCurrentPage ? "solid" : "ghost"}
-              className={isCurrentPage && "pointer-events-none"}
+              className={isCurrentPage ? "pointer-events-none" : ""}
               onClick={() => onChange(token, offSet)}
               data-ct={token}
               data-offset={offSet}
