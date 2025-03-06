@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { Icon } from "./icon/Icon";
+import { Icon } from "./atoms/icon/Icon";
 import { Divider } from "./dividers/Divider";
 import { CleanRouterQuery } from "@utils/cleanRouterQuery";
 import { QUERY_PARAMS } from "@constants/queryParams";
+import { Button } from "./atoms/button/Button";
 
 const FEATURED_SEARCHES = ["Adaptation strategy", "Energy prices", "Flood defence", "Fossil fuels"];
 const FEATURED_DOCUMENT_SLUG = "/documents/adaptation-strategy-to-climate-change-in-the-czech-republic_213b";
@@ -11,10 +12,9 @@ const FEATURED_DOCUMENT_SLUG = "/documents/adaptation-strategy-to-climate-change
 type TProps = {
   extended?: boolean;
   placeholder?: string;
-  extraButtonClasses?: string;
 };
 
-export const FloatingSearch = ({ extended = true, placeholder, extraButtonClasses }: TProps) => {
+export const FloatingSearch = ({ extended = true, placeholder }: TProps) => {
   const ref = useRef(null);
   const router = useRouter();
   const qQueryString = router.query[QUERY_PARAMS.query_string] as string;
@@ -89,14 +89,9 @@ export const FloatingSearch = ({ extended = true, placeholder, extraButtonClasse
             <ul className="flex gap-2 flex-wrap items-center">
               {FEATURED_SEARCHES.map((searchTerm) => (
                 <li key={searchTerm}>
-                  <button
-                    onClick={() => {
-                      handleSearch(searchTerm);
-                    }}
-                    className={`bg-white border border-gray-200 rounded-[40px] py-1 px-2 transition hover:border-blue-600 hover:text-textDark ${extraButtonClasses}`}
-                  >
+                  <Button color="mono" rounded size="small" variant="outlined" onClick={() => handleSearch(searchTerm)}>
                     {searchTerm}
-                  </button>
+                  </Button>
                 </li>
               ))}
             </ul>

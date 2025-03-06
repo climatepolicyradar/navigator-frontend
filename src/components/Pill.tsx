@@ -1,4 +1,4 @@
-import { Icon } from "./icon/Icon";
+import { Icon } from "./atoms/icon/Icon";
 import { ToolTipSSR } from "@components/tooltip/TooltipSSR";
 
 type TProps = {

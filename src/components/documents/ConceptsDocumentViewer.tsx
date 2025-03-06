@@ -1,8 +1,8 @@
 import EmbeddedPDF from "@components/EmbeddedPDF";
 import { FullWidth } from "@components/panels/FullWidth";
-import { TConcept, TDocumentPage, TPassage, TSearchResponse } from "@types";
+import { TConcept, TDocumentPage, TSearchResponse } from "@types";
 import { EmptyDocument } from "./EmptyDocument";
-import Button from "@components/buttons/Button";
+import { Button } from "@components/atoms/button/Button";
 import SearchForm from "@components/forms/SearchForm";
 import { MdOutlineTune } from "react-icons/md";
 import { AnimatePresence } from "framer-motion";
@@ -226,12 +226,7 @@ export const ConceptsDocumentViewer = ({
                 <div id="document-search" className="flex flex-col gap-2 md:pl-4">
                   {(selectedConcepts.length > 0 || initialQueryTerm) && (
                     <div className="flex gap-2">
-                      <Button
-                        color="dark-dark"
-                        data-cy="view-document-viewer-concept"
-                        extraClasses="flex items-center text-[14px] font-normal pt-1 pb-1 bg-black text-white border-none"
-                        onClick={handleClearSearch}
-                      >
+                      <Button rounded color="mono" size="small" data-cy="view-document-viewer-concept" onClick={handleClearSearch}>
                         ← Back
                       </Button>
                     </div>

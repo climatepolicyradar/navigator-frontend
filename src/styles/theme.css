@@ -75,13 +75,18 @@
   --color-text-primary: #202020;
   --color-text-secondary: #505050;
   --color-text-tertiary: #707070;
-  --color-text-white: #ffffff;
+  --color-text-light: #ffffff;
+  --color-text-brand: #005eeb;
 
   --color-border-grey: #e5e5e5;
 
-  --color-surface-ui: #f5f5f5;
+  --color-surface-light: #ffffff;
   --color-surface-bg: #fafafa;
-  --color-surface-white: #ffffff;
+  --color-surface-ui: #f5f5f5;
+  --color-surface-brand: #005eeb;
+  --color-surface-brand-dark: #0049b8;
+  --color-surface-mono: #202020;
+  --color-surface-mono-dark: #000000;
 
   --font-inter: "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
     "Noto Color Emoji";

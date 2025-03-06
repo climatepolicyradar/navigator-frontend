@@ -1,4 +1,4 @@
-import Button from "@components/buttons/Button";
+import { Button } from "@components/atoms/button/Button";
 import { setFeatureFlags } from "@utils/featureFlags";
 import { usePostHog } from "posthog-js/react";
 import { useEffect } from "react";

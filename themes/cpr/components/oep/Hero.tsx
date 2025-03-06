@@ -7,7 +7,7 @@ import { SiteWidth } from "@components/panels/SiteWidth";
 import { ExternalLink } from "@components/ExternalLink";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
-import { Icon } from "@components/icon/Icon";
+import { Icon } from "@components/atoms/icon/Icon";
 
 export const Hero = () => {
   const router = useRouter();
