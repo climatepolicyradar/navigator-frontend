@@ -68,7 +68,6 @@ export const ConceptsDocumentViewer = ({
     totalNoOfMatches: 0,
   });
 
-  /** Concepts: WIP */
   const [concepts, setConcepts] = useState<TConcept[]>([]);
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
 
