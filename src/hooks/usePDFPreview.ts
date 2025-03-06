@@ -117,7 +117,15 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
     await changePage(startingPassageIndex, documentPassageMatches);
     if (documentPassageMatches.length > 0) {
       const highlights = generateHighlights(physicalDocument, documentPassageMatches);
-      return await annotationManagerApi.addAnnotations(highlights);
+      // split list of passages into batches of 5
+      const batchSize = 5;
+      for (let i = 0; i < highlights.length; i += batchSize) {
+        const chunk = highlights.slice(i, i + batchSize);
+        await annotationManagerApi.addAnnotations(chunk);
+        // console.log("addAnnotations, batch i: ", i);
+      }
+      // Or run them all
+      // return await annotationManagerApi.addAnnotations(highlights);
     }
     // If we ever need to remove annotations
     // await annotationManagerApi.removeAnnotationsFromPDF();

@@ -42,7 +42,7 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = nul
   }, [addAnnotations, documentPassageMatches, startingPassageIndex]);
 
   useEffect(() => {
-    if (searchStatus === "loading" || isLoading) {
+    if (searchStatus === "loading") {
       return setIsLoading(true);
     }
     setIsLoading(false);
