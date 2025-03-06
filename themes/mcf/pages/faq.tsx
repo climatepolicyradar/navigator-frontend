@@ -10,7 +10,7 @@ import { Heading } from "@components/typography/Heading";
 
 import { FAQS, PLATFORMFAQS } from "@mcf/constants/faqs";
 import { VerticalSpacing } from "@components/utility/VerticalSpacing";
-
+import { CONCEPTS_FAQS } from "@constants/conceptsFaqs";
 const ACCORDIANMAXHEIGHT = "464px";
 
 const FAQ = () => {
@@ -47,6 +47,17 @@ const FAQ = () => {
             <VerticalSpacing size="md" />
             <div className="text-content mb-14">
               {PLATFORMFAQS.map((faq, i) => (
+                <Fragment key={faq.title}>
+                  <Accordian title={faq.title} startOpen={i === 0} fixedHeight={ACCORDIANMAXHEIGHT}>
+                    {faq.content}
+                  </Accordian>
+                  <hr />
+                </Fragment>
+              ))}
+            </div>
+            <VerticalSpacing size="md" />
+            <div className="text-content mb-14">
+              {CONCEPTS_FAQS.map((faq, i) => (
                 <Fragment key={faq.title}>
                   <Accordian title={faq.title} startOpen={i === 0} fixedHeight={ACCORDIANMAXHEIGHT}>
                     {faq.content}
