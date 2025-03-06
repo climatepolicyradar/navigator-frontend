@@ -55,11 +55,16 @@ const FAQ = () => {
                 </Fragment>
               ))}
             </div>
+          </SingleCol>
+          <SingleCol>
+            <Heading level={1} extraClasses="custom-header">
+              Concepts FAQs
+            </Heading>
             <VerticalSpacing size="md" />
             <div className="text-content mb-14">
               {CONCEPTS_FAQS.map((faq, i) => (
                 <Fragment key={faq.title}>
-                  <Accordian title={faq.title} startOpen={i === 0} fixedHeight={ACCORDIANMAXHEIGHT}>
+                  <Accordian title={faq.title} headContent={faq.headContent ?? null} startOpen={i === 0} fixedHeight={ACCORDIANMAXHEIGHT}>
                     {faq.content}
                   </Accordian>
                   <hr />

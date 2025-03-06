@@ -12,6 +12,7 @@ import { Heading } from "@components/typography/Heading";
 
 import { FAQS } from "@cclw/constants/faqs";
 import { CONCEPTS_FAQS } from "@constants/conceptsFaqs";
+import { VerticalSpacing } from "@components/utility/VerticalSpacing";
 
 const FAQ = () => {
   return (
@@ -51,14 +52,16 @@ const FAQ = () => {
               <Heading level={2}>FAQs</Heading>
               {FAQS.map((faq, i) => (
                 <Fragment key={faq.title}>
-                  <AccordianItem id={faq.id} title={faq.title} headContent={faq.headContent ?? null} startOpen={i === 0}>
+                  <AccordianItem id={faq.id} title={faq.title} startOpen={i === 0}>
                     {faq.content}
                   </AccordianItem>
                   <hr />
                 </Fragment>
               ))}
             </div>
+          </SingleCol>
 
+          <SingleCol>
             <div className="text-content mb-12">
               <Heading level={2}>Concepts FAQs</Heading>
               {CONCEPTS_FAQS.map((faq, i) => (
