@@ -10,7 +10,7 @@ type TProps = {
   concepts: TConcept[];
   rootConcepts: TConcept[];
   conceptCountsById: Record<string, number>;
-  showCounts: boolean;
+  showCounts?: boolean;
   onConceptClick?: (conceptLabel: string) => void;
 };
 
