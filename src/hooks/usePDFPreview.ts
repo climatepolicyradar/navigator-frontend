@@ -56,6 +56,7 @@ function generateHighlights(document: TDocumentPage, documentPassageMatches: TPa
 type TAdobeApis = {
   viewerApi: any;
   annotationManagerApi: any;
+  eventCallback: (callback: (event: any) => void) => void;
 };
 
 export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey: string) {
@@ -77,21 +78,47 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
   const getAdobeApis = async (): Promise<TAdobeApis> => {
     const viewSDKClient = new ViewSDKClient();
     await viewSDKClient.ready();
-    const adobeViewer = await viewSDKClient.previewFile(physicalDocument, adobeKey, "pdf-div", viewerConfig);
+    const adobeViewer = await viewSDKClient.getAdobeView(physicalDocument, adobeKey, "pdf-div");
+    const adobeViewerAPI = await adobeViewer.previewFile(
+      {
+        content: {
+          location: {
+            url: physicalDocument.cdn_object,
+          },
+        },
+        metaData: {
+          fileName: physicalDocument.title,
+          id: physicalDocument.import_id,
+        },
+      },
+      viewerConfig
+    );
+
+    const eventCallback = (callback: (event: any) => void) => {
+      adobeViewer.registerCallback(
+        window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
+        (event: any) => {
+          // console.log("eventCallback: ", event);
+          callback(event);
+        },
+        { enableFilePreviewEvents: true }
+      );
+    };
 
     // Adobe viewer api
     // https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/howtos_ui/#viewer-api
-    const viewerApi = await adobeViewer.getAPIs();
+    const viewerApi = await adobeViewerAPI.getAPIs();
     viewerApiMemo = viewerApi;
 
     // Adobe annotation manager api
     // https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/howtos_comments/#basic-apis-for-commenting
-    const annotationManagerApi = await adobeViewer.getAnnotationManager();
+    const annotationManagerApi = await adobeViewerAPI.getAnnotationManager();
     annotationManagerApi.setConfig(annotationConfig);
 
     return {
       viewerApi,
       annotationManagerApi,
+      eventCallback,
     };
   };
 
@@ -114,10 +141,18 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
     if (!annotationManagerApi) {
       return;
     }
-    changePage(startingPassageIndex, documentPassageMatches);
+    await changePage(startingPassageIndex, documentPassageMatches);
     if (documentPassageMatches.length > 0) {
       const highlights = generateHighlights(physicalDocument, documentPassageMatches);
-      await annotationManagerApi.addAnnotations(highlights);
+      // split list of passages into batches of 5
+      const batchSize = 5;
+      for (let i = 0; i < highlights.length; i += batchSize) {
+        const chunk = highlights.slice(i, i + batchSize);
+        await annotationManagerApi.addAnnotations(chunk);
+        // console.log("addAnnotations, batch i: ", i);
+      }
+      // Or run them all
+      // return await annotationManagerApi.addAnnotations(highlights);
     }
     // If we ever need to remove annotations
     // await annotationManagerApi.removeAnnotationsFromPDF();
