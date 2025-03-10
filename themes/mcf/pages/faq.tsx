@@ -10,7 +10,8 @@ import { Heading } from "@components/typography/Heading";
 
 import { FAQS, PLATFORMFAQS } from "@mcf/constants/faqs";
 import { VerticalSpacing } from "@components/utility/VerticalSpacing";
-
+import { CONCEPTS_FAQS } from "@constants/conceptsFaqs";
+import FaqSection from "@components/typography/FaqSection";
 const ACCORDIANMAXHEIGHT = "464px";
 
 const FAQ = () => {
@@ -56,6 +57,8 @@ const FAQ = () => {
               ))}
             </div>
           </SingleCol>
+
+          <FaqSection title="Concepts FAQs" faqs={CONCEPTS_FAQS} />
         </SiteWidth>
       </section>
     </Layout>
