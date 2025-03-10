@@ -415,7 +415,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
           <div className="flex items-center justify-center w-full mt-4">
             <Button content="both" className="mt-2 flex-nowrap md:hidden" onClick={toggleFilters}>
               <span>{showFilters ? "Hide" : "Show"} filters</span>
-              <div className={showFilters && "rotate-180"}>
+              <div className={showFilters ? "rotate-180" : ""}>
                 <Icon name="downChevron" />
               </div>
             </Button>
