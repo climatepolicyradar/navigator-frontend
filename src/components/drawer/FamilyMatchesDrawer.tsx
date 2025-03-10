@@ -1,14 +1,17 @@
 import { useRouter } from "next/router";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
-import PassageMatches from "@/components/PassageMatches";
-import Button from "@/components/buttons/Button";
-import { FamilyMeta } from "@/components/document/FamilyMeta";
-import { Heading } from "@/components/typography/Heading";
-import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
-import { TMatchedFamily } from "@/types";
-import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
-import { truncateString } from "@/utils/truncateString";
+import { TMatchedFamily } from "@types";
+
+import { FamilyMeta } from "@components/document/FamilyMeta";
+import PassageMatches from "@components/PassageMatches";
+import { LinkWithQuery } from "@components/LinkWithQuery";
+import { Button } from "@components/atoms/button/Button";
+import { Heading } from "@components/typography/Heading";
+
+import { CleanRouterQuery } from "@utils/cleanRouterQuery";
+import { truncateString } from "@utils/truncateString";
+
+import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
 
 type TProps = {
   family?: TMatchedFamily;
@@ -42,7 +45,7 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
   return (
     <>
       <div className="h-full flex flex-col">
-        <div className="p-5 pb-0 pr-10 md:pr-12">
+        <div className="p-5 pb-0 pr-12">
           <Heading level={2}>{family_name}</Heading>
           <div className="flex flex-wrap text-sm gap-1 mt-2 items-center middot-between">
             <FamilyMeta category={family_category} corpus_type_name={corpus_type_name} geographies={family_geographies} date={family_date} />
@@ -74,13 +77,15 @@ export const FamilyMatchesDrawer = ({ family }: TProps) => {
           <div className="flex-grow pr-1">
             {family_documents.map((document, docIndex) => (
               <div key={document.document_slug} className="mb-5">
-                <LinkWithQuery href={`/documents/${document.document_slug}`}>{document.document_title}</LinkWithQuery>
+                <LinkWithQuery href={`/documents/${document.document_slug}`} className="underline text-blue-600 hover:text-blue-800">
+                  {document.document_title}
+                </LinkWithQuery>
                 <PassageMatches passages={document.document_passage_matches.slice(0, 5)} onClick={(index) => onPassageClick(index, docIndex)} />
                 <Button
-                  color="clear"
-                  data-cy="view-document-button"
+                  rounded
+                  variant="outlined"
                   onClick={(e) => handleViewOtherDocsClick(e, document.document_slug)}
-                  extraClasses="text-sm text-blue-600"
+                  data-cy="view-document-button"
                 >
                   View all matches highlighted in document
                 </Button>

@@ -28,7 +28,7 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
     <div className="family-list-item relative">
       <LinkWithQuery
         href={`/document/${family_slug}`}
-        className="result-title text-left font-medium text-xl duration-300 hover:underline flex items-start"
+        className="result-title text-blue-600 text-left font-medium text-xl duration-300 flex items-start hover:underline hover:text-blue-800"
         passHref
         data-cy="family-title"
       >

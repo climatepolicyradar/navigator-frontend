@@ -1,10 +1,9 @@
 import { useState, useRef } from "react";
-
-import MENU_LINKS from "@/cclw/constants/menuLinks";
-import DropdownMenuItem from "@/components/menus/DropdownMenuItem";
-import DropdownMenuWrapper from "@/components/menus/DropdownMenuWrapper";
-import { MenuIcon } from "@/components/svg/Icons";
-import useOutsideAlerter from "@/hooks/useOutsideAlerter";
+import useOutsideAlerter from "@hooks/useOutsideAlerter";
+import { Icon } from "@components/atoms/icon/Icon";
+import DropdownMenuItem from "@components/menus/DropdownMenuItem";
+import DropdownMenuWrapper from "@components/menus/DropdownMenuWrapper";
+import MENU_LINKS from "@cclw/constants/menuLinks";
 
 export const Menu = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -19,7 +18,7 @@ export const Menu = () => {
   return (
     <div ref={menuRef} className="flex items-center relative z-[41]">
       <button data-cy="menu-icon" onClick={toggleMenu} aria-label="Toggle menu">
-        <MenuIcon color="white" width="32" height="32" />
+        <Icon name="menu" color="white" width="32" height="32" />
       </button>
       {showMenu && (
         <div className="absolute right-0 top-[100%] z-50">

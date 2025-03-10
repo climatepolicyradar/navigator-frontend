@@ -15,6 +15,22 @@ import useConfig from "@/hooks/useConfig";
 import { TDocumentPage, TFamilyPage, TConcept, TSearchResponse } from "@/types";
 import { truncateString } from "@/utils/truncateString";
 
+import { SiteWidth } from "@components/panels/SiteWidth";
+
+import { SubNav } from "@components/nav/SubNav";
+import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
+import { Button } from "@components/atoms/button/Button";
+import { Icon } from "@components/atoms/icon/Icon";
+import { Alert } from "@components/Alert";
+import { ExternalLink } from "@components/ExternalLink";
+import { Heading } from "@components/typography/Heading";
+
+import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
+import { truncateString } from "@utils/truncateString";
+
+import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
+
+import { TDocumentPage, TFamilyPage } from "@types";
 import { DocumentMetaRenderer } from "./renderers/DocumentMetaRenderer";
 
 type TProps = {
@@ -60,7 +76,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
   }, [family, showFullSummary]);
 
   return (
-    <div className="bg-white border-solid border-lineBorder border-b">
+    <div className="bg-white border-solid border-lineBorder border-b border-gray-200">
       <SubNav>
         <BreadCrumbs
           geography={breadcrumbGeography}
@@ -88,12 +104,20 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
           <div>
             <div className="my-4 flex flex-row gap-2 lg:flex-col">
               {family.documents.length > 1 && (
-                <Button color="clear" data-cy="view-source" onClick={handleViewOtherDocsClick} extraClasses="flex items-center text-sm">
+                <Button color="mono" rounded variant="outlined" onClick={handleViewOtherDocsClick} data-cy="view-source">
                   Other documents in this entry ({family.documents.length})
                 </Button>
               )}
-              <Button color="clear" data-cy="view-source" onClick={handleViewSourceClick} extraClasses="flex items-center text-sm">
-                <span className="mr-2">View source document</span>
+              <Button
+                color="mono"
+                content="both"
+                rounded
+                variant="outlined"
+                className="justify-between"
+                onClick={handleViewSourceClick}
+                data-cy="view-source"
+              >
+                View source document
                 <LuMoveUpRight height="16" width="16" />
               </Button>
             </div>
@@ -106,12 +130,12 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
               message={
                 <>
                   Any English translations of this document have been provided by Google Cloud Translate. They may not be 100% accurate.{" "}
-                  <ExternalLink url="https://form.jotform.com/233293886694373">
+                  <ExternalLink url="https://form.jotform.com/233293886694373" className="underline text-blue-600 hover:text-blue-800">
                     Get notified when full document translations are available.
                   </ExternalLink>
                 </>
               }
-              icon={<AlertCircleIcon height="16" width="16" />}
+              icon={<Icon name="alertCircle" height="16" width="16" />}
             />
           </div>
         )}

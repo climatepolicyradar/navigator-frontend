@@ -19,7 +19,7 @@ const TabbedNavItem = ({ title, count, index, activeTab, onClick }: TabbedNavIte
   const tooltipText = getCategoryTooltip(title);
   const isActive = activeTab === index;
   const cssClass = `flex items-center gap-2 text-textDark text-left mt-4 text-sm transition hover:text-blue-600 md:px-4 md:mt-0 ${
-    isActive && "tabbed-nav__active"
+    isActive && "relative text-blue-600! font-medium"
   } ${index === 0 && "md:pl-3"}`;
 
   return (
@@ -32,6 +32,7 @@ const TabbedNavItem = ({ title, count, index, activeTab, onClick }: TabbedNavIte
         data-cy="tabbed-nav-item"
       >
         {title} {count && tabCount(count, isActive)}
+        {isActive && <span className="invisible absolute left-0 h-[2px] w-full md:visible bg-blue-600 -bottom-2" />}
       </button>
       {tooltipText !== "" && <ToolTipSSR id={tooltipId} place={"top"} />}
     </>

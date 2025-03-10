@@ -28,14 +28,14 @@ const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: TP
       <>
         <p className="my-4 md:mt-0">
           Climate litigation case documents are coming soon.{" "}
-          <ExternalLink url="https://form.jotform.com/233294371485361" className="underline">
+          <ExternalLink url="https://form.jotform.com/233294371485361" className="underline text-blue-600 hover:text-blue-800">
             Get notified when they arrive
           </ExternalLink>
           .
         </p>
         <p className="my-4 md:mt-0">
           In the meantime, visit the Sabin Center's{" "}
-          <ExternalLink url="http://climatecasechart.com/" className="underline">
+          <ExternalLink url="http://climatecasechart.com/" className="underline text-blue-600 hover:text-blue-800">
             Climate Change Litigation Databases
           </ExternalLink>
           .

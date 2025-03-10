@@ -1,11 +1,9 @@
 import { useRouter } from "next/router";
-
-import MatchesButton from "@/components/buttons/MatchesButton";
-import { DocumentIcon, GlobeIcon, Loading } from "@/components/svg/Icons";
-import { getDocumentType } from "@/helpers/getDocumentType";
-import { getLanguage } from "@/helpers/getLanguage";
-import useConfig from "@/hooks/useConfig";
-import { TDocumentPage, TLoadingStatus } from "@/types";
+import { Icon } from "@components/atoms/icon/Icon";
+import useConfig from "@hooks/useConfig";
+import { getLanguage } from "@helpers/getLanguage";
+import { TDocumentPage, TLoadingStatus } from "@types";
+import { getDocumentType } from "@helpers/getDocumentType";
 
 type TProps = {
   document: TDocumentPage;
@@ -16,7 +14,7 @@ type TProps = {
 
 const loadingIndicator = (
   <span className="flex gap-2 items-center">
-    <Loading />
+    <Icon name="loading" />
     Searching...
   </span>
 );
@@ -43,8 +41,8 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
   };
 
   const getPreviewBehaviour = () => {
-    let cssClass = "family-document group mt-4 p-4 rounded-lg border bg-white border-gray-50 shadow-xs transition duration-300 flex flex-no-wrap ";
-    cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-gray-200 hover:bg-gray-50" : "";
+    let cssClass = "family-document group mt-4 p-4 rounded-lg border bg-gray-25 border-gray-100 shadow-xs transition duration-300 flex flex-no-wrap ";
+    cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-blue-100 hover:bg-gray-50" : "";
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.preventDefault();
@@ -59,17 +57,36 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
     };
   };
 
+  const getMatchesText = () => {
+    const overrideText = renderMatchesOverrideText();
+    if (overrideText) return overrideText;
+
+    const numberOfMatches = typeof matches === "number" ? matches : parseInt(matches, 10);
+    if (!numberOfMatches) return "";
+
+    return `View ${familyMatches >= 500 ? "more than " : ""}${numberOfMatches} ${numberOfMatches === 1 ? "match" : "matches"}`;
+  };
+
   return (
     <div {...getPreviewBehaviour()}>
       <div className="flex-0 mr-2 hidden md:block">
-        {canViewSource && <GlobeIcon width="20" height="20" color="#1F93FF" />}
-        {canPreview && !canViewSource && <DocumentIcon width="20" height="20" color="#1F93FF" />}
+        {canViewSource && <Icon name="globe" width="20" height="20" color="#1F93FF" />}
+        {canPreview && !canViewSource && <Icon name="document" width="20" height="20" color="#1F93FF" />}
       </div>
       <div className="flex-1">
         <div className="mb-2 flex justify-between no-wrap">
           {title}{" "}
           {(canPreview || canViewSource) && (
-            <MatchesButton dataAttribute={slug} count={matches} overideText={renderMatchesOverrideText()} familyMatches={familyMatches} />
+            <>
+              <span
+                className="text-sm text-text-brand shrink-0"
+                data-analytics="document-matches-button"
+                data-cy="document-matches-button"
+                data-slug={slug}
+              >
+                {getMatchesText()}
+              </span>
+            </>
           )}
         </div>
         <div className="md:flex flex-nowrap items-center">

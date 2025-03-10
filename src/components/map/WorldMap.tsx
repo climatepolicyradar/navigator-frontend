@@ -2,19 +2,18 @@ import React, { useRef, useState, useMemo, useEffect } from "react";
 import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
 import { Tooltip, TooltipRefProps } from "react-tooltip";
 
-import { getEnvFromServer } from "@/api/http-common";
-import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { GEO_CENTER_POINTS } from "@/constants/mapCentres";
-import { GEO_EU_COUNTRIES } from "@/constants/mapEUCountries";
-import useConfig from "@/hooks/useConfig";
-import useGeographies from "@/hooks/useGeographies";
-import { useMcfData } from "@/hooks/useMcfData";
-import { TGeography } from "@/types";
-import { hasMcfAccess } from "@/utils/checkCorpusAccess";
+import useConfig from "@hooks/useConfig";
+import useGeographies from "@hooks/useGeographies";
+import { useMcfData } from "@hooks/useMcfData";
 
+import { LinkWithQuery } from "@components/LinkWithQuery";
 import GeographySelect from "./GeographySelect";
 import { Legend } from "./Legend";
-import { ZoomControls } from "./ZoomControls";
+
+import { TGeography } from "@types";
+
+import { GEO_EU_COUNTRIES } from "@constants/mapEUCountries";
+import { GEO_CENTER_POINTS } from "@constants/mapCentres";
 
 const geoUrl = "/data/map/world-countries-50m.json";
 
@@ -32,12 +31,14 @@ type TGeoFamilyCounts = {
   EXECUTIVE: number;
   LEGISLATIVE: number;
   MCF: number;
+  REPORTS: number;
 };
 
 type TGeoMarkers = {
   lawsPolicies: number;
   unfccc: number;
   mcf: number;
+  reports: number;
 };
 
 type TGeographyWithCoords = TGeography & {
@@ -52,6 +53,7 @@ type TMapData = {
   maxLawsPolicies: number;
   maxUnfccc: number;
   maxMcf: number;
+  maxReports: number;
   geographies: TGeographiesWithCoords;
 };
 
@@ -120,8 +122,11 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
       )}
       {geography.familyCounts?.UNFCCC > 0 && <p>UNFCCC: {geography.familyCounts?.UNFCCC || 0}</p>}
       {geography.familyCounts?.MCF > 0 && <p>MCF projects: {geography.familyCounts?.MCF || 0}</p>}
+      {geography.familyCounts?.REPORTS > 0 && <p>Reports: {geography.familyCounts?.REPORTS || 0}</p>}
       <p>
-        <LinkWithQuery href={`/geographies/${geography.slug}`}>View more</LinkWithQuery>
+        <LinkWithQuery href={`/geographies/${geography.slug}`} className="text-blue-600 underline hover:text-blue-800">
+          View more
+        </LinkWithQuery>
       </p>
     </>
   );
@@ -138,7 +143,7 @@ export default function MapChart() {
   const [mapCenter, setMapCenter] = useState<TPoint>([0, 0]);
   const [mapZoom, setMapZoom] = useState(1);
   const [showUnifiedEU, setShowUnifiedEU] = useState(false);
-  const [selectedFamCategory, setSelectedFamCategory] = useState<"lawsPolicies" | "unfccc" | "mcf">("lawsPolicies");
+  const [selectedFamCategory, setSelectedFamCategory] = useState<"lawsPolicies" | "unfccc" | "mcf" | "reports">("lawsPolicies");
   const showMcf = useMcfData();
 
   useEffect(() => {
@@ -153,8 +158,11 @@ export default function MapChart() {
     const maxLawsPolicies = mapDataRaw.length
       ? Math.max(...mapDataRaw.map((g) => (g.family_counts?.EXECUTIVE || 0) + (g.family_counts?.LEGISLATIVE || 0)))
       : 0;
-    // Only take UNFCCC and MCF counts for countries that are not XAA or XAB (international, no geography)
+    // Only take UNFCCC, Reports and MCF counts for countries that are not XAA or XAB (international, no geography)
     const maxMcf = mapDataRaw.length ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.MCF || 0))) : 0;
+    const maxReports = mapDataRaw.length
+      ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.REPORTS || 0)))
+      : 0;
     const maxUnfccc = mapDataRaw.length
       ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.UNFCCC || 0)))
       : 0;
@@ -163,6 +171,7 @@ export default function MapChart() {
       maxLawsPolicies,
       maxUnfccc,
       maxMcf,
+      maxReports,
       geographies: {},
     };
 
@@ -173,6 +182,7 @@ export default function MapChart() {
       // As the map has no where to display XAA or XAB data we don't need to fiddle with the count.
       const unfcccCount = geoStats?.family_counts?.UNFCCC || 0;
       const mcfCount = geoStats?.family_counts?.MCF || 0;
+      const reportsCount = geoStats?.family_counts?.REPORTS || 0;
 
       acc[country.value] = {
         ...country,
@@ -182,6 +192,7 @@ export default function MapChart() {
           lawsPolicies: maxLawsPolicies > 0 ? Math.max(minMarkerSize, (lawsPoliciesCount / maxLawsPolicies) * maxMarkerSize) : 0,
           unfccc: maxUnfccc > 0 ? Math.max(minMarkerSize, (unfcccCount / maxUnfccc) * maxMarkerSize) : 0,
           mcf: maxMcf > 0 ? Math.max(minMarkerSize, (mcfCount / maxMcf) * maxMarkerSize) : 0,
+          reports: maxReports > 0 ? Math.max(minMarkerSize, (reportsCount / maxReports) * maxMarkerSize) : 0,
         },
       };
       return acc;
@@ -251,7 +262,7 @@ export default function MapChart() {
           <select
             className="border border-gray-300 small rounded-full !pl-4"
             onChange={(e) => {
-              setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc" | "mcf");
+              setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc" | "mcf" | "reports");
             }}
             value={selectedFamCategory}
             aria-label="Select a document type to display on the map"
@@ -260,6 +271,7 @@ export default function MapChart() {
             <option value="lawsPolicies">Laws and policies</option>
             <option value="unfccc">UNFCCC</option>
             {showMcf && <option value="mcf">MCF projects</option>}
+            <option value="reports">Reports</option>
           </select>
         </div>
         <div>
@@ -279,7 +291,7 @@ export default function MapChart() {
           </div>
         </div>
       </div>
-      <div ref={mapRef} className="map-container relative border" data-cy="world-map">
+      <div ref={mapRef} className="map-container relative border border-gray-300" data-cy="world-map">
         <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 160 }} height={340}>
           <ZoomableGroup
             maxZoom={MAX_ZOOM}
@@ -386,7 +398,13 @@ export default function MapChart() {
       {!!mapData.maxLawsPolicies && !!mapData.maxUnfccc && (
         <Legend
           max={
-            selectedFamCategory === "lawsPolicies" ? mapData.maxLawsPolicies : selectedFamCategory === "unfccc" ? mapData.maxUnfccc : mapData.maxMcf
+            selectedFamCategory === "lawsPolicies"
+              ? mapData.maxLawsPolicies
+              : selectedFamCategory === "unfccc"
+                ? mapData.maxUnfccc
+                : selectedFamCategory === "reports"
+                  ? mapData.maxReports
+                  : mapData.maxMcf
           }
         />
       )}

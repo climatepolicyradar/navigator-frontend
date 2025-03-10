@@ -25,11 +25,7 @@ const Header = ({ background = true, showBottomBorder = true }) => {
             </LinkWithQuery>
             {showSearch && (
               <div className="hidden md:block m-auto">
-                <FloatingSearch
-                  extended={false}
-                  placeholder={"Full text of over 5,000 multilateral climate fund projects"}
-                  extraButtonClasses={"!hover:bg-mcf-blue"}
-                />
+                <FloatingSearch extended={false} placeholder={"Full text of over 5,000 multilateral climate fund projects"} />
               </div>
             )}
           </div>

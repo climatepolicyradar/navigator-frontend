@@ -132,4 +132,12 @@ describe("canDisplayFilter: ", () => {
 
     expect(canDisplay).toBe(true);
   });
+
+  it("should return true if the category is in a different case", () => {
+    const filter = { label: "TEST FILTER", category: ["test_category_3"], taxonomyKey: "test_filter", corporaKey: "TEST_CATEGORY_3", type: "radio" };
+
+    const canDisplay = canDisplayFilter(filter, { [QUERY_PARAMS.category]: "test_CATEGORY_3" }, testThemeConfig);
+
+    expect(canDisplay).toBe(true);
+  });
 });

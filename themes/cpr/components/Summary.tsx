@@ -1,7 +1,8 @@
-import { ExternalLink } from "@/components/ExternalLink";
-import { SiteWidth } from "@/components/panels/SiteWidth";
-import { ReadMoreIcon } from "@/components/svg/Icons";
-import { Heading } from "@/components/typography/Heading";
+import { SiteWidth } from "@components/panels/SiteWidth";
+
+import { ExternalLink } from "@components/ExternalLink";
+import { Icon } from "@components/atoms/icon/Icon";
+import { Heading } from "@components/typography/Heading";
 
 const Summary = () => {
   return (
@@ -18,7 +19,7 @@ const Summary = () => {
           className="mt-4 md:mt-0 block w-full text-center bg-blue-500 text-white md:grow-0 p-2 rounded-xl md:w-48 transition duration-300 hover:text-white"
         >
           <div className="flex justify-center">
-            <ReadMoreIcon />
+            <Icon name="readMore" />
           </div>
           <span>Read more</span>
         </ExternalLink>

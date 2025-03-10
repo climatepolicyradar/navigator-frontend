@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
-
-import Close from "@/components/buttons/Close";
-import { SearchDropdown } from "@/components/forms/SearchDropdown";
-import { SearchIcon } from "@/components/svg/Icons";
+import { Icon } from "@components/atoms/icon/Icon";
+import { SearchDropdown } from "@components/forms/SearchDropdown";
+import { Button } from "@components/atoms/button/Button";
 
 interface SearchFormProps {
   placeholder?: string;
@@ -59,7 +58,9 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
           data-analytics="landingPage-searchInput"
           data-cy="search-input"
           type="search"
-          className="text-white placeholder:text-white py-4 pr-16 text-2xl bg-transparent border-t-0 border-l-0 border-r-0 border-white border-b-2 rounded-none focus:border-white focus:ring-0 w-full"
+          className={`text-white placeholder:text-transparent py-4 pr-16 text-2xl bg-transparent border-t-0 border-l-0 border-r-0 border-white border-b-2 rounded-none focus:border-white focus:ring-0 w-full ${
+            !showAnimation ? "placeholder:text-white" : ""
+          }`}
           value={term}
           onChange={onChange}
           onFocus={clearPlaceholderAnimation}
@@ -69,13 +70,21 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
         />
         {showAnimation && term.length === 0 && <div className="search-animated-placeholder">{displayPlaceholder}</div>}
         {term.length > 0 && (
-          <div data-cy="search-clear-button" className="flex mx-2 shrink-0 absolute top-0 right-0 mr-14 z-20 h-full items-center">
-            <Close onClick={clearSearch} size="16" />
+          <div data-cy="search-clear-button" className="flex mx-2 shrink-0 absolute top-0 right-0 mr-11.5 z-20 h-full items-center">
+            <Button
+              content="icon"
+              color="mono"
+              variant="ghost"
+              className="!text-text-light !outline-surface-light hover:!bg-transparent"
+              onClick={clearSearch}
+            >
+              <Icon name="close" />
+            </Button>
           </div>
         )}
         <button className="absolute top-0 right-0 h-full" onClick={() => handleSearchInput(term)} aria-label="Search">
           <span className="block">
-            <SearchIcon height="30" width="40" />
+            <Icon name="search" height="30" width="40" />
           </span>
         </button>
         <SearchDropdown term={term} show={formFocus} handleSearchClick={handleSearchInput} largeSpacing />

@@ -10,7 +10,7 @@ const ClimatePolicyRadarBannerHolder = () => {
           <p className="font-medium tracking-slight text-sm lg:text-md text-[#3399FF] mb-2 " data-cy="search-all">
             POWERED BY
           </p>
-          <Heading level={1} extraClasses="!text-white font-bold text-4xl !font-greycliff">
+          <Heading level={1} extraClasses="!text-white font-bold text-4xl font-greycliff">
             Climate Policy Radar
           </Heading>
           <br />

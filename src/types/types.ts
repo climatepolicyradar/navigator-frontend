@@ -6,6 +6,11 @@ export type TSearchKeywordFilters = {
   countries?: string[];
 };
 
+export type TSearchConceptFilters = {
+  names?: string[];
+  ids?: string[];
+};
+
 export type TSearchCriteriaMeta = {
   name: string;
   value: string;
@@ -27,7 +32,7 @@ export type TSearchCriteria = {
   continuation_tokens?: string[] | null;
   corpus_import_ids: string[];
   metadata: TSearchCriteriaMeta[];
-  concept_filters: { name: string }[];
+  concept_filters: { name: string; value: string }[];
   // for internal use
   runSearch?: boolean;
 };
@@ -320,6 +325,7 @@ export type TConcept = {
   negative_labels: string[];
   description: string;
   subconcept_of: string[];
+  recursive_subconcept_of: string[];
   has_subconcept: string[];
   related_concepts: string[];
   definition?: string;

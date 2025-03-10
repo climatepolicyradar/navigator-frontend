@@ -1,9 +1,9 @@
 import { Fragment } from "react";
 
-import { MAX_PAGES, RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN } from "@/constants/paging";
-import { getCurrentPage } from "@/utils/getCurrentPage";
+import { Button } from "@components/atoms/button/Button";
+import { MAX_PAGES, RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN } from "@constants/paging";
 
-import { PageButton } from "./pageButton";
+import { getCurrentPage } from "@utils/getCurrentPage";
 
 interface PaginationProps {
   onChange(ct: string, offSet: number): void;
@@ -54,26 +54,33 @@ const Pagination = ({
   const totalPagesForHits = Math.ceil(totalHits / RESULTS_PER_PAGE);
   // display the number of pages based on the number of continuation tokens, or the total number of pages - whichever is smaller
   const numberOfPagesToDisplay = Math.min(parsedTokens.length * PAGES_PER_CONTINUATION_TOKEN, totalPagesForHits, MAX_PAGES);
-  const displayElipsis = totalPagesForHits > MAX_PAGES && numberOfPagesToDisplay < MAX_PAGES;
+  const displayEllipsis = totalPagesForHits > MAX_PAGES && numberOfPagesToDisplay < MAX_PAGES;
 
   return (
-    <div id="pagination" className="pagination m-auto flex flex-wrap mt-5 gap-1" data-cy="pagination">
+    <div id="pagination" className="pagination m-auto flex flex-wrap items-baseline mt-5 gap-1" data-cy="pagination">
       <>
         {new Array(numberOfPagesToDisplay).fill(0).map((_, itemIndex) => {
           const pageNumber = itemIndex + 1;
+          const offSet = calculateOffset(pageNumber);
+          const token = calculateToken(pageNumber, parsedTokens);
+          const isCurrentPage = pageNumber === calcCurrentPage(offset, continuationTokens, activeContinuationToken);
+
           return (
-            <Fragment key={pageNumber}>
-              <PageButton
-                pageNumber={pageNumber}
-                ct={calculateToken(pageNumber, parsedTokens)}
-                offSet={calculateOffset(pageNumber)}
-                clickHandler={onChange}
-                isCurrentPage={pageNumber === calcCurrentPage(offset, continuationTokens, activeContinuationToken)}
-              />
-            </Fragment>
+            <Button
+              key={pageNumber}
+              value={pageNumber}
+              type="button"
+              variant={isCurrentPage ? "solid" : "ghost"}
+              className={isCurrentPage ? "pointer-events-none" : ""}
+              onClick={() => onChange(token, offSet)}
+              data-ct={token}
+              data-offset={offSet}
+            >
+              {pageNumber}
+            </Button>
           );
         })}
-        {displayElipsis && <span className="md:mx-1">...</span>}
+        {displayEllipsis && <span className="md:mx-1 select-none">…</span>}
       </>
     </div>
   );

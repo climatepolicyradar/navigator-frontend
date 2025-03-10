@@ -3,33 +3,39 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-import { ApiClient } from "@/api/http-common";
-import { Alert } from "@/components/Alert";
-import { ExternalLink } from "@/components/ExternalLink";
-import { Targets } from "@/components/Targets";
-import { CountryHeader } from "@/components/blocks/CountryHeader";
-import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
-import Button from "@/components/buttons/Button";
-import { Divider } from "@/components/dividers/Divider";
-import { FamilyListItem } from "@/components/document/FamilyListItem";
-import DocumentSearchForm from "@/components/forms/DocumentSearchForm";
-import Layout from "@/components/layouts/Main";
-import { SubNav } from "@/components/nav/SubNav";
-import TabbedNav from "@/components/nav/TabbedNav";
-import { SingleCol } from "@/components/panels/SingleCol";
-import { SiteWidth } from "@/components/panels/SiteWidth";
-import { DownChevronIcon, LegislativeIcon, AlertCircleIcon } from "@/components/svg/Icons";
-import { Event } from "@/components/timeline/Event";
-import { Timeline } from "@/components/timeline/Timeline";
-import { Heading } from "@/components/typography/Heading";
-import { QUERY_PARAMS } from "@/constants/queryParams";
-import { systemGeoNames } from "@/constants/systemGeos";
-import { getCountryCode } from "@/helpers/getCountryFields";
-import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
-import { TTarget, TEvent, TGeography, TTheme } from "@/types";
-import { extractNestedData } from "@/utils/extractNestedData";
-import { readConfigFile } from "@/utils/readConfigFile";
-import { sortFilterTargets } from "@/utils/sortFilterTargets";
+import { ApiClient } from "@api/http-common";
+
+import { SiteWidth } from "@components/panels/SiteWidth";
+import { SingleCol } from "@components/panels/SingleCol";
+
+import Layout from "@components/layouts/Main";
+import { Timeline } from "@components/timeline/Timeline";
+import { Event } from "@components/timeline/Event";
+import { CountryHeader } from "@components/blocks/CountryHeader";
+import { Divider } from "@components/dividers/Divider";
+import { Icon } from "@components/atoms/icon/Icon";
+import { FamilyListItem } from "@components/document/FamilyListItem";
+import { Targets } from "@components/Targets";
+import { Button } from "@components/atoms/button/Button";
+import TabbedNav from "@components/nav/TabbedNav";
+import { ExternalLink } from "@components/ExternalLink";
+import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
+import DocumentSearchForm from "@components/forms/DocumentSearchForm";
+import { Alert } from "@components/Alert";
+import { SubNav } from "@components/nav/SubNav";
+import { Heading } from "@components/typography/Heading";
+
+import { getCountryCode } from "@helpers/getCountryFields";
+
+import { extractNestedData } from "@utils/extractNestedData";
+import { sortFilterTargets } from "@utils/sortFilterTargets";
+import { readConfigFile } from "@utils/readConfigFile";
+
+import { QUERY_PARAMS } from "@constants/queryParams";
+import { systemGeoNames } from "@constants/systemGeos";
+
+import { TGeographyStats, TGeographySummary, TThemeConfig } from "@types";
+import { TTarget, TEvent, TGeography, TTheme } from "@types";
 
 type TProps = {
   geography: TGeographyStats;
@@ -131,7 +137,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     router.push({ pathname: "/search", query: queryObj });
   };
 
-  const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geography.name}`}</p>;
+  const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geography.name}.`}</p>;
 
   const renderDocuments = () => {
     // All docs || All MCF docs if theme is MCF
@@ -190,7 +196,10 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       return (
         <div className="mt-4 pb-4 border-b">
           Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center’s{" "}
-          <ExternalLink url="http://climatecasechart.com/">Climate Change Litigation Databases</ExternalLink>.
+          <ExternalLink url="http://climatecasechart.com/" className="underline text-blue-600 hover:text-blue-800">
+            Climate Change Litigation Databases
+          </ExternalLink>
+          .
         </div>
       );
     }
@@ -220,12 +229,9 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="geography" text={geography.name}>
       {!geography ? (
         <SingleCol>
-          <button
-            className="text-blue-500 underline text-sm text-left mt-2 hover:text-indigo-600 transition duration-300"
-            onClick={() => router.back()}
-          >
+          <Button variant="ghost" onClick={() => router.back()}>
             Go back
-          </button>
+          </Button>
           <p>We were not able to load the data for the country.</p>
         </SingleCol>
       ) : (
@@ -265,7 +271,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   </section>
                   {selectedCategoryIndex !== 4 && (
                     <div data-cy="see-more-button">
-                      <Button color="secondary" extraClasses="my-6" onClick={handleDocumentSeeMoreClick}>
+                      <Button rounded variant="outlined" className="my-5" onClick={handleDocumentSeeMoreClick}>
                         View more documents
                       </Button>
                       <Divider />
@@ -282,7 +288,11 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                           Targets <span className="font-normal">({publishedTargets.length})</span>
                         </Heading>
 
-                        <ExternalLink url="https://form.jotform.com/233542296946365" className="text-sm underline" cy="download-target-csv">
+                        <ExternalLink
+                          url="https://form.jotform.com/233542296946365"
+                          className="text-sm underline text-blue-600 hover:text-blue-800"
+                          cy="download-target-csv"
+                        >
                           Request to download all target data (.csv)
                         </ExternalLink>
                       </div>
@@ -291,10 +301,13 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                           message={
                             <>
                               We are developing the ability to detect targets in documents.{" "}
-                              <ExternalLink url="https://form.jotform.com/233294139336358">Get notified when this is ready</ExternalLink>.
+                              <ExternalLink url="https://form.jotform.com/233294139336358" className="underline text-blue-600 hover:text-blue-800">
+                                Get notified when this is ready
+                              </ExternalLink>
+                              .
                             </>
                           }
-                          icon={<AlertCircleIcon height="16" width="16" />}
+                          icon={<Icon name="alertCircle" height="16" width="16" />}
                         />
                       </div>
                       <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
@@ -303,21 +316,24 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   {publishedTargets.length > numberOfTargetsToDisplay && (
                     <div data-cy="more-targets-button">
                       <Button
-                        color="secondary"
-                        extraClasses="flex gap-2 items-center my-6"
+                        content="both"
+                        rounded
+                        variant="outlined"
+                        className="my-5"
                         onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
                       >
-                        <DownChevronIcon /> View more targets
+                        <Icon name="downChevron" />
+                        View more targets
                       </Button>
                       <Divider />
                     </div>
                   )}
                   {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
                     <div>
-                      <Button color="secondary" extraClasses="flex gap-2 items-center my-6" onClick={() => setNumberOfTargetsToDisplay(5)}>
+                      <Button content="both" rounded variant="outlined" className="my-5" onClick={() => setNumberOfTargetsToDisplay(5)}>
                         <div className="rotate-180">
-                          <DownChevronIcon />
-                        </div>{" "}
+                          <Icon name="downChevron" />
+                        </div>
                         Hide targets
                       </Button>
                       <Divider />
@@ -338,7 +354,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
               {geography.legislative_process && theme !== "mcf" && (
                 <section className="mt-10" data-cy="legislative-process">
                   <Heading level={2} extraClasses="flex items-center gap-2">
-                    <LegislativeIcon width="20" height="20" /> Legislative Process
+                    Legislative Process
                   </Heading>
                   <div
                     className="text-content"
@@ -395,7 +411,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     countries = response_geo.level2;
     const country = getCountryCode(id as string, countries);
     if (country) {
-      const targetsRaw = await axios.get<TTarget[]>(`${process.env.S3_PATH}/geographies/${country.toLowerCase()}.json`);
+      const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${country.toLowerCase()}.json`);
       targetsData = targetsRaw.data;
     }
   } catch {

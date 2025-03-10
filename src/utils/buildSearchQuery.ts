@@ -51,8 +51,8 @@ export default function buildSearchQuery(
     }
   }
 
-  if (routerQuery[QUERY_PARAMS["concept_filters.id"]]) {
-    const conceptFilters = routerQuery[QUERY_PARAMS["concept_filters.id"]];
+  if (routerQuery[QUERY_PARAMS.concept_id]) {
+    const conceptFilters = routerQuery[QUERY_PARAMS.concept_id];
     query.concept_filters = Array.isArray(conceptFilters)
       ? conceptFilters.map((id) => ({
           name: "id",
@@ -60,8 +60,8 @@ export default function buildSearchQuery(
         }))
       : [{ name: "id", value: conceptFilters }];
   }
-  if (routerQuery[QUERY_PARAMS["concept_filters.name"]]) {
-    const conceptFilters = routerQuery[QUERY_PARAMS["concept_filters.name"]];
+  if (routerQuery[QUERY_PARAMS.concept_name]) {
+    const conceptFilters = routerQuery[QUERY_PARAMS.concept_name];
     query.concept_filters = Array.isArray(conceptFilters)
       ? conceptFilters.map((name) => ({
           name: "name",

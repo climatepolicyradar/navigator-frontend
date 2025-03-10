@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 
-import Button from "@/components/buttons/Button";
-import { SearchDropdown } from "@/components/forms/SearchDropdown";
-import { Search2Icon } from "@/components/svg/Icons";
-import { QUERY_PARAMS } from "@/constants/queryParams";
+import { Icon } from "@components/atoms/icon/Icon";
+import { SearchDropdown } from "@components/forms/SearchDropdown";
+import { Button } from "@components/atoms/button/Button";
+
+import { QUERY_PARAMS } from "@constants/queryParams";
 
 // See the method handleSearchInput in the index.tsx file for the processing of the example searches
 const EXAMPLE_SEARCHES = [
@@ -51,7 +52,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
       <form data-cy="search-form" ref={formRef} onSubmit={(e) => e.preventDefault()}>
         <div className="max-w-screen-lg mx-auto flex items-stretch relative text-indigo-400 custom-gradient-background">
           <input
-            id="landingPage-searchInput-cclw"
+            id="landingPage-searchInput-mcf"
             data-analytics="landingPage-searchInput"
             data-cy="search-input"
             type="search"
@@ -63,7 +64,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
           />
           <button className="custom-search-button" onClick={() => handleSearchInput(term)} aria-label="Search">
             <span className="block">
-              <Search2Icon height="24" width="24" />
+              <Icon name="search2" height="24" width="24" />
             </span>
           </button>
           <SearchDropdown term={term} show={formFocus} handleSearchClick={handleSearchInput} largeSpacing />
@@ -74,8 +75,10 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
         {EXAMPLE_SEARCHES.map((example) => (
           <Button
             key={example.id}
-            thin
-            color="clear-underline"
+            rounded
+            size="small"
+            variant="ghost"
+            className="hover:!bg-gray-100 !text-gray-500 underline"
             onClick={() => handleSearchInput(example.term, example.filterType, example.filterValue)}
             data-cy={`example-search-${example.id}`}
           >

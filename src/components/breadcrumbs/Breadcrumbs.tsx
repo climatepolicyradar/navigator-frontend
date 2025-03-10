@@ -25,7 +25,7 @@ const BreadCrumb = ({ last = false, label, href = null, cy = "" }: TBreadcrumbLi
     <>
       <li data-cy={`breadcrumb ${cy}`} className={`${last && "text-textDark font-medium"}`}>
         {href ? (
-          <LinkWithQuery className="underline text-textNormal" href={href}>
+          <LinkWithQuery className="underline hover:text-blue-800 text-textNormal" href={href}>
             {labelShort}
           </LinkWithQuery>
         ) : (
@@ -38,6 +38,9 @@ const BreadCrumb = ({ last = false, label, href = null, cy = "" }: TBreadcrumbLi
   );
 };
 
+/**
+ * Lists the page hierarchy back to the homepage so that the user can better understand where they are, and to easily go back to a previous page.
+ */
 export const BreadCrumbs = ({ geography = null, category = null, family = null, label }: TProps) => {
   return (
     <ul className="flex items-baseline flex-wrap gap-2 text-sm" data-cy="breadcrumbs">

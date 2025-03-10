@@ -48,14 +48,8 @@ const FrameworkLaws = () => {
                 management.
               </p>
               <Link
-                className="button inline-block"
-                href={{
-                  pathname: "/search",
-                  query: {
-                    [QUERY_PARAMS.category]: "laws",
-                    [QUERY_PARAMS.framework_laws]: "true",
-                  },
-                }}
+                className="button inline-block !text-white !no-underline"
+                href={{ pathname: "/search", query: { [QUERY_PARAMS.category]: "laws", [QUERY_PARAMS.framework_laws]: "true" } }}
               >
                 Click here to view the list of Framework Laws
               </Link>

@@ -3,22 +3,32 @@ import { ParsedUrlQuery } from "querystring";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 
-import Pill from "@/components/Pill";
-import { QUERY_PARAMS } from "@/constants/queryParams";
-import { sortOptions } from "@/constants/sortOptions";
-import { getCountryName } from "@/helpers/getCountryFields";
-import useConfig from "@/hooks/useConfig";
-import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { TGeography, TThemeConfig } from "@/types";
+import Pill from "@components/Pill";
+
+import { getCountryName } from "@helpers/getCountryFields";
+import { getConceptName } from "@helpers/getConceptFields";
+
+import { QUERY_PARAMS } from "@constants/queryParams";
+import { sortOptions } from "@constants/sortOptions";
+
+import { TConcept, TGeography, TThemeConfig } from "@types";
 
 type TFilterChange = (type: string, value: string) => void;
 
 type TProps = {
   filterChange: TFilterChange;
+  concepts?: TConcept[];
 };
 
 const handleCountryRegion = (slug: string, dataSet: TGeography[]) => {
   return getCountryName(slug, dataSet);
+};
+
+const handleConceptName = (label: string, concepts: TConcept[]) => {
+  if (!concepts) {
+    return label;
+  }
+  return getConceptName(label, concepts);
 };
 
 type TFilterKeys = keyof typeof QUERY_PARAMS;
@@ -37,7 +47,8 @@ const handleFilterDisplay = (
   value: string,
   countries: TGeography[],
   regions: TGeography[],
-  themeConfig: TThemeConfig
+  themeConfig: TThemeConfig,
+  concepts?: TConcept[]
 ) => {
   let filterLabel: string | null | undefined = null;
   let filterValue = value;
@@ -51,6 +62,9 @@ const handleFilterDisplay = (
       break;
     case "region":
       filterLabel = handleCountryRegion(value, regions);
+      break;
+    case "concept_name":
+      filterLabel = handleConceptName(value, concepts);
       break;
     case "exact_match":
       filterLabel = value === "true" ? "Exact phrases only" : "Related phrases";
@@ -71,7 +85,7 @@ const handleFilterDisplay = (
     case "query_string":
       filterLabel = `Search: ${value}`;
       break;
-    //TODO: write a case for any remainding key that loops through the filters array on the config and then searches within the options where the key === taxonomyKey
+    //TODO: write a case for any remaining key that loops through the filters array on the config and then searches within the options where the key === taxonomyKey
     case "status":
       filterLabel = decodeURI(value);
       break;
@@ -105,7 +119,8 @@ const generatePills = (
   filterChange: TFilterChange,
   countries: TGeography[],
   regions: TGeography[],
-  themeConfig: TThemeConfig
+  themeConfig: TThemeConfig,
+  concepts?: TConcept[]
 ) => {
   const pills: JSX.Element[] = [];
 
@@ -113,13 +128,13 @@ const generatePills = (
     const value = queryParams[QUERY_PARAMS[key]];
     if (value) {
       if (key === "year_range")
-        return pills.push(handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions, themeConfig));
+        return pills.push(handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions, themeConfig, concepts));
       if (Array.isArray(value)) {
         return value.map((v: string) => {
-          return pills.push(handleFilterDisplay(filterChange, queryParams, key, v, countries, regions, themeConfig));
+          return pills.push(handleFilterDisplay(filterChange, queryParams, key, v, countries, regions, themeConfig, concepts));
         });
       }
-      return pills.push(handleFilterDisplay(filterChange, queryParams, key, value, countries, regions, themeConfig));
+      return pills.push(handleFilterDisplay(filterChange, queryParams, key, value, countries, regions, themeConfig, concepts));
     } else {
       return;
     }
@@ -128,15 +143,15 @@ const generatePills = (
   return pills;
 };
 
-export const AppliedFilters = ({ filterChange }: TProps) => {
+export const AppliedFilters = ({ filterChange, concepts }: TProps) => {
   const router = useRouter();
   const configQuery = useConfig();
   const { themeConfig } = useGetThemeConfig();
   const { data: { countries = [], regions = [] } = {} } = configQuery;
 
   const appliedFilters = useMemo(
-    () => generatePills(router.query, filterChange, countries, regions, themeConfig).map((pill) => pill),
-    [router.query, filterChange, countries, regions, themeConfig]
+    () => generatePills(router.query, filterChange, countries, regions, themeConfig, concepts).map((pill) => pill),
+    [router.query, filterChange, countries, regions, themeConfig, concepts]
   );
 
   if (appliedFilters.length === 0) {

@@ -1,4 +1,4 @@
-import { EyeIcon } from "@/components/svg/Icons";
+import { Icon } from "@components/atoms/icon/Icon";
 
 const LandingPageLinks = ({ handleLinkClick }) => {
   const terms = ["Adaptation strategy", "Energy prices", "Flood defence", "Just transition"];
@@ -6,7 +6,7 @@ const LandingPageLinks = ({ handleLinkClick }) => {
     <section>
       <div className="md:flex text-white">
         <div className="md:mr-12">
-          <EyeIcon />
+          <Icon name="eye" />
         </div>
         <div>
           <div className="font-medium text-2xl">Try these searches</div>
@@ -14,7 +14,7 @@ const LandingPageLinks = ({ handleLinkClick }) => {
             {terms.map((term) => (
               <li className="my-2" key={term}>
                 <a
-                  className="text-white hover:text-blue-500"
+                  className="text-white hover:text-blue-200 hover:underline"
                   href="/"
                   onClick={(e) => {
                     handleLinkClick(e);

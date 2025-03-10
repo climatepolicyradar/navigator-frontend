@@ -6,37 +6,46 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { MdOutlineTune } from "react-icons/md";
 
-import { ExternalLink } from "@/components/ExternalLink";
-import Loader from "@/components/Loader";
-import { NoOfResults } from "@/components/NoOfResults";
-import SearchFilters from "@/components/blocks/SearchFilters";
-import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
-import FilterToggle from "@/components/buttons/FilterToggle";
-import Drawer from "@/components/drawer/Drawer";
-import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
-import { SearchSettings } from "@/components/filters/SearchSettings";
-import SearchForm from "@/components/forms/SearchForm";
-import Layout from "@/components/layouts/Main";
-import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
-import { SubNav } from "@/components/nav/SubNav";
-import Pagination from "@/components/pagination";
-import { MultiCol } from "@/components/panels/MultiCol";
-import { SideCol } from "@/components/panels/SideCol";
-import { SingleCol } from "@/components/panels/SingleCol";
-import { SiteWidth } from "@/components/panels/SiteWidth";
-import SearchResultList from "@/components/search/SearchResultList";
-import { Loading } from "@/components/svg/Icons";
-import { QUERY_PARAMS } from "@/constants/queryParams";
-import useConfig from "@/hooks/useConfig";
-import { useDownloadCsv } from "@/hooks/useDownloadCsv";
-import useSearch from "@/hooks/useSearch";
-import { TTheme, TThemeConfig } from "@/types";
-import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
-import { readConfigFile } from "@/utils/readConfigFile";
+import useConfig from "@hooks/useConfig";
+import { useDownloadCsv } from "@hooks/useDownloadCsv";
+import useSearch from "@hooks/useSearch";
+
+import { MultiCol } from "@components/panels/MultiCol";
+import { SideCol } from "@components/panels/SideCol";
+import { SingleCol } from "@components/panels/SingleCol";
+import { SiteWidth } from "@components/panels/SiteWidth";
+
+import { ExternalLink } from "@components/ExternalLink";
+import Loader from "@components/Loader";
+import { NoOfResults } from "@components/NoOfResults";
+import SearchFilters from "@components/blocks/SearchFilters";
+import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
+import Drawer from "@components/drawer/Drawer";
+import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
+import { SearchSettings } from "@components/filters/SearchSettings";
+import SearchForm from "@components/forms/SearchForm";
+import Layout from "@components/layouts/Main";
+import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
+import { SubNav } from "@components/nav/SubNav";
+import Pagination from "@components/pagination";
+import SearchResultList from "@components/search/SearchResultList";
+import { Icon } from "@components/atoms/icon/Icon";
+
+import { getThemeConfigLink } from "@utils/getThemeConfigLink";
+import { readConfigFile } from "@utils/readConfigFile";
+
+import { QUERY_PARAMS } from "@constants/queryParams";
+
+import { TConcept, TFamilyPage, TTheme, TThemeConfig } from "@types";
+import { getFeatureFlags } from "@utils/featureFlags";
+import { ApiClient } from "@api/http-common";
+import { Button } from "@components/atoms/button/Button";
 
 type TProps = {
   theme: TTheme;
   themeConfig: TThemeConfig;
+  featureFlags: Record<string, string | boolean>;
+  conceptsData?: TConcept[];
 };
 
 const SETTINGS_ANIMATION_VARIANTS = {
@@ -44,7 +53,7 @@ const SETTINGS_ANIMATION_VARIANTS = {
   visible: { opacity: 1, transition: { duration: 0 } },
 };
 
-const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig }: TProps) => {
+const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig, featureFlags, conceptsData }: TProps) => {
   const router = useRouter();
   const qQueryString = router.query[QUERY_PARAMS.query_string];
   const [showFilters, setShowFilters] = useState(false);
@@ -88,7 +97,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
 
     query[QUERY_PARAMS.offset] = offSet.toString();
 
-    router.push({ query: query });
+    router.push({ query: query }, undefined, { shallow: true });
+    scrollTo(0, 0);
     resetCSVStatus();
   };
 
@@ -115,7 +125,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
       }
     }
 
-    router.push({ query: query });
+    router.push({ query: query }, undefined, { shallow: true });
+    scrollTo(0, 0);
     resetCSVStatus();
   };
 
@@ -158,12 +169,22 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
       }
     }
 
+    // If we are changing the fund or func document type for MCFs, clear non-applicable filters
     if (type === QUERY_PARAMS.fund) {
       delete router.query[QUERY_PARAMS.implementing_agency];
     }
+    if (type === QUERY_PARAMS.fund_doc_type) {
+      delete router.query[QUERY_PARAMS.implementing_agency];
+      delete router.query[QUERY_PARAMS.status];
+    }
+
+    if (type === QUERY_PARAMS.concept_name) {
+      queryCollection = Array.from(new Set(queryCollection)); // Remove duplicates
+    }
 
     router.query[type] = queryCollection;
-    router.push({ query: router.query });
+    router.push({ query: router.query }, undefined, { shallow: true });
+    scrollTo(0, 0);
     resetCSVStatus();
   };
 
@@ -173,7 +194,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     if (filter && filterValue && filter.length && filterValue.length) {
       suggestedQuery[filter] = [filterValue.toLowerCase()];
     }
-    router.push({ query: suggestedQuery });
+    router.push({ query: suggestedQuery }, undefined, { shallow: true });
+    scrollTo(0, 0);
     resetCSVStatus();
   };
 
@@ -193,7 +215,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     if (!value || reset) {
       delete router.query[type];
     }
-    router.push({ query: router.query });
+    router.push({ query: router.query }, undefined, { shallow: true });
+    scrollTo(0, 0);
     resetCSVStatus();
   };
 
@@ -222,13 +245,15 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
       delete router.query[QUERY_PARAMS.topic];
       delete router.query[QUERY_PARAMS.sector];
     }
-
+    delete router.query[QUERY_PARAMS.concept_id];
+    delete router.query[QUERY_PARAMS.concept_name];
     router.query[QUERY_PARAMS.category] = category;
     // Default search is all categories, so we do not need to provide any category if we want all
     if (category === "All") {
       delete router.query[QUERY_PARAMS.category];
     }
-    router.push({ query: router.query });
+    router.push({ query: router.query }, undefined, { shallow: true });
+    scrollTo(0, 0);
     resetCSVStatus();
   };
 
@@ -242,7 +267,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     if (sortOption === "null") {
       delete router.query[QUERY_PARAMS.sort_field];
       delete router.query[QUERY_PARAMS.sort_order];
-      router.push({ query: router.query });
+      router.push({ query: router.query }, undefined, { shallow: true });
+      scrollTo(0, 0);
       resetCSVStatus();
       return;
     }
@@ -265,7 +291,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     if (!order) {
       delete router.query[QUERY_PARAMS.sort_order];
     }
-    router.push({ query: router.query });
+    router.push({ query: router.query }, undefined, { shallow: true });
+    scrollTo(0, 0);
     resetCSVStatus();
   };
 
@@ -277,11 +304,11 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const handleClearSearch = () => {
     const previousSearchQuery = router.query[QUERY_PARAMS.query_string] as string;
     if (previousSearchQuery && previousSearchQuery.length > 0) {
-      return router.push({
-        query: { [QUERY_PARAMS.query_string]: previousSearchQuery },
-      });
+      router.push({ query: { [QUERY_PARAMS.query_string]: previousSearchQuery } }, undefined, { shallow: true });
+      return scrollTo(0, 0);
     }
-    return router.push({ query: {} });
+    router.push({ query: {} }, undefined, { shallow: true });
+    return scrollTo(0, 0);
   };
 
   const handleDownloadCsvClick = () => {
@@ -325,19 +352,23 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               <span>Download data (.csv): </span>
               <a
                 href="#"
-                className="flex gap-2 items-center justify-end"
+                className="flex gap-2 items-center justify-end text-blue-600 hover:underline hover:text-blue-800"
                 data-cy="download-search-csv"
                 onClick={(e) => {
                   e.preventDefault();
                   setShowCSVDownloadPopup(true);
                 }}
               >
-                {downloadCSVStatus === "loading" ? <Loading /> : "this search"}
+                {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
               </a>
               {getThemeConfigLink(themeConfig, "download-database") && (
                 <>
                   <span>|</span>
-                  <ExternalLink url={getThemeConfigLink(themeConfig, "download-database").url} cy="download-entire-search-csv">
+                  <ExternalLink
+                    url={getThemeConfigLink(themeConfig, "download-database").url}
+                    className="text-blue-600 hover:underline hover:text-blue-800"
+                    cy="download-entire-search-csv"
+                  >
                     whole database
                   </ExternalLink>
                 </>
@@ -383,30 +414,38 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
             </div>
           </div>
           <div className="flex items-center justify-center w-full mt-4">
-            <FilterToggle toggle={toggleFilters} isOpen={showFilters} />
+            <Button content="both" className="mt-2 flex-nowrap md:hidden" onClick={toggleFilters}>
+              <span>{showFilters ? "Hide" : "Show"} filters</span>
+              <div className={showFilters ? "rotate-180" : ""}>
+                <Icon name="downChevron" />
+              </div>
+            </Button>
           </div>
           <div className={`${showFilters ? "" : "hidden"}`}>
             {configQuery.isFetching ? (
               <Loader size="20px" />
             ) : (
-              <SearchFilters
-                searchCriteria={searchQuery}
-                query={router.query}
-                regions={regions}
-                countries={countries}
-                corpus_types={corpus_types}
-                handleFilterChange={handleFilterChange}
-                handleYearChange={handleYearChange}
-                handleRegionChange={handleRegionChange}
-                handleClearSearch={handleClearSearch}
-                handleDocumentCategoryClick={handleDocumentCategoryClick}
-              />
+              <>
+                <SearchFilters
+                  searchCriteria={searchQuery}
+                  query={router.query}
+                  regions={regions}
+                  countries={countries}
+                  corpus_types={corpus_types}
+                  conceptsData={conceptsData}
+                  handleFilterChange={handleFilterChange}
+                  handleYearChange={handleYearChange}
+                  handleRegionChange={handleRegionChange}
+                  handleClearSearch={handleClearSearch}
+                  handleDocumentCategoryClick={handleDocumentCategoryClick}
+                />
+              </>
             )}
           </div>
         </SiteWidth>
         {/* END MOBILE ONLY */}
         <MultiCol>
-          <SideCol extraClasses="hidden md:block border-r pt-5">
+          <SideCol extraClasses="hidden md:block border-r border-gray-300 pt-5 sticky top-0 h-screen overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
             {configQuery.isFetching ? (
               <Loader size="20px" />
             ) : (
@@ -416,6 +455,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 regions={regions}
                 countries={countries}
                 corpus_types={corpus_types}
+                conceptsData={conceptsData}
                 handleFilterChange={handleFilterChange}
                 handleYearChange={handleYearChange}
                 handleRegionChange={handleRegionChange}
@@ -518,6 +558,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
         onCancelClick={() => setShowCSVDownloadPopup(false)}
         onConfirmClick={() => handleDownloadCsvClick()}
       />
+      <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
     </Layout>
   );
 };
@@ -526,6 +567,7 @@ export default Search;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+  const featureFlags = await getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
   let themeConfig = {};
@@ -533,7 +575,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     themeConfig = await readConfigFile(theme);
   } catch (error) {}
 
+  let conceptsData: TConcept[];
+  try {
+    const client = new ApiClient(process.env.CONCEPTS_API_URL);
+    const conceptsV1 = featureFlags["concepts-v1"];
+    if (conceptsV1) {
+      const { data: returnedData } = await client.get(`/concepts/search?limit=10000&q=`);
+      conceptsData = returnedData;
+    }
+  } catch (error) {
+    // TODO: handle error more elegantly
+  }
+
   return {
-    props: { theme, themeConfig },
+    props: { theme, themeConfig, featureFlags, conceptsData: conceptsData ?? null },
   };
 };

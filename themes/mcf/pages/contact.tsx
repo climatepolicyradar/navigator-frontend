@@ -23,17 +23,29 @@ const Contact = () => {
             </Heading>
             <div className="text-content mb-12">
               <p>
-                If you have any questions or need further information, don't hesitate to reach out to us by
-                <ExternalLink url="https://form.jotform.com/242955027856365"> filling out this form</ExternalLink>.
+                If you have any questions or need further information, don't hesitate to reach out to us by{" "}
+                <ExternalLink className="text-blue-600 underline hover:text-blue-800" url="https://form.jotform.com/242955027856365">
+                  filling out this form
+                </ExternalLink>
+                .
               </p>
               <p>For more details on global climate initiatives, please explore the following resources:</p>
               <p>
-                <ExternalLink url="https://www.adaptation-fund.org/">Adaptation Fund</ExternalLink> <br />
-                <ExternalLink url="https://www.cif.org/">Climate Investment Funds</ExternalLink>
+                <ExternalLink className="text-blue-600 underline hover:text-blue-800" url="https://www.adaptation-fund.org/">
+                  Adaptation Fund
+                </ExternalLink>{" "}
                 <br />
-                <ExternalLink url="https://www.thegef.org/">Global Environment Facility</ExternalLink>
+                <ExternalLink className="text-blue-600 underline hover:text-blue-800" url="https://www.cif.org/">
+                  Climate Investment Funds
+                </ExternalLink>
                 <br />
-                <ExternalLink url="https://www.greenclimate.fund/">Green Climate Fund</ExternalLink>
+                <ExternalLink className="text-blue-600 underline hover:text-blue-800" url="https://www.thegef.org/">
+                  Global Environment Facility
+                </ExternalLink>
+                <br />
+                <ExternalLink className="text-blue-600 underline hover:text-blue-800" url="https://www.greenclimate.fund/">
+                  Green Climate Fund
+                </ExternalLink>
                 <br />
               </p>
             </div>

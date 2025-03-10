@@ -9,6 +9,12 @@ import { currentYear } from "@/constants/timedate";
 
 import { DateRangeInput } from "./DateRangeInput";
 import { FormError } from "../forms/FormError";
+import { InputListContainer } from "@components/filters/InputListContainer";
+import { InputRadio } from "@components/forms/Radio";
+import { Button } from "@components/atoms/button/Button";
+
+import { QUERY_PARAMS } from "@constants/queryParams";
+import { currentYear } from "@constants/timedate";
 
 type TProps = {
   type: string;
@@ -112,7 +118,7 @@ export const DateRange = ({ handleChange, defaultValues, min, max }: TProps) => 
           {error && <FormError message={error} />}
           {!error && (defaultValues[0] !== startInput || defaultValues[1] !== endInput) && (
             <div>
-              <Button onClick={submitCustomRange} extraClasses="w-auto !inline">
+              <Button rounded onClick={submitCustomRange}>
                 Apply
               </Button>
             </div>

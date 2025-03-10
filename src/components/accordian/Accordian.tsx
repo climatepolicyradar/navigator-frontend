@@ -12,15 +12,28 @@ type TProps = {
   className?: string;
   showFade?: "true" | "false";
   fixedHeight?: string;
+  headContent?: React.ReactNode;
 };
 
-export const Accordian = ({ title, startOpen = false, overflowOverride, fixedHeight = "300px", children, showFade = "false", ...props }: TProps) => {
+export const Accordian = ({
+  title,
+  startOpen = false,
+  overflowOverride,
+  fixedHeight = "300px",
+  children,
+  showFade = "false",
+  headContent,
+  ...props
+}: TProps) => {
   const [isOpen, setIsOpen] = useState(startOpen);
 
   return (
     <div {...props}>
       <div className={`flex justify-between cursor-pointer group`} onClick={() => setIsOpen(!isOpen)} data-cy="accordian-control">
-        <Heading>{title}</Heading>
+        <div className="flex items-center gap-2">
+          <Heading>{title}</Heading>
+          {headContent}
+        </div>
         <span className={`text-textDark opacity-40 group-hover:opacity-100 ${isOpen ? "" : ""}`}>
           {isOpen ? <AiOutlineMinus /> : <AiOutlinePlus />}
         </span>

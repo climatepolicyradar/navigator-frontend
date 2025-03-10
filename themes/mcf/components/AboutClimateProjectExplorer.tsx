@@ -24,7 +24,7 @@ const AboutClimateProjectExplorer = () => {
             impact of the MCFs, facilitate the exchange of information to enhance access to the funds, and promote transparency.
           </p>
           <br />
-          <LinkWithQuery className="underline" href="/about">
+          <LinkWithQuery className="text-blue-600 underline hover:text-blue-800" href="/about">
             Find out more
           </LinkWithQuery>
         </div>

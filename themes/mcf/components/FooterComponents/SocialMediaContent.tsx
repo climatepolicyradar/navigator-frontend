@@ -12,7 +12,7 @@ const SocialMediaContent = () => {
           <h2 className="font-inter-variable text-base font-medium leading-[22.4px] text-left">{fundType}</h2>
           <div className="flex flex-wrap gap-2 pt-2">
             {fundSocialMedia.map((logo, index) => (
-              <ExternalLink key={index} url={logo.url}>
+              <ExternalLink key={index} url={logo.url} className="text-mcf-iconGrey">
                 {logo.icon}
               </ExternalLink>
             ))}

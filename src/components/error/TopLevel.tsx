@@ -1,6 +1,6 @@
-import { ExternalLink } from "@/components/ExternalLink";
-import Button from "@/components/buttons/Button";
-import { Heading } from "@/components/typography/Heading";
+import { ExternalLink } from "@components/ExternalLink";
+import { Button } from "@components/atoms/button/Button";
+import { Heading } from "@components/typography/Heading";
 
 type TProps = {
   resetError: () => void;
@@ -12,17 +12,17 @@ const TopLevel = ({ resetError }: TProps) => {
       <Heading level={1}>Sorry, the app has encountered an error</Heading>
       <p>Restarting the app might fix the problem. Click the button below to restart</p>
       <div>
-        <Button thin onClick={resetError}>
+        <Button rounded onClick={resetError}>
           Restart
         </Button>
       </div>
       <p>
         If this doesn't work,{" "}
-        <a className="underline" href="/">
+        <a className="underline text-blue-600 hover:text-blue-800" href="/">
           return to the homepage
         </a>{" "}
         or report a problem by emailing:{" "}
-        <ExternalLink className="underline" url="mailto:support@climatepolicyradar.org">
+        <ExternalLink className="underline text-blue-600 hover:text-blue-800" url="mailto:support@climatepolicyradar.org">
           support@climatepolicyradar.org
         </ExternalLink>
       </p>

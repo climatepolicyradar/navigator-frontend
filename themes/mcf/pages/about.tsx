@@ -50,7 +50,10 @@ const About = () => {
                   implementing entities.
                 </p>
                 <p>
-                  Find more details on: <ExternalLink url="https://www.adaptation-fund.org/">adaptation-fund.org</ExternalLink>
+                  Find more details on:{" "}
+                  <ExternalLink url="https://www.adaptation-fund.org/" className="text-blue-600 underline hover:text-blue-800">
+                    adaptation-fund.org
+                  </ExternalLink>
                 </p>
               </div>
               <div className="text-content mb-12">
@@ -72,7 +75,10 @@ const About = () => {
                   governments to make bold investment decisions, and crowded in additional sources of finance for pioneering climate solutions.
                 </p>
                 <p>
-                  Find more details on: <ExternalLink url="https://www.cif.org/">cif.org</ExternalLink>
+                  Find more details on:{" "}
+                  <ExternalLink url="https://www.cif.org/" className="text-blue-600 underline hover:text-blue-800">
+                    cif.org
+                  </ExternalLink>
                 </p>
               </div>
               <div className="text-content mb-12">
@@ -92,25 +98,40 @@ const About = () => {
                 <p>
                   Over the past three decades, the GEF has provided more than $25 billion in financing and mobilized $145 billion for country-driven
                   priority projects. The family of funds includes the Global Environment Facility Trust Fund, 
-                  <ExternalLink url="https://www.thegef.org/what-we-do/topics/global-biodiversity-framework-fund">
+                  <ExternalLink
+                    className="text-blue-600 underline hover:text-blue-800"
+                    url="https://www.thegef.org/what-we-do/topics/global-biodiversity-framework-fund"
+                  >
                     Global Biodiversity Framework Fund 
                   </ExternalLink>
                   (GBFF), 
-                  <ExternalLink url="https://www.thegef.org/what-we-do/topics/least-developed-countries-fund-ldcf">
+                  <ExternalLink
+                    className="text-blue-600 underline hover:text-blue-800"
+                    url="https://www.thegef.org/what-we-do/topics/least-developed-countries-fund-ldcf"
+                  >
                     Least Developed Countries Fund
                   </ExternalLink>
                    (LDCF),
-                  <ExternalLink url="https://www.thegef.org/what-we-do/topics/special-climate-change-fund-sccf">
+                  <ExternalLink
+                    className="text-blue-600 underline hover:text-blue-800"
+                    url="https://www.thegef.org/what-we-do/topics/special-climate-change-fund-sccf"
+                  >
                      Special Climate Change Fund 
                   </ExternalLink>
                   (SCCF),
-                  <ExternalLink url="https://www.thegef.org/what-we-do/topics/biodiversity/access-and-benefit-sharing">
+                  <ExternalLink
+                    className="text-blue-600 underline hover:text-blue-800"
+                    url="https://www.thegef.org/what-we-do/topics/biodiversity/access-and-benefit-sharing"
+                  >
                      Nagoya Protocol Implementation Fund 
                   </ExternalLink>
                   (NPIF), and Capacity-building Initiative for Transparency Trust Fund (CBIT).
                 </p>
                 <p>
-                  Find more details on: <ExternalLink url="https://www.thegef.org/">thegef.org</ExternalLink>
+                  Find more details on:{" "}
+                  <ExternalLink className="text-blue-600 underline hover:text-blue-800" url="https://www.thegef.org/">
+                    thegef.org
+                  </ExternalLink>
                 </p>
               </div>
               <div className="text-content mb-12">
@@ -131,7 +152,10 @@ const About = () => {
                   serves the 2015 Paris Agreement, supporting the climate goals.
                 </p>
                 <p>
-                  Find more details on: <ExternalLink url="https://www.greenclimate.fund/">greenclimate.fund</ExternalLink>
+                  Find more details on:{" "}
+                  <ExternalLink url="https://www.greenclimate.fund/" className="text-blue-600 underline hover:text-blue-800">
+                    greenclimate.fund
+                  </ExternalLink>
                 </p>
               </div>
             </div>
