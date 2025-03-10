@@ -53,6 +53,16 @@ class ViewSDKClient {
       viewerConfig
     );
 
+    this.adobeDCView.registerCallback(
+      window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
+      (event) => {
+        if (event.type === "CURRENT_ACTIVE_PAGE") {
+          // console.log("Current Page: ", event.data.pageNumber);
+        }
+      },
+      { enableFilePreviewEvents: true }
+    );
+
     return previewFilePromise;
   }
 }
