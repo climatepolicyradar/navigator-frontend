@@ -168,8 +168,13 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
       }
     }
 
+    // If we are changing the fund or func document type for MCFs, clear non-applicable filters
     if (type === QUERY_PARAMS.fund) {
       delete router.query[QUERY_PARAMS.implementing_agency];
+    }
+    if (type === QUERY_PARAMS.fund_doc_type) {
+      delete router.query[QUERY_PARAMS.implementing_agency];
+      delete router.query[QUERY_PARAMS.status];
     }
 
     if (type === QUERY_PARAMS.concept_name) {
