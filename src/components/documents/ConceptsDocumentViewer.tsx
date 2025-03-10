@@ -205,7 +205,7 @@ export const ConceptsDocumentViewer = ({
       {concepts.length > 0 && (
         <section className="flex-1 flex" id="document-concepts-viewer">
           <FullWidth extraClasses="flex-1">
-            <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
+            <div id="document-container" className="flex flex-col md:flex-row md:h-[90vh]">
               <div id="document-preview" className={`pt-4 flex-1 h-[400px] basis-[400px] md:block md:h-full md:border-r md:border-r-gray-200`}>
                 {canPreview && (
                   <EmbeddedPDF
@@ -219,7 +219,7 @@ export const ConceptsDocumentViewer = ({
               </div>
               <div
                 id="document-sidebar"
-                className={`overflow-y-scroll py-4 order-first max-h-[90vh] md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
+                className={`flex flex-col overflow-y-auto py-4 order-first max-h-[90vh] scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 ${passageClasses(
                   document.content_type
                 )}`}
               >
@@ -277,6 +277,7 @@ export const ConceptsDocumentViewer = ({
                       concepts={concepts}
                       conceptCountsById={conceptCountsById}
                       onConceptClick={onConceptClick}
+                      showCounts={false}
                     ></ConceptsPanel>
                   )}
 
