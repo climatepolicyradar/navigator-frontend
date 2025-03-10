@@ -30,7 +30,7 @@ class ViewSDKClient {
   }
 
   // Set up the AdobeDC View configuration
-  previewFile(doc, adobeKey, divId, viewerConfig) {
+  getAdobeView(doc, adobeKey, divId) {
     if (!doc || !doc.cdn_object) return;
     const config = {
       clientId: adobeKey,
@@ -38,32 +38,7 @@ class ViewSDKClient {
     };
     this.adobeDCView = new window.AdobeDC.View(config);
 
-    const previewFilePromise = this.adobeDCView.previewFile(
-      {
-        content: {
-          location: {
-            url: doc.cdn_object,
-          },
-        },
-        metaData: {
-          fileName: doc.title,
-          id: doc.import_id,
-        },
-      },
-      viewerConfig
-    );
-
-    this.adobeDCView.registerCallback(
-      window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
-      (event) => {
-        if (event.type === "CURRENT_ACTIVE_PAGE") {
-          // console.log("Current Page: ", event.data.pageNumber);
-        }
-      },
-      { enableFilePreviewEvents: true }
-    );
-
-    return previewFilePromise;
+    return this.adobeDCView;
   }
 }
 

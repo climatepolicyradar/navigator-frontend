@@ -56,6 +56,7 @@ function generateHighlights(document: TDocumentPage, documentPassageMatches: TPa
 type TAdobeApis = {
   viewerApi: any;
   annotationManagerApi: any;
+  eventCallback: (callback: (event: any) => void) => void;
 };
 
 export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey: string) {
@@ -77,21 +78,47 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
   const getAdobeApis = async (): Promise<TAdobeApis> => {
     const viewSDKClient = new ViewSDKClient();
     await viewSDKClient.ready();
-    const adobeViewer = await viewSDKClient.previewFile(physicalDocument, adobeKey, "pdf-div", viewerConfig);
+    const adobeViewer = await viewSDKClient.getAdobeView(physicalDocument, adobeKey, "pdf-div");
+    const adobeViewerAPI = await adobeViewer.previewFile(
+      {
+        content: {
+          location: {
+            url: physicalDocument.cdn_object,
+          },
+        },
+        metaData: {
+          fileName: physicalDocument.title,
+          id: physicalDocument.import_id,
+        },
+      },
+      viewerConfig
+    );
+
+    const eventCallback = (callback: (event: any) => void) => {
+      adobeViewer.registerCallback(
+        window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
+        (event: any) => {
+          // console.log("eventCallback: ", event);
+          callback(event);
+        },
+        { enableFilePreviewEvents: true }
+      );
+    };
 
     // Adobe viewer api
     // https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/howtos_ui/#viewer-api
-    const viewerApi = await adobeViewer.getAPIs();
+    const viewerApi = await adobeViewerAPI.getAPIs();
     viewerApiMemo = viewerApi;
 
     // Adobe annotation manager api
     // https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/howtos_comments/#basic-apis-for-commenting
-    const annotationManagerApi = await adobeViewer.getAnnotationManager();
+    const annotationManagerApi = await adobeViewerAPI.getAnnotationManager();
     annotationManagerApi.setConfig(annotationConfig);
 
     return {
       viewerApi,
       annotationManagerApi,
+      eventCallback,
     };
   };
 
