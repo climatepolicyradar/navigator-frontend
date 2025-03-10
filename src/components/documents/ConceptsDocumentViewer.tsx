@@ -383,7 +383,9 @@ export const ConceptsDocumentViewer = ({
                       />
                     )}
 
-                    {unavailableConcepts.length > 0 && <UnavailableConcepts unavailableConcepts={unavailableConcepts} familySlug={familySlug} />}
+                    {state.totalNoOfMatches === 0 && unavailableConcepts.length > 0 && (
+                      <UnavailableConcepts unavailableConcepts={unavailableConcepts} familySlug={familySlug} />
+                    )}
                   </>
                 )}
               </div>
