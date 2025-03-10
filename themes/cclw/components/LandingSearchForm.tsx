@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 
-import { Icon } from "@components/icon/Icon";
+import { Icon } from "@components/atoms/icon/Icon";
 import { SearchDropdown } from "@components/forms/SearchDropdown";
-import Button from "@components/buttons/Button";
+import { Button } from "@components/atoms/button/Button";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 
@@ -80,8 +80,8 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
         {EXAMPLE_SEARCHES.map((example) => (
           <Button
             key={example.id}
-            thin
-            color="dark"
+            rounded
+            className="!bg-cclw-light hover:!bg-gray-700 border !border-gray-500"
             onClick={() => handleSearchInput(example.term, example.filterType, example.filterValue)}
             data-cy={`example-search-${example.id}`}
           >

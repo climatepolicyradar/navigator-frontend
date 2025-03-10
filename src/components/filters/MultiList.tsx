@@ -1,5 +1,5 @@
 import useConfig from "@hooks/useConfig";
-import FilterTag from "../buttons/FilterTag";
+import FilterTag from "../labels/FilterTag";
 import { getCountryName } from "@helpers/getCountryFields";
 import { QUERY_PARAMS } from "@constants/queryParams";
 

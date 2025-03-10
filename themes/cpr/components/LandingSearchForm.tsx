@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
-import Close from "@components/buttons/Close";
-import { Icon } from "@components/icon/Icon";
+import { Icon } from "@components/atoms/icon/Icon";
 import { SearchDropdown } from "@components/forms/SearchDropdown";
+import { Button } from "@components/atoms/button/Button";
 
 interface SearchFormProps {
   placeholder?: string;
@@ -70,8 +70,16 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
         />
         {showAnimation && term.length === 0 && <div className="search-animated-placeholder">{displayPlaceholder}</div>}
         {term.length > 0 && (
-          <div data-cy="search-clear-button" className="flex mx-2 shrink-0 absolute top-0 right-0 mr-14 z-20 h-full items-center">
-            <Close onClick={clearSearch} size="16" />
+          <div data-cy="search-clear-button" className="flex mx-2 shrink-0 absolute top-0 right-0 mr-11.5 z-20 h-full items-center">
+            <Button
+              content="icon"
+              color="mono"
+              variant="ghost"
+              className="!text-text-light !outline-surface-light hover:!bg-transparent"
+              onClick={clearSearch}
+            >
+              <Icon name="close" />
+            </Button>
           </div>
         )}
         <button className="absolute top-0 right-0 h-full" onClick={() => handleSearchInput(term)} aria-label="Search">

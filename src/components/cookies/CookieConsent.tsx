@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Script from "next/script";
 
-import Button from "@components/buttons/Button";
+import { Button } from "@components/atoms/button/Button";
 import { ExternalLink } from "@components/ExternalLink";
 
 import { getCookie, setCookie } from "@utils/cookies";
@@ -64,17 +64,13 @@ export const CookieConsent = ({ onConsentChange }: Props) => {
             <ExternalLink url="https://climatepolicyradar.org/privacy-policy">privacy and cookie policy</ExternalLink> to learn more. By accepting
             cookies you will help us make our site better, but you can reject them if you wish.
           </p>
-          <div className="flex justify-end">
-            <div className="">
-              <Button thin onClick={cookiesAcceptHandler} data-cy="cookie-consent-accept">
-                Accept
-              </Button>
-            </div>
-            <div className="ml-4">
-              <Button color="ghost" thin onClick={cookiesRejectHandler} data-cy="cookie-consent-reject">
-                Reject
-              </Button>
-            </div>
+          <div className="flex justify-end gap-4">
+            <Button rounded data-cy="cookie-consent-accept" onClick={cookiesAcceptHandler}>
+              Accept
+            </Button>
+            <Button rounded variant="ghost" onClick={cookiesRejectHandler} data-cy="cookie-consent-reject">
+              Reject
+            </Button>
           </div>
         </div>
       </div>

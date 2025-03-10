@@ -19,8 +19,8 @@ import { ExternalLink } from "@components/ExternalLink";
 import { Targets } from "@components/Targets";
 import { ShowHide } from "@components/controls/ShowHide";
 import { Divider } from "@components/dividers/Divider";
-import { Icon } from "@components/icon/Icon";
-import Button from "@components/buttons/Button";
+import { Icon } from "@components/atoms/icon/Icon";
+import { Button } from "@components/atoms/button/Button";
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import Tooltip from "@components/tooltip";
@@ -193,8 +193,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   }, [vespaFamilyData]);
 
   const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
-  // const conceptIds = [...new Set(conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]))];
-
   const conceptCountsById = conceptCounts.reduce((acc, { conceptKey, count }) => {
     const conceptId = conceptKey.split(":")[0];
     acc[conceptId] = count;
@@ -348,21 +346,24 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 {publishedTargets.length > numberOfTargetsToDisplay && (
                   <div data-cy="more-targets-button">
                     <Button
-                      color="secondary"
-                      extraClasses="flex gap-2 items-center my-5"
+                      content="both"
+                      rounded
+                      variant="outlined"
+                      className="my-5"
                       onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
                     >
-                      <Icon name="downChevron" /> View more targets
+                      <Icon name="downChevron" />
+                      View more targets
                     </Button>
                   </div>
                 )}
 
                 {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
                   <div>
-                    <Button color="secondary" extraClasses="flex gap-2 items-center my-5" onClick={() => setNumberOfTargetsToDisplay(5)}>
+                    <Button content="both" rounded variant="outlined" className="my-5" onClick={() => setNumberOfTargetsToDisplay(5)}>
                       <div className="rotate-180">
                         <Icon name="downChevron" />
-                      </div>{" "}
+                      </div>
                       Hide targets
                     </Button>
                   </div>
@@ -479,7 +480,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   if (familyData) {
     try {
-      const targetsRaw = await axios.get<TTarget[]>(`${process.env.S3_PATH}/families/${familyData.import_id}.json`);
+      const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/families/${familyData.import_id}.json`);
       targetsData = targetsRaw.data;
     } catch (error) {}
   }
