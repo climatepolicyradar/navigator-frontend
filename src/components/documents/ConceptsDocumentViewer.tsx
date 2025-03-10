@@ -19,6 +19,8 @@ import { ConceptsPanel } from "@components/concepts/ConceptsPanel";
 import { fetchAndProcessConcepts } from "@utils/processConcepts";
 import { useEffectOnce } from "@hooks/useEffectOnce";
 import Loader from "@components/Loader";
+import { Icon } from "@components/atoms/icon/Icon";
+import { UnavailableConcepts } from "./UnavailableConcepts";
 
 type TProps = {
   initialQueryTerm?: string | string[];
@@ -181,6 +183,11 @@ export const ConceptsDocumentViewer = ({
     [initialConceptFilters, familyConcepts]
   );
 
+  // Check if any initial concept filters are not in the document concepts
+  const unavailableConcepts = initialConceptFilters
+    ? initialConceptFilters.filter((filter) => !documentConcepts?.some((concept) => concept.preferred_label === filter))
+    : null;
+
   // Prepare search.
   const searchQueryParams = useMemo(
     () => ({
@@ -290,44 +297,47 @@ export const ConceptsDocumentViewer = ({
                     </div>
                   )}
 
-                  <div className="flex gap-2">
-                    <div className="flex-1">
-                      <SearchForm
-                        placeholder="Search document text"
-                        handleSearchInput={handleSearchInput}
-                        input={state.queryTerm as string}
-                        size="default"
-                      />
+                  {!unavailableConcepts && (
+                    <div className="flex gap-2">
+                      <div className="flex-1">
+                        <SearchForm
+                          placeholder="Search document text"
+                          handleSearchInput={handleSearchInput}
+                          input={state.queryTerm as string}
+                          size="default"
+                        />
+                      </div>
+
+                      <div className="relative z-10 flex justify-center">
+                        <button
+                          className="px-4 flex justify-center items-center text-textDark text-xl"
+                          onClick={() => setShowSearchOptions(!showSearchOptions)}
+                        >
+                          <MdOutlineTune />
+                        </button>
+                        <AnimatePresence initial={false}>
+                          {showSearchOptions && (
+                            <motion.div
+                              key="content"
+                              initial="collapsed"
+                              animate="open"
+                              exit="collapsed"
+                              variants={{
+                                collapsed: { opacity: 0, transition: { duration: 0.1 } },
+                                open: { opacity: 1, transition: { duration: 0.25 } },
+                              }}
+                            >
+                              <SearchSettings
+                                queryParams={searchQueryParams}
+                                handleSearchChange={handleSemanticSearchChange}
+                                setShowOptions={setShowSearchOptions}
+                              />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     </div>
-                    <div className="relative z-10 flex justify-center">
-                      <button
-                        className="px-4 flex justify-center items-center text-textDark text-xl"
-                        onClick={() => setShowSearchOptions(!showSearchOptions)}
-                      >
-                        <MdOutlineTune />
-                      </button>
-                      <AnimatePresence initial={false}>
-                        {showSearchOptions && (
-                          <motion.div
-                            key="content"
-                            initial="collapsed"
-                            animate="open"
-                            exit="collapsed"
-                            variants={{
-                              collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                              open: { opacity: 1, transition: { duration: 0.25 } },
-                            }}
-                          >
-                            <SearchSettings
-                              queryParams={searchQueryParams}
-                              handleSearchChange={handleSemanticSearchChange}
-                              setShowOptions={setShowSearchOptions}
-                            />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </div>
+                  )}
 
                   {selectedConcepts.length === 0 && !initialQueryTerm && (
                     <ConceptsPanel
@@ -397,7 +407,7 @@ export const ConceptsDocumentViewer = ({
                       </>
                     )}
 
-                    {state.totalNoOfMatches === 0 && (
+                    {state.totalNoOfMatches === 0 && !unavailableConcepts && (
                       <EmptyPassages
                         hasQueryString={
                           !!searchQueryParams[QUERY_PARAMS.query_string] &&
@@ -406,6 +416,8 @@ export const ConceptsDocumentViewer = ({
                         }
                       />
                     )}
+
+                    {unavailableConcepts && <UnavailableConcepts unavailableConcepts={unavailableConcepts} />}
                   </>
                 )}
               </div>
