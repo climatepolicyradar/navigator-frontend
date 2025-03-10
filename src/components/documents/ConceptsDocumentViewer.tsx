@@ -19,7 +19,6 @@ import { ConceptsPanel } from "@components/concepts/ConceptsPanel";
 import { fetchAndProcessConcepts } from "@utils/processConcepts";
 import { useEffectOnce } from "@hooks/useEffectOnce";
 import Loader from "@components/Loader";
-import { Icon } from "@components/atoms/icon/Icon";
 import { UnavailableConcepts } from "./UnavailableConcepts";
 
 type TProps = {
@@ -72,57 +71,28 @@ export const ConceptsDocumentViewer = ({
     totalNoOfMatches: 0,
   });
 
-  const [concepts, setConcepts] = useState<TConcept[]>([]);
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
-
-  // Extract unique concept keys and their counts
-  const conceptCounts: { conceptKey: string; count: number }[] = useMemo(() => {
-    const uniqueConceptMap = new Map<string, number>();
-
-    (vespaFamilyData?.families ?? []).forEach((family) => {
-      family.hits.forEach((hit) => {
-        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
-          const existingCount = uniqueConceptMap.get(conceptKey) || 0;
-          uniqueConceptMap.set(conceptKey, existingCount + count);
-        });
-      });
-    });
-
-    return Array.from(uniqueConceptMap.entries())
-      .map(([conceptKey, count]) => ({ conceptKey, count }))
-      .sort((a, b) => b.count - a.count);
-  }, [vespaFamilyData]);
+  const [familyConcepts, setFamilyConcepts] = useState<TConcept[]>([]);
 
   const canPreview = document.content_type === "application/pdf";
 
   useEffectOnce(() => {
-    const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
-
-    fetchAndProcessConcepts(conceptIds).then(({ rootConcepts, concepts }) => {
-      setRootConcepts(rootConcepts);
-      setConcepts(concepts);
-    });
-  });
-
-  const familyConcepts = useMemo(() => {
-    const uniqueConceptMap = new Map<string, TConcept>();
-
+    // Extract unique concept IDs directly from vespaFamilyData
+    const conceptIds = new Set<string>();
     (vespaFamilyData?.families ?? []).forEach((family) => {
       family.hits.forEach((hit) => {
-        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey]) => {
-          const [conceptId, conceptLabel] = conceptKey.split(":");
-          if (!uniqueConceptMap.has(conceptId)) {
-            const matchingConcept = concepts.find((concept) => concept.wikibase_id === conceptId);
-            if (matchingConcept) {
-              uniqueConceptMap.set(conceptId, matchingConcept);
-            }
-          }
+        Object.keys(hit.concept_counts ?? {}).forEach((conceptKey) => {
+          const [conceptId] = conceptKey.split(":");
+          conceptIds.add(conceptId);
         });
       });
     });
 
-    return Array.from(uniqueConceptMap.values());
-  }, [vespaFamilyData, concepts]);
+    fetchAndProcessConcepts(Array.from(conceptIds)).then(({ rootConcepts, concepts }) => {
+      setRootConcepts(rootConcepts);
+      setFamilyConcepts(concepts);
+    });
+  });
 
   const documentConcepts = useMemo(() => {
     const uniqueConceptMap = new Map<string, { concept: TConcept; count: number }>();
@@ -130,37 +100,30 @@ export const ConceptsDocumentViewer = ({
     (vespaDocumentData?.families ?? []).forEach((family) => {
       family.hits.forEach((hit) => {
         Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
-          const [conceptId, conceptLabel] = conceptKey.split(":");
-          if (!uniqueConceptMap.has(conceptId)) {
-            const matchingConcept = concepts.find((concept) => concept.wikibase_id === conceptId);
-            if (matchingConcept) {
-              uniqueConceptMap.set(conceptId, { concept: matchingConcept, count });
-            }
-          } else {
-            // If concept already exists, add to its count
+          const [conceptId] = conceptKey.split(":");
+          const matchingConcept = familyConcepts.find((concept) => concept.wikibase_id === conceptId);
+
+          if (matchingConcept) {
             const existingEntry = uniqueConceptMap.get(conceptId);
-            if (existingEntry) {
-              uniqueConceptMap.set(conceptId, {
-                ...existingEntry,
-                count: existingEntry.count + count,
-              });
-            }
+            const updatedCount = existingEntry ? existingEntry.count + count : count;
+
+            uniqueConceptMap.set(conceptId, {
+              concept: matchingConcept,
+              count: updatedCount,
+            });
           }
         });
       });
     });
 
-    // Transform the map to an array of concepts with their counts
-    const conceptsWithCounts = Array.from(uniqueConceptMap.values()).map(({ concept, count }) => ({
-      ...concept,
-      count,
-    }));
+    return Array.from(uniqueConceptMap.values())
+      .map(({ concept, count }) => ({
+        ...concept,
+        count,
+      }))
+      .sort((a, b) => (b.count || 0) - (a.count || 0));
+  }, [vespaDocumentData, familyConcepts]);
 
-    // Sort by count in descending order
-    return conceptsWithCounts.sort((a, b) => (b.count || 0) - (a.count || 0));
-  }, [vespaDocumentData, concepts]);
-
-  // Modify conceptCountsById to use the new documentConcepts structure
   const documentConceptCountsById = useMemo(
     () =>
       documentConcepts.reduce(
