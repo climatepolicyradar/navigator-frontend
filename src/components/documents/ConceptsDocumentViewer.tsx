@@ -19,7 +19,7 @@ import { ConceptsPanel } from "@components/concepts/ConceptsPanel";
 import { fetchAndProcessConcepts } from "@utils/processConcepts";
 import { useEffectOnce } from "@hooks/useEffectOnce";
 import Loader from "@components/Loader";
-import { UnavailableConcepts } from "./UnavailableConcepts";
+import { UnavailableConcepts } from "@components/documents/UnavailableConcepts";
 
 type TProps = {
   initialQueryTerm?: string | string[];
