@@ -26,6 +26,7 @@ type TProps = {
   initialPassage?: number;
   initialConceptFilters?: string[];
   vespaFamilyData: TSearchResponse;
+  vespaDocumentData: TSearchResponse;
   document: TDocumentPage;
 
   // Callback props for state changes
@@ -53,6 +54,7 @@ export const ConceptsDocumentViewer = ({
   initialConceptFilters,
   document,
   vespaFamilyData,
+  vespaDocumentData,
   onQueryTermChange,
   onExactMatchChange,
   onConceptClick,
@@ -89,6 +91,23 @@ export const ConceptsDocumentViewer = ({
       .sort((a, b) => b.count - a.count);
   }, [vespaFamilyData]);
 
+  // const conceptCountsFamily: { conceptKey: string; conceptLabel: string }[] = useMemo(() => {
+  //   const uniqueConceptMap = new Map<string, string>();
+  //   (vespaFamilyData?.families ?? []).forEach((family) => {
+  //     family.hits.forEach((hit) => {
+  //       Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey]) => {
+  //         const conceptId = conceptKey.split(":")[0];
+  //         const conceptLabel = conceptKey.split(":")[1];
+  //         uniqueConceptMap.set(conceptId, conceptLabel);
+  //       });
+  //     });
+  //   });
+
+  //   return Array.from(uniqueConceptMap.entries()).map(([conceptKey, conceptLabel]) => ({ conceptKey, conceptLabel }));
+  // }, [vespaFamilyData]);
+
+  // console.log(conceptCountsFamily);
+
   const canPreview = document.content_type === "application/pdf";
   const conceptCountsById = useMemo(
     () =>
@@ -112,15 +131,54 @@ export const ConceptsDocumentViewer = ({
     });
   });
 
-  // Dynamically filter concepts based on router concept params.
+  const familyConcepts = useMemo(() => {
+    const uniqueConceptMap = new Map<string, TConcept>();
+
+    (vespaFamilyData?.families ?? []).forEach((family) => {
+      family.hits.forEach((hit) => {
+        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey]) => {
+          const [conceptId, conceptLabel] = conceptKey.split(":");
+          if (!uniqueConceptMap.has(conceptId)) {
+            const matchingConcept = concepts.find((concept) => concept.wikibase_id === conceptId);
+            if (matchingConcept) {
+              uniqueConceptMap.set(conceptId, matchingConcept);
+            }
+          }
+        });
+      });
+    });
+
+    return Array.from(uniqueConceptMap.values());
+  }, [vespaFamilyData, concepts]);
+
+  const documentConcepts = useMemo(() => {
+    const uniqueConceptMap = new Map<string, TConcept>();
+
+    (vespaDocumentData?.families ?? []).forEach((family) => {
+      family.hits.forEach((hit) => {
+        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey]) => {
+          const [conceptId, conceptLabel] = conceptKey.split(":");
+          if (!uniqueConceptMap.has(conceptId)) {
+            const matchingConcept = concepts.find((concept) => concept.wikibase_id === conceptId);
+            if (matchingConcept) {
+              uniqueConceptMap.set(conceptId, matchingConcept);
+            }
+          }
+        });
+      });
+    });
+
+    return Array.from(uniqueConceptMap.values());
+  }, [vespaDocumentData, concepts]);
+
   const selectedConcepts = useMemo(
     () =>
       initialConceptFilters
-        ? concepts.filter((concept) =>
+        ? familyConcepts.filter((concept) =>
             (Array.isArray(initialConceptFilters) ? initialConceptFilters : [initialConceptFilters]).includes(concept.preferred_label)
           )
         : [],
-    [initialConceptFilters, concepts]
+    [initialConceptFilters, familyConcepts]
   );
 
   // Prepare search.
@@ -202,7 +260,7 @@ export const ConceptsDocumentViewer = ({
 
   return (
     <>
-      {concepts.length > 0 && (
+      {documentConcepts.length > 0 && (
         <section className="flex-1 flex" id="document-concepts-viewer">
           <FullWidth extraClasses="flex-1">
             <div id="document-container" className="flex flex-col md:flex-row md:h-[90vh]">
@@ -274,7 +332,7 @@ export const ConceptsDocumentViewer = ({
                   {selectedConcepts.length === 0 && !initialQueryTerm && (
                     <ConceptsPanel
                       rootConcepts={rootConcepts}
-                      concepts={concepts}
+                      concepts={documentConcepts}
                       conceptCountsById={conceptCountsById}
                       onConceptClick={onConceptClick}
                       showCounts={false}
