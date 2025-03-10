@@ -186,7 +186,7 @@ export const ConceptsDocumentViewer = ({
   // Check if any initial concept filters are not in the document concepts
   const unavailableConcepts = initialConceptFilters
     ? initialConceptFilters.filter((filter) => !documentConcepts?.some((concept) => concept.preferred_label === filter))
-    : null;
+    : [];
 
   // Prepare search.
   const searchQueryParams = useMemo(
@@ -297,7 +297,7 @@ export const ConceptsDocumentViewer = ({
                     </div>
                   )}
 
-                  {!unavailableConcepts && (
+                  {unavailableConcepts.length === 0 && (
                     <div className="flex gap-2">
                       <div className="flex-1">
                         <SearchForm
@@ -407,7 +407,7 @@ export const ConceptsDocumentViewer = ({
                       </>
                     )}
 
-                    {state.totalNoOfMatches === 0 && !unavailableConcepts && (
+                    {state.totalNoOfMatches === 0 && unavailableConcepts.length === 0 && (
                       <EmptyPassages
                         hasQueryString={
                           !!searchQueryParams[QUERY_PARAMS.query_string] &&
@@ -417,7 +417,7 @@ export const ConceptsDocumentViewer = ({
                       />
                     )}
 
-                    {unavailableConcepts && <UnavailableConcepts unavailableConcepts={unavailableConcepts} />}
+                    {unavailableConcepts.length > 0 && <UnavailableConcepts unavailableConcepts={unavailableConcepts} />}
                   </>
                 )}
               </div>
