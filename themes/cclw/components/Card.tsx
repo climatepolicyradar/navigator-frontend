@@ -1,4 +1,11 @@
-type TProps = { heading: string; type?: string; img?: string; imgAlt?: string; extraClasses?: string; children: React.ReactNode };
+type TProps = {
+  heading: string;
+  type?: string;
+  img?: string;
+  imgAlt?: string;
+  extraClasses?: string;
+  children: React.ReactNode;
+};
 
 export const Card = ({ heading, type, img, extraClasses, children }: TProps) => {
   return (
@@ -8,7 +15,12 @@ export const Card = ({ heading, type, img, extraClasses, children }: TProps) => 
           {img && (
             <div
               className="w-full h-[120px] overflow-hidden rounded-xl mb-2"
-              style={{ backgroundImage: `url(${img})`, backgroundSize: "cover", backgroundPosition: "center center", backgroundRepeat: "no-repeat" }}
+              style={{
+                backgroundImage: `url(${img})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center center",
+                backgroundRepeat: "no-repeat",
+              }}
             />
           )}
           {type && (

@@ -1,6 +1,5 @@
-import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
-
-import { MAX_RESULTS } from "@constants/paging";
+import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
+import { MAX_RESULTS } from "@/constants/paging";
 
 type TProps = {
   hits: number;

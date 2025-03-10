@@ -1,13 +1,12 @@
 import { ParsedUrlQuery } from "querystring";
 
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { TThemeConfig, TThemeConfigFilter } from "@/types";
+
 import { containsAny } from "./containsAny";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
-
-import { TThemeConfig, TThemeConfigFilter } from "@types";
-
 export const canDisplayFilter = (filter: TThemeConfigFilter, query: ParsedUrlQuery, themeConfig: TThemeConfig) => {
-  let canDisplay = false;
+  const canDisplay = false;
   if (!filter.category) return false;
   // Check whether the filter has a category it is associated with
   // No defined categories on the filter means it is for all

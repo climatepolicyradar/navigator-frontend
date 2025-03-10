@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from "react";
-import { addClass, removeClass } from "@utils/cssClass";
+
+import { addClass, removeClass } from "@/utils/cssClass";
 
 const SuggestList = ({ list, setList, keyField, keyFieldDisplay, type, setInput, handleFilterChange }) => {
   const ulRef = useRef(null);
@@ -17,7 +18,7 @@ const SuggestList = ({ list, setList, keyField, keyFieldDisplay, type, setInput,
         // down
         if (liSelected) {
           removeClass(liSelected, "selected");
-          let next = ul.getElementsByTagName("li")[index];
+          const next = ul.getElementsByTagName("li")[index];
           if (typeof next !== undefined && index <= len) {
             // eslint-disable-next-line react-hooks/exhaustive-deps
             liSelected = next;
@@ -36,7 +37,7 @@ const SuggestList = ({ list, setList, keyField, keyFieldDisplay, type, setInput,
         if (liSelected) {
           removeClass(liSelected, "selected");
           index -= 1;
-          let next = ul.getElementsByTagName("li")[index];
+          const next = ul.getElementsByTagName("li")[index];
           if (typeof next !== undefined && index >= 0) {
             liSelected = next;
           } else {

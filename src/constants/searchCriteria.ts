@@ -1,6 +1,6 @@
-import { minYear, currentYear } from "@constants/timedate";
-import { RESULTS_PER_PAGE, PASSAGES_PER_DOC } from "@constants/paging";
-import { TSearchCriteria } from "@types";
+import { RESULTS_PER_PAGE, PASSAGES_PER_DOC } from "@/constants/paging";
+import { minYear, currentYear } from "@/constants/timedate";
+import { TSearchCriteria } from "@/types";
 
 export const initialSearchCriteria: TSearchCriteria = {
   query_string: "",

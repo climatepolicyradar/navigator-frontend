@@ -1,23 +1,25 @@
-import EmbeddedPDF from "@components/EmbeddedPDF";
-import { FullWidth } from "@components/panels/FullWidth";
-import { TConcept, TDocumentPage, TPassage } from "@types";
-import { EmptyDocument } from "./EmptyDocument";
-import Link from "next/link";
-import Button from "@components/buttons/Button";
-import SearchForm from "@components/forms/SearchForm";
-import { MdOutlineTune } from "react-icons/md";
-import { AnimatePresence } from "framer-motion";
-import { Heading } from "@components/typography/Heading";
-import { ExternalLink } from "@components/ExternalLink";
-import PassageMatches from "@components/PassageMatches";
-import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
-import { EmptyPassages } from "./EmptyPassages";
 import { motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { useEffect, useState, useCallback, useMemo, useReducer } from "react";
-import { SearchSettings } from "@components/filters/SearchSettings";
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
-import useSearch from "@hooks/useSearch";
+import { MdOutlineTune } from "react-icons/md";
+
+import EmbeddedPDF from "@/components/EmbeddedPDF";
+import { ExternalLink } from "@/components/ExternalLink";
+import PassageMatches from "@/components/PassageMatches";
+import Button from "@/components/buttons/Button";
+import { SearchSettings } from "@/components/filters/SearchSettings";
+import SearchForm from "@/components/forms/SearchForm";
+import { FullWidth } from "@/components/panels/FullWidth";
+import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
+import { Heading } from "@/components/typography/Heading";
+import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import useSearch from "@/hooks/useSearch";
+import { TConcept, TDocumentPage, TPassage } from "@/types";
+
+import { EmptyDocument } from "./EmptyDocument";
+import { EmptyPassages } from "./EmptyPassages";
 
 type TProps = {
   initialQueryTerm?: string | string[];
@@ -232,8 +234,14 @@ export const ConceptsDocumentViewer = ({
                               animate="open"
                               exit="collapsed"
                               variants={{
-                                collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                                open: { opacity: 1, transition: { duration: 0.25 } },
+                                collapsed: {
+                                  opacity: 0,
+                                  transition: { duration: 0.1 },
+                                },
+                                open: {
+                                  opacity: 1,
+                                  transition: { duration: 0.25 },
+                                },
                               }}
                             >
                               <SearchSettings

@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 
-import { ExternalLink } from "@components/ExternalLink";
-import { LinkWithQuery } from "@components/LinkWithQuery";
-import { Card } from "@cclw/components/Card";
+import { Card } from "@/cclw/components/Card";
+import { ExternalLink } from "@/components/ExternalLink";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 
 type TArticle = {
   url: string;

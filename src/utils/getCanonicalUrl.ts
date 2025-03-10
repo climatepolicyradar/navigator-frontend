@@ -1,8 +1,8 @@
 import { NextRouter } from "next/router";
 
-import getThemeDomain from "./getThemeDomain";
+import { TTheme } from "@/types";
 
-import { TTheme } from "@types";
+import getThemeDomain from "./getThemeDomain";
 
 // Get the canonical URL for the current page
 // This is used to tell search engines the preferred URL for the current page

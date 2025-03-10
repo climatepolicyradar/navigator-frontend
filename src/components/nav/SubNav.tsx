@@ -1,4 +1,4 @@
-import { SiteWidth } from "@components/panels/SiteWidth";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
 type TProps = {
   extraClasses?: string;

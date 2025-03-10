@@ -1,5 +1,5 @@
-import { TCategory } from "@types";
-import { getCategoryName } from "@helpers/getCategoryName";
+import { getCategoryName } from "@/helpers/getCategoryName";
+import { TCategory } from "@/types";
 
 const stripHtml = (html: string) => {
   return html.replace(/<[^>]*>?/gm, "");

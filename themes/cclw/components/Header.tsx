@@ -1,12 +1,10 @@
 import { useRouter } from "next/router";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
-
-import { LinkWithQuery } from "@components/LinkWithQuery";
-import { FloatingSearch } from "@components/FloatingSearch";
-
-import { Menu } from "@cclw/components/Menu";
-import { Logo } from "@cclw/components/Logo";
+import { Logo } from "@/cclw/components/Logo";
+import { Menu } from "@/cclw/components/Menu";
+import { FloatingSearch } from "@/components/FloatingSearch";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
 const NON_SEARCH_PAGES = ["/", "/search"];
 

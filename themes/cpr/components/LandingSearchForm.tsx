@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
-import Close from "@components/buttons/Close";
-import { SearchIcon } from "@components/svg/Icons";
-import { SearchDropdown } from "@components/forms/SearchDropdown";
+
+import Close from "@/components/buttons/Close";
+import { SearchDropdown } from "@/components/forms/SearchDropdown";
+import { SearchIcon } from "@/components/svg/Icons";
 
 interface SearchFormProps {
   placeholder?: string;

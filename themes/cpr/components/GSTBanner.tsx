@@ -1,5 +1,5 @@
-import { ExternalLink } from "@components/ExternalLink";
-import { SpeakerIcon } from "@components/svg/Icons";
+import { ExternalLink } from "@/components/ExternalLink";
+import { SpeakerIcon } from "@/components/svg/Icons";
 
 export const GSTBanner = () => {
   return (

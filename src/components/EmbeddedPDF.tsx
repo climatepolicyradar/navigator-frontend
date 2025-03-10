@@ -1,9 +1,11 @@
-import { useRef, useMemo, useEffect, useContext } from "react";
 import Script from "next/script";
-import { TDocumentPage, TPassage } from "@types";
-import usePDFPreview from "@hooks/usePDFPreview";
+import { useRef, useMemo, useEffect, useContext } from "react";
+
+import { AdobeContext } from "@/context/AdobeContext";
+import usePDFPreview from "@/hooks/usePDFPreview";
+import { TDocumentPage, TPassage } from "@/types";
+
 import Loader from "./Loader";
-import { AdobeContext } from "@context/AdobeContext";
 
 type TProps = {
   document: TDocumentPage;

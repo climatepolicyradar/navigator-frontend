@@ -1,10 +1,11 @@
 import { useRouter } from "next/router";
-import MatchesButton from "@components/buttons/MatchesButton";
-import { DocumentIcon, GlobeIcon, Loading } from "@components/svg/Icons";
-import useConfig from "@hooks/useConfig";
-import { getLanguage } from "@helpers/getLanguage";
-import { TDocumentPage, TLoadingStatus } from "@types";
-import { getDocumentType } from "@helpers/getDocumentType";
+
+import MatchesButton from "@/components/buttons/MatchesButton";
+import { DocumentIcon, GlobeIcon, Loading } from "@/components/svg/Icons";
+import { getDocumentType } from "@/helpers/getDocumentType";
+import { getLanguage } from "@/helpers/getLanguage";
+import useConfig from "@/hooks/useConfig";
+import { TDocumentPage, TLoadingStatus } from "@/types";
 
 type TProps = {
   document: TDocumentPage;
@@ -52,7 +53,10 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
       if (canViewSource) window.open(document.source_url, "_blank");
     };
 
-    return { className: cssClass, onClick: !canPreview && !canViewSource ? null : handleClick };
+    return {
+      className: cssClass,
+      onClick: !canPreview && !canViewSource ? null : handleClick,
+    };
   };
 
   return (

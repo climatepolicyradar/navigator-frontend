@@ -1,8 +1,7 @@
-import { FamilyListItem } from "@components/document/FamilyListItem";
-import { SearchMatchesButton } from "@components/buttons/SearchMatchesButton";
-import { ToolTipSSR } from "@components/tooltip/TooltipSSR";
-
-import { TMatchedFamily } from "@types";
+import { SearchMatchesButton } from "@/components/buttons/SearchMatchesButton";
+import { FamilyListItem } from "@/components/document/FamilyListItem";
+import { ToolTipSSR } from "@/components/tooltip/TooltipSSR";
+import { TMatchedFamily } from "@/types";
 
 interface ISearchResultProps {
   family: TMatchedFamily;

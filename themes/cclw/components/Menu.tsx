@@ -1,9 +1,10 @@
 import { useState, useRef } from "react";
-import useOutsideAlerter from "@hooks/useOutsideAlerter";
-import { MenuIcon } from "@components/svg/Icons";
-import DropdownMenuItem from "@components/menus/DropdownMenuItem";
-import DropdownMenuWrapper from "@components/menus/DropdownMenuWrapper";
-import MENU_LINKS from "@cclw/constants/menuLinks";
+
+import MENU_LINKS from "@/cclw/constants/menuLinks";
+import DropdownMenuItem from "@/components/menus/DropdownMenuItem";
+import DropdownMenuWrapper from "@/components/menus/DropdownMenuWrapper";
+import { MenuIcon } from "@/components/svg/Icons";
+import useOutsideAlerter from "@/hooks/useOutsideAlerter";
 
 export const Menu = () => {
   const [showMenu, setShowMenu] = useState(false);

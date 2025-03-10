@@ -1,12 +1,11 @@
-import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
-import { SingleCol } from "@components/panels/SingleCol";
-import { SiteWidth } from "@components/panels/SiteWidth";
-import { ExternalLink } from "@components/ExternalLink";
-
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { ExternalLink } from "@/components/ExternalLink";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -38,7 +37,13 @@ export const Hero = () => {
   };
 
   const handleSubmit = (query?: string) => {
-    router.push({ pathname: "/search", query: { [QUERY_PARAMS.query_string]: query ?? term, [QUERY_PARAMS.category]: "reports" } });
+    router.push({
+      pathname: "/search",
+      query: {
+        [QUERY_PARAMS.query_string]: query ?? term,
+        [QUERY_PARAMS.category]: "reports",
+      },
+    });
   };
 
   return (

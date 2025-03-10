@@ -1,5 +1,6 @@
+import { ToolTipSSR } from "@/components/tooltip/TooltipSSR";
+
 import { CloseIcon } from "./svg/Icons";
-import { ToolTipSSR } from "@components/tooltip/TooltipSSR";
 
 type TProps = {
   onClick?: () => void;

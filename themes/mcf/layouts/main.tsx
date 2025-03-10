@@ -1,5 +1,6 @@
 import React, { FC, ReactNode } from "react";
-import { Header, Footer } from "@mcf/components";
+
+import { Header, Footer } from "@/mcf/components";
 
 type TProps = {
   children?: ReactNode;

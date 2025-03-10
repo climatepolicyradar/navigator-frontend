@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { ContextSearchIcon, ManyDocumentsIcon, ExternalLinkIcon, TranslationIcon } from "@components/svg/Icons";
+import { ContextSearchIcon, ManyDocumentsIcon, ExternalLinkIcon, TranslationIcon } from "@/components/svg/Icons";
 
 type TFamilyTotals = {
   laws: number;

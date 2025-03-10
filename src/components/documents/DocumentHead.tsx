@@ -1,24 +1,20 @@
 import { useEffect, useState } from "react";
 import { LuMoveUpRight } from "react-icons/lu";
 
-import useConfig from "@hooks/useConfig";
+import { Alert } from "@/components/Alert";
+import { ExternalLink } from "@/components/ExternalLink";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Button from "@/components/buttons/Button";
+import { SubNav } from "@/components/nav/SubNav";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { AlertCircleIcon } from "@/components/svg/Icons";
+import { Heading } from "@/components/typography/Heading";
+import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
+import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
+import useConfig from "@/hooks/useConfig";
+import { TDocumentPage, TFamilyPage, TConcept, TSearchResponse } from "@/types";
+import { truncateString } from "@/utils/truncateString";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
-
-import { SubNav } from "@components/nav/SubNav";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import Button from "@components/buttons/Button";
-import { AlertCircleIcon } from "@components/svg/Icons";
-import { Alert } from "@components/Alert";
-import { ExternalLink } from "@components/ExternalLink";
-import { Heading } from "@components/typography/Heading";
-
-import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
-import { truncateString } from "@utils/truncateString";
-
-import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
-
-import { TDocumentPage, TFamilyPage, TConcept, TSearchResponse } from "@types";
 import { DocumentMetaRenderer } from "./renderers/DocumentMetaRenderer";
 
 type TProps = {
@@ -44,7 +40,10 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
   const geoSlug = family.geographies ? getCountrySlug(family.geographies[0], countries) : "";
   const isMain = document.document_role.toLowerCase().includes("main");
   const breadcrumbGeography = family.geographies && family.geographies.length > 1 ? null : { label: geoName, href: `/geographies/${geoSlug}` };
-  const breadcrumbFamily = { label: family.title, href: `/document/${family.slug}` };
+  const breadcrumbFamily = {
+    label: family.title,
+    href: `/document/${family.slug}`,
+  };
   const breadcrumbLabel = isMain ? "Document" : document.document_role.toLowerCase();
   const breadcrumbCategory = { label: "Search results", href: "/search" };
   const translated = document.languages.length === 0 || containsNonEnglish(document.languages);

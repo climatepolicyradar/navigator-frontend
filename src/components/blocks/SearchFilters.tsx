@@ -1,28 +1,25 @@
-import { useEffect, useState, useMemo } from "react";
 import { ParsedUrlQuery } from "querystring";
 
-import useGetThemeConfig from "@hooks/useThemeConfig";
-
-import { DateRange } from "../filters/DateRange";
-import { Accordian } from "@components/accordian/Accordian";
-import { InputListContainer } from "@components/filters/InputListContainer";
-import { TypeAhead } from "../forms/TypeAhead";
-import { InputCheck } from "@components/forms/Checkbox";
-import { InputRadio } from "@components/forms/Radio";
-import { AppliedFilters } from "@components/filters/AppliedFilters";
-import Loader from "@components/Loader";
-import { FilterOptions } from "./FilterOptions";
-
-import { currentYear, minYear } from "@constants/timedate";
-import { QUERY_PARAMS } from "@constants/queryParams";
-
-import { getCountriesFromRegions } from "@helpers/getCountriesFromRegions";
-
-import { canDisplayFilter } from "@utils/canDisplayFilter";
-import { getFilterLabel } from "@utils/getFilterLabel";
-
-import { TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@types";
 import dynamic from "next/dynamic";
+import { useEffect, useState, useMemo } from "react";
+
+import Loader from "@/components/Loader";
+import { Accordian } from "@/components/accordian/Accordian";
+import { AppliedFilters } from "@/components/filters/AppliedFilters";
+import { InputListContainer } from "@/components/filters/InputListContainer";
+import { InputCheck } from "@/components/forms/Checkbox";
+import { InputRadio } from "@/components/forms/Radio";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { currentYear, minYear } from "@/constants/timedate";
+import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
+import useGetThemeConfig from "@/hooks/useThemeConfig";
+import { TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
+import { canDisplayFilter } from "@/utils/canDisplayFilter";
+import { getFilterLabel } from "@/utils/getFilterLabel";
+
+import { FilterOptions } from "./FilterOptions";
+import { DateRange } from "../filters/DateRange";
+import { TypeAhead } from "../forms/TypeAhead";
 
 const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/components/MethodologyLink`));
 
@@ -74,7 +71,11 @@ const SearchFilters = ({
 
   // memoize the filtered countries
   const availableCountries = useMemo(() => {
-    return getCountriesFromRegions({ regions, countries, selectedRegions: regionFilters });
+    return getCountriesFromRegions({
+      regions,
+      countries,
+      selectedRegions: regionFilters,
+    });
   }, [regionFilters, regions, countries]);
 
   // Show clear button if there are filters applied

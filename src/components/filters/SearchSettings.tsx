@@ -1,11 +1,12 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { ParsedUrlQuery } from "querystring";
 
-import { SearchSettingsList } from "./SearchSettingsList";
-import { SearchSettingsItem } from "./SearchSettingsItem";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { sortOptions, sortOptionsBrowse } from "@constants/sortOptions";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { sortOptions, sortOptionsBrowse } from "@/constants/sortOptions";
+
+import { SearchSettingsItem } from "./SearchSettingsItem";
+import { SearchSettingsList } from "./SearchSettingsList";
 
 type TProps = {
   queryParams: ParsedUrlQuery;

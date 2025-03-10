@@ -1,5 +1,6 @@
 import { ParsedUrlQuery } from "querystring";
-import { QUERY_PARAMS } from "@constants/queryParams";
+
+import { QUERY_PARAMS } from "@/constants/queryParams";
 
 export const CleanRouterQuery = (query: ParsedUrlQuery) => {
   // remove any keys from router.query that are not values in QUERY_PARAMS

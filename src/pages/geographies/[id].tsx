@@ -1,41 +1,35 @@
-import { useState } from "react";
 import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
-import { ApiClient } from "@api/http-common";
-
-import { SiteWidth } from "@components/panels/SiteWidth";
-import { SingleCol } from "@components/panels/SingleCol";
-
-import Layout from "@components/layouts/Main";
-import { Timeline } from "@components/timeline/Timeline";
-import { Event } from "@components/timeline/Event";
-import { CountryHeader } from "@components/blocks/CountryHeader";
-import { Divider } from "@components/dividers/Divider";
-import { DownChevronIcon, LegislativeIcon, AlertCircleIcon } from "@components/svg/Icons";
-import { FamilyListItem } from "@components/document/FamilyListItem";
-import { Targets } from "@components/Targets";
-import Button from "@components/buttons/Button";
-import TabbedNav from "@components/nav/TabbedNav";
-import { ExternalLink } from "@components/ExternalLink";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import DocumentSearchForm from "@components/forms/DocumentSearchForm";
-import { Alert } from "@components/Alert";
-import { SubNav } from "@components/nav/SubNav";
-import { Heading } from "@components/typography/Heading";
-
-import { getCountryCode } from "@helpers/getCountryFields";
-
-import { extractNestedData } from "@utils/extractNestedData";
-import { sortFilterTargets } from "@utils/sortFilterTargets";
-import { readConfigFile } from "@utils/readConfigFile";
-
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { systemGeoNames } from "@constants/systemGeos";
-
-import { TGeographyStats, TGeographySummary, TThemeConfig } from "@types";
-import { TTarget, TEvent, TGeography, TTheme } from "@types";
+import { ApiClient } from "@/api/http-common";
+import { Alert } from "@/components/Alert";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Targets } from "@/components/Targets";
+import { CountryHeader } from "@/components/blocks/CountryHeader";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Button from "@/components/buttons/Button";
+import { Divider } from "@/components/dividers/Divider";
+import { FamilyListItem } from "@/components/document/FamilyListItem";
+import DocumentSearchForm from "@/components/forms/DocumentSearchForm";
+import Layout from "@/components/layouts/Main";
+import { SubNav } from "@/components/nav/SubNav";
+import TabbedNav from "@/components/nav/TabbedNav";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { DownChevronIcon, LegislativeIcon, AlertCircleIcon } from "@/components/svg/Icons";
+import { Event } from "@/components/timeline/Event";
+import { Timeline } from "@/components/timeline/Timeline";
+import { Heading } from "@/components/typography/Heading";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { systemGeoNames } from "@/constants/systemGeos";
+import { getCountryCode } from "@/helpers/getCountryFields";
+import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
+import { TTarget, TEvent, TGeography, TTheme } from "@/types";
+import { extractNestedData } from "@/utils/extractNestedData";
+import { readConfigFile } from "@/utils/readConfigFile";
+import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 type TProps = {
   geography: TGeographyStats;
@@ -346,7 +340,12 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   <Heading level={2} extraClasses="flex items-center gap-2">
                     <LegislativeIcon width="20" height="20" /> Legislative Process
                   </Heading>
-                  <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
+                  <div
+                    className="text-content"
+                    dangerouslySetInnerHTML={{
+                      __html: geography.legislative_process,
+                    }}
+                  />
                 </section>
               )}
             </SingleCol>

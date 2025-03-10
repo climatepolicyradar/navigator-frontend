@@ -1,4 +1,4 @@
-import { FindInDocIcon } from "@components/svg/Icons";
+import { FindInDocIcon } from "@/components/svg/Icons";
 
 type TProps = {
   hasQueryString: boolean;

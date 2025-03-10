@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { getEnvFromServer } from "@api/http-common";
-import { hasMcfAccess } from "@utils/checkCorpusAccess";
+
+import { getEnvFromServer } from "@/api/http-common";
+import { hasMcfAccess } from "@/utils/checkCorpusAccess";
 
 export const useMcfData = () => {
   const [showMcf, setShowMcf] = useState(true);

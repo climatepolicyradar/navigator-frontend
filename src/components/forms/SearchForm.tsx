@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import { Search2Icon } from "@/components/svg/Icons";
+
 import { SearchDropdown } from "./SearchDropdown";
 import { TextInput } from "./TextInput";
-import { Search2Icon } from "@components/svg/Icons";
 
 type TProps = {
   input?: string;

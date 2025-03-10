@@ -1,4 +1,4 @@
-import { TConcept } from "@types";
+import { TConcept } from "@/types";
 
 // Define the root level concepts
 const ROOT_LEVEL_CONCEPTS = {
@@ -29,7 +29,7 @@ interface RootConceptsMapped {
 
 export const processConcepts = (concepts: (TConcept & { count: number })[]): RootConceptsMapped => {
   const conceptMap: RootConceptsMapped = {};
-  let otherConcepts: ConceptMap = {};
+  const otherConcepts: ConceptMap = {};
 
   concepts.forEach((concept) => {
     let isRootOrSubconcept = false;

@@ -1,4 +1,5 @@
 import { FC, ReactNode } from "react";
+
 import { SearchIcon } from "../svg/Icons";
 
 type TProps = {

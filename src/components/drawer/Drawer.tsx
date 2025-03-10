@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
-import Close from "@components/buttons/Close";
+
+import Close from "@/components/buttons/Close";
 
 interface SlideoutProps {
   children: JSX.Element | string;

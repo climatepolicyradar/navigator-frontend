@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 
-import useConfig from "@hooks/useConfig";
-
-import { calculateTotalFamilies } from "@helpers/getFamilyCounts";
-
-import Button from "@components/buttons/Button";
-import { DownArrowIcon } from "@components/svg/Icons";
-
-import { INSTRUCTIONS } from "@cclw/constants/instructions";
+import { INSTRUCTIONS } from "@/cclw/constants/instructions";
+import Button from "@/components/buttons/Button";
+import { DownArrowIcon } from "@/components/svg/Icons";
+import { calculateTotalFamilies } from "@/helpers/getFamilyCounts";
+import useConfig from "@/hooks/useConfig";
 
 const ANIMATION_DELAY = 3000;
 

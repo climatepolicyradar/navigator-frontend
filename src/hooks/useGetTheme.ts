@@ -1,5 +1,6 @@
-import { getSiteAsync } from "@utils/getSite";
 import { useEffect, useState } from "react";
+
+import { getSiteAsync } from "@/utils/getSite";
 
 export default function useGetTheme() {
   const [status, setStatus] = useState("idle");

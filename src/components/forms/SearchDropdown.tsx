@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
-import useConfig from "@hooks/useConfig";
-import { SearchIcon } from "@components/svg/Icons";
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { TGeography } from "@types";
-import { systemGeoCodes } from "@constants/systemGeos";
+
+import { SearchIcon } from "@/components/svg/Icons";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { systemGeoCodes } from "@/constants/systemGeos";
+import useConfig from "@/hooks/useConfig";
+import { TGeography } from "@/types";
 
 type TProps = {
   show: boolean;
@@ -72,7 +73,8 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
         <li key={intendedGeography.slug}>
           <a href="#" className={anchorClasses(false)} onClick={(e) => handleSuggestionClick(e, intendedGeography)}>
             Did you mean to search for&nbsp;
-            <span className="font-medium text-black">{termWithoutGeography(intendedGeography.display_value)}</span>&nbsp;in&nbsp;
+            <span className="font-medium text-black">{termWithoutGeography(intendedGeography.display_value)}</span>
+            &nbsp;in&nbsp;
             <span className="font-medium text-black">{intendedGeography.display_value}</span>?
           </a>
         </li>

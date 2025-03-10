@@ -1,14 +1,12 @@
-import { useEffect, useState } from "react";
-import Script from "next/script";
-
-import Button from "@components/buttons/Button";
-import { ExternalLink } from "@components/ExternalLink";
-
-import { getCookie, setCookie } from "@utils/cookies";
-import getDomain from "@utils/getDomain";
-
-import { COOKIE_CONSENT_NAME } from "@constants/cookies";
 import dynamic from "next/dynamic";
+import Script from "next/script";
+import { useEffect, useState } from "react";
+
+import { ExternalLink } from "@/components/ExternalLink";
+import Button from "@/components/buttons/Button";
+import { COOKIE_CONSENT_NAME } from "@/constants/cookies";
+import { getCookie, setCookie } from "@/utils/cookies";
+import getDomain from "@/utils/getDomain";
 
 const ThemeAnalytics = dynamic<{ enableAnalytics: boolean }>(() => import(`/themes/${process.env.THEME}/components/Analytics`));
 

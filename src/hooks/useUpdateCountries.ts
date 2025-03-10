@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "react-query";
-import { TGeography } from "@types";
+
+import { TGeography } from "@/types";
 
 type TMutationProps = {
   regionName: string;

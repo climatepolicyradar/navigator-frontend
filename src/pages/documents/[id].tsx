@@ -1,36 +1,31 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { MdOutlineTune } from "react-icons/md";
 
-import { ApiClient } from "@api/http-common";
-
-import useSearch from "@hooks/useSearch";
-
-import { FullWidth } from "@components/panels/FullWidth";
-
-import Layout from "@components/layouts/Main";
-import EmbeddedPDF from "@components/EmbeddedPDF";
-import PassageMatches from "@components/PassageMatches";
-import Loader from "@components/Loader";
-import SearchForm from "@components/forms/SearchForm";
-import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
-import { DocumentHead } from "@components/documents/DocumentHead";
-import { EmptyPassages } from "@components/documents/EmptyPassages";
-import { EmptyDocument } from "@components/documents/EmptyDocument";
-import { SearchSettings } from "@components/filters/SearchSettings";
-
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { getDocumentDescription } from "@constants/metaDescriptions";
-import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
-import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
-
-import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@types";
-import { getFeatureFlags } from "@utils/featureFlags";
-import { rootLevelConceptsIds } from "@utils/processConcepts";
-import { useEffectOnce } from "@hooks/useEffectOnce";
-import { ConceptsDocumentViewer } from "@components/documents/ConceptsDocumentViewer";
+import { ApiClient } from "@/api/http-common";
+import EmbeddedPDF from "@/components/EmbeddedPDF";
+import Loader from "@/components/Loader";
+import PassageMatches from "@/components/PassageMatches";
+import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
+import { DocumentHead } from "@/components/documents/DocumentHead";
+import { EmptyDocument } from "@/components/documents/EmptyDocument";
+import { EmptyPassages } from "@/components/documents/EmptyPassages";
+import { SearchSettings } from "@/components/filters/SearchSettings";
+import SearchForm from "@/components/forms/SearchForm";
+import Layout from "@/components/layouts/Main";
+import { FullWidth } from "@/components/panels/FullWidth";
+import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
+import { EXAMPLE_SEARCHES } from "@/constants/exampleSearches";
+import { getDocumentDescription } from "@/constants/metaDescriptions";
+import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { useEffectOnce } from "@/hooks/useEffectOnce";
+import useSearch from "@/hooks/useSearch";
+import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@/types";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { rootLevelConceptsIds } from "@/utils/processConcepts";
 
 type TProps = {
   document: TDocumentPage;
@@ -180,7 +175,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   );
 
   useEffect(() => {
-    let passageMatches: TPassage[] = [];
+    const passageMatches: TPassage[] = [];
     let totalNoOfMatches = 0;
     families.forEach((family) => {
       family.family_documents.forEach((cacheDoc) => {
@@ -208,7 +203,14 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
   const [selectedConcepts, setSelectedConceptsFilter] = useState<TConcept[]>([]);
   const conceptCounts: { conceptKey: string; count: number }[] = (vespaFamilyData?.families ?? [])
-    .flatMap((family) => family.hits.flatMap((hit) => Object.entries(hit.concept_counts ?? {}).map(([conceptKey, count]) => ({ conceptKey, count }))))
+    .flatMap((family) =>
+      family.hits.flatMap((hit) =>
+        Object.entries(hit.concept_counts ?? {}).map(([conceptKey, count]) => ({
+          conceptKey,
+          count,
+        }))
+      )
+    )
     .sort((a, b) => b.count - a.count);
 
   const conceptFiltersQuery = router.query[QUERY_PARAMS["concept_filters.name"]];
@@ -358,8 +360,14 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                                 animate="open"
                                 exit="collapsed"
                                 variants={{
-                                  collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                                  open: { opacity: 1, transition: { duration: 0.25 } },
+                                  collapsed: {
+                                    opacity: 0,
+                                    transition: { duration: 0.1 },
+                                  },
+                                  open: {
+                                    opacity: 1,
+                                    transition: { duration: 0.25 },
+                                  },
                                 }}
                               >
                                 <SearchSettings

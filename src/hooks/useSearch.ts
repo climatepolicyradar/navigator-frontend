@@ -1,13 +1,11 @@
 import { useEffect, useState, useMemo } from "react";
-import { ApiClient, getEnvFromServer } from "../api/http-common";
+
+import buildSearchQuery, { TRouterQuery } from "@/utils/buildSearchQuery";
+import { getCachedSearch, updateCacheSearch, TCacheResult } from "@/utils/searchCache";
 
 import useGetThemeConfig from "./useThemeConfig";
-
-import buildSearchQuery, { TRouterQuery } from "@utils/buildSearchQuery";
-import { getCachedSearch, updateCacheSearch, TCacheResult } from "@utils/searchCache";
-
+import { ApiClient, getEnvFromServer } from "../api/http-common";
 import { initialSearchCriteria } from "../constants/searchCriteria";
-
 import { TMatchedFamily, TSearch, TLoadingStatus } from "../types";
 
 const CACHE_ENABLED = false;

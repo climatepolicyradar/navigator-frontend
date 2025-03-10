@@ -1,4 +1,5 @@
 import React from "react";
+
 import { CloseIcon } from "../svg/Icons";
 
 interface CloseProps {

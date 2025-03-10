@@ -1,8 +1,10 @@
 import { FC, ReactNode } from "react";
-import useConfig from "@hooks/useConfig";
-import { getCountrySlug } from "@helpers/getCountryFields";
+
+import { systemGeoCodes } from "@/constants/systemGeos";
+import { getCountrySlug } from "@/helpers/getCountryFields";
+import useConfig from "@/hooks/useConfig";
+
 import { LinkWithQuery } from "./LinkWithQuery";
-import { systemGeoCodes } from "@constants/systemGeos";
 
 type TCountryLink = {
   countryCode: string;

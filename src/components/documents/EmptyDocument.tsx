@@ -1,5 +1,5 @@
-import { ExternalLink } from "@components/ExternalLink";
-import { BookOpenIcon } from "@components/svg/Icons";
+import { ExternalLink } from "@/components/ExternalLink";
+import { BookOpenIcon } from "@/components/svg/Icons";
 
 export const EmptyDocument = () => (
   <div className="ml-4 text-center text-gray-600">

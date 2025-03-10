@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
-import SuggestList from "../filters/SuggestList";
-import { TextInput } from "./TextInput";
+import { Search2Icon } from "@/components/svg/Icons";
+import { sortData } from "@/utils/sorting";
 
-import { sortData } from "@utils/sorting";
-import { Search2Icon } from "@components/svg/Icons";
+import { TextInput } from "./TextInput";
+import SuggestList from "../filters/SuggestList";
 
 type TProps = {
   list: Object[];

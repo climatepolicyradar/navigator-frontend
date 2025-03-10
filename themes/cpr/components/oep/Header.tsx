@@ -1,9 +1,8 @@
 import Image from "next/image";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
-
-import MainMenu from "@components/menus/MainMenu";
-import { LinkWithQuery } from "@components/LinkWithQuery";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import MainMenu from "@/components/menus/MainMenu";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
 export function Header() {
   return (

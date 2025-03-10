@@ -1,12 +1,11 @@
 import { useRouter } from "next/router";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
+import { FloatingSearch } from "@/components/FloatingSearch";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
-import { LinkWithQuery } from "@components/LinkWithQuery";
-import { FloatingSearch } from "@components/FloatingSearch";
-
-import { Menu } from "./HeaderComponents/Menu";
 import { Logo } from "./HeaderComponents/Logo";
+import { Menu } from "./HeaderComponents/Menu";
 
 const NON_SEARCH_PAGES = ["/", "/search"];
 

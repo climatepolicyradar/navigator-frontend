@@ -1,8 +1,10 @@
 import { useState, useRef } from "react";
-import useOutsideAlerter from "@hooks/useOutsideAlerter";
-import { MenuIcon } from "../svg/Icons";
+
+import useOutsideAlerter from "@/hooks/useOutsideAlerter";
+
 import DropdownMenuItem from "./DropdownMenuItem";
 import DropdownMenuWrapper from "./DropdownMenuWrapper";
+import { MenuIcon } from "../svg/Icons";
 
 type TProps = {
   iconClass?: string;

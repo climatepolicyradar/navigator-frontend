@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
-import { TCorpusTypeDictionary, TDataNode, TGeography, TLanguages } from "@types";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
+
+import { TCorpusTypeDictionary, TDataNode, TGeography, TLanguages } from "@/types";
 
 export async function getEnvFromServer() {
   return await axios.get("/api/env").then((res: any) => res);
@@ -28,7 +29,10 @@ class ApiClient {
       this.appToken = process.env.NEXT_PUBLIC_APP_TOKEN;
     }
 
-    this.axiosClient = axios.create({ baseURL: this.baseUrl, headers: { "app-token": this.appToken } });
+    this.axiosClient = axios.create({
+      baseURL: this.baseUrl,
+      headers: { "app-token": this.appToken },
+    });
   }
 
   /**
@@ -72,7 +76,11 @@ class ApiClient {
   }
 
   getConfig() {
-    return this.get<{ geographies: TDataNode<TGeography>[]; corpus_types: TCorpusTypeDictionary; languages: TLanguages }>("/config");
+    return this.get<{
+      geographies: TDataNode<TGeography>[];
+      corpus_types: TCorpusTypeDictionary;
+      languages: TLanguages;
+    }>("/config");
   }
 }
 

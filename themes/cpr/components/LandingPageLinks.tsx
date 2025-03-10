@@ -1,4 +1,4 @@
-import { EyeIcon } from "@components/svg/Icons";
+import { EyeIcon } from "@/components/svg/Icons";
 
 const LandingPageLinks = ({ handleLinkClick }) => {
   const terms = ["Adaptation strategy", "Energy prices", "Flood defence", "Just transition"];

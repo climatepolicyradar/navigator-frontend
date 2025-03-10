@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-import { Feature } from "./Feature";
+import { LightblubIcon } from "@/components/svg/Icons";
 
-import { LightblubIcon } from "@components/svg/Icons";
+import { Feature } from "./Feature";
 
 export const FeatureSearch = () => (
   <Feature

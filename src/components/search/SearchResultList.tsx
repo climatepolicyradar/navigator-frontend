@@ -1,7 +1,7 @@
-import { ExternalLink } from "@components/ExternalLink";
-import SearchResult from "./SearchResult";
+import { ExternalLink } from "@/components/ExternalLink";
+import { TMatchedFamily } from "@/types";
 
-import { TMatchedFamily } from "@types";
+import SearchResult from "./SearchResult";
 
 type TProps = {
   category?: string;

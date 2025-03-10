@@ -1,10 +1,10 @@
 import { FC, ReactNode } from "react";
-import { TFamily } from "@types";
 
-import { LinkWithQuery } from "@components/LinkWithQuery";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { TFamily } from "@/types";
+import { truncateString } from "@/utils/truncateString";
+
 import { FamilyMeta } from "./FamilyMeta";
-
-import { truncateString } from "@utils/truncateString";
 
 type TProps = {
   family: TFamily;
@@ -47,7 +47,9 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
       <p
         className="my-3 text-content"
         data-cy="family-description"
-        dangerouslySetInnerHTML={{ __html: truncateString(family_description.replace(/(<([^>]+)>)/gi, ""), 375) }}
+        dangerouslySetInnerHTML={{
+          __html: truncateString(family_description.replace(/(<([^>]+)>)/gi, ""), 375),
+        }}
       />
       {children}
     </div>

@@ -1,8 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
 import { ReactNode } from "react";
 
-import { ExternalLink } from "@components/ExternalLink";
-import { Heading } from "@components/typography/Heading";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Heading } from "@/components/typography/Heading";
 
 type TAcknowledgement = {
   partnerImage?: {
@@ -63,7 +62,13 @@ export const Acknowledgements = () => {
           thank FILE for its generous support for developments to the database.
         </p>
       </Acknowledgement>
-      <Acknowledgement partnerImage={{ url: "https://www.ipu.org/", imageUrl: "IPU_logo.png", imageAlt: "Inter-Parliamentary Union logo" }}>
+      <Acknowledgement
+        partnerImage={{
+          url: "https://www.ipu.org/",
+          imageUrl: "IPU_logo.png",
+          imageAlt: "Inter-Parliamentary Union logo",
+        }}
+      >
         <p>
           The Inter-Parliamentary Union (IPU) is the global organisation of national parliaments. It began in 1889 as a small group of
           parliamentarians, dedicated to promoting peace through parliamentary diplomacy and dialogue, and has since grown into a truly global

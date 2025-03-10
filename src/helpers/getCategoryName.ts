@@ -1,4 +1,4 @@
-import { TCategory, TCorpusTypeSubCategory } from "@types";
+import { TCategory, TCorpusTypeSubCategory } from "@/types";
 
 const reportSubCategories = {
   AF: "Guidance",

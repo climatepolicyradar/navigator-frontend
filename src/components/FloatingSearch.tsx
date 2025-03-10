@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { CloseIcon, LightblubIcon, SearchIcon } from "./svg/Icons";
+import { useEffect, useRef, useState } from "react";
+
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
+import { getSessionStorage, setSessionStorage } from "@/utils/sessionStorage";
+
 import { Divider } from "./dividers/Divider";
-import { CleanRouterQuery } from "@utils/cleanRouterQuery";
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { getSessionStorage, setSessionStorage } from "@utils/sessionStorage";
+import { CloseIcon, LightblubIcon, SearchIcon } from "./svg/Icons";
 
 const SEARCH_HIGHLIGHT_DELAY = 5000;
 const FEATURED_SEARCHES = ["Adaptation strategy", "Energy prices", "Flood defence", "Fossil fuels"];

@@ -1,42 +1,38 @@
+import { ParsedUrlQueryInput } from "querystring";
+
 import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { ParsedUrlQueryInput } from "querystring";
 import { useEffect, useRef, useState } from "react";
 import { MdOutlineTune } from "react-icons/md";
 
-import useConfig from "@hooks/useConfig";
-import { useDownloadCsv } from "@hooks/useDownloadCsv";
-import useSearch from "@hooks/useSearch";
-
-import { MultiCol } from "@components/panels/MultiCol";
-import { SideCol } from "@components/panels/SideCol";
-import { SingleCol } from "@components/panels/SingleCol";
-import { SiteWidth } from "@components/panels/SiteWidth";
-
-import { ExternalLink } from "@components/ExternalLink";
-import Loader from "@components/Loader";
-import { NoOfResults } from "@components/NoOfResults";
-import SearchFilters from "@components/blocks/SearchFilters";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import FilterToggle from "@components/buttons/FilterToggle";
-import Drawer from "@components/drawer/Drawer";
-import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
-import { SearchSettings } from "@components/filters/SearchSettings";
-import SearchForm from "@components/forms/SearchForm";
-import Layout from "@components/layouts/Main";
-import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
-import { SubNav } from "@components/nav/SubNav";
-import Pagination from "@components/pagination";
-import SearchResultList from "@components/search/SearchResultList";
-import { Loading } from "@components/svg/Icons";
-
-import { getThemeConfigLink } from "@utils/getThemeConfigLink";
-import { readConfigFile } from "@utils/readConfigFile";
-
-import { QUERY_PARAMS } from "@constants/queryParams";
-
-import { TTheme, TThemeConfig } from "@types";
+import { ExternalLink } from "@/components/ExternalLink";
+import Loader from "@/components/Loader";
+import { NoOfResults } from "@/components/NoOfResults";
+import SearchFilters from "@/components/blocks/SearchFilters";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import FilterToggle from "@/components/buttons/FilterToggle";
+import Drawer from "@/components/drawer/Drawer";
+import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
+import { SearchSettings } from "@/components/filters/SearchSettings";
+import SearchForm from "@/components/forms/SearchForm";
+import Layout from "@/components/layouts/Main";
+import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
+import { SubNav } from "@/components/nav/SubNav";
+import Pagination from "@/components/pagination";
+import { MultiCol } from "@/components/panels/MultiCol";
+import { SideCol } from "@/components/panels/SideCol";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import SearchResultList from "@/components/search/SearchResultList";
+import { Loading } from "@/components/svg/Icons";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import useConfig from "@/hooks/useConfig";
+import { useDownloadCsv } from "@/hooks/useDownloadCsv";
+import useSearch from "@/hooks/useSearch";
+import { TTheme, TThemeConfig } from "@/types";
+import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
+import { readConfigFile } from "@/utils/readConfigFile";
 
 type TProps = {
   theme: TTheme;
@@ -281,7 +277,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const handleClearSearch = () => {
     const previousSearchQuery = router.query[QUERY_PARAMS.query_string] as string;
     if (previousSearchQuery && previousSearchQuery.length > 0) {
-      return router.push({ query: { [QUERY_PARAMS.query_string]: previousSearchQuery } });
+      return router.push({
+        query: { [QUERY_PARAMS.query_string]: previousSearchQuery },
+      });
     }
     return router.push({ query: {} });
   };

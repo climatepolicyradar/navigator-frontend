@@ -1,6 +1,6 @@
-import ViewSDKClient from "@api/pdf";
-import { TPassage, TDocumentPage } from "@types";
-import { PDF_SCROLL_DELAY } from "@constants/document";
+import ViewSDKClient from "@/api/pdf";
+import { PDF_SCROLL_DELAY } from "@/constants/document";
+import { TPassage, TDocumentPage } from "@/types";
 
 function generateHighlights(document: TDocumentPage, documentPassageMatches: TPassage[]) {
   const date = new Date();
@@ -65,7 +65,12 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, documentP
     defaultViewMode: "FIT_PAGE",
   };
 
-  const annotationConfig = { showToolbar: false, showCommentsPanel: false, downloadWithAnnotations: true, printWithAnnotations: true };
+  const annotationConfig = {
+    showToolbar: false,
+    showCommentsPanel: false,
+    downloadWithAnnotations: true,
+    printWithAnnotations: true,
+  };
 
   let viewSDKClient = null;
   let embedApi = null;
@@ -122,5 +127,9 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, documentP
     }
   };
 
-  return { createPDFClient, passageIndexChangeHandler, documentMatchesChangeHandler };
+  return {
+    createPDFClient,
+    passageIndexChangeHandler,
+    documentMatchesChangeHandler,
+  };
 }

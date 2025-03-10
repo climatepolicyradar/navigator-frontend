@@ -1,6 +1,5 @@
-import { DocumentMagnifyIcon } from "@components/svg/Icons";
-
-import { MAX_RESULTS } from "@constants/paging";
+import { DocumentMagnifyIcon } from "@/components/svg/Icons";
+import { MAX_RESULTS } from "@/constants/paging";
 
 type TProps = {
   dataAttribute: string;

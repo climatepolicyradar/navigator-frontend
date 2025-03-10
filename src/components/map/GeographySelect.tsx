@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import SuggestList from "@components/filters/SuggestList";
-import { sortData } from "@utils/sorting";
-import { SearchIcon } from "@components/svg/Icons";
+
+import SuggestList from "@/components/filters/SuggestList";
+import { SearchIcon } from "@/components/svg/Icons";
+import { sortData } from "@/utils/sorting";
 
 interface ByTextInputProps {
   title: string;
