@@ -89,6 +89,16 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
     const annotationManagerApi = await adobeViewer.getAnnotationManager();
     annotationManagerApi.setConfig(annotationConfig);
 
+    // adobeViewer.registerCallback(
+    //   window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
+    //   function (event: any) {
+    //     if (event.type === adobeViewer.View.Enum.PDFAnalyticsEvents.PAGE_VIEW) {
+    //       console.log("Current Page: ", event.data.pageNumber);
+    //     }
+    //   },
+    //   {}
+    // );
+
     return {
       viewerApi,
       annotationManagerApi,
