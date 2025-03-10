@@ -93,36 +93,7 @@ export const ConceptsDocumentViewer = ({
       .sort((a, b) => b.count - a.count);
   }, [vespaFamilyData]);
 
-  // const conceptCountsFamily: { conceptKey: string; conceptLabel: string }[] = useMemo(() => {
-  //   const uniqueConceptMap = new Map<string, string>();
-  //   (vespaFamilyData?.families ?? []).forEach((family) => {
-  //     family.hits.forEach((hit) => {
-  //       Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey]) => {
-  //         const conceptId = conceptKey.split(":")[0];
-  //         const conceptLabel = conceptKey.split(":")[1];
-  //         uniqueConceptMap.set(conceptId, conceptLabel);
-  //       });
-  //     });
-  //   });
-
-  //   return Array.from(uniqueConceptMap.entries()).map(([conceptKey, conceptLabel]) => ({ conceptKey, conceptLabel }));
-  // }, [vespaFamilyData]);
-
-  // console.log(conceptCountsFamily);
-
   const canPreview = document.content_type === "application/pdf";
-  const conceptCountsById = useMemo(
-    () =>
-      conceptCounts.reduce(
-        (acc, { conceptKey, count }) => {
-          const conceptId = conceptKey.split(":")[0];
-          acc[conceptId] = count;
-          return acc;
-        },
-        {} as Record<string, number>
-      ),
-    [conceptCounts]
-  );
 
   useEffectOnce(() => {
     const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
@@ -154,24 +125,53 @@ export const ConceptsDocumentViewer = ({
   }, [vespaFamilyData, concepts]);
 
   const documentConcepts = useMemo(() => {
-    const uniqueConceptMap = new Map<string, TConcept>();
+    const uniqueConceptMap = new Map<string, { concept: TConcept; count: number }>();
 
     (vespaDocumentData?.families ?? []).forEach((family) => {
       family.hits.forEach((hit) => {
-        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey]) => {
+        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
           const [conceptId, conceptLabel] = conceptKey.split(":");
           if (!uniqueConceptMap.has(conceptId)) {
             const matchingConcept = concepts.find((concept) => concept.wikibase_id === conceptId);
             if (matchingConcept) {
-              uniqueConceptMap.set(conceptId, matchingConcept);
+              uniqueConceptMap.set(conceptId, { concept: matchingConcept, count });
+            }
+          } else {
+            // If concept already exists, add to its count
+            const existingEntry = uniqueConceptMap.get(conceptId);
+            if (existingEntry) {
+              uniqueConceptMap.set(conceptId, {
+                ...existingEntry,
+                count: existingEntry.count + count,
+              });
             }
           }
         });
       });
     });
 
-    return Array.from(uniqueConceptMap.values());
+    // Transform the map to an array of concepts with their counts
+    const conceptsWithCounts = Array.from(uniqueConceptMap.values()).map(({ concept, count }) => ({
+      ...concept,
+      count,
+    }));
+
+    // Sort by count in descending order
+    return conceptsWithCounts.sort((a, b) => (b.count || 0) - (a.count || 0));
   }, [vespaDocumentData, concepts]);
+
+  // Modify conceptCountsById to use the new documentConcepts structure
+  const documentConceptCountsById = useMemo(
+    () =>
+      documentConcepts.reduce(
+        (acc, concept) => {
+          acc[concept.wikibase_id] = concept.count || 0;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
+    [documentConcepts]
+  );
 
   const selectedConcepts = useMemo(
     () =>
@@ -183,7 +183,8 @@ export const ConceptsDocumentViewer = ({
     [initialConceptFilters, familyConcepts]
   );
 
-  // Check if any initial concept filters are not in the document concepts
+  // Check if any initial concept filters are not in the document concepts (e.g., the concept appears in the family or other documents
+  // but not this one)
   const unavailableConcepts = initialConceptFilters
     ? initialConceptFilters.filter((filter) => !documentConcepts?.some((concept) => concept.preferred_label === filter))
     : [];
@@ -343,9 +344,9 @@ export const ConceptsDocumentViewer = ({
                     <ConceptsPanel
                       rootConcepts={rootConcepts}
                       concepts={documentConcepts}
-                      conceptCountsById={conceptCountsById}
+                      conceptCountsById={documentConceptCountsById}
                       onConceptClick={onConceptClick}
-                      showCounts={false}
+                      showCounts={true}
                     ></ConceptsPanel>
                   )}
 
