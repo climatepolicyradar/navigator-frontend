@@ -29,6 +29,7 @@ type TProps = {
   vespaFamilyData: TSearchResponse;
   vespaDocumentData: TSearchResponse;
   document: TDocumentPage;
+  familySlug: string;
 
   // Callback props for state changes
   onQueryTermChange?: (queryTerm: string) => void;
@@ -54,6 +55,7 @@ export const ConceptsDocumentViewer = ({
   initialPassage = 0,
   initialConceptFilters,
   document,
+  familySlug,
   vespaFamilyData,
   vespaDocumentData,
   onQueryTermChange,
@@ -381,7 +383,7 @@ export const ConceptsDocumentViewer = ({
                       />
                     )}
 
-                    {unavailableConcepts.length > 0 && <UnavailableConcepts unavailableConcepts={unavailableConcepts} />}
+                    {unavailableConcepts.length > 0 && <UnavailableConcepts unavailableConcepts={unavailableConcepts} familySlug={familySlug} />}
                   </>
                 )}
               </div>

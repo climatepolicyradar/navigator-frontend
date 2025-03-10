@@ -380,6 +380,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             initialConceptFilters={conceptFilters}
             vespaFamilyData={vespaFamilyData}
             vespaDocumentData={vespaDocumentData}
+            familySlug={family.slug}
             document={document}
             onQueryTermChange={handleQueryTermChange}
             onExactMatchChange={handleExactMatchChange}
