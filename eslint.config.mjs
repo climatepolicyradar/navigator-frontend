@@ -5,8 +5,6 @@ import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
 import nextPlugin from "@next/eslint-plugin-next";
 import reactHooks from "eslint-plugin-react-hooks";
-import prettierPlugin from "eslint-plugin-prettier";
-import prettierConfig from "eslint-config-prettier";
 
 export default [
   {
@@ -30,7 +28,6 @@ export default [
       "@next/next": nextPlugin,
       import: fixupPluginRules(importPlugin),
       "react-hooks": reactHooks,
-      prettier: prettierPlugin,
     },
 
     languageOptions: {
@@ -64,12 +61,6 @@ export default [
     rules: {
       // Extend Next.js core web vitals rules
       ...nextPlugin.configs["core-web-vitals"].rules,
-
-      // Extend Prettier rules
-      ...prettierConfig.rules,
-
-      // Prettier integration
-      "prettier/prettier": "error",
 
       // TypeScript specific rules
       "@typescript-eslint/no-explicit-any": "warn",
