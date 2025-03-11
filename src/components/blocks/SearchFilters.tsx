@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { ParsedUrlQuery } from "querystring";
 import dynamic from "next/dynamic";
 
-import useGetThemeConfig from "@hooks/useThemeConfig";
+import useGetThemeConfig from "@/hooks/useThemeConfig";
 import { Label } from "@components/labels/Label";
 import { DateRange } from "../filters/DateRange";
 import { Accordian } from "@components/accordian/Accordian";

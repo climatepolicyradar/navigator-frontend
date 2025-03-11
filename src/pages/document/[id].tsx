@@ -7,7 +7,7 @@ import axios from "axios";
 
 import { ApiClient } from "@/api/http-common";
 
-import useSearch from "@hooks/useSearch";
+import useSearch from "@/hooks/useSearch";
 
 import { SingleCol } from "@components/panels/SingleCol";
 import Layout from "@components/layouts/Main";
@@ -48,7 +48,7 @@ import { MAX_PASSAGES } from "@constants/paging";
 import { getFeatureFlags } from "@utils/featureFlags";
 import { fetchAndProcessConcepts } from "@utils/processConcepts";
 import { MultiCol } from "@components/panels/MultiCol";
-import { useEffectOnce } from "@hooks/useEffectOnce";
+import { useEffectOnce } from "@/hooks/useEffectOnce";
 import { ConceptsPanel } from "@components/concepts/ConceptsPanel";
 
 type TProps = {

@@ -14,10 +14,10 @@ import { useEffect, useState, useCallback, useMemo, useReducer } from "react";
 import { SearchSettings } from "@components/filters/SearchSettings";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
-import useSearch from "@hooks/useSearch";
+import useSearch from "@/hooks/useSearch";
 import { ConceptsPanel } from "@components/concepts/ConceptsPanel";
 import { fetchAndProcessConcepts } from "@utils/processConcepts";
-import { useEffectOnce } from "@hooks/useEffectOnce";
+import { useEffectOnce } from "@/hooks/useEffectOnce";
 import Loader from "@components/Loader";
 
 type TProps = {

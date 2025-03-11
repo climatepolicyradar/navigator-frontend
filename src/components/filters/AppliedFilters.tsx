@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 
-import useConfig from "@hooks/useConfig";
-import useGetThemeConfig from "@hooks/useThemeConfig";
+import useConfig from "@/hooks/useConfig";
+import useGetThemeConfig from "@/hooks/useThemeConfig";
 
 import Pill from "@components/Pill";
 

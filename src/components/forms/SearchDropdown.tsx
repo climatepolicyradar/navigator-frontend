@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import useConfig from "@hooks/useConfig";
+import useConfig from "@/hooks/useConfig";
 import { Icon } from "@components/atoms/icon/Icon";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { TGeography } from "@types";

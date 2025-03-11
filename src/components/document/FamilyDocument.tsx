@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { Icon } from "@components/atoms/icon/Icon";
-import useConfig from "@hooks/useConfig";
+import useConfig from "@/hooks/useConfig";
 import { getLanguage } from "@helpers/getLanguage";
 import { TDocumentPage, TLoadingStatus } from "@types";
 import { getDocumentType } from "@helpers/getDocumentType";

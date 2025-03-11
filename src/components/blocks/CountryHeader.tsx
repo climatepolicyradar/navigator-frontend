@@ -1,4 +1,4 @@
-import useConfig from "@hooks/useConfig";
+import useConfig from "@/hooks/useConfig";
 
 import Tooltip from "@components/tooltip";
 import { ExternalLink } from "@components/ExternalLink";

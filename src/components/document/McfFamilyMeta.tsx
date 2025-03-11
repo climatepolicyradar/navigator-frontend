@@ -1,4 +1,4 @@
-import useConfig from "@hooks/useConfig";
+import useConfig from "@/hooks/useConfig";
 
 import { ExternalLink } from "@components/ExternalLink";
 import { CountryLinksAsList } from "@components/CountryLinks";

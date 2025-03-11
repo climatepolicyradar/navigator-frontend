@@ -5,9 +5,9 @@ import { ParsedUrlQueryInput } from "querystring";
 import { useEffect, useRef, useState } from "react";
 import { MdOutlineTune } from "react-icons/md";
 
-import useConfig from "@hooks/useConfig";
-import { useDownloadCsv } from "@hooks/useDownloadCsv";
-import useSearch from "@hooks/useSearch";
+import useConfig from "@/hooks/useConfig";
+import { useDownloadCsv } from "@/hooks/useDownloadCsv";
+import useSearch from "@/hooks/useSearch";
 
 import { MultiCol } from "@components/panels/MultiCol";
 import { SideCol } from "@components/panels/SideCol";
