@@ -61,8 +61,8 @@ printf " -> Created custom app directory for %s: %s\n\n" "${theme}" "${new_dir}"
 read -r -d '' MAIN_CONTENT <<EOM
 
 import React, { FC, ReactNode } from "react";
-import Header from "@components/headers/Main";
-import Footer from "@components/footer/Footer";
+import Header from "@/components/headers/Main";
+import Footer from "@/components/footer/Footer";
 
 type TProps = {
   children?: ReactNode;
@@ -97,7 +97,7 @@ read -r -d '' HOMEPAGE_CONTENT <<EOM
 
 import React from "react";
 // generic layer component
-import Layout from "@components/layouts/LandingPage";
+import Layout from "@/components/layouts/LandingPage";
 
 import Hero from "@${theme}/components/Hero";
 

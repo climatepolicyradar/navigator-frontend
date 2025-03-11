@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
-import { LinkWithQuery } from "@components/LinkWithQuery";
-import { FloatingSearch } from "@components/FloatingSearch";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { FloatingSearch } from "@/components/FloatingSearch";
 
 import { Menu } from "./HeaderComponents/Menu";
 import { Logo } from "./HeaderComponents/Logo";

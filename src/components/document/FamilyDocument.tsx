@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { Icon } from "@components/atoms/icon/Icon";
+import { Icon } from "@/components/atoms/icon/Icon";
 import useConfig from "@hooks/useConfig";
 import { getLanguage } from "@helpers/getLanguage";
 import { TDocumentPage, TLoadingStatus } from "@types";

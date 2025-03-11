@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { ParsedUrlQuery } from "querystring";
 
-import { InputCheck } from "@components/forms/Checkbox";
-import { InputRadio } from "@components/forms/Radio";
+import { InputCheck } from "@/components/forms/Checkbox";
+import { InputRadio } from "@/components/forms/Radio";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 
 import { TCorpusTypeDictionary, TThemeConfig, TThemeConfigFilter } from "@types";
-import { TextInput } from "@components/forms/TextInput";
+import { TextInput } from "@/components/forms/TextInput";
 
 const getTaxonomyAllowedValues = (corporaKey: string, taxonomyKey: string, corpus_types: TCorpusTypeDictionary) => {
   const allowedValues = corpus_types[corporaKey].taxonomy[taxonomyKey]?.allowed_values;

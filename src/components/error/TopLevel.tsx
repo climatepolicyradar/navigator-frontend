@@ -1,6 +1,6 @@
-import { ExternalLink } from "@components/ExternalLink";
-import { Button } from "@components/atoms/button/Button";
-import { Heading } from "@components/typography/Heading";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Button } from "@/components/atoms/button/Button";
+import { Heading } from "@/components/typography/Heading";
 
 type TProps = {
   resetError: () => void;

@@ -5,7 +5,7 @@ import { ParsedUrlQuery } from "querystring";
 import useConfig from "@hooks/useConfig";
 import useGetThemeConfig from "@hooks/useThemeConfig";
 
-import Pill from "@components/Pill";
+import Pill from "@/components/Pill";
 
 import { getCountryName } from "@helpers/getCountryFields";
 import { getConceptName } from "@helpers/getConceptFields";

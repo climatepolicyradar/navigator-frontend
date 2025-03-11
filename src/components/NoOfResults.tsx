@@ -1,4 +1,4 @@
-import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
+import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
 
 import { MAX_RESULTS } from "@constants/paging";
 

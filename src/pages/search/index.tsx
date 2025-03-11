@@ -9,26 +9,26 @@ import useConfig from "@hooks/useConfig";
 import { useDownloadCsv } from "@hooks/useDownloadCsv";
 import useSearch from "@hooks/useSearch";
 
-import { MultiCol } from "@components/panels/MultiCol";
-import { SideCol } from "@components/panels/SideCol";
-import { SingleCol } from "@components/panels/SingleCol";
-import { SiteWidth } from "@components/panels/SiteWidth";
+import { MultiCol } from "@/components/panels/MultiCol";
+import { SideCol } from "@/components/panels/SideCol";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
-import { ExternalLink } from "@components/ExternalLink";
-import Loader from "@components/Loader";
-import { NoOfResults } from "@components/NoOfResults";
-import SearchFilters from "@components/blocks/SearchFilters";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import Drawer from "@components/drawer/Drawer";
-import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
-import { SearchSettings } from "@components/filters/SearchSettings";
-import SearchForm from "@components/forms/SearchForm";
-import Layout from "@components/layouts/Main";
-import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
-import { SubNav } from "@components/nav/SubNav";
-import Pagination from "@components/pagination";
-import SearchResultList from "@components/search/SearchResultList";
-import { Icon } from "@components/atoms/icon/Icon";
+import { ExternalLink } from "@/components/ExternalLink";
+import Loader from "@/components/Loader";
+import { NoOfResults } from "@/components/NoOfResults";
+import SearchFilters from "@/components/blocks/SearchFilters";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Drawer from "@/components/drawer/Drawer";
+import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
+import { SearchSettings } from "@/components/filters/SearchSettings";
+import SearchForm from "@/components/forms/SearchForm";
+import Layout from "@/components/layouts/Main";
+import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
+import { SubNav } from "@/components/nav/SubNav";
+import Pagination from "@/components/pagination";
+import SearchResultList from "@/components/search/SearchResultList";
+import { Icon } from "@/components/atoms/icon/Icon";
 
 import { getThemeConfigLink } from "@utils/getThemeConfigLink";
 import { readConfigFile } from "@utils/readConfigFile";
@@ -38,7 +38,7 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 import { TConcept, TFamilyPage, TTheme, TThemeConfig } from "@types";
 import { getFeatureFlags } from "@utils/featureFlags";
 import { ApiClient } from "@api/http-common";
-import { Button } from "@components/atoms/button/Button";
+import { Button } from "@/components/atoms/button/Button";
 
 type TProps = {
   theme: TTheme;

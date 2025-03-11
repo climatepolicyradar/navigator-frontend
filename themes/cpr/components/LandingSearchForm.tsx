@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
-import { Icon } from "@components/atoms/icon/Icon";
-import { SearchDropdown } from "@components/forms/SearchDropdown";
-import { Button } from "@components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { SearchDropdown } from "@/components/forms/SearchDropdown";
+import { Button } from "@/components/atoms/button/Button";
 
 interface SearchFormProps {
   placeholder?: string;

@@ -1,4 +1,4 @@
-import { ToolTipSSR } from "@components/tooltip/TooltipSSR";
+import { ToolTipSSR } from "@/components/tooltip/TooltipSSR";
 
 import { getCategoryTooltip } from "@helpers/getCategoryTooltip";
 

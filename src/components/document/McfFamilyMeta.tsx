@@ -1,12 +1,12 @@
 import useConfig from "@hooks/useConfig";
 
-import { ExternalLink } from "@components/ExternalLink";
-import { CountryLinksAsList } from "@components/CountryLinks";
+import { ExternalLink } from "@/components/ExternalLink";
+import { CountryLinksAsList } from "@/components/CountryLinks";
 
 import { mapFamilyMetadata } from "@helpers/mapFamilyMetadata";
 
 import { TConcept, TFamilyMetadata, TMCFFamilyMetadata } from "@types";
-import { LinkWithQuery } from "@components/LinkWithQuery";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 
 interface MetadataItemProps {
   label: string;
