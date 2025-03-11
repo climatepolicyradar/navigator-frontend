@@ -17,7 +17,7 @@ import { FilterOptions } from "./FilterOptions";
 import { currentYear, minYear } from "@constants/timedate";
 import { QUERY_PARAMS } from "@constants/queryParams";
 
-import { getCountriesFromRegions } from "@helpers/getCountriesFromRegions";
+import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 
 import { canDisplayFilter } from "@utils/canDisplayFilter";
 import { getFilterLabel } from "@utils/getFilterLabel";

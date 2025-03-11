@@ -30,9 +30,9 @@ import { SubNav } from "@/components/nav/SubNav";
 import { Heading } from "@/components/typography/Heading";
 
 import { truncateString } from "@utils/truncateString";
-import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
-import { getCorpusInfo } from "@helpers/getCorpusInfo";
-import { getMainDocuments } from "@helpers/getMainDocuments";
+import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
+import { getCorpusInfo } from "@/helpers/getCorpusInfo";
+import { getMainDocuments } from "@/helpers/getMainDocuments";
 
 import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { pluralise } from "@utils/pluralise";

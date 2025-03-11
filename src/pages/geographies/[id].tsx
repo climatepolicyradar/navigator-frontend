@@ -25,7 +25,7 @@ import { Alert } from "@/components/Alert";
 import { SubNav } from "@/components/nav/SubNav";
 import { Heading } from "@/components/typography/Heading";
 
-import { getCountryCode } from "@helpers/getCountryFields";
+import { getCountryCode } from "@/helpers/getCountryFields";
 
 import { extractNestedData } from "@utils/extractNestedData";
 import { sortFilterTargets } from "@utils/sortFilterTargets";

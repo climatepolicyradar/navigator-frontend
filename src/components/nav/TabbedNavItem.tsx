@@ -1,6 +1,6 @@
 import { ToolTipSSR } from "@/components/tooltip/TooltipSSR";
 
-import { getCategoryTooltip } from "@helpers/getCategoryTooltip";
+import { getCategoryTooltip } from "@/helpers/getCategoryTooltip";
 
 import { TDocumentCategory } from "@types";
 
