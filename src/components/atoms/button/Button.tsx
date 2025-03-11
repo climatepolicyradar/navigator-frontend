@@ -1,3 +1,4 @@
+import { joinTailwindClasses } from "@/utils/tailwind";
 import { useMemo } from "react";
 
 interface ButtonClassArgs {
@@ -49,7 +50,7 @@ export const getButtonClasses = ({
 
   /* Shape */
 
-  const border = variant === "outlined" ? "border border-border-grey" : "";
+  const border = variant === "outlined" ? "border border-border-light" : "";
   const outlineColor = color === "brand" ? "outline-surface-brand-dark" : "outline-surface-mono-dark";
   const roundness = rounded ? "rounded-full" : "rounded-md";
 
@@ -75,7 +76,7 @@ export const getButtonClasses = ({
 
   const cursor = disabled ? "pointer-events-none" : "";
 
-  return [baseClasses, layout, sizing, bgColor, border, outlineColor, roundness, textColor, cursor, className].filter((classes) => classes).join(" ");
+  return joinTailwindClasses([baseClasses, layout, sizing, bgColor, border, outlineColor, roundness, textColor, cursor, className]);
 };
 
 export const Button = ({
