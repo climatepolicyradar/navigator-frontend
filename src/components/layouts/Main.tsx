@@ -9,7 +9,7 @@ import { getPageDescription } from "@utils/getPageDescription";
 import { getPageTitle } from "@utils/getPageTitle";
 import { getCanonicalUrl } from "@utils/getCanonicalUrl";
 
-import { TTheme, TThemeConfig } from "@types";
+import { TTheme, TThemeConfig } from "@/types";
 import dynamic from "next/dynamic";
 
 const Wrapper = dynamic<{ children: ReactNode }>(() => import(`/themes/${process.env.THEME}/layouts/main`));

@@ -1,4 +1,4 @@
-import { TCorpusTypeDictionary } from "@types";
+import { TCorpusTypeDictionary } from "@/types";
 
 export const calculateTotalFamilies = (corpus_types: TCorpusTypeDictionary) => {
   const totals = {

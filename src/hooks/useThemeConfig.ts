@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { getFilters } from "../api/http-common";
 
-import { TThemeConfig } from "@types";
+import { TThemeConfig } from "@/types";
 
 export default function useGetThemeConfig() {
   const [status, setStatus] = useState("idle");

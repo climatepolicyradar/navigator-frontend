@@ -7,7 +7,7 @@ import { getPageDescription } from "@utils/getPageDescription";
 import { getPageTitle } from "@utils/getPageTitle";
 import { getCanonicalUrl } from "@utils/getCanonicalUrl";
 
-import { TTheme, TThemeConfig } from "@types";
+import { TTheme, TThemeConfig } from "@/types";
 
 type TProps = {
   title?: string;

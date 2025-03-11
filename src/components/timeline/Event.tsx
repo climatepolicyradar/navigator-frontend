@@ -1,4 +1,4 @@
-import { TEvent } from "@types";
+import { TEvent } from "@/types";
 import { convertDate } from "@utils/timedate";
 
 interface EventProps {

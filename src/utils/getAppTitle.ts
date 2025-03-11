@@ -1,4 +1,4 @@
-import { TTheme } from "@types";
+import { TTheme } from "@/types";
 
 const DEFAULT_APP_NAME = "Climate Policy Radar";
 

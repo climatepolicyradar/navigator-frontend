@@ -1,5 +1,5 @@
 import { FC, ReactNode } from "react";
-import { TFamily } from "@types";
+import { TFamily } from "@/types";
 
 import { LinkWithQuery } from "@components/LinkWithQuery";
 import { FamilyMeta } from "./FamilyMeta";

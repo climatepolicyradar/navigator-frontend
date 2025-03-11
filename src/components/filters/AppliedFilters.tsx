@@ -13,7 +13,7 @@ import { getConceptName } from "@/helpers/getConceptFields";
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { sortOptions } from "@constants/sortOptions";
 
-import { TConcept, TGeography, TThemeConfig } from "@types";
+import { TConcept, TGeography, TThemeConfig } from "@/types";
 
 type TFilterChange = (type: string, value: string) => void;
 

@@ -11,7 +11,7 @@ import GeographySelect from "./GeographySelect";
 import { ZoomControls } from "./ZoomControls";
 import { Legend } from "./Legend";
 
-import { TGeography } from "@types";
+import { TGeography } from "@/types";
 
 import { GEO_EU_COUNTRIES } from "@constants/mapEUCountries";
 import { GEO_CENTER_POINTS } from "@constants/mapCentres";
