@@ -28,7 +28,7 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = nul
   // Ensure the instance of the PDF client is not reset on re-render
   // otherwise we lose the ability to interact with the pdf
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const { changePage, addAnnotations } = useMemo(() => pdfPreview, [document, adobeKey]);
+  const { changePage, registerPassages } = useMemo(() => pdfPreview, [document, adobeKey]);
 
   useEffect(() => {
     changePage(passageIndex, documentPassageMatches);
@@ -36,13 +36,13 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = nul
 
   useEffect(() => {
     setIsLoading(true);
-    addAnnotations(documentPassageMatches, startingPassageIndex).finally(() => {
+    registerPassages(documentPassageMatches, startingPassageIndex).finally(() => {
       setIsLoading(false);
     });
-  }, [addAnnotations, documentPassageMatches, startingPassageIndex]);
+  }, [registerPassages, documentPassageMatches, startingPassageIndex]);
 
   useEffect(() => {
-    if (searchStatus === "loading") {
+    if (searchStatus === "loading" || isLoading) {
       return setIsLoading(true);
     }
     setIsLoading(false);
