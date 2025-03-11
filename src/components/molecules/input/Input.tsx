@@ -1,7 +1,8 @@
 import { Input as BaseInput } from "@base-ui-components/react";
+import { Dispatch, SetStateAction, useMemo } from "react";
+
 import { Icon, IconName, iconNames } from "@/components/atoms/icon/Icon";
 import { joinTailwindClasses } from "@/utils/tailwind";
-import { Dispatch, SetStateAction, useMemo } from "react";
 
 interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
   clearable?: boolean;
