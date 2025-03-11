@@ -1,6 +1,6 @@
 import { McfFamilyMeta } from "@components/document/McfFamilyMeta";
 import { DocumentMeta } from "../DocumentMeta";
-import { getApprovedYearFromEvents } from "@helpers/getApprovedYearFromEvents";
+import { getApprovedYearFromEvents } from "@/helpers/getApprovedYearFromEvents";
 
 export const MULTILATERALCLIMATEFUNDSCATEGORY = "MCF";
 

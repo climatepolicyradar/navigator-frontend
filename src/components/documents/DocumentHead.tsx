@@ -13,7 +13,7 @@ import { Alert } from "@components/Alert";
 import { ExternalLink } from "@components/ExternalLink";
 import { Heading } from "@components/typography/Heading";
 
-import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
+import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { truncateString } from "@utils/truncateString";
 
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
