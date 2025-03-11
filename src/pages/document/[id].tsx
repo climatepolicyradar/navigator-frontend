@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
 import axios from "axios";
 
-import { ApiClient } from "@api/http-common";
+import { ApiClient } from "@/api/http-common";
 
 import useSearch from "@hooks/useSearch";
 
