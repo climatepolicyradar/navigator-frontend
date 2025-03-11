@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { ExternalLink } from "@components/ExternalLink";
+import { ExternalLink } from "@/components/ExternalLink";
 
 const partners = [
   {

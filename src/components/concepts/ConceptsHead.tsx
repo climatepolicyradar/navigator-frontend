@@ -1,7 +1,7 @@
-import { ExternalLink } from "@components/ExternalLink";
-import { Heading } from "@components/typography/Heading";
-import { Label } from "@components/labels/Label";
-import { Quote } from "@components/typography/Quote";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Heading } from "@/components/typography/Heading";
+import { Label } from "@/components/labels/Label";
+import { Quote } from "@/components/typography/Quote";
 
 export const ConceptsHead = () => {
   return (

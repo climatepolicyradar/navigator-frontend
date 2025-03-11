@@ -1,14 +1,14 @@
 import { Fragment } from "react";
 
-import Layout from "@components/layouts/Main";
-import { SiteWidth } from "@components/panels/SiteWidth";
-import { SingleCol } from "@components/panels/SingleCol";
-import { SubNav } from "@components/nav/SubNav";
+import Layout from "@/components/layouts/Main";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SubNav } from "@/components/nav/SubNav";
 
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { AccordianItem } from "@cclw/components/AccordianItem";
 
-import { Heading } from "@components/typography/Heading";
+import { Heading } from "@/components/typography/Heading";
 
 import { FAQS } from "@cclw/constants/faqs";
 

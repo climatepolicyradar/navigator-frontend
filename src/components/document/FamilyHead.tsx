@@ -1,6 +1,6 @@
 import { Fragment, useState } from "react";
 
-import { Heading } from "@components/typography/Heading";
+import { Heading } from "@/components/typography/Heading";
 import { TFamilyPage } from "@types";
 
 import { MetadataRenderer } from "./renderers/MetadataRenderer";

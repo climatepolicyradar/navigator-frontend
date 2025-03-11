@@ -9,30 +9,30 @@ import { ApiClient } from "@/api/http-common";
 
 import useSearch from "@hooks/useSearch";
 
-import { SingleCol } from "@components/panels/SingleCol";
-import Layout from "@components/layouts/Main";
-import { Timeline } from "@components/timeline/Timeline";
-import { Event } from "@components/timeline/Event";
-import { FamilyHead } from "@components/document/FamilyHead";
-import { FamilyDocument } from "@components/document/FamilyDocument";
-import { ExternalLink } from "@components/ExternalLink";
-import { Targets } from "@components/Targets";
-import { ShowHide } from "@components/controls/ShowHide";
-import { Divider } from "@components/dividers/Divider";
-import { Icon } from "@components/atoms/icon/Icon";
-import { Button } from "@components/atoms/button/Button";
-import { LinkWithQuery } from "@components/LinkWithQuery";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import Tooltip from "@components/tooltip";
-import DocumentSearchForm from "@components/forms/DocumentSearchForm";
-import { Alert } from "@components/Alert";
-import { SubNav } from "@components/nav/SubNav";
-import { Heading } from "@components/typography/Heading";
+import { SingleCol } from "@/components/panels/SingleCol";
+import Layout from "@/components/layouts/Main";
+import { Timeline } from "@/components/timeline/Timeline";
+import { Event } from "@/components/timeline/Event";
+import { FamilyHead } from "@/components/document/FamilyHead";
+import { FamilyDocument } from "@/components/document/FamilyDocument";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Targets } from "@/components/Targets";
+import { ShowHide } from "@/components/controls/ShowHide";
+import { Divider } from "@/components/dividers/Divider";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { Button } from "@/components/atoms/button/Button";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Tooltip from "@/components/tooltip";
+import DocumentSearchForm from "@/components/forms/DocumentSearchForm";
+import { Alert } from "@/components/Alert";
+import { SubNav } from "@/components/nav/SubNav";
+import { Heading } from "@/components/typography/Heading";
 
 import { truncateString } from "@utils/truncateString";
-import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
-import { getCorpusInfo } from "@helpers/getCorpusInfo";
-import { getMainDocuments } from "@helpers/getMainDocuments";
+import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
+import { getCorpusInfo } from "@/helpers/getCorpusInfo";
+import { getMainDocuments } from "@/helpers/getMainDocuments";
 
 import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { pluralise } from "@utils/pluralise";
@@ -47,9 +47,9 @@ import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
 import { MAX_PASSAGES } from "@constants/paging";
 import { getFeatureFlags } from "@utils/featureFlags";
 import { fetchAndProcessConcepts } from "@utils/processConcepts";
-import { MultiCol } from "@components/panels/MultiCol";
+import { MultiCol } from "@/components/panels/MultiCol";
 import { useEffectOnce } from "@hooks/useEffectOnce";
-import { ConceptsPanel } from "@components/concepts/ConceptsPanel";
+import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
 
 type TProps = {
   page: TFamilyPage;
