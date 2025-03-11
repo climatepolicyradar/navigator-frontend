@@ -8,7 +8,7 @@ import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Feedback } from "./Feedback";
 import MENU_LINKS from "../constants/menuLinks";
 
-import GRI_LINKS, { TLinkItem } from "@cclw/constants/griLinks";
+import GRI_LINKS, { TLinkItem } from "@/cclw/constants/griLinks";
 
 const Footer = () => {
   const renderLink = (item: TLinkItem) => {

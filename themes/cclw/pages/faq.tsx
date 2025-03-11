@@ -6,11 +6,11 @@ import { SingleCol } from "@/components/panels/SingleCol";
 import { SubNav } from "@/components/nav/SubNav";
 
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
-import { AccordianItem } from "@cclw/components/AccordianItem";
+import { AccordianItem } from "@/cclw/components/AccordianItem";
 
 import { Heading } from "@/components/typography/Heading";
 
-import { FAQS } from "@cclw/constants/faqs";
+import { FAQS } from "@/cclw/constants/faqs";
 
 const FAQ = () => {
   return (

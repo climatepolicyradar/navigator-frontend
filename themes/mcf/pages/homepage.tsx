@@ -2,8 +2,16 @@ import React from "react";
 
 import Layout from "@/components/layouts/LandingPage";
 
-import { Header, Footer, Hero, ClimatePolicyRadarBanner, AboutTheFunds, ContextualSearchContent, AboutClimateProjectExplorer } from "@mcf/components";
-import { PAGE_DESCRIPTION, APP_NAME } from "@mcf/constants/pageMetadata";
+import {
+  Header,
+  Footer,
+  Hero,
+  ClimatePolicyRadarBanner,
+  AboutTheFunds,
+  ContextualSearchContent,
+  AboutClimateProjectExplorer,
+} from "@/mcf/components";
+import { PAGE_DESCRIPTION, APP_NAME } from "@/mcf/constants/pageMetadata";
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;

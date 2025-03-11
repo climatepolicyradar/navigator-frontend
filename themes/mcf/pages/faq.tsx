@@ -8,7 +8,7 @@ import { SingleCol } from "@/components/panels/SingleCol";
 import { SubNav } from "@/components/nav/SubNav";
 import { Heading } from "@/components/typography/Heading";
 
-import { FAQS, PLATFORMFAQS } from "@mcf/constants/faqs";
+import { FAQS, PLATFORMFAQS } from "@/mcf/constants/faqs";
 import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
 
 const ACCORDIANMAXHEIGHT = "464px";

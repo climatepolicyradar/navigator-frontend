@@ -99,7 +99,7 @@ import React from "react";
 // generic layer component
 import Layout from "@/components/layouts/LandingPage";
 
-import Hero from "@${theme}/components/Hero";
+import Hero from "@/${theme}/components/Hero";
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;

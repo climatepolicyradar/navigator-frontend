@@ -5,16 +5,16 @@ import Layout from "@/components/layouts/LandingPage";
 import { FullWidth } from "@/components/panels/FullWidth";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 
-import Header from "@cclw/components/Header";
-import Footer from "@cclw/components/Footer";
-import { Hero } from "@cclw/components/Hero";
-import { Articles } from "@cclw/components/Articles";
-import { Partners } from "@cclw/components/Partners";
-import { PoweredBy } from "@cclw/components/PoweredBy";
-import { FeatureDiscover } from "@cclw/components/FeatureDiscover";
-import { HelpUs } from "@cclw/components/HelpUs";
-import { FeatureSearch } from "@cclw/components/FeatureSearch";
-import { PAGE_DESCRIPTION, APP_NAME } from "@cclw/constants/pageMetadata";
+import Header from "@/cclw/components/Header";
+import Footer from "@/cclw/components/Footer";
+import { Hero } from "@/cclw/components/Hero";
+import { Articles } from "@/cclw/components/Articles";
+import { Partners } from "@/cclw/components/Partners";
+import { PoweredBy } from "@/cclw/components/PoweredBy";
+import { FeatureDiscover } from "@/cclw/components/FeatureDiscover";
+import { HelpUs } from "@/cclw/components/HelpUs";
+import { FeatureSearch } from "@/cclw/components/FeatureSearch";
+import { PAGE_DESCRIPTION, APP_NAME } from "@/cclw/constants/pageMetadata";
 import { Heading } from "@/components/typography/Heading";
 
 const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {

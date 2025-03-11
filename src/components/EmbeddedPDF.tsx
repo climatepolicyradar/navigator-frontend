@@ -1,7 +1,7 @@
 import { useRef, useState, useMemo, useEffect, useContext } from "react";
 import Script from "next/script";
 
-import { AdobeContext } from "@context/AdobeContext";
+import { AdobeContext } from "@/context/AdobeContext";
 
 import usePDFPreview from "@/hooks/usePDFPreview";
 
