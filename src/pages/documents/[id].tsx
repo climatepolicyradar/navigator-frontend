@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
 import { MdOutlineTune } from "react-icons/md";
 
-import { ApiClient } from "@api/http-common";
+import { ApiClient } from "@/api/http-common";
 
 import useSearch from "@hooks/useSearch";
 

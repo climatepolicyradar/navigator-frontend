@@ -18,7 +18,7 @@
     "baseUrl": "",
     "types": ["node", "vitest/globals"],
     "paths": {
-      "@api/*": ["src/api/*"],
+      "@/api/*": ["src/api/*"],
       "@components/*": ["src/components/*"],
       "@/constants/*": ["src/constants/*"],
       "@context/*": ["src/context/*"],
