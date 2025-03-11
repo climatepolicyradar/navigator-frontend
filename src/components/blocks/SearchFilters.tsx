@@ -1,6 +1,7 @@
 import { ParsedUrlQuery } from "querystring";
 
 import dynamic from "next/dynamic";
+import { useEffect, useMemo, useState } from "react";
 
 import Loader from "@/components/Loader";
 import { Accordian } from "@/components/accordian/Accordian";

@@ -8,6 +8,8 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { sortOptions } from "@/constants/sortOptions";
 import { getConceptName } from "@/helpers/getConceptFields";
 import { getCountryName } from "@/helpers/getCountryFields";
+import useConfig from "@/hooks/useConfig";
+import useGetThemeConfig from "@/hooks/useThemeConfig";
 import { TConcept, TGeography, TThemeConfig } from "@/types";
 
 type TFilterChange = (type: string, value: string) => void;

@@ -4,8 +4,8 @@ import { Icon } from "@/components/atoms/icon/Icon";
 import DropdownMenuItem from "@/components/menus/DropdownMenuItem";
 import DropdownMenuWrapper from "@/components/menus/DropdownMenuWrapper";
 import useOutsideAlerter from "@/hooks/useOutsideAlerter";
-
-import menuLinks from "../../constants/menuLinks";
+import { colors } from "@/mcf/constants/colors";
+import menuLinks from "@/mcf/constants/menuLinks";
 
 export const Menu = () => {
   const [showMenu, setShowMenu] = useState(false);

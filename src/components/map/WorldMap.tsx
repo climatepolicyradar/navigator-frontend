@@ -12,6 +12,7 @@ import { TGeography } from "@/types";
 
 import GeographySelect from "./GeographySelect";
 import { Legend } from "./Legend";
+import { ZoomControls } from "./ZoomControls";
 
 const geoUrl = "/data/map/world-countries-50m.json";
 
