@@ -1,6 +1,6 @@
 import useConfig from "@hooks/useConfig";
 
-import { getLanguage } from "@helpers/getLanguage";
+import { getLanguage } from "@/helpers/getLanguage";
 import { CountryLinks } from "@components/CountryLinks";
 import { convertDate } from "@utils/timedate";
 

@@ -7,8 +7,8 @@ import useGetThemeConfig from "@hooks/useThemeConfig";
 
 import Pill from "@components/Pill";
 
-import { getCountryName } from "@helpers/getCountryFields";
-import { getConceptName } from "@helpers/getConceptFields";
+import { getCountryName } from "@/helpers/getCountryFields";
+import { getConceptName } from "@/helpers/getConceptFields";
 
 import { QUERY_PARAMS } from "@constants/queryParams";
 import { sortOptions } from "@constants/sortOptions";

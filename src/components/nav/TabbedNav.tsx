@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import TabbedNavItem from "./TabbedNavItem";
 
-import { getCategoryTooltip } from "@helpers/getCategoryTooltip";
+import { getCategoryTooltip } from "@/helpers/getCategoryTooltip";
 
 import { TDocumentCategory } from "@types";
 
