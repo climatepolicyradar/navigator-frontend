@@ -7,12 +7,12 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import "../styles/flag-icons.css";
 import "../styles/main.css";
 
-import { ThemeContext } from "@context/ThemeContext";
-import { AdobeContext } from "@context/AdobeContext";
+import { ThemeContext } from "@/context/ThemeContext";
+import { AdobeContext } from "@/context/AdobeContext";
 
 import { CookieConsent } from "@/components/cookies/CookieConsent";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
-import { PostHogProvider } from "@context/PostHogProvider";
+import { PostHogProvider } from "@/context/PostHogProvider";
 
 const favicon = `/images/favicon/${process.env.THEME}.png`;
 

@@ -2,7 +2,7 @@ import React, { FC, ReactNode, useContext } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
-import { ThemeContext } from "@context/ThemeContext";
+import { ThemeContext } from "@/context/ThemeContext";
 
 import { getAppTitle } from "@/utils/getAppTitle";
 import { getPageDescription } from "@/utils/getPageDescription";

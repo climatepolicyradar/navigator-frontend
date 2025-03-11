@@ -21,7 +21,7 @@
       "@/api/*": ["src/api/*"],
       "@/components/*": ["src/components/*"],
       "@/constants/*": ["src/constants/*"],
-      "@context/*": ["src/context/*"],
+      "@/context/*": ["src/context/*"],
       "@/helpers/*": ["src/helpers/*"],
       "@/hooks/*": ["src/hooks/*"],
       "@/interfaces/*": ["src/interfaces/*"],
