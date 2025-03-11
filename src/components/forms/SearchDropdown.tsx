@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
-import useConfig from "@hooks/useConfig";
-import { Icon } from "@components/atoms/icon/Icon";
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { TGeography } from "@types";
-import { systemGeoCodes } from "@constants/systemGeos";
+
+import { Icon } from "@/components/atoms/icon/Icon";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { systemGeoCodes } from "@/constants/systemGeos";
+import useConfig from "@/hooks/useConfig";
+import { TGeography } from "@/types";
 
 type TProps = {
   show: boolean;

@@ -1,5 +1,5 @@
-import { ExternalLink } from "@components/ExternalLink";
-import { Icon } from "@components/atoms/icon/Icon";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Icon } from "@/components/atoms/icon/Icon";
 
 export const GSTBanner = () => {
   return (

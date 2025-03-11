@@ -3,33 +3,28 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { MdOutlineTune } from "react-icons/md";
-
 import { ApiClient } from "@api/http-common";
+import useSearch from "@/hooks/useSearch";
 
-import useSearch from "@hooks/useSearch";
-
-import { FullWidth } from "@components/panels/FullWidth";
-
-import Layout from "@components/layouts/Main";
-import EmbeddedPDF from "@components/EmbeddedPDF";
-import PassageMatches from "@components/PassageMatches";
-import Loader from "@components/Loader";
-import SearchForm from "@components/forms/SearchForm";
-import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
-import { DocumentHead } from "@components/documents/DocumentHead";
-import { EmptyPassages } from "@components/documents/EmptyPassages";
-import { EmptyDocument } from "@components/documents/EmptyDocument";
-import { SearchSettings } from "@components/filters/SearchSettings";
-
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { getDocumentDescription } from "@constants/metaDescriptions";
-import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
-import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
-
-import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@types";
-import { getFeatureFlags } from "@utils/featureFlags";
-import { ConceptsDocumentViewer } from "@components/documents/ConceptsDocumentViewer";
-import { getMatchedPassagesFromSearch } from "@utils/getMatchedPassagesFromFamiy";
+import { FullWidth } from "@/components/panels/FullWidth";
+import Layout from "@/components/layouts/Main";
+import EmbeddedPDF from "@/components/EmbeddedPDF";
+import PassageMatches from "@/components/PassageMatches";
+import Loader from "@/components/Loader";
+import SearchForm from "@/components/forms/SearchForm";
+import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
+import { DocumentHead } from "@/components/documents/DocumentHead";
+import { EmptyPassages } from "@/components/documents/EmptyPassages";
+import { EmptyDocument } from "@/components/documents/EmptyDocument";
+import { SearchSettings } from "@/components/filters/SearchSettings";
+import { getDocumentDescription } from "@/constants/metaDescriptions";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { EXAMPLE_SEARCHES } from "@/constants/exampleSearches";
+import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
+import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@/types";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
+import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamiy";
 
 type TProps = {
   document: TDocumentPage;

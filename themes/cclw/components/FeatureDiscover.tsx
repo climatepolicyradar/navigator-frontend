@@ -1,10 +1,9 @@
 import { ExternalLink } from "@/components/ExternalLink";
+import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { getButtonClasses } from "@/components/atoms/button/Button";
 import { getButtonClasses } from "@/components/buttons/Button";
-
-import { getButtonClasses } from "@components/atoms/button/Button";
-import { LinkWithQuery } from "@components/LinkWithQuery";
-import { ExternalLink } from "@components/ExternalLink";
 
 export const FeatureDiscover = () => (
   <Feature heading="Central knowledge-base for climate policy data" image="app_search_results.jpg" imageAlt="Screenshot of the search results">

@@ -56,7 +56,7 @@ export const getButtonClasses = ({
   /* Size */
 
   const isIcon = content === "icon";
-  let layout = content === "both" ? "gap-2" : "";
+  const layout = content === "both" ? "gap-2" : "";
   let sizing = "";
 
   switch (size) {

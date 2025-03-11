@@ -1,9 +1,9 @@
-import { Button } from "@components/atoms/button/Button";
-import { setFeatureFlags } from "@utils/featureFlags";
 import { usePostHog } from "posthog-js/react";
 import { useEffect } from "react";
 
+import { Button } from "@/components/atoms/button/Button";
 import Button from "@/components/buttons/Button";
+import { setFeatureFlags } from "@/utils/featureFlags";
 import { setFeatureFlags } from "@/utils/featureFlags";
 
 export default function FeatureFlags() {

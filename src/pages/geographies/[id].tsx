@@ -1,8 +1,6 @@
 import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { useState } from "react";
-
 import { ApiClient } from "@api/http-common";
 
 import { SiteWidth } from "@components/panels/SiteWidth";
@@ -36,6 +34,7 @@ import { systemGeoNames } from "@constants/systemGeos";
 
 import { TGeographyStats, TGeographySummary, TThemeConfig } from "@types";
 import { TTarget, TEvent, TGeography, TTheme } from "@types";
+`import { useState } from "react";
 
 type TProps = {
   geography: TGeographyStats;

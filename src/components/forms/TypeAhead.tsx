@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 
+import { Icon } from "@/components/atoms/icon/Icon";
 import { Search2Icon } from "@/components/svg/Icons";
 import { sortData } from "@/utils/sorting";
-
-import { sortData } from "@utils/sorting";
-import { Icon } from "@components/atoms/icon/Icon";
+import { sortData } from "@/utils/sorting";
 
 type TProps = {
   list: Object[];

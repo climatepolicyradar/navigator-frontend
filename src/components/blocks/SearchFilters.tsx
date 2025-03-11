@@ -1,27 +1,25 @@
 import { ParsedUrlQuery } from "querystring";
+
 import dynamic from "next/dynamic";
 
-import useGetThemeConfig from "@hooks/useThemeConfig";
-import { Label } from "@components/labels/Label";
-import { DateRange } from "../filters/DateRange";
-import { Accordian } from "@components/accordian/Accordian";
-import { InputListContainer } from "@components/filters/InputListContainer";
-import { TypeAhead } from "../forms/TypeAhead";
-import { InputCheck } from "@components/forms/Checkbox";
-import { InputRadio } from "@components/forms/Radio";
-import { AppliedFilters } from "@components/filters/AppliedFilters";
-import Loader from "@components/Loader";
+import Loader from "@/components/Loader";
+import { Accordian } from "@/components/accordian/Accordian";
+import { AppliedFilters } from "@/components/filters/AppliedFilters";
+import { InputListContainer } from "@/components/filters/InputListContainer";
+import { InputCheck } from "@/components/forms/Checkbox";
+import { InputRadio } from "@/components/forms/Radio";
+import { Label } from "@/components/labels/Label";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { currentYear, minYear } from "@/constants/timedate";
+import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
+import useGetThemeConfig from "@/hooks/useThemeConfig";
+import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
+import { canDisplayFilter } from "@/utils/canDisplayFilter";
+import { getFilterLabel } from "@/utils/getFilterLabel";
+
 import { FilterOptions } from "./FilterOptions";
-
-import { currentYear, minYear } from "@constants/timedate";
-import { QUERY_PARAMS } from "@constants/queryParams";
-
-import { getCountriesFromRegions } from "@helpers/getCountriesFromRegions";
-
-import { canDisplayFilter } from "@utils/canDisplayFilter";
-import { getFilterLabel } from "@utils/getFilterLabel";
-
-import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@types";
+import { DateRange } from "../filters/DateRange";
+import { TypeAhead } from "../forms/TypeAhead";
 
 const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/components/MethodologyLink`));
 

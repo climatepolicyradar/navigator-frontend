@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
-import { Icon } from "@components/atoms/icon/Icon";
-import useConfig from "@hooks/useConfig";
-import { getLanguage } from "@helpers/getLanguage";
-import { TDocumentPage, TLoadingStatus } from "@types";
-import { getDocumentType } from "@helpers/getDocumentType";
+
+import { Icon } from "@/components/atoms/icon/Icon";
+import { getDocumentType } from "@/helpers/getDocumentType";
+import { getLanguage } from "@/helpers/getLanguage";
+import useConfig from "@/hooks/useConfig";
+import { TDocumentPage, TLoadingStatus } from "@/types";
 
 type TProps = {
   document: TDocumentPage;

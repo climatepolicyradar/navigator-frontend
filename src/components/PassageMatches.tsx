@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 import { TPassage } from "@/types";
+import { TPassage } from "@/types";
 
 import Loader from "./Loader";
-import { TPassage } from "@types";
 import { Icon } from "./atoms/icon/Icon";
 
 type TProps = {

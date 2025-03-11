@@ -1,7 +1,8 @@
-import { ExternalLink } from "@components/ExternalLink";
-import { Heading } from "@components/typography/Heading";
-import { TConcept } from "@types";
-import { getConceptStoreLink } from "@utils/getConceptStoreLink";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Heading } from "@/components/typography/Heading";
+import { TConcept } from "@/types";
+import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
+
 import { Popover } from "./Popover";
 
 type TProps = {

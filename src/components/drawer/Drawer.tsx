@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
-import { Icon } from "@components/atoms/icon/Icon";
-import { Button } from "@components/atoms/button/Button";
+
+import { Button } from "@/components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
 
 interface SlideoutProps {
   children: JSX.Element | string;
