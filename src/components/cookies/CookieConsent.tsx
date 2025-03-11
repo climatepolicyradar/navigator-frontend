@@ -13,8 +13,10 @@ import dynamic from "next/dynamic";
 const ThemeAnalytics = dynamic<{ enableAnalytics: boolean }>(() => import(`/themes/${process.env.THEME}/components/Analytics`));
 
 declare let gtag: Function;
-
-export const CookieConsent = () => {
+type Props = {
+  onConsentChange: (consent: boolean) => void;
+};
+export const CookieConsent = ({ onConsentChange }: Props) => {
   const [hide, setHide] = useState(true);
   const [enableAnalytics, setEnableAnalytics] = useState(false);
 
@@ -34,7 +36,8 @@ export const CookieConsent = () => {
         ad_personalization: "granted",
       });
     }
-  }, [enableAnalytics]);
+    onConsentChange(enableAnalytics);
+  }, [enableAnalytics, onConsentChange]);
 
   const cookiesAcceptHandler = () => {
     setCookie(COOKIE_CONSENT_NAME, "true", getDomain());

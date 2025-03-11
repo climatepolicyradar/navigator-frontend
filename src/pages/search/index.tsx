@@ -168,8 +168,13 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
       }
     }
 
+    // If we are changing the fund or func document type for MCFs, clear non-applicable filters
     if (type === QUERY_PARAMS.fund) {
       delete router.query[QUERY_PARAMS.implementing_agency];
+    }
+    if (type === QUERY_PARAMS.fund_doc_type) {
+      delete router.query[QUERY_PARAMS.implementing_agency];
+      delete router.query[QUERY_PARAMS.status];
     }
 
     if (type === QUERY_PARAMS.concept_name) {
@@ -410,7 +415,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
           <div className="flex items-center justify-center w-full mt-4">
             <Button content="both" className="mt-2 flex-nowrap md:hidden" onClick={toggleFilters}>
               <span>{showFilters ? "Hide" : "Show"} filters</span>
-              <div className={showFilters && "rotate-180"}>
+              <div className={showFilters ? "rotate-180" : ""}>
                 <Icon name="downChevron" />
               </div>
             </Button>

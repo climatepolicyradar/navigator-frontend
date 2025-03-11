@@ -11,7 +11,7 @@ interface ButtonClassArgs {
   variant?: "solid" | "faded" | "outlined" | "ghost";
 }
 
-type ButtonProps = ButtonClassArgs & React.ButtonHTMLAttributes<HTMLButtonElement>;
+type ButtonProps = ButtonClassArgs & React.ComponentProps<"button">;
 
 export const getButtonClasses = ({
   className,
