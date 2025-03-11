@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { LuMoveUpRight } from "react-icons/lu";
 
-import useConfig from "@hooks/useConfig";
+import useConfig from "@/hooks/useConfig";
 
 import { SiteWidth } from "@/components/panels/SiteWidth";
 

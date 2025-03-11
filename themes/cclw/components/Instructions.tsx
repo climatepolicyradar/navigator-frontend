@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import useConfig from "@hooks/useConfig";
+import useConfig from "@/hooks/useConfig";
 
 import { calculateTotalFamilies } from "@/helpers/getFamilyCounts";
 

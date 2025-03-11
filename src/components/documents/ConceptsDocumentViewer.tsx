@@ -11,13 +11,13 @@ import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
 import { EmptyPassages } from "./EmptyPassages";
 import { motion } from "framer-motion";
 import { useEffect, useState, useCallback, useMemo, useReducer } from "react";
+import useSearch from "@/hooks/useSearch";
+import { fetchAndProcessConcepts } from "@utils/processConcepts";
+import { useEffectOnce } from "@/hooks/useEffectOnce";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 import { SearchSettings } from "@/components/filters/SearchSettings";
-import useSearch from "@hooks/useSearch";
 import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
-import { fetchAndProcessConcepts } from "@utils/processConcepts";
-import { useEffectOnce } from "@hooks/useEffectOnce";
 import Loader from "@/components/Loader";
 
 type TProps = {

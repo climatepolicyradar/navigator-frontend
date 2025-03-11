@@ -1,4 +1,4 @@
-import useConfig from "@hooks/useConfig";
+import useConfig from "@/hooks/useConfig";
 
 import { CountryLinks } from "@/components/CountryLinks";
 import { getLanguage } from "@/helpers/getLanguage";

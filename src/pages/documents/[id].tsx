@@ -6,7 +6,7 @@ import { MdOutlineTune } from "react-icons/md";
 
 import { ApiClient } from "@/api/http-common";
 
-import useSearch from "@hooks/useSearch";
+import useSearch from "@/hooks/useSearch";
 
 import { FullWidth } from "@/components/panels/FullWidth";
 

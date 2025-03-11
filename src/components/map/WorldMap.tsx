@@ -2,9 +2,9 @@ import React, { useRef, useState, useMemo, useEffect } from "react";
 import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
 import { Tooltip, TooltipRefProps } from "react-tooltip";
 
-import useConfig from "@hooks/useConfig";
-import useGeographies from "@hooks/useGeographies";
-import { useMcfData } from "@hooks/useMcfData";
+import useConfig from "@/hooks/useConfig";
+import useGeographies from "@/hooks/useGeographies";
+import { useMcfData } from "@/hooks/useMcfData";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import GeographySelect from "./GeographySelect";

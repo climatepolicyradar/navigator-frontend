@@ -1,4 +1,4 @@
-import useConfig from "@hooks/useConfig";
+import useConfig from "@/hooks/useConfig";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { convertDate } from "@utils/timedate";
 import { TCategory, TCorpusTypeSubCategory } from "@types";

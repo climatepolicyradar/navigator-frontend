@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import useOutsideAlerter from "@hooks/useOutsideAlerter";
+import useOutsideAlerter from "@/hooks/useOutsideAlerter";
 import { Icon } from "@/components/atoms/icon/Icon";
 import DropdownMenuItem from "@/components/menus/DropdownMenuItem";
 import DropdownMenuWrapper from "@/components/menus/DropdownMenuWrapper";
