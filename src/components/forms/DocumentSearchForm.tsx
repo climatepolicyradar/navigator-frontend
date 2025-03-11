@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import SearchForm from "./SearchForm";
+
 import { Button } from "@/components/atoms/button/Button";
+
+import SearchForm from "./SearchForm";
 
 interface DocumentSearchFormProps {
   input?: string;

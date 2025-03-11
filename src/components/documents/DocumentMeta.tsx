@@ -1,7 +1,6 @@
-import useConfig from "@/hooks/useConfig";
-
 import { CountryLinks } from "@/components/CountryLinks";
 import { getLanguage } from "@/helpers/getLanguage";
+import useConfig from "@/hooks/useConfig";
 import { convertDate } from "@/utils/timedate";
 
 export const DocumentMeta = ({ family, isMain, document, document_type }: { family: any; isMain: boolean; document: any; document_type: any }) => {

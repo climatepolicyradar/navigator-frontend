@@ -19,7 +19,9 @@ test("search", async ({ page }) => {
    * This finds the first container that has the heading search results.
    * We could probably have a more semantic search markup with lists.
    */
-  const searchResultsHeading = page.getByRole("heading", { name: "Search results" });
+  const searchResultsHeading = page.getByRole("heading", {
+    name: "Search results",
+  });
   const searchResults = page.locator("div").filter({ has: searchResultsHeading }).last();
   await expect(searchResults).toBeVisible({ timeout: 10000 });
 
