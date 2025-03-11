@@ -31,8 +31,6 @@ export const Input = ({
   const classes = useMemo(() => {
     /* Colour */
 
-    // TODO may want to only support one colour
-
     const outlineColor = color === "brand" ? "focus-within:outline-border-brand" : "focus-within:outline-border-mono";
 
     /* Size */
