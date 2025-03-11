@@ -1,4 +1,4 @@
-import { LinkWithQuery } from "@components/LinkWithQuery";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 
 export const Banner = () => {
   return (

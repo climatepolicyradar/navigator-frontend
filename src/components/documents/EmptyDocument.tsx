@@ -1,5 +1,5 @@
-import { ExternalLink } from "@components/ExternalLink";
-import { Icon } from "@components/atoms/icon/Icon";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Icon } from "@/components/atoms/icon/Icon";
 
 export const EmptyDocument = () => (
   <div className="ml-4 text-center text-gray-600">

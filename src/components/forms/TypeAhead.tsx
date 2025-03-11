@@ -4,7 +4,7 @@ import SuggestList from "../filters/SuggestList";
 import { TextInput } from "./TextInput";
 
 import { sortData } from "@utils/sorting";
-import { Icon } from "@components/atoms/icon/Icon";
+import { Icon } from "@/components/atoms/icon/Icon";
 
 type TProps = {
   list: Object[];

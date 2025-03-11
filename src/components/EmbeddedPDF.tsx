@@ -3,7 +3,7 @@ import Script from "next/script";
 
 import { AdobeContext } from "@context/AdobeContext";
 
-import usePDFPreview from "@hooks/usePDFPreview";
+import usePDFPreview from "@/hooks/usePDFPreview";
 
 import Loader from "./Loader";
 

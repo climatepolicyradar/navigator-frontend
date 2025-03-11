@@ -4,8 +4,8 @@ import { ParsedUrlQuery } from "querystring";
 import { SearchSettingsList } from "./SearchSettingsList";
 import { SearchSettingsItem } from "./SearchSettingsItem";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { sortOptions, sortOptionsBrowse } from "@constants/sortOptions";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { sortOptions, sortOptionsBrowse } from "@/constants/sortOptions";
 
 type TProps = {
   queryParams: ParsedUrlQuery;
