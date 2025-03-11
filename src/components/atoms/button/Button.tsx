@@ -1,4 +1,4 @@
-import { joinTailwindClasses } from "@utils/tailwind";
+import { joinTailwindClasses } from "@/utils/tailwind";
 import { useMemo } from "react";
 
 interface ButtonClassArgs {
