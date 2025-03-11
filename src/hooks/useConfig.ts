@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { ApiClient, getEnvFromServer } from "../api/http-common";
-import { extractNestedData } from "@utils/extractNestedData";
-import { TGeography, TLanguages, TCorpusTypeDictionary, TDataNode } from "@types";
+import { extractNestedData } from "@/utils/extractNestedData";
+import { TGeography, TLanguages, TCorpusTypeDictionary, TDataNode } from "@/types";
 
 type TQueryResponse = {
   geographies: TDataNode<TGeography>[];

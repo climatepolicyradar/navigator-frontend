@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 
-import { Icon } from "@components/icon/Icon";
-import { SearchDropdown } from "@components/forms/SearchDropdown";
-import Button from "@components/buttons/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { SearchDropdown } from "@/components/forms/SearchDropdown";
+import { Button } from "@/components/atoms/button/Button";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 
 // See the method handleSearchInput in the index.tsx file for the processing of the example searches
 const EXAMPLE_SEARCHES = [
@@ -80,8 +80,8 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
         {EXAMPLE_SEARCHES.map((example) => (
           <Button
             key={example.id}
-            thin
-            color="dark"
+            rounded
+            className="!bg-cclw-light hover:!bg-gray-700 border !border-gray-500"
             onClick={() => handleSearchInput(example.term, example.filterType, example.filterValue)}
             data-cy={`example-search-${example.id}`}
           >

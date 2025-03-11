@@ -2,9 +2,9 @@ import { ParsedUrlQuery } from "querystring";
 
 import { containsAny } from "./containsAny";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 
-import { TThemeConfig, TThemeConfigFilter } from "@types";
+import { TThemeConfig, TThemeConfigFilter } from "@/types";
 
 export const canDisplayFilter = (filter: TThemeConfigFilter, query: ParsedUrlQuery, themeConfig: TThemeConfig) => {
   let canDisplay = false;
@@ -21,7 +21,7 @@ export const canDisplayFilter = (filter: TThemeConfigFilter, query: ParsedUrlQue
   const selectedCategory = query[QUERY_PARAMS.category] as string;
   if (!selectedCategory) return false;
   // Check whether the selected category is in theme's categories (someone might manipulate the query)
-  const selectedCategoryValue = themeConfig.categories.options.find((c) => c.slug === selectedCategory);
+  const selectedCategoryValue = themeConfig.categories.options.find((c) => c.slug.toLowerCase() === selectedCategory.toLowerCase());
   if (!selectedCategoryValue) return false;
   // Check whether the selected category is in the filter's category, and check the alias field too
   if (containsAny(filter.category, selectedCategoryValue.value) || containsAny(filter.category, [selectedCategoryValue.alias])) return true;

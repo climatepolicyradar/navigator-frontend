@@ -1,4 +1,4 @@
-import { TDocumentPage } from "@types";
+import { TDocumentPage } from "@/types";
 
 export const getMainDocuments = (documents: TDocumentPage[]): [TDocumentPage[], TDocumentPage[]] => {
   let mainDocuments: TDocumentPage[] = [];

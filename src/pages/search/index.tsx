@@ -5,40 +5,40 @@ import { ParsedUrlQueryInput } from "querystring";
 import { useEffect, useRef, useState } from "react";
 import { MdOutlineTune } from "react-icons/md";
 
-import useConfig from "@hooks/useConfig";
-import { useDownloadCsv } from "@hooks/useDownloadCsv";
-import useSearch from "@hooks/useSearch";
+import useConfig from "@/hooks/useConfig";
+import { useDownloadCsv } from "@/hooks/useDownloadCsv";
+import useSearch from "@/hooks/useSearch";
 
-import { MultiCol } from "@components/panels/MultiCol";
-import { SideCol } from "@components/panels/SideCol";
-import { SingleCol } from "@components/panels/SingleCol";
-import { SiteWidth } from "@components/panels/SiteWidth";
+import { MultiCol } from "@/components/panels/MultiCol";
+import { SideCol } from "@/components/panels/SideCol";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
-import { ExternalLink } from "@components/ExternalLink";
-import Loader from "@components/Loader";
-import { NoOfResults } from "@components/NoOfResults";
-import SearchFilters from "@components/blocks/SearchFilters";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import FilterToggle from "@components/buttons/FilterToggle";
-import Drawer from "@components/drawer/Drawer";
-import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
-import { SearchSettings } from "@components/filters/SearchSettings";
-import SearchForm from "@components/forms/SearchForm";
-import Layout from "@components/layouts/Main";
-import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
-import { SubNav } from "@components/nav/SubNav";
-import Pagination from "@components/pagination";
-import SearchResultList from "@components/search/SearchResultList";
-import { Icon } from "@components/icon/Icon";
+import { ExternalLink } from "@/components/ExternalLink";
+import Loader from "@/components/Loader";
+import { NoOfResults } from "@/components/NoOfResults";
+import SearchFilters from "@/components/blocks/SearchFilters";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Drawer from "@/components/drawer/Drawer";
+import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
+import { SearchSettings } from "@/components/filters/SearchSettings";
+import SearchForm from "@/components/forms/SearchForm";
+import Layout from "@/components/layouts/Main";
+import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
+import { SubNav } from "@/components/nav/SubNav";
+import Pagination from "@/components/pagination";
+import SearchResultList from "@/components/search/SearchResultList";
+import { Icon } from "@/components/atoms/icon/Icon";
 
-import { getThemeConfigLink } from "@utils/getThemeConfigLink";
-import { readConfigFile } from "@utils/readConfigFile";
+import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
+import { readConfigFile } from "@/utils/readConfigFile";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 
-import { TConcept, TFamilyPage, TTheme, TThemeConfig } from "@types";
-import { getFeatureFlags } from "@utils/featureFlags";
-import { ApiClient } from "@api/http-common";
+import { TConcept, TFamilyPage, TTheme, TThemeConfig } from "@/types";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { ApiClient } from "@/api/http-common";
+import { Button } from "@/components/atoms/button/Button";
 
 type TProps = {
   theme: TTheme;
@@ -168,8 +168,13 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
       }
     }
 
+    // If we are changing the fund or func document type for MCFs, clear non-applicable filters
     if (type === QUERY_PARAMS.fund) {
       delete router.query[QUERY_PARAMS.implementing_agency];
+    }
+    if (type === QUERY_PARAMS.fund_doc_type) {
+      delete router.query[QUERY_PARAMS.implementing_agency];
+      delete router.query[QUERY_PARAMS.status];
     }
 
     if (type === QUERY_PARAMS.concept_name) {
@@ -408,7 +413,12 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
             </div>
           </div>
           <div className="flex items-center justify-center w-full mt-4">
-            <FilterToggle toggle={toggleFilters} isOpen={showFilters} />
+            <Button content="both" className="mt-2 flex-nowrap md:hidden" onClick={toggleFilters}>
+              <span>{showFilters ? "Hide" : "Show"} filters</span>
+              <div className={showFilters ? "rotate-180" : ""}>
+                <Icon name="downChevron" />
+              </div>
+            </Button>
           </div>
           <div className={`${showFilters ? "" : "hidden"}`}>
             {configQuery.isFetching ? (

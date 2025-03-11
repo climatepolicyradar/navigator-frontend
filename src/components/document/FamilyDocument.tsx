@@ -1,10 +1,9 @@
 import { useRouter } from "next/router";
-import MatchesButton from "@components/buttons/MatchesButton";
-import { Icon } from "@components/icon/Icon";
-import useConfig from "@hooks/useConfig";
-import { getLanguage } from "@helpers/getLanguage";
-import { TDocumentPage, TLoadingStatus } from "@types";
-import { getDocumentType } from "@helpers/getDocumentType";
+import useConfig from "@/hooks/useConfig";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { getLanguage } from "@/helpers/getLanguage";
+import { TDocumentPage, TLoadingStatus } from "@/types";
+import { getDocumentType } from "@/helpers/getDocumentType";
 
 type TProps = {
   document: TDocumentPage;
@@ -55,6 +54,16 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
     return { className: cssClass, onClick: !canPreview && !canViewSource ? null : handleClick };
   };
 
+  const getMatchesText = () => {
+    const overrideText = renderMatchesOverrideText();
+    if (overrideText) return overrideText;
+
+    const numberOfMatches = typeof matches === "number" ? matches : parseInt(matches, 10);
+    if (!numberOfMatches) return "";
+
+    return `View ${familyMatches >= 500 ? "more than " : ""}${numberOfMatches} ${numberOfMatches === 1 ? "match" : "matches"}`;
+  };
+
   return (
     <div {...getPreviewBehaviour()}>
       <div className="flex-0 mr-2 hidden md:block">
@@ -65,7 +74,16 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
         <div className="mb-2 flex justify-between no-wrap">
           {title}{" "}
           {(canPreview || canViewSource) && (
-            <MatchesButton dataAttribute={slug} count={matches} overideText={renderMatchesOverrideText()} familyMatches={familyMatches} />
+            <>
+              <span
+                className="text-sm text-text-brand shrink-0"
+                data-analytics="document-matches-button"
+                data-cy="document-matches-button"
+                data-slug={slug}
+              >
+                {getMatchesText()}
+              </span>
+            </>
           )}
         </div>
         <div className="md:flex flex-nowrap items-center">

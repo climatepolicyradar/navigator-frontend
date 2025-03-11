@@ -1,15 +1,15 @@
 import Head from "next/head";
 import Image from "next/image";
 
-import Layout from "@components/layouts/LandingPage";
-import { ExternalLink } from "@components/ExternalLink";
-import { ColumnAndImage } from "@cpr/components/oep/ColumnAndImage";
-import { EqualColumn, EqualColumns } from "@cpr/components/oep/EqualColumns";
-import { Footer } from "@cpr/components/oep/Footer";
-import { Header } from "@cpr/components/oep/Header";
-import { Hero } from "@cpr/components/oep/Hero";
-import { Narrow } from "@cpr/components/oep/Narrow";
-import { Section } from "@cpr/components/oep/Section";
+import Layout from "@/components/layouts/LandingPage";
+import { ExternalLink } from "@/components/ExternalLink";
+import { ColumnAndImage } from "@/cpr/components/oep/ColumnAndImage";
+import { EqualColumn, EqualColumns } from "@/cpr/components/oep/EqualColumns";
+import { Footer } from "@/cpr/components/oep/Footer";
+import { Header } from "@/cpr/components/oep/Header";
+import { Hero } from "@/cpr/components/oep/Hero";
+import { Narrow } from "@/cpr/components/oep/Narrow";
+import { Section } from "@/cpr/components/oep/Section";
 
 const OceanEnergyPathwayPage = () => {
   return (

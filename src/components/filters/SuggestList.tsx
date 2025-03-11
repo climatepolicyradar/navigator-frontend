@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from "react";
-import { addClass, removeClass } from "@utils/cssClass";
+import { addClass, removeClass } from "@/utils/cssClass";
 
 const SuggestList = ({ list, setList, keyField, keyFieldDisplay, type, setInput, handleFilterChange }) => {
   const ulRef = useRef(null);

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { Feature } from "./Feature";
 
-import { Icon } from "@components/icon/Icon";
+import { Icon } from "@/components/atoms/icon/Icon";
 
 export const FeatureSearch = () => (
   <Feature

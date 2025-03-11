@@ -1,8 +1,8 @@
-import { TFamilyMetadata, TMCFFamilyMetadata, TFamilyPage } from "@types";
+import { TFamilyMetadata, TMCFFamilyMetadata, TFamilyPage } from "@/types";
 
 import { FamilyMeta } from "../FamilyMeta";
 import { McfFamilyMeta } from "../McfFamilyMeta";
-import { getApprovedYearFromEvents } from "@helpers/getApprovedYearFromEvents";
+import { getApprovedYearFromEvents } from "@/helpers/getApprovedYearFromEvents";
 
 const MultilateralClimateFunds = "MCF";
 

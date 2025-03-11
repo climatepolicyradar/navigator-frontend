@@ -4,34 +4,32 @@ import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
 import { MdOutlineTune } from "react-icons/md";
 
-import { ApiClient } from "@api/http-common";
+import { ApiClient } from "@/api/http-common";
 
-import useSearch from "@hooks/useSearch";
+import useSearch from "@/hooks/useSearch";
 
-import { FullWidth } from "@components/panels/FullWidth";
+import { FullWidth } from "@/components/panels/FullWidth";
 
-import Layout from "@components/layouts/Main";
-import EmbeddedPDF from "@components/EmbeddedPDF";
-import PassageMatches from "@components/PassageMatches";
-import Loader from "@components/Loader";
-import SearchForm from "@components/forms/SearchForm";
-import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
-import { DocumentHead } from "@components/documents/DocumentHead";
-import { EmptyPassages } from "@components/documents/EmptyPassages";
-import { EmptyDocument } from "@components/documents/EmptyDocument";
-import { SearchSettings } from "@components/filters/SearchSettings";
+import Layout from "@/components/layouts/Main";
+import EmbeddedPDF from "@/components/EmbeddedPDF";
+import PassageMatches from "@/components/PassageMatches";
+import Loader from "@/components/Loader";
+import SearchForm from "@/components/forms/SearchForm";
+import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
+import { DocumentHead } from "@/components/documents/DocumentHead";
+import { EmptyPassages } from "@/components/documents/EmptyPassages";
+import { EmptyDocument } from "@/components/documents/EmptyDocument";
+import { SearchSettings } from "@/components/filters/SearchSettings";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { getDocumentDescription } from "@constants/metaDescriptions";
-import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
-import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { getDocumentDescription } from "@/constants/metaDescriptions";
+import { EXAMPLE_SEARCHES } from "@/constants/exampleSearches";
+import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 
-import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@types";
-import { getFeatureFlags } from "@utils/featureFlags";
-import { fetchAndProcessConcepts } from "@utils/processConcepts";
-import { useEffectOnce } from "@hooks/useEffectOnce";
-import { ConceptsDocumentViewer } from "@components/documents/ConceptsDocumentViewer";
-import { getMatchedPassagesFromSearch } from "@utils/getMatchedPassagesFromFamiy";
+import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@/types";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
+import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamiy";
 
 type TProps = {
   document: TDocumentPage;
@@ -81,6 +79,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const exactMatchQuery = !!router.query[QUERY_PARAMS.exact_match];
   const startingPassage = Number(router.query.passage) || 0;
 
+  // TODO: Remove this once we have hard launched concepts in product.
   const { status, families, searchQuery } = useSearch(
     router.query,
     null,
@@ -143,10 +142,14 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     (queryTerm: string) => {
       const queryObj = { ...router.query };
       queryObj[QUERY_PARAMS.query_string] = queryTerm;
-      router.push({
-        pathname: `/documents/${document.slug}`,
-        query: queryObj,
-      });
+      router.push(
+        {
+          pathname: `/documents/${document.slug}`,
+          query: queryObj,
+        },
+        undefined,
+        { shallow: true }
+      );
     },
     [router, document.slug]
   );
@@ -159,10 +162,14 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
         queryObj[QUERY_PARAMS.exact_match] = "true";
       }
 
-      router.push({
-        pathname: `/documents/${document.slug}`,
-        query: queryObj,
-      });
+      router.push(
+        {
+          pathname: `/documents/${document.slug}`,
+          query: queryObj,
+        },
+        undefined,
+        { shallow: true }
+      );
     },
     [router, document.slug]
   );
@@ -177,28 +184,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(families), document.slug]);
 
-  /** Concepts: WIP */
-  const [concepts, setConcepts] = useState<TConcept[]>([]);
-  const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
-
-  // Extract unique concept keys and their counts
-  const conceptCounts: { conceptKey: string; count: number }[] = useMemo(() => {
-    const uniqueConceptMap = new Map<string, number>();
-
-    (vespaFamilyData?.families ?? []).forEach((family) => {
-      family.hits.forEach((hit) => {
-        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
-          const existingCount = uniqueConceptMap.get(conceptKey) || 0;
-          uniqueConceptMap.set(conceptKey, existingCount + count);
-        });
-      });
-    });
-
-    return Array.from(uniqueConceptMap.entries())
-      .map(([conceptKey, count]) => ({ conceptKey, count }))
-      .sort((a, b) => b.count - a.count);
-  }, [vespaFamilyData]);
-
   const conceptFiltersQuery = router.query[QUERY_PARAMS.concept_name];
   const conceptFilters = useMemo(
     () => (conceptFiltersQuery ? (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]) : undefined),
@@ -211,62 +196,47 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
       if (conceptLabel === "") return false;
 
       const currentConceptFilters = conceptFilters || [];
+      const queryObj = { ...router.query };
+
+      let updatedConceptFilters;
 
       // If the concept is already in filters, remove it
       if (currentConceptFilters.includes(conceptLabel)) {
-        const updatedConceptFilters = currentConceptFilters.filter((concept) => concept !== conceptLabel);
-
-        const queryObj = { ...router.query };
-
-        // If no concept filters remain, remove the concept_name query param entirely
-        if (updatedConceptFilters.length === 0) {
-          delete queryObj[QUERY_PARAMS.concept_name];
-        } else {
-          // Otherwise, update the concept filters
-          queryObj[QUERY_PARAMS.concept_name] = updatedConceptFilters;
-        }
-
-        router.push({
-          pathname: `/documents/${document.slug}`,
-          query: queryObj,
-        });
-        return;
+        updatedConceptFilters = currentConceptFilters.filter((concept) => concept !== conceptLabel);
+      } else {
+        // If the concept is not in filters, add it
+        updatedConceptFilters = [...currentConceptFilters, conceptLabel];
       }
 
-      // If the concept is not in filters, add it
-      const updatedConceptFilters = [...currentConceptFilters, conceptLabel];
+      // If no concept filters remain, remove the concept_name query param entirely
+      if (updatedConceptFilters.length === 0) {
+        delete queryObj[QUERY_PARAMS.concept_name];
+      } else {
+        // Otherwise, update the concept filters
+        queryObj[QUERY_PARAMS.concept_name] = updatedConceptFilters;
+      }
 
-      const queryObj = { ...router.query };
-      queryObj[QUERY_PARAMS.concept_name] = updatedConceptFilters;
-      router.push({
-        pathname: `/documents/${document.slug}`,
-        query: queryObj,
-      });
+      router.push(
+        {
+          pathname: `/documents/${document.slug}`,
+          query: queryObj,
+        },
+        undefined,
+        { shallow: true }
+      );
     },
     [router, document.slug, conceptFilters]
   );
 
-  useEffectOnce(() => {
-    const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
-
-    fetchAndProcessConcepts(conceptIds, (conceptId) => {
-      const url = `https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`;
-      return fetch(url).then((response) => response.json());
-    }).then(({ rootConcepts, concepts }) => {
-      setRootConcepts(rootConcepts);
-      setConcepts(concepts);
-    });
-  });
-
   const handleClearSearch = useCallback(() => {
-    router.push({
-      pathname: `/documents/${document.slug}`,
-      query: {},
-    });
-
-    setPassageMatches([]);
-    setTotalNoOfMatches(0);
-    setPassageIndex(0);
+    router.push(
+      {
+        pathname: `/documents/${document.slug}`,
+        query: {},
+      },
+      undefined,
+      { shallow: true }
+    );
   }, [router, document.slug]);
 
   return (
@@ -285,9 +255,10 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
           handleViewSourceClick={handleViewSourceClick}
         />
 
-        <section className="flex-1 flex" id="document-viewer">
-          <FullWidth extraClasses="flex-1">
-            {concepts.length === 0 && (
+        {/* TODO: Remove this once we have hard launched concepts in product. */}
+        {vespaFamilyData === null && (
+          <section className="flex-1 flex" id="document-viewer">
+            <FullWidth extraClasses="flex-1">
               <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
                 <div
                   id="document-preview"
@@ -394,19 +365,17 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                   )}
                 </div>
               </div>
-            )}
-          </FullWidth>
-        </section>
+            </FullWidth>
+          </section>
+        )}
 
-        {concepts.length > 0 && (
+        {vespaFamilyData !== null && (
           <ConceptsDocumentViewer
             initialQueryTerm={qsSearchString}
             initialExactMatch={exactMatchQuery}
             initialPassage={startingPassage}
-            concepts={concepts}
             initialConceptFilters={conceptFilters}
-            rootConcepts={rootConcepts}
-            conceptCounts={conceptCounts}
+            vespaFamilyData={vespaFamilyData}
             document={document}
             onQueryTermChange={handleQueryTermChange}
             onExactMatchChange={handleExactMatchChange}
@@ -443,7 +412,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // Fetch Vespa family data for concepts (similar to document/[id].tsx)
     const conceptsV1 = featureFlags["concepts-v1"];
     if (conceptsV1) {
-      const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
+      const { data: vespaFamilyDataResponse } = await client.get(`/document/${documentData.import_id}`);
       vespaFamilyData = vespaFamilyDataResponse;
     }
   } catch {

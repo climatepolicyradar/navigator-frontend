@@ -2,26 +2,12 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-import { SingleCol } from "@components/panels/SingleCol";
-import { SiteWidth } from "@components/panels/SiteWidth";
-import { ExternalLink } from "@components/ExternalLink";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { ExternalLink } from "@/components/ExternalLink";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { Icon } from "@components/icon/Icon";
-
-const SearchIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <g opacity="0.6">
-      <path
-        d="M17.5 17.5L13.9167 13.9167M15.8333 9.16667C15.8333 12.8486 12.8486 15.8333 9.16667 15.8333C5.48477 15.8333 2.5 12.8486 2.5 9.16667C2.5 5.48477 5.48477 2.5 9.16667 2.5C12.8486 2.5 15.8333 5.48477 15.8333 9.16667Z"
-        stroke="#202020"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </g>
-  </svg>
-);
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { Icon } from "@/components/atoms/icon/Icon";
 
 export const Hero = () => {
   const router = useRouter();
@@ -39,7 +25,7 @@ export const Hero = () => {
   };
 
   const handleSubmit = (query?: string) => {
-    router.push({ pathname: "/search", query: { [QUERY_PARAMS.query_string]: query ?? term, [QUERY_PARAMS.category]: "reports" } });
+    router.push({ pathname: "/search", query: { [QUERY_PARAMS.query_string]: query ?? term, [QUERY_PARAMS.category]: "Reports" } });
   };
 
   return (
@@ -61,9 +47,9 @@ export const Hero = () => {
               </h1>
               <p className="my-6 text-xl text-textDark md:text-2xl">Helping the offshore wind sector design effective strategies</p>
               <div className="relative z-1 mb-4">
-                <button className="h-full absolute left-0 px-4" onClick={() => handleSubmit()} aria-label="Search">
+                <button className="h-full absolute left-0 px-4 text-textNormal" onClick={() => handleSubmit()} aria-label="Search">
                   <span className="block">
-                    <Icon name="search" />
+                    <Icon name="search" height="20" width="20" />
                   </span>
                 </button>
                 <input

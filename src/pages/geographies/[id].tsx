@@ -3,39 +3,39 @@ import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 
-import { ApiClient } from "@api/http-common";
+import { ApiClient } from "@/api/http-common";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
-import { SingleCol } from "@components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { SingleCol } from "@/components/panels/SingleCol";
 
-import Layout from "@components/layouts/Main";
-import { Timeline } from "@components/timeline/Timeline";
-import { Event } from "@components/timeline/Event";
-import { CountryHeader } from "@components/blocks/CountryHeader";
-import { Divider } from "@components/dividers/Divider";
-import { Icon } from "@components/icon/Icon";
-import { FamilyListItem } from "@components/document/FamilyListItem";
-import { Targets } from "@components/Targets";
-import Button from "@components/buttons/Button";
-import TabbedNav from "@components/nav/TabbedNav";
-import { ExternalLink } from "@components/ExternalLink";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import DocumentSearchForm from "@components/forms/DocumentSearchForm";
-import { Alert } from "@components/Alert";
-import { SubNav } from "@components/nav/SubNav";
-import { Heading } from "@components/typography/Heading";
+import Layout from "@/components/layouts/Main";
+import { Timeline } from "@/components/timeline/Timeline";
+import { Event } from "@/components/timeline/Event";
+import { CountryHeader } from "@/components/blocks/CountryHeader";
+import { Divider } from "@/components/dividers/Divider";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { FamilyListItem } from "@/components/document/FamilyListItem";
+import { Targets } from "@/components/Targets";
+import { Button } from "@/components/atoms/button/Button";
+import TabbedNav from "@/components/nav/TabbedNav";
+import { ExternalLink } from "@/components/ExternalLink";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import DocumentSearchForm from "@/components/forms/DocumentSearchForm";
+import { Alert } from "@/components/Alert";
+import { SubNav } from "@/components/nav/SubNav";
+import { Heading } from "@/components/typography/Heading";
 
-import { getCountryCode } from "@helpers/getCountryFields";
+import { getCountryCode } from "@/helpers/getCountryFields";
 
-import { extractNestedData } from "@utils/extractNestedData";
-import { sortFilterTargets } from "@utils/sortFilterTargets";
-import { readConfigFile } from "@utils/readConfigFile";
+import { extractNestedData } from "@/utils/extractNestedData";
+import { sortFilterTargets } from "@/utils/sortFilterTargets";
+import { readConfigFile } from "@/utils/readConfigFile";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { systemGeoNames } from "@constants/systemGeos";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { systemGeoNames } from "@/constants/systemGeos";
 
-import { TGeographyStats, TGeographySummary, TThemeConfig } from "@types";
-import { TTarget, TEvent, TGeography, TTheme } from "@types";
+import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
+import { TTarget, TEvent, TGeography, TTheme } from "@/types";
 
 type TProps = {
   geography: TGeographyStats;
@@ -229,12 +229,9 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="geography" text={geography.name}>
       {!geography ? (
         <SingleCol>
-          <button
-            className="text-blue-500 underline text-sm text-left mt-2 hover:text-indigo-600 transition duration-300"
-            onClick={() => router.back()}
-          >
+          <Button variant="ghost" onClick={() => router.back()}>
             Go back
-          </button>
+          </Button>
           <p>We were not able to load the data for the country.</p>
         </SingleCol>
       ) : (
@@ -274,7 +271,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   </section>
                   {selectedCategoryIndex !== 4 && (
                     <div data-cy="see-more-button">
-                      <Button color="secondary" extraClasses="my-6" onClick={handleDocumentSeeMoreClick}>
+                      <Button rounded variant="outlined" className="my-5" onClick={handleDocumentSeeMoreClick}>
                         View more documents
                       </Button>
                       <Divider />
@@ -319,21 +316,24 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   {publishedTargets.length > numberOfTargetsToDisplay && (
                     <div data-cy="more-targets-button">
                       <Button
-                        color="secondary"
-                        extraClasses="flex gap-2 items-center my-6"
+                        content="both"
+                        rounded
+                        variant="outlined"
+                        className="my-5"
                         onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
                       >
-                        <Icon name="downChevron" /> View more targets
+                        <Icon name="downChevron" />
+                        View more targets
                       </Button>
                       <Divider />
                     </div>
                   )}
                   {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
                     <div>
-                      <Button color="secondary" extraClasses="flex gap-2 items-center my-6" onClick={() => setNumberOfTargetsToDisplay(5)}>
+                      <Button content="both" rounded variant="outlined" className="my-5" onClick={() => setNumberOfTargetsToDisplay(5)}>
                         <div className="rotate-180">
                           <Icon name="downChevron" />
-                        </div>{" "}
+                        </div>
                         Hide targets
                       </Button>
                       <Divider />
@@ -406,7 +406,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     countries = response_geo.level2;
     const country = getCountryCode(id as string, countries);
     if (country) {
-      const targetsRaw = await axios.get<TTarget[]>(`${process.env.S3_PATH}/geographies/${country.toLowerCase()}.json`);
+      const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${country.toLowerCase()}.json`);
       targetsData = targetsRaw.data;
     }
   } catch {

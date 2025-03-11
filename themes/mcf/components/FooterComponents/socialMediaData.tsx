@@ -1,6 +1,6 @@
-import { Icon } from "@components/icon/Icon";
+import { Icon } from "@/components/atoms/icon/Icon";
 
-import { colors } from "@mcf/constants/colors";
+import { colors } from "@/mcf/constants/colors";
 
 const iconColor = colors.mcf.iconColor;
 

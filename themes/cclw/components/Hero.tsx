@@ -1,10 +1,10 @@
 import dynamic from "next/dynamic";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
 import LandingSearchForm from "./LandingSearchForm";
 import { LogoLarge } from "./LogoLarge";
-import { Heading } from "@components/typography/Heading";
+import { Heading } from "@/components/typography/Heading";
 
 const Instructions = dynamic(() => import("./Instructions"), {
   loading: () => <p>Loading document stats...</p>,

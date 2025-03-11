@@ -1,14 +1,14 @@
-import { SiteWidth } from "@components/panels/SiteWidth";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
-import { ExternalLink } from "@components/ExternalLink";
-import { LinkWithQuery } from "@components/LinkWithQuery";
-import { getButtonClasses } from "@components/buttons/Button";
-import { Heading } from "@components/typography/Heading";
+import { ExternalLink } from "@/components/ExternalLink";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { Heading } from "@/components/typography/Heading";
+import { getButtonClasses } from "@/components/atoms/button/Button";
 
 const EMAIL_SUBJECT = "Joining the NLP community";
 const EMAIL_BODY = "Hi, I am interested in joining the climate NLP community. It is relevant to me because...";
 
-const linkClasses = getButtonClasses("secondary");
+const linkClasses = getButtonClasses({ color: "brand", rounded: true, className: "!bg-blue-500 hover:!bg-blue-700 !text-base" });
 
 export const HelpUs = () => (
   <div className="bg-cclw-dark">

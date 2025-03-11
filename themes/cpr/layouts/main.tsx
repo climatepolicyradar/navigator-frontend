@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from "react";
-import { PageHeader } from "@components/headers/PageHeader";
-import Footer from "@components/footer/Footer";
+import { PageHeader } from "@/components/headers/PageHeader";
+import Footer from "@/components/footer/Footer";
 
 type TProps = {
   children?: ReactNode;

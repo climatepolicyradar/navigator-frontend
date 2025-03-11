@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
 import Image from "next/image";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
-import { Heading } from "@components/typography/Heading";
+import { Heading } from "@/components/typography/Heading";
 
 type TProps = {
   heading?: string;

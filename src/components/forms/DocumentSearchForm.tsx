@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import SearchForm from "./SearchForm";
+import { Button } from "@/components/atoms/button/Button";
 
 interface DocumentSearchFormProps {
   input?: string;
@@ -29,12 +30,9 @@ const DocumentSearchForm = ({
               <ul className="flex gap-1 flex-wrap items-center">
                 {featuredSearches.map((searchTerm) => (
                   <li key={searchTerm}>
-                    <button
-                      onClick={() => handleSearchInput(searchTerm)}
-                      className="bg-white border border-gray-200 rounded-[40px] py-1 px-2 transition hover:border-blue-600 hover:text-textDark"
-                    >
+                    <Button color="mono" rounded size="small" variant="outlined" onClick={() => handleSearchInput(searchTerm)}>
                       {searchTerm}
-                    </button>
+                    </Button>
                   </li>
                 ))}
               </ul>
