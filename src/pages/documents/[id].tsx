@@ -112,6 +112,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     setPassageIndex(0);
     const queryObj = {};
     queryObj[QUERY_PARAMS.query_string] = term;
+    if (router.query[QUERY_PARAMS.exact_match]) queryObj[QUERY_PARAMS.exact_match] = router.query[QUERY_PARAMS.exact_match] as string;
     queryObj["id"] = document.slug;
     if (term === "") return false;
     router.push({ query: queryObj }, undefined, { shallow: true });
