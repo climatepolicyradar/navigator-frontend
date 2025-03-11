@@ -4,10 +4,13 @@ import dynamic from "next/dynamic";
 
 import Loader from "@/components/Loader";
 import { Accordian } from "@/components/accordian/Accordian";
+import { FilterOptions } from "@/components/blocks/FilterOptions";
 import { AppliedFilters } from "@/components/filters/AppliedFilters";
+import { DateRange } from "@/components/filters/DateRange";
 import { InputListContainer } from "@/components/filters/InputListContainer";
 import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
+import { TypeAhead } from "@/components/forms/TypeAhead";
 import { Label } from "@/components/labels/Label";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { currentYear, minYear } from "@/constants/timedate";
@@ -16,10 +19,6 @@ import useGetThemeConfig from "@/hooks/useThemeConfig";
 import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
 import { getFilterLabel } from "@/utils/getFilterLabel";
-
-import { FilterOptions } from "./FilterOptions";
-import { DateRange } from "../filters/DateRange";
-import { TypeAhead } from "../forms/TypeAhead";
 
 const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/components/MethodologyLink`));
 

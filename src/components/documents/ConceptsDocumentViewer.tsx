@@ -8,6 +8,8 @@ import Loader from "@/components/Loader";
 import PassageMatches from "@/components/PassageMatches";
 import { Button } from "@/components/atoms/button/Button";
 import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
+import { EmptyDocument } from "@/components/documents/EmptyDocument";
+import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { SearchSettings } from "@/components/filters/SearchSettings";
 import SearchForm from "@/components/forms/SearchForm";
 import { FullWidth } from "@/components/panels/FullWidth";
@@ -18,9 +20,6 @@ import { useEffectOnce } from "@/hooks/useEffectOnce";
 import useSearch from "@/hooks/useSearch";
 import { TConcept, TDocumentPage, TSearchResponse } from "@/types";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
-
-import { EmptyDocument } from "./EmptyDocument";
-import { EmptyPassages } from "./EmptyPassages";
 
 type TProps = {
   initialQueryTerm?: string | string[];

@@ -5,7 +5,7 @@ function generateHighlights(document: TDocumentPage, documentPassageMatches: TPa
   const date = new Date();
   return documentPassageMatches.map((passage) => {
     return {
-      "@/context": ["https://www.w3.org/ns/anno.jsonld", "https://comments.acrobat.com/ns/anno.jsonld"],
+      "@context": ["https://www.w3.org/ns/anno.jsonld", "https://comments.acrobat.com/ns/anno.jsonld"],
       type: "Annotation",
       id: passage.text_block_id,
       bodyValue: "",

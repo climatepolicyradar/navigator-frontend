@@ -1,10 +1,9 @@
 import { useState, useRef } from "react";
 
 import { Icon } from "@/components/atoms/icon/Icon";
+import DropdownMenuItem from "@/components/menus/DropdownMenuItem";
+import DropdownMenuWrapper from "@/components/menus/DropdownMenuWrapper";
 import useOutsideAlerter from "@/hooks/useOutsideAlerter";
-
-import DropdownMenuItem from "./DropdownMenuItem";
-import DropdownMenuWrapper from "./DropdownMenuWrapper";
 
 type TProps = {
   iconClass?: string;
