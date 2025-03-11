@@ -19,6 +19,8 @@ export default [
       "tailwind.config.js",
       "postcss.config.js",
       "**/*.js",
+      ".storybook/preview.ts",
+      ".storybook/main.ts",
     ],
   },
   {
@@ -55,6 +57,9 @@ export default [
       },
       react: {
         version: "detect",
+      },
+      node: {
+        extensions: [".ts", ".tsx", ".d.ts"],
       },
     },
 

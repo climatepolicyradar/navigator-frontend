@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 
 import { Icon } from "@/components/atoms/icon/Icon";
-import { Search2Icon } from "@/components/svg/Icons";
 import { sortData } from "@/utils/sorting";
-import { sortData } from "@/utils/sorting";
+
+import { TextInput } from "./TextInput";
+import SuggestList from "../filters/SuggestList";
 
 type TProps = {
   list: Object[];

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import { Icon } from "@/components/atoms/icon/Icon";
-import { Search2Icon } from "@/components/svg/Icons";
 
 import { SearchDropdown } from "./SearchDropdown";
 import { TextInput } from "./TextInput";

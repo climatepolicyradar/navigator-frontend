@@ -3,27 +3,27 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { MdOutlineTune } from "react-icons/md";
-import { ApiClient } from "@api/http-common";
-import useSearch from "@/hooks/useSearch";
 
-import { FullWidth } from "@/components/panels/FullWidth";
-import Layout from "@/components/layouts/Main";
+import { ApiClient } from "@/api/http-common";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
-import PassageMatches from "@/components/PassageMatches";
 import Loader from "@/components/Loader";
-import SearchForm from "@/components/forms/SearchForm";
-import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
+import PassageMatches from "@/components/PassageMatches";
+import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { DocumentHead } from "@/components/documents/DocumentHead";
-import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
+import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { SearchSettings } from "@/components/filters/SearchSettings";
-import { getDocumentDescription } from "@/constants/metaDescriptions";
-import { QUERY_PARAMS } from "@/constants/queryParams";
+import SearchForm from "@/components/forms/SearchForm";
+import Layout from "@/components/layouts/Main";
+import { FullWidth } from "@/components/panels/FullWidth";
+import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
 import { EXAMPLE_SEARCHES } from "@/constants/exampleSearches";
+import { getDocumentDescription } from "@/constants/metaDescriptions";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import useSearch from "@/hooks/useSearch";
 import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamiy";
 
 type TProps = {

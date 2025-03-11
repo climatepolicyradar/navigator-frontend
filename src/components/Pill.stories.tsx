@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
 
-import Pill from "./Pill";
+import Pill from "@/components/Pill";
 
 const meta = {
   title: "Old/Pill",

@@ -1,40 +1,35 @@
 import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { ApiClient } from "@api/http-common";
+import { useState } from "react";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
-import { SingleCol } from "@components/panels/SingleCol";
-
-import Layout from "@components/layouts/Main";
-import { Timeline } from "@components/timeline/Timeline";
-import { Event } from "@components/timeline/Event";
-import { CountryHeader } from "@components/blocks/CountryHeader";
-import { Divider } from "@components/dividers/Divider";
-import { Icon } from "@components/atoms/icon/Icon";
-import { FamilyListItem } from "@components/document/FamilyListItem";
-import { Targets } from "@components/Targets";
-import { Button } from "@components/atoms/button/Button";
-import TabbedNav from "@components/nav/TabbedNav";
-import { ExternalLink } from "@components/ExternalLink";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import DocumentSearchForm from "@components/forms/DocumentSearchForm";
-import { Alert } from "@components/Alert";
-import { SubNav } from "@components/nav/SubNav";
-import { Heading } from "@components/typography/Heading";
-
-import { getCountryCode } from "@helpers/getCountryFields";
-
-import { extractNestedData } from "@utils/extractNestedData";
-import { sortFilterTargets } from "@utils/sortFilterTargets";
-import { readConfigFile } from "@utils/readConfigFile";
-
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { systemGeoNames } from "@constants/systemGeos";
-
-import { TGeographyStats, TGeographySummary, TThemeConfig } from "@types";
-import { TTarget, TEvent, TGeography, TTheme } from "@types";
-`import { useState } from "react";
+import { ApiClient } from "@/api/http-common";
+import { Alert } from "@/components/Alert";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Targets } from "@/components/Targets";
+import { Button } from "@/components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { CountryHeader } from "@/components/blocks/CountryHeader";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import { Divider } from "@/components/dividers/Divider";
+import { FamilyListItem } from "@/components/document/FamilyListItem";
+import DocumentSearchForm from "@/components/forms/DocumentSearchForm";
+import Layout from "@/components/layouts/Main";
+import { SubNav } from "@/components/nav/SubNav";
+import TabbedNav from "@/components/nav/TabbedNav";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { Event } from "@/components/timeline/Event";
+import { Timeline } from "@/components/timeline/Timeline";
+import { Heading } from "@/components/typography/Heading";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { systemGeoNames } from "@/constants/systemGeos";
+import { getCountryCode } from "@/helpers/getCountryFields";
+import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
+import { TTarget, TEvent, TGeography, TTheme } from "@/types";
+import { extractNestedData } from "@/utils/extractNestedData";
+import { readConfigFile } from "@/utils/readConfigFile";
+import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 type TProps = {
   geography: TGeographyStats;

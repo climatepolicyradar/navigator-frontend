@@ -1,37 +1,26 @@
-import EmbeddedPDF from "@/components/EmbeddedPDF";
-import { FullWidth } from "@/components/panels/FullWidth";
-import { TConcept, TDocumentPage, TSearchResponse } from "@/types";
-
-import { EmptyDocument } from "./EmptyDocument";
-
-import { Button } from "@/components/atoms/button/Button";
-import SearchForm from "@/components/forms/SearchForm";
-
-import { MdOutlineTune } from "react-icons/md";
 import { AnimatePresence } from "framer-motion";
-
-import PassageMatches from "@/components/PassageMatches";
-import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
-
-import { EmptyPassages } from "./EmptyPassages";
-
 import { motion } from "framer-motion";
-import { AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import { useEffect, useState, useCallback, useMemo, useReducer } from "react";
+import { MdOutlineTune } from "react-icons/md";
 
-import { SearchSettings } from "@/components/filters/SearchSettings";
-import { QUERY_PARAMS } from "@/constants/queryParams";
-import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
-
-import useSearch from "@/hooks/useSearch";
-
+import EmbeddedPDF from "@/components/EmbeddedPDF";
+import Loader from "@/components/Loader";
+import PassageMatches from "@/components/PassageMatches";
+import { Button } from "@/components/atoms/button/Button";
 import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
+import { SearchSettings } from "@/components/filters/SearchSettings";
+import SearchForm from "@/components/forms/SearchForm";
+import { FullWidth } from "@/components/panels/FullWidth";
+import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
+import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { useEffectOnce } from "@/hooks/useEffectOnce";
+import useSearch from "@/hooks/useSearch";
+import { TConcept, TDocumentPage, TSearchResponse } from "@/types";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 
-import { useEffectOnce } from "@/hooks/useEffectOnce";
-
-import Loader from "@/components/Loader";
+import { EmptyDocument } from "./EmptyDocument";
+import { EmptyPassages } from "./EmptyPassages";
 
 type TProps = {
   initialQueryTerm?: string | string[];

@@ -2,18 +2,15 @@ import App, { AppProps } from "next/app";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-// import { ReactQueryDevtools } from "react-query/devtools";
-
-import "../styles/flag-icons.css";
-import "../styles/main.css";
-
-import { ThemeContext } from "@context/ThemeContext";
-import { AdobeContext } from "@context/AdobeContext";
 
 import { CookieConsent } from "@/components/cookies/CookieConsent";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
+import { AdobeContext } from "@/context/AdobeContext";
+import { PostHogProvider } from "@/context/PostHogProvider";
+import { ThemeContext } from "@/context/ThemeContext";
 
-import { PostHogProvider } from "@context/PostHogProvider";
+import "../styles/flag-icons.css";
+import "../styles/main.css";
 
 const favicon = `/images/favicon/${process.env.THEME}.png`;
 
