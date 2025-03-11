@@ -4,7 +4,7 @@ import { ParsedUrlQuery } from "querystring";
 import { InputCheck } from "@components/forms/Checkbox";
 import { InputRadio } from "@components/forms/Radio";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 
 import { TCorpusTypeDictionary, TThemeConfig, TThemeConfigFilter } from "@types";
 import { TextInput } from "@components/forms/TextInput";

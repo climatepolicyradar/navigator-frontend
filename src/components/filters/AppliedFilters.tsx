@@ -10,8 +10,8 @@ import Pill from "@components/Pill";
 import { getCountryName } from "@helpers/getCountryFields";
 import { getConceptName } from "@helpers/getConceptFields";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { sortOptions } from "@constants/sortOptions";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { sortOptions } from "@/constants/sortOptions";
 
 import { TConcept, TGeography, TThemeConfig } from "@types";
 

@@ -21,10 +21,10 @@ import { EmptyPassages } from "@components/documents/EmptyPassages";
 import { EmptyDocument } from "@components/documents/EmptyDocument";
 import { SearchSettings } from "@components/filters/SearchSettings";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { getDocumentDescription } from "@constants/metaDescriptions";
-import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
-import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { getDocumentDescription } from "@/constants/metaDescriptions";
+import { EXAMPLE_SEARCHES } from "@/constants/exampleSearches";
+import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 
 import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@types";
 import { getFeatureFlags } from "@utils/featureFlags";

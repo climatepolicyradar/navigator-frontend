@@ -8,7 +8,7 @@ import { SubNav } from "@components/nav/SubNav";
 import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
 import { ExternalLink } from "@components/ExternalLink";
 import { Heading } from "@components/typography/Heading";
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 
 const FrameworkLaws = () => {
   return (

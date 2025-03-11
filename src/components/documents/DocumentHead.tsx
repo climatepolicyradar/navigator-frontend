@@ -16,7 +16,7 @@ import { Heading } from "@components/typography/Heading";
 import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
 import { truncateString } from "@utils/truncateString";
 
-import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
+import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
 
 import { TDocumentPage, TFamilyPage } from "@types";
 import { DocumentMetaRenderer } from "./renderers/DocumentMetaRenderer";

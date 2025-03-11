@@ -7,8 +7,8 @@ import { InputListContainer } from "@components/filters/InputListContainer";
 import { InputRadio } from "@components/forms/Radio";
 import { Button } from "@components/atoms/button/Button";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { currentYear } from "@constants/timedate";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { currentYear } from "@/constants/timedate";
 
 type TProps = {
   type: string;
