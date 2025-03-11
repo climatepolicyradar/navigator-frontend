@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Script from "next/script";
 
-import { Button } from "@components/atoms/button/Button";
-import { ExternalLink } from "@components/ExternalLink";
+import { Button } from "@/components/atoms/button/Button";
+import { ExternalLink } from "@/components/ExternalLink";
 
 import { getCookie, setCookie } from "@utils/cookies";
 import getDomain from "@utils/getDomain";

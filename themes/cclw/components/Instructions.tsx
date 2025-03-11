@@ -4,8 +4,8 @@ import useConfig from "@hooks/useConfig";
 
 import { calculateTotalFamilies } from "@/helpers/getFamilyCounts";
 
-import { Button } from "@components/atoms/button/Button";
-import { Icon } from "@components/atoms/icon/Icon";
+import { Button } from "@/components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
 
 import { INSTRUCTIONS } from "@cclw/constants/instructions";
 

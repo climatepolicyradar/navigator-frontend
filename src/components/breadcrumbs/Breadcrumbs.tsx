@@ -1,4 +1,4 @@
-import { LinkWithQuery } from "@components/LinkWithQuery";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { isSystemGeo } from "@utils/isSystemGeo";
 
 const BREADCRUMB_MAXLENGTH = 50;

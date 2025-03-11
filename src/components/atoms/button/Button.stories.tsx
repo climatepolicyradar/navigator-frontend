@@ -1,4 +1,4 @@
-import { Icon } from "@components/atoms/icon/Icon";
+import { Icon } from "@/components/atoms/icon/Icon";
 import { Meta, StoryObj } from "@storybook/react/*";
 import { LuMoveUpRight } from "react-icons/lu";
 import { Button } from "./Button";

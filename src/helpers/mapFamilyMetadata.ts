@@ -1,4 +1,4 @@
-import { MULTILATERALCLIMATEFUNDSCATEGORY } from "@components/documents/renderers/DocumentMetaRenderer";
+import { MULTILATERALCLIMATEFUNDSCATEGORY } from "@/components/documents/renderers/DocumentMetaRenderer";
 import { metadataLabelMappings } from "@constants/familyMetadataMappings";
 import { getSubCategoryName } from "@/helpers/getCategoryName";
 import { getSumUSD } from "@/helpers/getSumUSD";

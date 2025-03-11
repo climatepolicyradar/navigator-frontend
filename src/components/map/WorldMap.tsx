@@ -6,7 +6,7 @@ import useConfig from "@hooks/useConfig";
 import useGeographies from "@hooks/useGeographies";
 import { useMcfData } from "@hooks/useMcfData";
 
-import { LinkWithQuery } from "@components/LinkWithQuery";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import GeographySelect from "./GeographySelect";
 import { ZoomControls } from "./ZoomControls";
 import { Legend } from "./Legend";
