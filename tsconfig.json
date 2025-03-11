@@ -28,8 +28,8 @@
       "@/types": ["src/types/index"],
       "@/pages/*": ["src/pages/*"],
       "@/utils/*": ["src/utils/*"],
-      "@cclw/*": ["themes/cclw/*"],
-      "@cpr/*": ["themes/cpr/*"],
+      "@/cclw/*": ["themes/cclw/*"],
+      "@/cpr/*": ["themes/cpr/*"],
       "@mcf/*": ["themes/mcf/*"]
     }
   },

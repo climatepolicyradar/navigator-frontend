@@ -6,7 +6,7 @@ import DropdownMenuItem from "@/components/menus/DropdownMenuItem";
 import DropdownMenuWrapper from "@/components/menus/DropdownMenuWrapper";
 
 import menuLinks from "../../constants/menuLinks";
-import { colors } from "@mcf/constants/colors";
+import { colors } from "@/mcf/constants/colors";
 
 export const Menu = () => {
   const [showMenu, setShowMenu] = useState(false);

@@ -9,9 +9,9 @@ import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { Heading } from "@/components/typography/Heading";
-import { AccordianItem } from "@cclw/components/AccordianItem";
+import { AccordianItem } from "@/cclw/components/AccordianItem";
 
-import { METHODOLOGY } from "@cclw/constants/methodologyItems";
+import { METHODOLOGY } from "@/cclw/constants/methodologyItems";
 
 const Methodology = () => {
   return (

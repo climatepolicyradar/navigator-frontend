@@ -7,7 +7,7 @@ import { calculateTotalFamilies } from "@/helpers/getFamilyCounts";
 import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
 
-import { INSTRUCTIONS } from "@cclw/constants/instructions";
+import { INSTRUCTIONS } from "@/cclw/constants/instructions";
 
 const ANIMATION_DELAY = 3000;
 

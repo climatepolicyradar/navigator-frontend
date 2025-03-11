@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import Instructions from "@cclw/components/Instructions";
+import Instructions from "@/cclw/components/Instructions";
 
 vi.mock("react-query", () => ({
   useQuery: vi.fn(() => ({
