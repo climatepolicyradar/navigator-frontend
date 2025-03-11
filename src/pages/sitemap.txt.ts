@@ -1,4 +1,4 @@
-import { ApiClient } from "@api/http-common";
+import { ApiClient } from "@/api/http-common";
 import { TDataNode, TGeography } from "@types";
 
 function Sitemap() {}

@@ -37,7 +37,7 @@ import { QUERY_PARAMS } from "@constants/queryParams";
 
 import { TConcept, TFamilyPage, TTheme, TThemeConfig } from "@types";
 import { getFeatureFlags } from "@utils/featureFlags";
-import { ApiClient } from "@api/http-common";
+import { ApiClient } from "@/api/http-common";
 import { Button } from "@components/atoms/button/Button";
 
 type TProps = {
