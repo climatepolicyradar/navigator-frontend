@@ -1,5 +1,5 @@
-import { ExternalLink } from "@components/ExternalLink";
-import { LinkWithQuery } from "@components/LinkWithQuery";
+import { ExternalLink } from "@/components/ExternalLink";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { useRouter } from "next/router";
 
 interface DropdownMenuItemProps {

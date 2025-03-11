@@ -1,4 +1,4 @@
-import { Icon } from "@components/atoms/icon/Icon";
+import { Icon } from "@/components/atoms/icon/Icon";
 
 type TProps = {
   hasQueryString: boolean;

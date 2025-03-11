@@ -1,4 +1,4 @@
-import { LinkWithQuery } from "@components/LinkWithQuery";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 
 const MethodologyLink = () => <LinkWithQuery href="/methodology">our methodology page</LinkWithQuery>;
 

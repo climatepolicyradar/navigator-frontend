@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { ExternalLink } from "@components/ExternalLink";
+import { ExternalLink } from "@/components/ExternalLink";
 
 export const PoweredBy = () => (
   <div className="md:flex justify-center gap-12 text-center">

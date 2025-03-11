@@ -5,34 +5,34 @@ import { useRouter } from "next/router";
 
 import { ApiClient } from "@/api/http-common";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
-import { SingleCol } from "@components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { SingleCol } from "@/components/panels/SingleCol";
 
-import Layout from "@components/layouts/Main";
-import { Timeline } from "@components/timeline/Timeline";
-import { Event } from "@components/timeline/Event";
-import { CountryHeader } from "@components/blocks/CountryHeader";
-import { Divider } from "@components/dividers/Divider";
-import { Icon } from "@components/atoms/icon/Icon";
-import { FamilyListItem } from "@components/document/FamilyListItem";
-import { Targets } from "@components/Targets";
-import { Button } from "@components/atoms/button/Button";
-import TabbedNav from "@components/nav/TabbedNav";
-import { ExternalLink } from "@components/ExternalLink";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import DocumentSearchForm from "@components/forms/DocumentSearchForm";
-import { Alert } from "@components/Alert";
-import { SubNav } from "@components/nav/SubNav";
-import { Heading } from "@components/typography/Heading";
+import Layout from "@/components/layouts/Main";
+import { Timeline } from "@/components/timeline/Timeline";
+import { Event } from "@/components/timeline/Event";
+import { CountryHeader } from "@/components/blocks/CountryHeader";
+import { Divider } from "@/components/dividers/Divider";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { FamilyListItem } from "@/components/document/FamilyListItem";
+import { Targets } from "@/components/Targets";
+import { Button } from "@/components/atoms/button/Button";
+import TabbedNav from "@/components/nav/TabbedNav";
+import { ExternalLink } from "@/components/ExternalLink";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import DocumentSearchForm from "@/components/forms/DocumentSearchForm";
+import { Alert } from "@/components/Alert";
+import { SubNav } from "@/components/nav/SubNav";
+import { Heading } from "@/components/typography/Heading";
 
-import { getCountryCode } from "@helpers/getCountryFields";
+import { getCountryCode } from "@/helpers/getCountryFields";
 
 import { extractNestedData } from "@utils/extractNestedData";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { readConfigFile } from "@utils/readConfigFile";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { systemGeoNames } from "@constants/systemGeos";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { systemGeoNames } from "@/constants/systemGeos";
 
 import { TGeographyStats, TGeographySummary, TThemeConfig } from "@types";
 import { TTarget, TEvent, TGeography, TTheme } from "@types";

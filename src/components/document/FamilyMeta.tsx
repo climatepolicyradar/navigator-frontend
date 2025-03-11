@@ -1,8 +1,8 @@
 import useConfig from "@/hooks/useConfig";
-import { getCategoryName } from "@helpers/getCategoryName";
+import { getCategoryName } from "@/helpers/getCategoryName";
 import { convertDate } from "@utils/timedate";
 import { TCategory, TCorpusTypeSubCategory } from "@types";
-import { CountryLinks } from "@components/CountryLinks";
+import { CountryLinks } from "@/components/CountryLinks";
 
 type TProps = {
   category: TCategory;

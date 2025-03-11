@@ -1,6 +1,6 @@
 import { canDisplayFilter } from "./canDisplayFilter";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 
 import { TThemeConfig } from "@types";
 

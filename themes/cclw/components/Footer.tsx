@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
-import { ExternalLink } from "@components/ExternalLink";
-import { LinkWithQuery } from "@components/LinkWithQuery";
+import { ExternalLink } from "@/components/ExternalLink";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Feedback } from "./Feedback";
 import MENU_LINKS from "../constants/menuLinks";
 

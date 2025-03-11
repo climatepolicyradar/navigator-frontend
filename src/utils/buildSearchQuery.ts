@@ -1,5 +1,5 @@
-import { initialSearchCriteria } from "@constants/searchCriteria";
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { initialSearchCriteria } from "@/constants/searchCriteria";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 
 import { buildSearchQueryMetadata } from "./buildSearchQueryMetadata";
 

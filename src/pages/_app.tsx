@@ -10,8 +10,8 @@ import "../styles/main.css";
 import { ThemeContext } from "@context/ThemeContext";
 import { AdobeContext } from "@context/AdobeContext";
 
-import { CookieConsent } from "@components/cookies/CookieConsent";
-import ErrorBoundary from "@components/error/ErrorBoundary";
+import { CookieConsent } from "@/components/cookies/CookieConsent";
+import ErrorBoundary from "@/components/error/ErrorBoundary";
 import { PostHogProvider } from "@context/PostHogProvider";
 
 const favicon = `/images/favicon/${process.env.THEME}.png`;

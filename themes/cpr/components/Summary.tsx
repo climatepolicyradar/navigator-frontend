@@ -1,8 +1,8 @@
-import { SiteWidth } from "@components/panels/SiteWidth";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
-import { ExternalLink } from "@components/ExternalLink";
-import { Icon } from "@components/atoms/icon/Icon";
-import { Heading } from "@components/typography/Heading";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { Heading } from "@/components/typography/Heading";
 
 const Summary = () => {
   return (

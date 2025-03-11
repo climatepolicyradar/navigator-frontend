@@ -1,7 +1,7 @@
 import useConfig from "@/hooks/useConfig";
 import FilterTag from "../labels/FilterTag";
-import { getCountryName } from "@helpers/getCountryFields";
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { getCountryName } from "@/helpers/getCountryFields";
 
 type TProps = {
   list: string[];
