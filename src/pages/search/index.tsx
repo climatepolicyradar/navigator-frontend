@@ -33,7 +33,7 @@ import { Icon } from "@/components/atoms/icon/Icon";
 import { getThemeConfigLink } from "@utils/getThemeConfigLink";
 import { readConfigFile } from "@utils/readConfigFile";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 
 import { TConcept, TFamilyPage, TTheme, TThemeConfig } from "@types";
 import { getFeatureFlags } from "@utils/featureFlags";

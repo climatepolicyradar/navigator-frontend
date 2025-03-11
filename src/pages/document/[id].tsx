@@ -41,10 +41,10 @@ import { extractNestedData } from "@utils/extractNestedData";
 
 import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept } from "@types";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
-import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
-import { MAX_PASSAGES } from "@constants/paging";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { EXAMPLE_SEARCHES } from "@/constants/exampleSearches";
+import { MAX_FAMILY_SUMMARY_LENGTH } from "@/constants/document";
+import { MAX_PASSAGES } from "@/constants/paging";
 import { getFeatureFlags } from "@utils/featureFlags";
 import { fetchAndProcessConcepts } from "@utils/processConcepts";
 import { MultiCol } from "@/components/panels/MultiCol";

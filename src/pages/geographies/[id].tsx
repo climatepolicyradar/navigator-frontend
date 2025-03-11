@@ -31,8 +31,8 @@ import { extractNestedData } from "@utils/extractNestedData";
 import { sortFilterTargets } from "@utils/sortFilterTargets";
 import { readConfigFile } from "@utils/readConfigFile";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { systemGeoNames } from "@constants/systemGeos";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { systemGeoNames } from "@/constants/systemGeos";
 
 import { TGeographyStats, TGeographySummary, TThemeConfig } from "@types";
 import { TTarget, TEvent, TGeography, TTheme } from "@types";

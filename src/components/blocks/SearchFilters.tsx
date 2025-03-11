@@ -14,8 +14,8 @@ import { AppliedFilters } from "@/components/filters/AppliedFilters";
 import Loader from "@/components/Loader";
 import { FilterOptions } from "./FilterOptions";
 
-import { currentYear, minYear } from "@constants/timedate";
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { currentYear, minYear } from "@/constants/timedate";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 

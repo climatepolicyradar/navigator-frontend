@@ -11,7 +11,7 @@ import { Heading } from "@/components/typography/Heading";
 import { CleanRouterQuery } from "@utils/cleanRouterQuery";
 import { truncateString } from "@utils/truncateString";
 
-import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
+import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
 
 type TProps = {
   family?: TMatchedFamily;
