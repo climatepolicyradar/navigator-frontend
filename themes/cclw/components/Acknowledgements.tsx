@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import { ReactNode } from "react";
 
-import { ExternalLink } from "@components/ExternalLink";
-import { Heading } from "@components/typography/Heading";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Heading } from "@/components/typography/Heading";
 
 type TAcknowledgement = {
   partnerImage?: {

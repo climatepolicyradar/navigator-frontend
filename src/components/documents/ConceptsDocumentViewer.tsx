@@ -1,24 +1,24 @@
-import EmbeddedPDF from "@components/EmbeddedPDF";
-import { FullWidth } from "@components/panels/FullWidth";
+import EmbeddedPDF from "@/components/EmbeddedPDF";
+import { FullWidth } from "@/components/panels/FullWidth";
 import { TConcept, TDocumentPage, TSearchResponse } from "@types";
 import { EmptyDocument } from "./EmptyDocument";
-import { Button } from "@components/atoms/button/Button";
-import SearchForm from "@components/forms/SearchForm";
+import { Button } from "@/components/atoms/button/Button";
+import SearchForm from "@/components/forms/SearchForm";
 import { MdOutlineTune } from "react-icons/md";
 import { AnimatePresence } from "framer-motion";
-import PassageMatches from "@components/PassageMatches";
-import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
+import PassageMatches from "@/components/PassageMatches";
+import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
 import { EmptyPassages } from "./EmptyPassages";
 import { motion } from "framer-motion";
 import { useEffect, useState, useCallback, useMemo, useReducer } from "react";
-import { SearchSettings } from "@components/filters/SearchSettings";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
+import { SearchSettings } from "@/components/filters/SearchSettings";
 import useSearch from "@hooks/useSearch";
-import { ConceptsPanel } from "@components/concepts/ConceptsPanel";
+import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
 import { fetchAndProcessConcepts } from "@utils/processConcepts";
 import { useEffectOnce } from "@hooks/useEffectOnce";
-import Loader from "@components/Loader";
+import Loader from "@/components/Loader";
 
 type TProps = {
   initialQueryTerm?: string | string[];

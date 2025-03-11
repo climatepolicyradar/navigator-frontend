@@ -1,4 +1,4 @@
-import { ExternalLink } from "@components/ExternalLink";
+import { ExternalLink } from "@/components/ExternalLink";
 
 type TFAQ = {
   id?: string;

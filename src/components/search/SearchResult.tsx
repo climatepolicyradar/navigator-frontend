@@ -1,8 +1,8 @@
-import { Button } from "@components/atoms/button/Button";
-import { FamilyListItem } from "@components/document/FamilyListItem";
-import { Icon } from "@components/atoms/icon/Icon";
-import { ToolTipSSR } from "@components/tooltip/TooltipSSR";
 import { MAX_RESULTS } from "@/constants/paging";
+import { Button } from "@/components/atoms/button/Button";
+import { FamilyListItem } from "@/components/document/FamilyListItem";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { ToolTipSSR } from "@/components/tooltip/TooltipSSR";
 import { TMatchedFamily } from "@types";
 interface ISearchResultProps {
   family: TMatchedFamily;

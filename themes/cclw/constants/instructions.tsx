@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Icon } from "@components/atoms/icon/Icon";
+import { Icon } from "@/components/atoms/icon/Icon";
 
 type TFamilyTotals = {
   laws: number;

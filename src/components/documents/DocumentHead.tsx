@@ -3,17 +3,17 @@ import { LuMoveUpRight } from "react-icons/lu";
 
 import useConfig from "@hooks/useConfig";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
-import { SubNav } from "@components/nav/SubNav";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import { Button } from "@components/atoms/button/Button";
-import { Icon } from "@components/atoms/icon/Icon";
-import { Alert } from "@components/Alert";
-import { ExternalLink } from "@components/ExternalLink";
-import { Heading } from "@components/typography/Heading";
+import { SubNav } from "@/components/nav/SubNav";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import { Button } from "@/components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { Alert } from "@/components/Alert";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Heading } from "@/components/typography/Heading";
 
-import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
+import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { truncateString } from "@utils/truncateString";
 
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";

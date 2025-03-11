@@ -3,21 +3,21 @@ import { ParsedUrlQuery } from "querystring";
 import dynamic from "next/dynamic";
 
 import useGetThemeConfig from "@hooks/useThemeConfig";
-import { Label } from "@components/labels/Label";
+import { Label } from "@/components/labels/Label";
 import { DateRange } from "../filters/DateRange";
-import { Accordian } from "@components/accordian/Accordian";
-import { InputListContainer } from "@components/filters/InputListContainer";
+import { Accordian } from "@/components/accordian/Accordian";
+import { InputListContainer } from "@/components/filters/InputListContainer";
 import { TypeAhead } from "../forms/TypeAhead";
-import { InputCheck } from "@components/forms/Checkbox";
-import { InputRadio } from "@components/forms/Radio";
-import { AppliedFilters } from "@components/filters/AppliedFilters";
-import Loader from "@components/Loader";
+import { InputCheck } from "@/components/forms/Checkbox";
+import { InputRadio } from "@/components/forms/Radio";
+import { AppliedFilters } from "@/components/filters/AppliedFilters";
+import Loader from "@/components/Loader";
 import { FilterOptions } from "./FilterOptions";
 
 import { currentYear, minYear } from "@/constants/timedate";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
-import { getCountriesFromRegions } from "@helpers/getCountriesFromRegions";
+import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 
 import { canDisplayFilter } from "@utils/canDisplayFilter";
 import { getFilterLabel } from "@utils/getFilterLabel";

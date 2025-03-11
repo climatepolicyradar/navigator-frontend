@@ -19,10 +19,10 @@
     "types": ["node", "vitest/globals"],
     "paths": {
       "@/api/*": ["src/api/*"],
-      "@components/*": ["src/components/*"],
+      "@/components/*": ["src/components/*"],
       "@/constants/*": ["src/constants/*"],
       "@context/*": ["src/context/*"],
-      "@helpers/*": ["src/helpers/*"],
+      "@/helpers/*": ["src/helpers/*"],
       "@hooks/*": ["src/hooks/*"],
       "@interfaces/*": ["src/interfaces/*"],
       "@types": ["src/types/index"],

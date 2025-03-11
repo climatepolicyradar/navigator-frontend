@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import useConfig from "@hooks/useConfig";
-import { Icon } from "@components/atoms/icon/Icon";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { Icon } from "@/components/atoms/icon/Icon";
 import { TGeography } from "@types";
 import { systemGeoCodes } from "@/constants/systemGeos";
 

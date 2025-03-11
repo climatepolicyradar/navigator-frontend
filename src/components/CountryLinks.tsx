@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 
-import { CountryLink } from "@components/CountryLink";
+import { CountryLink } from "@/components/CountryLink";
 
-import { getCountryName } from "@helpers/getCountryFields";
+import { getCountryName } from "@/helpers/getCountryFields";
 
 import { isSystemGeo, isSystemInternational } from "@utils/isSystemGeo";
 

@@ -1,4 +1,4 @@
-import { ExternalLink } from "@components/ExternalLink";
+import { ExternalLink } from "@/components/ExternalLink";
 import SearchResult from "./SearchResult";
 
 import { TMatchedFamily } from "@types";
