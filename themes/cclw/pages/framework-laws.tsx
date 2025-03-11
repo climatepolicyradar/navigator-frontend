@@ -5,10 +5,10 @@ import { SiteWidth } from "@/components/panels/SiteWidth";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SubNav } from "@/components/nav/SubNav";
 
+import { QUERY_PARAMS } from "@/constants/queryParams";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { ExternalLink } from "@/components/ExternalLink";
 import { Heading } from "@/components/typography/Heading";
-import { QUERY_PARAMS } from "@constants/queryParams";
 
 const FrameworkLaws = () => {
   return (

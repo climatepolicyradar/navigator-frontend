@@ -1,9 +1,9 @@
-import { initialSearchCriteria } from "@constants/searchCriteria";
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { initialSearchCriteria } from "@/constants/searchCriteria";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 
 import { buildSearchQueryMetadata } from "./buildSearchQueryMetadata";
 
-import { TSearchCriteria, TSearchKeywordFilters, TThemeConfig } from "@types";
+import { TSearchCriteria, TSearchKeywordFilters, TThemeConfig } from "@/types";
 
 export type TRouterQuery = {
   [key: string]: string | string[];

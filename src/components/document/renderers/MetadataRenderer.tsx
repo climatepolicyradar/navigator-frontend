@@ -1,4 +1,4 @@
-import { TFamilyMetadata, TMCFFamilyMetadata, TFamilyPage } from "@types";
+import { TFamilyMetadata, TMCFFamilyMetadata, TFamilyPage } from "@/types";
 
 import { FamilyMeta } from "../FamilyMeta";
 import { McfFamilyMeta } from "../McfFamilyMeta";

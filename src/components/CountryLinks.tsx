@@ -4,9 +4,9 @@ import { CountryLink } from "@/components/CountryLink";
 
 import { getCountryName } from "@/helpers/getCountryFields";
 
-import { isSystemGeo, isSystemInternational } from "@utils/isSystemGeo";
+import { isSystemGeo, isSystemInternational } from "@/utils/isSystemGeo";
 
-import { TGeography } from "@types";
+import { TGeography } from "@/types";
 
 type TCountriesLink = {
   geographies: string[];

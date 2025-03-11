@@ -1,4 +1,4 @@
-import { TConcept } from "@types";
+import { TConcept } from "@/types";
 
 const findConceptObject = (conceptSearch: string, dataSet: TConcept[]) => {
   let concept = dataSet.find((c) => c.wikibase_id.toLowerCase() === conceptSearch.toLowerCase());

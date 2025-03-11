@@ -27,15 +27,15 @@ import { Heading } from "@/components/typography/Heading";
 
 import { getCountryCode } from "@/helpers/getCountryFields";
 
-import { extractNestedData } from "@utils/extractNestedData";
-import { sortFilterTargets } from "@utils/sortFilterTargets";
-import { readConfigFile } from "@utils/readConfigFile";
+import { extractNestedData } from "@/utils/extractNestedData";
+import { sortFilterTargets } from "@/utils/sortFilterTargets";
+import { readConfigFile } from "@/utils/readConfigFile";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { systemGeoNames } from "@constants/systemGeos";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { systemGeoNames } from "@/constants/systemGeos";
 
-import { TGeographyStats, TGeographySummary, TThemeConfig } from "@types";
-import { TTarget, TEvent, TGeography, TTheme } from "@types";
+import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
+import { TTarget, TEvent, TGeography, TTheme } from "@/types";
 
 type TProps = {
   geography: TGeographyStats;

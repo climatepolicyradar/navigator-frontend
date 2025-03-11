@@ -1,4 +1,4 @@
-import { useMcfData } from "@hooks/useMcfData";
+import { useMcfData } from "@/hooks/useMcfData";
 
 export const Legend = ({ max }: { max: number }) => {
   const showMcf = useMcfData();

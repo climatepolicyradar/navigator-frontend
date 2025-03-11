@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { LuMoveUpRight } from "react-icons/lu";
 
-import useConfig from "@hooks/useConfig";
+import useConfig from "@/hooks/useConfig";
 
 import { SiteWidth } from "@/components/panels/SiteWidth";
 
@@ -14,11 +14,11 @@ import { ExternalLink } from "@/components/ExternalLink";
 import { Heading } from "@/components/typography/Heading";
 
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { truncateString } from "@utils/truncateString";
+import { truncateString } from "@/utils/truncateString";
 
-import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@constants/document";
+import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
 
-import { TDocumentPage, TFamilyPage } from "@types";
+import { TDocumentPage, TFamilyPage } from "@/types";
 import { DocumentMetaRenderer } from "./renderers/DocumentMetaRenderer";
 
 type TProps = {

@@ -1,5 +1,5 @@
 import ViewSDKClient from "@/api/pdf";
-import { TPassage, TDocumentPage } from "@types";
+import { TPassage, TDocumentPage } from "@/types";
 
 function generateHighlights(document: TDocumentPage, documentPassageMatches: TPassage[]) {
   const date = new Date();

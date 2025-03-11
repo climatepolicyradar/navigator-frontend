@@ -20,17 +20,17 @@
     "paths": {
       "@/api/*": ["src/api/*"],
       "@/components/*": ["src/components/*"],
-      "@constants/*": ["src/constants/*"],
-      "@context/*": ["src/context/*"],
+      "@/constants/*": ["src/constants/*"],
+      "@/context/*": ["src/context/*"],
       "@/helpers/*": ["src/helpers/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@interfaces/*": ["src/interfaces/*"],
-      "@types": ["src/types/index"],
-      "@pages/*": ["src/pages/*"],
-      "@utils/*": ["src/utils/*"],
-      "@cclw/*": ["themes/cclw/*"],
-      "@cpr/*": ["themes/cpr/*"],
-      "@mcf/*": ["themes/mcf/*"]
+      "@/hooks/*": ["src/hooks/*"],
+      "@/interfaces/*": ["src/interfaces/*"],
+      "@/types": ["src/types/index"],
+      "@/pages/*": ["src/pages/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/cclw/*": ["themes/cclw/*"],
+      "@/cpr/*": ["themes/cpr/*"],
+      "@/mcf/*": ["themes/mcf/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/api/pdf.js", "vitest.config.mts"],

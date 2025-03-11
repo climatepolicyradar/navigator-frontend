@@ -1,4 +1,4 @@
-import { getSiteAsync } from "@utils/getSite";
+import { getSiteAsync } from "@/utils/getSite";
 import { useEffect, useState } from "react";
 
 export default function useGetTheme() {

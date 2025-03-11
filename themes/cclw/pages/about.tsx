@@ -10,7 +10,7 @@ import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { Heading } from "@/components/typography/Heading";
 
-import { Acknowledgements } from "@cclw/components/Acknowledgements";
+import { Acknowledgements } from "@/cclw/components/Acknowledgements";
 
 const About = () => {
   return (

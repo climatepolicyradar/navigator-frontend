@@ -1,4 +1,4 @@
-import { systemGeoCodes, systemGeoNames, SYSTEM_INTERNATIONAL_CODE, SYSTEM_INTERNATIONAL_NAME } from "@constants/systemGeos";
+import { systemGeoCodes, systemGeoNames, SYSTEM_INTERNATIONAL_CODE, SYSTEM_INTERNATIONAL_NAME } from "@/constants/systemGeos";
 
 export const isSystemGeo = (geo?: string) => {
   if (!geo) return false;

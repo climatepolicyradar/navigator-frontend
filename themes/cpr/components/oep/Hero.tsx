@@ -6,7 +6,7 @@ import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { ExternalLink } from "@/components/ExternalLink";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 import { Icon } from "@/components/atoms/icon/Icon";
 
 export const Hero = () => {

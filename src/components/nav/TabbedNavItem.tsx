@@ -2,7 +2,7 @@ import { ToolTipSSR } from "@/components/tooltip/TooltipSSR";
 
 import { getCategoryTooltip } from "@/helpers/getCategoryTooltip";
 
-import { TDocumentCategory } from "@types";
+import { TDocumentCategory } from "@/types";
 
 interface TabbedNavItemProps {
   title: TDocumentCategory;
