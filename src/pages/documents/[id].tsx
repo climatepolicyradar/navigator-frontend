@@ -111,6 +111,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     setPassageIndex(0);
     const queryObj = {};
     queryObj[QUERY_PARAMS.query_string] = term;
+    if (router.query[QUERY_PARAMS.exact_match]) queryObj[QUERY_PARAMS.exact_match] = router.query[QUERY_PARAMS.exact_match] as string;
     queryObj["id"] = document.slug;
     if (term === "") return false;
     router.push({ query: queryObj }, undefined, { shallow: true });
@@ -261,7 +262,9 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
               <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
                 <div
                   id="document-preview"
-                  className={`pt-4 flex-1 h-[400px] basis-[400px] md:block md:h-full ${totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""}`}
+                  className={`pt-4 flex-1 h-[400px] basis-[400px] md:block md:h-full relative ${
+                    totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""
+                  }`}
                 >
                   {canPreview && (
                     <EmbeddedPDF
@@ -269,6 +272,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                       documentPassageMatches={passageMatches}
                       passageIndex={passageIndex}
                       startingPassageIndex={startingPassage}
+                      searchStatus={status}
                     />
                   )}
                   {!canPreview && <EmptyDocument />}
