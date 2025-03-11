@@ -1,4 +1,4 @@
-import { TCorpusTypeDictionary } from "@types";
+import { TCorpusTypeDictionary } from "@/types";
 
 type TProps = {
   corpus_types: TCorpusTypeDictionary;

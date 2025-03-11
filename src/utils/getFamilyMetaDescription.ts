@@ -1,4 +1,4 @@
-import { TCategory } from "@types";
+import { TCategory } from "@/types";
 import { getCategoryName } from "@/helpers/getCategoryName";
 
 const stripHtml = (html: string) => {

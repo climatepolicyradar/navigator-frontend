@@ -1,6 +1,6 @@
+import { TConcept, TDocumentPage, TSearchResponse } from "@/types";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import { FullWidth } from "@/components/panels/FullWidth";
-import { TConcept, TDocumentPage, TSearchResponse } from "@types";
 import { EmptyDocument } from "./EmptyDocument";
 import { Button } from "@/components/atoms/button/Button";
 import SearchForm from "@/components/forms/SearchForm";

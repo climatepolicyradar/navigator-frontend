@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import { TMatchedFamily } from "@types";
+import { TMatchedFamily } from "@/types";
 
 import { FamilyMeta } from "@/components/document/FamilyMeta";
 import PassageMatches from "@/components/PassageMatches";

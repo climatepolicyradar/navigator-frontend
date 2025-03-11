@@ -4,7 +4,7 @@ import TabbedNavItem from "./TabbedNavItem";
 
 import { getCategoryTooltip } from "@/helpers/getCategoryTooltip";
 
-import { TDocumentCategory } from "@types";
+import { TDocumentCategory } from "@/types";
 
 type TTabItems = {
   title: TDocumentCategory;

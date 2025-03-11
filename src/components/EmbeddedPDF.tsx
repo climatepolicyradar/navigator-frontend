@@ -7,7 +7,7 @@ import usePDFPreview from "@/hooks/usePDFPreview";
 
 import Loader from "./Loader";
 
-import { TDocumentPage, TPassage } from "@types";
+import { TDocumentPage, TPassage } from "@/types";
 
 type TProps = {
   document: TDocumentPage;

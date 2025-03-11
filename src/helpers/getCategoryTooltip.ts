@@ -1,4 +1,4 @@
-import { TDocumentCategory } from "@types";
+import { TDocumentCategory } from "@/types";
 
 export const getCategoryTooltip = (category: TDocumentCategory): string => {
   switch (category) {

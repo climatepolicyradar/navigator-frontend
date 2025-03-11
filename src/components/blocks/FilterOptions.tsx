@@ -6,7 +6,7 @@ import { InputRadio } from "@/components/forms/Radio";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
-import { TCorpusTypeDictionary, TThemeConfig, TThemeConfigFilter } from "@types";
+import { TCorpusTypeDictionary, TThemeConfig, TThemeConfigFilter } from "@/types";
 import { TextInput } from "@/components/forms/TextInput";
 
 const getTaxonomyAllowedValues = (corporaKey: string, taxonomyKey: string, corpus_types: TCorpusTypeDictionary) => {

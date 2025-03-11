@@ -2,7 +2,7 @@ import { metadataLabelMappings } from "@/constants/familyMetadataMappings";
 import { MULTILATERALCLIMATEFUNDSCATEGORY } from "@/components/documents/renderers/DocumentMetaRenderer";
 import { getSubCategoryName } from "@/helpers/getCategoryName";
 import { getSumUSD } from "@/helpers/getSumUSD";
-import { TCorpusTypeSubCategory } from "@types";
+import { TCorpusTypeSubCategory } from "@/types";
 
 interface Metadata {
   [key: string]: string[] | TCorpusTypeSubCategory | string;

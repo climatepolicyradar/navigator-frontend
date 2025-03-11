@@ -1,4 +1,4 @@
-import { TDataNode } from "@types";
+import { TDataNode } from "@/types";
 import { removeDuplicates } from "@utils/removeDuplicates";
 
 export function extractNestedData<T>(response: TDataNode<T>[], levels: number, filterProp: string): { level1: T[]; level2: T[] } {

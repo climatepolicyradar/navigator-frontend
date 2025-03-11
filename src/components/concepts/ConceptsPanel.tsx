@@ -3,7 +3,7 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { ConceptsPopover } from "@/components/popover/ConceptsPopover";
 import { Button } from "@/components/atoms/button/Button";
 import Link from "next/link";
-import { TConcept } from "@types";
+import { TConcept } from "@/types";
 import { useCallback, useState } from "react";
 
 type TProps = {

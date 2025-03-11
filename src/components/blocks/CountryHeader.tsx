@@ -4,7 +4,7 @@ import Tooltip from "@/components/tooltip";
 import { ExternalLink } from "@/components/ExternalLink";
 import { Heading } from "@/components/typography/Heading";
 
-import { TGeographyStats, TGeography, TTheme } from "@types";
+import { TGeographyStats, TGeography, TTheme } from "@/types";
 
 type TProps = {
   country: TGeographyStats;

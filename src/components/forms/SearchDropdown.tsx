@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
+import { TGeography } from "@/types";
 import useConfig from "@/hooks/useConfig";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { Icon } from "@/components/atoms/icon/Icon";
-import { TGeography } from "@types";
 import { systemGeoCodes } from "@/constants/systemGeos";
 
 type TProps = {

@@ -5,7 +5,7 @@ import { CountryLinksAsList } from "@/components/CountryLinks";
 
 import { mapFamilyMetadata } from "@/helpers/mapFamilyMetadata";
 
-import { TConcept, TFamilyMetadata, TMCFFamilyMetadata } from "@types";
+import { TConcept, TFamilyMetadata, TMCFFamilyMetadata } from "@/types";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 
 interface MetadataItemProps {
