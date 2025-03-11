@@ -3,7 +3,7 @@ import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 
-import { ApiClient } from "@api/http-common";
+import { ApiClient } from "@/api/http-common";
 
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { SingleCol } from "@/components/panels/SingleCol";
