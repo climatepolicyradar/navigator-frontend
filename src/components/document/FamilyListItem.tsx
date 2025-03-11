@@ -4,7 +4,7 @@ import { TFamily } from "@/types";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { FamilyMeta } from "./FamilyMeta";
 
-import { truncateString } from "@utils/truncateString";
+import { truncateString } from "@/utils/truncateString";
 
 type TProps = {
   family: TFamily;

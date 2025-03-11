@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { CleanRouterQuery } from "@utils/cleanRouterQuery";
+import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 
 type TProps = {
   href: string;

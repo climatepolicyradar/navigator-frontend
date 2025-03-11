@@ -19,8 +19,8 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 
-import { canDisplayFilter } from "@utils/canDisplayFilter";
-import { getFilterLabel } from "@utils/getFilterLabel";
+import { canDisplayFilter } from "@/utils/canDisplayFilter";
+import { getFilterLabel } from "@/utils/getFilterLabel";
 
 import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
 

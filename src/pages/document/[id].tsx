@@ -29,15 +29,15 @@ import { Alert } from "@/components/Alert";
 import { SubNav } from "@/components/nav/SubNav";
 import { Heading } from "@/components/typography/Heading";
 
-import { truncateString } from "@utils/truncateString";
+import { truncateString } from "@/utils/truncateString";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getCorpusInfo } from "@/helpers/getCorpusInfo";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
 
-import { sortFilterTargets } from "@utils/sortFilterTargets";
-import { pluralise } from "@utils/pluralise";
-import { getFamilyMetaDescription } from "@utils/getFamilyMetaDescription";
-import { extractNestedData } from "@utils/extractNestedData";
+import { sortFilterTargets } from "@/utils/sortFilterTargets";
+import { pluralise } from "@/utils/pluralise";
+import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
+import { extractNestedData } from "@/utils/extractNestedData";
 
 import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept } from "@/types";
 
@@ -45,8 +45,8 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { EXAMPLE_SEARCHES } from "@/constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@/constants/document";
 import { MAX_PASSAGES } from "@/constants/paging";
-import { getFeatureFlags } from "@utils/featureFlags";
-import { fetchAndProcessConcepts } from "@utils/processConcepts";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import { MultiCol } from "@/components/panels/MultiCol";
 import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";

@@ -3,8 +3,8 @@ import { ApiClient, getEnvFromServer } from "../api/http-common";
 
 import useGetThemeConfig from "./useThemeConfig";
 
-import buildSearchQuery, { TRouterQuery } from "@utils/buildSearchQuery";
-import { getCachedSearch, updateCacheSearch, TCacheResult } from "@utils/searchCache";
+import buildSearchQuery, { TRouterQuery } from "@/utils/buildSearchQuery";
+import { getCachedSearch, updateCacheSearch, TCacheResult } from "@/utils/searchCache";
 
 import { initialSearchCriteria } from "../constants/searchCriteria";
 

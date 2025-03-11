@@ -26,8 +26,8 @@
       "@/hooks/*": ["src/hooks/*"],
       "@/interfaces/*": ["src/interfaces/*"],
       "@/types": ["src/types/index"],
-      "@pages/*": ["src/pages/*"],
-      "@utils/*": ["src/utils/*"],
+      "@/pages/*": ["src/pages/*"],
+      "@/utils/*": ["src/utils/*"],
       "@cclw/*": ["themes/cclw/*"],
       "@cpr/*": ["themes/cpr/*"],
       "@mcf/*": ["themes/mcf/*"]

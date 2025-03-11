@@ -8,8 +8,8 @@ import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Button } from "@/components/atoms/button/Button";
 import { Heading } from "@/components/typography/Heading";
 
-import { CleanRouterQuery } from "@utils/cleanRouterQuery";
-import { truncateString } from "@utils/truncateString";
+import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
+import { truncateString } from "@/utils/truncateString";
 
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
 
