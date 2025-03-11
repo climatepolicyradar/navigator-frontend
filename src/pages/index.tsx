@@ -6,7 +6,7 @@ import useConfig from "@/hooks/useConfig";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
-import { triggerNewSearch } from "@utils/triggerNewSearch";
+import { triggerNewSearch } from "@/utils/triggerNewSearch";
 import dynamic from "next/dynamic";
 import { TProps as HomepageProps } from "@cpr/pages/homepage";
 

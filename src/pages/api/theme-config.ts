@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { readConfigFile } from "@utils/readConfigFile";
+import { readConfigFile } from "@/utils/readConfigFile";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {

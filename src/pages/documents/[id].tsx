@@ -27,9 +27,9 @@ import { EXAMPLE_SEARCHES } from "@/constants/exampleSearches";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 
 import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@/types";
-import { getFeatureFlags } from "@utils/featureFlags";
+import { getFeatureFlags } from "@/utils/featureFlags";
 import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
-import { getMatchedPassagesFromSearch } from "@utils/getMatchedPassagesFromFamiy";
+import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamiy";
 
 type TProps = {
   document: TDocumentPage;

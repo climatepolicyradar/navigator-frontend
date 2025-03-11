@@ -30,13 +30,13 @@ import Pagination from "@/components/pagination";
 import SearchResultList from "@/components/search/SearchResultList";
 import { Icon } from "@/components/atoms/icon/Icon";
 
-import { getThemeConfigLink } from "@utils/getThemeConfigLink";
-import { readConfigFile } from "@utils/readConfigFile";
+import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
+import { readConfigFile } from "@/utils/readConfigFile";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
 import { TConcept, TFamilyPage, TTheme, TThemeConfig } from "@/types";
-import { getFeatureFlags } from "@utils/featureFlags";
+import { getFeatureFlags } from "@/utils/featureFlags";
 import { ApiClient } from "@/api/http-common";
 import { Button } from "@/components/atoms/button/Button";
 

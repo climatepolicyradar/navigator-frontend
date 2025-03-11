@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { Icon } from "./atoms/icon/Icon";
 import { Divider } from "./dividers/Divider";
-import { CleanRouterQuery } from "@utils/cleanRouterQuery";
+import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { Button } from "./atoms/button/Button";
 

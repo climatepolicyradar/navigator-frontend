@@ -1,5 +1,5 @@
 import { ApiClient, getEnvFromServer, getFilters } from "../api/http-common";
-import buildSearchQuery, { TRouterQuery } from "@utils/buildSearchQuery";
+import buildSearchQuery, { TRouterQuery } from "@/utils/buildSearchQuery";
 import { TLoadingStatus, TSearch } from "@/types";
 import { useState } from "react";
 

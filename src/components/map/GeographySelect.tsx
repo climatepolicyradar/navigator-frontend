@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import SuggestList from "@/components/filters/SuggestList";
-import { sortData } from "@utils/sorting";
+import { sortData } from "@/utils/sorting";
 import { Icon } from "@/components/atoms/icon/Icon";
 
 interface ByTextInputProps {
