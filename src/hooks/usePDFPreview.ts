@@ -116,20 +116,18 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
     };
   };
 
-  const changePage = async (passageIndex: number, documentPassageMatches: TPassage[]) => {
+  const changePage = async (pageNumber: number) => {
     // Use the memoized viewerApi if it exists
     let viewerApi = viewerApiMemo;
     if (!viewerApiMemo) {
       const { viewerApi: newViewApi } = await getAdobeApis();
       viewerApi = newViewApi;
     }
-    if (passageIndex === null || !documentPassageMatches[passageIndex]) {
-      return;
-    }
-    await viewerApi.gotoLocation(documentPassageMatches[passageIndex]?.text_block_page);
+    await viewerApi.gotoLocation(pageNumber);
   };
 
-  const addAnnotationsForPage = async (pageIndex: number, documentPassageMatches: TPassage[]) => {
+  const addAnnotationsForPage = async (documentPassageMatches: TPassage[]) => {
+    // console.log("addAnnotationsForPage");
     let annotationManagerApi = annotationManagerApiMemo;
     if (!annotationManagerApiMemo) {
       const { annotationManagerApi: newAnnotationManagerApi } = await getAdobeApis();
@@ -139,12 +137,22 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
       return;
     }
     // Clear annotations before adding more
+    // console.time("Removing annotations");
     await annotationManagerApi.removeAnnotationsFromPDF();
-    await changePage(pageIndex, documentPassageMatches);
+    // await annotationManagerApi
+    //   .deleteAnnotations({
+    //     pageRange: { startPage: documentPassageMatches[0].text_block_page, endPage: documentPassageMatches[0].text_block_page },
+    //   })
+    //   .catch((error: any) => {
+    //     console.error("Error removing annotations: ", error);
+    //   });
+    // console.timeEnd("Removing annotations");
     if (documentPassageMatches.length > 0) {
       // Only get the annotations for the current page
       const highlights = generateHighlights(physicalDocument, documentPassageMatches);
+      // console.time("Adding annotations");
       await annotationManagerApi.addAnnotations(highlights);
+      // console.timeEnd("Adding annotations");
     }
   };
 
@@ -163,18 +171,17 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
       window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
       async (event: any) => {
         if (event.type === "CURRENT_ACTIVE_PAGE") {
-          // console.log("Current active page has changed. Adding annotations for page: ", event.data.pageNumber);
-          await addAnnotationsForPage(
-            event.data.pageNumber,
-            documentPassageMatches.filter((passage) => passage.text_block_page === event.data.pageNumber)
-          );
+          // console.log("Page changed to: ", event.data.pageNumber);
+          await addAnnotationsForPage(documentPassageMatches.filter((passage) => passage.text_block_page === event.data.pageNumber));
         }
       },
       { enableFilePreviewEvents: true }
     );
     // Set the initial page
     // Add the annotations for the initial page
-    return await changePage(startingPassageIndex, documentPassageMatches);
+    // const startingPage = documentPassageMatches[startingPassageIndex]?.text_block_page;
+    // await addAnnotationsForPage(documentPassageMatches.filter((passage) => passage.text_block_page === startingPage));
+    // return changePage(startingPassageIndex, documentPassageMatches);
   };
 
   return { getAdobeApis, changePage, registerPassages };

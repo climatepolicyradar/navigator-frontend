@@ -13,12 +13,12 @@ import { TDocumentPage, TLoadingStatus, TPassage } from "@/types";
 type TProps = {
   document: TDocumentPage;
   documentPassageMatches?: TPassage[];
-  passageIndex?: number;
+  pageNumber?: number;
   startingPassageIndex?: number;
   searchStatus?: TLoadingStatus;
 };
 
-const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = null, startingPassageIndex = 0, searchStatus }: TProps) => {
+const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null, startingPassageIndex = 0, searchStatus }: TProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const containerRef = useRef(null);
   const adobeKey = useContext(AdobeContext);
@@ -31,8 +31,9 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = nul
   const { changePage, registerPassages } = useMemo(() => pdfPreview, [document, adobeKey]);
 
   useEffect(() => {
-    changePage(passageIndex, documentPassageMatches);
-  }, [changePage, passageIndex, documentPassageMatches]);
+    // console.log("EmbeddedPDF useEffect. Page number changed to: ", pageNumber);
+    pageNumber && changePage(pageNumber);
+  }, [changePage, pageNumber]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -40,13 +41,6 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = nul
       setIsLoading(false);
     });
   }, [registerPassages, documentPassageMatches, startingPassageIndex]);
-
-  useEffect(() => {
-    if (searchStatus === "loading" || isLoading) {
-      return setIsLoading(true);
-    }
-    setIsLoading(false);
-  }, [searchStatus, isLoading]);
 
   return (
     <>
@@ -58,7 +52,7 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = nul
       ) : (
         <>
           <AnimatePresence initial={false}>
-            {isLoading && (
+            {(searchStatus === "loading" || isLoading) && (
               <motion.div
                 key="content"
                 initial={{ opacity: 0 }}

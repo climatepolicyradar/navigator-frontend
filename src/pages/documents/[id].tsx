@@ -71,7 +71,7 @@ const renderPassageCount = (count: number): string => {
 const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family, theme, vespaFamilyData }: TProps) => {
   const [canPreview, setCanPreview] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
-  const [passageIndex, setPassageIndex] = useState(null);
+  const [pageNumber, setPageNumber] = useState(null);
   const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
   const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
   const router = useRouter();
@@ -88,10 +88,10 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
     MAX_PASSAGES
   );
 
-  const handlePassageClick = (index: number) => {
+  const handlePassageClick = (pageNo: number) => {
     if (!canPreview) return;
-    setPassageIndex(index);
-    scrollToPassage(index);
+    setPageNumber(pageNo);
+    // scrollToPassage(pageNo);
   };
 
   const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
@@ -108,7 +108,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
 
   // Search input handler
   const handleSearchInput = (term: string) => {
-    setPassageIndex(0);
+    setPageNumber(null);
     const queryObj = {};
     queryObj[QUERY_PARAMS.query_string] = term;
     if (router.query[QUERY_PARAMS.exact_match]) queryObj[QUERY_PARAMS.exact_match] = router.query[QUERY_PARAMS.exact_match] as string;
@@ -119,7 +119,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
 
   // Semantic search / exact match handler
   const handleSemanticSearchChange = (_: string, isExact: string) => {
-    setPassageIndex(0);
+    setPageNumber(null);
     const queryObj = { ...router.query };
     if (isExact === "false") {
       delete queryObj[QUERY_PARAMS.exact_match];
@@ -192,7 +192,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
 
   const handleConceptClick = useCallback(
     (conceptLabel: string) => {
-      setPassageIndex(0);
+      setPageNumber(null);
       if (conceptLabel === "") return false;
 
       const currentConceptFilters = conceptFilters || [];
@@ -270,7 +270,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                     <EmbeddedPDF
                       document={document}
                       documentPassageMatches={passageMatches}
-                      passageIndex={passageIndex}
+                      pageNumber={pageNumber}
                       startingPassageIndex={startingPassage}
                       searchStatus={status}
                     />
@@ -356,7 +356,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                             id="document-passage-matches"
                             className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
                           >
-                            <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
+                            <PassageMatches passages={passageMatches} onClick={handlePassageClick} />
                           </div>
                         </>
                       )}

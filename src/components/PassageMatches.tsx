@@ -44,7 +44,7 @@ const PassageMatches = ({ passages, onClick, activeIndex, pageColour = "textDark
                   activeIndex === index ? "!border-blue-100 !bg-gray-50 hover:!border-gray-50" : ""
                 }`}
                 onClick={() => {
-                  onClick(index);
+                  onClick(item.text_block_page);
                 }}
               >
                 <div className={`text-sm flex justify-between ${"text-" + pageColour}`}>
