@@ -1,11 +1,19 @@
+import { SlideOutContext } from "@/context/SlideOutContext";
+import { useContext } from "react";
+
 interface SlideOutProps {
   children: React.ReactNode;
 }
 
 export const SlideOut = ({ children }: SlideOutProps) => {
+  const { currentSlideOut, setCurrentSlideOut } = useContext(SlideOutContext);
+
+  if (!currentSlideOut) return null;
+
   return (
-    <div className="fixed inset-0 z-50 bg-black/25">
-      <div className="fixed inset-y-0 right-0 z-50 w-96 bg-white p-4">{children}</div>
+    <div className="absolute top-0 left-full h-full bg-white border border-red-600 p-4 min-w-[400px]">
+      Slide out content <div onClick={() => setCurrentSlideOut("")}>CLOSE</div>
+      <div>{children}</div>
     </div>
   );
 };
