@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useContext } from "react";
 import { ParsedUrlQuery } from "querystring";
 import dynamic from "next/dynamic";
 
@@ -23,6 +23,8 @@ import { canDisplayFilter } from "@/utils/canDisplayFilter";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 
 import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
+
+import { SlideOutContext } from "@/context/SlideOutContext";
 
 const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/components/MethodologyLink`));
 
@@ -67,6 +69,7 @@ const SearchFilters = ({
 }: TSearchFiltersProps) => {
   const { status: themeConfigStatus, themeConfig } = useGetThemeConfig();
   const [showClear, setShowClear] = useState(false);
+  const { currentSlideOut, setCurrentSlideOut } = useContext(SlideOutContext);
 
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
@@ -172,6 +175,7 @@ const SearchFilters = ({
               />
             </InputListContainer>
           </Accordian>
+          <div onClick={() => setCurrentSlideOut("concepts")}>CONCEPTS</div>
         </>
       )}
 

@@ -39,6 +39,7 @@ import { TConcept, TFamilyPage, TTheme, TThemeConfig } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { ApiClient } from "@/api/http-common";
 import { Button } from "@/components/atoms/button/Button";
+import { SlideOutContext } from "@/context/SlideOutContext";
 
 type TProps = {
   theme: TTheme;
@@ -60,6 +61,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const [showOptions, setShowOptions] = useState(false);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
   const settingsButtonRef = useRef(null);
+
+  const [currentSlideOut, setCurrentSlideOut] = useState("");
 
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
@@ -343,221 +346,236 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
 
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
-      <section>
-        <SubNav>
-          <BreadCrumbs label={"Search results"} />
-          <div>
-            <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
-              <span>Download data (.csv): </span>
-              <a
-                href="#"
-                className="flex gap-2 items-center justify-end text-blue-600 hover:underline hover:text-blue-800"
-                data-cy="download-search-csv"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowCSVDownloadPopup(true);
-                }}
-              >
-                {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
-              </a>
-              {getThemeConfigLink(themeConfig, "download-database") && (
+      <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
+        <section>
+          <SubNav>
+            <BreadCrumbs label={"Search results"} />
+            <div>
+              <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
+                <span>Download data (.csv): </span>
+                <a
+                  href="#"
+                  className="flex gap-2 items-center justify-end text-blue-600 hover:underline hover:text-blue-800"
+                  data-cy="download-search-csv"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowCSVDownloadPopup(true);
+                  }}
+                >
+                  {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
+                </a>
+                {getThemeConfigLink(themeConfig, "download-database") && (
+                  <>
+                    <span>|</span>
+                    <ExternalLink
+                      url={getThemeConfigLink(themeConfig, "download-database").url}
+                      className="text-blue-600 hover:underline hover:text-blue-800"
+                      cy="download-entire-search-csv"
+                    >
+                      whole database
+                    </ExternalLink>
+                  </>
+                )}
+              </span>
+            </div>
+          </SubNav>
+          {/* MOBILE ONLY */}
+          <SiteWidth extraClasses="pt-4 md:hidden">
+            <div className="flex gap-3">
+              <div className="flex-1">
+                <SearchForm
+                  placeholder={placeholder}
+                  handleSearchInput={handleSearchInput}
+                  input={qQueryString ? qQueryString.toString() : ""}
+                  handleSuggestion={handleSuggestion}
+                />
+              </div>
+              <div className="relative z-10 flex justify-center">
+                <button
+                  className={`w-[55px] flex justify-center items-center text-textDark text-xl ${
+                    showOptions ? "bg-nearBlack text-white rounded-full" : ""
+                  }`}
+                  onClick={() => setShowOptions(!showOptions)}
+                  data-cy="search-options-mobile"
+                  ref={settingsButtonRef}
+                >
+                  <MdOutlineTune />
+                </button>
+                <AnimatePresence initial={false}>
+                  {showOptions && (
+                    <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
+                      <SearchSettings
+                        queryParams={router.query}
+                        handleSortClick={handleSortClick}
+                        handleSearchChange={handleSearchChange}
+                        setShowOptions={setShowOptions}
+                        settingsButtonRef={settingsButtonRef}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+            <div className="flex items-center justify-center w-full mt-4">
+              <Button content="both" className="mt-2 flex-nowrap md:hidden" onClick={toggleFilters}>
+                <span>{showFilters ? "Hide" : "Show"} filters</span>
+                <div className={showFilters ? "rotate-180" : ""}>
+                  <Icon name="downChevron" />
+                </div>
+              </Button>
+            </div>
+            <div className={`${showFilters ? "" : "hidden"}`}>
+              {configQuery.isFetching ? (
+                <Loader size="20px" />
+              ) : (
                 <>
-                  <span>|</span>
-                  <ExternalLink
-                    url={getThemeConfigLink(themeConfig, "download-database").url}
-                    className="text-blue-600 hover:underline hover:text-blue-800"
-                    cy="download-entire-search-csv"
-                  >
-                    whole database
-                  </ExternalLink>
+                  <SearchFilters
+                    searchCriteria={searchQuery}
+                    query={router.query}
+                    regions={regions}
+                    countries={countries}
+                    corpus_types={corpus_types}
+                    conceptsData={conceptsData}
+                    handleFilterChange={handleFilterChange}
+                    handleYearChange={handleYearChange}
+                    handleRegionChange={handleRegionChange}
+                    handleClearSearch={handleClearSearch}
+                    handleDocumentCategoryClick={handleDocumentCategoryClick}
+                  />
                 </>
               )}
-            </span>
-          </div>
-        </SubNav>
-        {/* MOBILE ONLY */}
-        <SiteWidth extraClasses="pt-4 md:hidden">
-          <div className="flex gap-3">
-            <div className="flex-1">
-              <SearchForm
-                placeholder={placeholder}
-                handleSearchInput={handleSearchInput}
-                input={qQueryString ? qQueryString.toString() : ""}
-                handleSuggestion={handleSuggestion}
-              />
             </div>
-            <div className="relative z-10 flex justify-center">
-              <button
-                className={`w-[55px] flex justify-center items-center text-textDark text-xl ${
-                  showOptions ? "bg-nearBlack text-white rounded-full" : ""
-                }`}
-                onClick={() => setShowOptions(!showOptions)}
-                data-cy="search-options-mobile"
-                ref={settingsButtonRef}
-              >
-                <MdOutlineTune />
-              </button>
-              <AnimatePresence initial={false}>
-                {showOptions && (
-                  <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
-                    <SearchSettings
-                      queryParams={router.query}
-                      handleSortClick={handleSortClick}
-                      handleSearchChange={handleSearchChange}
-                      setShowOptions={setShowOptions}
-                      settingsButtonRef={settingsButtonRef}
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-          <div className="flex items-center justify-center w-full mt-4">
-            <Button content="both" className="mt-2 flex-nowrap md:hidden" onClick={toggleFilters}>
-              <span>{showFilters ? "Hide" : "Show"} filters</span>
-              <div className={showFilters ? "rotate-180" : ""}>
-                <Icon name="downChevron" />
-              </div>
-            </Button>
-          </div>
-          <div className={`${showFilters ? "" : "hidden"}`}>
-            {configQuery.isFetching ? (
-              <Loader size="20px" />
-            ) : (
-              <>
-                <SearchFilters
-                  searchCriteria={searchQuery}
-                  query={router.query}
-                  regions={regions}
-                  countries={countries}
-                  corpus_types={corpus_types}
-                  conceptsData={conceptsData}
-                  handleFilterChange={handleFilterChange}
-                  handleYearChange={handleYearChange}
-                  handleRegionChange={handleRegionChange}
-                  handleClearSearch={handleClearSearch}
-                  handleDocumentCategoryClick={handleDocumentCategoryClick}
-                />
-              </>
-            )}
-          </div>
-        </SiteWidth>
-        {/* END MOBILE ONLY */}
-        <MultiCol>
-          <SideCol extraClasses="hidden md:block border-r border-gray-300 pt-5 sticky top-0 h-screen overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
-            {configQuery.isFetching ? (
-              <Loader size="20px" />
-            ) : (
-              <SearchFilters
-                searchCriteria={searchQuery}
-                query={router.query}
-                regions={regions}
-                countries={countries}
-                corpus_types={corpus_types}
-                conceptsData={conceptsData}
-                handleFilterChange={handleFilterChange}
-                handleYearChange={handleYearChange}
-                handleRegionChange={handleRegionChange}
-                handleClearSearch={handleClearSearch}
-                handleDocumentCategoryClick={handleDocumentCategoryClick}
-              />
-            )}
-          </SideCol>
-          <SingleCol extraClasses="px-5 pt-5">
-            <div>
-              {/* NON MOBILE SEARCH */}
-              <div className="hidden md:block mb-4">
-                <div className="flex gap-3">
-                  <div className="flex-1">
-                    <SearchForm
-                      placeholder={placeholder}
-                      handleSearchInput={handleSearchInput}
-                      input={qQueryString ? qQueryString.toString() : ""}
-                      handleSuggestion={handleSuggestion}
-                    />
-                  </div>
-                  <div className="relative z-10 flex justify-center">
-                    <button
-                      className={`w-[55px] flex justify-center items-center text-textDark text-xl ${
-                        showOptions ? "bg-nearBlack text-white rounded-full" : ""
-                      }`}
-                      onClick={() => setShowOptions(!showOptions)}
-                      data-cy="search-options"
-                      ref={settingsButtonRef}
-                    >
-                      <MdOutlineTune />
-                    </button>
-                    <AnimatePresence initial={false}>
-                      {showOptions && (
-                        <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
-                          <SearchSettings
-                            queryParams={router.query}
-                            handleSortClick={handleSortClick}
-                            handleSearchChange={handleSearchChange}
-                            setShowOptions={setShowOptions}
-                            settingsButtonRef={settingsButtonRef}
-                          />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-              </div>
-              {/* NON MOBILE SEARCH END */}
-              <div>
-                <div className="text-xs my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
-                  {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
-                </div>
-              </div>
-              <div className="text-sm md:text-right">
-                {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
-                {downloadCSVStatus === "success" && (
-                  <span className="text-green-600">CSV downloaded successfully, please check your downloads folder</span>
-                )}
-              </div>
-            </div>
-
-            <div className="mt-10">
-              {status === "loading" ? (
-                <div className="w-full flex justify-center h-96">
-                  <Loader />
-                </div>
+          </SiteWidth>
+          {/* END MOBILE ONLY */}
+          <MultiCol>
+            <SideCol extraClasses="hidden md:block relative">
+              {configQuery.isFetching ? (
+                <Loader size="20px" />
               ) : (
-                <section data-cy="search-results">
-                  <h2 className="sr-only">Search results</h2>
-                  <SearchResultList
-                    category={router.query[QUERY_PARAMS.category]?.toString()}
-                    families={families}
-                    onClick={handleMatchesButtonClick}
-                    activeFamilyIndex={drawerFamily}
-                  />
-                </section>
+                <>
+                  <div className="sticky top-0 z-50">
+                    <div className="px-5 bg-white border-r border-gray-300 pt-5 sticky top-0 h-screen overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
+                      <SearchFilters
+                        searchCriteria={searchQuery}
+                        query={router.query}
+                        regions={regions}
+                        countries={countries}
+                        corpus_types={corpus_types}
+                        conceptsData={conceptsData}
+                        handleFilterChange={handleFilterChange}
+                        handleYearChange={handleYearChange}
+                        handleRegionChange={handleRegionChange}
+                        handleClearSearch={handleClearSearch}
+                        handleDocumentCategoryClick={handleDocumentCategoryClick}
+                      />
+                    </div>
+                    {currentSlideOut && (
+                      <div className="absolute top-0 left-full h-full bg-white border border-red-600 p-4 min-w-[400px]">
+                        Slide out content <div onClick={() => setCurrentSlideOut("")}>CLOSE</div>
+                      </div>
+                    )}
+                  </div>
+                </>
               )}
+            </SideCol>
+            <div className={`flex-1 ${currentSlideOut ? "brightness-50 bg-white pointer-events-none select-none" : ""}`}>
+              <SingleCol extraClasses="px-5 pt-5 relative">
+                <div>
+                  {/* NON MOBILE SEARCH */}
+                  <div className="hidden md:block mb-4">
+                    <div className="flex gap-3">
+                      <div className="flex-1">
+                        <SearchForm
+                          placeholder={placeholder}
+                          handleSearchInput={handleSearchInput}
+                          input={qQueryString ? qQueryString.toString() : ""}
+                          handleSuggestion={handleSuggestion}
+                        />
+                      </div>
+                      <div className="relative z-10 flex justify-center">
+                        <button
+                          className={`w-[55px] flex justify-center items-center text-textDark text-xl ${
+                            showOptions ? "bg-nearBlack text-white rounded-full" : ""
+                          }`}
+                          onClick={() => setShowOptions(!showOptions)}
+                          data-cy="search-options"
+                          ref={settingsButtonRef}
+                        >
+                          <MdOutlineTune />
+                        </button>
+                        <AnimatePresence initial={false}>
+                          {showOptions && (
+                            <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
+                              <SearchSettings
+                                queryParams={router.query}
+                                handleSortClick={handleSortClick}
+                                handleSearchChange={handleSearchChange}
+                                setShowOptions={setShowOptions}
+                                settingsButtonRef={settingsButtonRef}
+                              />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </div>
+                  </div>
+                  {/* NON MOBILE SEARCH END */}
+                  <div>
+                    <div className="text-xs my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
+                      {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
+                    </div>
+                  </div>
+                  <div className="text-sm md:text-right">
+                    {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
+                    {downloadCSVStatus === "success" && (
+                      <span className="text-green-600">CSV downloaded successfully, please check your downloads folder</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-10">
+                  {status === "loading" ? (
+                    <div className="w-full flex justify-center h-96">
+                      <Loader />
+                    </div>
+                  ) : (
+                    <section data-cy="search-results">
+                      <h2 className="sr-only">Search results</h2>
+                      <SearchResultList
+                        category={router.query[QUERY_PARAMS.category]?.toString()}
+                        families={families}
+                        onClick={handleMatchesButtonClick}
+                        activeFamilyIndex={drawerFamily}
+                      />
+                    </section>
+                  )}
+                </div>
+                {status !== "loading" && hits > 1 && (
+                  <div className="mb-12">
+                    <Pagination
+                      onChange={handlePageChange}
+                      totalHits={hits}
+                      activeContinuationToken={router.query[QUERY_PARAMS.active_continuation_token] as string}
+                      continuationToken={continuationToken}
+                      continuationTokens={router.query[QUERY_PARAMS.continuation_tokens] as string}
+                      offset={router.query[QUERY_PARAMS.offset] as string}
+                    />
+                  </div>
+                )}
+              </SingleCol>
             </div>
-            {status !== "loading" && hits > 1 && (
-              <div className="mb-12">
-                <Pagination
-                  onChange={handlePageChange}
-                  totalHits={hits}
-                  activeContinuationToken={router.query[QUERY_PARAMS.active_continuation_token] as string}
-                  continuationToken={continuationToken}
-                  continuationTokens={router.query[QUERY_PARAMS.continuation_tokens] as string}
-                  offset={router.query[QUERY_PARAMS.offset] as string}
-                />
-              </div>
-            )}
-          </SingleCol>
-        </MultiCol>
-      </section>
-      <Drawer show={drawerFamily !== false} setShow={setDrawerFamily}>
-        <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
-      </Drawer>
-      <DownloadCsvPopup
-        active={showCSVDownloadPopup}
-        onCancelClick={() => setShowCSVDownloadPopup(false)}
-        onConfirmClick={() => handleDownloadCsvClick()}
-      />
-      <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
+          </MultiCol>
+        </section>
+        <Drawer show={drawerFamily !== false} setShow={setDrawerFamily}>
+          <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
+        </Drawer>
+        <DownloadCsvPopup
+          active={showCSVDownloadPopup}
+          onCancelClick={() => setShowCSVDownloadPopup(false)}
+          onConfirmClick={() => handleDownloadCsvClick()}
+        />
+        <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
+      </SlideOutContext.Provider>
     </Layout>
   );
 };

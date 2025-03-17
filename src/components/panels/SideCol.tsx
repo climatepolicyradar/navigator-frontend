@@ -5,7 +5,7 @@ type TProps = {
 
 export function SideCol({ extraClasses = "", children, ...props }: TProps) {
   return (
-    <div className={`w-maxSidebar grow-0 shrink-0 px-5 ${extraClasses}`} {...props}>
+    <div className={`w-maxSidebar grow-0 shrink-0 ${extraClasses}`} {...props}>
       {children}
     </div>
   );
