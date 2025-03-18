@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from "react";
-import { PageHeader } from "@/components/headers/PageHeader";
+import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import Footer from "@/components/footer/Footer";
 
 type TProps = {
