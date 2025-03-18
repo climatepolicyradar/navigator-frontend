@@ -58,7 +58,7 @@ jobs:
                 workflow_id: "deploy.yml",
                 ref: "main",
                 inputs: {
-                    "docker-tag": `main-${{ inputs.docker-tag }}`,
+                    "docker-tag": `${{ inputs.docker-tag }}`,
                     stack: stack
                 }
             })
