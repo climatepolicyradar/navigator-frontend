@@ -54,6 +54,7 @@ function generateHighlights(document: TDocumentPage, documentPassageMatches: TPa
 }
 
 type TAdobeApis = {
+  adobeViewer: any;
   viewerApi: any;
   annotationManagerApi: any;
 };
@@ -72,56 +73,116 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
   const annotationConfig = { showToolbar: false, showCommentsPanel: false, downloadWithAnnotations: true, printWithAnnotations: true };
 
   // Memoize the Adobe Viewer API - this is used to control the viewer, e.g. change page
+  let adobeViewerMemo: any;
   let viewerApiMemo: any;
+  let annotationManagerApiMemo: any;
 
   const getAdobeApis = async (): Promise<TAdobeApis> => {
     const viewSDKClient = new ViewSDKClient();
     await viewSDKClient.ready();
-    const adobeViewer = await viewSDKClient.previewFile(physicalDocument, adobeKey, "pdf-div", viewerConfig);
+    const adobeViewer = await viewSDKClient.getAdobeView(physicalDocument, adobeKey, "pdf-div");
+    adobeViewerMemo = adobeViewer;
+    // Preview the file (this returns the Adobe Viewer APIs)
+    const adobeViewerAPI = await adobeViewer.previewFile(
+      {
+        content: {
+          location: {
+            url: physicalDocument.cdn_object,
+          },
+        },
+        metaData: {
+          fileName: physicalDocument.title,
+          id: physicalDocument.import_id,
+        },
+      },
+      viewerConfig
+    );
 
     // Adobe viewer api
     // https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/howtos_ui/#viewer-api
-    const viewerApi = await adobeViewer.getAPIs();
+    const viewerApi = await adobeViewerAPI.getAPIs();
     viewerApiMemo = viewerApi;
 
     // Adobe annotation manager api
     // https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/howtos_comments/#basic-apis-for-commenting
-    const annotationManagerApi = await adobeViewer.getAnnotationManager();
+    const annotationManagerApi = await adobeViewerAPI.getAnnotationManager();
     annotationManagerApi.setConfig(annotationConfig);
+    annotationManagerApiMemo = annotationManagerApi;
 
     return {
+      adobeViewer,
       viewerApi,
       annotationManagerApi,
     };
   };
 
-  const changePage = async (passageIndex: number, documentPassageMatches: TPassage[]) => {
+  const changePage = async (pageNumber: number) => {
     // Use the memoized viewerApi if it exists
     let viewerApi = viewerApiMemo;
     if (!viewerApiMemo) {
       const { viewerApi: newViewApi } = await getAdobeApis();
       viewerApi = newViewApi;
     }
-    if (passageIndex === null || !documentPassageMatches[passageIndex]) {
-      return;
-    }
-    await viewerApi.gotoLocation(documentPassageMatches[passageIndex]?.text_block_page);
+    await viewerApi.gotoLocation(pageNumber);
   };
 
-  const addAnnotations = async (documentPassageMatches: TPassage[], startingPassageIndex = 0) => {
-    // Sometimes the adobe PDF viewer runs out of memory so safer to always reload the PDF viewer
-    const { annotationManagerApi } = await getAdobeApis();
+  const addAnnotationsForPage = async (documentPassageMatches: TPassage[]) => {
+    // console.log("addAnnotationsForPage");
+    let annotationManagerApi = annotationManagerApiMemo;
+    if (!annotationManagerApiMemo) {
+      const { annotationManagerApi: newAnnotationManagerApi } = await getAdobeApis();
+      annotationManagerApi = newAnnotationManagerApi;
+    }
     if (!annotationManagerApi) {
       return;
     }
-    changePage(startingPassageIndex, documentPassageMatches);
+    // Clear annotations before adding more
+    // console.time("Removing annotations");
+    await annotationManagerApi.removeAnnotationsFromPDF();
+    // await annotationManagerApi
+    //   .deleteAnnotations({
+    //     pageRange: { startPage: documentPassageMatches[0].text_block_page, endPage: documentPassageMatches[0].text_block_page },
+    //   })
+    //   .catch((error: any) => {
+    //     console.error("Error removing annotations: ", error);
+    //   });
+    // console.timeEnd("Removing annotations");
     if (documentPassageMatches.length > 0) {
+      // Only get the annotations for the current page
       const highlights = generateHighlights(physicalDocument, documentPassageMatches);
+      // console.time("Adding annotations");
       await annotationManagerApi.addAnnotations(highlights);
+      // console.timeEnd("Adding annotations");
     }
-    // If we ever need to remove annotations
-    // await annotationManagerApi.removeAnnotationsFromPDF();
   };
 
-  return { getAdobeApis, changePage, addAnnotations };
+  // Set up a new callback to listen for page changes once we have a new set of passages
+  // When the page changes, we will add the annotations for that page
+  const registerPassages = async (documentPassageMatches: TPassage[], startingPassageIndex = 0) => {
+    let adobeViewer = adobeViewerMemo;
+    if (!adobeViewer || !annotationManagerApiMemo) {
+      const { adobeViewer: newAdobeViewer } = await getAdobeApis();
+      adobeViewer = newAdobeViewer;
+    }
+    if (!adobeViewer) {
+      return;
+    }
+    await adobeViewer.registerCallback(
+      window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
+      async (event: any) => {
+        if (event.type === "CURRENT_ACTIVE_PAGE") {
+          // console.log("Page changed to: ", event.data.pageNumber);
+          await addAnnotationsForPage(documentPassageMatches.filter((passage) => passage.text_block_page === event.data.pageNumber));
+        }
+      },
+      { enableFilePreviewEvents: true }
+    );
+    // Set the initial page
+    // Add the annotations for the initial page
+    // const startingPage = documentPassageMatches[startingPassageIndex]?.text_block_page;
+    // await addAnnotationsForPage(documentPassageMatches.filter((passage) => passage.text_block_page === startingPage));
+    // return changePage(startingPassageIndex, documentPassageMatches);
+  };
+
+  return { getAdobeApis, changePage, registerPassages };
 }
