@@ -1,11 +1,11 @@
 import { Meta, StoryObj } from "@storybook/react/*";
-import { PageHeader } from "./PageHeader";
+import { NavBar } from "./NavBar";
 
 const meta = {
-  title: "Organisms/PageHeader",
-  component: PageHeader,
-} satisfies Meta<typeof PageHeader>;
-type Story = StoryObj<typeof PageHeader>;
+  title: "Organisms/Surfaces/NavBar",
+  component: NavBar,
+} satisfies Meta<typeof NavBar>;
+type Story = StoryObj<typeof NavBar>;
 
 export default meta;
 

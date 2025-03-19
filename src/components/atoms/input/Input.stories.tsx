@@ -4,7 +4,7 @@ import { iconNames } from "@/components/atoms/icon/Icon";
 import { useState } from "react";
 
 const meta = {
-  title: "Molecules/Input",
+  title: "Atoms/Input",
   component: Input,
   argTypes: {
     icon: {
