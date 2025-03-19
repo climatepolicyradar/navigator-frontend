@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
+
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
+
+import { Button } from "./atoms/button/Button";
 import { Icon } from "./atoms/icon/Icon";
 import { Divider } from "./dividers/Divider";
-import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
-import { QUERY_PARAMS } from "@/constants/queryParams";
-import { Button } from "./atoms/button/Button";
 
 const FEATURED_SEARCHES = ["Adaptation strategy", "Energy prices", "Flood defence", "Fossil fuels"];
 const FEATURED_DOCUMENT_SLUG = "/documents/adaptation-strategy-to-climate-change-in-the-czech-republic_213b";

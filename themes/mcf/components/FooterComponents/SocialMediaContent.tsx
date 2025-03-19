@@ -1,5 +1,7 @@
 import React from "react";
+
 import { ExternalLink } from "@/components/ExternalLink";
+
 import { multilateralClimateFundSocialMedia } from "./socialMediaData";
 
 const SocialMediaContent = () => {

@@ -1,7 +1,6 @@
 import React from "react";
 
 import Layout from "@/components/layouts/LandingPage";
-
 import {
   Header,
   Footer,

@@ -1,8 +1,7 @@
-import { Feature } from "./Feature";
-
-import { getButtonClasses } from "@/components/atoms/button/Button";
-import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { Feature } from "@/cclw/components/Feature";
 import { ExternalLink } from "@/components/ExternalLink";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { getButtonClasses } from "@/components/atoms/button/Button";
 
 export const FeatureDiscover = () => (
   <Feature heading="Central knowledge-base for climate policy data" image="app_search_results.jpg" imageAlt="Screenshot of the search results">

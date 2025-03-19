@@ -1,4 +1,5 @@
 import { useQuery } from "react-query";
+
 import { ApiClient, getEnvFromServer } from "../api/http-common";
 
 type TMapGeographyStats = {
