@@ -83,7 +83,7 @@ export const NavSearch = () => {
                 <Select.Positioner side="bottom" align="start">
                   <Select.Popup className="box-border p-0.5 bg-surface-bg rounded-md">
                     {searchContextValues.map((context) => (
-                      <Select.Item key={context} value={context} className="pl-3 pr-8 py-0.5 cursor-pointer">
+                      <Select.Item key={context} value={context} className="pl-3 pr-8 h-[47px] flex items-center cursor-pointer">
                         <Select.ItemText className="my-2 text-text-secondary text-sm leading-4 font-medium">{context}</Select.ItemText>
                       </Select.Item>
                     ))}
