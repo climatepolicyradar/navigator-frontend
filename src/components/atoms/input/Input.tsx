@@ -25,6 +25,7 @@ export const Input = ({
   iconOnLeft = false,
   inputClasses = "",
   size = "medium",
+  value,
   valueSetter,
   ...props
 }: InputProps) => {
@@ -85,13 +86,13 @@ export const Input = ({
   return (
     <div className={classes.container}>
       {iconOnLeft && iconNode}
-      <BaseInput className={classes.input} {...props} />
-      {!iconOnLeft && iconNode}
+      <BaseInput className={classes.input} value={value} {...props} />
       {clearable && (
-        <button type="button" className={classes.button} onClick={handleClear}>
+        <button type="button" className={`${classes.button} ${value ? "" : "invisible"}`} onClick={handleClear}>
           <Icon name="close" height="12" width="12" />
         </button>
       )}
+      {!iconOnLeft && iconNode}
     </div>
   );
 };

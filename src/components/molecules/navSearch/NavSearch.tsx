@@ -9,7 +9,6 @@ import { FormEventHandler, useEffect, useState } from "react";
 
 /**
  * TODO
- * - Better clear button functionality
  * - Works on search page
  * - Works on family page
  * - Works on document page
@@ -54,6 +53,7 @@ export const NavSearch = () => {
         <form onSubmit={onSubmit} className="flex flex-row">
           {/* Search field */}
           <Input
+            clearable
             containerClasses={`focus-within:!outline-0 ${showDropdown ? "rounded-r-none border-r border-r-border-light" : ""}`}
             icon={
               <button type="submit" className="w-4 h-4 ml-2">
@@ -61,9 +61,9 @@ export const NavSearch = () => {
               </button>
             }
             iconOnLeft
+            onBlur={() => setIsFocused(false)}
             onChange={(event) => setSearch(event.target.value)}
             onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
             placeholder="Search"
             size="large"
             value={search}
