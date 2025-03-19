@@ -5,6 +5,8 @@ import { ParsedUrlQueryInput } from "querystring";
 import { useEffect, useRef, useState } from "react";
 import { MdOutlineTune } from "react-icons/md";
 
+import { ApiClient } from "@/api/http-common";
+
 import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import useSearch from "@/hooks/useSearch";
@@ -29,17 +31,19 @@ import { SubNav } from "@/components/nav/SubNav";
 import Pagination from "@/components/pagination";
 import SearchResultList from "@/components/search/SearchResultList";
 import { Icon } from "@/components/atoms/icon/Icon";
+import { Button } from "@/components/atoms/button/Button";
 
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
+import { getFeatureFlags } from "@/utils/featureFlags";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
-import { TConcept, TFamilyPage, TTheme, TThemeConfig } from "@/types";
-import { getFeatureFlags } from "@/utils/featureFlags";
-import { ApiClient } from "@/api/http-common";
-import { Button } from "@/components/atoms/button/Button";
 import { SlideOutContext } from "@/context/SlideOutContext";
+
+import { TConcept, TTheme, TThemeConfig } from "@/types";
+import { Label } from "@/components/labels/Label";
+import { ConceptPicker } from "@/components/organisms/ConceptPicker";
 
 type TProps = {
   theme: TTheme;
@@ -469,11 +473,12 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                         handleDocumentCategoryClick={handleDocumentCategoryClick}
                       />
                     </div>
-                    {currentSlideOut && (
-                      <div className="absolute top-0 left-full h-full bg-white border border-red-600 p-4 min-w-[400px]">
-                        Slide out content <div onClick={() => setCurrentSlideOut("")}>CLOSE</div>
-                      </div>
-                    )}
+                    {/* {currentSlideOut && conceptsData.length > 0 && ( */}
+                    <div className="absolute top-0 left-full h-full bg-white border-2 border-red-600 p-5 min-w-[400px]">
+                      <div onClick={() => setCurrentSlideOut("")}>CLOSE</div>
+                      <ConceptPicker concepts={conceptsData} />
+                    </div>
+                    {/* )} */}
                   </div>
                 </>
               )}
@@ -597,7 +602,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const client = new ApiClient(process.env.CONCEPTS_API_URL);
     const conceptsV1 = featureFlags["concepts-v1"];
     if (conceptsV1) {
-      const { data: returnedData } = await client.get(`/concepts/search?limit=10000&q=`);
+      const { data: returnedData } = await client.get(`/concepts/search?limit=10000&has_classifier=true`);
       conceptsData = returnedData;
     }
   } catch (error) {

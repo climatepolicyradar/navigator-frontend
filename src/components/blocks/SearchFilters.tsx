@@ -155,7 +155,7 @@ const SearchFilters = ({
 
       {conceptsData && (
         <>
-          <Accordian
+          {/* <Accordian
             title={getFilterLabel("Concept", "concept", query[QUERY_PARAMS.concept_name], themeConfig)}
             data-cy="concepts"
             key="Concepts"
@@ -174,8 +174,8 @@ const SearchFilters = ({
                 handleFilterChange={handleFilterChange}
               />
             </InputListContainer>
-          </Accordian>
-          <div onClick={() => setCurrentSlideOut("concepts")}>CONCEPTS</div>
+          </Accordian> */}
+          <div onClick={() => setCurrentSlideOut(currentSlideOut === "concepts" ? "" : "concepts")}>CONCEPTS</div>
         </>
       )}
 
