@@ -9,7 +9,7 @@ export const NavBar = () => {
   const router = useRouter();
 
   return (
-    <header data-cy="header" className="w-full p-4 flex justify-between items-center banner">
+    <header data-cy="header" className="w-full px-4 flex justify-between items-center banner">
       <div className="flex-1">
         <LinkWithQuery href="/">
           <Image src="/images/cpr-logo-horizontal.png" width={228} height={35} alt="Climate Policy Radar logo" data-cy="cpr-logo" />

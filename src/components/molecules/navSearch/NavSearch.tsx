@@ -5,20 +5,20 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { Select } from "@base-ui-components/react";
 import { useRouter } from "next/router";
-import { FormEventHandler, useEffect, useState } from "react";
+import { FormEventHandler, useEffect, useRef, useState } from "react";
 
 /**
  * TODO
  * - Works on search page
  * - Works on family page
  * - Works on document page
- * - Tidy up stories
  */
 
 const searchContextValues = ["Everything", "Document"] as const;
 type SearchContext = (typeof searchContextValues)[number];
 
 export const NavSearch = () => {
+  const ref = useRef(null);
   const [search, setSearch] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const router = useRouter();
@@ -35,6 +35,19 @@ export const NavSearch = () => {
     setSearch(queryString || "");
   }, [queryString]);
 
+  // Clicking outside the search results will close it
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setIsFocused(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [ref]);
+
   // We specifically do not want to erase any filtering
   const handleSearch = () => {
     const queryObj = CleanRouterQuery({ ...router.query });
@@ -48,7 +61,7 @@ export const NavSearch = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative" ref={ref}>
       <div className="p-4 relative z-20">
         <form onSubmit={onSubmit} className="flex flex-row">
           {/* Search field */}
@@ -61,7 +74,6 @@ export const NavSearch = () => {
               </button>
             }
             iconOnLeft
-            onBlur={() => setIsFocused(false)}
             onChange={(event) => setSearch(event.target.value)}
             onFocus={() => setIsFocused(true)}
             placeholder="Search"
@@ -98,7 +110,13 @@ export const NavSearch = () => {
       {/* Results */}
       {showResults && (
         <div className="absolute top-0 left-0 right-0 border border-border-lighter rounded-xl bg-surface-light shadow-[0px_4px_48px_0px_rgba(0,0,0,0.08)] p-4 pt-19">
-          <Button className="inline-block text-base font-normal" color="mono" size="small" rounded variant="ghost" onClick={() => handleSearch()}>
+          <Button
+            className="inline-block w-full text-left text-base font-normal"
+            color="mono"
+            size="small"
+            variant="ghost"
+            onClick={() => handleSearch()}
+          >
             Search for <span className="font-bold">{search}</span>
           </Button>
         </div>
