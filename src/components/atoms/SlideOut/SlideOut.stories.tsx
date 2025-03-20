@@ -21,16 +21,15 @@ export default meta;
 
 export const Default: Story = {
   args: {
-    children: "SlideOut children",
+    children: "SlideOut content",
   },
-  render: ({ children, open }) => {
-    // const [x, setX] = useState(open ? "x" : "");
+  render: ({ children }) => {
     return (
-      // <SlideOutContext.Provider value={{ currentSlideOut: x, setCurrentSlideOut: setX }}>
-      <div className="relative h-screen w-4">
-        <SlideOut>{children}</SlideOut>
-      </div>
-      // </SlideOutContext.Provider>
+      <SlideOutContext.Provider value={{ currentSlideOut: "concepts", setCurrentSlideOut: () => {} }}>
+        <div className="relative h-screen w-4">
+          <SlideOut>{children}</SlideOut>
+        </div>
+      </SlideOutContext.Provider>
     );
   },
 };
