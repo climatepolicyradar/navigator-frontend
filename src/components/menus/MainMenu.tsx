@@ -19,8 +19,8 @@ const MainMenu = ({ iconClass = "text-white" }: TProps) => {
   };
 
   return (
-    <div ref={menuRef} className="relative z-[41] flex items-center">
-      <button data-cy="menu-icon" onClick={toggleMenu} className={iconClass} aria-label="Toggle menu">
+    <div ref={menuRef} className="relative z-[41]">
+      <button data-cy="menu-icon" onClick={toggleMenu} className={`${iconClass} border border-yellow-500`} aria-label="Toggle menu">
         <Icon name="menu" />
       </button>
       {showMenu && (
