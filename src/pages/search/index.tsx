@@ -32,6 +32,8 @@ import Pagination from "@/components/pagination";
 import SearchResultList from "@/components/search/SearchResultList";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { Button } from "@/components/atoms/button/Button";
+import { ConceptPicker } from "@/components/organisms/ConceptPicker";
+import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
 
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
@@ -42,8 +44,6 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SlideOutContext } from "@/context/SlideOutContext";
 
 import { TConcept, TTheme, TThemeConfig } from "@/types";
-import { Label } from "@/components/labels/Label";
-import { ConceptPicker } from "@/components/organisms/ConceptPicker";
 
 type TProps = {
   theme: TTheme;
@@ -66,7 +66,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
   const settingsButtonRef = useRef(null);
 
-  const [currentSlideOut, setCurrentSlideOut] = useState("");
+  const [currentSlideOut, setCurrentSlideOut] = useState("concepts");
 
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
@@ -458,7 +458,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               ) : (
                 <>
                   <div className="sticky top-0 z-50">
-                    <div className="px-5 bg-white border-r border-gray-300 pt-5 sticky top-0 h-screen overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
+                    <div className="z-10 px-5 bg-white border-r border-gray-300 pt-5 sticky top-0 h-screen overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
                       <SearchFilters
                         searchCriteria={searchQuery}
                         query={router.query}
@@ -473,17 +473,16 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                         handleDocumentCategoryClick={handleDocumentCategoryClick}
                       />
                     </div>
-                    {/* {currentSlideOut && conceptsData.length > 0 && ( */}
-                    <div className="absolute top-0 left-full h-full bg-white border-2 border-red-600 p-5 min-w-[400px]">
-                      <div onClick={() => setCurrentSlideOut("")}>CLOSE</div>
+                    <SlideOut>
                       <ConceptPicker concepts={conceptsData} />
-                    </div>
-                    {/* )} */}
+                    </SlideOut>
                   </div>
                 </>
               )}
             </SideCol>
-            <div className={`flex-1 ${currentSlideOut ? "brightness-50 bg-white pointer-events-none select-none" : ""}`}>
+            <div
+              className={`flex-1 bg-white transition-[filter] duration-150 ${currentSlideOut ? "brightness-50 pointer-events-none select-none" : ""}`}
+            >
               <SingleCol extraClasses="px-5 pt-5 relative">
                 <div>
                   {/* NON MOBILE SEARCH */}
