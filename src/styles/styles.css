@@ -11,7 +11,7 @@
     }
 
     &:focus {
-      @apply outline-none outline-transparent ring-offset-0 ring-0;
+      @apply outline-none outline-transparent ring-offset-0 ring-0 border-inputSelected;
     }
   }
 
