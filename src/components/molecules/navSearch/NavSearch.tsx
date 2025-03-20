@@ -7,35 +7,25 @@ import { Select } from "@base-ui-components/react";
 import { useRouter } from "next/router";
 import { FormEventHandler, useEffect, useRef, useState } from "react";
 
-/**
- * TODO
- * - Works on search page
- * - Works on family page
- * - Works on document page
- */
-
-const searchContextValues = ["Everything", "Document"] as const;
-type SearchContext = (typeof searchContextValues)[number];
+const pagesWithContextualSearch: string[] = ["/document/[id]", "/documents/[id]", "/geographies/[id]"];
 
 export const NavSearch = () => {
   const ref = useRef(null);
-  const [search, setSearch] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
   const router = useRouter();
   const queryString = router.query[QUERY_PARAMS.query_string] as string;
   const { pathname } = router;
-  const isADocumentPage = pathname.startsWith("/document");
-  const showDropdown = isADocumentPage;
 
+  const [search, setSearch] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const pageHasContextualSearch = pagesWithContextualSearch.includes(pathname);
+  const [searchEverything, setSearchEverything] = useState<boolean>(!pageHasContextualSearch);
+  const showDropdown = pageHasContextualSearch;
   const showResults = isFocused && search;
-
-  const [searchContext, setSearchContext] = useState<SearchContext>(isADocumentPage ? "Document" : "Everything");
 
   useEffect(() => {
     setSearch(queryString || "");
   }, [queryString]);
 
-  // Clicking outside the search results will close it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target)) {
@@ -48,11 +38,29 @@ export const NavSearch = () => {
     };
   }, [ref]);
 
-  // We specifically do not want to erase any filtering
+  let contextualSearchName = "Document";
+  if (pathname === "/geographies/[id]") contextualSearchName = "Geography";
+
   const handleSearch = () => {
-    const queryObj = CleanRouterQuery({ ...router.query });
-    queryObj[QUERY_PARAMS.query_string] = search;
-    router.push({ pathname: "/search", query: queryObj });
+    const newQuery = CleanRouterQuery({ ...router.query });
+    newQuery[QUERY_PARAMS.query_string] = search;
+
+    let newPathName = "/search";
+
+    if (!searchEverything) {
+      switch (pathname) {
+        case "/document/[id]":
+          newPathName = `/document/${router.query.id}`;
+          break;
+        case "/documents/[id]":
+          newPathName = `/documents/${router.query.id}`;
+          break;
+        case "/geographies/[id]":
+          newQuery[QUERY_PARAMS.country] = router.query.id;
+      }
+    }
+
+    router.push({ pathname: newPathName, query: newQuery });
   };
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
@@ -84,7 +92,7 @@ export const NavSearch = () => {
 
           {/* Dropdown */}
           {showDropdown && (
-            <Select.Root defaultValue={searchContext} onValueChange={(value) => setSearchContext(value)}>
+            <Select.Root defaultValue={searchEverything} onValueChange={(value) => setSearchEverything(value)}>
               <Select.Trigger className="pl-3 pr-4 flex items-center bg-surface-ui rounded-r-md text-text-secondary text-sm leading-4 font-medium gap-2 cursor-pointer">
                 <Select.Value />
                 <Select.Icon>
@@ -94,11 +102,12 @@ export const NavSearch = () => {
               <Select.Portal>
                 <Select.Positioner side="bottom" align="start">
                   <Select.Popup className="box-border p-0.5 bg-surface-bg rounded-md">
-                    {searchContextValues.map((context) => (
-                      <Select.Item key={context} value={context} className="pl-3 pr-8 h-[47px] flex items-center cursor-pointer">
-                        <Select.ItemText className="my-2 text-text-secondary text-sm leading-4 font-medium">{context}</Select.ItemText>
-                      </Select.Item>
-                    ))}
+                    <Select.Item value={true} className="pl-3 pr-8 h-[47px] flex items-center cursor-pointer">
+                      <Select.ItemText className="my-2 text-text-secondary text-sm leading-4 font-medium">Everything</Select.ItemText>
+                    </Select.Item>
+                    <Select.Item value={false} className="pl-3 pr-8 h-[47px] flex items-center cursor-pointer">
+                      <Select.ItemText className="my-2 text-text-secondary text-sm leading-4 font-medium">{contextualSearchName}</Select.ItemText>
+                    </Select.Item>
                   </Select.Popup>
                 </Select.Positioner>
               </Select.Portal>

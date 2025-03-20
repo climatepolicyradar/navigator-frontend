@@ -23,13 +23,29 @@ export const SearchPage: Story = {
   },
 };
 
+export const GeographyPage: Story = {
+  parameters: {
+    nextjs: {
+      router: {
+        asPath: "/geographies/saint-kitts-and-nevis?q=Adaptation+strategy",
+        pathname: "/geographies/[id]",
+        query: {
+          id: "saint-kitts-and-nevis",
+          q: "Adaptation strategy",
+        },
+      },
+    },
+  },
+};
+
 export const FamilyPage: Story = {
   parameters: {
     nextjs: {
       router: {
         asPath: "/document/national-adaptation-strategy-to-climate-change_3bf7?q=Adaptation+strategy",
-        pathname: "/document/national-adaptation-strategy-to-climate-change_3bf7",
+        pathname: "/document/[id]",
         query: {
+          id: "national-adaptation-strategy-to-climate-change_3bf7",
           q: "Adaptation strategy",
         },
       },
@@ -41,11 +57,12 @@ export const DocumentPage: Story = {
   parameters: {
     nextjs: {
       router: {
-        asPath: "/documents/resolution-1302019-f2f2?q=Adaptation+strategy&id=national-adaptation-strategy-to-climate-change_3bf7",
-        pathname: "/documents/resolution-1302019-f2f2",
+        asPath:
+          "/documents/national-strategy-for-adaptation-to-climate-change_f1a4?q=Adaptation+strategy&id=national-adaptation-strategy-to-climate-change_3bf7",
+        pathname: "/documents/[id]",
         query: {
           q: "Adaptation strategy",
-          id: "national-adaptation-strategy-to-climate-change_3bf7",
+          id: "national-strategy-for-adaptation-to-climate-change_f1a4",
         },
       },
     },
