@@ -88,6 +88,7 @@ export const ConceptPicker = ({ concepts }: TProps) => {
         <Label>Beta</Label>
       </div>
       <input type="text" placeholder="Quick search" value={search} onChange={(e) => setSearch(e.target.value)} />
+      {/* SORT PICKER
       <div className="text-sm">
         <label>Sort by:</label>
         <select name="sort" value={sort} onChange={(e) => setSort(e.target.value)}>
@@ -97,7 +98,7 @@ export const ConceptPicker = ({ concepts }: TProps) => {
             </option>
           ))}
         </select>
-      </div>
+      </div> */}
       <div className="flex-1 flex flex-col gap-2 text-sm overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
         {selectedConcepts.map((concept) => (
           <InputCheck
