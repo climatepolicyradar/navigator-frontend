@@ -5,6 +5,7 @@ import { Label } from "@/components/labels/Label";
 import { InputCheck } from "@/components/forms/Checkbox";
 
 import { TConcept } from "@/types";
+
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
 type TProps = {
@@ -24,11 +25,12 @@ const isSelected = (queryValue: string | string[] | undefined, option: string) =
   }
 };
 
-const filterConcepts = (concepts: TConcept[], search: string) => {
+const filterConcepts = (concepts: TConcept[], search: string, selectedConcepts: string | string[] = "") => {
   return concepts.filter(
     (concept) =>
-      concept.preferred_label.toLowerCase().includes(search.toLowerCase()) ||
-      concept.alternative_labels.some((label) => label.toLowerCase().includes(search.toLowerCase()))
+      !selectedConcepts.includes(concept.preferred_label) &&
+      (concept.preferred_label.toLowerCase().includes(search.toLowerCase()) ||
+        concept.alternative_labels.some((label) => label.toLowerCase().includes(search.toLowerCase())))
   );
 };
 
@@ -61,9 +63,23 @@ export const ConceptPicker = ({ concepts }: TProps) => {
   const [sort, setSort] = useState("A-Z");
   const [filteredConcepts, setFilteredConcepts] = useState<TConcept[]>([]);
 
+  // Separate selected concepts from the rest for easy access and viewing
+  const selectedConcepts = concepts.reduce((acc, concept) => {
+    const queryValue = router.query[QUERY_PARAMS.concept_name];
+    if (!queryValue) {
+      return acc;
+    }
+    if (typeof queryValue === "string") {
+      return queryValue === concept.preferred_label ? [...acc, concept] : acc;
+    }
+    return queryValue.includes(concept.preferred_label) ? [...acc, concept] : acc;
+  }, [] as TConcept[]);
+
   useEffect(() => {
-    setFilteredConcepts(filterConcepts(concepts, search).sort((a, b) => a.preferred_label.localeCompare(b.preferred_label)));
-  }, [concepts, search]);
+    setFilteredConcepts(
+      filterConcepts(concepts, search, router.query[QUERY_PARAMS.concept_name]).sort((a, b) => a.preferred_label.localeCompare(b.preferred_label))
+    );
+  }, [concepts, search, router.query]);
 
   return (
     <div className="relative flex flex-col gap-5 max-h-full pb-5">
@@ -83,6 +99,17 @@ export const ConceptPicker = ({ concepts }: TProps) => {
         </select>
       </div>
       <div className="flex-1 flex flex-col gap-2 text-sm overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
+        {selectedConcepts.map((concept) => (
+          <InputCheck
+            key={concept.wikibase_id}
+            label={concept.preferred_label}
+            checked={isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)}
+            onChange={() => {
+              onConceptChange(router, concept);
+            }}
+            name={concept.preferred_label}
+          />
+        ))}
         {filteredConcepts.map((concept) => (
           <InputCheck
             key={concept.wikibase_id}

@@ -451,7 +451,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
             </div>
           </SiteWidth>
           {/* END MOBILE ONLY */}
-          <MultiCol>
+          <MultiCol id="search">
             <SideCol extraClasses="hidden md:block relative">
               {configQuery.isFetching ? (
                 <Loader size="20px" />
@@ -481,7 +481,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               )}
             </SideCol>
             <div
-              className={`flex-1 bg-white transition-[filter] duration-150 ${currentSlideOut ? "md:brightness-50 md:pointer-events-none md:select-none" : ""}`}
+              className={`flex-1 bg-white transition-[filter] duration-150 ${
+                currentSlideOut ? "md:brightness-50 md:pointer-events-none md:select-none" : ""
+              }`}
             >
               <SingleCol extraClasses="px-5 pt-5 relative">
                 <div>
@@ -543,7 +545,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       <Loader />
                     </div>
                   ) : (
-                    <section data-cy="search-results">
+                    <section data-cy="search-results" className="min-h-screen">
                       <h2 className="sr-only">Search results</h2>
                       <SearchResultList
                         category={router.query[QUERY_PARAMS.category]?.toString()}
