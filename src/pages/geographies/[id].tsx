@@ -20,7 +20,6 @@ import { Button } from "@/components/atoms/button/Button";
 import TabbedNav from "@/components/nav/TabbedNav";
 import { ExternalLink } from "@/components/ExternalLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
-import DocumentSearchForm from "@/components/forms/DocumentSearchForm";
 import { Alert } from "@/components/Alert";
 import { SubNav } from "@/components/nav/SubNav";
 import { Heading } from "@/components/typography/Heading";
@@ -57,8 +56,6 @@ const categoryByIndex = {
 };
 
 const MAX_NUMBER_OF_FAMILIES = 3;
-
-const FEATURED_SEARCHES = ["Resilient infrastructure", "Fossil fuel divestment", "Net zero growth plan", "Sustainable fishing"];
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets, theme, themeConfig }: TProps) => {
   const router = useRouter();
@@ -127,14 +124,6 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       newQuery[QUERY_PARAMS.category] = documentCategory;
     }
     router.push({ pathname: "/search", query: { ...newQuery } });
-  };
-
-  // Search handlers
-  const handleSearchInput = (term: string) => {
-    const queryObj = {};
-    queryObj[QUERY_PARAMS.query_string] = term;
-    queryObj[QUERY_PARAMS.country] = geography.geography_slug;
-    router.push({ pathname: "/search", query: queryObj });
   };
 
   const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geography.name}.`}</p>;
@@ -248,16 +237,8 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                 theme={theme}
                 totalProjects={allDocumentsCount}
               />
-              <section className="mt-8" data-cy="country-search">
+              <section className="mt-8">
                 <Heading level={2}>Documents</Heading>
-                <DocumentSearchForm
-                  placeholder={`Search the full text of ${allDocumentsCount} documents from ${geography.name}`}
-                  handleSearchInput={handleSearchInput}
-                  input={""}
-                  featuredSearches={FEATURED_SEARCHES}
-                  showSuggestions
-                  suggestionsAsLinks
-                />
               </section>
               {hasFamilies && (
                 <>

@@ -61,6 +61,7 @@ export const NavSearch = () => {
     }
 
     router.push({ pathname: newPathName, query: newQuery });
+    setIsFocused(false);
   };
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {

@@ -14,7 +14,6 @@ import Layout from "@/components/layouts/Main";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import PassageMatches from "@/components/PassageMatches";
 import Loader from "@/components/Loader";
-import SearchForm from "@/components/forms/SearchForm";
 import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
 import { DocumentHead } from "@/components/documents/DocumentHead";
 import { EmptyPassages } from "@/components/documents/EmptyPassages";
@@ -23,10 +22,9 @@ import { SearchSettings } from "@/components/filters/SearchSettings";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getDocumentDescription } from "@/constants/metaDescriptions";
-import { EXAMPLE_SEARCHES } from "@/constants/exampleSearches";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 
-import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@/types";
+import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamiy";
@@ -104,16 +102,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
   const handleViewOtherDocsClick = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     router.push({ pathname: `/document/${family.slug}`, query: router.query });
-  };
-
-  // Search input handler
-  const handleSearchInput = (term: string) => {
-    setPassageIndex(0);
-    const queryObj = {};
-    queryObj[QUERY_PARAMS.query_string] = term;
-    queryObj["id"] = document.slug;
-    if (term === "") return false;
-    router.push({ query: queryObj }, undefined, { shallow: true });
   };
 
   // Semantic search / exact match handler
@@ -285,76 +273,57 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
                     </div>
                   ) : (
                     <>
-                      <div id="document-search" className="flex flex-col gap-2 md:pl-4">
-                        <div className="flex gap-2">
-                          <div className="flex-1">
-                            <SearchForm
-                              placeholder="Search the full text of the document"
-                              handleSearchInput={handleSearchInput}
-                              input={qsSearchString as string}
-                              size="default"
-                            />
-                          </div>
-                          <div className="relative z-10 flex justify-center">
-                            <button
-                              className="px-4 flex justify-center items-center text-textDark text-xl"
-                              onClick={() => setShowOptions(!showOptions)}
-                            >
-                              <MdOutlineTune />
-                            </button>
-                            <AnimatePresence initial={false}>
-                              {showOptions && (
-                                <motion.div
-                                  key="content"
-                                  initial="collapsed"
-                                  animate="open"
-                                  exit="collapsed"
-                                  variants={{
-                                    collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                                    open: { opacity: 1, transition: { duration: 0.25 } },
-                                  }}
-                                >
-                                  <SearchSettings
-                                    queryParams={router.query}
-                                    handleSearchChange={handleSemanticSearchChange}
-                                    setShowOptions={setShowOptions}
-                                  />
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
+                      <div id="document-search" className="flex items-start gap-2 md:pl-4 pb-4 border-b border-gray-200">
+                        <div className="flex-1">
+                          {totalNoOfMatches > 0 && (
+                            <>
+                              <div className="mb-2 pt-2 text-sm" data-cy="document-matches-description">
+                                Displaying {renderPassageCount(totalNoOfMatches)} for "
+                                <span className="text-textDark font-medium">{`${qsSearchString}`}</span>"
+                                {!searchQuery.exact_match && ` and related phrases`}
+                                {totalNoOfMatches >= MAX_RESULTS && (
+                                  <span className="ml-1 inline-block">
+                                    <SearchLimitTooltip colour="grey" />
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-sm">Sorted by search relevance</p>
+                            </>
+                          )}
                         </div>
-
-                        {!router.query[QUERY_PARAMS.query_string] && (
-                          <div className="flex text-sm text-gray-600">
-                            <div className="mr-2 flex-shrink-0 font-medium">Examples:</div>
-                            <div className="">{EXAMPLE_SEARCHES.join(", ")}</div>
-                          </div>
-                        )}
+                        <div className="relative z-10 flex justify-center">
+                          <button className="p-2 text-textDark text-xl" onClick={() => setShowOptions(!showOptions)}>
+                            <MdOutlineTune />
+                          </button>
+                          <AnimatePresence initial={false}>
+                            {showOptions && (
+                              <motion.div
+                                key="content"
+                                initial="collapsed"
+                                animate="open"
+                                exit="collapsed"
+                                variants={{
+                                  collapsed: { opacity: 0, transition: { duration: 0.1 } },
+                                  open: { opacity: 1, transition: { duration: 0.25 } },
+                                }}
+                              >
+                                <SearchSettings
+                                  queryParams={router.query}
+                                  handleSearchChange={handleSemanticSearchChange}
+                                  setShowOptions={setShowOptions}
+                                />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
                       </div>
                       {totalNoOfMatches > 0 && (
-                        <>
-                          <div className="my-4 text-sm pb-4 border-b border-gray-200 md:pl-4" data-cy="document-matches-description">
-                            <div className="mb-2">
-                              Displaying {renderPassageCount(totalNoOfMatches)} for "
-                              <span className="text-textDark font-medium">{`${qsSearchString}`}</span>"
-                              {!searchQuery.exact_match && ` and related phrases`}
-                              {totalNoOfMatches >= MAX_RESULTS && (
-                                <span className="ml-1 inline-block">
-                                  <SearchLimitTooltip colour="grey" />
-                                </span>
-                              )}
-                            </div>
-
-                            <p>Sorted by search relevance</p>
-                          </div>
-                          <div
-                            id="document-passage-matches"
-                            className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
-                          >
-                            <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
-                          </div>
-                        </>
+                        <div
+                          id="document-passage-matches"
+                          className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
+                        >
+                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
+                        </div>
                       )}
                       {totalNoOfMatches === 0 && <EmptyPassages hasQueryString={!!router.query[QUERY_PARAMS.query_string]} />}
                     </>

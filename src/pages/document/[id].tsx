@@ -253,18 +253,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               )}
             </section>
 
-            <section className="mt-8" data-cy="top-documents">
-              <DocumentSearchForm
-                placeholder={`Search the full text of the ${page.title}`}
-                handleSearchInput={handleSearchInput}
-                input={router.query[QUERY_PARAMS.query_string] as string}
-                featuredSearches={EXAMPLE_SEARCHES}
-                showSuggestions
-              />
-            </section>
-
             {mainDocuments.length > 0 && theme !== "mcf" && (
-              <section className="mt-8">
+              <section className="mt-10">
                 <Heading level={2}>Main {pluralise(mainDocuments.length, "document", "documents")}</Heading>
                 <div data-cy="main-documents">
                   {mainDocuments.map((doc) => (
