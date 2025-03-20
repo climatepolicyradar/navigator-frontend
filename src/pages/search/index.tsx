@@ -66,7 +66,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
   const settingsButtonRef = useRef(null);
 
-  const [currentSlideOut, setCurrentSlideOut] = useState("concepts");
+  const [currentSlideOut, setCurrentSlideOut] = useState("");
 
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
@@ -481,7 +481,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               )}
             </SideCol>
             <div
-              className={`flex-1 bg-white transition-[filter] duration-150 ${currentSlideOut ? "brightness-50 pointer-events-none select-none" : ""}`}
+              className={`flex-1 bg-white transition-[filter] duration-150 ${currentSlideOut ? "md:brightness-50 md:pointer-events-none md:select-none" : ""}`}
             >
               <SingleCol extraClasses="px-5 pt-5 relative">
                 <div>

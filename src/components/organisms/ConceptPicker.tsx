@@ -11,6 +11,8 @@ type TProps = {
   concepts: TConcept[];
 };
 
+const SORT_OPTIONS = ["A-Z", "Grouped"];
+
 const isSelected = (queryValue: string | string[] | undefined, option: string) => {
   if (!queryValue) {
     return false;
@@ -30,7 +32,7 @@ const filterConcepts = (concepts: TConcept[], search: string) => {
   );
 };
 
-const onChanged = (router: NextRouter, concept: TConcept) => {
+const onConceptChange = (router: NextRouter, concept: TConcept) => {
   const query = { ...router.query };
   let selectedConcepts: string | string[] = query[QUERY_PARAMS.concept_name] || [];
 
@@ -56,6 +58,7 @@ const onChanged = (router: NextRouter, concept: TConcept) => {
 export const ConceptPicker = ({ concepts }: TProps) => {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("A-Z");
   const [filteredConcepts, setFilteredConcepts] = useState<TConcept[]>([]);
 
   useEffect(() => {
@@ -69,14 +72,24 @@ export const ConceptPicker = ({ concepts }: TProps) => {
         <Label>Beta</Label>
       </div>
       <input type="text" placeholder="Quick search" value={search} onChange={(e) => setSearch(e.target.value)} />
-      <div className="flex-1 flex flex-col gap-4 overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
+      <div className="text-sm">
+        <label>Sort by:</label>
+        <select name="sort" value={sort} onChange={(e) => setSort(e.target.value)}>
+          {SORT_OPTIONS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="flex-1 flex flex-col gap-2 text-sm overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
         {filteredConcepts.map((concept) => (
           <InputCheck
             key={concept.wikibase_id}
             label={concept.preferred_label}
             checked={isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)}
             onChange={() => {
-              onChanged(router, concept);
+              onConceptChange(router, concept);
             }}
             name={concept.preferred_label}
           />
