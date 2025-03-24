@@ -2,18 +2,40 @@ import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { Input } from "@/components/atoms/input/Input";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { systemGeoCodes } from "@/constants/systemGeos";
+import useConfig from "@/hooks/useConfig";
+import { TGeography } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { Select } from "@base-ui-components/react";
+import { sortBy } from "lodash";
 import { useRouter } from "next/router";
-import { FormEventHandler, useEffect, useRef, useState } from "react";
+import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";
 
 const pagesWithContextualSearch: string[] = ["/document/[id]", "/documents/[id]", "/geographies/[id]"];
+
+const withBoldMatch = (text: string, match: string) => {
+  if (!text.toLocaleLowerCase().includes(match.toLocaleLowerCase())) return text;
+
+  const matchIndex = text.toLocaleLowerCase().indexOf(match.toLocaleLowerCase());
+  const beforeMatch = text.slice(0, matchIndex);
+  const matchText = text.slice(matchIndex, matchIndex + match.length);
+  const afterMatch = text.slice(matchIndex + match.length);
+
+  return (
+    <>
+      {beforeMatch.length > 0 && beforeMatch}
+      <span className="font-semibold">{matchText}</span>
+      {afterMatch.length > 0 && afterMatch}
+    </>
+  );
+};
 
 export const NavSearch = () => {
   const ref = useRef(null);
   const router = useRouter();
   const queryString = router.query[QUERY_PARAMS.query_string] as string;
   const { pathname } = router;
+  const configQuery = useConfig();
 
   const [searchText, setSearchText] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -37,6 +59,26 @@ export const NavSearch = () => {
       document.removeEventListener("click", handleClickOutside, true);
     };
   }, [ref]);
+
+  const geographyResults = useMemo(() => {
+    if (searchText.length < 2) return [];
+
+    const geographies = configQuery.data?.countries || [];
+
+    return sortBy(
+      geographies.filter(
+        (geography) =>
+          !systemGeoCodes.includes(geography.slug) &&
+          (geography.display_value.toLocaleLowerCase().includes(searchText.toLocaleLowerCase()) ||
+            searchText.toLocaleLowerCase().includes(geography.display_value.toLowerCase()))
+      ),
+      [
+        (geo) => !geo.display_value.toLocaleLowerCase().includes(searchText.toLocaleLowerCase()),
+        (geo) => geo.display_value.toLocaleLowerCase().indexOf(searchText.toLocaleLowerCase()),
+        "display_value",
+      ]
+    );
+  }, [searchText, configQuery]);
 
   let contextualSearchName = "Document";
   if (pathname === "/geographies/[id]") contextualSearchName = "Geography";
@@ -69,20 +111,35 @@ export const NavSearch = () => {
     setIsFocused(false);
   };
 
-  const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     handleSearch(searchText);
   };
 
-  const onClear = () => {
-    setSearchText(""); // Visually clears input before handleSearch redirects
-    handleSearch("");
+  const handleSearchLink = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    handleSearch(searchText);
+  };
+
+  const handleClear = () => {
+    setSearchText("");
+    const newQuery = { ...router.query };
+    delete newQuery[QUERY_PARAMS.query_string];
+    router.push({ query: newQuery });
+    setIsFocused(false);
+  };
+
+  const handleGeography = (geoSlug: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    router.push({ pathname: `/geographies/${geoSlug}` });
+    setSearchText("");
+    setIsFocused(false);
   };
 
   return (
     <div className="relative" ref={ref}>
       <div className="p-4 relative z-20">
-        <form onSubmit={onSubmit} className="flex flex-row">
+        <form onSubmit={handleSubmit} className="flex flex-row">
           {/* Search field */}
           <Input
             clearable
@@ -94,7 +151,7 @@ export const NavSearch = () => {
             }
             iconOnLeft
             onChange={(event) => setSearchText(event.target.value)}
-            onClear={onClear}
+            onClear={handleClear}
             onFocus={() => setIsFocused(true)}
             placeholder="Search"
             size="large"
@@ -129,16 +186,24 @@ export const NavSearch = () => {
 
       {/* Results */}
       {showResults && (
-        <div className="absolute top-0 left-0 right-0 border border-border-lighter rounded-xl bg-surface-light shadow-[0px_4px_48px_0px_rgba(0,0,0,0.08)] p-4 pt-19">
-          <Button
-            className="inline-block w-full text-left text-base font-normal"
-            color="mono"
-            size="small"
-            variant="ghost"
-            onClick={() => handleSearch(searchText)}
-          >
-            Search for <span className="font-bold">{searchText}</span>
-          </Button>
+        <div className="absolute top-0 left-0 right-0 border border-border-lighter rounded-xl bg-surface-light shadow-[0px_4px_48px_0px_rgba(0,0,0,0.08)] p-4 pt-16">
+          {/* Geographies */}
+          {geographyResults.length > 0 && (
+            <div className="my-6 flex flex-col gap-4">
+              <h3 className="text-text-brand text-sm font-medium select-none">Geographies</h3>
+              {geographyResults.map((geography) => (
+                <a href="#" onClick={handleGeography(geography.slug)} key={geography.id} className="text-sm hover:underline">
+                  {withBoldMatch(geography.display_value, searchText)}
+                </a>
+              ))}
+            </div>
+          )}
+          {/* Search */}
+          <div className="not-first:border-t border-border-lighter">
+            <a href="#" onClick={handleSearchLink} className="block pt-4 pb-2 text-sm hover:underline">
+              Search for <span className="font-bold">{searchText}</span>
+            </a>
+          </div>
         </div>
       )}
     </div>
