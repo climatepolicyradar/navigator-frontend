@@ -128,6 +128,9 @@ const generatePills = (
 
   Object.keys(QUERY_PARAMS).map((key: TFilterKeys) => {
     const value = queryParams[QUERY_PARAMS[key]];
+
+    if (["query_string"].includes(key)) return;
+
     if (value) {
       if (key === "year_range")
         return pills.push(handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions, themeConfig, concepts));
