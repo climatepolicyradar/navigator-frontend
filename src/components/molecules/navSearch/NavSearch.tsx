@@ -1,15 +1,13 @@
-import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { Input } from "@/components/atoms/input/Input";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { systemGeoCodes } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
-import { TGeography } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
-import { Select } from "@base-ui-components/react";
 import { sortBy } from "lodash";
 import { useRouter } from "next/router";
 import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";
+import { NavSearchDropdown } from "./NavSearchDropdown";
 
 const pagesWithContextualSearch: string[] = ["/document/[id]", "/documents/[id]", "/geographies/[id]"];
 
@@ -142,8 +140,9 @@ export const NavSearch = () => {
         <form onSubmit={handleSubmit} className="flex flex-row">
           {/* Search field */}
           <Input
+            autoComplete="off"
             clearable
-            containerClasses={`focus-within:!outline-0 ${showDropdown ? "rounded-r-none border-r border-r-border-light" : ""}`}
+            containerClasses={`focus-within:!outline-0 ${showDropdown ? "rounded-r-none" : ""}`}
             icon={
               <button type="submit" className="w-4 h-4 ml-2">
                 <Icon name="search" />
@@ -160,26 +159,7 @@ export const NavSearch = () => {
 
           {/* Dropdown */}
           {showDropdown && (
-            <Select.Root defaultValue={searchEverything} onValueChange={(value) => setSearchEverything(value)}>
-              <Select.Trigger className="pl-3 pr-4 flex items-center bg-surface-ui rounded-r-md text-text-secondary text-sm leading-4 font-medium gap-2 cursor-pointer">
-                <Select.Value />
-                <Select.Icon>
-                  <Icon name="downChevron" height="12" width="12" />
-                </Select.Icon>
-              </Select.Trigger>
-              <Select.Portal>
-                <Select.Positioner side="bottom" align="start">
-                  <Select.Popup className="box-border p-0.5 bg-surface-bg rounded-md">
-                    <Select.Item value={true} className="pl-3 pr-8 h-[47px] flex items-center cursor-pointer">
-                      <Select.ItemText className="my-2 text-text-secondary text-sm leading-4 font-medium">Everything</Select.ItemText>
-                    </Select.Item>
-                    <Select.Item value={false} className="pl-3 pr-8 h-[47px] flex items-center cursor-pointer">
-                      <Select.ItemText className="my-2 text-text-secondary text-sm leading-4 font-medium">{contextualSearchName}</Select.ItemText>
-                    </Select.Item>
-                  </Select.Popup>
-                </Select.Positioner>
-              </Select.Portal>
-            </Select.Root>
+            <NavSearchDropdown contextualSearchName={contextualSearchName} isEverything={searchEverything} setIsEverything={setSearchEverything} />
           )}
         </form>
       </div>
@@ -199,8 +179,8 @@ export const NavSearch = () => {
             </div>
           )}
           {/* Search */}
-          <div className="not-first:border-t border-border-lighter">
-            <a href="#" onClick={handleSearchLink} className="block pt-4 pb-2 text-sm hover:underline">
+          <div className="pt-4 pb-2 not-first:border-t border-border-lighter">
+            <a href="#" onClick={handleSearchLink} className="block text-sm hover:underline">
               Search for <span className="font-bold">{searchText}</span>
             </a>
           </div>
