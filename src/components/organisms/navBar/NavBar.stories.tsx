@@ -2,7 +2,7 @@ import { Meta, StoryObj } from "@storybook/react/*";
 import { NavBar } from "./NavBar";
 
 const meta = {
-  title: "Organisms/Surfaces/NavBar",
+  title: "Organisms/NavBar",
   component: NavBar,
 } satisfies Meta<typeof NavBar>;
 type Story = StoryObj<typeof NavBar>;
