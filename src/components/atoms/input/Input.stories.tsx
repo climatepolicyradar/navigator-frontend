@@ -11,8 +11,8 @@ const meta = {
       control: "select",
       options: iconNames,
     },
+    onClear: { control: false },
     placeholder: { control: "text" },
-    valueSetter: { control: false },
   },
 } satisfies Meta<typeof Input>;
 type Story = StoryObj<typeof Input>;
@@ -22,8 +22,9 @@ export default meta;
 const useInputContext = ({ ...props }) => {
   const [value, setValue] = useState("");
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => setValue(event.currentTarget.value);
+  const handleClear = () => setValue("");
 
-  return <Input value={value} onChange={handleChange} valueSetter={setValue} {...props} />;
+  return <Input value={value} onChange={handleChange} onClear={handleClear} {...props} />;
 };
 
 export const Default: Story = {

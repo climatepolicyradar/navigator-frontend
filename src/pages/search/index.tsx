@@ -477,7 +477,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               </div>
             </div>
 
-            <div className="mt-10">
+            <div className="mt-5">
               {status === "loading" ? (
                 <div className="w-full flex justify-center h-96">
                   <Loader />

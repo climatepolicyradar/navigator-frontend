@@ -15,15 +15,15 @@ export const NavSearch = () => {
   const queryString = router.query[QUERY_PARAMS.query_string] as string;
   const { pathname } = router;
 
-  const [search, setSearch] = useState("");
+  const [searchText, setSearchText] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const pageHasContextualSearch = pagesWithContextualSearch.includes(pathname);
   const [searchEverything, setSearchEverything] = useState<boolean>(!pageHasContextualSearch);
   const showDropdown = pageHasContextualSearch;
-  const showResults = isFocused && search;
+  const showResults = isFocused && searchText;
 
   useEffect(() => {
-    setSearch(queryString || "");
+    setSearchText(queryString || "");
   }, [queryString]);
 
   useEffect(() => {
@@ -41,9 +41,14 @@ export const NavSearch = () => {
   let contextualSearchName = "Document";
   if (pathname === "/geographies/[id]") contextualSearchName = "Geography";
 
-  const handleSearch = () => {
+  const handleSearch = (searchQuery: string) => {
     const newQuery = CleanRouterQuery({ ...router.query });
-    newQuery[QUERY_PARAMS.query_string] = search;
+
+    if (searchQuery) {
+      newQuery[QUERY_PARAMS.query_string] = searchQuery;
+    } else {
+      delete newQuery[QUERY_PARAMS.query_string];
+    }
 
     let newPathName = "/search";
 
@@ -66,7 +71,12 @@ export const NavSearch = () => {
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    handleSearch();
+    handleSearch(searchText);
+  };
+
+  const onClear = () => {
+    setSearchText(""); // Visually clears input before handleSearch redirects
+    handleSearch("");
   };
 
   return (
@@ -83,12 +93,12 @@ export const NavSearch = () => {
               </button>
             }
             iconOnLeft
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => setSearchText(event.target.value)}
+            onClear={onClear}
             onFocus={() => setIsFocused(true)}
             placeholder="Search"
             size="large"
-            value={search}
-            valueSetter={setSearch}
+            value={searchText}
           />
 
           {/* Dropdown */}
@@ -125,9 +135,9 @@ export const NavSearch = () => {
             color="mono"
             size="small"
             variant="ghost"
-            onClick={() => handleSearch()}
+            onClick={() => handleSearch(searchText)}
           >
-            Search for <span className="font-bold">{search}</span>
+            Search for <span className="font-bold">{searchText}</span>
           </Button>
         </div>
       )}
