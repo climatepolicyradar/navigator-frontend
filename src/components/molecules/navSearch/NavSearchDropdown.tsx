@@ -1,5 +1,5 @@
-import { Icon } from "@/components/atoms/icon/Icon";
 import { useEffect, useRef, useState } from "react";
+import { LuChevronsUpDown } from "react-icons/lu";
 
 interface NavSearchDropdownProps {
   contextualSearchName: string;
@@ -56,7 +56,7 @@ export const NavSearchDropdown = ({ contextualSearchName, isEverything, setIsEve
     if (isOpen) setIsEverything(newValue);
   };
 
-  const optionClasses = "h-full flex items-center gap-2 pl-3 pr-4 bg-surface-ui text-sm leading-4 cursor-pointer";
+  const optionClasses = "h-full w-full flex items-center justify-between gap-2 pl-3 pr-3 bg-surface-ui text-sm leading-4 text-nowrap cursor-pointer";
 
   return (
     <div ref={ref} className="border-l border-l-border-light">
@@ -67,14 +67,12 @@ export const NavSearchDropdown = ({ contextualSearchName, isEverything, setIsEve
       >
         {firstOption.name}
         <div className={isOpen ? "invisible" : ""}>
-          <Icon name="downChevron" height="12" width="12" />
+          <LuChevronsUpDown height="12" width="12" />
         </div>
       </button>
-      {isOpen && (
-        <button type="button" onClick={() => handleClick(secondOption.value)} className={`${optionClasses} w-full rounded-b-md`}>
-          {secondOption.name}
-        </button>
-      )}
+      <button type="button" onClick={() => handleClick(secondOption.value)} className={`${optionClasses} ${isOpen ? "" : "invisible"} rounded-b-md`}>
+        {secondOption.name}
+      </button>
     </div>
   );
 };

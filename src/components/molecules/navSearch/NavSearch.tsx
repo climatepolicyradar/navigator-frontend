@@ -78,8 +78,8 @@ export const NavSearch = () => {
     );
   }, [searchText, configQuery]);
 
-  let contextualSearchName = "Document";
-  if (pathname === "/geographies/[id]") contextualSearchName = "Geography";
+  let contextualSearchName = "This document";
+  if (pathname === "/geographies/[id]") contextualSearchName = "This geography";
 
   const handleSearch = (searchQuery: string) => {
     const newQuery = CleanRouterQuery({ ...router.query });

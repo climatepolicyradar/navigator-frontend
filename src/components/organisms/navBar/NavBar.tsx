@@ -18,7 +18,7 @@ export const NavBar = () => {
             <Image src="/images/cpr-logo-horizontal.png" width={228} height={35} alt="Climate Policy Radar logo" data-cy="cpr-logo" />
           </LinkWithQuery>
         </div>
-        <div className="flex-[1_1_100%] sm:flex-initial order-1 sm:order-0 lg:min-w-[500px]">
+        <div className="flex-[1_1_100%] sm:flex-initial order-1 sm:order-0 lg:min-w-[550px]">
           <NavSearch />
         </div>
         <div className="lg:flex-1 flex justify-end pt-4 pr-4 sm:pt-0 sm:pr-0">
