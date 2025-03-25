@@ -101,7 +101,7 @@ export const CCLW: Story = {
     showLogo: true,
     showSearch: true,
   },
-  storyName: "CCLW",
+  name: "CCLW",
   parameters: documentPageParameters,
 };
 
@@ -113,6 +113,6 @@ export const MCF: Story = {
     showLogo: true,
     showSearch: true,
   },
-  storyName: "MCF",
+  name: "MCF",
   parameters: documentPageParameters,
 };
