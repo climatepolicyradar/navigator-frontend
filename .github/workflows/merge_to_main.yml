@@ -82,7 +82,7 @@ jobs:
           path: playwright-report/
           retention-days: 30
   # deploy
-  deploy:
+  release:
     runs-on: ubuntu-latest
     needs: [code-quality, test, test-e2e]
     environment: production
