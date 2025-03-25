@@ -11,6 +11,7 @@ import { NavSearchDropdown } from "./NavSearchDropdown";
 
 const pagesWithContextualSearch: string[] = ["/document/[id]", "/documents/[id]", "/geographies/[id]"];
 
+// Replaces the substring match with bold via JSX.
 const withBoldMatch = (text: string, match: string) => {
   if (!text.toLocaleLowerCase().includes(match.toLocaleLowerCase())) return text;
 
@@ -71,6 +72,7 @@ export const NavSearch = () => {
             searchText.toLocaleLowerCase().includes(geography.display_value.toLowerCase()))
       ),
       [
+        // Prioritises matches where the substring is earlier in the string, then alphabetical
         (geo) => !geo.display_value.toLocaleLowerCase().includes(searchText.toLocaleLowerCase()),
         (geo) => geo.display_value.toLocaleLowerCase().indexOf(searchText.toLocaleLowerCase()),
         "display_value",
