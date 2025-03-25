@@ -1,12 +1,118 @@
+import { CCLWLogo } from "@/cclw/components/Header";
+import { Menu as CCLWMenu } from "@/cclw/components/Menu";
+import MainMenu from "@/components/menus/MainMenu";
+import { CPRLogo } from "@/cpr/layouts/main";
+import { MCFLogo } from "@/mcf/components/Header";
+import { Menu as MCFMenu } from "@/mcf/components/Menu";
 import { Meta, StoryObj } from "@storybook/react/*";
 import { NavBar } from "./NavBar";
 
 const meta = {
   title: "Organisms/NavBar",
   component: NavBar,
+  argTypes: {
+    logo: { control: false },
+    menu: { control: false },
+  },
 } satisfies Meta<typeof NavBar>;
 type Story = StoryObj<typeof NavBar>;
 
 export default meta;
 
-export { SearchPage, GeographyPage, FamilyPage, DocumentPage } from "../../molecules/navSearch/NavSearch.stories";
+const CPRArgs = {
+  headerClasses: "banner",
+  logo: CPRLogo,
+  menu: <MainMenu />,
+  showLogo: true,
+  showSearch: true,
+};
+
+export const SearchPage: Story = {
+  args: CPRArgs,
+  parameters: {
+    nextjs: {
+      router: {
+        asPath: "/search?q=Adaptation+strategy",
+        pathname: "/search",
+        query: {
+          q: "Adaptation strategy",
+        },
+      },
+    },
+  },
+};
+
+export const GeographyPage: Story = {
+  args: CPRArgs,
+  parameters: {
+    nextjs: {
+      router: {
+        asPath: "/geographies/saint-kitts-and-nevis?q=Adaptation+strategy",
+        pathname: "/geographies/[id]",
+        query: {
+          id: "saint-kitts-and-nevis",
+          q: "Adaptation strategy",
+        },
+      },
+    },
+  },
+};
+
+export const FamilyPage: Story = {
+  args: CPRArgs,
+  parameters: {
+    nextjs: {
+      router: {
+        asPath: "/document/national-adaptation-strategy-to-climate-change_3bf7?q=Adaptation+strategy",
+        pathname: "/document/[id]",
+        query: {
+          id: "national-adaptation-strategy-to-climate-change_3bf7",
+          q: "Adaptation strategy",
+        },
+      },
+    },
+  },
+};
+
+const documentPageParameters = {
+  nextjs: {
+    router: {
+      asPath:
+        "/documents/national-strategy-for-adaptation-to-climate-change_f1a4?q=Adaptation+strategy&id=national-adaptation-strategy-to-climate-change_3bf7",
+      pathname: "/documents/[id]",
+      query: {
+        q: "Adaptation strategy",
+        id: "national-strategy-for-adaptation-to-climate-change_f1a4",
+      },
+    },
+  },
+};
+
+export const DocumentPage: Story = {
+  args: CPRArgs,
+  parameters: documentPageParameters,
+};
+
+export const CCLW: Story = {
+  args: {
+    headerClasses: "bg-cclw-dark",
+    logo: CCLWLogo,
+    menu: <CCLWMenu />,
+    showLogo: true,
+    showSearch: true,
+  },
+  storyName: "CCLW",
+  parameters: documentPageParameters,
+};
+
+export const MCF: Story = {
+  args: {
+    headerClasses: "bg-surface-light min-h-20 border-b border-gray-200 border-solid",
+    logo: MCFLogo,
+    menu: <MCFMenu />,
+    showLogo: true,
+    showSearch: true,
+  },
+  storyName: "MCF",
+  parameters: documentPageParameters,
+};

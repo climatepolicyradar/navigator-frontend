@@ -1,6 +1,6 @@
-import React, { FC, ReactNode } from "react";
-import Header from "@/cclw/components/Header";
 import Footer from "@/cclw/components/Footer";
+import Header from "@/cclw/components/Header";
+import { FC, ReactNode } from "react";
 
 type TProps = {
   children?: ReactNode;

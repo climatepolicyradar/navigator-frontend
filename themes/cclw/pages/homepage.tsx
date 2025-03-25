@@ -32,7 +32,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
     <Layout title="Law and Policy Search" theme={APP_NAME} description={PAGE_DESCRIPTION}>
       <main id="main" className="flex flex-col flex-1">
         <div className="bg-cclw-dark">
-          <Header background={false} />
+          <Header />
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
         </div>
         <SiteWidth extraClasses="my-12" data-cy="powered-by">
