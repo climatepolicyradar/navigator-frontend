@@ -37,7 +37,7 @@ on:
         required: true
 permissions: read-all
 jobs:
-  deploy-on-merge:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
