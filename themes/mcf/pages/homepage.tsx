@@ -23,7 +23,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
     <Layout title="Climate Fund Search" theme={APP_NAME} description={PAGE_DESCRIPTION}>
       <main id="main" className="flex flex-col flex-1">
         <div>
-          <Header background={false} showBottomBorder={false} />
+          <Header />
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
         </div>
         <AboutClimateProjectExplorer />

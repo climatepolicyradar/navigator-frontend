@@ -63,7 +63,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
               <Head>
                 <link rel="icon" href={favicon} />
               </Head>
-              <div id={dynamicTheme} className="h-full">
+              <div id={dynamicTheme}>
                 <Component {...pageProps} />
               </div>
               <CookieConsent onConsentChange={onConsentChange} />
