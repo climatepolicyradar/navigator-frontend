@@ -24,7 +24,6 @@ import { Button } from "@/components/atoms/button/Button";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Tooltip from "@/components/tooltip";
-import DocumentSearchForm from "@/components/forms/DocumentSearchForm";
 import { Alert } from "@/components/Alert";
 import { SubNav } from "@/components/nav/SubNav";
 import { Heading } from "@/components/typography/Heading";
@@ -42,7 +41,6 @@ import { extractNestedData } from "@/utils/extractNestedData";
 import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept } from "@/types";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { EXAMPLE_SEARCHES } from "@/constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@/constants/document";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -253,18 +251,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               )}
             </section>
 
-            <section className="mt-8" data-cy="top-documents">
-              <DocumentSearchForm
-                placeholder={`Search the full text of the ${page.title}`}
-                handleSearchInput={handleSearchInput}
-                input={router.query[QUERY_PARAMS.query_string] as string}
-                featuredSearches={EXAMPLE_SEARCHES}
-                showSuggestions
-              />
-            </section>
-
             {mainDocuments.length > 0 && theme !== "mcf" && (
-              <section className="mt-8">
+              <section className="mt-10">
                 <Heading level={2}>Main {pluralise(mainDocuments.length, "document", "documents")}</Heading>
                 <div data-cy="main-documents">
                   {mainDocuments.map((doc) => (

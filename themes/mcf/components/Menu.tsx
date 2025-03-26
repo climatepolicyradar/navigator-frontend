@@ -5,7 +5,7 @@ import { Icon } from "@/components/atoms/icon/Icon";
 import DropdownMenuItem from "@/components/menus/DropdownMenuItem";
 import DropdownMenuWrapper from "@/components/menus/DropdownMenuWrapper";
 
-import menuLinks from "../../constants/menuLinks";
+import menuLinks from "../constants/menuLinks";
 import { colors } from "@/mcf/constants/colors";
 
 export const Menu = () => {
