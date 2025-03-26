@@ -7,6 +7,7 @@ import { InputCheck } from "@/components/forms/Checkbox";
 import { TConcept } from "@/types";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { startCase } from "lodash";
 
 type TProps = {
   concepts: TConcept[];
@@ -114,7 +115,7 @@ export const ConceptPicker = ({ concepts }: TProps) => {
         {filteredConcepts.map((concept) => (
           <InputCheck
             key={concept.wikibase_id}
-            label={concept.preferred_label}
+            label={concept.preferred_label.slice(0, 1).toUpperCase() + concept.preferred_label.slice(1)}
             checked={isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)}
             onChange={() => {
               onConceptChange(router, concept);
