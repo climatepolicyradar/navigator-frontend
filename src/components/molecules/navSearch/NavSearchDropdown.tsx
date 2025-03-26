@@ -9,7 +9,7 @@ interface NavSearchDropdownProps {
 
 type DropdownOption = {
   name: string;
-  value: boolean;
+  newIsEverythingValue: boolean;
 };
 
 export const NavSearchDropdown = ({ contextualSearchName, isEverything, setIsEverything }: NavSearchDropdownProps) => {
@@ -41,11 +41,11 @@ export const NavSearchDropdown = ({ contextualSearchName, isEverything, setIsEve
   const dropdownOptions: DropdownOption[] = [
     {
       name: "Everything",
-      value: true,
+      newIsEverythingValue: true,
     },
     {
       name: contextualSearchName,
-      value: false,
+      newIsEverythingValue: false,
     },
   ];
   if (!isEverything) dropdownOptions.reverse();
@@ -62,7 +62,7 @@ export const NavSearchDropdown = ({ contextualSearchName, isEverything, setIsEve
     <div ref={ref} className="border-l border-l-border-light">
       <button
         type="button"
-        onClick={() => handleClick(firstOption.value)}
+        onClick={() => handleClick(firstOption.newIsEverythingValue)}
         className={`${optionClasses} ${isOpen ? "rounded-tr-md" : "rounded-r-md"}`}
       >
         {firstOption.name}
@@ -70,7 +70,11 @@ export const NavSearchDropdown = ({ contextualSearchName, isEverything, setIsEve
           <LuChevronsUpDown height="12" width="12" />
         </div>
       </button>
-      <button type="button" onClick={() => handleClick(secondOption.value)} className={`${optionClasses} ${isOpen ? "" : "invisible"} rounded-b-md`}>
+      <button
+        type="button"
+        onClick={() => handleClick(secondOption.newIsEverythingValue)}
+        className={`${optionClasses} ${isOpen ? "" : "invisible"} rounded-b-md`}
+      >
         {secondOption.name}
       </button>
     </div>

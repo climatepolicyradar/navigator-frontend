@@ -6,16 +6,17 @@ import useConfig from "@/hooks/useConfig";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { sortBy } from "lodash";
 import { useRouter } from "next/router";
-import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";
+import { FormEventHandler, MouseEventHandler, useEffect, useMemo, useRef, useState } from "react";
 import { NavSearchDropdown } from "./NavSearchDropdown";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 
 const pagesWithContextualSearch: string[] = ["/document/[id]", "/documents/[id]", "/geographies/[id]"];
 
 // Replaces the substring match with bold via JSX.
 const withBoldMatch = (text: string, match: string) => {
-  if (!text.toLocaleLowerCase().includes(match.toLocaleLowerCase())) return text;
+  if (!text.toLowerCase().includes(match.toLowerCase())) return text;
 
-  const matchIndex = text.toLocaleLowerCase().indexOf(match.toLocaleLowerCase());
+  const matchIndex = text.toLowerCase().indexOf(match.toLowerCase());
   const beforeMatch = text.slice(0, matchIndex);
   const matchText = text.slice(matchIndex, matchIndex + match.length);
   const afterMatch = text.slice(matchIndex + match.length);
@@ -32,7 +33,7 @@ const withBoldMatch = (text: string, match: string) => {
 export const NavSearch = () => {
   const ref = useRef(null);
   const router = useRouter();
-  const queryString = router.query[QUERY_PARAMS.query_string] as string;
+  const queryString = [router.query[QUERY_PARAMS.query_string]].flat()[0];
   const { pathname } = router;
   const configQuery = useConfig();
 
@@ -68,13 +69,13 @@ export const NavSearch = () => {
       geographies.filter(
         (geography) =>
           !systemGeoCodes.includes(geography.slug) &&
-          (geography.display_value.toLocaleLowerCase().includes(searchText.toLocaleLowerCase()) ||
-            searchText.toLocaleLowerCase().includes(geography.display_value.toLowerCase()))
+          (geography.display_value.toLowerCase().includes(searchText.toLowerCase()) ||
+            searchText.toLowerCase().includes(geography.display_value.toLowerCase()))
       ),
       [
         // Prioritises matches where the substring is earlier in the string, then alphabetical
-        (geo) => !geo.display_value.toLocaleLowerCase().includes(searchText.toLocaleLowerCase()),
-        (geo) => geo.display_value.toLocaleLowerCase().indexOf(searchText.toLocaleLowerCase()),
+        (geo) => !geo.display_value.toLowerCase().includes(searchText.toLowerCase()),
+        (geo) => geo.display_value.toLowerCase().indexOf(searchText.toLowerCase()),
         "display_value",
       ]
     );
@@ -116,7 +117,7 @@ export const NavSearch = () => {
     handleSearch(searchText);
   };
 
-  const handleSearchLink = (event: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleSearchButton: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();
     handleSearch(searchText);
   };
@@ -126,13 +127,6 @@ export const NavSearch = () => {
     const newQuery = { ...router.query };
     delete newQuery[QUERY_PARAMS.query_string];
     router.push({ query: newQuery });
-    setIsFocused(false);
-  };
-
-  const handleGeography = (geoSlug: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-    router.push({ pathname: `/geographies/${geoSlug}` });
-    setSearchText("");
     setIsFocused(false);
   };
 
@@ -174,17 +168,17 @@ export const NavSearch = () => {
             <div className="my-6 flex flex-col gap-4">
               <h3 className="text-text-brand text-sm font-medium select-none">Geographies</h3>
               {geographyResults.map((geography) => (
-                <a href="#" onClick={handleGeography(geography.slug)} key={geography.id} className="text-sm hover:underline">
+                <LinkWithQuery href={`/geographies/${geography.slug}`} key={geography.id} className="text-sm hover:underline">
                   {withBoldMatch(geography.display_value, searchText)}
-                </a>
+                </LinkWithQuery>
               ))}
             </div>
           )}
           {/* Search */}
           <div className="pt-4 pb-2 not-first:border-t border-border-lighter">
-            <a href="#" onClick={handleSearchLink} className="block text-sm hover:underline">
+            <button type="button" onClick={handleSearchButton} className="w-full text-sm text-left hover:underline">
               Search for <span className="font-bold">{searchText}</span>
-            </a>
+            </button>
           </div>
         </div>
       )}

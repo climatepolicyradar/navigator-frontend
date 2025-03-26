@@ -80,7 +80,7 @@ export const Input = ({
   }
 
   const handleClear = () => {
-    if (onClear) onClear();
+    onClear?.();
   };
 
   return (

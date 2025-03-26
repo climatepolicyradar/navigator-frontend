@@ -129,7 +129,8 @@ const generatePills = (
   Object.keys(QUERY_PARAMS).map((key: TFilterKeys) => {
     const value = queryParams[QUERY_PARAMS[key]];
 
-    if (["query_string"].includes(key)) return;
+    // Exclude the search query from pills as it displays in NavSearch instead
+    if (key === "query_string") return;
 
     if (value) {
       if (key === "year_range")
