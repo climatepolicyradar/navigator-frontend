@@ -1,10 +1,10 @@
+import { usePostHog } from "posthog-js/react";
 import { useEffect, useState } from "react";
 
 import { TPassage } from "@/types";
 
 import Loader from "./Loader";
 import { Icon } from "./atoms/icon/Icon";
-import { usePostHog } from "posthog-js/react";
 
 type TProps = {
   passages: TPassage[];

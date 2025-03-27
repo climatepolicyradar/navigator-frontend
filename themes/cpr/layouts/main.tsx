@@ -1,9 +1,10 @@
-import Footer from "@/components/footer/Footer";
-import { LinkWithQuery } from "@/components/LinkWithQuery";
-import MainMenu from "@/components/menus/MainMenu";
-import { NavBar } from "@/components/organisms/navBar/NavBar";
 import Image from "next/image";
 import { FC, ReactNode } from "react";
+
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import Footer from "@/components/footer/Footer";
+import MainMenu from "@/components/menus/MainMenu";
+import { NavBar } from "@/components/organisms/navBar/NavBar";
 
 export const CPRLogo = (
   <LinkWithQuery href="/">

@@ -1,53 +1,47 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import Script from "next/script";
-import { useRouter } from "next/router";
-import { usePathname } from "next/navigation";
 import axios from "axios";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
+import Script from "next/script";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
-
-import useSearch from "@/hooks/useSearch";
-
-import { SingleCol } from "@/components/panels/SingleCol";
-import Layout from "@/components/layouts/Main";
-import { Timeline } from "@/components/timeline/Timeline";
-import { Event } from "@/components/timeline/Event";
-import { FamilyHead } from "@/components/document/FamilyHead";
-import { FamilyDocument } from "@/components/document/FamilyDocument";
+import { Alert } from "@/components/Alert";
 import { ExternalLink } from "@/components/ExternalLink";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Targets } from "@/components/Targets";
+import { Button } from "@/components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
 import { ShowHide } from "@/components/controls/ShowHide";
 import { Divider } from "@/components/dividers/Divider";
-import { Icon } from "@/components/atoms/icon/Icon";
-import { Button } from "@/components/atoms/button/Button";
-import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
-import Tooltip from "@/components/tooltip";
-import { Alert } from "@/components/Alert";
+import { FamilyDocument } from "@/components/document/FamilyDocument";
+import { FamilyHead } from "@/components/document/FamilyHead";
+import Layout from "@/components/layouts/Main";
 import { SubNav } from "@/components/nav/SubNav";
+import { MultiCol } from "@/components/panels/MultiCol";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { Event } from "@/components/timeline/Event";
+import { Timeline } from "@/components/timeline/Timeline";
+import Tooltip from "@/components/tooltip";
 import { Heading } from "@/components/typography/Heading";
-
-import { truncateString } from "@/utils/truncateString";
-import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { getCorpusInfo } from "@/helpers/getCorpusInfo";
-import { getMainDocuments } from "@/helpers/getMainDocuments";
-
-import { sortFilterTargets } from "@/utils/sortFilterTargets";
-import { pluralise } from "@/utils/pluralise";
-import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
-import { extractNestedData } from "@/utils/extractNestedData";
-
-import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept } from "@/types";
-
-import { QUERY_PARAMS } from "@/constants/queryParams";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@/constants/document";
 import { MAX_PASSAGES } from "@/constants/paging";
-import { getFeatureFlags } from "@/utils/featureFlags";
-import { fetchAndProcessConcepts } from "@/utils/processConcepts";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { getCorpusInfo } from "@/helpers/getCorpusInfo";
+import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
+import { getMainDocuments } from "@/helpers/getMainDocuments";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
-import { MultiCol } from "@/components/panels/MultiCol";
-import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
+import useSearch from "@/hooks/useSearch";
+import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept } from "@/types";
+import { extractNestedData } from "@/utils/extractNestedData";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
+import { pluralise } from "@/utils/pluralise";
+import { fetchAndProcessConcepts } from "@/utils/processConcepts";
+import { sortFilterTargets } from "@/utils/sortFilterTargets";
+import { truncateString } from "@/utils/truncateString";
 
 type TProps = {
   page: TFamilyPage;
@@ -131,7 +125,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   const getDocumentCategories = () => {
     // Some types are comma separated, so we need to split them
-    let categories = page.documents.map((doc) => {
+    const categories = page.documents.map((doc) => {
       if (doc.document_type?.includes(",")) {
         return doc.document_type.split(",");
       } else return doc.document_type || "";
