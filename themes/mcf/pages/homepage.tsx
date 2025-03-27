@@ -1,9 +1,17 @@
 import React from "react";
 
-import Layout from "@components/layouts/LandingPage";
+import Layout from "@/components/layouts/LandingPage";
 
-import { Header, Footer, Hero, ClimatePolicyRadarBanner, AboutTheFunds, ContextualSearchContent, AboutClimateProjectExplorer } from "@mcf/components";
-import { PAGE_DESCRIPTION, APP_NAME } from "@mcf/constants/pageMetadata";
+import {
+  Header,
+  Footer,
+  Hero,
+  ClimatePolicyRadarBanner,
+  AboutTheFunds,
+  ContextualSearchContent,
+  AboutClimateProjectExplorer,
+} from "@/mcf/components";
+import { PAGE_DESCRIPTION, APP_NAME } from "@/mcf/constants/pageMetadata";
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
@@ -15,7 +23,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
     <Layout title="Climate Fund Search" theme={APP_NAME} description={PAGE_DESCRIPTION}>
       <main id="main" className="flex flex-col flex-1">
         <div>
-          <Header background={false} showBottomBorder={false} />
+          <Header />
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
         </div>
         <AboutClimateProjectExplorer />

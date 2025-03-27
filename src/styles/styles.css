@@ -88,6 +88,11 @@
   }
 }
 
+/* Necessary for Base UI overlays (tooltip, popover etc.) */
+.root {
+  isolation: isolate;
+}
+
 body,
 html,
 #__next {

@@ -1,17 +1,18 @@
 import { Fragment } from "react";
 
-import { Accordian } from "@components/accordian/Accordian";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import Layout from "@components/layouts/Main";
-import { SiteWidth } from "@components/panels/SiteWidth";
-import { SingleCol } from "@components/panels/SingleCol";
-import { SubNav } from "@components/nav/SubNav";
-import { Heading } from "@components/typography/Heading";
+import { Accordian } from "@/components/accordian/Accordian";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Layout from "@/components/layouts/Main";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SubNav } from "@/components/nav/SubNav";
+import { Heading } from "@/components/typography/Heading";
 
-import { FAQS, PLATFORMFAQS } from "@mcf/constants/faqs";
-import { VerticalSpacing } from "@components/utility/VerticalSpacing";
-import { CONCEPTS_FAQS } from "@constants/conceptsFaqs";
-import FaqSection from "@components/typography/FaqSection";
+import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
+import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
+import FaqSection from "@/components/typography/FaqSection";
+import { FAQS, PLATFORMFAQS } from "@/mcf/constants/faqs";
+
 const ACCORDIANMAXHEIGHT = "464px";
 
 const FAQ = () => {

@@ -10,6 +10,8 @@
   nocompatible: true;
 }
 
+@custom-variant hocus (&:hover, &:focus);
+
 :root {
   --MAX_SITE_WIDTH: 1440px;
   --MAX_CONTENT_WIDTH: 800px;

@@ -1,7 +1,7 @@
-import { Heading } from "@components/typography/Heading";
-import { ExternalLink } from "@components/ExternalLink";
+import { Heading } from "@/components/typography/Heading";
+import { ExternalLink } from "@/components/ExternalLink";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
 const ClimatePolicyRadarBannerHolder = () => {
   return (

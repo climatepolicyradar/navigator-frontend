@@ -5,51 +5,49 @@ import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
 import axios from "axios";
 
-import { ApiClient } from "@api/http-common";
+import { ApiClient } from "@/api/http-common";
 
-import useSearch from "@hooks/useSearch";
+import useSearch from "@/hooks/useSearch";
 
-import { SingleCol } from "@components/panels/SingleCol";
-import Layout from "@components/layouts/Main";
-import { Timeline } from "@components/timeline/Timeline";
-import { Event } from "@components/timeline/Event";
-import { FamilyHead } from "@components/document/FamilyHead";
-import { FamilyDocument } from "@components/document/FamilyDocument";
-import { ExternalLink } from "@components/ExternalLink";
-import { Targets } from "@components/Targets";
-import { ShowHide } from "@components/controls/ShowHide";
-import { Divider } from "@components/dividers/Divider";
-import { Icon } from "@components/icon/Icon";
-import Button from "@components/buttons/Button";
-import { LinkWithQuery } from "@components/LinkWithQuery";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import Tooltip from "@components/tooltip";
-import DocumentSearchForm from "@components/forms/DocumentSearchForm";
-import { Alert } from "@components/Alert";
-import { SubNav } from "@components/nav/SubNav";
-import { Heading } from "@components/typography/Heading";
+import { SingleCol } from "@/components/panels/SingleCol";
+import Layout from "@/components/layouts/Main";
+import { Timeline } from "@/components/timeline/Timeline";
+import { Event } from "@/components/timeline/Event";
+import { FamilyHead } from "@/components/document/FamilyHead";
+import { FamilyDocument } from "@/components/document/FamilyDocument";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Targets } from "@/components/Targets";
+import { ShowHide } from "@/components/controls/ShowHide";
+import { Divider } from "@/components/dividers/Divider";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { Button } from "@/components/atoms/button/Button";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Tooltip from "@/components/tooltip";
+import { Alert } from "@/components/Alert";
+import { SubNav } from "@/components/nav/SubNav";
+import { Heading } from "@/components/typography/Heading";
 
-import { truncateString } from "@utils/truncateString";
-import { getCountryName, getCountrySlug } from "@helpers/getCountryFields";
-import { getCorpusInfo } from "@helpers/getCorpusInfo";
-import { getMainDocuments } from "@helpers/getMainDocuments";
+import { truncateString } from "@/utils/truncateString";
+import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
+import { getCorpusInfo } from "@/helpers/getCorpusInfo";
+import { getMainDocuments } from "@/helpers/getMainDocuments";
 
-import { sortFilterTargets } from "@utils/sortFilterTargets";
-import { pluralise } from "@utils/pluralise";
-import { getFamilyMetaDescription } from "@utils/getFamilyMetaDescription";
-import { extractNestedData } from "@utils/extractNestedData";
+import { sortFilterTargets } from "@/utils/sortFilterTargets";
+import { pluralise } from "@/utils/pluralise";
+import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
+import { extractNestedData } from "@/utils/extractNestedData";
 
-import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept } from "@types";
+import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept } from "@/types";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { EXAMPLE_SEARCHES } from "@constants/exampleSearches";
-import { MAX_FAMILY_SUMMARY_LENGTH } from "@constants/document";
-import { MAX_PASSAGES } from "@constants/paging";
-import { getFeatureFlags } from "@utils/featureFlags";
-import { fetchAndProcessConcepts } from "@utils/processConcepts";
-import { MultiCol } from "@components/panels/MultiCol";
-import { useEffectOnce } from "@hooks/useEffectOnce";
-import { ConceptsPanel } from "@components/concepts/ConceptsPanel";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { MAX_FAMILY_SUMMARY_LENGTH } from "@/constants/document";
+import { MAX_PASSAGES } from "@/constants/paging";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { fetchAndProcessConcepts } from "@/utils/processConcepts";
+import { useEffectOnce } from "@/hooks/useEffectOnce";
+import { MultiCol } from "@/components/panels/MultiCol";
+import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
 
 type TProps = {
   page: TFamilyPage;
@@ -253,18 +251,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               )}
             </section>
 
-            <section className="mt-8" data-cy="top-documents">
-              <DocumentSearchForm
-                placeholder={`Search the full text of the ${page.title}`}
-                handleSearchInput={handleSearchInput}
-                input={router.query[QUERY_PARAMS.query_string] as string}
-                featuredSearches={EXAMPLE_SEARCHES}
-                showSuggestions
-              />
-            </section>
-
             {mainDocuments.length > 0 && theme !== "mcf" && (
-              <section className="mt-8">
+              <section className="mt-10">
                 <Heading level={2}>Main {pluralise(mainDocuments.length, "document", "documents")}</Heading>
                 <div data-cy="main-documents">
                   {mainDocuments.map((doc) => (
@@ -346,21 +334,24 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 {publishedTargets.length > numberOfTargetsToDisplay && (
                   <div data-cy="more-targets-button">
                     <Button
-                      color="secondary"
-                      extraClasses="flex gap-2 items-center my-5"
+                      content="both"
+                      rounded
+                      variant="outlined"
+                      className="my-5"
                       onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
                     >
-                      <Icon name="downChevron" /> View more targets
+                      <Icon name="downChevron" />
+                      View more targets
                     </Button>
                   </div>
                 )}
 
                 {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
                   <div>
-                    <Button color="secondary" extraClasses="flex gap-2 items-center my-5" onClick={() => setNumberOfTargetsToDisplay(5)}>
+                    <Button content="both" rounded variant="outlined" className="my-5" onClick={() => setNumberOfTargetsToDisplay(5)}>
                       <div className="rotate-180">
                         <Icon name="downChevron" />
-                      </div>{" "}
+                      </div>
                       Hide targets
                     </Button>
                   </div>
@@ -477,7 +468,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   if (familyData) {
     try {
-      const targetsRaw = await axios.get<TTarget[]>(`${process.env.S3_PATH}/families/${familyData.import_id}.json`);
+      const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/families/${familyData.import_id}.json`);
       targetsData = targetsRaw.data;
     } catch (error) {}
   }

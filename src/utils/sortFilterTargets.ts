@@ -1,4 +1,4 @@
-import { TTarget } from "@types";
+import { TTarget } from "@/types";
 
 const sourceMapping = {
   strategy: "executive",

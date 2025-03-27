@@ -1,6 +1,6 @@
 import { LinkWithQuery } from "./LinkWithQuery";
 
-import { TTarget } from "@types";
+import { TTarget } from "@/types";
 
 type TTargets = {
   targets: TTarget[];

@@ -1,8 +1,8 @@
 import { Feature } from "./Feature";
 
-import { getButtonClasses } from "@components/buttons/Button";
-import { LinkWithQuery } from "@components/LinkWithQuery";
-import { ExternalLink } from "@components/ExternalLink";
+import { getButtonClasses } from "@/components/atoms/button/Button";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { ExternalLink } from "@/components/ExternalLink";
 
 export const FeatureDiscover = () => (
   <Feature heading="Central knowledge-base for climate policy data" image="app_search_results.jpg" imageAlt="Screenshot of the search results">
@@ -14,12 +14,18 @@ export const FeatureDiscover = () => (
       and targets for every country.
     </p>
     <div className="flex flex-col gap-4 mt-6 lg:flex-row">
-      <LinkWithQuery href="/methodology" className={getButtonClasses()}>
+      <LinkWithQuery
+        href="/methodology"
+        className={getButtonClasses({ color: "brand", rounded: true, className: "!bg-blue-500 hover:!bg-blue-700 !text-base" })}
+      >
         Learn more about our database
       </LinkWithQuery>
       <ExternalLink
         url="https://form.jotform.com/233131638610347"
-        className={getButtonClasses("ghost", false, "!bg-transparent !border-0 !text-blue-300 hover:!text-white hover:!underline")}
+        className={getButtonClasses({
+          variant: "ghost",
+          className: "hover:!bg-transparent !text-base !text-blue-300 hover:!text-white underline",
+        })}
       >
         Download our data
       </ExternalLink>

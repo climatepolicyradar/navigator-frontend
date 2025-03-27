@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { TCorpusTypeDictionary, TDataNode, TGeography, TLanguages } from "@types";
+import { TCorpusTypeDictionary, TDataNode, TGeography, TLanguages } from "@/types";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 export async function getEnvFromServer() {

@@ -1,4 +1,4 @@
-import { TThemeConfig } from "@types";
+import { TThemeConfig } from "@/types";
 
 export const getPageDescription = (themeConfig?: TThemeConfig, metadataKey?: string, text?: string) => {
   let description = "";

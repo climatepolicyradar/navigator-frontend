@@ -1,24 +1,25 @@
-import EmbeddedPDF from "@components/EmbeddedPDF";
-import { FullWidth } from "@components/panels/FullWidth";
-import { TConcept, TDocumentPage, TPassage, TSearchResponse } from "@types";
+import { TConcept, TDocumentPage, TSearchResponse } from "@/types";
+import EmbeddedPDF from "@/components/EmbeddedPDF";
+import { FullWidth } from "@/components/panels/FullWidth";
 import { EmptyDocument } from "./EmptyDocument";
-import Button from "@components/buttons/Button";
-import SearchForm from "@components/forms/SearchForm";
+import { Button } from "@/components/atoms/button/Button";
+import SearchForm from "@/components/forms/SearchForm";
 import { MdOutlineTune } from "react-icons/md";
 import { AnimatePresence } from "framer-motion";
-import PassageMatches from "@components/PassageMatches";
-import { SearchLimitTooltip } from "@components/tooltip/SearchLimitTooltip";
+import { UnavailableConcepts } from "@/components/documents/UnavailableConcepts";
+import PassageMatches from "@/components/PassageMatches";
+import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
 import { EmptyPassages } from "./EmptyPassages";
 import { motion } from "framer-motion";
 import { useEffect, useState, useCallback, useMemo, useReducer } from "react";
-import { SearchSettings } from "@components/filters/SearchSettings";
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { MAX_PASSAGES, MAX_RESULTS } from "@constants/paging";
-import useSearch from "@hooks/useSearch";
-import { ConceptsPanel } from "@components/concepts/ConceptsPanel";
-import { fetchAndProcessConcepts } from "@utils/processConcepts";
-import { useEffectOnce } from "@hooks/useEffectOnce";
-import Loader from "@components/Loader";
+import useSearch from "@/hooks/useSearch";
+import { fetchAndProcessConcepts } from "@/utils/processConcepts";
+import { useEffectOnce } from "@/hooks/useEffectOnce";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
+import { SearchSettings } from "@/components/filters/SearchSettings";
+import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
+import Loader from "@/components/Loader";
 
 type TProps = {
   initialQueryTerm?: string | string[];
@@ -26,7 +27,9 @@ type TProps = {
   initialPassage?: number;
   initialConceptFilters?: string[];
   vespaFamilyData: TSearchResponse;
+  vespaDocumentData: TSearchResponse;
   document: TDocumentPage;
+  familySlug: string;
 
   // Callback props for state changes
   onQueryTermChange?: (queryTerm: string) => void;
@@ -52,7 +55,9 @@ export const ConceptsDocumentViewer = ({
   initialPassage = 0,
   initialConceptFilters,
   document,
+  familySlug,
   vespaFamilyData,
+  vespaDocumentData,
   onQueryTermChange,
   onExactMatchChange,
   onConceptClick,
@@ -68,60 +73,86 @@ export const ConceptsDocumentViewer = ({
     totalNoOfMatches: 0,
   });
 
-  const [concepts, setConcepts] = useState<TConcept[]>([]);
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
+  const [familyConcepts, setFamilyConcepts] = useState<TConcept[]>([]);
 
-  // Extract unique concept keys and their counts
-  const conceptCounts: { conceptKey: string; count: number }[] = useMemo(() => {
-    const uniqueConceptMap = new Map<string, number>();
+  const canPreview = document.content_type === "application/pdf";
 
+  useEffectOnce(() => {
+    // Extract unique concept IDs directly from vespaFamilyData
+    const conceptIds = new Set<string>();
     (vespaFamilyData?.families ?? []).forEach((family) => {
       family.hits.forEach((hit) => {
-        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
-          const existingCount = uniqueConceptMap.get(conceptKey) || 0;
-          uniqueConceptMap.set(conceptKey, existingCount + count);
+        Object.keys(hit.concept_counts ?? {}).forEach((conceptKey) => {
+          const [conceptId] = conceptKey.split(":");
+          conceptIds.add(conceptId);
         });
       });
     });
 
-    return Array.from(uniqueConceptMap.entries())
-      .map(([conceptKey, count]) => ({ conceptKey, count }))
-      .sort((a, b) => b.count - a.count);
-  }, [vespaFamilyData]);
+    fetchAndProcessConcepts(Array.from(conceptIds)).then(({ rootConcepts, concepts }) => {
+      setRootConcepts(rootConcepts);
+      setFamilyConcepts(concepts);
+    });
+  });
 
-  const canPreview = document.content_type === "application/pdf";
-  const conceptCountsById = useMemo(
+  const documentConcepts = useMemo(() => {
+    const uniqueConceptMap = new Map<string, { concept: TConcept; count: number }>();
+
+    (vespaDocumentData?.families ?? []).forEach((family) => {
+      family.hits.forEach((hit) => {
+        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
+          const [conceptId] = conceptKey.split(":");
+          const matchingConcept = familyConcepts.find((concept) => concept.wikibase_id === conceptId);
+
+          if (matchingConcept) {
+            const existingEntry = uniqueConceptMap.get(conceptId);
+            const updatedCount = existingEntry ? existingEntry.count + count : count;
+
+            uniqueConceptMap.set(conceptId, {
+              concept: matchingConcept,
+              count: updatedCount,
+            });
+          }
+        });
+      });
+    });
+
+    return Array.from(uniqueConceptMap.values())
+      .map(({ concept, count }) => ({
+        ...concept,
+        count,
+      }))
+      .sort((a, b) => (b.count || 0) - (a.count || 0));
+  }, [vespaDocumentData, familyConcepts]);
+
+  const documentConceptCountsById = useMemo(
     () =>
-      conceptCounts.reduce(
-        (acc, { conceptKey, count }) => {
-          const conceptId = conceptKey.split(":")[0];
-          acc[conceptId] = count;
+      documentConcepts.reduce(
+        (acc, concept) => {
+          acc[concept.wikibase_id] = concept.count || 0;
           return acc;
         },
         {} as Record<string, number>
       ),
-    [conceptCounts]
+    [documentConcepts]
   );
 
-  useEffectOnce(() => {
-    const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
-
-    fetchAndProcessConcepts(conceptIds).then(({ rootConcepts, concepts }) => {
-      setRootConcepts(rootConcepts);
-      setConcepts(concepts);
-    });
-  });
-
-  // Dynamically filter concepts based on router concept params.
   const selectedConcepts = useMemo(
     () =>
       initialConceptFilters
-        ? concepts.filter((concept) =>
+        ? familyConcepts.filter((concept) =>
             (Array.isArray(initialConceptFilters) ? initialConceptFilters : [initialConceptFilters]).includes(concept.preferred_label)
           )
         : [],
-    [initialConceptFilters, concepts]
+    [initialConceptFilters, familyConcepts]
   );
+
+  // Check if any initial concept filters are not in the document concepts (e.g., the concept appears in the family or other documents
+  // but not this one)
+  const unavailableConcepts = initialConceptFilters
+    ? initialConceptFilters.filter((filter) => !documentConcepts?.some((concept) => concept.preferred_label === filter))
+    : [];
 
   // Prepare search.
   const searchQueryParams = useMemo(
@@ -202,10 +233,10 @@ export const ConceptsDocumentViewer = ({
 
   return (
     <>
-      {concepts.length > 0 && (
+      {documentConcepts.length > 0 && (
         <section className="flex-1 flex" id="document-concepts-viewer">
           <FullWidth extraClasses="flex-1">
-            <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
+            <div id="document-container" className="flex flex-col md:flex-row md:h-[90vh]">
               <div id="document-preview" className={`pt-4 flex-1 h-[400px] basis-[400px] md:block md:h-full md:border-r md:border-r-gray-200`}>
                 {canPreview && (
                   <EmbeddedPDF
@@ -219,69 +250,68 @@ export const ConceptsDocumentViewer = ({
               </div>
               <div
                 id="document-sidebar"
-                className={`overflow-y-scroll py-4 order-first max-h-[90vh] md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
+                className={`flex flex-col overflow-y-auto py-4 order-first max-h-[90vh] scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 ${passageClasses(
                   document.content_type
                 )}`}
               >
                 <div id="document-search" className="flex flex-col gap-2 md:pl-4">
                   {(selectedConcepts.length > 0 || initialQueryTerm) && (
                     <div className="flex gap-2">
-                      <Button
-                        color="dark-dark"
-                        data-cy="view-document-viewer-concept"
-                        extraClasses="flex items-center text-[14px] font-normal pt-1 pb-1 bg-black text-white border-none"
-                        onClick={handleClearSearch}
-                      >
+                      <Button rounded color="mono" size="small" data-cy="view-document-viewer-concept" onClick={handleClearSearch}>
                         ← Back
                       </Button>
                     </div>
                   )}
 
-                  <div className="flex gap-2">
-                    <div className="flex-1">
-                      <SearchForm
-                        placeholder="Search document text"
-                        handleSearchInput={handleSearchInput}
-                        input={state.queryTerm as string}
-                        size="default"
-                      />
+                  {unavailableConcepts.length === 0 && (
+                    <div className="flex gap-2">
+                      <div className="flex-1">
+                        <SearchForm
+                          placeholder="Search document text"
+                          handleSearchInput={handleSearchInput}
+                          input={state.queryTerm as string}
+                          size="default"
+                        />
+                      </div>
+
+                      <div className="relative z-10 flex justify-center">
+                        <button
+                          className="px-4 flex justify-center items-center text-textDark text-xl"
+                          onClick={() => setShowSearchOptions(!showSearchOptions)}
+                        >
+                          <MdOutlineTune />
+                        </button>
+                        <AnimatePresence initial={false}>
+                          {showSearchOptions && (
+                            <motion.div
+                              key="content"
+                              initial="collapsed"
+                              animate="open"
+                              exit="collapsed"
+                              variants={{
+                                collapsed: { opacity: 0, transition: { duration: 0.1 } },
+                                open: { opacity: 1, transition: { duration: 0.25 } },
+                              }}
+                            >
+                              <SearchSettings
+                                queryParams={searchQueryParams}
+                                handleSearchChange={handleSemanticSearchChange}
+                                setShowOptions={setShowSearchOptions}
+                              />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     </div>
-                    <div className="relative z-10 flex justify-center">
-                      <button
-                        className="px-4 flex justify-center items-center text-textDark text-xl"
-                        onClick={() => setShowSearchOptions(!showSearchOptions)}
-                      >
-                        <MdOutlineTune />
-                      </button>
-                      <AnimatePresence initial={false}>
-                        {showSearchOptions && (
-                          <motion.div
-                            key="content"
-                            initial="collapsed"
-                            animate="open"
-                            exit="collapsed"
-                            variants={{
-                              collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                              open: { opacity: 1, transition: { duration: 0.25 } },
-                            }}
-                          >
-                            <SearchSettings
-                              queryParams={searchQueryParams}
-                              handleSearchChange={handleSemanticSearchChange}
-                              setShowOptions={setShowSearchOptions}
-                            />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </div>
+                  )}
 
                   {selectedConcepts.length === 0 && !initialQueryTerm && (
                     <ConceptsPanel
                       rootConcepts={rootConcepts}
-                      concepts={concepts}
-                      conceptCountsById={conceptCountsById}
+                      concepts={documentConcepts}
+                      conceptCountsById={documentConceptCountsById}
                       onConceptClick={onConceptClick}
+                      showCounts={false}
                     ></ConceptsPanel>
                   )}
 
@@ -343,7 +373,7 @@ export const ConceptsDocumentViewer = ({
                       </>
                     )}
 
-                    {state.totalNoOfMatches === 0 && (
+                    {state.totalNoOfMatches === 0 && unavailableConcepts.length === 0 && (
                       <EmptyPassages
                         hasQueryString={
                           !!searchQueryParams[QUERY_PARAMS.query_string] &&
@@ -351,6 +381,10 @@ export const ConceptsDocumentViewer = ({
                           !!searchQueryParams[QUERY_PARAMS.concept_name]
                         }
                       />
+                    )}
+
+                    {state.totalNoOfMatches === 0 && unavailableConcepts.length > 0 && (
+                      <UnavailableConcepts unavailableConcepts={unavailableConcepts} familySlug={familySlug} />
                     )}
                   </>
                 )}

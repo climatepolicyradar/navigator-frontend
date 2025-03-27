@@ -2,18 +2,18 @@ import { useMemo } from "react";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 
-import useConfig from "@hooks/useConfig";
-import useGetThemeConfig from "@hooks/useThemeConfig";
+import useConfig from "@/hooks/useConfig";
+import useGetThemeConfig from "@/hooks/useThemeConfig";
 
-import Pill from "@components/Pill";
+import Pill from "@/components/Pill";
 
-import { getCountryName } from "@helpers/getCountryFields";
-import { getConceptName } from "@helpers/getConceptFields";
+import { getCountryName } from "@/helpers/getCountryFields";
+import { getConceptName } from "@/helpers/getConceptFields";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
-import { sortOptions } from "@constants/sortOptions";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { sortOptions } from "@/constants/sortOptions";
 
-import { TConcept, TGeography, TThemeConfig } from "@types";
+import { TConcept, TGeography, TThemeConfig } from "@/types";
 
 type TFilterChange = (type: string, value: string) => void;
 
@@ -128,6 +128,10 @@ const generatePills = (
 
   Object.keys(QUERY_PARAMS).map((key: TFilterKeys) => {
     const value = queryParams[QUERY_PARAMS[key]];
+
+    // Exclude the search query from pills as it displays in NavSearch instead
+    if (key === "query_string") return;
+
     if (value) {
       if (key === "year_range")
         return pills.push(handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions, themeConfig, concepts));

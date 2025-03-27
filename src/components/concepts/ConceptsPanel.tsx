@@ -1,19 +1,20 @@
 import { ConceptsHead } from "./ConceptsHead";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { ConceptsPopover } from "@components/popover/ConceptsPopover";
-import Button from "@components/buttons/Button";
+import { ConceptsPopover } from "@/components/popover/ConceptsPopover";
+import { Button } from "@/components/atoms/button/Button";
 import Link from "next/link";
-import { TConcept } from "@types";
+import { TConcept } from "@/types";
 import { useCallback, useState } from "react";
 
 type TProps = {
   concepts: TConcept[];
   rootConcepts: TConcept[];
   conceptCountsById: Record<string, number>;
+  showCounts?: boolean;
   onConceptClick?: (conceptLabel: string) => void;
 };
 
-export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onConceptClick }: TProps) => {
+export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showCounts = true, onConceptClick }: TProps) => {
   const [openPopoverIds, setOpenPopoverIds] = useState<string[]>([]);
 
   const handleConceptClick = useCallback(
@@ -99,12 +100,9 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, onCon
                         handleConceptClick?.(concept.preferred_label);
                       }}
                     >
-                      <Button
-                        color="clear-blue"
-                        data-cy="view-document-viewer-concept"
-                        extraClasses="capitalize flex items-center text-neutral-600 text-sm font-normal leading-tight"
-                      >
-                        {concept.preferred_label} {conceptCountsById[concept.wikibase_id]}
+                      <Button color="mono" rounded variant="outlined" className="capitalize" data-cy="view-document-viewer-concept">
+                        {concept.preferred_label}
+                        {showCounts && ` (${conceptCountsById[concept.wikibase_id]})`}
                       </Button>
                     </Link>
                   </li>

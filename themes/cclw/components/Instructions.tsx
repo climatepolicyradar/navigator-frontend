@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
-import useConfig from "@hooks/useConfig";
+import useConfig from "@/hooks/useConfig";
 
-import { calculateTotalFamilies } from "@helpers/getFamilyCounts";
+import { calculateTotalFamilies } from "@/helpers/getFamilyCounts";
 
-import Button from "@components/buttons/Button";
-import { Icon } from "@components/icon/Icon";
+import { Button } from "@/components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
 
-import { INSTRUCTIONS } from "@cclw/constants/instructions";
+import { INSTRUCTIONS } from "@/cclw/constants/instructions";
 
 const ANIMATION_DELAY = 3000;
 
@@ -42,8 +42,8 @@ const Instructions = () => {
         ))}
       </div>
       <div className="hidden md:block absolute top-0 right-0 -translate-y-[140%] 2xl:top-auto 2xl:bottom-0 2xlright-full 2xl:translate-y-0 2xl:translate-x-[110%]">
-        <Button extraClasses="flex gap-2 items-center" color="dark-dark" onClick={scrollToMap}>
-          Or try exploring by country{" "}
+        <Button content="both" rounded className="!bg-blueGray-800  hover:!bg-blueGray-700 border !border-blueGray-700" onClick={scrollToMap}>
+          Or try exploring by country
           <span className={`hover:animate-none ${isAnimated ? "animate-bounce" : ""}`}>
             <Icon name="downArrow" />
           </span>

@@ -1,7 +1,7 @@
-import { ExternalLink } from "@components/ExternalLink";
-import Button from "@components/buttons/Button";
-import { LinkWithQuery } from "@components/LinkWithQuery";
-import { Heading } from "@components/typography/Heading";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Button } from "@/components/atoms/button/Button";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { Heading } from "@/components/typography/Heading";
 import Popup from "./Popup";
 
 type TProps = {
@@ -24,8 +24,10 @@ export const DownloadCsvPopup = ({ active, onCancelClick, onConfirmClick }: TPro
           with any questions. Note that the actual number of entries returned may be 1 or 2 below the total indicated on the search results page.
         </p>
         <div className="flex">
-          <Button onClick={onConfirmClick}>Download</Button>
-          <Button color="ghost" onClick={onCancelClick}>
+          <Button rounded onClick={onConfirmClick}>
+            Download
+          </Button>
+          <Button rounded variant="ghost" onClick={onCancelClick}>
             Cancel
           </Button>
         </div>

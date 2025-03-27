@@ -1,4 +1,4 @@
-import { TGeography } from "@types";
+import { TGeography } from "@/types";
 
 type TProps = {
   selectedRegions: string[];

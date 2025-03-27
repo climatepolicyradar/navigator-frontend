@@ -1,8 +1,8 @@
-import Layout from "@components/layouts/Main";
+import Layout from "@/components/layouts/Main";
 
-import { ExternalLink } from "@components/ExternalLink";
-import Button from "@components/buttons/Button";
-import { Heading } from "@components/typography/Heading";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Button } from "@/components/atoms/button/Button";
+import { Heading } from "@/components/typography/Heading";
 
 type TProps = {
   resetError: () => void;
@@ -16,7 +16,7 @@ const PageLevel = ({ resetError }: TProps) => {
           <Heading level={1}>Sorry, the app has encountered an error</Heading>
           <p>Restarting the app might fix the problem. Click the button below to restart</p>
           <div>
-            <Button thin onClick={resetError}>
+            <Button rounded onClick={resetError}>
               Restart
             </Button>
           </div>
