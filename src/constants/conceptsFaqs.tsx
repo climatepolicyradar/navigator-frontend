@@ -11,18 +11,16 @@ type TFAQ = {
 export const CONCEPTS_FAQS: TFAQ[] = [
   {
     id: "concepts",
-    title: "Automatic Detection of Climate Concepts in Documents",
+    title: "Automatic Detection of key concepts in documents",
     headContent: <Label>Beta</Label>,
     content: (
       <>
-        <p>This new feature automatically detects climate concepts in documents.</p>
-
         <p>
-          You can use it to find mentions of key climate concepts like sectors of the economy, targets, and policy instruments in any of the documents
-          in our database.
+          This new feature automatically identifies mentions of key concepts in documents, helping you quickly find where important topics like
+          economic sectors, targets, and climate finance instruments appear in our database.
         </p>
 
-        <p>While the results should be more accurate than our existing search feature, accuracy is still not 100%.</p>
+        <p>While this feature is more precise than our standard search, accuracy is not 100%.</p>
       </>
     ),
   },
@@ -30,16 +28,16 @@ export const CONCEPTS_FAQS: TFAQ[] = [
     title: "How should I use this feature?",
     content: (
       <>
-        <p>Our automatically detected concepts make it easy to:</p>
+        <p>Automatically detected concepts help you:</p>
         <ul>
-          <li>Quickly find mentions of significant concepts in documents</li>
-          <li>Understand what a document is primarily about</li>
+          <li>Quickly locate mentions of key topics in documents.</li>
+          <li>Understand the primary focus of a document.</li>
         </ul>
 
-        <p>However, our results aren't perfect. You should exercise caution when:</p>
+        <p>However, results are not 100% accurate. Be cautious when:</p>
         <ul>
-          <li>Trying to precisely count the number of times a concept is mentioned</li>
-          <li>Making comparisons between documents based on how often a concept appears</li>
+          <li>Counting how often a concept appears in a document.</li>
+          <li>Comparing documents based on concept frequency.</li>
         </ul>
       </>
     ),
@@ -48,15 +46,23 @@ export const CONCEPTS_FAQS: TFAQ[] = [
     title: "Which concepts are currently available?",
     content: (
       <>
+        <p>Examples include:</p>
         <ul>
-          <li>Sectors (e.g., Energy, Transport, Agriculture)</li>
-          <li>Policy Instruments</li>
-          <li>Targets</li>
-          <li>Adaptation Measures</li>
-          <li>Mitigation Strategies</li>
+          <li>
+            <b>Economic sectors</b>: e.g. energy, transport, construction.
+          </li>
+          <li>
+            <b>Policy instruments</b>: e.g. bans, subsidies, early warning systems, targets.
+          </li>
+          <li>
+            <b>Climate finance</b>: e.g. insurance, climate funds.
+          </li>
+          <li>
+            <b>Greenhouse gases</b>: e.g. CO₂, methane, carbon tetrachloride.
+          </li>
         </ul>
         <p>
-          <ExternalLink url="https://climatepolicyradar.wikibase.cloud/wiki/Main_Page">View our full concept catalogue</ExternalLink>
+          You can see more in our <ExternalLink url="https://climatepolicyradar.wikibase.cloud/wiki/Main_Page">concept store</ExternalLink>.
         </p>
       </>
     ),
@@ -65,16 +71,21 @@ export const CONCEPTS_FAQS: TFAQ[] = [
     title: "How do we automatically detect climate concepts in documents?",
     content: (
       <>
-        <p>
-          Each mention of a concept is the product of both human expertise and clever automation. Our in-house team of policy experts decides which
-          concepts are most significant for understanding climate policy. We combine existing taxonomies, our expertise, and input from external
-          experts to produce a catalogue of these concepts.
-        </p>
-
-        <p>
-          Our data scientists and software engineers then use this data to build models that automatically detect concepts in text. These models vary
-          in complexity, and we always evaluate a sample of results before releasing the full set.
-        </p>
+        <p>Each detected concept is based on a combination of expert knowledge and automated models:</p>
+        <ul>
+          <li>
+            <b>Expert-driven concept selection</b>: our policy specialists identify the most important concepts by looking at existing taxonomies and
+            consulting external experts. We maintain a catalogue of these concepts in{" "}
+            <ExternalLink url="https://climatepolicyradar.wikibase.cloud/wiki/Main_Page">our concept store</ExternalLink>.
+          </li>
+          <li>
+            <b>Automated detection</b>: our data scientists and software engineers build models to find these concepts in text, continuously refining
+            them based on human feedback.
+          </li>
+          <li>
+            <b>Quality control</b>: before public release, we manually review a sample of results to ensure accuracy.
+          </li>
+        </ul>
       </>
     ),
   },
@@ -82,15 +93,30 @@ export const CONCEPTS_FAQS: TFAQ[] = [
     title: "How accurate are the results?",
     content: (
       <>
-        <p>
-          We prioritize transparency, which means occasionally showing results we're uncertain about. While each model performs differently, a good
-          rule of thumb is that if a classifier identifies a concept, it's correct in 9 out of 10 cases.
-        </p>
+        <p>Our classifiers are designed to prioritise transparency, meaning we sometimes display uncertain results rather than hide them.</p>
 
-        <p>
-          Our classifiers are only as accurate as the text we can extract. If we can't accurately parse a document's text, we won't be able to find
-          concepts within it.
-        </p>
+        <ul>
+          <li>
+            On average, if a classifier highlights a concept, it is correct in <b>9 out of 10 cases</b>.
+          </li>
+          <li>Accuracy varies by concept and document quality. For example, if text extraction fails, we cannot accurately detect concepts.</li>
+          <li>We are actively improving accuracy by refining our models and ensuring consistency across different document types and languages.</li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    title: "Should I be concerned about the climate impact of this feature?",
+    content: (
+      <>
+        <p>We prioritise sustainability in our technology choices:</p>
+
+        <ul>
+          <li>When two models produce similar results, we use the simpler, less energy-intensive option.</li>
+          <li>Most of our models rely on efficient keyword-based detection rather than resource-heavy AI.</li>
+        </ul>
+
+        <p>Nevertheless, we’re working to measure, minimise, and report on the precise energy intensity of our data science work.</p>
       </>
     ),
   },
@@ -99,8 +125,8 @@ export const CONCEPTS_FAQS: TFAQ[] = [
     content: (
       <>
         <p>
-          The full set of raw results is not yet publicly available. If you're doing high-impact work that might benefit from the complete dataset,
-          you can request early access.
+          The full dataset is not yet publicly available. If you're conducting high-impact research, you can{" "}
+          <ExternalLink url="mailto:alan@climatepolicyradar.org">request early access</ExternalLink>.
         </p>
       </>
     ),
@@ -109,19 +135,14 @@ export const CONCEPTS_FAQS: TFAQ[] = [
     title: "What improvements are coming?",
     content: (
       <>
-        <p>
-          We plan to:
-          <ul>
-            <li>Add new concepts</li>
-            <li>Improve the accuracy of existing classifiers</li>
-            <li>Build new features using our structured data</li>
-          </ul>
-        </p>
+        <p>We are expanding our concept database, improving accuracy, and developing new structured data features.</p>
 
         <p>
+          See our
           <ExternalLink url="https://www.notion.so/Climate-Policy-Radar-Public-Product-Roadmap-250fdc6416824160b7b34aef4ef29e1c?pvs=21">
-            Read our public product roadmap
+            public product roadmap
           </ExternalLink>
+          for more details.
         </p>
       </>
     ),
@@ -131,8 +152,8 @@ export const CONCEPTS_FAQS: TFAQ[] = [
     content: (
       <>
         <p>
-          If you notice a concept that's particularly important to your research or think a classifier is making crucial mistakes, please contact us
-          at <ExternalLink url="mailto:support@climatepolicyradar.org">support@climatepolicyradar.org</ExternalLink>.
+          If you believe a concept is missing or misclassified, <ExternalLink url="https://eu.jotform.com/250402253775352">contact us</ExternalLink>.
+          Your feedback helps us improve.
         </p>
       </>
     ),
