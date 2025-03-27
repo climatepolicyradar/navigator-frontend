@@ -1,14 +1,16 @@
+import { sortBy } from "lodash";
+import { useRouter } from "next/router";
+import { FormEventHandler, MouseEventHandler, useEffect, useMemo, useRef, useState } from "react";
+
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { Input } from "@/components/atoms/input/Input";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { systemGeoCodes } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
-import { sortBy } from "lodash";
-import { useRouter } from "next/router";
-import { FormEventHandler, MouseEventHandler, useEffect, useMemo, useRef, useState } from "react";
+
 import { NavSearchDropdown } from "./NavSearchDropdown";
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 
 const pagesWithContextualSearch: string[] = ["/document/[id]", "/documents/[id]", "/geographies/[id]"];
 

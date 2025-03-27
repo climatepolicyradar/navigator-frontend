@@ -1,7 +1,7 @@
 import { TDocumentPage, TMatchedFamily, TPassage } from "@/types";
 
 export const getMatchedPassagesFromSearch = (families: TMatchedFamily[], document: TDocumentPage): [TPassage[], number] => {
-  let passageMatches: TPassage[] = [];
+  const passageMatches: TPassage[] = [];
   let totalNoOfMatches = 0;
   families.forEach((family) => {
     family.family_documents.forEach((doc) => {

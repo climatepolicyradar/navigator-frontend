@@ -1,5 +1,6 @@
-import { joinTailwindClasses } from "@/utils/tailwind";
 import { useMemo } from "react";
+
+import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface ButtonClassArgs {
   className?: string;
@@ -57,7 +58,7 @@ export const getButtonClasses = ({
   /* Size */
 
   const isIcon = content === "icon";
-  let layout = content === "both" ? "gap-2" : "";
+  const layout = content === "both" ? "gap-2" : "";
   let sizing = "";
 
   switch (size) {

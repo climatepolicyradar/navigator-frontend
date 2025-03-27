@@ -5,7 +5,7 @@ export function extractNestedData<T>(response: TDataNode<T>[], levels: number, f
   let level1 = [];
   let level2Nested = [];
   let level2 = [];
-  let data = response;
+  const data = response;
   if (data) {
     level1 = data.map((item) => {
       return item.node;

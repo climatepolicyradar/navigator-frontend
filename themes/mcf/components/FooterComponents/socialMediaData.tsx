@@ -1,5 +1,4 @@
 import { Icon } from "@/components/atoms/icon/Icon";
-
 import { colors } from "@/mcf/constants/colors";
 
 const iconColor = colors.mcf.iconColor;

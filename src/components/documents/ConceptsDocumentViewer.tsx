@@ -1,25 +1,26 @@
-import { TConcept, TDocumentPage, TSearchResponse } from "@/types";
-import EmbeddedPDF from "@/components/EmbeddedPDF";
-import { FullWidth } from "@/components/panels/FullWidth";
-import { EmptyDocument } from "./EmptyDocument";
-import { Button } from "@/components/atoms/button/Button";
-import SearchForm from "@/components/forms/SearchForm";
-import { MdOutlineTune } from "react-icons/md";
 import { AnimatePresence } from "framer-motion";
-import { UnavailableConcepts } from "@/components/documents/UnavailableConcepts";
-import PassageMatches from "@/components/PassageMatches";
-import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
-import { EmptyPassages } from "./EmptyPassages";
 import { motion } from "framer-motion";
 import { useEffect, useState, useCallback, useMemo, useReducer } from "react";
-import useSearch from "@/hooks/useSearch";
-import { fetchAndProcessConcepts } from "@/utils/processConcepts";
-import { useEffectOnce } from "@/hooks/useEffectOnce";
-import { QUERY_PARAMS } from "@/constants/queryParams";
-import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
-import { SearchSettings } from "@/components/filters/SearchSettings";
-import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
+import { MdOutlineTune } from "react-icons/md";
+
+import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
+import PassageMatches from "@/components/PassageMatches";
+import { Button } from "@/components/atoms/button/Button";
+import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
+import { EmptyDocument } from "@/components/documents/EmptyDocument";
+import { EmptyPassages } from "@/components/documents/EmptyPassages";
+import { UnavailableConcepts } from "@/components/documents/UnavailableConcepts";
+import { SearchSettings } from "@/components/filters/SearchSettings";
+import SearchForm from "@/components/forms/SearchForm";
+import { FullWidth } from "@/components/panels/FullWidth";
+import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
+import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { useEffectOnce } from "@/hooks/useEffectOnce";
+import useSearch from "@/hooks/useSearch";
+import { TConcept, TDocumentPage, TSearchResponse } from "@/types";
+import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 
 type TProps = {
   initialQueryTerm?: string | string[];

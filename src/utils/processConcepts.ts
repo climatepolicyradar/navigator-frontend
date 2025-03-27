@@ -65,7 +65,7 @@ interface RootConceptsMapped {
 
 export const processConcepts = (concepts: (TConcept & { count: number })[]): RootConceptsMapped => {
   const conceptMap: RootConceptsMapped = {};
-  let otherConcepts: ConceptMap = {};
+  const otherConcepts: ConceptMap = {};
 
   concepts.forEach((concept) => {
     let isRootOrSubconcept = false;

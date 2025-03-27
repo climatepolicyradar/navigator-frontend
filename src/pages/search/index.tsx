@@ -4,18 +4,12 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { MdOutlineTune } from "react-icons/md";
 
-import useConfig from "@/hooks/useConfig";
-import { useDownloadCsv } from "@/hooks/useDownloadCsv";
-import useSearch from "@/hooks/useSearch";
-
-import { MultiCol } from "@/components/panels/MultiCol";
-import { SideCol } from "@/components/panels/SideCol";
-import { SingleCol } from "@/components/panels/SingleCol";
-import { SiteWidth } from "@/components/panels/SiteWidth";
-
+import { ApiClient } from "@/api/http-common";
 import { ExternalLink } from "@/components/ExternalLink";
 import Loader from "@/components/Loader";
 import { NoOfResults } from "@/components/NoOfResults";
+import { Button } from "@/components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
 import SearchFilters from "@/components/blocks/SearchFilters";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Drawer from "@/components/drawer/Drawer";
@@ -25,18 +19,19 @@ import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
 import { SubNav } from "@/components/nav/SubNav";
 import Pagination from "@/components/pagination";
+import { MultiCol } from "@/components/panels/MultiCol";
+import { SideCol } from "@/components/panels/SideCol";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 import SearchResultList from "@/components/search/SearchResultList";
-import { Icon } from "@/components/atoms/icon/Icon";
-
-import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
-import { readConfigFile } from "@/utils/readConfigFile";
-
 import { QUERY_PARAMS } from "@/constants/queryParams";
-
+import useConfig from "@/hooks/useConfig";
+import { useDownloadCsv } from "@/hooks/useDownloadCsv";
+import useSearch from "@/hooks/useSearch";
 import { TConcept, TTheme, TThemeConfig } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { ApiClient } from "@/api/http-common";
-import { Button } from "@/components/atoms/button/Button";
+import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
+import { readConfigFile } from "@/utils/readConfigFile";
 
 type TProps = {
   theme: TTheme;

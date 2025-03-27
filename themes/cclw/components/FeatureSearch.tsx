@@ -1,7 +1,6 @@
 import Link from "next/link";
 
-import { Feature } from "./Feature";
-
+import { Feature } from "@/cclw/components/Feature";
 import { Icon } from "@/components/atoms/icon/Icon";
 
 export const FeatureSearch = () => (
