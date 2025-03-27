@@ -6,6 +6,7 @@ import { Button } from "@/components/atoms/button/Button";
 import SearchForm from "@/components/forms/SearchForm";
 import { MdOutlineTune } from "react-icons/md";
 import { AnimatePresence } from "framer-motion";
+import { UnavailableConcepts } from "@/components/documents/UnavailableConcepts";
 import PassageMatches from "@/components/PassageMatches";
 import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
 import { EmptyPassages } from "./EmptyPassages";
