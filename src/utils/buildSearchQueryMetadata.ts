@@ -1,4 +1,4 @@
-import { TSearchCriteriaMeta, TThemeConfig } from "@types";
+import { TSearchCriteriaMeta, TThemeConfig } from "@/types";
 
 export const buildSearchQueryMetadata = (
   metadata: TSearchCriteriaMeta[],

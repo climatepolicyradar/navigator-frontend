@@ -1,4 +1,4 @@
-import { TConcept } from "@types";
+import { TConcept } from "@/types";
 
 // Define the root level concepts
 export const ROOT_LEVEL_CONCEPTS = {

@@ -1,8 +1,8 @@
 import Layout from "../components/layouts/Main";
-import { SiteWidth } from "@components/panels/SiteWidth";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
-import { ExternalLink } from "@components/ExternalLink";
-import { Heading } from "@components/typography/Heading";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Heading } from "@/components/typography/Heading";
 
 function Error({ statusCode }) {
   return (

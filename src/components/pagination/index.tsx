@@ -1,9 +1,9 @@
 import { Fragment } from "react";
 
-import { Button } from "@components/atoms/button/Button";
-import { MAX_PAGES, RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN } from "@constants/paging";
+import { MAX_PAGES, RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN } from "@/constants/paging";
+import { Button } from "@/components/atoms/button/Button";
 
-import { getCurrentPage } from "@utils/getCurrentPage";
+import { getCurrentPage } from "@/utils/getCurrentPage";
 
 interface PaginationProps {
   onChange(ct: string, offSet: number): void;

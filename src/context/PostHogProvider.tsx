@@ -63,6 +63,7 @@ export function PostHogProvider({ children, consent }: Props) {
       capture_pageview: false,
       capture_pageleave: true,
       persistence: "memory",
+      person_profiles: "always",
     });
     window.sessionStorage.setItem("posthogLoaded", "true");
   }, []);

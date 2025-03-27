@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
-import { Icon } from "@components/atoms/icon/Icon";
-import { SearchDropdown } from "@components/forms/SearchDropdown";
-import { Button } from "@components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { SearchDropdown } from "@/components/forms/SearchDropdown";
+import { Button } from "@/components/atoms/button/Button";
 
 interface SearchFormProps {
   placeholder?: string;
@@ -51,7 +51,14 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
   const displayPlaceholder = placeholder ?? "Search the full text of 5000+ laws and policies";
 
   return (
-    <form data-cy="search-form" ref={formRef} onSubmit={(e) => e.preventDefault()}>
+    <form
+      data-cy="search-form"
+      ref={formRef}
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSearchInput(term);
+      }}
+    >
       <div className="max-w-screen-lg mx-auto flex items-stretch relative text-white">
         <input
           id="landingPage-searchInput"
@@ -77,12 +84,13 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
               variant="ghost"
               className="!text-text-light !outline-surface-light hover:!bg-transparent"
               onClick={clearSearch}
+              type="button"
             >
               <Icon name="close" />
             </Button>
           </div>
         )}
-        <button className="absolute top-0 right-0 h-full" onClick={() => handleSearchInput(term)} aria-label="Search">
+        <button type="submit" className="absolute top-0 right-0 h-full" onClick={() => handleSearchInput(term)} aria-label="Search">
           <span className="block">
             <Icon name="search" height="30" width="40" />
           </span>

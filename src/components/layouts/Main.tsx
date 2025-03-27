@@ -2,14 +2,14 @@ import React, { FC, ReactNode, useContext } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
-import { ThemeContext } from "@context/ThemeContext";
+import { ThemeContext } from "@/context/ThemeContext";
 
-import { getAppTitle } from "@utils/getAppTitle";
-import { getPageDescription } from "@utils/getPageDescription";
-import { getPageTitle } from "@utils/getPageTitle";
-import { getCanonicalUrl } from "@utils/getCanonicalUrl";
+import { getAppTitle } from "@/utils/getAppTitle";
+import { getPageDescription } from "@/utils/getPageDescription";
+import { getPageTitle } from "@/utils/getPageTitle";
+import { getCanonicalUrl } from "@/utils/getCanonicalUrl";
 
-import { TTheme, TThemeConfig } from "@types";
+import { TTheme, TThemeConfig } from "@/types";
 import dynamic from "next/dynamic";
 
 const Wrapper = dynamic<{ children: ReactNode }>(() => import(`/themes/${process.env.THEME}/layouts/main`));
@@ -29,7 +29,7 @@ const Layout: FC<TProps> = ({ children, title, theme, description, themeConfig, 
   const contextTheme = useContext(ThemeContext);
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col min-h-screen">
       <Head>
         <title>{`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppTitle(theme, contextTheme)}`}</title>
         <meta property="og:title" content={`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppTitle(theme, contextTheme)}`} />

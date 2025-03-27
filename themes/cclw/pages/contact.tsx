@@ -1,11 +1,11 @@
-import Layout from "@components/layouts/Main";
-import { SiteWidth } from "@components/panels/SiteWidth";
-import { SingleCol } from "@components/panels/SingleCol";
-import { SubNav } from "@components/nav/SubNav";
+import Layout from "@/components/layouts/Main";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SubNav } from "@/components/nav/SubNav";
 
-import { ExternalLink } from "@components/ExternalLink";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import { Heading } from "@components/typography/Heading";
+import { ExternalLink } from "@/components/ExternalLink";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import { Heading } from "@/components/typography/Heading";
 
 const Contact = () => {
   return (

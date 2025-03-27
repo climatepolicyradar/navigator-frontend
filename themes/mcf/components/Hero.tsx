@@ -1,8 +1,8 @@
-import { Heading } from "@components/typography/Heading";
+import { Heading } from "@/components/typography/Heading";
 import LandingSearchForm from "./LandingSearchForm";
 
-import { SiteWidth } from "@components/panels/SiteWidth";
-import { VerticalSpacing } from "@components/utility/VerticalSpacing";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
 import { MultilateralClimateFundLogos } from "./HeroComponents/MultilateralClimateFundsLogos";
 
 const Instructions = () => <p>Loading document stats...</p>;

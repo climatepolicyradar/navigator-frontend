@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
-import useOutsideAlerter from "@hooks/useOutsideAlerter";
-import { Icon } from "@components/atoms/icon/Icon";
+import useOutsideAlerter from "@/hooks/useOutsideAlerter";
+import { Icon } from "@/components/atoms/icon/Icon";
 import DropdownMenuItem from "./DropdownMenuItem";
 import DropdownMenuWrapper from "./DropdownMenuWrapper";
 

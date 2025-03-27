@@ -1,4 +1,4 @@
-import { TFamilyDocument } from "@types";
+import { TFamilyDocument } from "@/types";
 
 export const matchesCount = (documents: TFamilyDocument[]) => {
   let numberOfMatches = 0;

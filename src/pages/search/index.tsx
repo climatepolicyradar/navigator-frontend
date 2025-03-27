@@ -1,44 +1,42 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { ParsedUrlQueryInput } from "querystring";
 import { useEffect, useRef, useState } from "react";
 import { MdOutlineTune } from "react-icons/md";
 
-import useConfig from "@hooks/useConfig";
-import { useDownloadCsv } from "@hooks/useDownloadCsv";
-import useSearch from "@hooks/useSearch";
+import useConfig from "@/hooks/useConfig";
+import { useDownloadCsv } from "@/hooks/useDownloadCsv";
+import useSearch from "@/hooks/useSearch";
 
-import { MultiCol } from "@components/panels/MultiCol";
-import { SideCol } from "@components/panels/SideCol";
-import { SingleCol } from "@components/panels/SingleCol";
-import { SiteWidth } from "@components/panels/SiteWidth";
+import { MultiCol } from "@/components/panels/MultiCol";
+import { SideCol } from "@/components/panels/SideCol";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
-import { ExternalLink } from "@components/ExternalLink";
-import Loader from "@components/Loader";
-import { NoOfResults } from "@components/NoOfResults";
-import SearchFilters from "@components/blocks/SearchFilters";
-import { BreadCrumbs } from "@components/breadcrumbs/Breadcrumbs";
-import Drawer from "@components/drawer/Drawer";
-import { FamilyMatchesDrawer } from "@components/drawer/FamilyMatchesDrawer";
-import { SearchSettings } from "@components/filters/SearchSettings";
-import SearchForm from "@components/forms/SearchForm";
-import Layout from "@components/layouts/Main";
-import { DownloadCsvPopup } from "@components/modals/DownloadCsv";
-import { SubNav } from "@components/nav/SubNav";
-import Pagination from "@components/pagination";
-import SearchResultList from "@components/search/SearchResultList";
-import { Icon } from "@components/atoms/icon/Icon";
+import { ExternalLink } from "@/components/ExternalLink";
+import Loader from "@/components/Loader";
+import { NoOfResults } from "@/components/NoOfResults";
+import SearchFilters from "@/components/blocks/SearchFilters";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Drawer from "@/components/drawer/Drawer";
+import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
+import { SearchSettings } from "@/components/filters/SearchSettings";
+import Layout from "@/components/layouts/Main";
+import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
+import { SubNav } from "@/components/nav/SubNav";
+import Pagination from "@/components/pagination";
+import SearchResultList from "@/components/search/SearchResultList";
+import { Icon } from "@/components/atoms/icon/Icon";
 
-import { getThemeConfigLink } from "@utils/getThemeConfigLink";
-import { readConfigFile } from "@utils/readConfigFile";
+import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
+import { readConfigFile } from "@/utils/readConfigFile";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 
-import { TConcept, TFamilyPage, TTheme, TThemeConfig } from "@types";
-import { getFeatureFlags } from "@utils/featureFlags";
-import { ApiClient } from "@api/http-common";
-import { Button } from "@components/atoms/button/Button";
+import { TConcept, TTheme, TThemeConfig } from "@/types";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { ApiClient } from "@/api/http-common";
+import { Button } from "@/components/atoms/button/Button";
 
 type TProps = {
   theme: TTheme;
@@ -67,8 +65,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
-
-  const placeholder = "Search for something...";
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
@@ -168,8 +164,13 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
       }
     }
 
+    // If we are changing the fund or func document type for MCFs, clear non-applicable filters
     if (type === QUERY_PARAMS.fund) {
       delete router.query[QUERY_PARAMS.implementing_agency];
+    }
+    if (type === QUERY_PARAMS.fund_doc_type) {
+      delete router.query[QUERY_PARAMS.implementing_agency];
+      delete router.query[QUERY_PARAMS.status];
     }
 
     if (type === QUERY_PARAMS.concept_name) {
@@ -178,17 +179,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
 
     router.query[type] = queryCollection;
     router.push({ query: router.query }, undefined, { shallow: true });
-    scrollTo(0, 0);
-    resetCSVStatus();
-  };
-
-  const handleSuggestion = (term: string, filter?: string, filterValue?: string) => {
-    const suggestedQuery: ParsedUrlQueryInput = {};
-    suggestedQuery[QUERY_PARAMS.query_string] = term;
-    if (filter && filterValue && filter.length && filterValue.length) {
-      suggestedQuery[filter] = [filterValue.toLowerCase()];
-    }
-    router.push({ query: suggestedQuery }, undefined, { shallow: true });
     scrollTo(0, 0);
     resetCSVStatus();
   };
@@ -212,10 +202,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     router.push({ query: router.query }, undefined, { shallow: true });
     scrollTo(0, 0);
     resetCSVStatus();
-  };
-
-  const handleSearchInput = (term: string) => {
-    handleSearchChange(QUERY_PARAMS.query_string, term);
   };
 
   // When we change category we don't want to keep the previous filters which are not applicable
@@ -372,20 +358,19 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
         </SubNav>
         {/* MOBILE ONLY */}
         <SiteWidth extraClasses="pt-4 md:hidden">
-          <div className="flex gap-3">
-            <div className="flex-1">
-              <SearchForm
-                placeholder={placeholder}
-                handleSearchInput={handleSearchInput}
-                input={qQueryString ? qQueryString.toString() : ""}
-                handleSuggestion={handleSuggestion}
-              />
+          <div className="flex gap-3 items-center">
+            <div className="flex-1 text-xs" data-cy="number-of-results">
+              {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
             </div>
+            <Button content="both" className="flex-nowrap md:hidden" onClick={toggleFilters}>
+              <span>{showFilters ? "Hide" : "Show"} filters</span>
+              <div className={showFilters ? "rotate-180" : ""}>
+                <Icon name="downChevron" />
+              </div>
+            </Button>
             <div className="relative z-10 flex justify-center">
               <button
-                className={`w-[55px] flex justify-center items-center text-textDark text-xl ${
-                  showOptions ? "bg-nearBlack text-white rounded-full" : ""
-                }`}
+                className={`p-2 text-textDark text-xl ${showOptions ? "bg-nearBlack text-white rounded-full" : ""}`}
                 onClick={() => setShowOptions(!showOptions)}
                 data-cy="search-options-mobile"
                 ref={settingsButtonRef}
@@ -407,15 +392,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               </AnimatePresence>
             </div>
           </div>
-          <div className="flex items-center justify-center w-full mt-4">
-            <Button content="both" className="mt-2 flex-nowrap md:hidden" onClick={toggleFilters}>
-              <span>{showFilters ? "Hide" : "Show"} filters</span>
-              <div className={showFilters ? "rotate-180" : ""}>
-                <Icon name="downChevron" />
-              </div>
-            </Button>
-          </div>
-          <div className={`${showFilters ? "" : "hidden"}`}>
+          <div className={`${showFilters ? "" : "hidden"} mt-4`}>
             {configQuery.isFetching ? (
               <Loader size="20px" />
             ) : (
@@ -461,21 +438,14 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
           <SingleCol extraClasses="px-5 pt-5">
             <div>
               {/* NON MOBILE SEARCH */}
-              <div className="hidden md:block mb-4">
-                <div className="flex gap-3">
-                  <div className="flex-1">
-                    <SearchForm
-                      placeholder={placeholder}
-                      handleSearchInput={handleSearchInput}
-                      input={qQueryString ? qQueryString.toString() : ""}
-                      handleSuggestion={handleSuggestion}
-                    />
+              <div className="hidden md:block">
+                <div className="flex gap-3 items-center">
+                  <div className="flex-1 text-xs" data-cy="number-of-results">
+                    {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
                   </div>
-                  <div className="relative z-10 flex justify-center">
+                  <div className="relative z-10">
                     <button
-                      className={`w-[55px] flex justify-center items-center text-textDark text-xl ${
-                        showOptions ? "bg-nearBlack text-white rounded-full" : ""
-                      }`}
+                      className={`p-4 text-textDark text-xl ${showOptions ? "bg-nearBlack text-white rounded-full" : ""}`}
                       onClick={() => setShowOptions(!showOptions)}
                       data-cy="search-options"
                       ref={settingsButtonRef}
@@ -499,11 +469,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 </div>
               </div>
               {/* NON MOBILE SEARCH END */}
-              <div>
-                <div className="text-xs my-4 md:mb-4 md:mt-0 lg:my-0" data-cy="number-of-results">
-                  {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
-                </div>
-              </div>
               <div className="text-sm md:text-right">
                 {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
                 {downloadCSVStatus === "success" && (
@@ -512,7 +477,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               </div>
             </div>
 
-            <div className="mt-10">
+            <div className="mt-5">
               {status === "loading" ? (
                 <div className="w-full flex justify-center h-96">
                   <Loader />
@@ -574,7 +539,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const client = new ApiClient(process.env.CONCEPTS_API_URL);
     const conceptsV1 = featureFlags["concepts-v1"];
     if (conceptsV1) {
-      const { data: returnedData } = await client.get(`/concepts/search?limit=10000&q=`);
+      const { data: returnedData } = await client.get(`/concepts/search?limit=10000&has_classifier=true&q=`);
       conceptsData = returnedData;
     }
   } catch (error) {

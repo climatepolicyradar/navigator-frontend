@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 
-import { Icon } from "@components/atoms/icon/Icon";
-import { SearchDropdown } from "@components/forms/SearchDropdown";
-import { Button } from "@components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { SearchDropdown } from "@/components/forms/SearchDropdown";
+import { Button } from "@/components/atoms/button/Button";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 
 // See the method handleSearchInput in the index.tsx file for the processing of the example searches
 const EXAMPLE_SEARCHES = [

@@ -2,9 +2,9 @@ import { ParsedUrlQuery } from "querystring";
 
 import { containsAny } from "./containsAny";
 
-import { QUERY_PARAMS } from "@constants/queryParams";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 
-import { TThemeConfig, TThemeConfigFilter } from "@types";
+import { TThemeConfig, TThemeConfigFilter } from "@/types";
 
 export const canDisplayFilter = (filter: TThemeConfigFilter, query: ParsedUrlQuery, themeConfig: TThemeConfig) => {
   let canDisplay = false;
