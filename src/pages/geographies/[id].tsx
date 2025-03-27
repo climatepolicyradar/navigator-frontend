@@ -1,35 +1,40 @@
+import { useState } from "react";
 import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
-import { Alert } from "@/components/Alert";
-import { ExternalLink } from "@/components/ExternalLink";
+
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { SingleCol } from "@/components/panels/SingleCol";
+
+import Layout from "@/components/layouts/Main";
+import { Timeline } from "@/components/timeline/Timeline";
+import { Event } from "@/components/timeline/Event";
+import { CountryHeader } from "@/components/blocks/CountryHeader";
+import { Divider } from "@/components/dividers/Divider";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { FamilyListItem } from "@/components/document/FamilyListItem";
 import { Targets } from "@/components/Targets";
 import { Button } from "@/components/atoms/button/Button";
-import { Icon } from "@/components/atoms/icon/Icon";
-import { CountryHeader } from "@/components/blocks/CountryHeader";
-import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
-import { Divider } from "@/components/dividers/Divider";
-import { FamilyListItem } from "@/components/document/FamilyListItem";
-import DocumentSearchForm from "@/components/forms/DocumentSearchForm";
-import Layout from "@/components/layouts/Main";
-import { SubNav } from "@/components/nav/SubNav";
 import TabbedNav from "@/components/nav/TabbedNav";
-import { SingleCol } from "@/components/panels/SingleCol";
-import { SiteWidth } from "@/components/panels/SiteWidth";
-import { Event } from "@/components/timeline/Event";
-import { Timeline } from "@/components/timeline/Timeline";
+import { ExternalLink } from "@/components/ExternalLink";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import { Alert } from "@/components/Alert";
+import { SubNav } from "@/components/nav/SubNav";
 import { Heading } from "@/components/typography/Heading";
+
+import { getCountryCode } from "@/helpers/getCountryFields";
+
+import { extractNestedData } from "@/utils/extractNestedData";
+import { sortFilterTargets } from "@/utils/sortFilterTargets";
+import { readConfigFile } from "@/utils/readConfigFile";
+
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { systemGeoNames } from "@/constants/systemGeos";
-import { getCountryCode } from "@/helpers/getCountryFields";
+
 import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
 import { TTarget, TEvent, TGeography, TTheme } from "@/types";
-import { extractNestedData } from "@/utils/extractNestedData";
-import { readConfigFile } from "@/utils/readConfigFile";
-import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 type TProps = {
   geography: TGeographyStats;
@@ -51,8 +56,6 @@ const categoryByIndex = {
 };
 
 const MAX_NUMBER_OF_FAMILIES = 3;
-
-const FEATURED_SEARCHES = ["Resilient infrastructure", "Fossil fuel divestment", "Net zero growth plan", "Sustainable fishing"];
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets, theme, themeConfig }: TProps) => {
   const router = useRouter();
@@ -121,14 +124,6 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       newQuery[QUERY_PARAMS.category] = documentCategory;
     }
     router.push({ pathname: "/search", query: { ...newQuery } });
-  };
-
-  // Search handlers
-  const handleSearchInput = (term: string) => {
-    const queryObj = {};
-    queryObj[QUERY_PARAMS.query_string] = term;
-    queryObj[QUERY_PARAMS.country] = geography.geography_slug;
-    router.push({ pathname: "/search", query: queryObj });
   };
 
   const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geography.name}.`}</p>;
@@ -242,16 +237,8 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                 theme={theme}
                 totalProjects={allDocumentsCount}
               />
-              <section className="mt-8" data-cy="country-search">
+              <section className="mt-8">
                 <Heading level={2}>Documents</Heading>
-                <DocumentSearchForm
-                  placeholder={`Search the full text of ${allDocumentsCount} documents from ${geography.name}`}
-                  handleSearchInput={handleSearchInput}
-                  input={""}
-                  featuredSearches={FEATURED_SEARCHES}
-                  showSuggestions
-                  suggestionsAsLinks
-                />
               </section>
               {hasFamilies && (
                 <>
@@ -350,12 +337,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   <Heading level={2} extraClasses="flex items-center gap-2">
                     Legislative Process
                   </Heading>
-                  <div
-                    className="text-content"
-                    dangerouslySetInnerHTML={{
-                      __html: geography.legislative_process,
-                    }}
-                  />
+                  <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
                 </section>
               )}
             </SingleCol>

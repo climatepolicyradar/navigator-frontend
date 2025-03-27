@@ -125,6 +125,10 @@ const generatePills = (
 
   Object.keys(QUERY_PARAMS).map((key: TFilterKeys) => {
     const value = queryParams[QUERY_PARAMS[key]];
+
+    // Exclude the search query from pills as it displays in NavSearch instead
+    if (key === "query_string") return;
+
     if (value) {
       if (key === "year_range")
         return pills.push(handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions, themeConfig, concepts));

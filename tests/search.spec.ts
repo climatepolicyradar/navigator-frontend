@@ -11,6 +11,15 @@ test("search", async ({ page }) => {
   /** Homepage */
   await expect(page.getByLabel("Search").first()).toBeVisible();
   await page.getByLabel("Search").first().fill("Adaptation strategy");
+
+  /** Test keyboard submission */
+  await page.getByLabel("Search").first().press("Enter");
+  await page.waitForURL("/search*");
+
+  /** Test tap submission  */
+  await page.goBack();
+  await expect(page.getByLabel("Search").first()).toBeVisible();
+  await page.getByLabel("Search").first().fill("Adaptation strategy");
   await page.getByRole("button", { name: "Search" }).click();
 
   /** Search */

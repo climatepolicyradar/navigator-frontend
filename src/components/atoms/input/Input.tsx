@@ -1,5 +1,5 @@
 import { Input as BaseInput } from "@base-ui-components/react";
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { useMemo } from "react";
 
 import { Icon, IconName, iconNames } from "@/components/atoms/icon/Icon";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -11,8 +11,8 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "
   icon?: IconName | React.ReactNode;
   iconOnLeft?: boolean;
   inputClasses?: string;
+  onClear?: () => void;
   size?: "small" | "medium" | "large";
-  valueSetter?: Dispatch<SetStateAction<string>>;
 }
 
 const isIconName = (icon: unknown): icon is IconName => iconNames.includes(icon as IconName);
@@ -26,7 +26,8 @@ export const Input = ({
   iconOnLeft = false,
   inputClasses = "",
   size = "medium",
-  valueSetter,
+  onClear,
+  value,
   ...props
 }: InputProps) => {
   const classes = useMemo(() => {
@@ -80,19 +81,19 @@ export const Input = ({
   }
 
   const handleClear = () => {
-    if (valueSetter) valueSetter("");
+    onClear?.();
   };
 
   return (
     <div className={classes.container}>
       {iconOnLeft && iconNode}
-      <BaseInput className={classes.input} {...props} />
-      {!iconOnLeft && iconNode}
+      <BaseInput className={classes.input} value={value} {...props} />
       {clearable && (
-        <button type="button" className={classes.button} onClick={handleClear}>
+        <button type="button" className={`${classes.button} ${value ? "" : "invisible"}`} onClick={handleClear}>
           <Icon name="close" height="12" width="12" />
         </button>
       )}
+      {!iconOnLeft && iconNode}
     </div>
   );
 };

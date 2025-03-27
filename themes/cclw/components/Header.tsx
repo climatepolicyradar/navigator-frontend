@@ -1,42 +1,33 @@
+import { Menu } from "@/cclw/components/Menu";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { NavBar } from "@/components/organisms/navBar/NavBar";
+import Image from "next/image";
 import { useRouter } from "next/router";
 
-import { Logo } from "@/cclw/components/Logo";
-import { Menu } from "@/cclw/components/Menu";
-import { FloatingSearch } from "@/components/FloatingSearch";
-import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { SiteWidth } from "@/components/panels/SiteWidth";
+export const CCLWLogo = (
+  <LinkWithQuery href={`/`} cypress="cclw-logo">
+    <div className="flex items-center flex-nowrap gap-2">
+      <Image src="/images/cclw/cclw-logo-globe.png" alt="Climate Change Laws of the World logo globe" width={60} height={60} />
+      <Image src="/images/cclw/cclw-logo-text-light.svg" alt="Climate Change Laws of the World logo text" width={197} height={30} />
+    </div>
+  </LinkWithQuery>
+);
 
-const NON_SEARCH_PAGES = ["/", "/search"];
-
-const Header = ({ background = true }) => {
+const Header = () => {
   const router = useRouter();
 
-  // Do not show search on specific pages
-  const showSearch = !NON_SEARCH_PAGES.includes(router.pathname);
+  const showBackground = router.pathname === "/";
   const showLogo = router.pathname !== "/";
+  const showSearch = router.pathname !== "/";
 
   return (
-    <header data-cy="header" className={`${background ? "bg-cclw-dark" : ""} w-full`}>
-      <SiteWidth>
-        <div className="flex flex-nowrap my-2">
-          <div className="items-center flex flex-nowrap flex-1">
-            {showLogo && (
-              <LinkWithQuery href={`/`} className="flex items-center flex-nowrap gap-1" cypress="cclw-logo">
-                <Logo />
-              </LinkWithQuery>
-            )}
-            {showSearch && (
-              <div className="hidden ml-6 md:block md:w-[340px]">
-                <FloatingSearch />
-              </div>
-            )}
-          </div>
-          <div className="flex text-sm items-center">
-            <Menu />
-          </div>
-        </div>
-      </SiteWidth>
-    </header>
+    <NavBar
+      headerClasses={`min-h-12 ${showBackground ? "bg-cclw-dark" : ""}`}
+      logo={CCLWLogo}
+      menu={<Menu />}
+      showLogo={showLogo}
+      showSearch={showSearch}
+    />
   );
 };
 
