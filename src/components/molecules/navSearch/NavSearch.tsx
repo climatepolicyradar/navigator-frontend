@@ -132,13 +132,13 @@ export const NavSearch = () => {
 
   return (
     <div className="relative" ref={ref}>
-      <div className="p-4 relative z-20">
+      <div className="p-2 relative z-20">
         <form onSubmit={handleSubmit} className="flex flex-row gap-2">
           {/* Search field */}
           <Input
             autoComplete="off"
             clearable
-            containerClasses={`h-[45px] focus-within:!outline-0`}
+            containerClasses={`h-[40px] focus-within:!outline-0`}
             icon={
               <button type="submit" className="w-4 h-4 ml-2 shrink-0">
                 <Icon name="search" />
@@ -150,7 +150,6 @@ export const NavSearch = () => {
             onClear={handleClear}
             onFocus={() => setIsFocused(true)}
             placeholder="Search"
-            size="large"
             value={searchText}
           />
 
@@ -162,25 +161,29 @@ export const NavSearch = () => {
       </div>
 
       {/* Results */}
-      {showResults && (
-        <div className="absolute top-0 left-0 right-0 border border-border-lighter rounded-xl bg-surface-light shadow-[0px_4px_48px_0px_rgba(0,0,0,0.08)] p-4 pt-16">
-          {/* Geographies */}
-          {geographyResults.length > 0 && (
-            <div className="my-6 flex flex-col gap-4">
-              <h3 className="text-text-brand text-sm font-medium select-none">Geographies</h3>
-              {geographyResults.map((geography) => (
-                <LinkWithQuery href={`/geographies/${geography.slug}`} key={geography.id} className="text-sm hover:underline">
-                  {withBoldMatch(geography.display_value, searchText)}
-                </LinkWithQuery>
-              ))}
+      {isFocused && (
+        <div className="absolute top-0 left-0 right-0 border border-border-lighter rounded-xl bg-surface-light shadow-[0px_4px_48px_0px_rgba(0,0,0,0.08)] min-h-full">
+          {showResults && (
+            <div className="p-2 pt-[56px]">
+              {/* Geographies */}
+              {geographyResults.length > 0 && (
+                <div className="my-6 flex flex-col gap-4">
+                  <h3 className="text-text-brand text-sm font-medium select-none">Geographies</h3>
+                  {geographyResults.map((geography) => (
+                    <LinkWithQuery href={`/geographies/${geography.slug}`} key={geography.id} className="text-sm hover:underline">
+                      {withBoldMatch(geography.display_value, searchText)}
+                    </LinkWithQuery>
+                  ))}
+                </div>
+              )}
+              {/* Search */}
+              <div className="pt-4 pb-2 not-first:border-t border-border-lighter">
+                <button type="button" onClick={handleSearchButton} className="w-full text-sm text-left hover:underline">
+                  Search for <span className="font-bold">{searchText}</span>
+                </button>
+              </div>
             </div>
           )}
-          {/* Search */}
-          <div className="pt-4 pb-2 not-first:border-t border-border-lighter">
-            <button type="button" onClick={handleSearchButton} className="w-full text-sm text-left hover:underline">
-              Search for <span className="font-bold">{searchText}</span>
-            </button>
-          </div>
         </div>
       )}
     </div>
