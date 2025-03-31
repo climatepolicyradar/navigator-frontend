@@ -64,7 +64,7 @@ export const NavSearch = () => {
   }, [ref]);
 
   const geographyResults = useMemo(() => {
-    if (searchText.length < 2) return [];
+    if (!searchEverything || searchText.length < 2) return [];
 
     const geographies = configQuery.data?.countries || [];
 
@@ -82,7 +82,7 @@ export const NavSearch = () => {
         "display_value",
       ]
     );
-  }, [searchText, configQuery]);
+  }, [searchEverything, searchText, configQuery]);
 
   let contextualSearchName = "This document";
   if (router.pathname === "/geographies/[id]") contextualSearchName = "This geography";
@@ -117,7 +117,12 @@ export const NavSearch = () => {
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
+    setIsFocused(false);
     router.push(searchHref);
+  };
+
+  const handleSuggestionClick = () => {
+    setIsFocused(false);
   };
 
   const handleClear = () => {
@@ -174,6 +179,7 @@ export const NavSearch = () => {
                       Icon={
                         <LuArrowRight height="16" width="16" className="opacity-0 group-hover:opacity-100 text-text-brand transition duration-200" />
                       }
+                      onClick={handleSuggestionClick}
                     >
                       {withBoldMatch(geography.display_value, searchText)}
                     </NavSearchSuggestion>
@@ -189,6 +195,7 @@ export const NavSearch = () => {
                     Press <LuCornerDownLeft height="12" width="12" className="inline group-hover:text-text-brand transition duration-200" /> ENTER
                   </div>
                 }
+                onClick={handleSuggestionClick}
               >
                 All results for <span className="font-bold">&#8216;{searchText}&#8217;</span>
               </NavSearchSuggestion>

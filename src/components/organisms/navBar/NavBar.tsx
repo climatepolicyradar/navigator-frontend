@@ -12,7 +12,7 @@ export const NavBar = ({ headerClasses = "", logo, menu, showLogo = true, showSe
   return (
     <header
       data-cy="header"
-      className={`w-full sm:px-4 flex justify-between items-center flex-wrap sm:flex-nowrap gap-y-1 sm:gap-y-0 sticky top-0 z-100 ${headerClasses}`}
+      className={`w-full sm:px-4 flex justify-between items-center flex-wrap sm:flex-nowrap gap-y-1 sm:gap-y-0 sticky top-0 z-60 ${headerClasses}`}
     >
       {showLogo && <div className="lg:flex-1 pl-4 pt-4 sm:pl-0 sm:pt-0">{logo}</div>}
       {showSearch && (
