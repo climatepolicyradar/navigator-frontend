@@ -59,14 +59,14 @@ export const NavSearchDropdown = ({ contextualSearchName, isEverything, setIsEve
   const optionClasses = "h-full w-full flex items-center justify-between gap-2 pl-3 pr-3 bg-surface-ui text-sm leading-4 text-nowrap cursor-pointer";
 
   return (
-    <div ref={ref} className="border-l border-l-border-light">
+    <div ref={ref} className="text-text-secondary">
       <button
         type="button"
         onClick={() => handleClick(firstOption.newIsEverythingValue)}
-        className={`${optionClasses} ${isOpen ? "rounded-tr-md" : "rounded-r-md"}`}
+        className={`${optionClasses} ${isOpen ? "rounded-t-md" : "rounded-md"}`}
       >
         {firstOption.name}
-        <div className={isOpen ? "invisible" : ""}>
+        <div className={`text-icon-standard ${isOpen ? "invisible" : ""}`}>
           <LuChevronsUpDown height="12" width="12" />
         </div>
       </button>

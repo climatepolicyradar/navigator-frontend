@@ -133,18 +133,19 @@ export const NavSearch = () => {
   return (
     <div className="relative" ref={ref}>
       <div className="p-4 relative z-20">
-        <form onSubmit={handleSubmit} className="flex flex-row">
+        <form onSubmit={handleSubmit} className="flex flex-row gap-2">
           {/* Search field */}
           <Input
             autoComplete="off"
             clearable
-            containerClasses={`focus-within:!outline-0 ${showDropdown ? "rounded-r-none" : ""}`}
+            containerClasses="focus-within:!outline-0"
             icon={
               <button type="submit" className="w-4 h-4 ml-2">
                 <Icon name="search" />
               </button>
             }
             iconOnLeft
+            inputClasses="text-sm"
             onChange={(event) => setSearchText(event.target.value)}
             onClear={handleClear}
             onFocus={() => setIsFocused(true)}

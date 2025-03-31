@@ -52,7 +52,7 @@ export const Input = ({
     }
 
     return {
-      button: joinTailwindClasses([iconPadding]),
+      button: joinTailwindClasses(["text-icon-standard", iconPadding]),
       container: joinTailwindClasses([
         "w-full px-2 flex flex-row justify-around items-center bg-surface-ui rounded-md focus-within:outline",
         outlineColor,
