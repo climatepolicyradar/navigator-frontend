@@ -56,29 +56,31 @@ export const NavSearchDropdown = ({ contextualSearchName, isEverything, setIsEve
   };
 
   return (
-    <div
-      ref={ref}
-      className={`flex flex-col bg-surface-light -outline-offset-1 outline-border-lighter rounded-md ${isOpen ? "p-1 gap-0.5 outline" : ""}`}
-    >
-      {dropdownOptions.map((option, optionIndex) => (
-        <button
-          key={option.name}
-          type="button"
-          onClick={() => handleClick(option.newIsEverythingValue)}
-          className={`w-full flex items-center justify-between gap-2 text-sm leading-4 font-medium text-nowrap cursor-pointer
+    <div className="h-[40px] overflow-visible">
+      <div
+        ref={ref}
+        className={`flex flex-col bg-surface-light -outline-offset-1 outline-border-lighter rounded-md ${isOpen ? "p-1 gap-0.5 outline" : ""}`}
+      >
+        {dropdownOptions.map((option, optionIndex) => (
+          <button
+            key={option.name}
+            type="button"
+            onClick={() => handleClick(option.newIsEverythingValue)}
+            className={`w-full flex items-center justify-between gap-2 text-sm leading-4 font-medium text-nowrap cursor-pointer
           ${
             isOpen
               ? "h-[32px] px-2 hocus:bg-surface-mono-dark rounded-xs text-text-primary hocus:text-text-light focus:outline-0"
               : "h-[40px] px-3 bg-surface-ui rounded-md hover:text-text-primary"
           }
           ${optionIndex > 0 && !isOpen ? "!h-0 overflow-hidden" : ""}`}
-        >
-          {option.name}
-          <div className={isOpen ? "invisible" : ""}>
-            <LuChevronsUpDown height="12" width="12" />
-          </div>
-        </button>
-      ))}
+          >
+            {option.name}
+            <div className={isOpen ? "invisible" : ""}>
+              <LuChevronsUpDown height="12" width="12" />
+            </div>
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
