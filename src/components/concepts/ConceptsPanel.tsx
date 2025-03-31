@@ -1,10 +1,14 @@
-import { ConceptsHead } from "./ConceptsHead";
+import { useCallback, useState } from "react";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import Link from "next/link";
+
+import { ConceptsHead } from "./ConceptsHead";
 import { ConceptsPopover } from "@/components/popover/ConceptsPopover";
 import { Button } from "@/components/atoms/button/Button";
-import Link from "next/link";
+
+import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
+
 import { TConcept } from "@/types";
-import { useCallback, useState } from "react";
 
 type TProps = {
   concepts: TConcept[];
@@ -36,18 +40,7 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
     has_subconcept: [],
   };
 
-  const conceptsGroupedByRootConcept: { [rootConceptId: string]: TConcept[] } = Object.groupBy(concepts, (concept) => {
-    const rootConcept = rootConcepts.find((rootConcept) => concept.recursive_subconcept_of.includes(rootConcept.wikibase_id));
-    const isRootConcept = rootConcepts.some((rootConcept) => rootConcept.wikibase_id === concept.wikibase_id);
-
-    /**
-     * 1. if it has a root concept, add to that list
-     * 2. if it is a root concept, add to itself
-     * 3. otherwise add to other
-     */
-    const rootConceptId = rootConcept?.wikibase_id ?? (isRootConcept ? concept.wikibase_id : otherRootConcept.wikibase_id);
-    return rootConceptId;
-  });
+  const conceptsGroupedByRootConcept = groupByRootConcept(concepts, rootConcepts);
 
   return (
     <div className="pb-4">
