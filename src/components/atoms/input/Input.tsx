@@ -88,7 +88,7 @@ export const Input = ({
       {iconOnLeft && iconNode}
       <BaseInput className={classes.input} value={value} {...props} />
       {clearable && (
-        <button type="button" className={`${classes.button} ${value ? "in-focus-within:hidden" : "hidden"}`} onClick={handleClear}>
+        <button type="button" className={`${classes.button} ${value ? "" : "hidden"}`} onClick={handleClear}>
           <Icon name="close" height="12" width="12" />
         </button>
       )}
