@@ -110,18 +110,9 @@ export const ConceptPicker = ({ concepts, startingSort = "A-Z" }: TProps) => {
         <Label>Beta</Label>
       </div>
       <input type="text" placeholder="Quick search" value={search} onChange={(e) => setSearch(e.target.value)} />
-      <div className="text-sm">
-        <label>Sort by:</label>
-        <select name="sort" value={sort} onChange={(e) => setSort(e.target.value as TSort)} className="ml-2">
-          {SORT_OPTIONS.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+      <div className="relative">
+        <Select defaultValue="A-Z" value={sort} onValueChange={(value) => setSort(value as TSort)} options={SORT_OPTIONS} />
       </div>
-      {/* TODO: proper select box */}
-      {/* <Select defaultValue="A-Z" value={sort} onValueChange={setSort} options={SORT_OPTIONS} /> */}
       <div className="flex-1 flex flex-col gap-2 text-sm overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
         {/* SELECTED CONCEPTS */}
         {selectedConcepts.length > 0 && (
