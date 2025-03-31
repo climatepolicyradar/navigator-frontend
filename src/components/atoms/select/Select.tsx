@@ -23,10 +23,10 @@ export function Select({ defaultValue, value, options, onValueChange }: SelectPr
         </BaseSelect.Icon>
       </BaseSelect.Trigger>
       <BaseSelect.Portal>
-        <BaseSelect.Positioner className="z-50 text-sm w-[--anchor-width]" sideOffset={8}>
+        <BaseSelect.Positioner className="z-50 text-sm w-(--anchor-width)">
           <BaseSelect.ScrollUpArrow className="" />
           <BaseSelect.Popup
-            className={`rounded-sm p-2 bg-white outline-1 outline-gray-200 m-h-(--available-height) [data-side="none"]:opacity-1 data-starting-style:opacity-0 data-ending-style:opacity-0`}
+            className={`rounded-sm p-1 bg-white outline-1 outline-gray-200 m-h-(--available-height) [data-side="none"]:opacity-1 data-starting-style:opacity-0 data-ending-style:opacity-0`}
           >
             {options &&
               options.length > 0 &&
