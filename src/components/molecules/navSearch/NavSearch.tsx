@@ -1,5 +1,6 @@
 import { Icon } from "@/components/atoms/icon/Icon";
 import { Input } from "@/components/atoms/input/Input";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { systemGeoCodes } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
@@ -8,7 +9,6 @@ import { sortBy } from "lodash";
 import { useRouter } from "next/router";
 import { FormEventHandler, MouseEventHandler, useEffect, useMemo, useRef, useState } from "react";
 import { NavSearchDropdown } from "./NavSearchDropdown";
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 
 const pagesWithContextualSearch: string[] = ["/document/[id]", "/documents/[id]", "/geographies/[id]"];
 
@@ -138,9 +138,9 @@ export const NavSearch = () => {
           <Input
             autoComplete="off"
             clearable
-            containerClasses="focus-within:!outline-0"
+            containerClasses={`h-[45px] focus-within:!outline-0`}
             icon={
-              <button type="submit" className="w-4 h-4 ml-2">
+              <button type="submit" className="w-4 h-4 ml-2 shrink-0">
                 <Icon name="search" />
               </button>
             }
