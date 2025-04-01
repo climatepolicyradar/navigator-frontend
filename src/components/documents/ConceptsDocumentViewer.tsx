@@ -28,7 +28,6 @@ type TProps = {
   vespaDocumentData: TSearchResponse;
   document: TDocumentPage;
   familySlug: string;
-
   // Callback props for state changes
   onExactMatchChange?: (isExact: boolean) => void;
   onConceptClick?: (conceptLabel: string) => void;
@@ -130,10 +129,13 @@ export const ConceptsDocumentViewer = ({
 
   const documentConceptCountsById = useMemo(
     () =>
-      documentConcepts.reduce((acc, concept) => {
-        acc[concept.wikibase_id] = concept.count || 0;
-        return acc;
-      }, {} as Record<string, number>),
+      documentConcepts.reduce(
+        (acc, concept) => {
+          acc[concept.wikibase_id] = concept.count || 0;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
     [documentConcepts]
   );
 
