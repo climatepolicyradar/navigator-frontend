@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { MdOutlineTune } from "react-icons/md";
+import { LuSettings2 } from "react-icons/lu";
 
 import { ApiClient } from "@/api/http-common";
 
@@ -383,7 +383,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                   data-cy="search-options-mobile"
                   ref={settingsButtonRef}
                 >
-                  <MdOutlineTune />
+                  <LuSettings2 />
                 </button>
                 <AnimatePresence initial={false}>
                   {showOptions && (
@@ -472,7 +472,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                           data-cy="search-options"
                           ref={settingsButtonRef}
                         >
-                          <MdOutlineTune />
+                          <LuSettings2 />
                         </button>
                         <AnimatePresence initial={false}>
                           {showOptions && (

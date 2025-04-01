@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { LuInfo } from "react-icons/lu";
 import Link from "next/link";
 
 import { ConceptsHead } from "./ConceptsHead";
@@ -66,9 +66,9 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
                         : [...openPopoverIds, rootConcept.wikibase_id]
                     );
                   }}
-                  className="text-neutral-500 flex items-center z-50"
+                  className="text-text-primary flex items-center z-50 opacity-20 group-hover:opacity-40 transition-opacity duration-150"
                 >
-                  <HiOutlineDotsHorizontal className="text-xl group-hover:border-neutral-200 border-transparent border-1 rounded-full p-0.5" />
+                  <LuInfo className="text-xl" />
                 </button>
 
                 {openPopoverIds.includes(rootConcept.wikibase_id) && (

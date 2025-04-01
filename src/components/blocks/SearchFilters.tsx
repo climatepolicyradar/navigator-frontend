@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useContext } from "react";
 import { ParsedUrlQuery } from "querystring";
 import dynamic from "next/dynamic";
-import { HiChevronRight } from "react-icons/hi2";
+import { LuChevronRight } from "react-icons/lu";
 
 import useGetThemeConfig from "@/hooks/useThemeConfig";
 import { Label } from "@/components/labels/Label";
@@ -170,7 +170,7 @@ const SearchFilters = ({
                 currentSlideOut === "concepts" ? "transform rotate-180" : ""
               }`}
             >
-              <HiChevronRight />
+              <LuChevronRight />
             </span>
           </button>
         </>
