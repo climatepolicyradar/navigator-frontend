@@ -2,8 +2,6 @@ import { TConcept, TDocumentPage, TSearchResponse } from "@/types";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import { FullWidth } from "@/components/panels/FullWidth";
 import { EmptyDocument } from "./EmptyDocument";
-import { Button } from "@/components/atoms/button/Button";
-import SearchForm from "@/components/forms/SearchForm";
 import { MdOutlineTune } from "react-icons/md";
 import { AnimatePresence } from "framer-motion";
 import PassageMatches from "@/components/PassageMatches";
@@ -29,10 +27,8 @@ type TProps = {
   document: TDocumentPage;
 
   // Callback props for state changes
-  onQueryTermChange?: (queryTerm: string) => void;
   onExactMatchChange?: (isExact: boolean) => void;
   onConceptClick?: (conceptLabel: string) => void;
-  onClear?: () => void;
 };
 
 const passageClasses = (docType: string) => {
@@ -53,20 +49,26 @@ export const ConceptsDocumentViewer = ({
   initialConceptFilters,
   document,
   vespaFamilyData,
-  onQueryTermChange,
   onExactMatchChange,
   onConceptClick,
-  onClear,
 }: TProps) => {
   const [showSearchOptions, setShowSearchOptions] = useState(false);
+
+  const getQueryTerm = (term: string | string[]) => (Array.isArray(term) ? term[0] : term || "");
 
   const [state, setState] = useReducer((prev: any, next: Partial<any>) => ({ ...prev, ...next }), {
     passageIndex: initialPassage,
     isExactSearch: initialExactMatch,
-    queryTerm: Array.isArray(initialQueryTerm) ? initialQueryTerm[0] : initialQueryTerm || "",
+    queryTerm: getQueryTerm(initialQueryTerm),
     passageMatches: [],
     totalNoOfMatches: 0,
   });
+
+  // Run a new query if the initial query changes (likely a query param change)
+  useEffect(() => {
+    const newQueryTerm = getQueryTerm(initialQueryTerm);
+    setState({ queryTerm: newQueryTerm });
+  }, [initialQueryTerm]);
 
   const [concepts, setConcepts] = useState<TConcept[]>([]);
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
@@ -168,14 +170,6 @@ export const ConceptsDocumentViewer = ({
     [document.content_type]
   );
 
-  const handleSearchInput = useCallback(
-    (term: string) => {
-      setState({ queryTerm: term });
-      onQueryTermChange?.(term);
-    },
-    [onQueryTermChange]
-  );
-
   const handleSemanticSearchChange = useCallback(
     (_: string, isExact: string) => {
       const exactBool = isExact === "true";
@@ -188,17 +182,6 @@ export const ConceptsDocumentViewer = ({
     },
     [onExactMatchChange]
   );
-
-  const handleClearSearch = useCallback(() => {
-    setState({
-      passageMatches: [],
-      totalNoOfMatches: 0,
-      passageIndex: 0,
-      queryTerm: "",
-      isExactSearch: false,
-    });
-    onClear();
-  }, [onClear]);
 
   return (
     <>
@@ -224,53 +207,6 @@ export const ConceptsDocumentViewer = ({
                 )}`}
               >
                 <div id="document-search" className="flex flex-col gap-2 md:pl-4">
-                  {(selectedConcepts.length > 0 || initialQueryTerm) && (
-                    <div className="flex gap-2">
-                      <Button rounded color="mono" size="small" data-cy="view-document-viewer-concept" onClick={handleClearSearch}>
-                        ← Back
-                      </Button>
-                    </div>
-                  )}
-
-                  <div className="flex gap-2">
-                    <div className="flex-1">
-                      <SearchForm
-                        placeholder="Search document text"
-                        handleSearchInput={handleSearchInput}
-                        input={state.queryTerm as string}
-                        size="default"
-                      />
-                    </div>
-                    <div className="relative z-10 flex justify-center">
-                      <button
-                        className="px-4 flex justify-center items-center text-textDark text-xl"
-                        onClick={() => setShowSearchOptions(!showSearchOptions)}
-                      >
-                        <MdOutlineTune />
-                      </button>
-                      <AnimatePresence initial={false}>
-                        {showSearchOptions && (
-                          <motion.div
-                            key="content"
-                            initial="collapsed"
-                            animate="open"
-                            exit="collapsed"
-                            variants={{
-                              collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                              open: { opacity: 1, transition: { duration: 0.25 } },
-                            }}
-                          >
-                            <SearchSettings
-                              queryParams={searchQueryParams}
-                              handleSearchChange={handleSemanticSearchChange}
-                              setShowOptions={setShowSearchOptions}
-                            />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </div>
-
                   {selectedConcepts.length === 0 && !initialQueryTerm && (
                     <ConceptsPanel
                       rootConcepts={rootConcepts}
@@ -301,30 +237,60 @@ export const ConceptsDocumentViewer = ({
                   </div>
                 ) : (
                   <>
-                    {state.totalNoOfMatches > 0 && (
+                    {initialQueryTerm !== "" && state.totalNoOfMatches > 0 && (
                       <>
-                        <div className="border-gray-200 my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
-                          <div className="mb-2">
-                            Displaying {renderPassageCount(state.totalNoOfMatches)}{" "}
-                            {initialQueryTerm && (
-                              <>
-                                for "<span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
-                              </>
-                            )}
-                            {initialQueryTerm && !searchQuery.exact_match && ` and related phrases`}
-                            {selectedConcepts.length > 0 && (
-                              <>
-                                {" in "}
-                                <b>{selectedConcepts.map((concept) => concept.preferred_label).join(", ")}</b>
-                              </>
-                            )}
-                            {state.totalNoOfMatches >= MAX_RESULTS && (
-                              <span className="ml-1 inline-block">
-                                <SearchLimitTooltip colour="grey" />
-                              </span>
-                            )}
+                        <div className="flex items-start pb-4 md:pl-4 border-b border-gray-200 text-sm" data-cy="document-matches-description">
+                          <div className="flex-1">
+                            <div className="mb-2">
+                              Displaying {renderPassageCount(state.totalNoOfMatches)}{" "}
+                              {initialQueryTerm && (
+                                <>
+                                  for "<span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
+                                </>
+                              )}
+                              {initialQueryTerm && !searchQuery.exact_match && ` and related phrases`}
+                              {selectedConcepts.length > 0 && (
+                                <>
+                                  {" in "}
+                                  <b>{selectedConcepts.map((concept) => concept.preferred_label).join(", ")}</b>
+                                </>
+                              )}
+                              {state.totalNoOfMatches >= MAX_RESULTS && (
+                                <span className="ml-1 inline-block">
+                                  <SearchLimitTooltip colour="grey" />
+                                </span>
+                              )}
+                            </div>
+                            <p>Sorted by search relevance</p>
                           </div>
-                          <p>Sorted by search relevance</p>
+                          <div className="relative z-10 flex justify-center">
+                            <button
+                              className="px-4 flex justify-center items-center text-textDark text-xl"
+                              onClick={() => setShowSearchOptions(!showSearchOptions)}
+                            >
+                              <MdOutlineTune />
+                            </button>
+                            <AnimatePresence initial={false}>
+                              {showSearchOptions && (
+                                <motion.div
+                                  key="content"
+                                  initial="collapsed"
+                                  animate="open"
+                                  exit="collapsed"
+                                  variants={{
+                                    collapsed: { opacity: 0, transition: { duration: 0.1 } },
+                                    open: { opacity: 1, transition: { duration: 0.25 } },
+                                  }}
+                                >
+                                  <SearchSettings
+                                    queryParams={searchQueryParams}
+                                    handleSearchChange={handleSemanticSearchChange}
+                                    setShowOptions={setShowSearchOptions}
+                                  />
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
                         </div>
                         <div
                           id="document-passage-matches"
@@ -339,7 +305,7 @@ export const ConceptsDocumentViewer = ({
                       </>
                     )}
 
-                    {state.totalNoOfMatches === 0 && (
+                    {(initialQueryTerm === "" || state.totalNoOfMatches === 0) && (
                       <EmptyPassages
                         hasQueryString={
                           !!searchQueryParams[QUERY_PARAMS.query_string] &&
