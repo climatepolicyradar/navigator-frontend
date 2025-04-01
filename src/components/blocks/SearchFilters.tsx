@@ -157,7 +157,7 @@ const SearchFilters = ({
       {conceptsData && (
         <>
           <button
-            className={`flex items-center justify-between cursor-pointer group`}
+            className="items-center justify-between cursor-pointer group hidden md:flex"
             onClick={() => setCurrentSlideOut(currentSlideOut === "concepts" ? "" : "concepts")}
             data-cy="accordian-control"
           >
