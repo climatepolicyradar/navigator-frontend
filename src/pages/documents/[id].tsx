@@ -34,6 +34,7 @@ type TProps = {
   family: TFamilyPage;
   theme: TTheme;
   vespaFamilyData?: TSearchResponse;
+  vespaDocumentData?: TSearchResponse;
 };
 
 const passageClasses = (docType: string) => {
@@ -66,7 +67,13 @@ const renderPassageCount = (count: number): string => {
   - If the document is an HTML, the passages will be displayed in a list on the left side of the page but the document will not be displayed.
 */
 
-const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ document, family, theme, vespaFamilyData }: TProps) => {
+const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
+  document,
+  family,
+  theme,
+  vespaFamilyData,
+  vespaDocumentData,
+}: TProps) => {
   const [canPreview, setCanPreview] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [passageIndex, setPassageIndex] = useState(null);
@@ -217,7 +224,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
         />
 
         {/* TODO: Remove this once we have hard launched concepts in product. */}
-        {vespaFamilyData === null && (
+        {vespaFamilyData === null && vespaDocumentData === null && (
           <section className="flex-1 flex" id="document-viewer">
             <FullWidth extraClasses="flex-1">
               <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
@@ -308,13 +315,15 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ 
           </section>
         )}
 
-        {vespaFamilyData !== null && (
+        {vespaFamilyData !== null && vespaDocumentData !== null && (
           <ConceptsDocumentViewer
             initialQueryTerm={qsSearchString}
             initialExactMatch={exactMatchQuery}
             initialPassage={startingPassage}
             initialConceptFilters={conceptFilters}
             vespaFamilyData={vespaFamilyData}
+            vespaDocumentData={vespaDocumentData}
+            familySlug={family.slug}
             document={document}
             onExactMatchChange={handleExactMatchChange}
             onConceptClick={handleConceptClick}
@@ -338,6 +347,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let documentData: TDocumentPage;
   let familyData: TFamilyPage;
   let vespaFamilyData: TSearchResponse | null = null;
+  let vespaDocumentData: TSearchResponse | null = null;
 
   try {
     const { data: returnedDocumentData } = await client.get(`/documents/${id}`);
@@ -349,7 +359,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // Fetch Vespa family data for concepts (similar to document/[id].tsx)
     const conceptsV1 = featureFlags["concepts-v1"];
     if (conceptsV1) {
-      const { data: vespaFamilyDataResponse } = await client.get(`/document/${documentData.import_id}`);
+      const { data: vespaDocumentDataResponse } = await client.get(`/document/${documentData.import_id}`);
+      vespaDocumentData = vespaDocumentDataResponse;
+      const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
       vespaFamilyData = vespaFamilyDataResponse;
     }
   } catch {
@@ -368,6 +380,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       family: familyData,
       theme: theme,
       vespaFamilyData: vespaFamilyData ?? null,
+      vespaDocumentData: vespaDocumentData ?? null,
     },
   };
 };
