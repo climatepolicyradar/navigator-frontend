@@ -23,7 +23,7 @@
   [type="text"],
   [type="search"],
   [type="number"] {
-    @apply text-textDark p-2 bg-input leading-[1.4] w-full;
+    @apply text-text-primary p-2 bg-surface-ui border-surface-ui leading-[1.4] w-full;
 
     &.extra-content-left {
       @apply pl-8;
