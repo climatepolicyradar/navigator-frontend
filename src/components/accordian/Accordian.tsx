@@ -29,7 +29,7 @@ export const Accordian = ({
 
   return (
     <div {...props}>
-      <div className={`flex justify-between cursor-pointer group`} onClick={() => setIsOpen(!isOpen)} data-cy="accordian-control">
+      <div className={`flex items-center justify-between cursor-pointer group`} onClick={() => setIsOpen(!isOpen)} data-cy="accordian-control">
         <div className="flex items-center gap-2">
           <Heading>{title}</Heading>
           {headContent}
