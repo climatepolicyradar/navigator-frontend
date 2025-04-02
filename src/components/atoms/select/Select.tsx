@@ -22,7 +22,7 @@ export function Select({ defaultValue, value, options, onValueChange, container 
 
   return (
     <BaseSelect.Root defaultValue={defaultValue} onValueChange={handleValueChange} value={value}>
-      <BaseSelect.Trigger className="flex items-center justify-between gap-2 p-2 border border-surface-ui bg-surface-ui b-1 rounded-sm text-sm m-0 outline-0 select-none cursor-default hover:border-inputSelected active:bg-surface-ui data-popup-open:bg-surface-ui focus:border-inputSelected">
+      <BaseSelect.Trigger className="flex items-center justify-between gap-2 p-2 border border-border-light bg-surface-ui b-1 rounded-sm text-sm m-0 outline-0 select-none cursor-default hover:border-inputSelected active:bg-surface-ui data-popup-open:bg-surface-ui focus:border-inputSelected">
         <BaseSelect.Value placeholder="" />
         <BaseSelect.Icon className="flex">
           <LuChevronsUpDown height="12" width="12" />
