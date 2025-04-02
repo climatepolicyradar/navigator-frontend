@@ -365,7 +365,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
             </div>
           </SubNav>
           {/* MOBILE ONLY */}
-          <SiteWidth extraClasses="pt-4 md:hidden">
+          {/* <SiteWidth extraClasses="pt-4 md:hidden">
             <div className="flex justify-between gap-2 items-center">
               <Button content="both" className="flex-nowrap md:hidden" onClick={toggleFilters}>
                 <span>{showFilters ? "Hide" : "Show"} filters</span>
@@ -421,10 +421,14 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
             <div className="mt-4 text-xs" data-cy="number-of-results">
               {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
             </div>
-          </SiteWidth>
+          </SiteWidth> */}
           {/* END MOBILE ONLY */}
           <MultiCol id="search">
-            <SideCol extraClasses="hidden md:block relative">
+            <SideCol
+              extraClasses={`absolute z-1 top-0 w-screen h-full bg-white md:relative ${
+                showFilters ? "translate-x-0" : "translate-x-[-100%]"
+              } md:translate-x-0`}
+            >
               {configQuery.isFetching ? (
                 <Loader size="20px" />
               ) : (
@@ -460,12 +464,17 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               <SingleCol extraClasses="px-5 pt-5 relative">
                 <div>
                   {/* NON MOBILE SEARCH */}
-                  <div className="hidden md:block">
-                    <div className="flex gap-3 items-center">
-                      <div className="flex-1 text-xs" data-cy="number-of-results">
-                        {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
+                  <div className="">
+                    <div className="flex justify-between flex-wrap gap-2 items-center">
+                      <div className="md:hidden">
+                        <Button content="both" className="flex-nowrap" onClick={toggleFilters}>
+                          <span>{showFilters ? "Hide" : "Show"} filters</span>
+                          <div className={showFilters ? "rotate-180" : ""}>
+                            <Icon name="downChevron" />
+                          </div>
+                        </Button>
                       </div>
-                      <div className="relative z-10">
+                      <div className="relative z-10 md:order-1">
                         <button
                           className={`p-4 text-textDark text-xl ${showOptions ? "bg-nearBlack text-white rounded-full" : ""}`}
                           onClick={() => setShowOptions(!showOptions)}
@@ -487,6 +496,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                             </motion.div>
                           )}
                         </AnimatePresence>
+                      </div>
+                      <div className="text-xs basis-full md:basis-auto md:order-0" data-cy="number-of-results">
+                        {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
                       </div>
                     </div>
                   </div>
