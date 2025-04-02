@@ -2,10 +2,15 @@ import { RefObject } from "react";
 import { Select as BaseSelect } from "@base-ui-components/react";
 import { LuChevronsUpDown } from "react-icons/lu";
 
+type TSelectOption = {
+  label: string;
+  value: string;
+};
+
 interface SelectProps {
   defaultValue?: string;
   value?: string;
-  options?: string[];
+  options?: TSelectOption[];
   onValueChange?: (value: string) => void;
   container?: HTMLElement | RefObject<HTMLElement> | null;
 }
@@ -35,11 +40,11 @@ export function Select({ defaultValue, value, options, onValueChange, container 
               options.length > 0 &&
               options.map((option) => (
                 <BaseSelect.Item
-                  key={option}
-                  value={option}
+                  key={option.value}
+                  value={option.value}
                   className="text-text-primary bg-white-ui p-2 rounded-sm cursor-default data-highlighted:bg-surface-mono data-highlighted:text-white data-highlighted:outline-inputSelected"
                 >
-                  <BaseSelect.ItemText className="">{option}</BaseSelect.ItemText>
+                  <BaseSelect.ItemText className="">{option.label}</BaseSelect.ItemText>
                 </BaseSelect.Item>
               ))}
           </BaseSelect.Popup>

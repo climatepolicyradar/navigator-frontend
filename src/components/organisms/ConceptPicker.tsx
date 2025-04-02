@@ -17,9 +17,9 @@ type TProps = {
   startingSort?: TSort;
 };
 
-type TSort = "A-Z" | "Grouped";
+const SORT_OPTIONS = ["A-Z", "Grouped"] as const;
 
-const SORT_OPTIONS: TSort[] = ["A-Z", "Grouped"];
+type TSort = (typeof SORT_OPTIONS)[number];
 
 const isSelected = (queryValue: string | string[] | undefined, option: string) => {
   if (!queryValue) {
@@ -94,6 +94,11 @@ export const ConceptPicker = ({ concepts, startingSort = "A-Z" }: TProps) => {
   const [conceptsGrouped, setConceptsGrouped] = useState<{ [rootConceptId: string]: TConcept[] }>({});
   const [filteredConcepts, setFilteredConcepts] = useState<TConcept[]>([]);
 
+  const selectOptions = SORT_OPTIONS.map((option) => ({
+    value: option,
+    label: option,
+  }));
+
   useEffect(() => {
     const conceptIds = concepts.map((concept) => concept.wikibase_id);
     fetchAndProcessConcepts(conceptIds).then(({ rootConcepts, concepts }) => {
@@ -111,7 +116,13 @@ export const ConceptPicker = ({ concepts, startingSort = "A-Z" }: TProps) => {
           <Label>Beta</Label>
         </div>
         <div className="basis-1/3">
-          <Select defaultValue="A-Z" value={sort} onValueChange={(value) => setSort(value as TSort)} options={SORT_OPTIONS} container={ref.current} />
+          <Select
+            defaultValue="A-Z"
+            value={sort}
+            onValueChange={(value) => setSort(value as TSort)}
+            options={selectOptions}
+            container={ref.current}
+          />
         </div>
       </div>
       {/* SCROLL AREA */}
