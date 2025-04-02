@@ -1,5 +1,6 @@
-import { Icon } from "./atoms/icon/Icon";
 import { ToolTipSSR } from "@/components/tooltip/TooltipSSR";
+
+import { Icon } from "./atoms/icon/Icon";
 
 type TProps = {
   onClick?: () => void;

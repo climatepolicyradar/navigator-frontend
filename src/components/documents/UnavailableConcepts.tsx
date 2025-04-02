@@ -1,5 +1,6 @@
-import { Icon } from "@/components/atoms/icon/Icon";
 import Link from "next/link";
+
+import { Icon } from "@/components/atoms/icon/Icon";
 
 type TProps = {
   unavailableConcepts: string[];

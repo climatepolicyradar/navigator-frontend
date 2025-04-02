@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { getFilters } from "../api/http-common";
-
 import { TThemeConfig } from "@/types";
+
+import { getFilters } from "../api/http-common";
 
 export default function useGetThemeConfig() {
   const [status, setStatus] = useState("idle");

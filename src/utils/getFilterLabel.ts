@@ -1,6 +1,6 @@
-import { containsAny } from "./containsAny";
-
 import { TThemeConfig } from "@/types";
+
+import { containsAny } from "./containsAny";
 
 export const getFilterLabel = (fallbackLabel: string, key: string, queryCategories: string | string[], themeConfig: TThemeConfig) => {
   if (!themeConfig || !themeConfig.labelVariations) {

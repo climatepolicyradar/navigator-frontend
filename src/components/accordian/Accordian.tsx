@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 
 import { Heading } from "./Heading";
-
-import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 
 type TProps = {
   title: string;
