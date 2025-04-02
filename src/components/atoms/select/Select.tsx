@@ -1,3 +1,4 @@
+import { RefObject } from "react";
 import { Select as BaseSelect } from "@base-ui-components/react";
 import { LuChevronsUpDown } from "react-icons/lu";
 
@@ -6,9 +7,10 @@ interface SelectProps {
   value?: string;
   options?: string[];
   onValueChange?: (value: string) => void;
+  container?: HTMLElement | RefObject<HTMLElement> | null;
 }
 
-export function Select({ defaultValue, value, options, onValueChange }: SelectProps) {
+export function Select({ defaultValue, value, options, onValueChange, container = null }: SelectProps) {
   const handleValueChange = (value: string) => {
     if (onValueChange) {
       onValueChange(value);
@@ -23,7 +25,7 @@ export function Select({ defaultValue, value, options, onValueChange }: SelectPr
           <LuChevronsUpDown height="12" width="12" />
         </BaseSelect.Icon>
       </BaseSelect.Trigger>
-      <BaseSelect.Portal>
+      <BaseSelect.Portal container={container}>
         <BaseSelect.Positioner className="z-50 text-sm min-w-[calc(var(--anchor-width)+4px)]">
           <BaseSelect.ScrollUpArrow className="" />
           <BaseSelect.Popup
