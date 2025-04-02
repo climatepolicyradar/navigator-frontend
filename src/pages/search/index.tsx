@@ -39,7 +39,7 @@ import { getFeatureFlags } from "@/utils/featureFlags";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
-import { SlideOutContext } from "@/context/SlideOutContext";
+import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 
 import { TConcept, TTheme, TThemeConfig } from "@/types";
 
@@ -64,7 +64,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
   const settingsButtonRef = useRef(null);
 
-  const [currentSlideOut, setCurrentSlideOut] = useState("");
+  const [currentSlideOut, setCurrentSlideOut] = useState<TSlideOutContent>("");
 
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
@@ -366,10 +366,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
           </SubNav>
           {/* MOBILE ONLY */}
           <SiteWidth extraClasses="pt-4 md:hidden">
-            <div className="flex gap-3 items-center">
-              <div className="flex-1 text-xs" data-cy="number-of-results">
-                {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
-              </div>
+            <div className="flex justify-between gap-2 items-center">
               <Button content="both" className="flex-nowrap md:hidden" onClick={toggleFilters}>
                 <span>{showFilters ? "Hide" : "Show"} filters</span>
                 <div className={showFilters ? "rotate-180" : ""}>
@@ -421,6 +418,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 </>
               )}
             </div>
+            <div className="mt-4 text-xs" data-cy="number-of-results">
+              {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
+            </div>
           </SiteWidth>
           {/* END MOBILE ONLY */}
           <MultiCol id="search">
@@ -445,7 +445,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                         handleDocumentCategoryClick={handleDocumentCategoryClick}
                       />
                     </div>
-                    <SlideOut>
+                    <SlideOut showCloseButton={false}>
                       <ConceptPicker concepts={conceptsData} />
                     </SlideOut>
                   </div>

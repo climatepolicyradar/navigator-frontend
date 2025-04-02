@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NextRouter, useRouter } from "next/router";
 
 import { Label } from "@/components/labels/Label";
@@ -17,9 +17,9 @@ type TProps = {
   startingSort?: TSort;
 };
 
-type TSort = "A-Z" | "Grouped";
+const SORT_OPTIONS = ["A-Z", "Grouped"] as const;
 
-const SORT_OPTIONS: TSort[] = ["A-Z", "Grouped"];
+type TSort = (typeof SORT_OPTIONS)[number];
 
 const isSelected = (queryValue: string | string[] | undefined, option: string) => {
   if (!queryValue) {
@@ -51,20 +51,12 @@ const filterConcepts = (concepts: TConcept[], search: string) => {
 
 const onConceptChange = (router: NextRouter, concept: TConcept) => {
   const query = { ...router.query };
-  let selectedConcepts: string | string[] = query[QUERY_PARAMS.concept_name] || [];
+  let selectedConcepts = query[QUERY_PARAMS.concept_name] ? [query[QUERY_PARAMS.concept_name]].flat() : [];
 
-  if (Array.isArray(selectedConcepts)) {
-    if (selectedConcepts.includes(concept.preferred_label)) {
-      selectedConcepts = selectedConcepts.filter((c) => c !== concept.preferred_label);
-    } else {
-      selectedConcepts = [...selectedConcepts, concept.preferred_label];
-    }
+  if (selectedConcepts.includes(concept.preferred_label)) {
+    selectedConcepts = selectedConcepts.filter((c) => c !== concept.preferred_label);
   } else {
-    if (selectedConcepts === concept.preferred_label) {
-      selectedConcepts = [];
-    } else {
-      selectedConcepts = [selectedConcepts, concept.preferred_label];
-    }
+    selectedConcepts = [...selectedConcepts, concept.preferred_label];
   }
 
   query[QUERY_PARAMS.concept_name] = selectedConcepts;
@@ -87,11 +79,17 @@ const getSelectedConcepts = (concepts: TConcept[], router: NextRouter) => {
 
 export const ConceptPicker = ({ concepts, startingSort = "A-Z" }: TProps) => {
   const router = useRouter();
+  const ref = useRef(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<TSort>(startingSort);
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
   const [conceptsGrouped, setConceptsGrouped] = useState<{ [rootConceptId: string]: TConcept[] }>({});
   const [filteredConcepts, setFilteredConcepts] = useState<TConcept[]>([]);
+
+  const selectOptions = SORT_OPTIONS.map((option) => ({
+    value: option,
+    label: option,
+  }));
 
   useEffect(() => {
     const conceptIds = concepts.map((concept) => concept.wikibase_id);
@@ -103,20 +101,25 @@ export const ConceptPicker = ({ concepts, startingSort = "A-Z" }: TProps) => {
   }, [concepts]);
 
   return (
-    <div className="relative flex flex-col gap-5 max-h-full pb-5">
-      <div className="flex items-center gap-2">
-        <div className="text-[15px] font-medium text-text-primary">Concepts</div>
-        <Label>Beta</Label>
+    <div className="relative flex flex-col gap-5 max-h-full pb-5" ref={ref}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="text-[15px] font-medium text-text-primary">Concepts</div>
+          <Label>Beta</Label>
+        </div>
+        <div className="basis-1/3">
+          <Select
+            defaultValue="A-Z"
+            value={sort}
+            onValueChange={(value) => setSort(value as TSort)}
+            options={selectOptions}
+            container={ref.current}
+          />
+        </div>
       </div>
       {/* SCROLL AREA */}
       <div className="flex-1 flex flex-col gap-5 overflow-y-scroll scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
         <input type="text" placeholder="Quick search" value={search} onChange={(e) => setSearch(e.target.value)} />
-        <div className="flex justify-between items-center">
-          <span className="text-text-primary text-sm">Placeholder</span>
-          <div className="basis-1/3">
-            <Select defaultValue="A-Z" value={sort} onValueChange={(value) => setSort(value as TSort)} options={SORT_OPTIONS} />
-          </div>
-        </div>
         <div className="flex flex-col gap-2 text-sm">
           {/* GROUPED SORT */}
           {sort === "Grouped" &&
