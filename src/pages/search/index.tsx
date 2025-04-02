@@ -445,7 +445,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                         handleDocumentCategoryClick={handleDocumentCategoryClick}
                       />
                     </div>
-                    <SlideOut>
+                    <SlideOut showCloseButton={false}>
                       <ConceptPicker concepts={conceptsData} />
                     </SlideOut>
                   </div>

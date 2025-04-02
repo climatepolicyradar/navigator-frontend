@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NextRouter, useRouter } from "next/router";
 
 import { Label } from "@/components/labels/Label";
@@ -87,6 +87,7 @@ const getSelectedConcepts = (concepts: TConcept[], router: NextRouter) => {
 
 export const ConceptPicker = ({ concepts, startingSort = "A-Z" }: TProps) => {
   const router = useRouter();
+  const ref = useRef(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<TSort>(startingSort);
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
@@ -103,20 +104,19 @@ export const ConceptPicker = ({ concepts, startingSort = "A-Z" }: TProps) => {
   }, [concepts]);
 
   return (
-    <div className="relative flex flex-col gap-5 max-h-full pb-5">
-      <div className="flex items-center gap-2">
-        <div className="text-[15px] font-medium text-text-primary">Concepts</div>
-        <Label>Beta</Label>
+    <div className="relative flex flex-col gap-5 max-h-full pb-5" ref={ref}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="text-[15px] font-medium text-text-primary">Concepts</div>
+          <Label>Beta</Label>
+        </div>
+        <div className="basis-1/3">
+          <Select defaultValue="A-Z" value={sort} onValueChange={(value) => setSort(value as TSort)} options={SORT_OPTIONS} container={ref.current} />
+        </div>
       </div>
       {/* SCROLL AREA */}
       <div className="flex-1 flex flex-col gap-5 overflow-y-scroll scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
         <input type="text" placeholder="Quick search" value={search} onChange={(e) => setSearch(e.target.value)} />
-        <div className="flex justify-between items-center">
-          <span className="text-text-primary text-sm">Placeholder</span>
-          <div className="basis-1/3">
-            <Select defaultValue="A-Z" value={sort} onValueChange={(value) => setSort(value as TSort)} options={SORT_OPTIONS} />
-          </div>
-        </div>
         <div className="flex flex-col gap-2 text-sm">
           {/* GROUPED SORT */}
           {sort === "Grouped" &&
