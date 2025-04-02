@@ -366,10 +366,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
           </SubNav>
           {/* MOBILE ONLY */}
           <SiteWidth extraClasses="pt-4 md:hidden">
-            <div className="flex gap-3 items-center">
-              <div className="flex-1 text-xs" data-cy="number-of-results">
-                {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
-              </div>
+            <div className="flex justify-between gap-2 items-center">
               <Button content="both" className="flex-nowrap md:hidden" onClick={toggleFilters}>
                 <span>{showFilters ? "Hide" : "Show"} filters</span>
                 <div className={showFilters ? "rotate-180" : ""}>
@@ -420,6 +417,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                   />
                 </>
               )}
+            </div>
+            <div className="mt-4 text-xs" data-cy="number-of-results">
+              {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
             </div>
           </SiteWidth>
           {/* END MOBILE ONLY */}
