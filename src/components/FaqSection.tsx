@@ -1,10 +1,9 @@
 import { Fragment } from "react";
 
-import { Accordian } from "@components/accordian/Accordian";
-import { SingleCol } from "@components/panels/SingleCol";
-import { Heading } from "@components/typography/Heading";
-
-import { VerticalSpacing } from "@components/utility/VerticalSpacing";
+import { Accordian } from "@/components/accordian/Accordian";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { Heading } from "@/components/typography/Heading";
+import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
 
 type TProps = {
   title: string;

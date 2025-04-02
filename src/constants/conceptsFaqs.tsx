@@ -1,5 +1,5 @@
-import { ExternalLink } from "@components/ExternalLink";
-import { Label } from "@components/labels/Label";
+import { ExternalLink } from "@/components/ExternalLink";
+import { Label } from "@/components/labels/Label";
 
 type TFAQ = {
   id?: string;

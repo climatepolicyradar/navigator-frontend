@@ -9,8 +9,8 @@ import { SubNav } from "@/components/nav/SubNav";
 import { Heading } from "@/components/typography/Heading";
 
 import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
+import FaqSection from "@/components/FaqSection";
 import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
-import FaqSection from "@/components/typography/FaqSection";
 import { FAQS, PLATFORMFAQS } from "@/mcf/constants/faqs";
 
 const ACCORDIANMAXHEIGHT = "464px";
