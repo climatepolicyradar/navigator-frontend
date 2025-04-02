@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
-import { MdOutlineTune } from "react-icons/md";
+import { LuSettings2 } from "react-icons/lu";
 
 import { ApiClient } from "@/api/http-common";
 
@@ -274,7 +274,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                         </div>
                         <div className="relative z-10 flex justify-center">
                           <button className="p-2 text-textDark text-xl" onClick={() => setShowOptions(!showOptions)}>
-                            <MdOutlineTune />
+                            <LuSettings2 />
                           </button>
                           <AnimatePresence initial={false}>
                             {showOptions && (

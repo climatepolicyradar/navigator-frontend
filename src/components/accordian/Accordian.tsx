@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { LuPlus, LuMinus } from "react-icons/lu";
 
 import { Heading } from "./Heading";
-
-import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 
 type TProps = {
   title: string;
@@ -35,9 +34,7 @@ export const Accordian = ({
           <Heading>{title}</Heading>
           {headContent}
         </div>
-        <span className={`text-textDark opacity-40 group-hover:opacity-100 ${isOpen ? "" : ""}`}>
-          {isOpen ? <AiOutlineMinus /> : <AiOutlinePlus />}
-        </span>
+        <span className="text-textDark opacity-40 group-hover:opacity-100">{isOpen ? <LuMinus /> : <LuPlus />}</span>
       </div>
       <AnimatePresence initial={false}>
         {isOpen && (
