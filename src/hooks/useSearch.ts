@@ -21,9 +21,7 @@ type TConfig = {
 
 const scrollToSearchTop = () => {
   const container = document.querySelector("#search");
-  if (container) {
-    container.scrollIntoView(true);
-  }
+  container?.scrollIntoView(true);
 };
 
 async function getSearch(query = initialSearchCriteria) {

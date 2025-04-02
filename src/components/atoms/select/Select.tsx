@@ -17,9 +17,7 @@ interface SelectProps {
 
 export function Select({ defaultValue, value, options, onValueChange, container = null }: SelectProps) {
   const handleValueChange = (value: string) => {
-    if (onValueChange) {
-      onValueChange(value);
-    }
+    onValueChange?.(value);
   };
 
   return (
@@ -36,8 +34,7 @@ export function Select({ defaultValue, value, options, onValueChange, container 
           <BaseSelect.Popup
             className={`rounded-sm p-1 bg-white outline-1 outline-gray-200 m-h-(--available-height) [data-side="none"]:opacity-1 data-starting-style:opacity-0 data-ending-style:opacity-0`}
           >
-            {options &&
-              options.length > 0 &&
+            {options?.length > 0 &&
               options.map((option) => (
                 <BaseSelect.Item
                   key={option.value}
