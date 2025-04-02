@@ -20,6 +20,7 @@ export default [
       "postcss.config.js",
       "**/*.js",
       ".storybook/*",
+      "vitest.config.mts",
     ],
   },
   {
