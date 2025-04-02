@@ -39,7 +39,7 @@ import { getFeatureFlags } from "@/utils/featureFlags";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
-import { SlideOutContext } from "@/context/SlideOutContext";
+import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 
 import { TConcept, TTheme, TThemeConfig } from "@/types";
 
@@ -64,7 +64,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
   const settingsButtonRef = useRef(null);
 
-  const [currentSlideOut, setCurrentSlideOut] = useState("");
+  const [currentSlideOut, setCurrentSlideOut] = useState<TSlideOutContent>("");
 
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
