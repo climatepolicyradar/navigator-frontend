@@ -6,7 +6,7 @@ import { InputCheck } from "@/components/forms/Checkbox";
 import { Select } from "@/components/atoms/select/Select";
 
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
-import { groupByRootConcept } from "@/utils/conceptsGroupedByRootConcept";
+import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 

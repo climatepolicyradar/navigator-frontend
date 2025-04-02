@@ -1,4 +1,4 @@
-import { groupByRootConcept } from "@/utils/conceptsGroupedByRootConcept";
+import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 
 const ROOT_CONCEPTS = [
   {
