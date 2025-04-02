@@ -8,5 +8,10 @@
     "title": "Ocean Energy Pathway",
     "path": "offshorewind",
     "contentPath": "oep"
+  },
+  {
+    "title": "FAQ",
+    "path": "faq",
+    "contentPath": "faq"
   }
 ]

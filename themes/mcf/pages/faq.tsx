@@ -8,8 +8,10 @@ import { SingleCol } from "@/components/panels/SingleCol";
 import { SubNav } from "@/components/nav/SubNav";
 import { Heading } from "@/components/typography/Heading";
 
-import { FAQS, PLATFORMFAQS } from "@/mcf/constants/faqs";
+import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
+import FaqSection from "@/components/FaqSection";
 import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
+import { FAQS, PLATFORMFAQS } from "@/mcf/constants/faqs";
 
 const ACCORDIANMAXHEIGHT = "464px";
 
@@ -56,6 +58,8 @@ const FAQ = () => {
               ))}
             </div>
           </SingleCol>
+
+          <FaqSection title="Concepts FAQs" faqs={CONCEPTS_FAQS} />
         </SiteWidth>
       </section>
     </Layout>
