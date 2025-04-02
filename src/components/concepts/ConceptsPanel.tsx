@@ -6,7 +6,7 @@ import { ConceptsHead } from "./ConceptsHead";
 import { ConceptsPopover } from "@/components/popover/ConceptsPopover";
 import { Button } from "@/components/atoms/button/Button";
 
-import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
+import { groupByRootConcept } from "@/utils/conceptsGroupedByRootConcept";
 
 import { TConcept } from "@/types";
 
