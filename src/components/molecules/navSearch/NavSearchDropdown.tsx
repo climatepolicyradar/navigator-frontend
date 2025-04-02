@@ -49,34 +49,38 @@ export const NavSearchDropdown = ({ contextualSearchName, isEverything, setIsEve
     },
   ];
   if (!isEverything) dropdownOptions.reverse();
-  const [firstOption, secondOption] = dropdownOptions;
 
   const handleClick = (newValue: boolean) => {
     setIsOpen((current) => !current);
     if (isOpen) setIsEverything(newValue);
   };
 
-  const optionClasses = "h-full w-full flex items-center justify-between gap-2 pl-3 pr-3 bg-surface-ui text-sm leading-4 text-nowrap cursor-pointer";
-
   return (
-    <div ref={ref} className="border-l border-l-border-light">
-      <button
-        type="button"
-        onClick={() => handleClick(firstOption.newIsEverythingValue)}
-        className={`${optionClasses} ${isOpen ? "rounded-tr-md" : "rounded-r-md"}`}
+    <div className="h-[40px] overflow-visible">
+      <div
+        ref={ref}
+        className={`flex flex-col bg-surface-light -outline-offset-1 outline-border-lighter rounded-md ${isOpen ? "p-1 gap-0.5 outline" : ""}`}
       >
-        {firstOption.name}
-        <div className={isOpen ? "invisible" : ""}>
-          <LuChevronsUpDown height="12" width="12" />
-        </div>
-      </button>
-      <button
-        type="button"
-        onClick={() => handleClick(secondOption.newIsEverythingValue)}
-        className={`${optionClasses} ${isOpen ? "" : "invisible"} rounded-b-md`}
-      >
-        {secondOption.name}
-      </button>
+        {dropdownOptions.map((option, optionIndex) => (
+          <button
+            key={option.name}
+            type="button"
+            onClick={() => handleClick(option.newIsEverythingValue)}
+            className={`w-full flex items-center justify-between gap-2 text-sm leading-4 font-medium text-nowrap cursor-pointer
+          ${
+            isOpen
+              ? "h-[32px] px-2 hocus:bg-surface-mono-dark rounded-xs text-text-primary hocus:text-text-light focus:outline-0"
+              : "h-[40px] px-3 bg-surface-ui rounded-md hover:text-text-primary"
+          }
+          ${optionIndex > 0 && !isOpen ? "!h-0 overflow-hidden" : ""}`}
+          >
+            {option.name}
+            <div className={isOpen ? "invisible" : ""}>
+              <LuChevronsUpDown height="12" width="12" />
+            </div>
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

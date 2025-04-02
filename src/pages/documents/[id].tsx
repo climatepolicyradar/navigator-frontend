@@ -132,21 +132,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   };
 
   // Handlers to update router
-  const handleQueryTermChange = useCallback(
-    (queryTerm: string) => {
-      const queryObj = { ...router.query };
-      queryObj[QUERY_PARAMS.query_string] = queryTerm;
-      router.push(
-        {
-          pathname: `/documents/${document.slug}`,
-          query: queryObj,
-        },
-        undefined,
-        { shallow: true }
-      );
-    },
-    [router, document.slug]
-  );
 
   const handleExactMatchChange = useCallback(
     (isExact: boolean) => {
@@ -221,17 +206,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     },
     [router, document.slug, conceptFilters]
   );
-
-  const handleClearSearch = useCallback(() => {
-    router.push(
-      {
-        pathname: `/documents/${document.slug}`,
-        query: {},
-      },
-      undefined,
-      { shallow: true }
-    );
-  }, [router, document.slug]);
 
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
@@ -351,10 +325,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             vespaDocumentData={vespaDocumentData}
             familySlug={family.slug}
             document={document}
-            onQueryTermChange={handleQueryTermChange}
             onExactMatchChange={handleExactMatchChange}
             onConceptClick={handleConceptClick}
-            onClear={handleClearSearch}
           />
         )}
       </section>

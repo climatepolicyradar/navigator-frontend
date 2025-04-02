@@ -16,7 +16,7 @@ export const CCLWLogo = (
 const Header = () => {
   const router = useRouter();
 
-  const showBackground = router.pathname === "/";
+  const showBackground = router.pathname !== "/";
   const showLogo = router.pathname !== "/";
   const showSearch = router.pathname !== "/";
 
