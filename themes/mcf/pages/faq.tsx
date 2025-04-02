@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 
+import FaqSection from "@/components/FaqSection";
 import { Accordian } from "@/components/accordian/Accordian";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
@@ -7,13 +8,11 @@ import { SiteWidth } from "@/components/panels/SiteWidth";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SubNav } from "@/components/nav/SubNav";
 import { Heading } from "@/components/typography/Heading";
-
-import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
-import FaqSection from "@/components/FaqSection";
 import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
+import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
 import { FAQS, PLATFORMFAQS } from "@/mcf/constants/faqs";
 
-const ACCORDIANMAXHEIGHT = "464px";
+const ACCORDIAN_MAX_HEIGHT = "464px";
 
 const FAQ = () => {
   return (
@@ -34,7 +33,7 @@ const FAQ = () => {
             <div className="text-content mb-14">
               {FAQS.map((faq, i) => (
                 <Fragment key={faq.title}>
-                  <Accordian title={faq.title} startOpen={i === 0} fixedHeight={ACCORDIANMAXHEIGHT}>
+                  <Accordian title={faq.title} startOpen={i === 0} fixedHeight={ACCORDIAN_MAX_HEIGHT}>
                     {faq.content}
                   </Accordian>
                   <hr />
@@ -42,6 +41,7 @@ const FAQ = () => {
               ))}
             </div>
           </SingleCol>
+
           <SingleCol>
             <Heading level={1} extraClasses="custom-header">
               Platform FAQs
@@ -50,7 +50,7 @@ const FAQ = () => {
             <div className="text-content mb-14">
               {PLATFORMFAQS.map((faq, i) => (
                 <Fragment key={faq.title}>
-                  <Accordian title={faq.title} startOpen={i === 0} fixedHeight={ACCORDIANMAXHEIGHT}>
+                  <Accordian title={faq.title} startOpen={i === 0} fixedHeight={ACCORDIAN_MAX_HEIGHT}>
                     {faq.content}
                   </Accordian>
                   <hr />
