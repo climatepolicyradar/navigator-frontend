@@ -34,7 +34,7 @@ export const Accordian = ({
           <Heading>{title}</Heading>
           {headContent}
         </div>
-        <span className={`text-textDark opacity-40 group-hover:opacity-100 ${isOpen ? "" : ""}`}>{isOpen ? <LuMinus /> : <LuPlus />}</span>
+        <span className="text-textDark opacity-40 group-hover:opacity-100">{isOpen ? <LuMinus /> : <LuPlus />}</span>
       </div>
       <AnimatePresence initial={false}>
         {isOpen && (
