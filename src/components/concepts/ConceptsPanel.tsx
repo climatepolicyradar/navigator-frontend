@@ -53,7 +53,7 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
 
   return (
     <div className="pb-4">
-      <div className="mt-4 grow-0 shrink-0">
+      <div className="grow-0 shrink-0">
         <ConceptsHead></ConceptsHead>
       </div>
 

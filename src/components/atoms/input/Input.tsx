@@ -53,13 +53,13 @@ export const Input = ({
     }
 
     return {
-      button: joinTailwindClasses([iconPadding]),
+      button: joinTailwindClasses(["shrink-0 text-icon-standard", iconPadding]),
       container: joinTailwindClasses([
         "w-full px-2 flex flex-row justify-around items-center bg-surface-ui rounded-md focus-within:outline",
         outlineColor,
         containerClasses,
       ]),
-      icon: joinTailwindClasses([iconPadding]),
+      icon: joinTailwindClasses(["shrink-0", iconPadding]),
       input: joinTailwindClasses([
         "w-full block bg-transparent border-none focus:shadow-[none] leading-none font-medium text-text-primary placeholder:text-text-tertiary caret-text-brand",
         inputPadding,
@@ -89,7 +89,7 @@ export const Input = ({
       {iconOnLeft && iconNode}
       <BaseInput className={classes.input} value={value} {...props} />
       {clearable && (
-        <button type="button" className={`${classes.button} ${value ? "" : "invisible"}`} onClick={handleClear}>
+        <button type="button" className={`${classes.button} ${value ? "" : "hidden"}`} onClick={handleClear}>
           <Icon name="close" height="12" width="12" />
         </button>
       )}

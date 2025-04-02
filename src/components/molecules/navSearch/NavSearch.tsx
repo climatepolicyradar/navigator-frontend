@@ -1,9 +1,9 @@
 import { sortBy } from "lodash";
+import { Url } from "next/dist/shared/lib/router/router";
 import { useRouter } from "next/router";
-import { FormEventHandler, MouseEventHandler, useEffect, useMemo, useRef, useState } from "react";
+import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";
+import { LuArrowRight, LuCornerDownLeft, LuSearch } from "react-icons/lu";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { Icon } from "@/components/atoms/icon/Icon";
 import { Input } from "@/components/atoms/input/Input";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { systemGeoCodes } from "@/constants/systemGeos";
@@ -11,6 +11,7 @@ import useConfig from "@/hooks/useConfig";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 
 import { NavSearchDropdown } from "./NavSearchDropdown";
+import { NavSearchSuggestion } from "./NavSearchSuggestion";
 
 const pagesWithContextualSearch: string[] = ["/document/[id]", "/documents/[id]", "/geographies/[id]"];
 
@@ -36,12 +37,11 @@ export const NavSearch = () => {
   const ref = useRef(null);
   const router = useRouter();
   const queryString = [router.query[QUERY_PARAMS.query_string]].flat()[0];
-  const { pathname } = router;
   const configQuery = useConfig();
 
   const [searchText, setSearchText] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const pageHasContextualSearch = pagesWithContextualSearch.includes(pathname);
+  const pageHasContextualSearch = pagesWithContextualSearch.includes(router.pathname);
   const [searchEverything, setSearchEverything] = useState<boolean>(!pageHasContextualSearch);
   const showDropdown = pageHasContextualSearch;
   const showResults = isFocused && searchText;
@@ -63,7 +63,7 @@ export const NavSearch = () => {
   }, [ref]);
 
   const geographyResults = useMemo(() => {
-    if (searchText.length < 2) return [];
+    if (!searchEverything || searchText.length < 2) return [];
 
     const geographies = configQuery.data?.countries || [];
 
@@ -81,16 +81,17 @@ export const NavSearch = () => {
         "display_value",
       ]
     );
-  }, [searchText, configQuery]);
+  }, [searchEverything, searchText, configQuery]);
 
   let contextualSearchName = "This document";
-  if (pathname === "/geographies/[id]") contextualSearchName = "This geography";
+  if (router.pathname === "/geographies/[id]") contextualSearchName = "This geography";
 
-  const handleSearch = (searchQuery: string) => {
+  // The path to navigate to when submitting the search input
+  const searchHref: Url = useMemo(() => {
     const newQuery = CleanRouterQuery({ ...router.query });
 
-    if (searchQuery) {
-      newQuery[QUERY_PARAMS.query_string] = searchQuery;
+    if (searchText) {
+      newQuery[QUERY_PARAMS.query_string] = searchText;
     } else {
       delete newQuery[QUERY_PARAMS.query_string];
     }
@@ -98,7 +99,7 @@ export const NavSearch = () => {
     let newPathName = "/search";
 
     if (!searchEverything) {
-      switch (pathname) {
+      switch (router.pathname) {
         case "/document/[id]":
           newPathName = `/document/${router.query.id}`;
           break;
@@ -110,18 +111,17 @@ export const NavSearch = () => {
       }
     }
 
-    router.push({ pathname: newPathName, query: newQuery });
-    setIsFocused(false);
-  };
+    return { pathname: newPathName, query: newQuery };
+  }, [router, searchEverything, searchText]);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    handleSearch(searchText);
+    setIsFocused(false);
+    router.push(searchHref);
   };
 
-  const handleSearchButton: MouseEventHandler<HTMLButtonElement> = (event) => {
-    event.preventDefault();
-    handleSearch(searchText);
+  const handleSuggestionClick = () => {
+    setIsFocused(false);
   };
 
   const handleClear = () => {
@@ -134,24 +134,24 @@ export const NavSearch = () => {
 
   return (
     <div className="relative" ref={ref}>
-      <div className="p-4 relative z-20">
-        <form onSubmit={handleSubmit} className="flex flex-row">
+      <div className="p-2 relative z-20">
+        <form onSubmit={handleSubmit} className="flex flex-row gap-2">
           {/* Search field */}
           <Input
             autoComplete="off"
             clearable
-            containerClasses={`focus-within:!outline-0 ${showDropdown ? "rounded-r-none" : ""}`}
+            containerClasses={`h-[40px] focus-within:!outline-0`}
             icon={
-              <button type="submit" className="w-4 h-4 ml-2">
-                <Icon name="search" />
+              <button type="submit" className="w-4 h-4 ml-0.5 shrink-0">
+                <LuSearch height="16" width="16" />
               </button>
             }
             iconOnLeft
+            inputClasses="text-sm"
             onChange={(event) => setSearchText(event.target.value)}
             onClear={handleClear}
             onFocus={() => setIsFocused(true)}
             placeholder="Search"
-            size="large"
             value={searchText}
           />
 
@@ -163,25 +163,43 @@ export const NavSearch = () => {
       </div>
 
       {/* Results */}
-      {showResults && (
-        <div className="absolute top-0 left-0 right-0 border border-border-lighter rounded-xl bg-surface-light shadow-[0px_4px_48px_0px_rgba(0,0,0,0.08)] p-4 pt-16">
-          {/* Geographies */}
-          {geographyResults.length > 0 && (
-            <div className="my-6 flex flex-col gap-4">
-              <h3 className="text-text-brand text-sm font-medium select-none">Geographies</h3>
-              {geographyResults.map((geography) => (
-                <LinkWithQuery href={`/geographies/${geography.slug}`} key={geography.id} className="text-sm hover:underline">
-                  {withBoldMatch(geography.display_value, searchText)}
-                </LinkWithQuery>
-              ))}
+      {isFocused && (
+        <div className="absolute top-0 left-0 right-0 min-h-[56px] outline -outline-offset-1 outline-border-lighter rounded-xl bg-surface-light shadow-[0px_4px_48px_0px_rgba(0,0,0,0.08)]">
+          {showResults && (
+            <div className="flex flex-col gap-3 p-2 pt-[56px]">
+              {/* Geographies */}
+              {geographyResults.length > 0 && (
+                <div>
+                  <h3 className="px-2.5 py-1.5 mb-1 text-text-brand text-sm font-medium select-none">Geographies</h3>
+                  {geographyResults.map((geography) => (
+                    <NavSearchSuggestion
+                      key={geography.id}
+                      href={`/geographies/${geography.slug}`}
+                      Icon={
+                        <LuArrowRight height="16" width="16" className="opacity-0 group-hover:opacity-100 text-text-brand transition duration-200" />
+                      }
+                      onClick={handleSuggestionClick}
+                    >
+                      {withBoldMatch(geography.display_value, searchText)}
+                    </NavSearchSuggestion>
+                  ))}
+                </div>
+              )}
+              {/* Search */}
+              <NavSearchSuggestion
+                href={searchHref}
+                Icon={<LuSearch height="16" width="16" />}
+                hint={
+                  <div className="text-xs text-text-tertiary font-[440]">
+                    Press <LuCornerDownLeft height="12" width="12" className="inline group-hover:text-text-brand transition duration-200" /> ENTER
+                  </div>
+                }
+                onClick={handleSuggestionClick}
+              >
+                All results for <span className="font-bold">&#8216;{searchText}&#8217;</span>
+              </NavSearchSuggestion>
             </div>
           )}
-          {/* Search */}
-          <div className="pt-4 pb-2 not-first:border-t border-border-lighter">
-            <button type="button" onClick={handleSearchButton} className="w-full text-sm text-left hover:underline">
-              Search for <span className="font-bold">{searchText}</span>
-            </button>
-          </div>
         </div>
       )}
     </div>

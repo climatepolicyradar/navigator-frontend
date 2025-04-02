@@ -31,12 +31,9 @@ type TProps = {
   vespaDocumentData: TSearchResponse;
   document: TDocumentPage;
   familySlug: string;
-
   // Callback props for state changes
-  onQueryTermChange?: (queryTerm: string) => void;
   onExactMatchChange?: (isExact: boolean) => void;
   onConceptClick?: (conceptLabel: string) => void;
-  onClear?: () => void;
 };
 
 const passageClasses = (docType: string) => {
@@ -59,20 +56,26 @@ export const ConceptsDocumentViewer = ({
   familySlug,
   vespaFamilyData,
   vespaDocumentData,
-  onQueryTermChange,
   onExactMatchChange,
   onConceptClick,
-  onClear,
 }: TProps) => {
   const [showSearchOptions, setShowSearchOptions] = useState(false);
+
+  const getQueryTerm = (term: string | string[]) => (Array.isArray(term) ? term[0] : term || "");
 
   const [state, setState] = useReducer((prev: any, next: Partial<any>) => ({ ...prev, ...next }), {
     passageIndex: initialPassage,
     isExactSearch: initialExactMatch,
-    queryTerm: Array.isArray(initialQueryTerm) ? initialQueryTerm[0] : initialQueryTerm || "",
+    queryTerm: getQueryTerm(initialQueryTerm),
     passageMatches: [],
     totalNoOfMatches: 0,
   });
+
+  // Run a new query if the initial query changes (likely a query param change)
+  useEffect(() => {
+    const newQueryTerm = getQueryTerm(initialQueryTerm);
+    setState({ queryTerm: newQueryTerm });
+  }, [initialQueryTerm]);
 
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
   const [familyConcepts, setFamilyConcepts] = useState<TConcept[]>([]);
@@ -200,14 +203,6 @@ export const ConceptsDocumentViewer = ({
     [document.content_type]
   );
 
-  const handleSearchInput = useCallback(
-    (term: string) => {
-      setState({ queryTerm: term });
-      onQueryTermChange?.(term);
-    },
-    [onQueryTermChange]
-  );
-
   const handleSemanticSearchChange = useCallback(
     (_: string, isExact: string) => {
       const exactBool = isExact === "true";
@@ -220,17 +215,6 @@ export const ConceptsDocumentViewer = ({
     },
     [onExactMatchChange]
   );
-
-  const handleClearSearch = useCallback(() => {
-    setState({
-      passageMatches: [],
-      totalNoOfMatches: 0,
-      passageIndex: 0,
-      queryTerm: "",
-      isExactSearch: false,
-    });
-    onClear();
-  }, [onClear]);
 
   return (
     <>
@@ -256,53 +240,34 @@ export const ConceptsDocumentViewer = ({
                 )}`}
               >
                 <div id="document-search" className="flex flex-col gap-2 md:pl-4">
-                  {(selectedConcepts.length > 0 || initialQueryTerm) && (
-                    <div className="flex gap-2">
-                      <Button rounded color="mono" size="small" data-cy="view-document-viewer-concept" onClick={handleClearSearch}>
-                        ← Back
-                      </Button>
-                    </div>
-                  )}
-
                   {unavailableConcepts.length === 0 && (
-                    <div className="flex gap-2">
-                      <div className="flex-1">
-                        <SearchForm
-                          placeholder="Search document text"
-                          handleSearchInput={handleSearchInput}
-                          input={state.queryTerm as string}
-                          size="default"
-                        />
-                      </div>
-
-                      <div className="relative z-10 flex justify-center">
-                        <button
-                          className="px-4 flex justify-center items-center text-textDark text-xl"
-                          onClick={() => setShowSearchOptions(!showSearchOptions)}
-                        >
-                          <MdOutlineTune />
-                        </button>
-                        <AnimatePresence initial={false}>
-                          {showSearchOptions && (
-                            <motion.div
-                              key="content"
-                              initial="collapsed"
-                              animate="open"
-                              exit="collapsed"
-                              variants={{
-                                collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                                open: { opacity: 1, transition: { duration: 0.25 } },
-                              }}
-                            >
-                              <SearchSettings
-                                queryParams={searchQueryParams}
-                                handleSearchChange={handleSemanticSearchChange}
-                                setShowOptions={setShowSearchOptions}
-                              />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
+                    <div className="relative z-10 flex justify-end">
+                      <button
+                        className="px-4 flex justify-center items-center text-textDark text-xl"
+                        onClick={() => setShowSearchOptions(!showSearchOptions)}
+                      >
+                        <MdOutlineTune />
+                      </button>
+                      <AnimatePresence initial={false}>
+                        {showSearchOptions && (
+                          <motion.div
+                            key="content"
+                            initial="collapsed"
+                            animate="open"
+                            exit="collapsed"
+                            variants={{
+                              collapsed: { opacity: 0, transition: { duration: 0.1 } },
+                              open: { opacity: 1, transition: { duration: 0.25 } },
+                            }}
+                          >
+                            <SearchSettings
+                              queryParams={searchQueryParams}
+                              handleSearchChange={handleSemanticSearchChange}
+                              setShowOptions={setShowSearchOptions}
+                            />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   )}
 
@@ -336,7 +301,7 @@ export const ConceptsDocumentViewer = ({
                   </div>
                 ) : (
                   <>
-                    {state.totalNoOfMatches > 0 && (
+                    {initialQueryTerm !== "" && state.totalNoOfMatches > 0 && (
                       <>
                         <div className="border-gray-200 my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
                           <div className="mb-2">
