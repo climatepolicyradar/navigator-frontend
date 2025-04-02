@@ -51,20 +51,12 @@ const filterConcepts = (concepts: TConcept[], search: string) => {
 
 const onConceptChange = (router: NextRouter, concept: TConcept) => {
   const query = { ...router.query };
-  let selectedConcepts: string | string[] = query[QUERY_PARAMS.concept_name] || [];
+  let selectedConcepts = query[QUERY_PARAMS.concept_name] ? [query[QUERY_PARAMS.concept_name]].flat() : [];
 
-  if (Array.isArray(selectedConcepts)) {
-    if (selectedConcepts.includes(concept.preferred_label)) {
-      selectedConcepts = selectedConcepts.filter((c) => c !== concept.preferred_label);
-    } else {
-      selectedConcepts = [...selectedConcepts, concept.preferred_label];
-    }
+  if (selectedConcepts.includes(concept.preferred_label)) {
+    selectedConcepts = selectedConcepts.filter((c) => c !== concept.preferred_label);
   } else {
-    if (selectedConcepts === concept.preferred_label) {
-      selectedConcepts = [];
-    } else {
-      selectedConcepts = [selectedConcepts, concept.preferred_label];
-    }
+    selectedConcepts = [...selectedConcepts, concept.preferred_label];
   }
 
   query[QUERY_PARAMS.concept_name] = selectedConcepts;
