@@ -39,7 +39,9 @@ lint:
   enabled:
     - actionlint@1.7.5
     - checkov@3.2.46
-    - eslint@9.22.0
+    - eslint@9.22.0:
+        config:
+          file: eslint.config.mjs
     - git-diff-check
     - markdownlint@0.39.0
     - oxipng@9.0.0
