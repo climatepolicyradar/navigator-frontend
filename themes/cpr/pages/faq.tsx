@@ -4,6 +4,7 @@ import Layout from "@/components/layouts/Main";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { SubNav } from "@/components/nav/SubNav";
 import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
+import { FAQS, PLATFORM_FAQS } from "@/cpr/constants/faqs";
 
 const FAQ = () => {
   return (
@@ -16,7 +17,9 @@ const FAQ = () => {
       </SubNav>
       <section className="pt-8">
         <SiteWidth>
-          <FaqSection title="FAQs" faqs={CONCEPTS_FAQS} />
+          <FaqSection title="FAQs" faqs={FAQS} />
+          <FaqSection title="Platform FAQs" faqs={PLATFORM_FAQS} />
+          <FaqSection title="Concepts FAQs" faqs={CONCEPTS_FAQS} />
         </SiteWidth>
       </section>
     </Layout>
