@@ -109,14 +109,11 @@ export const CONCEPTS_FAQS: TFAQ[] = [
     title: "Should I be concerned about the climate impact of this feature?",
     content: (
       <>
-        <p>
-          We prioritise sustainability in our technology choices:
-          <ul>
-            <li>When two models produce similar results, we use the simpler, less energy-intensive option.</li>
-            <li>Most of our models rely on efficient keyword-based detection rather than resource-heavy AI.</li>
-          </ul>
-        </p>
-
+        <p>We prioritise sustainability in our technology choices:</p>
+        <ul>
+          <li>When two models produce similar results, we use the simpler, less energy-intensive option.</li>
+          <li>Most of our models rely on efficient keyword-based detection rather than resource-heavy AI.</li>
+        </ul>
         <p>Nevertheless, we’re working to measure, minimise, and report on the precise energy intensity of our data science work.</p>
       </>
     ),
