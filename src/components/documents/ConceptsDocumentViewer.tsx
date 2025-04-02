@@ -16,10 +16,11 @@ import { useEffectOnce } from "@/hooks/useEffectOnce";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 import { SearchSettings } from "@/components/filters/SearchSettings";
-import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
 import Loader from "@/components/Loader";
 import { SideCol } from "../panels/SideCol";
 import { ConceptPicker } from "../organisms/ConceptPicker";
+import { Button } from "../atoms/button/Button";
+import { Icon } from "../atoms/icon/Icon";
 
 type TProps = {
   initialQueryTerm?: string | string[];
@@ -32,7 +33,6 @@ type TProps = {
   familySlug: string;
   // Callback props for state changes
   onExactMatchChange?: (isExact: boolean) => void;
-  onConceptClick?: (conceptLabel: string) => void;
 };
 
 const passageClasses = (docType: string) => {
@@ -56,9 +56,9 @@ export const ConceptsDocumentViewer = ({
   vespaFamilyData,
   vespaDocumentData,
   onExactMatchChange,
-  onConceptClick,
 }: TProps) => {
   const [showSearchOptions, setShowSearchOptions] = useState(false);
+  const [showConcepts, setShowConcepts] = useState(false);
 
   const getQueryTerm = (term: string | string[]) => (Array.isArray(term) ? term[0] : term || "");
 
@@ -76,7 +76,6 @@ export const ConceptsDocumentViewer = ({
     setState({ queryTerm: newQueryTerm });
   }, [initialQueryTerm]);
 
-  const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
   const [familyConcepts, setFamilyConcepts] = useState<TConcept[]>([]);
 
   const canPreview = document.content_type === "application/pdf";
@@ -93,8 +92,7 @@ export const ConceptsDocumentViewer = ({
       });
     });
 
-    fetchAndProcessConcepts(Array.from(conceptIds)).then(({ rootConcepts, concepts }) => {
-      setRootConcepts(rootConcepts);
+    fetchAndProcessConcepts(Array.from(conceptIds)).then(({ concepts }) => {
       setFamilyConcepts(concepts);
     });
   });
@@ -128,18 +126,6 @@ export const ConceptsDocumentViewer = ({
       }))
       .sort((a, b) => (b.count || 0) - (a.count || 0));
   }, [vespaDocumentData, familyConcepts]);
-
-  const documentConceptCountsById = useMemo(
-    () =>
-      documentConcepts.reduce(
-        (acc, concept) => {
-          acc[concept.wikibase_id] = concept.count || 0;
-          return acc;
-        },
-        {} as Record<string, number>
-      ),
-    [documentConcepts]
-  );
 
   const selectedConcepts = useMemo(
     () =>
@@ -215,9 +201,11 @@ export const ConceptsDocumentViewer = ({
     [onExactMatchChange]
   );
 
-  if (!documentConcepts.length) return;
+  const handleToggleConcepts = () => {
+    setShowConcepts((current) => !current);
+  };
 
-  console.log({ totalNoOfMatches: state.totalNoOfMatches, unavailableConcepts: unavailableConcepts.length });
+  if (!documentConcepts.length) return;
 
   const isLoading = status !== "success";
   const hasConcepts = selectedConcepts.length > 0;
@@ -226,17 +214,30 @@ export const ConceptsDocumentViewer = ({
   const hasUnavailableConcepts = state.totalNoOfMatches === 0 && unavailableConcepts.length > 0;
 
   return (
-    <section className="flex-1 px-5" id="document-concepts-viewer">
+    <section className="flex-1 xl:px-5" id="document-concepts-viewer">
       <div id="document-container" className="flex flex-col xl:flex-row xl:h-[90vh]">
         {/* Concepts */}
-        <SideCol id="document-concepts" extraClasses="bg-blue-100">
-          <ConceptPicker concepts={documentConcepts} />
+        <SideCol id="document-concepts" extraClasses="!w-full xl:!w-maxSidebar">
+          <div className="p-4 xl:hidden">
+            <Button content="both" onClick={handleToggleConcepts}>
+              <span>{showConcepts ? "Hide" : "Show"} concepts</span>
+              <div className={showConcepts ? "rotate-180" : ""}>
+                <Icon name="downChevron" />
+              </div>
+            </Button>
+          </div>
+          <ConceptPicker
+            concepts={documentConcepts}
+            showSearch={false}
+            title={<p className="text-base font-medium">In this document</p>}
+            containerClasses={`pt-4 pr-4 pl-4 xl:pl-0 ${showConcepts ? "" : "hidden xl:flex"}`}
+          />
         </SideCol>
 
         {/* Preview */}
         <div
           id="document-preview"
-          className={`flex-1 order-last xl:order-none h-[400px] basis-[400px] xl:block xl:h-full xl:border-x xl:border-x-gray-200`}
+          className={`flex-1 order-last xl:order-none h-[400px] basis-[400px] xl:block xl:h-full xl:border-x xl:border-x-gray-200 px-4 xl:px-0`}
         >
           {canPreview && (
             <EmbeddedPDF
@@ -252,7 +253,7 @@ export const ConceptsDocumentViewer = ({
         {/* Sidebar */}
         <div
           id="document-sidebar"
-          className={`flex flex-col overflow-y-auto max-h-[90vh] scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 xl:max-h-full xl:max-w-[480px] xl:min-w-[400px] xl:grow-0 xl:shrink-0 ${passageClasses(
+          className={`flex flex-col overflow-y-auto max-h-[90vh] mr-4 xl:mr-0 scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 xl:max-h-full xl:max-w-[480px] xl:min-w-[400px] xl:grow-0 xl:shrink-0 ${passageClasses(
             document.content_type
           )}`}
         >

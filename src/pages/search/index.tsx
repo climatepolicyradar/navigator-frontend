@@ -42,6 +42,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 
 import { TConcept, TTheme, TThemeConfig } from "@/types";
+import { Label } from "@/components/labels/Label";
 
 type TProps = {
   theme: TTheme;
@@ -446,7 +447,15 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       />
                     </div>
                     <SlideOut showCloseButton={false}>
-                      <ConceptPicker concepts={conceptsData} />
+                      <ConceptPicker
+                        concepts={conceptsData}
+                        title={
+                          <div className="flex items-center gap-2">
+                            <div className="text-[15px] font-medium text-text-primary">Concepts</div>
+                            <Label>Beta</Label>
+                          </div>
+                        }
+                      />
                     </SlideOut>
                   </div>
                 </>
