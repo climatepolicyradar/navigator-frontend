@@ -1,5 +1,5 @@
 import { ExternalLink } from "@/components/ExternalLink";
-import { PLATFORM_FAQS } from "@/constants/platformFaqs";
+import { PLATFORM_FAQS as GENERIC_PLATFORM_FAQS } from "@/constants/platformFaqs";
 
 type TFAQ = {
   id?: string;
@@ -48,7 +48,7 @@ export const FAQS: TFAQ[] = [
   },
 ];
 
-export const PLATFORMFAQS: TFAQ[] = [
+export const PLATFORM_FAQS: TFAQ[] = [
   {
     title: "What can I do with your tool?",
     content: (
@@ -91,5 +91,5 @@ export const PLATFORMFAQS: TFAQ[] = [
       </>
     ),
   },
-  ...PLATFORM_FAQS,
+  ...GENERIC_PLATFORM_FAQS,
 ];

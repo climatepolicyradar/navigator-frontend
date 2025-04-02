@@ -1,5 +1,5 @@
 import { ExternalLink } from "@/components/ExternalLink";
-import { PLATFORM_FAQS } from "@/constants/platformFaqs";
+import { PLATFORM_FAQS as GENERIC_PLATFORM_FAQS } from "@/constants/platformFaqs";
 
 type TFAQ = {
   id?: string;
@@ -22,8 +22,7 @@ export const FAQS: TFAQ[] = [
         <ul>
           <li>Conduct searches in the database using the full text of documents. This improves the comprehensiveness of your search results.</li>
           <li>
-            Find relevant information more easily. The new search function looks for similar and related phrases to search queries (‘semantic
-            search’).
+            Find relevant information more easily. The new search function looks for similar and related phrases to search queries (semantic search).
           </li>
           <li>
             See where a search term or relevant text appears in a document, with relevant passages of text automatically highlighted in yellow to help
@@ -121,7 +120,7 @@ export const FAQS: TFAQ[] = [
   },
 ];
 
-export const PLATFORMFAQS: TFAQ[] = [
+export const PLATFORM_FAQS: TFAQ[] = [
   {
     title: "What can I do with the Climate Project Explorer?",
     content: (
@@ -163,5 +162,5 @@ export const PLATFORMFAQS: TFAQ[] = [
       </>
     ),
   },
-  ...PLATFORM_FAQS,
+  ...GENERIC_PLATFORM_FAQS,
 ];
