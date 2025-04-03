@@ -18,8 +18,10 @@ type TProps = {
 const Main: FC<TProps> = ({ children }) => (
   <>
     <NavBar headerClasses="banner" logo={CPRLogo} menu={<MainMenu />} />
-    <main className="flex flex-col flex-1">{children}</main>
-    <Footer />
+    <div className="h-[calc(100vh-128px)] md:h-[calc(100vh-72px)] flex flex-col justify-between overflow-y-auto">
+      <main className="flex flex-col flex-1">{children}</main>
+      <Footer />
+    </div>
   </>
 );
 export default Main;
