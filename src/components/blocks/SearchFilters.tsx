@@ -1,6 +1,7 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useContext } from "react";
 import { ParsedUrlQuery } from "querystring";
 import dynamic from "next/dynamic";
+import { LuChevronRight } from "react-icons/lu";
 
 import useGetThemeConfig from "@/hooks/useThemeConfig";
 import { Label } from "@/components/labels/Label";
@@ -16,6 +17,7 @@ import { FilterOptions } from "./FilterOptions";
 
 import { currentYear, minYear } from "@/constants/timedate";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { SLIDE_OUT_DATA_KEY } from "@/constants/dataAttributes";
 
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 
@@ -23,6 +25,9 @@ import { canDisplayFilter } from "@/utils/canDisplayFilter";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 
 import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
+
+import { SlideOutContext } from "@/context/SlideOutContext";
+import { Heading } from "../accordian/Heading";
 
 const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/components/MethodologyLink`));
 
@@ -67,10 +72,10 @@ const SearchFilters = ({
 }: TSearchFiltersProps) => {
   const { status: themeConfigStatus, themeConfig } = useGetThemeConfig();
   const [showClear, setShowClear] = useState(false);
+  const { currentSlideOut, setCurrentSlideOut } = useContext(SlideOutContext);
 
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
-    concept_filters: conceptFilters = [],
   } = searchCriteria;
 
   const thisYear = currentYear();
@@ -152,26 +157,24 @@ const SearchFilters = ({
 
       {conceptsData && (
         <>
-          <Accordian
-            title={getFilterLabel("Concept", "concept", query[QUERY_PARAMS.concept_name], themeConfig)}
-            data-cy="concepts"
-            key="Concepts"
-            startOpen={!!query[QUERY_PARAMS.concept_name]}
-            overflowOverride
-            className="relative z-11"
-            headContent={!!conceptsData && <Label>Beta</Label>}
+          <button
+            className="items-center justify-between cursor-pointer group hidden md:flex"
+            onClick={() => setCurrentSlideOut(currentSlideOut === "" ? "concepts" : "")}
+            data-cy="concepts-control"
+            {...{ [SLIDE_OUT_DATA_KEY]: "concepts" }}
           >
-            <InputListContainer>
-              <TypeAhead
-                list={conceptsData}
-                selectedList={conceptFilters.map((concept) => concept.value)}
-                keyField="preferred_label"
-                keyFieldDisplay="preferred_label"
-                filterType={QUERY_PARAMS.concept_name}
-                handleFilterChange={handleFilterChange}
-              />
-            </InputListContainer>
-          </Accordian>
+            <div className="flex items-center gap-2 pointer-events-none">
+              <Heading>Concepts</Heading>
+              <Label>Beta</Label>
+            </div>
+            <span
+              className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
+                currentSlideOut === "concepts" ? "transform rotate-180" : ""
+              }`}
+            >
+              <LuChevronRight />
+            </span>
+          </button>
         </>
       )}
 
