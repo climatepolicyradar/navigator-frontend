@@ -2,7 +2,7 @@ import { TConcept, TDocumentPage, TSearchResponse } from "@/types";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import { FullWidth } from "@/components/panels/FullWidth";
 import { EmptyDocument } from "./EmptyDocument";
-import { MdOutlineTune } from "react-icons/md";
+import { LuSettings2 } from "react-icons/lu";
 import { AnimatePresence } from "framer-motion";
 import { UnavailableConcepts } from "@/components/documents/UnavailableConcepts";
 import PassageMatches from "@/components/PassageMatches";
@@ -243,7 +243,7 @@ export const ConceptsDocumentViewer = ({
                         className="px-4 flex justify-center items-center text-textDark text-xl"
                         onClick={() => setShowSearchOptions(!showSearchOptions)}
                       >
-                        <MdOutlineTune />
+                        <LuSettings2 />
                       </button>
                       <AnimatePresence initial={false}>
                         {showSearchOptions && (
