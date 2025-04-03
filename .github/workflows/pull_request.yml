@@ -76,7 +76,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: trunk-io/analytics-uploader@main
         with:
-          junit-paths: "**/junit.xml"
+          junit-paths: "**/vitest.xml"
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
           token: ${{ secrets.TRUNK_TOKEN }}
         continue-on-error: true
