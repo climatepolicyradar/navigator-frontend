@@ -1,8 +1,7 @@
 import { useQuery } from "react-query";
-import { ApiClient } from "../api/http-common";
+import { ApiClient, getEnvFromServer } from "../api/http-common";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { TGeography, TLanguages, TCorpusTypeDictionary, TDataNode } from "@/types";
-import { config } from "../config";
 
 type TQueryResponse = {
   geographies: TDataNode<TGeography>[];
@@ -16,7 +15,8 @@ export default function useConfig() {
   return useQuery(
     "config",
     async () => {
-      const client = new ApiClient(config.apiUrl, config.appToken);
+      const { data } = await getEnvFromServer();
+      const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
       const query_response = await client.getConfig();
       const geographies = query_response.data.geographies;
       const response_geo = extractNestedData<TGeography>(geographies, 2, "");

@@ -1,8 +1,7 @@
-import { ApiClient, getFilters } from "../api/http-common";
+import { ApiClient, getEnvFromServer, getFilters } from "../api/http-common";
 import buildSearchQuery, { TRouterQuery } from "@/utils/buildSearchQuery";
 import { TLoadingStatus, TSearch } from "@/types";
 import { useState } from "react";
-import { config } from "../config";
 
 type TConfig = {
   headers: {
@@ -27,21 +26,23 @@ const downloadFile = ({ data, fileName, fileType }) => {
 };
 
 async function getDownloadCsv(query: TRouterQuery) {
+  const config: TConfig = {
+    headers: {
+      accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  };
+
+  const { data: envResponse } = await getEnvFromServer();
   const { data: themeConfigResponse } = await getFilters();
-  const client = new ApiClient(config.apiUrl, config.appToken);
+  const client = new ApiClient(envResponse?.env?.api_url, envResponse?.env?.app_token);
 
   const searchQuery = buildSearchQuery(query, themeConfigResponse, "", "", true, 0);
   // Manually set this to 500, overriding the default 10 which is used for pagination
   searchQuery.page_size = 500;
   searchQuery.limit = 500;
 
-  const results = await client.post<TSearch>("/searches/download-csv", searchQuery, {
-    headers: {
-      accept: "application/json",
-      "Content-Type": "application/json",
-    },
-  });
-
+  const results = await client.post<TSearch>("/searches/download-csv", searchQuery, config);
   if (results.status !== 200) {
     return false;
   }

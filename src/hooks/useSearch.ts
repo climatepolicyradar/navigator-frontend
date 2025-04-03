@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { ApiClient } from "../api/http-common";
-import { config } from "../config";
+import { ApiClient, getEnvFromServer } from "../api/http-common";
 
 import useGetThemeConfig from "./useThemeConfig";
 
@@ -26,14 +25,17 @@ const scrollToSearchTop = () => {
 };
 
 async function getSearch(query = initialSearchCriteria) {
-  const url = "/searches";
-  const client = new ApiClient(config.apiUrl, config.appToken);
-  const results = await client.post<TSearch>(url, query, {
+  const config: TConfig = {
     headers: {
       accept: "application/json",
       "Content-Type": "application/json",
     },
-  });
+  };
+
+  const url = "/searches";
+  const { data } = await getEnvFromServer();
+  const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
+  const results = await client.post<TSearch>(url, query, config);
   return results;
 }
 
