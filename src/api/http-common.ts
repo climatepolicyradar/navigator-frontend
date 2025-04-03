@@ -1,6 +1,11 @@
 /* eslint-disable no-console */
 import { TCorpusTypeDictionary, TDataNode, TGeography, TLanguages } from "@/types";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
+
+export async function getEnvFromServer() {
+  return await axios.get("/api/env").then((res: any) => res);
+}
+
 export async function getFilters() {
   return await axios.get("/api/theme-config").then((res: any) => res);
 }
