@@ -1,5 +1,6 @@
 import { useQuery } from "react-query";
-import { ApiClient, getEnvFromServer } from "../api/http-common";
+import { ApiClient } from "../api/http-common";
+import { config } from "../config";
 
 type TMapGeographyStats = {
   display_name: string;
@@ -18,8 +19,7 @@ export default function useGeographies() {
   return useQuery(
     "geographies",
     async () => {
-      const { data } = await getEnvFromServer();
-      const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
+      const client = new ApiClient(config.apiUrl, config.appToken);
       const query_response = await client.get("/geographies", null);
       const mapData: TMapGeographyStats[] = query_response.data;
 

@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
-import { ApiClient, getEnvFromServer } from "../api/http-common";
+import { ApiClient } from "../api/http-common";
+import { config } from "../config";
 
 import useGetThemeConfig from "./useThemeConfig";
 
@@ -19,18 +20,20 @@ type TConfig = {
   };
 };
 
+const scrollToSearchTop = () => {
+  const container = document.querySelector("#search");
+  container?.scrollIntoView(true);
+};
+
 async function getSearch(query = initialSearchCriteria) {
-  const config: TConfig = {
+  const url = "/searches";
+  const client = new ApiClient(config.apiUrl, config.appToken);
+  const results = await client.post<TSearch>(url, query, {
     headers: {
       accept: "application/json",
       "Content-Type": "application/json",
     },
-  };
-
-  const url = "/searches";
-  const { data } = await getEnvFromServer();
-  const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
-  const results = await client.post<TSearch>(url, query, config);
+  });
   return results;
 }
 
@@ -47,6 +50,7 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
 
   useEffect(() => {
     setStatus("loading");
+    scrollToSearchTop();
 
     // If we don't want to trigger an API call, return early
     if (!runFreshSearch || !searchQuery.runSearch) {

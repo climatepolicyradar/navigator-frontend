@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
-import { MdOutlineTune } from "react-icons/md";
+import { LuSettings2 } from "react-icons/lu";
 
 import { ApiClient } from "@/api/http-common";
 
@@ -24,7 +24,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getDocumentDescription } from "@/constants/metaDescriptions";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 
-import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse } from "@/types";
+import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamiy";
@@ -169,44 +169,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     [conceptFiltersQuery]
   );
 
-  const handleConceptClick = useCallback(
-    (conceptLabel: string) => {
-      setPassageIndex(0);
-      if (conceptLabel === "") return false;
-
-      const currentConceptFilters = conceptFilters || [];
-      const queryObj = { ...router.query };
-
-      let updatedConceptFilters;
-
-      // If the concept is already in filters, remove it
-      if (currentConceptFilters.includes(conceptLabel)) {
-        updatedConceptFilters = currentConceptFilters.filter((concept) => concept !== conceptLabel);
-      } else {
-        // If the concept is not in filters, add it
-        updatedConceptFilters = [...currentConceptFilters, conceptLabel];
-      }
-
-      // If no concept filters remain, remove the concept_name query param entirely
-      if (updatedConceptFilters.length === 0) {
-        delete queryObj[QUERY_PARAMS.concept_name];
-      } else {
-        // Otherwise, update the concept filters
-        queryObj[QUERY_PARAMS.concept_name] = updatedConceptFilters;
-      }
-
-      router.push(
-        {
-          pathname: `/documents/${document.slug}`,
-          query: queryObj,
-        },
-        undefined,
-        { shallow: true }
-      );
-    },
-    [router, document.slug, conceptFilters]
-  );
-
   return (
     <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
       <section
@@ -274,7 +236,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                         </div>
                         <div className="relative z-10 flex justify-center">
                           <button className="p-2 text-textDark text-xl" onClick={() => setShowOptions(!showOptions)}>
-                            <MdOutlineTune />
+                            <LuSettings2 />
                           </button>
                           <AnimatePresence initial={false}>
                             {showOptions && (
@@ -326,7 +288,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             familySlug={family.slug}
             document={document}
             onExactMatchChange={handleExactMatchChange}
-            onConceptClick={handleConceptClick}
           />
         )}
       </section>
