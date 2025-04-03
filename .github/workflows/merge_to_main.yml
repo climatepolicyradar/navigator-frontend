@@ -75,6 +75,15 @@ jobs:
           NODE_ENV: production
       - run: npx playwright install --with-deps
       - run: npx playwright test
+      - name: Upload Test Result
+        # Upload the results even if the tests fails to Trunk.io
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        uses: trunk-io/analytics-uploader@main
+        with:
+          junit-paths: "**/playwright.xml"
+          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+          token: ${{ secrets.TRUNK_TOKEN }}
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
