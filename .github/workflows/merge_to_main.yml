@@ -59,6 +59,15 @@ jobs:
         env:
           NODE_ENV: production
       - run: npm run test
+      - name: Upload results
+        # Run this step even if the test step ahead fails
+        if: ${{ !cancelled() }}
+        uses: trunk-io/analytics-uploader@main
+        with:
+          junit-paths: "**/junit.xml"
+          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+          token: ${{ secrets.TRUNK_TOKEN }}
+        continue-on-error: true
 
   test-e2e:
     timeout-minutes: 60
