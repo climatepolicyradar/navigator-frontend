@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { NextRouter, useRouter } from "next/router";
 
-import { Label } from "@/components/labels/Label";
 import { InputCheck } from "@/components/forms/Checkbox";
 import { Select } from "@/components/atoms/select/Select";
 
@@ -67,19 +66,6 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
   router.push({ query: query }, undefined, { shallow: true });
 };
 
-const getSelectedConcepts = (concepts: TConcept[], router: NextRouter) => {
-  return concepts.reduce((acc, concept) => {
-    const queryValue = router.query[QUERY_PARAMS.concept_name];
-    if (!queryValue) {
-      return acc;
-    }
-    if (typeof queryValue === "string") {
-      return queryValue === concept.preferred_label ? [...acc, concept] : acc;
-    }
-    return queryValue.includes(concept.preferred_label) ? [...acc, concept] : acc;
-  }, [] as TConcept[]);
-};
-
 export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "A-Z", showSearch = true, title }: TProps) => {
   const router = useRouter();
   const ref = useRef(null);
@@ -104,7 +90,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
   }, [concepts]);
 
   return (
-    <div className="relative flex flex-col gap-5 max-h-full pb-5" ref={ref}>
+    <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
       <div className="flex items-center justify-between">
         {title}
         <div className="basis-1/3">
