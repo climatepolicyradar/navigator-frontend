@@ -32,6 +32,7 @@ import { Icon } from "@/components/atoms/icon/Icon";
 import { Button } from "@/components/atoms/button/Button";
 import { ConceptPicker } from "@/components/organisms/ConceptPicker";
 import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
+import { Label } from "@/components/labels/Label";
 
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
@@ -42,7 +43,6 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 
 import { TConcept, TTheme, TThemeConfig } from "@/types";
-import { Label } from "@/components/labels/Label";
 
 type TProps = {
   theme: TTheme;

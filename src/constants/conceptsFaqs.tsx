@@ -11,7 +11,7 @@ type TFAQ = {
 export const CONCEPTS_FAQS: TFAQ[] = [
   {
     id: "concepts",
-    title: "Automatic Detection of key concepts in documents",
+    title: "Automatic detection of key concepts in documents",
     headContent: <Label>Beta</Label>,
     content: (
       <>
@@ -110,12 +110,10 @@ export const CONCEPTS_FAQS: TFAQ[] = [
     content: (
       <>
         <p>We prioritise sustainability in our technology choices:</p>
-
         <ul>
           <li>When two models produce similar results, we use the simpler, less energy-intensive option.</li>
           <li>Most of our models rely on efficient keyword-based detection rather than resource-heavy AI.</li>
         </ul>
-
         <p>Nevertheless, we’re working to measure, minimise, and report on the precise energy intensity of our data science work.</p>
       </>
     ),
@@ -138,10 +136,10 @@ export const CONCEPTS_FAQS: TFAQ[] = [
         <p>We are expanding our concept database, improving accuracy, and developing new structured data features.</p>
 
         <p>
-          See our
+          See our{" "}
           <ExternalLink url="https://www.notion.so/Climate-Policy-Radar-Public-Product-Roadmap-250fdc6416824160b7b34aef4ef29e1c?pvs=21">
             public product roadmap
-          </ExternalLink>
+          </ExternalLink>{" "}
           for more details.
         </p>
       </>
