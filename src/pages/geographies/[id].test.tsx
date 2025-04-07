@@ -54,12 +54,12 @@ describe("CountryPage", () => {
     expect(link.getAttribute("href")).toBe("https://climate.law.columbia.edu/content/climate-backtracker");
   });
 
-  it("does not display alert with Sabin tracker link on non-us geography pages", async () => {
+  it.each(["cpr", "cclw"])("does not display alert with Sabin tracker link on non-us geography pages for %s", async (theme) => {
     const props = {
       geography: { name: "Brazil", geography_slug: "brazil", legislative_process: "", political_groups: "" },
       summary: { family_counts: [] },
       targets: [],
-      theme: "cpr",
+      theme: theme,
       themeConfig: {
         documentCategories: ["All"],
         metadata: [
