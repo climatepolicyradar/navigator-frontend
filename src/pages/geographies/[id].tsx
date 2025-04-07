@@ -237,6 +237,27 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                 theme={theme}
                 totalProjects={allDocumentsCount}
               />
+              {geography.name === "United States of America" && (
+                <section className="mt-8">
+                  <div className="flex mt-4">
+                    <Alert
+                      message={
+                        <>
+                          To see developments in the Trump-Vance administration's climate rollback, visit the{" "}
+                          <ExternalLink
+                            url="https://climate.law.columbia.edu/content/climate-backtracker"
+                            className="underline text-blue-600 hover:text-blue-800"
+                          >
+                            Sabin Center's Climate Backtracker
+                          </ExternalLink>
+                          .
+                        </>
+                      }
+                      icon={<Icon name="alertCircle" height="16" width="16" />}
+                    />
+                  </div>
+                </section>
+              )}
               <section className="mt-8">
                 <Heading level={2}>Documents</Heading>
               </section>

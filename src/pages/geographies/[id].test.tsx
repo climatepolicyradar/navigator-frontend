@@ -53,4 +53,30 @@ describe("CountryPage", () => {
     let link = screen.getByRole("link", { name: "Sabin Center's Climate Backtracker" });
     expect(link.getAttribute("href")).toBe("https://climate.law.columbia.edu/content/climate-backtracker");
   });
+
+  it("does not display alert with Sabin tracker link on non-us geography pages", async () => {
+    const props = {
+      geography: { name: "Brazil", geography_slug: "brazil", legislative_process: "", political_groups: "" },
+      summary: { family_counts: [] },
+      targets: [],
+      theme: "cpr",
+      themeConfig: {
+        documentCategories: ["All"],
+        metadata: [
+          {
+            key: "geography",
+            title: "{text} climate laws and policies",
+          },
+        ],
+      },
+    };
+
+    // @ts-ignore
+    render(<CountryPage {...props} />);
+    expect(screen.getByRole("heading", { name: "Brazil", level: 1 })).toBeDefined();
+    expect(screen.queryByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).toBeNull();
+
+    let link = screen.queryByRole("link", { name: "Sabin Center's Climate Backtracker" });
+    expect(link).toBeNull();
+  });
 });
