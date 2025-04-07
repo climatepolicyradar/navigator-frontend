@@ -237,7 +237,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                 theme={theme}
                 totalProjects={allDocumentsCount}
               />
-              {geography.name === "United States of America" && (
+              {theme !== "mcf" && geography.name === "United States of America" && (
                 <section className="mt-8">
                   <div className="flex mt-4">
                     <Alert
