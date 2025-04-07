@@ -32,6 +32,7 @@ import { Icon } from "@/components/atoms/icon/Icon";
 import { Button } from "@/components/atoms/button/Button";
 import { ConceptPicker } from "@/components/organisms/ConceptPicker";
 import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
+import { Label } from "@/components/labels/Label";
 
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
@@ -39,7 +40,7 @@ import { getFeatureFlags } from "@/utils/featureFlags";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
-import { SlideOutContext } from "@/context/SlideOutContext";
+import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 
 import { TConcept, TTheme, TThemeConfig } from "@/types";
 
@@ -64,7 +65,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
   const settingsButtonRef = useRef(null);
 
-  const [currentSlideOut, setCurrentSlideOut] = useState("");
+  const [currentSlideOut, setCurrentSlideOut] = useState<TSlideOutContent>("");
 
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
@@ -450,7 +451,15 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       />
                     </div>
                     <SlideOut showCloseButton={false}>
-                      <ConceptPicker concepts={conceptsData} />
+                      <ConceptPicker
+                        concepts={conceptsData}
+                        title={
+                          <div className="flex items-center gap-2">
+                            <div className="text-[15px] font-medium text-text-primary">Concepts</div>
+                            <Label>Beta</Label>
+                          </div>
+                        }
+                      />
                     </SlideOut>
                   </div>
                 </>

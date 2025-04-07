@@ -319,17 +319,18 @@ export type TOrganisationDictionary = TDictionary<TOrganisation>;
 export type TCorpusTypeDictionary = TDictionary<TCorpusType>;
 
 export type TConcept = {
-  preferred_label: string;
-  wikibase_id: string;
   alternative_labels: string[];
-  negative_labels: string[];
-  description: string;
-  subconcept_of: string[];
-  recursive_subconcept_of: string[];
-  has_subconcept: string[];
-  related_concepts: string[];
+  count?: number;
   definition?: string;
+  description: string;
+  has_subconcept: string[];
   labelled_passages?: [];
+  negative_labels: string[];
+  preferred_label: string;
+  recursive_subconcept_of: string[];
+  related_concepts: string[];
+  subconcept_of: string[];
+  wikibase_id: string;
 };
 
 export type TSearchResponse = {

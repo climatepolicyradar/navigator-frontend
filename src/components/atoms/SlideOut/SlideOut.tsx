@@ -5,6 +5,8 @@ import { Icon } from "@/components/atoms/icon/Icon";
 
 import { SlideOutContext } from "@/context/SlideOutContext";
 
+import { SLIDE_OUT_DATA_KEY } from "@/constants/dataAttributes";
+
 interface SlideOutProps {
   children: React.ReactNode;
   showCloseButton?: boolean;
@@ -19,7 +21,7 @@ export const SlideOut = ({ children, showCloseButton = true }: SlideOutProps) =>
     const handleClickOutside = (event: MouseEvent) => {
       // Check whether the clicked element is the slide out trigger for this slideout context
       const clickedElement = event.target as HTMLElement;
-      if (ref.current && !ref.current.contains(event.target) && clickedElement.getAttribute("data-slideOut") !== currentSlideOut) {
+      if (ref.current && !ref.current.contains(event.target) && clickedElement.getAttribute(SLIDE_OUT_DATA_KEY) !== currentSlideOut) {
         setCurrentSlideOut("");
       }
     };

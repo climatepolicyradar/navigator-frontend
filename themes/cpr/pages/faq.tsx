@@ -6,7 +6,7 @@ import Layout from "@/components/layouts/Main";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { SubNav } from "@/components/nav/SubNav";
 import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
-import { FAQS, PLATFORM_FAQS } from "@/mcf/constants/faqs";
+import { FAQS, PLATFORM_FAQS } from "@/cpr/constants/faqs";
 import { getFeatureFlags } from "@/utils/featureFlags";
 
 type TProps = {
@@ -17,7 +17,7 @@ const FAQ: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFl
   return (
     <Layout
       title="FAQ"
-      description="Find quick tips for how you can use this resource to explore national-level climate change projects from across the world."
+      description="Find quick tips for how you can use Climate Policy Radar to explore climate laws, policies, and projects from across the world."
     >
       <SubNav>
         <BreadCrumbs label={"Frequently asked questions"} />
@@ -33,6 +33,7 @@ const FAQ: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFl
     </Layout>
   );
 };
+
 export default FAQ;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

@@ -17,6 +17,7 @@ import { FilterOptions } from "./FilterOptions";
 
 import { currentYear, minYear } from "@/constants/timedate";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { SLIDE_OUT_DATA_KEY } from "@/constants/dataAttributes";
 
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 
@@ -160,7 +161,7 @@ const SearchFilters = ({
             className="items-center justify-between cursor-pointer group hidden md:flex"
             onClick={() => setCurrentSlideOut(currentSlideOut === "" ? "concepts" : "")}
             data-cy="concepts-control"
-            data-slideOut="concepts"
+            {...{ [SLIDE_OUT_DATA_KEY]: "concepts" }}
           >
             <div className="flex items-center gap-2 pointer-events-none">
               <Heading>Concepts</Heading>
