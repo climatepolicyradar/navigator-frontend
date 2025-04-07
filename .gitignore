@@ -46,3 +46,6 @@ tsconfig.tsbuildinfo
 # storybook
 *storybook.log
 storybook-static
+
+# vitest
+vitest.xml
