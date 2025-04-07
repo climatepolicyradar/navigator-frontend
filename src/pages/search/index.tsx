@@ -5,14 +5,12 @@ import { useEffect, useRef, useState } from "react";
 import { LuSettings2 } from "react-icons/lu";
 
 import { ApiClient } from "@/api/http-common";
-
-import { ApiClient } from "@/api/http-common";
 import { ExternalLink } from "@/components/ExternalLink";
 import Loader from "@/components/Loader";
 import { NoOfResults } from "@/components/NoOfResults";
+import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
 import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
-import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
 import SearchFilters from "@/components/blocks/SearchFilters";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Drawer from "@/components/drawer/Drawer";

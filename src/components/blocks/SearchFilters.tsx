@@ -1,5 +1,6 @@
-import dynamic from "next/dynamic";
 import { ParsedUrlQuery } from "querystring";
+
+import dynamic from "next/dynamic";
 import { useEffect, useState, useMemo, useContext } from "react";
 import { LuChevronRight } from "react-icons/lu";
 
