@@ -426,7 +426,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
           {/* END MOBILE ONLY */}
           <MultiCol id="search">
             <SideCol
-              extraClasses={`absolute z-1 top-0 w-screen h-full bg-white md:relative ${
+              extraClasses={`absolute z-99 top-0 w-screen h-full bg-white duration-100 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] md:relative ${
                 showFilters ? "translate-x-0" : "translate-x-[-100%]"
               } md:translate-x-0`}
             >
@@ -451,15 +451,17 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       />
                     </div>
                     <SlideOut showCloseButton={false}>
-                      <ConceptPicker
-                        concepts={conceptsData}
-                        title={
-                          <div className="flex items-center gap-2">
-                            <div className="text-[15px] font-medium text-text-primary">Concepts</div>
-                            <Label>Beta</Label>
-                          </div>
-                        }
-                      />
+                      {currentSlideOut === "concepts" && (
+                        <ConceptPicker
+                          concepts={conceptsData}
+                          title={
+                            <div className="flex items-center gap-2">
+                              <div className="text-[15px] font-medium text-text-primary">Concepts</div>
+                              <Label>Beta</Label>
+                            </div>
+                          }
+                        />
+                      )}
                     </SlideOut>
                   </div>
                 </>
