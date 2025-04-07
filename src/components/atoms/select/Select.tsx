@@ -1,5 +1,5 @@
-import { RefObject } from "react";
 import { Select as BaseSelect } from "@base-ui-components/react";
+import { RefObject } from "react";
 import { LuChevronsUpDown } from "react-icons/lu";
 
 type TSelectOption = {
