@@ -365,76 +365,17 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               </span>
             </div>
           </SubNav>
-          {/* MOBILE ONLY */}
-          {/* <SiteWidth extraClasses="pt-4 md:hidden">
-            <div className="flex justify-between gap-2 items-center">
-              <Button content="both" className="flex-nowrap md:hidden" onClick={toggleFilters}>
-                <span>{showFilters ? "Hide" : "Show"} filters</span>
-                <div className={showFilters ? "rotate-180" : ""}>
-                  <Icon name="downChevron" />
-                </div>
-              </Button>
-              <div className="relative z-10 flex justify-center">
-                <button
-                  className={`p-2 text-textDark text-xl ${showOptions ? "bg-nearBlack text-white rounded-full" : ""}`}
-                  onClick={() => setShowOptions(!showOptions)}
-                  data-cy="search-options-mobile"
-                  ref={settingsButtonRef}
-                >
-                  <LuSettings2 />
-                </button>
-                <AnimatePresence initial={false}>
-                  {showOptions && (
-                    <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
-                      <SearchSettings
-                        queryParams={router.query}
-                        handleSortClick={handleSortClick}
-                        handleSearchChange={handleSearchChange}
-                        setShowOptions={setShowOptions}
-                        settingsButtonRef={settingsButtonRef}
-                      />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
-            <div className={`${showFilters ? "" : "hidden"} mt-4`}>
-              {configQuery.isFetching ? (
-                <Loader size="20px" />
-              ) : (
-                <>
-                  <SearchFilters
-                    searchCriteria={searchQuery}
-                    query={router.query}
-                    regions={regions}
-                    countries={countries}
-                    corpus_types={corpus_types}
-                    conceptsData={conceptsData}
-                    handleFilterChange={handleFilterChange}
-                    handleYearChange={handleYearChange}
-                    handleRegionChange={handleRegionChange}
-                    handleClearSearch={handleClearSearch}
-                    handleDocumentCategoryClick={handleDocumentCategoryClick}
-                  />
-                </>
-              )}
-            </div>
-            <div className="mt-4 text-xs" data-cy="number-of-results">
-              {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
-            </div>
-          </SiteWidth> */}
-          {/* END MOBILE ONLY */}
           <MultiCol id="search">
             <SideCol
-              extraClasses={`absolute z-99 top-0 w-screen h-full bg-white duration-100 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] md:relative ${
-                showFilters ? "translate-x-0" : "translate-x-[-100%]"
-              } md:translate-x-0`}
+              extraClasses={`absolute z-99 top-0 w-screen bg-white duration-250 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] ${
+                showFilters ? "translate-y-[0%]" : "fixed translate-y-[100vh]"
+              } md:translate-y-[0%] md:h-full md:relative`}
             >
               {configQuery.isFetching ? (
                 <Loader size="20px" />
               ) : (
                 <>
-                  <div className="sticky top-0 z-50">
+                  <div className="md:sticky md:top-0 md:z-50">
                     <div className="z-10 px-5 bg-white border-r border-gray-300 pt-5 sticky top-0 h-screen overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
                       <SearchFilters
                         searchCriteria={searchQuery}
@@ -463,6 +404,19 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                         />
                       )}
                     </SlideOut>
+                    {/* // TODO: show only if a change */}
+                    <div className="absolute z-50 bottom-0 left-0 w-full flex">
+                      <Button
+                        variant="outlined"
+                        className="m-4 w-full"
+                        onClick={() => {
+                          setCurrentSlideOut("");
+                          setShowFilters(false);
+                        }}
+                      >
+                        Close
+                      </Button>
+                    </div>
                   </div>
                 </>
               )}
@@ -480,9 +434,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       <div className="md:hidden">
                         <Button content="both" className="flex-nowrap" onClick={toggleFilters}>
                           <span>{showFilters ? "Hide" : "Show"} filters</span>
-                          <div className={showFilters ? "rotate-180" : ""}>
-                            <Icon name="downChevron" />
-                          </div>
                         </Button>
                       </div>
                       <div className="relative z-10 md:order-1">
