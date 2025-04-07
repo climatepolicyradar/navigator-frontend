@@ -71,20 +71,18 @@ export default function buildSearchQuery(
       : [{ name: "name", value: conceptFilters }];
   }
 
-  if (routerQuery[QUERY_PARAMS.category]) {
-    const qCategory = routerQuery[QUERY_PARAMS.category] as string;
-    let category: string[];
-    let corpusIds: string[] = [];
-    if (themeConfig?.categories) {
-      const configCategory = themeConfig.categories.options.find((c) => c.slug.toLowerCase() === qCategory.toLowerCase());
-      category = configCategory?.category;
-      if (configCategory?.value) corpusIds = configCategory.value;
-    }
-    // Set the category if we have one (TODO: remove this at some point)
-    keyword_filters.categories = category;
-    // Set the corpus import ids if we have them
-    query.corpus_import_ids = corpusIds;
+  const qCategory = (routerQuery[QUERY_PARAMS.category] as string) ?? "All";
+  let category: string[];
+  let corpusIds: string[] = [];
+  if (themeConfig?.categories) {
+    const configCategory = themeConfig.categories.options.find((c) => c.slug.toLowerCase() === qCategory.toLowerCase());
+    category = configCategory?.category;
+    if (configCategory?.value) corpusIds = configCategory.value;
   }
+  // Set the category if we have one (TODO: remove this at some point)
+  keyword_filters.categories = category;
+  // Set the corpus import ids if we have them
+  query.corpus_import_ids = corpusIds;
 
   if (routerQuery[QUERY_PARAMS.region]) {
     const regions = routerQuery[QUERY_PARAMS.region];
