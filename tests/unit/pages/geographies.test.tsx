@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import CountryPage from "./[id]";
+import CountryPage from "../../../src/pages/geographies/[id]";
 
 vi.mock("next/router", () => ({
   useRouter: () => {
