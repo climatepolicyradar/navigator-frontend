@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="1" failures="1" errors="0" time="0.605">
+    <testsuite name="src/utils/buildSearchQuery.test.ts" timestamp="2025-04-07T12:21:48.898Z" hostname="Jamess-MacBook-Pro.local" tests="1" failures="1" errors="0" skipped="0" time="0.002795667">
+        <testcase classname="src/utils/buildSearchQuery.test.ts" name="buildSearchQuery:  &gt; should use All.categories if there&apos;s no category in the routerQuery" time="0.002338375">
+            <failure message="buildSearchQuery is not a function" type="TypeError">
+TypeError: buildSearchQuery is not a function
+ ❯ src/utils/buildSearchQuery.test.ts:14:25
+            </failure>
+        </testcase>
+    </testsuite>
+</testsuites>
