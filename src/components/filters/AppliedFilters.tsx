@@ -27,7 +27,11 @@ const handleConceptName = (label: string, concepts: TConcept[]) => {
   if (!concepts) {
     return label;
   }
-  return getConceptName(label, concepts);
+  const conceptLabel = getConceptName(label, concepts);
+  if (!conceptLabel) {
+    return label;
+  }
+  return conceptLabel.charAt(0).toUpperCase() + conceptLabel.slice(1);
 };
 
 type TFilterKeys = keyof typeof QUERY_PARAMS;

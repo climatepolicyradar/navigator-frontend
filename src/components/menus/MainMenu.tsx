@@ -34,6 +34,7 @@ const MainMenu = ({ iconClass = "text-white" }: TProps) => {
               title="Methodology"
               setShowMenu={setShowMenu}
             />
+            <DropdownMenuItem href="/faq" title="FAQ" setShowMenu={setShowMenu} />
           </DropdownMenuWrapper>
         </div>
       )}

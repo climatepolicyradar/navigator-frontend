@@ -15,7 +15,6 @@ export const UnavailableConcepts = ({ unavailableConcepts, familySlug }: TProps)
       </div>
     </div>
     <p className="text-xl font-medium">Concept not in Document</p>
-    <p>Concept matching is currently in beta mode.</p>
     <p>
       Some concepts from your search are not be present in this document but might be present in{" "}
       <Link
@@ -27,7 +26,7 @@ export const UnavailableConcepts = ({ unavailableConcepts, familySlug }: TProps)
       .
     </p>
     <p>
-      The following concept {unavailableConcepts.length > 1 ? "s are" : " is"} not present in this document:
+      The following {unavailableConcepts.length > 1 ? "concepts are" : "concept is"} not present in this document:
       <p className="font-medium">{unavailableConcepts.join(", ")}</p>
     </p>
   </div>

@@ -58,8 +58,8 @@ const SearchForm = ({ input, placeholder, size = "large", handleSearchInput, han
 
   return (
     <form data-cy="search-form" ref={formRef} onSubmit={onFormSubmit}>
-      <div className="relative z-40">
-        <div className="relative z-20">
+      <div className="relative">
+        <div className="relative">
           <TextInput
             value={term}
             onChange={onChange}

@@ -2,7 +2,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { MdOutlineTune } from "react-icons/md";
+import { LuSettings2 } from "react-icons/lu";
+
+import { ApiClient } from "@/api/http-common";
 
 import { ApiClient } from "@/api/http-common";
 import { ExternalLink } from "@/components/ExternalLink";
@@ -10,14 +12,17 @@ import Loader from "@/components/Loader";
 import { NoOfResults } from "@/components/NoOfResults";
 import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
+import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
 import SearchFilters from "@/components/blocks/SearchFilters";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Drawer from "@/components/drawer/Drawer";
 import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
 import { SearchSettings } from "@/components/filters/SearchSettings";
+import { Label } from "@/components/labels/Label";
 import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
 import { SubNav } from "@/components/nav/SubNav";
+import { ConceptPicker } from "@/components/organisms/ConceptPicker";
 import Pagination from "@/components/pagination";
 import { MultiCol } from "@/components/panels/MultiCol";
 import { SideCol } from "@/components/panels/SideCol";
@@ -25,6 +30,7 @@ import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import SearchResultList from "@/components/search/SearchResultList";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import useSearch from "@/hooks/useSearch";
@@ -53,6 +59,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const [showOptions, setShowOptions] = useState(false);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
   const settingsButtonRef = useRef(null);
+
+  const [currentSlideOut, setCurrentSlideOut] = useState<TSlideOutContent>("");
 
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
@@ -319,200 +327,225 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
 
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
-      <section>
-        <SubNav>
-          <BreadCrumbs label={"Search results"} />
-          <div>
-            <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
-              <span>Download data (.csv): </span>
-              <a
-                href="#"
-                className="flex gap-2 items-center justify-end text-blue-600 hover:underline hover:text-blue-800"
-                data-cy="download-search-csv"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowCSVDownloadPopup(true);
-                }}
-              >
-                {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
-              </a>
-              {getThemeConfigLink(themeConfig, "download-database") && (
+      <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
+        <section>
+          <SubNav>
+            <BreadCrumbs label={"Search results"} />
+            <div>
+              <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
+                <span>Download data (.csv): </span>
+                <a
+                  href="#"
+                  className="flex gap-2 items-center justify-end text-blue-600 hover:underline hover:text-blue-800"
+                  data-cy="download-search-csv"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowCSVDownloadPopup(true);
+                  }}
+                >
+                  {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
+                </a>
+                {getThemeConfigLink(themeConfig, "download-database") && (
+                  <>
+                    <span>|</span>
+                    <ExternalLink
+                      url={getThemeConfigLink(themeConfig, "download-database").url}
+                      className="text-blue-600 hover:underline hover:text-blue-800"
+                      cy="download-entire-search-csv"
+                    >
+                      whole database
+                    </ExternalLink>
+                  </>
+                )}
+              </span>
+            </div>
+          </SubNav>
+          {/* MOBILE ONLY */}
+          <SiteWidth extraClasses="pt-4 md:hidden">
+            <div className="flex justify-between gap-2 items-center">
+              <Button content="both" className="flex-nowrap md:hidden" onClick={toggleFilters}>
+                <span>{showFilters ? "Hide" : "Show"} filters</span>
+                <div className={showFilters ? "rotate-180" : ""}>
+                  <Icon name="downChevron" />
+                </div>
+              </Button>
+              <div className="relative z-10 flex justify-center">
+                <button
+                  className={`p-2 text-textDark text-xl ${showOptions ? "bg-nearBlack text-white rounded-full" : ""}`}
+                  onClick={() => setShowOptions(!showOptions)}
+                  data-cy="search-options-mobile"
+                  ref={settingsButtonRef}
+                >
+                  <LuSettings2 />
+                </button>
+                <AnimatePresence initial={false}>
+                  {showOptions && (
+                    <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
+                      <SearchSettings
+                        queryParams={router.query}
+                        handleSortClick={handleSortClick}
+                        handleSearchChange={handleSearchChange}
+                        setShowOptions={setShowOptions}
+                        settingsButtonRef={settingsButtonRef}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+            <div className={`${showFilters ? "" : "hidden"} mt-4`}>
+              {configQuery.isFetching ? (
+                <Loader size="20px" />
+              ) : (
                 <>
-                  <span>|</span>
-                  <ExternalLink
-                    url={getThemeConfigLink(themeConfig, "download-database").url}
-                    className="text-blue-600 hover:underline hover:text-blue-800"
-                    cy="download-entire-search-csv"
-                  >
-                    whole database
-                  </ExternalLink>
+                  <SearchFilters
+                    searchCriteria={searchQuery}
+                    query={router.query}
+                    regions={regions}
+                    countries={countries}
+                    corpus_types={corpus_types}
+                    conceptsData={conceptsData}
+                    handleFilterChange={handleFilterChange}
+                    handleYearChange={handleYearChange}
+                    handleRegionChange={handleRegionChange}
+                    handleClearSearch={handleClearSearch}
+                    handleDocumentCategoryClick={handleDocumentCategoryClick}
+                  />
                 </>
               )}
-            </span>
-          </div>
-        </SubNav>
-        {/* MOBILE ONLY */}
-        <SiteWidth extraClasses="pt-4 md:hidden">
-          <div className="flex gap-3 items-center">
-            <div className="flex-1 text-xs" data-cy="number-of-results">
+            </div>
+            <div className="mt-4 text-xs" data-cy="number-of-results">
               {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
             </div>
-            <Button content="both" className="flex-nowrap md:hidden" onClick={toggleFilters}>
-              <span>{showFilters ? "Hide" : "Show"} filters</span>
-              <div className={showFilters ? "rotate-180" : ""}>
-                <Icon name="downChevron" />
-              </div>
-            </Button>
-            <div className="relative z-10 flex justify-center">
-              <button
-                className={`p-2 text-textDark text-xl ${showOptions ? "bg-nearBlack text-white rounded-full" : ""}`}
-                onClick={() => setShowOptions(!showOptions)}
-                data-cy="search-options-mobile"
-                ref={settingsButtonRef}
-              >
-                <MdOutlineTune />
-              </button>
-              <AnimatePresence initial={false}>
-                {showOptions && (
-                  <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
-                    <SearchSettings
-                      queryParams={router.query}
-                      handleSortClick={handleSortClick}
-                      handleSearchChange={handleSearchChange}
-                      setShowOptions={setShowOptions}
-                      settingsButtonRef={settingsButtonRef}
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-          <div className={`${showFilters ? "" : "hidden"} mt-4`}>
-            {configQuery.isFetching ? (
-              <Loader size="20px" />
-            ) : (
-              <>
-                <SearchFilters
-                  searchCriteria={searchQuery}
-                  query={router.query}
-                  regions={regions}
-                  countries={countries}
-                  corpus_types={corpus_types}
-                  conceptsData={conceptsData}
-                  handleFilterChange={handleFilterChange}
-                  handleYearChange={handleYearChange}
-                  handleRegionChange={handleRegionChange}
-                  handleClearSearch={handleClearSearch}
-                  handleDocumentCategoryClick={handleDocumentCategoryClick}
-                />
-              </>
-            )}
-          </div>
-        </SiteWidth>
-        {/* END MOBILE ONLY */}
-        <MultiCol>
-          <SideCol extraClasses="hidden md:block border-r border-gray-300 pt-5 sticky top-0 h-screen overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
-            {configQuery.isFetching ? (
-              <Loader size="20px" />
-            ) : (
-              <SearchFilters
-                searchCriteria={searchQuery}
-                query={router.query}
-                regions={regions}
-                countries={countries}
-                corpus_types={corpus_types}
-                conceptsData={conceptsData}
-                handleFilterChange={handleFilterChange}
-                handleYearChange={handleYearChange}
-                handleRegionChange={handleRegionChange}
-                handleClearSearch={handleClearSearch}
-                handleDocumentCategoryClick={handleDocumentCategoryClick}
-              />
-            )}
-          </SideCol>
-          <SingleCol extraClasses="px-5 pt-5">
-            <div>
-              {/* NON MOBILE SEARCH */}
-              <div className="hidden md:block">
-                <div className="flex gap-3 items-center">
-                  <div className="flex-1 text-xs" data-cy="number-of-results">
-                    {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
-                  </div>
-                  <div className="relative z-10">
-                    <button
-                      className={`p-4 text-textDark text-xl ${showOptions ? "bg-nearBlack text-white rounded-full" : ""}`}
-                      onClick={() => setShowOptions(!showOptions)}
-                      data-cy="search-options"
-                      ref={settingsButtonRef}
-                    >
-                      <MdOutlineTune />
-                    </button>
-                    <AnimatePresence initial={false}>
-                      {showOptions && (
-                        <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
-                          <SearchSettings
-                            queryParams={router.query}
-                            handleSortClick={handleSortClick}
-                            handleSearchChange={handleSearchChange}
-                            setShowOptions={setShowOptions}
-                            settingsButtonRef={settingsButtonRef}
-                          />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-              </div>
-              {/* NON MOBILE SEARCH END */}
-              <div className="text-sm md:text-right">
-                {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
-                {downloadCSVStatus === "success" && (
-                  <span className="text-green-600">CSV downloaded successfully, please check your downloads folder</span>
-                )}
-              </div>
-            </div>
-
-            <div className="mt-5">
-              {status === "loading" ? (
-                <div className="w-full flex justify-center h-96">
-                  <Loader />
-                </div>
+          </SiteWidth>
+          {/* END MOBILE ONLY */}
+          <MultiCol id="search">
+            <SideCol extraClasses="hidden md:block relative">
+              {configQuery.isFetching ? (
+                <Loader size="20px" />
               ) : (
-                <section data-cy="search-results">
-                  <h2 className="sr-only">Search results</h2>
-                  <SearchResultList
-                    category={router.query[QUERY_PARAMS.category]?.toString()}
-                    families={families}
-                    onClick={handleMatchesButtonClick}
-                    activeFamilyIndex={drawerFamily}
-                  />
-                </section>
+                <>
+                  <div className="sticky top-0 z-50">
+                    <div className="z-10 px-5 bg-white border-r border-gray-300 pt-5 sticky top-0 h-screen overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
+                      <SearchFilters
+                        searchCriteria={searchQuery}
+                        query={router.query}
+                        regions={regions}
+                        countries={countries}
+                        corpus_types={corpus_types}
+                        conceptsData={conceptsData}
+                        handleFilterChange={handleFilterChange}
+                        handleYearChange={handleYearChange}
+                        handleRegionChange={handleRegionChange}
+                        handleClearSearch={handleClearSearch}
+                        handleDocumentCategoryClick={handleDocumentCategoryClick}
+                      />
+                    </div>
+                    <SlideOut showCloseButton={false}>
+                      <ConceptPicker
+                        concepts={conceptsData}
+                        title={
+                          <div className="flex items-center gap-2">
+                            <div className="text-[15px] font-medium text-text-primary">Concepts</div>
+                            <Label>Beta</Label>
+                          </div>
+                        }
+                      />
+                    </SlideOut>
+                  </div>
+                </>
               )}
+            </SideCol>
+            <div
+              className={`flex-1 bg-white transition-[filter] duration-150 ${
+                currentSlideOut ? "md:brightness-50 md:pointer-events-none md:select-none" : ""
+              }`}
+            >
+              <SingleCol extraClasses="px-5 pt-5 relative">
+                <div>
+                  {/* NON MOBILE SEARCH */}
+                  <div className="hidden md:block">
+                    <div className="flex gap-3 items-center">
+                      <div className="flex-1 text-xs" data-cy="number-of-results">
+                        {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
+                      </div>
+                      <div className="relative z-10">
+                        <button
+                          className={`p-4 text-textDark text-xl ${showOptions ? "bg-nearBlack text-white rounded-full" : ""}`}
+                          onClick={() => setShowOptions(!showOptions)}
+                          data-cy="search-options"
+                          ref={settingsButtonRef}
+                        >
+                          <LuSettings2 />
+                        </button>
+                        <AnimatePresence initial={false}>
+                          {showOptions && (
+                            <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
+                              <SearchSettings
+                                queryParams={router.query}
+                                handleSortClick={handleSortClick}
+                                handleSearchChange={handleSearchChange}
+                                setShowOptions={setShowOptions}
+                                settingsButtonRef={settingsButtonRef}
+                              />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </div>
+                  </div>
+                  {/* NON MOBILE SEARCH END */}
+                  <div className="text-sm md:text-right">
+                    {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
+                    {downloadCSVStatus === "success" && (
+                      <span className="text-green-600">CSV downloaded successfully, please check your downloads folder</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-5">
+                  {status === "loading" ? (
+                    <div className="w-full flex justify-center h-96">
+                      <Loader />
+                    </div>
+                  ) : (
+                    <section data-cy="search-results" className="min-h-screen">
+                      <h2 className="sr-only">Search results</h2>
+                      <SearchResultList
+                        category={router.query[QUERY_PARAMS.category]?.toString()}
+                        families={families}
+                        onClick={handleMatchesButtonClick}
+                        activeFamilyIndex={drawerFamily}
+                      />
+                    </section>
+                  )}
+                </div>
+                {status !== "loading" && hits > 1 && (
+                  <div className="mb-12">
+                    <Pagination
+                      onChange={handlePageChange}
+                      totalHits={hits}
+                      activeContinuationToken={router.query[QUERY_PARAMS.active_continuation_token] as string}
+                      continuationToken={continuationToken}
+                      continuationTokens={router.query[QUERY_PARAMS.continuation_tokens] as string}
+                      offset={router.query[QUERY_PARAMS.offset] as string}
+                    />
+                  </div>
+                )}
+              </SingleCol>
             </div>
-            {status !== "loading" && hits > 1 && (
-              <div className="mb-12">
-                <Pagination
-                  onChange={handlePageChange}
-                  totalHits={hits}
-                  activeContinuationToken={router.query[QUERY_PARAMS.active_continuation_token] as string}
-                  continuationToken={continuationToken}
-                  continuationTokens={router.query[QUERY_PARAMS.continuation_tokens] as string}
-                  offset={router.query[QUERY_PARAMS.offset] as string}
-                />
-              </div>
-            )}
-          </SingleCol>
-        </MultiCol>
-      </section>
-      <Drawer show={drawerFamily !== false} setShow={setDrawerFamily}>
-        <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
-      </Drawer>
-      <DownloadCsvPopup
-        active={showCSVDownloadPopup}
-        onCancelClick={() => setShowCSVDownloadPopup(false)}
-        onConfirmClick={() => handleDownloadCsvClick()}
-      />
-      <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
+          </MultiCol>
+        </section>
+        <Drawer show={drawerFamily !== false} setShow={setDrawerFamily}>
+          <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
+        </Drawer>
+        <DownloadCsvPopup
+          active={showCSVDownloadPopup}
+          onCancelClick={() => setShowCSVDownloadPopup(false)}
+          onConfirmClick={() => handleDownloadCsvClick()}
+        />
+        <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
+      </SlideOutContext.Provider>
     </Layout>
   );
 };
@@ -534,7 +567,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const client = new ApiClient(process.env.CONCEPTS_API_URL);
     const conceptsV1 = featureFlags["concepts-v1"];
     if (conceptsV1) {
-      const { data: returnedData } = await client.get(`/concepts/search?limit=10000&has_classifier=true&q=`);
+      const { data: returnedData } = await client.get(`/concepts/search?limit=10000&has_classifier=true`);
       conceptsData = returnedData;
     }
   } catch (error) {

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import { FilterOptions } from "./FilterOptions";
+import { FilterOptions } from "@/components/blocks/FilterOptions";
 
 describe("FilterOptions", () => {
   it("displays the correct filter options when corporaKey is present in themeConfig", () => {

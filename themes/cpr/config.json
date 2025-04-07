@@ -4,7 +4,24 @@
     "options": [
       {
         "label": "All",
-        "slug": "All"
+        "slug": "All",
+        "value": [
+          "CCLW.corpus.i00000001.n0000",
+          "CPR.corpus.Goldstandard.n0000",
+          "CPR.corpus.i00000589.n0000",
+          "CPR.corpus.i00000591.n0000",
+          "CPR.corpus.i00000592.n0000",
+          "MCF.corpus.AF.Guidance",
+          "MCF.corpus.AF.n0000",
+          "MCF.corpus.CIF.Guidance",
+          "MCF.corpus.CIF.n0000",
+          "MCF.corpus.GCF.Guidance",
+          "MCF.corpus.GCF.n0000",
+          "MCF.corpus.GEF.Guidance",
+          "MCF.corpus.GEF.n0000",
+          "OEP.corpus.i00000001.n0000",
+          "UNFCCC.corpus.i00000001.n0000"
+        ]
       },
       {
         "label": "UNFCCC",
@@ -17,7 +34,6 @@
         "slug": "policies",
         "value": [
           "CCLW.corpus.i00000001.n0000",
-          "CPR.corpus.i00000001.n0000",
           "CPR.corpus.i00000589.n0000",
           "CPR.corpus.i00000591.n0000",
           "CPR.corpus.i00000592.n0000",
@@ -30,7 +46,6 @@
         "slug": "laws",
         "value": [
           "CCLW.corpus.i00000001.n0000",
-          "CPR.corpus.i00000001.n0000",
           "CPR.corpus.i00000589.n0000",
           "CPR.corpus.i00000591.n0000",
           "CPR.corpus.i00000592.n0000",
@@ -194,7 +209,6 @@
       "type": "radio",
       "category": [
         "CCLW.corpus.i00000001.n0000",
-        "CPR.corpus.i00000001.n0000",
         "CPR.corpus.i00000589.n0000",
         "CPR.corpus.i00000591.n0000",
         "CPR.corpus.i00000592.n0000",
@@ -210,7 +224,6 @@
       "type": "radio",
       "category": [
         "CCLW.corpus.i00000001.n0000",
-        "CPR.corpus.i00000001.n0000",
         "CPR.corpus.i00000589.n0000",
         "CPR.corpus.i00000591.n0000",
         "CPR.corpus.i00000592.n0000",

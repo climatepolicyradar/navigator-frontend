@@ -1,19 +1,16 @@
-import { AnimatePresence } from "framer-motion";
-import { motion } from "framer-motion";
-import { useEffect, useState, useCallback, useMemo, useReducer } from "react";
-import { MdOutlineTune } from "react-icons/md";
+import { AnimatePresence, motion } from "framer-motion";
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { LuSettings2 } from "react-icons/lu";
 
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
 import PassageMatches from "@/components/PassageMatches";
 import { Button } from "@/components/atoms/button/Button";
-import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
+import { Icon } from "@/components/atoms/icon/Icon";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { UnavailableConcepts } from "@/components/documents/UnavailableConcepts";
 import { SearchSettings } from "@/components/filters/SearchSettings";
-import SearchForm from "@/components/forms/SearchForm";
-import { FullWidth } from "@/components/panels/FullWidth";
 import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -21,6 +18,9 @@ import { useEffectOnce } from "@/hooks/useEffectOnce";
 import useSearch from "@/hooks/useSearch";
 import { TConcept, TDocumentPage, TSearchResponse } from "@/types";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
+
+import { ConceptPicker } from "../organisms/ConceptPicker";
+import { SideCol } from "../panels/SideCol";
 
 type TProps = {
   initialQueryTerm?: string | string[];
@@ -33,14 +33,13 @@ type TProps = {
   familySlug: string;
   // Callback props for state changes
   onExactMatchChange?: (isExact: boolean) => void;
-  onConceptClick?: (conceptLabel: string) => void;
 };
 
 const passageClasses = (docType: string) => {
   if (docType === "application/pdf") {
-    return "md:w-1/3";
+    return "xl:w-1/3";
   }
-  return "md:w-2/3";
+  return "xl:w-2/3";
 };
 
 const renderPassageCount = (count: number): string => {
@@ -57,9 +56,9 @@ export const ConceptsDocumentViewer = ({
   vespaFamilyData,
   vespaDocumentData,
   onExactMatchChange,
-  onConceptClick,
 }: TProps) => {
   const [showSearchOptions, setShowSearchOptions] = useState(false);
+  const [showConcepts, setShowConcepts] = useState(false);
 
   const getQueryTerm = (term: string | string[]) => (Array.isArray(term) ? term[0] : term || "");
 
@@ -77,7 +76,6 @@ export const ConceptsDocumentViewer = ({
     setState({ queryTerm: newQueryTerm });
   }, [initialQueryTerm]);
 
-  const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
   const [familyConcepts, setFamilyConcepts] = useState<TConcept[]>([]);
 
   const canPreview = document.content_type === "application/pdf";
@@ -94,13 +92,12 @@ export const ConceptsDocumentViewer = ({
       });
     });
 
-    fetchAndProcessConcepts(Array.from(conceptIds)).then(({ rootConcepts, concepts }) => {
-      setRootConcepts(rootConcepts);
+    fetchAndProcessConcepts(Array.from(conceptIds)).then(({ concepts }) => {
       setFamilyConcepts(concepts);
     });
   });
 
-  const documentConcepts = useMemo(() => {
+  const documentConcepts: TConcept[] = useMemo(() => {
     const uniqueConceptMap = new Map<string, { concept: TConcept; count: number }>();
 
     (vespaDocumentData?.families ?? []).forEach((family) => {
@@ -129,18 +126,6 @@ export const ConceptsDocumentViewer = ({
       }))
       .sort((a, b) => (b.count || 0) - (a.count || 0));
   }, [vespaDocumentData, familyConcepts]);
-
-  const documentConceptCountsById = useMemo(
-    () =>
-      documentConcepts.reduce(
-        (acc, concept) => {
-          acc[concept.wikibase_id] = concept.count || 0;
-          return acc;
-        },
-        {} as Record<string, number>
-      ),
-    [documentConcepts]
-  );
 
   const selectedConcepts = useMemo(
     () =>
@@ -216,149 +201,157 @@ export const ConceptsDocumentViewer = ({
     [onExactMatchChange]
   );
 
+  const handleToggleConcepts = () => {
+    setShowConcepts((current) => !current);
+  };
+
+  if (!documentConcepts.length) return;
+
+  const isLoading = status !== "success";
+  const hasConcepts = selectedConcepts.length > 0;
+  const showPassages = initialQueryTerm !== "" && state.totalNoOfMatches > 0;
+  const hasNoPassages = !showPassages || (state.totalNoOfMatches === 0 && unavailableConcepts.length === 0);
+  const hasUnavailableConcepts = state.totalNoOfMatches === 0 && unavailableConcepts.length > 0;
+
   return (
-    <>
-      {documentConcepts.length > 0 && (
-        <section className="flex-1 flex" id="document-concepts-viewer">
-          <FullWidth extraClasses="flex-1">
-            <div id="document-container" className="flex flex-col md:flex-row md:h-[90vh]">
-              <div id="document-preview" className={`pt-4 flex-1 h-[400px] basis-[400px] md:block md:h-full md:border-r md:border-r-gray-200`}>
-                {canPreview && (
-                  <EmbeddedPDF
-                    document={document}
-                    documentPassageMatches={state.passageMatches}
-                    passageIndex={state.passageIndex}
-                    startingPassageIndex={initialPassage}
+    <section className="flex-1 xl:px-5" id="document-concepts-viewer">
+      <div id="document-container" className="flex flex-col xl:flex-row xl:h-[90vh]">
+        {/* Concepts */}
+        <SideCol id="document-concepts" extraClasses="!w-full xl:!w-maxSidebar">
+          <div className="p-4 xl:hidden">
+            <Button content="both" onClick={handleToggleConcepts}>
+              <span>{showConcepts ? "Hide" : "Show"} concepts</span>
+              <div className={showConcepts ? "rotate-180" : ""}>
+                <Icon name="downChevron" />
+              </div>
+            </Button>
+          </div>
+          <ConceptPicker
+            concepts={documentConcepts}
+            showSearch={false}
+            title={<p className="text-base font-medium">In this document</p>}
+            containerClasses={`pt-4 pr-4 pl-4 xl:pl-0 ${showConcepts ? "" : "hidden xl:flex"}`}
+          />
+        </SideCol>
+
+        {/* Preview */}
+        <div
+          id="document-preview"
+          className={`flex-1 order-last xl:order-none h-[400px] basis-[400px] xl:block xl:h-full xl:border-x xl:border-x-gray-200 px-4 xl:px-0`}
+        >
+          {canPreview && (
+            <EmbeddedPDF
+              document={document}
+              documentPassageMatches={state.passageMatches}
+              passageIndex={state.passageIndex}
+              startingPassageIndex={initialPassage}
+            />
+          )}
+          {!canPreview && <EmptyDocument />}
+        </div>
+
+        {/* Sidebar */}
+        <div
+          id="document-sidebar"
+          className={`flex flex-col overflow-y-auto max-h-[90vh] mr-4 xl:mr-0 scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 xl:max-h-full xl:max-w-[480px] xl:min-w-[400px] xl:grow-0 xl:shrink-0 ${passageClasses(
+            document.content_type
+          )}`}
+        >
+          <div className="flex justify-between p-4">
+            <h1 className="text-base font-medium">Passage matches</h1>
+            <button className="text-xl text-text-tertiary" onClick={() => setShowSearchOptions(!showSearchOptions)}>
+              <LuSettings2 />
+            </button>
+            <AnimatePresence initial={false}>
+              {showSearchOptions && (
+                <motion.div
+                  key="content"
+                  initial="collapsed"
+                  animate="open"
+                  exit="collapsed"
+                  variants={{
+                    collapsed: { opacity: 0, transition: { duration: 0.1 } },
+                    open: { opacity: 1, transition: { duration: 0.25 } },
+                  }}
+                >
+                  <SearchSettings
+                    queryParams={searchQueryParams}
+                    handleSearchChange={handleSemanticSearchChange}
+                    setShowOptions={setShowSearchOptions}
                   />
-                )}
-                {!canPreview && <EmptyDocument />}
-              </div>
-              <div
-                id="document-sidebar"
-                className={`flex flex-col overflow-y-auto py-4 order-first max-h-[90vh] scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 ${passageClasses(
-                  document.content_type
-                )}`}
-              >
-                <div id="document-search" className="flex flex-col gap-2 md:pl-4">
-                  {unavailableConcepts.length === 0 && (
-                    <div className="relative z-10 flex justify-end">
-                      <button
-                        className="px-4 flex justify-center items-center text-textDark text-xl"
-                        onClick={() => setShowSearchOptions(!showSearchOptions)}
-                      >
-                        <MdOutlineTune />
-                      </button>
-                      <AnimatePresence initial={false}>
-                        {showSearchOptions && (
-                          <motion.div
-                            key="content"
-                            initial="collapsed"
-                            animate="open"
-                            exit="collapsed"
-                            variants={{
-                              collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                              open: { opacity: 1, transition: { duration: 0.25 } },
-                            }}
-                          >
-                            <SearchSettings
-                              queryParams={searchQueryParams}
-                              handleSearchChange={handleSemanticSearchChange}
-                              setShowOptions={setShowSearchOptions}
-                            />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
-                  {selectedConcepts.length === 0 && !initialQueryTerm && (
-                    <ConceptsPanel
-                      rootConcepts={rootConcepts}
-                      concepts={documentConcepts}
-                      conceptCountsById={documentConceptCountsById}
-                      onConceptClick={onConceptClick}
-                      showCounts={false}
-                    ></ConceptsPanel>
-                  )}
-
-                  {selectedConcepts.length > 0 && (
-                    <div className="pt-6 pb-6">
-                      <p className="mb-2 capitalize text-[15px] font-medium text-neutral-800 text-base leading-normal flex-grow">
-                        {selectedConcepts.map((concept) => concept.preferred_label).join(", ")}
-                      </p>
-                      {selectedConcepts.map((concept) => (
-                        <p key={concept.wikibase_id} className="pt-1 pb-1">
-                          {concept.description}
-                        </p>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {status !== "success" ? (
-                  <div className="w-full flex justify-center flex-1 bg-white">
-                    <Loader />
-                  </div>
-                ) : (
-                  <>
-                    {initialQueryTerm !== "" && state.totalNoOfMatches > 0 && (
-                      <>
-                        <div className="border-gray-200 my-4 text-sm pb-4 border-b md:pl-4" data-cy="document-matches-description">
-                          <div className="mb-2">
-                            Displaying {renderPassageCount(state.totalNoOfMatches)}{" "}
-                            {initialQueryTerm && (
-                              <>
-                                for "<span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
-                              </>
-                            )}
-                            {initialQueryTerm && !searchQuery.exact_match && ` and related phrases`}
-                            {selectedConcepts.length > 0 && (
-                              <>
-                                {" in "}
-                                <b>{selectedConcepts.map((concept) => concept.preferred_label).join(", ")}</b>
-                              </>
-                            )}
-                            {state.totalNoOfMatches >= MAX_RESULTS && (
-                              <span className="ml-1 inline-block">
-                                <SearchLimitTooltip colour="grey" />
-                              </span>
-                            )}
-                          </div>
-                          <p>Sorted by search relevance</p>
-                        </div>
-                        <div
-                          id="document-passage-matches"
-                          className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
-                        >
-                          <PassageMatches
-                            passages={state.passageMatches}
-                            onClick={handlePassageClick}
-                            activeIndex={state.passageIndex ?? initialPassage}
-                          />
-                        </div>
-                      </>
-                    )}
-
-                    {state.totalNoOfMatches === 0 && unavailableConcepts.length === 0 && (
-                      <EmptyPassages
-                        hasQueryString={
-                          !!searchQueryParams[QUERY_PARAMS.query_string] &&
-                          !!searchQueryParams[QUERY_PARAMS.concept_id] &&
-                          !!searchQueryParams[QUERY_PARAMS.concept_name]
-                        }
-                      />
-                    )}
-
-                    {state.totalNoOfMatches === 0 && unavailableConcepts.length > 0 && (
-                      <UnavailableConcepts unavailableConcepts={unavailableConcepts} familySlug={familySlug} />
-                    )}
-                  </>
-                )}
-              </div>
+          {isLoading ? (
+            <div className="w-full flex justify-center flex-1">
+              <Loader />
             </div>
-          </FullWidth>
-        </section>
-      )}
-    </>
+          ) : (
+            <>
+              {hasConcepts && !hasNoPassages && (
+                <div className="px-4">
+                  {selectedConcepts.map((concept) => (
+                    <React.Fragment key={concept.wikibase_id}>
+                      <p className="mt-4 my-2 capitalize text-[15px] font-medium text-neutral-800 text-base leading-normal flex-grow">
+                        {concept.preferred_label}
+                      </p>
+                      <p className="mt-2 my-4">{concept.description}</p>
+                    </React.Fragment>
+                  ))}
+                </div>
+              )}
+
+              {showPassages && (
+                <>
+                  <div className="border-gray-200 p-4 text-sm border-b xl:pl-4" data-cy="document-matches-description">
+                    <div className="mb-2">
+                      Displaying {renderPassageCount(state.totalNoOfMatches)}{" "}
+                      {initialQueryTerm && (
+                        <>
+                          for "<span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
+                        </>
+                      )}
+                      {initialQueryTerm && !searchQuery.exact_match && ` and related phrases`}
+                      {selectedConcepts.length > 0 && (
+                        <>
+                          {" in "}
+                          <b>{selectedConcepts.map((concept) => concept.preferred_label).join(", ")}</b>
+                        </>
+                      )}
+                      {state.totalNoOfMatches >= MAX_RESULTS && (
+                        <span className="ml-1 inline-block">
+                          <SearchLimitTooltip colour="grey" />
+                        </span>
+                      )}
+                    </div>
+                    <p>Sorted by search relevance</p>
+                  </div>
+                  <div
+                    id="document-passage-matches"
+                    className="relative xl:overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 px-4"
+                  >
+                    <PassageMatches passages={state.passageMatches} onClick={handlePassageClick} activeIndex={state.passageIndex ?? initialPassage} />
+                  </div>
+                </>
+              )}
+
+              {hasNoPassages && (
+                <EmptyPassages
+                  hasQueryString={
+                    !!searchQueryParams[QUERY_PARAMS.query_string] &&
+                    !!searchQueryParams[QUERY_PARAMS.concept_id] &&
+                    !!searchQueryParams[QUERY_PARAMS.concept_name]
+                  }
+                />
+              )}
+
+              {hasUnavailableConcepts && <UnavailableConcepts unavailableConcepts={unavailableConcepts} familySlug={familySlug} />}
+            </>
+          )}
+        </div>
+      </div>
+    </section>
   );
 };
