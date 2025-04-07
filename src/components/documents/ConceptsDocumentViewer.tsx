@@ -246,11 +246,13 @@ export const ConceptsDocumentViewer = ({
             document.content_type
           )}`}
         >
-          <div className="flex justify-between p-4">
-            <h1 className="text-base font-medium">Passage matches</h1>
-            <button className="text-xl text-text-tertiary" onClick={() => setShowSearchOptions(!showSearchOptions)}>
-              <LuSettings2 />
-            </button>
+          <div className="relative">
+            <div className="flex justify-between p-4">
+              <h1 className="text-base font-medium">Passage matches</h1>
+              <button className="text-xl text-text-tertiary" onClick={() => setShowSearchOptions(!showSearchOptions)}>
+                <LuSettings2 />
+              </button>
+            </div>
             <AnimatePresence initial={false}>
               {showSearchOptions && (
                 <motion.div
@@ -267,6 +269,7 @@ export const ConceptsDocumentViewer = ({
                     queryParams={searchQueryParams}
                     handleSearchChange={handleSemanticSearchChange}
                     setShowOptions={setShowSearchOptions}
+                    extraClasses="!mt-0 mr-4"
                   />
                 </motion.div>
               )}
