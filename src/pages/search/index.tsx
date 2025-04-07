@@ -13,7 +13,6 @@ import useSearch from "@/hooks/useSearch";
 import { MultiCol } from "@/components/panels/MultiCol";
 import { SideCol } from "@/components/panels/SideCol";
 import { SingleCol } from "@/components/panels/SingleCol";
-import { SiteWidth } from "@/components/panels/SiteWidth";
 
 import { ExternalLink } from "@/components/ExternalLink";
 import Loader from "@/components/Loader";
@@ -63,6 +62,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
+  const [searchChanged, setSearchChanged] = useState(false);
   const settingsButtonRef = useRef(null);
 
   const [currentSlideOut, setCurrentSlideOut] = useState<TSlideOutContent>("");
@@ -330,6 +330,15 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     };
   }, [drawerFamily, showCSVDownloadPopup]);
 
+  // We want to track changes to search, but only within the context of an open filter panel
+  useEffect(() => {
+    setSearchChanged(true);
+  }, [searchQuery]);
+  // If we are opening or closing the filters, we want to assume there are no changes yet
+  useEffect(() => {
+    setSearchChanged(false);
+  }, [showFilters]);
+
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
       <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
@@ -369,14 +378,14 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
             <SideCol
               extraClasses={`absolute z-99 top-0 w-screen bg-white duration-250 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] ${
                 showFilters ? "translate-y-[0%]" : "fixed translate-y-[100vh]"
-              } md:translate-y-[0%] md:h-full md:relative`}
+              } md:translate-y-[0%] md:h-full md:sticky`}
             >
               {configQuery.isFetching ? (
                 <Loader size="20px" />
               ) : (
                 <>
                   <div className="md:sticky md:top-0 md:z-50">
-                    <div className="z-10 px-5 bg-white border-r border-gray-300 pt-5 sticky top-0 h-screen overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
+                    <div className="z-10 px-5 bg-white border-r border-gray-300 pt-5 pb-[70px] sticky top-0 h-screen overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pb-0">
                       <SearchFilters
                         searchCriteria={searchQuery}
                         query={router.query}
@@ -405,16 +414,17 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       )}
                     </SlideOut>
                     {/* // TODO: show only if a change */}
-                    <div className="absolute z-50 bottom-0 left-0 w-full flex">
+                    <div className="absolute z-50 bottom-0 left-0 w-full flex bg-white md:hidden">
                       <Button
-                        variant="outlined"
+                        variant={searchChanged ? "solid" : "outlined"}
                         className="m-4 w-full"
                         onClick={() => {
                           setCurrentSlideOut("");
                           setShowFilters(false);
+                          setSearchChanged(false);
                         }}
                       >
-                        Close
+                        {searchChanged ? "Apply" : "Close"}
                       </Button>
                     </div>
                   </div>
