@@ -1,0 +1,51 @@
+<testsuites id="" name="" tests="2" failures="1" skipped="0" errors="0" time="18.377963">
+<testsuite name="search.spec.ts" timestamp="2025-04-07T12:45:38.428Z" hostname="chromium" tests="1" failures="1" skipped="0" time="15.325" errors="0">
+<testcase name="search" classname="search.spec.ts" time="15.325">
+<failure message="search.spec.ts:3:5 search" type="FAILURE">
+<![CDATA[  [chromium] › search.spec.ts:3:5 › search ─────────────────────────────────────────────────────────
+
+    Error: Timed out 10000ms waiting for expect(locator).toBeVisible()
+
+    Locator: locator('div').filter({ has: getByRole('heading', { name: 'Search results' }) }).last().locator('[data-cy="search-result"]').first()
+    Expected: visible
+    Received: <element(s) not found>
+    Call log:
+      - expect.toBeVisible with timeout 10000ms
+      - waiting for locator('div').filter({ has: getByRole('heading', { name: 'Search results' }) }).last().locator('[data-cy="search-result"]').first()
+
+
+      35 |   /** Check the structure of the search result */
+      36 |   const firstSearchResult = searchResults.locator('[data-cy="search-result"]').first();
+    > 37 |   await expect(firstSearchResult).toBeVisible({ timeout: 10000 });
+         |                                   ^
+      38 |
+      39 |   /** TODO: Make the markup more semantic */
+      40 |   await expect(firstSearchResult.locator('[data-cy="family-title"]')).toBeVisible();
+        at /Users/jamesgorrie/code/navigator-frontend/tests/search.spec.ts:37:35
+
+    attachment #1: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/search-search-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/search-search-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/search-search-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="searchFilters.spec.ts" timestamp="2025-04-07T12:45:38.428Z" hostname="chromium" tests="1" failures="0" skipped="0" time="4.968" errors="0">
+<testcase name="search filters" classname="searchFilters.spec.ts" time="4.968">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/searchFilters-search-filters-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>
