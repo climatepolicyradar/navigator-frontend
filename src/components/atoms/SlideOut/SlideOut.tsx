@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { LuArrowLeft } from "react-icons/lu";
 
 import { Icon } from "@/components/atoms/icon/Icon";
 
@@ -47,6 +48,14 @@ export const SlideOut = ({ children, showCloseButton = true }: SlideOutProps) =>
               <Icon name="close" width="12" height="12" />
             </button>
           )}
+          <div className="mb-5 md:hidden">
+            <button
+              className="flex items-center gap-2 text-sm text-text-secondary opacity-50 hover:opacity-100"
+              onClick={() => setCurrentSlideOut("")}
+            >
+              <LuArrowLeft /> Back
+            </button>
+          </div>
           {children}
         </motion.div>
       )}
