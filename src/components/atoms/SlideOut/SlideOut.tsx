@@ -33,14 +33,14 @@ export const SlideOut = ({ children, showCloseButton = true }: SlideOutProps) =>
 
   return (
     <AnimatePresence initial={false}>
-      {currentSlideOut === "concepts" && (
+      {currentSlideOut !== "" && (
         <motion.div
           ref={ref}
           key="slideOut"
           initial={{ translateX: "-100px" }}
           animate={{ opacity: 1, translateX: 0, transition: { duration: 0.35, ease: [0.04, 0.62, 0.23, 0.98] } }}
           exit={{ opacity: 0, transition: { duration: 0 } }}
-          className="absolute top-0 left-full h-full bg-white p-5 pb-10 min-w-[400px]"
+          className="absolute z-20 top-0 left-0 h-full bg-white p-5 pb-10 w-screen md:z-0 md:w-auto md:min-w-[400px] md:left-full"
         >
           {showCloseButton && (
             <button className="absolute z-20 top-5 right-5" onClick={() => setCurrentSlideOut("")}>

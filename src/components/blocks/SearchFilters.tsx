@@ -158,7 +158,7 @@ const SearchFilters = ({
       {conceptsData && (
         <>
           <button
-            className="items-center justify-between cursor-pointer group hidden md:flex"
+            className="items-center justify-between cursor-pointer group flex"
             onClick={() => setCurrentSlideOut(currentSlideOut === "" ? "concepts" : "")}
             data-cy="concepts-control"
             {...{ [SLIDE_OUT_DATA_KEY]: "concepts" }}
