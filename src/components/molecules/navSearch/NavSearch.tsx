@@ -132,7 +132,7 @@ export const NavSearch = () => {
 
   return (
     <div className="relative" ref={ref}>
-      <div className="p-2 relative z-20">
+      <div className="p-2 relative z-21">
         <form onSubmit={handleSubmit} className="flex flex-row gap-2">
           {/* Search field */}
           <Input
@@ -162,7 +162,7 @@ export const NavSearch = () => {
 
       {/* Results */}
       {isFocused && (
-        <div className="absolute top-0 left-0 right-0 min-h-[56px] outline -outline-offset-1 outline-border-lighter rounded-xl bg-surface-light shadow-[0px_4px_48px_0px_rgba(0,0,0,0.08)]">
+        <div className="absolute top-0 left-0 z-20 right-0 min-h-[56px] outline -outline-offset-1 outline-border-lighter rounded-xl bg-surface-light shadow-[0px_4px_48px_0px_rgba(0,0,0,0.08)]">
           {showResults && (
             <div className="flex flex-col gap-3 p-2 pt-[56px]">
               {/* Geographies */}
