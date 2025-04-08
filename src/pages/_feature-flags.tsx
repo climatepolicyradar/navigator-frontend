@@ -1,4 +1,5 @@
 import { Button } from "@/components/atoms/button/Button";
+import { config } from "@/config";
 import { setFeatureFlags } from "@/utils/featureFlags";
 import { usePostHog } from "posthog-js/react";
 import { useEffect } from "react";
@@ -7,6 +8,9 @@ export default function FeatureFlags() {
   const posthog = usePostHog();
 
   useEffect(() => {
+    /* trunk-ignore(eslint/no-console) */
+    console.info("test config", config);
+
     /**
      * This key is a public key.
      * @see: https://posthog.com/docs/privacy#is-it-ok-for-my-api-key-to-be-exposed-and-public

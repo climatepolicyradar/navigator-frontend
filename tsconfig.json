@@ -30,7 +30,8 @@
       "@/utils/*": ["src/utils/*"],
       "@/cclw/*": ["themes/cclw/*"],
       "@/cpr/*": ["themes/cpr/*"],
-      "@/mcf/*": ["themes/mcf/*"]
+      "@/mcf/*": ["themes/mcf/*"],
+      "@/config": ["src/config/index"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/api/pdf.js", "vitest.config.mts"],
