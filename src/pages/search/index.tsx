@@ -316,20 +316,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     }, 150);
   };
 
-  // Concerned only with preventing scrolling when either the drawer or the CSV download popup is open
-  useEffect(() => {
-    if (typeof drawerFamily === "number" || showCSVDownloadPopup) {
-      document.body.classList.add("overflow-hidden");
-    } else {
-      document.body.classList.remove("overflow-hidden");
-    }
-
-    // Allow page to scroll on unmount
-    return () => {
-      document.body.classList.remove("overflow-hidden");
-    };
-  }, [drawerFamily, showCSVDownloadPopup]);
-
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
       <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
@@ -546,11 +532,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
         <Drawer show={drawerFamily !== false} setShow={setDrawerFamily}>
           <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
         </Drawer>
-        <DownloadCsvPopup
-          active={showCSVDownloadPopup}
-          onCancelClick={() => setShowCSVDownloadPopup(false)}
-          onConfirmClick={() => handleDownloadCsvClick()}
-        />
+        <DownloadCsvPopup isOpen={showCSVDownloadPopup} onClose={() => setShowCSVDownloadPopup(false)} onDownload={handleDownloadCsvClick} />
         <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
       </SlideOutContext.Provider>
     </Layout>

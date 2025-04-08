@@ -2,7 +2,7 @@ import { Card } from "@/components/atoms/card/Card";
 import React, { useEffect } from "react";
 import { LuX } from "react-icons/lu";
 
-interface ModalProps {
+export interface ModalProps {
   cardClasses?: string;
   children: React.ReactNode;
   isOpen: boolean;
@@ -34,7 +34,7 @@ export const Modal = ({ cardClasses = "", children, isOpen, onClose, showCloseBu
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex flex-col justify-center items-center bg-surface-mono-dark/50 overflow-hidden ${
+      className={`fixed inset-0 z-100 flex flex-col justify-center items-center bg-surface-mono-dark/50 overflow-hidden ${
         isOpen ? "visible" : "invisible"
       }`}
       onClick={onModalClick}

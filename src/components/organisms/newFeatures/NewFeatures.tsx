@@ -2,7 +2,7 @@ import { Card } from "@/components/atoms/card/Card";
 import { LuX } from "react-icons/lu";
 
 export const NewFeatures = () => (
-  <div className="absolute inset-0 z-200 p-4 flex flex-col justify-end pointer-events-none">
+  <div className="fixed inset-0 z-90 p-4 flex flex-col justify-end pointer-events-none">
     <Card className="max-w-[300px] pointer-events-auto">
       <div className="flex justify-between">
         <span>New thing!</span>
