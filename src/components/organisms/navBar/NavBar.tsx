@@ -10,7 +10,7 @@ interface NavBarProps {
 
 export const NavBar = ({ headerClasses = "", logo, menu, showLogo = true, showSearch = true }: NavBarProps) => {
   return (
-    <header data-cy="header" className={`w-full h-[128px] sm:h-[72px] ${headerClasses}`}>
+    <header data-cy="header" className={`w-full h-[128px] sm:h-[72px] sticky top-0 z-60 ${headerClasses}`}>
       <div className="max-w-maxSiteWidth sm:px-4 pt-2 sm:pb-2 mx-auto flex justify-between items-center flex-wrap sm:flex-nowrap gap-y-1 sm:gap-y-0">
         {showLogo && <div className="lg:flex-1 shrink-4 md:max-w-[30%] px-4 sm:pl-0 sm:pt-0">{logo}</div>}
         {showSearch && (
