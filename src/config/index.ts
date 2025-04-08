@@ -19,10 +19,11 @@ export function generateBrowserEnvConfig() {
   return config;
 }
 
-export const config = {} as Record<(typeof publicRuntimeEnvConfig)[number], string>;
+type PublicEnvConfig = Record<(typeof publicRuntimeEnvConfig)[number], string>;
+export const config = {} as PublicEnvConfig;
 declare global {
   interface Window {
-    __ENV__: Record<string, string>;
+    __ENV__: PublicEnvConfig;
   }
 }
 
