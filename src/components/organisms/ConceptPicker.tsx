@@ -110,7 +110,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
           {/* GROUPED SORT */}
           {sort === "Grouped" &&
             rootConcepts.map((rootConcept) => {
-              const filteredConcepts = filterConcepts(conceptsGrouped[rootConcept.wikibase_id], search);
+              const filteredConcepts = filterConcepts(conceptsGrouped[rootConcept.wikibase_id] || [], search);
               if (filteredConcepts.length === 0) return null;
               return (
                 <div className="pb-4 flex flex-col gap-2" key={rootConcept.wikibase_id}>
