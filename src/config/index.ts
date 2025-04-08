@@ -13,7 +13,7 @@ export const publicRuntimeEnvConfig = ["API_URL", "THEME", "BACKEND_API_URL", "B
 export function generateBrowserEnvConfig() {
   const config = {};
   for (const key of publicRuntimeEnvConfig) {
-    config[`${key}`] = process.env[key];
+    config[key] = process.env[key];
   }
 
   return config;
@@ -29,7 +29,7 @@ declare global {
 
 for (const key of publicRuntimeEnvConfig) {
   if (typeof window !== "undefined") {
-    config[key] = window.__ENV__[`${key}`];
+    config[key] = window.__ENV__[key];
   } else {
     config[key] = process.env[key];
   }
