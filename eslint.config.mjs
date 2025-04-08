@@ -3,9 +3,10 @@ import globals from "globals";
 import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
-import prettier from "eslint-config-prettier";
+import prettier from "eslint-plugin-prettier/recommended";
 import tsParser from "@typescript-eslint/parser";
-import next from "@next/eslint-plugin-next";
+import pluginNext from "@next/eslint-plugin-next";
+import reactHooks from "eslint-plugin-react-hooks";
 
 export default defineConfig([
   {
@@ -22,14 +23,24 @@ export default defineConfig([
       ".storybook/preview.ts",
       ".storybook/main.ts",
     ],
-    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+    files: ["**/*.{mjs,cjs,ts,jsx,tsx}"],
     plugins: {
-      js: js,
-      "@typescript-eslint": tseslint.configs.strict,
-      prettier: prettier,
-      "react-hooks": pluginReact.configs.flat.recommended,
-      "@next/next": next,
+      js,
+      tseslint,
+      pluginReact,
+      reactHooks,
+      pluginNext,
+      prettier,
     },
+    extends: [
+      "js/recommended",
+      tseslint.configs.strict,
+      //   "plugin:react/recommended",
+      //   "plugin:react-hooks/recommended",
+      //   "plugin:next/recommended",
+      //   "plugin:next/eslint-plugin-next/recommended",
+      //   "plugin:prettier/recommended",
+    ],
     languageOptions: {
       globals: {
         ...globals.browser,
