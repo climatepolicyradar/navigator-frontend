@@ -13,6 +13,7 @@ type TProps = {
   handleSearchChange?: (key: string, value: string) => void;
   setShowOptions?: (value: boolean) => void;
   settingsButtonRef?: MutableRefObject<any>;
+  extraClasses?: string;
 };
 
 const getCurrentSortChoice = (queryParams: ParsedUrlQuery, isBrowsing: boolean) => {
@@ -33,7 +34,14 @@ const getCurrentSemanticSearchChoice = (queryParams: ParsedUrlQuery) => {
   return exactMatch as string;
 };
 
-export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChange, setShowOptions, settingsButtonRef }: TProps) => {
+export const SearchSettings = ({
+  queryParams,
+  handleSortClick,
+  handleSearchChange,
+  setShowOptions,
+  settingsButtonRef,
+  extraClasses = "",
+}: TProps) => {
   const searchOptionsRef = useRef(null);
   const [options, setOptions] = useState(sortOptions);
 
@@ -73,7 +81,7 @@ export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChang
 
   return (
     <div
-      className="absolute top-full right-0 bg-nearBlack rounded-lg p-4 mt-2 z-10 text-white text-sm w-[180px]"
+      className={`absolute top-full right-0 bg-nearBlack rounded-lg p-4 mt-2 z-10 text-white text-sm w-[180px] ${extraClasses}`}
       ref={searchOptionsRef}
       data-cy="search-settings"
     >

@@ -398,6 +398,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                         handleRegionChange={handleRegionChange}
                         handleClearSearch={handleClearSearch}
                         handleDocumentCategoryClick={handleDocumentCategoryClick}
+                        featureFlags={featureFlags}
                       />
                     </div>
                     <SlideOut showCloseButton={false}>

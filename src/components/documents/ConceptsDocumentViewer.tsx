@@ -58,21 +58,12 @@ export const ConceptsDocumentViewer = ({
   const [showSearchOptions, setShowSearchOptions] = useState(false);
   const [showConcepts, setShowConcepts] = useState(false);
 
-  const getQueryTerm = (term: string | string[]) => (Array.isArray(term) ? term[0] : term || "");
-
   const [state, setState] = useReducer((prev: any, next: Partial<any>) => ({ ...prev, ...next }), {
     passageIndex: initialPassage,
     isExactSearch: initialExactMatch,
-    queryTerm: getQueryTerm(initialQueryTerm),
     passageMatches: [],
     totalNoOfMatches: 0,
   });
-
-  // Run a new query if the initial query changes (likely a query param change)
-  useEffect(() => {
-    const newQueryTerm = getQueryTerm(initialQueryTerm);
-    setState({ queryTerm: newQueryTerm });
-  }, [initialQueryTerm]);
 
   const [familyConcepts, setFamilyConcepts] = useState<TConcept[]>([]);
 
@@ -144,7 +135,7 @@ export const ConceptsDocumentViewer = ({
   // Prepare search.
   const searchQueryParams = useMemo(
     () => ({
-      [QUERY_PARAMS.query_string]: state.queryTerm,
+      [QUERY_PARAMS.query_string]: initialQueryTerm,
       [QUERY_PARAMS.exact_match]: state.isExactSearch ? "true" : "false",
       [QUERY_PARAMS.concept_name]: initialConceptFilters
         ? Array.isArray(initialConceptFilters)
@@ -152,14 +143,14 @@ export const ConceptsDocumentViewer = ({
           : [initialConceptFilters]
         : undefined,
     }),
-    [state.queryTerm, state.isExactSearch, initialConceptFilters]
+    [initialQueryTerm, state.isExactSearch, initialConceptFilters]
   );
 
   const { status, families, searchQuery } = useSearch(
     searchQueryParams,
     null,
     document.import_id,
-    !!(state.queryTerm || initialConceptFilters),
+    !!(initialQueryTerm || initialConceptFilters),
     MAX_PASSAGES
   );
 
@@ -207,8 +198,8 @@ export const ConceptsDocumentViewer = ({
 
   const isLoading = status !== "success";
   const hasConcepts = selectedConcepts.length > 0;
-  const showPassages = initialQueryTerm !== "" && state.totalNoOfMatches > 0;
-  const hasNoPassages = !showPassages || (state.totalNoOfMatches === 0 && unavailableConcepts.length === 0);
+  const hasPassages = state.totalNoOfMatches > 0;
+  const hasQuery = initialQueryTerm !== "" || hasConcepts;
   const hasUnavailableConcepts = state.totalNoOfMatches === 0 && unavailableConcepts.length > 0;
 
   return (
@@ -255,11 +246,13 @@ export const ConceptsDocumentViewer = ({
             document.content_type
           )}`}
         >
-          <div className="flex justify-between p-4">
-            <h1 className="text-base font-medium">Passage matches</h1>
-            <button className="text-xl text-text-tertiary" onClick={() => setShowSearchOptions(!showSearchOptions)}>
-              <LuSettings2 />
-            </button>
+          <div className="relative">
+            <div className="flex justify-between p-4">
+              <h1 className="text-base font-medium">Passage matches</h1>
+              <button className="text-xl text-text-tertiary" onClick={() => setShowSearchOptions(!showSearchOptions)}>
+                <LuSettings2 />
+              </button>
+            </div>
             <AnimatePresence initial={false}>
               {showSearchOptions && (
                 <motion.div
@@ -276,19 +269,22 @@ export const ConceptsDocumentViewer = ({
                     queryParams={searchQueryParams}
                     handleSearchChange={handleSemanticSearchChange}
                     setShowOptions={setShowSearchOptions}
+                    extraClasses="!mt-0 mr-4"
                   />
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
-          {isLoading ? (
+          {isLoading && (
             <div className="w-full flex justify-center flex-1">
               <Loader />
             </div>
-          ) : (
+          )}
+
+          {!isLoading && (
             <>
-              {hasConcepts && !hasNoPassages && (
+              {hasConcepts && (
                 <div className="px-4">
                   {selectedConcepts.map((concept) => (
                     <React.Fragment key={concept.wikibase_id}>
@@ -301,49 +297,48 @@ export const ConceptsDocumentViewer = ({
                 </div>
               )}
 
-              {showPassages && (
-                <>
-                  <div className="border-gray-200 p-4 text-sm border-b xl:pl-4" data-cy="document-matches-description">
-                    <div className="mb-2">
-                      Displaying {renderPassageCount(state.totalNoOfMatches)}{" "}
-                      {initialQueryTerm && (
-                        <>
-                          for "<span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
-                        </>
-                      )}
-                      {initialQueryTerm && !searchQuery.exact_match && ` and related phrases`}
-                      {selectedConcepts.length > 0 && (
-                        <>
-                          {" in "}
-                          <b>{selectedConcepts.map((concept) => concept.preferred_label).join(", ")}</b>
-                        </>
-                      )}
-                      {state.totalNoOfMatches >= MAX_RESULTS && (
-                        <span className="ml-1 inline-block">
-                          <SearchLimitTooltip colour="grey" />
-                        </span>
-                      )}
+              {hasQuery &&
+                (hasPassages ? (
+                  <>
+                    <div className="border-gray-200 p-4 text-sm border-b xl:pl-4" data-cy="document-matches-description">
+                      <div className="mb-2">
+                        Displaying {renderPassageCount(state.totalNoOfMatches)}{" "}
+                        {initialQueryTerm && (
+                          <>
+                            for "<span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
+                          </>
+                        )}
+                        {initialQueryTerm && !searchQuery.exact_match && ` and related phrases`}
+                        {selectedConcepts.length > 0 && (
+                          <>
+                            {" in "}
+                            <b>{selectedConcepts.map((concept) => concept.preferred_label).join(", ")}</b>
+                          </>
+                        )}
+                        {state.totalNoOfMatches >= MAX_RESULTS && (
+                          <span className="ml-1 inline-block">
+                            <SearchLimitTooltip colour="grey" />
+                          </span>
+                        )}
+                      </div>
+                      <p>Sorted by search relevance</p>
                     </div>
-                    <p>Sorted by search relevance</p>
-                  </div>
-                  <div
-                    id="document-passage-matches"
-                    className="relative xl:overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 px-4"
-                  >
-                    <PassageMatches passages={state.passageMatches} onClick={handlePassageClick} activeIndex={state.passageIndex ?? initialPassage} />
-                  </div>
-                </>
-              )}
+                    <div
+                      id="document-passage-matches"
+                      className="relative xl:overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 px-4"
+                    >
+                      <PassageMatches
+                        passages={state.passageMatches}
+                        onClick={handlePassageClick}
+                        activeIndex={state.passageIndex ?? initialPassage}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <EmptyPassages hasQueryString />
+                ))}
 
-              {hasNoPassages && (
-                <EmptyPassages
-                  hasQueryString={
-                    !!searchQueryParams[QUERY_PARAMS.query_string] &&
-                    !!searchQueryParams[QUERY_PARAMS.concept_id] &&
-                    !!searchQueryParams[QUERY_PARAMS.concept_name]
-                  }
-                />
-              )}
+              {!hasQuery && <EmptyPassages hasQueryString={false} />}
 
               {hasUnavailableConcepts && <UnavailableConcepts unavailableConcepts={unavailableConcepts} familySlug={familySlug} />}
             </>
