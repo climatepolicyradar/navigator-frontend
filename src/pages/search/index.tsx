@@ -413,7 +413,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       />
                     )}
                   </SlideOut>
-                  {/* // TODO: show only if a change */}
                   <div className="absolute z-50 bottom-0 left-0 w-full flex bg-white md:hidden">
                     <Button
                       variant={searchChanged ? "solid" : "outlined"}
@@ -437,7 +436,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
             >
               <SingleCol extraClasses="px-5 pt-5 relative">
                 <div>
-                  {/* NON MOBILE SEARCH */}
                   <div className="">
                     <div className="flex justify-between flex-wrap gap-2 items-center">
                       <div className="md:hidden">
@@ -473,7 +471,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       </div>
                     </div>
                   </div>
-                  {/* NON MOBILE SEARCH END */}
                   <div className="text-sm md:text-right">
                     {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
                     {downloadCSVStatus === "success" && (
