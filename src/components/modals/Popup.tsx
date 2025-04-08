@@ -4,7 +4,7 @@ import { Icon } from "@/components/atoms/icon/Icon";
 const Popup = ({ active, onCloseClick, children }) => {
   return (
     <div
-      className={`absolute bg-black/50 pointer-events-none top-0 left-0 p-2 transition duration-250 z-50 transform w-full h-full flex justify-center items-start items-center md:p-4 ${
+      className={`absolute bg-black/50 pointer-events-none top-0 left-0 p-2 transition duration-250 z-100 transform w-full h-full flex justify-center items-start items-center md:p-4 ${
         active ? "opacity-100 visible" : "opacity-0 invisible"
       }`}
     >

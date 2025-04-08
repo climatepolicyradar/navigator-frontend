@@ -29,7 +29,7 @@ const Layout: FC<TProps> = ({ children, title, theme, description, themeConfig, 
   const contextTheme = useContext(ThemeContext);
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="h-full min-h-screen flex flex-col">
       <Head>
         <title>{`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppTitle(theme, contextTheme)}`}</title>
         <meta property="og:title" content={`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppTitle(theme, contextTheme)}`} />
