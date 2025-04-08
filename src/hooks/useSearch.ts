@@ -19,11 +19,6 @@ type TConfig = {
   };
 };
 
-const scrollToSearchTop = () => {
-  const container = document.querySelector("#search");
-  container?.scrollIntoView(true);
-};
-
 async function getSearch(query = initialSearchCriteria) {
   const config: TConfig = {
     headers: {

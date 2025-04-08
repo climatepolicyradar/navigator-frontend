@@ -384,7 +384,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 <Loader size="20px" />
               ) : (
                 <>
-                  <div className="md:sticky md:top-0 md:z-50">
+                  <div className="md:sticky md:top-[72px] md:z-50">
                     <div className="z-10 px-5 bg-white border-r border-gray-300 pt-5 pb-[70px] sticky top-0 h-screen overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pb-0">
                       <SearchFilters
                         searchCriteria={searchQuery}
