@@ -3,6 +3,11 @@
     "label": "Category",
     "options": [
       {
+        "label": "Climate Policy Radar Reports",
+        "slug": "climate_policy_radar_reports",
+        "value": ["CPR.corpus.i00000002.n0000"]
+      },
+      {
         "label": "All",
         "slug": "All",
         "value": [
