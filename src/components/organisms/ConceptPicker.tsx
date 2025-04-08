@@ -66,7 +66,7 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
   router.push({ query: query }, undefined, { shallow: true });
 };
 
-export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "A-Z", showSearch = true, title }: TProps) => {
+export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showSearch = true, title }: TProps) => {
   const router = useRouter();
   const ref = useRef(null);
   const [search, setSearch] = useState("");
@@ -90,10 +90,10 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
   }, [concepts]);
 
   return (
-    <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
+    <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`}>
       <div className="flex items-center justify-between">
         {title}
-        <div className="basis-1/3">
+        <div className="basis-1/3 relative" ref={ref}>
           <Select
             defaultValue="A-Z"
             value={sort}
