@@ -1,11 +1,9 @@
-import { useContext, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useContext, useEffect, useRef } from "react";
 
 import { Icon } from "@/components/atoms/icon/Icon";
-
-import { SlideOutContext } from "@/context/SlideOutContext";
-
 import { SLIDE_OUT_DATA_KEY } from "@/constants/dataAttributes";
+import { SlideOutContext } from "@/context/SlideOutContext";
 
 interface SlideOutProps {
   children: React.ReactNode;

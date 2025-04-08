@@ -15,7 +15,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": "",
+    "baseUrl": ".",
     "types": ["node", "vitest/globals"],
     "paths": {
       "@/api/*": ["src/api/*"],

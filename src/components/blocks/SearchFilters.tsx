@@ -1,32 +1,29 @@
-import { useEffect, useState, useMemo, useContext } from "react";
 import { ParsedUrlQuery } from "querystring";
+
 import dynamic from "next/dynamic";
+import { useEffect, useState, useMemo, useContext } from "react";
 import { LuChevronRight } from "react-icons/lu";
 
-import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { Label } from "@/components/labels/Label";
-import { DateRange } from "../filters/DateRange";
+import Loader from "@/components/Loader";
 import { Accordian } from "@/components/accordian/Accordian";
+import { FilterOptions } from "@/components/blocks/FilterOptions";
+import { AppliedFilters } from "@/components/filters/AppliedFilters";
+import { DateRange } from "@/components/filters/DateRange";
 import { InputListContainer } from "@/components/filters/InputListContainer";
-import { TypeAhead } from "../forms/TypeAhead";
 import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
-import { AppliedFilters } from "@/components/filters/AppliedFilters";
-import Loader from "@/components/Loader";
-import { FilterOptions } from "./FilterOptions";
-
-import { currentYear, minYear } from "@/constants/timedate";
-import { QUERY_PARAMS } from "@/constants/queryParams";
+import { TypeAhead } from "@/components/forms/TypeAhead";
+import { Label } from "@/components/labels/Label";
 import { SLIDE_OUT_DATA_KEY } from "@/constants/dataAttributes";
-
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { currentYear, minYear } from "@/constants/timedate";
+import { SlideOutContext } from "@/context/SlideOutContext";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
-
+import useGetThemeConfig from "@/hooks/useThemeConfig";
+import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 
-import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
-
-import { SlideOutContext } from "@/context/SlideOutContext";
 import { Heading } from "../accordian/Heading";
 
 const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/components/MethodologyLink`));
@@ -84,7 +81,11 @@ const SearchFilters = ({
 
   // memoize the filtered countries
   const availableCountries = useMemo(() => {
-    return getCountriesFromRegions({ regions, countries, selectedRegions: regionFilters });
+    return getCountriesFromRegions({
+      regions,
+      countries,
+      selectedRegions: regionFilters,
+    });
   }, [regionFilters, regions, countries]);
 
   // Show clear button if there are filters applied

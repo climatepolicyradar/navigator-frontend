@@ -1,6 +1,6 @@
+import { ExternalLink } from "@/components/ExternalLink";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 
-import { ExternalLink } from "@/components/ExternalLink";
 import FooterLinks from "./FooterLinks";
 
 const Footer = () => {

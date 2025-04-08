@@ -1,10 +1,12 @@
+import { Meta, StoryObj } from "@storybook/react";
+
 import { CCLWLogo } from "@/cclw/components/Header";
 import { Menu as CCLWMenu } from "@/cclw/components/Menu";
 import MainMenu from "@/components/menus/MainMenu";
 import { CPRLogo } from "@/cpr/layouts/main";
 import { MCFLogo } from "@/mcf/components/Header";
 import { Menu as MCFMenu } from "@/mcf/components/Menu";
-import { Meta, StoryObj } from "@storybook/react/*";
+
 import { NavBar } from "./NavBar";
 
 const meta = {

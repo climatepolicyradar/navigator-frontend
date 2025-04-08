@@ -1,7 +1,7 @@
-/* eslint-disable no-console */
 import React from "react";
-import TopLevel from "./TopLevel";
+
 import PageLevel from "./PageLevel";
+import TopLevel from "./TopLevel";
 
 // based on: https://nextjs.org/docs/advanced-features/error-handling
 

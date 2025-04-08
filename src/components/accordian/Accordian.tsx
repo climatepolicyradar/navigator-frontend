@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import { LuPlus, LuMinus } from "react-icons/lu";
 
 import { Heading } from "./Heading";
