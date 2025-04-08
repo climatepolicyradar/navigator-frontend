@@ -52,7 +52,6 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
 
   useEffect(() => {
     setStatus("loading");
-    scrollToSearchTop();
 
     // If we don't want to trigger an API call, return early
     if (!runFreshSearch || !searchQuery.runSearch) {
