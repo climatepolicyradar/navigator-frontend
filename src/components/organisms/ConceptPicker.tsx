@@ -90,10 +90,10 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
   }, [concepts]);
 
   return (
-    <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`}>
+    <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
       <div className="flex items-center justify-between">
         {title}
-        <div className="basis-1/3 relative" ref={ref}>
+        <div className="basis-1/3 relative">
           <Select
             defaultValue="A-Z"
             value={sort}

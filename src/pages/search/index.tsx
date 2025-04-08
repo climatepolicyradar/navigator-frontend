@@ -378,56 +378,54 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
             <SideCol
               extraClasses={`absolute z-99 top-0 w-screen bg-white duration-250 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] ${
                 showFilters ? "translate-y-[0%]" : "fixed translate-y-[100vh]"
-              } md:translate-y-[0%] md:h-full md:sticky`}
+              } md:translate-y-[0%] md:h-full md:sticky md:top-[72px]`}
             >
               {configQuery.isFetching ? (
                 <Loader size="20px" />
               ) : (
                 <>
-                  <div className="md:sticky md:top-[72px] md:z-50">
-                    <div className="z-10 px-5 bg-white border-r border-gray-300 pt-5 pb-[70px] sticky top-0 h-screen overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pb-0">
-                      <SearchFilters
-                        searchCriteria={searchQuery}
-                        query={router.query}
-                        regions={regions}
-                        countries={countries}
-                        corpus_types={corpus_types}
-                        conceptsData={conceptsData}
-                        handleFilterChange={handleFilterChange}
-                        handleYearChange={handleYearChange}
-                        handleRegionChange={handleRegionChange}
-                        handleClearSearch={handleClearSearch}
-                        handleDocumentCategoryClick={handleDocumentCategoryClick}
-                        featureFlags={featureFlags}
+                  <div className="sticky md:top-[72px] h-screen md:h-[calc(100vh-72px)] px-5 bg-white border-r border-gray-300 pt-5 pb-[70px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pb-0">
+                    <SearchFilters
+                      searchCriteria={searchQuery}
+                      query={router.query}
+                      regions={regions}
+                      countries={countries}
+                      corpus_types={corpus_types}
+                      conceptsData={conceptsData}
+                      handleFilterChange={handleFilterChange}
+                      handleYearChange={handleYearChange}
+                      handleRegionChange={handleRegionChange}
+                      handleClearSearch={handleClearSearch}
+                      handleDocumentCategoryClick={handleDocumentCategoryClick}
+                      featureFlags={featureFlags}
+                    />
+                  </div>
+                  <SlideOut showCloseButton={false}>
+                    {currentSlideOut === "concepts" && (
+                      <ConceptPicker
+                        concepts={conceptsData}
+                        title={
+                          <div className="flex items-center gap-2">
+                            <div className="text-[15px] font-medium text-text-primary">Concepts</div>
+                            <Label>Beta</Label>
+                          </div>
+                        }
                       />
-                    </div>
-                    <SlideOut showCloseButton={false}>
-                      {currentSlideOut === "concepts" && (
-                        <ConceptPicker
-                          concepts={conceptsData}
-                          title={
-                            <div className="flex items-center gap-2">
-                              <div className="text-[15px] font-medium text-text-primary">Concepts</div>
-                              <Label>Beta</Label>
-                            </div>
-                          }
-                        />
-                      )}
-                    </SlideOut>
-                    {/* // TODO: show only if a change */}
-                    <div className="absolute z-50 bottom-0 left-0 w-full flex bg-white md:hidden">
-                      <Button
-                        variant={searchChanged ? "solid" : "outlined"}
-                        className="m-4 w-full"
-                        onClick={() => {
-                          setCurrentSlideOut("");
-                          setShowFilters(false);
-                          setSearchChanged(false);
-                        }}
-                      >
-                        {searchChanged ? "Apply" : "Close"}
-                      </Button>
-                    </div>
+                    )}
+                  </SlideOut>
+                  {/* // TODO: show only if a change */}
+                  <div className="absolute z-50 bottom-0 left-0 w-full flex bg-white md:hidden">
+                    <Button
+                      variant={searchChanged ? "solid" : "outlined"}
+                      className="m-4 w-full"
+                      onClick={() => {
+                        setCurrentSlideOut("");
+                        setShowFilters(false);
+                        setSearchChanged(false);
+                      }}
+                    >
+                      {searchChanged ? "Apply" : "Close"}
+                    </Button>
                   </div>
                 </>
               )}
