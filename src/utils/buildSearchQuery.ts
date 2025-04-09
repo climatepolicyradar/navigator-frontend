@@ -29,20 +29,26 @@ export default function buildSearchQuery(
     query.query_string = routerQuery[QUERY_PARAMS.query_string]?.toString();
   }
 
-  if (routerQuery[QUERY_PARAMS.exact_match]) {
-    query.exact_match = routerQuery[QUERY_PARAMS.exact_match] === "true";
-  }
-
-  if (routerQuery[QUERY_PARAMS.offset]) {
-    query.offset = Number(routerQuery[QUERY_PARAMS.offset]);
+  if (routerQuery[QUERY_PARAMS.sort_order]) {
+    query.sort_order = routerQuery[QUERY_PARAMS.sort_order]?.toString();
   }
 
   if (routerQuery[QUERY_PARAMS.sort_field]) {
     query.sort_field = routerQuery[QUERY_PARAMS.sort_field]?.toString();
   }
 
-  if (routerQuery[QUERY_PARAMS.sort_order]) {
-    query.sort_order = routerQuery[QUERY_PARAMS.sort_order]?.toString();
+  // If no sort order is provided, and we are in "browse" mode, we want to set the sort order to latest date "date:desc"
+  if (!routerQuery[QUERY_PARAMS.sort_field] && !routerQuery[QUERY_PARAMS.sort_order] && !routerQuery[QUERY_PARAMS.query_string]) {
+    query.sort_order = "desc";
+    query.sort_field = "date";
+  }
+
+  if (routerQuery[QUERY_PARAMS.exact_match]) {
+    query.exact_match = routerQuery[QUERY_PARAMS.exact_match] === "true";
+  }
+
+  if (routerQuery[QUERY_PARAMS.offset]) {
+    query.offset = Number(routerQuery[QUERY_PARAMS.offset]);
   }
 
   if (routerQuery[QUERY_PARAMS.year_range]) {
