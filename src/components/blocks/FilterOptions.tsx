@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ParsedUrlQuery } from "querystring";
-import { find as Lfind, get as Lget } from "lodash";
+import { get } from "lodash";
 
 import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
@@ -11,7 +11,7 @@ import { TCorpusTypeDictionary, TThemeConfig, TThemeConfigFilter } from "@/types
 import { TextInput } from "@/components/forms/TextInput";
 
 const getTaxonomyAllowedValues = (corporaKey: string, taxonomyKey: string, corpus_types: TCorpusTypeDictionary) => {
-  const allowedValues = Lget(corpus_types[corporaKey].taxonomy, taxonomyKey)?.allowed_values || [];
+  const allowedValues = get(corpus_types[corporaKey].taxonomy, taxonomyKey)?.allowed_values || [];
 
   return allowedValues;
 };
