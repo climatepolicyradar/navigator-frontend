@@ -62,7 +62,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
-  const [searchChanged, setSearchChanged] = useState(false);
+  const [searchDirty, setSearchDirty] = useState(false);
   const settingsButtonRef = useRef(null);
 
   const [currentSlideOut, setCurrentSlideOut] = useState<TSlideOutContent>("");
@@ -332,11 +332,11 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
 
   // We want to track changes to search, but only within the context of an open filter panel
   useEffect(() => {
-    setSearchChanged(true);
+    setSearchDirty(true);
   }, [searchQuery]);
   // If we are opening or closing the filters, we want to assume there are no changes yet
   useEffect(() => {
-    setSearchChanged(false);
+    setSearchDirty(false);
   }, [showFilters]);
 
   return (
@@ -415,15 +415,15 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                   </SlideOut>
                   <div className="absolute z-50 bottom-0 left-0 w-full flex bg-white md:hidden">
                     <Button
-                      variant={searchChanged ? "solid" : "outlined"}
+                      variant={searchDirty ? "solid" : "outlined"}
                       className="m-4 w-full"
                       onClick={() => {
                         setCurrentSlideOut("");
                         setShowFilters(false);
-                        setSearchChanged(false);
+                        setSearchDirty(false);
                       }}
                     >
-                      {searchChanged ? "Apply" : "Close"}
+                      {searchDirty ? "Apply" : "Close"}
                     </Button>
                   </div>
                 </>
