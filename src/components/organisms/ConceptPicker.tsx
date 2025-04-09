@@ -66,7 +66,7 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
   router.push({ query: query }, undefined, { shallow: true });
 };
 
-export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "A-Z", showSearch = true, title }: TProps) => {
+export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showSearch = true, title }: TProps) => {
   const router = useRouter();
   const ref = useRef(null);
   const [search, setSearch] = useState("");
@@ -93,7 +93,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
       <div className="flex items-center justify-between">
         {title}
-        <div className="basis-1/3">
+        <div className="basis-1/3 relative">
           <Select
             defaultValue="A-Z"
             value={sort}
@@ -106,6 +106,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
       {/* SCROLL AREA */}
       <div className="flex-1 flex flex-col gap-5 overflow-y-scroll scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
         {showSearch && <input type="text" placeholder="Quick search" value={search} onChange={(e) => setSearch(e.target.value)} />}
+        {search !== "" && <p className="text-xs italic">The results below are also filtered using the concept's alternative labels</p>}
         <div className="flex flex-col gap-2 text-sm">
           {/* GROUPED SORT */}
           {sort === "Grouped" &&
