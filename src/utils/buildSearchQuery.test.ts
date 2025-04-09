@@ -34,4 +34,23 @@ describe("buildSearchQuery: ", () => {
     const searchQueryWithCategory = buildSearchQuery({ c: "UNFCCC" }, themeConfig);
     expect(searchQueryWithCategory.corpus_import_ids).toBe(unfcccCategories);
   });
+
+  it("should set the sort order to 'date' 'descending' if no query or sort is provided", () => {
+    const themeConfig = {
+      defaultCorpora: undefined,
+      categories: {
+        label: "Category",
+        options: [],
+      },
+      filters: [],
+      labelVariations: [],
+      links: [],
+      metadata: [],
+      documentCategories: [],
+    };
+
+    const searchQuery = buildSearchQuery({}, themeConfig);
+    expect(searchQuery.sort_field).toEqual("date");
+    expect(searchQuery.sort_order).toEqual("desc");
+  });
 });
