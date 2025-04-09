@@ -3,7 +3,7 @@ import _ from "lodash";
 type NewFeature = {
   featureValue: number;
   title: string;
-  summary: string;
+  summary: React.ReactNode;
   content: React.ReactNode;
 };
 
