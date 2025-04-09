@@ -4,7 +4,6 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "starthttps": "node server.js",
     "prod": "next build && next start",
     "type-check": "tsc",
     "add": "docker-compose exec -w /opt/node_app frontend npm install -S",

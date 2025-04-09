@@ -19,11 +19,6 @@ type TConfig = {
   };
 };
 
-const scrollToSearchTop = () => {
-  const container = document.querySelector("#search");
-  container?.scrollIntoView(true);
-};
-
 async function getSearch(query = initialSearchCriteria) {
   const config: TConfig = {
     headers: {
@@ -52,7 +47,6 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
 
   useEffect(() => {
     setStatus("loading");
-    scrollToSearchTop();
 
     // If we don't want to trigger an API call, return early
     if (!runFreshSearch || !searchQuery.runSearch) {

@@ -61,7 +61,7 @@ test("search filters", async ({ page }) => {
   await page.goto("/search");
 
   await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
-  await expect(page.getByText("FILTERS").last()).toBeVisible();
+  await expect(page.getByText("FILTERS").first()).toBeVisible();
 
   await expect(page.locator('[data-cy="categories"]:has-text("Category")').last()).toBeVisible();
 
