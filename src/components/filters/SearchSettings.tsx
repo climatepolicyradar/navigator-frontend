@@ -20,7 +20,7 @@ const getCurrentSortChoice = (queryParams: ParsedUrlQuery, isBrowsing: boolean) 
   const field = queryParams[QUERY_PARAMS.sort_field];
   const order = queryParams[QUERY_PARAMS.sort_order];
   if (field === undefined && order === undefined) {
-    if (isBrowsing) return "date:desc";
+    if (isBrowsing) return "null";
     return "relevance";
   }
   return `${field}:${order}`;
