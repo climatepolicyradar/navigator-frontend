@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ParsedUrlQuery } from "querystring";
+import { find as Lfind, get as Lget } from "lodash";
 
 import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
@@ -10,7 +11,7 @@ import { TCorpusTypeDictionary, TThemeConfig, TThemeConfigFilter } from "@/types
 import { TextInput } from "@/components/forms/TextInput";
 
 const getTaxonomyAllowedValues = (corporaKey: string, taxonomyKey: string, corpus_types: TCorpusTypeDictionary) => {
-  const allowedValues = corpus_types[corporaKey].taxonomy[taxonomyKey]?.allowed_values;
+  const allowedValues = Lget(corpus_types[corporaKey].taxonomy, taxonomyKey)?.allowed_values || [];
 
   return allowedValues;
 };
@@ -106,7 +107,9 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
   }
 
   // De-duplicate and sort the options
-  const optionsDeDuped: string[] = [...new Set(options.sort())].filter((option) => option.toLowerCase().includes(search.toLowerCase()));
+  const optionsDeDuped: string[] = options
+    ? [...new Set(options.sort())].filter((option) => option.toLowerCase().includes(search.toLowerCase()))
+    : [];
 
   let optionsAsComponents = optionsDeDuped.map((option: string) =>
     filter.type === "radio" ? (
