@@ -34,12 +34,15 @@ export const Modal = ({ cardClasses = "", children, isOpen, onClose, showCloseBu
 
   return (
     <div
-      className={`fixed inset-0 z-100 flex flex-col justify-center items-center bg-surface-mono-dark/50 overflow-hidden ${
-        isOpen ? "visible" : "invisible"
+      className={`fixed inset-0 z-100 flex flex-col justify-center items-center bg-surface-mono-dark/50 overflow-hidden transition duration-200 ${
+        isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
       onClick={onModalClick}
     >
-      <Card variant="outlined" className={`relative max-w-maxContent m-4 sm:m-8 !border-0 !rounded-xl ${cardClasses}`}>
+      <Card
+        variant="outlined"
+        className={`relative max-w-maxContent max-h-[calc(100vh-32px)] sm:max-h-[calc(100vh-64px)] m-4 sm:m-8 !border-0 !rounded-xl overflow-hidden ${cardClasses}`}
+      >
         {showCloseButton && (
           <button onClick={onClose} className="absolute top-4 right-4 p-2">
             <LuX height="16" width="16" />
