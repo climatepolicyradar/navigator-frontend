@@ -13,7 +13,7 @@ export default function FeatureFlags() {
      */
     posthog.init("phc_zaZYaLxsAeMjCLPsU2YvFqu4oaXRJ8uAkgXY8DancyL", {
       api_host: "https://eu.i.posthog.com",
-      opt_in_site_apps: true,
+      opt_in_site_apps: true, // enables the beta feature popup
     });
 
     posthog.onFeatureFlags((featureFlags) => {

@@ -37,7 +37,7 @@ export default function buildSearchQuery(
     query.sort_field = routerQuery[QUERY_PARAMS.sort_field]?.toString();
   }
 
-  // If no sort order is provided, and we are in "browse" mode, we want to set the sort order to latest date "date:desc"
+  // If no sort order is provided, and we are in "browse" mode (i.e. no search term), we want to set the sort order to latest date "date:desc"
   if (!routerQuery[QUERY_PARAMS.sort_field] && !routerQuery[QUERY_PARAMS.sort_order] && !routerQuery[QUERY_PARAMS.query_string]) {
     query.sort_order = "desc";
     query.sort_field = "date";
@@ -225,6 +225,13 @@ export default function buildSearchQuery(
   // These are the filters that are specific to the Reports corpus type
   if (routerQuery[QUERY_PARAMS.author_type]) {
     query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS.author_type], "author_type", themeConfig);
+  }
+  // ---- End of Reports specific ----
+
+  // ---- UNFCCC specific ----
+  // These are the filters that are specific to the UNFCCC corpus type
+  if (routerQuery[QUERY_PARAMS["_document.type"]]) {
+    query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS["_document.type"]], "_document.type", themeConfig);
   }
 
   query = {

@@ -22,6 +22,8 @@ export const QUERY_PARAMS = {
   sector: "sc",
   // Reports
   author_type: "at",
+  // UNFCCC
+  "_document.type": "t",
   // Pass through
   concept_id: "cfi",
   concept_name: "cfn",
