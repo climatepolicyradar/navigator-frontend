@@ -304,7 +304,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const theme = process.env.THEME;
   const id = context.params.id;
-  const client = new ApiClient(process.env.API_URL);
+  const client = new ApiClient(process.env.BACKEND_API_URL);
 
   let documentData: TDocumentPage;
   let familyData: TFamilyPage;
