@@ -16,13 +16,12 @@ export const CCLWLogo = (
 const Header = () => {
   const router = useRouter();
 
-  const showBackground = router.pathname !== "/";
   const showLogo = router.pathname !== "/";
   const showSearch = router.pathname !== "/";
 
   return (
     <NavBar
-      headerClasses={`min-h-12 ${showBackground ? "bg-cclw-dark" : ""}`}
+      headerClasses={`min-h-12 bg-cclw-dark ${!showLogo && !showSearch ? "!h-[72px]" : ""}`}
       logo={CCLWLogo}
       menu={<Menu />}
       showLogo={showLogo}
