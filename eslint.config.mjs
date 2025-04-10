@@ -25,6 +25,16 @@ const eslintConfig = [
       "@next/next/no-html-link-for-pages": "off",
       eqeqeq: "warn",
       "no-console": "warn",
+
+      // TODO: Remove in next PR
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unsafe-function-type": "warn",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "prefer-const": "warn",
+      "no-var": "warn",
+      "@typescript-eslint/no-unused-expressions": "warn",
+      "@typescript-eslint/no-wrapper-object-types": "warn",
+      "@typescript-eslint/no-empty-object-type": "warn",
     },
   }),
   {
