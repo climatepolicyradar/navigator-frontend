@@ -42,6 +42,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 
 import { TConcept, TTheme, TThemeConfig } from "@/types";
+import { withEnvConfig } from "@/context/EnvConfig";
 
 type TProps = {
   theme: TTheme;
@@ -551,6 +552,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: { theme, themeConfig, featureFlags, conceptsData: conceptsData ?? null },
+    props: withEnvConfig({ theme, themeConfig, featureFlags, conceptsData: conceptsData ?? null }),
   };
 };

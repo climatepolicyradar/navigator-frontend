@@ -28,6 +28,7 @@ import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamiy";
+import { withEnvConfig } from "@/context/EnvConfig";
 
 type TProps = {
   document: TDocumentPage;
@@ -336,12 +337,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: {
+    props: withEnvConfig({
       document: documentData,
       family: familyData,
       theme: theme,
       vespaFamilyData: vespaFamilyData ?? null,
       vespaDocumentData: vespaDocumentData ?? null,
-    },
+    }),
   };
 };

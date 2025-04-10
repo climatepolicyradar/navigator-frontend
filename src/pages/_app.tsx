@@ -13,6 +13,7 @@ import { AdobeContext } from "@/context/AdobeContext";
 import { CookieConsent } from "@/components/cookies/CookieConsent";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
 import { PostHogProvider } from "@/context/PostHogProvider";
+import { EnvConfigContext } from "@/context/EnvConfig";
 
 const favicon = `/images/favicon/${process.env.THEME}.png`;
 
@@ -59,15 +60,17 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
       <ThemeContext.Provider value={dynamicTheme}>
         <AdobeContext.Provider value={dynamicAdobeKey}>
           <PostHogProvider consent={consent}>
-            <ErrorBoundary level="top">
-              <Head>
-                <link rel="icon" href={favicon} />
-              </Head>
-              <div id={dynamicTheme}>
-                <Component {...pageProps} />
-              </div>
-              <CookieConsent onConsentChange={onConsentChange} />
-            </ErrorBoundary>
+            <EnvConfigContext.Provider value={pageProps?.envConfig}>
+              <ErrorBoundary level="top">
+                <Head>
+                  <link rel="icon" href={favicon} />
+                </Head>
+                <div id={dynamicTheme}>
+                  <Component {...pageProps} />
+                </div>
+                <CookieConsent onConsentChange={onConsentChange} />
+              </ErrorBoundary>
+            </EnvConfigContext.Provider>
           </PostHogProvider>
         </AdobeContext.Provider>
       </ThemeContext.Provider>
