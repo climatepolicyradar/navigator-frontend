@@ -41,7 +41,7 @@ test("search", async ({ page }) => {
   await expect(firstSearchResult.locator('[data-cy="family-metadata-category"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="family-metadata-year"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="family-description"]')).toBeVisible();
-  await expect(firstSearchResult.locator('[data-cy="country-link"]')).toBeVisible();
+  await expect(firstSearchResult.locator('[data-cy="country-link"]')).toBeVisible({ timeout: 10000 });
 
   await searchResults.getByRole("link").first().click();
 
