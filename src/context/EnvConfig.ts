@@ -13,7 +13,16 @@
  */
 import { createContext, useContext } from "react";
 
-export const publicRuntimeEnvConfig = ["BACKEND_API_URL", "BACKEND_API_TOKEN", "TARGETS_URL", "CDN_URL", "CONCEPTS_API_URL", "ADOBE_API_KEY", "REDIRECT_FILE", "HOSTNAME"] as const;
+export const publicRuntimeEnvConfig = [
+  "BACKEND_API_URL",
+  "BACKEND_API_TOKEN",
+  "TARGETS_URL",
+  "CDN_URL",
+  "CONCEPTS_API_URL",
+  "ADOBE_API_KEY",
+  "REDIRECT_FILE",
+  "HOSTNAME",
+] as const;
 
 export type PublicEnvConfig = Record<(typeof publicRuntimeEnvConfig)[number], string>;
 
