@@ -18,7 +18,10 @@ const compat = new FlatCompat({ baseDirectory: _dirname });
 
 const eslintConfig = [
   ...compat.config({
-    extends: ["next/core-web-vitals", "next/typescript", "prettier"],
+    // TODO: There's a bug in next/core-web-vitals at the moment, so we need to comment out its rules
+    // https://github.com/microsoft/rushstack/issues/4965 & https://github.com/microsoft/rushstack/issues/5049
+    // extends: ["next/core-web-vitals", "next/typescript", "prettier"],
+    extends: ["next/typescript", "prettier"],
 
     rules: {
       "react/no-unescaped-entities": "off",
