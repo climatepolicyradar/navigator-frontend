@@ -321,7 +321,6 @@ export const ConceptsDocumentViewer = ({
                           </span>
                         )}
                       </div>
-                      <p>Sorted by search relevance</p>
                     </div>
                     <div
                       id="document-passage-matches"
