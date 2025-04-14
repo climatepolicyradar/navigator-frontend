@@ -131,7 +131,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   const getDocumentCategories = () => {
     // Some types are comma separated, so we need to split them
-    let categories = page.documents.map((doc) => {
+    const categories = page.documents.map((doc) => {
       if (doc.document_type?.includes(",")) {
         return doc.document_type.split(",");
       } else return doc.document_type || "";
@@ -380,7 +380,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               <div className="flex text-sm">
                 {corpusImage && (
                   <div className="relative max-w-[144px] mt-1 mr-2">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={`${corpusImage}`} alt={corpusAltImage} className="h-auto w-full" />
                   </div>
                 )}
