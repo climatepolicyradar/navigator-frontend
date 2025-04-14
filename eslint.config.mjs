@@ -1,12 +1,6 @@
 // import { defineConfig } from "eslint/config";
 import globals from "globals";
-import js from "@eslint/js";
-import tseslint from "typescript-eslint";
-import pluginReact from "eslint-plugin-react";
-import prettier from "eslint-plugin-prettier/recommended";
 import tsParser from "@typescript-eslint/parser";
-import pluginNext from "@next/eslint-plugin-next";
-import reactHooks from "eslint-plugin-react-hooks";
 
 import { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -21,15 +15,18 @@ const eslintConfig = [
     // TODO: There's a bug in next/core-web-vitals at the moment, so we need to comment out its rules
     // https://github.com/microsoft/rushstack/issues/4965 & https://github.com/microsoft/rushstack/issues/5049
     // extends: ["next/core-web-vitals", "next/typescript", "prettier"],
-    extends: ["next/typescript", "prettier"],
+    extends: ["next/typescript", "plugin:react/recommended", "plugin:react-hooks/recommended-legacy", "prettier"],
 
     rules: {
       "react/no-unescaped-entities": "off",
       "@next/next/no-html-link-for-pages": "off",
       eqeqeq: "warn",
       "no-console": "warn",
+      // NextJS does this for us so we can disable this rule.
+      "react/react-in-jsx-scope": "off",
 
-      // TODO: Remove in next PR
+      // TODO: Remove in next PR - this PR is just to migrate our existing config
+      // and in the next we'll actually resolve the errors below that we've suppressed.
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unsafe-function-type": "warn",
       "@typescript-eslint/no-unused-vars": "warn",
@@ -38,6 +35,7 @@ const eslintConfig = [
       "@typescript-eslint/no-unused-expressions": "warn",
       "@typescript-eslint/no-wrapper-object-types": "warn",
       "@typescript-eslint/no-empty-object-type": "warn",
+      "react/prop-types": "warn",
     },
   }),
   {
@@ -49,7 +47,7 @@ const eslintConfig = [
       "**/*.config.mjs",
       "**/eslint.config.mjs",
       "**/vite.config.{js,mts}",
-      "tailwind.config.js",
+      "**/tailwind.config.js",
       "postcss.config.js",
       ".storybook/preview.ts",
       ".storybook/main.ts",
