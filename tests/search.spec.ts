@@ -24,17 +24,18 @@ test("search", async ({ page }) => {
 
   /** Search */
   await page.waitForURL("/search*");
+  await page.waitForResponse("**/searches");
   /**
    * This finds the first container that has the heading search results.
    * We could probably have a more semantic search markup with lists.
    */
   const searchResultsHeading = page.getByRole("heading", { name: "Search results" });
   const searchResults = page.locator("div").filter({ has: searchResultsHeading }).last();
-  await expect(searchResults).toBeVisible({ timeout: 10000 });
+  await expect(searchResults).toBeVisible();
 
   /** Check the structure of the search result */
   const firstSearchResult = searchResults.locator('[data-cy="search-result"]').first();
-  await expect(firstSearchResult).toBeVisible({ timeout: 10000 });
+  await expect(firstSearchResult).toBeVisible();
 
   /** TODO: Make the markup more semantic */
   await expect(firstSearchResult.locator('[data-cy="family-title"]')).toBeVisible();
@@ -47,6 +48,7 @@ test("search", async ({ page }) => {
 
   /** Document (AKA Family) page */
   await page.waitForURL("/document/*");
+  await page.waitForResponse("**/searches");
   await page
     .getByText(/View (more than )?\d+ matches/)
     .first()
@@ -54,5 +56,6 @@ test("search", async ({ page }) => {
 
   /** Documents Page */
   await page.waitForURL("/documents/*");
+  await page.waitForResponse("**/searches");
   await expect(page.getByText("View source document")).toBeVisible();
 });
