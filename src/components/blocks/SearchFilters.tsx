@@ -99,7 +99,7 @@ const SearchFilters = ({
   }, [query]);
 
   return (
-    <div id="search_filters" data-cy="seach-filters" className="text-sm text-textNormal flex flex-col gap-5">
+    <div id="search_filters" data-cy="seach-filters" className="text-sm text-text-secondary flex flex-col gap-5">
       {themeConfigStatus === "loading" && <Loader size="20px" />}
       <div className="flex justify-between">
         <div className="flex gap-2">
@@ -137,6 +137,13 @@ const SearchFilters = ({
 
       {themeConfigStatus === "success" &&
         themeConfig.filters.map((filter) => {
+          // TODO: remove FF and logic for UNFCCC filters
+          if (
+            ["_document.type", "author_type"].includes(filter.taxonomyKey) &&
+            filter.corporaKey === "Intl. agreements" &&
+            !featureFlags["unfccc-filters"]
+          )
+            return;
           // If the filter is not in the selected category, don't display it
           if (!canDisplayFilter(filter, query, themeConfig)) return;
           return (
@@ -163,7 +170,7 @@ const SearchFilters = ({
       {conceptsData && (
         <>
           <button
-            className="items-center justify-between cursor-pointer group hidden md:flex"
+            className="items-center justify-between cursor-pointer group flex"
             onClick={() => setCurrentSlideOut(currentSlideOut === "" ? "concepts" : "")}
             data-cy="concepts-control"
             {...{ [SLIDE_OUT_DATA_KEY]: "concepts" }}

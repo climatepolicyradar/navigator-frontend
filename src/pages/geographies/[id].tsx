@@ -35,6 +35,7 @@ import { systemGeoNames } from "@/constants/systemGeos";
 
 import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
 import { TTarget, TEvent, TGeography, TTheme } from "@/types";
+import { withEnvConfig } from "@/context/EnvConfig";
 
 type TProps = {
   geography: TGeographyStats;
@@ -428,12 +429,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: {
+    props: withEnvConfig({
       geography: geographyData,
       summary: summaryData,
       targets: theme === "mcf" ? [] : targetsData,
       theme: theme,
       themeConfig,
-    },
+    }),
   };
 };

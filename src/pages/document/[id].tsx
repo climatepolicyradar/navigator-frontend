@@ -48,6 +48,7 @@ import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import { MultiCol } from "@/components/panels/MultiCol";
 import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
+import { withEnvConfig } from "@/context/EnvConfig";
 
 type TProps = {
   page: TFamilyPage;
@@ -443,7 +444,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const theme = process.env.THEME;
   const id = context.params.id;
-  const client = new ApiClient(process.env.API_URL);
+  const client = new ApiClient(process.env.BACKEND_API_URL);
 
   let familyData: TFamilyPage;
   let vespaFamilyData: TSearchResponse;
@@ -488,7 +489,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: {
+    props: withEnvConfig({
       page: familyData,
       targets: targetsData,
       countries: countriesData,
@@ -496,6 +497,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       theme: theme,
       featureFlags,
       vespaFamilyData: vespaFamilyData ?? null,
-    },
+    }),
   };
 };
