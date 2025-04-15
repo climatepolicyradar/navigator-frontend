@@ -248,21 +248,67 @@
       "corporaKey": "Reports"
     },
     {
-      "label": "Type",
-      "corporaKey": "Intl. agreements",
-      "taxonomyKey": "_document.type",
-      "apiMetaDataKey": "document.type",
-      "type": "radio",
-      "category": ["UNFCCC.corpus.i00000001.n0000"],
-      "quickSearch": "true"
-    },
-    {
       "label": "Author Type",
       "corporaKey": "Intl. agreements",
       "taxonomyKey": "author_type",
       "apiMetaDataKey": "family.author.type",
       "type": "radio",
       "category": ["UNFCCC.corpus.i00000001.n0000"]
+    },
+    {
+      "label": "Type of submission",
+      "corporaKey": "Intl. agreements",
+      "taxonomyKey": "_document.type",
+      "apiMetaDataKey": "document.type",
+      "type": "radio",
+      "category": ["UNFCCC.corpus.i00000001.n0000"],
+      "options": [
+        {
+          "label": "Adaptation Communication (AC)",
+          "slug": "Adaptation Communication",
+          "value": "Adaptation Communication"
+        },
+        {
+          "label": "Biennial Report (BR)",
+          "slug": "Biennial Report",
+          "value": "Biennial Report"
+        },
+        {
+          "label": "Biennial Transparency Report (BTR)",
+          "slug": "Biennial Transparency Report",
+          "value": "Biennial Transparency Report"
+        },
+        {
+          "label": "Biennial Update Report (BUR)",
+          "slug": "Biennial Update Report",
+          "value": "Biennial Update Report"
+        },
+        {
+          "label": "Long-Term Low-Emission Development Strategy (LT-LEDS)",
+          "slug": "Long-Term Low-Emission Development Strategy",
+          "value": "Long-Term Low-Emission Development Strategy"
+        },
+        {
+          "label": "National Adaptation Plan (NAP)",
+          "slug": "National Adaptation Plan",
+          "value": "National Adaptation Plan"
+        },
+        {
+          "label": "National Communication (NC)",
+          "slug": "National Communication",
+          "value": "National Communication"
+        },
+        {
+          "label": "Nationally Determined Contribution (NDC)",
+          "slug": "Nationally Determined Contribution",
+          "value": "Nationally Determined Contribution"
+        },
+        {
+          "label": "National Inventory Report (NIR)",
+          "slug": "National Inventory Report",
+          "value": "National Inventory Report"
+        }
+      ]
     }
   ],
   "labelVariations": [
