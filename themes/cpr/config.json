@@ -254,7 +254,53 @@
       "apiMetaDataKey": "document.type",
       "type": "radio",
       "category": ["UNFCCC.corpus.i00000001.n0000"],
-      "quickSearch": "true"
+      "options": [
+        {
+          "label": "Adaptation Communication",
+          "slug": "Adaptation Communication",
+          "value": "Adaptation Communication"
+        },
+        {
+          "label": "Biennial Report",
+          "slug": "Biennial Report",
+          "value": "Biennial Report"
+        },
+        {
+          "label": "Biennial Transparency Report",
+          "slug": "Biennial Transparency Report",
+          "value": "Biennial Transparency Report"
+        },
+        {
+          "label": "Biennial Update Report",
+          "slug": "Biennial Update Report",
+          "value": "Biennial Update Report"
+        },
+        {
+          "label": "Long-Term Low-Emission Development Strategy",
+          "slug": "Long-Term Low-Emission Development Strategy",
+          "value": "Long-Term Low-Emission Development Strategy"
+        },
+        {
+          "label": "National Adaptation Plan",
+          "slug": "National Adaptation Plan",
+          "value": "National Adaptation Plan"
+        },
+        {
+          "label": "National Communication",
+          "slug": "National Communication",
+          "value": "National Communication"
+        },
+        {
+          "label": "Nationally Determined Contribution",
+          "slug": "Nationally Determined Contribution",
+          "value": "Nationally Determined Contribution"
+        },
+        {
+          "label": "National Inventory Report",
+          "slug": "National Inventory Report",
+          "value": "National Inventory Report"
+        }
+      ]
     },
     {
       "label": "Author Type",
