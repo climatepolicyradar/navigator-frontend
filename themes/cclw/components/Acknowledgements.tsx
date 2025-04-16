@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { ReactNode } from "react";
 
 import { ExternalLink } from "@/components/ExternalLink";
