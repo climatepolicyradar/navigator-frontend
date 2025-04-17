@@ -405,8 +405,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     let countries: TGeography[] = [];
     const configData = await client.getConfig();
-    const response_geo = extractNestedData<TGeography>(configData.data?.geographies, 2, "");
-    countries = response_geo.level2;
+    const response_geo = extractNestedData<TGeography>(configData.data?.geographies || []);
+    countries = response_geo[1];
     const country = getCountryCode(id as string, countries);
     if (country) {
       const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${country.toLowerCase()}.json`);
