@@ -273,8 +273,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               <>
                 <section className="mt-8">
                   <div className="flex items-center gap-2">
-                    <Heading level={2} extraClasses="mb-0">
-                      {theme === "mcf" ? "Project documents" : "Other documents in this entry"}
+                    <Heading level={2} extraClasses="!mb-0">
+                      {theme === "mcf" ? "Project documents" : mainDocuments.length > 0 ? "Other documents in this entry" : "Documents in this entry"}
                     </Heading>
                     {theme !== "mcf" && (
                       <Tooltip
