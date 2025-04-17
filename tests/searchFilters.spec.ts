@@ -59,6 +59,7 @@ test("search filters", async ({ page }) => {
   });
 
   await page.goto("/search");
+  await page.waitForResponse("**/searches");
 
   await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
   await expect(page.getByText("FILTERS").first()).toBeVisible();
