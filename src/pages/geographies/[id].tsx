@@ -424,13 +424,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // TODO: handle error more elegantly
   }
   try {
-    let countries: TGeography[] = [];
     const configData = await client.getConfig();
     const response_geo = extractNestedData<TGeography>(configData.data?.geographies || []);
-    countries = response_geo[1];
-    const country = getCountryCode(id as string, countries);
-    if (country) {
-      const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${country.toLowerCase()}.json`);
+    const [_regions, countries, subdivisions] = response_geo;
+    const geographiesData = [...countries, ...subdivisions];
+
+    const countryCode = getCountryCode(id as string, geographiesData);
+    if (countryCode) {
+      const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${countryCode.toLowerCase()}.json`);
       targetsData = targetsRaw.data;
     }
   } catch {
