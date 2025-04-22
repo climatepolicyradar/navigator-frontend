@@ -1,22 +1,20 @@
-import { FC, ReactNode } from "react";
-import useConfig from "@/hooks/useConfig";
-import { getCountrySlug } from "@/helpers/getCountryFields";
-import { LinkWithQuery } from "./LinkWithQuery";
 import { systemGeoCodes } from "@/constants/systemGeos";
+import { getCountrySlug } from "@/helpers/getCountryFields";
+import { TGeography } from "@/types";
+import { FC, ReactNode } from "react";
+import { LinkWithQuery } from "./LinkWithQuery";
 
 type TCountryLink = {
-  countryCode: string;
-  className?: string;
-  emptyContentFallback?: ReactNode;
   children?: ReactNode;
+  className?: string;
+  countryCode: string;
+  emptyContentFallback?: ReactNode;
+  geographiesData: TGeography[];
   showFlag?: boolean;
 };
 
-export const CountryLink: FC<TCountryLink> = ({ countryCode, className = "", emptyContentFallback, children, showFlag = true }) => {
-  const configQuery = useConfig();
-  const { data: { countries = [] } = {} } = configQuery;
-
-  const slug = getCountrySlug(countryCode, countries);
+export const CountryLink: FC<TCountryLink> = ({ children, className = "", countryCode, emptyContentFallback, geographiesData, showFlag = true }) => {
+  const slug = getCountrySlug(countryCode, geographiesData);
   // Force render without any empty content fallback the children without a link
   if (!slug && emptyContentFallback) return <>{emptyContentFallback}</>;
   if (!slug && !emptyContentFallback) return <>{children}</>;

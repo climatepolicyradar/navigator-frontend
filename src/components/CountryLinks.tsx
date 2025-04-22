@@ -1,63 +1,73 @@
-import { Fragment } from "react";
-
 import { CountryLink } from "@/components/CountryLink";
-
 import { getCountryName } from "@/helpers/getCountryFields";
-
-import { isSystemGeo, isSystemInternational } from "@/utils/isSystemGeo";
-
 import { TGeography } from "@/types";
+import { isSystemGeo, isSystemInternational } from "@/utils/isSystemGeo";
+import { Fragment } from "react";
 
 type TCountriesLink = {
   geographies: string[];
-  countries: TGeography[];
+  geographiesData: TGeography[];
   showFlag?: boolean;
 };
 
-export const CountryLinks = ({ geographies, countries, showFlag = true }: TCountriesLink) => (
+export const CountryLinks = ({ geographies, geographiesData, showFlag = true }: TCountriesLink) => (
   <>
     {geographies?.map((geography) => {
-      const countryName = getCountryName(geography, countries);
-      if (!countryName) return null;
+      const countryName = getCountryName(geography, geographiesData);
+      if (!countryName || countryName === "No Geography") return null;
 
-      return (
-        <Fragment key={geography}>
-          {isSystemInternational(geography) && (
+      if (isSystemInternational(geography)) {
+        return (
+          <Fragment key={geography}>
             <span className="flex gap-1">
               <>{countryName}</>
             </span>
-          )}
-          {!isSystemGeo(geography) && (
+          </Fragment>
+        );
+      }
+
+      if (!isSystemGeo(geography)) {
+        const isLevel2Code = /[A-Z]{2}-[A-Z]{1,3}/.test(geography);
+
+        return (
+          <Fragment key={geography}>
             <span className="flex gap-1">
-              <CountryLink countryCode={geography} showFlag={showFlag} className="text-textDark no-underline">
+              <CountryLink
+                className="text-textDark no-underline"
+                countryCode={geography}
+                geographiesData={geographiesData}
+                showFlag={isLevel2Code ? false : showFlag}
+              >
                 <span>{countryName}</span>
               </CountryLink>
             </span>
-          )}
-        </Fragment>
-      );
+          </Fragment>
+        );
+      }
+      return null;
     })}
   </>
 );
 
-export const CountryLinksAsList = ({ geographies, countries, showFlag = true }: TCountriesLink) => (
+export const CountryLinksAsList = ({ geographies, geographiesData, showFlag = true }: TCountriesLink) => (
   <>
     {geographies?.map((geography, index) => (
       <Fragment key={geography}>
         {isSystemInternational(geography) && (
           <div className="flex">
-            <>{getCountryName(geography, countries)}</>
+            <>{getCountryName(geography, geographiesData)}</>
             {index !== geographies.length - 1 && <span>,</span>}
           </div>
         )}
         {!isSystemGeo(geography) && (
           <div className="flex">
             <CountryLink
-              countryCode={geography}
-              showFlag={showFlag}
               className="text-blue-600 underline truncate text-sm capitalize hover:text-blue-800"
+              countryCode={geography}
+              geographiesData={geographiesData}
+              showFlag={showFlag}
             >
-              <span>{getCountryName(geography, countries)}</span>
+              <span>{getCountryName(geography, geographiesData)}</span>
             </CountryLink>
             {index !== geographies.length - 1 && <span>,</span>}
           </div>

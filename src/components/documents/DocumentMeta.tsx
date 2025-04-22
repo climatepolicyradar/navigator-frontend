@@ -6,14 +6,15 @@ import { convertDate } from "@/utils/timedate";
 
 export const DocumentMeta = ({ family, isMain, document, document_type }: { family: any; isMain: boolean; document: any; document_type: any }) => {
   const configQuery = useConfig();
-  const { data: { countries = [], languages = {} } = {} } = configQuery;
+  const { data: { countries = [], subdivisions = [], languages = {} } = {} } = configQuery;
+  const geographiesData = [...countries, ...subdivisions];
   const [year] = convertDate(family.published_date);
 
   return (
     <div className="py-4 my-4 md:my-2 md:flex justify-between items-center">
       <div className="flex flex-col text-sm gap-2">
         <div className="flex items-center gap-2 middot-between flex-wrap">
-          <CountryLinks geographies={family.geographies} countries={countries} />
+          <CountryLinks geographies={family.geographies} geographiesData={geographiesData} />
           {family.category === "Reports" && year && <span>{year}</span>}
           {!isMain && document.document_role && <span className="capitalize">{document.document_role.toLowerCase()}</span>}
           {family.category === "Reports" && family.metadata.author && family.metadata.author.length > 0 && (
