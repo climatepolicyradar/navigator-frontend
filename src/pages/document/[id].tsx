@@ -273,8 +273,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               <>
                 <section className="mt-8">
                   <div className="flex items-center gap-2">
-                    <Heading level={2} extraClasses="mb-0">
-                      {theme === "mcf" ? "Project documents" : "Other documents in this entry"}
+                    <Heading level={2} extraClasses="!mb-0">
+                      {theme === "mcf" ? "Project documents" : mainDocuments.length > 0 ? "Other documents in this entry" : "Documents in this entry"}
                     </Heading>
                     {theme !== "mcf" && (
                       <Tooltip
@@ -376,18 +376,20 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               </section>
             )}
 
-            <section className="mt-8">
-              <Heading level={4}>Note</Heading>
-              <div className="flex text-sm">
-                {corpusImage && (
-                  <div className="relative max-w-[144px] mt-1 mr-2">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`${corpusImage}`} alt={corpusAltImage} className="h-auto w-full" />
-                  </div>
-                )}
-                <span dangerouslySetInnerHTML={{ __html: corpusNote }} className="" />
-              </div>
-            </section>
+            {corpusNote && (
+              <section className="mt-8">
+                <Heading level={4}>Note</Heading>
+                <div className="flex text-sm">
+                  {corpusImage && (
+                    <div className="relative max-w-[144px] mt-1 mr-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={`${corpusImage}`} alt={corpusAltImage} className="h-auto w-full" />
+                    </div>
+                  )}
+                  <span dangerouslySetInnerHTML={{ __html: corpusNote }} className="" />
+                </div>
+              </section>
+            )}
 
             {page.collections.length > 0 && (
               <div className="mt-8">
