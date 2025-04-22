@@ -33,7 +33,7 @@ const TabbedNavItem = ({ title, count, index, activeTab, onClick }: TabbedNavIte
         data-tooltip-id={tooltipId}
         data-cy="tabbed-nav-item"
       >
-        {title} {count && tabCount(count, isActive)}
+        {title} {Number.isInteger(count) && tabCount(count, isActive)}
         {isActive && <span className="invisible absolute left-0 h-[2px] w-full md:visible bg-blue-600 -bottom-2" />}
       </button>
       {tooltipText !== "" && <ToolTipSSR id={tooltipId} place={"top"} />}
