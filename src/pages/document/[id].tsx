@@ -479,8 +479,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (familyData) {
     try {
       const configRaw = await client.getConfig();
-      const response_geo = extractNestedData<TGeography>(configRaw.data.geographies, 2, "");
-      countriesData = response_geo.level2;
+      const response_geo = extractNestedData<TGeography>(configRaw.data.geographies);
+      countriesData = response_geo[1];
       corpus_types = configRaw.data.corpus_types;
     } catch (error) {}
   }
