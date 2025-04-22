@@ -59,7 +59,7 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
           </section>
         </main>
         <FullWidth extraClasses="hidden my-6 md:block">
-          <WorldMap />
+          <WorldMap showLitigation />
         </FullWidth>
         <Summary />
         <Partners />
