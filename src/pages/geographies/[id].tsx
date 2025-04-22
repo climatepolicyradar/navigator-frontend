@@ -36,8 +36,10 @@ import { systemGeoNames } from "@/constants/systemGeos";
 import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
 import { TTarget, TEvent, TGeography, TTheme } from "@/types";
 import { withEnvConfig } from "@/context/EnvConfig";
+import { getFeatureFlags } from "@/utils/featureFlags";
 
 type TProps = {
+  featureFlags: Record<string, string | boolean>;
   geography: TGeographyStats;
   summary: TGeographySummary;
   targets: TTarget[];
@@ -58,7 +60,14 @@ const categoryByIndex = {
 
 const MAX_NUMBER_OF_FAMILIES = 3;
 
-const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets, theme, themeConfig }: TProps) => {
+const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
+  featureFlags,
+  geography,
+  summary,
+  targets,
+  theme,
+  themeConfig,
+}: TProps) => {
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
@@ -87,7 +96,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
         count = summary.family_counts.UNFCCC;
         break;
       case "Litigation":
-        count = 0;
+        count = summary.family_counts.Litigation;
         break;
       case "MCF":
         count = summary.family_counts.MCF;
@@ -183,15 +192,25 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     }
     // Litigation
     if (selectedCategoryIndex === 4) {
-      return (
-        <div className="mt-4 pb-4 border-b">
-          Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center’s{" "}
-          <ExternalLink url="http://climatecasechart.com/" className="underline text-blue-600 hover:text-blue-800">
-            Climate Change Litigation Databases
-          </ExternalLink>
-          .
-        </div>
-      );
+      if (featureFlags.litigation) {
+        return summary.top_families.Litigation.length === 0
+          ? renderEmpty("Litigation")
+          : summary.top_families.Litigation.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
+              <div key={family.family_slug} className="mb-10">
+                <FamilyListItem family={family} />
+              </div>
+            ));
+      } else {
+        return (
+          <div className="mt-4 pb-4 border-b">
+            Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center’s{" "}
+            <ExternalLink url="http://climatecasechart.com/" className="underline text-blue-600 hover:text-blue-800">
+              Climate Change Litigation Databases
+            </ExternalLink>
+            .
+          </div>
+        );
+      }
     }
     // MCF
     if (selectedCategoryIndex === 5) {
@@ -374,6 +393,8 @@ export default CountryPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+  const featureFlags = await getFeatureFlags(context.req.cookies);
+
   const id = context.params.id;
 
   if (systemGeoNames.includes(id as string)) {
@@ -430,6 +451,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: withEnvConfig({
+      featureFlags,
       geography: geographyData,
       summary: summaryData,
       targets: theme === "mcf" ? [] : targetsData,
