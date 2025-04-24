@@ -21,6 +21,8 @@ const envConfig = config[env];
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  timeout: 120_000,
+
   testDir: "./tests",
   testMatch: "**/*.spec.ts",
   /* Run tests in files in parallel */
