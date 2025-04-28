@@ -58,8 +58,7 @@ test("search filters", async ({ page }) => {
     await route.fulfill({ json });
   });
 
-  await page.goto("/search");
-  await page.waitForResponse("**/searches");
+  await Promise.all([page.goto("/search"), page.waitForResponse("**/searches")]);
 
   await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
   await expect(page.getByText("FILTERS").first()).toBeVisible();
