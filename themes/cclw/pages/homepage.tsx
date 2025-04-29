@@ -17,10 +17,11 @@ import { FeatureSearch } from "@/cclw/components/FeatureSearch";
 import { PAGE_DESCRIPTION, APP_NAME } from "@/cclw/constants/pageMetadata";
 import { Heading } from "@/components/typography/Heading";
 
-const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {
-  loading: () => <p>Loading world map...</p>,
-  ssr: false,
-});
+// TODO temporarily disabled: https://climate-policy-radar.slack.com/archives/C08Q8GD1CUT/p1745941756888349
+// const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {
+//   loading: () => <p>Loading world map...</p>,
+//   ssr: false,
+// });
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
@@ -42,7 +43,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
           <Heading level={2} extraClasses="text-center text-3xl xl:text-4xl">
             Explore by country
           </Heading>
-          <WorldMap />
+          {/* <WorldMap /> */}
         </FullWidth>
         <SiteWidth extraClasses="my-12" data-cy="featured-content">
           <Heading level={2} extraClasses="text-center text-3xl xl:text-4xl">
