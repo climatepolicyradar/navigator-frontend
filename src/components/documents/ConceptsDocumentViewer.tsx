@@ -33,8 +33,8 @@ type TProps = {
   onExactMatchChange?: (isExact: boolean) => void;
 };
 
-const passageClasses = (docType: string) => {
-  if (docType === "application/pdf") {
+const passageClasses = (canPreview: boolean) => {
+  if (canPreview) {
     return "xl:w-1/3";
   }
   return "xl:w-2/3";
@@ -67,7 +67,7 @@ export const ConceptsDocumentViewer = ({
 
   const [familyConcepts, setFamilyConcepts] = useState<TConcept[]>([]);
 
-  const canPreview = document.content_type === "application/pdf";
+  const canPreview = !!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf");
 
   useEffectOnce(() => {
     // Extract unique concept IDs directly from vespaFamilyData
@@ -171,7 +171,7 @@ export const ConceptsDocumentViewer = ({
 
   const handlePassageClick = useCallback(
     (index: number) => {
-      if (document.content_type !== "application/pdf") return;
+      if (!canPreview) return;
       setState({ passageIndex: index });
     },
     [document.content_type]
@@ -242,9 +242,7 @@ export const ConceptsDocumentViewer = ({
         {/* Sidebar */}
         <div
           id="document-sidebar"
-          className={`flex flex-col overflow-y-auto max-h-[90vh] mr-4 xl:mr-0 scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 xl:max-h-full xl:max-w-[480px] xl:min-w-[400px] xl:grow-0 xl:shrink-0 ${passageClasses(
-            document.content_type
-          )}`}
+          className={`flex flex-col overflow-y-auto max-h-[90vh] mr-4 xl:mr-0 scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 xl:max-h-full xl:max-w-[480px] xl:min-w-[400px] xl:grow-0 xl:shrink-0 ${passageClasses(canPreview)}`}
         >
           <div className="relative">
             <div className="flex justify-between p-4">
