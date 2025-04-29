@@ -21,7 +21,7 @@ const envConfig = config[env];
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  // timeout: 120_000,
+  // timeout: 60_000,
   testDir: "./tests",
   testMatch: "**/*.spec.ts",
   /* Run tests in files in parallel */
@@ -31,7 +31,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  // reporter: [["junit", { outputFile: "playright.xml" }]],
+  reporter: [["junit", { outputFile: "playright.xml" }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
