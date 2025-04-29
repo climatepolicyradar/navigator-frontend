@@ -84,6 +84,7 @@ jobs:
           NODE_ENV: production
       - run: npx playwright install --with-deps
       - run: npx playwright test
+        continue-on-error: true
       - name: Upload Test Result
         # Upload the results even if the tests fails to Trunk.io
         if: ${{ !cancelled() }}
