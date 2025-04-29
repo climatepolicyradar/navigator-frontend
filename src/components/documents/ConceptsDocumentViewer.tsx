@@ -174,7 +174,7 @@ export const ConceptsDocumentViewer = ({
       if (!canPreview) return;
       setState({ passageIndex: index });
     },
-    [document.content_type]
+    [canPreview]
   );
 
   const handleSemanticSearchChange = useCallback(
