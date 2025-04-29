@@ -194,39 +194,40 @@ export const ConceptsDocumentViewer = ({
     setShowConcepts((current) => !current);
   };
 
-  if (!documentConcepts.length) return;
-
   const isLoading = status !== "success";
-  const hasConcepts = selectedConcepts.length > 0;
+  const hasConcepts = documentConcepts.length > 0;
+  const hasSelectedConcepts = selectedConcepts.length > 0;
   const hasPassages = state.totalNoOfMatches > 0;
-  const hasQuery = initialQueryTerm !== "" || hasConcepts;
+  const hasQuery = initialQueryTerm !== "" || hasSelectedConcepts;
   const hasUnavailableConcepts = state.totalNoOfMatches === 0 && unavailableConcepts.length > 0;
 
   return (
     <section className="flex-1 xl:px-5" id="document-concepts-viewer">
       <div id="document-container" className="flex flex-col xl:flex-row xl:h-[90vh]">
         {/* Concepts */}
-        <SideCol id="document-concepts" extraClasses="!w-full xl:!w-maxSidebar">
-          <div className="p-4 xl:hidden">
-            <Button content="both" onClick={handleToggleConcepts}>
-              <span>{showConcepts ? "Hide" : "Show"} concepts</span>
-              <div className={showConcepts ? "rotate-180" : ""}>
-                <Icon name="downChevron" />
-              </div>
-            </Button>
-          </div>
-          <ConceptPicker
-            concepts={documentConcepts}
-            showSearch={false}
-            title={<p className="text-base font-medium">In this document</p>}
-            containerClasses={`pt-4 pr-4 pl-4 xl:pl-0 ${showConcepts ? "" : "hidden xl:flex"}`}
-          />
-        </SideCol>
+        {hasConcepts && (
+          <SideCol id="document-concepts" extraClasses="!w-full xl:!w-maxSidebar">
+            <div className="p-4 xl:hidden">
+              <Button content="both" onClick={handleToggleConcepts}>
+                <span>{showConcepts ? "Hide" : "Show"} concepts</span>
+                <div className={showConcepts ? "rotate-180" : ""}>
+                  <Icon name="downChevron" />
+                </div>
+              </Button>
+            </div>
+            <ConceptPicker
+              concepts={documentConcepts}
+              showSearch={false}
+              title={<p className="text-base font-medium">In this document</p>}
+              containerClasses={`pt-4 pr-4 pl-4 xl:pl-0 ${showConcepts ? "" : "hidden xl:flex"}`}
+            />
+          </SideCol>
+        )}
 
         {/* Preview */}
         <div
           id="document-preview"
-          className={`flex-1 order-last xl:order-none h-[400px] basis-[400px] xl:block xl:h-full xl:border-x xl:border-x-gray-200 px-4 xl:px-0`}
+          className={`flex-1 order-last xl:order-none h-[400px] basis-[400px] xl:block xl:h-full xl:border-gray-200 px-4 xl:px-0 ${hasConcepts ? "xl:border-x" : "xl:border-r"}`}
         >
           {canPreview && (
             <EmbeddedPDF
@@ -284,7 +285,7 @@ export const ConceptsDocumentViewer = ({
 
           {!isLoading && (
             <>
-              {hasConcepts && (
+              {hasSelectedConcepts && (
                 <div className="px-4">
                   {selectedConcepts.map((concept) => (
                     <React.Fragment key={concept.wikibase_id}>
