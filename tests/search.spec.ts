@@ -23,8 +23,8 @@ test("search", async ({ page }) => {
   await page.getByRole("button", { name: "Search" }).click();
 
   /** Search */
-  await page.waitForURL("/search*");
-  await page.waitForResponse("**/searches");
+  await Promise.all([page.waitForURL("/search*"), page.waitForResponse("**/searches")]);
+
   /**
    * This finds the first container that has the heading search results.
    * We could probably have a more semantic search markup with lists.
@@ -47,15 +47,13 @@ test("search", async ({ page }) => {
   await searchResults.getByRole("link").first().click();
 
   /** Document (AKA Family) page */
-  await page.waitForURL("/document/*");
-  await page.waitForResponse("**/searches");
+  await Promise.all([page.waitForURL("/document/*"), page.waitForResponse("**/searches")]);
   await page
     .getByText(/View (more than )?\d+ matches/)
     .first()
     .click();
 
   /** Documents Page */
-  await page.waitForURL("/documents/*");
-  await page.waitForResponse("**/searches");
+  await Promise.all([page.waitForURL("/documents/*"), page.waitForResponse("**/searches")]);
   await expect(page.getByText("View source document")).toBeVisible();
 });
