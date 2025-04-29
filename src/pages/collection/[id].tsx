@@ -9,7 +9,7 @@ import { withEnvConfig } from "@/context/EnvConfig";
 import { TCollection, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { GetServerSideProps, InferGetStaticPropsType } from "next";
-import { LuFiles } from "react-icons/lu";
+import { LuFileStack } from "react-icons/lu";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
@@ -79,7 +79,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
                     className="family-document group mt-4 p-4 rounded-lg border bg-gray-25 border-gray-100 shadow-xs transition duration-300 flex flex-no-wrap cursor-pointer hover:border-blue-100 hover:bg-gray-50"
                   >
                     <div className="flex-0 mr-2 hidden md:block">
-                      <LuFiles size="20" className="mt-0.5 text-text-brand" />
+                      <LuFileStack size="20" className="mt-0.5 text-text-brand" />
                     </div>
                     <div className="flex-1">
                       <span dangerouslySetInnerHTML={{ __html: family.title }} />
