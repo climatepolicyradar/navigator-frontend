@@ -438,6 +438,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // TODO: handle error more elegantly
   }
 
+  console.log({ geographyData, summaryData });
+
   if (!geographyData || !summaryData) {
     return {
       notFound: true,
