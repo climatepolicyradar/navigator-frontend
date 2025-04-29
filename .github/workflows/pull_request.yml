@@ -140,7 +140,7 @@ jobs:
         continue-on-error: true
         uses: trunk-io/analytics-uploader@main
         with:
-          junit-paths: "**/playright.xml"
+          junit-paths: "**/playwright.xml"
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
           token: ${{ secrets.TRUNK_TOKEN }}
       - uses: actions/upload-artifact@v4
