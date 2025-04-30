@@ -36,6 +36,7 @@ import { systemGeoNames } from "@/constants/systemGeos";
 import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
 import { TTarget, TEvent, TGeography, TTheme } from "@/types";
 import { withEnvConfig } from "@/context/EnvConfig";
+import { getFeatureFlags } from "@/utils/featureFlags";
 
 type TProps = {
   geography: TGeographyStats;
@@ -374,6 +375,7 @@ export default CountryPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+  const featureFlags = await getFeatureFlags(context.req.cookies);
   const id = context.params.id;
 
   if (systemGeoNames.includes(id as string)) {
@@ -423,7 +425,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   try {
-    themeConfig = await readConfigFile(theme);
+    themeConfig = await readConfigFile(theme, featureFlags);
   } catch {
     // TODO: handler error more elegantly
   }

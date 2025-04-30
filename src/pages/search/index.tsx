@@ -538,7 +538,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const theme = process.env.THEME;
   let themeConfig = {};
   try {
-    themeConfig = await readConfigFile(theme);
+    themeConfig = await readConfigFile(theme, featureFlags);
   } catch (error) {}
 
   let conceptsData: TConcept[];
