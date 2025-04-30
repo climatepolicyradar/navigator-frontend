@@ -16,10 +16,11 @@ import Partners from "@/cpr/components/Partners";
 import Summary from "@/cpr/components/Summary";
 import LandingSearchForm from "@/cpr/components/LandingSearchForm";
 
-const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {
-  loading: () => <p>Loading world map...</p>,
-  ssr: false,
-});
+// TODO temporarily disabled: https://climate-policy-radar.slack.com/archives/C08Q8GD1CUT/p1745941756888349
+// const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {
+//   loading: () => <p>Loading world map...</p>,
+//   ssr: false,
+// });
 
 /**
  * GOTCHA: we export this to be used in the src/pages/index.tsx file.
@@ -58,9 +59,9 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
             </SiteWidth>
           </section>
         </main>
-        <FullWidth extraClasses="hidden my-6 md:block">
+        {/* <FullWidth extraClasses="hidden my-6 md:block">
           <WorldMap showLitigation />
-        </FullWidth>
+        </FullWidth> */}
         <Summary />
         <Partners />
         <Footer />
