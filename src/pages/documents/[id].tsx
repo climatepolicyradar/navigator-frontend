@@ -38,8 +38,8 @@ type TProps = {
   vespaDocumentData?: TSearchResponse;
 };
 
-const passageClasses = (docType: string) => {
-  if (docType === "application/pdf") {
+const passageClasses = (canPreview: boolean) => {
+  if (canPreview) {
     return "md:w-1/3";
   }
   return "md:w-2/3";
@@ -159,7 +159,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
     setPassageMatches(passageMatches);
     setTotalNoOfMatches(totalNoOfMatches);
-    setCanPreview(document.content_type === "application/pdf");
+    setCanPreview(!!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf"));
     // comparing families as objects will cause an infinite loop as each collection is a new instance of an object
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(families), document.slug]);
@@ -207,9 +207,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 </div>
                 <div
                   id="document-sidebar"
-                  className={`py-4 order-first max-h-[90vh] md:pb-0 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
-                    document.content_type
-                  )}`}
+                  className={`py-4 order-first max-h-[90vh] md:pb-0 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(canPreview)}`}
                 >
                   {status !== "success" ? (
                     <div className="w-full flex justify-center flex-1 bg-white">

@@ -27,7 +27,7 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
   const isMain = document_role?.toLowerCase().includes("main");
   const hasMatches = typeof matches !== "undefined" && matches > 0;
   // If we have matches or the document is a pdf - and we have the document, we can preview it
-  const canPreview = hasMatches || (document.content_type === "application/pdf" && !!document.cdn_object);
+  const canPreview = hasMatches || (!!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf"));
   const canViewSource = !canPreview && !!document.source_url;
 
   const renderDocumentInfo = (): string | JSX.Element => {
