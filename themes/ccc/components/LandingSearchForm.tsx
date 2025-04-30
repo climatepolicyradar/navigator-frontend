@@ -64,7 +64,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchForm
             aria-label="Search term"
           />
           <button
-            className="absolute right-0 h-full px-6 text-white bg-surface-mono-dark rounded-r-4xl"
+            className="absolute right-0 h-full px-6 text-white bg-surface-mono hover:bg-surface-mono-dark rounded-r-4xl"
             onClick={() => handleSearchInput(term)}
             aria-label="Search"
           >

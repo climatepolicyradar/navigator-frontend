@@ -1,9 +1,7 @@
-import Layout from "@/components/layouts/LandingPage";
-
-import { Footer } from "@/ccc/components/Footer";
 import Header from "@/ccc/components/Header";
 import { Hero } from "@/ccc/components/Hero";
 import { APP_NAME, PAGE_DESCRIPTION } from "@/ccc/constants/pageMetadata";
+import Layout from "@/components/layouts/LandingPage";
 
 type TProps = {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
