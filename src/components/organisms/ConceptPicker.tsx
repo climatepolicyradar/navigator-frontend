@@ -105,7 +105,9 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
       </div>
       {/* SCROLL AREA */}
       <div className="flex-1 flex flex-col gap-5 overflow-y-scroll scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
-        {showSearch && <input type="text" placeholder="Quick search" value={search} onChange={(e) => setSearch(e.target.value)} />}
+        {showSearch && (
+          <input type="text" placeholder="Quick search" value={search} onChange={(e) => setSearch(e.target.value)} className="py-1 text-xs" />
+        )}
         {search !== "" && <p className="text-xs italic">The results below are also filtered using the concept's alternative labels</p>}
         <div className="flex flex-col gap-2 text-sm">
           {/* GROUPED SORT */}
