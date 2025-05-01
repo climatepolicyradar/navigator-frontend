@@ -321,7 +321,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
 
   // Concerned only with preventing scrolling when either the drawer or the CSV download popup is open
   useEffect(() => {
-    if (typeof drawerFamily === "number" || showCSVDownloadPopup) {
+    if (typeof drawerFamily === "number" || showCSVDownloadPopup || showFilters) {
       document.body.classList.add("overflow-hidden");
     } else {
       document.body.classList.remove("overflow-hidden");
@@ -331,7 +331,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     return () => {
       document.body.classList.remove("overflow-hidden");
     };
-  }, [drawerFamily, showCSVDownloadPopup]);
+  }, [drawerFamily, showCSVDownloadPopup, showFilters]);
 
   // We want to track changes to search, but only within the context of an open filter panel
   useEffect(() => {
