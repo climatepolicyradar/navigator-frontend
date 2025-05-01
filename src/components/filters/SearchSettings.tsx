@@ -85,39 +85,42 @@ export const SearchSettings = ({
       ref={searchOptionsRef}
       data-cy="search-settings"
     >
-      <>
-        {handleSearchChange && (
-          <div className={`${handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
-            <SearchSettingsList data-cy="semantic-search" aria-label="Semantic search">
-              <SearchSettingsItem
-                onClick={(e) => handleSemanticSearchClick(e, "false")}
-                isActive={getCurrentSemanticSearchChoice(queryParams) === "false"}
-              >
-                Related phrases
-              </SearchSettingsItem>
-              <SearchSettingsItem
-                onClick={(e) => handleSemanticSearchClick(e, "true")}
-                isActive={getCurrentSemanticSearchChoice(queryParams) === "true"}
-              >
-                Exact phrases only
-              </SearchSettingsItem>
+      {queryParams[QUERY_PARAMS.category]?.toString() === "Litigation" && <p>No filters available</p>}
+      {queryParams[QUERY_PARAMS.category]?.toString() !== "Litigation" && (
+        <>
+          {handleSearchChange && (
+            <div className={`${handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
+              <SearchSettingsList data-cy="semantic-search" aria-label="Semantic search">
+                <SearchSettingsItem
+                  onClick={(e) => handleSemanticSearchClick(e, "false")}
+                  isActive={getCurrentSemanticSearchChoice(queryParams) === "false"}
+                >
+                  Related phrases
+                </SearchSettingsItem>
+                <SearchSettingsItem
+                  onClick={(e) => handleSemanticSearchClick(e, "true")}
+                  isActive={getCurrentSemanticSearchChoice(queryParams) === "true"}
+                >
+                  Exact phrases only
+                </SearchSettingsItem>
+              </SearchSettingsList>
+            </div>
+          )}
+          {handleSortClick && (
+            <SearchSettingsList data-cy="sort" aria-label="Sort">
+              {options.map((item) => (
+                <SearchSettingsItem
+                  key={item.value}
+                  onClick={(e) => handleSortOptionClick(e, item.value)}
+                  isActive={item.value === getCurrentSortChoice(queryParams, isBrowsing)}
+                >
+                  {item.label}
+                </SearchSettingsItem>
+              ))}
             </SearchSettingsList>
-          </div>
-        )}
-        {handleSortClick && (
-          <SearchSettingsList data-cy="sort" aria-label="Sort">
-            {options.map((item) => (
-              <SearchSettingsItem
-                key={item.value}
-                onClick={(e) => handleSortOptionClick(e, item.value)}
-                isActive={item.value === getCurrentSortChoice(queryParams, isBrowsing)}
-              >
-                {item.label}
-              </SearchSettingsItem>
-            ))}
-          </SearchSettingsList>
-        )}
-      </>
+          )}
+        </>
+      )}
     </div>
   );
 };
