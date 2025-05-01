@@ -6,7 +6,10 @@ import { useRouter } from "next/router";
 
 export const CCLWLogo = (
   <LinkWithQuery href={`/`} cypress="cclw-logo">
-    <span className="text-text-light text-2xl font-medium">Climate Case Chart</span>
+    <div className="max-h-[56px] flex items-center flex-nowrap gap-2">
+      <Image src="/images/cclw/cclw-logo-globe.png" alt="Climate Change Laws of the World logo globe" width={60} height={60} />
+      <Image src="/images/cclw/cclw-logo-text-light.svg" alt="Climate Change Laws of the World logo text" width={197} height={30} />
+    </div>
   </LinkWithQuery>
 );
 
@@ -18,7 +21,7 @@ const Header = () => {
 
   return (
     <NavBar
-      headerClasses={`min-h-12 bg-[rebeccapurple] ${!showLogo && !showSearch ? "!h-[72px]" : ""}`}
+      headerClasses={`min-h-12 bg-cclw-dark ${!showLogo && !showSearch ? "!h-[72px]" : ""}`}
       logo={CCLWLogo}
       menu={<Menu />}
       showLogo={showLogo}
