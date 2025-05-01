@@ -33,8 +33,8 @@ type TProps = {
   onExactMatchChange?: (isExact: boolean) => void;
 };
 
-const passageClasses = (docType: string) => {
-  if (docType === "application/pdf") {
+const passageClasses = (canPreview: boolean) => {
+  if (canPreview) {
     return "xl:w-1/3";
   }
   return "xl:w-2/3";
@@ -67,7 +67,7 @@ export const ConceptsDocumentViewer = ({
 
   const [familyConcepts, setFamilyConcepts] = useState<TConcept[]>([]);
 
-  const canPreview = document.content_type === "application/pdf";
+  const canPreview = !!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf");
 
   useEffectOnce(() => {
     // Extract unique concept IDs directly from vespaFamilyData
@@ -171,10 +171,10 @@ export const ConceptsDocumentViewer = ({
 
   const handlePassageClick = useCallback(
     (index: number) => {
-      if (document.content_type !== "application/pdf") return;
+      if (!canPreview) return;
       setState({ passageIndex: index });
     },
-    [document.content_type]
+    [canPreview]
   );
 
   const handleSemanticSearchChange = useCallback(
@@ -194,39 +194,40 @@ export const ConceptsDocumentViewer = ({
     setShowConcepts((current) => !current);
   };
 
-  if (!documentConcepts.length) return;
-
   const isLoading = status !== "success";
-  const hasConcepts = selectedConcepts.length > 0;
+  const hasConcepts = documentConcepts.length > 0;
+  const hasSelectedConcepts = selectedConcepts.length > 0;
   const hasPassages = state.totalNoOfMatches > 0;
-  const hasQuery = initialQueryTerm !== "" || hasConcepts;
+  const hasQuery = initialQueryTerm !== "" || hasSelectedConcepts;
   const hasUnavailableConcepts = state.totalNoOfMatches === 0 && unavailableConcepts.length > 0;
 
   return (
     <section className="flex-1 xl:px-5" id="document-concepts-viewer">
       <div id="document-container" className="flex flex-col xl:flex-row xl:h-[90vh]">
         {/* Concepts */}
-        <SideCol id="document-concepts" extraClasses="!w-full xl:!w-maxSidebar">
-          <div className="p-4 xl:hidden">
-            <Button content="both" onClick={handleToggleConcepts}>
-              <span>{showConcepts ? "Hide" : "Show"} concepts</span>
-              <div className={showConcepts ? "rotate-180" : ""}>
-                <Icon name="downChevron" />
-              </div>
-            </Button>
-          </div>
-          <ConceptPicker
-            concepts={documentConcepts}
-            showSearch={false}
-            title={<p className="text-base font-medium">In this document</p>}
-            containerClasses={`pt-4 pr-4 pl-4 xl:pl-0 ${showConcepts ? "" : "hidden xl:flex"}`}
-          />
-        </SideCol>
+        {hasConcepts && (
+          <SideCol id="document-concepts" extraClasses="!w-full xl:!w-maxSidebar">
+            <div className="p-4 xl:hidden">
+              <Button content="both" onClick={handleToggleConcepts}>
+                <span>{showConcepts ? "Hide" : "Show"} concepts</span>
+                <div className={showConcepts ? "rotate-180" : ""}>
+                  <Icon name="downChevron" />
+                </div>
+              </Button>
+            </div>
+            <ConceptPicker
+              concepts={documentConcepts}
+              showSearch={false}
+              title={<p className="text-base font-medium">In this document</p>}
+              containerClasses={`pt-4 pr-4 pl-4 xl:pl-0 ${showConcepts ? "" : "hidden xl:flex"}`}
+            />
+          </SideCol>
+        )}
 
         {/* Preview */}
         <div
           id="document-preview"
-          className={`flex-1 order-last xl:order-none h-[400px] basis-[400px] xl:block xl:h-full xl:border-x xl:border-x-gray-200 px-4 xl:px-0`}
+          className={`flex-1 order-last xl:order-none h-[400px] basis-[400px] xl:block xl:h-full xl:border-gray-200 px-4 xl:px-0 ${hasConcepts ? "xl:border-x" : "xl:border-r"}`}
         >
           {canPreview && (
             <EmbeddedPDF
@@ -242,9 +243,7 @@ export const ConceptsDocumentViewer = ({
         {/* Sidebar */}
         <div
           id="document-sidebar"
-          className={`flex flex-col overflow-y-auto max-h-[90vh] mr-4 xl:mr-0 scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 xl:max-h-full xl:max-w-[480px] xl:min-w-[400px] xl:grow-0 xl:shrink-0 ${passageClasses(
-            document.content_type
-          )}`}
+          className={`flex flex-col overflow-y-auto max-h-[90vh] mr-4 xl:mr-0 scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 xl:max-h-full xl:max-w-[480px] xl:min-w-[400px] xl:grow-0 xl:shrink-0 ${passageClasses(canPreview)}`}
         >
           <div className="relative">
             <div className="flex justify-between p-4">
@@ -284,7 +283,7 @@ export const ConceptsDocumentViewer = ({
 
           {!isLoading && (
             <>
-              {hasConcepts && (
+              {hasSelectedConcepts && (
                 <div className="px-4">
                   {selectedConcepts.map((concept) => (
                     <React.Fragment key={concept.wikibase_id}>

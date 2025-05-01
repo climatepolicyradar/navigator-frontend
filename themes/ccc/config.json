@@ -11,6 +11,7 @@
         "label": "All",
         "slug": "All",
         "value": [
+          "Academic.corpus.Litigation.n0000",
           "CCLW.corpus.i00000001.n0000",
           "CPR.corpus.Goldstandard.n0000",
           "CPR.corpus.i00000589.n0000",
@@ -81,8 +82,8 @@
       {
         "label": "Litigation",
         "slug": "Litigation",
-        "category": ["Litigation"],
-        "value": ["LITIGATION-COMING-SOON"]
+        "value": ["Academic.corpus.Litigation.n0000"],
+        "category": ["Litigation"]
       }
     ]
   },
@@ -328,8 +329,8 @@
   "metadata": [
     {
       "key": "default",
-      "title": "Climate Policy Radar",
-      "description": "Use Climate Policy Radar's data science and AI-powered platform to search and explore thousands of climate change laws, policies and legal cases worldwide."
+      "title": "Climate Case Chart",
+      "description": "WIP"
     },
     {
       "key": "geography",
