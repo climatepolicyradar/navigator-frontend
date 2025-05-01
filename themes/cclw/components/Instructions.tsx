@@ -41,14 +41,15 @@ const Instructions = () => {
           </div>
         ))}
       </div>
-      <div className="hidden md:block absolute top-0 right-0 -translate-y-[140%] 2xl:top-auto 2xl:bottom-0 2xlright-full 2xl:translate-y-0 2xl:translate-x-[110%]">
+      {/* TODO: reinstate when the world map API is back */}
+      {/* <div className="hidden md:block absolute top-0 right-0 -translate-y-[140%] 2xl:top-auto 2xl:bottom-0 2xlright-full 2xl:translate-y-0 2xl:translate-x-[110%]">
         <Button content="both" rounded className="!bg-blueGray-800  hover:!bg-blueGray-700 border !border-blueGray-700" onClick={scrollToMap}>
           Or try exploring by country
           <span className={`hover:animate-none ${isAnimated ? "animate-bounce" : ""}`}>
             <Icon name="downArrow" />
           </span>
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };
