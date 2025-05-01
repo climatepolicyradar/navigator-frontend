@@ -36,7 +36,7 @@ const getCurrentSemanticSearchChoice = (queryParams: ParsedUrlQuery) => {
 };
 
 const getCurrentPassagesOrderChoice = (queryParams: ParsedUrlQuery) => {
-  return queryParams[QUERY_PARAMS.sort_within_page] === "true";
+  return queryParams[QUERY_PARAMS.passages_by_position] === "true";
 };
 
 export const SearchSettings = ({

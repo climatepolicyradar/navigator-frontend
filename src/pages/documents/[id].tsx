@@ -135,7 +135,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const handlePassagesOrderChange = (orderValue: string) => {
     setPassageIndex(0);
     const queryObj = { ...router.query };
-    queryObj[QUERY_PARAMS.sort_within_page] = orderValue;
+    queryObj[QUERY_PARAMS.passages_by_position] = orderValue;
     router.push({ query: queryObj }, undefined, { shallow: true });
   };
 

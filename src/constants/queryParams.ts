@@ -6,11 +6,11 @@ export const QUERY_PARAMS = {
   country: "l",
   exact_match: "e",
   offset: "o",
+  passages_by_position: "sp",
   query_string: "q",
   region: "r",
   sort_field: "sf",
   sort_order: "so",
-  sort_within_page: "sp",
   year_range: "y",
   // Multilateral Climate Funds (MCF)
   fund_doc_type: "fdt",
