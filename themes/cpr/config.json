@@ -81,7 +81,8 @@
       {
         "label": "Litigation",
         "slug": "Litigation",
-        "category": ["Litigation"]
+        "category": ["Litigation"],
+        "value": ["LITIGATION-COMING-SOON"]
       }
     ]
   },
