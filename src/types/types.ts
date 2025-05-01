@@ -17,22 +17,23 @@ export type TSearchCriteriaMeta = {
 };
 
 export type TSearchCriteria = {
-  query_string: string;
-  exact_match: boolean;
-  max_passages_per_doc: number;
-  keyword_filters?: TSearchKeywordFilters;
-  year_range: [string, string];
-  sort_field: string | null;
-  sort_order: string;
-  page_size: number;
-  limit: number;
-  offset: number;
-  family_ids?: string[] | null;
-  document_ids?: string[] | null;
+  concept_filters: { name: string; value: string }[];
   continuation_tokens?: string[] | null;
   corpus_import_ids: string[];
+  document_ids?: string[] | null;
+  exact_match: boolean;
+  family_ids?: string[] | null;
+  keyword_filters?: TSearchKeywordFilters;
+  limit: number;
+  max_passages_per_doc: number;
   metadata: TSearchCriteriaMeta[];
-  concept_filters: { name: string; value: string }[];
+  offset: number;
+  page_size: number;
+  query_string: string;
+  sort_field: string | null;
+  sort_order: string;
+  sort_within_page: boolean;
+  year_range: [string, string];
   // for internal use
   runSearch?: boolean;
 };
