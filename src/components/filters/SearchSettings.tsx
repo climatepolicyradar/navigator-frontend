@@ -85,8 +85,8 @@ export const SearchSettings = ({
       ref={searchOptionsRef}
       data-cy="search-settings"
     >
-      {queryParams[QUERY_PARAMS.category]?.toString() === "Litigation" && <p>No filters available</p>}
-      {queryParams[QUERY_PARAMS.category]?.toString() !== "Litigation" && (
+      {queryParams[QUERY_PARAMS.category]?.toString().toLowerCase() === "litigation" && <p>No filters available</p>}
+      {queryParams[QUERY_PARAMS.category]?.toString().toLowerCase() !== "litigation" && (
         <>
           {handleSearchChange && (
             <div className={`${handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
