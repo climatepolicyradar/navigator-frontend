@@ -1,4 +1,4 @@
-import { Menu } from "@/cclw/components/Menu";
+import { Menu } from "@/ccc/components/Menu";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { NavBar } from "@/components/organisms/navBar/NavBar";
 import Image from "next/image";
