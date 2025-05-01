@@ -134,7 +134,7 @@ export const SearchSettings = ({
                   onClick={(e) => handlePassagesOrderClick(e, "true")}
                   isActive={getCurrentPassagesOrderChoice(queryParams) === true}
                 >
-                  Document position
+                  Position in document
                 </SearchSettingsItem>
               </SearchSettingsList>
             </div>
