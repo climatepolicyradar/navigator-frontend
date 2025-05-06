@@ -123,7 +123,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
           </div>
         </div>
         {search !== "" && <p className="text-xs italic">The results below are also filtered using the concept's alternative labels</p>}
-        <div className={`flex flex-col text-sm border-t border-border-light ${sort === "A-Z" ? "gap-2" : ""}`}>
+        <div className={`flex flex-col text-sm border-t border-border-light ${sort === "A-Z" ? "gap-2 border-t-0" : ""}`}>
           {/* GROUPED SORT */}
           {sort === "Grouped" &&
             rootConcepts.map((rootConcept) => {
