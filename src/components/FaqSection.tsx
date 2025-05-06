@@ -26,7 +26,7 @@ export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px" }: TProps
       <div className="text-content mb-14">
         {faqs.map((faq, i) => (
           <Fragment key={faq.title}>
-            <Accordian title={faq.title} headContent={faq.headContent ?? null} startOpen={i === 0} fixedHeight={accordionMaxHeight}>
+            <Accordian title={faq.title} headContent={faq.headContent ?? null} open={i === 0} fixedHeight={accordionMaxHeight}>
               {faq.content}
             </Accordian>
             <hr />
