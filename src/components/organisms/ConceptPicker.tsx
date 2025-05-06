@@ -3,6 +3,7 @@ import { NextRouter, useRouter } from "next/router";
 
 import { InputCheck } from "@/components/forms/Checkbox";
 import { Select } from "@/components/atoms/select/Select";
+import { Accordian } from "@/components/accordian/Accordian";
 
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
@@ -109,29 +110,38 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
           <input type="text" placeholder="Quick search" value={search} onChange={(e) => setSearch(e.target.value)} className="py-1 text-xs" />
         )}
         {search !== "" && <p className="text-xs italic">The results below are also filtered using the concept's alternative labels</p>}
-        <div className="flex flex-col gap-2 text-sm">
+        <div className={`flex flex-col text-sm border-t border-border-light ${sort === "A-Z" ? "gap-2" : ""}`}>
           {/* GROUPED SORT */}
           {sort === "Grouped" &&
             rootConcepts.map((rootConcept) => {
               const filteredConcepts = filterConcepts(conceptsGrouped[rootConcept.wikibase_id] || [], search);
               if (filteredConcepts.length === 0) return null;
+              // Check if any of the filtered concepts are selected
+              const isAnySelected = filteredConcepts.some((concept) => isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label));
               return (
-                <div className="pb-4 flex flex-col gap-2" key={rootConcept.wikibase_id}>
-                  <h5 className="text-text-primary capitalize font-bold">{rootConcept.preferred_label}</h5>
-                  {filteredConcepts
-                    .sort((a, b) => conceptsSorter(a, b, "A-Z"))
-                    .map((concept) => (
-                      <InputCheck
-                        key={concept.wikibase_id}
-                        label={concept.preferred_label.slice(0, 1).toUpperCase() + concept.preferred_label.slice(1)}
-                        checked={isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)}
-                        onChange={() => {
-                          onConceptChange(router, concept);
-                        }}
-                        name={concept.preferred_label}
-                      />
-                    ))}
-                </div>
+                <Accordian
+                  title={rootConcept.preferred_label.slice(0, 1).toUpperCase() + rootConcept.preferred_label.slice(1)}
+                  key={rootConcept.wikibase_id}
+                  fixedHeight="100%"
+                  startOpen={isAnySelected}
+                  className="py-3 border-b border-border-lighter"
+                >
+                  <div className="flex flex-col gap-2 mb-2">
+                    {filteredConcepts
+                      .sort((a, b) => conceptsSorter(a, b, "A-Z"))
+                      .map((concept) => (
+                        <InputCheck
+                          key={concept.wikibase_id}
+                          label={concept.preferred_label.slice(0, 1).toUpperCase() + concept.preferred_label.slice(1)}
+                          checked={isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)}
+                          onChange={() => {
+                            onConceptChange(router, concept);
+                          }}
+                          name={concept.preferred_label}
+                        />
+                      ))}
+                  </div>
+                </Accordian>
               );
             })}
 
