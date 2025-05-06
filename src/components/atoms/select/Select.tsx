@@ -39,7 +39,7 @@ export function Select({ defaultValue, value, options, onValueChange, container 
                 <BaseSelect.Item
                   key={option.value}
                   value={option.value}
-                  className="text-text-primary bg-white-ui p-2 rounded-sm cursor-default data-highlighted:bg-surface-mono data-highlighted:text-white data-highlighted:outline-inputSelected"
+                  className="text-text-primary bg-white-ui p-1 rounded-sm cursor-default data-highlighted:bg-surface-mono data-highlighted:text-white data-highlighted:outline-inputSelected"
                 >
                   <BaseSelect.ItemText className="">{option.label}</BaseSelect.ItemText>
                 </BaseSelect.Item>
