@@ -8,12 +8,13 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { sortOptions, sortOptionsBrowse } from "@/constants/sortOptions";
 
 type TProps = {
-  queryParams: ParsedUrlQuery;
-  handleSortClick?: (sortOption: string) => void;
+  extraClasses?: string;
+  handlePassagesClick?: (passagesOption: string) => void;
   handleSearchChange?: (key: string, value: string) => void;
+  handleSortClick?: (sortOption: string) => void;
+  queryParams: ParsedUrlQuery;
   setShowOptions?: (value: boolean) => void;
   settingsButtonRef?: MutableRefObject<any>;
-  extraClasses?: string;
 };
 
 const getCurrentSortChoice = (queryParams: ParsedUrlQuery, isBrowsing: boolean) => {
@@ -34,27 +35,41 @@ const getCurrentSemanticSearchChoice = (queryParams: ParsedUrlQuery) => {
   return exactMatch as string;
 };
 
+const getCurrentPassagesOrderChoice = (queryParams: ParsedUrlQuery) => {
+  return queryParams[QUERY_PARAMS.passages_by_position] === "true";
+};
+
 export const SearchSettings = ({
-  queryParams,
-  handleSortClick,
+  extraClasses = "",
+  handlePassagesClick,
   handleSearchChange,
+  handleSortClick,
+  queryParams,
   setShowOptions,
   settingsButtonRef,
-  extraClasses = "",
 }: TProps) => {
   const searchOptionsRef = useRef(null);
   const [options, setOptions] = useState(sortOptions);
 
+  // no query string OR query string is empty
   const isBrowsing = !queryParams[QUERY_PARAMS.query_string] || queryParams[QUERY_PARAMS.query_string]?.toString().trim() === "";
 
   const handleSemanticSearchClick = (e: React.MouseEvent<HTMLAnchorElement>, value: string) => {
     e.preventDefault();
-    if (handleSearchChange) handleSearchChange(QUERY_PARAMS.exact_match, value);
+    setShowOptions(false);
+    handleSearchChange?.(QUERY_PARAMS.exact_match, value);
   };
 
   const handleSortOptionClick = (e: React.MouseEvent<HTMLAnchorElement>, sortOption: string) => {
     e.preventDefault();
-    if (handleSortClick) handleSortClick(sortOption);
+    setShowOptions(false);
+    handleSortClick?.(sortOption);
+  };
+
+  const handlePassagesOrderClick = (e: React.MouseEvent<HTMLAnchorElement>, value: string) => {
+    e.preventDefault();
+    setShowOptions(false);
+    handlePassagesClick?.(value);
   };
 
   useEffect(() => {
@@ -85,39 +100,60 @@ export const SearchSettings = ({
       ref={searchOptionsRef}
       data-cy="search-settings"
     >
-      <>
-        {handleSearchChange && (
-          <div className={`${handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
-            <SearchSettingsList data-cy="semantic-search" aria-label="Semantic search">
-              <SearchSettingsItem
-                onClick={(e) => handleSemanticSearchClick(e, "false")}
-                isActive={getCurrentSemanticSearchChoice(queryParams) === "false"}
-              >
-                Related phrases
-              </SearchSettingsItem>
-              <SearchSettingsItem
-                onClick={(e) => handleSemanticSearchClick(e, "true")}
-                isActive={getCurrentSemanticSearchChoice(queryParams) === "true"}
-              >
-                Exact phrases only
-              </SearchSettingsItem>
+      {queryParams[QUERY_PARAMS.category]?.toString().toLowerCase() === "litigation" && <p>No filters available</p>}
+      {queryParams[QUERY_PARAMS.category]?.toString().toLowerCase() !== "litigation" && (
+        <>
+          {handleSearchChange && (
+            <div className={`${handlePassagesClick || handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
+              <SearchSettingsList data-cy="semantic-search" aria-label="Semantic search">
+                <SearchSettingsItem
+                  onClick={(e) => handleSemanticSearchClick(e, "false")}
+                  isActive={getCurrentSemanticSearchChoice(queryParams) === "false"}
+                >
+                  Related phrases
+                </SearchSettingsItem>
+                <SearchSettingsItem
+                  onClick={(e) => handleSemanticSearchClick(e, "true")}
+                  isActive={getCurrentSemanticSearchChoice(queryParams) === "true"}
+                >
+                  Exact phrases only
+                </SearchSettingsItem>
+              </SearchSettingsList>
+            </div>
+          )}
+          {handlePassagesClick && (
+            <div className={`${handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
+              <SearchSettingsList data-cy="passages-sort" aria-label="Passages sort">
+                <SearchSettingsItem
+                  onClick={(e) => handlePassagesOrderClick(e, "false")}
+                  isActive={getCurrentPassagesOrderChoice(queryParams) === false}
+                >
+                  Relevance
+                </SearchSettingsItem>
+                <SearchSettingsItem
+                  onClick={(e) => handlePassagesOrderClick(e, "true")}
+                  isActive={getCurrentPassagesOrderChoice(queryParams) === true}
+                >
+                  Page number
+                </SearchSettingsItem>
+              </SearchSettingsList>
+            </div>
+          )}
+          {handleSortClick && (
+            <SearchSettingsList data-cy="sort" aria-label="Sort">
+              {options.map((item) => (
+                <SearchSettingsItem
+                  key={item.value}
+                  onClick={(e) => handleSortOptionClick(e, item.value)}
+                  isActive={item.value === getCurrentSortChoice(queryParams, isBrowsing)}
+                >
+                  {item.label}
+                </SearchSettingsItem>
+              ))}
             </SearchSettingsList>
-          </div>
-        )}
-        {handleSortClick && (
-          <SearchSettingsList data-cy="sort" aria-label="Sort">
-            {options.map((item) => (
-              <SearchSettingsItem
-                key={item.value}
-                onClick={(e) => handleSortOptionClick(e, item.value)}
-                isActive={item.value === getCurrentSortChoice(queryParams, isBrowsing)}
-              >
-                {item.label}
-              </SearchSettingsItem>
-            ))}
-          </SearchSettingsList>
-        )}
-      </>
+          )}
+        </>
+      )}
     </div>
   );
 };

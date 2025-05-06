@@ -59,6 +59,7 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
             </SiteWidth>
           </section>
         </main>
+        {/* TODO: reinstate when the world map API is back */}
         {/* <FullWidth extraClasses="hidden my-6 md:block">
           <WorldMap showLitigation />
         </FullWidth> */}

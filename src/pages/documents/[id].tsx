@@ -83,6 +83,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const router = useRouter();
   const qsSearchString = router.query[QUERY_PARAMS.query_string];
   const exactMatchQuery = !!router.query[QUERY_PARAMS.exact_match];
+  const passagesByPosition = router.query[QUERY_PARAMS.passages_by_position] === "true";
   const startingPassage = Number(router.query.passage) || 0;
 
   // TODO: Remove this once we have hard launched concepts in product.
@@ -130,6 +131,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
       undefined,
       { shallow: true }
     );
+  };
+
+  const handlePassagesOrderChange = (orderValue: string) => {
+    setPassageIndex(0);
+    const queryObj = { ...router.query };
+    queryObj[QUERY_PARAMS.passages_by_position] = orderValue;
+    router.push({ query: queryObj }, undefined, { shallow: true });
   };
 
   // Handlers to update router
@@ -207,7 +215,9 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 </div>
                 <div
                   id="document-sidebar"
-                  className={`py-4 order-first max-h-[90vh] md:pb-0 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(canPreview)}`}
+                  className={`py-4 order-first max-h-[90vh] md:pb-0 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
+                    canPreview
+                  )}`}
                 >
                   {status !== "success" ? (
                     <div className="w-full flex justify-center flex-1 bg-white">
@@ -229,7 +239,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                   </span>
                                 )}
                               </div>
-                              <p className="text-sm">Sorted by search relevance</p>
+                              <p className="text-sm">Sorted by {passagesByPosition ? "page number" : "search relevance"}</p>
                             </>
                           )}
                         </div>
@@ -253,6 +263,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                   queryParams={router.query}
                                   handleSearchChange={handleSemanticSearchChange}
                                   setShowOptions={setShowOptions}
+                                  handlePassagesClick={handlePassagesOrderChange}
                                 />
                               </motion.div>
                             )}

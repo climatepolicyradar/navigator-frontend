@@ -1,3 +1,4 @@
+import { ExternalLink } from "@/components/ExternalLink";
 import SearchResult from "./SearchResult";
 
 import { TMatchedFamily } from "@/types";
@@ -22,8 +23,25 @@ const renderEmptyMessage = (category: string) => {
 };
 
 const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: TProps) => {
-  if (category && category === "Litigation" && families.length === 0) {
-    return renderEmptyMessage(category);
+  if (category && category.toLowerCase() === "litigation") {
+    return (
+      <>
+        <p className="my-4 md:mt-0">
+          Climate litigation case documents are coming soon.{" "}
+          <ExternalLink url="https://form.jotform.com/233294371485361" className="underline text-blue-600 hover:text-blue-800">
+            Get notified when they arrive
+          </ExternalLink>
+          .
+        </p>
+        <p className="my-4 md:mt-0">
+          In the meantime, visit the Sabin Center's{" "}
+          <ExternalLink url="http://climatecasechart.com/" className="underline text-blue-600 hover:text-blue-800">
+            Climate Change Litigation Databases
+          </ExternalLink>
+          .
+        </p>
+      </>
+    );
   }
   if (category && category === "Laws" && families.length === 0) {
     return renderEmptyMessage(category);
