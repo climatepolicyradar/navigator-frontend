@@ -13,7 +13,8 @@ import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
 import { AppliedFilters } from "@/components/filters/AppliedFilters";
 import Loader from "@/components/Loader";
-import { FilterOptions } from "./FilterOptions";
+import { FilterOptions } from "@/components/blocks/FilterOptions";
+import { Heading } from "@/components/accordian/Heading";
 
 import { currentYear, minYear } from "@/constants/timedate";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -27,9 +28,6 @@ import { getFilterLabel } from "@/utils/getFilterLabel";
 import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
 
 import { SlideOutContext } from "@/context/SlideOutContext";
-import { Heading } from "../accordian/Heading";
-
-const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/components/MethodologyLink`));
 
 const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption) => {
   if (selectedCatgeory) {
@@ -114,7 +112,7 @@ const SearchFilters = ({
 
       <AppliedFilters filterChange={handleFilterChange} concepts={conceptsData} />
       {themeConfigStatus === "success" && themeConfig.categories && (
-        <Accordian title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
+        <Accordian title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} open>
           <InputListContainer>
             {themeConfig.categories?.options?.map(
               (option) =>
@@ -151,7 +149,7 @@ const SearchFilters = ({
               title={filter.label}
               data-cy={filter.label}
               key={filter.label}
-              startOpen={filter.startOpen === "true" || !!query[QUERY_PARAMS[filter.taxonomyKey]]}
+              open={filter.startOpen === "true" || !!query[QUERY_PARAMS[filter.taxonomyKey]]}
               showFade={filter.showFade}
             >
               <InputListContainer>
@@ -193,7 +191,7 @@ const SearchFilters = ({
       <Accordian
         title={getFilterLabel("Region", "region", query[QUERY_PARAMS.category], themeConfig)}
         data-cy="regions"
-        startOpen={!!query[QUERY_PARAMS.region]}
+        open={!!query[QUERY_PARAMS.region]}
       >
         <InputListContainer>
           {regions.map((region) => (
@@ -231,16 +229,10 @@ const SearchFilters = ({
       <Accordian
         title={getFilterLabel("Date", "date", query[QUERY_PARAMS.category], themeConfig)}
         data-cy="date-range"
-        startOpen={!!query[QUERY_PARAMS.year_range]}
+        open={!!query[QUERY_PARAMS.year_range]}
       >
         <DateRange type="year_range" handleChange={handleYearChange} defaultValues={searchCriteria.year_range} min={minYear} max={thisYear} />
       </Accordian>
-
-      <div className="my-5 pt-5 border-t border-gray-300" data-cy="methodology-notice">
-        <p>
-          Read <MethodologyLink /> for more information on how we collect and analyse our data.
-        </p>
-      </div>
     </div>
   );
 };
