@@ -8,7 +8,7 @@ export default function Document() {
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         <link rel="stylesheet" href="https://use.typekit.net/qeq0int.css" />
       </Head>
-      <body>
+      <body className="root isolate">
         <Main />
         <NextScript />
       </body>
