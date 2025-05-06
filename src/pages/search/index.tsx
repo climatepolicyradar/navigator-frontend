@@ -434,7 +434,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
             </SideCol>
             <div
               className={`flex-1 bg-white transition-[filter] duration-150 ${
-                currentSlideOut ? "md:brightness-50 md:pointer-events-none md:select-none" : ""
+                currentSlideOut ? "md:pointer-events-none md:select-none md:opacity-50" : ""
               }`}
             >
               <SingleCol extraClasses="px-5 pt-5 relative">
