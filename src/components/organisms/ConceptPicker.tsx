@@ -92,23 +92,30 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
 
   return (
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
-      <div className="flex items-center justify-between">
-        {title}
-        <div className="basis-1/3 relative">
-          <Select
-            defaultValue="A-Z"
-            value={sort}
-            onValueChange={(value) => setSort(value as TSort)}
-            options={selectOptions}
-            container={ref.current}
-          />
-        </div>
-      </div>
+      <div>{title}</div>
       {/* SCROLL AREA */}
       <div className="flex-1 flex flex-col gap-5 overflow-y-scroll scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
-        {showSearch && (
-          <input type="text" placeholder="Quick search" value={search} onChange={(e) => setSearch(e.target.value)} className="py-1 text-xs" />
-        )}
+        <p className="text-xs">This feature automatically detects climste concepts in documents. Accuracy is not 100%.</p>
+        <div className="flex gap-2 items-center justify-between">
+          {showSearch && (
+            <input
+              type="text"
+              placeholder="Quick search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="py-1 text-xs h-[30px]"
+            />
+          )}
+          <div className="basis-3/10 shrink-0 relative">
+            <Select
+              defaultValue="A-Z"
+              value={sort}
+              onValueChange={(value) => setSort(value as TSort)}
+              options={selectOptions}
+              container={ref.current}
+            />
+          </div>
+        </div>
         {search !== "" && <p className="text-xs italic">The results below are also filtered using the concept's alternative labels</p>}
         <div className={`flex flex-col text-sm border-t border-border-light ${sort === "A-Z" ? "gap-2" : ""}`}>
           {/* GROUPED SORT */}
@@ -116,17 +123,16 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
             rootConcepts.map((rootConcept) => {
               const filteredConcepts = filterConcepts(conceptsGrouped[rootConcept.wikibase_id] || [], search);
               if (filteredConcepts.length === 0) return null;
-              // Check if any of the filtered concepts are selected
               const isAnySelected = filteredConcepts.some((concept) => isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label));
               return (
                 <Accordian
                   title={rootConcept.preferred_label.slice(0, 1).toUpperCase() + rootConcept.preferred_label.slice(1)}
                   key={rootConcept.wikibase_id}
                   fixedHeight="100%"
-                  startOpen={isAnySelected}
+                  open={isAnySelected || search !== ""}
                   className="py-3 border-b border-border-lighter"
                 >
-                  <div className="flex flex-col gap-2 mb-2">
+                  <div className="flex flex-col gap-2 pb-2">
                     {filteredConcepts
                       .sort((a, b) => conceptsSorter(a, b, "A-Z"))
                       .map((concept) => (

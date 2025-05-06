@@ -114,7 +114,7 @@ const SearchFilters = ({
 
       <AppliedFilters filterChange={handleFilterChange} concepts={conceptsData} />
       {themeConfigStatus === "success" && themeConfig.categories && (
-        <Accordian title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
+        <Accordian title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} open>
           <InputListContainer>
             {themeConfig.categories?.options?.map(
               (option) =>
@@ -151,7 +151,7 @@ const SearchFilters = ({
               title={filter.label}
               data-cy={filter.label}
               key={filter.label}
-              startOpen={filter.startOpen === "true" || !!query[QUERY_PARAMS[filter.taxonomyKey]]}
+              open={filter.startOpen === "true" || !!query[QUERY_PARAMS[filter.taxonomyKey]]}
               showFade={filter.showFade}
             >
               <InputListContainer>
@@ -193,7 +193,7 @@ const SearchFilters = ({
       <Accordian
         title={getFilterLabel("Region", "region", query[QUERY_PARAMS.category], themeConfig)}
         data-cy="regions"
-        startOpen={!!query[QUERY_PARAMS.region]}
+        open={!!query[QUERY_PARAMS.region]}
       >
         <InputListContainer>
           {regions.map((region) => (
@@ -231,7 +231,7 @@ const SearchFilters = ({
       <Accordian
         title={getFilterLabel("Date", "date", query[QUERY_PARAMS.category], themeConfig)}
         data-cy="date-range"
-        startOpen={!!query[QUERY_PARAMS.year_range]}
+        open={!!query[QUERY_PARAMS.year_range]}
       >
         <DateRange type="year_range" handleChange={handleYearChange} defaultValues={searchCriteria.year_range} min={minYear} max={thisYear} />
       </Accordian>
