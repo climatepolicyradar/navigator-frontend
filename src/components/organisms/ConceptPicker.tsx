@@ -96,9 +96,9 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
       <div>{title}</div>
       {/* SCROLL AREA */}
       <div className="flex-1 flex flex-col gap-5 overflow-y-scroll scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
-        <p className="text-xs">
-          This feature automatically detects climste concepts in documents. Accuracy is not 100%.{" "}
-          <LinkWithQuery href="/faq" className="underline">
+        <p className="text-sm">
+          This feature automatically detects climate concepts in documents. Accuracy is not 100%.{" "}
+          <LinkWithQuery href="/faq" className="underline" target="_blank">
             Learn more
           </LinkWithQuery>
         </p>
@@ -112,7 +112,8 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
               className="py-1 text-xs h-[30px]"
             />
           )}
-          <div className="basis-3/10 shrink-0 relative">
+          <div className="basis-3/10 shrink-0 relative flex items-center">
+            <label className="text-sm text-text-tertiary">Sort:</label>
             <Select
               defaultValue="A-Z"
               value={sort}
