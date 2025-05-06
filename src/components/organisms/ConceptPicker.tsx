@@ -11,6 +11,7 @@ import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
 import { TConcept } from "@/types";
+import { LinkWithQuery } from "../LinkWithQuery";
 
 type TProps = {
   concepts: TConcept[];
@@ -95,7 +96,12 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
       <div>{title}</div>
       {/* SCROLL AREA */}
       <div className="flex-1 flex flex-col gap-5 overflow-y-scroll scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
-        <p className="text-xs">This feature automatically detects climste concepts in documents. Accuracy is not 100%.</p>
+        <p className="text-xs">
+          This feature automatically detects climste concepts in documents. Accuracy is not 100%.{" "}
+          <LinkWithQuery href="/faq" className="underline">
+            Learn more
+          </LinkWithQuery>
+        </p>
         <div className="flex gap-2 items-center justify-between">
           {showSearch && (
             <input
