@@ -8,7 +8,7 @@ import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import useSearch from "@/hooks/useSearch";
-import { TConcept, TDocumentPage, TSearchResponse } from "@/types";
+import { TConcept, TDocumentPage, TPassage, TSearchResponse } from "@/types";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from "react";
@@ -19,6 +19,14 @@ import { ConceptPicker } from "../organisms/ConceptPicker";
 import { SideCol } from "../panels/SideCol";
 import { EmptyDocument } from "./EmptyDocument";
 import { EmptyPassages } from "./EmptyPassages";
+import { useRouter } from "next/router";
+
+type TState = {
+  passageIndex: number;
+  isExactSearch: boolean;
+  passageMatches: TPassage[];
+  totalNoOfMatches: number;
+};
 
 type TProps = {
   initialQueryTerm?: string | string[];
@@ -55,10 +63,11 @@ export const ConceptsDocumentViewer = ({
   vespaDocumentData,
   onExactMatchChange,
 }: TProps) => {
+  const router = useRouter();
   const [showSearchOptions, setShowSearchOptions] = useState(false);
   const [showConcepts, setShowConcepts] = useState(false);
 
-  const [state, setState] = useReducer((prev: any, next: Partial<any>) => ({ ...prev, ...next }), {
+  const [state, setState] = useReducer((prev: TState, next: Partial<TState>) => ({ ...prev, ...next }), {
     passageIndex: initialPassage,
     isExactSearch: initialExactMatch,
     passageMatches: [],
@@ -194,6 +203,13 @@ export const ConceptsDocumentViewer = ({
     setShowConcepts((current) => !current);
   };
 
+  const handlePassagesOrderChange = (orderValue: string) => {
+    setState({ passageIndex: 0 });
+    const queryObj = { ...router.query };
+    queryObj[QUERY_PARAMS.passages_by_position] = orderValue;
+    router.push({ query: queryObj }, undefined, { shallow: true });
+  };
+
   const isLoading = status !== "success";
   const hasConcepts = documentConcepts.length > 0;
   const hasSelectedConcepts = selectedConcepts.length > 0;
@@ -227,7 +243,9 @@ export const ConceptsDocumentViewer = ({
         {/* Preview */}
         <div
           id="document-preview"
-          className={`flex-1 order-last xl:order-none h-[400px] basis-[400px] xl:block xl:h-full xl:border-gray-200 px-4 xl:px-0 ${hasConcepts ? "xl:border-x" : "xl:border-r"}`}
+          className={`flex-1 order-last xl:order-none h-[400px] basis-[400px] xl:block xl:h-full xl:border-gray-200 px-4 xl:px-0 ${
+            hasConcepts ? "xl:border-x" : "xl:border-r"
+          }`}
         >
           {canPreview && (
             <EmbeddedPDF
@@ -243,7 +261,9 @@ export const ConceptsDocumentViewer = ({
         {/* Sidebar */}
         <div
           id="document-sidebar"
-          className={`flex flex-col overflow-y-auto max-h-[90vh] mr-4 xl:mr-0 scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 xl:max-h-full xl:max-w-[480px] xl:min-w-[400px] xl:grow-0 xl:shrink-0 ${passageClasses(canPreview)}`}
+          className={`flex flex-col overflow-y-auto max-h-[90vh] mr-4 xl:mr-0 scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 xl:max-h-full xl:max-w-[480px] xl:min-w-[400px] xl:grow-0 xl:shrink-0 ${passageClasses(
+            canPreview
+          )}`}
         >
           <div className="relative">
             <div className="flex justify-between p-4">
@@ -267,6 +287,7 @@ export const ConceptsDocumentViewer = ({
                   <SearchSettings
                     queryParams={searchQueryParams}
                     handleSearchChange={handleSemanticSearchChange}
+                    handlePassagesClick={handlePassagesOrderChange}
                     setShowOptions={setShowSearchOptions}
                     extraClasses="!mt-0 mr-4"
                   />
