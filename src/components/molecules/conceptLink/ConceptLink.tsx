@@ -13,8 +13,8 @@ export const ConceptLink = ({ concept, triggerClasses = "" }: ConceptLinkProps) 
   const [isOpen, setIsOpen] = useState(false);
 
   const allTriggerClasses = joinTailwindClasses(
-    "inline text-text-primary capitalize underline cursor-pointer",
-    isOpen ? "decoration-wavy underline-offset-1 decoration-1" : "decoration-dotted underline-offset-2",
+    "inline text-text-primary capitalize underline underline-offset-2 decoration-dotted cursor-pointer",
+    isOpen ? "decoration-text-primary" : "decoration-text-tertiary",
     triggerClasses
   );
 

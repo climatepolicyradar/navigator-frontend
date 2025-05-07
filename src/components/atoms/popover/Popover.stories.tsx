@@ -16,7 +16,7 @@ type Story = StoryObj<typeof Popover>;
 
 export default meta;
 
-export const Primary: Story = {
+export const Generic: Story = {
   args: {
     children: "Hello, I am a popover!",
     openOnHover: false,
