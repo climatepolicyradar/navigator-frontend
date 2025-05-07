@@ -127,16 +127,23 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
         <div className={`flex flex-col text-sm border-t border-border-light ${sort === "A-Z" ? "gap-2 border-t-0" : ""}`}>
           {/* GROUPED SORT */}
           {sort === "Grouped" &&
-            rootConcepts.map((rootConcept) => {
+            rootConcepts.map((rootConcept, rootConceptIndex) => {
               const filteredConcepts = filterConcepts(conceptsGrouped[rootConcept.wikibase_id] || [], search);
               if (filteredConcepts.length === 0) return null;
-              const isAnySelected = filteredConcepts.some((concept) => isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label));
+              // Starts open if:
+              // - any of the concepts in the root concept are selected
+              // OR
+              // - it is the first root concept
+              const startOpen =
+                filteredConcepts.some((concept) => isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)) ||
+                rootConceptIndex === 0;
               return (
                 <Accordian
                   title={rootConcept.preferred_label.slice(0, 1).toUpperCase() + rootConcept.preferred_label.slice(1)}
                   key={rootConcept.wikibase_id}
                   fixedHeight="100%"
-                  open={isAnySelected || search !== ""}
+                  startOpen={startOpen}
+                  open={search === "" ? undefined : true}
                   className="py-3 border-b border-border-lighter"
                 >
                   <div className="flex flex-col gap-2 pb-2">
