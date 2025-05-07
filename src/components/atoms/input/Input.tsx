@@ -52,19 +52,19 @@ export const Input = ({
     }
 
     return {
-      button: joinTailwindClasses(["shrink-0 text-icon-standard", iconPadding]),
-      container: joinTailwindClasses([
+      button: joinTailwindClasses("shrink-0 text-icon-standard", iconPadding),
+      container: joinTailwindClasses(
         "w-full px-2 flex flex-row justify-around items-center bg-surface-ui rounded-md focus-within:outline",
         outlineColor,
-        containerClasses,
-      ]),
-      icon: joinTailwindClasses(["shrink-0", iconPadding]),
-      input: joinTailwindClasses([
+        containerClasses
+      ),
+      icon: joinTailwindClasses("shrink-0", iconPadding),
+      input: joinTailwindClasses(
         "w-full block bg-transparent border-none focus:shadow-[none] leading-none font-medium text-text-primary placeholder:text-text-tertiary caret-text-brand",
         inputPadding,
         textSize,
-        inputClasses,
-      ]),
+        inputClasses
+      ),
     };
   }, [color, containerClasses, inputClasses, size]);
 
