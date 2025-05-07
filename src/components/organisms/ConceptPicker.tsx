@@ -95,7 +95,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
       <div>{title}</div>
       {/* SCROLL AREA */}
-      <div className="flex-1 flex flex-col gap-5 overflow-y-scroll scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
+      <div className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
         <p className="text-sm">
           This feature automatically detects climate concepts in documents. Accuracy is not 100%.{" "}
           <LinkWithQuery href="/faq" className="underline" target="_blank">
