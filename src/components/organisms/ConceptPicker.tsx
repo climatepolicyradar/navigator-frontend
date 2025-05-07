@@ -95,10 +95,10 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
       <div>{title}</div>
       {/* SCROLL AREA */}
-      <div className="flex-1 flex flex-col gap-5 overflow-y-scroll scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
-        <p className="text-xs">
-          This feature automatically detects climste concepts in documents. Accuracy is not 100%.{" "}
-          <LinkWithQuery href="/faq" className="underline">
+      <div className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
+        <p className="text-sm">
+          This feature automatically detects climate concepts in documents. Accuracy is not 100%.{" "}
+          <LinkWithQuery href="/faq" className="underline" target="_blank">
             Learn more
           </LinkWithQuery>
         </p>
@@ -112,7 +112,8 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
               className="py-1 text-xs h-[30px]"
             />
           )}
-          <div className="basis-3/10 shrink-0 relative">
+          <div className="basis-3/10 shrink-0 relative flex items-center">
+            <label className="text-sm text-text-tertiary">Sort:</label>
             <Select
               defaultValue="A-Z"
               value={sort}
@@ -126,16 +127,23 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
         <div className={`flex flex-col text-sm border-t border-border-light ${sort === "A-Z" ? "gap-2 border-t-0" : ""}`}>
           {/* GROUPED SORT */}
           {sort === "Grouped" &&
-            rootConcepts.map((rootConcept) => {
+            rootConcepts.map((rootConcept, rootConceptIndex) => {
               const filteredConcepts = filterConcepts(conceptsGrouped[rootConcept.wikibase_id] || [], search);
               if (filteredConcepts.length === 0) return null;
-              const isAnySelected = filteredConcepts.some((concept) => isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label));
+              // Starts open if:
+              // - any of the concepts in the root concept are selected
+              // OR
+              // - it is the first root concept
+              const startOpen =
+                filteredConcepts.some((concept) => isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)) ||
+                rootConceptIndex === 0;
               return (
                 <Accordian
                   title={rootConcept.preferred_label.slice(0, 1).toUpperCase() + rootConcept.preferred_label.slice(1)}
                   key={rootConcept.wikibase_id}
                   fixedHeight="100%"
-                  open={isAnySelected || search !== ""}
+                  startOpen={startOpen}
+                  open={search === "" ? undefined : true}
                   className="py-3 border-b border-border-lighter"
                 >
                   <div className="flex flex-col gap-2 pb-2">

@@ -7,6 +7,7 @@ import { start } from "repl";
 
 type TProps = {
   title: string;
+  startOpen?: boolean;
   open?: boolean;
   overflowOverride?: boolean;
   children: React.ReactNode;
@@ -18,7 +19,8 @@ type TProps = {
 
 export const Accordian = ({
   title,
-  open = false,
+  startOpen = false,
+  open,
   overflowOverride,
   fixedHeight = "300px",
   children,
@@ -26,9 +28,10 @@ export const Accordian = ({
   headContent,
   ...props
 }: TProps) => {
-  const [isOpen, setIsOpen] = useState(open);
+  const [isOpen, setIsOpen] = useState(startOpen);
 
   useEffect(() => {
+    if (open === undefined) return;
     setIsOpen(open);
   }, [open]);
 
