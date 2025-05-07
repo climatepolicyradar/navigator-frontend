@@ -1,4 +1,5 @@
 import { Popover } from "@/components/atoms/popover/Popover";
+import { ExternalLink } from "@/components/ExternalLink";
 import { TConcept } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import Link from "next/link";
@@ -22,9 +23,9 @@ export const ConceptLink = ({ concept, triggerClasses = "" }: ConceptLinkProps) 
     <Popover openOnHover onOpenChange={setIsOpen} trigger={<span className={allTriggerClasses}>{concept.preferred_label}</span>}>
       <span className="font-bold capitalize underline-offset-un">{concept.preferred_label}</span>
       <p className="my-2">{concept.description}</p>
-      <Link className="underline" href={`https://climatepolicyradar.wikibase.cloud/wiki/Item:${concept.wikibase_id}`}>
+      <ExternalLink className="underline" url={`https://climatepolicyradar.wikibase.cloud/wiki/Item:${concept.wikibase_id}`}>
         Source
-      </Link>
+      </ExternalLink>
     </Popover>
   );
 };

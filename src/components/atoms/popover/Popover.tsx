@@ -25,7 +25,7 @@ interface PopoverProps {
 
 export const Popover = ({ children, onOpenChange, openOnHover = false, popupClasses = "", trigger }: PopoverProps) => {
   const allPopupClasses = joinTailwindClasses(
-    "p-3 max-w-[350px] bg-surface-light border border-border-light rounded-md shadow-[0px_4px_16px_0px_rgba(0,0,0,0.08)] text-sm leading-normal select-none focus-visible:outline-0",
+    "p-3 max-w-[350px] bg-surface-light border border-border-light rounded-md shadow-md text-sm leading-normal select-none focus-visible:outline-0",
     popupClasses
   );
 
