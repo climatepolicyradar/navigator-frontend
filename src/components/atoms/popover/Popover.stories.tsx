@@ -7,7 +7,7 @@ const meta = {
   component: Popover,
   parameters: { layout: "centered" },
   argTypes: {
-    children: { control: false },
+    children: { control: "text" },
     onOpenChange: { control: false },
     trigger: { control: false },
   },
