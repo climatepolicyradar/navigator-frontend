@@ -1,3 +1,4 @@
+import { ExternalLink } from "@/components/ExternalLink";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { Popover as BasePopover } from "@base-ui-components/react/popover";
 import { ReactElement, ReactNode } from "react";
@@ -15,15 +16,35 @@ const PopoverArrow = () => (
   </svg>
 );
 
-interface PopoverProps {
-  children: ReactNode;
+// Provide options for structuring the popover using props & Base UI components (heavily preferred) or children for full flexibility
+
+interface PopoverGenericProps {
   onOpenChange?: (open: boolean) => void;
   openOnHover?: boolean;
   popupClasses?: string;
   trigger: ReactElement;
 }
 
-export const Popover = ({ children, onOpenChange, openOnHover = false, popupClasses = "", trigger }: PopoverProps) => {
+interface PopoverElementProps extends PopoverGenericProps {
+  title?: string;
+  description: string;
+  link?: {
+    href: string;
+    text: string;
+  };
+  children?: never;
+}
+
+interface PopoverChildrenProps extends PopoverGenericProps {
+  children: ReactNode;
+  title?: never;
+  description?: never;
+  link?: never;
+}
+
+type PopoverProps = PopoverElementProps | PopoverChildrenProps;
+
+export const Popover = ({ children, description, link, onOpenChange, openOnHover = false, popupClasses = "", title, trigger }: PopoverProps) => {
   const allPopupClasses = joinTailwindClasses(
     "p-3 max-w-[350px] bg-surface-light border border-border-light rounded-md shadow-md text-sm leading-normal select-none focus-visible:outline-0",
     popupClasses
@@ -38,7 +59,19 @@ export const Popover = ({ children, onOpenChange, openOnHover = false, popupClas
             <BasePopover.Arrow className="flex -top-2">
               <PopoverArrow />
             </BasePopover.Arrow>
-            {children}
+            {children || (
+              <>
+                {title && <BasePopover.Title className="mb-2 font-bold capitalize">{title}</BasePopover.Title>}
+                <BasePopover.Description>
+                  <span className="block">{description}</span>
+                  {link && (
+                    <ExternalLink url={link.href} className="block mt-2 underline">
+                      {link.text}
+                    </ExternalLink>
+                  )}
+                </BasePopover.Description>
+              </>
+            )}
           </BasePopover.Popup>
         </BasePopover.Positioner>
       </BasePopover.Portal>

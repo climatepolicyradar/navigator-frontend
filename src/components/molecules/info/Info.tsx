@@ -1,14 +1,19 @@
 import { Popover } from "@/components/atoms/popover/Popover";
 import { joinTailwindClasses } from "@/utils/tailwind";
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import { LuInfo } from "react-icons/lu";
 
 type InfoProps = {
   className?: string;
-  children: ReactNode;
+  title?: string;
+  description: string;
+  link?: {
+    href: string;
+    text: string;
+  };
 };
 
-export const Info = ({ className, children }: InfoProps) => {
+export const Info = ({ className, description, link, title }: InfoProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const infoClasses = joinTailwindClasses("cursor-help", isOpen ? "text-text-brand" : "text-text-secondary", className);
@@ -22,8 +27,9 @@ export const Info = ({ className, children }: InfoProps) => {
           <LuInfo height="16" width="16" />
         </div>
       }
-    >
-      {children}
-    </Popover>
+      title={title}
+      description={description}
+      link={link}
+    />
   );
 };
