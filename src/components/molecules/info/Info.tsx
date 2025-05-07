@@ -11,7 +11,7 @@ type InfoProps = {
 export const Info = ({ className, children }: InfoProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const infoClasses = joinTailwindClasses(isOpen ? "text-text-brand" : "text-text-secondary", className);
+  const infoClasses = joinTailwindClasses("cursor-help", isOpen ? "text-text-brand" : "text-text-secondary", className);
 
   return (
     <Popover
