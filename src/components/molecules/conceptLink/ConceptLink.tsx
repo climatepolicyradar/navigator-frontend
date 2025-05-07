@@ -19,7 +19,7 @@ export const ConceptLink = ({ concept, triggerClasses = "" }: ConceptLinkProps) 
   );
 
   return (
-    <Popover onOpenChange={setIsOpen} trigger={<span className={allTriggerClasses}>{concept.preferred_label}</span>}>
+    <Popover openOnHover onOpenChange={setIsOpen} trigger={<span className={allTriggerClasses}>{concept.preferred_label}</span>}>
       <span className="font-bold capitalize underline-offset-un">{concept.preferred_label}</span>
       <p className="my-2">{concept.description}</p>
       <Link className="underline" href={`https://climatepolicyradar.wikibase.cloud/wiki/Item:${concept.wikibase_id}`}>
