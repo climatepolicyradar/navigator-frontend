@@ -2,6 +2,7 @@ import Footer from "@/components/footer/Footer";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import MainMenu from "@/components/menus/MainMenu";
 import { NavBar } from "@/components/organisms/navBar/NavBar";
+import { NewFeatures } from "@/components/organisms/newFeatures/NewFeatures";
 import Image from "next/image";
 import { FC, ReactNode } from "react";
 
@@ -19,6 +20,7 @@ const Main: FC<TProps> = ({ children }) => (
   <>
     <NavBar headerClasses="banner" logo={CPRLogo} menu={<MainMenu />} />
     <main className="flex flex-col flex-1">{children}</main>
+    <NewFeatures />
     <Footer />
   </>
 );
