@@ -11,7 +11,7 @@ export const NewFeatures = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [latestUpdateIsNew, setLatestUpdateIsNew] = useState(false);
 
-  const { featureValue } = LATEST_FEATURE;
+  const { featureValue, modalContent, modalTitle, popupCTA, popupDescription, popupTitle } = LATEST_FEATURE;
 
   // Check if there is an update to show the user
   useEffect(() => {
@@ -38,16 +38,17 @@ export const NewFeatures = () => {
       {/* Call to action */}
       {latestUpdateIsNew && (
         <div className="fixed inset-0 z-90 p-4 flex flex-col justify-end pointer-events-none">
-          <Card className="max-w-[300px] !p-4 pointer-events-auto">
-            <div className="flex justify-between flex-nowrap gap-2 mb-4">
-              <span>{LATEST_FEATURE.summary}</span>
-              <button onClick={() => markUpdateSeen()}>
-                <LuX height="16" width="16" />
-              </button>
+          <Card className="max-w-[300px] !p-4 flex items-start gap-2 pointer-events-auto select-none">
+            <div>
+              {popupTitle && <h4 className="font-bold">{popupTitle}</h4>}
+              <p className="my-3">{popupDescription}</p>
+              <a href="#" onClick={() => setModalIsOpen(true)} className="underline">
+                {popupCTA}
+              </a>
             </div>
-            <a href="#" onClick={() => setModalIsOpen(true)} className="underline">
-              Read more
-            </a>
+            <button onClick={() => markUpdateSeen()}>
+              <LuX height="16" width="16" />
+            </button>
           </Card>
         </div>
       )}
@@ -55,9 +56,9 @@ export const NewFeatures = () => {
       {/* Modal */}
       <Modal isOpen={modalIsOpen} onClose={onModalClose} cardClasses="">
         <div className="h-full flex flex-col gap-4">
-          <h1 className="text-2xl font-medium">{LATEST_FEATURE.title}</h1>
+          <h1 className="text-2xl font-medium">{modalTitle}</h1>
           <div className="h-full pr-2 overflow-y-auto">
-            <div className="flex flex-col items-center gap-6 overflow-y-auto">{LATEST_FEATURE.content}</div>
+            <div className="flex flex-col items-center gap-6 overflow-y-auto">{modalContent}</div>
           </div>
         </div>
       </Modal>

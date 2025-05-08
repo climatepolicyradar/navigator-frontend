@@ -2,58 +2,38 @@ import _ from "lodash";
 
 type NewFeature = {
   featureValue: number;
-  title: string;
-  summary: React.ReactNode;
-  content: React.ReactNode;
+  popupTitle?: string;
+  popupDescription: string;
+  popupCTA: string;
+  modalTitle: string;
+  modalContent: React.ReactNode;
 };
 
 export const NEW_FEATURES: NewFeature[] = [
   {
     featureValue: 1,
-    title: "New Feature",
-    summary: "Check out our newest feature.",
-    content: (
+    popupTitle: "New Improvements",
+    popupDescription: "You can now find what you're looking for faster.",
+    popupCTA: "More Info",
+    modalTitle: "New Improvements",
+    modalContent: (
       <>
-        <div className="bg-mcf-iconGrey w-[500px] h-[250px]" />
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec risus dui, interdum quis lacus sed, ultrices pharetra risus. Sed efficitur,
-          risus et interdum placerat, dolor sem elementum orci, vel ullamcorper lorem dui vel dolor. Nullam vehicula ac orci eget rhoncus. Curabitur
-          viverra porttitor sem, id vehicula nulla pulvinar pretium. Morbi euismod velit justo, accumsan dictum justo fermentum sit amet. Nam eu dui
-          sit amet nulla hendrerit suscipit non in orci. Phasellus varius magna ultricies massa scelerisque tempor vitae vitae mi. Sed et neque in
-          lorem venenatis blandit in ac ex. Curabitur porta iaculis venenatis. Integer ut tempor arcu, vitae dictum sem. Praesent vel odio ac dui
-          finibus euismod iaculis a metus. Aliquam at pulvinar nisl. Vestibulum a metus massa. Aenean ullamcorper justo nulla, at rhoncus nisi
-          accumsan sed. Praesent nisi risus, malesuada ut pharetra sed, maximus sed neque.
+        <p className="w-full">
+          Climate Policy Radar have introduced a new layer of structure to the data, automatically identifying mentions of key climate concepts in
+          documents.
         </p>
-        <div className="bg-mcf-iconGrey w-[500px] h-[250px]" />
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec risus dui, interdum quis lacus sed, ultrices pharetra risus. Sed efficitur,
-          risus et interdum placerat, dolor sem elementum orci, vel ullamcorper lorem dui vel dolor. Nullam vehicula ac orci eget rhoncus. Curabitur
-          viverra porttitor sem, id vehicula nulla pulvinar pretium. Morbi euismod velit justo, accumsan dictum justo fermentum sit amet. Nam eu dui
-          sit amet nulla hendrerit suscipit non in orci. Phasellus varius magna ultricies massa scelerisque tempor vitae vitae mi. Sed et neque in
-          lorem venenatis blandit in ac ex. Curabitur porta iaculis venenatis. Integer ut tempor arcu, vitae dictum sem. Praesent vel odio ac dui
-          finibus euismod iaculis a metus. Aliquam at pulvinar nisl. Vestibulum a metus massa. Aenean ullamcorper justo nulla, at rhoncus nisi
-          accumsan sed. Praesent nisi risus, malesuada ut pharetra sed, maximus sed neque.
+        <div className="bg-text-tertiary w-[500px] h-[300px] flex items-center justify-center text-white">(image: knowledge graph)</div>
+        <p className="w-full">
+          Moving beyond simple search + browse, this feature will help you quickly find where important topics (i.e. economic sectors, targets, and
+          climate finance instruments) appear across the database.
         </p>
-        <div className="bg-mcf-iconGrey w-[500px] h-[250px]" />
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec risus dui, interdum quis lacus sed, ultrices pharetra risus. Sed efficitur,
-          risus et interdum placerat, dolor sem elementum orci, vel ullamcorper lorem dui vel dolor. Nullam vehicula ac orci eget rhoncus. Curabitur
-          viverra porttitor sem, id vehicula nulla pulvinar pretium. Morbi euismod velit justo, accumsan dictum justo fermentum sit amet. Nam eu dui
-          sit amet nulla hendrerit suscipit non in orci. Phasellus varius magna ultricies massa scelerisque tempor vitae vitae mi. Sed et neque in
-          lorem venenatis blandit in ac ex. Curabitur porta iaculis venenatis. Integer ut tempor arcu, vitae dictum sem. Praesent vel odio ac dui
-          finibus euismod iaculis a metus. Aliquam at pulvinar nisl. Vestibulum a metus massa. Aenean ullamcorper justo nulla, at rhoncus nisi
-          accumsan sed. Praesent nisi risus, malesuada ut pharetra sed, maximus sed neque.
-        </p>
-        <div className="bg-mcf-iconGrey w-[500px] h-[250px]" />
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec risus dui, interdum quis lacus sed, ultrices pharetra risus. Sed efficitur,
-          risus et interdum placerat, dolor sem elementum orci, vel ullamcorper lorem dui vel dolor. Nullam vehicula ac orci eget rhoncus. Curabitur
-          viverra porttitor sem, id vehicula nulla pulvinar pretium. Morbi euismod velit justo, accumsan dictum justo fermentum sit amet. Nam eu dui
-          sit amet nulla hendrerit suscipit non in orci. Phasellus varius magna ultricies massa scelerisque tempor vitae vitae mi. Sed et neque in
-          lorem venenatis blandit in ac ex. Curabitur porta iaculis venenatis. Integer ut tempor arcu, vitae dictum sem. Praesent vel odio ac dui
-          finibus euismod iaculis a metus. Aliquam at pulvinar nisl. Vestibulum a metus massa. Aenean ullamcorper justo nulla, at rhoncus nisi
-          accumsan sed. Praesent nisi risus, malesuada ut pharetra sed, maximus sed neque.
-        </p>
+        <div className="bg-text-tertiary w-[500px] h-[300px] flex items-center justify-center text-white">
+          (image: block with specific concept search or whatever is most useful)
+        </div>
+        <p className="w-full">You will now be able to identify the primary focuses of each document faster too.</p>
+        <div className="bg-text-tertiary w-[500px] h-[300px] flex items-center justify-center text-white">
+          (shot of the count of key concepts within each document)
+        </div>
       </>
     ),
   },
