@@ -23,7 +23,7 @@ const getCardClasses = ({ className = "", color = "brand", variant = "solid" }: 
     bgColor = color === "brand" ? "bg-surface-brand" : "bg-surface-mono";
   }
 
-  return joinTailwindClasses([baseClasses, bgColor, border, textColor, className]);
+  return joinTailwindClasses(baseClasses, bgColor, border, textColor, className);
 };
 
 export const Card = ({ children, className, color = "brand", variant = "solid", ...props }: CardProps) => {

@@ -13,7 +13,8 @@ import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
 import { AppliedFilters } from "@/components/filters/AppliedFilters";
 import Loader from "@/components/Loader";
-import { FilterOptions } from "./FilterOptions";
+import { FilterOptions } from "@/components/blocks/FilterOptions";
+import { Heading } from "@/components/accordian/Heading";
 
 import { currentYear, minYear } from "@/constants/timedate";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -27,9 +28,6 @@ import { getFilterLabel } from "@/utils/getFilterLabel";
 import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
 
 import { SlideOutContext } from "@/context/SlideOutContext";
-import { Heading } from "../accordian/Heading";
-
-const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/components/MethodologyLink`));
 
 const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption) => {
   if (selectedCatgeory) {
@@ -99,7 +97,7 @@ const SearchFilters = ({
   }, [query]);
 
   return (
-    <div id="search_filters" data-cy="seach-filters" className="text-sm text-textNormal flex flex-col gap-5">
+    <div id="search_filters" data-cy="seach-filters" className="text-sm text-text-secondary flex flex-col gap-5">
       {themeConfigStatus === "loading" && <Loader size="20px" />}
       <div className="flex justify-between">
         <div className="flex gap-2">
@@ -137,6 +135,13 @@ const SearchFilters = ({
 
       {themeConfigStatus === "success" &&
         themeConfig.filters.map((filter) => {
+          // TODO: remove FF and logic for UNFCCC filters
+          if (
+            ["_document.type", "author_type"].includes(filter.taxonomyKey) &&
+            filter.corporaKey === "Intl. agreements" &&
+            !featureFlags["unfccc-filters"]
+          )
+            return;
           // If the filter is not in the selected category, don't display it
           if (!canDisplayFilter(filter, query, themeConfig)) return;
           return (
@@ -163,7 +168,7 @@ const SearchFilters = ({
       {conceptsData && (
         <>
           <button
-            className="items-center justify-between cursor-pointer group hidden md:flex"
+            className="items-center justify-between cursor-pointer group flex"
             onClick={() => setCurrentSlideOut(currentSlideOut === "" ? "concepts" : "")}
             data-cy="concepts-control"
             {...{ [SLIDE_OUT_DATA_KEY]: "concepts" }}
@@ -228,12 +233,6 @@ const SearchFilters = ({
       >
         <DateRange type="year_range" handleChange={handleYearChange} defaultValues={searchCriteria.year_range} min={minYear} max={thisYear} />
       </Accordian>
-
-      <div className="my-5 pt-5 border-t border-gray-300" data-cy="methodology-notice">
-        <p>
-          Read <MethodologyLink /> for more information on how we collect and analyse our data.
-        </p>
-      </div>
     </div>
   );
 };

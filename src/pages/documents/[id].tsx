@@ -28,6 +28,7 @@ import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamiy";
+import { withEnvConfig } from "@/context/EnvConfig";
 
 type TProps = {
   document: TDocumentPage;
@@ -37,8 +38,8 @@ type TProps = {
   vespaDocumentData?: TSearchResponse;
 };
 
-const passageClasses = (docType: string) => {
-  if (docType === "application/pdf") {
+const passageClasses = (canPreview: boolean) => {
+  if (canPreview) {
     return "md:w-1/3";
   }
   return "md:w-2/3";
@@ -82,6 +83,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const router = useRouter();
   const qsSearchString = router.query[QUERY_PARAMS.query_string];
   const exactMatchQuery = !!router.query[QUERY_PARAMS.exact_match];
+  const passagesByPosition = router.query[QUERY_PARAMS.passages_by_position] === "true";
   const startingPassage = Number(router.query.passage) || 0;
 
   // TODO: Remove this once we have hard launched concepts in product.
@@ -131,6 +133,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     );
   };
 
+  const handlePassagesOrderChange = (orderValue: string) => {
+    setPassageIndex(0);
+    const queryObj = { ...router.query };
+    queryObj[QUERY_PARAMS.passages_by_position] = orderValue;
+    router.push({ query: queryObj }, undefined, { shallow: true });
+  };
+
   // Handlers to update router
 
   const handleExactMatchChange = useCallback(
@@ -158,7 +167,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
     setPassageMatches(passageMatches);
     setTotalNoOfMatches(totalNoOfMatches);
-    setCanPreview(document.content_type === "application/pdf");
+    setCanPreview(!!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf"));
     // comparing families as objects will cause an infinite loop as each collection is a new instance of an object
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(families), document.slug]);
@@ -207,7 +216,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 <div
                   id="document-sidebar"
                   className={`py-4 order-first max-h-[90vh] md:pb-0 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
-                    document.content_type
+                    canPreview
                   )}`}
                 >
                   {status !== "success" ? (
@@ -230,7 +239,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                   </span>
                                 )}
                               </div>
-                              <p className="text-sm">Sorted by search relevance</p>
+                              <p className="text-sm">Sorted by {passagesByPosition ? "page number" : "search relevance"}</p>
                             </>
                           )}
                         </div>
@@ -254,6 +263,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                   queryParams={router.query}
                                   handleSearchChange={handleSemanticSearchChange}
                                   setShowOptions={setShowOptions}
+                                  handlePassagesClick={handlePassagesOrderChange}
                                 />
                               </motion.div>
                             )}
@@ -303,7 +313,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const theme = process.env.THEME;
   const id = context.params.id;
-  const client = new ApiClient(process.env.API_URL);
+  const client = new ApiClient(process.env.BACKEND_API_URL);
 
   let documentData: TDocumentPage;
   let familyData: TFamilyPage;
@@ -336,12 +346,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: {
+    props: withEnvConfig({
       document: documentData,
       family: familyData,
       theme: theme,
       vespaFamilyData: vespaFamilyData ?? null,
       vespaDocumentData: vespaDocumentData ?? null,
-    },
+    }),
   };
 };

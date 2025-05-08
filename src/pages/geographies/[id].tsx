@@ -35,6 +35,7 @@ import { systemGeoNames } from "@/constants/systemGeos";
 
 import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
 import { TTarget, TEvent, TGeography, TTheme } from "@/types";
+import { withEnvConfig } from "@/context/EnvConfig";
 
 type TProps = {
   geography: TGeographyStats;
@@ -404,8 +405,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     let countries: TGeography[] = [];
     const configData = await client.getConfig();
-    const response_geo = extractNestedData<TGeography>(configData.data?.geographies, 2, "");
-    countries = response_geo.level2;
+    const response_geo = extractNestedData<TGeography>(configData.data?.geographies || []);
+    countries = response_geo[1];
     const country = getCountryCode(id as string, countries);
     if (country) {
       const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${country.toLowerCase()}.json`);
@@ -428,12 +429,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: {
+    props: withEnvConfig({
       geography: geographyData,
       summary: summaryData,
       targets: theme === "mcf" ? [] : targetsData,
       theme: theme,
       themeConfig,
-    },
+    }),
   };
 };

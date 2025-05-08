@@ -13,7 +13,6 @@ import useSearch from "@/hooks/useSearch";
 import { MultiCol } from "@/components/panels/MultiCol";
 import { SideCol } from "@/components/panels/SideCol";
 import { SingleCol } from "@/components/panels/SingleCol";
-import { SiteWidth } from "@/components/panels/SiteWidth";
 
 import { ExternalLink } from "@/components/ExternalLink";
 import Loader from "@/components/Loader";
@@ -43,6 +42,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 
 import { TConcept, TTheme, TThemeConfig } from "@/types";
+import { withEnvConfig } from "@/context/EnvConfig";
 
 type TProps = {
   theme: TTheme;
@@ -63,6 +63,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
+  const [searchDirty, setSearchDirty] = useState(false);
   const settingsButtonRef = useRef(null);
 
   const [currentSlideOut, setCurrentSlideOut] = useState<TSlideOutContent>("");
@@ -228,6 +229,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     delete router.query[QUERY_PARAMS.framework_laws];
     // Reports filters
     delete router.query[QUERY_PARAMS.author_type];
+    // UNFCCC filters
+    delete router.query[QUERY_PARAMS["_document.type"]];
     // Only reset the topic and sector filters if we are not moving between laws or policies categories
     if (category !== "policies" && category !== "laws") {
       delete router.query[QUERY_PARAMS.topic];
@@ -316,6 +319,29 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     }, 150);
   };
 
+  // Concerned only with preventing scrolling when either the drawer or the CSV download popup is open
+  useEffect(() => {
+    if (typeof drawerFamily === "number" || showCSVDownloadPopup || showFilters) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    // Allow page to scroll on unmount
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [drawerFamily, showCSVDownloadPopup, showFilters]);
+
+  // We want to track changes to search, but only within the context of an open filter panel
+  useEffect(() => {
+    setSearchDirty(true);
+  }, [searchQuery]);
+  // If we are opening or closing the filters, we want to assume there are no changes yet
+  useEffect(() => {
+    setSearchDirty(false);
+  }, [showFilters]);
+
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
       <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
@@ -351,90 +377,34 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               </span>
             </div>
           </SubNav>
-          {/* MOBILE ONLY */}
-          <SiteWidth extraClasses="pt-4 md:hidden">
-            <div className="flex justify-between gap-2 items-center">
-              <Button content="both" className="flex-nowrap md:hidden" onClick={toggleFilters}>
-                <span>{showFilters ? "Hide" : "Show"} filters</span>
-                <div className={showFilters ? "rotate-180" : ""}>
-                  <Icon name="downChevron" />
-                </div>
-              </Button>
-              <div className="relative z-10 flex justify-center">
-                <button
-                  className={`p-2 text-textDark text-xl ${showOptions ? "bg-nearBlack text-white rounded-full" : ""}`}
-                  onClick={() => setShowOptions(!showOptions)}
-                  data-cy="search-options-mobile"
-                  ref={settingsButtonRef}
-                >
-                  <LuSettings2 />
-                </button>
-                <AnimatePresence initial={false}>
-                  {showOptions && (
-                    <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
-                      <SearchSettings
-                        queryParams={router.query}
-                        handleSortClick={handleSortClick}
-                        handleSearchChange={handleSearchChange}
-                        setShowOptions={setShowOptions}
-                        settingsButtonRef={settingsButtonRef}
-                      />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
-            <div className={`${showFilters ? "" : "hidden"} mt-4`}>
-              {configQuery.isFetching ? (
-                <Loader size="20px" />
-              ) : (
-                <>
-                  <SearchFilters
-                    searchCriteria={searchQuery}
-                    query={router.query}
-                    regions={regions}
-                    countries={countries}
-                    corpus_types={corpus_types}
-                    conceptsData={conceptsData}
-                    handleFilterChange={handleFilterChange}
-                    handleYearChange={handleYearChange}
-                    handleRegionChange={handleRegionChange}
-                    handleClearSearch={handleClearSearch}
-                    handleDocumentCategoryClick={handleDocumentCategoryClick}
-                    featureFlags={featureFlags}
-                  />
-                </>
-              )}
-            </div>
-            <div className="mt-4 text-xs" data-cy="number-of-results">
-              {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
-            </div>
-          </SiteWidth>
-          {/* END MOBILE ONLY */}
           <MultiCol id="search">
-            <SideCol extraClasses="hidden md:block relative">
+            <SideCol
+              extraClasses={`absolute z-99 top-0 w-screen bg-white duration-250 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] ${
+                showFilters ? "translate-y-[0%]" : "fixed translate-y-[100vh]"
+              } md:translate-y-[0%] md:h-full md:sticky md:top-[72px] md:z-50`}
+            >
               {configQuery.isFetching ? (
                 <Loader size="20px" />
               ) : (
                 <>
-                  <div className="sticky top-[72px] z-50">
-                    <div className="z-10 px-5 bg-white border-r border-gray-300 pt-5 sticky top-0 h-screen overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500">
-                      <SearchFilters
-                        searchCriteria={searchQuery}
-                        query={router.query}
-                        regions={regions}
-                        countries={countries}
-                        corpus_types={corpus_types}
-                        conceptsData={conceptsData}
-                        handleFilterChange={handleFilterChange}
-                        handleYearChange={handleYearChange}
-                        handleRegionChange={handleRegionChange}
-                        handleClearSearch={handleClearSearch}
-                        handleDocumentCategoryClick={handleDocumentCategoryClick}
-                        featureFlags={featureFlags}
-                      />
-                    </div>
-                    <SlideOut showCloseButton={false}>
+                  <div className="sticky md:top-[72px] h-screen md:h-[calc(100vh-72px)] px-5 bg-white border-r border-gray-300 pt-5 pb-[70px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pb-0">
+                    <SearchFilters
+                      searchCriteria={searchQuery}
+                      query={router.query}
+                      regions={regions}
+                      countries={countries}
+                      corpus_types={corpus_types}
+                      conceptsData={conceptsData}
+                      handleFilterChange={handleFilterChange}
+                      handleYearChange={handleYearChange}
+                      handleRegionChange={handleRegionChange}
+                      handleClearSearch={handleClearSearch}
+                      handleDocumentCategoryClick={handleDocumentCategoryClick}
+                      featureFlags={featureFlags}
+                    />
+                  </div>
+                  <SlideOut showCloseButton={false}>
+                    {currentSlideOut === "concepts" && (
                       <ConceptPicker
                         concepts={conceptsData}
                         title={
@@ -444,25 +414,39 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                           </div>
                         }
                       />
-                    </SlideOut>
+                    )}
+                  </SlideOut>
+                  <div className="absolute z-50 bottom-0 left-0 w-full flex bg-white md:hidden">
+                    <Button
+                      variant={searchDirty ? "solid" : "outlined"}
+                      className="m-4 w-full"
+                      onClick={() => {
+                        setCurrentSlideOut("");
+                        setShowFilters(false);
+                        setSearchDirty(false);
+                      }}
+                    >
+                      {searchDirty ? "Apply" : "Close"}
+                    </Button>
                   </div>
                 </>
               )}
             </SideCol>
             <div
               className={`flex-1 bg-white transition-[filter] duration-150 ${
-                currentSlideOut ? "md:brightness-50 md:pointer-events-none md:select-none" : ""
+                currentSlideOut ? "md:pointer-events-none md:select-none md:opacity-50" : ""
               }`}
             >
               <SingleCol extraClasses="px-5 pt-5 relative">
                 <div>
-                  {/* NON MOBILE SEARCH */}
-                  <div className="hidden md:block">
-                    <div className="flex gap-3 items-center">
-                      <div className="flex-1 text-xs" data-cy="number-of-results">
-                        {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
+                  <div className="">
+                    <div className="flex justify-between flex-wrap gap-2 items-center">
+                      <div className="md:hidden">
+                        <Button content="both" className="flex-nowrap" onClick={toggleFilters}>
+                          <span>{showFilters ? "Hide" : "Show"} filters</span>
+                        </Button>
                       </div>
-                      <div className="relative z-10">
+                      <div className="relative z-10 md:order-1">
                         <button
                           className={`p-4 text-textDark text-xl ${showOptions ? "bg-nearBlack text-white rounded-full" : ""}`}
                           onClick={() => setShowOptions(!showOptions)}
@@ -485,9 +469,11 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                           )}
                         </AnimatePresence>
                       </div>
+                      <div className="text-xs basis-full md:basis-auto md:order-0" data-cy="number-of-results">
+                        {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
+                      </div>
                     </div>
                   </div>
-                  {/* NON MOBILE SEARCH END */}
                   <div className="text-sm md:text-right">
                     {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
                     {downloadCSVStatus === "success" && (
@@ -564,6 +550,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: { theme, themeConfig, featureFlags, conceptsData: conceptsData ?? null },
+    props: withEnvConfig({ theme, themeConfig, featureFlags, conceptsData: conceptsData ?? null }),
   };
 };

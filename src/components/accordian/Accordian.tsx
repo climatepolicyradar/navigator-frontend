@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LuPlus, LuMinus } from "react-icons/lu";
+import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 
 import { Heading } from "./Heading";
+import { start } from "repl";
 
 type TProps = {
   title: string;
   startOpen?: boolean;
+  open?: boolean;
   overflowOverride?: boolean;
   children: React.ReactNode;
   className?: string;
@@ -18,6 +20,7 @@ type TProps = {
 export const Accordian = ({
   title,
   startOpen = false,
+  open,
   overflowOverride,
   fixedHeight = "300px",
   children,
@@ -27,6 +30,11 @@ export const Accordian = ({
 }: TProps) => {
   const [isOpen, setIsOpen] = useState(startOpen);
 
+  useEffect(() => {
+    if (open === undefined) return;
+    setIsOpen(open);
+  }, [open]);
+
   return (
     <div {...props}>
       <div className={`flex items-center justify-between cursor-pointer group`} onClick={() => setIsOpen(!isOpen)} data-cy="accordian-control">
@@ -34,7 +42,7 @@ export const Accordian = ({
           <Heading>{title}</Heading>
           {headContent}
         </div>
-        <span className="text-textDark opacity-40 group-hover:opacity-100">{isOpen ? <LuMinus /> : <LuPlus />}</span>
+        <span className="text-textDark opacity-40 group-hover:opacity-100">{isOpen ? <LuChevronUp /> : <LuChevronDown />}</span>
       </div>
       <AnimatePresence initial={false}>
         {isOpen && (

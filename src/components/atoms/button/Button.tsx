@@ -76,7 +76,7 @@ export const getButtonClasses = ({
 
   const cursor = disabled ? "pointer-events-none" : "";
 
-  return joinTailwindClasses([baseClasses, layout, sizing, bgColor, border, outlineColor, roundness, textColor, cursor, className]);
+  return joinTailwindClasses(baseClasses, layout, sizing, bgColor, border, outlineColor, roundness, textColor, cursor, className);
 };
 
 export const Button = ({
