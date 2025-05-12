@@ -5,7 +5,6 @@ import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { FamilyMeta } from "./FamilyMeta";
 
 import { truncateString } from "@/utils/truncateString";
-import { Popover } from "../atoms/popover/Popover";
 
 type TProps = {
   family: TFamily;
