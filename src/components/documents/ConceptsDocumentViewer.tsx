@@ -266,10 +266,13 @@ export const ConceptsDocumentViewer = ({
           )}`}
         >
           <div className="relative">
-            <div className="flex justify-between p-4">
+            <div className="flex justify-between items-end p-4">
               <h1 className="text-base font-medium">Passage matches</h1>
-              <button className="text-xl text-text-tertiary" onClick={() => setShowSearchOptions(!showSearchOptions)}>
-                <LuSettings2 />
+              <button
+                className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
+                onClick={() => setShowSearchOptions(!showSearchOptions)}
+              >
+                Sort & Display
               </button>
             </div>
             <AnimatePresence initial={false}>

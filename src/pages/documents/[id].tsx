@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
-import { LuSettings2 } from "react-icons/lu";
 
 import { ApiClient } from "@/api/http-common";
 
@@ -229,7 +228,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                         <div className="flex-1">
                           {totalNoOfMatches > 0 && (
                             <>
-                              <div className="mb-2 pt-2 text-sm" data-cy="document-matches-description">
+                              <div className="mb-2 text-sm" data-cy="document-matches-description">
                                 Displaying {renderPassageCount(totalNoOfMatches)} for "
                                 <span className="text-textDark font-medium">{`${qsSearchString}`}</span>"
                                 {!searchQuery.exact_match && ` and related phrases`}
@@ -244,8 +243,11 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           )}
                         </div>
                         <div className="relative z-10 flex justify-center">
-                          <button className="p-2 text-textDark text-xl" onClick={() => setShowOptions(!showOptions)}>
-                            <LuSettings2 />
+                          <button
+                            className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showOptions ? "bg-surface-ui" : ""}`}
+                            onClick={() => setShowOptions(!showOptions)}
+                          >
+                            Sort & Display
                           </button>
                           <AnimatePresence initial={false}>
                             {showOptions && (
