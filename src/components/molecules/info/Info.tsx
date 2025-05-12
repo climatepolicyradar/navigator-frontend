@@ -3,14 +3,14 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 import { useState } from "react";
 import { LuInfo } from "react-icons/lu";
 
-type InfoProps = {
+type TInfoProps = {
   className?: string;
   title?: string;
   description: string;
   link?: TPopoverLink;
 };
 
-export const Info = ({ className, description, link, title }: InfoProps) => {
+export const Info = ({ className, description, link, title }: TInfoProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const infoClasses = joinTailwindClasses("cursor-help", isOpen ? "text-text-brand" : "text-text-secondary", className);

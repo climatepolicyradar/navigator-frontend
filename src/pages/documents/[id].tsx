@@ -247,7 +247,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                             className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showOptions ? "bg-surface-ui" : ""}`}
                             onClick={() => setShowOptions(!showOptions)}
                           >
-                            Sort & Display
+                            Sort &amp; Display
                           </button>
                           <AnimatePresence initial={false}>
                             {showOptions && (

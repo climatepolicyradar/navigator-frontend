@@ -451,7 +451,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                           data-cy="search-options"
                           ref={settingsButtonRef}
                         >
-                          Sort & Display
+                          Sort &amp; Display
                         </button>
                         <AnimatePresence initial={false}>
                           {showOptions && (

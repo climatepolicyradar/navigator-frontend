@@ -13,30 +13,30 @@ export type TPopoverLink = {
 
 // Provide options for structuring the popover using props & Base UI components (heavily preferred) or children for full flexibility
 
-interface PopoverGenericProps {
+interface IPopoverGenericProps {
   onOpenChange?: (open: boolean) => void;
   openOnHover?: boolean;
   popupClasses?: string;
   trigger: ReactElement;
 }
 
-interface PopoverElementProps extends PopoverGenericProps {
+interface IPopoverElementProps extends IPopoverGenericProps {
   title?: string;
   description: string;
   link?: TPopoverLink;
   children?: never;
 }
 
-interface PopoverChildrenProps extends PopoverGenericProps {
+interface IPopoverChildrenProps extends IPopoverGenericProps {
   children: ReactNode;
   title?: never;
   description?: never;
   link?: never;
 }
 
-type PopoverProps = PopoverElementProps | PopoverChildrenProps;
+type TPopoverProps = IPopoverElementProps | IPopoverChildrenProps;
 
-export const Popover = ({ children, description, link, onOpenChange, openOnHover = false, popupClasses = "", title, trigger }: PopoverProps) => {
+export const Popover = ({ children, description, link, onOpenChange, openOnHover = false, popupClasses = "", title, trigger }: TPopoverProps) => {
   const allPopupClasses = joinTailwindClasses(
     "p-3 max-w-[350px] bg-surface-light border border-border-light rounded-md shadow-md text-sm leading-normal select-none focus-visible:outline-0",
     popupClasses

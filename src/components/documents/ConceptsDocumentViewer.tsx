@@ -272,7 +272,7 @@ export const ConceptsDocumentViewer = ({
                 className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
                 onClick={() => setShowSearchOptions(!showSearchOptions)}
               >
-                Sort & Display
+                Sort &amp; Display
               </button>
             </div>
             <AnimatePresence initial={false}>
