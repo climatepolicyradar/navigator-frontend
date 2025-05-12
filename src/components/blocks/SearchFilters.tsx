@@ -28,6 +28,7 @@ import { getFilterLabel } from "@/utils/getFilterLabel";
 import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
 
 import { SlideOutContext } from "@/context/SlideOutContext";
+import { Info } from "../molecules/info/Info";
 
 const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption) => {
   if (selectedCatgeory) {
@@ -100,8 +101,13 @@ const SearchFilters = ({
     <div id="search_filters" data-cy="seach-filters" className="text-sm text-text-secondary flex flex-col gap-5">
       {themeConfigStatus === "loading" && <Loader size="20px" />}
       <div className="flex justify-between">
-        <div className="flex gap-2">
-          <p className="text-xs uppercase">Filters</p>
+        <div className="flex items-center gap-2">
+          <p className="text-[15px] text-text-primary font-normal">Filters</p>
+          <Info
+            title="About"
+            description="Narrow down your results using the filters below. You can also combine these with a search term."
+            link={{ href: "/faq", text: "Learn more" }}
+          />
         </div>
         {showClear && (
           <button className="anchor underline text-sm" onClick={handleClearSearch}>

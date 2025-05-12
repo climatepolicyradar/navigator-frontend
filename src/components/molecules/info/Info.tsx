@@ -1,4 +1,4 @@
-import { Popover } from "@/components/atoms/popover/Popover";
+import { Popover, TPopoverLink } from "@/components/atoms/popover/Popover";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { useState } from "react";
 import { LuInfo } from "react-icons/lu";
@@ -7,10 +7,7 @@ type InfoProps = {
   className?: string;
   title?: string;
   description: string;
-  link?: {
-    href: string;
-    text: string;
-  };
+  link?: TPopoverLink;
 };
 
 export const Info = ({ className, description, link, title }: InfoProps) => {
@@ -24,7 +21,7 @@ export const Info = ({ className, description, link, title }: InfoProps) => {
       onOpenChange={setIsOpen}
       trigger={
         <div className={infoClasses}>
-          <LuInfo height="16" width="16" />
+          <LuInfo size={16} />
         </div>
       }
       title={title}

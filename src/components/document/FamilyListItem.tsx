@@ -44,13 +44,6 @@ export const FamilyListItem: FC<TProps> = ({ family, children }) => {
           geographies={family_geographies}
           {...(corpus_type_name === "Reports" ? { author: (family_metadata as { author: string[] }).author } : {})}
         />
-        <Popover trigger={<p className="underline decoration-dotted decoration-[1.5px] hover:decoration-wavy hover:decoration-1">Net-Zero Target</p>}>
-          <p className="font-bold">Description</p>
-          <p className="my-2">
-            A commitment to balance GHG emissions with removal by a certain point in time, effectively reducing the net emissions to zero.
-          </p>
-          <p className="underline">Source</p>
-        </Popover>
       </div>
       <p
         className="my-3 text-content"
