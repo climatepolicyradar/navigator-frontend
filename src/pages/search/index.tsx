@@ -385,7 +385,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 <Loader size="20px" />
               ) : (
                 <>
-                  <div className="sticky md:top-[72px] h-screen md:h-[calc(100vh-72px)] px-5 bg-white border-r border-gray-300 pt-5 pb-[70px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pb-0">
+                  <div className="sticky md:top-[72px] h-screen md:h-[calc(100vh-72px)] px-5 bg-white md:border-r border-gray-300 pt-5 pb-[180px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pb-4">
                     <SearchFilters
                       searchCriteria={searchQuery}
                       query={router.query}
@@ -414,7 +414,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       />
                     )}
                   </SlideOut>
-                  <div className="absolute z-50 bottom-0 left-0 w-full flex bg-white md:hidden">
+                  <div className="absolute z-50 bottom-0 left-0 w-full flex pb-[100px] bg-white md:hidden">
                     <Button
                       variant={searchDirty ? "solid" : "outlined"}
                       className="m-4 w-full"
