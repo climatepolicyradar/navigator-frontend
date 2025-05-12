@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { LuSettings2 } from "react-icons/lu";
 
 import { ApiClient } from "@/api/http-common";
 
@@ -16,7 +15,6 @@ import { SingleCol } from "@/components/panels/SingleCol";
 
 import { ExternalLink } from "@/components/ExternalLink";
 import Loader from "@/components/Loader";
-import { NoOfResults } from "@/components/NoOfResults";
 import SearchFilters from "@/components/blocks/SearchFilters";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Drawer from "@/components/drawer/Drawer";
@@ -43,6 +41,7 @@ import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 
 import { TConcept, TTheme, TThemeConfig } from "@/types";
 import { withEnvConfig } from "@/context/EnvConfig";
+import { Info } from "@/components/molecules/info/Info";
 
 type TProps = {
   theme: TTheme;
@@ -58,7 +57,6 @@ const SETTINGS_ANIMATION_VARIANTS = {
 
 const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig, featureFlags, conceptsData }: TProps) => {
   const router = useRouter();
-  const qQueryString = router.query[QUERY_PARAMS.query_string];
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
@@ -440,20 +438,20 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               <SingleCol extraClasses="px-5 pt-5 relative">
                 <div>
                   <div className="">
-                    <div className="flex justify-between flex-wrap gap-2 items-center">
+                    <div className="flex justify-between flex-wrap gap-2 items-start">
                       <div className="md:hidden">
                         <Button content="both" className="flex-nowrap" onClick={toggleFilters}>
                           <span>{showFilters ? "Hide" : "Show"} filters</span>
                         </Button>
                       </div>
-                      <div className="relative z-10 md:order-1">
+                      <div className="relative z-10 -top-0.5 md:order-1">
                         <button
-                          className={`p-4 text-textDark text-xl ${showOptions ? "bg-nearBlack text-white rounded-full" : ""}`}
+                          className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showOptions ? "bg-surface-ui" : ""}`}
                           onClick={() => setShowOptions(!showOptions)}
                           data-cy="search-options"
                           ref={settingsButtonRef}
                         >
-                          <LuSettings2 />
+                          Sort &amp; Display
                         </button>
                         <AnimatePresence initial={false}>
                           {showOptions && (
@@ -469,8 +467,15 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                           )}
                         </AnimatePresence>
                       </div>
-                      <div className="text-xs basis-full md:basis-auto md:order-0" data-cy="number-of-results">
-                        {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm text-text-primary font-normal">
+                          Results <span className="text-text-secondary">{hits || 0}</span>
+                        </p>
+                        <Info
+                          title="Showing the top 500 results"
+                          description="We limit the number of matches you can see so you get the quickest, most accurate results."
+                          link={{ href: "/faq", text: "Learn more" }}
+                        />
                       </div>
                     </div>
                   </div>

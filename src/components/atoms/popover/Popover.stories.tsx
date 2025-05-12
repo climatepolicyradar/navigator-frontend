@@ -16,10 +16,25 @@ type Story = StoryObj<typeof Popover>;
 
 export default meta;
 
-export const Generic: Story = {
+const trigger = <Button>Trigger</Button>;
+
+export const WithChildren: Story = {
   args: {
     children: "Hello, I am a popover!",
     openOnHover: false,
-    trigger: <Button>Trigger</Button>,
+    trigger,
+  },
+};
+
+export const WithElements: Story = {
+  args: {
+    description: "This is the popover description. Lots of text can go here, if you'd like.",
+    link: {
+      href: "#",
+      text: "Link",
+    },
+    openOnHover: false,
+    title: "Title",
+    trigger,
   },
 };
