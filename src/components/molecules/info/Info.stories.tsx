@@ -5,39 +5,25 @@ const meta = {
   title: "Molecules/Info",
   component: Info,
   parameters: { layout: "centered" },
-  argTypes: {
-    children: { control: "text" },
-  },
+  argTypes: {},
 } satisfies Meta<typeof Info>;
 type Story = StoryObj<typeof Info>;
 
 export default meta;
 
-export const Generic: Story = {
+export const Filters: Story = {
   args: {
-    children: "Here is some more info!",
+    title: "About",
+    description: "Narrow down your results using the filter below. You can also combine these with a search term.",
+    link: {
+      href: "#",
+      text: "Learn more",
+    },
   },
 };
 
-export const Filters: Story = {
-  argTypes: {
-    children: { control: false },
-  },
+export const Minimal: Story = {
   args: {
-    children: (
-      <>
-        <span className="font-bold">About</span>
-        <p className="my-2">Narrow down your results using the filter below. You can also combine these with a search term.</p>
-        <a href="#" className="underline">
-          Learn more
-        </a>
-      </>
-    ),
+    description: "Here is some more info!",
   },
-  render: ({ ...props }) => (
-    <p className="flex gap-1.5 items-center">
-      <span className="font-medium">Filters</span>
-      <Info {...props} />
-    </p>
-  ),
 };

@@ -1,14 +1,16 @@
-import { Popover } from "@/components/atoms/popover/Popover";
+import { Popover, TPopoverLink } from "@/components/atoms/popover/Popover";
 import { joinTailwindClasses } from "@/utils/tailwind";
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import { LuInfo } from "react-icons/lu";
 
-type InfoProps = {
+type TInfoProps = {
   className?: string;
-  children: ReactNode;
+  title?: string;
+  description: string;
+  link?: TPopoverLink;
 };
 
-export const Info = ({ className, children }: InfoProps) => {
+export const Info = ({ className, description, link, title }: TInfoProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const infoClasses = joinTailwindClasses("cursor-help", isOpen ? "text-text-brand" : "text-text-secondary", className);
@@ -19,11 +21,12 @@ export const Info = ({ className, children }: InfoProps) => {
       onOpenChange={setIsOpen}
       trigger={
         <div className={infoClasses}>
-          <LuInfo height="16" width="16" />
+          <LuInfo size={16} />
         </div>
       }
-    >
-      {children}
-    </Popover>
+      title={title}
+      description={description}
+      link={link}
+    />
   );
 };
