@@ -23,7 +23,7 @@ const renderEmptyMessage = (category: string) => {
 };
 
 const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: TProps) => {
-  if (category && category === "Litigation") {
+  if (category && category.toLowerCase() === "litigation") {
     return (
       <>
         <p className="my-4 md:mt-0">

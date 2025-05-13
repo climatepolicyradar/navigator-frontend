@@ -1,11 +1,10 @@
 type TProps = {
   extraClasses?: string;
-  children?: React.ReactNode;
 };
 
-export function SideCol({ extraClasses = "", children, ...props }: TProps) {
+export function SideCol({ extraClasses = "", children, ...props }: TProps & React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={`w-maxSidebar grow-0 shrink-0 px-5 ${extraClasses}`} {...props}>
+    <div className={`md:block md:w-maxSidebar md:grow-0 md:shrink-0 ${extraClasses}`} {...props}>
       {children}
     </div>
   );

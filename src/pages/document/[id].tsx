@@ -24,7 +24,6 @@ import { Button } from "@/components/atoms/button/Button";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Tooltip from "@/components/tooltip";
-import DocumentSearchForm from "@/components/forms/DocumentSearchForm";
 import { Alert } from "@/components/Alert";
 import { SubNav } from "@/components/nav/SubNav";
 import { Heading } from "@/components/typography/Heading";
@@ -42,7 +41,6 @@ import { extractNestedData } from "@/utils/extractNestedData";
 import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept } from "@/types";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { EXAMPLE_SEARCHES } from "@/constants/exampleSearches";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@/constants/document";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -50,6 +48,7 @@ import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import { MultiCol } from "@/components/panels/MultiCol";
 import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
+import { withEnvConfig } from "@/context/EnvConfig";
 
 type TProps = {
   page: TFamilyPage;
@@ -253,18 +252,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               )}
             </section>
 
-            <section className="mt-8" data-cy="top-documents">
-              <DocumentSearchForm
-                placeholder={`Search the full text of the ${page.title}`}
-                handleSearchInput={handleSearchInput}
-                input={router.query[QUERY_PARAMS.query_string] as string}
-                featuredSearches={EXAMPLE_SEARCHES}
-                showSuggestions
-              />
-            </section>
-
             {mainDocuments.length > 0 && theme !== "mcf" && (
-              <section className="mt-8">
+              <section className="mt-10">
                 <Heading level={2}>Main {pluralise(mainDocuments.length, "document", "documents")}</Heading>
                 <div data-cy="main-documents">
                   {mainDocuments.map((doc) => (
@@ -284,8 +273,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               <>
                 <section className="mt-8">
                   <div className="flex items-center gap-2">
-                    <Heading level={2} extraClasses="mb-0">
-                      {theme === "mcf" ? "Project documents" : "Other documents in this entry"}
+                    <Heading level={2} extraClasses="!mb-0">
+                      {theme === "mcf" ? "Project documents" : mainDocuments.length > 0 ? "Other documents in this entry" : "Documents in this entry"}
                     </Heading>
                     {theme !== "mcf" && (
                       <Tooltip
@@ -387,18 +376,20 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               </section>
             )}
 
-            <section className="mt-8">
-              <Heading level={4}>Note</Heading>
-              <div className="flex text-sm">
-                {corpusImage && (
-                  <div className="relative max-w-[144px] mt-1 mr-2">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`${corpusImage}`} alt={corpusAltImage} className="h-auto w-full" />
-                  </div>
-                )}
-                <span dangerouslySetInnerHTML={{ __html: corpusNote }} className="" />
-              </div>
-            </section>
+            {corpusNote && (
+              <section className="mt-8">
+                <Heading level={4}>Note</Heading>
+                <div className="flex text-sm">
+                  {corpusImage && (
+                    <div className="relative max-w-[144px] mt-1 mr-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={`${corpusImage}`} alt={corpusAltImage} className="h-auto w-full" />
+                    </div>
+                  )}
+                  <span dangerouslySetInnerHTML={{ __html: corpusNote }} className="" />
+                </div>
+              </section>
+            )}
 
             {page.collections.length > 0 && (
               <div className="mt-8">
@@ -456,7 +447,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const theme = process.env.THEME;
   const id = context.params.id;
-  const client = new ApiClient(process.env.API_URL);
+  const client = new ApiClient(process.env.BACKEND_API_URL);
 
   let familyData: TFamilyPage;
   let vespaFamilyData: TSearchResponse;
@@ -488,8 +479,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (familyData) {
     try {
       const configRaw = await client.getConfig();
-      const response_geo = extractNestedData<TGeography>(configRaw.data.geographies, 2, "");
-      countriesData = response_geo.level2;
+      const response_geo = extractNestedData<TGeography>(configRaw.data.geographies);
+      countriesData = response_geo[1];
       corpus_types = configRaw.data.corpus_types;
     } catch (error) {}
   }
@@ -501,7 +492,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: {
+    props: withEnvConfig({
       page: familyData,
       targets: targetsData,
       countries: countriesData,
@@ -509,6 +500,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       theme: theme,
       featureFlags,
       vespaFamilyData: vespaFamilyData ?? null,
-    },
+    }),
   };
 };

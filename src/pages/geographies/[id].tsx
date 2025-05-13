@@ -20,7 +20,6 @@ import { Button } from "@/components/atoms/button/Button";
 import TabbedNav from "@/components/nav/TabbedNav";
 import { ExternalLink } from "@/components/ExternalLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
-import DocumentSearchForm from "@/components/forms/DocumentSearchForm";
 import { Alert } from "@/components/Alert";
 import { SubNav } from "@/components/nav/SubNav";
 import { Heading } from "@/components/typography/Heading";
@@ -36,6 +35,7 @@ import { systemGeoNames } from "@/constants/systemGeos";
 
 import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
 import { TTarget, TEvent, TGeography, TTheme } from "@/types";
+import { withEnvConfig } from "@/context/EnvConfig";
 
 type TProps = {
   geography: TGeographyStats;
@@ -57,8 +57,6 @@ const categoryByIndex = {
 };
 
 const MAX_NUMBER_OF_FAMILIES = 3;
-
-const FEATURED_SEARCHES = ["Resilient infrastructure", "Fossil fuel divestment", "Net zero growth plan", "Sustainable fishing"];
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets, theme, themeConfig }: TProps) => {
   const router = useRouter();
@@ -127,14 +125,6 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       newQuery[QUERY_PARAMS.category] = documentCategory;
     }
     router.push({ pathname: "/search", query: { ...newQuery } });
-  };
-
-  // Search handlers
-  const handleSearchInput = (term: string) => {
-    const queryObj = {};
-    queryObj[QUERY_PARAMS.query_string] = term;
-    queryObj[QUERY_PARAMS.country] = geography.geography_slug;
-    router.push({ pathname: "/search", query: queryObj });
   };
 
   const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geography.name}.`}</p>;
@@ -248,16 +238,29 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                 theme={theme}
                 totalProjects={allDocumentsCount}
               />
-              <section className="mt-8" data-cy="country-search">
+              {theme !== "mcf" && geography.name === "United States of America" && (
+                <section className="mt-8">
+                  <div className="flex mt-4">
+                    <Alert
+                      message={
+                        <>
+                          To see developments in the Trump-Vance administration's climate rollback, visit the{" "}
+                          <ExternalLink
+                            url="https://climate.law.columbia.edu/content/climate-backtracker"
+                            className="underline text-blue-600 hover:text-blue-800"
+                          >
+                            Sabin Center's Climate Backtracker
+                          </ExternalLink>
+                          .
+                        </>
+                      }
+                      icon={<Icon name="alertCircle" height="16" width="16" />}
+                    />
+                  </div>
+                </section>
+              )}
+              <section className="mt-8">
                 <Heading level={2}>Documents</Heading>
-                <DocumentSearchForm
-                  placeholder={`Search the full text of ${allDocumentsCount} documents from ${geography.name}`}
-                  handleSearchInput={handleSearchInput}
-                  input={""}
-                  featuredSearches={FEATURED_SEARCHES}
-                  showSuggestions
-                  suggestionsAsLinks
-                />
               </section>
               {hasFamilies && (
                 <>
@@ -402,8 +405,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     let countries: TGeography[] = [];
     const configData = await client.getConfig();
-    const response_geo = extractNestedData<TGeography>(configData.data?.geographies, 2, "");
-    countries = response_geo.level2;
+    const response_geo = extractNestedData<TGeography>(configData.data?.geographies || []);
+    countries = response_geo[1];
     const country = getCountryCode(id as string, countries);
     if (country) {
       const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${country.toLowerCase()}.json`);
@@ -426,12 +429,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: {
+    props: withEnvConfig({
       geography: geographyData,
       summary: summaryData,
       targets: theme === "mcf" ? [] : targetsData,
       theme: theme,
       themeConfig,
-    },
+    }),
   };
 };

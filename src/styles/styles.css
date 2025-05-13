@@ -11,7 +11,7 @@
     }
 
     &:focus {
-      @apply outline-none outline-transparent ring-offset-0 ring-0;
+      @apply outline-none outline-transparent ring-offset-0 ring-0 border-inputSelected;
     }
   }
 
@@ -23,7 +23,7 @@
   [type="text"],
   [type="search"],
   [type="number"] {
-    @apply text-textDark p-2 bg-input leading-[1.4] w-full;
+    @apply text-text-primary p-2 bg-surface-ui border-border-light leading-[1.4] w-full;
 
     &.extra-content-left {
       @apply pl-8;
@@ -615,4 +615,10 @@ ul li.selected {
   width: 32px;
   height: 32px;
   background: hsl(200, 50%, 0%);
+}
+
+/* Base UI elements */
+[data-floating-ui-portal] {
+  position: absolute;
+  z-index: 1000;
 }

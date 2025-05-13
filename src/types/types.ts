@@ -17,22 +17,23 @@ export type TSearchCriteriaMeta = {
 };
 
 export type TSearchCriteria = {
-  query_string: string;
-  exact_match: boolean;
-  max_passages_per_doc: number;
-  keyword_filters?: TSearchKeywordFilters;
-  year_range: [string, string];
-  sort_field: string | null;
-  sort_order: string;
-  page_size: number;
-  limit: number;
-  offset: number;
-  family_ids?: string[] | null;
-  document_ids?: string[] | null;
+  concept_filters: { name: string; value: string }[];
   continuation_tokens?: string[] | null;
   corpus_import_ids: string[];
+  document_ids?: string[] | null;
+  exact_match: boolean;
+  family_ids?: string[] | null;
+  keyword_filters?: TSearchKeywordFilters;
+  limit: number;
+  max_passages_per_doc: number;
   metadata: TSearchCriteriaMeta[];
-  concept_filters: { name: string; value: string }[];
+  offset: number;
+  page_size: number;
+  query_string: string;
+  sort_field: string | null;
+  sort_order: string;
+  sort_within_page: boolean;
+  year_range: [string, string];
   // for internal use
   runSearch?: boolean;
 };
@@ -319,17 +320,18 @@ export type TOrganisationDictionary = TDictionary<TOrganisation>;
 export type TCorpusTypeDictionary = TDictionary<TCorpusType>;
 
 export type TConcept = {
-  preferred_label: string;
-  wikibase_id: string;
   alternative_labels: string[];
-  negative_labels: string[];
-  description: string;
-  subconcept_of: string[];
-  recursive_subconcept_of: string[];
-  has_subconcept: string[];
-  related_concepts: string[];
+  count?: number;
   definition?: string;
+  description: string;
+  has_subconcept: string[];
   labelled_passages?: [];
+  negative_labels: string[];
+  preferred_label: string;
+  recursive_subconcept_of: string[];
+  related_concepts: string[];
+  subconcept_of: string[];
+  wikibase_id: string;
 };
 
 export type TSearchResponse = {

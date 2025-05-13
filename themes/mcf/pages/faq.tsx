@@ -1,19 +1,19 @@
-import { Fragment } from "react";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
-import { Accordian } from "@/components/accordian/Accordian";
+import FaqSection from "@/components/FaqSection";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { SiteWidth } from "@/components/panels/SiteWidth";
-import { SingleCol } from "@/components/panels/SingleCol";
 import { SubNav } from "@/components/nav/SubNav";
-import { Heading } from "@/components/typography/Heading";
+import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
+import { FAQS, PLATFORM_FAQS } from "@/mcf/constants/faqs";
+import { getFeatureFlags } from "@/utils/featureFlags";
 
-import { FAQS, PLATFORMFAQS } from "@/mcf/constants/faqs";
-import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
+type TProps = {
+  featureFlags: Record<string, string | boolean>;
+};
 
-const ACCORDIANMAXHEIGHT = "464px";
-
-const FAQ = () => {
+const FAQ: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags = {} }: TProps) => {
   return (
     <Layout
       title="FAQ"
@@ -24,41 +24,23 @@ const FAQ = () => {
       </SubNav>
       <section className="pt-8">
         <SiteWidth>
-          <SingleCol>
-            <Heading level={1} extraClasses="custom-header">
-              FAQs
-            </Heading>
-            <VerticalSpacing size="md" />
-            <div className="text-content mb-14">
-              {FAQS.map((faq, i) => (
-                <Fragment key={faq.title}>
-                  <Accordian title={faq.title} startOpen={i === 0} fixedHeight={ACCORDIANMAXHEIGHT}>
-                    {faq.content}
-                  </Accordian>
-                  <hr />
-                </Fragment>
-              ))}
-            </div>
-          </SingleCol>
-          <SingleCol>
-            <Heading level={1} extraClasses="custom-header">
-              Platform FAQs
-            </Heading>
-            <VerticalSpacing size="md" />
-            <div className="text-content mb-14">
-              {PLATFORMFAQS.map((faq, i) => (
-                <Fragment key={faq.title}>
-                  <Accordian title={faq.title} startOpen={i === 0} fixedHeight={ACCORDIANMAXHEIGHT}>
-                    {faq.content}
-                  </Accordian>
-                  <hr />
-                </Fragment>
-              ))}
-            </div>
-          </SingleCol>
+          <FaqSection title="FAQs" faqs={FAQS} />
+          <FaqSection title="Platform FAQs" faqs={PLATFORM_FAQS} />
+          {featureFlags["concepts-v1"] === true && <FaqSection title="Concepts FAQs" faqs={CONCEPTS_FAQS} />}
         </SiteWidth>
       </section>
+      <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
     </Layout>
   );
 };
 export default FAQ;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const featureFlags = await getFeatureFlags(context.req.cookies);
+
+  return {
+    props: {
+      featureFlags: featureFlags || {},
+    },
+  };
+};

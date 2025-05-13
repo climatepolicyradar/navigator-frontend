@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Loader from "./Loader";
 import { TPassage } from "@/types";
 import { Icon } from "./atoms/icon/Icon";
+import { usePostHog } from "posthog-js/react";
 
 type TProps = {
   passages: TPassage[];
@@ -29,6 +30,8 @@ const PassageMatches = ({ passages, onClick, activeIndex, pageColour = "textDark
     }
   }, [hasCopied]);
 
+  const posthog = usePostHog();
+
   return (
     <>
       {!passages ? (
@@ -38,7 +41,13 @@ const PassageMatches = ({ passages, onClick, activeIndex, pageColour = "textDark
       ) : (
         <div className="my-5" id="passage-matches">
           {passages.map((item, index: number) => (
-            <div key={item.text_block_id} data-analytics="document-passage-result" id={`passage-${index}`} className="mb-2">
+            <div
+              key={item.text_block_id}
+              data-analytics="document-passage-result"
+              id={`passage-${index}`}
+              className="mb-2"
+              onClick={() => posthog.capture("Passage matches click", { index })}
+            >
               <div
                 className={`p-4 cursor-pointer border border-gray-200 rounded-md bg-white hover:border-gray-500 ${
                   activeIndex === index ? "!border-blue-100 !bg-gray-50 hover:!border-gray-50" : ""

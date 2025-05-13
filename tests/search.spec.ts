@@ -11,21 +11,31 @@ test("search", async ({ page }) => {
   /** Homepage */
   await expect(page.getByLabel("Search").first()).toBeVisible();
   await page.getByLabel("Search").first().fill("Adaptation strategy");
+
+  /** Test keyboard submission */
+  await page.getByLabel("Search").first().press("Enter");
+  await page.waitForURL("/search*");
+
+  /** Test tap submission  */
+  await page.goBack();
+  await expect(page.getByLabel("Search").first()).toBeVisible();
+  await page.getByLabel("Search").first().fill("Adaptation strategy");
   await page.getByRole("button", { name: "Search" }).click();
 
   /** Search */
-  await page.waitForURL("/search*");
+  await Promise.all([page.waitForURL("/search*"), page.waitForResponse("**/searches")]);
+
   /**
    * This finds the first container that has the heading search results.
    * We could probably have a more semantic search markup with lists.
    */
   const searchResultsHeading = page.getByRole("heading", { name: "Search results" });
   const searchResults = page.locator("div").filter({ has: searchResultsHeading }).last();
-  await expect(searchResults).toBeVisible({ timeout: 10000 });
+  await expect(searchResults).toBeVisible();
 
   /** Check the structure of the search result */
   const firstSearchResult = searchResults.locator('[data-cy="search-result"]').first();
-  await expect(firstSearchResult).toBeVisible({ timeout: 10000 });
+  await expect(firstSearchResult).toBeVisible();
 
   /** TODO: Make the markup more semantic */
   await expect(firstSearchResult.locator('[data-cy="family-title"]')).toBeVisible();
@@ -37,13 +47,13 @@ test("search", async ({ page }) => {
   await searchResults.getByRole("link").first().click();
 
   /** Document (AKA Family) page */
-  await page.waitForURL("/document/*");
+  await Promise.all([page.waitForURL("/document/*"), page.waitForResponse("**/searches")]);
   await page
     .getByText(/View (more than )?\d+ matches/)
     .first()
     .click();
 
   /** Documents Page */
-  await page.waitForURL("/documents/*");
+  await Promise.all([page.waitForURL("/documents/*"), page.waitForResponse("**/searches")]);
   await expect(page.getByText("View source document")).toBeVisible();
 });

@@ -11,8 +11,15 @@ import { AccordianItem } from "@/cclw/components/AccordianItem";
 import { Heading } from "@/components/typography/Heading";
 
 import { FAQS } from "@/cclw/constants/faqs";
+import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
-const FAQ = () => {
+type TProps = {
+  featureFlags: Record<string, string | boolean>;
+};
+
+const FAQ: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags = {} }: TProps) => {
   return (
     <Layout
       title="FAQ"
@@ -58,9 +65,36 @@ const FAQ = () => {
               ))}
             </div>
           </SingleCol>
+
+          {featureFlags["concepts-v1"] === true && (
+            <SingleCol>
+              <div className="text-content mb-12">
+                <Heading level={2}>Concepts FAQs</Heading>
+                {CONCEPTS_FAQS.map((faq, i) => (
+                  <Fragment key={faq.title}>
+                    <AccordianItem id={faq.id} title={faq.title} headContent={faq.headContent ?? null} startOpen={i === 0}>
+                      {faq.content}
+                    </AccordianItem>
+                    <hr />
+                  </Fragment>
+                ))}
+              </div>
+            </SingleCol>
+          )}
         </SiteWidth>
       </section>
+      <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
     </Layout>
   );
 };
 export default FAQ;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const featureFlags = await getFeatureFlags(context.req.cookies);
+
+  return {
+    props: {
+      featureFlags: featureFlags || {},
+    },
+  };
+};

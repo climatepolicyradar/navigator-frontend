@@ -1,10 +1,14 @@
+import { useCallback, useState } from "react";
+import { LuInfo } from "react-icons/lu";
+import Link from "next/link";
+
 import { ConceptsHead } from "./ConceptsHead";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { ConceptsPopover } from "@/components/popover/ConceptsPopover";
 import { Button } from "@/components/atoms/button/Button";
-import Link from "next/link";
+
+import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
+
 import { TConcept } from "@/types";
-import { useCallback, useState } from "react";
 
 type TProps = {
   concepts: TConcept[];
@@ -36,22 +40,11 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
     has_subconcept: [],
   };
 
-  const conceptsGroupedByRootConcept: { [rootConceptId: string]: TConcept[] } = Object.groupBy(concepts, (concept) => {
-    const rootConcept = rootConcepts.find((rootConcept) => concept.recursive_subconcept_of.includes(rootConcept.wikibase_id));
-    const isRootConcept = rootConcepts.some((rootConcept) => rootConcept.wikibase_id === concept.wikibase_id);
-
-    /**
-     * 1. if it has a root concept, add to that list
-     * 2. if it is a root concept, add to itself
-     * 3. otherwise add to other
-     */
-    const rootConceptId = rootConcept?.wikibase_id ?? (isRootConcept ? concept.wikibase_id : otherRootConcept.wikibase_id);
-    return rootConceptId;
-  });
+  const conceptsGroupedByRootConcept = groupByRootConcept(concepts, rootConcepts);
 
   return (
     <div className="pb-4">
-      <div className="mt-4 grow-0 shrink-0">
+      <div className="grow-0 shrink-0">
         <ConceptsHead></ConceptsHead>
       </div>
 
@@ -73,9 +66,9 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
                         : [...openPopoverIds, rootConcept.wikibase_id]
                     );
                   }}
-                  className="text-neutral-500 flex items-center z-50"
+                  className="text-text-primary flex items-center z-50 opacity-20 group-hover:opacity-40 transition-opacity duration-150"
                 >
-                  <HiOutlineDotsHorizontal className="text-xl group-hover:border-neutral-200 border-transparent border-1 rounded-full p-0.5" />
+                  <LuInfo className="text-xl" />
                 </button>
 
                 {openPopoverIds.includes(rootConcept.wikibase_id) && (

@@ -8,9 +8,11 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { sortOptions, sortOptionsBrowse } from "@/constants/sortOptions";
 
 type TProps = {
-  queryParams: ParsedUrlQuery;
-  handleSortClick?: (sortOption: string) => void;
+  extraClasses?: string;
+  handlePassagesClick?: (passagesOption: string) => void;
   handleSearchChange?: (key: string, value: string) => void;
+  handleSortClick?: (sortOption: string) => void;
+  queryParams: ParsedUrlQuery;
   setShowOptions?: (value: boolean) => void;
   settingsButtonRef?: MutableRefObject<any>;
 };
@@ -19,7 +21,7 @@ const getCurrentSortChoice = (queryParams: ParsedUrlQuery, isBrowsing: boolean) 
   const field = queryParams[QUERY_PARAMS.sort_field];
   const order = queryParams[QUERY_PARAMS.sort_order];
   if (field === undefined && order === undefined) {
-    if (isBrowsing) return "null";
+    if (isBrowsing) return "date:desc";
     return "relevance";
   }
   return `${field}:${order}`;
@@ -33,20 +35,41 @@ const getCurrentSemanticSearchChoice = (queryParams: ParsedUrlQuery) => {
   return exactMatch as string;
 };
 
-export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChange, setShowOptions, settingsButtonRef }: TProps) => {
+const getCurrentPassagesOrderChoice = (queryParams: ParsedUrlQuery) => {
+  return queryParams[QUERY_PARAMS.passages_by_position] === "true";
+};
+
+export const SearchSettings = ({
+  extraClasses = "",
+  handlePassagesClick,
+  handleSearchChange,
+  handleSortClick,
+  queryParams,
+  setShowOptions,
+  settingsButtonRef,
+}: TProps) => {
   const searchOptionsRef = useRef(null);
   const [options, setOptions] = useState(sortOptions);
 
+  // no query string OR query string is empty
   const isBrowsing = !queryParams[QUERY_PARAMS.query_string] || queryParams[QUERY_PARAMS.query_string]?.toString().trim() === "";
 
   const handleSemanticSearchClick = (e: React.MouseEvent<HTMLAnchorElement>, value: string) => {
     e.preventDefault();
-    if (handleSearchChange) handleSearchChange(QUERY_PARAMS.exact_match, value);
+    setShowOptions(false);
+    handleSearchChange?.(QUERY_PARAMS.exact_match, value);
   };
 
   const handleSortOptionClick = (e: React.MouseEvent<HTMLAnchorElement>, sortOption: string) => {
     e.preventDefault();
-    if (handleSortClick) handleSortClick(sortOption);
+    setShowOptions(false);
+    handleSortClick?.(sortOption);
+  };
+
+  const handlePassagesOrderClick = (e: React.MouseEvent<HTMLAnchorElement>, value: string) => {
+    e.preventDefault();
+    setShowOptions(false);
+    handlePassagesClick?.(value);
   };
 
   useEffect(() => {
@@ -73,15 +96,15 @@ export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChang
 
   return (
     <div
-      className="absolute top-full right-0 bg-nearBlack rounded-lg p-4 mt-2 z-10 text-white text-sm w-[180px]"
+      className={`absolute top-full right-0 bg-nearBlack rounded-lg p-4 mt-2 z-10 text-white text-sm w-[180px] ${extraClasses}`}
       ref={searchOptionsRef}
       data-cy="search-settings"
     >
-      {queryParams[QUERY_PARAMS.category]?.toString() === "Litigation" && <p>No filters available</p>}
-      {queryParams[QUERY_PARAMS.category]?.toString() !== "Litigation" && (
+      {queryParams[QUERY_PARAMS.category]?.toString().toLowerCase() === "litigation" && <p>No filters available</p>}
+      {queryParams[QUERY_PARAMS.category]?.toString().toLowerCase() !== "litigation" && (
         <>
           {handleSearchChange && (
-            <div className={`${handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
+            <div className={`${handlePassagesClick || handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
               <SearchSettingsList data-cy="semantic-search" aria-label="Semantic search">
                 <SearchSettingsItem
                   onClick={(e) => handleSemanticSearchClick(e, "false")}
@@ -94,6 +117,24 @@ export const SearchSettings = ({ queryParams, handleSortClick, handleSearchChang
                   isActive={getCurrentSemanticSearchChoice(queryParams) === "true"}
                 >
                   Exact phrases only
+                </SearchSettingsItem>
+              </SearchSettingsList>
+            </div>
+          )}
+          {handlePassagesClick && (
+            <div className={`${handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
+              <SearchSettingsList data-cy="passages-sort" aria-label="Passages sort">
+                <SearchSettingsItem
+                  onClick={(e) => handlePassagesOrderClick(e, "false")}
+                  isActive={getCurrentPassagesOrderChoice(queryParams) === false}
+                >
+                  Relevance
+                </SearchSettingsItem>
+                <SearchSettingsItem
+                  onClick={(e) => handlePassagesOrderClick(e, "true")}
+                  isActive={getCurrentPassagesOrderChoice(queryParams) === true}
+                >
+                  Page number
                 </SearchSettingsItem>
               </SearchSettingsList>
             </div>

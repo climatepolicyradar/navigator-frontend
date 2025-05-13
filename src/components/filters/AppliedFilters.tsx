@@ -30,7 +30,11 @@ const handleConceptName = (label: string, concepts: TConcept[]) => {
   if (!concepts) {
     return label;
   }
-  return getConceptName(label, concepts);
+  const conceptLabel = getConceptName(label, concepts);
+  if (!conceptLabel) {
+    return label;
+  }
+  return conceptLabel.charAt(0).toUpperCase() + conceptLabel.slice(1);
 };
 
 type TFilterKeys = keyof typeof QUERY_PARAMS;
@@ -100,6 +104,7 @@ const handleFilterDisplay = (
     case "fund":
     case "fund_doc_type":
     case "framework_laws":
+    case "_document.type":
       filterLabel = getFilterDisplayValue(key, value, themeConfig);
       break;
   }
@@ -128,6 +133,10 @@ const generatePills = (
 
   Object.keys(QUERY_PARAMS).map((key: TFilterKeys) => {
     const value = queryParams[QUERY_PARAMS[key]];
+
+    // Exclude the search query from pills as it displays in NavSearch instead
+    if (key === "query_string") return;
+
     if (value) {
       if (key === "year_range")
         return pills.push(handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions, themeConfig, concepts));
