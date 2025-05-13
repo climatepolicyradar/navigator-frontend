@@ -23,12 +23,12 @@ import { Heading } from "@/components/typography/Heading";
 //   ssr: false,
 // });
 
-type TProps = {
+interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   searchInput: string;
-};
+}
 
-const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
+const LandingPage = ({ handleSearchInput, searchInput }: IProps) => {
   return (
     <Layout title="Law and Policy Search" theme={APP_NAME} description={PAGE_DESCRIPTION}>
       <main id="main" className="flex flex-col flex-1">

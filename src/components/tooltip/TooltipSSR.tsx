@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
 
-type TProps = {
+interface IProps {
   id: string;
   place?: "top" | "right" | "bottom" | "left";
   tooltip?: string | React.ReactNode;
   interactableContent?: boolean;
-};
+}
 
-export const ToolTipSSR = ({ id, place, tooltip, interactableContent }: TProps) => {
+export const ToolTipSSR = ({ id, place, tooltip, interactableContent }: IProps) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {

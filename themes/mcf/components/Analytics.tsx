@@ -1,12 +1,12 @@
 import Script from "next/script";
 
-type TProps = {
+interface IProps {
   enableAnalytics: boolean;
-};
+}
 
 const MCF_GA_ID = "G-4SHFJ172GL";
 
-const Analytics = ({ enableAnalytics }: TProps) => {
+const Analytics = ({ enableAnalytics }: IProps) => {
   return (
     <>
       {enableAnalytics && (

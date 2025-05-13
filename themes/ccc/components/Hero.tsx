@@ -3,12 +3,12 @@ import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 import LandingSearchForm from "./LandingSearchForm";
 
-type TProps = {
+interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   searchInput: string;
-};
+}
 
-export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
+export const Hero = ({ handleSearchInput, searchInput }: IProps) => {
   return (
     <div className="pb-[33vh] text-white">
       <SiteWidth>

@@ -13,13 +13,13 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TConcept } from "@/types";
 import { LinkWithQuery } from "../LinkWithQuery";
 
-type TProps = {
+interface IProps {
   concepts: TConcept[];
   containerClasses?: string;
   showSearch?: boolean;
   startingSort?: TSort;
   title: React.ReactNode;
-};
+}
 
 const SORT_OPTIONS = ["A-Z", "Grouped"] as const;
 
@@ -68,7 +68,7 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
   router.push({ query: query }, undefined, { shallow: true });
 };
 
-export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showSearch = true, title }: TProps) => {
+export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showSearch = true, title }: IProps) => {
   const router = useRouter();
   const ref = useRef(null);
   const [search, setSearch] = useState("");

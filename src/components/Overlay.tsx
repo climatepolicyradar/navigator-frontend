@@ -1,10 +1,10 @@
-interface OverlayProps {
+interface IProps {
   active: boolean;
   onClick(): void;
   children?: JSX.Element | string;
 }
 
-const Overlay = ({ active, onClick, children }: OverlayProps): JSX.Element => {
+const Overlay = ({ active, onClick, children }: IProps): JSX.Element => {
   return (
     <div
       onClick={onClick}

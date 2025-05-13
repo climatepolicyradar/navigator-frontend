@@ -8,12 +8,12 @@ import { SlideOutContext } from "@/context/SlideOutContext";
 
 import { SLIDE_OUT_DATA_KEY } from "@/constants/dataAttributes";
 
-interface SlideOutProps {
+interface IProps {
   children: React.ReactNode;
   showCloseButton?: boolean;
 }
 
-export const SlideOut = ({ children, showCloseButton = true }: SlideOutProps) => {
+export const SlideOut = ({ children, showCloseButton = true }: IProps) => {
   const ref = useRef(null);
   const { currentSlideOut, setCurrentSlideOut } = useContext(SlideOutContext);
 

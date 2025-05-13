@@ -1,4 +1,4 @@
-export type SortFuncType = (data: any, prop: any) => any;
+export type TSortFuncType = (data: any, prop: any) => any;
 
 export const sortData = (data, prop) => {
   var myData = data.sort((a, b) => {

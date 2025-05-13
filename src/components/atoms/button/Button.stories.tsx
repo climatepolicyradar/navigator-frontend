@@ -14,11 +14,11 @@ const meta = {
     disabled: { control: "boolean" },
   },
 } satisfies Meta<typeof Button>;
-type Story = StoryObj<typeof Button>;
+type TStory = StoryObj<typeof Button>;
 
 export default meta;
 
-export const Medium: Story = {
+export const Medium: TStory = {
   args: {
     children: "Button",
     color: "brand",
@@ -30,7 +30,7 @@ export const Medium: Story = {
   },
 };
 
-export const Small: Story = {
+export const Small: TStory = {
   args: {
     children: "Small",
     color: "brand",
@@ -42,7 +42,7 @@ export const Small: Story = {
   },
 };
 
-export const Large: Story = {
+export const Large: TStory = {
   args: {
     children: "Large",
     color: "brand",
@@ -54,7 +54,7 @@ export const Large: Story = {
   },
 };
 
-export const Rounded: Story = {
+export const Rounded: TStory = {
   args: {
     children: "Rounded",
     color: "brand",
@@ -66,7 +66,7 @@ export const Rounded: Story = {
   },
 };
 
-export const Faded: Story = {
+export const Faded: TStory = {
   args: {
     children: "Faded",
     color: "brand",
@@ -78,7 +78,7 @@ export const Faded: Story = {
   },
 };
 
-export const Outlined: Story = {
+export const Outlined: TStory = {
   args: {
     children: "Outlined",
     color: "mono",
@@ -90,7 +90,7 @@ export const Outlined: Story = {
   },
 };
 
-export const Ghost: Story = {
+export const Ghost: TStory = {
   args: {
     children: "Ghost",
     color: "mono",
@@ -102,7 +102,7 @@ export const Ghost: Story = {
   },
 };
 
-export const Disabled: Story = {
+export const Disabled: TStory = {
   args: {
     children: "Disabled",
     color: "brand",
@@ -114,7 +114,7 @@ export const Disabled: Story = {
   },
 };
 
-export const IconAndText: Story = {
+export const IconAndText: TStory = {
   args: {
     color: "brand",
     content: "both",
@@ -141,7 +141,7 @@ export const IconAndText: Story = {
   ),
 };
 
-export const IconOnly: Story = {
+export const IconOnly: TStory = {
   args: {
     children: <Icon name="search2" height="16" width="16" />,
     color: "brand",
@@ -156,7 +156,7 @@ export const IconOnly: Story = {
   },
 };
 
-export const Close: Story = {
+export const Close: TStory = {
   args: {
     content: "icon",
     children: <Icon name="close" />,

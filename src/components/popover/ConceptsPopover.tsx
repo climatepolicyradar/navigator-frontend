@@ -4,12 +4,12 @@ import { Heading } from "@/components/typography/Heading";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { Popover } from "./Popover";
 
-type TProps = {
+interface IProps {
   concept?: TConcept;
   onClose: () => void;
-};
+}
 
-export const ConceptsPopover = ({ concept, onClose }: TProps) => {
+export const ConceptsPopover = ({ concept, onClose }: IProps) => {
   return (
     <Popover>
       <>

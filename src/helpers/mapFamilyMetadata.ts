@@ -4,17 +4,17 @@ import { getSubCategoryName } from "@/helpers/getCategoryName";
 import { getSumUSD } from "@/helpers/getSumUSD";
 import { TCorpusTypeSubCategory } from "@/types";
 
-interface Metadata {
+interface IMetadata {
   [key: string]: string[] | TCorpusTypeSubCategory | string;
 }
 
-type ResultItem = {
+type TResultItem = {
   label: string;
   value: string[] | string;
 };
 
-export const mapFamilyMetadata = (metadata: Metadata) => {
-  const result: ResultItem[] = [];
+export const mapFamilyMetadata = (metadata: IMetadata) => {
+  const result: TResultItem[] = [];
 
   for (const [key, values] of Object.entries(metadata)) {
     const mapping = metadataLabelMappings[key];

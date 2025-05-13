@@ -4,11 +4,11 @@ import { ExternalLink } from "@/components/ExternalLink";
 import { Button } from "@/components/atoms/button/Button";
 import { Heading } from "@/components/typography/Heading";
 
-type TProps = {
+interface IProps {
   resetError: () => void;
-};
+}
 
-const PageLevel = ({ resetError }: TProps) => {
+const PageLevel = ({ resetError }: IProps) => {
   return (
     <Layout title={"Application Error"}>
       <section>

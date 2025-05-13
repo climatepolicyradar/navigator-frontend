@@ -312,12 +312,12 @@ export type TCorpusType = {
   corpora: TCorpusWithStats[];
 };
 
-export interface TDictionary<T> {
+export interface IDictionary<T> {
   [Key: string]: T;
 }
 
-export type TOrganisationDictionary = TDictionary<TOrganisation>;
-export type TCorpusTypeDictionary = TDictionary<TCorpusType>;
+export type TOrganisationDictionary = IDictionary<TOrganisation>;
+export type TCorpusTypeDictionary = IDictionary<TCorpusType>;
 
 export type TConcept = {
   alternative_labels: string[];

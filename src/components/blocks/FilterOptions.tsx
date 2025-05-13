@@ -16,13 +16,13 @@ const getTaxonomyAllowedValues = (corporaKey: string, taxonomyKey: string, corpu
   return allowedValues;
 };
 
-type TProps = {
+interface IProps {
   filter: TThemeConfigFilter;
   query: ParsedUrlQuery;
   handleFilterChange: Function;
   corpus_types: TCorpusTypeDictionary;
   themeConfig: TThemeConfig;
-};
+}
 
 const filterIsSelected = (queryValue: string | string[] | undefined, option: string) => {
   if (!queryValue) {
@@ -35,7 +35,7 @@ const filterIsSelected = (queryValue: string | string[] | undefined, option: str
   }
 };
 
-export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types, themeConfig }: TProps) => {
+export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types, themeConfig }: IProps) => {
   const [search, setSearch] = useState("");
 
   // If the filter has its own options defined, display them

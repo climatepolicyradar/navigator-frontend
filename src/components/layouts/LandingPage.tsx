@@ -9,7 +9,7 @@ import { getCanonicalUrl } from "@/utils/getCanonicalUrl";
 
 import { TTheme, TThemeConfig } from "@/types";
 
-type TProps = {
+interface IProps {
   title?: string;
   theme?: TTheme;
   description?: string;
@@ -17,9 +17,9 @@ type TProps = {
   metadataKey?: string;
   text?: string;
   children?: ReactNode;
-};
+}
 
-const Layout = ({ children, title, theme, description, themeConfig, metadataKey, text }: TProps) => {
+const Layout = ({ children, title, theme, description, themeConfig, metadataKey, text }: IProps) => {
   const router = useRouter();
 
   return (

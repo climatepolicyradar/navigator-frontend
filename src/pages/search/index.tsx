@@ -43,19 +43,19 @@ import { TConcept, TTheme, TThemeConfig } from "@/types";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { Info } from "@/components/molecules/info/Info";
 
-type TProps = {
+interface IProps {
   theme: TTheme;
   themeConfig: TThemeConfig;
   featureFlags: Record<string, string | boolean>;
   conceptsData?: TConcept[];
-};
+}
 
 const SETTINGS_ANIMATION_VARIANTS = {
   hidden: { opacity: 0, transition: { duration: 0.1 } },
   visible: { opacity: 1, transition: { duration: 0 } },
 };
 
-const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig, featureFlags, conceptsData }: TProps) => {
+const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig, featureFlags, conceptsData }: IProps) => {
   const router = useRouter();
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);

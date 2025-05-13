@@ -1,12 +1,12 @@
 import { Icon } from "@/components/atoms/icon/Icon";
 import Link from "next/link";
 
-type TProps = {
+interface IProps {
   unavailableConcepts: string[];
   familySlug: string;
-};
+}
 
-export const UnavailableConcepts = ({ unavailableConcepts, familySlug }: TProps) => (
+export const UnavailableConcepts = ({ unavailableConcepts, familySlug }: IProps) => (
   <div className="border-gray-200 flex flex-col gap-4 flex-1 mt-4 pt-10 border-t text-center text-gray-600 px-4">
     <div className="text-blue-800 flex justify-center items-center">
       <div className="rounded-full bg-blue-50 p-6 mb-2">

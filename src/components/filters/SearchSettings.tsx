@@ -7,7 +7,7 @@ import { SearchSettingsItem } from "./SearchSettingsItem";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { sortOptions, sortOptionsBrowse } from "@/constants/sortOptions";
 
-type TProps = {
+interface IProps {
   extraClasses?: string;
   handlePassagesClick?: (passagesOption: string) => void;
   handleSearchChange?: (key: string, value: string) => void;
@@ -15,7 +15,7 @@ type TProps = {
   queryParams: ParsedUrlQuery;
   setShowOptions?: (value: boolean) => void;
   settingsButtonRef?: MutableRefObject<any>;
-};
+}
 
 const getCurrentSortChoice = (queryParams: ParsedUrlQuery, isBrowsing: boolean) => {
   const field = queryParams[QUERY_PARAMS.sort_field];
@@ -47,7 +47,7 @@ export const SearchSettings = ({
   queryParams,
   setShowOptions,
   settingsButtonRef,
-}: TProps) => {
+}: IProps) => {
   const searchOptionsRef = useRef(null);
   const [options, setOptions] = useState(sortOptions);
 

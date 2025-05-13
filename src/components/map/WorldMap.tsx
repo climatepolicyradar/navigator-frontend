@@ -132,11 +132,11 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
   );
 };
 
-type TMapChartProps = {
+interface IProps {
   showLitigation?: boolean;
-};
+}
 
-export default function MapChart({ showLitigation = false }: TMapChartProps) {
+export default function MapChart({ showLitigation = false }: IProps) {
   const configQuery = useConfig();
   const geographiesQuery = useGeographies();
   const { data: { countries: configCountries = [] } = {} } = configQuery;

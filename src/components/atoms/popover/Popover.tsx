@@ -34,9 +34,9 @@ interface IPopoverChildrenProps extends IPopoverGenericProps {
   link?: never;
 }
 
-type TPopoverProps = IPopoverElementProps | IPopoverChildrenProps;
+type TProps = IPopoverElementProps | IPopoverChildrenProps;
 
-export const Popover = ({ children, description, link, onOpenChange, openOnHover = false, popupClasses = "", title, trigger }: TPopoverProps) => {
+export const Popover = ({ children, description, link, onOpenChange, openOnHover = false, popupClasses = "", title, trigger }: TProps) => {
   const allPopupClasses = joinTailwindClasses(
     "p-3 max-w-[350px] bg-surface-light border border-border-light rounded-md shadow-md text-sm leading-normal select-none focus-visible:outline-0",
     popupClasses

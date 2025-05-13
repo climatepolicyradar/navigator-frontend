@@ -28,7 +28,7 @@ type TState = {
   totalNoOfMatches: number;
 };
 
-type TProps = {
+interface IProps {
   initialQueryTerm?: string | string[];
   initialExactMatch?: boolean;
   initialPassage?: number;
@@ -39,7 +39,7 @@ type TProps = {
   familySlug: string;
   // Callback props for state changes
   onExactMatchChange?: (isExact: boolean) => void;
-};
+}
 
 const passageClasses = (canPreview: boolean) => {
   if (canPreview) {
@@ -62,7 +62,7 @@ export const ConceptsDocumentViewer = ({
   vespaFamilyData,
   vespaDocumentData,
   onExactMatchChange,
-}: TProps) => {
+}: IProps) => {
   const router = useRouter();
   const [showSearchOptions, setShowSearchOptions] = useState(false);
   const [showConcepts, setShowConcepts] = useState(false);

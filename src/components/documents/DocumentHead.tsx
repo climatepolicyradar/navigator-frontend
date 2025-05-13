@@ -21,18 +21,18 @@ import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
 import { TDocumentPage, TFamilyPage } from "@/types";
 import { DocumentMetaRenderer } from "./renderers/DocumentMetaRenderer";
 
-type TProps = {
+interface IProps {
   document: TDocumentPage;
   family: TFamilyPage;
   handleViewOtherDocsClick: (e: React.FormEvent<HTMLButtonElement>) => void;
   handleViewSourceClick: (e: React.FormEvent<HTMLButtonElement>) => void;
-};
+}
 
 const containsNonEnglish = (languages: string[]) => {
   return languages.some((lang) => lang !== "eng");
 };
 
-export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handleViewSourceClick }: TProps) => {
+export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handleViewSourceClick }: IProps) => {
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [summary, setSummary] = useState("");
 

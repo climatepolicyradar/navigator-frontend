@@ -8,7 +8,7 @@ const meta = {
   parameters: { layout: "centered" },
   argTypes: {},
 } satisfies Meta<typeof ConceptLink>;
-type Story = StoryObj<typeof ConceptLink>;
+type TStory = StoryObj<typeof ConceptLink>;
 
 export default meta;
 
@@ -47,13 +47,13 @@ const concepts: Partial<TConcept>[] = [
   },
 ];
 
-export const Single: Story = {
+export const Single: TStory = {
   args: {
     concept: concepts[0] as TConcept,
   },
 };
 
-export const Multiple: Story = {
+export const Multiple: TStory = {
   argTypes: {
     concept: { control: false },
   },
