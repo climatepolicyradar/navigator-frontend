@@ -87,6 +87,7 @@ export const NavSearch = () => {
   // The path to navigate to when submitting the search input
   const searchHref: Url = useMemo(() => {
     const newQuery = CleanRouterQuery({ ...router.query });
+    delete newQuery[QUERY_PARAMS.offset];
 
     if (searchText) {
       newQuery[QUERY_PARAMS.query_string] = searchText;
