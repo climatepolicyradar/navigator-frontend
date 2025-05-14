@@ -438,13 +438,23 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               <SingleCol extraClasses="px-5 pt-5 relative">
                 <div>
                   <div className="">
-                    <div className="flex justify-between flex-wrap gap-2 items-start">
-                      <div className="md:hidden">
-                        <Button content="both" className="flex-nowrap" onClick={toggleFilters}>
-                          <span>{showFilters ? "Hide" : "Show"} filters</span>
-                        </Button>
+                    <div className="md:hidden mb-4">
+                      <Button content="both" className="flex-nowrap" onClick={toggleFilters}>
+                        <span>{showFilters ? "Hide" : "Show"} filters</span>
+                      </Button>
+                    </div>
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm text-text-primary font-normal">
+                          Results <span className="text-text-secondary">{hits || 0}</span>
+                        </p>
+                        <Info
+                          title="Showing the top 500 results"
+                          description="We limit the number of matches you can see so you get the quickest, most accurate results."
+                          link={{ href: "/faq", text: "Learn more" }}
+                        />
                       </div>
-                      <div className="relative z-10 -top-0.5 md:order-1">
+                      <div className="relative z-10 -top-0.5">
                         <button
                           className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showOptions ? "bg-surface-ui" : ""}`}
                           onClick={() => setShowOptions(!showOptions)}
@@ -466,16 +476,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                             </motion.div>
                           )}
                         </AnimatePresence>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <p className="text-sm text-text-primary font-normal">
-                          Results <span className="text-text-secondary">{hits || 0}</span>
-                        </p>
-                        <Info
-                          title="Showing the top 500 results"
-                          description="We limit the number of matches you can see so you get the quickest, most accurate results."
-                          link={{ href: "/faq", text: "Learn more" }}
-                        />
                       </div>
                     </div>
                   </div>
