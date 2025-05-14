@@ -200,7 +200,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
                 <div
                   id="document-preview"
-                  className={`pt-4 flex-1 h-[400px] basis-[400px] md:block md:h-full ${totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""}`}
+                  className={`flex-1 h-[400px] basis-[400px] md:block md:h-full ${totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""}`}
                 >
                   {canPreview && (
                     <EmbeddedPDF
