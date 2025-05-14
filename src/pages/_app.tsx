@@ -19,12 +19,12 @@ const favicon = `/images/favicon/${process.env.THEME}.png`;
 
 const queryClient = new QueryClient();
 
-type TProps = AppProps & {
+interface IProps extends AppProps {
   theme?: string;
   adobeApiKey?: string;
-};
+}
 
-function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
+function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
   const [siteTheme, setSiteTheme] = useState(null);
   const [adobeKey, setAdobeKey] = useState(null);
 

@@ -4,12 +4,12 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 import { startCase } from "lodash";
 import { useState } from "react";
 
-interface ConceptLinkProps {
+interface IProps {
   concept: TConcept;
   triggerClasses?: string;
 }
 
-export const ConceptLink = ({ concept, triggerClasses = "" }: ConceptLinkProps) => {
+export const ConceptLink = ({ concept, triggerClasses = "" }: IProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const allTriggerClasses = joinTailwindClasses(

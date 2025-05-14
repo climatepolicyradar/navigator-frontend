@@ -1,12 +1,12 @@
 import Script from "next/script";
 
-type TProps = {
+interface IProps {
   enableAnalytics: boolean;
-};
+}
 
 const CCLW_GA_ID = "UA-153841121-2";
 
-const Analytics = ({ enableAnalytics }: TProps) => {
+const Analytics = ({ enableAnalytics }: IProps) => {
   return (
     <>
       {enableAnalytics && (

@@ -42,7 +42,7 @@ const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCate
   return false;
 };
 
-type TSearchFiltersProps = {
+interface IProps {
   searchCriteria: TSearchCriteria;
   query: ParsedUrlQuery;
   regions: TGeography[];
@@ -55,7 +55,7 @@ type TSearchFiltersProps = {
   handleClearSearch(): void;
   handleDocumentCategoryClick(value: string): void;
   featureFlags: Record<string, string | boolean>;
-};
+}
 
 const SearchFilters = ({
   searchCriteria,
@@ -70,7 +70,7 @@ const SearchFilters = ({
   handleClearSearch,
   handleDocumentCategoryClick,
   featureFlags,
-}: TSearchFiltersProps) => {
+}: IProps) => {
   const { status: themeConfigStatus, themeConfig } = useGetThemeConfig();
   const [showClear, setShowClear] = useState(false);
   const { currentSlideOut, setCurrentSlideOut } = useContext(SlideOutContext);

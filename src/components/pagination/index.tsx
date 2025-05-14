@@ -5,7 +5,7 @@ import { Button } from "@/components/atoms/button/Button";
 
 import { getCurrentPage } from "@/utils/getCurrentPage";
 
-interface PaginationProps {
+interface IProps {
   onChange(ct: string, offSet: number): void;
   offset?: string | number;
   maxNeighbourDistance?: number;
@@ -36,14 +36,7 @@ const calcCurrentPage = (offset: string | number = 0, continuationTokens: string
   return getCurrentPage(offSet, RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN, cts, activeContinuationToken);
 };
 
-const Pagination = ({
-  onChange,
-  offset,
-  totalHits = 0,
-  continuationToken = null,
-  continuationTokens = "[]",
-  activeContinuationToken,
-}: PaginationProps) => {
+const Pagination = ({ onChange, offset, totalHits = 0, continuationToken = null, continuationTokens = "[]", activeContinuationToken }: IProps) => {
   const parsedTokens: string[] = JSON.parse(continuationTokens);
   // empty string to the beginning of the array accounts for the first set of pages that do not require a token
   parsedTokens.splice(0, 0, "");

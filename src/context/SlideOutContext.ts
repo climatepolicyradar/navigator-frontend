@@ -2,9 +2,9 @@ import { createContext } from "react";
 
 export type TSlideOutContent = "concepts" | "";
 
-type TProps = {
+interface IProps {
   currentSlideOut: TSlideOutContent;
   setCurrentSlideOut: (value: TSlideOutContent) => void;
-};
+}
 
-export const SlideOutContext = createContext<TProps>(null);
+export const SlideOutContext = createContext<IProps>(null);

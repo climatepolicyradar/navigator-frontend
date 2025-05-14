@@ -14,7 +14,7 @@ import dynamic from "next/dynamic";
 
 const Wrapper = dynamic<{ children: ReactNode }>(() => import(`/themes/${process.env.THEME}/layouts/main`));
 
-type TProps = {
+interface IProps {
   title?: string;
   theme?: TTheme;
   description?: string;
@@ -22,9 +22,9 @@ type TProps = {
   metadataKey?: string;
   text?: string;
   children?: ReactNode;
-};
+}
 
-const Layout: FC<TProps> = ({ children, title, theme, description, themeConfig, metadataKey, text }) => {
+const Layout: FC<IProps> = ({ children, title, theme, description, themeConfig, metadataKey, text }) => {
   const router = useRouter();
   const contextTheme = useContext(ThemeContext);
 

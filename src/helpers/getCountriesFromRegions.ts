@@ -1,12 +1,12 @@
 import { TGeography } from "@/types";
 
-type TProps = {
+interface IProps {
   selectedRegions: string[];
   regions: TGeography[];
   countries: TGeography[];
-};
+}
 
-export const getCountriesFromRegions = ({ regions, countries, selectedRegions }: TProps) => {
+export const getCountriesFromRegions = ({ regions, countries, selectedRegions }: IProps) => {
   const selectedRegionsGeo = regions.filter((item) => selectedRegions.includes(item.slug));
 
   let newList = countries;

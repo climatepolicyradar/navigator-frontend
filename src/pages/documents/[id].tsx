@@ -29,13 +29,13 @@ import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentV
 import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamiy";
 import { withEnvConfig } from "@/context/EnvConfig";
 
-type TProps = {
+interface IProps {
   document: TDocumentPage;
   family: TFamilyPage;
   theme: TTheme;
   vespaFamilyData?: TSearchResponse;
   vespaDocumentData?: TSearchResponse;
-};
+}
 
 const passageClasses = (canPreview: boolean) => {
   if (canPreview) {
@@ -73,7 +73,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   theme,
   vespaFamilyData,
   vespaDocumentData,
-}: TProps) => {
+}: IProps) => {
   const [canPreview, setCanPreview] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [passageIndex, setPassageIndex] = useState(null);

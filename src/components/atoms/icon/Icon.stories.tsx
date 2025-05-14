@@ -18,10 +18,10 @@ const meta = {
   },
 } satisfies Meta<typeof Icon>;
 
-type Story = StoryObj<typeof Icon>;
+type TStory = StoryObj<typeof Icon>;
 export default meta;
 
-export const AllIcons: Story = {
+export const AllIcons: TStory = {
   args: {
     color: "#505050",
     height: "40",
@@ -42,7 +42,7 @@ export const AllIcons: Story = {
   ),
 };
 
-export const Primary: Story = {
+export const Primary: TStory = {
   args: {
     color: "#505050",
     name: "close",

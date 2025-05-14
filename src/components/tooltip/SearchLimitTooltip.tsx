@@ -2,12 +2,12 @@ import Tooltip from ".";
 
 import { MAX_RESULTS } from "@/constants/paging";
 
-type TProps = {
+interface IProps {
   colour?: string;
   textOverride?: string;
-};
+}
 
-export const SearchLimitTooltip = ({ colour, textOverride }: TProps) => {
+export const SearchLimitTooltip = ({ colour, textOverride }: IProps) => {
   return (
     <Tooltip
       id="search-results-number"

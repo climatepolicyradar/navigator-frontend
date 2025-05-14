@@ -5,7 +5,7 @@ import { SingleCol } from "@/components/panels/SingleCol";
 import { Heading } from "@/components/typography/Heading";
 import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
 
-type TProps = {
+interface IProps {
   title: string;
   faqs: {
     id?: string;
@@ -14,9 +14,9 @@ type TProps = {
     headContent?: JSX.Element;
   }[];
   accordionMaxHeight?: string;
-};
+}
 
-export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px" }: TProps) => {
+export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px" }: IProps) => {
   return (
     <SingleCol>
       <Heading level={1} extraClasses="custom-header">

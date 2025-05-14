@@ -1,13 +1,13 @@
 import { TEvent } from "@/types";
 import { convertDate } from "@/utils/timedate";
 
-interface EventProps {
+interface IProps {
   event: TEvent;
   last: boolean;
   index: number;
 }
 
-export const Event = ({ event, last, index }: EventProps) => {
+export const Event = ({ event, last, index }: IProps) => {
   const { title, date } = event;
   const [year, _, month] = convertDate(date);
 

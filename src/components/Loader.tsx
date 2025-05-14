@@ -1,8 +1,8 @@
-type TProps = {
+interface IProps {
   size?: string;
-};
+}
 
-const Loader = ({ size = "80px" }: TProps) => {
+const Loader = ({ size = "80px" }: IProps) => {
   return (
     <>
       <div className="flex items-start justify-center">

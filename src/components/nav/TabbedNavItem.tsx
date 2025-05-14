@@ -4,7 +4,7 @@ import { getCategoryTooltip } from "@/helpers/getCategoryTooltip";
 
 import { TDocumentCategory } from "@/types";
 
-interface TabbedNavItemProps {
+interface IProps {
   title: TDocumentCategory;
   count?: number;
   index: number;
@@ -16,7 +16,7 @@ const tabCount = (count: number, active: boolean) => {
   return <span className={`py-1 px-2 rounded-2xl text-xs bg-gray-100 ${active && "text-blue-600 bg-blue-100"}`}>{count}</span>;
 };
 
-const TabbedNavItem = ({ title, count, index, activeTab, onClick }: TabbedNavItemProps) => {
+const TabbedNavItem = ({ title, count, index, activeTab, onClick }: IProps) => {
   const tooltipId = `${index}-tooltip`;
   const tooltipText = getCategoryTooltip(title);
   const isActive = activeTab === index;

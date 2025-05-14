@@ -11,35 +11,35 @@ const meta = {
     children: { control: "text" },
   },
 } satisfies Meta<typeof Pill>;
-type Story = StoryObj<typeof Pill>;
+type TStory = StoryObj<typeof Pill>;
 
 export default meta;
 
-export const SearchQuery: Story = {
+export const SearchQuery: TStory = {
   args: {
     children: "Search: electric vehicles",
   },
 };
 
-export const SearchCategory: Story = {
+export const SearchCategory: TStory = {
   args: {
     children: "UNFCCC",
   },
 };
 
-export const SearchRegion: Story = {
+export const SearchRegion: TStory = {
   args: {
     children: "North America",
   },
 };
 
-export const SearchJurisdiction: Story = {
+export const SearchJurisdiction: TStory = {
   args: {
     children: "Canada",
   },
 };
 
-export const SearchDate: Story = {
+export const SearchDate: TStory = {
   args: {
     children: "2020 - 2025",
   },

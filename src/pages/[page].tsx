@@ -15,13 +15,13 @@ type TPage = {
   contentPath: string;
 };
 
-type TProps = {
+interface IProps {
   page?: TPage & {
     notFound?: boolean;
   };
-};
+}
 
-export default function Page({ page }: TProps) {
+export default function Page({ page }: IProps) {
   // TODO: fix this properly
   // Next is throwing a NEXT_REDIRECT error under the hood when attemping to navigate to a missing page at root, e.g. /missing-page
   if (!page || page.notFound) {

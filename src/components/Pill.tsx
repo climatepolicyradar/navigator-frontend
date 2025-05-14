@@ -1,16 +1,16 @@
 import { Icon } from "./atoms/icon/Icon";
 import { ToolTipSSR } from "@/components/tooltip/TooltipSSR";
 
-type TProps = {
+interface IProps {
   onClick?: () => void;
   children: React.ReactNode;
   extraClasses?: string;
-};
+}
 
 /**
  * A pill with a remove button. Represents a search query parameter.
  */
-const Pill = ({ children, onClick, extraClasses = "" }: TProps) => {
+const Pill = ({ children, onClick, extraClasses = "" }: IProps) => {
   const handleClick = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();
     if (onClick) {

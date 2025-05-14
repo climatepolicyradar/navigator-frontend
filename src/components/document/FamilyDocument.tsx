@@ -5,12 +5,12 @@ import { getLanguage } from "@/helpers/getLanguage";
 import { TDocumentPage, TLoadingStatus } from "@/types";
 import { getDocumentType } from "@/helpers/getDocumentType";
 
-type TProps = {
+interface IProps {
   document: TDocumentPage;
   matches?: number;
   status?: TLoadingStatus;
   familyMatches?: number;
-};
+}
 
 const loadingIndicator = (
   <span className="flex gap-2 items-center">
@@ -19,7 +19,7 @@ const loadingIndicator = (
   </span>
 );
 
-export const FamilyDocument = ({ document, matches, status, familyMatches }: TProps) => {
+export const FamilyDocument = ({ document, matches, status, familyMatches }: IProps) => {
   const { title, slug, document_role, language, content_type, variant } = document;
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
