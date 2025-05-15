@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
 
 import { SiteWidth } from "@/components/panels/SiteWidth";
