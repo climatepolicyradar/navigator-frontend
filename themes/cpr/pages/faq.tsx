@@ -9,11 +9,11 @@ import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
 import { FAQS, PLATFORM_FAQS } from "@/cpr/constants/faqs";
 import { getFeatureFlags } from "@/utils/featureFlags";
 
-type TProps = {
+interface IProps {
   featureFlags: Record<string, string | boolean>;
-};
+}
 
-const FAQ: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags = {} }: TProps) => {
+const FAQ: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags = {} }: IProps) => {
   return (
     <Layout
       title="FAQ"

@@ -13,11 +13,11 @@ import { truncateString } from "@/utils/truncateString";
 
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
 
-type TProps = {
+interface IProps {
   family?: TMatchedFamily;
-};
+}
 
-export const FamilyMatchesDrawer = ({ family }: TProps) => {
+export const FamilyMatchesDrawer = ({ family }: IProps) => {
   const router = useRouter();
 
   if (!family) return null;

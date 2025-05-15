@@ -37,13 +37,13 @@ import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
 import { TTarget, TEvent, TGeography, TTheme } from "@/types";
 import { withEnvConfig } from "@/context/EnvConfig";
 
-type TProps = {
+interface IProps {
   geography: TGeographyStats;
   summary: TGeographySummary;
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
-};
+}
 
 // Mapping of category index to category name in search
 const categoryByIndex = {
@@ -58,7 +58,7 @@ const categoryByIndex = {
 
 const MAX_NUMBER_OF_FAMILIES = 3;
 
-const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets, theme, themeConfig }: TProps) => {
+const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets, theme, themeConfig }: IProps) => {
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
@@ -405,8 +405,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     let countries: TGeography[] = [];
     const configData = await client.getConfig();
-    const response_geo = extractNestedData<TGeography>(configData.data?.geographies, 2, "");
-    countries = response_geo.level2;
+    const response_geo = extractNestedData<TGeography>(configData.data?.geographies || []);
+    countries = response_geo[1];
     const country = getCountryCode(id as string, countries);
     if (country) {
       const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${country.toLowerCase()}.json`);

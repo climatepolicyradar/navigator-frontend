@@ -1,12 +1,12 @@
 import { ExternalLink } from "@/components/ExternalLink";
 
-interface FundData {
+interface IFundData {
   imgSrc: string;
   name: string;
   url: string;
 }
 
-const fundInformation: FundData[] = [
+const fundInformation: IFundData[] = [
   {
     imgSrc: "/images/mcf/AF.png",
     name: "Adaptation Fund",

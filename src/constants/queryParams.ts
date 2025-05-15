@@ -1,25 +1,26 @@
 export const QUERY_PARAMS = {
   // Core
-  query_string: "q",
-  exact_match: "e",
+  active_continuation_token: "act",
   category: "c",
-  region: "r",
+  continuation_tokens: "cts",
   country: "l",
-  year_range: "y",
+  exact_match: "e",
+  offset: "o",
+  passages_by_position: "sp",
+  query_string: "q",
+  region: "r",
   sort_field: "sf",
   sort_order: "so",
-  offset: "o",
-  active_continuation_token: "act",
-  continuation_tokens: "cts",
+  year_range: "y",
   // Multilateral Climate Funds (MCF)
-  fund: "fd",
-  status: "st",
-  implementing_agency: "ia",
   fund_doc_type: "fdt",
+  fund: "fd",
+  implementing_agency: "ia",
+  status: "st",
   // Laws and Policies
   framework_laws: "fl",
-  topic: "tp",
   sector: "sc",
+  topic: "tp",
   // Reports
   author_type: "at",
   // UNFCCC

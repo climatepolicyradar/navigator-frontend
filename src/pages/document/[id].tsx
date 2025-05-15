@@ -50,7 +50,7 @@ import { MultiCol } from "@/components/panels/MultiCol";
 import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
 import { withEnvConfig } from "@/context/EnvConfig";
 
-type TProps = {
+interface IProps {
   page: TFamilyPage;
   targets: TTarget[];
   countries: TGeography[];
@@ -58,7 +58,7 @@ type TProps = {
   theme: TTheme;
   featureFlags: Record<string, string | boolean>;
   vespaFamilyData?: TSearchResponse;
-};
+}
 
 /*
   # DEV NOTES
@@ -75,7 +75,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   theme,
   featureFlags,
   vespaFamilyData,
-}: TProps) => {
+}: IProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const startingNumberOfTargetsToDisplay = 5;
@@ -273,8 +273,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               <>
                 <section className="mt-8">
                   <div className="flex items-center gap-2">
-                    <Heading level={2} extraClasses="mb-0">
-                      {theme === "mcf" ? "Project documents" : "Other documents in this entry"}
+                    <Heading level={2} extraClasses="!mb-0">
+                      {theme === "mcf" ? "Project documents" : mainDocuments.length > 0 ? "Other documents in this entry" : "Documents in this entry"}
                     </Heading>
                     {theme !== "mcf" && (
                       <Tooltip
@@ -376,17 +376,20 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               </section>
             )}
 
-            <section className="mt-8">
-              <Heading level={4}>Note</Heading>
-              <div className="flex text-sm">
-                {corpusImage && (
-                  <div className="relative max-w-[144px] mt-1 mr-2">
-                    <img src={`${corpusImage}`} alt={corpusAltImage} className="h-auto w-full" />
-                  </div>
-                )}
-                <span dangerouslySetInnerHTML={{ __html: corpusNote }} className="" />
-              </div>
-            </section>
+            {corpusNote && (
+              <section className="mt-8">
+                <Heading level={4}>Note</Heading>
+                <div className="flex text-sm">
+                  {corpusImage && (
+                    <div className="relative max-w-[144px] mt-1 mr-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={`${corpusImage}`} alt={corpusAltImage} className="h-auto w-full" />
+                    </div>
+                  )}
+                  <span dangerouslySetInnerHTML={{ __html: corpusNote }} className="" />
+                </div>
+              </section>
+            )}
 
             {page.collections.length > 0 && (
               <div className="mt-8">
@@ -476,8 +479,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (familyData) {
     try {
       const configRaw = await client.getConfig();
-      const response_geo = extractNestedData<TGeography>(configRaw.data.geographies, 2, "");
-      countriesData = response_geo.level2;
+      const response_geo = extractNestedData<TGeography>(configRaw.data.geographies);
+      countriesData = response_geo[1];
       corpus_types = configRaw.data.corpus_types;
     } catch (error) {}
   }

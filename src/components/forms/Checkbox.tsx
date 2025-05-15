@@ -1,6 +1,6 @@
 import { InputLearnMoreLink } from "./InputLearnMoreLink";
 
-type TProps = {
+interface IProps {
   label?: string;
   checked: boolean;
   name?: string;
@@ -8,13 +8,13 @@ type TProps = {
   learnMoreUrl?: string;
   learnMoreExternal?: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
+}
 
-const CheckBox = ({ checked, onChange, name }: TProps) => {
+const CheckBox = ({ checked, onChange, name }: IProps) => {
   return <input type="checkbox" checked={checked || false} onChange={onChange} className="w-[24px] h-[24px]" name={name} />;
 };
 
-export const InputCheck = ({ label, checked, onChange, name, additionalInfo, learnMoreUrl, learnMoreExternal }: TProps) => {
+export const InputCheck = ({ label, checked, onChange, name, additionalInfo, learnMoreUrl, learnMoreExternal }: IProps) => {
   return (
     <>
       <label className={`flex gap-2 cursor-pointer ${checked ? "font-medium text-textDark" : ""}`}>

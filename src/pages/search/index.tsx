@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { LuSettings2 } from "react-icons/lu";
 
 import { ApiClient } from "@/api/http-common";
 
@@ -16,7 +15,6 @@ import { SingleCol } from "@/components/panels/SingleCol";
 
 import { ExternalLink } from "@/components/ExternalLink";
 import Loader from "@/components/Loader";
-import { NoOfResults } from "@/components/NoOfResults";
 import SearchFilters from "@/components/blocks/SearchFilters";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Drawer from "@/components/drawer/Drawer";
@@ -43,22 +41,22 @@ import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 
 import { TConcept, TTheme, TThemeConfig } from "@/types";
 import { withEnvConfig } from "@/context/EnvConfig";
+import { Info } from "@/components/molecules/info/Info";
 
-type TProps = {
+interface IProps {
   theme: TTheme;
   themeConfig: TThemeConfig;
   featureFlags: Record<string, string | boolean>;
   conceptsData?: TConcept[];
-};
+}
 
 const SETTINGS_ANIMATION_VARIANTS = {
   hidden: { opacity: 0, transition: { duration: 0.1 } },
   visible: { opacity: 1, transition: { duration: 0 } },
 };
 
-const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig, featureFlags, conceptsData }: TProps) => {
+const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig, featureFlags, conceptsData }: IProps) => {
   const router = useRouter();
-  const qQueryString = router.query[QUERY_PARAMS.query_string];
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
@@ -229,6 +227,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     delete router.query[QUERY_PARAMS.framework_laws];
     // Reports filters
     delete router.query[QUERY_PARAMS.author_type];
+    // UNFCCC filters
+    delete router.query[QUERY_PARAMS["_document.type"]];
     // Only reset the topic and sector filters if we are not moving between laws or policies categories
     if (category !== "policies" && category !== "laws") {
       delete router.query[QUERY_PARAMS.topic];
@@ -319,7 +319,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
 
   // Concerned only with preventing scrolling when either the drawer or the CSV download popup is open
   useEffect(() => {
-    if (typeof drawerFamily === "number" || showCSVDownloadPopup) {
+    if (typeof drawerFamily === "number" || showCSVDownloadPopup || showFilters) {
       document.body.classList.add("overflow-hidden");
     } else {
       document.body.classList.remove("overflow-hidden");
@@ -329,7 +329,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     return () => {
       document.body.classList.remove("overflow-hidden");
     };
-  }, [drawerFamily, showCSVDownloadPopup]);
+  }, [drawerFamily, showCSVDownloadPopup, showFilters]);
 
   // We want to track changes to search, but only within the context of an open filter panel
   useEffect(() => {
@@ -385,7 +385,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 <Loader size="20px" />
               ) : (
                 <>
-                  <div className="sticky md:top-[72px] h-screen md:h-[calc(100vh-72px)] px-5 bg-white border-r border-gray-300 pt-5 pb-[70px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pb-0">
+                  <div className="sticky md:top-[72px] h-screen md:h-[calc(100vh-72px)] px-5 bg-white md:border-r border-gray-300 pt-5 pb-[180px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pb-4">
                     <SearchFilters
                       searchCriteria={searchQuery}
                       query={router.query}
@@ -414,7 +414,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       />
                     )}
                   </SlideOut>
-                  <div className="absolute z-50 bottom-0 left-0 w-full flex bg-white md:hidden">
+                  <div className="absolute z-50 bottom-0 left-0 w-full flex pb-[100px] bg-white md:hidden">
                     <Button
                       variant={searchDirty ? "solid" : "outlined"}
                       className="m-4 w-full"
@@ -432,53 +432,18 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
             </SideCol>
             <div
               className={`flex-1 bg-white transition-[filter] duration-150 ${
-                currentSlideOut ? "md:brightness-50 md:pointer-events-none md:select-none" : ""
+                currentSlideOut ? "md:pointer-events-none md:select-none md:opacity-50" : ""
               }`}
             >
-              <SingleCol extraClasses="px-5 pt-5 relative">
-                <div>
-                  <div className="">
-                    <div className="flex justify-between flex-wrap gap-2 items-center">
-                      <div className="md:hidden">
-                        <Button content="both" className="flex-nowrap" onClick={toggleFilters}>
-                          <span>{showFilters ? "Hide" : "Show"} filters</span>
-                        </Button>
-                      </div>
-                      <div className="relative z-10 md:order-1">
-                        <button
-                          className={`p-4 text-textDark text-xl ${showOptions ? "bg-nearBlack text-white rounded-full" : ""}`}
-                          onClick={() => setShowOptions(!showOptions)}
-                          data-cy="search-options"
-                          ref={settingsButtonRef}
-                        >
-                          <LuSettings2 />
-                        </button>
-                        <AnimatePresence initial={false}>
-                          {showOptions && (
-                            <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
-                              <SearchSettings
-                                queryParams={router.query}
-                                handleSortClick={handleSortClick}
-                                handleSearchChange={handleSearchChange}
-                                setShowOptions={setShowOptions}
-                                settingsButtonRef={settingsButtonRef}
-                              />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                      <div className="text-xs basis-full md:basis-auto md:order-0" data-cy="number-of-results">
-                        {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-sm md:text-right">
+              <SingleCol extraClasses="px-5 relative">
+                {["error", "success"].includes(downloadCSVStatus) && (
+                  <div className="text-sm text-center mt-5">
                     {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
                     {downloadCSVStatus === "success" && (
                       <span className="text-green-600">CSV downloaded successfully, please check your downloads folder</span>
                     )}
                   </div>
-                </div>
+                )}
 
                 <div className="mt-5">
                   {status === "loading" ? (
@@ -486,15 +451,59 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       <Loader />
                     </div>
                   ) : (
-                    <section data-cy="search-results" className="min-h-screen">
-                      <h2 className="sr-only">Search results</h2>
-                      <SearchResultList
-                        category={router.query[QUERY_PARAMS.category]?.toString()}
-                        families={families}
-                        onClick={handleMatchesButtonClick}
-                        activeFamilyIndex={drawerFamily}
-                      />
-                    </section>
+                    <>
+                      <div className="md:mb-5">
+                        <div className="md:hidden mb-4">
+                          <Button content="both" className="flex-nowrap" onClick={toggleFilters}>
+                            <span>{showFilters ? "Hide" : "Show"} filters</span>
+                          </Button>
+                        </div>
+                        <div className="flex justify-between items-start">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm text-text-primary font-normal">
+                              Results <span className="text-text-secondary">{hits || 0}</span>
+                            </p>
+                            <Info
+                              title="Showing the top 500 results"
+                              description="We limit the number of matches you can see so you get the quickest, most accurate results."
+                              link={{ href: "/faq", text: "Learn more" }}
+                            />
+                          </div>
+                          <div className="relative z-10 -top-0.5">
+                            <button
+                              className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showOptions ? "bg-surface-ui" : ""}`}
+                              onClick={() => setShowOptions(!showOptions)}
+                              data-cy="search-options"
+                              ref={settingsButtonRef}
+                            >
+                              Sort &amp; Display
+                            </button>
+                            <AnimatePresence initial={false}>
+                              {showOptions && (
+                                <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
+                                  <SearchSettings
+                                    queryParams={router.query}
+                                    handleSortClick={handleSortClick}
+                                    handleSearchChange={handleSearchChange}
+                                    setShowOptions={setShowOptions}
+                                    settingsButtonRef={settingsButtonRef}
+                                  />
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                        </div>
+                      </div>
+                      <section data-cy="search-results" className="min-h-screen">
+                        <h2 className="sr-only">Search results</h2>
+                        <SearchResultList
+                          category={router.query[QUERY_PARAMS.category]?.toString()}
+                          families={families}
+                          onClick={handleMatchesButtonClick}
+                          activeFamilyIndex={drawerFamily}
+                        />
+                      </section>
+                    </>
                   )}
                 </div>
                 {status !== "loading" && hits > 1 && (

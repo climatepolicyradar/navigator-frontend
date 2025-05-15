@@ -5,14 +5,14 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { systemGeoCodes } from "@/constants/systemGeos";
 
-type TProps = {
+interface IProps {
   show: boolean;
   term: string;
   handleSearchClick: (term: string, filter?: string, filterValue?: string) => void;
   largeSpacing?: boolean;
-};
+}
 
-export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpacing }: TProps) => {
+export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpacing }: IProps) => {
   const router = useRouter();
   const configQuery = useConfig();
   const geographies = configQuery.data?.countries || [];

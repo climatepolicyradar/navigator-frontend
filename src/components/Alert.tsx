@@ -1,9 +1,9 @@
-type TProps = {
+interface IProps {
   message: string | React.ReactNode;
   icon?: React.ReactNode;
-};
+}
 
-export const Alert = ({ message, icon }: TProps) => {
+export const Alert = ({ message, icon }: IProps) => {
   return (
     <div className="flex">
       <div className="w-[6px] h-full bg-blue-400 rounded-l-lg"></div>

@@ -13,10 +13,12 @@ import dynamic from "next/dynamic";
 const ThemeAnalytics = dynamic<{ enableAnalytics: boolean }>(() => import(`/themes/${process.env.THEME}/components/Analytics`));
 
 declare let gtag: Function;
-type Props = {
+
+interface IProps {
   onConsentChange: (consent: boolean) => void;
-};
-export const CookieConsent = ({ onConsentChange }: Props) => {
+}
+
+export const CookieConsent = ({ onConsentChange }: IProps) => {
   const [hide, setHide] = useState(true);
   const [enableAnalytics, setEnableAnalytics] = useState(false);
 

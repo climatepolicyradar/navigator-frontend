@@ -33,6 +33,7 @@ type TGeoFamilyCounts = {
   LEGISLATIVE: number;
   MCF: number;
   REPORTS: number;
+  LITIGATION: number;
 };
 
 type TGeoMarkers = {
@@ -51,6 +52,7 @@ type TMapData = {
   maxUnfccc: number;
   maxMcf: number;
   maxReports: number;
+  maxLitigation: number;
   geographies: TGeographiesWithCoords;
 };
 
@@ -114,12 +116,13 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
   return (
     <>
       <p className="text-textDark font-medium">{geography.display_value}</p>
-      {(geography.familyCounts?.EXECUTIVE || geography.familyCounts?.LEGISLATIVE) && (
+      {(geography.familyCounts?.EXECUTIVE > 0 || geography.familyCounts?.LEGISLATIVE > 0) && (
         <p>Laws and policies: {(geography.familyCounts?.EXECUTIVE || 0) + (geography.familyCounts?.LEGISLATIVE || 0)}</p>
       )}
       {geography.familyCounts?.UNFCCC > 0 && <p>UNFCCC: {geography.familyCounts?.UNFCCC || 0}</p>}
       {geography.familyCounts?.MCF > 0 && <p>MCF projects: {geography.familyCounts?.MCF || 0}</p>}
       {geography.familyCounts?.REPORTS > 0 && <p>Reports: {geography.familyCounts?.REPORTS || 0}</p>}
+      {geography.familyCounts?.LITIGATION > 0 && <p>Litigation: {geography.familyCounts?.LITIGATION || 0}</p>}
       <p>
         <LinkWithQuery href={`/geographies/${geography.slug}`} className="text-blue-600 underline hover:text-blue-800">
           View more
@@ -129,7 +132,11 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
   );
 };
 
-export default function MapChart() {
+interface IProps {
+  showLitigation?: boolean;
+}
+
+export default function MapChart({ showLitigation = false }: IProps) {
   const configQuery = useConfig();
   const geographiesQuery = useGeographies();
   const { data: { countries: configCountries = [] } = {} } = configQuery;
@@ -140,7 +147,7 @@ export default function MapChart() {
   const [mapCenter, setMapCenter] = useState<TPoint>([0, 0]);
   const [mapZoom, setMapZoom] = useState(1);
   const [showUnifiedEU, setShowUnifiedEU] = useState(false);
-  const [selectedFamCategory, setSelectedFamCategory] = useState<"lawsPolicies" | "unfccc" | "mcf" | "reports">("lawsPolicies");
+  const [selectedFamCategory, setSelectedFamCategory] = useState<"lawsPolicies" | "unfccc" | "mcf" | "reports" | "litigation">("lawsPolicies");
   const showMcf = useMcfData();
 
   useEffect(() => {
@@ -163,12 +170,16 @@ export default function MapChart() {
     const maxUnfccc = mapDataRaw.length
       ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.UNFCCC || 0)))
       : 0;
+    const maxLitigation = mapDataRaw.length
+      ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.LITIGATION || 0)))
+      : 0;
 
     const mapDataConstructor: TMapData = {
       maxLawsPolicies,
       maxUnfccc,
       maxMcf,
       maxReports,
+      maxLitigation,
       geographies: {},
     };
 
@@ -180,6 +191,7 @@ export default function MapChart() {
       const unfcccCount = geoStats?.family_counts?.UNFCCC || 0;
       const mcfCount = geoStats?.family_counts?.MCF || 0;
       const reportsCount = geoStats?.family_counts?.REPORTS || 0;
+      const litigationCount = geoStats?.family_counts?.LITIGATION || 0;
 
       acc[country.value] = {
         ...country,
@@ -190,6 +202,7 @@ export default function MapChart() {
           unfccc: maxUnfccc > 0 ? Math.max(minMarkerSize, (unfcccCount / maxUnfccc) * maxMarkerSize) : 0,
           mcf: maxMcf > 0 ? Math.max(minMarkerSize, (mcfCount / maxMcf) * maxMarkerSize) : 0,
           reports: maxReports > 0 ? Math.max(minMarkerSize, (reportsCount / maxReports) * maxMarkerSize) : 0,
+          litigation: maxLitigation > 0 ? Math.max(minMarkerSize, (litigationCount / maxLitigation) * maxMarkerSize) : 0,
         },
       };
       return acc;
@@ -259,7 +272,7 @@ export default function MapChart() {
           <select
             className="border border-gray-300 small rounded-full !pl-4"
             onChange={(e) => {
-              setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc" | "mcf" | "reports");
+              setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc" | "mcf" | "reports" | "litigation");
             }}
             value={selectedFamCategory}
             aria-label="Select a document type to display on the map"
@@ -269,6 +282,7 @@ export default function MapChart() {
             <option value="unfccc">UNFCCC</option>
             {showMcf && <option value="mcf">MCF projects</option>}
             <option value="reports">Reports</option>
+            {showLitigation && <option value="litigation">Litigation</option>}
           </select>
         </div>
         <div>
@@ -401,8 +415,12 @@ export default function MapChart() {
                 ? mapData.maxUnfccc
                 : selectedFamCategory === "reports"
                   ? mapData.maxReports
-                  : mapData.maxMcf
+                  : selectedFamCategory === "mcf"
+                    ? mapData.maxMcf
+                    : mapData.maxLitigation
           }
+          showMcf={showMcf}
+          showLitigation={showLitigation}
         />
       )}
     </>

@@ -1,11 +1,11 @@
 import { TCorpusTypeDictionary } from "@/types";
 
-type TProps = {
+interface IProps {
   corpus_types: TCorpusTypeDictionary;
   corpus_id: string;
-};
+}
 
-export const getCorpusInfo = ({ corpus_types, corpus_id }: TProps) => {
+export const getCorpusInfo = ({ corpus_types, corpus_id }: IProps) => {
   const corpora = Object.values(corpus_types).flatMap((corpus_type) => corpus_type.corpora);
   const selectedCorpus = corpora.find((corpus) => corpus.corpus_import_id === corpus_id);
   const defaultCorpus = {

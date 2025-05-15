@@ -4,13 +4,14 @@ import { Button } from "@/components/atoms/button/Button";
 import { FamilyListItem } from "@/components/document/FamilyListItem";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { ToolTipSSR } from "@/components/tooltip/TooltipSSR";
-interface ISearchResultProps {
+
+interface IProps {
   family: TMatchedFamily;
   active: boolean;
   onClick?: () => void;
 }
 
-const SearchResult = ({ family, active, onClick }: ISearchResultProps) => {
+const SearchResult = ({ family, active, onClick }: IProps) => {
   const { family_documents, total_passage_hits, family_slug } = family;
 
   const matchesNumber = total_passage_hits >= MAX_RESULTS ? `${MAX_RESULTS}+` : `${total_passage_hits}`;

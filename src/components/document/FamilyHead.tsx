@@ -5,12 +5,12 @@ import { Heading } from "@/components/typography/Heading";
 
 import { MetadataRenderer } from "./renderers/MetadataRenderer";
 
-type TProps = {
+interface IProps {
   family: TFamilyPage;
   onCollectionClick?: (e: any, i: number) => void;
-};
+}
 
-export const FamilyHead = ({ family, onCollectionClick }: TProps) => {
+export const FamilyHead = ({ family, onCollectionClick }: IProps) => {
   // don't show 'more details' if there is no extra metadata
   const hasExtraMetadata = family.metadata?.keyword && family.metadata?.keyword.length > 0;
   const [showMoreDetails, setShowMoreDetails] = useState(!hasExtraMetadata);

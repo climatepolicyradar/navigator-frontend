@@ -1,11 +1,11 @@
 import { FC, ReactNode } from "react";
 
-type TProps = {
+interface IProps {
   color?: string;
   children?: ReactNode;
-};
+}
 
-export const Divider: FC<TProps> = ({ children, color }) => {
+export const Divider: FC<IProps> = ({ children, color }) => {
   const dividerColor = color ?? "bg-gray-200";
 
   return (

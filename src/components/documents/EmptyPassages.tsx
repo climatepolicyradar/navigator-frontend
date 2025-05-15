@@ -1,10 +1,10 @@
 import { Icon } from "@/components/atoms/icon/Icon";
 
-type TProps = {
+interface IProps {
   hasQueryString: boolean;
-};
+}
 
-export const EmptyPassages = ({ hasQueryString }: TProps) => (
+export const EmptyPassages = ({ hasQueryString }: IProps) => (
   <div className="flex flex-col gap-4 flex-1 pt-10 text-center text-gray-600 px-4">
     <div className="text-blue-800 flex justify-center items-center">
       <div className="rounded-full bg-blue-50 p-6 mb-2">

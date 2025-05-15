@@ -8,7 +8,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 
 import { triggerNewSearch } from "@/utils/triggerNewSearch";
 import dynamic from "next/dynamic";
-import { TProps as HomepageProps } from "@/cpr/pages/homepage";
+import { IProps as HomepageProps } from "@/cpr/pages/homepage";
 
 const Homepage = dynamic<HomepageProps>(() => import(`/themes/${process.env.THEME}/pages/homepage`));
 

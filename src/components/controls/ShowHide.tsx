@@ -1,11 +1,11 @@
-type TShowHideControlProps = {
+interface IProps {
   show: boolean;
   label?: string;
   onClick: () => void;
   className?: string;
-};
+}
 
-export const ShowHide = ({ show, label, onClick, className }: TShowHideControlProps) => {
+export const ShowHide = ({ show, label, onClick, className }: IProps) => {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
     onClick();

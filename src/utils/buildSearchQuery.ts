@@ -47,6 +47,10 @@ export default function buildSearchQuery(
     query.exact_match = routerQuery[QUERY_PARAMS.exact_match] === "true";
   }
 
+  if (routerQuery[QUERY_PARAMS.passages_by_position]) {
+    query.sort_within_page = routerQuery[QUERY_PARAMS.passages_by_position] === "true";
+  }
+
   if (routerQuery[QUERY_PARAMS.offset]) {
     query.offset = Number(routerQuery[QUERY_PARAMS.offset]);
   }

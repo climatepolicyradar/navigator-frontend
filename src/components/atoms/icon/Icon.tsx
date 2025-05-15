@@ -43,7 +43,7 @@ export const iconNames = [
   "viewDocumentCoverPage",
 ] as const;
 
-export type IconName = (typeof iconNames)[number];
+export type TIconName = (typeof iconNames)[number];
 
 interface IconProps {
   color?: string;
@@ -52,7 +52,7 @@ interface IconProps {
 }
 
 // Should never be exported. Import the Icon component instead.
-const allIcons: Record<IconName, (IconProps) => JSX.Element> = {
+const allIcons: Record<TIconName, (IconProps) => JSX.Element> = {
   accordionClose: ({ color = "currentColor", height = "20", width = "20" }) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" style={{ width: `${width}px`, height: `${height}px` }}>
       <g>
@@ -616,11 +616,11 @@ const allIcons: Record<IconName, (IconProps) => JSX.Element> = {
   ),
 };
 
-interface IconComponentProps extends IconProps {
-  name: IconName;
+interface IProps extends IconProps {
+  name: TIconName;
 }
 
 /**
  * Renders an SVG icon from our internal icons library. All icons are SVG markup as JSX, allowing us to set currentColor to colour them.
  */
-export const Icon = ({ name, ...iconProps }: IconComponentProps) => allIcons[name](iconProps);
+export const Icon = ({ name, ...iconProps }: IProps) => allIcons[name](iconProps);

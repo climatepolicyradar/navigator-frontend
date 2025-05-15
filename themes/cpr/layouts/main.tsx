@@ -11,11 +11,11 @@ export const CPRLogo = (
   </LinkWithQuery>
 );
 
-type TProps = {
+interface IProps {
   children?: ReactNode;
-};
+}
 
-const Main: FC<TProps> = ({ children }) => (
+const Main: FC<IProps> = ({ children }) => (
   <>
     <NavBar headerClasses="banner" logo={CPRLogo} menu={<MainMenu />} />
     <main className="flex flex-col flex-1">{children}</main>

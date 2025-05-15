@@ -17,17 +17,18 @@ import { FeatureSearch } from "@/cclw/components/FeatureSearch";
 import { PAGE_DESCRIPTION, APP_NAME } from "@/cclw/constants/pageMetadata";
 import { Heading } from "@/components/typography/Heading";
 
-const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {
-  loading: () => <p>Loading world map...</p>,
-  ssr: false,
-});
+// TODO temporarily disabled: https://climate-policy-radar.slack.com/archives/C08Q8GD1CUT/p1745941756888349
+// const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {
+//   loading: () => <p>Loading world map...</p>,
+//   ssr: false,
+// });
 
-type TProps = {
+interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   searchInput: string;
-};
+}
 
-const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
+const LandingPage = ({ handleSearchInput, searchInput }: IProps) => {
   return (
     <Layout title="Law and Policy Search" theme={APP_NAME} description={PAGE_DESCRIPTION}>
       <main id="main" className="flex flex-col flex-1">
@@ -38,12 +39,13 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
         <SiteWidth extraClasses="my-12" data-cy="powered-by">
           <PoweredBy />
         </SiteWidth>
-        <FullWidth id="world-map" extraClasses="hidden pt-6 md:block">
+        {/* TODO: reinstate when the world map API is back */}
+        {/* <FullWidth id="world-map" extraClasses="hidden pt-6 md:block">
           <Heading level={2} extraClasses="text-center text-3xl xl:text-4xl">
             Explore by country
           </Heading>
           <WorldMap />
-        </FullWidth>
+        </FullWidth> */}
         <SiteWidth extraClasses="my-12" data-cy="featured-content">
           <Heading level={2} extraClasses="text-center text-3xl xl:text-4xl">
             Featured content

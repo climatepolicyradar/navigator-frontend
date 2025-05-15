@@ -17,10 +17,10 @@ import { TConcept, TGeography, TThemeConfig } from "@/types";
 
 type TFilterChange = (type: string, value: string) => void;
 
-type TProps = {
+interface IProps {
   filterChange: TFilterChange;
   concepts?: TConcept[];
-};
+}
 
 const handleCountryRegion = (slug: string, dataSet: TGeography[]) => {
   return getCountryName(slug, dataSet);
@@ -104,6 +104,7 @@ const handleFilterDisplay = (
     case "fund":
     case "fund_doc_type":
     case "framework_laws":
+    case "_document.type":
       filterLabel = getFilterDisplayValue(key, value, themeConfig);
       break;
   }
@@ -153,7 +154,7 @@ const generatePills = (
   return pills;
 };
 
-export const AppliedFilters = ({ filterChange, concepts }: TProps) => {
+export const AppliedFilters = ({ filterChange, concepts }: IProps) => {
   const router = useRouter();
   const configQuery = useConfig();
   const { themeConfig } = useGetThemeConfig();
