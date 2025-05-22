@@ -19,8 +19,8 @@ export async function getFeatureFlags(
   let featureFlags: Partial<{ [key: string]: true }> = {};
   if (cookies.feature_flags) {
     try {
-      const allCookies = Array.isArray(cookies.feature_flags) ? cookies.feature_flags[0] : cookies.feature_flags;
-      featureFlags = JSON.parse(allCookies);
+      const featureFlagsCookie = Array.isArray(cookies.feature_flags) ? cookies.feature_flags[0] : cookies.feature_flags;
+      featureFlags = JSON.parse(featureFlagsCookie);
     } catch (e) {
       /** it would be nice to alert to a beacon service, but we have none 😢 */
       console.error(e); // eslint-disable-line no-console
