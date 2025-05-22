@@ -9,7 +9,7 @@ export type TLabelVariation = {
 export type TThemeConfigOption<Value> = {
   label: string;
   slug: string;
-  value?: Value;
+  value: Value;
   category?: string[];
   corporaKey?: string;
   alias?: string;
