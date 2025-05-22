@@ -30,7 +30,7 @@ import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeCon
 import { SlideOutContext } from "@/context/SlideOutContext";
 import { Info } from "../molecules/info/Info";
 
-const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption) => {
+const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption<any>) => {
   if (selectedCatgeory) {
     if (selectedCatgeory.toLowerCase() === themeConfigCategory.slug.toLowerCase()) {
       return true;
