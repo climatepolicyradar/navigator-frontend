@@ -20,9 +20,9 @@ const FAQ: React.FC = () => {
   */
   const [featureFlags, setFeatureFlags] = useState({});
   async function getFeatureFlag() {
-    const featureFlagsCookie = getAllCookies();
-    const featureFlagsFromServer = await getFeatureFlags(featureFlagsCookie);
-    setFeatureFlags(featureFlagsFromServer);
+    const allCookies = getAllCookies();
+    const parsedFeatureFlags = await getFeatureFlags(allCookies);
+    setFeatureFlags(parsedFeatureFlags);
   }
 
   // TODO: Remove this once we have hard launched concepts in product.
