@@ -497,7 +497,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       targets: targetsData,
       countries: countriesData,
       corpus_types,
-      theme: theme,
+      theme,
       featureFlags,
       vespaFamilyData: vespaFamilyData ?? null,
     }),
