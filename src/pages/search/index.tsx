@@ -435,57 +435,15 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 currentSlideOut ? "md:pointer-events-none md:select-none md:opacity-50" : ""
               }`}
             >
-              <SingleCol extraClasses="px-5 pt-5 relative">
-                <div>
-                  <div className="">
-                    <div className="md:hidden mb-4">
-                      <Button content="both" className="flex-nowrap" onClick={toggleFilters}>
-                        <span>{showFilters ? "Hide" : "Show"} filters</span>
-                      </Button>
-                    </div>
-                    <div className="flex justify-between items-start">
-                      <div className="flex items-center gap-2">
-                        <p className="text-sm text-text-primary font-normal">
-                          Results <span className="text-text-secondary">{hits || 0}</span>
-                        </p>
-                        <Info
-                          title="Showing the top 500 results"
-                          description="We limit the number of matches you can see so you get the quickest, most accurate results."
-                          link={{ href: "/faq", text: "Learn more" }}
-                        />
-                      </div>
-                      <div className="relative z-10 -top-0.5">
-                        <button
-                          className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showOptions ? "bg-surface-ui" : ""}`}
-                          onClick={() => setShowOptions(!showOptions)}
-                          data-cy="search-options"
-                          ref={settingsButtonRef}
-                        >
-                          Sort &amp; Display
-                        </button>
-                        <AnimatePresence initial={false}>
-                          {showOptions && (
-                            <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
-                              <SearchSettings
-                                queryParams={router.query}
-                                handleSortClick={handleSortClick}
-                                handleSearchChange={handleSearchChange}
-                                setShowOptions={setShowOptions}
-                                settingsButtonRef={settingsButtonRef}
-                              />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-sm md:text-right">
+              <SingleCol extraClasses="px-5 relative">
+                {["error", "success"].includes(downloadCSVStatus) && (
+                  <div className="text-sm text-center mt-5">
                     {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
                     {downloadCSVStatus === "success" && (
                       <span className="text-green-600">CSV downloaded successfully, please check your downloads folder</span>
                     )}
                   </div>
-                </div>
+                )}
 
                 <div className="mt-5">
                   {status === "loading" ? (
@@ -493,15 +451,59 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       <Loader />
                     </div>
                   ) : (
-                    <section data-cy="search-results" className="min-h-screen">
-                      <h2 className="sr-only">Search results</h2>
-                      <SearchResultList
-                        category={router.query[QUERY_PARAMS.category]?.toString()}
-                        families={families}
-                        onClick={handleMatchesButtonClick}
-                        activeFamilyIndex={drawerFamily}
-                      />
-                    </section>
+                    <>
+                      <div className="md:mb-5">
+                        <div className="md:hidden mb-4">
+                          <Button content="both" className="flex-nowrap" onClick={toggleFilters}>
+                            <span>{showFilters ? "Hide" : "Show"} filters</span>
+                          </Button>
+                        </div>
+                        <div className="flex justify-between items-start">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm text-text-primary font-normal">
+                              Results <span className="text-text-secondary">{hits || 0}</span>
+                            </p>
+                            <Info
+                              title="Showing the top 500 results"
+                              description="We limit the number of matches you can see so you get the quickest, most accurate results."
+                              link={{ href: "/faq", text: "Learn more" }}
+                            />
+                          </div>
+                          <div className="relative z-10 -top-0.5">
+                            <button
+                              className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showOptions ? "bg-surface-ui" : ""}`}
+                              onClick={() => setShowOptions(!showOptions)}
+                              data-cy="search-options"
+                              ref={settingsButtonRef}
+                            >
+                              Sort &amp; Display
+                            </button>
+                            <AnimatePresence initial={false}>
+                              {showOptions && (
+                                <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
+                                  <SearchSettings
+                                    queryParams={router.query}
+                                    handleSortClick={handleSortClick}
+                                    handleSearchChange={handleSearchChange}
+                                    setShowOptions={setShowOptions}
+                                    settingsButtonRef={settingsButtonRef}
+                                  />
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                        </div>
+                      </div>
+                      <section data-cy="search-results" className="min-h-screen">
+                        <h2 className="sr-only">Search results</h2>
+                        <SearchResultList
+                          category={router.query[QUERY_PARAMS.category]?.toString()}
+                          families={families}
+                          onClick={handleMatchesButtonClick}
+                          activeFamilyIndex={drawerFamily}
+                        />
+                      </section>
+                    </>
                   )}
                 </div>
                 {status !== "loading" && hits > 1 && (
