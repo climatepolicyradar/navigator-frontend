@@ -1,6 +1,6 @@
 import { ParsedUrlQuery } from "querystring";
 
-import { get } from "lodash";
+import get from "lodash/get";
 import { useState } from "react";
 
 import { InputCheck } from "@/components/forms/Checkbox";

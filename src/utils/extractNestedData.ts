@@ -1,4 +1,7 @@
-import { groupBy, sortBy, toPairs, uniqBy } from "lodash/fp";
+import groupBy from "lodash/fp/groupBy";
+import sortBy from "lodash/fp/sortBy";
+import toPairs from "lodash/fp/toPairs";
+import uniqBy from "lodash/fp/uniqBy";
 
 import { TDataNode } from "@/types";
 
