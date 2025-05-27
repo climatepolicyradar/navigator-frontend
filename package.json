@@ -27,6 +27,7 @@
     "cypress-pseudo-localization": "^1.0.0",
     "framer-motion": "^11.11.7",
     "jwt-decode": "^4.0.0",
+    "lodash": "^4.17.21",
     "next": "15.3.2",
     "posthog-js": "^1.207.0",
     "posthog-node": "^4.4.0",
