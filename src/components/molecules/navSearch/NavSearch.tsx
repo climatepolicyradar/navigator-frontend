@@ -1,4 +1,4 @@
-import { sortBy } from "lodash";
+import sortBy from "lodash/sortBy";
 import { Url } from "next/dist/shared/lib/router/router";
 import { useRouter } from "next/router";
 import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";

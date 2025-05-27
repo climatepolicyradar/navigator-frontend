@@ -1,4 +1,4 @@
-import { startCase } from "lodash";
+import startCase from "lodash/startCase";
 import { useState } from "react";
 
 import { Popover } from "@/components/atoms/popover/Popover";
