@@ -27,7 +27,8 @@ class ErrorBoundary extends React.Component<IProps, TState> {
   }
   // Track using error logging service
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.warn({ error, errorInfo });
+    // eslint-disable-next-line no-console
+    console.error(error);
   }
 
   handleClick = () => {
