@@ -149,7 +149,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick, theme, tota
         </div>
         {countryGeography?.value && (
           <div className="hidden overflow-hidden mt-4 lg:flex lg:self-center lg:shrink svg-country" data-cy="map">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            {}
             <img className="w-full max-h-[280px]" src={`/images/countries/${countryGeography?.value}.svg`} alt={`${country.name} map`} />
           </div>
         )}

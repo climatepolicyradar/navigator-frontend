@@ -1,8 +1,9 @@
+import { startCase } from "lodash";
+import { useState } from "react";
+
 import { Popover } from "@/components/atoms/popover/Popover";
 import { TConcept } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
-import { startCase } from "lodash";
-import { useState } from "react";
 
 interface IProps {
   concept: TConcept;

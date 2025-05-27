@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import FaqSection from "@/components/FaqSection";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
@@ -5,9 +7,8 @@ import { SubNav } from "@/components/nav/SubNav";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
 import { FAQS, PLATFORM_FAQS } from "@/cpr/constants/faqs";
-import { useEffect, useState } from "react";
-import { getFeatureFlags } from "@/utils/featureFlags";
 import { getAllCookies } from "@/utils/cookies";
+import { getFeatureFlags } from "@/utils/featureFlags";
 
 const FAQ: React.FC = () => {
   /*

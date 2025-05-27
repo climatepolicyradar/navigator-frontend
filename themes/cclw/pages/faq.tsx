@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import { useEffect } from "react";
 
 import { AccordianItem } from "@/cclw/components/AccordianItem";
 import { FAQS } from "@/cclw/constants/faqs";
@@ -11,7 +12,6 @@ import { Heading } from "@/components/typography/Heading";
 import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
 import { getAllCookies } from "@/utils/cookies";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { useEffect } from "react";
 
 const FAQ: React.FC = () => {
   /*

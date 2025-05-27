@@ -1,8 +1,10 @@
-import App from "@/pages/_app";
 import { render } from "@testing-library/react";
-import { useEnvConfig, withEnvConfig } from "./EnvConfig";
 import "@testing-library/jest-dom";
 import { vi } from "vitest";
+
+import App from "@/pages/_app";
+
+import { useEnvConfig, withEnvConfig } from "./EnvConfig";
 
 const mockRouter = {} as any;
 test("should not error when component does not use useEnvConfig nor uses withEnvConfig", async () => {

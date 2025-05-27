@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
-
 import { ExternalLink } from "@/components/ExternalLink";
 import Loader from "@/components/Loader";
 import SearchFilters from "@/components/blocks/SearchFilters";

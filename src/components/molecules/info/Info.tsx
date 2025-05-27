@@ -1,7 +1,8 @@
-import { Popover, TPopoverLink } from "@/components/atoms/popover/Popover";
-import { joinTailwindClasses } from "@/utils/tailwind";
 import { useState } from "react";
 import { LuInfo } from "react-icons/lu";
+
+import { Popover, TPopoverLink } from "@/components/atoms/popover/Popover";
+import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
   className?: string;
