@@ -382,7 +382,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 <div className="flex text-sm">
                   {corpusImage && (
                     <div className="relative max-w-[144px] mt-1 mr-2">
-                      {}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={`${corpusImage}`} alt={corpusAltImage} className="h-auto w-full" />
                     </div>
                   )}
