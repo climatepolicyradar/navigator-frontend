@@ -308,19 +308,6 @@ export const ConceptsDocumentViewer = ({
 
           {!isLoading && (
             <>
-              {hasSelectedConcepts && (
-                <div className="px-4">
-                  {selectedConcepts.map((concept) => (
-                    <React.Fragment key={concept.wikibase_id}>
-                      <p className="mt-4 my-2 capitalize text-[15px] font-medium text-neutral-800 text-base leading-normal flex-grow">
-                        {concept.preferred_label}
-                      </p>
-                      <p className="mt-2 my-4">{concept.description}</p>
-                    </React.Fragment>
-                  ))}
-                </div>
-              )}
-
               {hasQuery &&
                 (hasPassages ? (
                   <>
