@@ -3,7 +3,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { systemGeoCodes } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
-import sortBy from "lodash";
+import { sortBy } from "lodash";
 import { Url } from "next/dist/shared/lib/router/router";
 import { useRouter } from "next/router";
 import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";
