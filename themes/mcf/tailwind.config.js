@@ -131,7 +131,7 @@ module.exports = {
       },
     },
   },
-  plugins: [require("@tailwindcss/forms"), require("tailwind-scrollbar")],
+  plugins: ["@tailwindcss/forms", "tailwind-scrollbar"],
   variants: {
     scrollbar: ["rounded"],
   },

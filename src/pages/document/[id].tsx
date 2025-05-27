@@ -132,7 +132,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   const getDocumentCategories = () => {
     // Some types are comma separated, so we need to split them
-    let categories = page.documents.map((doc) => {
+    const categories = page.documents.map((doc) => {
       if (doc.document_type?.includes(",")) {
         return doc.document_type.split(",");
       } else return doc.document_type || "";
