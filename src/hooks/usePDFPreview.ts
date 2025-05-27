@@ -171,7 +171,7 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
       window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
       async (event: any) => {
         if (event.type === "CURRENT_ACTIVE_PAGE") {
-          // console.log("Page changed to: ", event.data.pageNumber);
+          // console.log("CURRENT_ACTIVE_PAGE Page changed to: ", event.data.pageNumber);
           await addAnnotationsForPage(documentPassageMatches.filter((passage) => passage.text_block_page === event.data.pageNumber));
         }
       },

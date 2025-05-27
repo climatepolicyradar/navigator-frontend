@@ -217,6 +217,9 @@ export const ConceptsDocumentViewer = ({
   const hasQuery = initialQueryTerm !== "" || hasSelectedConcepts;
   const hasUnavailableConcepts = state.totalNoOfMatches === 0 && unavailableConcepts.length > 0;
 
+  // console.log("hi");
+  // console.log(vespaFamilyData, vespaDocumentData);
+
   return (
     <section className="flex-1 xl:px-5" id="document-concepts-viewer">
       <div id="document-container" className="flex flex-col xl:flex-row xl:h-[90vh]">

@@ -280,7 +280,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           id="document-passage-matches"
                           className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
                         >
-                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={pageNumber ?? startingPassage} />
+                          {/* Removing active passage index for now as we don't use indexes any more //activeIndex={pageNumber ?? startingPassage} */}
+                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} />
                         </div>
                       )}
                       {totalNoOfMatches === 0 && <EmptyPassages hasQueryString={!!router.query[QUERY_PARAMS.query_string]} />}
