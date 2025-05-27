@@ -6,10 +6,10 @@ export type TLabelVariation = {
   key: string;
 };
 
-export type TThemeConfigOption = {
+export type TThemeConfigOption<Value> = {
   label: string;
   slug: string;
-  value?: string[];
+  value: Value;
   category?: string[];
   corporaKey?: string;
   alias?: string;
@@ -20,10 +20,10 @@ export type TThemeConfigOption = {
 
 type TThemeConfigCategory = {
   label: string;
-  options: TThemeConfigOption[];
+  options: TThemeConfigOption<string[]>[];
 };
 
-export type TThemeConfigFilter = {
+interface IThemeConfigFilterType {
   label: string;
   taxonomyKey: string;
   apiMetaDataKey?: string;
@@ -31,12 +31,23 @@ export type TThemeConfigFilter = {
   category: string[];
   categoryKey?: string;
   startOpen?: "true" | "false";
-  options?: TThemeConfigOption[];
   showFade?: "true" | "false";
   dependentFilterKey?: string;
   corporaKey?: string;
   quickSearch?: string;
-};
+}
+
+interface IThemeConfigFilterCheckbox extends IThemeConfigFilterType {
+  type: "checkbox";
+  options: TThemeConfigOption<"true" | "false" | string[]>[];
+}
+
+interface IThemeConfigFilterFilterRadio extends IThemeConfigFilterType {
+  type: "radio";
+  options?: TThemeConfigOption<string | string[]>[];
+}
+
+export type TThemeConfigFilter = IThemeConfigFilterCheckbox | IThemeConfigFilterFilterRadio;
 
 type TThemeLink = {
   key: string;

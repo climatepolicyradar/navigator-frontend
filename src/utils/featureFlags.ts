@@ -23,6 +23,7 @@ export async function getFeatureFlags(
       featureFlags = JSON.parse(featureFlagsCookie);
     } catch (e) {
       /** it would be nice to alert to a beacon service, but we have none 😢 */
+      console.error(e); // eslint-disable-line no-console
     }
   }
 
