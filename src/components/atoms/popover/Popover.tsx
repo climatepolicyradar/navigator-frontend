@@ -57,11 +57,12 @@ export const Popover = ({ children, description, link, onOpenChange, openOnHover
                 {title && <BasePopover.Title className="mb-2 font-bold">{title}</BasePopover.Title>}
                 <BasePopover.Description>
                   <span className="block">{description}</span>
-                  {link && link.external ? (
+                  {link && link.external && (
                     <ExternalLink url={link.href} className="block mt-2 underline">
                       {link.text}
                     </ExternalLink>
-                  ) : (
+                  )}
+                  {link && !link.external && (
                     <Link href={link.href} className="block mt-2 underline">
                       {link.text}
                     </Link>
