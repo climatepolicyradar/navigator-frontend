@@ -1,6 +1,6 @@
 import { SiteWidth } from "@/components/panels/SiteWidth";
-
 import { Heading } from "@/components/typography/Heading";
+
 import LandingSearchForm from "./LandingSearchForm";
 
 interface IProps {

@@ -1,7 +1,8 @@
 import { ExternalLink } from "@/components/ExternalLink";
-import { Button } from "@/components/atoms/button/Button";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { Button } from "@/components/atoms/button/Button";
 import { Heading } from "@/components/typography/Heading";
+
 import Popup from "./Popup";
 
 interface IProps {

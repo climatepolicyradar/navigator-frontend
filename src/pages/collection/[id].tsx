@@ -1,3 +1,6 @@
+import { GetServerSideProps, InferGetStaticPropsType } from "next";
+import { LuFileStack } from "react-icons/lu";
+
 import { ApiClient } from "@/api/http-common";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
@@ -8,8 +11,6 @@ import { Heading } from "@/components/typography/Heading";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { TCollection, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { GetServerSideProps, InferGetStaticPropsType } from "next";
-import { LuFileStack } from "react-icons/lu";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");

@@ -1,9 +1,10 @@
-import { ExternalLink } from "@/components/ExternalLink";
-import { BaseUIArrow } from "@/utils/baseUI";
-import { joinTailwindClasses } from "@/utils/tailwind";
 import { Popover as BasePopover } from "@base-ui-components/react/popover";
 import Link from "next/link";
 import { ReactElement, ReactNode } from "react";
+
+import { ExternalLink } from "@/components/ExternalLink";
+import { BaseUIArrow } from "@/utils/baseUI";
+import { joinTailwindClasses } from "@/utils/tailwind";
 
 export type TPopoverLink = {
   href: string;

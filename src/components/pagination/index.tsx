@@ -1,8 +1,5 @@
-import { Fragment } from "react";
-
-import { MAX_PAGES, RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN } from "@/constants/paging";
 import { Button } from "@/components/atoms/button/Button";
-
+import { MAX_PAGES, RESULTS_PER_PAGE, PAGES_PER_CONTINUATION_TOKEN } from "@/constants/paging";
 import { getCurrentPage } from "@/utils/getCurrentPage";
 
 interface IProps {

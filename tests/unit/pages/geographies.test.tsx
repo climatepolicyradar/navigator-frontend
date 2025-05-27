@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+
 import CountryPage from "../../../src/pages/geographies/[id]";
 
 vi.mock("next/router", () => ({
@@ -49,7 +50,7 @@ describe("CountryPage", () => {
     expect(screen.getByRole("heading", { name: "United States of America", level: 1 })).toBeDefined();
     expect(screen.getByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).toBeDefined();
 
-    let link = screen.getByRole("link", { name: "Sabin Center's Climate Backtracker" });
+    const link = screen.getByRole("link", { name: "Sabin Center's Climate Backtracker" });
     expect(link.getAttribute("href")).toBe("https://climate.law.columbia.edu/content/climate-backtracker");
   });
 
@@ -75,7 +76,7 @@ describe("CountryPage", () => {
     expect(screen.getByRole("heading", { name: "Brazil", level: 1 })).toBeDefined();
     expect(screen.queryByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).toBeNull();
 
-    let link = screen.queryByRole("link", { name: "Sabin Center's Climate Backtracker" });
+    const link = screen.queryByRole("link", { name: "Sabin Center's Climate Backtracker" });
     expect(link).toBeNull();
   });
 
@@ -101,7 +102,7 @@ describe("CountryPage", () => {
     expect(screen.getByRole("heading", { name: "United States of America", level: 1 })).toBeDefined();
     expect(screen.queryByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).toBeNull();
 
-    let link = screen.queryByRole("link", { name: "Sabin Center's Climate Backtracker" });
+    const link = screen.queryByRole("link", { name: "Sabin Center's Climate Backtracker" });
     expect(link).toBeNull();
   });
 });

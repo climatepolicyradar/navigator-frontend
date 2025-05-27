@@ -1,8 +1,16 @@
-import { UnavailableConcepts } from "@/components/documents/UnavailableConcepts";
+import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/router";
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+
 import EmbeddedPDF from "@/components/EmbeddedPDF";
-import { SearchSettings } from "@/components/filters/SearchSettings";
 import Loader from "@/components/Loader";
 import PassageMatches from "@/components/PassageMatches";
+import { Button } from "@/components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { EmptyDocument } from "@/components/documents/EmptyDocument";
+import { EmptyPassages } from "@/components/documents/EmptyPassages";
+import { UnavailableConcepts } from "@/components/documents/UnavailableConcepts";
+import { SearchSettings } from "@/components/filters/SearchSettings";
 import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -10,16 +18,9 @@ import { useEffectOnce } from "@/hooks/useEffectOnce";
 import useSearch from "@/hooks/useSearch";
 import { TConcept, TDocumentPage, TPassage, TSearchResponse } from "@/types";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
-import { AnimatePresence, motion } from "framer-motion";
-import React, { useCallback, useEffect, useMemo, useReducer, useState } from "react";
-import { LuSettings2 } from "react-icons/lu";
-import { Button } from "../atoms/button/Button";
-import { Icon } from "../atoms/icon/Icon";
+
 import { ConceptPicker } from "../organisms/ConceptPicker";
 import { SideCol } from "../panels/SideCol";
-import { EmptyDocument } from "./EmptyDocument";
-import { EmptyPassages } from "./EmptyPassages";
-import { useRouter } from "next/router";
 
 type TState = {
   passageIndex: number;

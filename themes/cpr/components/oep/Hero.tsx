@@ -1,13 +1,12 @@
-import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
+import { ExternalLink } from "@/components/ExternalLink";
+import { Icon } from "@/components/atoms/icon/Icon";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
-import { ExternalLink } from "@/components/ExternalLink";
-
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { Icon } from "@/components/atoms/icon/Icon";
 
 export const Hero = () => {
   const router = useRouter();

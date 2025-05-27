@@ -1,16 +1,14 @@
-import { useEffect, useRef, useState } from "react";
 import { NextRouter, useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
 
-import { InputCheck } from "@/components/forms/Checkbox";
-import { Select } from "@/components/atoms/select/Select";
 import { Accordian } from "@/components/accordian/Accordian";
-
-import { fetchAndProcessConcepts } from "@/utils/processConcepts";
-import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
-
+import { Select } from "@/components/atoms/select/Select";
+import { InputCheck } from "@/components/forms/Checkbox";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-
 import { TConcept } from "@/types";
+import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
+import { fetchAndProcessConcepts } from "@/utils/processConcepts";
+
 import { LinkWithQuery } from "../LinkWithQuery";
 
 interface IProps {
@@ -74,7 +72,9 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<TSort>(startingSort);
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
-  const [conceptsGrouped, setConceptsGrouped] = useState<{ [rootConceptId: string]: TConcept[] }>({});
+  const [conceptsGrouped, setConceptsGrouped] = useState<{
+    [rootConceptId: string]: TConcept[];
+  }>({});
   const [filteredConcepts, setFilteredConcepts] = useState<TConcept[]>([]);
 
   const selectOptions = SORT_OPTIONS.map((option) => ({

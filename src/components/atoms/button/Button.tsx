@@ -1,5 +1,6 @@
-import { joinTailwindClasses } from "@/utils/tailwind";
 import { useMemo } from "react";
+
+import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IButtonClassArgs {
   className?: string;
@@ -57,7 +58,7 @@ export const getButtonClasses = ({
   /* Size */
 
   const isIcon = content === "icon";
-  let layout = content === "both" ? "gap-2" : "";
+  const layout = content === "both" ? "gap-2" : "";
   let sizing = "";
 
   switch (size) {
@@ -91,7 +92,16 @@ export const Button = ({
   ...props
 }: TProps) => {
   const classes = useMemo(
-    () => getButtonClasses({ className, color, content, disabled, size, rounded, variant }),
+    () =>
+      getButtonClasses({
+        className,
+        color,
+        content,
+        disabled,
+        size,
+        rounded,
+        variant,
+      }),
     [className, color, content, disabled, size, rounded, variant]
   );
 

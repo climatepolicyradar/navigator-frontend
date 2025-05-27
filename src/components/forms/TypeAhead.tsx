@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 
-import SuggestList from "../filters/SuggestList";
-import { TextInput } from "./TextInput";
-
-import { sortData } from "@/utils/sorting";
 import { Icon } from "@/components/atoms/icon/Icon";
+import SuggestList from "@/components/filters/SuggestList";
+import { TextInput } from "@/components/forms/TextInput";
+import { sortData } from "@/utils/sorting";
 
 interface IProps {
   list: Object[];

@@ -1,6 +1,7 @@
+import { useRouter } from "next/router";
+
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { useRouter } from "next/router";
 
 interface IProps {
   first?: boolean;

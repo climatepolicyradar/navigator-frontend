@@ -1,13 +1,12 @@
-import React, { ReactNode } from "react";
-import { useRouter } from "next/router";
 import Head from "next/head";
-
-import { getAppTitle } from "@/utils/getAppTitle";
-import { getPageDescription } from "@/utils/getPageDescription";
-import { getPageTitle } from "@/utils/getPageTitle";
-import { getCanonicalUrl } from "@/utils/getCanonicalUrl";
+import { useRouter } from "next/router";
+import React, { ReactNode } from "react";
 
 import { TTheme, TThemeConfig } from "@/types";
+import { getAppTitle } from "@/utils/getAppTitle";
+import { getCanonicalUrl } from "@/utils/getCanonicalUrl";
+import { getPageDescription } from "@/utils/getPageDescription";
+import { getPageTitle } from "@/utils/getPageTitle";
 
 interface IProps {
   title?: string;

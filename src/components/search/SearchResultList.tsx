@@ -1,7 +1,7 @@
 import { ExternalLink } from "@/components/ExternalLink";
-import SearchResult from "./SearchResult";
-
 import { TMatchedFamily } from "@/types";
+
+import SearchResult from "./SearchResult";
 
 interface IProps {
   category?: string;

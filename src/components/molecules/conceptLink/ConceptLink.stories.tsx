@@ -1,6 +1,8 @@
-import { Meta, StoryObj } from "@storybook/react/*";
-import { ConceptLink } from "./ConceptLink";
+import { Meta, StoryObj } from "@storybook/react";
+
 import { TConcept } from "@/types";
+
+import { ConceptLink } from "./ConceptLink";
 
 const meta = {
   title: "Molecules/ConceptLink",

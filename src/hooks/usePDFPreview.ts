@@ -69,7 +69,12 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
     defaultViewMode: "FIT_PAGE",
   };
 
-  const annotationConfig = { showToolbar: false, showCommentsPanel: false, downloadWithAnnotations: true, printWithAnnotations: true };
+  const annotationConfig = {
+    showToolbar: false,
+    showCommentsPanel: false,
+    downloadWithAnnotations: true,
+    printWithAnnotations: true,
+  };
 
   // Memoize the Adobe Viewer API - this is used to control the viewer, e.g. change page
   let viewerApiMemo: any;

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+
+import { Icon } from "@/components/atoms/icon/Icon";
 import SuggestList from "@/components/filters/SuggestList";
 import { sortData } from "@/utils/sorting";
-import { Icon } from "@/components/atoms/icon/Icon";
 
 interface IProps {
   title: string;

@@ -19,7 +19,10 @@ export const buildSearchQueryMetadata = (
     }
     metadataForApi.map((m) => {
       if (decodeURI(m).trim().length > 0) {
-        newMetadata.push({ name: configMetadata.apiMetaDataKey, value: decodeURI(m) });
+        newMetadata.push({
+          name: configMetadata.apiMetaDataKey,
+          value: decodeURI(m),
+        });
       }
     });
   }

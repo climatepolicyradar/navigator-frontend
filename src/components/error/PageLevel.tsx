@@ -1,7 +1,6 @@
-import Layout from "@/components/layouts/Main";
-
 import { ExternalLink } from "@/components/ExternalLink";
 import { Button } from "@/components/atoms/button/Button";
+import Layout from "@/components/layouts/Main";
 import { Heading } from "@/components/typography/Heading";
 
 interface IProps {

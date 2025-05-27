@@ -1,9 +1,7 @@
-import useConfig from "@/hooks/useConfig";
-
-import Tooltip from "@/components/tooltip";
 import { ExternalLink } from "@/components/ExternalLink";
+import Tooltip from "@/components/tooltip";
 import { Heading } from "@/components/typography/Heading";
-
+import useConfig from "@/hooks/useConfig";
 import { TGeographyStats, TGeography, TTheme } from "@/types";
 
 interface IProps {

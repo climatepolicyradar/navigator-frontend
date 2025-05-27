@@ -15,7 +15,12 @@ export const Card = ({ heading, type, img, extraClasses, children }: IProps) => 
           {img && (
             <div
               className="w-full h-[120px] overflow-hidden rounded-xl mb-2"
-              style={{ backgroundImage: `url(${img})`, backgroundSize: "cover", backgroundPosition: "center center", backgroundRepeat: "no-repeat" }}
+              style={{
+                backgroundImage: `url(${img})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center center",
+                backgroundRepeat: "no-repeat",
+              }}
             />
           )}
           {type && (

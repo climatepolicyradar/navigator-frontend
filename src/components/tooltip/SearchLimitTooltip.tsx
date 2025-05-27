@@ -1,6 +1,6 @@
-import Tooltip from ".";
-
 import { MAX_RESULTS } from "@/constants/paging";
+
+import Tooltip from ".";
 
 interface IProps {
   colour?: string;

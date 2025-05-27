@@ -1,20 +1,17 @@
 import { Fragment, useState } from "react";
+import { useEffect } from "react";
 
-import Layout from "@/components/layouts/Main";
-import { SiteWidth } from "@/components/panels/SiteWidth";
-import { SingleCol } from "@/components/panels/SingleCol";
-import { SubNav } from "@/components/nav/SubNav";
-
-import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { AccordianItem } from "@/cclw/components/AccordianItem";
-
-import { Heading } from "@/components/typography/Heading";
-
 import { FAQS } from "@/cclw/constants/faqs";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Layout from "@/components/layouts/Main";
+import { SubNav } from "@/components/nav/SubNav";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { Heading } from "@/components/typography/Heading";
 import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
 import { getAllCookies } from "@/utils/cookies";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { useEffect } from "react";
 
 const FAQ: React.FC = () => {
   /*

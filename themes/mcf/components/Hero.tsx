@@ -1,9 +1,9 @@
-import { Heading } from "@/components/typography/Heading";
-import LandingSearchForm from "./LandingSearchForm";
-
 import { SiteWidth } from "@/components/panels/SiteWidth";
+import { Heading } from "@/components/typography/Heading";
 import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
+
 import { MultilateralClimateFundLogos } from "./HeroComponents/MultilateralClimateFundsLogos";
+import LandingSearchForm from "./LandingSearchForm";
 
 interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;

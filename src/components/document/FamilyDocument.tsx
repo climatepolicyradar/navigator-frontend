@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
-import useConfig from "@/hooks/useConfig";
+
 import { Icon } from "@/components/atoms/icon/Icon";
-import { getLanguage } from "@/helpers/getLanguage";
-import { TDocumentPage, TLoadingStatus } from "@/types";
 import { getDocumentType } from "@/helpers/getDocumentType";
+import { getLanguage } from "@/helpers/getLanguage";
+import useConfig from "@/hooks/useConfig";
+import { TDocumentPage, TLoadingStatus } from "@/types";
 
 interface IProps {
   document: TDocumentPage;
@@ -51,7 +52,10 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: IPr
       if (canViewSource) window.open(document.source_url, "_blank");
     };
 
-    return { className: cssClass, onClick: !canPreview && !canViewSource ? null : handleClick };
+    return {
+      className: cssClass,
+      onClick: !canPreview && !canViewSource ? null : handleClick,
+    };
   };
 
   const getMatchesText = () => {

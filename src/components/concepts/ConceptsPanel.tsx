@@ -1,14 +1,13 @@
+import Link from "next/link";
 import { useCallback, useState } from "react";
 import { LuInfo } from "react-icons/lu";
-import Link from "next/link";
 
-import { ConceptsHead } from "./ConceptsHead";
-import { ConceptsPopover } from "@/components/popover/ConceptsPopover";
 import { Button } from "@/components/atoms/button/Button";
-
+import { ConceptsPopover } from "@/components/popover/ConceptsPopover";
+import { TConcept } from "@/types";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 
-import { TConcept } from "@/types";
+import { ConceptsHead } from "./ConceptsHead";
 
 interface IProps {
   concepts: TConcept[];

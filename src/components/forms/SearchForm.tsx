@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { SearchDropdown } from "./SearchDropdown";
-import { TextInput } from "./TextInput";
 import { Icon } from "@/components/atoms/icon/Icon";
+import { SearchDropdown } from "@/components/forms/SearchDropdown";
+import { TextInput } from "@/components/forms/TextInput";
 
 interface IProps {
   input?: string;

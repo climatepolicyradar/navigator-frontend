@@ -1,18 +1,15 @@
-import { useMemo } from "react";
-import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 
-import useConfig from "@/hooks/useConfig";
-import useGetThemeConfig from "@/hooks/useThemeConfig";
+import { useRouter } from "next/router";
+import { useMemo } from "react";
 
 import Pill from "@/components/Pill";
-
-import { getCountryName } from "@/helpers/getCountryFields";
-import { getConceptName } from "@/helpers/getConceptFields";
-
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { sortOptions } from "@/constants/sortOptions";
-
+import { getConceptName } from "@/helpers/getConceptFields";
+import { getCountryName } from "@/helpers/getCountryFields";
+import useConfig from "@/hooks/useConfig";
+import useGetThemeConfig from "@/hooks/useThemeConfig";
 import { TConcept, TGeography, TThemeConfig } from "@/types";
 
 type TFilterChange = (type: string, value: string) => void;
@@ -129,7 +126,7 @@ const generatePills = (
   themeConfig: TThemeConfig,
   concepts?: TConcept[]
 ) => {
-  let pills: JSX.Element[] = [];
+  const pills: JSX.Element[] = [];
 
   Object.keys(QUERY_PARAMS).map((key: TFilterKeys) => {
     const value = queryParams[QUERY_PARAMS[key]];

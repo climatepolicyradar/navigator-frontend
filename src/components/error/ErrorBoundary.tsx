@@ -1,7 +1,7 @@
-/* eslint-disable no-console */
 import React from "react";
-import TopLevel from "./TopLevel";
+
 import PageLevel from "./PageLevel";
+import TopLevel from "./TopLevel";
 
 // based on: https://nextjs.org/docs/advanced-features/error-handling
 
@@ -27,7 +27,8 @@ class ErrorBoundary extends React.Component<IProps, TState> {
   }
   // Track using error logging service
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.warn({ error, errorInfo });
+    // eslint-disable-next-line no-console
+    console.error(error);
   }
 
   handleClick = () => {

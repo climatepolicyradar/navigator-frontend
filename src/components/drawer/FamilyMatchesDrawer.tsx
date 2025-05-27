@@ -1,17 +1,14 @@
 import { useRouter } from "next/router";
 
-import { TMatchedFamily } from "@/types";
-
-import { FamilyMeta } from "@/components/document/FamilyMeta";
-import PassageMatches from "@/components/PassageMatches";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import PassageMatches from "@/components/PassageMatches";
 import { Button } from "@/components/atoms/button/Button";
+import { FamilyMeta } from "@/components/document/FamilyMeta";
 import { Heading } from "@/components/typography/Heading";
-
+import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
+import { TMatchedFamily } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { truncateString } from "@/utils/truncateString";
-
-import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
 
 interface IProps {
   family?: TMatchedFamily;
@@ -27,13 +24,19 @@ export const FamilyMatchesDrawer = ({ family }: IProps) => {
     const document = family_documents[documentIndex];
     const queryObj = CleanRouterQuery({ ...router.query });
     queryObj.passage = passageIndex.toString();
-    router.push({ pathname: `/documents/${document.document_slug}`, query: queryObj });
+    router.push({
+      pathname: `/documents/${document.document_slug}`,
+      query: queryObj,
+    });
   };
 
   const handleViewOtherDocsClick = (e: React.FormEvent<HTMLButtonElement>, documentSlug: string) => {
     e.preventDefault();
     if (!documentSlug) return;
-    router.push({ pathname: `/documents/${documentSlug}`, query: router.query });
+    router.push({
+      pathname: `/documents/${documentSlug}`,
+      query: router.query,
+    });
   };
 
   return (
@@ -48,7 +51,9 @@ export const FamilyMatchesDrawer = ({ family }: IProps) => {
             <Heading level={3}>Summary</Heading>
             <div
               className="text-content mb-2"
-              dangerouslySetInnerHTML={{ __html: truncateString(family.family_description, MAX_FAMILY_SUMMARY_LENGTH_BRIEF) }}
+              dangerouslySetInnerHTML={{
+                __html: truncateString(family.family_description, MAX_FAMILY_SUMMARY_LENGTH_BRIEF),
+              }}
             />
             <LinkWithQuery href={`/document/${family.family_slug}`} className="text-sm alt">
               View full summary and timeline

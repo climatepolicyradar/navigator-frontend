@@ -4,44 +4,37 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
-
-import useConfig from "@/hooks/useConfig";
-import { useDownloadCsv } from "@/hooks/useDownloadCsv";
-import useSearch from "@/hooks/useSearch";
-
-import { MultiCol } from "@/components/panels/MultiCol";
-import { SideCol } from "@/components/panels/SideCol";
-import { SingleCol } from "@/components/panels/SingleCol";
-
 import { ExternalLink } from "@/components/ExternalLink";
 import Loader from "@/components/Loader";
+import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
+import { Button } from "@/components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
 import SearchFilters from "@/components/blocks/SearchFilters";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Drawer from "@/components/drawer/Drawer";
 import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
 import { SearchSettings } from "@/components/filters/SearchSettings";
+import { Label } from "@/components/labels/Label";
 import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
+import { Info } from "@/components/molecules/info/Info";
 import { SubNav } from "@/components/nav/SubNav";
-import Pagination from "@/components/pagination";
-import SearchResultList from "@/components/search/SearchResultList";
-import { Icon } from "@/components/atoms/icon/Icon";
-import { Button } from "@/components/atoms/button/Button";
 import { ConceptPicker } from "@/components/organisms/ConceptPicker";
-import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
-import { Label } from "@/components/labels/Label";
-
+import Pagination from "@/components/pagination";
+import { MultiCol } from "@/components/panels/MultiCol";
+import { SideCol } from "@/components/panels/SideCol";
+import { SingleCol } from "@/components/panels/SingleCol";
+import SearchResultList from "@/components/search/SearchResultList";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { withEnvConfig } from "@/context/EnvConfig";
+import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
+import useConfig from "@/hooks/useConfig";
+import { useDownloadCsv } from "@/hooks/useDownloadCsv";
+import useSearch from "@/hooks/useSearch";
+import { TConcept, TTheme, TThemeConfig } from "@/types";
+import { getFeatureFlags } from "@/utils/featureFlags";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
-import { getFeatureFlags } from "@/utils/featureFlags";
-
-import { QUERY_PARAMS } from "@/constants/queryParams";
-
-import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
-
-import { TConcept, TTheme, TThemeConfig } from "@/types";
-import { withEnvConfig } from "@/context/EnvConfig";
-import { Info } from "@/components/molecules/info/Info";
 
 interface IProps {
   theme: TTheme;
@@ -561,6 +554,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: withEnvConfig({ theme, themeConfig, featureFlags, conceptsData: conceptsData ?? null }),
+    props: withEnvConfig({
+      theme,
+      themeConfig,
+      featureFlags,
+      conceptsData: conceptsData ?? null,
+    }),
   };
 };

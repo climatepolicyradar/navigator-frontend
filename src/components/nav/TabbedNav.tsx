@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 
-import TabbedNavItem from "./TabbedNavItem";
-
 import { getCategoryTooltip } from "@/helpers/getCategoryTooltip";
-
 import { TDocumentCategory } from "@/types";
+
+import TabbedNavItem from "./TabbedNavItem";
 
 type TTabItems = {
   title: TDocumentCategory;

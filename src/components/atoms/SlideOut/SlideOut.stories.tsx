@@ -1,7 +1,8 @@
-import { Meta, StoryObj } from "@storybook/react/*";
-import { SlideOut } from "./SlideOut";
+import { Meta, StoryObj } from "@storybook/react";
+
 import { SlideOutContext } from "@/context/SlideOutContext";
-import { useState } from "react";
+
+import { SlideOut } from "./SlideOut";
 
 interface IProps {
   open: boolean;

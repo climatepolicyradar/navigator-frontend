@@ -1,6 +1,7 @@
-import { TMatchedFamily, TSearchKeywordFilters } from "@/types";
-import { arrayOfStringdMatch } from "./arrayEquality";
 import { CACHE_NAME, CACHE_LIMIT, CACHE_EXPIRY } from "@/constants/cache";
+import { TMatchedFamily, TSearchKeywordFilters } from "@/types";
+
+import { arrayOfStringdMatch } from "./arrayEquality";
 
 const arrayStringMatchChecker = (a?: string[] | null, b?: string[] | null) => {
   let result = false;

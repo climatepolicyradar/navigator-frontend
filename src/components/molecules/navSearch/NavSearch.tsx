@@ -1,13 +1,15 @@
+import sortBy from "lodash/sortBy";
+import { Url } from "next/dist/shared/lib/router/router";
+import { useRouter } from "next/router";
+import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";
+import { LuArrowRight, LuCornerDownLeft, LuSearch } from "react-icons/lu";
+
 import { Input } from "@/components/atoms/input/Input";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { systemGeoCodes } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
-import { sortBy } from "lodash";
-import { Url } from "next/dist/shared/lib/router/router";
-import { useRouter } from "next/router";
-import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";
-import { LuArrowRight, LuCornerDownLeft, LuSearch } from "react-icons/lu";
+
 import { NavSearchDropdown } from "./NavSearchDropdown";
 import { NavSearchSuggestion } from "./NavSearchSuggestion";
 

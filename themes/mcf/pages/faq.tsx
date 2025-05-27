@@ -1,14 +1,14 @@
+import { useState, useEffect } from "react";
+
 import FaqSection from "@/components/FaqSection";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { SiteWidth } from "@/components/panels/SiteWidth";
 import { SubNav } from "@/components/nav/SubNav";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
 import { FAQS, PLATFORM_FAQS } from "@/mcf/constants/faqs";
-import { getFeatureFlags } from "@/utils/featureFlags";
-import { useState } from "react";
 import { getAllCookies } from "@/utils/cookies";
-import { useEffect } from "react";
+import { getFeatureFlags } from "@/utils/featureFlags";
 
 const FAQ: React.FC = () => {
   /*

@@ -1,8 +1,8 @@
 import Image from "next/image";
 
-import { SiteWidth } from "@/components/panels/SiteWidth";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
 export const Footer = () => {
   return (

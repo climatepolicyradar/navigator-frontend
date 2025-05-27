@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 
 import { Heading } from "./Heading";
