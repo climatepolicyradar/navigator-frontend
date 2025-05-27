@@ -7,14 +7,14 @@ import { TDocumentPage, TPassage } from "@/types";
 
 import Loader from "./Loader";
 
-type TProps = {
+interface IProps {
   document: TDocumentPage;
   documentPassageMatches?: TPassage[];
   passageIndex?: number;
   startingPassageIndex?: number;
-};
+}
 
-const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = null, startingPassageIndex = 0 }: TProps) => {
+const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = null, startingPassageIndex = 0 }: IProps) => {
   const isLoading = useState(true);
   const containerRef = useRef(null);
   const adobeKey = useContext(AdobeContext);
