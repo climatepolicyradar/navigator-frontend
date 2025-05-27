@@ -4,15 +4,15 @@ import { SearchDropdown } from "./SearchDropdown";
 import { TextInput } from "./TextInput";
 import { Icon } from "@/components/atoms/icon/Icon";
 
-type TProps = {
+interface IProps {
   input?: string;
   placeholder: string;
   size?: "small" | "large" | "default";
   handleSearchInput(term: string): void;
   handleSuggestion?(term: string, filter?: string, filterValue?: string): void;
-};
+}
 
-const SearchForm = ({ input, placeholder, size = "large", handleSearchInput, handleSuggestion }: TProps) => {
+const SearchForm = ({ input, placeholder, size = "large", handleSearchInput, handleSuggestion }: IProps) => {
   const [term, setTerm] = useState("");
   const [formFocus, setFormFocus] = useState(false);
   const formRef = useRef(null);

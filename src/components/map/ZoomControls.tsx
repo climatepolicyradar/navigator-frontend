@@ -1,13 +1,13 @@
-type TProps = {
+interface IProps {
   mapZoom: number;
   minZoom: number;
   maxZoom: number;
   handleZoomIn: () => void;
   handleZoomOut: () => void;
   handleReset: () => void;
-};
+}
 
-export const ZoomControls = ({ mapZoom, minZoom, maxZoom, handleZoomIn, handleZoomOut, handleReset }: TProps) => {
+export const ZoomControls = ({ mapZoom, minZoom, maxZoom, handleZoomIn, handleZoomOut, handleReset }: IProps) => {
   return (
     <div className="absolute bottom-0 right-0 p-4 flex gap-2">
       <button className="text-xs bg-white text-gray-500 rounded-full border border-gray-300 h-[40px] px-4" onClick={handleReset}>

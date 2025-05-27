@@ -11,14 +11,14 @@ type TTabItems = {
   count?: number;
 };
 
-type TTabbedNavProps = {
+interface IProps {
   handleTabClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string): void;
   items: TTabItems[];
   activeIndex: number;
   showBorder?: boolean;
-};
+}
 
-const TabbedNav = ({ handleTabClick, items, activeIndex = 0, showBorder = true }: TTabbedNavProps) => {
+const TabbedNav = ({ handleTabClick, items, activeIndex = 0, showBorder = true }: IProps) => {
   const [activeTab, setActiveTab] = useState(activeIndex);
 
   const helpText = (index: number) => {

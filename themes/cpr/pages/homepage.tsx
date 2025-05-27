@@ -26,14 +26,14 @@ import LandingSearchForm from "@/cpr/components/LandingSearchForm";
  * GOTCHA: we export this to be used in the src/pages/index.tsx file.
  * It's a generic passed to `dynamic` so we can't rely on generic type checking.
  */
-export type TProps = {
+export interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   handleSearchChange: (type: string, value: any) => void;
   searchInput: string;
   exactMatch: boolean;
-};
+}
 
-const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exactMatch }: TProps) => {
+const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exactMatch }: IProps) => {
   const handleLinkClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const term = e.currentTarget.textContent;
@@ -59,6 +59,7 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
             </SiteWidth>
           </section>
         </main>
+        {/* TODO: reinstate when the world map API is back */}
         {/* <FullWidth extraClasses="hidden my-6 md:block">
           <WorldMap showLitigation />
         </FullWidth> */}

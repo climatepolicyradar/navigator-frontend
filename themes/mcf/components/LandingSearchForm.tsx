@@ -13,13 +13,13 @@ const EXAMPLE_SEARCHES = [
   { id: 3, filterValue: "Philippines", filterType: QUERY_PARAMS.country },
 ];
 
-interface SearchFormProps {
+interface IProps {
   placeholder?: string;
   handleSearchInput(term: string, filter?: string, filterValue?: string): void;
   input?: string;
 }
 
-const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchFormProps) => {
+const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) => {
   const [term, setTerm] = useState("");
   const [formFocus, setFormFocus] = useState(false);
   const formRef = useRef(null);

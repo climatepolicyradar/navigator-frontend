@@ -8,12 +8,12 @@ import { SlideOutContext } from "@/context/SlideOutContext";
 
 import { SLIDE_OUT_DATA_KEY } from "@/constants/dataAttributes";
 
-interface SlideOutProps {
+interface IProps {
   children: React.ReactNode;
   showCloseButton?: boolean;
 }
 
-export const SlideOut = ({ children, showCloseButton = true }: SlideOutProps) => {
+export const SlideOut = ({ children, showCloseButton = true }: IProps) => {
   const ref = useRef(null);
   const { currentSlideOut, setCurrentSlideOut } = useContext(SlideOutContext);
 
@@ -41,7 +41,7 @@ export const SlideOut = ({ children, showCloseButton = true }: SlideOutProps) =>
           initial={{ translateX: "-100px" }}
           animate={{ opacity: 1, translateX: 0, transition: { duration: 0.25, ease: [0.04, 0.62, 0.23, 0.98] } }}
           exit={{ opacity: 0, transition: { duration: 0 } }}
-          className="absolute z-20 top-0 left-0 h-full bg-white p-5 pb-[70px] w-screen md:z-0 md:w-auto md:min-w-[400px] md:left-full md:pb-0"
+          className="absolute z-20 top-0 left-0 h-full bg-white p-5 pb-[180px] w-screen md:px-9 md:z-0 md:w-auto md:min-w-[460px] md:left-full md:pb-0 md:border-r md:border-gray-300"
         >
           {showCloseButton && (
             <button className="absolute z-20 top-5 right-5" onClick={() => setCurrentSlideOut("")}>

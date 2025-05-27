@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
-import { LuSettings2 } from "react-icons/lu";
 
 import { ApiClient } from "@/api/http-common";
 
@@ -30,13 +29,13 @@ import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentV
 import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamiy";
 import { withEnvConfig } from "@/context/EnvConfig";
 
-type TProps = {
+interface IProps {
   document: TDocumentPage;
   family: TFamilyPage;
   theme: TTheme;
   vespaFamilyData?: TSearchResponse;
   vespaDocumentData?: TSearchResponse;
-};
+}
 
 const passageClasses = (canPreview: boolean) => {
   if (canPreview) {
@@ -74,7 +73,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   theme,
   vespaFamilyData,
   vespaDocumentData,
-}: TProps) => {
+}: IProps) => {
   const [canPreview, setCanPreview] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [passageIndex, setPassageIndex] = useState(null);
@@ -83,6 +82,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const router = useRouter();
   const qsSearchString = router.query[QUERY_PARAMS.query_string];
   const exactMatchQuery = !!router.query[QUERY_PARAMS.exact_match];
+  const passagesByPosition = router.query[QUERY_PARAMS.passages_by_position] === "true";
   const startingPassage = Number(router.query.passage) || 0;
 
   // TODO: Remove this once we have hard launched concepts in product.
@@ -130,6 +130,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
       undefined,
       { shallow: true }
     );
+  };
+
+  const handlePassagesOrderChange = (orderValue: string) => {
+    setPassageIndex(0);
+    const queryObj = { ...router.query };
+    queryObj[QUERY_PARAMS.passages_by_position] = orderValue;
+    router.push({ query: queryObj }, undefined, { shallow: true });
   };
 
   // Handlers to update router
@@ -193,7 +200,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
                 <div
                   id="document-preview"
-                  className={`pt-4 flex-1 h-[400px] basis-[400px] md:block md:h-full ${totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""}`}
+                  className={`flex-1 h-[400px] basis-[400px] md:block md:h-full ${totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""}`}
                 >
                   {canPreview && (
                     <EmbeddedPDF
@@ -207,7 +214,9 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 </div>
                 <div
                   id="document-sidebar"
-                  className={`py-4 order-first max-h-[90vh] md:pb-0 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(canPreview)}`}
+                  className={`py-4 order-first max-h-[90vh] md:pb-0 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
+                    canPreview
+                  )}`}
                 >
                   {status !== "success" ? (
                     <div className="w-full flex justify-center flex-1 bg-white">
@@ -219,7 +228,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                         <div className="flex-1">
                           {totalNoOfMatches > 0 && (
                             <>
-                              <div className="mb-2 pt-2 text-sm" data-cy="document-matches-description">
+                              <div className="mb-2 text-sm" data-cy="document-matches-description">
                                 Displaying {renderPassageCount(totalNoOfMatches)} for "
                                 <span className="text-textDark font-medium">{`${qsSearchString}`}</span>"
                                 {!searchQuery.exact_match && ` and related phrases`}
@@ -229,13 +238,16 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                   </span>
                                 )}
                               </div>
-                              <p className="text-sm">Sorted by search relevance</p>
+                              <p className="text-sm">Sorted by {passagesByPosition ? "page number" : "search relevance"}</p>
                             </>
                           )}
                         </div>
                         <div className="relative z-10 flex justify-center">
-                          <button className="p-2 text-textDark text-xl" onClick={() => setShowOptions(!showOptions)}>
-                            <LuSettings2 />
+                          <button
+                            className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showOptions ? "bg-surface-ui" : ""}`}
+                            onClick={() => setShowOptions(!showOptions)}
+                          >
+                            Sort &amp; Display
                           </button>
                           <AnimatePresence initial={false}>
                             {showOptions && (
@@ -253,6 +265,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                   queryParams={router.query}
                                   handleSearchChange={handleSemanticSearchChange}
                                   setShowOptions={setShowOptions}
+                                  handlePassagesClick={handlePassagesOrderChange}
                                 />
                               </motion.div>
                             )}

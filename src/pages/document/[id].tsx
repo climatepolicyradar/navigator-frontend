@@ -50,7 +50,7 @@ import { MultiCol } from "@/components/panels/MultiCol";
 import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
 import { withEnvConfig } from "@/context/EnvConfig";
 
-type TProps = {
+interface IProps {
   page: TFamilyPage;
   targets: TTarget[];
   countries: TGeography[];
@@ -58,7 +58,7 @@ type TProps = {
   theme: TTheme;
   featureFlags: Record<string, string | boolean>;
   vespaFamilyData?: TSearchResponse;
-};
+}
 
 /*
   # DEV NOTES
@@ -75,7 +75,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   theme,
   featureFlags,
   vespaFamilyData,
-}: TProps) => {
+}: IProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const startingNumberOfTargetsToDisplay = 5;

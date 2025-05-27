@@ -3,13 +3,13 @@ import { Icon } from "@/components/atoms/icon/Icon";
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
 import { Button } from "@/components/atoms/button/Button";
 
-interface SearchFormProps {
+interface IProps {
   placeholder?: string;
   handleSearchInput(term: string, filter?: string, filterValue?: string): void;
   input?: string;
 }
 
-const LandingSearchForm = ({ placeholder, input, handleSearchInput }: SearchFormProps) => {
+const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) => {
   const [term, setTerm] = useState("");
   const [formFocus, setFormFocus] = useState(false);
   const [showAnimation, setShowAnimation] = useState(true);

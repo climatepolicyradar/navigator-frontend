@@ -13,7 +13,8 @@ import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
 import { AppliedFilters } from "@/components/filters/AppliedFilters";
 import Loader from "@/components/Loader";
-import { FilterOptions } from "./FilterOptions";
+import { FilterOptions } from "@/components/blocks/FilterOptions";
+import { Heading } from "@/components/accordian/Heading";
 
 import { currentYear, minYear } from "@/constants/timedate";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -27,11 +28,9 @@ import { getFilterLabel } from "@/utils/getFilterLabel";
 import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
 
 import { SlideOutContext } from "@/context/SlideOutContext";
-import { Heading } from "../accordian/Heading";
+import { Info } from "../molecules/info/Info";
 
-const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/components/MethodologyLink`));
-
-const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption) => {
+const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption<any>) => {
   if (selectedCatgeory) {
     if (selectedCatgeory.toLowerCase() === themeConfigCategory.slug.toLowerCase()) {
       return true;
@@ -43,7 +42,7 @@ const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCate
   return false;
 };
 
-type TSearchFiltersProps = {
+interface IProps {
   searchCriteria: TSearchCriteria;
   query: ParsedUrlQuery;
   regions: TGeography[];
@@ -56,7 +55,7 @@ type TSearchFiltersProps = {
   handleClearSearch(): void;
   handleDocumentCategoryClick(value: string): void;
   featureFlags: Record<string, string | boolean>;
-};
+}
 
 const SearchFilters = ({
   searchCriteria,
@@ -71,7 +70,7 @@ const SearchFilters = ({
   handleClearSearch,
   handleDocumentCategoryClick,
   featureFlags,
-}: TSearchFiltersProps) => {
+}: IProps) => {
   const { status: themeConfigStatus, themeConfig } = useGetThemeConfig();
   const [showClear, setShowClear] = useState(false);
   const { currentSlideOut, setCurrentSlideOut } = useContext(SlideOutContext);
@@ -102,8 +101,13 @@ const SearchFilters = ({
     <div id="search_filters" data-cy="seach-filters" className="text-sm text-text-secondary flex flex-col gap-5">
       {themeConfigStatus === "loading" && <Loader size="20px" />}
       <div className="flex justify-between">
-        <div className="flex gap-2">
-          <p className="text-xs uppercase">Filters</p>
+        <div className="flex items-center gap-2">
+          <p className="text-[15px] text-text-primary font-normal">Filters</p>
+          <Info
+            title="About"
+            description="Narrow down your results using the filters below. You can also combine these with a search term."
+            link={{ href: "/faq", text: "Learn more" }}
+          />
         </div>
         {showClear && (
           <button className="anchor underline text-sm" onClick={handleClearSearch}>
@@ -235,12 +239,6 @@ const SearchFilters = ({
       >
         <DateRange type="year_range" handleChange={handleYearChange} defaultValues={searchCriteria.year_range} min={minYear} max={thisYear} />
       </Accordian>
-
-      <div className="my-5 pt-5 border-t border-gray-300" data-cy="methodology-notice">
-        <p>
-          Read <MethodologyLink /> for more information on how we collect and analyse our data.
-        </p>
-      </div>
     </div>
   );
 };

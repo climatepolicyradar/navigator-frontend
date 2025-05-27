@@ -13,6 +13,22 @@ export function getCookie(cname: string) {
   return "";
 }
 
+export function getAllCookies(): Record<string, string> {
+  const cookies: Record<string, string> = {};
+  const cookieString = document.cookie;
+
+  if (cookieString) {
+    cookieString.split(";").forEach((cookie) => {
+      const [key, value] = cookie.split("=").map((part) => part.trim());
+      if (key && value) {
+        cookies[key] = value;
+      }
+    });
+  }
+
+  return cookies;
+}
+
 export function setCookie(cname: string, cvalue: string, domain: string) {
   const d = new Date();
   let y = d.getFullYear() + 1;

@@ -15,7 +15,7 @@ const meta = {
     menu: { control: false },
   },
 } satisfies Meta<typeof NavBar>;
-type Story = StoryObj<typeof NavBar>;
+type TStory = StoryObj<typeof NavBar>;
 
 export default meta;
 
@@ -27,7 +27,7 @@ const CPRArgs = {
   showSearch: true,
 };
 
-export const SearchPage: Story = {
+export const SearchPage: TStory = {
   args: CPRArgs,
   parameters: {
     nextjs: {
@@ -42,7 +42,7 @@ export const SearchPage: Story = {
   },
 };
 
-export const GeographyPage: Story = {
+export const GeographyPage: TStory = {
   args: CPRArgs,
   parameters: {
     nextjs: {
@@ -58,7 +58,7 @@ export const GeographyPage: Story = {
   },
 };
 
-export const FamilyPage: Story = {
+export const FamilyPage: TStory = {
   args: CPRArgs,
   parameters: {
     nextjs: {
@@ -88,12 +88,12 @@ const documentPageParameters = {
   },
 };
 
-export const DocumentPage: Story = {
+export const DocumentPage: TStory = {
   args: CPRArgs,
   parameters: documentPageParameters,
 };
 
-export const CCLW: Story = {
+export const CCLW: TStory = {
   args: {
     headerClasses: "bg-cclw-dark",
     logo: CCLWLogo,
@@ -105,7 +105,7 @@ export const CCLW: Story = {
   parameters: documentPageParameters,
 };
 
-export const MCF: Story = {
+export const MCF: TStory = {
   args: {
     headerClasses: "bg-surface-light min-h-20 border-b border-gray-200 border-solid",
     logo: MCFLogo,

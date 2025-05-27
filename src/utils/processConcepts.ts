@@ -49,23 +49,23 @@ export const fetchAndProcessConcepts = async (conceptIds: string[]) => {
   return { rootConcepts: rootConceptsResults, concepts: conceptsResults };
 };
 
-interface Concept {
+interface IConcept {
   name: string;
   count: number;
   wikibaseId: string;
 }
 
-interface ConceptMap {
-  [subconcept: string]: Concept;
+interface IConceptMap {
+  [subconcept: string]: IConcept;
 }
 
-interface RootConceptsMapped {
-  [rootConcept: string]: ConceptMap;
+interface IRootConceptsMapped {
+  [rootConcept: string]: IConceptMap;
 }
 
-export const processConcepts = (concepts: (TConcept & { count: number })[]): RootConceptsMapped => {
-  const conceptMap: RootConceptsMapped = {};
-  let otherConcepts: ConceptMap = {};
+export const processConcepts = (concepts: (TConcept & { count: number })[]): IRootConceptsMapped => {
+  const conceptMap: IRootConceptsMapped = {};
+  let otherConcepts: IConceptMap = {};
 
   concepts.forEach((concept) => {
     let isRootOrSubconcept = false;

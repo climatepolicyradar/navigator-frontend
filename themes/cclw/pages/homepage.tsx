@@ -23,12 +23,12 @@ import { Heading } from "@/components/typography/Heading";
 //   ssr: false,
 // });
 
-type TProps = {
+interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   searchInput: string;
-};
+}
 
-const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
+const LandingPage = ({ handleSearchInput, searchInput }: IProps) => {
   return (
     <Layout title="Law and Policy Search" theme={APP_NAME} description={PAGE_DESCRIPTION}>
       <main id="main" className="flex flex-col flex-1">
@@ -39,6 +39,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
         <SiteWidth extraClasses="my-12" data-cy="powered-by">
           <PoweredBy />
         </SiteWidth>
+        {/* TODO: reinstate when the world map API is back */}
         {/* <FullWidth id="world-map" extraClasses="hidden pt-6 md:block">
           <Heading level={2} extraClasses="text-center text-3xl xl:text-4xl">
             Explore by country
