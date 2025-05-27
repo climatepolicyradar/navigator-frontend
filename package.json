@@ -50,7 +50,6 @@
   "devDependencies": {
     "@babel/core": "^7.16.5",
     "@babel/preset-env": "^7.16.5",
-    "@eslint/compat": "^1.2.7",
     "@next/eslint-plugin-next": "^15.2.1",
     "@percy/cli": "^1.30.6",
     "@playwright/test": "^1.49.0",
