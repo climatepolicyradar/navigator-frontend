@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 
 import { Icon } from "@/components/atoms/icon/Icon";
+import { MAX_PASSAGES } from "@/constants/paging";
 import { getDocumentType } from "@/helpers/getDocumentType";
 import { getLanguage } from "@/helpers/getLanguage";
 import useConfig from "@/hooks/useConfig";
@@ -65,7 +66,7 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: IPr
     const numberOfMatches = typeof matches === "number" ? matches : parseInt(matches, 10);
     if (!numberOfMatches) return "";
 
-    return `View ${familyMatches >= 500 ? "more than " : ""}${numberOfMatches} ${numberOfMatches === 1 ? "match" : "matches"}`;
+    return `View ${familyMatches >= MAX_PASSAGES ? "more than " : ""}${numberOfMatches} ${numberOfMatches === 1 ? "match" : "matches"}`;
   };
 
   return (

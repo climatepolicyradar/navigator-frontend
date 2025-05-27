@@ -11,14 +11,15 @@ import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { UnavailableConcepts } from "@/components/documents/UnavailableConcepts";
 import { SearchSettings } from "@/components/filters/SearchSettings";
-import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import useSearch from "@/hooks/useSearch";
 import { TConcept, TDocumentPage, TPassage, TSearchResponse } from "@/types";
+import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 
+import { Info } from "../molecules/info/Info";
 import { ConceptPicker } from "../organisms/ConceptPicker";
 import { SideCol } from "../panels/SideCol";
 
@@ -211,6 +212,13 @@ export const ConceptsDocumentViewer = ({
     router.push({ query: queryObj }, undefined, { shallow: true });
   };
 
+  const passagesResultsContext = getPassageResultsContext({
+    isExactSearch: state.isExactSearch,
+    passageMatches: state.totalNoOfMatches,
+    queryTerm: initialQueryTerm,
+    selectedTopics: selectedConcepts,
+  });
+
   const isLoading = status !== "success";
   const hasConcepts = documentConcepts.length > 0;
   const hasSelectedConcepts = selectedConcepts.length > 0;
@@ -312,26 +320,15 @@ export const ConceptsDocumentViewer = ({
                 (hasPassages ? (
                   <>
                     <div className="border-gray-200 p-4 text-sm border-b xl:pl-4" data-cy="document-matches-description">
-                      <div className="mb-2">
-                        Displaying {renderPassageCount(state.totalNoOfMatches)}{" "}
-                        {initialQueryTerm && (
-                          <>
-                            for "<span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
-                          </>
-                        )}
-                        {initialQueryTerm && !searchQuery.exact_match && ` and related phrases`}
-                        {selectedConcepts.length > 0 && (
-                          <>
-                            {" in "}
-                            <b>{selectedConcepts.map((concept) => concept.preferred_label).join(", ")}</b>
-                          </>
-                        )}
+                      <p className="mb-2">
+                        {passagesResultsContext}
                         {state.totalNoOfMatches >= MAX_RESULTS && (
-                          <span className="ml-1 inline-block">
-                            <SearchLimitTooltip colour="grey" />
-                          </span>
+                          <Info
+                            className="inline-block ml-2 align-text-bottom"
+                            description={`We limit the number of search results to ${MAX_RESULTS} so that you get the best performance from our tool. We're working on a way to remove this limit.`}
+                          />
                         )}
-                      </div>
+                      </p>
                     </div>
                     <div
                       id="document-passage-matches"
