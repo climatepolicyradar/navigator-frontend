@@ -8,13 +8,14 @@ import TopLevel from "./TopLevel";
 type TState = {
   hasError: boolean;
 };
-type TProps = {
+
+interface IProps {
   children: React.ReactNode;
   level: "top" | "page";
-};
+}
 
-class ErrorBoundary extends React.Component<TProps, TState> {
-  constructor(props: TProps) {
+class ErrorBoundary extends React.Component<IProps, TState> {
+  constructor(props: IProps) {
     super(props);
 
     // Define a state variable to track whether is an error or not

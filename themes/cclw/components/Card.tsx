@@ -1,13 +1,13 @@
-type TProps = {
+interface IProps {
+  children: React.ReactNode;
+  extraClasses?: string;
   heading: string;
-  type?: string;
   img?: string;
   imgAlt?: string;
-  extraClasses?: string;
-  children: React.ReactNode;
-};
+  type?: string;
+}
 
-export const Card = ({ heading, type, img, extraClasses, children }: TProps) => {
+export const Card = ({ heading, type, img, extraClasses, children }: IProps) => {
   return (
     <div className={`h-full ${extraClasses}`}>
       <div className="block relative border border-gray-300 rounded-xl h-full shadow p-4">

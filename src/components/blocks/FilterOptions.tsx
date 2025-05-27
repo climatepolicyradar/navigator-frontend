@@ -1,4 +1,5 @@
 import { ParsedUrlQuery } from "querystring";
+import { get } from "lodash";
 
 import { useState } from "react";
 
@@ -9,18 +10,18 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TCorpusTypeDictionary, TThemeConfig, TThemeConfigFilter } from "@/types";
 
 const getTaxonomyAllowedValues = (corporaKey: string, taxonomyKey: string, corpus_types: TCorpusTypeDictionary) => {
-  const allowedValues = corpus_types[corporaKey].taxonomy[taxonomyKey]?.allowed_values;
+  const allowedValues = get(corpus_types[corporaKey].taxonomy, taxonomyKey)?.allowed_values || [];
 
   return allowedValues;
 };
 
-type TProps = {
+interface IProps {
   filter: TThemeConfigFilter;
   query: ParsedUrlQuery;
   handleFilterChange: Function;
   corpus_types: TCorpusTypeDictionary;
   themeConfig: TThemeConfig;
-};
+}
 
 const filterIsSelected = (queryValue: string | string[] | undefined, option: string) => {
   if (!queryValue) {
@@ -33,7 +34,7 @@ const filterIsSelected = (queryValue: string | string[] | undefined, option: str
   }
 };
 
-export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types, themeConfig }: TProps) => {
+export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types, themeConfig }: IProps) => {
   const [search, setSearch] = useState("");
 
   // If the filter has its own options defined, display them
@@ -105,7 +106,9 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
   }
 
   // De-duplicate and sort the options
-  const optionsDeDuped: string[] = [...new Set(options.sort())].filter((option) => option.toLowerCase().includes(search.toLowerCase()));
+  const optionsDeDuped: string[] = options
+    ? [...new Set(options.sort())].filter((option) => option.toLowerCase().includes(search.toLowerCase()))
+    : [];
 
   const optionsAsComponents = optionsDeDuped.map((option: string) =>
     filter.type === "radio" ? (

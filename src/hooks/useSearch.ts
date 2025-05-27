@@ -17,11 +17,6 @@ type TConfig = {
   };
 };
 
-const scrollToSearchTop = () => {
-  const container = document.querySelector("#search");
-  container?.scrollIntoView(true);
-};
-
 async function getSearch(query = initialSearchCriteria) {
   const config: TConfig = {
     headers: {
@@ -50,7 +45,6 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
 
   useEffect(() => {
     setStatus("loading");
-    scrollToSearchTop();
 
     // If we don't want to trigger an API call, return early
     if (!runFreshSearch || !searchQuery.runSearch) {
@@ -59,19 +53,20 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
     }
 
     const cacheId = {
-      query_string: searchQuery.query_string,
-      exact_match: searchQuery.exact_match,
-      keyword_filters: searchQuery.keyword_filters,
-      year_range: searchQuery.year_range,
-      sort_field: searchQuery.sort_field,
-      sort_order: searchQuery.sort_order,
-      offset: searchQuery.offset,
-      family_ids: searchQuery.family_ids,
-      document_ids: searchQuery.document_ids,
+      concept_filters: searchQuery.concept_filters,
       continuation_tokens: searchQuery.continuation_tokens,
       corpus_import_ids: searchQuery.corpus_import_ids,
-      concept_filters: searchQuery.concept_filters,
+      document_ids: searchQuery.document_ids,
+      exact_match: searchQuery.exact_match,
+      family_ids: searchQuery.family_ids,
+      keyword_filters: searchQuery.keyword_filters,
       metadata: searchQuery.metadata,
+      offset: searchQuery.offset,
+      query_string: searchQuery.query_string,
+      sort_field: searchQuery.sort_field,
+      sort_order: searchQuery.sort_order,
+      sort_within_page: searchQuery.sort_within_page,
+      year_range: searchQuery.year_range,
     };
 
     // Check if we have a cached result before calling the API

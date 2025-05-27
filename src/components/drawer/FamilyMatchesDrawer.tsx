@@ -10,11 +10,11 @@ import { TMatchedFamily } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { truncateString } from "@/utils/truncateString";
 
-type TProps = {
+interface IProps {
   family?: TMatchedFamily;
-};
+}
 
-export const FamilyMatchesDrawer = ({ family }: TProps) => {
+export const FamilyMatchesDrawer = ({ family }: IProps) => {
   const router = useRouter();
 
   if (!family) return null;

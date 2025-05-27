@@ -7,7 +7,7 @@ export const ROOT_LEVEL_CONCEPTS = {
   Q975: "Climate risk",
   Q638: "Fossil fuels",
   Q672: "Impacted groups",
-  Q1343: "Climate finance",
+  Q1343: "Climate foooinance",
   Q1171: "Instruments",
   Q218: "Greenhouse gases",
   Q1367: "Public finance actors",
@@ -49,23 +49,23 @@ export const fetchAndProcessConcepts = async (conceptIds: string[]) => {
   return { rootConcepts: rootConceptsResults, concepts: conceptsResults };
 };
 
-interface Concept {
+interface IConcept {
   name: string;
   count: number;
   wikibaseId: string;
 }
 
-interface ConceptMap {
-  [subconcept: string]: Concept;
+interface IConceptMap {
+  [subconcept: string]: IConcept;
 }
 
-interface RootConceptsMapped {
-  [rootConcept: string]: ConceptMap;
+interface IRootConceptsMapped {
+  [rootConcept: string]: IConceptMap;
 }
 
-export const processConcepts = (concepts: (TConcept & { count: number })[]): RootConceptsMapped => {
-  const conceptMap: RootConceptsMapped = {};
-  const otherConcepts: ConceptMap = {};
+export const processConcepts = (concepts: (TConcept & { count: number })[]): IRootConceptsMapped => {
+  const conceptMap: IRootConceptsMapped = {};
+  const otherConcepts: IConceptMap = {};
 
   concepts.forEach((concept) => {
     let isRootOrSubconcept = false;

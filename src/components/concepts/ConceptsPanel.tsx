@@ -9,15 +9,15 @@ import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 
 import { ConceptsHead } from "./ConceptsHead";
 
-type TProps = {
+interface IProps {
   concepts: TConcept[];
   rootConcepts: TConcept[];
   conceptCountsById: Record<string, number>;
   showCounts?: boolean;
   onConceptClick?: (conceptLabel: string) => void;
-};
+}
 
-export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showCounts = true, onConceptClick }: TProps) => {
+export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showCounts = true, onConceptClick }: IProps) => {
   const [openPopoverIds, setOpenPopoverIds] = useState<string[]>([]);
 
   const handleConceptClick = useCallback(

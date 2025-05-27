@@ -1,21 +1,21 @@
 import { Input as BaseInput } from "@base-ui-components/react";
 import { useMemo } from "react";
 
-import { Icon, IconName, iconNames } from "@/components/atoms/icon/Icon";
+import { Icon, TIconName, iconNames } from "@/components/atoms/icon/Icon";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
+interface IProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
   clearable?: boolean;
   containerClasses?: string;
   color?: "brand" | "mono";
-  icon?: IconName | React.ReactNode;
+  icon?: TIconName | React.ReactNode;
   iconOnLeft?: boolean;
   inputClasses?: string;
   onClear?: () => void;
   size?: "small" | "medium" | "large";
 }
 
-const isIconName = (icon: unknown): icon is IconName => iconNames.includes(icon as IconName);
+const isIconName = (icon: unknown): icon is TIconName => iconNames.includes(icon as TIconName);
 
 export const Input = ({
   className: _className,
@@ -29,7 +29,7 @@ export const Input = ({
   onClear,
   value,
   ...props
-}: InputProps) => {
+}: IProps) => {
   const classes = useMemo(() => {
     /* Colour */
 
@@ -53,19 +53,19 @@ export const Input = ({
     }
 
     return {
-      button: joinTailwindClasses(["shrink-0 text-icon-standard", iconPadding]),
-      container: joinTailwindClasses([
+      button: joinTailwindClasses("shrink-0 text-icon-standard", iconPadding),
+      container: joinTailwindClasses(
         "w-full px-2 flex flex-row justify-around items-center bg-surface-ui rounded-md focus-within:outline",
         outlineColor,
-        containerClasses,
-      ]),
-      icon: joinTailwindClasses(["shrink-0", iconPadding]),
-      input: joinTailwindClasses([
+        containerClasses
+      ),
+      icon: joinTailwindClasses("shrink-0", iconPadding),
+      input: joinTailwindClasses(
         "w-full block bg-transparent border-none focus:shadow-[none] leading-none font-medium text-text-primary placeholder:text-text-tertiary caret-text-brand",
         inputPadding,
         textSize,
-        inputClasses,
-      ]),
+        inputClasses
+      ),
     };
   }, [color, containerClasses, inputClasses, size]);
 

@@ -6,14 +6,14 @@ import { systemGeoCodes } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
 import { TGeography } from "@/types";
 
-type TProps = {
+interface IProps {
   show: boolean;
   term: string;
   handleSearchClick: (term: string, filter?: string, filterValue?: string) => void;
   largeSpacing?: boolean;
-};
+}
 
-export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpacing }: TProps) => {
+export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpacing }: IProps) => {
   const router = useRouter();
   const configQuery = useConfig();
   const geographies = configQuery.data?.countries || [];

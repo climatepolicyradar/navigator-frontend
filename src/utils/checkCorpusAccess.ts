@@ -10,7 +10,7 @@ import { jwtDecode } from "jwt-decode";
  * @property {string} sub - The 'theme' of the custom app that requested the token.
  * @property {string} aud - The URL of the server that the token is intended for.
  */
-type DecodedToken = {
+type TDecodedToken = {
   allowed_corpora_ids: string[];
   exp: number;
   iat: number;
@@ -21,7 +21,7 @@ type DecodedToken = {
 
 export const hasMcfAccess = (token: string): boolean => {
   try {
-    const decoded = jwtDecode<DecodedToken>(token);
+    const decoded = jwtDecode<TDecodedToken>(token);
     return decoded.allowed_corpora_ids.some((id) => id.startsWith("MCF"));
   } catch (error) {
     return false;

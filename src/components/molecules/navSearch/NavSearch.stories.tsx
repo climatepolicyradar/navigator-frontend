@@ -6,11 +6,11 @@ const meta = {
   title: "Molecules/NavSearch",
   component: NavSearch,
 } satisfies Meta<typeof NavSearch>;
-type Story = StoryObj<typeof NavSearch>;
+type TStory = StoryObj<typeof NavSearch>;
 
 export default meta;
 
-export const SearchPage: Story = {
+export const SearchPage: TStory = {
   parameters: {
     nextjs: {
       router: {
@@ -24,7 +24,7 @@ export const SearchPage: Story = {
   },
 };
 
-export const GeographyPage: Story = {
+export const GeographyPage: TStory = {
   parameters: {
     nextjs: {
       router: {
@@ -39,7 +39,7 @@ export const GeographyPage: Story = {
   },
 };
 
-export const FamilyPage: Story = {
+export const FamilyPage: TStory = {
   parameters: {
     nextjs: {
       router: {
@@ -54,7 +54,7 @@ export const FamilyPage: Story = {
   },
 };
 
-export const DocumentPage: Story = {
+export const DocumentPage: TStory = {
   parameters: {
     nextjs: {
       router: {

@@ -3,13 +3,13 @@ import { useRef, useEffect } from "react";
 import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
 
-interface SlideoutProps {
+interface IProps {
   children: JSX.Element | string;
   show: boolean;
   setShow(value: boolean): void;
 }
 
-const Slideout = ({ children, show, setShow }: SlideoutProps) => {
+const Slideout = ({ children, show, setShow }: IProps) => {
   const ref = useRef(null);
 
   // Clicking outside the drawer will close it

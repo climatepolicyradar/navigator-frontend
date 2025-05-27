@@ -1,16 +1,16 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 
-type TProps = {
+interface IProps {
   id?: string;
   title: string;
   children: JSX.Element;
   startOpen?: boolean;
   className?: string;
   headContent?: JSX.Element;
-};
+}
 
-export const AccordianItem = ({ id, title, children, startOpen = false, className, headContent }: TProps) => {
+export const AccordianItem = ({ id, title, children, startOpen = false, className, headContent }: IProps) => {
   const { asPath } = useRouter();
   const [open, setOpen] = useState(startOpen);
 

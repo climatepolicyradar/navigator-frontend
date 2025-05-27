@@ -616,3 +616,9 @@ ul li.selected {
   height: 32px;
   background: hsl(200, 50%, 0%);
 }
+
+/* Base UI elements */
+[data-floating-ui-portal] {
+  position: absolute;
+  z-index: 1000;
+}

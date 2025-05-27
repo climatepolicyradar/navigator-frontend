@@ -5,16 +5,16 @@ import SuggestList from "@/components/filters/SuggestList";
 import { TextInput } from "@/components/forms/TextInput";
 import { sortData } from "@/utils/sorting";
 
-type TProps = {
+interface IProps {
   list: Object[];
   selectedList: string[];
   keyField: string;
   keyFieldDisplay?: string;
   filterType: string;
   handleFilterChange(filterType: string, value: string): void;
-};
+}
 
-export const TypeAhead = ({ list, selectedList, keyField, keyFieldDisplay, filterType, handleFilterChange }: TProps) => {
+export const TypeAhead = ({ list, selectedList, keyField, keyFieldDisplay, filterType, handleFilterChange }: IProps) => {
   const [input, setInput] = useState("");
   const [suggestList, setSuggestList] = useState<Object[]>([]);
 

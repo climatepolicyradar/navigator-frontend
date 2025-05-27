@@ -6,12 +6,12 @@ import { truncateString } from "@/utils/truncateString";
 
 import { FamilyMeta } from "./FamilyMeta";
 
-type TProps = {
+interface IProps {
   family: TFamily;
   children?: ReactNode;
-};
+}
 
-export const FamilyListItem: FC<TProps> = ({ family, children }) => {
+export const FamilyListItem: FC<IProps> = ({ family, children }) => {
   const {
     corpus_type_name,
     family_slug,

@@ -11,12 +11,12 @@ const Instructions = dynamic(() => import("./Instructions"), {
   ssr: false,
 });
 
-type TProps = {
+interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   searchInput: string;
-};
+}
 
-export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
+export const Hero = ({ handleSearchInput, searchInput }: IProps) => {
   return (
     <div className="pb-6 text-white pt-[28px] sm:pt-[48px] md:pt-[80px] lg:pt-[100px] xl:pt-[140px]">
       <SiteWidth>

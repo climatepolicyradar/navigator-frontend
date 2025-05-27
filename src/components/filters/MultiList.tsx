@@ -4,14 +4,14 @@ import useConfig from "@/hooks/useConfig";
 
 import FilterTag from "../labels/FilterTag";
 
-type TProps = {
+interface IProps {
   list: string[];
   removeFilter: (type: string, value: string) => void;
   type: string;
   dataCy?: string;
-};
+}
 
-const MultiList = ({ list, removeFilter, type, dataCy }: TProps) => {
+const MultiList = ({ list, removeFilter, type, dataCy }: IProps) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
 

@@ -4,9 +4,9 @@ import { SlideOutContext } from "@/context/SlideOutContext";
 
 import { SlideOut } from "./SlideOut";
 
-type TStorybookProps = {
+interface IProps {
   open: boolean;
-};
+}
 
 const meta = {
   title: "Atoms/SlideOut",
@@ -15,12 +15,12 @@ const meta = {
     children: { control: "text" },
     open: { control: "boolean" },
   },
-} satisfies Meta<typeof SlideOut | TStorybookProps>;
-type Story = StoryObj<typeof SlideOut | TStorybookProps>;
+} satisfies Meta<typeof SlideOut | IProps>;
+type TStory = StoryObj<typeof SlideOut | IProps>;
 
 export default meta;
 
-export const Default: Story = {
+export const Default: TStory = {
   args: {
     children: "SlideOut content",
   },

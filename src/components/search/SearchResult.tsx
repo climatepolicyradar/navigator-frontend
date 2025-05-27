@@ -4,13 +4,14 @@ import { FamilyListItem } from "@/components/document/FamilyListItem";
 import { ToolTipSSR } from "@/components/tooltip/TooltipSSR";
 import { MAX_RESULTS } from "@/constants/paging";
 import { TMatchedFamily } from "@/types";
-interface ISearchResultProps {
+
+interface IProps {
   family: TMatchedFamily;
   active: boolean;
   onClick?: () => void;
 }
 
-const SearchResult = ({ family, active, onClick }: ISearchResultProps) => {
+const SearchResult = ({ family, active, onClick }: IProps) => {
   const { family_documents, total_passage_hits, family_slug } = family;
 
   const matchesNumber = total_passage_hits >= MAX_RESULTS ? `${MAX_RESULTS}+` : `${total_passage_hits}`;

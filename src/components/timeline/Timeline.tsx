@@ -1,10 +1,10 @@
 import { FC, ReactNode } from "react";
 
-type TProps = {
+interface IProps {
   children?: ReactNode;
-};
+}
 
-export const Timeline: FC<TProps> = ({ children }) => {
+export const Timeline: FC<IProps> = ({ children }) => {
   return (
     <div className="mt-4">
       <div className="flex place-content-center bg-gray-50 rounded border border-gray-200 drop-shadow-lg p-4">

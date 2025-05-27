@@ -5,14 +5,12 @@ import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
 import { MultilateralClimateFundLogos } from "./HeroComponents/MultilateralClimateFundsLogos";
 import LandingSearchForm from "./LandingSearchForm";
 
-const Instructions = () => <p>Loading document stats...</p>;
-
-type TProps = {
+interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   searchInput: string;
-};
+}
 
-const Hero = ({ handleSearchInput, searchInput }: TProps) => (
+const Hero = ({ handleSearchInput, searchInput }: IProps) => (
   <div className="pb-6 pt-[28px] sm:pt-[48px] md:pt-[80px] lg:pt-[100px] xl:pt-[140px]">
     <SiteWidth extraClasses="!max-w-[1024px]">
       <div className="mx-auto text-center">

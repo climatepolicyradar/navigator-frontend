@@ -4,7 +4,7 @@ import useConfig from "@/hooks/useConfig";
 import { TCategory, TCorpusTypeSubCategory } from "@/types";
 import { convertDate } from "@/utils/timedate";
 
-type TProps = {
+interface IProps {
   category: TCategory;
   corpus_type_name: TCorpusTypeSubCategory;
   source?: string;
@@ -13,9 +13,9 @@ type TProps = {
   topics?: string[];
   author?: string[];
   document_type?: string;
-};
+}
 
-export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name, document_type, source }: TProps) => {
+export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name, document_type, source }: IProps) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
 

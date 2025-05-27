@@ -1,10 +1,10 @@
-type TProps = {
+interface IProps {
   additionalInfo?: string;
   learnMoreUrl?: string;
   learnMoreExternal?: boolean;
-};
+}
 
-export const InputLearnMoreLink = ({ additionalInfo, learnMoreUrl, learnMoreExternal }: TProps) => {
+export const InputLearnMoreLink = ({ additionalInfo, learnMoreUrl, learnMoreExternal }: IProps) => {
   if (!additionalInfo) return null;
 
   return (

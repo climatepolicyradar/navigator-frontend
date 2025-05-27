@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { CookieConsent } from "@/components/cookies/CookieConsent";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
 import { AdobeContext } from "@/context/AdobeContext";
+import { EnvConfigContext } from "@/context/EnvConfig";
 import { PostHogProvider } from "@/context/PostHogProvider";
 import { ThemeContext } from "@/context/ThemeContext";
 
@@ -16,12 +17,12 @@ const favicon = `/images/favicon/${process.env.THEME}.png`;
 
 const queryClient = new QueryClient();
 
-type TProps = AppProps & {
+interface IProps extends AppProps {
   theme?: string;
   adobeApiKey?: string;
-};
+}
 
-function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
+function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
   const [siteTheme, setSiteTheme] = useState(null);
   const [adobeKey, setAdobeKey] = useState(null);
 
@@ -57,15 +58,17 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
       <ThemeContext.Provider value={dynamicTheme}>
         <AdobeContext.Provider value={dynamicAdobeKey}>
           <PostHogProvider consent={consent}>
-            <ErrorBoundary level="top">
-              <Head>
-                <link rel="icon" href={favicon} />
-              </Head>
-              <div id={dynamicTheme}>
-                <Component {...pageProps} />
-              </div>
-              <CookieConsent onConsentChange={onConsentChange} />
-            </ErrorBoundary>
+            <EnvConfigContext.Provider value={pageProps?.envConfig}>
+              <ErrorBoundary level="top">
+                <Head>
+                  <link rel="icon" href={favicon} />
+                </Head>
+                <div id={dynamicTheme}>
+                  <Component {...pageProps} />
+                </div>
+                <CookieConsent onConsentChange={onConsentChange} />
+              </ErrorBoundary>
+            </EnvConfigContext.Provider>
           </PostHogProvider>
         </AdobeContext.Provider>
       </ThemeContext.Provider>

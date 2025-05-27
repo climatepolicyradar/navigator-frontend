@@ -4,15 +4,15 @@ import { ReactNode } from "react";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 
-type TProps = {
+interface IProps {
   heading?: string;
   contentSide?: "left" | "right";
   image?: string;
   imageAlt?: string;
   children?: ReactNode;
-};
+}
 
-export const Feature = ({ heading, contentSide = "left", image, imageAlt, children }: TProps) => {
+export const Feature = ({ heading, contentSide = "left", image, imageAlt, children }: IProps) => {
   return (
     <div className="bg-cclw-dark text-white py-12">
       <SiteWidth extraClasses="md:flex gap-8">

@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from "react";
-import { LuSettings2 } from "react-icons/lu";
 
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
@@ -16,13 +16,20 @@ import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import useSearch from "@/hooks/useSearch";
-import { TConcept, TDocumentPage, TSearchResponse } from "@/types";
+import { TConcept, TDocumentPage, TPassage, TSearchResponse } from "@/types";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 
 import { ConceptPicker } from "../organisms/ConceptPicker";
 import { SideCol } from "../panels/SideCol";
 
-type TProps = {
+type TState = {
+  passageIndex: number;
+  isExactSearch: boolean;
+  passageMatches: TPassage[];
+  totalNoOfMatches: number;
+};
+
+interface IProps {
   initialQueryTerm?: string | string[];
   initialExactMatch?: boolean;
   initialPassage?: number;
@@ -33,10 +40,10 @@ type TProps = {
   familySlug: string;
   // Callback props for state changes
   onExactMatchChange?: (isExact: boolean) => void;
-};
+}
 
-const passageClasses = (docType: string) => {
-  if (docType === "application/pdf") {
+const passageClasses = (canPreview: boolean) => {
+  if (canPreview) {
     return "xl:w-1/3";
   }
   return "xl:w-2/3";
@@ -56,29 +63,21 @@ export const ConceptsDocumentViewer = ({
   vespaFamilyData,
   vespaDocumentData,
   onExactMatchChange,
-}: TProps) => {
+}: IProps) => {
+  const router = useRouter();
   const [showSearchOptions, setShowSearchOptions] = useState(false);
   const [showConcepts, setShowConcepts] = useState(false);
 
-  const getQueryTerm = (term: string | string[]) => (Array.isArray(term) ? term[0] : term || "");
-
-  const [state, setState] = useReducer((prev: any, next: Partial<any>) => ({ ...prev, ...next }), {
+  const [state, setState] = useReducer((prev: TState, next: Partial<TState>) => ({ ...prev, ...next }), {
     passageIndex: initialPassage,
     isExactSearch: initialExactMatch,
-    queryTerm: getQueryTerm(initialQueryTerm),
     passageMatches: [],
     totalNoOfMatches: 0,
   });
 
-  // Run a new query if the initial query changes (likely a query param change)
-  useEffect(() => {
-    const newQueryTerm = getQueryTerm(initialQueryTerm);
-    setState({ queryTerm: newQueryTerm });
-  }, [initialQueryTerm]);
-
   const [familyConcepts, setFamilyConcepts] = useState<TConcept[]>([]);
 
-  const canPreview = document.content_type === "application/pdf";
+  const canPreview = !!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf");
 
   useEffectOnce(() => {
     // Extract unique concept IDs directly from vespaFamilyData
@@ -146,7 +145,7 @@ export const ConceptsDocumentViewer = ({
   // Prepare search.
   const searchQueryParams = useMemo(
     () => ({
-      [QUERY_PARAMS.query_string]: state.queryTerm,
+      [QUERY_PARAMS.query_string]: initialQueryTerm,
       [QUERY_PARAMS.exact_match]: state.isExactSearch ? "true" : "false",
       [QUERY_PARAMS.concept_name]: initialConceptFilters
         ? Array.isArray(initialConceptFilters)
@@ -154,14 +153,14 @@ export const ConceptsDocumentViewer = ({
           : [initialConceptFilters]
         : undefined,
     }),
-    [state.queryTerm, state.isExactSearch, initialConceptFilters]
+    [initialQueryTerm, state.isExactSearch, initialConceptFilters]
   );
 
   const { status, families, searchQuery } = useSearch(
     searchQueryParams,
     null,
     document.import_id,
-    !!(state.queryTerm || initialConceptFilters),
+    !!(initialQueryTerm || initialConceptFilters),
     MAX_PASSAGES
   );
 
@@ -182,10 +181,10 @@ export const ConceptsDocumentViewer = ({
 
   const handlePassageClick = useCallback(
     (index: number) => {
-      if (document.content_type !== "application/pdf") return;
+      if (!canPreview) return;
       setState({ passageIndex: index });
     },
-    [document.content_type]
+    [canPreview]
   );
 
   const handleSemanticSearchChange = useCallback(
@@ -205,39 +204,49 @@ export const ConceptsDocumentViewer = ({
     setShowConcepts((current) => !current);
   };
 
-  if (!documentConcepts.length) return;
+  const handlePassagesOrderChange = (orderValue: string) => {
+    setState({ passageIndex: 0 });
+    const queryObj = { ...router.query };
+    queryObj[QUERY_PARAMS.passages_by_position] = orderValue;
+    router.push({ query: queryObj }, undefined, { shallow: true });
+  };
 
   const isLoading = status !== "success";
-  const hasConcepts = selectedConcepts.length > 0;
-  const showPassages = initialQueryTerm !== "" && state.totalNoOfMatches > 0;
-  const hasNoPassages = !showPassages || (state.totalNoOfMatches === 0 && unavailableConcepts.length === 0);
+  const hasConcepts = documentConcepts.length > 0;
+  const hasSelectedConcepts = selectedConcepts.length > 0;
+  const hasPassages = state.totalNoOfMatches > 0;
+  const hasQuery = initialQueryTerm !== "" || hasSelectedConcepts;
   const hasUnavailableConcepts = state.totalNoOfMatches === 0 && unavailableConcepts.length > 0;
 
   return (
     <section className="flex-1 xl:px-5" id="document-concepts-viewer">
       <div id="document-container" className="flex flex-col xl:flex-row xl:h-[90vh]">
         {/* Concepts */}
-        <SideCol id="document-concepts" extraClasses="!w-full xl:!w-maxSidebar">
-          <div className="p-4 xl:hidden">
-            <Button content="both" onClick={handleToggleConcepts}>
-              <span>{showConcepts ? "Hide" : "Show"} concepts</span>
-              <div className={showConcepts ? "rotate-180" : ""}>
-                <Icon name="downChevron" />
-              </div>
-            </Button>
-          </div>
-          <ConceptPicker
-            concepts={documentConcepts}
-            showSearch={false}
-            title={<p className="text-base font-medium">In this document</p>}
-            containerClasses={`pt-4 pr-4 pl-4 xl:pl-0 ${showConcepts ? "" : "hidden xl:flex"}`}
-          />
-        </SideCol>
+        {hasConcepts && (
+          <SideCol id="document-concepts" extraClasses="!w-full xl:!w-maxSidebar">
+            <div className="p-4 xl:hidden">
+              <Button content="both" onClick={handleToggleConcepts}>
+                <span>{showConcepts ? "Hide" : "Show"} concepts</span>
+                <div className={showConcepts ? "rotate-180" : ""}>
+                  <Icon name="downChevron" />
+                </div>
+              </Button>
+            </div>
+            <ConceptPicker
+              concepts={documentConcepts}
+              showSearch={false}
+              title={<p className="text-base font-medium">In this document</p>}
+              containerClasses={`pt-4 pr-4 pl-4 xl:pl-0 ${showConcepts ? "" : "hidden xl:flex"}`}
+            />
+          </SideCol>
+        )}
 
         {/* Preview */}
         <div
           id="document-preview"
-          className={`flex-1 order-last xl:order-none h-[400px] basis-[400px] xl:block xl:h-full xl:border-x xl:border-x-gray-200 px-4 xl:px-0`}
+          className={`flex-1 order-last xl:order-none h-[400px] basis-[400px] xl:block xl:h-full xl:border-gray-200 px-4 xl:px-0 ${
+            hasConcepts ? "xl:border-x" : "xl:border-r"
+          }`}
         >
           {canPreview && (
             <EmbeddedPDF
@@ -254,14 +263,19 @@ export const ConceptsDocumentViewer = ({
         <div
           id="document-sidebar"
           className={`flex flex-col overflow-y-auto max-h-[90vh] mr-4 xl:mr-0 scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 xl:max-h-full xl:max-w-[480px] xl:min-w-[400px] xl:grow-0 xl:shrink-0 ${passageClasses(
-            document.content_type
+            canPreview
           )}`}
         >
-          <div className="flex justify-between p-4">
-            <h1 className="text-base font-medium">Passage matches</h1>
-            <button className="text-xl text-text-tertiary" onClick={() => setShowSearchOptions(!showSearchOptions)}>
-              <LuSettings2 />
-            </button>
+          <div className="relative">
+            <div className="flex justify-between items-end p-4">
+              <h1 className="text-base font-medium">Passage matches</h1>
+              <button
+                className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
+                onClick={() => setShowSearchOptions(!showSearchOptions)}
+              >
+                Sort &amp; Display
+              </button>
+            </div>
             <AnimatePresence initial={false}>
               {showSearchOptions && (
                 <motion.div
@@ -277,20 +291,24 @@ export const ConceptsDocumentViewer = ({
                   <SearchSettings
                     queryParams={searchQueryParams}
                     handleSearchChange={handleSemanticSearchChange}
+                    handlePassagesClick={handlePassagesOrderChange}
                     setShowOptions={setShowSearchOptions}
+                    extraClasses="!mt-0 mr-4"
                   />
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
-          {isLoading ? (
+          {isLoading && (
             <div className="w-full flex justify-center flex-1">
               <Loader />
             </div>
-          ) : (
+          )}
+
+          {!isLoading && (
             <>
-              {hasConcepts && !hasNoPassages && (
+              {hasSelectedConcepts && (
                 <div className="px-4">
                   {selectedConcepts.map((concept) => (
                     <React.Fragment key={concept.wikibase_id}>
@@ -303,49 +321,47 @@ export const ConceptsDocumentViewer = ({
                 </div>
               )}
 
-              {showPassages && (
-                <>
-                  <div className="border-gray-200 p-4 text-sm border-b xl:pl-4" data-cy="document-matches-description">
-                    <div className="mb-2">
-                      Displaying {renderPassageCount(state.totalNoOfMatches)}{" "}
-                      {initialQueryTerm && (
-                        <>
-                          for "<span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
-                        </>
-                      )}
-                      {initialQueryTerm && !searchQuery.exact_match && ` and related phrases`}
-                      {selectedConcepts.length > 0 && (
-                        <>
-                          {" in "}
-                          <b>{selectedConcepts.map((concept) => concept.preferred_label).join(", ")}</b>
-                        </>
-                      )}
-                      {state.totalNoOfMatches >= MAX_RESULTS && (
-                        <span className="ml-1 inline-block">
-                          <SearchLimitTooltip colour="grey" />
-                        </span>
-                      )}
+              {hasQuery &&
+                (hasPassages ? (
+                  <>
+                    <div className="border-gray-200 p-4 text-sm border-b xl:pl-4" data-cy="document-matches-description">
+                      <div className="mb-2">
+                        Displaying {renderPassageCount(state.totalNoOfMatches)}{" "}
+                        {initialQueryTerm && (
+                          <>
+                            for "<span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
+                          </>
+                        )}
+                        {initialQueryTerm && !searchQuery.exact_match && ` and related phrases`}
+                        {selectedConcepts.length > 0 && (
+                          <>
+                            {" in "}
+                            <b>{selectedConcepts.map((concept) => concept.preferred_label).join(", ")}</b>
+                          </>
+                        )}
+                        {state.totalNoOfMatches >= MAX_RESULTS && (
+                          <span className="ml-1 inline-block">
+                            <SearchLimitTooltip colour="grey" />
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <p>Sorted by search relevance</p>
-                  </div>
-                  <div
-                    id="document-passage-matches"
-                    className="relative xl:overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 px-4"
-                  >
-                    <PassageMatches passages={state.passageMatches} onClick={handlePassageClick} activeIndex={state.passageIndex ?? initialPassage} />
-                  </div>
-                </>
-              )}
+                    <div
+                      id="document-passage-matches"
+                      className="relative xl:overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 px-4"
+                    >
+                      <PassageMatches
+                        passages={state.passageMatches}
+                        onClick={handlePassageClick}
+                        activeIndex={state.passageIndex ?? initialPassage}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <EmptyPassages hasQueryString />
+                ))}
 
-              {hasNoPassages && (
-                <EmptyPassages
-                  hasQueryString={
-                    !!searchQueryParams[QUERY_PARAMS.query_string] &&
-                    !!searchQueryParams[QUERY_PARAMS.concept_id] &&
-                    !!searchQueryParams[QUERY_PARAMS.concept_name]
-                  }
-                />
-              )}
+              {!hasQuery && <EmptyPassages hasQueryString={false} />}
 
               {hasUnavailableConcepts && <UnavailableConcepts unavailableConcepts={unavailableConcepts} familySlug={familySlug} />}
             </>

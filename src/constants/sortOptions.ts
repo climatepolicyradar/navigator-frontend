@@ -23,10 +23,6 @@ export const sortOptions = [
 
 export const sortOptionsBrowse = [
   {
-    label: "Default",
-    value: "null",
-  },
-  {
     label: "Title: A - Z",
     value: "title:asc",
   },

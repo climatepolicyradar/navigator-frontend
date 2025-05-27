@@ -4,12 +4,12 @@ import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 
-type FundDescription = {
+type TFundDescription = {
   name: string;
   description: string;
 };
 
-const fundDescriptions: FundDescription[] = [
+const fundDescriptions: TFundDescription[] = [
   {
     name: "Adaptation Fund",
     description: "(AF) finances projects and programmes that help vulnerable communities in developing countries adapt to climate change.",

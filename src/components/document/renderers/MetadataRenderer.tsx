@@ -6,13 +6,13 @@ import { McfFamilyMeta } from "../McfFamilyMeta";
 
 const MultilateralClimateFunds = "MCF";
 
-interface TProps {
+interface IProps {
   family: TFamilyPage;
 }
 
 type TFamilyMetadataUnion = TFamilyMetadata | TMCFFamilyMetadata;
 
-export const MetadataRenderer = ({ family }: TProps) => {
+export const MetadataRenderer = ({ family }: IProps) => {
   const { metadata, organisation, category, geographies, corpus_type_name, published_date, documents } = family || {};
   const document_type = documents && documents.length > 0 ? documents[0].document_type : undefined;
 

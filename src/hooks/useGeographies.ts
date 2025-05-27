@@ -12,6 +12,7 @@ type TMapGeographyStats = {
     LEGISLATIVE: number;
     MCF: number;
     REPORTS: number;
+    LITIGATION: number;
   };
 };
 

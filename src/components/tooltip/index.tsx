@@ -1,6 +1,6 @@
 import { ToolTipSSR } from "./TooltipSSR";
 
-interface TooltipProps {
+interface IProps {
   id: string;
   tooltip: string | React.ReactNode;
   icon?: "?" | "!" | "i";
@@ -9,7 +9,7 @@ interface TooltipProps {
   colour?: string;
 }
 
-const Tooltip = ({ id, tooltip, icon = "?", place, interactableContent, colour }: TooltipProps) => {
+const Tooltip = ({ id, tooltip, icon = "?", place, interactableContent, colour }: IProps) => {
   let colourCss = "";
   switch (colour) {
     case "grey":

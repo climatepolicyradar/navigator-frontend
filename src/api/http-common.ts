@@ -20,13 +20,13 @@ class ApiClient {
     if (baseUrl) {
       this.baseUrl = baseUrl;
     } else {
-      this.baseUrl = process.env.API_URL;
+      this.baseUrl = process.env.BACKEND_API_URL;
     }
 
     if (appToken) {
       this.appToken = appToken;
     } else {
-      this.appToken = process.env.NEXT_PUBLIC_APP_TOKEN;
+      this.appToken = process.env.BACKEND_API_TOKEN;
     }
 
     this.axiosClient = axios.create({

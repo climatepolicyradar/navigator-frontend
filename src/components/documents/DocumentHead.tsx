@@ -16,18 +16,18 @@ import useConfig from "@/hooks/useConfig";
 import { TDocumentPage, TFamilyPage } from "@/types";
 import { truncateString } from "@/utils/truncateString";
 
-type TProps = {
+interface IProps {
   document: TDocumentPage;
   family: TFamilyPage;
   handleViewOtherDocsClick: (e: React.FormEvent<HTMLButtonElement>) => void;
   handleViewSourceClick: (e: React.FormEvent<HTMLButtonElement>) => void;
-};
+}
 
 const containsNonEnglish = (languages: string[]) => {
   return languages.some((lang) => lang !== "eng");
 };
 
-export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handleViewSourceClick }: TProps) => {
+export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handleViewSourceClick }: IProps) => {
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [summary, setSummary] = useState("");
 

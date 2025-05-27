@@ -12,17 +12,15 @@ export const CPRLogo = (
   </LinkWithQuery>
 );
 
-type TProps = {
+interface IProps {
   children?: ReactNode;
-};
+}
 
-const Main: FC<TProps> = ({ children }) => (
+const Main: FC<IProps> = ({ children }) => (
   <>
     <NavBar headerClasses="banner" logo={CPRLogo} menu={<MainMenu />} />
-    <div className="h-[calc(100vh-128px)] md:h-[calc(100vh-72px)] flex flex-col justify-between overflow-y-auto">
-      <main className="flex flex-col flex-1">{children}</main>
-      <Footer />
-    </div>
+    <main className="flex flex-col flex-1">{children}</main>
+    <Footer />
   </>
 );
 export default Main;

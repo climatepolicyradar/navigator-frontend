@@ -5,11 +5,11 @@ import DropdownMenuItem from "@/components/menus/DropdownMenuItem";
 import DropdownMenuWrapper from "@/components/menus/DropdownMenuWrapper";
 import useOutsideAlerter from "@/hooks/useOutsideAlerter";
 
-type TProps = {
+interface IProps {
   iconClass?: string;
-};
+}
 
-const MainMenu = ({ iconClass = "text-white" }: TProps) => {
+const MainMenu = ({ iconClass = "text-white" }: IProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
   useOutsideAlerter(menuRef, () => setShowMenu(false));

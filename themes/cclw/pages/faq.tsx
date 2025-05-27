@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 
 import { AccordianItem } from "@/cclw/components/AccordianItem";
 import { FAQS } from "@/cclw/constants/faqs";
@@ -9,14 +9,31 @@ import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
+import { getAllCookies } from "@/utils/cookies";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { useEffect } from "react";
 
-type TProps = {
-  featureFlags: Record<string, string | boolean>;
-};
+const FAQ: React.FC = () => {
+  /*
+    The FAQs page is read in not by using Next.JS, but by our CPR specific page reading logic.
+    This means that we cannot fetch the feature flags directly by using the page context.
+    This function provides a means of working around this so we can conditionally display the
+    concept FAQs.
+  
+    TODO: Remove this once we have hard launched concepts in product.
+  */
+  const [featureFlags, setFeatureFlags] = useState({});
+  async function getFeatureFlag() {
+    const allCookies = getAllCookies();
+    const parsedFeatureFlags = await getFeatureFlags(allCookies);
+    setFeatureFlags(parsedFeatureFlags);
+  }
 
-const FAQ: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags = {} }: TProps) => {
+  // TODO: Remove this once we have hard launched concepts in product.
+  useEffect(() => {
+    getFeatureFlag();
+  }, []);
+
   return (
     <Layout
       title="FAQ"
@@ -85,13 +102,3 @@ const FAQ: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFl
   );
 };
 export default FAQ;
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const featureFlags = await getFeatureFlags(context.req.cookies);
-
-  return {
-    props: {
-      featureFlags: featureFlags || {},
-    },
-  };
-};

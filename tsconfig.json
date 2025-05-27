@@ -28,6 +28,7 @@
       "@/types": ["src/types/index"],
       "@/pages/*": ["src/pages/*"],
       "@/utils/*": ["src/utils/*"],
+      "@/ccc/*": ["themes/ccc/*"],
       "@/cclw/*": ["themes/cclw/*"],
       "@/cpr/*": ["themes/cpr/*"],
       "@/mcf/*": ["themes/mcf/*"]

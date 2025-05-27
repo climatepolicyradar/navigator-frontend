@@ -3,12 +3,12 @@ import { TMatchedFamily } from "@/types";
 
 import SearchResult from "./SearchResult";
 
-type TProps = {
+interface IProps {
   category?: string;
   families: TMatchedFamily[];
   activeFamilyIndex?: number | boolean;
   onClick?: (index: number) => void;
-};
+}
 
 const renderEmptyMessage = (category: string) => {
   if (category !== "UNFCCC") {
@@ -22,8 +22,8 @@ const renderEmptyMessage = (category: string) => {
   );
 };
 
-const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: TProps) => {
-  if (category && category === "Litigation") {
+const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: IProps) => {
+  if (category && category.toLowerCase() === "litigation") {
     return (
       <>
         <p className="my-4 md:mt-0">

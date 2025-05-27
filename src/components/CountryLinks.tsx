@@ -13,22 +13,27 @@ type TCountriesLink = {
 
 export const CountryLinks = ({ geographies, countries, showFlag = true }: TCountriesLink) => (
   <>
-    {geographies?.map((geography) => (
-      <Fragment key={geography}>
-        {isSystemInternational(geography) && (
-          <span className="flex gap-1">
-            <>{getCountryName(geography, countries)}</>
-          </span>
-        )}
-        {!isSystemGeo(geography) && (
-          <span className="flex gap-1">
-            <CountryLink countryCode={geography} showFlag={showFlag} className="text-textDark no-underline">
-              <span>{getCountryName(geography, countries)}</span>
-            </CountryLink>
-          </span>
-        )}
-      </Fragment>
-    ))}
+    {geographies?.map((geography) => {
+      const countryName = getCountryName(geography, countries);
+      if (!countryName) return null;
+
+      return (
+        <Fragment key={geography}>
+          {isSystemInternational(geography) && (
+            <span className="flex gap-1">
+              <>{countryName}</>
+            </span>
+          )}
+          {!isSystemGeo(geography) && (
+            <span className="flex gap-1">
+              <CountryLink countryCode={geography} showFlag={showFlag} className="text-textDark no-underline">
+                <span>{countryName}</span>
+              </CountryLink>
+            </span>
+          )}
+        </Fragment>
+      );
+    })}
   </>
 );
 

@@ -1,11 +1,11 @@
 type THeadingLevels = 1 | 2 | 3 | 4 | 5;
 
-type TProps = {
+interface IProps {
   level?: THeadingLevels;
   extraClasses?: string;
   children: React.ReactNode;
   [x: string]: any;
-};
+}
 
 // Dev note: because we have dynamic content that we may not have control over, please update the style.css with the corresponding html heading tags
 export const coreClasses = "text-textDark font-medium";
@@ -15,7 +15,7 @@ export const h3Classes = "text-xl mb-5";
 export const h4Classes = "text-lg mb-5";
 export const h5Classes = "text-l mb-5";
 
-export const Heading = ({ level, extraClasses = "", children, ...props }: TProps) => {
+export const Heading = ({ level, extraClasses = "", children, ...props }: IProps) => {
   switch (level) {
     case 1:
       return (

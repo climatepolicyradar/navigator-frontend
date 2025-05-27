@@ -23,6 +23,7 @@ import { Timeline } from "@/components/timeline/Timeline";
 import { Heading } from "@/components/typography/Heading";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { systemGeoNames } from "@/constants/systemGeos";
+import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode } from "@/helpers/getCountryFields";
 import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
 import { TTarget, TEvent, TGeography, TTheme } from "@/types";
@@ -30,13 +31,13 @@ import { extractNestedData } from "@/utils/extractNestedData";
 import { readConfigFile } from "@/utils/readConfigFile";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
-type TProps = {
+interface IProps {
   geography: TGeographyStats;
   summary: TGeographySummary;
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
-};
+}
 
 // Mapping of category index to category name in search
 const categoryByIndex = {
@@ -51,7 +52,7 @@ const categoryByIndex = {
 
 const MAX_NUMBER_OF_FAMILIES = 3;
 
-const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets, theme, themeConfig }: TProps) => {
+const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ geography, summary, targets, theme, themeConfig }: IProps) => {
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
@@ -352,7 +353,12 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
                   <Heading level={2} extraClasses="flex items-center gap-2">
                     Legislative Process
                   </Heading>
-                  <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
+                  <div
+                    className="text-content"
+                    dangerouslySetInnerHTML={{
+                      __html: geography.legislative_process,
+                    }}
+                  />
                 </section>
               )}
             </SingleCol>
@@ -398,8 +404,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     let countries: TGeography[] = [];
     const configData = await client.getConfig();
-    const response_geo = extractNestedData<TGeography>(configData.data?.geographies, 2, "");
-    countries = response_geo.level2;
+    const response_geo = extractNestedData<TGeography>(configData.data?.geographies || []);
+    countries = response_geo[1];
     const country = getCountryCode(id as string, countries);
     if (country) {
       const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${country.toLowerCase()}.json`);
@@ -422,12 +428,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: {
+    props: withEnvConfig({
       geography: geographyData,
       summary: summaryData,
       targets: theme === "mcf" ? [] : targetsData,
       theme: theme,
       themeConfig,
-    },
+    }),
   };
 };

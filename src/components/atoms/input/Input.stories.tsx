@@ -17,7 +17,7 @@ const meta = {
     placeholder: { control: "text" },
   },
 } satisfies Meta<typeof Input>;
-type Story = StoryObj<typeof Input>;
+type TStory = StoryObj<typeof Input>;
 
 export default meta;
 
@@ -29,12 +29,12 @@ const useInputContext = ({ ...props }) => {
   return <Input value={value} onChange={handleChange} onClear={handleClear} {...props} />;
 };
 
-export const Default: Story = {
+export const Default: TStory = {
   args: {},
   render: useInputContext,
 };
 
-export const Clearable: Story = {
+export const Clearable: TStory = {
   args: {
     clearable: true,
     icon: undefined,
@@ -45,7 +45,7 @@ export const Clearable: Story = {
   render: useInputContext,
 };
 
-export const IconRight: Story = {
+export const IconRight: TStory = {
   args: {
     clearable: false,
     icon: "search",
@@ -56,7 +56,7 @@ export const IconRight: Story = {
   render: useInputContext,
 };
 
-export const IconLeft: Story = {
+export const IconLeft: TStory = {
   args: {
     clearable: false,
     icon: "add",

@@ -41,7 +41,7 @@ export const FAQS: TFAQ[] = [
           New data, and updates to existing data, are collected from official sources such as government websites, parliamentary records and court
           documents. We add these to the database on a rolling basis. Submissions to the UNFCCC portals were first added on the 23rd of May 2023, and
           are checked for updates regularly. If you're aware of documents that are missing, please let us know using our{" "}
-          <ExternalLink url="https://eu.jotform.com/250402253775352">data contributors form</ExternalLink>.
+          <ExternalLink url="https://form.jotform.com/250974303048355">data contributors form</ExternalLink>.
         </p>
       </>
     ),

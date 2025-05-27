@@ -10,15 +10,15 @@ import { currentYear } from "@/constants/timedate";
 import { DateRangeInput } from "./DateRangeInput";
 import { FormError } from "../forms/FormError";
 
-type TProps = {
+interface IProps {
   type: string;
   handleChange(values: string[], reset?: boolean): void;
   defaultValues: string[];
   min: number;
   max: number;
-};
+}
 
-export const DateRange = ({ handleChange, defaultValues, min, max }: TProps) => {
+export const DateRange = ({ handleChange, defaultValues, min, max }: IProps) => {
   const router = useRouter();
   const [startYear, endYear] = defaultValues;
   const [showDateInput, setShowDateInput] = useState(false);

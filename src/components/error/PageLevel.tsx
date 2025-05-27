@@ -3,11 +3,11 @@ import { Button } from "@/components/atoms/button/Button";
 import Layout from "@/components/layouts/Main";
 import { Heading } from "@/components/typography/Heading";
 
-type TProps = {
+interface IProps {
   resetError: () => void;
-};
+}
 
-const PageLevel = ({ resetError }: TProps) => {
+const PageLevel = ({ resetError }: IProps) => {
   return (
     <Layout title={"Application Error"}>
       <section>

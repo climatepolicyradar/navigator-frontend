@@ -9,6 +9,7 @@ type TQueryResponse = {
   geographies: TDataNode<TGeography>[];
   regions: TGeography[];
   countries: TGeography[];
+  subdivisions: TGeography[];
   languages: TLanguages;
   corpus_types: TCorpusTypeDictionary;
 };
@@ -21,15 +22,14 @@ export default function useConfig() {
       const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
       const query_response = await client.getConfig();
       const geographies = query_response.data.geographies;
-      const response_geo = extractNestedData<TGeography>(geographies, 2, "");
-      const regions = response_geo.level1;
-      const countries = response_geo.level2;
+      const [regions, countries, subdivisions] = extractNestedData<TGeography>(geographies);
       const corpus_types = query_response.data.corpus_types;
 
       const resp_end: TQueryResponse = {
         geographies,
         regions,
         countries,
+        subdivisions,
         languages: query_response.data.languages,
         corpus_types,
       };
