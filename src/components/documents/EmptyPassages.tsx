@@ -12,7 +12,7 @@ export const EmptyPassages = ({ hasQueryString }: IProps) => (
       </div>
     </div>
     <p className="text-xl font-medium">No {hasQueryString ? "results" : "searches yet"}</p>
-    {hasQueryString && <p>No results found for that search, please try a different term</p>}
+    {hasQueryString && <p>No results found for this search. Please try again.</p>}
     {!hasQueryString && (
       <>
         <p>We'll search for the meaning of your phrase. You'll see exact matches and related phrases highlighted in the text.</p>
