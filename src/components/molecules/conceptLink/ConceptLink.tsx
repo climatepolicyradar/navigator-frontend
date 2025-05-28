@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { Popover } from "@/components/atoms/popover/Popover";
 import { TConcept } from "@/types";
+import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
@@ -29,7 +30,7 @@ export const ConceptLink = ({ concept, triggerClasses = "" }: IProps) => {
       title={title}
       description={concept.description}
       link={{
-        href: `https://climatepolicyradar.wikibase.cloud/wiki/Item:${concept.wikibase_id}`,
+        href: getConceptStoreLink(concept.wikibase_id),
         text: "Source",
         external: true,
       }}
