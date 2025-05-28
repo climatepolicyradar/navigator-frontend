@@ -1,7 +1,7 @@
 name: Deploy to staging
 on:
   workflow_run:
-    workflows: ["Merge to main"]
+    workflows: [Merge to main]
     types:
       - completed
     branches:
