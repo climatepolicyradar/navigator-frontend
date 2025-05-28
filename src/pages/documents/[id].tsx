@@ -13,8 +13,8 @@ import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { SearchSettings } from "@/components/filters/SearchSettings";
 import Layout from "@/components/layouts/Main";
+import { Info } from "@/components/molecules/info/Info";
 import { FullWidth } from "@/components/panels/FullWidth";
-import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
 import { getDocumentDescription } from "@/constants/metaDescriptions";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -23,6 +23,7 @@ import useSearch from "@/hooks/useSearch";
 import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamily";
+import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
 
 interface IProps {
   document: TDocumentPage;
@@ -166,6 +167,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(families), document.slug]);
 
+  const passagesResultsContext = getPassageResultsContext({
+    isExactSearch: exactMatchQuery,
+    passageMatches: totalNoOfMatches,
+    queryTerm: qsSearchString,
+    selectedTopics: [],
+  });
+
   const conceptFiltersQuery = router.query[QUERY_PARAMS.concept_name];
   const conceptFilters = useMemo(
     () => (conceptFiltersQuery ? (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]) : undefined),
@@ -224,13 +232,12 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           {totalNoOfMatches > 0 && (
                             <>
                               <div className="mb-2 text-sm" data-cy="document-matches-description">
-                                Displaying {renderPassageCount(totalNoOfMatches)} for "
-                                <span className="text-textDark font-medium">{`${qsSearchString}`}</span>"
-                                {!searchQuery.exact_match && ` and related phrases`}
+                                {passagesResultsContext}
                                 {totalNoOfMatches >= MAX_RESULTS && (
-                                  <span className="ml-1 inline-block">
-                                    <SearchLimitTooltip colour="grey" />
-                                  </span>
+                                  <Info
+                                    className="inline-block ml-2 align-text-bottom"
+                                    description={`We limit the number of search results to ${MAX_RESULTS} so that you get the best performance from our tool. We're working on a way to remove this limit.`}
+                                  />
                                 )}
                               </div>
                               <p className="text-sm">Sorted by {passagesByPosition ? "page number" : "search relevance"}</p>

@@ -8,6 +8,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TConcept } from "@/types";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
+import { firstCase } from "@/utils/text";
 
 import { LinkWithQuery } from "../LinkWithQuery";
 
@@ -139,7 +140,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
                 rootConceptIndex === 0;
               return (
                 <Accordian
-                  title={rootConcept.preferred_label.slice(0, 1).toUpperCase() + rootConcept.preferred_label.slice(1)}
+                  title={firstCase(rootConcept.preferred_label)}
                   key={rootConcept.wikibase_id}
                   fixedHeight="100%"
                   startOpen={startOpen}
@@ -152,7 +153,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
                       .map((concept) => (
                         <InputCheck
                           key={concept.wikibase_id}
-                          label={concept.preferred_label.slice(0, 1).toUpperCase() + concept.preferred_label.slice(1)}
+                          label={firstCase(concept.preferred_label)}
                           checked={isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)}
                           onChange={() => {
                             onConceptChange(router, concept);
@@ -172,7 +173,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
               .map((concept) => (
                 <InputCheck
                   key={concept.wikibase_id}
-                  label={concept.preferred_label.slice(0, 1).toUpperCase() + concept.preferred_label.slice(1)}
+                  label={firstCase(concept.preferred_label)}
                   checked={isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)}
                   onChange={() => {
                     onConceptChange(router, concept);
