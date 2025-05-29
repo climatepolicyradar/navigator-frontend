@@ -59,7 +59,7 @@ export const PLATFORM_FAQS: TFAQ[] = [
             country level action
           </li>
           <li>Find data from 4 biggest Multilateral Climate Funds, including project summaries, implementation documents and project guidance</li>
-          <li>Search for keywords and policy concepts (like 'electric vehicles' or 'gender equality') across the full text of all documents</li>
+          <li>Search for keywords and policy topics (like 'electric vehicles' or 'gender equality') across the full text of all documents</li>
           <li>View your search term (and related phrases) highlighted in search results</li>
           <li>Browse country profiles to find and compare their climate laws, policies and strategies</li>
           <li>Access the raw data: you just need to fill out this form to request a copy of the entire dataset</li>

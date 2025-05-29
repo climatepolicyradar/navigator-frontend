@@ -98,7 +98,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
       {/* SCROLL AREA */}
       <div className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
         <p className="text-sm">
-          This feature automatically detects climate concepts in documents. Accuracy is not 100%.{" "}
+          This feature automatically detects climate topics in documents. Accuracy is not 100%.{" "}
           <LinkWithQuery href="/faq" className="underline" target="_blank">
             Learn more
           </LinkWithQuery>
@@ -124,7 +124,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
             />
           </div>
         </div>
-        {search !== "" && <p className="text-xs italic">The results below are also filtered using the concept's alternative labels</p>}
+        {search !== "" && <p className="text-xs italic">The results below are also filtered using the topic's alternative labels</p>}
         <div className={`flex flex-col text-sm border-t border-border-light ${sort === "A-Z" ? "gap-2 border-t-0" : ""}`}>
           {/* GROUPED SORT */}
           {sort === "Grouped" &&
