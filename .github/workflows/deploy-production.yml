@@ -39,11 +39,11 @@ jobs:
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: eu-west-1
 
-      - name: Build, tag, and push to ECR with 'production' tag
+      - name: Build, tag, and push to ECR with 'latest' tag
         id: build-image
         env:
           ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
-          IMAGE_TAG: production
+          IMAGE_TAG: latest
           AWS_REGION: eu-west-1
           ECR_REPOSITORY: navigator-frontend-${{ inputs.theme }}
           THEME: ${{ inputs.theme }}

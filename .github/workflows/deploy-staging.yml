@@ -31,7 +31,7 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
-          IMAGE_TAG: staging
+          IMAGE_TAG: latest
           AWS_REGION: eu-west-1
           ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
           THEME: ${{ matrix.theme }}
