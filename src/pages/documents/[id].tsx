@@ -22,8 +22,10 @@ import { withEnvConfig } from "@/context/EnvConfig";
 import useSearch from "@/hooks/useSearch";
 import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamily";
 import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
+import { readConfigFile } from "@/utils/readConfigFile";
 
 interface IProps {
   document: TDocumentPage;
@@ -322,6 +324,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const featureFlags = await getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
+  const themeConfig = await readConfigFile(theme);
+
+  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+
   const id = context.params.id;
   const client = new ApiClient(process.env.BACKEND_API_URL);
 
@@ -338,8 +344,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     familyData = returnedFamilyData;
 
     // Fetch Vespa family data for concepts (similar to document/[id].tsx)
-    const conceptsV1 = featureFlags["concepts-v1"];
-    if (conceptsV1) {
+    if (knowledgeGraphEnabled) {
       const { data: vespaDocumentDataResponse } = await client.get(`/document/${documentData.import_id}`);
       vespaDocumentData = vespaDocumentDataResponse;
       const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);

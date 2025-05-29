@@ -11,6 +11,7 @@ import { Heading } from "@/components/typography/Heading";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { TCollection, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
+import { isLitigationEnabled } from "@/utils/features";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
@@ -20,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = context.params.id;
   const client = new ApiClient(process.env.BACKEND_API_URL);
 
-  if (!featureFlags["litigation"]) {
+  if (!isLitigationEnabled(featureFlags)) {
     return { notFound: true };
   }
 

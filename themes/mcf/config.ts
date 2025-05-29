@@ -132,6 +132,9 @@ const config: TThemeConfig = {
     },
   ],
   documentCategories: ["All"],
+  features: {
+    knowledgeGraph: false,
+  },
 };
 
 export default config;

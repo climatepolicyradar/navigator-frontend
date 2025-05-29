@@ -1,2 +1,3 @@
-export * from "./types";
+export * from "./features";
 export * from "./themeConfig";
+export * from "./types";

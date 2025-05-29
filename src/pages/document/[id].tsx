@@ -38,9 +38,11 @@ import useSearch from "@/hooks/useSearch";
 import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { pluralise } from "@/utils/pluralise";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
+import { readConfigFile } from "@/utils/readConfigFile";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { truncateString } from "@/utils/truncateString";
 
@@ -456,6 +458,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const featureFlags = await getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
+  const themeConfig = await readConfigFile(theme);
+
+  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+
   const id = context.params.id;
   const client = new ApiClient(process.env.BACKEND_API_URL);
 
@@ -469,8 +475,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const { data: returnedData } = await client.get(`/documents/${id}`);
     familyData = returnedData;
 
-    const conceptsV1 = featureFlags["concepts-v1"];
-    if (conceptsV1) {
+    if (knowledgeGraphEnabled) {
       // fetch the families
       const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
       vespaFamilyData = vespaFamilyDataResponse;

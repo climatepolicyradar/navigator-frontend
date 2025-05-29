@@ -68,6 +68,9 @@ const config: TThemeConfig = {
     },
   ],
   documentCategories: ["All", "Laws", "Policies", "UNFCCC", "Litigation", "MCF", "Reports"],
+  features: {
+    knowledgeGraph: false,
+  },
 };
 
 export default config;
