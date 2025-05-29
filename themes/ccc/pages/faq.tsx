@@ -43,7 +43,7 @@ const FAQ: React.FC = () => {
         <SiteWidth>
           <FaqSection title="FAQs" faqs={FAQS} />
           <FaqSection title="Platform FAQs" faqs={PLATFORM_FAQS} />
-          {featureFlags["concepts-v1"] === true && <FaqSection title="Concepts FAQs" faqs={CONCEPTS_FAQS} />}
+          {featureFlags["concepts-v1"] === true && <FaqSection title="Topics FAQs" faqs={CONCEPTS_FAQS} />}
         </SiteWidth>
       </section>
       <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />

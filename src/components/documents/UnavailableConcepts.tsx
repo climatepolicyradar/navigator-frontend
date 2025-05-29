@@ -14,9 +14,9 @@ export const UnavailableConcepts = ({ unavailableConcepts, familySlug }: IProps)
         <Icon name="findInDoc" width="48" height="48" />
       </div>
     </div>
-    <p className="text-xl font-medium">Concept not in Document</p>
+    <p className="text-xl font-medium">Topic not in Document</p>
     <p>
-      Some concepts from your search are not be present in this document but might be present in{" "}
+      Some topics from your search are not be present in this document but might be present in{" "}
       <Link
         href={`/document/${familySlug}?${unavailableConcepts.map((concept) => `cfn=${concept}`).join("&")}`}
         className="text-blue-600  hover:underline"
@@ -26,7 +26,7 @@ export const UnavailableConcepts = ({ unavailableConcepts, familySlug }: IProps)
       .
     </p>
     <p>
-      The following {unavailableConcepts.length > 1 ? "concepts are" : "concept is"} not present in this document:
+      The following {unavailableConcepts.length > 1 ? "topics are" : "topic is"} not present in this document:
       <p className="font-medium">{unavailableConcepts.join(", ")}</p>
     </p>
   </div>
