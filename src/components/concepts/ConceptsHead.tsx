@@ -9,13 +9,13 @@ export const ConceptsHead = () => {
       <div className="space-y-3">
         <div className="flex items-center gap-2">
           <Heading level={2} className="text-base font-medium text-neutral-800">
-            Climate concepts
+            Climate topics
           </Heading>
           <Label>Beta</Label>
         </div>
         <Quote>
           <>
-            This feature automatically detects climate concepts in documents. Accuracy is not 100%.{" "}
+            This feature automatically detects climate topics in documents. Accuracy is not 100%.{" "}
             <ExternalLink url="https://climatepolicyradar.org/concepts" className="text-gray-600 underline">
               Learn more
             </ExternalLink>

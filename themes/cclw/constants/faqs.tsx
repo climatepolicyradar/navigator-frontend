@@ -77,7 +77,7 @@ export const FAQS: TFAQ[] = [
             Find climate and climate-related laws, policies, strategies and action plans from every country and submissions to the UNFCCC relevant to
             country level action
           </li>
-          <li>Search for keywords and policy concepts (like ‘electric vehicles’ or ‘gender equality’) across the full text of all documents</li>
+          <li>Search for keywords and policy topics (like ‘electric vehicles’ or ‘gender equality’) across the full text of all documents</li>
           <li>View your search term (and related phrases) highlighted in search results</li>
           <li>Browse country profiles to find and compare their climate laws, policies and strategies</li>
           <li>
