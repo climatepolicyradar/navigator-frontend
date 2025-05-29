@@ -401,7 +401,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                         concepts={conceptsData}
                         title={
                           <div className="flex items-center gap-2">
-                            <div className="text-[15px] font-medium text-text-primary">Concepts</div>
+                            <div className="text-[15px] font-medium text-text-primary">Topics</div>
                             <Label>Beta</Label>
                           </div>
                         }

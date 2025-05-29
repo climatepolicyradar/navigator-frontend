@@ -181,7 +181,7 @@ const SearchFilters = ({
             {...{ [SLIDE_OUT_DATA_KEY]: "concepts" }}
           >
             <div className="flex items-center gap-2 pointer-events-none">
-              <Heading>Concepts</Heading>
+              <Heading>Topics</Heading>
               <Label>Beta</Label>
             </div>
             <span

@@ -66,7 +66,7 @@ const FAQ: React.FC = () => {
           {knowledgeGraphEnabled && (
             <SingleCol>
               <div className="text-content mb-12">
-                <Heading level={2}>Concepts FAQs</Heading>
+                <Heading level={2}>Topics FAQs</Heading>
                 {CONCEPTS_FAQS.map((faq, i) => (
                   <Fragment key={faq.title}>
                     <AccordianItem id={faq.id} title={faq.title} headContent={faq.headContent ?? null} startOpen={i === 0}>

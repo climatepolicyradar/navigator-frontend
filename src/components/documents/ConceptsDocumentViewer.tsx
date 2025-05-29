@@ -234,7 +234,7 @@ export const ConceptsDocumentViewer = ({
           <SideCol id="document-concepts" extraClasses="!w-full xl:!w-maxSidebar">
             <div className="p-4 xl:hidden">
               <Button content="both" onClick={handleToggleConcepts}>
-                <span>{showConcepts ? "Hide" : "Show"} concepts</span>
+                <span>{showConcepts ? "Hide" : "Show"} topics</span>
                 <div className={showConcepts ? "rotate-180" : ""}>
                   <Icon name="downChevron" />
                 </div>

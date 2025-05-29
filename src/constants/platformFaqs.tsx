@@ -34,8 +34,8 @@ export const PLATFORM_FAQS: TFAQ[] = [
       <>
         <p>
           If you don't toggle (or click on) 'exact phrase only', our new search feature searches the database for similar and related terms to the
-          query you typed into the search bar. You will get a richer search experience. Often climate or policy concepts are described in different
-          ways by the government actors and policymakers producing the documents (such as petrol cars, internal combustion engine vehicles,
+          query you typed into the search bar. You will get a richer search experience. Often climate or policy topics are described in different ways
+          by the government actors and policymakers producing the documents (such as petrol cars, internal combustion engine vehicles,
           gasoline-powered cars, etc). This feature uses a technique called natural language processing, which trains computers to understand text and
           the meaning of words and phrases in context. Climate Policy Radar's team of policy experts is continually working to improve the performance
           and accuracy of the models.
