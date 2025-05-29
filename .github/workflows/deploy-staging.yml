@@ -17,15 +17,21 @@ jobs:
     strategy:
       matrix:
         theme: [cpr, cclw, mcf, ccc]
+
     runs-on: ubuntu-latest
     environment: staging
     steps:
+      - uses: actions/checkout@v4
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-new-frontend-github-actions
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: eu-west-1
+
+      - name: Login to Amazon ECR (staging)
+        id: login-ecr-staging
+        uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
 
       - name: Build, tag, and push to ECR with 'latest' tag
         id: build-image
