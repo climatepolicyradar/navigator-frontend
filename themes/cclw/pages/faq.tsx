@@ -1,5 +1,4 @@
-import { Fragment, useState } from "react";
-import { useEffect } from "react";
+import { Fragment, useContext } from "react";
 
 import { AccordianItem } from "@/cclw/components/AccordianItem";
 import { FAQS } from "@/cclw/constants/faqs";
@@ -10,29 +9,13 @@ import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
-import { getAllCookies } from "@/utils/cookies";
-import { getFeatureFlags } from "@/utils/featureFlags";
+import { ThemePageFeaturesContext } from "@/context/ThemePageFeaturesContext";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
 
 const FAQ: React.FC = () => {
-  /*
-    The FAQs page is read in not by using Next.JS, but by our CPR specific page reading logic.
-    This means that we cannot fetch the feature flags directly by using the page context.
-    This function provides a means of working around this so we can conditionally display the
-    concept FAQs.
-  
-    TODO: Remove this once we have hard launched concepts in product.
-  */
-  const [featureFlags, setFeatureFlags] = useState({});
-  async function getFeatureFlag() {
-    const allCookies = getAllCookies();
-    const parsedFeatureFlags = await getFeatureFlags(allCookies);
-    setFeatureFlags(parsedFeatureFlags);
-  }
+  const { featureFlags, themeConfig } = useContext(ThemePageFeaturesContext);
 
-  // TODO: Remove this once we have hard launched concepts in product.
-  useEffect(() => {
-    getFeatureFlag();
-  }, []);
+  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
 
   return (
     <Layout
@@ -80,7 +63,7 @@ const FAQ: React.FC = () => {
             </div>
           </SingleCol>
 
-          {featureFlags["concepts-v1"] === true && (
+          {knowledgeGraphEnabled && (
             <SingleCol>
               <div className="text-content mb-12">
                 <Heading level={2}>Concepts FAQs</Heading>

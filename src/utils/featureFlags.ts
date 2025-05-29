@@ -1,16 +1,17 @@
-import { featureFlagKeys, TFeatureFlags } from "src/types/features";
+import { DEFAULT_FEATURE_FLAGS } from "@/constants/features";
+import { TFeatureFlags } from "@/types";
 
 import { deleteCookie, setCookie } from "./cookies";
 import getDomain from "./getDomain";
 
-export function setFeatureFlags(featureFlags: Partial<TFeatureFlags>) {
+export const setFeatureFlags = (featureFlags: Partial<TFeatureFlags>) => {
   if (Object.keys(featureFlags).length === 0) {
     deleteCookie(`feature_flags`, getDomain());
     return;
   } else {
     setCookie(`feature_flags`, JSON.stringify(featureFlags), getDomain());
   }
-}
+};
 
 export const getFeatureFlags = async (
   // This is a replica of `NextApiRequestCookies`
@@ -18,7 +19,7 @@ export const getFeatureFlags = async (
     [key: string]: string | string[];
   }>
 ): Promise<TFeatureFlags> => {
-  const featureFlags = Object.fromEntries(featureFlagKeys.map((flag) => [flag, false])) as TFeatureFlags;
+  const featureFlags = { ...DEFAULT_FEATURE_FLAGS };
 
   if (cookies.feature_flags) {
     try {

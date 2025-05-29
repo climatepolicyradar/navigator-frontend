@@ -1,3 +1,5 @@
+import { TConfigFeatures } from "./features";
+
 export type TDocumentCategory = "All" | "Laws" | "Policies" | "UNFCCC" | "Litigation" | "MCF" | "Reports";
 
 export type TLabelVariation = {
@@ -68,4 +70,5 @@ export type TThemeConfig = {
   links: TThemeLink[];
   metadata: TThemeMetadata[];
   documentCategories: TDocumentCategory[];
+  features: TConfigFeatures;
 };

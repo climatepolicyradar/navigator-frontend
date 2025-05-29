@@ -31,15 +31,16 @@ import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import useSearch from "@/hooks/useSearch";
-import { TConcept, TTheme, TThemeConfig } from "@/types";
+import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 interface IProps {
   theme: TTheme;
   themeConfig: TThemeConfig;
-  featureFlags: Record<string, string | boolean>;
+  featureFlags: TFeatureFlags;
   conceptsData?: TConcept[];
 }
 
@@ -536,21 +537,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const featureFlags = await getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
-  let themeConfig = {};
-  try {
-    themeConfig = await readConfigFile(theme);
-  } catch (error) {}
+  const themeConfig = await readConfigFile(theme);
+
+  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
 
   let conceptsData: TConcept[];
-  try {
-    const client = new ApiClient(process.env.CONCEPTS_API_URL);
-    const conceptsV1 = featureFlags["concepts-v1"];
-    if (conceptsV1) {
+  if (knowledgeGraphEnabled) {
+    try {
+      const client = new ApiClient(process.env.CONCEPTS_API_URL);
       const { data: returnedData } = await client.get(`/concepts/search?limit=10000&has_classifier=true`);
       conceptsData = returnedData;
+    } catch (error) {
+      // TODO: handle error more elegantly
     }
-  } catch (error) {
-    // TODO: handle error more elegantly
   }
 
   return {
