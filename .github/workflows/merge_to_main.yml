@@ -167,10 +167,23 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
+      - name: Build, tag, and push image to Amazon ECR (staging)
+        id: build-image-staging
         env:
-          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID_STAGING }}.dkr.ecr.eu-west-1.amazonaws.com
+          IMAGE_TAG: ${{ github.sha }}
+          AWS_REGION: eu-west-1
+          ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
+          THEME: ${{ matrix.theme }}
+        run: |
+          docker build --build-arg THEME=${THEME} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Build, tag, and push image to Amazon ECR (production)
+        id: build-image-prod
+        env:
+          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID_PROD }}.dkr.ecr.eu-west-1.amazonaws.com
           IMAGE_TAG: ${{ github.sha }}
           AWS_REGION: eu-west-1
           ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
