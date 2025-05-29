@@ -170,7 +170,7 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR (staging)
         id: build-image-staging
         env:
-          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY_STAGING }}
+          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID_STAGING }}.dkr.ecr.eu-west-1.amazonaws.com
           IMAGE_TAG: ${{ github.sha }}
           AWS_REGION: eu-west-1
           ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
@@ -183,7 +183,7 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR (production)
         id: build-image-prod
         env:
-          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY_PROD }}
+          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID_PROD }}.dkr.ecr.eu-west-1.amazonaws.com
           IMAGE_TAG: ${{ github.sha }}
           AWS_REGION: eu-west-1
           ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
