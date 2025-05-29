@@ -13,9 +13,9 @@ export const FAQS: TFAQ[] = [
     content: (
       <>
         <p>
-          Climate Policy Radar builds responsible AI tools for climate action. A UK-based not-for-profit, our data and tools help governments,
-          researchers, international organisations, civil society, and the private sector create effective climate policies and deploy climate
-          finance.
+          Climate Policy Radar builds responsible AI tools for climate action. A UK-based not-for-profit, our data and tools support governments,
+          researchers, international organisations, civil society, and the private sector in their decision-making pertaining to climate policy, law
+          and/or finance.
         </p>
       </>
     ),
@@ -62,7 +62,10 @@ export const PLATFORM_FAQS: TFAQ[] = [
           <li>Search for keywords and policy topics (like 'electric vehicles' or 'gender equality') across the full text of all documents</li>
           <li>View your search term (and related phrases) highlighted in search results</li>
           <li>Browse country profiles to find and compare their climate laws, policies and strategies</li>
-          <li>Access the raw data: you just need to fill out this form to request a copy of the entire dataset</li>
+          <li>
+            Access the raw data: you just need to fill out <ExternalLink url="https://form.jotform.com/250202141318339">this form</ExternalLink> to
+            request a copy of the entire dataset
+          </li>
         </ul>
       </>
     ),

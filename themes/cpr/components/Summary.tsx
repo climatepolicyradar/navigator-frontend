@@ -14,7 +14,7 @@ const Summary = () => {
           </p>
         </div>
         <ExternalLink
-          url="https://github.com/climatepolicyradar/methodology"
+          url="https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md"
           className="mt-4 md:mt-0 block w-full text-center bg-blue-500 text-white md:grow-0 p-2 rounded-xl md:w-48 transition duration-300 hover:text-white"
         >
           <div className="flex justify-center">
