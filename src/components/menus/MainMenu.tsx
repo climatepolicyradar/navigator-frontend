@@ -30,7 +30,7 @@ const MainMenu = ({ iconClass = "text-white" }: IProps) => {
             <DropdownMenuItem external={true} href="https://climatepolicyradar.org" title="About us" first={true} setShowMenu={setShowMenu} />
             <DropdownMenuItem
               external={true}
-              href="https://github.com/climatepolicyradar/methodology"
+              href="https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md"
               title="Methodology"
               setShowMenu={setShowMenu}
             />

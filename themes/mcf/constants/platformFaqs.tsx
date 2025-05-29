@@ -188,7 +188,7 @@ export const PLATFORM_FAQS: TFAQ[] = [
     ),
   },
   {
-    title: "What map and boundaries are used?",
+    title: "What geographical map and boundaries are used?",
     content: (
       <>
         <p>

@@ -21,7 +21,10 @@ export const Footer = () => {
         </p>
         <ul className="md:flex gap-9">
           <li className="mb-4 md:mb-0">
-            <ExternalLink url="https://github.com/climatepolicyradar/methodology" className="text-textNormal underline opacity-60 hover:opacity-100">
+            <ExternalLink
+              url="https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md"
+              className="text-textNormal underline opacity-60 hover:opacity-100"
+            >
               Methodology
             </ExternalLink>
           </li>
