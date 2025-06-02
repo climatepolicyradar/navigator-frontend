@@ -10,6 +10,8 @@ import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { Suspense, useEffect } from "react";
 
+import { setFeatureFlags } from "@/utils/featureFlags";
+
 interface IProps {
   children: React.ReactNode;
   consent?: boolean;
@@ -66,6 +68,16 @@ export function PostHogProvider({ children, consent }: IProps) {
       person_profiles: "always",
     });
     window.sessionStorage.setItem("posthogLoaded", "true");
+
+    // * Load the feature flags and set the cookie */
+    posthog.onFeatureFlags((featureFlags) => {
+      const newFeatureFlags = {};
+      for (const featureFlag of featureFlags) {
+        newFeatureFlags[featureFlag] = true;
+      }
+
+      setFeatureFlags(newFeatureFlags);
+    });
   }, []);
 
   useEffect(() => {
