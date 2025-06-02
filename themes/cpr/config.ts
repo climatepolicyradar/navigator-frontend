@@ -254,7 +254,7 @@ const config: TThemeConfig = {
       label: "Author Type",
       corporaKey: "Intl. agreements",
       taxonomyKey: "author_type",
-      apiMetaDataKey: "family.author.type",
+      apiMetaDataKey: "family.author_type",
       type: "radio",
       category: ["UNFCCC.corpus.i00000001.n0000"],
     },
