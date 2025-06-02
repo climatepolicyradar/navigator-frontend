@@ -7,7 +7,7 @@ interface IArgs {
 
 // Determines if an app feature is on or off by combining app-level config and PostHog feature flags
 export const isFeatureEnabled = ({ configFeature, featureFlag }: IArgs): boolean => {
-  if (configFeature === undefined && featureFlag === undefined) return false; // Shouldn't be using this fn
+  if (configFeature === undefined && featureFlag === undefined) return true; // No feature control = on
   if (configFeature === false) return false; // Config feature off = always off
   if (configFeature === true && featureFlag === undefined) return true; // Config feature on = on
   return featureFlag === true; // Config feature on + feature flag = use feature flag

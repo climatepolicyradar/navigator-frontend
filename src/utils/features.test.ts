@@ -1,6 +1,10 @@
 import { isFeatureEnabled } from "./features";
 
 describe("isFeatureEnabled", () => {
+  it("returns true with no config feature or feature flag", () => {
+    expect(isFeatureEnabled({})).toBe(true);
+  });
+
   it("returns true with an enabled config feature", () => {
     expect(isFeatureEnabled({ configFeature: true })).toBe(true);
   });
