@@ -142,13 +142,6 @@ const SearchFilters = ({
 
       {themeConfigStatus === "success" &&
         themeConfig.filters.map((filter) => {
-          // TODO: remove FF and logic for UNFCCC filters
-          if (
-            ["_document.type", "author_type"].includes(filter.taxonomyKey) &&
-            filter.corporaKey === "Intl. agreements" &&
-            !isUNFCCCFiltersEnabled(featureFlags)
-          )
-            return;
           // If the filter is not in the selected category, don't display it
           if (!canDisplayFilter(filter, query, themeConfig)) return;
           return (
