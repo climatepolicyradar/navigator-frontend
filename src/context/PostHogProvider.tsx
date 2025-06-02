@@ -68,16 +68,6 @@ export function PostHogProvider({ children, consent }: IProps) {
       person_profiles: "always",
     });
     window.sessionStorage.setItem("posthogLoaded", "true");
-
-    // * Load the feature flags and set the cookie */
-    posthog.onFeatureFlags((featureFlags) => {
-      const newFeatureFlags = {};
-      for (const featureFlag of featureFlags) {
-        newFeatureFlags[featureFlag] = true;
-      }
-
-      setFeatureFlags(newFeatureFlags);
-    });
   }, []);
 
   useEffect(() => {
