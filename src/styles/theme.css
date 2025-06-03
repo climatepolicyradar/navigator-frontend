@@ -130,4 +130,9 @@
   --spacing-maxSiteWidth: var(--MAX_SITE_WIDTH);
   --spacing-maxContent: var(--MAX_CONTENT_WIDTH);
   --spacing-maxSidebar: var(--MAX_SIDEBAR_WIDTH);
+  --spacing-max-cols: 1500px;
+
+  --breakpoint-cols-2: 540px;
+  --breakpoint-cols-3: 820px;
+  --breakpoint-cols-4: 1100px;
 }
