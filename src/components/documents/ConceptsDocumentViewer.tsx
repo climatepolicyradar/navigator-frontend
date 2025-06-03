@@ -144,21 +144,21 @@ export const ConceptsDocumentViewer = ({
     : [];
 
   // Prepare search.
-  const searchQueryParams = useMemo(
-    () => ({
-      [QUERY_PARAMS.query_string]: initialQueryTerm,
-      [QUERY_PARAMS.exact_match]: state.isExactSearch ? "true" : "false",
-      [QUERY_PARAMS.concept_name]: initialConceptFilters
-        ? Array.isArray(initialConceptFilters)
-          ? initialConceptFilters
-          : [initialConceptFilters]
-        : undefined,
-    }),
-    [initialQueryTerm, state.isExactSearch, initialConceptFilters]
-  );
+  // const searchQueryParams = useMemo(
+  //   () => ({
+  //     [QUERY_PARAMS.query_string]: initialQueryTerm,
+  //     [QUERY_PARAMS.exact_match]: state.isExactSearch ? "true" : "false",
+  //     [QUERY_PARAMS.concept_name]: initialConceptFilters
+  //       ? Array.isArray(initialConceptFilters)
+  //         ? initialConceptFilters
+  //         : [initialConceptFilters]
+  //       : undefined,
+  //   }),
+  //   [initialQueryTerm, state.isExactSearch, initialConceptFilters]
+  // );
 
   const { status, families, searchQuery } = useSearch(
-    searchQueryParams,
+    router.query,
     null,
     document.import_id,
     !!(initialQueryTerm || initialConceptFilters),
@@ -263,7 +263,7 @@ export const ConceptsDocumentViewer = ({
             <EmbeddedPDF
               document={document}
               documentPassageMatches={state.passageMatches}
-              passageIndex={state.passageIndex}
+              pageNumber={state.passageIndex}
               startingPassageIndex={initialPassage}
             />
           )}
@@ -300,7 +300,7 @@ export const ConceptsDocumentViewer = ({
                   }}
                 >
                   <SearchSettings
-                    queryParams={searchQueryParams}
+                    queryParams={router.query}
                     handleSearchChange={handleSemanticSearchChange}
                     handlePassagesClick={handlePassagesOrderChange}
                     setShowOptions={setShowSearchOptions}
