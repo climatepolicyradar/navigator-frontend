@@ -1,6 +1,7 @@
-import { Meta, StoryObj } from "@storybook/react/*";
-import { Card } from "./Card";
+import { Meta, StoryObj } from "@storybook/react";
 import { LuCopy } from "react-icons/lu";
+
+import { Card } from "./Card";
 
 const meta = {
   title: "Atoms/Card",
@@ -10,7 +11,7 @@ const meta = {
     children: { control: false },
   },
 } satisfies Meta<typeof Card>;
-type Story = StoryObj<typeof Card>;
+type TStory = StoryObj<typeof Card>;
 
 export default meta;
 
@@ -36,7 +37,7 @@ const children = (
   </>
 );
 
-export const Outlined: Story = {
+export const Outlined: TStory = {
   args: {
     children,
     className: "",
@@ -46,7 +47,7 @@ export const Outlined: Story = {
   render,
 };
 
-export const Solid: Story = {
+export const Solid: TStory = {
   args: {
     children,
     className: "",

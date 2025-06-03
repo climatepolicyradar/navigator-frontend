@@ -1,10 +1,12 @@
-import { Meta, StoryObj } from "@storybook/react/*";
-import { Modal } from "./Modal";
+import { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+
+import { ExternalLink } from "@/components/ExternalLink";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Button } from "@/components/atoms/button/Button";
 import { Heading } from "@/components/typography/Heading";
-import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { ExternalLink } from "@/components/ExternalLink";
+
+import { Modal } from "./Modal";
 
 const meta = {
   title: "Molecules/Modal",
@@ -15,7 +17,7 @@ const meta = {
     onClose: { control: false },
   },
 } satisfies Meta<typeof Modal>;
-type Story = StoryObj<typeof Modal>;
+type TStory = StoryObj<typeof Modal>;
 
 export default meta;
 
@@ -32,7 +34,7 @@ const useModalContext = ({ children, ...props }) => {
   );
 };
 
-export const Primary: Story = {
+export const Primary: TStory = {
   args: {
     children: "Hello modal!",
     showCloseButton: false,
@@ -40,7 +42,7 @@ export const Primary: Story = {
   render: useModalContext,
 };
 
-export const DownloadCSV: Story = {
+export const DownloadCSV: TStory = {
   name: "Download CSV",
   args: {
     children: (

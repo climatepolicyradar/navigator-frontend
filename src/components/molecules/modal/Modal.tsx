@@ -1,6 +1,7 @@
-import { Card } from "@/components/atoms/card/Card";
 import React, { useEffect } from "react";
 import { LuX } from "react-icons/lu";
+
+import { Card } from "@/components/atoms/card/Card";
 
 export interface ModalProps {
   cardClasses?: string;

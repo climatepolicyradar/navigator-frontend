@@ -1,5 +1,6 @@
-import { joinTailwindClasses } from "@/utils/tailwind";
 import React, { useMemo } from "react";
+
+import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface CardClassArgs {
   className?: string;
