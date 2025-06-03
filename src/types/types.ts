@@ -343,6 +343,7 @@ export type TSearchResponse = {
     id: string;
     hits: (TFamily & {
       concept_counts?: Record<string, number>;
+      document_import_id: string;
     })[];
   }[];
   continuation_token?: string;
