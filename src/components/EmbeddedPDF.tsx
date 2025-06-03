@@ -1,10 +1,10 @@
-import { useRef, useState, useMemo, useEffect, useContext } from "react";
 import Script from "next/script";
+import { useRef, useState, useMemo, useEffect, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { AdobeContext } from "@/context/AdobeContext";
-
 import usePDFPreview from "@/hooks/usePDFPreview";
+import { TDocumentPage, TPassage } from "@/types";
 
 import Loader from "./Loader";
 
@@ -16,9 +16,9 @@ type TProps = {
   pageNumber?: number;
   startingPassageIndex?: number;
   searchStatus?: TLoadingStatus;
-};
+}
 
-const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null, startingPassageIndex = 0, searchStatus }: TProps) => {
+const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null, startingPassageIndex = 0, searchStatus }: IProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const containerRef = useRef(null);
   const adobeKey = useContext(AdobeContext);

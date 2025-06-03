@@ -1,16 +1,17 @@
-import { Popover, TPopoverLink } from "@/components/atoms/popover/Popover";
-import { joinTailwindClasses } from "@/utils/tailwind";
 import { useState } from "react";
 import { LuInfo } from "react-icons/lu";
 
-type TInfoProps = {
+import { Popover, TPopoverLink } from "@/components/atoms/popover/Popover";
+import { joinTailwindClasses } from "@/utils/tailwind";
+
+interface IProps {
   className?: string;
   title?: string;
   description: string;
   link?: TPopoverLink;
-};
+}
 
-export const Info = ({ className, description, link, title }: TInfoProps) => {
+export const Info = ({ className, description, link, title }: IProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const infoClasses = joinTailwindClasses("cursor-help", isOpen ? "text-text-brand" : "text-text-secondary", className);

@@ -1,30 +1,28 @@
-import { useEffect, useState } from "react";
 import App, { AppProps } from "next/app";
 import Head from "next/head";
+import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-// import { ReactQueryDevtools } from "react-query/devtools";
-
-import "../styles/flag-icons.css";
-import "../styles/main.css";
-
-import { ThemeContext } from "@/context/ThemeContext";
-import { AdobeContext } from "@/context/AdobeContext";
 
 import { CookieConsent } from "@/components/cookies/CookieConsent";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
-import { PostHogProvider } from "@/context/PostHogProvider";
+import { AdobeContext } from "@/context/AdobeContext";
 import { EnvConfigContext } from "@/context/EnvConfig";
+import { PostHogProvider } from "@/context/PostHogProvider";
+import { ThemeContext } from "@/context/ThemeContext";
+
+import "../styles/flag-icons.css";
+import "../styles/main.css";
 
 const favicon = `/images/favicon/${process.env.THEME}.png`;
 
 const queryClient = new QueryClient();
 
-type TProps = AppProps & {
+interface IProps extends AppProps {
   theme?: string;
   adobeApiKey?: string;
-};
+}
 
-function MyApp({ Component, pageProps, theme, adobeApiKey }: TProps) {
+function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
   const [siteTheme, setSiteTheme] = useState(null);
   const [adobeKey, setAdobeKey] = useState(null);
 
@@ -85,7 +83,11 @@ MyApp.getInitialProps = async () => {
     return { ...initialProps };
   }
 
-  return { ...initialProps, theme: process.env.THEME, adobeApiKey: process.env.ADOBE_API_KEY ?? "" };
+  return {
+    ...initialProps,
+    theme: process.env.THEME,
+    adobeApiKey: process.env.ADOBE_API_KEY ?? "",
+  };
 };
 
 export default MyApp;

@@ -1,25 +1,27 @@
-import { UnavailableConcepts } from "@/components/documents/UnavailableConcepts";
+import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/router";
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+
 import EmbeddedPDF from "@/components/EmbeddedPDF";
-import { SearchSettings } from "@/components/filters/SearchSettings";
 import Loader from "@/components/Loader";
 import PassageMatches from "@/components/PassageMatches";
-import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
+import { Button } from "@/components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { EmptyDocument } from "@/components/documents/EmptyDocument";
+import { EmptyPassages } from "@/components/documents/EmptyPassages";
+import { UnavailableConcepts } from "@/components/documents/UnavailableConcepts";
+import { SearchSettings } from "@/components/filters/SearchSettings";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import useSearch from "@/hooks/useSearch";
 import { TConcept, TDocumentPage, TPassage, TSearchResponse } from "@/types";
+import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
-import { AnimatePresence, motion } from "framer-motion";
-import React, { useCallback, useEffect, useMemo, useReducer, useState } from "react";
-import { LuSettings2 } from "react-icons/lu";
-import { Button } from "../atoms/button/Button";
-import { Icon } from "../atoms/icon/Icon";
+
+import { Info } from "../molecules/info/Info";
 import { ConceptPicker } from "../organisms/ConceptPicker";
 import { SideCol } from "../panels/SideCol";
-import { EmptyDocument } from "./EmptyDocument";
-import { EmptyPassages } from "./EmptyPassages";
-import { useRouter } from "next/router";
 
 type TState = {
   passageIndex: number;
@@ -28,7 +30,7 @@ type TState = {
   totalNoOfMatches: number;
 };
 
-type TProps = {
+interface IProps {
   initialQueryTerm?: string | string[];
   initialExactMatch?: boolean;
   initialPassage?: number;
@@ -39,7 +41,7 @@ type TProps = {
   familySlug: string;
   // Callback props for state changes
   onExactMatchChange?: (isExact: boolean) => void;
-};
+}
 
 const passageClasses = (canPreview: boolean) => {
   if (canPreview) {
@@ -62,7 +64,7 @@ export const ConceptsDocumentViewer = ({
   vespaFamilyData,
   vespaDocumentData,
   onExactMatchChange,
-}: TProps) => {
+}: IProps) => {
   const router = useRouter();
   const [showSearchOptions, setShowSearchOptions] = useState(false);
   const [showConcepts, setShowConcepts] = useState(false);
@@ -210,6 +212,13 @@ export const ConceptsDocumentViewer = ({
     router.push({ query: queryObj }, undefined, { shallow: true });
   };
 
+  const passagesResultsContext = getPassageResultsContext({
+    isExactSearch: state.isExactSearch,
+    passageMatches: state.totalNoOfMatches,
+    queryTerm: initialQueryTerm,
+    selectedTopics: selectedConcepts,
+  });
+
   const isLoading = status !== "success";
   const hasConcepts = documentConcepts.length > 0;
   const hasSelectedConcepts = selectedConcepts.length > 0;
@@ -228,7 +237,7 @@ export const ConceptsDocumentViewer = ({
           <SideCol id="document-concepts" extraClasses="!w-full xl:!w-maxSidebar">
             <div className="p-4 xl:hidden">
               <Button content="both" onClick={handleToggleConcepts}>
-                <span>{showConcepts ? "Hide" : "Show"} concepts</span>
+                <span>{showConcepts ? "Hide" : "Show"} topics</span>
                 <div className={showConcepts ? "rotate-180" : ""}>
                   <Icon name="downChevron" />
                 </div>
@@ -310,43 +319,19 @@ export const ConceptsDocumentViewer = ({
 
           {!isLoading && (
             <>
-              {hasSelectedConcepts && (
-                <div className="px-4">
-                  {selectedConcepts.map((concept) => (
-                    <React.Fragment key={concept.wikibase_id}>
-                      <p className="mt-4 my-2 capitalize text-[15px] font-medium text-neutral-800 text-base leading-normal flex-grow">
-                        {concept.preferred_label}
-                      </p>
-                      <p className="mt-2 my-4">{concept.description}</p>
-                    </React.Fragment>
-                  ))}
-                </div>
-              )}
-
               {hasQuery &&
                 (hasPassages ? (
                   <>
                     <div className="border-gray-200 p-4 text-sm border-b xl:pl-4" data-cy="document-matches-description">
-                      <div className="mb-2">
-                        Displaying {renderPassageCount(state.totalNoOfMatches)}{" "}
-                        {initialQueryTerm && (
-                          <>
-                            for "<span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
-                          </>
-                        )}
-                        {initialQueryTerm && !searchQuery.exact_match && ` and related phrases`}
-                        {selectedConcepts.length > 0 && (
-                          <>
-                            {" in "}
-                            <b>{selectedConcepts.map((concept) => concept.preferred_label).join(", ")}</b>
-                          </>
-                        )}
+                      <p className="mb-2">
+                        {passagesResultsContext}
                         {state.totalNoOfMatches >= MAX_RESULTS && (
-                          <span className="ml-1 inline-block">
-                            <SearchLimitTooltip colour="grey" />
-                          </span>
+                          <Info
+                            className="inline-block ml-2 align-text-bottom"
+                            description={`We limit the number of search results to ${MAX_RESULTS} so that you get the best performance from our tool. We're working on a way to remove this limit.`}
+                          />
                         )}
-                      </div>
+                      </p>
                     </div>
                     <div
                       id="document-passage-matches"

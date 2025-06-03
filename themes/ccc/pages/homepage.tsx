@@ -3,12 +3,12 @@ import { Hero } from "@/ccc/components/Hero";
 import { APP_NAME, PAGE_DESCRIPTION } from "@/ccc/constants/pageMetadata";
 import Layout from "@/components/layouts/LandingPage";
 
-type TProps = {
+interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   searchInput: string;
-};
+}
 
-const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
+const LandingPage = ({ handleSearchInput, searchInput }: IProps) => {
   return (
     <Layout title="Climate Case Chart" theme={APP_NAME} description={PAGE_DESCRIPTION}>
       <main id="main" className="h-screen flex flex-col bg-[rebeccapurple]">

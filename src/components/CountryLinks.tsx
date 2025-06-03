@@ -1,12 +1,9 @@
 import { Fragment } from "react";
 
 import { CountryLink } from "@/components/CountryLink";
-
 import { getCountryName } from "@/helpers/getCountryFields";
-
-import { isSystemGeo, isSystemInternational } from "@/utils/isSystemGeo";
-
 import { TGeography } from "@/types";
+import { isSystemGeo, isSystemInternational } from "@/utils/isSystemGeo";
 
 type TCountriesLink = {
   geographies: string[];

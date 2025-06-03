@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import React, { useState, useEffect } from "react";
 
-import { DateRangeInput } from "./DateRangeInput";
-import { FormError } from "../forms/FormError";
+import { Button } from "@/components/atoms/button/Button";
 import { InputListContainer } from "@/components/filters/InputListContainer";
 import { InputRadio } from "@/components/forms/Radio";
-import { Button } from "@/components/atoms/button/Button";
-
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { currentYear } from "@/constants/timedate";
 
-type TProps = {
+import { DateRangeInput } from "./DateRangeInput";
+import { FormError } from "../forms/FormError";
+
+interface IProps {
   type: string;
   handleChange(values: string[], reset?: boolean): void;
   defaultValues: string[];
   min: number;
   max: number;
-};
+}
 
-export const DateRange = ({ handleChange, defaultValues, min, max }: TProps) => {
+export const DateRange = ({ handleChange, defaultValues, min, max }: IProps) => {
   const router = useRouter();
   const [startYear, endYear] = defaultValues;
   const [showDateInput, setShowDateInput] = useState(false);

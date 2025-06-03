@@ -1,9 +1,10 @@
 import { useState, useRef } from "react";
-import useOutsideAlerter from "@/hooks/useOutsideAlerter";
+
+import MENU_LINKS from "@/ccc/constants/menuLinks";
 import { Icon } from "@/components/atoms/icon/Icon";
 import DropdownMenuItem from "@/components/menus/DropdownMenuItem";
 import DropdownMenuWrapper from "@/components/menus/DropdownMenuWrapper";
-import MENU_LINKS from "@/ccc/constants/menuLinks";
+import useOutsideAlerter from "@/hooks/useOutsideAlerter";
 
 export const Menu = () => {
   const [showMenu, setShowMenu] = useState(false);

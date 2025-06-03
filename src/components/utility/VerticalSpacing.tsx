@@ -1,9 +1,9 @@
-type spacingSize = "base" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl" | "xxxl" | "minimumtargetsize";
+type SpacingSize = "base" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl" | "xxxl" | "minimumtargetsize";
 
-type Tprops = {
-  size: spacingSize;
+interface IProps {
+  size: SpacingSize;
   children?: React.ReactNode;
-};
+}
 
 const padding = {
   base: 1, //"4px",
@@ -18,6 +18,6 @@ const padding = {
   minimumtargetsize: "[44px]",
 };
 
-export const VerticalSpacing = ({ size, children = null }: Tprops) => {
+export const VerticalSpacing = ({ size, children = null }: IProps) => {
   return <div className={`p-${padding[size]}`}>{children}</div>;
 };

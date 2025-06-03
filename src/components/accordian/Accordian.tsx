@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 
 import { Heading } from "./Heading";
-import { start } from "repl";
 
-type TProps = {
+interface IProps {
   title: string;
   startOpen?: boolean;
   open?: boolean;
@@ -15,7 +14,7 @@ type TProps = {
   showFade?: "true" | "false";
   fixedHeight?: string;
   headContent?: React.ReactNode;
-};
+}
 
 export const Accordian = ({
   title,
@@ -27,7 +26,7 @@ export const Accordian = ({
   showFade = "false",
   headContent,
   ...props
-}: TProps) => {
+}: IProps) => {
   const [isOpen, setIsOpen] = useState(startOpen);
 
   useEffect(() => {

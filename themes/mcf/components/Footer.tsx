@@ -1,9 +1,9 @@
-import { SiteWidth } from "@/components/panels/SiteWidth";
-
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import SocialMediaContent from "./FooterComponents/SocialMediaContent";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
+
+import SocialMediaContent from "./FooterComponents/SocialMediaContent";
 
 const Footer = () => {
   return (

@@ -1,7 +1,8 @@
-import { joinTailwindClasses } from "@/utils/tailwind";
 import { useMemo } from "react";
 
-interface ButtonClassArgs {
+import { joinTailwindClasses } from "@/utils/tailwind";
+
+interface IButtonClassArgs {
   className?: string;
   color?: "brand" | "mono";
   content?: "text" | "icon" | "both";
@@ -11,7 +12,7 @@ interface ButtonClassArgs {
   variant?: "solid" | "faded" | "outlined" | "ghost";
 }
 
-type ButtonProps = ButtonClassArgs & React.ComponentProps<"button">;
+type TProps = IButtonClassArgs & React.ComponentProps<"button">;
 
 export const getButtonClasses = ({
   className,
@@ -21,7 +22,7 @@ export const getButtonClasses = ({
   rounded = false,
   size = "medium",
   variant = "solid",
-}: ButtonClassArgs) => {
+}: IButtonClassArgs) => {
   const baseClasses =
     "flex flex-row items-center justify-center text-sm leading-3.5 font-medium transition duration-200 focus-visible:outline-2 outline-offset-2";
 
@@ -57,7 +58,7 @@ export const getButtonClasses = ({
   /* Size */
 
   const isIcon = content === "icon";
-  let layout = content === "both" ? "gap-2" : "";
+  const layout = content === "both" ? "gap-2" : "";
   let sizing = "";
 
   switch (size) {
@@ -89,9 +90,18 @@ export const Button = ({
   rounded = false,
   variant = "solid",
   ...props
-}: ButtonProps) => {
+}: TProps) => {
   const classes = useMemo(
-    () => getButtonClasses({ className, color, content, disabled, size, rounded, variant }),
+    () =>
+      getButtonClasses({
+        className,
+        color,
+        content,
+        disabled,
+        size,
+        rounded,
+        variant,
+      }),
     [className, color, content, disabled, size, rounded, variant]
   );
 

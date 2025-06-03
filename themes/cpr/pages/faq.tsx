@@ -1,19 +1,20 @@
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { useContext, useEffect, useState } from "react";
 
 import FaqSection from "@/components/FaqSection";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { SiteWidth } from "@/components/panels/SiteWidth";
 import { SubNav } from "@/components/nav/SubNav";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
+import { ThemePageFeaturesContext } from "@/context/ThemePageFeaturesContext";
 import { FAQS, PLATFORM_FAQS } from "@/cpr/constants/faqs";
-import { getFeatureFlags } from "@/utils/featureFlags";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
 
-type TProps = {
-  featureFlags: Record<string, string | boolean>;
-};
+const FAQ: React.FC = () => {
+  const { featureFlags, themeConfig } = useContext(ThemePageFeaturesContext);
 
-const FAQ: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags = {} }: TProps) => {
+  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+
   return (
     <Layout
       title="FAQ"
@@ -26,22 +27,11 @@ const FAQ: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFl
         <SiteWidth>
           <FaqSection title="FAQs" faqs={FAQS} />
           <FaqSection title="Platform FAQs" faqs={PLATFORM_FAQS} />
-          {featureFlags["concepts-v1"] === true && <FaqSection title="Concepts FAQs" faqs={CONCEPTS_FAQS} />}
+          {knowledgeGraphEnabled && <FaqSection title="Topics FAQs" faqs={CONCEPTS_FAQS} />}
         </SiteWidth>
       </section>
-      <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
     </Layout>
   );
 };
 
 export default FAQ;
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const featureFlags = await getFeatureFlags(context.req.cookies);
-
-  return {
-    props: {
-      featureFlags: featureFlags || {},
-    },
-  };
-};

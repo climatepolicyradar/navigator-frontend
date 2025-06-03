@@ -4,58 +4,52 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
-
-import useConfig from "@/hooks/useConfig";
-import { useDownloadCsv } from "@/hooks/useDownloadCsv";
-import useSearch from "@/hooks/useSearch";
-
-import { MultiCol } from "@/components/panels/MultiCol";
-import { SideCol } from "@/components/panels/SideCol";
-import { SingleCol } from "@/components/panels/SingleCol";
-
 import { ExternalLink } from "@/components/ExternalLink";
 import Loader from "@/components/Loader";
+import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
+import { Button } from "@/components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
 import SearchFilters from "@/components/blocks/SearchFilters";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Drawer from "@/components/drawer/Drawer";
 import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
 import { SearchSettings } from "@/components/filters/SearchSettings";
+import { Label } from "@/components/labels/Label";
 import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
+import { Info } from "@/components/molecules/info/Info";
 import { SubNav } from "@/components/nav/SubNav";
-import Pagination from "@/components/pagination";
-import SearchResultList from "@/components/search/SearchResultList";
-import { Icon } from "@/components/atoms/icon/Icon";
-import { Button } from "@/components/atoms/button/Button";
 import { ConceptPicker } from "@/components/organisms/ConceptPicker";
-import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
-import { Label } from "@/components/labels/Label";
-
+import Pagination from "@/components/pagination";
+import { MultiCol } from "@/components/panels/MultiCol";
+import { SideCol } from "@/components/panels/SideCol";
+import { SingleCol } from "@/components/panels/SingleCol";
+import SearchResultList from "@/components/search/SearchResultList";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { withEnvConfig } from "@/context/EnvConfig";
+import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
+import useConfig from "@/hooks/useConfig";
+import { useDownloadCsv } from "@/hooks/useDownloadCsv";
+import useSearch from "@/hooks/useSearch";
+import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
-import { getFeatureFlags } from "@/utils/featureFlags";
 
-import { QUERY_PARAMS } from "@/constants/queryParams";
-
-import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
-
-import { TConcept, TTheme, TThemeConfig } from "@/types";
-import { withEnvConfig } from "@/context/EnvConfig";
-import { Info } from "@/components/molecules/info/Info";
-
-type TProps = {
+interface IProps {
   theme: TTheme;
   themeConfig: TThemeConfig;
-  featureFlags: Record<string, string | boolean>;
+  featureFlags: TFeatureFlags;
   conceptsData?: TConcept[];
-};
+}
 
 const SETTINGS_ANIMATION_VARIANTS = {
   hidden: { opacity: 0, transition: { duration: 0.1 } },
   visible: { opacity: 1, transition: { duration: 0 } },
 };
 
-const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig, featureFlags, conceptsData }: TProps) => {
+const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig, featureFlags, conceptsData }: IProps) => {
   const router = useRouter();
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
@@ -407,7 +401,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                         concepts={conceptsData}
                         title={
                           <div className="flex items-center gap-2">
-                            <div className="text-[15px] font-medium text-text-primary">Concepts</div>
+                            <div className="text-[15px] font-medium text-text-primary">Topics</div>
                             <Label>Beta</Label>
                           </div>
                         }
@@ -435,57 +429,15 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 currentSlideOut ? "md:pointer-events-none md:select-none md:opacity-50" : ""
               }`}
             >
-              <SingleCol extraClasses="px-5 pt-5 relative">
-                <div>
-                  <div className="">
-                    <div className="flex justify-between flex-wrap gap-2 items-start">
-                      <div className="md:hidden">
-                        <Button content="both" className="flex-nowrap" onClick={toggleFilters}>
-                          <span>{showFilters ? "Hide" : "Show"} filters</span>
-                        </Button>
-                      </div>
-                      <div className="relative z-10 -top-0.5 md:order-1">
-                        <button
-                          className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showOptions ? "bg-surface-ui" : ""}`}
-                          onClick={() => setShowOptions(!showOptions)}
-                          data-cy="search-options"
-                          ref={settingsButtonRef}
-                        >
-                          Sort &amp; Display
-                        </button>
-                        <AnimatePresence initial={false}>
-                          {showOptions && (
-                            <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
-                              <SearchSettings
-                                queryParams={router.query}
-                                handleSortClick={handleSortClick}
-                                handleSearchChange={handleSearchChange}
-                                setShowOptions={setShowOptions}
-                                settingsButtonRef={settingsButtonRef}
-                              />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <p className="text-sm text-text-primary font-normal">
-                          Results <span className="text-text-secondary">{hits || 0}</span>
-                        </p>
-                        <Info
-                          title="Showing the top 500 results"
-                          description="We limit the number of matches you can see so you get the quickest, most accurate results."
-                          link={{ href: "/faq", text: "Learn more" }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-sm md:text-right">
+              <SingleCol extraClasses="px-5 relative">
+                {["error", "success"].includes(downloadCSVStatus) && (
+                  <div className="text-sm text-center mt-5">
                     {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
                     {downloadCSVStatus === "success" && (
                       <span className="text-green-600">CSV downloaded successfully, please check your downloads folder</span>
                     )}
                   </div>
-                </div>
+                )}
 
                 <div className="mt-5">
                   {status === "loading" ? (
@@ -493,15 +445,59 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       <Loader />
                     </div>
                   ) : (
-                    <section data-cy="search-results" className="min-h-screen">
-                      <h2 className="sr-only">Search results</h2>
-                      <SearchResultList
-                        category={router.query[QUERY_PARAMS.category]?.toString()}
-                        families={families}
-                        onClick={handleMatchesButtonClick}
-                        activeFamilyIndex={drawerFamily}
-                      />
-                    </section>
+                    <>
+                      <div className="md:mb-5">
+                        <div className="md:hidden mb-4">
+                          <Button content="both" className="flex-nowrap" onClick={toggleFilters}>
+                            <span>{showFilters ? "Hide" : "Show"} filters</span>
+                          </Button>
+                        </div>
+                        <div className="flex justify-between items-start">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm text-text-primary font-normal">
+                              Results <span className="text-text-secondary">{hits || 0}</span>
+                            </p>
+                            <Info
+                              title="Showing the top 500 results"
+                              description="We limit the number of matches you can see so you get the quickest, most accurate results."
+                              link={{ href: "/faq", text: "Learn more" }}
+                            />
+                          </div>
+                          <div className="relative z-10 -top-0.5">
+                            <button
+                              className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showOptions ? "bg-surface-ui" : ""}`}
+                              onClick={() => setShowOptions(!showOptions)}
+                              data-cy="search-options"
+                              ref={settingsButtonRef}
+                            >
+                              Sort &amp; Display
+                            </button>
+                            <AnimatePresence initial={false}>
+                              {showOptions && (
+                                <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
+                                  <SearchSettings
+                                    queryParams={router.query}
+                                    handleSortClick={handleSortClick}
+                                    handleSearchChange={handleSearchChange}
+                                    setShowOptions={setShowOptions}
+                                    settingsButtonRef={settingsButtonRef}
+                                  />
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                        </div>
+                      </div>
+                      <section data-cy="search-results" className="min-h-screen">
+                        <h2 className="sr-only">Search results</h2>
+                        <SearchResultList
+                          category={router.query[QUERY_PARAMS.category]?.toString()}
+                          families={families}
+                          onClick={handleMatchesButtonClick}
+                          activeFamilyIndex={drawerFamily}
+                        />
+                      </section>
+                    </>
                   )}
                 </div>
                 {status !== "loading" && hits > 1 && (
@@ -541,24 +537,27 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const featureFlags = await getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
-  let themeConfig = {};
-  try {
-    themeConfig = await readConfigFile(theme);
-  } catch (error) {}
+  const themeConfig = await readConfigFile(theme);
+
+  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
 
   let conceptsData: TConcept[];
-  try {
-    const client = new ApiClient(process.env.CONCEPTS_API_URL);
-    const conceptsV1 = featureFlags["concepts-v1"];
-    if (conceptsV1) {
+  if (knowledgeGraphEnabled) {
+    try {
+      const client = new ApiClient(process.env.CONCEPTS_API_URL);
       const { data: returnedData } = await client.get(`/concepts/search?limit=10000&has_classifier=true`);
       conceptsData = returnedData;
+    } catch (error) {
+      // TODO: handle error more elegantly
     }
-  } catch (error) {
-    // TODO: handle error more elegantly
   }
 
   return {
-    props: withEnvConfig({ theme, themeConfig, featureFlags, conceptsData: conceptsData ?? null }),
+    props: withEnvConfig({
+      theme,
+      themeConfig,
+      featureFlags,
+      conceptsData: conceptsData ?? null,
+    }),
   };
 };

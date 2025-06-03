@@ -39,7 +39,7 @@ lint:
   enabled:
     - actionlint@1.7.5
     - checkov@3.2.46
-    - eslint@8.57.0
+    - eslint@8
     - git-diff-check
     - markdownlint@0.39.0
     - oxipng@9.0.0

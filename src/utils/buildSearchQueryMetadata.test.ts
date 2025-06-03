@@ -1,4 +1,5 @@
 import { TThemeConfig } from "@/types";
+
 import { buildSearchQueryMetadata } from "./buildSearchQueryMetadata";
 
 const testThemeConfig: TThemeConfig = {

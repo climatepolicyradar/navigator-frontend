@@ -1,16 +1,17 @@
 import { ExternalLink } from "@/components/ExternalLink";
-import { Button } from "@/components/atoms/button/Button";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { Button } from "@/components/atoms/button/Button";
 import { Heading } from "@/components/typography/Heading";
+
 import Popup from "./Popup";
 
-type TProps = {
+interface IProps {
   active: boolean;
   onCancelClick: () => void;
   onConfirmClick: () => void;
-};
+}
 
-export const DownloadCsvPopup = ({ active, onCancelClick, onConfirmClick }: TProps) => {
+export const DownloadCsvPopup = ({ active, onCancelClick, onConfirmClick }: IProps) => {
   return (
     <Popup active={active} onCloseClick={onCancelClick}>
       <div className="flex flex-col items-center">

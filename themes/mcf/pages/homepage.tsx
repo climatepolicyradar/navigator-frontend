@@ -1,7 +1,6 @@
 import React from "react";
 
 import Layout from "@/components/layouts/LandingPage";
-
 import {
   Header,
   Footer,
@@ -13,12 +12,12 @@ import {
 } from "@/mcf/components";
 import { PAGE_DESCRIPTION, APP_NAME } from "@/mcf/constants/pageMetadata";
 
-type TProps = {
+interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   searchInput: string;
-};
+}
 
-const LandingPage = ({ handleSearchInput, searchInput }: TProps) => {
+const LandingPage = ({ handleSearchInput, searchInput }: IProps) => {
   return (
     <Layout title="Climate Fund Search" theme={APP_NAME} description={PAGE_DESCRIPTION}>
       <main id="main" className="flex flex-col flex-1">

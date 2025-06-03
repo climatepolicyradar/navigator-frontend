@@ -1,5 +1,5 @@
-import { RefObject } from "react";
 import { Select as BaseSelect } from "@base-ui-components/react";
+import { RefObject } from "react";
 import { LuChevronsUpDown } from "react-icons/lu";
 
 type TSelectOption = {
@@ -7,7 +7,7 @@ type TSelectOption = {
   value: string;
 };
 
-interface SelectProps {
+interface IProps {
   defaultValue?: string;
   value?: string;
   options?: TSelectOption[];
@@ -15,7 +15,7 @@ interface SelectProps {
   container?: HTMLElement | RefObject<HTMLElement> | null;
 }
 
-export function Select({ defaultValue, value, options, onValueChange, container = null }: SelectProps) {
+export function Select({ defaultValue, value, options, onValueChange, container = null }: IProps) {
   const handleValueChange = (value: string) => {
     onValueChange?.(value);
   };

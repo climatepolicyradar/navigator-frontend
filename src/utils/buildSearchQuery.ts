@@ -1,9 +1,8 @@
-import { initialSearchCriteria } from "@/constants/searchCriteria";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { initialSearchCriteria } from "@/constants/searchCriteria";
+import { TSearchCriteria, TSearchKeywordFilters, TThemeConfig } from "@/types";
 
 import { buildSearchQueryMetadata } from "./buildSearchQueryMetadata";
-
-import { TSearchCriteria, TSearchKeywordFilters, TThemeConfig } from "@/types";
 
 export type TRouterQuery = {
   [key: string]: string | string[];
@@ -110,7 +109,7 @@ export default function buildSearchQuery(
   }
 
   if (includeAllTokens) {
-    let allContinuationTokens: string[] = [];
+    const allContinuationTokens: string[] = [];
     const routerQueryToken = routerQuery[QUERY_PARAMS.active_continuation_token] as string;
     const routerQueryTokens = routerQuery[QUERY_PARAMS.continuation_tokens] as string;
     if (routerQueryTokens) {
@@ -155,7 +154,10 @@ export default function buildSearchQuery(
     const configFrameworkLaws = themeConfig.filters.find((f) => f.taxonomyKey === "framework_laws");
     query.metadata = query.metadata.filter((m) => m.name !== configFrameworkLaws.apiMetaDataKey);
     if (routerQuery[QUERY_PARAMS.framework_laws] === "true") {
-      query.metadata.push({ name: configFrameworkLaws.apiMetaDataKey, value: "Mitigation" });
+      query.metadata.push({
+        name: configFrameworkLaws.apiMetaDataKey,
+        value: "Mitigation",
+      });
     }
   }
   if (routerQuery[QUERY_PARAMS.topic]) {
@@ -174,7 +176,7 @@ export default function buildSearchQuery(
   }
 
   if (routerQuery[QUERY_PARAMS.fund]) {
-    let corpusIds: string[] = [];
+    const corpusIds: string[] = [];
     const funds = routerQuery[QUERY_PARAMS.fund];
     const configFunds = themeConfig.filters.find((f) => f.taxonomyKey === "fund");
     if (configFunds) {
@@ -193,7 +195,7 @@ export default function buildSearchQuery(
   }
 
   if (routerQuery[QUERY_PARAMS.fund_doc_type]) {
-    let corpusIds: string[] = [];
+    const corpusIds: string[] = [];
     const funds = routerQuery[QUERY_PARAMS.fund_doc_type];
     const configFundsFromTypes = themeConfig.filters.find((f) => f.taxonomyKey === "fund_doc_type");
     if (configFundsFromTypes) {
@@ -225,12 +227,12 @@ export default function buildSearchQuery(
   }
   // ---- End of MCF specific ----
 
-  // ---- Reports specific ----
-  // These are the filters that are specific to the Reports corpus type
+  // ---- Reports & UNFCCC specific ----
+  // These are the filters that are specific to the Reports and UNFCCC corpus types - note: we pass in the corpusIds to check as there are multiple instances of the same filter
   if (routerQuery[QUERY_PARAMS.author_type]) {
-    query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS.author_type], "author_type", themeConfig);
+    query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS.author_type], "author_type", themeConfig, corpusIds);
   }
-  // ---- End of Reports specific ----
+  // ---- End of Reports & UNFCCC specific specific ----
 
   // ---- UNFCCC specific ----
   // These are the filters that are specific to the UNFCCC corpus type

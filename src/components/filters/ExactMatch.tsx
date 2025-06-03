@@ -1,4 +1,5 @@
 import { ChangeEvent } from "react";
+
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
 const ExactMatch = ({ id, handleSearchChange, checked, landing = false }) => {

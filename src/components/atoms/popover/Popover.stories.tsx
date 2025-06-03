@@ -1,6 +1,7 @@
-import { Meta, StoryObj } from "@storybook/react/*";
-import { Button } from "../button/Button";
+import { Meta, StoryObj } from "@storybook/react";
+
 import { Popover } from "./Popover";
+import { Button } from "../button/Button";
 
 const meta = {
   title: "Atoms/Popover",
@@ -12,13 +13,13 @@ const meta = {
     trigger: { control: false },
   },
 } satisfies Meta<typeof Popover>;
-type Story = StoryObj<typeof Popover>;
+type TStory = StoryObj<typeof Popover>;
 
 export default meta;
 
 const trigger = <Button>Trigger</Button>;
 
-export const WithChildren: Story = {
+export const WithChildren: TStory = {
   args: {
     children: "Hello, I am a popover!",
     openOnHover: false,
@@ -26,7 +27,7 @@ export const WithChildren: Story = {
   },
 };
 
-export const WithElements: Story = {
+export const WithElements: TStory = {
   args: {
     description: "This is the popover description. Lots of text can go here, if you'd like.",
     link: {

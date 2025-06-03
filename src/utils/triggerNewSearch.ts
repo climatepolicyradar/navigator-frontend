@@ -1,4 +1,5 @@
 import { NextRouter } from "next/router";
+
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
 export const triggerNewSearch = (router: NextRouter, term: string, filter?: string, filterValue?: string) => {

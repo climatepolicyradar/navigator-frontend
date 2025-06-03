@@ -1,41 +1,39 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState, useCallback, useMemo } from "react";
 
 import { ApiClient } from "@/api/http-common";
-
-import useSearch from "@/hooks/useSearch";
-
-import { FullWidth } from "@/components/panels/FullWidth";
-
-import Layout from "@/components/layouts/Main";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
-import PassageMatches from "@/components/PassageMatches";
 import Loader from "@/components/Loader";
-import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
+import PassageMatches from "@/components/PassageMatches";
+import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { DocumentHead } from "@/components/documents/DocumentHead";
-import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
+import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { SearchSettings } from "@/components/filters/SearchSettings";
-
-import { QUERY_PARAMS } from "@/constants/queryParams";
+import Layout from "@/components/layouts/Main";
+import { Info } from "@/components/molecules/info/Info";
+import { FullWidth } from "@/components/panels/FullWidth";
 import { getDocumentDescription } from "@/constants/metaDescriptions";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
-
-import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@/types";
-import { getFeatureFlags } from "@/utils/featureFlags";
-import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
-import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamiy";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 import { withEnvConfig } from "@/context/EnvConfig";
+import useSearch from "@/hooks/useSearch";
+import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse } from "@/types";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamily";
+import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
+import { readConfigFile } from "@/utils/readConfigFile";
 
-type TProps = {
+interface IProps {
   document: TDocumentPage;
   family: TFamilyPage;
   theme: TTheme;
   vespaFamilyData?: TSearchResponse;
   vespaDocumentData?: TSearchResponse;
-};
+}
 
 const passageClasses = (canPreview: boolean) => {
   if (canPreview) {
@@ -73,7 +71,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   theme,
   vespaFamilyData,
   vespaDocumentData,
-}: TProps) => {
+}: IProps) => {
   const [canPreview, setCanPreview] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [pageNumber, setPageNumber] = useState(null);
@@ -171,6 +169,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(families), document.slug]);
 
+  const passagesResultsContext = getPassageResultsContext({
+    isExactSearch: exactMatchQuery,
+    passageMatches: totalNoOfMatches,
+    queryTerm: qsSearchString,
+    selectedTopics: [],
+  });
+
   const conceptFiltersQuery = router.query[QUERY_PARAMS.concept_name];
   const conceptFilters = useMemo(
     () => (conceptFiltersQuery ? (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]) : undefined),
@@ -200,7 +205,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
                 <div
                   id="document-preview"
-                  className={`pt-4 flex-1 h-[400px] basis-[400px] md:block md:h-full relative ${
+                  className={`flex-1 h-[400px] basis-[400px] md:block md:h-full relative ${
                     totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""
                   }`}
                 >
@@ -232,13 +237,12 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           {totalNoOfMatches > 0 && (
                             <>
                               <div className="mb-2 text-sm" data-cy="document-matches-description">
-                                Displaying {renderPassageCount(totalNoOfMatches)} for "
-                                <span className="text-textDark font-medium">{`${qsSearchString}`}</span>"
-                                {!searchQuery.exact_match && ` and related phrases`}
+                                {passagesResultsContext}
                                 {totalNoOfMatches >= MAX_RESULTS && (
-                                  <span className="ml-1 inline-block">
-                                    <SearchLimitTooltip colour="grey" />
-                                  </span>
+                                  <Info
+                                    className="inline-block ml-2 align-text-bottom"
+                                    description={`We limit the number of search results to ${MAX_RESULTS} so that you get the best performance from our tool. We're working on a way to remove this limit.`}
+                                  />
                                 )}
                               </div>
                               <p className="text-sm">Sorted by {passagesByPosition ? "page number" : "search relevance"}</p>
@@ -260,8 +264,14 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                 animate="open"
                                 exit="collapsed"
                                 variants={{
-                                  collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                                  open: { opacity: 1, transition: { duration: 0.25 } },
+                                  collapsed: {
+                                    opacity: 0,
+                                    transition: { duration: 0.1 },
+                                  },
+                                  open: {
+                                    opacity: 1,
+                                    transition: { duration: 0.25 },
+                                  },
                                 }}
                               >
                                 <SearchSettings
@@ -318,6 +328,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const featureFlags = await getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
+  const themeConfig = await readConfigFile(theme);
+
+  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+
   const id = context.params.id;
   const client = new ApiClient(process.env.BACKEND_API_URL);
 
@@ -334,8 +348,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     familyData = returnedFamilyData;
 
     // Fetch Vespa family data for concepts (similar to document/[id].tsx)
-    const conceptsV1 = featureFlags["concepts-v1"];
-    if (conceptsV1) {
+    if (knowledgeGraphEnabled) {
       const { data: vespaDocumentDataResponse } = await client.get(`/document/${documentData.import_id}`);
       vespaDocumentData = vespaDocumentDataResponse;
       const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
