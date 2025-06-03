@@ -1,16 +1,14 @@
+import { motion, AnimatePresence } from "framer-motion";
 import Script from "next/script";
 import { useRef, useState, useMemo, useEffect, useContext } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 
 import { AdobeContext } from "@/context/AdobeContext";
 import usePDFPreview from "@/hooks/usePDFPreview";
-import { TDocumentPage, TPassage } from "@/types";
+import { TDocumentPage, TLoadingStatus, TPassage } from "@/types";
 
 import Loader from "./Loader";
 
-import { TDocumentPage, TLoadingStatus, TPassage } from "@/types";
-
-type TProps = {
+interface IProps {
   document: TDocumentPage;
   documentPassageMatches?: TPassage[];
   pageNumber?: number;
