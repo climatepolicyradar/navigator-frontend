@@ -49,7 +49,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
     };
   }, [formRef]);
 
-  const displayPlaceholder = placeholder ?? "Search the full text of 5000+ laws and policies";
+  const displayPlaceholder = placeholder ?? "Search the full text of over 12,000 climate documents";
 
   return (
     <form

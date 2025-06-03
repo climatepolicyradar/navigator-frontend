@@ -20,8 +20,9 @@ import { currentYear, minYear } from "@/constants/timedate";
 import { SlideOutContext } from "@/context/SlideOutContext";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
+import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
+import { isCorporateReportsEnabled, isUNFCCCFiltersEnabled } from "@/utils/features";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 
 import { Info } from "../molecules/info/Info";
@@ -50,7 +51,7 @@ interface IProps {
   handleRegionChange(region: string): void;
   handleClearSearch(): void;
   handleDocumentCategoryClick(value: string): void;
-  featureFlags: Record<string, string | boolean>;
+  featureFlags: TFeatureFlags;
 }
 
 const SearchFilters = ({
@@ -122,7 +123,7 @@ const SearchFilters = ({
           <InputListContainer>
             {themeConfig.categories?.options?.map(
               (option) =>
-                ((option.slug === "climate_policy_radar_reports" && featureFlags["corporate-reports"]) ||
+                ((option.slug === "climate_policy_radar_reports" && isCorporateReportsEnabled(featureFlags)) ||
                   option.slug !== "climate_policy_radar_reports") && (
                   <InputRadio
                     key={option.slug}
@@ -141,13 +142,6 @@ const SearchFilters = ({
 
       {themeConfigStatus === "success" &&
         themeConfig.filters.map((filter) => {
-          // TODO: remove FF and logic for UNFCCC filters
-          if (
-            ["_document.type", "author_type"].includes(filter.taxonomyKey) &&
-            filter.corporaKey === "Intl. agreements" &&
-            !featureFlags["unfccc-filters"]
-          )
-            return;
           // If the filter is not in the selected category, don't display it
           if (!canDisplayFilter(filter, query, themeConfig)) return;
           return (
@@ -180,7 +174,7 @@ const SearchFilters = ({
             {...{ [SLIDE_OUT_DATA_KEY]: "concepts" }}
           >
             <div className="flex items-center gap-2 pointer-events-none">
-              <Heading>Concepts</Heading>
+              <Heading>Topics</Heading>
               <Label>Beta</Label>
             </div>
             <span

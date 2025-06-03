@@ -26,7 +26,7 @@ export const fetchAndProcessConcepts = async (conceptIds: string[]) => {
       return {
         wikibase_id: conceptId,
         preferred_label: ROOT_LEVEL_CONCEPTS[conceptId] || "Other",
-        description: "Concept data unavailable",
+        description: "Topic data unavailable",
         subconcept_of: [],
       } as TConcept;
     }

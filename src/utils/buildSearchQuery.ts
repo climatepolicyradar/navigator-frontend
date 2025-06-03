@@ -227,12 +227,12 @@ export default function buildSearchQuery(
   }
   // ---- End of MCF specific ----
 
-  // ---- Reports specific ----
-  // These are the filters that are specific to the Reports corpus type
+  // ---- Reports & UNFCCC specific ----
+  // These are the filters that are specific to the Reports and UNFCCC corpus types - note: we pass in the corpusIds to check as there are multiple instances of the same filter
   if (routerQuery[QUERY_PARAMS.author_type]) {
-    query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS.author_type], "author_type", themeConfig);
+    query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS.author_type], "author_type", themeConfig, corpusIds);
   }
-  // ---- End of Reports specific ----
+  // ---- End of Reports & UNFCCC specific specific ----
 
   // ---- UNFCCC specific ----
   // These are the filters that are specific to the UNFCCC corpus type
