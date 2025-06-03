@@ -10,12 +10,12 @@ type TBreadcrumbLink = {
   cy?: string;
 };
 
-type TProps = {
+interface IProps {
   category?: TBreadcrumbLink;
   family?: TBreadcrumbLink;
   geography?: TBreadcrumbLink;
   label: string | React.ReactNode;
-};
+}
 
 const BreadCrumb = ({ last = false, label, href = null, cy = "" }: TBreadcrumbLink) => {
   const labelShort =
@@ -41,7 +41,7 @@ const BreadCrumb = ({ last = false, label, href = null, cy = "" }: TBreadcrumbLi
 /**
  * Lists the page hierarchy back to the homepage so that the user can better understand where they are, and to easily go back to a previous page.
  */
-export const BreadCrumbs = ({ geography = null, category = null, family = null, label }: TProps) => {
+export const BreadCrumbs = ({ geography = null, category = null, family = null, label }: IProps) => {
   return (
     <ul className="flex items-baseline flex-wrap gap-2 text-sm" data-cy="breadcrumbs">
       <BreadCrumb label="Home" href="/" cy="home" />

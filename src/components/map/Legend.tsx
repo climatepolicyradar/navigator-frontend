@@ -1,10 +1,10 @@
-type TLegendProps = {
+interface IProps {
   max: number;
   showLitigation: boolean;
   showMcf: boolean;
-};
+}
 
-export const Legend = ({ max, showLitigation, showMcf }: TLegendProps) => {
+export const Legend = ({ max, showLitigation, showMcf }: IProps) => {
   const scale = [1, Math.round(max * 0.25), Math.round(max * 0.5), Math.round(max * 0.75), max];
 
   return (

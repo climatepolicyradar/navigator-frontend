@@ -2,11 +2,11 @@ import { ExternalLink } from "@/components/ExternalLink";
 import { Button } from "@/components/atoms/button/Button";
 import { Heading } from "@/components/typography/Heading";
 
-type TProps = {
+interface IProps {
   resetError: () => void;
-};
+}
 
-const TopLevel = ({ resetError }: TProps) => {
+const TopLevel = ({ resetError }: IProps) => {
   return (
     <div className="max-w-screen-sm m-auto h-full flex flex-col justify-center p-4 gap-4">
       <Heading level={1}>Sorry, the app has encountered an error</Heading>

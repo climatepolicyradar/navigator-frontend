@@ -1,25 +1,22 @@
-import { Fragment } from "react";
+import { Fragment, useContext } from "react";
 
-import Layout from "@/components/layouts/Main";
-import { SiteWidth } from "@/components/panels/SiteWidth";
-import { SingleCol } from "@/components/panels/SingleCol";
-import { SubNav } from "@/components/nav/SubNav";
-
-import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { AccordianItem } from "@/cclw/components/AccordianItem";
-
-import { Heading } from "@/components/typography/Heading";
-
 import { FAQS } from "@/cclw/constants/faqs";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Layout from "@/components/layouts/Main";
+import { SubNav } from "@/components/nav/SubNav";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { Heading } from "@/components/typography/Heading";
 import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
-import { getFeatureFlags } from "@/utils/featureFlags";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { ThemePageFeaturesContext } from "@/context/ThemePageFeaturesContext";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
 
-type TProps = {
-  featureFlags: Record<string, string | boolean>;
-};
+const FAQ: React.FC = () => {
+  const { featureFlags, themeConfig } = useContext(ThemePageFeaturesContext);
 
-const FAQ: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags = {} }: TProps) => {
+  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+
   return (
     <Layout
       title="FAQ"
@@ -66,10 +63,10 @@ const FAQ: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFl
             </div>
           </SingleCol>
 
-          {featureFlags["concepts-v1"] === true && (
+          {knowledgeGraphEnabled && (
             <SingleCol>
               <div className="text-content mb-12">
-                <Heading level={2}>Concepts FAQs</Heading>
+                <Heading level={2}>Topics FAQs</Heading>
                 {CONCEPTS_FAQS.map((faq, i) => (
                   <Fragment key={faq.title}>
                     <AccordianItem id={faq.id} title={faq.title} headContent={faq.headContent ?? null} startOpen={i === 0}>
@@ -88,13 +85,3 @@ const FAQ: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFl
   );
 };
 export default FAQ;
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const featureFlags = await getFeatureFlags(context.req.cookies);
-
-  return {
-    props: {
-      featureFlags: featureFlags || {},
-    },
-  };
-};

@@ -1,25 +1,24 @@
-import { useEffect, useRef, useState } from "react";
 import { NextRouter, useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
 
-import { InputCheck } from "@/components/forms/Checkbox";
-import { Select } from "@/components/atoms/select/Select";
 import { Accordian } from "@/components/accordian/Accordian";
-
-import { fetchAndProcessConcepts } from "@/utils/processConcepts";
-import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
-
+import { Select } from "@/components/atoms/select/Select";
+import { InputCheck } from "@/components/forms/Checkbox";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-
 import { TConcept } from "@/types";
+import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
+import { fetchAndProcessConcepts } from "@/utils/processConcepts";
+import { firstCase } from "@/utils/text";
+
 import { LinkWithQuery } from "../LinkWithQuery";
 
-type TProps = {
+interface IProps {
   concepts: TConcept[];
   containerClasses?: string;
   showSearch?: boolean;
   startingSort?: TSort;
   title: React.ReactNode;
-};
+}
 
 const SORT_OPTIONS = ["A-Z", "Grouped"] as const;
 
@@ -68,13 +67,15 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
   router.push({ query: query }, undefined, { shallow: true });
 };
 
-export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showSearch = true, title }: TProps) => {
+export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showSearch = true, title }: IProps) => {
   const router = useRouter();
   const ref = useRef(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<TSort>(startingSort);
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
-  const [conceptsGrouped, setConceptsGrouped] = useState<{ [rootConceptId: string]: TConcept[] }>({});
+  const [conceptsGrouped, setConceptsGrouped] = useState<{
+    [rootConceptId: string]: TConcept[];
+  }>({});
   const [filteredConcepts, setFilteredConcepts] = useState<TConcept[]>([]);
 
   const selectOptions = SORT_OPTIONS.map((option) => ({
@@ -97,7 +98,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
       {/* SCROLL AREA */}
       <div className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
         <p className="text-sm">
-          This feature automatically detects climate concepts in documents. Accuracy is not 100%.{" "}
+          This feature automatically detects climate topics in documents. Accuracy is not 100%.{" "}
           <LinkWithQuery href="/faq" className="underline" target="_blank">
             Learn more
           </LinkWithQuery>
@@ -123,7 +124,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
             />
           </div>
         </div>
-        {search !== "" && <p className="text-xs italic">The results below are also filtered using the concept's alternative labels</p>}
+        {search !== "" && <p className="text-xs italic">The results below are also filtered using the topic's alternative labels</p>}
         <div className={`flex flex-col text-sm border-t border-border-light ${sort === "A-Z" ? "gap-2 border-t-0" : ""}`}>
           {/* GROUPED SORT */}
           {sort === "Grouped" &&
@@ -139,7 +140,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
                 rootConceptIndex === 0;
               return (
                 <Accordian
-                  title={rootConcept.preferred_label.slice(0, 1).toUpperCase() + rootConcept.preferred_label.slice(1)}
+                  title={firstCase(rootConcept.preferred_label)}
                   key={rootConcept.wikibase_id}
                   fixedHeight="100%"
                   startOpen={startOpen}
@@ -152,7 +153,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
                       .map((concept) => (
                         <InputCheck
                           key={concept.wikibase_id}
-                          label={concept.preferred_label.slice(0, 1).toUpperCase() + concept.preferred_label.slice(1)}
+                          label={firstCase(concept.preferred_label)}
                           checked={isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)}
                           onChange={() => {
                             onConceptChange(router, concept);
@@ -172,7 +173,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
               .map((concept) => (
                 <InputCheck
                   key={concept.wikibase_id}
-                  label={concept.preferred_label.slice(0, 1).toUpperCase() + concept.preferred_label.slice(1)}
+                  label={firstCase(concept.preferred_label)}
                   checked={isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)}
                   onChange={() => {
                     onConceptChange(router, concept);

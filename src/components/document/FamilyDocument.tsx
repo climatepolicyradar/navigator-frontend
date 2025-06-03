@@ -1,16 +1,18 @@
 import { useRouter } from "next/router";
-import useConfig from "@/hooks/useConfig";
-import { Icon } from "@/components/atoms/icon/Icon";
-import { getLanguage } from "@/helpers/getLanguage";
-import { TDocumentPage, TLoadingStatus } from "@/types";
-import { getDocumentType } from "@/helpers/getDocumentType";
 
-type TProps = {
+import { Icon } from "@/components/atoms/icon/Icon";
+import { MAX_PASSAGES } from "@/constants/paging";
+import { getDocumentType } from "@/helpers/getDocumentType";
+import { getLanguage } from "@/helpers/getLanguage";
+import useConfig from "@/hooks/useConfig";
+import { TDocumentPage, TLoadingStatus } from "@/types";
+
+interface IProps {
   document: TDocumentPage;
   matches?: number;
   status?: TLoadingStatus;
   familyMatches?: number;
-};
+}
 
 const loadingIndicator = (
   <span className="flex gap-2 items-center">
@@ -19,7 +21,7 @@ const loadingIndicator = (
   </span>
 );
 
-export const FamilyDocument = ({ document, matches, status, familyMatches }: TProps) => {
+export const FamilyDocument = ({ document, matches, status, familyMatches }: IProps) => {
   const { title, slug, document_role, language, content_type, variant } = document;
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
@@ -51,7 +53,10 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
       if (canViewSource) window.open(document.source_url, "_blank");
     };
 
-    return { className: cssClass, onClick: !canPreview && !canViewSource ? null : handleClick };
+    return {
+      className: cssClass,
+      onClick: !canPreview && !canViewSource ? null : handleClick,
+    };
   };
 
   const getMatchesText = () => {
@@ -61,7 +66,7 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
     const numberOfMatches = typeof matches === "number" ? matches : parseInt(matches, 10);
     if (!numberOfMatches) return "";
 
-    return `View ${familyMatches >= 500 ? "more than " : ""}${numberOfMatches} ${numberOfMatches === 1 ? "match" : "matches"}`;
+    return `View ${familyMatches >= MAX_PASSAGES ? "more than " : ""}${numberOfMatches} ${numberOfMatches === 1 ? "match" : "matches"}`;
   };
 
   return (

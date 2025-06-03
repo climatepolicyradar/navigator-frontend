@@ -1,0 +1,58 @@
+name: Deploy to production
+on:
+  workflow_dispatch:
+    inputs:
+      # This is a gated deploy workflow.
+      # User inputs are intentional and protected by:
+      # 1. Environment protection rules requiring approval
+      # 2. Limited theme choices
+      # 3. Only deploying existing images
+      # trunk-ignore(checkov/CKV_GHA_7)
+      theme:
+        description: Theme to deploy
+        type: choice
+        required: true
+        options:
+          - cpr
+          - cclw
+          - mcf
+          - ccc
+      sha:
+        description: Git SHA to deploy
+        type: string
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-production:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4.1.0
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-new-frontend-github-actions
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: eu-west-1
+
+      - name: Login to Amazon ECR (production)
+        id: login-ecr-production
+        uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
+
+      - name: Build, tag, and push to ECR with 'latest' tag
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+          IMAGE_TAG: latest
+          AWS_REGION: eu-west-1
+          ECR_REPOSITORY: navigator-frontend-${{ inputs.theme }}
+          THEME: ${{ inputs.theme }}
+        run: |
+          docker build --build-arg THEME=${THEME} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT

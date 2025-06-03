@@ -1,7 +1,15 @@
 /* eslint-disable no-console */
 import fs from "fs";
+
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+import { DEFAULT_CONFIG_FEATURES, DEFAULT_FEATURE_FLAGS } from "@/constants/features";
+import { ThemePageFeaturesContext } from "@/context/ThemePageFeaturesContext";
+import { TFeatureFlags, TThemeConfig } from "@/types";
+import { getAllCookies } from "@/utils/cookies";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { readConfigFile } from "@/utils/readConfigFile";
 
 /*
 // This is a dynamic page to generate pages based on the routes.json file
@@ -15,13 +23,34 @@ type TPage = {
   contentPath: string;
 };
 
-type TProps = {
+interface IProps {
   page?: TPage & {
     notFound?: boolean;
   };
-};
+}
 
-export default function Page({ page }: TProps) {
+export default function Page({ page }: IProps) {
+  // const [configFeatures, setConfigFeatures] = useState<TConfigFeatures>(DEFAULT_CONFIG_FEATURES);
+  const [featureFlags, setFeatureFlags] = useState<TFeatureFlags>(DEFAULT_FEATURE_FLAGS);
+  const [themeConfig, setThemeConfig] = useState<TThemeConfig>({ features: DEFAULT_CONFIG_FEATURES } as TThemeConfig);
+
+  const loadFeatureFlags = async () => {
+    const allCookies = getAllCookies();
+    const retrievedFeatureFlags = await getFeatureFlags(allCookies);
+    setFeatureFlags(retrievedFeatureFlags);
+  };
+
+  const loadThemeConfig = async () => {
+    const theme = process.env.THEME;
+    const themeConfig = await readConfigFile(theme);
+    setThemeConfig(themeConfig);
+  };
+
+  useEffect(() => {
+    loadFeatureFlags();
+    loadThemeConfig();
+  }, []);
+
   // TODO: fix this properly
   // Next is throwing a NEXT_REDIRECT error under the hood when attemping to navigate to a missing page at root, e.g. /missing-page
   if (!page || page.notFound) {
@@ -33,7 +62,11 @@ export default function Page({ page }: TProps) {
     ssr: true,
   });
 
-  return <DynamicComponent />;
+  return (
+    <ThemePageFeaturesContext.Provider value={{ featureFlags, themeConfig }}>
+      <DynamicComponent />
+    </ThemePageFeaturesContext.Provider>
+  );
 }
 
 export async function getStaticPaths() {

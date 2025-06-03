@@ -1,7 +1,9 @@
-import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { NavBar } from "@/components/organisms/navBar/NavBar";
 import Image from "next/image";
 import { useRouter } from "next/router";
+
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { NavBar } from "@/components/organisms/navBar/NavBar";
+
 import { Menu } from "./Menu";
 
 export const MCFLogo = (

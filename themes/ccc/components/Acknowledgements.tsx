@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { ReactNode } from "react";
 
 import { ExternalLink } from "@/components/ExternalLink";
@@ -19,6 +18,7 @@ const Acknowledgement = ({ partnerImage, children }: TAcknowledgement) => {
       {partnerImage && (
         <div className="mb-4 md:mb-0 md:basis-1/2 lg:basis-1/3 flex">
           <ExternalLink className="" url={partnerImage.url}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`/images/cclw/partners/${partnerImage.imageUrl}`} alt={partnerImage.imageAlt} className="max-h-[96px]" />
           </ExternalLink>
         </div>

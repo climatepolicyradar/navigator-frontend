@@ -1,20 +1,21 @@
-/* eslint-disable no-console */
 import React from "react";
-import TopLevel from "./TopLevel";
+
 import PageLevel from "./PageLevel";
+import TopLevel from "./TopLevel";
 
 // based on: https://nextjs.org/docs/advanced-features/error-handling
 
 type TState = {
   hasError: boolean;
 };
-type TProps = {
+
+interface IProps {
   children: React.ReactNode;
   level: "top" | "page";
-};
+}
 
-class ErrorBoundary extends React.Component<TProps, TState> {
-  constructor(props: TProps) {
+class ErrorBoundary extends React.Component<IProps, TState> {
+  constructor(props: IProps) {
     super(props);
 
     // Define a state variable to track whether is an error or not
@@ -26,7 +27,8 @@ class ErrorBoundary extends React.Component<TProps, TState> {
   }
   // Track using error logging service
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.warn({ error, errorInfo });
+    // eslint-disable-next-line no-console
+    console.error(error);
   }
 
   handleClick = () => {

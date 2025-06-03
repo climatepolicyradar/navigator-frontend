@@ -1,6 +1,7 @@
-import { Meta, StoryObj } from "@storybook/react/*";
-import { Button } from "../button/Button";
+import { Meta, StoryObj } from "@storybook/react";
+
 import { Popover } from "./Popover";
+import { Button } from "../button/Button";
 
 const meta = {
   title: "Atoms/Popover",
@@ -12,14 +13,29 @@ const meta = {
     trigger: { control: false },
   },
 } satisfies Meta<typeof Popover>;
-type Story = StoryObj<typeof Popover>;
+type TStory = StoryObj<typeof Popover>;
 
 export default meta;
 
-export const Generic: Story = {
+const trigger = <Button>Trigger</Button>;
+
+export const WithChildren: TStory = {
   args: {
     children: "Hello, I am a popover!",
     openOnHover: false,
-    trigger: <Button>Trigger</Button>,
+    trigger,
+  },
+};
+
+export const WithElements: TStory = {
+  args: {
+    description: "This is the popover description. Lots of text can go here, if you'd like.",
+    link: {
+      href: "#",
+      text: "Link",
+    },
+    openOnHover: false,
+    title: "Title",
+    trigger,
   },
 };

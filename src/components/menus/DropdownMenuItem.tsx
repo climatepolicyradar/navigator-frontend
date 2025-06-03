@@ -1,8 +1,9 @@
-import { ExternalLink } from "@/components/ExternalLink";
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { useRouter } from "next/router";
 
-interface DropdownMenuItemProps {
+import { ExternalLink } from "@/components/ExternalLink";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+
+interface IProps {
   first?: boolean;
   title: string;
   href: string;
@@ -11,7 +12,7 @@ interface DropdownMenuItemProps {
   cy?: string;
   setShowMenu?(value: boolean): void;
 }
-const DropdownMenuItem = ({ first = false, title, href, target = "", external = false, cy, setShowMenu }: DropdownMenuItemProps) => {
+const DropdownMenuItem = ({ first = false, title, href, target = "", external = false, cy, setShowMenu }: IProps) => {
   const { pathname } = useRouter();
 
   const linkClass = (pageUrl: string) => {

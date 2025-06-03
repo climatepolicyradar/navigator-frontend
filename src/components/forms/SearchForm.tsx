@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { SearchDropdown } from "./SearchDropdown";
-import { TextInput } from "./TextInput";
 import { Icon } from "@/components/atoms/icon/Icon";
+import { SearchDropdown } from "@/components/forms/SearchDropdown";
+import { TextInput } from "@/components/forms/TextInput";
 
-type TProps = {
+interface IProps {
   input?: string;
   placeholder: string;
   size?: "small" | "large" | "default";
   handleSearchInput(term: string): void;
   handleSuggestion?(term: string, filter?: string, filterValue?: string): void;
-};
+}
 
-const SearchForm = ({ input, placeholder, size = "large", handleSearchInput, handleSuggestion }: TProps) => {
+const SearchForm = ({ input, placeholder, size = "large", handleSearchInput, handleSuggestion }: IProps) => {
   const [term, setTerm] = useState("");
   const [formFocus, setFormFocus] = useState(false);
   const formRef = useRef(null);

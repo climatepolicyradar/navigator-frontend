@@ -1,16 +1,17 @@
-import useConfig from "@/hooks/useConfig";
-import FilterTag from "../labels/FilterTag";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getCountryName } from "@/helpers/getCountryFields";
+import useConfig from "@/hooks/useConfig";
 
-type TProps = {
+import FilterTag from "../labels/FilterTag";
+
+interface IProps {
   list: string[];
   removeFilter: (type: string, value: string) => void;
   type: string;
   dataCy?: string;
-};
+}
 
-const MultiList = ({ list, removeFilter, type, dataCy }: TProps) => {
+const MultiList = ({ list, removeFilter, type, dataCy }: IProps) => {
   const configQuery = useConfig();
   const { data: { countries = [] } = {} } = configQuery;
 

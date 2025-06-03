@@ -1,4 +1,4 @@
-type TProps = {
+interface IProps {
   value?: string;
   type?: string;
   className?: string;
@@ -8,7 +8,7 @@ type TProps = {
   size?: "small" | "large" | "default";
   name?: string;
   onChange?: (value: string) => void;
-};
+}
 
 const iconClasses = (side: "left" | "right", children?: React.ReactNode) => {
   if (children) {
@@ -31,7 +31,7 @@ export const TextInput = ({
   side = "left",
   name,
   ...props
-}: TProps) => {
+}: IProps) => {
   const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
     if (onChange) {
       onChange(e.currentTarget.value);

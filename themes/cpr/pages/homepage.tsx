@@ -1,20 +1,19 @@
-import { MouseEvent } from "react";
 import dynamic from "next/dynamic";
+import { MouseEvent } from "react";
 
+import Banner from "@/components/banner/FullHeight";
+import ExactMatch from "@/components/filters/ExactMatch";
+import Footer from "@/components/footer/Footer";
+import Header from "@/components/headers/LandingPage";
 import Layout from "@/components/layouts/LandingPage";
+import AlphaLogo from "@/components/logo/AlphaLogo";
 import { FullWidth } from "@/components/panels/FullWidth";
 import { SiteWidth } from "@/components/panels/SiteWidth";
-
-import AlphaLogo from "@/components/logo/AlphaLogo";
-import ExactMatch from "@/components/filters/ExactMatch";
-import Header from "@/components/headers/LandingPage";
-import Banner from "@/components/banner/FullHeight";
-import Footer from "@/components/footer/Footer";
-import { PAGE_DESCRIPTION, APP_NAME } from "@/cpr/constants/pageMetadata";
 import LandingPageLinks from "@/cpr/components/LandingPageLinks";
+import LandingSearchForm from "@/cpr/components/LandingSearchForm";
 import Partners from "@/cpr/components/Partners";
 import Summary from "@/cpr/components/Summary";
-import LandingSearchForm from "@/cpr/components/LandingSearchForm";
+import { PAGE_DESCRIPTION, APP_NAME } from "@/cpr/constants/pageMetadata";
 
 // TODO temporarily disabled: https://climate-policy-radar.slack.com/archives/C08Q8GD1CUT/p1745941756888349
 // const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {
@@ -26,14 +25,14 @@ import LandingSearchForm from "@/cpr/components/LandingSearchForm";
  * GOTCHA: we export this to be used in the src/pages/index.tsx file.
  * It's a generic passed to `dynamic` so we can't rely on generic type checking.
  */
-export type TProps = {
+export interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   handleSearchChange: (type: string, value: any) => void;
   searchInput: string;
   exactMatch: boolean;
-};
+}
 
-const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exactMatch }: TProps) => {
+const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exactMatch }: IProps) => {
   const handleLinkClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const term = e.currentTarget.textContent;

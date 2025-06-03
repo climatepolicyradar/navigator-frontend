@@ -1,22 +1,22 @@
 import dynamic from "next/dynamic";
 
 import { SiteWidth } from "@/components/panels/SiteWidth";
+import { Heading } from "@/components/typography/Heading";
 
 import LandingSearchForm from "./LandingSearchForm";
 import { LogoLarge } from "./LogoLarge";
-import { Heading } from "@/components/typography/Heading";
 
 const Instructions = dynamic(() => import("./Instructions"), {
   loading: () => <p>Loading document stats...</p>,
   ssr: false,
 });
 
-type TProps = {
+interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   searchInput: string;
-};
+}
 
-export const Hero = ({ handleSearchInput, searchInput }: TProps) => {
+export const Hero = ({ handleSearchInput, searchInput }: IProps) => {
   return (
     <div className="pb-6 text-white pt-[28px] sm:pt-[48px] md:pt-[80px] lg:pt-[100px] xl:pt-[140px]">
       <SiteWidth>

@@ -1,8 +1,8 @@
 import Head from "next/head";
 import Image from "next/image";
 
-import Layout from "@/components/layouts/LandingPage";
 import { ExternalLink } from "@/components/ExternalLink";
+import Layout from "@/components/layouts/LandingPage";
 import { ColumnAndImage } from "@/cpr/components/oep/ColumnAndImage";
 import { EqualColumn, EqualColumns } from "@/cpr/components/oep/EqualColumns";
 import { Footer } from "@/cpr/components/oep/Footer";
@@ -42,7 +42,7 @@ const OceanEnergyPathwayPage = () => {
               <p className="text-lg">
                 With this tool, you can find information on offshore wind from around the globe, including legislation, government policies,
                 strategies, industry reports, analyses and policy recommendations from researchers and civil society. You can search for keywords and
-                policy concepts across the full text of all documents, viewing your search term and related phrases highlighted in the search results.
+                policy topics across the full text of all documents, viewing your search term and related phrases highlighted in the search results.
               </p>
             </ColumnAndImage>
           </Section>

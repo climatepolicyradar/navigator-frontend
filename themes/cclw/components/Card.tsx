@@ -1,6 +1,13 @@
-type TProps = { heading: string; type?: string; img?: string; imgAlt?: string; extraClasses?: string; children: React.ReactNode };
+interface IProps {
+  children: React.ReactNode;
+  extraClasses?: string;
+  heading: string;
+  img?: string;
+  imgAlt?: string;
+  type?: string;
+}
 
-export const Card = ({ heading, type, img, extraClasses, children }: TProps) => {
+export const Card = ({ heading, type, img, extraClasses, children }: IProps) => {
   return (
     <div className={`h-full ${extraClasses}`}>
       <div className="block relative border border-gray-300 rounded-xl h-full shadow p-4">
@@ -8,7 +15,12 @@ export const Card = ({ heading, type, img, extraClasses, children }: TProps) => 
           {img && (
             <div
               className="w-full h-[120px] overflow-hidden rounded-xl mb-2"
-              style={{ backgroundImage: `url(${img})`, backgroundSize: "cover", backgroundPosition: "center center", backgroundRepeat: "no-repeat" }}
+              style={{
+                backgroundImage: `url(${img})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center center",
+                backgroundRepeat: "no-repeat",
+              }}
             />
           )}
           {type && (

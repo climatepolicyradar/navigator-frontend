@@ -1,16 +1,17 @@
-import { Button } from "@/components/atoms/button/Button";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { Button } from "@/components/atoms/button/Button";
 import { Heading } from "@/components/typography/Heading";
+
 import { Modal } from "../molecules/modal/Modal";
 
-type TProps = {
+interface IProps {
   isOpen: boolean;
   onClose: () => void;
   onDownload: () => void;
-};
+}
 
-export const DownloadCsvPopup = ({ isOpen, onClose, onDownload }: TProps) => {
+export const DownloadCsvPopup = ({ isOpen, onClose, onDownload }: IProps) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="flex flex-col items-center">

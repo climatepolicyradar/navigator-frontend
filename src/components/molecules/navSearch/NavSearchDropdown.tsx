@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { LuChevronsUpDown } from "react-icons/lu";
 
-interface NavSearchDropdownProps {
+interface IProps {
   contextualSearchName: string;
   isEverything: boolean;
   setIsEverything: (newValue: boolean) => void;
 }
 
-type DropdownOption = {
+type TDropdownOption = {
   name: string;
   newIsEverythingValue: boolean;
 };
 
-export const NavSearchDropdown = ({ contextualSearchName, isEverything, setIsEverything }: NavSearchDropdownProps) => {
+export const NavSearchDropdown = ({ contextualSearchName, isEverything, setIsEverything }: IProps) => {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -38,7 +38,7 @@ export const NavSearchDropdown = ({ contextualSearchName, isEverything, setIsEve
   }, [ref]);
 
   // Show the other option below the currently selected one
-  const dropdownOptions: DropdownOption[] = [
+  const dropdownOptions: TDropdownOption[] = [
     {
       name: "Everything",
       newIsEverythingValue: true,

@@ -1,14 +1,14 @@
 import { InputListContainer } from "./InputListContainer";
 
-type TProps = {
+interface IProps {
   label: string;
   name: string;
   value: string;
   handleSubmit(): void;
   handleChange(value: string): void;
-};
+}
 
-export const DateRangeInput = ({ label, name, value, handleSubmit, handleChange }: TProps) => {
+export const DateRangeInput = ({ label, name, value, handleSubmit, handleChange }: IProps) => {
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSubmit();

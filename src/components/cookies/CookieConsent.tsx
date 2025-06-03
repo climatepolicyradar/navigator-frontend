@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import Script from "next/script";
+import { useEffect, useState } from "react";
 
-import { Button } from "@/components/atoms/button/Button";
 import { ExternalLink } from "@/components/ExternalLink";
-
+import { Button } from "@/components/atoms/button/Button";
+import { COOKIE_CONSENT_NAME } from "@/constants/cookies";
 import { getCookie, setCookie } from "@/utils/cookies";
 import getDomain from "@/utils/getDomain";
-
-import { COOKIE_CONSENT_NAME } from "@/constants/cookies";
-import dynamic from "next/dynamic";
 
 const ThemeAnalytics = dynamic<{ enableAnalytics: boolean }>(() => import(`/themes/${process.env.THEME}/components/Analytics`));
 
 declare let gtag: Function;
-type Props = {
+
+interface IProps {
   onConsentChange: (consent: boolean) => void;
-};
-export const CookieConsent = ({ onConsentChange }: Props) => {
+}
+
+export const CookieConsent = ({ onConsentChange }: IProps) => {
   const [hide, setHide] = useState(true);
   const [enableAnalytics, setEnableAnalytics] = useState(false);
 

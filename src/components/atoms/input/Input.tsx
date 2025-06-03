@@ -1,20 +1,21 @@
 import { Input as BaseInput } from "@base-ui-components/react";
-import { Icon, IconName, iconNames } from "@/components/atoms/icon/Icon";
-import { joinTailwindClasses } from "@/utils/tailwind";
 import { useMemo } from "react";
 
-interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
+import { Icon, TIconName, iconNames } from "@/components/atoms/icon/Icon";
+import { joinTailwindClasses } from "@/utils/tailwind";
+
+interface IProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
   clearable?: boolean;
   containerClasses?: string;
   color?: "brand" | "mono";
-  icon?: IconName | React.ReactNode;
+  icon?: TIconName | React.ReactNode;
   iconOnLeft?: boolean;
   inputClasses?: string;
   onClear?: () => void;
   size?: "small" | "medium" | "large";
 }
 
-const isIconName = (icon: unknown): icon is IconName => iconNames.includes(icon as IconName);
+const isIconName = (icon: unknown): icon is TIconName => iconNames.includes(icon as TIconName);
 
 export const Input = ({
   className: _className,
@@ -28,7 +29,7 @@ export const Input = ({
   onClear,
   value,
   ...props
-}: InputProps) => {
+}: IProps) => {
   const classes = useMemo(() => {
     /* Colour */
 
