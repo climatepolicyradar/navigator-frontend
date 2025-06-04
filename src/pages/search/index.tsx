@@ -14,7 +14,6 @@ import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Drawer from "@/components/drawer/Drawer";
 import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
 import { SearchSettings } from "@/components/filters/SearchSettings";
-import { Label } from "@/components/labels/Label";
 import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
 import { Info } from "@/components/molecules/info/Info";
@@ -26,7 +25,6 @@ import { SideCol } from "@/components/panels/SideCol";
 import { SingleCol } from "@/components/panels/SingleCol";
 import SearchResultList from "@/components/search/SearchResultList";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { withEnvConfig } from "@/context/EnvConfig";
 import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
@@ -539,11 +537,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: withEnvConfig({
+    props: {
       theme,
       themeConfig,
       featureFlags,
       conceptsData: conceptsData ?? null,
-    }),
+    },
   };
 };

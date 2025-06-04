@@ -18,7 +18,6 @@ import { FullWidth } from "@/components/panels/FullWidth";
 import { getDocumentDescription } from "@/constants/metaDescriptions";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { withEnvConfig } from "@/context/EnvConfig";
 import useSearch from "@/hooks/useSearch";
 import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -361,12 +360,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: withEnvConfig({
+    props: {
       document: documentData,
       family: familyData,
       theme: theme,
       vespaFamilyData: vespaFamilyData ?? null,
       vespaDocumentData: vespaDocumentData ?? null,
-    }),
+    },
   };
 };

@@ -3,7 +3,6 @@ import Image from "next/image";
 import { ReactNode } from "react";
 
 import { ExternalLink } from "@/components/ExternalLink";
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { TConfigFeature } from "@/types";
 
 export interface INewFeature {

@@ -1,4 +1,4 @@
-import App, { AppProps } from "next/app";
+import { AppProps } from "next/app";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -78,7 +78,6 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
         <NewFeatureContext.Provider value={newFeatureContextProviderValue}>
           <AdobeContext.Provider value={dynamicAdobeKey}>
             <PostHogProvider consent={consent}>
-              {/* <EnvConfigContext.Provider value={pageProps?.envConfig}> */}
               <ErrorBoundary level="top">
                 <Head>
                   <link rel="icon" href={favicon} />
@@ -88,7 +87,6 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
                 </div>
                 <Overlays onConsentChange={onConsentChange} />
               </ErrorBoundary>
-              {/* </EnvConfigContext.Provider> */}
             </PostHogProvider>
           </AdobeContext.Provider>
         </NewFeatureContext.Provider>
@@ -97,18 +95,5 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
     </QueryClientProvider>
   );
 }
-
-MyApp.getInitialProps = async () => {
-  const initialProps = App.getInitialProps;
-  if (typeof window !== "undefined") {
-    return { ...initialProps };
-  }
-
-  return {
-    ...initialProps,
-    theme: process.env.THEME,
-    adobeApiKey: process.env.ADOBE_API_KEY ?? "",
-  };
-};
 
 export default MyApp;
