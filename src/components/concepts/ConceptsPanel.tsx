@@ -44,7 +44,7 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
   return (
     <div className="flex flex-col gap-6 pb-4">
       <div className="grow-0 shrink-0">
-        <Heading level={2} className="mb-0.5 text-base leading-tight font-[600] text-text-primary">
+        <Heading level={2} className="mb-0.5 text-base leading-tight font-semibold text-text-primary">
           Topics
         </Heading>
       </div>

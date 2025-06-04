@@ -5,7 +5,6 @@ import { LinkWithQuery } from "@/components/LinkWithQuery";
 import Footer from "@/components/footer/Footer";
 import MainMenu from "@/components/menus/MainMenu";
 import { NavBar } from "@/components/organisms/navBar/NavBar";
-import { NewFeatures } from "@/components/organisms/newFeatures/NewFeatures";
 
 export const CPRLogo = (
   <LinkWithQuery href="/">
@@ -21,7 +20,6 @@ const Main: FC<IProps> = ({ children }) => (
   <>
     <NavBar headerClasses="banner" logo={CPRLogo} menu={<MainMenu />} />
     <main className="flex flex-col flex-1">{children}</main>
-    <NewFeatures />
     <Footer />
   </>
 );

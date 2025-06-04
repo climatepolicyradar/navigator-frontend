@@ -2,6 +2,7 @@ import { Meta, StoryObj } from "@storybook/react";
 import { LuCopy } from "react-icons/lu";
 
 import { Card } from "./Card";
+import { Button } from "../button/Button";
 
 const meta = {
   title: "Atoms/Card",
@@ -15,11 +16,14 @@ type TStory = StoryObj<typeof Card>;
 
 export default meta;
 
-const render = ({ ...props }) => (
-  <div className="max-w-[400px]">
-    <Card {...props} />
-  </div>
-);
+const render =
+  (containerClasses) =>
+  // eslint-disable-next-line react/display-name
+  ({ ...props }) => (
+    <div className={containerClasses}>
+      <Card {...props} />
+    </div>
+  );
 
 const children = (
   <>
@@ -44,7 +48,7 @@ export const Outlined: TStory = {
     color: "brand",
     variant: "outlined",
   },
-  render,
+  render: render("max-4-[400px]"),
 };
 
 export const Solid: TStory = {
@@ -54,5 +58,35 @@ export const Solid: TStory = {
     color: "brand",
     variant: "solid",
   },
-  render,
+  render: render("max-4-[400px]"),
+};
+
+export const CookieConsent: TStory = {
+  args: {
+    children: (
+      <>
+        <p className="text-base leading-normal font-semibold text-text-primary">Cookies and your privacy</p>
+        <p className="mt-2 mb-4 text-sm leading-normal font-normal text-text-primary">
+          We take your trust and privacy seriously. Climate Policy Radar uses cookies to make our site work optimally, analyse traffic to our website
+          and improve your experience. Read our{" "}
+          <a href="#" className="underline">
+            privacy and cookie policy
+          </a>{" "}
+          to learn more. By accepting cookies you will help us make our site better, but you can reject them if you wish.
+        </p>
+        <div className="flex gap-2">
+          <Button color="mono" size="small">
+            Accept
+          </Button>
+          <Button color="mono" size="small" variant="ghost">
+            Reject
+          </Button>
+        </div>
+      </>
+    ),
+    className: "bg-surface-ui select-none",
+    color: "mono",
+    variant: "outlined",
+  },
+  render: render("max-w-[525px]"),
 };

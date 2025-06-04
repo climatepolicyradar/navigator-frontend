@@ -12,7 +12,7 @@ type CardProps = CardClassArgs & React.ComponentProps<"div">;
 
 const getCardClasses = ({ className = "", color = "brand", variant = "solid" }: CardClassArgs) => {
   const isSolid = variant === "solid";
-  const baseClasses = "px-6 py-5 rounded-md";
+  const baseClasses = "px-5 py-4 rounded-md";
 
   /* Colour */
 

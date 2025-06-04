@@ -1,8 +1,12 @@
 import _ from "lodash";
 import Image from "next/image";
 
-type NewFeature = {
+export interface INewFeature {
   featureValue: number;
+  banner: {
+    text: string;
+    CTA: string;
+  };
   popupTitle?: string;
   popupImage?: {
     alt: string;
@@ -12,11 +16,15 @@ type NewFeature = {
   popupCTA: string;
   modalTitle: string;
   modalContent: React.ReactNode;
-};
+}
 
-export const NEW_FEATURES: NewFeature[] = [
+export const NEW_FEATURES: INewFeature[] = [
   {
     featureValue: 1,
+    banner: {
+      text: "You can now find what you're looking for faster",
+      CTA: "Learn more",
+    },
     popupTitle: "New Improvements",
     popupImage: {
       alt: "TODO",

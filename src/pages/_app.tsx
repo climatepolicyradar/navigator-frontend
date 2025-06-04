@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 import { CookieConsent } from "@/components/cookies/CookieConsent";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
+import { Overlays } from "@/components/organisms/overlays/Overlays";
 import { AdobeContext } from "@/context/AdobeContext";
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { PostHogProvider } from "@/context/PostHogProvider";
@@ -66,7 +67,8 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
                 <div id={dynamicTheme}>
                   <Component {...pageProps} />
                 </div>
-                <CookieConsent onConsentChange={onConsentChange} />
+                <Overlays />
+                {/* <CookieConsent onConsentChange={onConsentChange} /> */}
               </ErrorBoundary>
             </EnvConfigContext.Provider>
           </PostHogProvider>

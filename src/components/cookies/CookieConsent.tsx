@@ -8,6 +8,8 @@ import { COOKIE_CONSENT_NAME } from "@/constants/cookies";
 import { getCookie, setCookie } from "@/utils/cookies";
 import getDomain from "@/utils/getDomain";
 
+import { Card } from "../atoms/card/Card";
+
 const ThemeAnalytics = dynamic<{ enableAnalytics: boolean }>(() => import(`/themes/${process.env.THEME}/components/Analytics`));
 
 declare let gtag: Function;
@@ -52,27 +54,26 @@ export const CookieConsent = ({ onConsentChange }: IProps) => {
 
   return (
     <>
-      <div
-        data-cy="cookie-consent"
-        className={`${hide ? "hidden" : ""} fixed w-[90%] max-w-[600px] bottom-6 left-1/2 translate-x-[-50%] z-[9999] rounded-xl bg-blue-100`}
-      >
-        <div className="py-4 px-6">
-          <div className="text-xl mb-2">Cookies and your privacy</div>
-          <p className="text-content text-sm mb-2">
+      <div data-cy="cookie-consent" className={`${hide ? "hidden" : ""} fixed w-full max-w-[550px] bottom-4 right-4 z-[9999]`}>
+        <Card color="mono" variant="outlined" className="bg-surface-ui select-none">
+          <p className="text-base leading-normal font-semibold text-text-primary">Cookies and your privacy</p>
+          <p className="mt-2 mb-4 text-sm leading-normal font-normal text-text-primary">
             We take your trust and privacy seriously. Climate Policy Radar uses cookies to make our site work optimally, analyse traffic to our
             website and improve your experience. Read our{" "}
-            <ExternalLink url="https://climatepolicyradar.org/privacy-policy">privacy and cookie policy</ExternalLink> to learn more. By accepting
-            cookies you will help us make our site better, but you can reject them if you wish.
+            <a href="#" className="underline">
+              privacy and cookie policy
+            </a>{" "}
+            to learn more. By accepting cookies you will help us make our site better, but you can reject them if you wish.
           </p>
-          <div className="flex justify-end gap-4">
-            <Button rounded data-cy="cookie-consent-accept" onClick={cookiesAcceptHandler}>
+          <div className="flex gap-2">
+            <Button color="mono" size="small" onClick={cookiesAcceptHandler} data-cy="cookie-consent-accept">
               Accept
             </Button>
-            <Button rounded variant="ghost" onClick={cookiesRejectHandler} data-cy="cookie-consent-reject">
+            <Button color="mono" size="small" variant="ghost" onClick={cookiesRejectHandler} data-cy="cookie-consent-reject">
               Reject
             </Button>
           </div>
-        </div>
+        </Card>
       </div>
       <Script id="google-analytics" strategy="afterInteractive">
         {`
