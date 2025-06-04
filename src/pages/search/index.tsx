@@ -228,8 +228,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
       delete router.query[QUERY_PARAMS.topic];
       delete router.query[QUERY_PARAMS.sector];
     }
-    delete router.query[QUERY_PARAMS.concept_id];
-    delete router.query[QUERY_PARAMS.concept_name];
     router.query[QUERY_PARAMS.category] = category;
     // Default search is all categories, so we do not need to provide any category if we want all
     if (category === "All") {
