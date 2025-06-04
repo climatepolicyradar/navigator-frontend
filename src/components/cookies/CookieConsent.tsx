@@ -54,22 +54,27 @@ export const CookieConsent = ({ onConsentChange }: IProps) => {
 
   return (
     <>
-      <div data-cy="cookie-consent" className={`${hide ? "hidden" : ""} fixed w-full max-w-[550px] bottom-4 right-4 z-[9999]`}>
-        <Card color="mono" variant="outlined" className="bg-surface-ui select-none">
+      <div className={`flex justify-end ${hide ? "hidden" : ""}`} data-cy="cookie-consent">
+        <Card color="mono" variant="outlined" className="m-3 sm:m-4 max-w-[550px] bg-surface-ui pointer-events-auto select-none">
           <p className="text-base leading-normal font-semibold text-text-primary">Cookies and your privacy</p>
           <p className="mt-2 mb-4 text-sm leading-normal font-normal text-text-primary">
             We take your trust and privacy seriously. Climate Policy Radar uses cookies to make our site work optimally, analyse traffic to our
             website and improve your experience. Read our{" "}
-            <a href="#" className="underline">
-              privacy and cookie policy
-            </a>{" "}
-            to learn more. By accepting cookies you will help us make our site better, but you can reject them if you wish.
+            <ExternalLink url="https://climatepolicyradar.org/privacy-policy">privacy and cookie policy</ExternalLink> to learn more. By accepting
+            cookies you will help us make our site better, but you can reject them if you wish.
           </p>
           <div className="flex gap-2">
             <Button color="mono" size="small" onClick={cookiesAcceptHandler} data-cy="cookie-consent-accept">
               Accept
             </Button>
-            <Button color="mono" size="small" variant="ghost" onClick={cookiesRejectHandler} data-cy="cookie-consent-reject">
+            <Button
+              color="mono"
+              size="small"
+              variant="ghost"
+              className="text-text-secondary hover:text-text-primary"
+              onClick={cookiesRejectHandler}
+              data-cy="cookie-consent-reject"
+            >
               Reject
             </Button>
           </div>

@@ -1,14 +1,19 @@
 import startCase from "lodash/startCase";
 import Link from "next/link";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
+import { NEW_FEATURES } from "@/constants/newFeatures";
+import { NewFeatureContext } from "@/context/NewFeatureContext";
 import { TConcept } from "@/types";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { firstCase } from "@/utils/text";
 
+import { LinkWithQuery } from "../LinkWithQuery";
+import { Badge } from "../atoms/label/Badge";
 import { Info } from "../molecules/info/Info";
+import { NewFeatureCard } from "../molecules/newFeatures/NewFeatureCard";
 import { Heading } from "../typography/Heading";
 
 interface IProps {
@@ -20,6 +25,8 @@ interface IProps {
 }
 
 export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showCounts = true, onConceptClick }: IProps) => {
+  const { previousNewFeature } = useContext(NewFeatureContext);
+
   const handleConceptClick = useCallback(
     (conceptLabel: string) => {
       onConceptClick?.(conceptLabel);
@@ -40,13 +47,25 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
   };
 
   const conceptsGroupedByRootConcept = groupByRootConcept(concepts, rootConcepts);
+  const knowledgeGraphIsNew = previousNewFeature < 0;
 
   return (
     <div className="flex flex-col gap-6 pb-4">
-      <div className="grow-0 shrink-0">
-        <Heading level={2} className="mb-0.5 text-base leading-tight font-semibold text-text-primary">
+      <div className="flex flex-col gap-5">
+        {knowledgeGraphIsNew && <NewFeatureCard newFeature={NEW_FEATURES[0]} />}
+        <span className="text-base font-semibold text-text-primary">
           Topics
-        </Heading>
+          {!knowledgeGraphIsNew && <Badge className="ml-2">Beta</Badge>}
+        </span>
+        {!knowledgeGraphIsNew && (
+          <p className="text-sm text-text-tertiary">
+            Find mentions of topics. Accuracy is not 100%.
+            <br />
+            <LinkWithQuery href="/faq" className="underline" target="_blank">
+              Learn more
+            </LinkWithQuery>
+          </p>
+        )}
       </div>
 
       {rootConcepts.concat(otherRootConcept).map((rootConcept) => {

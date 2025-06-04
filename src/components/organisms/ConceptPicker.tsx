@@ -1,10 +1,14 @@
 import { NextRouter, useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import { Accordian } from "@/components/accordian/Accordian";
+import { Badge } from "@/components/atoms/label/Badge";
 import { Select } from "@/components/atoms/select/Select";
 import { InputCheck } from "@/components/forms/Checkbox";
+import { NewFeatureCard } from "@/components/molecules/newFeatures/NewFeatureCard";
+import { NEW_FEATURES } from "@/constants/newFeatures";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { NewFeatureContext } from "@/context/NewFeatureContext";
 import { TConcept } from "@/types";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
@@ -17,7 +21,7 @@ interface IProps {
   containerClasses?: string;
   showSearch?: boolean;
   startingSort?: TSort;
-  title: React.ReactNode;
+  title: string;
 }
 
 const SORT_OPTIONS = ["A-Z", "Grouped"] as const;
@@ -69,6 +73,7 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
 
 export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showSearch = true, title }: IProps) => {
   const router = useRouter();
+  const { previousNewFeature } = useContext(NewFeatureContext);
   const ref = useRef(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<TSort>(startingSort);
@@ -92,17 +97,28 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
     });
   }, [concepts]);
 
+  const knowledgeGraphIsNew = previousNewFeature < 0;
+
   return (
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
-      <div>{title}</div>
+      {/* HEADER */}
+      {knowledgeGraphIsNew && <NewFeatureCard newFeature={NEW_FEATURES[0]} />}
+      <span className="text-base font-semibold text-text-primary">
+        {title}
+        {!knowledgeGraphIsNew && <Badge className="ml-2">Beta</Badge>}
+      </span>
+
       {/* SCROLL AREA */}
       <div className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
-        <p className="text-sm">
-          This feature automatically detects climate topics in documents. Accuracy is not 100%.{" "}
-          <LinkWithQuery href="/faq" className="underline" target="_blank">
-            Learn more
-          </LinkWithQuery>
-        </p>
+        {!knowledgeGraphIsNew && (
+          <p className="text-sm text-text-tertiary">
+            Find mentions of topics. Accuracy is not 100%.
+            <br />
+            <LinkWithQuery href="/faq" className="underline" target="_blank">
+              Learn more
+            </LinkWithQuery>
+          </p>
+        )}
         <div className="flex gap-2 items-center justify-between">
           {showSearch && (
             <input

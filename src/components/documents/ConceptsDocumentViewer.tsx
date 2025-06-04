@@ -243,7 +243,7 @@ export const ConceptsDocumentViewer = ({
             <ConceptPicker
               concepts={documentConcepts}
               showSearch={false}
-              title={<p className="text-base font-medium">In this document</p>}
+              title="In this document"
               containerClasses={`pt-4 pr-4 pl-4 xl:pl-0 ${showConcepts ? "" : "hidden xl:flex"}`}
             />
           </SideCol>

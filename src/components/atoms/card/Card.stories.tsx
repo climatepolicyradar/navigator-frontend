@@ -78,7 +78,7 @@ export const CookieConsent: TStory = {
           <Button color="mono" size="small">
             Accept
           </Button>
-          <Button color="mono" size="small" variant="ghost">
+          <Button color="mono" size="small" variant="ghost" className="text-text-secondary hover:text-text-primary">
             Reject
           </Button>
         </div>

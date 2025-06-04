@@ -1,11 +1,17 @@
+import { CookieConsent } from "@/components/cookies/CookieConsent";
 import { NewFeatureBanner } from "@/components/molecules/newFeatures/NewFeatureBanner";
-import { LATEST_FEATURE } from "@/constants/newFeatures";
+import { NEW_FEATURES } from "@/constants/newFeatures";
 
-export const Overlays = () => {
+interface IProps {
+  onConsentChange: (consent: boolean) => void;
+}
+
+export const Overlays = ({ onConsentChange }: IProps) => {
   return (
     <div className="fixed z-1000 inset-0 pointer-events-none">
       <div className="flex flex-col-reverse h-full">
-        <NewFeatureBanner newFeature={LATEST_FEATURE} />
+        <NewFeatureBanner newFeature={NEW_FEATURES[0]} />
+        <CookieConsent onConsentChange={onConsentChange} />
       </div>
     </div>
   );

@@ -3,14 +3,14 @@ import { Meta, StoryObj } from "@storybook/react";
 import { NEW_FEATURES } from "@/constants/newFeatures";
 import { NewFeatureContext } from "@/context/NewFeatureContext";
 
-import { NewFeatureBanner } from "./NewFeatureBanner";
+import { NewFeatureCard } from "./NewFeatureCard";
 
 const meta = {
-  title: "Molecules/New Featurees/NewFeatureBanner",
-  component: NewFeatureBanner,
+  title: "Molecules/New Featurees/NewFeatureCard",
+  component: NewFeatureCard,
   argTypes: {},
-} satisfies Meta<typeof NewFeatureBanner>;
-type TStory = StoryObj<typeof NewFeatureBanner>;
+} satisfies Meta<typeof NewFeatureCard>;
+type TStory = StoryObj<typeof NewFeatureCard>;
 
 export default meta;
 
@@ -26,7 +26,7 @@ const useNewFeatureContext = ({ ...props }) => {
 
   return (
     <NewFeatureContext.Provider value={value}>
-      <NewFeatureBanner newFeature={props.newFeature} />
+      <NewFeatureCard newFeature={props.newFeature} />
     </NewFeatureContext.Provider>
   );
 };

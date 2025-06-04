@@ -1,55 +1,22 @@
 import _ from "lodash";
-import Image from "next/image";
+import { ReactNode } from "react";
+
+import { TConfigFeature } from "@/types";
 
 export interface INewFeature {
-  featureValue: number;
-  banner: {
-    text: string;
-    CTA: string;
-  };
-  popupTitle?: string;
-  popupImage?: {
-    alt: string;
-    src: string;
-  };
-  popupDescription: string;
-  popupCTA: string;
-  modalTitle: string;
-  modalContent: React.ReactNode;
+  order: number;
+  relatedConfigFeature?: TConfigFeature;
+  bannerText: string;
+  cardText: string;
+  modalContent: ReactNode;
 }
 
 export const NEW_FEATURES: INewFeature[] = [
   {
-    featureValue: 1,
-    banner: {
-      text: "You can now find what you're looking for faster",
-      CTA: "Learn more",
-    },
-    popupTitle: "New Improvements",
-    popupImage: {
-      alt: "TODO",
-      src: "/images/onboarding/TEMP_300x200.svg",
-    },
-    popupDescription: "You can now find what you're looking for faster.",
-    popupCTA: "More Info",
-    modalTitle: "New Improvements",
-    modalContent: (
-      <>
-        <p className="w-full">
-          Climate Policy Radar have introduced a new layer of structure to the data, automatically identifying mentions of key climate concepts in
-          documents.
-        </p>
-        <Image src="/images/onboarding/TEMP_600x400.svg" alt="TEMP" height={400} width={600} />
-        <p className="w-full">
-          Moving beyond simple search + browse, this feature will help you quickly find where important topics (i.e. economic sectors, targets, and
-          climate finance instruments) appear across the database.
-        </p>
-        <Image src="/images/onboarding/TEMP_600x400.svg" alt="TEMP" height={400} width={600} />
-        <p className="w-full">You will now be able to identify the primary focuses of each document faster too.</p>
-        <Image src="/images/onboarding/TEMP_600x400.svg" alt="TEMP" height={400} width={600} />
-      </>
-    ),
+    order: 0,
+    relatedConfigFeature: "knowledgeGraph",
+    bannerText: "You can now find what you're looking for faster",
+    cardText: "Find mentions of topics in documents. This is more precise than standard search, but accuracy is not 100%.",
+    modalContent: "TODO",
   },
 ];
-
-export const LATEST_FEATURE = _.orderBy(NEW_FEATURES, "featureValue", "desc")[0];
