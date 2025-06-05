@@ -15,7 +15,6 @@ interface IProps {
 }
 
 const EmbeddedPDF = ({ document, documentPassageMatches = [], passageIndex = null, startingPassageIndex = 0 }: IProps) => {
-  const isLoading = useState(true);
   const containerRef = useRef(null);
   const adobeKey = useContext(AdobeContext);
 
