@@ -12,21 +12,18 @@ import { PostHogProvider } from "@/context/PostHogProvider";
 import { ThemeContext } from "@/context/ThemeContext";
 import "../styles/flag-icons.css";
 import "../styles/main.css";
+import { TTheme } from "@/types";
 import { getCookie, setCookie } from "@/utils/cookies";
 import getDomain from "@/utils/getDomain";
+
+const theme = (process.env.THEME ?? "cpr") as TTheme;
+const adobeApiKey = process.env.ADOBE_API_KEY ?? "";
 
 const favicon = `/images/favicon/${process.env.THEME}.png`;
 
 const queryClient = new QueryClient();
 
-interface IProps extends AppProps {
-  theme?: string;
-  adobeApiKey?: string;
-}
-
-function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
-  const [siteTheme, setSiteTheme] = useState(null);
-  const [adobeKey, setAdobeKey] = useState(null);
+function MyApp({ Component, pageProps }: AppProps) {
   const [previousNewFeature, setPreviousNewFeature] = useState<number | null>(null);
   const [displayNewFeature, setDisplayNewFeature] = useState<number | null>(null);
 
@@ -40,21 +37,6 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
     const updateCookie = parseInt(getCookie(COOKIE_FEATURES_NAME));
     setPreviousNewFeature(Number.isNaN(updateCookie) ? -1 : updateCookie);
   }, []);
-
-  useEffect(() => {
-    if (theme && theme !== "") {
-      setSiteTheme(theme);
-    }
-  }, [theme]);
-
-  useEffect(() => {
-    if (adobeApiKey && adobeApiKey !== "") {
-      setAdobeKey(adobeApiKey);
-    }
-  }, [adobeApiKey]);
-
-  const dynamicTheme = theme ?? siteTheme;
-  const dynamicAdobeKey = adobeApiKey ?? adobeKey;
 
   const [consent, setConsent] = useState(false);
   const onConsentChange = (consent: boolean) => {
@@ -74,15 +56,15 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeContext.Provider value={dynamicTheme}>
+      <ThemeContext.Provider value={theme}>
         <NewFeatureContext.Provider value={newFeatureContextProviderValue}>
-          <AdobeContext.Provider value={dynamicAdobeKey}>
+          <AdobeContext.Provider value={adobeApiKey}>
             <PostHogProvider consent={consent}>
               <ErrorBoundary level="top">
                 <Head>
                   <link rel="icon" href={favicon} />
                 </Head>
-                <div id={dynamicTheme}>
+                <div id={theme}>
                   <Component {...pageProps} />
                 </div>
                 <Overlays onConsentChange={onConsentChange} />
