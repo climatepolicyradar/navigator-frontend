@@ -52,7 +52,7 @@ export const Accordian = ({
             exit="collapsed"
             variants={{
               collapsed: { opacity: 0, height: 0, marginTop: 0 },
-              open: { opacity: 1, height: "auto", marginTop: "20px" },
+              open: { opacity: 1, height: "auto", marginTop: "14px" },
             }}
             transition={{ duration: 0.35, ease: [0.04, 0.62, 0.23, 0.98] }}
           >
