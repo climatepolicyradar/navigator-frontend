@@ -1,12 +1,17 @@
 name: Deploy to staging
 on:
+  # a. Auto deploy once the merge-to-main action is completed successfully
   workflow_run:
     workflows: [Merge to main]
     types:
       - completed
     branches:
       - main
+  # b. Allow deployment from the actions tab - this allows feature branch deployment
   workflow_dispatch: {}
+  # c. Label a PR with "deploy:staging" will deply to staging
+  pull_request:
+    types: [labeled]
 
 permissions:
   id-token: write
@@ -14,7 +19,11 @@ permissions:
 
 jobs:
   deploy-staging:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # relating to a, b, c in the `on` section
+    if: |
+      github.event.workflow_run.conclusion == 'success' ||
+      github.event_name == 'workflow_dispatch' ||
+      github.event.label.name == 'deploy:staging'
     strategy:
       matrix:
         theme: [cpr, cclw, mcf, ccc]
@@ -42,7 +51,8 @@ jobs:
           AWS_REGION: eu-west-1
           ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
           THEME: ${{ matrix.theme }}
+        # @related: GITHUB_SHA_ENV_VAR
         run: |
-          docker build --build-arg THEME=${THEME} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build --build-arg THEME=${THEME} --build-arg GITHUB_SHA=$(git rev-parse HEAD) -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
