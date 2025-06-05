@@ -76,9 +76,9 @@ test("search filters", async ({ page }) => {
   await policiesRadioButton.click();
   expect(policiesRadioButton.isChecked()).toBeTruthy();
 
-  const topicAccordion = page.locator('[data-cy="Topic"]:has-text("Topic")').last();
-  await expect(topicAccordion).toBeVisible();
-  await topicAccordion.click();
+  const responseAreasAccordion = page.locator('[data-cy="Response areas"]:has-text("Response areas")').last();
+  await expect(responseAreasAccordion).toBeVisible();
+  await responseAreasAccordion.click();
   await expect(page.getByRole("radio", { name: "Mitigation" })).toBeVisible();
 
   const sectorAccordion = page.locator('[data-cy="Sector"]:has-text("Sector")').last();
