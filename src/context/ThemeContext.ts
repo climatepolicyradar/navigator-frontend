@@ -1,5 +1,10 @@
 import { createContext } from "react";
 
-import { TTheme } from "@/types";
+import { TTheme, TThemeConfig } from "@/types";
 
-export const ThemeContext = createContext<TTheme>(null);
+interface IProps {
+  theme: TTheme;
+  themeConfig: TThemeConfig;
+}
+
+export const ThemeContext = createContext<IProps>(null);

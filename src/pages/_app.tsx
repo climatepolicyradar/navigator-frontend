@@ -6,15 +6,17 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
 import { Overlays } from "@/components/organisms/overlays/Overlays";
 import { COOKIE_FEATURES_NAME } from "@/constants/cookies";
+import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { AdobeContext } from "@/context/AdobeContext";
 import { NewFeatureContext } from "@/context/NewFeatureContext";
 import { PostHogProvider } from "@/context/PostHogProvider";
 import { ThemeContext } from "@/context/ThemeContext";
 import "../styles/flag-icons.css";
 import "../styles/main.css";
-import { TTheme } from "@/types";
+import { TTheme, TThemeConfig } from "@/types";
 import { getCookie, setCookie } from "@/utils/cookies";
 import getDomain from "@/utils/getDomain";
+import { readConfigFile } from "@/utils/readConfigFile";
 
 const theme = (process.env.THEME ?? "cpr") as TTheme;
 const adobeApiKey = process.env.ADOBE_API_KEY ?? "";
@@ -26,6 +28,12 @@ const queryClient = new QueryClient();
 function MyApp({ Component, pageProps }: AppProps) {
   const [previousNewFeature, setPreviousNewFeature] = useState<number | null>(null);
   const [displayNewFeature, setDisplayNewFeature] = useState<number | null>(null);
+  const [themeConfig, setThemeConfig] = useState<TThemeConfig>(DEFAULT_THEME_CONFIG);
+
+  const getThemeConfig = async () => {
+    const config = await readConfigFile(theme);
+    setThemeConfig(config);
+  };
 
   useEffect(() => {
     // For access inside Cypress:
@@ -36,6 +44,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     // Determine the last feature the user saw
     const updateCookie = parseInt(getCookie(COOKIE_FEATURES_NAME));
     setPreviousNewFeature(Number.isNaN(updateCookie) ? -1 : updateCookie);
+
+    getThemeConfig();
   }, []);
 
   const [consent, setConsent] = useState(false);
@@ -56,7 +66,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeContext.Provider value={theme}>
+      <ThemeContext.Provider value={{ theme, themeConfig }}>
         <NewFeatureContext.Provider value={newFeatureContextProviderValue}>
           <AdobeContext.Provider value={adobeApiKey}>
             <PostHogProvider consent={consent}>
