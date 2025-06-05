@@ -29,6 +29,7 @@ import { Heading } from "@/components/typography/Heading";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@/constants/document";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { withEnvConfig } from "@/context/EnvConfig";
 import { getCorpusInfo } from "@/helpers/getCorpusInfo";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
@@ -498,7 +499,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: {
+    props: withEnvConfig({
       page: familyData,
       targets: targetsData,
       countries: countriesData,
@@ -506,6 +507,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       theme,
       featureFlags,
       vespaFamilyData: vespaFamilyData ?? null,
-    },
+    }),
   };
 };

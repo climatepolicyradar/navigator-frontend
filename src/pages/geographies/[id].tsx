@@ -23,6 +23,7 @@ import { Timeline } from "@/components/timeline/Timeline";
 import { Heading } from "@/components/typography/Heading";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { systemGeoNames } from "@/constants/systemGeos";
+import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode } from "@/helpers/getCountryFields";
 import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
 import { TTarget, TEvent, TGeography, TTheme } from "@/types";
@@ -427,12 +428,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: {
+    props: withEnvConfig({
       geography: geographyData,
       summary: summaryData,
       targets: theme === "mcf" ? [] : targetsData,
       theme: theme,
       themeConfig,
-    },
+    }),
   };
 };

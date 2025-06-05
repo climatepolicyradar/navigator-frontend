@@ -8,6 +8,7 @@ import { SubNav } from "@/components/nav/SubNav";
 import { MultiCol } from "@/components/panels/MultiCol";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { Heading } from "@/components/typography/Heading";
+import { withEnvConfig } from "@/context/EnvConfig";
 import { TCollection, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isLitigationEnabled } from "@/utils/features";
@@ -38,10 +39,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: {
+    props: withEnvConfig({
       collection,
       theme,
-    },
+    }),
   };
 };
 

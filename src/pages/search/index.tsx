@@ -25,6 +25,7 @@ import { SideCol } from "@/components/panels/SideCol";
 import { SingleCol } from "@/components/panels/SingleCol";
 import SearchResultList from "@/components/search/SearchResultList";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { withEnvConfig } from "@/context/EnvConfig";
 import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
@@ -535,11 +536,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: {
+    props: withEnvConfig({
       theme,
       themeConfig,
       featureFlags,
       conceptsData: conceptsData ?? null,
-    },
+    }),
   };
 };
