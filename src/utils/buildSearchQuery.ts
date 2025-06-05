@@ -50,6 +50,20 @@ export default function buildSearchQuery(
     query.sort_within_page = routerQuery[QUERY_PARAMS.passages_by_position] === "true";
   }
 
+  // TODO: remove this
+  // Setting the default sort order to "sort_within_page" for a specific search with conditions:
+  // - no search query
+  // - within a document view
+  // - with concepts/classifiers
+  if (
+    !routerQuery[QUERY_PARAMS.passages_by_position] &&
+    !routerQuery[QUERY_PARAMS.query_string] &&
+    documentId &&
+    (routerQuery[QUERY_PARAMS.concept_id] || routerQuery[QUERY_PARAMS.concept_name])
+  ) {
+    query.sort_within_page = true;
+  }
+
   if (routerQuery[QUERY_PARAMS.offset]) {
     query.offset = Number(routerQuery[QUERY_PARAMS.offset]);
   }

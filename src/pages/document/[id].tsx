@@ -34,7 +34,7 @@ import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import useSearch from "@/hooks/useSearch";
-import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept } from "@/types";
+import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept, TDocumentPage } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled } from "@/utils/features";
@@ -44,6 +44,17 @@ import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { readConfigFile } from "@/utils/readConfigFile";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { truncateString } from "@/utils/truncateString";
+
+// Only published documents are returned in the family page call, so we can cross reference the import ID with those
+const documentIsPublished = (familyDocuments: TDocumentPage[], documentImportId: string) => {
+  let isPublished = false;
+
+  familyDocuments.forEach((familyDocument) => {
+    if (familyDocument.import_id === documentImportId) isPublished = true;
+  });
+
+  return isPublished;
+};
 
 interface IProps {
   page: TFamilyPage;
@@ -150,28 +161,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     setShowCollectionDetail(false);
   }, [pathname]);
 
-  // Search handlers
-  const handleSearchInput = (term: string) => {
-    const queryObj = {};
-    queryObj[QUERY_PARAMS.query_string] = term;
-    if (term === "") return false;
-    // if the family only has one main document, redirect to that document
-    // if there is no main document but only one other document, redirect to the other document
-    if (mainDocuments.length === 1) {
-      router.push({
-        pathname: `/documents/${mainDocuments[0].slug}`,
-        query: queryObj,
-      });
-    } else if (mainDocuments.length === 0 && otherDocuments.length === 1) {
-      router.push({
-        pathname: `/documents/${otherDocuments[0].slug}`,
-        query: queryObj,
-      });
-    } else {
-      router.push({ pathname: `/document/${page.slug}`, query: queryObj });
-    }
-  };
-
   /** Concepts */
   const [concepts, setConcepts] = useState<TConcept[]>([]);
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
@@ -180,17 +169,20 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
     (vespaFamilyData?.families ?? []).forEach((family) => {
       family.hits.forEach((hit) => {
-        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
-          const existingCount = uniqueConceptMap.get(conceptKey) || 0;
-          uniqueConceptMap.set(conceptKey, existingCount + count);
-        });
+        // Check the document id against the documents in the page
+        if (documentIsPublished(page.documents, hit.document_import_id)) {
+          Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
+            const existingCount = uniqueConceptMap.get(conceptKey) || 0;
+            uniqueConceptMap.set(conceptKey, existingCount + count);
+          });
+        }
       });
     });
 
     return Array.from(uniqueConceptMap.entries())
       .map(([conceptKey, count]) => ({ conceptKey, count }))
       .sort((a, b) => b.count - a.count);
-  }, [vespaFamilyData]);
+  }, [vespaFamilyData, page.documents]);
 
   const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
   const conceptCountsById = conceptCounts.reduce((acc, { conceptKey, count }) => {
