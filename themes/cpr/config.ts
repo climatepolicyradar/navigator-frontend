@@ -211,7 +211,7 @@ const config: TThemeConfig = {
       ],
     },
     {
-      label: "Topic",
+      label: "Response areas",
       taxonomyKey: "topic",
       apiMetaDataKey: "family.topic",
       type: "radio",
@@ -224,6 +224,7 @@ const config: TThemeConfig = {
       ],
       dependentFilterKey: "",
       corporaKey: "Laws and Policies",
+      showTopicsMessage: true,
     },
     {
       label: "Sector",
@@ -241,6 +242,7 @@ const config: TThemeConfig = {
       showFade: "true",
       corporaKey: "Laws and Policies",
       quickSearch: "true",
+      showTopicsMessage: true,
     },
     {
       label: "Author Type",
