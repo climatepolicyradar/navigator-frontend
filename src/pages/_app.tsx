@@ -65,7 +65,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
       const config = await readConfigFile(dynamicTheme);
       setThemeConfig(config);
     };
-    getThemeConfig();
+    if (dynamicTheme) getThemeConfig();
   }, [dynamicTheme]);
 
   const [consent, setConsent] = useState(false);
