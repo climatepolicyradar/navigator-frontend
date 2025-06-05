@@ -13,12 +13,12 @@ export const setFeatureFlags = (featureFlags: Partial<TFeatureFlags>) => {
   }
 };
 
-export const getFeatureFlags = async (
+export const getFeatureFlags = (
   // This is a replica of `NextApiRequestCookies`
   cookies: Partial<{
     [key: string]: string | string[];
   }>
-): Promise<TFeatureFlags> => {
+): TFeatureFlags => {
   const featureFlags = { ...DEFAULT_FEATURE_FLAGS };
 
   if (cookies.feature_flags) {

@@ -14,7 +14,6 @@ import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Drawer from "@/components/drawer/Drawer";
 import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
 import { SearchSettings } from "@/components/filters/SearchSettings";
-import { Label } from "@/components/labels/Label";
 import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
 import { Info } from "@/components/molecules/info/Info";
@@ -394,17 +393,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                     />
                   </div>
                   <SlideOut showCloseButton={false}>
-                    {currentSlideOut === "concepts" && (
-                      <ConceptPicker
-                        concepts={conceptsData}
-                        title={
-                          <div className="flex items-center gap-2">
-                            <div className="text-[15px] font-medium text-text-primary">Topics</div>
-                            <Label>Beta</Label>
-                          </div>
-                        }
-                      />
-                    )}
+                    {currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Topics" />}
                   </SlideOut>
                   <div className="absolute z-50 bottom-0 left-0 w-full flex pb-[100px] bg-white md:hidden">
                     <Button
@@ -517,11 +506,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
         <Drawer show={drawerFamily !== false} setShow={setDrawerFamily}>
           <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
         </Drawer>
-        <DownloadCsvPopup
-          active={showCSVDownloadPopup}
-          onCancelClick={() => setShowCSVDownloadPopup(false)}
-          onConfirmClick={() => handleDownloadCsvClick()}
-        />
+        <DownloadCsvPopup isOpen={showCSVDownloadPopup} onClose={() => setShowCSVDownloadPopup(false)} onDownload={handleDownloadCsvClick} />
         <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
       </SlideOutContext.Provider>
     </Layout>
@@ -532,7 +517,7 @@ export default Search;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-  const featureFlags = await getFeatureFlags(context.req.cookies);
+  const featureFlags = getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
   const themeConfig = await readConfigFile(theme);

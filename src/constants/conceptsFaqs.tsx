@@ -1,5 +1,5 @@
 import { ExternalLink } from "@/components/ExternalLink";
-import { Label } from "@/components/labels/Label";
+import { Badge } from "@/components/atoms/label/Badge";
 
 type TFAQ = {
   id?: string;
@@ -12,7 +12,7 @@ export const CONCEPTS_FAQS: TFAQ[] = [
   {
     id: "topics",
     title: "Automatic detection of key topics in documents",
-    headContent: <Label>Beta</Label>,
+    headContent: <Badge>Beta</Badge>,
     content: (
       <>
         <p>

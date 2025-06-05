@@ -36,7 +36,7 @@ export default function Page({ page }: IProps) {
 
   const loadFeatureFlags = async () => {
     const allCookies = getAllCookies();
-    const retrievedFeatureFlags = await getFeatureFlags(allCookies);
+    const retrievedFeatureFlags = getFeatureFlags(allCookies);
     setFeatureFlags(retrievedFeatureFlags);
   };
 
@@ -46,6 +46,7 @@ export default function Page({ page }: IProps) {
     setThemeConfig(themeConfig);
   };
 
+  // TODO: once dynamic imports are no longer needed, both of these are synchronous
   useEffect(() => {
     loadFeatureFlags();
     loadThemeConfig();

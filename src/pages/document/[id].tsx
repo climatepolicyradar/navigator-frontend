@@ -447,7 +447,7 @@ export default FamilyPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-  const featureFlags = await getFeatureFlags(context.req.cookies);
+  const featureFlags = getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
   const themeConfig = await readConfigFile(theme);
