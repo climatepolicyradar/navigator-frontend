@@ -23,7 +23,7 @@ import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
 import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
-import { isCorporateReportsEnabled } from "@/utils/features";
+import { isCorporateReportsEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 
 const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption<any>) => {
@@ -177,7 +177,7 @@ const SearchFilters = ({
               showFade={filter.showFade}
             >
               <InputListContainer>
-                {filter.showTopicsMessage && (
+                {filter.showTopicsMessage && isKnowledgeGraphEnabled(featureFlags, themeConfig) && (
                   <p className="opacity-80 mb-2">
                     Our new topic filter automatically identifies {filter.label.toLowerCase()} in the text of documents.{" "}
                     <a
