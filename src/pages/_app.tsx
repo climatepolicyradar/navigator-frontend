@@ -8,6 +8,7 @@ import { Overlays } from "@/components/organisms/overlays/Overlays";
 import { COOKIE_FEATURES_NAME } from "@/constants/cookies";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { AdobeContext } from "@/context/AdobeContext";
+import { EnvConfigContext } from "@/context/EnvConfig";
 import { NewFeatureContext } from "@/context/NewFeatureContext";
 import { PostHogProvider } from "@/context/PostHogProvider";
 import { ThemeContext } from "@/context/ThemeContext";
@@ -89,15 +90,17 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
         <NewFeatureContext.Provider value={newFeatureContextProviderValue}>
           <AdobeContext.Provider value={dynamicAdobeKey}>
             <PostHogProvider consent={consent}>
-              <ErrorBoundary level="top">
-                <Head>
-                  <link rel="icon" href={favicon} />
-                </Head>
-                <div id={theme}>
-                  <Component {...pageProps} />
-                </div>
-                <Overlays onConsentChange={onConsentChange} />
-              </ErrorBoundary>
+              <EnvConfigContext.Provider value={pageProps?.envConfig}>
+                <ErrorBoundary level="top">
+                  <Head>
+                    <link rel="icon" href={favicon} />
+                  </Head>
+                  <div id={theme}>
+                    <Component {...pageProps} />
+                  </div>
+                  <Overlays onConsentChange={onConsentChange} />
+                </ErrorBoundary>
+              </EnvConfigContext.Provider>
             </PostHogProvider>
           </AdobeContext.Provider>
         </NewFeatureContext.Provider>
