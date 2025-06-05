@@ -139,31 +139,6 @@ const SearchFilters = ({
         </Accordian>
       )}
 
-      {themeConfigStatus === "success" &&
-        themeConfig.filters.map((filter) => {
-          // If the filter is not in the selected category, don't display it
-          if (!canDisplayFilter(filter, query, themeConfig)) return;
-          return (
-            <Accordian
-              title={filter.label}
-              data-cy={filter.label}
-              key={filter.label}
-              startOpen={filter.startOpen === "true" || !!query[QUERY_PARAMS[filter.taxonomyKey]]}
-              showFade={filter.showFade}
-            >
-              <InputListContainer>
-                <FilterOptions
-                  filter={filter}
-                  query={query}
-                  handleFilterChange={handleFilterChange}
-                  corpus_types={corpus_types}
-                  themeConfig={themeConfig}
-                />
-              </InputListContainer>
-            </Accordian>
-          );
-        })}
-
       {conceptsData && (
         <>
           <button
@@ -188,6 +163,46 @@ const SearchFilters = ({
           </button>
         </>
       )}
+
+      {themeConfigStatus === "success" &&
+        themeConfig.filters.map((filter) => {
+          // If the filter is not in the selected category, don't display it
+          if (!canDisplayFilter(filter, query, themeConfig)) return;
+          return (
+            <Accordian
+              title={filter.label}
+              data-cy={filter.label}
+              key={filter.label}
+              startOpen={filter.startOpen === "true" || !!query[QUERY_PARAMS[filter.taxonomyKey]]}
+              showFade={filter.showFade}
+            >
+              <InputListContainer>
+                {filter.showTopicsMessage && (
+                  <p className="opacity-80 mb-2">
+                    Our new topic filter automatically identifies {filter.label.toLowerCase()} in the text of documents.{" "}
+                    <a
+                      className="underline"
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentSlideOut(currentSlideOut === "" ? "concepts" : "");
+                      }}
+                    >
+                      Try it now
+                    </a>
+                  </p>
+                )}
+                <FilterOptions
+                  filter={filter}
+                  query={query}
+                  handleFilterChange={handleFilterChange}
+                  corpus_types={corpus_types}
+                  themeConfig={themeConfig}
+                />
+              </InputListContainer>
+            </Accordian>
+          );
+        })}
 
       <Accordian
         title={getFilterLabel("Region", "region", query[QUERY_PARAMS.category], themeConfig)}
