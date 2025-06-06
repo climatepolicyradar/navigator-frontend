@@ -121,8 +121,8 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
     };
   };
 
+  // Changes the page of the pdf reader to the page number provided
   const changePage = async (pageNumber: number) => {
-    // Use the memoized viewerApi if it exists
     let viewerApi = viewerApiMemo;
     if (!viewerApiMemo) {
       const { viewerApi: newViewApi } = await getAdobeApis();
@@ -131,6 +131,7 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
     await viewerApi.gotoLocation(pageNumber);
   };
 
+  // Removes existing highlights before add the provided passage highlights to the document
   const addAnnotationsForPage = async (documentPassageMatches: TPassage[]) => {
     // console.log("addAnnotationsForPage");
     let annotationManagerApi = annotationManagerApiMemo;
@@ -141,19 +142,12 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
     if (!annotationManagerApi) {
       return;
     }
-    // Clear annotations before adding more
+    // Clear annotations before adding provided ones
     // console.time("Removing annotations");
     await annotationManagerApi.removeAnnotationsFromPDF();
-    // await annotationManagerApi
-    //   .deleteAnnotations({
-    //     pageRange: { startPage: documentPassageMatches[0].text_block_page, endPage: documentPassageMatches[0].text_block_page },
-    //   })
-    //   .catch((error: any) => {
-    //     console.error("Error removing annotations: ", error);
-    //   });
     // console.timeEnd("Removing annotations");
     if (documentPassageMatches.length > 0) {
-      // Only get the annotations for the current page
+      // Generate highlights for the provided passages
       const highlights = generateHighlights(physicalDocument, documentPassageMatches);
       // console.time("Adding annotations");
       await annotationManagerApi.addAnnotations(highlights);
@@ -164,29 +158,36 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
   // Set up a new callback to listen for page changes once we have a new set of passages
   // When the page changes, we will add the annotations for that page
   const registerPassages = async (documentPassageMatches: TPassage[], startingPassageIndex = 0) => {
+    const startingPage = documentPassageMatches[startingPassageIndex]?.text_block_page;
+
     let adobeViewer = adobeViewerMemo;
     if (!adobeViewer || !annotationManagerApiMemo) {
       const { adobeViewer: newAdobeViewer } = await getAdobeApis();
       adobeViewer = newAdobeViewer;
+
+      // We only want to add the annotations intentionally when we are confident this is a first load and initialisation
+      // Otherwise the callback below can handle highlights management on the page change event
+      // Add the annotations for the initial page
+      await addAnnotationsForPage(documentPassageMatches.filter((passage) => passage.text_block_page === startingPage));
     }
     if (!adobeViewer) {
       return;
     }
+    // Open the viewer on the page of the first passage highlight
+    changePage(startingPage);
+
+    // Finally - register a callback on page change
+    // Everytime we change page - add the highlights for that page
+    // This will catch passage clicks, as well as navigation within the native pdf reader
     await adobeViewer.registerCallback(
       window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
       async (event: any) => {
         if (event.type === "CURRENT_ACTIVE_PAGE") {
-          // console.log("CURRENT_ACTIVE_PAGE Page changed to: ", event.data.pageNumber);
           await addAnnotationsForPage(documentPassageMatches.filter((passage) => passage.text_block_page === event.data.pageNumber));
         }
       },
       { enableFilePreviewEvents: true }
     );
-    // Set the initial page
-    // Add the annotations for the initial page
-    // const startingPage = documentPassageMatches[startingPassageIndex]?.text_block_page;
-    // await addAnnotationsForPage(documentPassageMatches.filter((passage) => passage.text_block_page === startingPage));
-    // return changePage(startingPassageIndex, documentPassageMatches);
   };
 
   return { getAdobeApis, changePage, registerPassages };
