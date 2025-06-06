@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
 
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
@@ -9,21 +9,21 @@ import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { EmptyPassages } from "@/components/documents/EmptyPassages";
-import { UnavailableConcepts } from "@/components/documents/UnavailableConcepts";
 import { SearchSettings } from "@/components/filters/SearchSettings";
 import { MAX_RESULTS } from "@/constants/paging";
-import { QUERY_PARAMS } from "@/constants/queryParams";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import { TConcept, TDocumentPage, TLoadingStatus, TMatchedFamily, TPassage, TSearchResponse } from "@/types";
 import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
+import { getCurrentPassagesOrderChoice } from "@/utils/getPassagesSortOrder";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 
 import { Info } from "../molecules/info/Info";
 import { ConceptPicker } from "../organisms/ConceptPicker";
+import { FullWidth } from "../panels/FullWidth";
 import { SideCol } from "../panels/SideCol";
 
 type TState = {
-  passageIndex: number;
+  pageNumber: number;
   isExactSearch: boolean;
   passageMatches: TPassage[];
   totalNoOfMatches: number;
@@ -37,18 +37,18 @@ interface IProps {
   vespaFamilyData: TSearchResponse;
   vespaDocumentData: TSearchResponse;
   document: TDocumentPage;
-  familySlug: string;
   searchStatus: TLoadingStatus;
   searchResultFamilies: TMatchedFamily[];
   // Callback props for state changes
-  onExactMatchChange?: (isExact: boolean) => void;
+  handleSemanticSearchChange?: (_: string, isExact: string) => void;
+  handlePassagesOrderChange?: (orderValue: string) => void;
 }
 
 const passageClasses = (canPreview: boolean) => {
   if (canPreview) {
-    return "xl:w-1/3";
+    return "lg:w-1/3";
   }
-  return "xl:w-2/3";
+  return "md:w-2/3";
 };
 
 export const ConceptsDocumentViewer = ({
@@ -57,19 +57,19 @@ export const ConceptsDocumentViewer = ({
   initialPassage = 0,
   initialConceptFilters,
   document,
-  familySlug,
   vespaFamilyData,
   vespaDocumentData,
   searchStatus,
   searchResultFamilies,
-  onExactMatchChange,
+  handleSemanticSearchChange,
+  handlePassagesOrderChange,
 }: IProps) => {
   const router = useRouter();
   const [showSearchOptions, setShowSearchOptions] = useState(false);
   const [showConcepts, setShowConcepts] = useState(false);
 
   const [state, setState] = useReducer((prev: TState, next: Partial<TState>) => ({ ...prev, ...next }), {
-    passageIndex: initialPassage,
+    pageNumber: initialPassage,
     isExactSearch: initialExactMatch,
     passageMatches: [],
     totalNoOfMatches: 0,
@@ -137,12 +137,6 @@ export const ConceptsDocumentViewer = ({
     [initialConceptFilters, familyConcepts]
   );
 
-  // Check if any initial concept filters are not in the document concepts
-  // (e.g., the concept appears in the family or other documents but not this one)
-  const unavailableConcepts = initialConceptFilters
-    ? initialConceptFilters.filter((filter) => !documentConcepts?.some((concept) => concept.preferred_label === filter))
-    : [];
-
   // Calculate passage matches.
   useEffect(() => {
     const matches = searchResultFamilies.flatMap((family) =>
@@ -159,30 +153,13 @@ export const ConceptsDocumentViewer = ({
     });
   }, [searchResultFamilies, document.slug]);
 
-  const handlePassageClick = (index: number) => {
+  const handlePassageClick = (pageNumber: number) => {
     if (!canPreview) return;
-    setState({ passageIndex: index });
-  };
-
-  const handleSemanticSearchChange = (_: string, isExact: string) => {
-    const exactBool = isExact === "true";
-    setState({
-      isExactSearch: exactBool,
-      passageIndex: 0,
-    });
-    setShowSearchOptions(false);
-    onExactMatchChange?.(exactBool);
+    setState({ pageNumber: pageNumber });
   };
 
   const handleToggleConcepts = () => {
     setShowConcepts((current) => !current);
-  };
-
-  const handlePassagesOrderChange = (orderValue: string) => {
-    setState({ passageIndex: 0 });
-    const queryObj = { ...router.query };
-    queryObj[QUERY_PARAMS.passages_by_position] = orderValue;
-    router.push({ query: queryObj }, undefined, { shallow: true });
   };
 
   const passagesResultsContext = getPassageResultsContext({
@@ -195,136 +172,133 @@ export const ConceptsDocumentViewer = ({
   const isLoading = searchStatus !== "success";
   const hasConcepts = documentConcepts.length > 0;
   const hasSelectedConcepts = selectedConcepts.length > 0;
-  const hasPassages = state.totalNoOfMatches > 0;
   const hasQuery = initialQueryTerm !== "" || hasSelectedConcepts;
-  const hasUnavailableConcepts = state.totalNoOfMatches === 0 && unavailableConcepts.length > 0;
 
   return (
-    <section className="flex-1 xl:px-5" id="document-concepts-viewer">
-      <div id="document-container" className="flex flex-col xl:flex-row xl:h-[90vh]">
-        {/* Concepts */}
-        {hasConcepts && (
-          <SideCol id="document-concepts" extraClasses="!w-full xl:!w-maxSidebar">
-            <div className="p-4 xl:hidden">
-              <Button content="both" onClick={handleToggleConcepts}>
-                <span>{showConcepts ? "Hide" : "Show"} topics</span>
-                <div className={showConcepts ? "rotate-180" : ""}>
-                  <Icon name="downChevron" />
-                </div>
-              </Button>
-            </div>
-            <ConceptPicker
-              concepts={documentConcepts}
-              showSearch={false}
-              title="In this document"
-              containerClasses={`pt-4 pr-4 pl-4 xl:pl-0 ${showConcepts ? "" : "hidden xl:flex"}`}
-            />
-          </SideCol>
-        )}
-
-        {/* Preview */}
-        <div
-          id="document-preview"
-          className={`flex-1 order-last xl:order-none h-[400px] basis-[400px] xl:block xl:h-full xl:border-gray-200 px-4 xl:px-0 ${
-            hasConcepts ? "xl:border-x" : "xl:border-r"
-          }`}
-        >
-          {canPreview && (
-            <EmbeddedPDF
-              document={document}
-              documentPassageMatches={state.passageMatches}
-              passageIndex={state.passageIndex}
-              startingPassageIndex={initialPassage}
-            />
+    <section className="flex-1 flex" id="document-concepts-viewer">
+      <FullWidth extraClasses="flex-1">
+        <div id="document-container" className="flex flex-row flex-wrap lg:flex-nowrap lg:h-[80vh]">
+          {/* Concepts */}
+          {hasConcepts && (
+            <SideCol id="document-concepts" extraClasses="w-full max-h-[80vh] md:!w-1/2 lg:!w-maxSidebar lg:max-h-full">
+              <div className="py-4 md:hidden">
+                <Button content="both" onClick={handleToggleConcepts}>
+                  <span>{showConcepts ? "Hide" : "Show"} topics</span>
+                  <div className={showConcepts ? "rotate-180" : ""}>
+                    <Icon name="downChevron" />
+                  </div>
+                </Button>
+              </div>
+              <ConceptPicker
+                concepts={documentConcepts}
+                showSearch={false}
+                title="In this document"
+                containerClasses={`pt-4 pr-4 pl-4 md:pl-0 ${showConcepts ? "" : "hidden md:flex"}`}
+              />
+            </SideCol>
           )}
-          {!canPreview && <EmptyDocument />}
-        </div>
 
-        {/* Sidebar */}
-        <div
-          id="document-sidebar"
-          className={`flex flex-col overflow-y-auto max-h-[90vh] mr-4 xl:mr-0 scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 xl:max-h-full xl:max-w-[480px] xl:min-w-[400px] xl:grow-0 xl:shrink-0 ${passageClasses(
-            canPreview
-          )}`}
-        >
-          <div className="relative">
-            <div className="flex justify-between items-end p-4">
-              <h1 className="text-base font-medium">Passage matches</h1>
-              <button
-                className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
-                onClick={() => setShowSearchOptions(!showSearchOptions)}
-              >
-                Sort &amp; Display
-              </button>
-            </div>
-            <AnimatePresence initial={false}>
-              {showSearchOptions && (
-                <motion.div
-                  key="content"
-                  initial="collapsed"
-                  animate="open"
-                  exit="collapsed"
-                  variants={{
-                    collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                    open: { opacity: 1, transition: { duration: 0.25 } },
-                  }}
-                >
-                  <SearchSettings
-                    queryParams={router.query}
-                    handleSearchChange={handleSemanticSearchChange}
-                    handlePassagesClick={handlePassagesOrderChange}
-                    setShowOptions={setShowSearchOptions}
-                    extraClasses="!mt-0 mr-4"
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
+          {/* Preview */}
+          <div
+            id="document-preview"
+            className={`flex-1 order-last border-t border-t-gray-200 h-[600px] basis-full lg:basis-auto lg:border-t-0 lg:order-none lg:h-full md:border-gray-200 ${hasConcepts ? "lg:border-x" : "lg:border-r"}`}
+          >
+            {canPreview && (
+              <EmbeddedPDF
+                document={document}
+                documentPassageMatches={state.passageMatches}
+                pageNumber={state.pageNumber}
+                startingPassageIndex={initialPassage}
+                searchStatus={searchStatus}
+              />
+            )}
+            {!canPreview && <EmptyDocument />}
           </div>
 
-          {isLoading && (
-            <div className="w-full flex justify-center flex-1">
-              <Loader />
-            </div>
-          )}
-
-          {!isLoading && (
-            <>
-              {hasQuery &&
-                (hasPassages ? (
-                  <>
-                    <div className="border-gray-200 p-4 text-sm border-b xl:pl-4" data-cy="document-matches-description">
-                      <p className="mb-2">
-                        {passagesResultsContext}
-                        {state.totalNoOfMatches >= MAX_RESULTS && (
-                          <Info
-                            className="inline-block ml-2 align-text-bottom"
-                            description={`We limit the number of search results to ${MAX_RESULTS} so that you get the best performance from our tool. We're working on a way to remove this limit.`}
-                          />
-                        )}
-                      </p>
-                    </div>
-                    <div
-                      id="document-passage-matches"
-                      className="relative xl:overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 px-4"
+          {/* Sidebar */}
+          <div
+            id="document-sidebar"
+            className={`py-4 max-h-[80vh] md:w-1/2 lg:max-w-[480px] lg:min-w-[400px] lg:max-h-full lg:grow-0 lg:shrink-0 lg:pb-0 flex flex-col ${hasConcepts ? "lg:!max-w-[400px]" : ""} ${passageClasses(
+              canPreview
+            )}`}
+          >
+            {isLoading ? (
+              <div className="w-full flex justify-center flex-1 bg-white">
+                <Loader />
+              </div>
+            ) : (
+              <>
+                <div id="document-search" className="flex items-start gap-2 md:pl-4 pb-4 border-b border-gray-200">
+                  <div className="flex-1">
+                    {hasQuery && state.totalNoOfMatches > 0 && (
+                      <>
+                        <div className="mb-2 text-sm" data-cy="document-matches-description">
+                          {passagesResultsContext}
+                          {state.totalNoOfMatches >= MAX_RESULTS && (
+                            <Info
+                              className="inline-block ml-2 align-text-bottom"
+                              description={`We limit the number of search results to ${MAX_RESULTS} so that you get the best performance from our tool. We're working on a way to remove this limit.`}
+                            />
+                          )}
+                        </div>
+                        <p className="text-sm">
+                          Sorted by {getCurrentPassagesOrderChoice(router.query) === true ? "page number" : "search relevance"}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                  <div className="relative z-10 flex justify-center">
+                    <button
+                      className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
+                      onClick={() => setShowSearchOptions(!showSearchOptions)}
                     >
-                      <PassageMatches
-                        passages={state.passageMatches}
-                        onClick={handlePassageClick}
-                        activeIndex={state.passageIndex ?? initialPassage}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <EmptyPassages hasQueryString />
-                ))}
-
-              {!hasQuery && <EmptyPassages hasQueryString={false} />}
-
-              {hasUnavailableConcepts && <UnavailableConcepts unavailableConcepts={unavailableConcepts} familySlug={familySlug} />}
-            </>
-          )}
+                      Sort &amp; Display
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {showSearchOptions && (
+                        <motion.div
+                          key="content"
+                          initial="collapsed"
+                          animate="open"
+                          exit="collapsed"
+                          variants={{
+                            collapsed: {
+                              opacity: 0,
+                              transition: { duration: 0.1 },
+                            },
+                            open: {
+                              opacity: 1,
+                              transition: { duration: 0.25 },
+                            },
+                          }}
+                        >
+                          <SearchSettings
+                            queryParams={router.query}
+                            handleSearchChange={handleSemanticSearchChange}
+                            setShowOptions={setShowSearchOptions}
+                            handlePassagesOrderChange={handlePassagesOrderChange}
+                          />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+                {hasQuery && state.totalNoOfMatches > 0 && (
+                  <div
+                    id="document-passage-matches"
+                    className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
+                  >
+                    {/* Removing active passage index for now as we don't use indexes any more //activeIndex={pageNumber ?? startingPassage} */}
+                    <PassageMatches passages={state.passageMatches} onClick={handlePassageClick} />
+                  </div>
+                )}
+                {hasQuery && state.totalNoOfMatches === 0 && <EmptyPassages hasQueryString />}
+                {!hasQuery && <EmptyPassages hasQueryString={false} />}
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      </FullWidth>
     </section>
   );
 };
