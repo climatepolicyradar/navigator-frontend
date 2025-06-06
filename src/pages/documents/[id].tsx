@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
@@ -120,27 +120,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     queryObj[QUERY_PARAMS.passages_by_position] = orderValue;
     router.push({ query: queryObj }, undefined, { shallow: true });
   };
-
-  // Handlers to update router
-  const handleExactMatchChange = useCallback(
-    (isExact: boolean) => {
-      const queryObj = { ...router.query };
-
-      if (isExact) {
-        queryObj[QUERY_PARAMS.exact_match] = "true";
-      }
-
-      router.push(
-        {
-          pathname: `/documents/${document.slug}`,
-          query: queryObj,
-        },
-        undefined,
-        { shallow: true }
-      );
-    },
-    [router, document.slug]
-  );
 
   // Update passages based on search results
   useEffect(() => {
@@ -262,7 +241,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                   queryParams={router.query}
                                   handleSearchChange={handleSemanticSearchChange}
                                   setShowOptions={setShowOptions}
-                                  handlePassagesClick={handlePassagesOrderChange}
+                                  handlePassagesOrderChange={handlePassagesOrderChange}
                                 />
                               </motion.div>
                             )}
@@ -295,11 +274,11 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             initialConceptFilters={conceptFilters}
             vespaFamilyData={vespaFamilyData}
             vespaDocumentData={vespaDocumentData}
-            familySlug={family.slug}
             document={document}
             searchStatus={status}
             searchResultFamilies={families}
-            onExactMatchChange={handleExactMatchChange}
+            handleSemanticSearchChange={handleSemanticSearchChange}
+            handlePassagesOrderChange={handlePassagesOrderChange}
           />
         )}
       </section>

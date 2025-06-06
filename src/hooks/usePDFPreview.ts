@@ -158,23 +158,25 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
   // Set up a new callback to listen for page changes once we have a new set of passages
   // When the page changes, we will add the annotations for that page
   const registerPassages = async (documentPassageMatches: TPassage[], startingPassageIndex = 0) => {
-    const startingPage = documentPassageMatches[startingPassageIndex]?.text_block_page;
+    let hasRegisteredCallback = false;
+    const startingPage = documentPassageMatches[startingPassageIndex]?.text_block_page || 1;
 
     let adobeViewer = adobeViewerMemo;
     if (!adobeViewer || !annotationManagerApiMemo) {
       const { adobeViewer: newAdobeViewer } = await getAdobeApis();
       adobeViewer = newAdobeViewer;
-
-      // We only want to add the annotations intentionally when we are confident this is a first load and initialisation
-      // Otherwise the callback below can handle highlights management on the page change event
-      // Add the annotations for the initial page
-      await addAnnotationsForPage(documentPassageMatches.filter((passage) => passage.text_block_page === startingPage));
     }
     if (!adobeViewer) {
       return;
     }
     // Open the viewer on the page of the first passage highlight
     changePage(startingPage);
+    // We only want to add the annotations intentionally when we are confident this is a first load and initialisation
+    // Otherwise the callback below can handle highlights management on the page change event
+    // Add the annotations for the initial page
+    if (!hasRegisteredCallback) {
+      await addAnnotationsForPage(documentPassageMatches.filter((passage) => passage.text_block_page === startingPage));
+    }
 
     // Finally - register a callback on page change
     // Everytime we change page - add the highlights for that page
@@ -188,6 +190,8 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
       },
       { enableFilePreviewEvents: true }
     );
+
+    hasRegisteredCallback = true;
   };
 
   return { getAdobeApis, changePage, registerPassages };

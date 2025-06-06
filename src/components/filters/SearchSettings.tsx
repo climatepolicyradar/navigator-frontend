@@ -10,7 +10,7 @@ import { SearchSettingsList } from "./SearchSettingsList";
 
 interface IProps {
   extraClasses?: string;
-  handlePassagesClick?: (passagesOption: string) => void;
+  handlePassagesOrderChange?: (passagesOption: string) => void;
   handleSearchChange?: (key: string, value: string) => void;
   handleSortClick?: (sortOption: string) => void;
   queryParams: ParsedUrlQuery;
@@ -52,7 +52,7 @@ const getCurrentPassagesOrderChoice = (queryParams: ParsedUrlQuery) => {
 
 export const SearchSettings = ({
   extraClasses = "",
-  handlePassagesClick,
+  handlePassagesOrderChange,
   handleSearchChange,
   handleSortClick,
   queryParams,
@@ -80,7 +80,7 @@ export const SearchSettings = ({
   const handlePassagesOrderClick = (e: React.MouseEvent<HTMLAnchorElement>, value: string) => {
     e.preventDefault();
     setShowOptions(false);
-    handlePassagesClick?.(value);
+    handlePassagesOrderChange?.(value);
   };
 
   useEffect(() => {
@@ -115,7 +115,7 @@ export const SearchSettings = ({
       {queryParams[QUERY_PARAMS.category]?.toString().toLowerCase() !== "litigation" && (
         <>
           {handleSearchChange && (
-            <div className={`${handlePassagesClick || handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
+            <div className={`${handlePassagesOrderChange || handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
               <SearchSettingsList data-cy="semantic-search" aria-label="Semantic search">
                 <SearchSettingsItem
                   onClick={(e) => handleSemanticSearchClick(e, "false")}
@@ -132,7 +132,7 @@ export const SearchSettings = ({
               </SearchSettingsList>
             </div>
           )}
-          {handlePassagesClick && (
+          {handlePassagesOrderChange && (
             <div className={`${handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
               <SearchSettingsList data-cy="passages-sort" aria-label="Passages sort">
                 <SearchSettingsItem

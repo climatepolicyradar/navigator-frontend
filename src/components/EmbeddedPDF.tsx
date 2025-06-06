@@ -29,7 +29,6 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null,
   const { changePage, registerPassages } = useMemo(() => pdfPreview, [document, adobeKey]);
 
   useEffect(() => {
-    // console.log("EmbeddedPDF useEffect. Page number changed to: ", pageNumber);
     pageNumber && changePage(pageNumber);
   }, [changePage, pageNumber]);
 
@@ -44,7 +43,7 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null,
     <>
       <Script src="https://acrobatservices.adobe.com/view-sdk/viewer.js" />
       {!document ? (
-        <div className="w-full flex justify-center flex-1">
+        <div className="flex-1 flex justify-center">
           <Loader />
         </div>
       ) : (
@@ -57,7 +56,7 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null,
                 animate={{ opacity: 1, clipPath: "inset(0 0 0 0)" }}
                 exit={{ clipPath: "inset(0px 100% 0px 0px)" }}
                 transition={{ duration: 0.5, ease: [0.77, 0, 0.175, 1] }}
-                className="w-full flex flex-col items-center gap-6 flex-1 absolute h-full bg-white pt-10"
+                className="w-full flex flex-col items-center gap-6 flex-1 absolute left-0 h-full bg-white pt-10 z-2000"
               >
                 <div className="w-[80px] h-[80px]">
                   <object className="radar" type="image/svg+xml" data="/images/radar-loader.svg" style={{ width: "80px", height: "80px" }} />
