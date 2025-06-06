@@ -9,13 +9,12 @@ import { Icon } from "./atoms/icon/Icon";
 interface IProps {
   passages: TPassage[];
   onClick: (index: number) => void;
-  activeIndex?: number;
   pageColour?: string;
 }
 
 const COPY_TIMEOUT = 1000;
 
-const PassageMatches = ({ passages, onClick, activeIndex, pageColour = "textDark" }: IProps) => {
+const PassageMatches = ({ passages, onClick, pageColour = "textDark" }: IProps) => {
   const [hasCopied, setHasCopied] = useState<number | null>(null);
 
   const copyOnClick = (e: React.MouseEvent<HTMLDivElement>, index: number, text: string) => {
@@ -51,9 +50,7 @@ const PassageMatches = ({ passages, onClick, activeIndex, pageColour = "textDark
               onClick={() => posthog.capture("Passage matches click", { index })}
             >
               <div
-                className={`p-4 cursor-pointer border border-gray-200 rounded-md bg-white hover:border-gray-500 ${
-                  activeIndex === index ? "!border-blue-100 !bg-gray-50 hover:!border-gray-50" : ""
-                }`}
+                className={`p-4 cursor-pointer border border-gray-200 rounded-md bg-white hover:border-gray-500`}
                 onClick={() => {
                   onClick(item.text_block_page);
                 }}

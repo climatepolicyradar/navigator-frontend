@@ -42,21 +42,6 @@ const passageClasses = (canPreview: boolean) => {
   return "md:w-2/3";
 };
 
-const scrollToPassage = (index: number) => {
-  setTimeout(() => {
-    const passage = window.document.getElementById(`passage-${index}`);
-    if (!passage) return;
-    const topPos = passage.offsetTop;
-    const container = window.document.getElementById("document-passage-matches");
-    if (!container) return;
-    container.scrollTo({ top: topPos - 10, behavior: "smooth" });
-  }, 100);
-};
-
-const renderPassageCount = (count: number): string => {
-  return count > MAX_PASSAGES ? `top ${MAX_PASSAGES} matches` : count + ` match${count > 1 ? "es" : ""}`;
-};
-
 /*
   # DEV NOTES
   - This page displays a 'physical' document, which is a single document within a document family.
@@ -95,7 +80,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const handlePassageClick = (pageNo: number) => {
     if (!canPreview) return;
     setPageNumber(pageNo);
-    // scrollToPassage(pageNo);
   };
 
   const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
