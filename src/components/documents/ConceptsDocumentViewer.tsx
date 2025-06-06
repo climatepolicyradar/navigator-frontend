@@ -11,10 +11,10 @@ import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { SearchSettings } from "@/components/filters/SearchSettings";
 import { MAX_RESULTS } from "@/constants/paging";
-import { QUERY_PARAMS } from "@/constants/queryParams";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import { TConcept, TDocumentPage, TLoadingStatus, TMatchedFamily, TPassage, TSearchResponse } from "@/types";
 import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
+import { getCurrentPassagesOrderChoice } from "@/utils/getPassagesSortOrder";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 
 import { Info } from "../molecules/info/Info";
@@ -174,9 +174,6 @@ export const ConceptsDocumentViewer = ({
   const hasSelectedConcepts = selectedConcepts.length > 0;
   const hasQuery = initialQueryTerm !== "" || hasSelectedConcepts;
 
-  // console.log("hi");
-  // console.log(vespaFamilyData, vespaDocumentData);
-
   return (
     <section className="flex-1 flex" id="document-concepts-viewer">
       <FullWidth extraClasses="flex-1">
@@ -212,6 +209,7 @@ export const ConceptsDocumentViewer = ({
                 documentPassageMatches={state.passageMatches}
                 pageNumber={state.pageNumber}
                 startingPassageIndex={initialPassage}
+                searchStatus={searchStatus}
               />
             )}
             {!canPreview && <EmptyDocument />}
@@ -220,7 +218,7 @@ export const ConceptsDocumentViewer = ({
           {/* Sidebar */}
           <div
             id="document-sidebar"
-            className={`py-4 max-h-[80vh] md:w-1/2 lg:max-w-[480px] lg:min-w-[400px] lg:max-h-full lg:grow-0 lg:shrink-0 lg:pb-0 flex flex-col ${passageClasses(
+            className={`py-4 max-h-[80vh] md:w-1/2 lg:max-w-[480px] lg:min-w-[400px] lg:max-h-full lg:grow-0 lg:shrink-0 lg:pb-0 flex flex-col ${hasConcepts ? "lg:!max-w-[400px]" : ""} ${passageClasses(
               canPreview
             )}`}
           >
@@ -232,7 +230,7 @@ export const ConceptsDocumentViewer = ({
               <>
                 <div id="document-search" className="flex items-start gap-2 md:pl-4 pb-4 border-b border-gray-200">
                   <div className="flex-1">
-                    {state.totalNoOfMatches > 0 && (
+                    {hasQuery && state.totalNoOfMatches > 0 && (
                       <>
                         <div className="mb-2 text-sm" data-cy="document-matches-description">
                           {passagesResultsContext}
@@ -244,7 +242,7 @@ export const ConceptsDocumentViewer = ({
                           )}
                         </div>
                         <p className="text-sm">
-                          Sorted by {router.query[QUERY_PARAMS.passages_by_position] === "true" ? "page number" : "search relevance"}
+                          Sorted by {getCurrentPassagesOrderChoice(router.query) === true ? "page number" : "search relevance"}
                         </p>
                       </>
                     )}
@@ -285,7 +283,7 @@ export const ConceptsDocumentViewer = ({
                     </AnimatePresence>
                   </div>
                 </div>
-                {state.totalNoOfMatches > 0 && (
+                {hasQuery && state.totalNoOfMatches > 0 && (
                   <div
                     id="document-passage-matches"
                     className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"

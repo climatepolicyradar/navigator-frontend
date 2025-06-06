@@ -4,6 +4,7 @@ import { MutableRefObject, useEffect, useRef, useState } from "react";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { sortOptions, sortOptionsBrowse } from "@/constants/sortOptions";
+import { getCurrentPassagesOrderChoice } from "@/utils/getPassagesSortOrder";
 
 import { SearchSettingsItem } from "./SearchSettingsItem";
 import { SearchSettingsList } from "./SearchSettingsList";
@@ -34,20 +35,6 @@ const getCurrentSemanticSearchChoice = (queryParams: ParsedUrlQuery) => {
     return "false";
   }
   return exactMatch as string;
-};
-
-const getCurrentPassagesOrderChoice = (queryParams: ParsedUrlQuery) => {
-  // TODO: remove this
-  // Setting the default sort order to "sort_within_page" for a specific search with conditions:
-  // - no search query
-  // - with concepts/classifiers
-  if (
-    !queryParams[QUERY_PARAMS.passages_by_position] &&
-    !queryParams[QUERY_PARAMS.query_string] &&
-    (queryParams[QUERY_PARAMS.concept_id] || queryParams[QUERY_PARAMS.concept_name])
-  )
-    return true;
-  return queryParams[QUERY_PARAMS.passages_by_position] === "true";
 };
 
 export const SearchSettings = ({
