@@ -11,11 +11,10 @@ import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { UnavailableConcepts } from "@/components/documents/UnavailableConcepts";
 import { SearchSettings } from "@/components/filters/SearchSettings";
-import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
+import { MAX_RESULTS } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
-import useSearch from "@/hooks/useSearch";
-import { TConcept, TDocumentPage, TPassage, TSearchResponse } from "@/types";
+import { TConcept, TDocumentPage, TLoadingStatus, TMatchedFamily, TPassage, TSearchResponse } from "@/types";
 import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 
@@ -39,6 +38,8 @@ interface IProps {
   vespaDocumentData: TSearchResponse;
   document: TDocumentPage;
   familySlug: string;
+  searchStatus: TLoadingStatus;
+  searchResultFamilies: TMatchedFamily[];
   // Callback props for state changes
   onExactMatchChange?: (isExact: boolean) => void;
 }
@@ -50,10 +51,6 @@ const passageClasses = (canPreview: boolean) => {
   return "xl:w-2/3";
 };
 
-const renderPassageCount = (count: number): string => {
-  return count > MAX_PASSAGES ? `top ${MAX_PASSAGES} matches` : count + ` match${count > 1 ? "es" : ""}`;
-};
-
 export const ConceptsDocumentViewer = ({
   initialQueryTerm = "",
   initialExactMatch = false,
@@ -63,6 +60,8 @@ export const ConceptsDocumentViewer = ({
   familySlug,
   vespaFamilyData,
   vespaDocumentData,
+  searchStatus,
+  searchResultFamilies,
   onExactMatchChange,
 }: IProps) => {
   const router = useRouter();
@@ -80,6 +79,7 @@ export const ConceptsDocumentViewer = ({
 
   const canPreview = !!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf");
 
+  // Load concept data
   useEffectOnce(() => {
     // Extract unique concept IDs directly from vespaFamilyData
     const conceptIds = new Set<string>();
@@ -137,69 +137,42 @@ export const ConceptsDocumentViewer = ({
     [initialConceptFilters, familyConcepts]
   );
 
-  // Check if any initial concept filters are not in the document concepts (e.g., the concept appears in the family or other documents
-  // but not this one)
+  // Check if any initial concept filters are not in the document concepts
+  // (e.g., the concept appears in the family or other documents but not this one)
   const unavailableConcepts = initialConceptFilters
     ? initialConceptFilters.filter((filter) => !documentConcepts?.some((concept) => concept.preferred_label === filter))
     : [];
 
-  // Prepare search.
-  // const searchQueryParams = useMemo(
-  //   () => ({
-  //     [QUERY_PARAMS.query_string]: initialQueryTerm,
-  //     [QUERY_PARAMS.exact_match]: state.isExactSearch ? "true" : "false",
-  //     [QUERY_PARAMS.concept_name]: initialConceptFilters
-  //       ? Array.isArray(initialConceptFilters)
-  //         ? initialConceptFilters
-  //         : [initialConceptFilters]
-  //       : undefined,
-  //   }),
-  //   [initialQueryTerm, state.isExactSearch, initialConceptFilters]
-  // );
-
-  const { status, families, searchQuery } = useSearch(
-    router.query,
-    null,
-    document.import_id,
-    !!(initialQueryTerm || initialConceptFilters),
-    MAX_PASSAGES
-  );
-
   // Calculate passage matches.
   useEffect(() => {
-    const matches = families.flatMap((family) =>
+    const matches = searchResultFamilies.flatMap((family) =>
       family.family_documents.filter((cacheDoc) => cacheDoc.document_slug === document.slug).flatMap((cacheDoc) => cacheDoc.document_passage_matches)
     );
 
     const totalMatches =
-      families.find((family) => family.family_documents.some((cacheDoc) => cacheDoc.document_slug === document.slug))?.total_passage_hits || 0;
+      searchResultFamilies.find((family) => family.family_documents.some((cacheDoc) => cacheDoc.document_slug === document.slug))
+        ?.total_passage_hits || 0;
 
     setState({
       passageMatches: matches,
       totalNoOfMatches: totalMatches,
     });
-  }, [families, document.slug]);
+  }, [searchResultFamilies, document.slug]);
 
-  const handlePassageClick = useCallback(
-    (index: number) => {
-      if (!canPreview) return;
-      setState({ passageIndex: index });
-    },
-    [canPreview]
-  );
+  const handlePassageClick = (index: number) => {
+    if (!canPreview) return;
+    setState({ passageIndex: index });
+  };
 
-  const handleSemanticSearchChange = useCallback(
-    (_: string, isExact: string) => {
-      const exactBool = isExact === "true";
-      setState({
-        isExactSearch: exactBool,
-        passageIndex: 0,
-      });
-      setShowSearchOptions(false);
-      onExactMatchChange?.(exactBool);
-    },
-    [onExactMatchChange]
-  );
+  const handleSemanticSearchChange = (_: string, isExact: string) => {
+    const exactBool = isExact === "true";
+    setState({
+      isExactSearch: exactBool,
+      passageIndex: 0,
+    });
+    setShowSearchOptions(false);
+    onExactMatchChange?.(exactBool);
+  };
 
   const handleToggleConcepts = () => {
     setShowConcepts((current) => !current);
@@ -219,7 +192,7 @@ export const ConceptsDocumentViewer = ({
     selectedTopics: selectedConcepts,
   });
 
-  const isLoading = status !== "success";
+  const isLoading = searchStatus !== "success";
   const hasConcepts = documentConcepts.length > 0;
   const hasSelectedConcepts = selectedConcepts.length > 0;
   const hasPassages = state.totalNoOfMatches > 0;
@@ -246,7 +219,7 @@ export const ConceptsDocumentViewer = ({
             <ConceptPicker
               concepts={documentConcepts}
               showSearch={false}
-              title={<p className="text-base font-medium">In this document</p>}
+              title="In this document"
               containerClasses={`pt-4 pr-4 pl-4 xl:pl-0 ${showConcepts ? "" : "hidden xl:flex"}`}
             />
           </SideCol>

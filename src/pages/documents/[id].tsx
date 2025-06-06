@@ -83,7 +83,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const passagesByPosition = router.query[QUERY_PARAMS.passages_by_position] === "true";
   const startingPassage = Number(router.query.passage) || 0;
 
-  // TODO: Remove this once we have hard launched concepts in product.
+  // Note: only runs a fresh start if either a query string or concept data is provided
   const { status, families, searchQuery } = useSearch(
     router.query,
     null,
@@ -138,7 +138,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   };
 
   // Handlers to update router
-
   const handleExactMatchChange = useCallback(
     (isExact: boolean) => {
       const queryObj = { ...router.query };
@@ -159,6 +158,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     [router, document.slug]
   );
 
+  // Update passages based on search results
   useEffect(() => {
     const [passageMatches, totalNoOfMatches] = getMatchedPassagesFromSearch(families, document);
 
@@ -313,6 +313,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             vespaDocumentData={vespaDocumentData}
             familySlug={family.slug}
             document={document}
+            searchStatus={status}
+            searchResultFamilies={families}
             onExactMatchChange={handleExactMatchChange}
           />
         )}
@@ -325,7 +327,7 @@ export default DocumentPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-  const featureFlags = await getFeatureFlags(context.req.cookies);
+  const featureFlags = getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
   const themeConfig = await readConfigFile(theme);

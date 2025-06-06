@@ -37,6 +37,7 @@ interface IThemeConfigFilterType {
   dependentFilterKey?: string;
   corporaKey?: string;
   quickSearch?: string;
+  showTopicsMessage?: boolean;
 }
 
 interface IThemeConfigFilterCheckbox extends IThemeConfigFilterType {

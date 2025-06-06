@@ -24,7 +24,7 @@ interface IProps {
 
 const Layout: FC<IProps> = ({ children, title, theme, description, themeConfig, metadataKey, text }) => {
   const router = useRouter();
-  const contextTheme = useContext(ThemeContext);
+  const { theme: contextTheme } = useContext(ThemeContext);
 
   return (
     <div className="h-full min-h-lvh flex flex-col">

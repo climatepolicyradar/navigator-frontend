@@ -1,4 +1,4 @@
-/**
+/*
  * This implementation gives us runtime, isomorphic env variables.
  *
  * We could use NEXT_PUBLIC_* env variables, but those have to be baked in at build time.

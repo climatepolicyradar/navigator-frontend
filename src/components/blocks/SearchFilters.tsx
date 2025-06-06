@@ -6,6 +6,7 @@ import { LuChevronRight } from "react-icons/lu";
 import Loader from "@/components/Loader";
 import { Accordian } from "@/components/accordian/Accordian";
 import { Heading } from "@/components/accordian/Heading";
+import { Badge } from "@/components/atoms/label/Badge";
 import { FilterOptions } from "@/components/blocks/FilterOptions";
 import { AppliedFilters } from "@/components/filters/AppliedFilters";
 import { DateRange } from "@/components/filters/DateRange";
@@ -13,7 +14,7 @@ import { InputListContainer } from "@/components/filters/InputListContainer";
 import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
 import { TypeAhead } from "@/components/forms/TypeAhead";
-import { Label } from "@/components/labels/Label";
+import { Info } from "@/components/molecules/info/Info";
 import { SLIDE_OUT_DATA_KEY } from "@/constants/dataAttributes";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { currentYear, minYear } from "@/constants/timedate";
@@ -22,10 +23,8 @@ import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
 import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
-import { isCorporateReportsEnabled, isUNFCCCFiltersEnabled } from "@/utils/features";
+import { isCorporateReportsEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
 import { getFilterLabel } from "@/utils/getFilterLabel";
-
-import { Info } from "../molecules/info/Info";
 
 const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption<any>) => {
   if (selectedCatgeory) {
@@ -140,6 +139,31 @@ const SearchFilters = ({
         </Accordian>
       )}
 
+      {conceptsData && (
+        <>
+          <button
+            className="items-center justify-between cursor-pointer group flex"
+            onClick={() => setCurrentSlideOut(currentSlideOut === "" ? "concepts" : "")}
+            data-cy="concepts-control"
+            {...{ [SLIDE_OUT_DATA_KEY]: "concepts" }}
+          >
+            <Heading>
+              Topics
+              <Badge size="small" className="ml-2">
+                Beta
+              </Badge>
+            </Heading>
+            <span
+              className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
+                currentSlideOut === "concepts" ? "transform rotate-180" : ""
+              }`}
+            >
+              <LuChevronRight />
+            </span>
+          </button>
+        </>
+      )}
+
       {themeConfigStatus === "success" &&
         themeConfig.filters.map((filter) => {
           // If the filter is not in the selected category, don't display it
@@ -153,6 +177,21 @@ const SearchFilters = ({
               showFade={filter.showFade}
             >
               <InputListContainer>
+                {filter.showTopicsMessage && isKnowledgeGraphEnabled(featureFlags, themeConfig) && (
+                  <p className="opacity-80 mb-2">
+                    Our new topic filter automatically identifies {filter.label.toLowerCase()} in the text of documents.{" "}
+                    <a
+                      className="underline"
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentSlideOut(currentSlideOut === "" ? "concepts" : "");
+                      }}
+                    >
+                      Try it now
+                    </a>
+                  </p>
+                )}
                 <FilterOptions
                   filter={filter}
                   query={query}
@@ -164,29 +203,6 @@ const SearchFilters = ({
             </Accordian>
           );
         })}
-
-      {conceptsData && (
-        <>
-          <button
-            className="items-center justify-between cursor-pointer group flex"
-            onClick={() => setCurrentSlideOut(currentSlideOut === "" ? "concepts" : "")}
-            data-cy="concepts-control"
-            {...{ [SLIDE_OUT_DATA_KEY]: "concepts" }}
-          >
-            <div className="flex items-center gap-2 pointer-events-none">
-              <Heading>Topics</Heading>
-              <Label>Beta</Label>
-            </div>
-            <span
-              className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
-                currentSlideOut === "concepts" ? "transform rotate-180" : ""
-              }`}
-            >
-              <LuChevronRight />
-            </span>
-          </button>
-        </>
-      )}
 
       <Accordian
         title={getFilterLabel("Region", "region", query[QUERY_PARAMS.category], themeConfig)}

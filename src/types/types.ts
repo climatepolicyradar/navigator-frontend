@@ -1,4 +1,4 @@
-export type TTheme = "cpr" | "cclw" | "mcf";
+export type TTheme = "cpr" | "cclw" | "mcf" | "ccc";
 
 export type TSearchKeywordFilters = {
   categories?: string[];
@@ -343,6 +343,7 @@ export type TSearchResponse = {
     id: string;
     hits: (TFamily & {
       concept_counts?: Record<string, number>;
+      document_import_id: string;
     })[];
   }[];
   continuation_token?: string;

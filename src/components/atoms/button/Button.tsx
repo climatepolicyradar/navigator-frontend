@@ -63,7 +63,7 @@ export const getButtonClasses = ({
 
   switch (size) {
     case "small":
-      sizing = isIcon ? "w-7 h-7" : "px-2 py-2.5";
+      sizing = isIcon ? "w-7 h-7" : "px-2.5 py-2";
       break;
     case "medium":
       sizing = isIcon ? "w-9 h-9" : "px-4 py-3";
