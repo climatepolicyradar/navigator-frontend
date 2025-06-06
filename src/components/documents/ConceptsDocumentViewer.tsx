@@ -180,7 +180,7 @@ export const ConceptsDocumentViewer = ({
         <div id="document-container" className="flex flex-row flex-wrap lg:flex-nowrap lg:h-[80vh]">
           {/* Concepts */}
           {hasConcepts && (
-            <SideCol id="document-concepts" extraClasses="w-full md:!w-1/2 lg:!w-maxSidebar">
+            <SideCol id="document-concepts" extraClasses="w-full max-h-[80vh] md:!w-1/2 lg:!w-maxSidebar lg:max-h-full">
               <div className="py-4 md:hidden">
                 <Button content="both" onClick={handleToggleConcepts}>
                   <span>{showConcepts ? "Hide" : "Show"} topics</span>
