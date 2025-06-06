@@ -1,3 +1,5 @@
+import { ParsedUrlQuery } from "querystring";
+
 import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
@@ -42,6 +44,11 @@ const passageClasses = (canPreview: boolean) => {
   return "md:w-2/3";
 };
 
+// If we don't have a query string or a concept selected, we do't have a search
+const isEmptySearch = (query: ParsedUrlQuery) => {
+  return !(query[QUERY_PARAMS.query_string] || query[QUERY_PARAMS.concept_id] || query[QUERY_PARAMS.concept_name]);
+};
+
 /*
   # DEV NOTES
   - This page displays a 'physical' document, which is a single document within a document family.
@@ -73,7 +80,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     router.query,
     null,
     document.import_id,
-    !!(router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]),
+    // !!(router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]),
+    !isEmptySearch(router.query),
     MAX_PASSAGES
   );
 
@@ -276,7 +284,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             vespaDocumentData={vespaDocumentData}
             document={document}
             searchStatus={status}
-            searchResultFamilies={families}
+            searchResultFamilies={isEmptySearch(router.query) ? [] : families}
             handleSemanticSearchChange={handleSemanticSearchChange}
             handlePassagesOrderChange={handlePassagesOrderChange}
           />
