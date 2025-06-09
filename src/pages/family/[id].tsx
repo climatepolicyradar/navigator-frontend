@@ -4,7 +4,7 @@ import { ApiClient } from "@/api/http-common";
 import { Columns } from "@/components/atoms/columns/Columns";
 import Layout from "@/components/layouts/Main";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
-import { FAMILY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sidebarItems";
+import { FAMILY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { TFamilyPage, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";

@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from "@storybook/react";
 
 import { Columns } from "@/components/atoms/columns/Columns";
-import { FAMILY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sidebarItems";
+import { FAMILY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
 
 import { ContentsSideBar } from "./ContentsSideBar";
 

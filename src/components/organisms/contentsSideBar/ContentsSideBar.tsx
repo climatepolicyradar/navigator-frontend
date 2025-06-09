@@ -3,7 +3,7 @@ import { MouseEvent, useState } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
 import { Badge } from "@/components/atoms/label/Badge";
-import { ISideBarItem } from "@/constants/sidebarItems";
+import { ISideBarItem } from "@/constants/sideBarItems";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
