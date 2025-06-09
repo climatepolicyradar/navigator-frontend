@@ -26,12 +26,12 @@ export const FamilyHead = ({ family, onCollectionClick }: IProps) => {
     <div>
       <Heading level={1}>{family.title}</Heading>
       {family.collections?.length > 0 && (
-        <div className="md:flex text-sm mt-4 items-center w-full mb-2">
+        <div className="text-sm mt-4 items-top w-full mb-2">
           <span>Part of the&nbsp;</span>
           {family.collections?.length > 0 &&
             family.collections?.map((collection, i) => (
               <Fragment key={`${collection.title}-${i}`}>
-                <a onClick={(e) => onCollectionClick(e, i)} href={`#collection-${i}`}>
+                <a onClick={(e) => onCollectionClick(e, i)} href={`#collection-${i}`} className="underline text-text-primary hover:text-text-brand">
                   {collection.title}
                 </a>
                 {i < family.collections.length - 1 && <span>,&nbsp;</span>}
