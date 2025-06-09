@@ -1,7 +1,9 @@
+import { ParsedUrlQuery } from "querystring";
+
 import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
@@ -42,19 +44,9 @@ const passageClasses = (canPreview: boolean) => {
   return "md:w-2/3";
 };
 
-const scrollToPassage = (index: number) => {
-  setTimeout(() => {
-    const passage = window.document.getElementById(`passage-${index}`);
-    if (!passage) return;
-    const topPos = passage.offsetTop;
-    const container = window.document.getElementById("document-passage-matches");
-    if (!container) return;
-    container.scrollTo({ top: topPos - 10, behavior: "smooth" });
-  }, 100);
-};
-
-const renderPassageCount = (count: number): string => {
-  return count > MAX_PASSAGES ? `top ${MAX_PASSAGES} matches` : count + ` match${count > 1 ? "es" : ""}`;
+// If we don't have a query string or a concept selected, we do't have a search
+const isEmptySearch = (query: ParsedUrlQuery) => {
+  return !(query[QUERY_PARAMS.query_string] || query[QUERY_PARAMS.concept_id] || query[QUERY_PARAMS.concept_name]);
 };
 
 /*
@@ -74,7 +66,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 }: IProps) => {
   const [canPreview, setCanPreview] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
-  const [passageIndex, setPassageIndex] = useState(null);
+  const [pageNumber, setPageNumber] = useState(null);
   const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
   const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
   const router = useRouter();
@@ -84,18 +76,11 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const startingPassage = Number(router.query.passage) || 0;
 
   // Note: only runs a fresh start if either a query string or concept data is provided
-  const { status, families, searchQuery } = useSearch(
-    router.query,
-    null,
-    document.import_id,
-    !!(router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]),
-    MAX_PASSAGES
-  );
+  const { status, families, searchQuery } = useSearch(router.query, null, document.import_id, !isEmptySearch(router.query), MAX_PASSAGES);
 
-  const handlePassageClick = (index: number) => {
+  const handlePassageClick = (pageNo: number) => {
     if (!canPreview) return;
-    setPassageIndex(index);
-    scrollToPassage(index);
+    setPageNumber(pageNo);
   };
 
   const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
@@ -112,7 +97,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   // Semantic search / exact match handler
   const handleSemanticSearchChange = (_: string, isExact: string) => {
-    setPassageIndex(0);
+    setPageNumber(null);
     const queryObj = { ...router.query };
     if (isExact === "false") {
       delete queryObj[QUERY_PARAMS.exact_match];
@@ -131,32 +116,11 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   };
 
   const handlePassagesOrderChange = (orderValue: string) => {
-    setPassageIndex(0);
+    setPageNumber(null);
     const queryObj = { ...router.query };
     queryObj[QUERY_PARAMS.passages_by_position] = orderValue;
     router.push({ query: queryObj }, undefined, { shallow: true });
   };
-
-  // Handlers to update router
-  const handleExactMatchChange = useCallback(
-    (isExact: boolean) => {
-      const queryObj = { ...router.query };
-
-      if (isExact) {
-        queryObj[QUERY_PARAMS.exact_match] = "true";
-      }
-
-      router.push(
-        {
-          pathname: `/documents/${document.slug}`,
-          query: queryObj,
-        },
-        undefined,
-        { shallow: true }
-      );
-    },
-    [router, document.slug]
-  );
 
   // Update passages based on search results
   useEffect(() => {
@@ -205,14 +169,17 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
                 <div
                   id="document-preview"
-                  className={`flex-1 h-[400px] basis-[400px] md:block md:h-full ${totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""}`}
+                  className={`flex-1 h-[400px] basis-[400px] md:block md:h-full relative ${
+                    totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""
+                  }`}
                 >
                   {canPreview && (
                     <EmbeddedPDF
                       document={document}
                       documentPassageMatches={passageMatches}
-                      passageIndex={passageIndex}
+                      pageNumber={pageNumber}
                       startingPassageIndex={startingPassage}
+                      searchStatus={status}
                     />
                   )}
                   {!canPreview && <EmptyDocument />}
@@ -275,7 +242,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                   queryParams={router.query}
                                   handleSearchChange={handleSemanticSearchChange}
                                   setShowOptions={setShowOptions}
-                                  handlePassagesClick={handlePassagesOrderChange}
+                                  handlePassagesOrderChange={handlePassagesOrderChange}
                                 />
                               </motion.div>
                             )}
@@ -287,7 +254,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           id="document-passage-matches"
                           className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
                         >
-                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
+                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} />
                         </div>
                       )}
                       {totalNoOfMatches === 0 && <EmptyPassages hasQueryString={!!router.query[QUERY_PARAMS.query_string]} />}
@@ -307,11 +274,11 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             initialConceptFilters={conceptFilters}
             vespaFamilyData={vespaFamilyData}
             vespaDocumentData={vespaDocumentData}
-            familySlug={family.slug}
             document={document}
             searchStatus={status}
-            searchResultFamilies={families}
-            onExactMatchChange={handleExactMatchChange}
+            searchResultFamilies={isEmptySearch(router.query) ? [] : families}
+            handleSemanticSearchChange={handleSemanticSearchChange}
+            handlePassagesOrderChange={handlePassagesOrderChange}
           />
         )}
       </section>
