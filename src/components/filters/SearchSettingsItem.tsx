@@ -7,8 +7,13 @@ interface IProps {
 }
 
 export const SearchSettingsItem = ({ children, isActive, onClick, ...props }: IProps) => (
-  <a className={`flex gap-1 text-text-primary items-top hover:opacity-100 ${isActive ? "" : "opacity-80"}`} onClick={onClick} href="#" {...props}>
-    {isActive && <LuCheck size="14" className="shrink-0 mt-1" />}
+  <a
+    className={`flex justify-between gap-1 text-text-primary items-top hover:opacity-100 ${isActive ? "" : "opacity-80"}`}
+    onClick={onClick}
+    href="#"
+    {...props}
+  >
     {children}
+    {isActive && <LuCheck size="14" className="shrink-0 mt-1" />}
   </a>
 );
