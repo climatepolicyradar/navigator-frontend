@@ -286,7 +286,7 @@ export const ConceptsDocumentViewer = ({
                     </div>
                   </div>
                   <div className="">
-                    {hasQuery && state.totalNoOfMatches > 0 && (
+                    {hasQuery && (
                       <>
                         <div className="mb-2 text-sm" data-cy="document-matches-description">
                           {passagesResultsContext}
@@ -297,9 +297,13 @@ export const ConceptsDocumentViewer = ({
                             />
                           )}
                         </div>
-                        <p className="text-sm">
-                          Sorted by {getCurrentPassagesOrderChoice(router.query) === true ? "page number" : "search relevance"}
-                        </p>
+                        {state.totalNoOfMatches > 0 && (
+                          <>
+                            <p className="text-sm">
+                              Sorted by {getCurrentPassagesOrderChoice(router.query) === true ? "page number" : "search relevance"}
+                            </p>
+                          </>
+                        )}
                       </>
                     )}
                   </div>
