@@ -1,7 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
 
 import { Columns } from "@/components/atoms/columns/Columns";
-import { Badge } from "@/components/atoms/label/Badge";
 
 import { ContentsSideBar, ISideBarItem } from "./ContentsSideBar";
 
@@ -16,28 +15,37 @@ export default meta;
 
 const items: ISideBarItem[] = [
   {
-    id: "section-description",
-    display: "Description",
-  },
-  {
     id: "section-documents",
     display: "Documents",
+  },
+  {
+    id: "section-summary",
+    display: "Summary",
   },
   {
     id: "section-targets",
     display: "Targets",
   },
   {
-    id: "section-index",
-    display: "Index",
-  },
-  {
     id: "section-collection",
     display: "Collection",
   },
   {
-    id: "section-related",
-    display: "Related",
+    id: "section-topics",
+    display: "Topics",
+    badge: "Experimental",
+  },
+  {
+    id: "section-data",
+    display: "Get the data",
+  },
+  {
+    id: "section-download",
+    display: "Download documents",
+  },
+  {
+    id: "section-notes",
+    display: "Citation & Notes",
   },
 ];
 
