@@ -20,5 +20,5 @@ export const getPassageResultsContext = ({ isExactSearch, passageMatches, queryT
   const topics = selectedTopics.map((concept) => firstCase(concept.preferred_label));
   const phraseAndTopics = [phrase, ...topics].filter((part) => part).join(" AND ");
 
-  return [passages, matchesPlural, "for", phraseAndTopics].join(" ") + ".";
+  return [passages, matchesPlural, "for", phraseAndTopics].join(" ");
 };
