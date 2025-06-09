@@ -1,4 +1,4 @@
 export const SEARCH_SETTINGS = {
-  exact: "Exact phrases only",
+  exact: "Exact phrases",
   semantic: "Related phrases",
 };

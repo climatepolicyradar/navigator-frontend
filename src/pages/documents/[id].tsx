@@ -71,7 +71,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
   const router = useRouter();
   const qsSearchString = router.query[QUERY_PARAMS.query_string];
-  const exactMatchQuery = !!router.query[QUERY_PARAMS.exact_match];
+  // exact match is default, so only instances where it is explicitly set to false do we check against
+  const exactMatchQuery = router.query[QUERY_PARAMS.exact_match] === undefined || router.query[QUERY_PARAMS.exact_match] !== "false";
   const passagesByPosition = router.query[QUERY_PARAMS.passages_by_position] === "true";
   const startingPassage = Number(router.query.passage) || 0;
 
@@ -100,7 +101,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     setPageNumber(null);
     const queryObj = { ...router.query };
     if (isExact === "false") {
-      delete queryObj[QUERY_PARAMS.exact_match];
+      queryObj[QUERY_PARAMS.exact_match] = "false";
     } else if (isExact === "true") {
       queryObj[QUERY_PARAMS.exact_match] = "true";
     }

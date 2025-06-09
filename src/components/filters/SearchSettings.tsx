@@ -3,6 +3,7 @@ import { ParsedUrlQuery } from "querystring";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { SEARCH_PASSAGE_ORDER } from "@/constants/searchPassagesOrder";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { sortOptions, sortOptionsBrowse } from "@/constants/sortOptions";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
@@ -110,13 +111,13 @@ export const SearchSettings = ({
                   onClick={(e) => handlePassagesOrderClick(e, "false")}
                   isActive={getCurrentPassagesOrderChoice(queryParams) === false}
                 >
-                  Relevance
+                  {SEARCH_PASSAGE_ORDER.relevance}
                 </SearchSettingsItem>
                 <SearchSettingsItem
                   onClick={(e) => handlePassagesOrderClick(e, "true")}
                   isActive={getCurrentPassagesOrderChoice(queryParams) === true}
                 >
-                  Page number
+                  {SEARCH_PASSAGE_ORDER.page}
                 </SearchSettingsItem>
               </SearchSettingsList>
             </div>
