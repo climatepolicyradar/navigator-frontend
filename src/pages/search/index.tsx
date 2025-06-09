@@ -465,7 +465,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                           <div className="flex gap-4">
                             <div className="relative z-10 -top-0.5">
                               <button
-                                className={`flex items-center gap-1 px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
+                                className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
                                 onClick={() => setShowSearchOptions(!showSearchOptions)}
                                 data-cy="search-options"
                                 ref={searchSettingsButtonRef}
@@ -490,7 +490,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                             </div>
                             <div className="relative z-10 -top-0.5">
                               <button
-                                className={`flex items-center gap-2 px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showSortOptions ? "bg-surface-ui" : ""}`}
+                                className={`flex items-center gap-2 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSortOptions ? "bg-surface-ui" : ""}`}
                                 onClick={() => setShowSortOptions(!showSortOptions)}
                                 data-cy="search-options"
                                 ref={sortSettingsButtonRef}
