@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
+import { LuChevronDown } from "react-icons/lu";
 
 import { ApiClient } from "@/api/http-common";
 import { ExternalLink } from "@/components/ExternalLink";
@@ -25,6 +26,8 @@ import { SideCol } from "@/components/panels/SideCol";
 import { SingleCol } from "@/components/panels/SingleCol";
 import SearchResultList from "@/components/search/SearchResultList";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { SEARCH_SETTINGS } from "@/constants/searchSettings";
+import { sortOptions } from "@/constants/sortOptions";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 import useConfig from "@/hooks/useConfig";
@@ -33,6 +36,8 @@ import useSearch from "@/hooks/useSearch";
 import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
+import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
 
@@ -48,14 +53,21 @@ const SETTINGS_ANIMATION_VARIANTS = {
   visible: { opacity: 1, transition: { duration: 0 } },
 };
 
+const getSelectedSortOptionText = (sortOption: string) => {
+  const selectedOptionValue = sortOptions.find(({ value }) => value === sortOption);
+  return selectedOptionValue.label;
+};
+
 const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig, featureFlags, conceptsData }: IProps) => {
   const router = useRouter();
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
+  const [showSearchOptions, setShowSearchOptions] = useState(false);
+  const [showSortOptions, setShowSortOptions] = useState(false);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
   const [searchDirty, setSearchDirty] = useState(false);
-  const settingsButtonRef = useRef(null);
+  const sortSettingsButtonRef = useRef(null);
+  const searchSettingsButtonRef = useRef(null);
 
   const [currentSlideOut, setCurrentSlideOut] = useState<TSlideOutContent>("");
 
@@ -450,28 +462,63 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                               link={{ href: "/faq", text: "Learn more" }}
                             />
                           </div>
-                          <div className="relative z-10 -top-0.5">
-                            <button
-                              className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showOptions ? "bg-surface-ui" : ""}`}
-                              onClick={() => setShowOptions(!showOptions)}
-                              data-cy="search-options"
-                              ref={settingsButtonRef}
-                            >
-                              Sort &amp; Display
-                            </button>
-                            <AnimatePresence initial={false}>
-                              {showOptions && (
-                                <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
-                                  <SearchSettings
-                                    queryParams={router.query}
-                                    handleSortClick={handleSortClick}
-                                    handleSearchChange={handleSearchChange}
-                                    setShowOptions={setShowOptions}
-                                    settingsButtonRef={settingsButtonRef}
-                                  />
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
+                          <div className="flex gap-4">
+                            <div className="relative z-10 -top-0.5">
+                              <button
+                                className={`flex items-center gap-1 px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
+                                onClick={() => setShowSearchOptions(!showSearchOptions)}
+                                data-cy="search-options"
+                                ref={searchSettingsButtonRef}
+                              >
+                                <span className="font-bold">Search:</span>{" "}
+                                <span>{getCurrentSearchChoice(router.query) === "true" ? SEARCH_SETTINGS.exact : SEARCH_SETTINGS.semantic}</span>
+                                <LuChevronDown />
+                              </button>
+                              <AnimatePresence initial={false}>
+                                {showSearchOptions && (
+                                  <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
+                                    <SearchSettings
+                                      queryParams={router.query}
+                                      handleSearchChange={handleSearchChange}
+                                      setShowOptions={setShowSearchOptions}
+                                      settingsButtonRef={searchSettingsButtonRef}
+                                      extraClasses="w-[280px]"
+                                    />
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                            <div className="relative z-10 -top-0.5">
+                              <button
+                                className={`flex items-center gap-2 px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showSortOptions ? "bg-surface-ui" : ""}`}
+                                onClick={() => setShowSortOptions(!showSortOptions)}
+                                data-cy="search-options"
+                                ref={sortSettingsButtonRef}
+                              >
+                                <span className="font-bold">Order:</span>{" "}
+                                <span>
+                                  {getSelectedSortOptionText(
+                                    getCurrentSortChoice(
+                                      router.query,
+                                      !router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.query_string]?.toString().trim() === ""
+                                    )
+                                  )}
+                                </span>{" "}
+                                <LuChevronDown />
+                              </button>
+                              <AnimatePresence initial={false}>
+                                {showSortOptions && (
+                                  <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
+                                    <SearchSettings
+                                      queryParams={router.query}
+                                      handleSortClick={handleSortClick}
+                                      setShowOptions={setShowSortOptions}
+                                      settingsButtonRef={sortSettingsButtonRef}
+                                    />
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
                           </div>
                         </div>
                       </div>

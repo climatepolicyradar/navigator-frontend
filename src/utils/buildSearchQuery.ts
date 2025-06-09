@@ -42,9 +42,10 @@ export default function buildSearchQuery(
     query.sort_field = "date";
   }
 
-  if (routerQuery[QUERY_PARAMS.exact_match]) {
-    query.exact_match = routerQuery[QUERY_PARAMS.exact_match] === "true";
-  }
+  // Default to search using exact match - only look for when exact_match is specifically set to false
+  // if (routerQuery[QUERY_PARAMS.exact_match]) {
+  query.exact_match = routerQuery[QUERY_PARAMS.exact_match] !== "false";
+  // }
 
   if (routerQuery[QUERY_PARAMS.passages_by_position]) {
     query.sort_within_page = routerQuery[QUERY_PARAMS.passages_by_position] === "true";
