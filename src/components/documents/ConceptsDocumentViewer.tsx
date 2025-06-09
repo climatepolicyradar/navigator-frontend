@@ -201,7 +201,7 @@ export const ConceptsDocumentViewer = ({
           {/* Preview */}
           <div
             id="document-preview"
-            className={`flex-1 order-last border-t border-t-gray-200 h-[600px] basis-full lg:basis-auto lg:border-t-0 lg:order-none lg:h-full md:border-gray-200 ${hasConcepts ? "lg:border-x" : "lg:border-r"}`}
+            className={`flex-1 relative order-last border-t border-t-gray-200 h-[600px] basis-full lg:basis-auto lg:border-t-0 lg:order-none lg:h-full md:border-gray-200 ${hasConcepts ? "lg:border-x" : "lg:border-r"}`}
           >
             {canPreview && (
               <EmbeddedPDF
