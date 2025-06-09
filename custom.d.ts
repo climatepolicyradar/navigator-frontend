@@ -4,6 +4,7 @@ interface Window {
   dataLayer?: any;
   Cypress?: any;
   queryClient: any;
+  AdobeDC: any;
 }
 declare namespace NodeJS {
   interface Global {
