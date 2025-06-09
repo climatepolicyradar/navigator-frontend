@@ -1,3 +1,5 @@
+import React from "react";
+
 import { ConceptLink } from "@/components/molecules/conceptLink/ConceptLink";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { TConcept } from "@/types";
@@ -28,11 +30,11 @@ export const getPassageResultsContext = ({ isExactSearch, passageMatches, queryT
     <div>
       {passages} {matchesPlural} for {phrase}{" "}
       {selectedTopics.map((concept, i, allConcepts) => (
-        <>
-          {i === 0 && "AND "}
+        <React.Fragment key={concept.wikibase_id}>
+          {i === 0 && phrase && "AND "}
           <ConceptLink key={concept.wikibase_id} concept={concept} />
           {i + 1 < allConcepts.length && " AND "}
-        </>
+        </React.Fragment>
       ))}
     </div>
   );
