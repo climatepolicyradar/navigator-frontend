@@ -230,7 +230,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
         <SubNav>
           <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={page.title} />
         </SubNav>
-        <MultiCol>
+        <MultiCol extraClasses="flex-wrap md:flex-nowrap">
           <SingleCol extraClasses={`mt-8 px-5 w-full`}>
             <FamilyHead family={page} onCollectionClick={handleCollectionClick} />
             <section className="mt-6">
@@ -427,7 +427,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             ))}
           </SingleCol>
           {concepts.length > 0 && (
-            <div className="border-gray-200 grow-0 shrink-0 px-5 border-l pt-5 w-[460px] text-sm">
+            <div className="border-gray-200 grow-0 shrink-0 px-5 border-l pt-4 md:pt-8 text-sm basis-full md:basis-[320px] lg:basis-[380px] xl:basis-[460px]">
               <ConceptsPanel
                 rootConcepts={rootConcepts}
                 concepts={concepts}
