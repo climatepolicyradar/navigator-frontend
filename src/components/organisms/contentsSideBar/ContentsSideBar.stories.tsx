@@ -1,70 +1,42 @@
 import { Meta, StoryObj } from "@storybook/react";
 
 import { Columns } from "@/components/atoms/columns/Columns";
+import { FAMILY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sidebarItems";
 
-import { ContentsSideBar, ISideBarItem } from "./ContentsSideBar";
+import { ContentsSideBar } from "./ContentsSideBar";
 
 const meta = {
   title: "Organisms/ContentsSideBar",
   component: ContentsSideBar,
-  argTypes: {},
+  argTypes: {
+    containerClasses: { control: "text" },
+    stickyClasses: { control: "text" },
+  },
 } satisfies Meta<typeof ContentsSideBar>;
 type TStory = StoryObj<typeof ContentsSideBar>;
 
 export default meta;
 
-const items: ISideBarItem[] = [
-  {
-    id: "section-documents",
-    display: "Documents",
-  },
-  {
-    id: "section-summary",
-    display: "Summary",
-  },
-  {
-    id: "section-targets",
-    display: "Targets",
-  },
-  {
-    id: "section-collection",
-    display: "Collection",
-  },
-  {
-    id: "section-topics",
-    display: "Topics",
-    badge: "Experimental",
-  },
-  {
-    id: "section-data",
-    display: "Get the data",
-  },
-  {
-    id: "section-download",
-    display: "Download documents",
-  },
-  {
-    id: "section-notes",
-    display: "Citation & Notes",
-  },
-];
-
 export const InIsolation: TStory = {
   args: {
-    items,
+    items: FAMILY_PAGE_SIDE_BAR_ITEMS,
+    containerClasses: "",
+    stickyClasses: "",
   },
 };
 
 export const OnAPage: TStory = {
   name: "On a Page",
   args: {
-    items,
+    items: FAMILY_PAGE_SIDE_BAR_ITEMS,
+    containerClasses: "",
+    stickyClasses: "",
   },
   render: ({ ...props }) => (
     <Columns>
       <ContentsSideBar {...props} />
       <div className="flex flex-col gap-8 cols-3:col-span-2 cols-4:col-span-3">
-        {items.map((item) => (
+        {FAMILY_PAGE_SIDE_BAR_ITEMS.map((item) => (
           <section id={item.id} key={item.id}>
             <h1 className="text-2xl font-bold mb-4">{item.display}</h1>
             <p>
