@@ -76,14 +76,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const startingPassage = Number(router.query.passage) || 0;
 
   // Note: only runs a fresh start if either a query string or concept data is provided
-  const { status, families, searchQuery } = useSearch(
-    router.query,
-    null,
-    document.import_id,
-    // !!(router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]),
-    !isEmptySearch(router.query),
-    MAX_PASSAGES
-  );
+  const { status, families, searchQuery } = useSearch(router.query, null, document.import_id, !isEmptySearch(router.query), MAX_PASSAGES);
 
   const handlePassageClick = (pageNo: number) => {
     if (!canPreview) return;
@@ -261,7 +254,6 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           id="document-passage-matches"
                           className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
                         >
-                          {/* Removing active passage index for now as we don't use indexes any more //activeIndex={pageNumber ?? startingPassage} */}
                           <PassageMatches passages={passageMatches} onClick={handlePassageClick} />
                         </div>
                       )}
