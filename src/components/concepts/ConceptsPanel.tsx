@@ -90,15 +90,15 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
   const knowledgeGraphIsNew = previousNewFeature < 0;
 
   return (
-    <div className="flex flex-col gap-6 pb-4">
-      <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-4 pb-4 text-sm">
+      <div className="flex flex-col gap-4 pb-4 border-b border-border-light text-text-tertiary">
         {knowledgeGraphIsNew && <NewFeatureCard newFeature={NEW_FEATURES[0]} />}
         <span className="text-base font-semibold text-text-primary">
           In this document
           {!knowledgeGraphIsNew && <Badge className="ml-2">Beta</Badge>}
         </span>
         {!knowledgeGraphIsNew && (
-          <p className="text-sm text-text-tertiary">
+          <p>
             Find mentions of topics. Accuracy is not 100%.
             <br />
             <LinkWithQuery href="/faq" className="underline" target="_blank">
@@ -106,6 +106,7 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
             </LinkWithQuery>
           </p>
         )}
+        <p>Sorted by the most frequent mention.</p>
       </div>
 
       {rootConcepts.concat(otherRootConcept).map((rootConcept) => {
@@ -124,7 +125,7 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
                 link={{ href: getConceptStoreLink(rootConcept.wikibase_id), text: "Source" }}
               />
             </div>
-            <ul className="flex flex-col gap-2 mt-4 ml-4">
+            <ul className="flex flex-col gap-2 mt-2 ml-4">
               <ConceptsList concepts={conceptsGroupedByRootConcept[rootConcept.wikibase_id]} onConceptClick={onConceptClick} />
             </ul>
           </div>
