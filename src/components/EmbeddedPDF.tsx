@@ -48,7 +48,7 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null,
         </div>
       ) : (
         <>
-          <AnimatePresence initial={false}>
+          {/* <AnimatePresence initial={false}>
             {(searchStatus === "loading" || isLoading) && (
               <motion.div
                 key="content"
@@ -64,7 +64,7 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null,
                 <div>Loading the PDF viewer</div>
               </motion.div>
             )}
-          </AnimatePresence>
+          </AnimatePresence> */}
           <div ref={containerRef} id="pdf-div" className="h-full" data-analytics-document={document.content_type}></div>
         </>
       )}
