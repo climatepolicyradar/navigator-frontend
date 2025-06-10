@@ -147,19 +147,39 @@ export const ConceptsDocumentViewer = ({
 
   // Calculate passage matches.
   useEffect(() => {
-    const matches = searchResultFamilies.flatMap((family) =>
+    let matches = searchResultFamilies.flatMap((family) =>
       family.family_documents.filter((cacheDoc) => cacheDoc.document_slug === document.slug).flatMap((cacheDoc) => cacheDoc.document_passage_matches)
     );
 
-    const totalMatches =
+    let totalMatches =
       searchResultFamilies.find((family) => family.family_documents.some((cacheDoc) => cacheDoc.document_slug === document.slug))
         ?.total_passage_hits || 0;
+    //  ___   ___   ______   _________  ______   ________  __     __
+    // /__/\ /__/\ /_____/\ /________/\/_____/\ /_______/\/__/\ /__/\
+    // \::\ \\  \ \\:::_ \ \\__.::.__\/\::::_\/_\__.::._\/\ \::\\:.\ \
+    //  \::\/_\ .\ \\:\ \ \ \  \::\ \   \:\/___/\  \::\ \  \_\::_\:_\/
+    //   \:: ___::\ \\:\ \ \ \  \::\ \   \:::._\/  _\::\ \__ _\/__\_\_/\
+    //    \: \ \\::\ \\:\_\ \ \  \::\ \   \:\ \   /__\::\__/\\ \ \ \::\ \
+    //     \__\/ \::\/ \_____\/   \__\/    \_\/   \________\/ \_\/  \__\/
+    // HOTFIX - slug mismatch can happen between RDS and Vespa when document titles are updated
+    // TODO: delete / figure this out later but for now a temporary solution is to check against the source url as that is relatively unchanging
+    if (!matches.length) {
+      matches = searchResultFamilies.flatMap((family) =>
+        family.family_documents
+          .filter((cacheDoc) => cacheDoc.document_source_url === document.source_url)
+          .flatMap((cacheDoc) => cacheDoc.document_passage_matches)
+      );
+
+      totalMatches =
+        searchResultFamilies.find((family) => family.family_documents.some((cacheDoc) => cacheDoc.document_source_url === document.source_url))
+          ?.total_passage_hits || 0;
+    }
 
     setState({
       passageMatches: matches,
       totalNoOfMatches: totalMatches,
     });
-  }, [searchResultFamilies, document.slug]);
+  }, [searchResultFamilies, document.slug, document.source_url]);
 
   const handlePassageClick = (pageNumber: number) => {
     if (!canPreview) return;
@@ -288,7 +308,7 @@ export const ConceptsDocumentViewer = ({
                   <div className="">
                     {hasQuery && (
                       <>
-                        <div className="mb-2 text-sm" data-cy="document-matches-description">
+                        <div className="flex flex-wrap mb-2 text-sm" data-cy="document-matches-description">
                           {passagesResultsContext}
                           {state.totalNoOfMatches >= MAX_RESULTS && (
                             <Info
