@@ -21,7 +21,7 @@ export const NEW_FEATURES: INewFeature[] = [
     cardText: "Find mentions of topics in documents. This is more precise than standard search, but accuracy is not 100%.",
     modalContent: (
       <>
-        <p>We have introduced a new layer of structure to the data, automatically identifying mentions of key climate concepts in documents.</p>
+        <p>We have introduced a new layer of structure to the data, automatically identifying mentions of key climate topics in documents.</p>
         <Image src="/images/features/knowledge-graph.jpg" alt="A screenshot showing a list of topics" width={792} height={446} />
         <p>
           Moving beyond simple search + browse, this feature will help you quickly find where important topics (i.e. economic sectors, targets, and
