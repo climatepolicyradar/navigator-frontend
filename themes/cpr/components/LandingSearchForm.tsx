@@ -101,4 +101,5 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
     </form>
   );
 };
+
 export default LandingSearchForm;
