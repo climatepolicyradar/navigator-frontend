@@ -424,8 +424,10 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               )}
             </SideCol>
             <div
-              className={`flex-1 bg-white transition-[filter] duration-150 ${
-                currentSlideOut ? "md:pointer-events-none md:select-none md:opacity-50" : ""
+              className={`flex-1 bg-white transition-all duration-150 ${
+                currentSlideOut
+                  ? "md:pointer-events-none md:select-none md:opacity-50" // if we want slide across: xl:pointer-events-auto xl:select-auto xl:opacity-100 xl:ml-[460px]
+                  : ""
               }`}
             >
               <SingleCol extraClasses="px-5 relative">
@@ -451,7 +453,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                             <span>{showFilters ? "Hide" : "Show"} filters</span>
                           </Button>
                         </div>
-                        <div className="flex justify-between items-start">
+                        <div className="flex flex-wrap gap-4 justify-between items-start">
                           <div className="flex items-center gap-2">
                             <p className="text-sm text-text-primary font-normal">
                               Results <span className="text-text-secondary">{hits || 0}</span>
@@ -462,8 +464,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                               link={{ href: "/faq", text: "Learn more" }}
                             />
                           </div>
-                          <div className="flex gap-4">
-                            <div className="relative z-10 -top-0.5">
+                          <div className="flex flex-col lg:flex-row gap-1 lg:gap-4">
+                            <div className="relative z-10 -top-0.5 flex justify-end">
                               <button
                                 className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
                                 onClick={() => setShowSearchOptions(!showSearchOptions)}
@@ -488,9 +490,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                                 )}
                               </AnimatePresence>
                             </div>
-                            <div className="relative z-10 -top-0.5">
+                            <div className="relative z-8 -top-0.5 flex justify-end">
                               <button
-                                className={`flex items-center gap-2 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSortOptions ? "bg-surface-ui" : ""}`}
+                                className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSortOptions ? "bg-surface-ui" : ""}`}
                                 onClick={() => setShowSortOptions(!showSortOptions)}
                                 data-cy="search-options"
                                 ref={sortSettingsButtonRef}
