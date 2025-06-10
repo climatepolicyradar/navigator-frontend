@@ -51,7 +51,7 @@ test("search", async ({ page }) => {
   /** Document (AKA Family) page */
   await Promise.all([page.waitForURL("/document/*"), page.waitForResponse("**/searches")]);
   await page
-    .getByText(/View (more than )?\d+ matches/)
+    .getByText(/(more than )?\d+ matches/)
     .first()
     .click();
 
