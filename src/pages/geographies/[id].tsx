@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
+import { BrazilImplementingNDCCard } from "@/cclw/components/BrazilImplementingNDCCard";
 import { Alert } from "@/components/Alert";
 import { ExternalLink } from "@/components/ExternalLink";
 import { Targets } from "@/components/Targets";
@@ -64,6 +65,8 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
   const allDocumentsCount = Object.values(summary.family_counts).reduce((acc, count) => acc + (count || 0), 0);
+
+  const displayBrazilNDCBanner = theme === "cclw" && geography?.geography_slug.toLowerCase() === "brazil";
 
   const documentCategories = themeConfig.documentCategories.map((category) => {
     let count = null;
@@ -225,6 +228,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
           </SubNav>
           <SiteWidth>
             <SingleCol extraClasses="mt-8">
+              {displayBrazilNDCBanner && <BrazilImplementingNDCCard />}
               <CountryHeader
                 country={geography}
                 targetCount={hasTargets ? publishedTargets?.length : 0}
