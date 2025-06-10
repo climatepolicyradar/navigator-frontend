@@ -91,7 +91,8 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
   const formRef = useRef(null);
   const router = useRouter();
   const { featureFlags, themeConfig } = useContext(ThemePageFeaturesContext);
-  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+  const knowledgeGraphEnabled = true;
+  // const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTerm(e.currentTarget.value);
@@ -117,9 +118,18 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
   const displayPlaceholder = placeholder ?? "Search the full text of any document";
 
   const handleQuickSearch = (params: Record<string, string>) => {
-    // Convert all values to lowercase
+    // Only lowercase specific parameters that need it
     const lowercaseParams = Object.entries(params).reduce((acc, [key, value]) => {
-      acc[key] = typeof value === "string" ? value.toLowerCase() : value;
+      // Parameters that should be lowercase
+      if (key === QUERY_PARAMS.category) {
+        // Keep UNFCCC in uppercase, lowercase others
+        acc[key] = value === "UNFCCC" ? value : value.toLowerCase();
+      } else if (key === QUERY_PARAMS.country || key === QUERY_PARAMS.framework_laws || key === QUERY_PARAMS.exact_match) {
+        acc[key] = value.toLowerCase();
+      } else {
+        // Keep original case for other parameters (like concept names)
+        acc[key] = value;
+      }
       return acc;
     }, {});
 
