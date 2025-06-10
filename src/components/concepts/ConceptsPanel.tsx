@@ -1,6 +1,7 @@
 import startCase from "lodash/startCase";
 import Link from "next/link";
-import { useCallback, useContext } from "react";
+import { useContext, useState } from "react";
+import { LuChevronUp } from "react-icons/lu";
 
 import { Button } from "@/components/atoms/button/Button";
 import { NEW_FEATURES } from "@/constants/newFeatures";
@@ -24,15 +25,57 @@ interface IProps {
   onConceptClick?: (conceptLabel: string) => void;
 }
 
-export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showCounts = true, onConceptClick }: IProps) => {
-  const { previousNewFeature } = useContext(NewFeatureContext);
+interface IConceptListProps {
+  concepts: TConcept[];
+  onConceptClick?: (conceptLabel: string) => void;
+}
 
-  const handleConceptClick = useCallback(
-    (conceptLabel: string) => {
-      onConceptClick?.(conceptLabel);
-    },
-    [onConceptClick]
+// How many concepts to show based on the most mentions
+const TOP_CONCEPTS_LENGTH = 3;
+
+const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
+  const [showAll, setShowAll] = useState(false);
+
+  return (
+    <>
+      {concepts.slice(0, showAll ? undefined : TOP_CONCEPTS_LENGTH).map((concept) => {
+        return (
+          <li key={concept.wikibase_id} className="">
+            <Link
+              className="inline text-text-primary capitalize underline underline-offset-2 decoration-dotted hover:underline"
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                onConceptClick?.(concept.preferred_label);
+              }}
+            >
+              {firstCase(concept.preferred_label)}
+            </Link>
+          </li>
+        );
+      })}
+      {concepts.length > TOP_CONCEPTS_LENGTH && (
+        <>
+          <div>
+            <Button size="x-small" color="mono" variant="faded" onClick={() => setShowAll(!showAll)}>
+              {showAll ? (
+                <>
+                  <LuChevronUp />
+                  &nbsp; hide
+                </>
+              ) : (
+                `+${concepts.length - TOP_CONCEPTS_LENGTH} more`
+              )}
+            </Button>
+          </div>
+        </>
+      )}
+    </>
   );
+};
+
+export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showCounts = false, onConceptClick }: IProps) => {
+  const { previousNewFeature } = useContext(NewFeatureContext);
 
   const otherRootConcept: TConcept = {
     wikibase_id: "Q000",
@@ -50,15 +93,15 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
   const knowledgeGraphIsNew = previousNewFeature < 0;
 
   return (
-    <div className="flex flex-col gap-6 pb-4">
-      <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-4 pb-4 text-sm">
+      <div className="flex flex-col gap-4 pb-4 border-b border-border-light text-text-tertiary">
         {knowledgeGraphIsNew && <NewFeatureCard newFeature={NEW_FEATURES[0]} />}
         <span className="text-base font-semibold text-text-primary">
-          Topics
+          In this document
           {!knowledgeGraphIsNew && <Badge className="ml-2">Beta</Badge>}
         </span>
         {!knowledgeGraphIsNew && (
-          <p className="text-sm text-text-tertiary">
+          <p>
             Find mentions of topics. Accuracy is not 100%.
             <br />
             <LinkWithQuery href="/faq" className="underline" target="_blank">
@@ -66,6 +109,7 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
             </LinkWithQuery>
           </p>
         )}
+        <p>Sorted by the most frequent mention.</p>
       </div>
 
       {rootConcepts.concat(otherRootConcept).map((rootConcept) => {
@@ -84,32 +128,8 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
                 link={{ href: getConceptStoreLink(rootConcept.wikibase_id), text: "Source" }}
               />
             </div>
-            <ul className="flex flex-wrap gap-1 mt-4">
-              {conceptsGroupedByRootConcept[rootConcept.wikibase_id].map((concept) => {
-                return (
-                  <li key={concept.wikibase_id}>
-                    <Link
-                      className="capitalize hover:no-underline"
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleConceptClick?.(concept.preferred_label);
-                      }}
-                    >
-                      <Button
-                        color="mono"
-                        rounded
-                        variant="outlined"
-                        className="!px-2.5 !py-1.5 !font-normal leading-tight"
-                        data-cy="view-document-viewer-concept"
-                      >
-                        {firstCase(concept.preferred_label)}
-                        {showCounts && ` (${conceptCountsById[concept.wikibase_id]})`}
-                      </Button>
-                    </Link>
-                  </li>
-                );
-              })}
+            <ul className="flex flex-col gap-2 mt-2 ml-4">
+              <ConceptsList concepts={conceptsGroupedByRootConcept[rootConcept.wikibase_id]} onConceptClick={onConceptClick} />
             </ul>
           </div>
         );
