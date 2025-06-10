@@ -30,12 +30,15 @@ interface IConceptListProps {
   onConceptClick?: (conceptLabel: string) => void;
 }
 
+// How many concepts to show based on the most mentions
+const TOP_CONCEPTS_LENGTH = 3;
+
 const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
   const [showAll, setShowAll] = useState(false);
 
   return (
     <>
-      {concepts.slice(0, showAll ? undefined : 3).map((concept) => {
+      {concepts.slice(0, showAll ? undefined : TOP_CONCEPTS_LENGTH).map((concept) => {
         return (
           <li key={concept.wikibase_id} className="">
             <Link
@@ -51,7 +54,7 @@ const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
           </li>
         );
       })}
-      {concepts.length > 3 && (
+      {concepts.length > TOP_CONCEPTS_LENGTH && (
         <>
           <div>
             <Button size="x-small" color="mono" variant="faded" onClick={() => setShowAll(!showAll)}>
@@ -61,7 +64,7 @@ const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
                   &nbsp; hide
                 </>
               ) : (
-                `+${concepts.length - 3} more`
+                `+${concepts.length - TOP_CONCEPTS_LENGTH} more`
               )}
             </Button>
           </div>
