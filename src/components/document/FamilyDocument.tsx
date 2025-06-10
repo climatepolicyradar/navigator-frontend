@@ -68,7 +68,6 @@ export const FamilyDocument = ({ document, matches, status, familyMatches, conce
     const numberOfMatches = typeof matches === "number" ? matches : parseInt(matches, 10);
     if (!numberOfMatches) return "";
 
-    // return `View ${familyMatches >= MAX_PASSAGES ? "more than " : ""}${numberOfMatches} ${numberOfMatches === 1 ? "match" : "matches"}`;
     const conceptsQuery = router.query[QUERY_PARAMS.concept_name];
     const conceptFiltersQuery = conceptsQuery ? (Array.isArray(conceptsQuery) ? conceptsQuery : [conceptsQuery]) : undefined;
     const appliedConcepts =
