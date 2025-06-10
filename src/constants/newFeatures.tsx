@@ -29,7 +29,7 @@ export const NEW_FEATURES: INewFeature[] = [
         </p>
         <p>
           This is more precise than standard search, but accuracy is not 100%. Help us to improve by{" "}
-          <ExternalLink url="mailto:support@climatepolicyradar.org" className="underline">
+          <ExternalLink url="https://eu.jotform.com/250402253775352" className="underline">
             giving us feedback
           </ExternalLink>
           .
