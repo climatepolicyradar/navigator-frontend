@@ -91,8 +91,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
   const formRef = useRef(null);
   const router = useRouter();
   const { featureFlags, themeConfig } = useContext(ThemePageFeaturesContext);
-  const knowledgeGraphEnabled = true;
-  // const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTerm(e.currentTarget.value);
