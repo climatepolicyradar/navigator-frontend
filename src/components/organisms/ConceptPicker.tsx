@@ -112,8 +112,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
       <div className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
         {!knowledgeGraphIsNew && (
           <p className="text-sm text-text-tertiary">
-            Find mentions of topics. Accuracy is not 100%.
-            <br />
+            Find mentions of topics. Accuracy is not 100%.{" "}
             <LinkWithQuery href="/faq" className="underline" target="_blank">
               Learn more
             </LinkWithQuery>

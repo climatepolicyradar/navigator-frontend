@@ -73,6 +73,16 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
 
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
+  useEffect(() => {
+    if (router.query.openConceptsPicker === "true") {
+      // Remove the parameter after opening the picker
+      const query = { ...router.query };
+      delete query.openConceptsPicker;
+      router.replace({ query }, undefined, { shallow: true });
+      setCurrentSlideOut("concepts");
+    }
+  }, [router]);
+
   const configQuery = useConfig();
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
 

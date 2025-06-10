@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import React from "react";
 
 import { Articles } from "@/cclw/components/Articles";
+import { BrazilImplementingNDCBanner } from "@/cclw/components/BrazilImplementingNDCBanner";
 import { FeatureDiscover } from "@/cclw/components/FeatureDiscover";
 import { FeatureSearch } from "@/cclw/components/FeatureSearch";
 import Footer from "@/cclw/components/Footer";
@@ -32,6 +33,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: IProps) => {
     <Layout title="Law and Policy Search" theme={APP_NAME} description={PAGE_DESCRIPTION}>
       <main id="main" className="flex flex-col flex-1">
         <div className="bg-cclw-dark">
+          <BrazilImplementingNDCBanner />
           <Header />
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
         </div>
