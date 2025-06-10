@@ -103,8 +103,14 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     page.geographies && page.geographies.length > 1 ? null : { label: geographyName, href: `/geographies/${geographySlug}` };
 
   let searchFamily: TMatchedFamily = null;
-  const { status, families } = useSearch(router.query, page.import_id, null, !!router.query[QUERY_PARAMS.query_string], MAX_PASSAGES);
-  if (!!router.query[QUERY_PARAMS.query_string]) {
+  const { status, families } = useSearch(
+    router.query,
+    page.import_id,
+    null,
+    !!(router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]),
+    MAX_PASSAGES
+  );
+  if (!!(router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name])) {
     families.forEach((family) => {
       if (page.slug === family.family_slug) {
         searchFamily = family;
@@ -257,6 +263,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       key={doc.import_id}
                       status={status}
                       familyMatches={searchFamily?.total_passage_hits}
+                      concepts={concepts}
                     />
                   ))}
                 </div>
@@ -287,6 +294,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           document={doc}
                           status={status}
                           familyMatches={searchFamily?.total_passage_hits}
+                          concepts={concepts}
                         />
                       </div>
                     ))}
