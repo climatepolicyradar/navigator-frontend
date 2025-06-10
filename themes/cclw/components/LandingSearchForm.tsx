@@ -8,7 +8,6 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { ThemePageFeaturesContext } from "@/context/ThemePageFeaturesContext";
 import { isKnowledgeGraphEnabled } from "@/utils/features";
 
-// See the method handleSearchInput in the index.tsx file for the processing of the example searches
 const EXAMPLE_SEARCHES = [
   {
     id: 1,

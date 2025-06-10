@@ -60,7 +60,7 @@ const KNOWLEDGE_GRAPH_QUICK_SEARCHES = [
     id: 3,
     label: "Zoning and spatial planning + marine",
     params: {
-      [QUERY_PARAMS.concept_name]: "zoning and spatial planning",
+      [QUERY_PARAMS.concept_name]: "Zoning and spatial planning",
       [QUERY_PARAMS.query_string]: "marine",
       [QUERY_PARAMS.exact_match]: "true",
     },
@@ -71,37 +71,21 @@ const KNOWLEDGE_GRAPH_QUICK_SEARCHES = [
     params: {
       [QUERY_PARAMS.category]: "laws",
       [QUERY_PARAMS.framework_laws]: "true",
-      [QUERY_PARAMS.concept_name]: "emissions reduction target",
+      [QUERY_PARAMS.concept_name]: "Emissions reduction target",
     },
   },
 ];
 
-const LandingPageLinks = ({ handleLinkClick }) => {
+const LandingPageLinks = ({}) => {
   const router = useRouter();
   const { featureFlags, themeConfig } = useContext(ThemePageFeaturesContext);
-  const knowledgeGraphEnabled = true;
-  // const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
 
   const handleQuickSearch = (params: Record<string, string>) => {
-    // Only lowercase specific parameters that need it
-    const lowercaseParams = Object.entries(params).reduce((acc, [key, value]) => {
-      // Parameters that should be lowercase
-      if (key === QUERY_PARAMS.category) {
-        // Keep UNFCCC in uppercase, lowercase others
-        acc[key] = value === "UNFCCC" ? value : value.toLowerCase();
-      } else if (key === QUERY_PARAMS.country || key === QUERY_PARAMS.framework_laws || key === QUERY_PARAMS.exact_match) {
-        acc[key] = value.toLowerCase();
-      } else {
-        // Keep original case for other parameters (like concept names)
-        acc[key] = value;
-      }
-      return acc;
-    }, {});
-
     // Push directly to search page with all parameters
     router.push({
       pathname: "/search",
-      query: lowercaseParams,
+      query: params,
     });
   };
 
