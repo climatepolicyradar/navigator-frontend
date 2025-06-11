@@ -6,7 +6,7 @@ TARGETS_URL ?= https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
 CDN_URL ?= https://cdn.dev.climatepolicyradar.org
 CONCEPTS_API_URL ?= https://api.climatepolicyradar.org
 ADOBE_API_KEY ?= dca9187b65294374a6367824df902fdf
-BACKEND_API_URL ?= https://app.dev.climatepolicyradar.org/api/v1
+BACKEND_API_URL ?= https://cpr.staging.climatepolicyradar.org/api/v1
 BACKEND_API_TOKEN ?= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkX2NvcnBvcmFfaWRzIjpbIkNDTFcuY29ycHVzLmkwMDAwMDAwMS5uMDAwMCIsIkNQUi5jb3JwdXMuaTAwMDAwMDAxLm4wMDAwIiwiVU5GQ0NDLmNvcnB1cy5pMDAwMDAwMDEubjAwMDAiXSwiZXhwIjoyMDQyMTEzMzY5LCJpYXQiOjE3MjY1NzY5NjksImlzcyI6IkNsaW1hdGUgUG9saWN5IFJhZGFyIiwic3ViIjoiQ1BSIiwiYXVkIjoiaHR0cHM6Ly9hcHAuZGV2LmNsaW1hdGVwb2xpY3lyYWRhci5vcmcvIn0.mJ2qLJmMyPLGt0rM_tTXhlVv1glxooxmQV0bWrvPwKU
 
 build:
