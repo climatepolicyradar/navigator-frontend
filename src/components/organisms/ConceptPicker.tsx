@@ -1,5 +1,6 @@
 import { NextRouter, useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
+import { LuSquare } from "react-icons/lu";
 
 import { Accordian } from "@/components/accordian/Accordian";
 import { Badge } from "@/components/atoms/label/Badge";
@@ -105,6 +106,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
       {/* HEADER */}
       {knowledgeGraphIsNew && <NewFeatureCard newFeature={NEW_FEATURES[0]} />}
       <span className="text-base font-semibold text-text-primary">
+        <LuSquare size={20} className="inline mr-2 text-text-brand align-text-bottom" />
         {title}
         {!knowledgeGraphIsNew && <Badge className="ml-2">Beta</Badge>}
       </span>
@@ -113,8 +115,8 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
       <div className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
         {!knowledgeGraphIsNew && (
           <p className="text-sm text-text-tertiary">
-            Find mentions of topics. Accuracy is not 100%.{" "}
-            <ExternalLink url="/faq#topics-faqs" className="underline">
+            Choose a topic to see precisely where it appears. Combine topics to see where they appear together. Accuracy is not 100%.{" "}
+            <ExternalLink url="/faq#topics-faqs" className="underline inline-block">
               Learn more
             </ExternalLink>
           </p>

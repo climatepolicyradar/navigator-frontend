@@ -415,7 +415,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                     />
                   </div>
                   <SlideOut showCloseButton={false}>
-                    {currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Topics" />}
+                    {currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Find mentions of topics" />}
                   </SlideOut>
                   <div className="absolute z-50 bottom-0 left-0 w-full flex pb-[100px] bg-white md:hidden">
                     <Button

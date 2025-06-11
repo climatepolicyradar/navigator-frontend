@@ -12,7 +12,6 @@ import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { firstCase } from "@/utils/text";
 
 import { ExternalLink } from "../ExternalLink";
-import { LinkWithQuery } from "../LinkWithQuery";
 import { Badge } from "../atoms/label/Badge";
 import { Info } from "../molecules/info/Info";
 import { NewFeatureCard } from "../molecules/newFeatures/NewFeatureCard";
