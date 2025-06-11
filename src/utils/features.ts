@@ -9,8 +9,7 @@ interface IArgs {
 export const isFeatureEnabled = ({ configFeature, featureFlag }: IArgs): boolean => {
   if (configFeature === undefined && featureFlag === undefined) return true; // No feature control = on
   if (configFeature === true) return true; // Config feature on = always on regardless of feature flags
-  if (configFeature === false && featureFlag === undefined) return false; // Config feature off and no feature supplied = off
-  return featureFlag === true; // Config feature off + feature flag = use feature flag
+  return featureFlag === true; // Config feature off + feature flag = use feature flag. This will be off is the feature flag is undefined
 };
 
 /* Specific feature shorthand functions */
