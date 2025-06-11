@@ -436,7 +436,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
             <div
               className={`flex-1 bg-white transition-all duration-150 ${
                 currentSlideOut
-                  ? "md:pointer-events-none md:select-none md:opacity-50" // if we want slide across: xl:pointer-events-auto xl:select-auto xl:opacity-100 xl:ml-[460px]
+                  ? "md:pointer-events-none md:select-none md:opacity-50 xl:pointer-events-auto xl:select-auto xl:opacity-100 xl:ml-[460px]"
                   : ""
               }`}
             >
