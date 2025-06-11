@@ -52,7 +52,7 @@ const PassageMatches = ({ passages, onClick, pageColour = "textDark" }: IProps) 
               <div
                 className={`p-4 cursor-pointer border border-gray-200 rounded-md bg-white hover:border-gray-500`}
                 onClick={() => {
-                  onClick(item.text_block_page);
+                  onClick(index);
                 }}
               >
                 <div className={`text-sm flex justify-between ${"text-" + pageColour}`}>
