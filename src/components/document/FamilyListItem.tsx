@@ -2,6 +2,7 @@ import { FC, ReactNode } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { TFamily } from "@/types";
+import { joinTailwindClasses } from "@/utils/tailwind";
 import { truncateString } from "@/utils/truncateString";
 
 import { FamilyMeta } from "./FamilyMeta";
@@ -10,9 +11,10 @@ interface IProps {
   children?: ReactNode;
   family: TFamily;
   showSummary?: boolean;
+  titleClasses?: string;
 }
 
-export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = true }) => {
+export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = true, titleClasses = "hover:underline" }) => {
   const {
     corpus_type_name,
     family_slug,
@@ -24,6 +26,8 @@ export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = tru
     family_metadata,
     family_source,
   } = family;
+
+  const allTitleClasses = joinTailwindClasses("result-title text-left font-medium text-lg duration-300 flex items-start", titleClasses);
 
   return (
     <div className="family-list-item relative">
@@ -37,12 +41,7 @@ export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = tru
           {...(corpus_type_name === "Reports" ? { author: (family_metadata as { author: string[] }).author } : {})}
         />
       </div>
-      <LinkWithQuery
-        href={`/document/${family_slug}`}
-        className="result-title text-[#0041A3] text-left font-medium text-lg duration-300 flex items-start !no-underline hover:!underline"
-        passHref
-        data-cy="family-title"
-      >
+      <LinkWithQuery href={`/document/${family_slug}`} className={allTitleClasses} passHref data-cy="family-title">
         {family_name}
       </LinkWithQuery>
       {showSummary && (
