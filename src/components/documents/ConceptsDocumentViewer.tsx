@@ -219,6 +219,7 @@ export const ConceptsDocumentViewer = ({
               </div>
               <ConceptPicker
                 concepts={documentConcepts}
+                showBadge
                 showSearch={false}
                 title="In this document"
                 containerClasses={`pt-4 pr-4 pl-4 md:pl-0 ${showConcepts ? "" : "hidden md:flex"}`}

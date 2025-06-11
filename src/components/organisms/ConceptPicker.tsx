@@ -20,6 +20,7 @@ import { ExternalLink } from "../ExternalLink";
 interface IProps {
   concepts: TConcept[];
   containerClasses?: string;
+  showBadge?: boolean;
   showSearch?: boolean;
   startingSort?: TSort;
   title: string;
@@ -72,7 +73,7 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
   router.push({ query: query }, undefined, { shallow: true });
 };
 
-export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showSearch = true, title }: IProps) => {
+export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showBadge = false, showSearch = true, title }: IProps) => {
   const router = useRouter();
   const { previousNewFeature } = useContext(NewFeatureContext);
   const ref = useRef(null);
@@ -107,6 +108,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
       <span className="text-base font-semibold text-text-primary">
         <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
         {title}
+        {!knowledgeGraphIsNew && showBadge && <Badge className="ml-2">Beta</Badge>}
       </span>
 
       {/* SCROLL AREA */}
