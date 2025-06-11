@@ -1,5 +1,5 @@
+import { File } from "lucide-react";
 import { useRouter } from "next/router";
-import { LuFile } from "react-icons/lu";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import PassageMatches from "@/components/PassageMatches";
@@ -67,8 +67,8 @@ export const FamilyMatchesDrawer = ({ family }: IProps) => {
                   href={`/documents/${document.document_slug}`}
                   className="text-[#005EEB] hover:text-blue-800 hover:underline text-lg inline-block"
                 >
-                  <span className="text-xl leading-none mr-1 -mb-[2px] inline-block">
-                    <LuFile />
+                  <span className="mr-1 -mb-[2px] inline-block">
+                    <File width={20} height={20} />
                   </span>
                   {document.document_title}
                 </LinkWithQuery>
