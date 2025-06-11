@@ -5,8 +5,6 @@ interface IProps {
   setDisplayNewFeature: (order: number | null) => void;
   previousNewFeature: number | null;
   setPreviousNewFeature: (order: number) => void;
-  hasShownModal: boolean;
-  setHasShownModal: (shown: boolean) => void;
 }
 
 export const NewFeatureContext = createContext<IProps>({
@@ -14,6 +12,4 @@ export const NewFeatureContext = createContext<IProps>({
   setDisplayNewFeature: (_order) => {},
   previousNewFeature: null,
   setPreviousNewFeature: (_order) => {},
-  hasShownModal: false,
-  setHasShownModal: (_shown) => {},
 });
