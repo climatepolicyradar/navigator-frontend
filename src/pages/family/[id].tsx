@@ -35,6 +35,7 @@ const Family: InferGetStaticPropsType<typeof getServerSideProps> = ({ featureFla
             <h1 className="text-4xl leading-tight font-[640] text-text-primary">{page.title}</h1>
           </div>
           <div className="flex flex-col gap-24">
+            {/* Each section should eventually be its own component */}
             {FAMILY_PAGE_SIDE_BAR_ITEMS.map((item) => (
               <section key={item.id} id={item.id} className="scroll-m-21 cols-2:scroll-m-24 cols-3:scroll-m-26">
                 <h2 className="text-2xl leading-tight font-[640] text-text-primary mb-4">{item.display}</h2>

@@ -14,7 +14,7 @@ export const useIntersectionObserver = ({ rootMargin, elementsQuery, setActiveId
     const matchingElements: Element[] = Array.from(document.querySelectorAll(elementsQuery));
 
     // Called when elements become / are no longer visible
-    const newCallback = (observerEntries: IntersectionObserverEntry[]) => {
+    const handleVisibilityChanges = (observerEntries: IntersectionObserverEntry[]) => {
       // Update the ref of which elements are currently visible
       elementEntriesRef.current = observerEntries.reduce((map, entry) => {
         map[entry.target.id] = entry;
@@ -34,7 +34,7 @@ export const useIntersectionObserver = ({ rootMargin, elementsQuery, setActiveId
       }
     };
 
-    const observer = new IntersectionObserver(newCallback, { rootMargin });
+    const observer = new IntersectionObserver(handleVisibilityChanges, { rootMargin });
 
     // Watch for which elements are currently visible
     matchingElements.forEach((element) => observer.observe(element));
