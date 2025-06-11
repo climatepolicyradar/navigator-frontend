@@ -40,7 +40,7 @@ export const NEW_FEATURES: INewFeature[] = [
           .
         </p>
         <p>
-          <ExternalLink url="/faq" className="underline">
+          <ExternalLink url="/faq#topics-faqs" className="underline">
             Read more in the FAQs
           </ExternalLink>
         </p>
