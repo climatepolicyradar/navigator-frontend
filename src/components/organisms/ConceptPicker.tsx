@@ -107,7 +107,6 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
       <span className="text-base font-semibold text-text-primary">
         <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
         {title}
-        {!knowledgeGraphIsNew && <Badge className="ml-2">Beta</Badge>}
       </span>
 
       {/* SCROLL AREA */}
