@@ -1,3 +1,5 @@
+import { ParsedUrlQuery } from "querystring";
+
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
@@ -6,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { ExternalLink } from "@/components/ExternalLink";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import Loader from "@/components/Loader";
 import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
 import { Button } from "@/components/atoms/button/Button";
@@ -38,6 +41,7 @@ import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
+import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
 
@@ -56,6 +60,21 @@ const SETTINGS_ANIMATION_VARIANTS = {
 const getSelectedSortOptionText = (sortOption: string) => {
   const selectedOptionValue = sortOptions.find(({ value }) => value === sortOption);
   return selectedOptionValue.label;
+};
+
+// We want to show the KG information under certain rules
+const showKnowledgeGraphInformation = (query: ParsedUrlQuery) => {
+  let show = false;
+  // If we have multiple topics/concepts selected
+  if (Array.isArray(query[QUERY_PARAMS.concept_name]) && query[QUERY_PARAMS.concept_name].length > 1) return true;
+  // If we have a query AND a concept selected
+  if (query[QUERY_PARAMS.query_string] && (query[QUERY_PARAMS.concept_name] || query[QUERY_PARAMS.concept_id])) return true;
+  return show;
+};
+
+const getSelectedConcepts = (selectedConcepts: string | string[], allConcepts: TConcept[]): TConcept[] => {
+  const selectedConceptsAsArray = Array.isArray(selectedConcepts) ? selectedConcepts : [selectedConcepts];
+  return allConcepts.filter((concept) => selectedConceptsAsArray.includes(concept.preferred_label.toLowerCase()));
 };
 
 const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig, featureFlags, conceptsData }: IProps) => {
@@ -536,6 +555,19 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       </div>
                       <section data-cy="search-results" className="min-h-screen">
                         <h2 className="sr-only">Search results</h2>
+                        {showKnowledgeGraphInformation(router.query) && (
+                          <div className="mb-8 p-4 pl-5 text-sm text-black border-l-2 border-[#005EEB] bg-[#005EEB14]">
+                            You are viewing a list of documents containing precise text passages matches related to{" "}
+                            <ResultsTopicsContext
+                              phrase={router.query[QUERY_PARAMS.query_string] as string}
+                              selectedTopics={getSelectedConcepts(router.query[QUERY_PARAMS.concept_name], conceptsData)}
+                            />
+                            .{" "}
+                            <LinkWithQuery href="/faq" target="_blank" hash="topics-faqs" className="underline hover:text-blue-800">
+                              Learn more
+                            </LinkWithQuery>
+                          </div>
+                        )}
                         <SearchResultList
                           category={router.query[QUERY_PARAMS.category]?.toString()}
                           families={families}
