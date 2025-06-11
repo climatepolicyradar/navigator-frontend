@@ -1,13 +1,9 @@
-import dynamic from "next/dynamic";
-import { MouseEvent } from "react";
-
 import Banner from "@/components/banner/FullHeight";
 import ExactMatch from "@/components/filters/ExactMatch";
 import Footer from "@/components/footer/Footer";
 import Header from "@/components/headers/LandingPage";
 import Layout from "@/components/layouts/LandingPage";
 import AlphaLogo from "@/components/logo/AlphaLogo";
-import { FullWidth } from "@/components/panels/FullWidth";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import LandingPageLinks from "@/cpr/components/LandingPageLinks";
 import LandingSearchForm from "@/cpr/components/LandingSearchForm";
@@ -33,12 +29,6 @@ export interface IProps {
 }
 
 const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exactMatch }: IProps) => {
-  const handleLinkClick = (e: MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    const term = e.currentTarget.textContent;
-    handleSearchInput(term);
-  };
-
   return (
     <Layout title="Law and Policy Search" theme={APP_NAME} description={PAGE_DESCRIPTION}>
       <div className="relative">
@@ -53,7 +43,7 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
                 <ExactMatch landing={true} checked={exactMatch} id="exact-match" handleSearchChange={handleSearchChange} />
               </div>
               <div className="mt-12">
-                <LandingPageLinks handleLinkClick={handleLinkClick} />
+                <LandingPageLinks />
               </div>
             </SiteWidth>
           </section>
