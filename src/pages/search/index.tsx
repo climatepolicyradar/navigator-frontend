@@ -566,7 +566,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
           <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
         </Drawer>
         <DownloadCsvPopup isOpen={showCSVDownloadPopup} onClose={() => setShowCSVDownloadPopup(false)} onDownload={handleDownloadCsvClick} />
-        <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
       </SlideOutContext.Provider>
     </Layout>
   );

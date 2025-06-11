@@ -446,8 +446,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           )}
         </MultiCol>
       </section>
-      {/* This is here in the short term for us to test features flags with our cache settings */}
-      <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
     </Layout>
   );
 };
