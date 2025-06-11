@@ -9,7 +9,7 @@ describe("isFeatureEnabled", () => {
     expect(isFeatureEnabled({ configFeature: true })).toBe(true);
   });
 
-  it("returns false with an disabled config feature and no feature flag", () => {
+  it("returns false when disabled in the config & feature flag turned off", () => {
     expect(isFeatureEnabled({ configFeature: false })).toBe(false);
   });
 
