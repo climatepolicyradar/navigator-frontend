@@ -1,4 +1,4 @@
-import { LuCheck } from "react-icons/lu";
+import { Check } from "lucide-react";
 
 interface IProps {
   children: React.ReactNode;
@@ -14,6 +14,6 @@ export const SearchSettingsItem = ({ children, isActive, onClick, ...props }: IP
     {...props}
   >
     {children}
-    {isActive && <LuCheck size="14" className="shrink-0 mt-1" />}
+    {isActive && <Check size="14" className="shrink-0 mt-1" />}
   </a>
 );

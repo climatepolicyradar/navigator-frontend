@@ -1,6 +1,6 @@
+import { TextSearch } from "lucide-react";
 import { NextRouter, useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
-import { LuSquare } from "react-icons/lu";
 
 import { Accordian } from "@/components/accordian/Accordian";
 import { Badge } from "@/components/atoms/label/Badge";
@@ -16,7 +16,6 @@ import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { firstCase } from "@/utils/text";
 
 import { ExternalLink } from "../ExternalLink";
-import { LinkWithQuery } from "../LinkWithQuery";
 
 interface IProps {
   concepts: TConcept[];
@@ -106,7 +105,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
       {/* HEADER */}
       {knowledgeGraphIsNew && <NewFeatureCard newFeature={NEW_FEATURES[0]} />}
       <span className="text-base font-semibold text-text-primary">
-        <LuSquare size={20} className="inline mr-2 text-text-brand align-text-bottom" />
+        <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
         {title}
         {!knowledgeGraphIsNew && <Badge className="ml-2">Beta</Badge>}
       </span>
