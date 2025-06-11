@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react";
-import { LuMoveUpRight } from "react-icons/lu";
+import { MoveUpRight } from "lucide-react";
 
 import { Icon } from "@/components/atoms/icon/Icon";
 
@@ -137,7 +137,7 @@ export const IconAndText: TStory = {
       </Button>
       <Button {...props}>
         View source document
-        <LuMoveUpRight className="ml-2" height="16" width="16" />
+        <MoveUpRight className="ml-2" height="16" width="16" />
       </Button>
     </div>
   ),

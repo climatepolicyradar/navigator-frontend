@@ -18,7 +18,7 @@ const SearchResult = ({ family, active, onClick }: IProps) => {
   const matchesText = `${matchesNumber} ${total_passage_hits === 1 ? "match" : "matches"} in documents`;
 
   return (
-    <FamilyListItem family={family}>
+    <FamilyListItem family={family} showSummary={false}>
       {family_documents.length > 0 && (
         <div>
           <div className="inline-block" data-tooltip-content="View passages in this document that match your search" data-tooltip-id={family_slug}>
