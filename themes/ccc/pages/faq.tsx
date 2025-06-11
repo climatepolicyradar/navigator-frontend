@@ -27,7 +27,7 @@ const FAQ: React.FC = () => {
         <SiteWidth>
           <FaqSection title="FAQs" faqs={FAQS} />
           <FaqSection title="Platform FAQs" faqs={PLATFORM_FAQS} />
-          {knowledgeGraphEnabled && <FaqSection title="Topics FAQs" faqs={CONCEPTS_FAQS} />}
+          {knowledgeGraphEnabled && <FaqSection title="Topics FAQs" sectionId="topics-faqs" faqs={CONCEPTS_FAQS} />}
         </SiteWidth>
       </section>
       <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />

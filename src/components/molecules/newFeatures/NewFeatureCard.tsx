@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import { LuX } from "react-icons/lu";
 
+import { ExternalLink } from "@/components/ExternalLink";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Button } from "@/components/atoms/button/Button";
 import { Card } from "@/components/atoms/card/Card";
 import { INewFeature } from "@/constants/newFeatures";
@@ -12,7 +14,7 @@ interface IProps {
 }
 
 export const NewFeatureCard = ({ className, newFeature: { cardText, order } }: IProps) => {
-  const { previousNewFeature, setDisplayNewFeature, setPreviousNewFeature } = useContext(NewFeatureContext);
+  const { previousNewFeature, setDisplayNewFeature, setPreviousNewFeature, hasShownModal } = useContext(NewFeatureContext);
 
   if (previousNewFeature === null || previousNewFeature >= order) return null;
 
@@ -28,14 +30,23 @@ export const NewFeatureCard = ({ className, newFeature: { cardText, order } }: I
       </div>
       <p className="mt-1.5 mb-3 text-sm text-text-light/85">{cardText}</p>
       <div className="flex gap-2">
-        <Button
-          size="small"
-          variant="outlined"
-          className="border-border-light/75 hover:border-border-light hover:!bg-transparent text-text-light"
-          onClick={() => setDisplayNewFeature(order)}
-        >
-          Learn more
-        </Button>
+        {!hasShownModal ? (
+          <Button
+            size="small"
+            variant="outlined"
+            className="border-border-light/75 hover:border-border-light hover:!bg-transparent text-text-light"
+            onClick={() => setDisplayNewFeature(order)}
+          >
+            Learn more
+          </Button>
+        ) : (
+          <ExternalLink
+            url="/faq#topics-faqs"
+            className="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium border rounded-md border-border-light/75 hover:border-border-light text-text-light"
+          >
+            Learn more
+          </ExternalLink>
+        )}
         <Button size="small" variant="ghost" className="text-text-light/75 hover:text-text-light hover:!bg-transparent" onClick={onDismiss}>
           Dismiss
         </Button>
