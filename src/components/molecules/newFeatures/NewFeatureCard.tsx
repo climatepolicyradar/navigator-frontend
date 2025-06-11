@@ -1,5 +1,5 @@
+import { X } from "lucide-react";
 import { useContext } from "react";
-import { LuX } from "react-icons/lu";
 
 import { Button } from "@/components/atoms/button/Button";
 import { Card } from "@/components/atoms/card/Card";
@@ -23,7 +23,7 @@ export const NewFeatureCard = ({ className, newFeature: { cardText, order } }: I
       <div className="flex justify-between text-text-light">
         <span className="text-sm leading-tight font-semibold">New improvement</span>
         <button type="button" onClick={onDismiss}>
-          <LuX size="16" />
+          <X size="16" />
         </button>
       </div>
       <p className="mt-1.5 mb-3 text-sm text-text-light/85">{cardText}</p>

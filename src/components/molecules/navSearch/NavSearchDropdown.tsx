@@ -1,5 +1,5 @@
+import { ChevronsUpDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { LuChevronsUpDown } from "react-icons/lu";
 
 interface IProps {
   contextualSearchName: string;
@@ -76,7 +76,7 @@ export const NavSearchDropdown = ({ contextualSearchName, isEverything, setIsEve
           >
             {option.name}
             <div className={isOpen ? "invisible" : ""}>
-              <LuChevronsUpDown height="12" width="12" />
+              <ChevronsUpDown height="12" width="12" />
             </div>
           </button>
         ))}

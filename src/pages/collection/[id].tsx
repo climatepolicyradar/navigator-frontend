@@ -1,5 +1,5 @@
+import { FileStack } from "lucide-react";
 import { GetServerSideProps, InferGetStaticPropsType } from "next";
-import { LuFileStack } from "react-icons/lu";
 
 import { ApiClient } from "@/api/http-common";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
@@ -81,7 +81,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
                     className="family-document group mt-4 p-4 rounded-lg border bg-gray-25 border-gray-100 shadow-xs transition duration-300 flex flex-no-wrap cursor-pointer hover:border-blue-100 hover:bg-gray-50"
                   >
                     <div className="flex-0 mr-2 hidden md:block">
-                      <LuFileStack size="20" className="mt-0.5 text-text-brand" />
+                      <FileStack size="20" className="mt-0.5 text-text-brand" />
                     </div>
                     <div className="flex-1">
                       <span dangerouslySetInnerHTML={{ __html: family.title }} />

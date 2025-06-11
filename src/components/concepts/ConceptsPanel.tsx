@@ -1,7 +1,7 @@
 import startCase from "lodash/startCase";
+import { ChevronUp } from "lucide-react";
 import Link from "next/link";
 import { useContext, useState } from "react";
-import { LuChevronUp } from "react-icons/lu";
 
 import { Button } from "@/components/atoms/button/Button";
 import { NEW_FEATURES } from "@/constants/newFeatures";
@@ -12,7 +12,6 @@ import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { firstCase } from "@/utils/text";
 
 import { ExternalLink } from "../ExternalLink";
-import { LinkWithQuery } from "../LinkWithQuery";
 import { Badge } from "../atoms/label/Badge";
 import { Info } from "../molecules/info/Info";
 import { NewFeatureCard } from "../molecules/newFeatures/NewFeatureCard";
@@ -61,7 +60,7 @@ const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
             <Button size="x-small" color="mono" variant="faded" onClick={() => setShowAll(!showAll)}>
               {showAll ? (
                 <>
-                  <LuChevronUp />
+                  <ChevronUp />
                   &nbsp; hide
                 </>
               ) : (
