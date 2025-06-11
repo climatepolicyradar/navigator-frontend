@@ -72,9 +72,9 @@ const showKnowledgeGraphInformation = (query: ParsedUrlQuery) => {
   return show;
 };
 
-const getSelectedConcepts = (selectedConcepts: string | string[], allConcepts: TConcept[]): TConcept[] => {
+const getSelectedConcepts = (selectedConcepts: string | string[], allConcepts: TConcept[] = []): TConcept[] => {
   const selectedConceptsAsArray = Array.isArray(selectedConcepts) ? selectedConcepts : [selectedConcepts];
-  return allConcepts.filter((concept) => selectedConceptsAsArray.includes(concept.preferred_label.toLowerCase()));
+  return allConcepts?.filter((concept) => selectedConceptsAsArray.includes(concept.preferred_label.toLowerCase())) || [];
 };
 
 const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig, featureFlags, conceptsData }: IProps) => {
