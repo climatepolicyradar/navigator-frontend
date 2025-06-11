@@ -24,4 +24,12 @@ describe("isFeatureEnabled", () => {
   it("returns true with an enabled config feature and a disabled feature flag", () => {
     expect(isFeatureEnabled({ configFeature: true, featureFlag: false })).toBe(true);
   });
+
+  it("returns true with an unset config feature and an enabled feature flag", () => {
+    expect(isFeatureEnabled({ configFeature: undefined, featureFlag: true })).toBe(true);
+  });
+
+  it("returns false with an unset config feature and a disabled feature flag", () => {
+    expect(isFeatureEnabled({ configFeature: undefined, featureFlag: false })).toBe(false);
+  });
 });
