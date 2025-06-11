@@ -1,12 +1,16 @@
 import { useRouter } from "next/router";
-import { useState, useEffect, useRef, ChangeEvent, useContext } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
+import { DEFAULT_CONFIG_FEATURES } from "@/constants/features";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { ThemePageFeaturesContext } from "@/context/ThemePageFeaturesContext";
+import { TFeatureFlags, TThemeConfig } from "@/types";
+import { getAllCookies } from "@/utils/cookies";
+import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { readConfigFile } from "@/utils/readConfigFile";
 
 const EXAMPLE_SEARCHES = [
   {
@@ -89,8 +93,34 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
   const [formFocus, setFormFocus] = useState(false);
   const formRef = useRef(null);
   const router = useRouter();
-  const { featureFlags, themeConfig } = useContext(ThemePageFeaturesContext);
-  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+
+  /*
+    The landing page is read in not by using Next.JS, but by our CCLW specific page reading logic.
+    This means that we cannot fetch the feature flags directly by using the page context.
+    This function provides a means of working around this so we can conditionally display the
+    quick searches.
+
+    TODO: Remove this once we have hard launched concepts in product.
+  */
+  const [featureFlags, setFeatureFlags] = useState({} as TFeatureFlags);
+  const [localThemeConfig, setLocalThemeConfig] = useState<TThemeConfig>({ features: DEFAULT_CONFIG_FEATURES } as TThemeConfig);
+
+  async function loadConfig() {
+    const allCookies = getAllCookies();
+    const parsedFeatureFlags = getFeatureFlags(allCookies);
+    setFeatureFlags(parsedFeatureFlags);
+
+    const theme = process.env.THEME;
+    const themeConfig = await readConfigFile(theme);
+    setLocalThemeConfig(themeConfig);
+  }
+
+  // TODO: Remove this once we have hard launched concepts in product.
+  useEffect(() => {
+    loadConfig();
+  }, []);
+
+  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, localThemeConfig);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTerm(e.currentTarget.value);
