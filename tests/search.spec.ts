@@ -45,7 +45,8 @@ test("search", async ({ page }) => {
   await expect(firstSearchResult.locator('[data-cy="family-metadata-year"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="country-link"]')).toBeVisible();
 
-  await searchResults.getByRole("link").first().click();
+  // Click first search result family title link
+  await firstSearchResult.locator('[data-cy="family-title"]').click();
 
   /** Document (AKA Family) page */
   await Promise.all([page.waitForURL("/document/*"), page.waitForResponse("**/searches")]);
