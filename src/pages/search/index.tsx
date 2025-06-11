@@ -461,7 +461,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
             >
               <SingleCol extraClasses="px-5 relative">
                 {["error", "success"].includes(downloadCSVStatus) && (
-                  <div className="text-sm text-center mt-5">
+                  <div className="text-sm mt-2">
                     {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
                     {downloadCSVStatus === "success" && (
                       <span className="text-green-600">CSV downloaded successfully, please check your downloads folder</span>
