@@ -22,6 +22,9 @@ const useNewFeatureContext = ({ ...props }) => {
     previousNewFeature: -1,
     // eslint-disable-next-line no-console
     setPreviousNewFeature: (order: number) => console.info("setPreviousNewFeature", order),
+    hasShownModal: false,
+    // eslint-disable-next-line no-console
+    setHasShownModal: (shown: boolean) => console.info("setHasShownModal", shown),
   };
 
   return (
