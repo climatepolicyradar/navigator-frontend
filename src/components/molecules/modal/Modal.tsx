@@ -1,5 +1,5 @@
+import { X } from "lucide-react";
 import { ReactNode, useEffect } from "react";
-import { LuX } from "react-icons/lu";
 
 import { Card } from "@/components/atoms/card/Card";
 import { Heading } from "@/components/typography/Heading";
@@ -48,7 +48,7 @@ export const Modal = ({ cardClasses = "", children, isOpen, onClose, showCloseBu
         <div className="mb-3 flex flex-row-reverse justify-between items-center gap-3">
           {showCloseButton && (
             <button onClick={onClose} className="text-text-brand">
-              <LuX size="18" />
+              <X size="18" />
             </button>
           )}
           <Heading level={1} className="text-lg leading-tight font-semibold text-text-primary flex-1">

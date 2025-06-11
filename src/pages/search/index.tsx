@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { LuChevronDown } from "react-icons/lu";
 
 import { ApiClient } from "@/api/http-common";
 import { ExternalLink } from "@/components/ExternalLink";
@@ -415,7 +415,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                     />
                   </div>
                   <SlideOut showCloseButton={false}>
-                    {currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Topics" />}
+                    {currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Find mentions of topics" />}
                   </SlideOut>
                   <div className="absolute z-50 bottom-0 left-0 w-full flex pb-[100px] bg-white md:hidden">
                     <Button
@@ -484,7 +484,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                               >
                                 <span className="font-bold">Search:</span>{" "}
                                 <span>{getCurrentSearchChoice(router.query) === "true" ? SEARCH_SETTINGS.exact : SEARCH_SETTINGS.semantic}</span>
-                                <LuChevronDown />
+                                <ChevronDown />
                               </button>
                               <AnimatePresence initial={false}>
                                 {showSearchOptions && (
@@ -516,7 +516,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                                     )
                                   )}
                                 </span>{" "}
-                                <LuChevronDown />
+                                <ChevronDown />
                               </button>
                               <AnimatePresence initial={false}>
                                 {showSortOptions && (
