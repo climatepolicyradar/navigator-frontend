@@ -11,6 +11,7 @@ import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { firstCase } from "@/utils/text";
 
+import { ExternalLink } from "../ExternalLink";
 import { LinkWithQuery } from "../LinkWithQuery";
 import { Badge } from "../atoms/label/Badge";
 import { Info } from "../molecules/info/Info";
@@ -104,9 +105,9 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
           <p>
             Find mentions of topics. Accuracy is not 100%.
             <br />
-            <LinkWithQuery href="/faq" className="underline" target="_blank">
+            <ExternalLink url="/faq#topics-faqs" className="underline">
               Learn more
-            </LinkWithQuery>
+            </ExternalLink>
           </p>
         )}
         <p>Sorted by the most frequent mention.</p>

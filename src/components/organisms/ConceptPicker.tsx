@@ -14,6 +14,7 @@ import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { firstCase } from "@/utils/text";
 
+import { ExternalLink } from "../ExternalLink";
 import { LinkWithQuery } from "../LinkWithQuery";
 
 interface IProps {
@@ -113,9 +114,9 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
         {!knowledgeGraphIsNew && (
           <p className="text-sm text-text-tertiary">
             Find mentions of topics. Accuracy is not 100%.{" "}
-            <LinkWithQuery href="/faq" className="underline" target="_blank">
+            <ExternalLink url="/faq#topics-faqs" className="underline">
               Learn more
-            </LinkWithQuery>
+            </ExternalLink>
           </p>
         )}
         <div className="flex gap-2 items-center justify-between">

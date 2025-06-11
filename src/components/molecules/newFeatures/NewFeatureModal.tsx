@@ -5,13 +5,13 @@ import { NEW_FEATURES } from "@/constants/newFeatures";
 import { NewFeatureContext } from "@/context/NewFeatureContext";
 
 export const NewFeatureModal = () => {
-  const { displayNewFeature, setDisplayNewFeature, setHasShownModal } = useContext(NewFeatureContext);
+  const { displayNewFeature, setDisplayNewFeature, setPreviousNewFeature } = useContext(NewFeatureContext);
 
   if (displayNewFeature === null) return null;
 
   const onCloseModal = () => {
+    setPreviousNewFeature(displayNewFeature);
     setDisplayNewFeature(null);
-    setHasShownModal(true);
   };
 
   const feature = NEW_FEATURES[displayNewFeature];
