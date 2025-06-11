@@ -34,7 +34,6 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
 
   const [previousNewFeature, setPreviousNewFeature] = useState<number | null>(null);
   const [displayNewFeature, setDisplayNewFeature] = useState<number | null>(null);
-  const [hasShownModal, setHasShownModal] = useState<boolean>(false);
   const [themeConfig, setThemeConfig] = useState<TThemeConfig>(DEFAULT_THEME_CONFIG);
 
   useEffect(() => {
@@ -83,8 +82,6 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
     setDisplayNewFeature,
     previousNewFeature,
     setPreviousNewFeature: setNewFeatureSeen,
-    hasShownModal,
-    setHasShownModal,
   };
 
   return (
