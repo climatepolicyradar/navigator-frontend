@@ -17,7 +17,7 @@ describe("isFeatureEnabled", () => {
     expect(isFeatureEnabled({ configFeature: false, featureFlag: true })).toBe(true);
   });
 
-  it("returns true with an enabled config feature and an enabled feature flag", () => {
+  it("returns true when enabled in the theme config AND feature flag is enabled", () => {
     expect(isFeatureEnabled({ configFeature: true, featureFlag: true })).toBe(true);
   });
 
