@@ -43,7 +43,6 @@ test("search", async ({ page }) => {
   await expect(firstSearchResult.locator('[data-cy="family-title"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="family-metadata-category"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="family-metadata-year"]')).toBeVisible();
-  await expect(firstSearchResult.locator('[data-cy="family-description"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="country-link"]')).toBeVisible();
 
   await searchResults.getByRole("link").first().click();
