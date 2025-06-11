@@ -9,9 +9,10 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 interface IProps {
   concept: TConcept;
   triggerClasses?: string;
+  onClick?: () => void;
 }
 
-export const ConceptLink = ({ concept, triggerClasses = "" }: IProps) => {
+export const ConceptLink = ({ concept, triggerClasses = "", onClick }: IProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const allTriggerClasses = joinTailwindClasses(
@@ -26,7 +27,11 @@ export const ConceptLink = ({ concept, triggerClasses = "" }: IProps) => {
     <Popover
       openOnHover
       onOpenChange={setIsOpen}
-      trigger={<span className={allTriggerClasses}>{title}</span>}
+      trigger={
+        <span className={allTriggerClasses} onClick={() => onclick}>
+          {title}
+        </span>
+      }
       title={title}
       description={concept.description}
       link={{

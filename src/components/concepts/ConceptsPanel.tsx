@@ -4,6 +4,7 @@ import { useContext, useState } from "react";
 import { LuChevronUp } from "react-icons/lu";
 
 import { Button } from "@/components/atoms/button/Button";
+import { ConceptLink } from "@/components/molecules/conceptLink/ConceptLink";
 import { NEW_FEATURES } from "@/constants/newFeatures";
 import { NewFeatureContext } from "@/context/NewFeatureContext";
 import { TConcept } from "@/types";
@@ -41,7 +42,7 @@ const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
       {concepts.slice(0, showAll ? undefined : TOP_CONCEPTS_LENGTH).map((concept) => {
         return (
           <li key={concept.wikibase_id} className="">
-            <Link
+            {/* <Link
               className="inline text-text-primary capitalize underline underline-offset-2 decoration-dotted hover:underline"
               href="#"
               onClick={(e) => {
@@ -50,7 +51,8 @@ const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
               }}
             >
               {firstCase(concept.preferred_label)}
-            </Link>
+            </Link> */}
+            <ConceptLink concept={concept} onClick={() => onConceptClick?.(concept.preferred_label)} />
           </li>
         );
       })}
