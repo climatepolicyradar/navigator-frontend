@@ -7,11 +7,12 @@ import { truncateString } from "@/utils/truncateString";
 import { FamilyMeta } from "./FamilyMeta";
 
 interface IProps {
-  family: TFamily;
   children?: ReactNode;
+  family: TFamily;
+  showSummary?: boolean;
 }
 
-export const FamilyListItem: FC<IProps> = ({ family, children }) => {
+export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = true }) => {
   const {
     corpus_type_name,
     family_slug,
@@ -44,13 +45,15 @@ export const FamilyListItem: FC<IProps> = ({ family, children }) => {
       >
         {family_name}
       </LinkWithQuery>
-      <p
-        className="my-3 text-content"
-        data-cy="family-description"
-        dangerouslySetInnerHTML={{
-          __html: truncateString(family_description.replace(/(<([^>]+)>)/gi, ""), 375),
-        }}
-      />
+      {showSummary && (
+        <p
+          className="my-3 text-content"
+          data-cy="family-description"
+          dangerouslySetInnerHTML={{
+            __html: truncateString(family_description.replace(/(<([^>]+)>)/gi, ""), 375),
+          }}
+        />
+      )}
       {children}
     </div>
   );
