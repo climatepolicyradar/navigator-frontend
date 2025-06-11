@@ -1,6 +1,6 @@
 import { TConcept } from "@/types";
 
-// TODO: remove this cocneot tech-debt
+// TODO: remove this concept tech-debt
 // Ticket: APP-711
 const DISABLED_CONCEPTS = ["Q777", "Q778", "Q639", "Q650", "Q661", "Q221"];
 
