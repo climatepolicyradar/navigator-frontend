@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
+import { LuChevronDown } from "react-icons/lu";
 
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
@@ -11,8 +12,11 @@ import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { SearchSettings } from "@/components/filters/SearchSettings";
 import { MAX_RESULTS } from "@/constants/paging";
+import { SEARCH_PASSAGE_ORDER } from "@/constants/searchPassagesOrder";
+import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import { TConcept, TDocumentPage, TLoadingStatus, TMatchedFamily, TPassage, TSearchResponse } from "@/types";
+import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
 import { getCurrentPassagesOrderChoice } from "@/utils/getPassagesSortOrder";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
@@ -24,7 +28,6 @@ import { SideCol } from "../panels/SideCol";
 
 type TState = {
   pageNumber: number;
-  isExactSearch: boolean;
   passageMatches: TPassage[];
   totalNoOfMatches: number;
 };
@@ -51,9 +54,14 @@ const passageClasses = (canPreview: boolean) => {
   return "md:w-2/3";
 };
 
+const SETTINGS_ANIMATION_VARIANTS = {
+  hidden: { opacity: 0, transition: { duration: 0.1 } },
+  visible: { opacity: 1, transition: { duration: 0 } },
+};
+
 export const ConceptsDocumentViewer = ({
   initialQueryTerm = "",
-  initialExactMatch = false,
+  initialExactMatch,
   initialPassage = 0,
   initialConceptFilters,
   document,
@@ -66,11 +74,11 @@ export const ConceptsDocumentViewer = ({
 }: IProps) => {
   const router = useRouter();
   const [showSearchOptions, setShowSearchOptions] = useState(false);
+  const [showSortOptions, setShowSortOptions] = useState(false);
   const [showConcepts, setShowConcepts] = useState(false);
 
   const [state, setState] = useReducer((prev: TState, next: Partial<TState>) => ({ ...prev, ...next }), {
     pageNumber: initialPassage,
-    isExactSearch: initialExactMatch,
     passageMatches: [],
     totalNoOfMatches: 0,
   });
@@ -139,19 +147,39 @@ export const ConceptsDocumentViewer = ({
 
   // Calculate passage matches.
   useEffect(() => {
-    const matches = searchResultFamilies.flatMap((family) =>
+    let matches = searchResultFamilies.flatMap((family) =>
       family.family_documents.filter((cacheDoc) => cacheDoc.document_slug === document.slug).flatMap((cacheDoc) => cacheDoc.document_passage_matches)
     );
 
-    const totalMatches =
+    let totalMatches =
       searchResultFamilies.find((family) => family.family_documents.some((cacheDoc) => cacheDoc.document_slug === document.slug))
         ?.total_passage_hits || 0;
+    //  ___   ___   ______   _________  ______   ________  __     __
+    // /__/\ /__/\ /_____/\ /________/\/_____/\ /_______/\/__/\ /__/\
+    // \::\ \\  \ \\:::_ \ \\__.::.__\/\::::_\/_\__.::._\/\ \::\\:.\ \
+    //  \::\/_\ .\ \\:\ \ \ \  \::\ \   \:\/___/\  \::\ \  \_\::_\:_\/
+    //   \:: ___::\ \\:\ \ \ \  \::\ \   \:::._\/  _\::\ \__ _\/__\_\_/\
+    //    \: \ \\::\ \\:\_\ \ \  \::\ \   \:\ \   /__\::\__/\\ \ \ \::\ \
+    //     \__\/ \::\/ \_____\/   \__\/    \_\/   \________\/ \_\/  \__\/
+    // HOTFIX - slug mismatch can happen between RDS and Vespa when document titles are updated
+    // TODO: delete / figure this out later but for now a temporary solution is to check against the source url as that is relatively unchanging
+    if (!matches.length) {
+      matches = searchResultFamilies.flatMap((family) =>
+        family.family_documents
+          .filter((cacheDoc) => cacheDoc.document_source_url === document.source_url)
+          .flatMap((cacheDoc) => cacheDoc.document_passage_matches)
+      );
+
+      totalMatches =
+        searchResultFamilies.find((family) => family.family_documents.some((cacheDoc) => cacheDoc.document_source_url === document.source_url))
+          ?.total_passage_hits || 0;
+    }
 
     setState({
       passageMatches: matches,
       totalNoOfMatches: totalMatches,
     });
-  }, [searchResultFamilies, document.slug]);
+  }, [searchResultFamilies, document.slug, document.source_url]);
 
   const handlePassageClick = (pageNumber: number) => {
     if (!canPreview) return;
@@ -163,7 +191,7 @@ export const ConceptsDocumentViewer = ({
   };
 
   const passagesResultsContext = getPassageResultsContext({
-    isExactSearch: state.isExactSearch,
+    isExactSearch: initialExactMatch,
     passageMatches: state.totalNoOfMatches,
     queryTerm: initialQueryTerm,
     selectedTopics: selectedConcepts,
@@ -201,7 +229,7 @@ export const ConceptsDocumentViewer = ({
           {/* Preview */}
           <div
             id="document-preview"
-            className={`flex-1 order-last border-t border-t-gray-200 h-[600px] basis-full lg:basis-auto lg:border-t-0 lg:order-none lg:h-full md:border-gray-200 ${hasConcepts ? "lg:border-x" : "lg:border-r"}`}
+            className={`flex-1 relative order-last border-t border-t-gray-200 h-[600px] basis-full lg:basis-auto lg:border-t-0 lg:order-none lg:h-full md:border-gray-200 ${hasConcepts ? "lg:border-x" : "lg:border-r"}`}
           >
             {canPreview && (
               <EmbeddedPDF
@@ -228,11 +256,59 @@ export const ConceptsDocumentViewer = ({
               </div>
             ) : (
               <>
-                <div id="document-search" className="flex items-start gap-2 md:pl-4 pb-4 border-b border-gray-200">
-                  <div className="flex-1">
-                    {hasQuery && state.totalNoOfMatches > 0 && (
+                <div id="document-search" className="flex flex-col gap-2 md:pl-4 pb-4 border-b border-gray-200">
+                  <p className="text-text-primary">Passage matches</p>
+                  <div className="relative z-10 flex gap-4">
+                    <div className="relative">
+                      <button
+                        className={`flex items-center gap-1 px-2 py-1 -mt-1 -ml-2 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
+                        onClick={() => setShowSearchOptions(!showSearchOptions)}
+                      >
+                        <span className="font-bold">Search:</span>{" "}
+                        <span>{getCurrentSearchChoice(router.query) === "true" ? SEARCH_SETTINGS.exact : SEARCH_SETTINGS.semantic}</span>
+                        <LuChevronDown />
+                      </button>
+                      <AnimatePresence initial={false}>
+                        {showSearchOptions && (
+                          <motion.div key="content" initial="collapsed" animate="open" exit="collapsed" variants={SETTINGS_ANIMATION_VARIANTS}>
+                            <SearchSettings
+                              queryParams={router.query}
+                              handleSearchChange={handleSemanticSearchChange}
+                              setShowOptions={setShowSearchOptions}
+                              extraClasses="w-[280px]"
+                            />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                    <div className="relative">
+                      <button
+                        className={`flex items-center gap-1 px-2 py-1 -mt-1 -ml-2 rounded-md text-sm text-text-primary font-normal ${showSortOptions ? "bg-surface-ui" : ""}`}
+                        onClick={() => setShowSortOptions(!showSortOptions)}
+                      >
+                        <span className="font-bold">Order:</span>{" "}
+                        <span>
+                          {getCurrentPassagesOrderChoice(router.query) === true ? SEARCH_PASSAGE_ORDER.page : SEARCH_PASSAGE_ORDER.relevance}
+                        </span>
+                        <LuChevronDown />
+                      </button>
+                      <AnimatePresence initial={false}>
+                        {showSortOptions && (
+                          <motion.div key="content" initial="collapsed" animate="open" exit="collapsed" variants={SETTINGS_ANIMATION_VARIANTS}>
+                            <SearchSettings
+                              queryParams={router.query}
+                              setShowOptions={setShowSortOptions}
+                              handlePassagesOrderChange={handlePassagesOrderChange}
+                            />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                  <div className="">
+                    {hasQuery && (
                       <>
-                        <div className="mb-2 text-sm" data-cy="document-matches-description">
+                        <div className="flex flex-wrap mb-2 text-sm" data-cy="document-matches-description">
                           {passagesResultsContext}
                           {state.totalNoOfMatches >= MAX_RESULTS && (
                             <Info
@@ -241,46 +317,15 @@ export const ConceptsDocumentViewer = ({
                             />
                           )}
                         </div>
-                        <p className="text-sm">
-                          Sorted by {getCurrentPassagesOrderChoice(router.query) === true ? "page number" : "search relevance"}
-                        </p>
+                        {state.totalNoOfMatches > 0 && (
+                          <>
+                            <p className="text-sm">
+                              Sorted by {getCurrentPassagesOrderChoice(router.query) === true ? "page number" : "search relevance"}
+                            </p>
+                          </>
+                        )}
                       </>
                     )}
-                  </div>
-                  <div className="relative z-10 flex justify-center">
-                    <button
-                      className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
-                      onClick={() => setShowSearchOptions(!showSearchOptions)}
-                    >
-                      Sort &amp; Display
-                    </button>
-                    <AnimatePresence initial={false}>
-                      {showSearchOptions && (
-                        <motion.div
-                          key="content"
-                          initial="collapsed"
-                          animate="open"
-                          exit="collapsed"
-                          variants={{
-                            collapsed: {
-                              opacity: 0,
-                              transition: { duration: 0.1 },
-                            },
-                            open: {
-                              opacity: 1,
-                              transition: { duration: 0.25 },
-                            },
-                          }}
-                        >
-                          <SearchSettings
-                            queryParams={router.query}
-                            handleSearchChange={handleSemanticSearchChange}
-                            setShowOptions={setShowSearchOptions}
-                            handlePassagesOrderChange={handlePassagesOrderChange}
-                          />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
                   </div>
                 </div>
                 {hasQuery && state.totalNoOfMatches > 0 && (

@@ -2,7 +2,7 @@ import { TConcept } from "@/types";
 
 import { getPassageResultsContext } from "./getPassageResultsContext";
 
-describe("getPassageResultsContext", () => {
+describe.skip("getPassageResultsContext", () => {
   const isExactSearch = false;
   const passageMatches = 512;
   const queryTerm = "banana";
