@@ -20,7 +20,7 @@ const SearchResult = ({ family, active, onClick }: IProps) => {
   const matchesText = `View ${matchesNumber} text ${total_passage_hits === 1 ? "passage" : "passages"} matching your search`;
 
   const titleClasses = joinTailwindClasses(
-    hasFamilyDocuments ? "text-text-primary" : "text-text-brand",
+    hasFamilyDocuments ? "text-text-[#0041A3]" : "text-text-brand",
     active ? "!underline" : "!no-underline hover:!underline"
   );
 
