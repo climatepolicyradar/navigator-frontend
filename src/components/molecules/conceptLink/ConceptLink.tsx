@@ -8,25 +8,35 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
   concept: TConcept;
+  onClick?: (concept: TConcept) => void;
   triggerClasses?: string;
 }
 
-export const ConceptLink = ({ concept, triggerClasses = "" }: IProps) => {
+export const ConceptLink = ({ concept, onClick, triggerClasses = "" }: IProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const allTriggerClasses = joinTailwindClasses(
-    "inline capitalize underline underline-offset-2 decoration-dotted cursor-help",
+    "inline capitalize underline underline-offset-2 decoration-dotted",
     isOpen ? "decoration-text-primary" : "decoration-text-quaternary",
+    onClick ? "" : "cursor-help",
     triggerClasses
   );
 
   const title = startCase(concept.preferred_label);
 
+  const trigger = onClick ? (
+    <button className={allTriggerClasses} onClick={() => onClick(concept)}>
+      {title}
+    </button>
+  ) : (
+    <span className={allTriggerClasses}>{title}</span>
+  );
+
   return (
     <Popover
       openOnHover
       onOpenChange={setIsOpen}
-      trigger={<span className={allTriggerClasses}>{title}</span>}
+      trigger={trigger}
       title={title}
       description={concept.description}
       link={{
