@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 
 import { Accordian } from "@/components/accordian/Accordian";
 import { SingleCol } from "@/components/panels/SingleCol";
@@ -14,12 +14,29 @@ interface IProps {
     headContent?: JSX.Element;
   }[];
   accordionMaxHeight?: string;
+  sectionId?: string;
 }
 
-export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px" }: IProps) => {
+export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionId = "" }: IProps) => {
+  useEffect(() => {
+    // Only run if this component has an ID (meaning it's the target component)
+    if (!sectionId) return;
+
+    const hash = window.location.hash.substring(1);
+
+    if (hash === sectionId) {
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 200);
+    }
+  }, [sectionId]);
+
   return (
     <SingleCol>
-      <Heading level={1} extraClasses="custom-header">
+      <Heading level={1} extraClasses="custom-header" id={sectionId}>
         {title}
       </Heading>
       <VerticalSpacing size="md" />

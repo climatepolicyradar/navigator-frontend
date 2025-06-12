@@ -30,7 +30,6 @@ const FAQ: React.FC = () => {
           {knowledgeGraphEnabled && <FaqSection title="Topics FAQs" faqs={CONCEPTS_FAQS} />}
         </SiteWidth>
       </section>
-      <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
     </Layout>
   );
 };

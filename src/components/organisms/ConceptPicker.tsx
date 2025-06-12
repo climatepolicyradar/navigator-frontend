@@ -1,3 +1,4 @@
+import { TextSearch } from "lucide-react";
 import { NextRouter, useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
 
@@ -14,11 +15,12 @@ import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { firstCase } from "@/utils/text";
 
-import { LinkWithQuery } from "../LinkWithQuery";
+import { ExternalLink } from "../ExternalLink";
 
 interface IProps {
   concepts: TConcept[];
   containerClasses?: string;
+  showBadge?: boolean;
   showSearch?: boolean;
   startingSort?: TSort;
   title: string;
@@ -71,7 +73,7 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
   router.push({ query: query }, undefined, { shallow: true });
 };
 
-export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showSearch = true, title }: IProps) => {
+export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showBadge = false, showSearch = true, title }: IProps) => {
   const router = useRouter();
   const { previousNewFeature } = useContext(NewFeatureContext);
   const ref = useRef(null);
@@ -104,18 +106,19 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
       {/* HEADER */}
       {knowledgeGraphIsNew && <NewFeatureCard newFeature={NEW_FEATURES[0]} />}
       <span className="text-base font-semibold text-text-primary">
+        <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
         {title}
-        {!knowledgeGraphIsNew && <Badge className="ml-2">Beta</Badge>}
+        {!knowledgeGraphIsNew && showBadge && <Badge className="ml-2">Beta</Badge>}
       </span>
 
       {/* SCROLL AREA */}
       <div className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
         {!knowledgeGraphIsNew && (
           <p className="text-sm text-text-tertiary">
-            Find mentions of topics. Accuracy is not 100%.{" "}
-            <LinkWithQuery href="/faq" className="underline" target="_blank">
+            Choose a topic to see precisely where it appears. Combine topics to see where they appear together. Accuracy is not 100%.{" "}
+            <ExternalLink url="/faq#topics-faqs" className="underline inline-block">
               Learn more
-            </LinkWithQuery>
+            </ExternalLink>
           </p>
         )}
         <div className="flex gap-2 items-center justify-between">

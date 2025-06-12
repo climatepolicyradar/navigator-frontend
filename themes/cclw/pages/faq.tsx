@@ -2,6 +2,7 @@ import { Fragment, useContext } from "react";
 
 import { AccordianItem } from "@/cclw/components/AccordianItem";
 import { FAQS } from "@/cclw/constants/faqs";
+import FaqSection from "@/components/FaqSection";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { SubNav } from "@/components/nav/SubNav";
@@ -63,24 +64,9 @@ const FAQ: React.FC = () => {
             </div>
           </SingleCol>
 
-          {knowledgeGraphEnabled && (
-            <SingleCol>
-              <div className="text-content mb-12">
-                <Heading level={2}>Topics FAQs</Heading>
-                {CONCEPTS_FAQS.map((faq, i) => (
-                  <Fragment key={faq.title}>
-                    <AccordianItem id={faq.id} title={faq.title} headContent={faq.headContent ?? null} startOpen={i === 0}>
-                      {faq.content}
-                    </AccordianItem>
-                    <hr />
-                  </Fragment>
-                ))}
-              </div>
-            </SingleCol>
-          )}
+          {knowledgeGraphEnabled && <FaqSection title="Topics FAQs" faqs={CONCEPTS_FAQS} sectionId={"topics-faqs"} />}
         </SiteWidth>
       </section>
-      <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
     </Layout>
   );
 };

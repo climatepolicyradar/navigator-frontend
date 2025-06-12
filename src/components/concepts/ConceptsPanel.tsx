@@ -1,7 +1,7 @@
 import startCase from "lodash/startCase";
+import { ChevronUp } from "lucide-react";
 import Link from "next/link";
 import { useContext, useState } from "react";
-import { LuChevronUp } from "react-icons/lu";
 
 import { Button } from "@/components/atoms/button/Button";
 import { NEW_FEATURES } from "@/constants/newFeatures";
@@ -11,7 +11,7 @@ import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { firstCase } from "@/utils/text";
 
-import { LinkWithQuery } from "../LinkWithQuery";
+import { ExternalLink } from "../ExternalLink";
 import { Badge } from "../atoms/label/Badge";
 import { Info } from "../molecules/info/Info";
 import { NewFeatureCard } from "../molecules/newFeatures/NewFeatureCard";
@@ -60,7 +60,7 @@ const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
             <Button size="x-small" color="mono" variant="faded" onClick={() => setShowAll(!showAll)}>
               {showAll ? (
                 <>
-                  <LuChevronUp />
+                  <ChevronUp />
                   &nbsp; hide
                 </>
               ) : (
@@ -104,9 +104,9 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
           <p>
             Find mentions of topics. Accuracy is not 100%.
             <br />
-            <LinkWithQuery href="/faq" className="underline" target="_blank">
+            <ExternalLink url="/faq#topics-faqs" className="underline">
               Learn more
-            </LinkWithQuery>
+            </ExternalLink>
           </p>
         )}
         <p>Sorted by the most frequent mention.</p>
