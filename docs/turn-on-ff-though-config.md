@@ -1,6 +1,6 @@
 # Turning on a feature using the theme config
 
-The theme config is located in the repo at: theme/[theme-name]/config.ts
+The theme config is located in the repo at: /theme/[theme-name]/config.ts
 
 There is a section in the theme called features which is a key-value pair
 of the name of a feature and a boolean. For all apps currently the
