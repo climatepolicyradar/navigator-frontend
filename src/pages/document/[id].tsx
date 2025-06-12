@@ -80,7 +80,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   countries = [],
   corpus_types,
   theme,
-  featureFlags,
   vespaFamilyData,
 }: IProps) => {
   const router = useRouter();
@@ -142,6 +141,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   });
 
   const [mainDocuments, otherDocuments] = getMainDocuments(page.documents);
+  const mainDocumentImportIds = mainDocuments.map((document) => document.import_id);
 
   const getDocumentCategories = () => {
     // Some types are comma separated, so we need to split them
@@ -177,7 +177,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     (vespaFamilyData?.families ?? []).forEach((family) => {
       family.hits.forEach((hit) => {
         // Check the document id against the documents in the page
-        if (documentIsPublished(page.documents, hit.document_import_id)) {
+        if (documentIsPublished(page.documents, hit.document_import_id) && mainDocumentImportIds.includes(hit.document_import_id)) {
           Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
             const existingCount = uniqueConceptMap.get(conceptKey) || 0;
             uniqueConceptMap.set(conceptKey, existingCount + count);
@@ -189,14 +189,9 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     return Array.from(uniqueConceptMap.entries())
       .map(([conceptKey, count]) => ({ conceptKey, count }))
       .sort((a, b) => b.count - a.count);
-  }, [vespaFamilyData, page.documents]);
+  }, [vespaFamilyData, page.documents, mainDocumentImportIds]);
 
   const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
-  const conceptCountsById = conceptCounts.reduce((acc, { conceptKey, count }) => {
-    const conceptId = conceptKey.split(":")[0];
-    acc[conceptId] = count;
-    return acc;
-  }, {});
 
   useEffectOnce(() => {
     fetchAndProcessConcepts(conceptIds).then(({ rootConcepts, concepts }) => {
