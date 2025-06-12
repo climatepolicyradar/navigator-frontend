@@ -66,7 +66,7 @@ const KNOWLEDGE_GRAPH_QUICK_SEARCHES = [
     id: 3,
     label: "Zoning and spatial planning + marine",
     params: {
-      [QUERY_PARAMS.concept_name]: "Zoning and spatial planning",
+      [QUERY_PARAMS.concept_name]: "zoning and spatial planning",
       [QUERY_PARAMS.query_string]: "marine",
       [QUERY_PARAMS.exact_match]: "true",
     },
@@ -77,7 +77,7 @@ const KNOWLEDGE_GRAPH_QUICK_SEARCHES = [
     params: {
       [QUERY_PARAMS.category]: "laws",
       [QUERY_PARAMS.framework_laws]: "true",
-      [QUERY_PARAMS.concept_name]: "Emissions reduction target",
+      [QUERY_PARAMS.concept_name]: "emissions reduction target",
     },
   },
 ];
