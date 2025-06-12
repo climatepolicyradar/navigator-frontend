@@ -13,6 +13,7 @@ import { firstCase } from "@/utils/text";
 
 import { ExternalLink } from "../ExternalLink";
 import { Badge } from "../atoms/label/Badge";
+import { ConceptLink } from "../molecules/conceptLink/ConceptLink";
 import { Info } from "../molecules/info/Info";
 import { NewFeatureCard } from "../molecules/newFeatures/NewFeatureCard";
 import { Heading } from "../typography/Heading";
@@ -41,16 +42,7 @@ const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
       {concepts.slice(0, showAll ? undefined : TOP_CONCEPTS_LENGTH).map((concept) => {
         return (
           <li key={concept.wikibase_id} className="">
-            <Link
-              className="inline text-text-primary capitalize underline underline-offset-2 decoration-dotted hover:underline"
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                onConceptClick?.(concept.preferred_label);
-              }}
-            >
-              {firstCase(concept.preferred_label)}
-            </Link>
+            <ConceptLink concept={concept} onClick={() => onConceptClick?.(concept.preferred_label)} />
           </li>
         );
       })}

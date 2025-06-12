@@ -1,10 +1,10 @@
-import startCase from "lodash/startCase";
 import { useState } from "react";
 
 import { Popover } from "@/components/atoms/popover/Popover";
 import { TConcept } from "@/types";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { joinTailwindClasses } from "@/utils/tailwind";
+import { firstCase } from "@/utils/text";
 
 interface IProps {
   concept: TConcept;
@@ -22,7 +22,7 @@ export const ConceptLink = ({ concept, onClick, triggerClasses = "" }: IProps) =
     triggerClasses
   );
 
-  const title = startCase(concept.preferred_label);
+  const title = firstCase(concept.preferred_label);
 
   const trigger = onClick ? (
     <button className={allTriggerClasses} onClick={() => onClick(concept)}>
