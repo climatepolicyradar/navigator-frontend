@@ -35,7 +35,7 @@ type TState = {
 interface IProps {
   initialQueryTerm?: string | string[];
   initialExactMatch?: boolean;
-  initialPassage?: number;
+  initialPageNumber?: number;
   initialConceptFilters?: string[];
   vespaFamilyData: TSearchResponse;
   vespaDocumentData: TSearchResponse;
@@ -62,7 +62,7 @@ const SETTINGS_ANIMATION_VARIANTS = {
 export const ConceptsDocumentViewer = ({
   initialQueryTerm = "",
   initialExactMatch,
-  initialPassage = 0,
+  initialPageNumber,
   initialConceptFilters,
   document,
   vespaFamilyData,
@@ -78,7 +78,7 @@ export const ConceptsDocumentViewer = ({
   const [showConcepts, setShowConcepts] = useState(false);
 
   const [state, setState] = useReducer((prev: TState, next: Partial<TState>) => ({ ...prev, ...next }), {
-    pageNumber: initialPassage,
+    pageNumber: initialPageNumber,
     passageMatches: [],
     totalNoOfMatches: 0,
   });
@@ -237,7 +237,7 @@ export const ConceptsDocumentViewer = ({
                 document={document}
                 documentPassageMatches={state.passageMatches}
                 pageNumber={state.pageNumber}
-                startingPassageIndex={initialPassage}
+                startingPageNumber={initialPageNumber}
                 searchStatus={searchStatus}
               />
             )}

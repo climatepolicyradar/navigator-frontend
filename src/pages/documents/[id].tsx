@@ -74,7 +74,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   // exact match is default, so only instances where it is explicitly set to false do we check against
   const exactMatchQuery = router.query[QUERY_PARAMS.exact_match] === undefined || router.query[QUERY_PARAMS.exact_match] !== "false";
   const passagesByPosition = router.query[QUERY_PARAMS.passages_by_position] === "true";
-  const startingPassage = Number(router.query.passage) || 0;
+  const startingPageNumber = Number(router.query.page) || 0;
 
   // Note: only runs a fresh start if either a query string or concept data is provided
   const { status, families, searchQuery } = useSearch(router.query, null, document.import_id, !isEmptySearch(router.query), MAX_PASSAGES);
@@ -179,7 +179,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       document={document}
                       documentPassageMatches={passageMatches}
                       pageNumber={pageNumber}
-                      startingPassageIndex={startingPassage}
+                      startingPageNumber={startingPageNumber}
                       searchStatus={status}
                     />
                   )}
@@ -271,7 +271,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           <ConceptsDocumentViewer
             initialQueryTerm={qsSearchString}
             initialExactMatch={exactMatchQuery}
-            initialPassage={startingPassage}
+            initialPageNumber={startingPageNumber}
             initialConceptFilters={conceptFilters}
             vespaFamilyData={vespaFamilyData}
             vespaDocumentData={vespaDocumentData}
