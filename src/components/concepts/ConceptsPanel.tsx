@@ -21,8 +21,6 @@ import { Heading } from "../typography/Heading";
 interface IProps {
   concepts: TConcept[];
   rootConcepts: TConcept[];
-  conceptCountsById: Record<string, number>;
-  showCounts?: boolean;
   onConceptClick?: (conceptLabel: string) => void;
 }
 
@@ -52,8 +50,8 @@ const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
             <Button size="x-small" color="mono" variant="faded" onClick={() => setShowAll(!showAll)}>
               {showAll ? (
                 <>
-                  <ChevronUp />
-                  &nbsp; hide
+                  <ChevronUp size={14} className="mr-0.5" />
+                  hide
                 </>
               ) : (
                 `+${concepts.length - TOP_CONCEPTS_LENGTH} more`
@@ -66,7 +64,7 @@ const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
   );
 };
 
-export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showCounts = false, onConceptClick }: IProps) => {
+export const ConceptsPanel = ({ rootConcepts, concepts, onConceptClick }: IProps) => {
   const { previousNewFeature } = useContext(NewFeatureContext);
 
   const otherRootConcept: TConcept = {
