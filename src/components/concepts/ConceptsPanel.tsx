@@ -1,5 +1,5 @@
 import startCase from "lodash/startCase";
-import { ChevronUp } from "lucide-react";
+import { ChevronUp, TextSearch } from "lucide-react";
 import Link from "next/link";
 import { useContext, useState } from "react";
 
@@ -86,22 +86,25 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
 
   return (
     <div className="flex flex-col gap-4 pb-4 text-sm">
-      <div className="flex flex-col gap-4 pb-4 border-b border-border-light text-text-tertiary">
+      <div className="flex flex-col gap-4 pb-4 border-b border-border-light text-text-secondary">
         {knowledgeGraphIsNew && <NewFeatureCard newFeature={NEW_FEATURES[0]} />}
         <span className="text-base font-semibold text-text-primary">
-          In this document
+          <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
+          Find mentions of topics
           {!knowledgeGraphIsNew && <Badge className="ml-2">Beta</Badge>}
         </span>
         {!knowledgeGraphIsNew && (
           <p>
-            Find mentions of topics. Accuracy is not 100%.
-            <br />
-            <ExternalLink url="/faq#topics-faqs" className="underline">
+            Find where a topic precisely appears in the main document. Accuracy is not 100%.{" "}
+            <ExternalLink url="/faq#topics-faqs" className="underline inline-block">
               Learn more
             </ExternalLink>
           </p>
         )}
-        <p>Sorted by the most frequent mention.</p>
+      </div>
+      <div className="pt-1 pb-4">
+        <span className="block mb-1 text-[15px] text-text-primary font-semibold">Topics in the main document</span>
+        <p className="">Ordered by most frequently mentioned, grouped by category</p>
       </div>
 
       {rootConcepts.concat(otherRootConcept).map((rootConcept) => {
