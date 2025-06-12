@@ -9,12 +9,9 @@ interface IProps {
 }
 
 export const Columns = ({ children, containerClasses, gridClasses }: IProps) => {
-  const allContainerClasses = joinTailwindClasses("max-w-max-cols px-3 cols-2:px-6 mx-auto", containerClasses);
+  const allContainerClasses = joinTailwindClasses("px-3 cols-2:px-6 cols-3:px-8", containerClasses);
 
-  const allGridClasses = joinTailwindClasses(
-    "grid grid-cols-1 cols-2:grid-cols-2 cols-3:grid-cols-3 cols-4:grid-cols-4 gap-6 max-w-max-cols",
-    gridClasses
-  );
+  const allGridClasses = joinTailwindClasses("grid grid-cols-1 cols-2:grid-cols-2 cols-3:grid-cols-3 cols-4:grid-cols-4 gap-6", gridClasses);
 
   return (
     <div className={allContainerClasses}>
