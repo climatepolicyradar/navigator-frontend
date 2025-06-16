@@ -43,6 +43,29 @@ export const CONCEPTS_FAQS: TFAQ[] = [
     ),
   },
   {
+    title: "What happens if I select multiple topics or add a text search?",
+    content: (
+      <>
+        <p>
+          When you select more than one topic or combine a topic with a text search, the tool looks for <i>individual passages</i> (short sections of
+          text) that include <b>all</b> selected topics and/or keywords together.
+        </p>
+
+        <p>Because few passages contain many topics at once, selecting more topics can reduce the number of results — sometimes to zero.</p>
+
+        <p>
+          <b>Example:</b> If you choose “target” and “energy sector,” you’ll only see passages where <i>both</i> appear together, not all documents
+          that mention each topic separately.
+        </p>
+
+        <p>
+          We’re working on improving this feature to support broader searches across entire documents and give you more control over how topics and
+          keywords are combined.
+        </p>
+      </>
+    ),
+  },
+  {
     title: "Which topics are currently available?",
     content: (
       <>
