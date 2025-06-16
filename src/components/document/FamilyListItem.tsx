@@ -2,16 +2,19 @@ import { FC, ReactNode } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { TFamily } from "@/types";
+import { joinTailwindClasses } from "@/utils/tailwind";
 import { truncateString } from "@/utils/truncateString";
 
 import { FamilyMeta } from "./FamilyMeta";
 
 interface IProps {
-  family: TFamily;
   children?: ReactNode;
+  family: TFamily;
+  showSummary?: boolean;
+  titleClasses?: string;
 }
 
-export const FamilyListItem: FC<IProps> = ({ family, children }) => {
+export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = true, titleClasses = "hover:underline" }) => {
   const {
     corpus_type_name,
     family_slug,
@@ -24,17 +27,11 @@ export const FamilyListItem: FC<IProps> = ({ family, children }) => {
     family_source,
   } = family;
 
+  const allTitleClasses = joinTailwindClasses("result-title text-left font-medium text-lg duration-300 flex items-start", titleClasses);
+
   return (
     <div className="family-list-item relative">
-      <LinkWithQuery
-        href={`/document/${family_slug}`}
-        className="result-title text-blue-600 text-left font-medium text-xl duration-300 flex items-start hover:underline hover:text-blue-800"
-        passHref
-        data-cy="family-title"
-      >
-        {family_name}
-      </LinkWithQuery>
-      <div className="flex flex-wrap text-sm gap-1 my-3 items-center middot-between">
+      <div className="flex flex-wrap text-sm gap-1 my-2 items-center middot-between">
         <FamilyMeta
           category={family_category}
           corpus_type_name={corpus_type_name}
@@ -44,13 +41,18 @@ export const FamilyListItem: FC<IProps> = ({ family, children }) => {
           {...(corpus_type_name === "Reports" ? { author: (family_metadata as { author: string[] }).author } : {})}
         />
       </div>
-      <p
-        className="my-3 text-content"
-        data-cy="family-description"
-        dangerouslySetInnerHTML={{
-          __html: truncateString(family_description.replace(/(<([^>]+)>)/gi, ""), 375),
-        }}
-      />
+      <LinkWithQuery href={`/document/${family_slug}`} className={allTitleClasses} passHref data-cy="family-title">
+        {family_name}
+      </LinkWithQuery>
+      {showSummary && (
+        <p
+          className="my-3 text-content"
+          data-cy="family-description"
+          dangerouslySetInnerHTML={{
+            __html: truncateString(family_description.replace(/(<([^>]+)>)/gi, ""), 375),
+          }}
+        />
+      )}
       {children}
     </div>
   );

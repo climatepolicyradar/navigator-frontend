@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react";
-import { LuCopy } from "react-icons/lu";
+import { Copy } from "lucide-react";
 
 import { Card } from "./Card";
 import { Button } from "../button/Button";
@@ -29,7 +29,7 @@ const children = (
   <>
     <div className={`mb-4 flex justify-between opacity-80`}>
       <span className="font-medium text-[13px]">Page 16</span>
-      <LuCopy height="16" width="16" />
+      <Copy height="16" width="16" />
     </div>
     <p className="font-normal text-[15px]">
       (PM2.5), the pollutant most associated with negative health impacts. The impact quantified here are premature deaths associated with PM2.5

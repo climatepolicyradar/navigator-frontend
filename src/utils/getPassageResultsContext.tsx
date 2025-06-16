@@ -11,6 +11,21 @@ interface IArgs {
   selectedTopics: TConcept[];
 }
 
+export const ResultsTopicsContext = ({ phrase, selectedTopics }: { phrase: string; selectedTopics: TConcept[] }) => {
+  return (
+    <>
+      {phrase && <>'{phrase}'&nbsp;</>}
+      {selectedTopics.map((concept, i, allConcepts) => (
+        <React.Fragment key={concept.wikibase_id}>
+          {i === 0 && phrase && "AND "}
+          <ConceptLink key={concept.wikibase_id} concept={concept} />
+          {i + 1 < allConcepts.length && " AND "}
+        </React.Fragment>
+      ))}
+    </>
+  );
+};
+
 export const getPassageResultsContext = ({ isExactSearch, passageMatches, queryTerm, selectedTopics }: IArgs) => {
   const queryString = queryTerm instanceof Array ? queryTerm[0] || "" : queryTerm;
 
@@ -24,18 +39,11 @@ export const getPassageResultsContext = ({ isExactSearch, passageMatches, queryT
     );
   const matchesPlural = passageMatches === 1 ? "match" : "matches";
 
-  const phrase = queryString ? `${isExactSearch ? "" : "phrases related to "}"${queryString}"` : null;
+  const phrase = queryString ? `${isExactSearch ? "" : "phrases related to "}${queryString}` : null;
 
   return (
     <div>
-      {passages} {matchesPlural} for {phrase}{" "}
-      {selectedTopics.map((concept, i, allConcepts) => (
-        <React.Fragment key={concept.wikibase_id}>
-          {i === 0 && phrase && "AND "}
-          <ConceptLink key={concept.wikibase_id} concept={concept} />
-          {i + 1 < allConcepts.length && " AND "}
-        </React.Fragment>
-      ))}
+      {passages} {matchesPlural} for <ResultsTopicsContext phrase={phrase} selectedTopics={selectedTopics} />
     </div>
   );
 };

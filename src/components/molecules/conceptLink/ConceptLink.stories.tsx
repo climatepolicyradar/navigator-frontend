@@ -8,7 +8,9 @@ const meta = {
   title: "Molecules/ConceptLink",
   component: ConceptLink,
   parameters: { layout: "centered" },
-  argTypes: {},
+  argTypes: {
+    onClick: { control: false },
+  },
 } satisfies Meta<typeof ConceptLink>;
 type TStory = StoryObj<typeof ConceptLink>;
 
@@ -66,4 +68,12 @@ export const Multiple: TStory = {
       ))}
     </div>
   ),
+};
+
+export const WithOnClick: TStory = {
+  name: "With onClick",
+  args: {
+    concept: concepts[1] as TConcept,
+    onClick: (concept: TConcept) => alert(concept.preferred_label),
+  },
 };

@@ -1,5 +1,5 @@
+import { MoveUpRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import { LuMoveUpRight } from "react-icons/lu";
 
 import { Alert } from "@/components/Alert";
 import { ExternalLink } from "@/components/ExternalLink";
@@ -101,7 +101,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
                 data-cy="view-source"
               >
                 View source document
-                <LuMoveUpRight height="16" width="16" />
+                <MoveUpRight height="16" width="16" />
               </Button>
             </div>
           </div>

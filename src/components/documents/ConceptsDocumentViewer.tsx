@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
-import { LuChevronDown } from "react-icons/lu";
 
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
@@ -35,7 +35,7 @@ type TState = {
 interface IProps {
   initialQueryTerm?: string | string[];
   initialExactMatch?: boolean;
-  initialPassage?: number;
+  initialPageNumber?: number;
   initialConceptFilters?: string[];
   vespaFamilyData: TSearchResponse;
   vespaDocumentData: TSearchResponse;
@@ -62,7 +62,7 @@ const SETTINGS_ANIMATION_VARIANTS = {
 export const ConceptsDocumentViewer = ({
   initialQueryTerm = "",
   initialExactMatch,
-  initialPassage = 0,
+  initialPageNumber,
   initialConceptFilters,
   document,
   vespaFamilyData,
@@ -78,7 +78,7 @@ export const ConceptsDocumentViewer = ({
   const [showConcepts, setShowConcepts] = useState(false);
 
   const [state, setState] = useReducer((prev: TState, next: Partial<TState>) => ({ ...prev, ...next }), {
-    pageNumber: initialPassage,
+    pageNumber: initialPageNumber,
     passageMatches: [],
     totalNoOfMatches: 0,
   });
@@ -219,6 +219,7 @@ export const ConceptsDocumentViewer = ({
               </div>
               <ConceptPicker
                 concepts={documentConcepts}
+                showBadge
                 showSearch={false}
                 title="In this document"
                 containerClasses={`pt-4 pr-4 pl-4 md:pl-0 ${showConcepts ? "" : "hidden md:flex"}`}
@@ -236,7 +237,7 @@ export const ConceptsDocumentViewer = ({
                 document={document}
                 documentPassageMatches={state.passageMatches}
                 pageNumber={state.pageNumber}
-                startingPassageIndex={initialPassage}
+                startingPageNumber={initialPageNumber}
                 searchStatus={searchStatus}
               />
             )}
@@ -266,7 +267,7 @@ export const ConceptsDocumentViewer = ({
                       >
                         <span className="font-bold">Search:</span>{" "}
                         <span>{getCurrentSearchChoice(router.query) === "true" ? SEARCH_SETTINGS.exact : SEARCH_SETTINGS.semantic}</span>
-                        <LuChevronDown />
+                        <ChevronDown />
                       </button>
                       <AnimatePresence initial={false}>
                         {showSearchOptions && (
@@ -290,7 +291,7 @@ export const ConceptsDocumentViewer = ({
                         <span>
                           {getCurrentPassagesOrderChoice(router.query) === true ? SEARCH_PASSAGE_ORDER.page : SEARCH_PASSAGE_ORDER.relevance}
                         </span>
-                        <LuChevronDown />
+                        <ChevronDown />
                       </button>
                       <AnimatePresence initial={false}>
                         {showSortOptions && (

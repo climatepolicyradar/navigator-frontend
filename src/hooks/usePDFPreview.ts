@@ -157,9 +157,10 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
 
   // Set up a new callback to listen for page changes once we have a new set of passages
   // When the page changes, we will add the annotations for that page
-  const registerPassages = async (documentPassageMatches: TPassage[], startingPassageIndex = 0) => {
+  const registerPassages = async (documentPassageMatches: TPassage[], startingPageNumber?: number) => {
     let hasRegisteredCallback = false;
-    const startingPage = documentPassageMatches[startingPassageIndex]?.text_block_page || 1;
+    // Ensure we either start on the page passed in, or the page of the first passage, or default to first page
+    const startingPage = startingPageNumber || documentPassageMatches[0]?.text_block_page || 1;
 
     let adobeViewer = adobeViewerMemo;
     if (!adobeViewer || !annotationManagerApiMemo) {
