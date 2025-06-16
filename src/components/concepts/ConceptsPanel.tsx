@@ -118,7 +118,7 @@ export const ConceptsPanel = ({ rootConcepts, concepts, onConceptClick }: IProps
               <Info
                 title={startCase(rootConcept.preferred_label)}
                 description={rootConcept.description}
-                link={{ href: getConceptStoreLink(rootConcept.wikibase_id), text: "Source" }}
+                link={{ href: getConceptStoreLink(rootConcept.wikibase_id), text: "Source", external: true }}
               />
             </div>
             <ul className="flex flex-col gap-2 mt-2 ml-4">
