@@ -23,6 +23,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { withEnvConfig } from "@/context/EnvConfig";
 import useSearch from "@/hooks/useSearch";
 import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse } from "@/types";
+import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamily";
@@ -99,7 +100,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   // Semantic search / exact match handler
   const handleSemanticSearchChange = (_: string, isExact: string) => {
     setPageNumber(null);
-    const queryObj = { ...router.query };
+    const queryObj = CleanRouterQuery({ ...router.query });
     if (isExact === "false") {
       queryObj[QUERY_PARAMS.exact_match] = "false";
     } else if (isExact === "true") {
@@ -118,7 +119,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   const handlePassagesOrderChange = (orderValue: string) => {
     setPageNumber(null);
-    const queryObj = { ...router.query };
+    const queryObj = CleanRouterQuery({ ...router.query });
+    queryObj["id"] = document.slug;
     queryObj[QUERY_PARAMS.passages_by_position] = orderValue;
     router.push({ query: queryObj }, undefined, { shallow: true });
   };
@@ -142,6 +144,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   });
 
   const conceptFiltersQuery = router.query[QUERY_PARAMS.concept_name];
+
   const conceptFilters = useMemo(
     () => (conceptFiltersQuery ? (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]) : undefined),
     [conceptFiltersQuery]
