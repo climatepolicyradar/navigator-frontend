@@ -11,6 +11,7 @@ import { NEW_FEATURES } from "@/constants/newFeatures";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { NewFeatureContext } from "@/context/NewFeatureContext";
 import { TConcept } from "@/types";
+import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { firstCase } from "@/utils/text";
@@ -59,7 +60,11 @@ const filterConcepts = (concepts: TConcept[], search: string) => {
 };
 
 const onConceptChange = (router: NextRouter, concept: TConcept) => {
-  const query = { ...router.query };
+  const query = CleanRouterQuery({ ...router.query });
+  // Retain any dynamic ids in the query (e.g. document page)
+  if (router.query.id) {
+    query["id"] = router.query.id;
+  }
   let selectedConcepts = query[QUERY_PARAMS.concept_name] ? [query[QUERY_PARAMS.concept_name]].flat() : [];
 
   if (selectedConcepts.includes(concept.preferred_label)) {
