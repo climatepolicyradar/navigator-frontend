@@ -19,10 +19,10 @@ export const FamilyMatchesDrawer = ({ family }: IProps) => {
   if (!family) return null;
   const { family_geographies, family_name, family_category, family_date, family_documents, corpus_type_name } = family;
 
-  const onPassageClick = (passageIndex: number, documentIndex: number) => {
+  const onPassageClick = (pageNumber: number, documentIndex: number) => {
     const document = family_documents[documentIndex];
     const queryObj = CleanRouterQuery({ ...router.query });
-    queryObj.passage = passageIndex.toString();
+    queryObj.page = pageNumber.toString();
     router.push({
       pathname: `/documents/${document.document_slug}`,
       query: queryObj,
