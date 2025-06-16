@@ -54,12 +54,12 @@ export const CONCEPTS_FAQS: TFAQ[] = [
         <p>Because few passages contain many topics at once, selecting more topics can reduce the number of results — sometimes to zero.</p>
 
         <p>
-          <b>Example:</b> If you choose “target” and “energy sector,” you’ll only see passages where <i>both</i> appear together, not all documents
+          <b>Example:</b> If you choose "target" and "energy sector", you'll only see passages where <i>both</i> appear together, not all documents
           that mention each topic separately.
         </p>
 
         <p>
-          We’re working on improving this feature to support broader searches across entire documents and give you more control over how topics and
+          We're working on improving this feature to support broader searches across entire documents and give you more control over how topics and
           keywords are combined.
         </p>
       </>
