@@ -163,6 +163,7 @@ const config: TThemeConfig = {
   documentCategories: ["All", "Laws", "Policies", "UNFCCC", "Litigation"],
   features: {
     knowledgeGraph: false,
+    searchFamilySummary: true,
   },
 };
 

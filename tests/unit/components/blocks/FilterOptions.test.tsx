@@ -23,6 +23,7 @@ describe("FilterOptions", () => {
       documentCategories: [],
       features: {
         knowledgeGraph: false,
+        searchFamilySummary: true,
       },
     };
 
