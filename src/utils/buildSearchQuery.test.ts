@@ -26,7 +26,7 @@ describe("buildSearchQuery: ", () => {
       links: [],
       metadata: [],
       documentCategories: [],
-      features: { knowledgeGraph: true },
+      features: { knowledgeGraph: true, searchFamilySummary: true },
     };
 
     const searchQueryWithNoCategory = buildSearchQuery({}, themeConfig);
@@ -48,7 +48,7 @@ describe("buildSearchQuery: ", () => {
       links: [],
       metadata: [],
       documentCategories: [],
-      features: { knowledgeGraph: true },
+      features: { knowledgeGraph: true, searchFamilySummary: true },
     };
 
     const searchQuery = buildSearchQuery({}, themeConfig);
