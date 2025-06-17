@@ -17,6 +17,9 @@ const testThemeConfig: TThemeConfig = {
   links: [],
   documentCategories: [],
   metadata: [],
+  features: {
+    knowledgeGraph: false,
+  },
 };
 
 describe("buildSearchQueryMetadata: ", () => {
