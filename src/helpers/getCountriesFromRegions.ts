@@ -6,7 +6,7 @@ interface IProps {
   countries: TGeography[];
 }
 
-export const getCountriesFromRegions = async ({ regions, countries, selectedRegions }: IProps) => {
+export const getCountriesFromRegions = ({ regions, countries, selectedRegions }: IProps) => {
   const selectedRegionsGeo = regions.filter((item) => selectedRegions.includes(item.slug));
 
   let newList = countries;
