@@ -34,3 +34,8 @@ export const isUNFCCCFiltersEnabled = (featureFlags: TFeatureFlags) =>
   isFeatureEnabled({
     featureFlag: featureFlags["unfccc-filters"],
   });
+
+export const isSearchFamilySummaryEnabled = (themeConfig: TThemeConfig) =>
+  isFeatureEnabled({
+    configFeature: themeConfig.features.searchFamilySummary,
+  });
