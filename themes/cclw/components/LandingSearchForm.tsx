@@ -31,7 +31,8 @@ const EXAMPLE_SEARCHES = [
     id: 3,
     label: "Climate framework laws",
     params: {
-      [QUERY_PARAMS.query_string]: "Climate framework laws",
+      [QUERY_PARAMS.category]: "laws",
+      [QUERY_PARAMS.framework_laws]: "true",
     },
   },
   {
