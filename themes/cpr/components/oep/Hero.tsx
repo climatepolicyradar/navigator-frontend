@@ -77,11 +77,6 @@ export const Hero = () => {
                       Floating offshore wind
                     </a>
                   </li>
-                  <li>
-                    <a href="" onClick={handleSuggestionClick} className="text-textDark opacity-60 hover:opacity-100">
-                      Offshore wind communities
-                    </a>
-                  </li>
                 </ul>
               </div>
             </div>

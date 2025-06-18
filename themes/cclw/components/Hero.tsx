@@ -34,7 +34,7 @@ export const Hero = ({ handleSearchInput, searchInput }: IProps) => {
         <div className="max-w-screen-md mx-auto mt-6">
           <LandingSearchForm handleSearchInput={handleSearchInput} placeholder="Search the full text of any document" input={searchInput} />
         </div>
-        <div className="mt-6 mt-[48px] sm:mt-[88px] md:mt-[188px] lg:mt-[208px] xl:mt-[248px]">
+        <div className="mt-[48px] sm:mt-[88px] md:mt-[188px] lg:mt-[208px] xl:mt-[248px]">
           <Instructions />
         </div>
       </SiteWidth>
