@@ -4,6 +4,7 @@ import { ApiClient } from "@/api/http-common";
 import { Columns } from "@/components/atoms/columns/Columns";
 import Layout from "@/components/layouts/Main";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
+import { FamilyHeader } from "@/components/organisms/family/familyHeader/FamilyHeader";
 import { FAMILY_PAGE_SIDE_BAR_ITEMS_SORTED } from "@/constants/sideBarItems";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { TFamilyPage, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
@@ -32,7 +33,7 @@ const Family: InferGetStaticPropsType<typeof getServerSideProps> = ({ featureFla
         <ContentsSideBar items={FAMILY_PAGE_SIDE_BAR_ITEMS_SORTED} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
         <main className="py-3 cols-2:py-6 cols-3:py-8 cols-3:col-span-2 cols-4:col-span-3">
           <div className="mb-19">
-            <h1 className="text-4xl leading-tight font-[640] text-text-primary">{family.title}</h1>
+            <FamilyHeader family={family} />
           </div>
           <div className="flex flex-col gap-24">
             {/* Each section should eventually be its own component */}
