@@ -11,7 +11,7 @@ export const getCountriesFromRegions = ({ regions, countries, selectedRegions }:
 
   let newList = countries;
 
-  if (selectedRegionsGeo.length > 0 && "parent_id" in countries[0]) {
+  if (selectedRegionsGeo.length > 0) {
     newList = [];
     // for each selected region, filter the countries
     for (let i = 0; i < selectedRegionsGeo.length; i++) {
