@@ -82,6 +82,14 @@ class ApiClient {
       languages: TLanguages;
     }>("/config");
   }
+
+  getCountries(url: string) {
+    return this.get<{
+      geographies: TDataNode<TGeography>[];
+      corpus_types: TCorpusTypeDictionary;
+      languages: TLanguages;
+    }>(`${url}/geographies/`);
+  }
 }
 
 export { ApiClient };
