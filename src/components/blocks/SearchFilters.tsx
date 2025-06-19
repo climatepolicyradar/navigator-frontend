@@ -43,7 +43,7 @@ interface IProps {
   searchCriteria: TSearchCriteria;
   query: ParsedUrlQuery;
   regions: TGeography[];
-  countries: TGeography[] | TCountry[];
+  countries: TGeography[];
   corpus_types: TCorpusTypeDictionary;
   conceptsData?: TConcept[];
   handleFilterChange(type: string, value: string, clearOthersOfType?: boolean): void;
@@ -71,24 +71,25 @@ const SearchFilters = ({
   const { status: themeConfigStatus, themeConfig } = useGetThemeConfig();
   const [showClear, setShowClear] = useState(false);
   const { currentSlideOut, setCurrentSlideOut } = useContext(SlideOutContext);
-  const geographies = useCountries();
+  const { data: geographies } = useCountries();
 
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
   } = searchCriteria;
 
   const thisYear = currentYear();
-
-  const listOfCountries = regionFilters.length > 0 ? countries : geographies;
+  const useOldCountries = regionFilters.length > 0;
 
   // memoize the filtered countries
   const availableCountries = useMemo(() => {
-    return getCountriesFromRegions({
-      regions,
-      countries,
-      selectedRegions: regionFilters,
-    });
-  }, [regionFilters, regions, countries]);
+    return useOldCountries
+      ? getCountriesFromRegions({
+          regions,
+          countries,
+          selectedRegions: regionFilters,
+        })
+      : geographies;
+  }, [regionFilters, regions, useOldCountries, countries, geographies]);
 
   // Show clear button if there are filters applied
   useEffect(() => {
@@ -238,8 +239,8 @@ const SearchFilters = ({
           <TypeAhead
             list={availableCountries}
             selectedList={countryFilters}
-            keyField="slug"
-            keyFieldDisplay="display_value"
+            keyField={useOldCountries ? "slug" : "alpha3"}
+            keyFieldDisplay={useOldCountries ? "display_value" : "name"}
             filterType={QUERY_PARAMS.country}
             handleFilterChange={handleFilterChange}
           />
