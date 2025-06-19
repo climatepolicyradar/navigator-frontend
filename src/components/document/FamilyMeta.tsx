@@ -9,7 +9,7 @@ interface IProps {
   corpus_type_name: TCorpusTypeSubCategory;
   source?: string;
   date: string;
-  geographies: string[];
+  geographies?: string[];
   topics?: string[];
   author?: string[];
   document_type?: string;
@@ -23,7 +23,7 @@ export const FamilyMeta = ({ category, date, geographies, topics, author, corpus
 
   return (
     <>
-      <CountryLinks geographies={geographies} countries={countries} />
+      {geographies && geographies.length > 0 && <CountryLinks geographies={geographies} countries={countries} />}
       {/* TODO: we need to revisit this once we have updated the config, so that we can determine this output based on the corpora */}
       {!isNaN(year) && <span data-cy="family-metadata-year">{`${category === "MCF" ? "Approval FY: " + year : year}`}</span>}
       {topics && topics.length > 0 && (
