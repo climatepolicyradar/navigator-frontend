@@ -20,8 +20,9 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { currentYear, minYear } from "@/constants/timedate";
 import { SlideOutContext } from "@/context/SlideOutContext";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
+import useCountries from "@/hooks/useCountries";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
+import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TGeography, TSearchCriteria, TThemeConfigOption, TCountry } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
 import { isCorporateReportsEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
 import { getFilterLabel } from "@/utils/getFilterLabel";
@@ -42,7 +43,7 @@ interface IProps {
   searchCriteria: TSearchCriteria;
   query: ParsedUrlQuery;
   regions: TGeography[];
-  countries: TGeography[];
+  countries: TGeography[] | TCountry[];
   corpus_types: TCorpusTypeDictionary;
   conceptsData?: TConcept[];
   handleFilterChange(type: string, value: string, clearOthersOfType?: boolean): void;
@@ -70,12 +71,15 @@ const SearchFilters = ({
   const { status: themeConfigStatus, themeConfig } = useGetThemeConfig();
   const [showClear, setShowClear] = useState(false);
   const { currentSlideOut, setCurrentSlideOut } = useContext(SlideOutContext);
+  const geographies = useCountries();
 
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
   } = searchCriteria;
 
   const thisYear = currentYear();
+
+  const listOfCountries = regionFilters.length > 0 ? countries : geographies;
 
   // memoize the filtered countries
   const availableCountries = useMemo(() => {
