@@ -1,4 +1,4 @@
-import { TGeography, TCountry } from "@/types";
+import { TGeography } from "@/types";
 
 interface IProps {
   selectedRegions: string[];
