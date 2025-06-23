@@ -1,20 +1,18 @@
-import useConfig from "@/hooks/useConfig";
-
-import Tooltip from "@/components/tooltip";
 import { ExternalLink } from "@/components/ExternalLink";
+import Tooltip from "@/components/tooltip";
 import { Heading } from "@/components/typography/Heading";
-
+import useConfig from "@/hooks/useConfig";
 import { TGeographyStats, TGeography, TTheme } from "@/types";
 
-type TProps = {
+interface IProps {
   country: TGeographyStats;
   targetCount: number;
   onTargetClick: () => void;
   theme: TTheme;
   totalProjects: number;
-};
+}
 
-export const CountryHeader = ({ country, targetCount, onTargetClick, theme, totalProjects }: TProps) => {
+export const CountryHeader = ({ country, targetCount, onTargetClick, theme, totalProjects }: IProps) => {
   const configQuery = useConfig();
   const { data: { regions = [], countries = [] } = {} } = configQuery;
 

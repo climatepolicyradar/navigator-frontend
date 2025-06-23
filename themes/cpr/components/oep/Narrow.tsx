@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 
-type TNarrowProps = {
+interface IProps {
   children: ReactNode;
   extraClasses?: string;
-};
+}
 
-export const Narrow = ({ children, extraClasses = "" }: TNarrowProps) => <div className={`max-w-[775px] ${extraClasses}`}>{children}</div>;
+export const Narrow = ({ children, extraClasses = "" }: IProps) => <div className={`max-w-[775px] ${extraClasses}`}>{children}</div>;

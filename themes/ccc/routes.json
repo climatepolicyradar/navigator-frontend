@@ -1,0 +1,32 @@
+[
+  {
+    "title": "About",
+    "path": "about",
+    "contentPath": "about"
+  },
+  {
+    "title": "Contact",
+    "path": "contact",
+    "contentPath": "contact"
+  },
+  {
+    "title": "FAQ",
+    "path": "faq",
+    "contentPath": "faq"
+  },
+  {
+    "title": "Framework Laws",
+    "path": "framework-laws",
+    "contentPath": "framework-laws"
+  },
+  {
+    "title": "Methodology",
+    "path": "methodology",
+    "contentPath": "methodology"
+  },
+  {
+    "title": "Terms of use",
+    "path": "terms-of-use",
+    "contentPath": "terms-of-use"
+  }
+]

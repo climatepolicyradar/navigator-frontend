@@ -1,15 +1,14 @@
-import React, { ReactNode } from "react";
-import { useRouter } from "next/router";
 import Head from "next/head";
-
-import { getAppTitle } from "@/utils/getAppTitle";
-import { getPageDescription } from "@/utils/getPageDescription";
-import { getPageTitle } from "@/utils/getPageTitle";
-import { getCanonicalUrl } from "@/utils/getCanonicalUrl";
+import { useRouter } from "next/router";
+import React, { ReactNode } from "react";
 
 import { TTheme, TThemeConfig } from "@/types";
+import { getAppTitle } from "@/utils/getAppTitle";
+import { getCanonicalUrl } from "@/utils/getCanonicalUrl";
+import { getPageDescription } from "@/utils/getPageDescription";
+import { getPageTitle } from "@/utils/getPageTitle";
 
-type TProps = {
+interface IProps {
   title?: string;
   theme?: TTheme;
   description?: string;
@@ -17,9 +16,9 @@ type TProps = {
   metadataKey?: string;
   text?: string;
   children?: ReactNode;
-};
+}
 
-const Layout = ({ children, title, theme, description, themeConfig, metadataKey, text }: TProps) => {
+const Layout = ({ children, title, theme, description, themeConfig, metadataKey, text }: IProps) => {
   const router = useRouter();
 
   return (

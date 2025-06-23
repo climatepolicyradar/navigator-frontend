@@ -19,9 +19,11 @@ const preview: Preview = {
       const queryClient = new QueryClient();
 
       return (
-        <QueryClientProvider client={queryClient}>
-          <Story />
-        </QueryClientProvider>
+        <div className="root isolate">
+          <QueryClientProvider client={queryClient}>
+            <Story />
+          </QueryClientProvider>
+        </div>
       );
     },
   ],

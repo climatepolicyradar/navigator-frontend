@@ -1,14 +1,13 @@
-import { useState } from "react";
 import { ParsedUrlQuery } from "querystring";
-import { get } from "lodash";
+
+import get from "lodash/get";
+import { useState } from "react";
 
 import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
-
-import { QUERY_PARAMS } from "@/constants/queryParams";
-
-import { TCorpusTypeDictionary, TThemeConfig, TThemeConfigFilter } from "@/types";
 import { TextInput } from "@/components/forms/TextInput";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { TCorpusTypeDictionary, TThemeConfig, TThemeConfigFilter } from "@/types";
 
 const getTaxonomyAllowedValues = (corporaKey: string, taxonomyKey: string, corpus_types: TCorpusTypeDictionary) => {
   const allowedValues = get(corpus_types[corporaKey].taxonomy, taxonomyKey)?.allowed_values || [];
@@ -16,13 +15,13 @@ const getTaxonomyAllowedValues = (corporaKey: string, taxonomyKey: string, corpu
   return allowedValues;
 };
 
-type TProps = {
+interface IProps {
   filter: TThemeConfigFilter;
   query: ParsedUrlQuery;
   handleFilterChange: Function;
   corpus_types: TCorpusTypeDictionary;
   themeConfig: TThemeConfig;
-};
+}
 
 const filterIsSelected = (queryValue: string | string[] | undefined, option: string) => {
   if (!queryValue) {
@@ -35,7 +34,7 @@ const filterIsSelected = (queryValue: string | string[] | undefined, option: str
   }
 };
 
-export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types, themeConfig }: TProps) => {
+export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types, themeConfig }: IProps) => {
   const [search, setSearch] = useState("");
 
   // If the filter has its own options defined, display them
@@ -111,7 +110,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
     ? [...new Set(options.sort())].filter((option) => option.toLowerCase().includes(search.toLowerCase()))
     : [];
 
-  let optionsAsComponents = optionsDeDuped.map((option: string) =>
+  const optionsAsComponents = optionsDeDuped.map((option: string) =>
     filter.type === "radio" ? (
       <InputRadio
         key={option}

@@ -1,56 +1,63 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import Script from "next/script";
-import { useRouter } from "next/router";
-import { usePathname } from "next/navigation";
 import axios from "axios";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
+import Script from "next/script";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
-
-import useSearch from "@/hooks/useSearch";
-
-import { SingleCol } from "@/components/panels/SingleCol";
-import Layout from "@/components/layouts/Main";
-import { Timeline } from "@/components/timeline/Timeline";
-import { Event } from "@/components/timeline/Event";
-import { FamilyHead } from "@/components/document/FamilyHead";
-import { FamilyDocument } from "@/components/document/FamilyDocument";
+import { Alert } from "@/components/Alert";
 import { ExternalLink } from "@/components/ExternalLink";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Targets } from "@/components/Targets";
+import { Button } from "@/components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
 import { ShowHide } from "@/components/controls/ShowHide";
 import { Divider } from "@/components/dividers/Divider";
-import { Icon } from "@/components/atoms/icon/Icon";
-import { Button } from "@/components/atoms/button/Button";
-import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
-import Tooltip from "@/components/tooltip";
-import { Alert } from "@/components/Alert";
+import { FamilyDocument } from "@/components/document/FamilyDocument";
+import { FamilyHead } from "@/components/document/FamilyHead";
+import Layout from "@/components/layouts/Main";
 import { SubNav } from "@/components/nav/SubNav";
+import { MultiCol } from "@/components/panels/MultiCol";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { Event } from "@/components/timeline/Event";
+import { Timeline } from "@/components/timeline/Timeline";
+import Tooltip from "@/components/tooltip";
 import { Heading } from "@/components/typography/Heading";
-
-import { truncateString } from "@/utils/truncateString";
-import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { getCorpusInfo } from "@/helpers/getCorpusInfo";
-import { getMainDocuments } from "@/helpers/getMainDocuments";
-
-import { sortFilterTargets } from "@/utils/sortFilterTargets";
-import { pluralise } from "@/utils/pluralise";
-import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
-import { extractNestedData } from "@/utils/extractNestedData";
-
-import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept } from "@/types";
-
-import { QUERY_PARAMS } from "@/constants/queryParams";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@/constants/document";
 import { MAX_PASSAGES } from "@/constants/paging";
-import { getFeatureFlags } from "@/utils/featureFlags";
-import { fetchAndProcessConcepts } from "@/utils/processConcepts";
-import { useEffectOnce } from "@/hooks/useEffectOnce";
-import { MultiCol } from "@/components/panels/MultiCol";
-import { ConceptsPanel } from "@/components/concepts/ConceptsPanel";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 import { withEnvConfig } from "@/context/EnvConfig";
+import { getCorpusInfo } from "@/helpers/getCorpusInfo";
+import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
+import { getMainDocuments } from "@/helpers/getMainDocuments";
+import { useEffectOnce } from "@/hooks/useEffectOnce";
+import useSearch from "@/hooks/useSearch";
+import { TFamilyPage, TMatchedFamily, TTarget, TGeography, TTheme, TCorpusTypeDictionary, TSearchResponse, TConcept, TDocumentPage } from "@/types";
+import { extractNestedData } from "@/utils/extractNestedData";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
+import { pluralise } from "@/utils/pluralise";
+import { fetchAndProcessConcepts } from "@/utils/processConcepts";
+import { readConfigFile } from "@/utils/readConfigFile";
+import { sortFilterTargets } from "@/utils/sortFilterTargets";
+import { truncateString } from "@/utils/truncateString";
 
-type TProps = {
+// Only published documents are returned in the family page call, so we can cross reference the import ID with those
+const documentIsPublished = (familyDocuments: TDocumentPage[], documentImportId: string) => {
+  let isPublished = false;
+
+  familyDocuments.forEach((familyDocument) => {
+    if (familyDocument.import_id === documentImportId) isPublished = true;
+  });
+
+  return isPublished;
+};
+
+interface IProps {
   page: TFamilyPage;
   targets: TTarget[];
   countries: TGeography[];
@@ -58,7 +65,7 @@ type TProps = {
   theme: TTheme;
   featureFlags: Record<string, string | boolean>;
   vespaFamilyData?: TSearchResponse;
-};
+}
 
 /*
   # DEV NOTES
@@ -73,9 +80,8 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   countries = [],
   corpus_types,
   theme,
-  featureFlags,
   vespaFamilyData,
-}: TProps) => {
+}: IProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const startingNumberOfTargetsToDisplay = 5;
@@ -96,8 +102,14 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     page.geographies && page.geographies.length > 1 ? null : { label: geographyName, href: `/geographies/${geographySlug}` };
 
   let searchFamily: TMatchedFamily = null;
-  const { status, families } = useSearch(router.query, page.import_id, null, !!router.query[QUERY_PARAMS.query_string], MAX_PASSAGES);
-  if (!!router.query[QUERY_PARAMS.query_string]) {
+  const { status, families } = useSearch(
+    router.query,
+    page.import_id,
+    null,
+    !!(router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]),
+    MAX_PASSAGES
+  );
+  if (!!(router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name])) {
     families.forEach((family) => {
       if (page.slug === family.family_slug) {
         searchFamily = family;
@@ -129,10 +141,12 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   });
 
   const [mainDocuments, otherDocuments] = getMainDocuments(page.documents);
+  const mainDocumentImportIds = mainDocuments.map((document) => document.import_id);
+  const topMainDocument = mainDocumentImportIds[0];
 
   const getDocumentCategories = () => {
     // Some types are comma separated, so we need to split them
-    let categories = page.documents.map((doc) => {
+    const categories = page.documents.map((doc) => {
       if (doc.document_type?.includes(",")) {
         return doc.document_type.split(",");
       } else return doc.document_type || "";
@@ -155,22 +169,6 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     setShowCollectionDetail(false);
   }, [pathname]);
 
-  // Search handlers
-  const handleSearchInput = (term: string) => {
-    const queryObj = {};
-    queryObj[QUERY_PARAMS.query_string] = term;
-    if (term === "") return false;
-    // if the family only has one main document, redirect to that document
-    // if there is no main document but only one other document, redirect to the other document
-    if (mainDocuments.length === 1) {
-      router.push({ pathname: `/documents/${mainDocuments[0].slug}`, query: queryObj });
-    } else if (mainDocuments.length === 0 && otherDocuments.length === 1) {
-      router.push({ pathname: `/documents/${otherDocuments[0].slug}`, query: queryObj });
-    } else {
-      router.push({ pathname: `/document/${page.slug}`, query: queryObj });
-    }
-  };
-
   /** Concepts */
   const [concepts, setConcepts] = useState<TConcept[]>([]);
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
@@ -179,24 +177,22 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
     (vespaFamilyData?.families ?? []).forEach((family) => {
       family.hits.forEach((hit) => {
-        Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
-          const existingCount = uniqueConceptMap.get(conceptKey) || 0;
-          uniqueConceptMap.set(conceptKey, existingCount + count);
-        });
+        // Check the document id against the documents in the page
+        if (documentIsPublished(page.documents, hit.document_import_id) && topMainDocument === hit.document_import_id) {
+          Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
+            const existingCount = uniqueConceptMap.get(conceptKey) || 0;
+            uniqueConceptMap.set(conceptKey, existingCount + count);
+          });
+        }
       });
     });
 
     return Array.from(uniqueConceptMap.entries())
       .map(([conceptKey, count]) => ({ conceptKey, count }))
       .sort((a, b) => b.count - a.count);
-  }, [vespaFamilyData]);
+  }, [vespaFamilyData, page.documents, topMainDocument]);
 
   const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
-  const conceptCountsById = conceptCounts.reduce((acc, { conceptKey, count }) => {
-    const conceptId = conceptKey.split(":")[0];
-    acc[conceptId] = count;
-    return acc;
-  }, {});
 
   useEffectOnce(() => {
     fetchAndProcessConcepts(conceptIds).then(({ rootConcepts, concepts }) => {
@@ -236,7 +232,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
         <SubNav>
           <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={page.title} />
         </SubNav>
-        <MultiCol>
+        <MultiCol extraClasses="flex-wrap md:flex-nowrap">
           <SingleCol extraClasses={`mt-8 px-5 w-full`}>
             <FamilyHead family={page} onCollectionClick={handleCollectionClick} />
             <section className="mt-6">
@@ -263,6 +259,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       key={doc.import_id}
                       status={status}
                       familyMatches={searchFamily?.total_passage_hits}
+                      concepts={concepts}
                     />
                   ))}
                 </div>
@@ -293,6 +290,7 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           document={doc}
                           status={status}
                           familyMatches={searchFamily?.total_passage_hits}
+                          concepts={concepts}
                         />
                       </div>
                     ))}
@@ -407,13 +405,23 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 </div>
                 {showCollectionDetail && (
                   <div>
-                    <div className="mb-8 text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
+                    <div
+                      className="mb-8 text-content"
+                      dangerouslySetInnerHTML={{
+                        __html: collection.description,
+                      }}
+                    />
                     <Heading level={4}>Other documents in the {collection.title}</Heading>
                     <div className="divide-solid divide-y">
                       {collection.families.map((collFamily, i) => (
                         <div key={collFamily.slug} className="pt-4 pb-4">
                           <LinkWithQuery href={`/document/${collFamily.slug}`}>{collFamily.title}</LinkWithQuery>
-                          <div className="text-content" dangerouslySetInnerHTML={{ __html: collFamily.description }}></div>
+                          <div
+                            className="text-content"
+                            dangerouslySetInnerHTML={{
+                              __html: collFamily.description,
+                            }}
+                          ></div>
                         </div>
                       ))}
                     </div>
@@ -423,19 +431,12 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             ))}
           </SingleCol>
           {concepts.length > 0 && (
-            <div className="border-gray-200 grow-0 shrink-0 px-5 border-l pt-5 w-[460px] text-sm">
-              <ConceptsPanel
-                rootConcepts={rootConcepts}
-                concepts={concepts}
-                conceptCountsById={conceptCountsById}
-                onConceptClick={handleConceptClick}
-              ></ConceptsPanel>
+            <div className="border-gray-200 grow-0 shrink-0 px-5 border-l pt-4 md:pt-8 basis-full md:basis-[320px] lg:basis-[380px] xl:basis-[460px]">
+              <ConceptsPanel rootConcepts={rootConcepts} concepts={concepts} onConceptClick={handleConceptClick}></ConceptsPanel>
             </div>
           )}
         </MultiCol>
       </section>
-      {/* This is here in the short term for us to test features flags with our cache settings */}
-      <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
     </Layout>
   );
 };
@@ -443,9 +444,13 @@ export default FamilyPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-  const featureFlags = await getFeatureFlags(context.req.cookies);
+  const featureFlags = getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
+  const themeConfig = await readConfigFile(theme);
+
+  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+
   const id = context.params.id;
   const client = new ApiClient(process.env.BACKEND_API_URL);
 
@@ -459,8 +464,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const { data: returnedData } = await client.get(`/documents/${id}`);
     familyData = returnedData;
 
-    const conceptsV1 = featureFlags["concepts-v1"];
-    if (conceptsV1) {
+    if (knowledgeGraphEnabled) {
       // fetch the families
       const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
       vespaFamilyData = vespaFamilyDataResponse;
@@ -497,7 +501,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       targets: targetsData,
       countries: countriesData,
       corpus_types,
-      theme: theme,
+      theme,
       featureFlags,
       vespaFamilyData: vespaFamilyData ?? null,
     }),

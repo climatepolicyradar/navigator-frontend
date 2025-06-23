@@ -10,10 +10,12 @@ import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { Suspense, useEffect } from "react";
 
-type Props = {
+import { setFeatureFlags } from "@/utils/featureFlags";
+
+interface IProps {
   children: React.ReactNode;
   consent?: boolean;
-};
+}
 
 function PostHogPageView() {
   const pathname = usePathname();
@@ -47,7 +49,7 @@ export function SuspendedPostHogPageView() {
   );
 }
 
-export function PostHogProvider({ children, consent }: Props) {
+export function PostHogProvider({ children, consent }: IProps) {
   /**
    * The sessionStorage is read by tag manager to not re-init posthog
    * We don't use something like posthog.__loaded as posthog isn't available on the window
@@ -63,7 +65,6 @@ export function PostHogProvider({ children, consent }: Props) {
       capture_pageview: false,
       capture_pageleave: true,
       persistence: "memory",
-      person_profiles: "always",
     });
     window.sessionStorage.setItem("posthogLoaded", "true");
   }, []);

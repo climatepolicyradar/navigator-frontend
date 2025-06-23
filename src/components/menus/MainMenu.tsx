@@ -1,14 +1,15 @@
 import { useState, useRef } from "react";
-import useOutsideAlerter from "@/hooks/useOutsideAlerter";
+
 import { Icon } from "@/components/atoms/icon/Icon";
-import DropdownMenuItem from "./DropdownMenuItem";
-import DropdownMenuWrapper from "./DropdownMenuWrapper";
+import DropdownMenuItem from "@/components/menus/DropdownMenuItem";
+import DropdownMenuWrapper from "@/components/menus/DropdownMenuWrapper";
+import useOutsideAlerter from "@/hooks/useOutsideAlerter";
 
-type TProps = {
+interface IProps {
   iconClass?: string;
-};
+}
 
-const MainMenu = ({ iconClass = "text-white" }: TProps) => {
+const MainMenu = ({ iconClass = "text-white" }: IProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
   useOutsideAlerter(menuRef, () => setShowMenu(false));
@@ -29,7 +30,7 @@ const MainMenu = ({ iconClass = "text-white" }: TProps) => {
             <DropdownMenuItem external={true} href="https://climatepolicyradar.org" title="About us" first={true} setShowMenu={setShowMenu} />
             <DropdownMenuItem
               external={true}
-              href="https://github.com/climatepolicyradar/methodology"
+              href="https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md"
               title="Methodology"
               setShowMenu={setShowMenu}
             />

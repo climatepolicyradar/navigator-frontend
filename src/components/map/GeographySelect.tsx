@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+
+import { Icon } from "@/components/atoms/icon/Icon";
 import SuggestList from "@/components/filters/SuggestList";
 import { sortData } from "@/utils/sorting";
-import { Icon } from "@/components/atoms/icon/Icon";
 
-interface ByTextInputProps {
+interface IProps {
   title: string;
   list: { [key: string]: {} };
   keyField: string;
@@ -12,7 +13,7 @@ interface ByTextInputProps {
   handleFilterChange(filterType: string, value: string): void;
 }
 
-const GeographySelect = ({ title, list, keyField, keyFieldDisplay, filterType, handleFilterChange }: ByTextInputProps) => {
+const GeographySelect = ({ title, list, keyField, keyFieldDisplay, filterType, handleFilterChange }: IProps) => {
   const [input, setInput] = useState("");
   const [suggestList, setSuggestList] = useState([]);
 
@@ -75,4 +76,5 @@ const GeographySelect = ({ title, list, keyField, keyFieldDisplay, filterType, h
     </div>
   );
 };
+
 export default GeographySelect;

@@ -1,4 +1,4 @@
-export type TTheme = "cpr" | "cclw" | "mcf";
+export type TTheme = "cpr" | "cclw" | "mcf" | "ccc";
 
 export type TSearchKeywordFilters = {
   categories?: string[];
@@ -17,22 +17,23 @@ export type TSearchCriteriaMeta = {
 };
 
 export type TSearchCriteria = {
-  query_string: string;
-  exact_match: boolean;
-  max_passages_per_doc: number;
-  keyword_filters?: TSearchKeywordFilters;
-  year_range: [string, string];
-  sort_field: string | null;
-  sort_order: string;
-  page_size: number;
-  limit: number;
-  offset: number;
-  family_ids?: string[] | null;
-  document_ids?: string[] | null;
+  concept_filters: { name: string; value: string }[];
   continuation_tokens?: string[] | null;
   corpus_import_ids: string[];
+  document_ids?: string[] | null;
+  exact_match: boolean;
+  family_ids?: string[] | null;
+  keyword_filters?: TSearchKeywordFilters;
+  limit: number;
+  max_passages_per_doc: number;
   metadata: TSearchCriteriaMeta[];
-  concept_filters: { name: string; value: string }[];
+  offset: number;
+  page_size: number;
+  query_string: string;
+  sort_field: string | null;
+  sort_order: string;
+  sort_within_page: boolean;
+  year_range: [string, string];
   // for internal use
   runSearch?: boolean;
 };
@@ -311,12 +312,12 @@ export type TCorpusType = {
   corpora: TCorpusWithStats[];
 };
 
-export interface TDictionary<T> {
+export interface IDictionary<T> {
   [Key: string]: T;
 }
 
-export type TOrganisationDictionary = TDictionary<TOrganisation>;
-export type TCorpusTypeDictionary = TDictionary<TCorpusType>;
+export type TOrganisationDictionary = IDictionary<TOrganisation>;
+export type TCorpusTypeDictionary = IDictionary<TCorpusType>;
 
 export type TConcept = {
   alternative_labels: string[];
@@ -342,6 +343,7 @@ export type TSearchResponse = {
     id: string;
     hits: (TFamily & {
       concept_counts?: Record<string, number>;
+      document_import_id: string;
     })[];
   }[];
   continuation_token?: string;

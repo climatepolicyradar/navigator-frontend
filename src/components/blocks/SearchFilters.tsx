@@ -1,37 +1,32 @@
-import { useEffect, useState, useMemo, useContext } from "react";
 import { ParsedUrlQuery } from "querystring";
-import dynamic from "next/dynamic";
-import { LuChevronRight } from "react-icons/lu";
 
-import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { Label } from "@/components/labels/Label";
-import { DateRange } from "../filters/DateRange";
+import { ChevronRight } from "lucide-react";
+import { useEffect, useState, useMemo, useContext } from "react";
+
+import Loader from "@/components/Loader";
 import { Accordian } from "@/components/accordian/Accordian";
+import { Heading } from "@/components/accordian/Heading";
+import { Badge } from "@/components/atoms/label/Badge";
+import { FilterOptions } from "@/components/blocks/FilterOptions";
+import { AppliedFilters } from "@/components/filters/AppliedFilters";
+import { DateRange } from "@/components/filters/DateRange";
 import { InputListContainer } from "@/components/filters/InputListContainer";
-import { TypeAhead } from "../forms/TypeAhead";
 import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
-import { AppliedFilters } from "@/components/filters/AppliedFilters";
-import Loader from "@/components/Loader";
-import { FilterOptions } from "./FilterOptions";
-
-import { currentYear, minYear } from "@/constants/timedate";
-import { QUERY_PARAMS } from "@/constants/queryParams";
+import { TypeAhead } from "@/components/forms/TypeAhead";
+import { Info } from "@/components/molecules/info/Info";
 import { SLIDE_OUT_DATA_KEY } from "@/constants/dataAttributes";
-
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { currentYear, minYear } from "@/constants/timedate";
+import { SlideOutContext } from "@/context/SlideOutContext";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
-
+import useGetThemeConfig from "@/hooks/useThemeConfig";
+import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
+import { isCorporateReportsEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 
-import { TConcept, TCorpusTypeDictionary, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
-
-import { SlideOutContext } from "@/context/SlideOutContext";
-import { Heading } from "../accordian/Heading";
-
-const MethodologyLink = dynamic(() => import(`/themes/${process.env.THEME}/components/MethodologyLink`));
-
-const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption) => {
+const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption<any>) => {
   if (selectedCatgeory) {
     if (selectedCatgeory.toLowerCase() === themeConfigCategory.slug.toLowerCase()) {
       return true;
@@ -43,7 +38,7 @@ const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCate
   return false;
 };
 
-type TSearchFiltersProps = {
+interface IProps {
   searchCriteria: TSearchCriteria;
   query: ParsedUrlQuery;
   regions: TGeography[];
@@ -55,8 +50,8 @@ type TSearchFiltersProps = {
   handleRegionChange(region: string): void;
   handleClearSearch(): void;
   handleDocumentCategoryClick(value: string): void;
-  featureFlags: Record<string, string | boolean>;
-};
+  featureFlags: TFeatureFlags;
+}
 
 const SearchFilters = ({
   searchCriteria,
@@ -71,7 +66,7 @@ const SearchFilters = ({
   handleClearSearch,
   handleDocumentCategoryClick,
   featureFlags,
-}: TSearchFiltersProps) => {
+}: IProps) => {
   const { status: themeConfigStatus, themeConfig } = useGetThemeConfig();
   const [showClear, setShowClear] = useState(false);
   const { currentSlideOut, setCurrentSlideOut } = useContext(SlideOutContext);
@@ -84,7 +79,11 @@ const SearchFilters = ({
 
   // memoize the filtered countries
   const availableCountries = useMemo(() => {
-    return getCountriesFromRegions({ regions, countries, selectedRegions: regionFilters });
+    return getCountriesFromRegions({
+      regions,
+      countries,
+      selectedRegions: regionFilters,
+    });
   }, [regionFilters, regions, countries]);
 
   // Show clear button if there are filters applied
@@ -102,8 +101,13 @@ const SearchFilters = ({
     <div id="search_filters" data-cy="seach-filters" className="text-sm text-text-secondary flex flex-col gap-5">
       {themeConfigStatus === "loading" && <Loader size="20px" />}
       <div className="flex justify-between">
-        <div className="flex gap-2">
-          <p className="text-xs uppercase">Filters</p>
+        <div className="flex items-center gap-2">
+          <p className="text-[15px] text-text-primary font-normal">Filters</p>
+          <Info
+            title="About"
+            description="Narrow down your results using the filters below. You can also combine these with a search term."
+            link={{ href: "/faq", text: "Learn more" }}
+          />
         </div>
         {showClear && (
           <button className="anchor underline text-sm" onClick={handleClearSearch}>
@@ -118,7 +122,7 @@ const SearchFilters = ({
           <InputListContainer>
             {themeConfig.categories?.options?.map(
               (option) =>
-                ((option.slug === "climate_policy_radar_reports" && featureFlags["corporate-reports"]) ||
+                ((option.slug === "climate_policy_radar_reports" && isCorporateReportsEnabled(featureFlags)) ||
                   option.slug !== "climate_policy_radar_reports") && (
                   <InputRadio
                     key={option.slug}
@@ -135,15 +139,33 @@ const SearchFilters = ({
         </Accordian>
       )}
 
+      {conceptsData && (
+        <>
+          <button
+            className="items-center justify-between cursor-pointer group flex"
+            onClick={() => setCurrentSlideOut(currentSlideOut === "" ? "concepts" : "")}
+            data-cy="concepts-control"
+            {...{ [SLIDE_OUT_DATA_KEY]: "concepts" }}
+          >
+            <Heading>
+              Topics
+              <Badge size="small" className="ml-2">
+                Beta
+              </Badge>
+            </Heading>
+            <span
+              className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
+                currentSlideOut === "concepts" ? "transform rotate-180" : ""
+              }`}
+            >
+              <ChevronRight />
+            </span>
+          </button>
+        </>
+      )}
+
       {themeConfigStatus === "success" &&
         themeConfig.filters.map((filter) => {
-          // TODO: remove FF and logic for UNFCCC filters
-          if (
-            ["_document.type", "author_type"].includes(filter.taxonomyKey) &&
-            filter.corporaKey === "Intl. agreements" &&
-            !featureFlags["unfccc-filters"]
-          )
-            return;
           // If the filter is not in the selected category, don't display it
           if (!canDisplayFilter(filter, query, themeConfig)) return;
           return (
@@ -155,6 +177,21 @@ const SearchFilters = ({
               showFade={filter.showFade}
             >
               <InputListContainer>
+                {filter.showTopicsMessage && isKnowledgeGraphEnabled(featureFlags, themeConfig) && (
+                  <p className="opacity-80 mb-2">
+                    Our new topic filter automatically identifies {filter.label.toLowerCase()} in the text of documents.{" "}
+                    <a
+                      className="underline"
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentSlideOut(currentSlideOut === "" ? "concepts" : "");
+                      }}
+                    >
+                      Try it now
+                    </a>
+                  </p>
+                )}
                 <FilterOptions
                   filter={filter}
                   query={query}
@@ -166,29 +203,6 @@ const SearchFilters = ({
             </Accordian>
           );
         })}
-
-      {conceptsData && (
-        <>
-          <button
-            className="items-center justify-between cursor-pointer group flex"
-            onClick={() => setCurrentSlideOut(currentSlideOut === "" ? "concepts" : "")}
-            data-cy="concepts-control"
-            {...{ [SLIDE_OUT_DATA_KEY]: "concepts" }}
-          >
-            <div className="flex items-center gap-2 pointer-events-none">
-              <Heading>Concepts</Heading>
-              <Label>Beta</Label>
-            </div>
-            <span
-              className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
-                currentSlideOut === "concepts" ? "transform rotate-180" : ""
-              }`}
-            >
-              <LuChevronRight />
-            </span>
-          </button>
-        </>
-      )}
 
       <Accordian
         title={getFilterLabel("Region", "region", query[QUERY_PARAMS.category], themeConfig)}
@@ -235,12 +249,6 @@ const SearchFilters = ({
       >
         <DateRange type="year_range" handleChange={handleYearChange} defaultValues={searchCriteria.year_range} min={minYear} max={thisYear} />
       </Accordian>
-
-      <div className="my-5 pt-5 border-t border-gray-300" data-cy="methodology-notice">
-        <p>
-          Read <MethodologyLink /> for more information on how we collect and analyse our data.
-        </p>
-      </div>
     </div>
   );
 };

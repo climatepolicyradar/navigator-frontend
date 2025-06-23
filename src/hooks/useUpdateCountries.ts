@@ -1,16 +1,17 @@
 import { useMutation, useQueryClient } from "react-query";
+
 import { TGeography } from "@/types";
 
-type TMutationProps = {
+interface IProps {
   regionName: string;
   regions: TGeography[];
   countries: TGeography[];
-};
+}
 
 export default function useUpdateCountries() {
   const queryClient = useQueryClient();
 
-  return useMutation(async (value: TMutationProps) => {
+  return useMutation(async (value: IProps) => {
     const { regionName, regions, countries } = value;
     const region = regions.find((item) => item.slug === regionName);
     let newList = countries;

@@ -1,13 +1,11 @@
 import { useEffect, useState, useMemo } from "react";
-import { ApiClient, getEnvFromServer } from "../api/http-common";
-
-import useGetThemeConfig from "./useThemeConfig";
 
 import buildSearchQuery, { TRouterQuery } from "@/utils/buildSearchQuery";
 import { getCachedSearch, updateCacheSearch, TCacheResult } from "@/utils/searchCache";
 
+import useGetThemeConfig from "./useThemeConfig";
+import { ApiClient, getEnvFromServer } from "../api/http-common";
 import { initialSearchCriteria } from "../constants/searchCriteria";
-
 import { TMatchedFamily, TSearch, TLoadingStatus } from "../types";
 
 const CACHE_ENABLED = false;
@@ -55,19 +53,20 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
     }
 
     const cacheId = {
-      query_string: searchQuery.query_string,
-      exact_match: searchQuery.exact_match,
-      keyword_filters: searchQuery.keyword_filters,
-      year_range: searchQuery.year_range,
-      sort_field: searchQuery.sort_field,
-      sort_order: searchQuery.sort_order,
-      offset: searchQuery.offset,
-      family_ids: searchQuery.family_ids,
-      document_ids: searchQuery.document_ids,
+      concept_filters: searchQuery.concept_filters,
       continuation_tokens: searchQuery.continuation_tokens,
       corpus_import_ids: searchQuery.corpus_import_ids,
-      concept_filters: searchQuery.concept_filters,
+      document_ids: searchQuery.document_ids,
+      exact_match: searchQuery.exact_match,
+      family_ids: searchQuery.family_ids,
+      keyword_filters: searchQuery.keyword_filters,
       metadata: searchQuery.metadata,
+      offset: searchQuery.offset,
+      query_string: searchQuery.query_string,
+      sort_field: searchQuery.sort_field,
+      sort_order: searchQuery.sort_order,
+      sort_within_page: searchQuery.sort_within_page,
+      year_range: searchQuery.year_range,
     };
 
     // Check if we have a cached result before calling the API

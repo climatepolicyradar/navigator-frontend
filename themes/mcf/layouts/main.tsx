@@ -1,11 +1,12 @@
 import React, { FC, ReactNode } from "react";
+
 import { Header, Footer } from "@/mcf/components";
 
-type TProps = {
+interface IProps {
   children?: ReactNode;
-};
+}
 
-const Main: FC<TProps> = ({ children }) => (
+const Main: FC<IProps> = ({ children }) => (
   <>
     <Header />
     <main id="main" className="flex flex-col flex-1">

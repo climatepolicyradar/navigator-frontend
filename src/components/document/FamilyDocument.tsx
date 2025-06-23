@@ -1,16 +1,20 @@
 import { useRouter } from "next/router";
-import useConfig from "@/hooks/useConfig";
-import { Icon } from "@/components/atoms/icon/Icon";
-import { getLanguage } from "@/helpers/getLanguage";
-import { TDocumentPage, TLoadingStatus } from "@/types";
-import { getDocumentType } from "@/helpers/getDocumentType";
 
-type TProps = {
+import { Icon } from "@/components/atoms/icon/Icon";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { getDocumentType } from "@/helpers/getDocumentType";
+import { getLanguage } from "@/helpers/getLanguage";
+import useConfig from "@/hooks/useConfig";
+import { TConcept, TDocumentPage, TLoadingStatus } from "@/types";
+import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
+
+interface IProps {
   document: TDocumentPage;
   matches?: number;
   status?: TLoadingStatus;
   familyMatches?: number;
-};
+  concepts?: TConcept[];
+}
 
 const loadingIndicator = (
   <span className="flex gap-2 items-center">
@@ -19,7 +23,7 @@ const loadingIndicator = (
   </span>
 );
 
-export const FamilyDocument = ({ document, matches, status, familyMatches }: TProps) => {
+export const FamilyDocument = ({ document, matches, status, familyMatches, concepts }: IProps) => {
   const { title, slug, document_role, language, content_type, variant } = document;
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
@@ -27,7 +31,7 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
   const isMain = document_role?.toLowerCase().includes("main");
   const hasMatches = typeof matches !== "undefined" && matches > 0;
   // If we have matches or the document is a pdf - and we have the document, we can preview it
-  const canPreview = hasMatches || (document.content_type === "application/pdf" && !!document.cdn_object);
+  const canPreview = hasMatches || (!!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf"));
   const canViewSource = !canPreview && !!document.source_url;
 
   const renderDocumentInfo = (): string | JSX.Element => {
@@ -51,7 +55,10 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
       if (canViewSource) window.open(document.source_url, "_blank");
     };
 
-    return { className: cssClass, onClick: !canPreview && !canViewSource ? null : handleClick };
+    return {
+      className: cssClass,
+      onClick: !canPreview && !canViewSource ? null : handleClick,
+    };
   };
 
   const getMatchesText = () => {
@@ -61,7 +68,21 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
     const numberOfMatches = typeof matches === "number" ? matches : parseInt(matches, 10);
     if (!numberOfMatches) return "";
 
-    return `View ${familyMatches >= 500 ? "more than " : ""}${numberOfMatches} ${numberOfMatches === 1 ? "match" : "matches"}`;
+    const conceptsQuery = router.query[QUERY_PARAMS.concept_name];
+    const conceptFiltersQuery = conceptsQuery ? (Array.isArray(conceptsQuery) ? conceptsQuery : [conceptsQuery]) : undefined;
+    const appliedConcepts =
+      conceptFiltersQuery && concepts
+        ? concepts.filter((concept) =>
+            (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]).includes(concept.preferred_label)
+          )
+        : [];
+
+    return getPassageResultsContext({
+      isExactSearch: router.query[QUERY_PARAMS.exact_match] !== "false",
+      passageMatches: matches,
+      queryTerm: router.query[QUERY_PARAMS.query_string],
+      selectedTopics: appliedConcepts,
+    });
   };
 
   return (
@@ -71,21 +92,7 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
         {canPreview && !canViewSource && <Icon name="document" width="20" height="20" color="#1F93FF" />}
       </div>
       <div className="flex-1">
-        <div className="mb-2 flex justify-between no-wrap">
-          {title}{" "}
-          {(canPreview || canViewSource) && (
-            <>
-              <span
-                className="text-sm text-text-brand shrink-0"
-                data-analytics="document-matches-button"
-                data-cy="document-matches-button"
-                data-slug={slug}
-              >
-                {getMatchesText()}
-              </span>
-            </>
-          )}
-        </div>
+        <div className="mb-2">{title} </div>
         <div className="md:flex flex-nowrap items-center">
           <div className="flex-1">
             <div className="flex items-center text-sm">
@@ -103,6 +110,11 @@ export const FamilyDocument = ({ document, matches, status, familyMatches }: TPr
             </div>
           </div>
         </div>
+        {(canPreview || canViewSource) && (
+          <div className="mt-2 text-sm !text-text-brand" data-analytics="document-matches-button" data-cy="document-matches-button" data-slug={slug}>
+            {getMatchesText()}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,63 +1,53 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { ParsedUrlQuery } from "querystring";
+
+import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { AnimatePresence, motion } from "framer-motion";
-import { LuSettings2 } from "react-icons/lu";
+import { useEffect, useState, useMemo } from "react";
 
 import { ApiClient } from "@/api/http-common";
-
-import useSearch from "@/hooks/useSearch";
-
-import { FullWidth } from "@/components/panels/FullWidth";
-
-import Layout from "@/components/layouts/Main";
 import EmbeddedPDF from "@/components/EmbeddedPDF";
-import PassageMatches from "@/components/PassageMatches";
 import Loader from "@/components/Loader";
-import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
+import PassageMatches from "@/components/PassageMatches";
+import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { DocumentHead } from "@/components/documents/DocumentHead";
-import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
+import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { SearchSettings } from "@/components/filters/SearchSettings";
-
-import { QUERY_PARAMS } from "@/constants/queryParams";
+import Layout from "@/components/layouts/Main";
+import { Info } from "@/components/molecules/info/Info";
+import { FullWidth } from "@/components/panels/FullWidth";
 import { getDocumentDescription } from "@/constants/metaDescriptions";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
-
-import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@/types";
-import { getFeatureFlags } from "@/utils/featureFlags";
-import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
-import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamiy";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 import { withEnvConfig } from "@/context/EnvConfig";
+import useSearch from "@/hooks/useSearch";
+import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse } from "@/types";
+import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamily";
+import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
+import { readConfigFile } from "@/utils/readConfigFile";
 
-type TProps = {
+interface IProps {
   document: TDocumentPage;
   family: TFamilyPage;
   theme: TTheme;
   vespaFamilyData?: TSearchResponse;
   vespaDocumentData?: TSearchResponse;
-};
+}
 
-const passageClasses = (docType: string) => {
-  if (docType === "application/pdf") {
+const passageClasses = (canPreview: boolean) => {
+  if (canPreview) {
     return "md:w-1/3";
   }
   return "md:w-2/3";
 };
 
-const scrollToPassage = (index: number) => {
-  setTimeout(() => {
-    const passage = window.document.getElementById(`passage-${index}`);
-    if (!passage) return;
-    const topPos = passage.offsetTop;
-    const container = window.document.getElementById("document-passage-matches");
-    if (!container) return;
-    container.scrollTo({ top: topPos - 10, behavior: "smooth" });
-  }, 100);
-};
-
-const renderPassageCount = (count: number): string => {
-  return count > MAX_PASSAGES ? `top ${MAX_PASSAGES} matches` : count + ` match${count > 1 ? "es" : ""}`;
+// If we don't have a query string or a concept selected, we do't have a search
+const isEmptySearch = (query: ParsedUrlQuery) => {
+  return !(query[QUERY_PARAMS.query_string] || query[QUERY_PARAMS.concept_id] || query[QUERY_PARAMS.concept_name]);
 };
 
 /*
@@ -74,30 +64,25 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   theme,
   vespaFamilyData,
   vespaDocumentData,
-}: TProps) => {
+}: IProps) => {
   const [canPreview, setCanPreview] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
-  const [passageIndex, setPassageIndex] = useState(null);
+  const [pageNumber, setPageNumber] = useState(null);
   const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
   const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
   const router = useRouter();
   const qsSearchString = router.query[QUERY_PARAMS.query_string];
-  const exactMatchQuery = !!router.query[QUERY_PARAMS.exact_match];
-  const startingPassage = Number(router.query.passage) || 0;
+  // exact match is default, so only instances where it is explicitly set to false do we check against
+  const exactMatchQuery = router.query[QUERY_PARAMS.exact_match] === undefined || router.query[QUERY_PARAMS.exact_match] !== "false";
+  const passagesByPosition = router.query[QUERY_PARAMS.passages_by_position] === "true";
+  const startingPageNumber = Number(router.query.page) || 0;
 
-  // TODO: Remove this once we have hard launched concepts in product.
-  const { status, families, searchQuery } = useSearch(
-    router.query,
-    null,
-    document.import_id,
-    !!(router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]),
-    MAX_PASSAGES
-  );
+  // Note: only runs a fresh start if either a query string or concept data is provided
+  const { status, families, searchQuery } = useSearch(router.query, null, document.import_id, !isEmptySearch(router.query), MAX_PASSAGES);
 
-  const handlePassageClick = (index: number) => {
+  const handlePassageClick = (pageNo: number) => {
     if (!canPreview) return;
-    setPassageIndex(index);
-    scrollToPassage(index);
+    setPageNumber(pageNo);
   };
 
   const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
@@ -114,10 +99,10 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   // Semantic search / exact match handler
   const handleSemanticSearchChange = (_: string, isExact: string) => {
-    setPassageIndex(0);
-    const queryObj = { ...router.query };
+    setPageNumber(null);
+    const queryObj = CleanRouterQuery({ ...router.query });
     if (isExact === "false") {
-      delete queryObj[QUERY_PARAMS.exact_match];
+      queryObj[QUERY_PARAMS.exact_match] = "false";
     } else if (isExact === "true") {
       queryObj[QUERY_PARAMS.exact_match] = "true";
     }
@@ -132,39 +117,34 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     );
   };
 
-  // Handlers to update router
+  const handlePassagesOrderChange = (orderValue: string) => {
+    setPageNumber(null);
+    const queryObj = CleanRouterQuery({ ...router.query });
+    queryObj["id"] = document.slug;
+    queryObj[QUERY_PARAMS.passages_by_position] = orderValue;
+    router.push({ query: queryObj }, undefined, { shallow: true });
+  };
 
-  const handleExactMatchChange = useCallback(
-    (isExact: boolean) => {
-      const queryObj = { ...router.query };
-
-      if (isExact) {
-        queryObj[QUERY_PARAMS.exact_match] = "true";
-      }
-
-      router.push(
-        {
-          pathname: `/documents/${document.slug}`,
-          query: queryObj,
-        },
-        undefined,
-        { shallow: true }
-      );
-    },
-    [router, document.slug]
-  );
-
+  // Update passages based on search results
   useEffect(() => {
     const [passageMatches, totalNoOfMatches] = getMatchedPassagesFromSearch(families, document);
 
     setPassageMatches(passageMatches);
     setTotalNoOfMatches(totalNoOfMatches);
-    setCanPreview(document.content_type === "application/pdf");
+    setCanPreview(!!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf"));
     // comparing families as objects will cause an infinite loop as each collection is a new instance of an object
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(families), document.slug]);
 
+  const passagesResultsContext = getPassageResultsContext({
+    isExactSearch: exactMatchQuery,
+    passageMatches: totalNoOfMatches,
+    queryTerm: qsSearchString,
+    selectedTopics: [],
+  });
+
   const conceptFiltersQuery = router.query[QUERY_PARAMS.concept_name];
+
   const conceptFilters = useMemo(
     () => (conceptFiltersQuery ? (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]) : undefined),
     [conceptFiltersQuery]
@@ -193,14 +173,17 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
                 <div
                   id="document-preview"
-                  className={`pt-4 flex-1 h-[400px] basis-[400px] md:block md:h-full ${totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""}`}
+                  className={`flex-1 h-[400px] basis-[400px] md:block md:h-full relative ${
+                    totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""
+                  }`}
                 >
                   {canPreview && (
                     <EmbeddedPDF
                       document={document}
                       documentPassageMatches={passageMatches}
-                      passageIndex={passageIndex}
-                      startingPassageIndex={startingPassage}
+                      pageNumber={pageNumber}
+                      startingPageNumber={startingPageNumber}
+                      searchStatus={status}
                     />
                   )}
                   {!canPreview && <EmptyDocument />}
@@ -208,7 +191,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 <div
                   id="document-sidebar"
                   className={`py-4 order-first max-h-[90vh] md:pb-0 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
-                    document.content_type
+                    canPreview
                   )}`}
                 >
                   {status !== "success" ? (
@@ -221,23 +204,25 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                         <div className="flex-1">
                           {totalNoOfMatches > 0 && (
                             <>
-                              <div className="mb-2 pt-2 text-sm" data-cy="document-matches-description">
-                                Displaying {renderPassageCount(totalNoOfMatches)} for "
-                                <span className="text-textDark font-medium">{`${qsSearchString}`}</span>"
-                                {!searchQuery.exact_match && ` and related phrases`}
+                              <div className="mb-2 text-sm" data-cy="document-matches-description">
+                                {passagesResultsContext}
                                 {totalNoOfMatches >= MAX_RESULTS && (
-                                  <span className="ml-1 inline-block">
-                                    <SearchLimitTooltip colour="grey" />
-                                  </span>
+                                  <Info
+                                    className="inline-block ml-2 align-text-bottom"
+                                    description={`We limit the number of search results to ${MAX_RESULTS} so that you get the best performance from our tool. We're working on a way to remove this limit.`}
+                                  />
                                 )}
                               </div>
-                              <p className="text-sm">Sorted by search relevance</p>
+                              <p className="text-sm">Sorted by {passagesByPosition ? "page number" : "search relevance"}</p>
                             </>
                           )}
                         </div>
                         <div className="relative z-10 flex justify-center">
-                          <button className="p-2 text-textDark text-xl" onClick={() => setShowOptions(!showOptions)}>
-                            <LuSettings2 />
+                          <button
+                            className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showOptions ? "bg-surface-ui" : ""}`}
+                            onClick={() => setShowOptions(!showOptions)}
+                          >
+                            Sort &amp; Display
                           </button>
                           <AnimatePresence initial={false}>
                             {showOptions && (
@@ -247,14 +232,21 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                 animate="open"
                                 exit="collapsed"
                                 variants={{
-                                  collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                                  open: { opacity: 1, transition: { duration: 0.25 } },
+                                  collapsed: {
+                                    opacity: 0,
+                                    transition: { duration: 0.1 },
+                                  },
+                                  open: {
+                                    opacity: 1,
+                                    transition: { duration: 0.25 },
+                                  },
                                 }}
                               >
                                 <SearchSettings
                                   queryParams={router.query}
                                   handleSearchChange={handleSemanticSearchChange}
                                   setShowOptions={setShowOptions}
+                                  handlePassagesOrderChange={handlePassagesOrderChange}
                                 />
                               </motion.div>
                             )}
@@ -266,7 +258,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           id="document-passage-matches"
                           className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
                         >
-                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
+                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} />
                         </div>
                       )}
                       {totalNoOfMatches === 0 && <EmptyPassages hasQueryString={!!router.query[QUERY_PARAMS.query_string]} />}
@@ -282,13 +274,15 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           <ConceptsDocumentViewer
             initialQueryTerm={qsSearchString}
             initialExactMatch={exactMatchQuery}
-            initialPassage={startingPassage}
+            initialPageNumber={startingPageNumber}
             initialConceptFilters={conceptFilters}
             vespaFamilyData={vespaFamilyData}
             vespaDocumentData={vespaDocumentData}
-            familySlug={family.slug}
             document={document}
-            onExactMatchChange={handleExactMatchChange}
+            searchStatus={status}
+            searchResultFamilies={isEmptySearch(router.query) ? [] : families}
+            handleSemanticSearchChange={handleSemanticSearchChange}
+            handlePassagesOrderChange={handlePassagesOrderChange}
           />
         )}
       </section>
@@ -300,9 +294,13 @@ export default DocumentPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-  const featureFlags = await getFeatureFlags(context.req.cookies);
+  const featureFlags = getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
+  const themeConfig = await readConfigFile(theme);
+
+  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+
   const id = context.params.id;
   const client = new ApiClient(process.env.BACKEND_API_URL);
 
@@ -319,8 +317,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     familyData = returnedFamilyData;
 
     // Fetch Vespa family data for concepts (similar to document/[id].tsx)
-    const conceptsV1 = featureFlags["concepts-v1"];
-    if (conceptsV1) {
+    if (knowledgeGraphEnabled) {
       const { data: vespaDocumentDataResponse } = await client.get(`/document/${documentData.import_id}`);
       vespaDocumentData = vespaDocumentDataResponse;
       const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);

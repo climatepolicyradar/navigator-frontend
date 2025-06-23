@@ -15,7 +15,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": "",
+    "baseUrl": ".",
     "types": ["node", "vitest/globals"],
     "paths": {
       "@/api/*": ["src/api/*"],
@@ -28,6 +28,7 @@
       "@/types": ["src/types/index"],
       "@/pages/*": ["src/pages/*"],
       "@/utils/*": ["src/utils/*"],
+      "@/ccc/*": ["themes/ccc/*"],
       "@/cclw/*": ["themes/cclw/*"],
       "@/cpr/*": ["themes/cpr/*"],
       "@/mcf/*": ["themes/mcf/*"]

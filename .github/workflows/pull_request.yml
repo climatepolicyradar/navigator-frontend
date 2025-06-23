@@ -89,6 +89,8 @@ jobs:
       - uses: trunk-io/trunk-action@v1
         with:
           arguments: --ci
+      - run: npm run type-check
+
     permissions:
       # For trunk to post annotations
       checks: write
@@ -134,7 +136,6 @@ jobs:
           NODE_ENV: production
       - run: npx playwright install --with-deps
       - run: npx playwright test
-        continue-on-error: true
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
@@ -147,6 +148,6 @@ jobs:
         continue-on-error: true
         uses: trunk-io/analytics-uploader@main
         with:
-          junit-paths: "**/playright.xml"
+          junit-paths: "**/playwright.xml"
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
           token: ${{ secrets.TRUNK_TOKEN }}

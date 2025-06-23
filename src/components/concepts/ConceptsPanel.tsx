@@ -1,32 +1,71 @@
-import { useCallback, useState } from "react";
-import { LuInfo } from "react-icons/lu";
+import startCase from "lodash/startCase";
+import { ChevronUp, TextSearch } from "lucide-react";
 import Link from "next/link";
+import { useContext, useState } from "react";
 
-import { ConceptsHead } from "./ConceptsHead";
-import { ConceptsPopover } from "@/components/popover/ConceptsPopover";
 import { Button } from "@/components/atoms/button/Button";
-
-import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
-
+import { NEW_FEATURES } from "@/constants/newFeatures";
+import { NewFeatureContext } from "@/context/NewFeatureContext";
 import { TConcept } from "@/types";
+import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
+import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
+import { firstCase } from "@/utils/text";
 
-type TProps = {
+import { ExternalLink } from "../ExternalLink";
+import { Badge } from "../atoms/label/Badge";
+import { ConceptLink } from "../molecules/conceptLink/ConceptLink";
+import { Info } from "../molecules/info/Info";
+import { NewFeatureCard } from "../molecules/newFeatures/NewFeatureCard";
+import { Heading } from "../typography/Heading";
+
+interface IProps {
   concepts: TConcept[];
   rootConcepts: TConcept[];
-  conceptCountsById: Record<string, number>;
-  showCounts?: boolean;
   onConceptClick?: (conceptLabel: string) => void;
+}
+
+interface IConceptListProps {
+  concepts: TConcept[];
+  onConceptClick?: (conceptLabel: string) => void;
+}
+
+// How many concepts to show based on the most mentions
+const TOP_CONCEPTS_LENGTH = 3;
+
+const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
+  const [showAll, setShowAll] = useState(false);
+
+  return (
+    <>
+      {concepts.slice(0, showAll ? undefined : TOP_CONCEPTS_LENGTH).map((concept) => {
+        return (
+          <li key={concept.wikibase_id} className="">
+            <ConceptLink concept={concept} onClick={() => onConceptClick?.(concept.preferred_label)} />
+          </li>
+        );
+      })}
+      {concepts.length > TOP_CONCEPTS_LENGTH && (
+        <>
+          <div>
+            <Button size="x-small" color="mono" variant="faded" onClick={() => setShowAll(!showAll)}>
+              {showAll ? (
+                <>
+                  <ChevronUp size={14} className="mr-0.5" />
+                  hide
+                </>
+              ) : (
+                `+${concepts.length - TOP_CONCEPTS_LENGTH} more`
+              )}
+            </Button>
+          </div>
+        </>
+      )}
+    </>
+  );
 };
 
-export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showCounts = true, onConceptClick }: TProps) => {
-  const [openPopoverIds, setOpenPopoverIds] = useState<string[]>([]);
-
-  const handleConceptClick = useCallback(
-    (conceptLabel: string) => {
-      onConceptClick?.(conceptLabel);
-    },
-    [onConceptClick]
-  );
+export const ConceptsPanel = ({ rootConcepts, concepts, onConceptClick }: IProps) => {
+  const { previousNewFeature } = useContext(NewFeatureContext);
 
   const otherRootConcept: TConcept = {
     wikibase_id: "Q000",
@@ -41,11 +80,29 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
   };
 
   const conceptsGroupedByRootConcept = groupByRootConcept(concepts, rootConcepts);
+  const knowledgeGraphIsNew = previousNewFeature < 0;
 
   return (
-    <div className="pb-4">
-      <div className="grow-0 shrink-0">
-        <ConceptsHead></ConceptsHead>
+    <div className="flex flex-col gap-4 pb-4 text-sm">
+      <div className="flex flex-col gap-4 pb-4 border-b border-border-light text-text-secondary">
+        {knowledgeGraphIsNew && <NewFeatureCard newFeature={NEW_FEATURES[0]} />}
+        <span className="text-base font-semibold text-text-primary">
+          <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
+          Find mentions of topics
+          {!knowledgeGraphIsNew && <Badge className="ml-2">Beta</Badge>}
+        </span>
+        {!knowledgeGraphIsNew && (
+          <p>
+            Find where a topic precisely appears in the main document. Accuracy is not 100%.{" "}
+            <ExternalLink url="/faq#topics-faqs" className="underline inline-block">
+              Learn more
+            </ExternalLink>
+          </p>
+        )}
+      </div>
+      <div className="pt-1 pb-4">
+        <span className="block mb-1 text-[15px] text-text-primary font-semibold">Topics in the main document</span>
+        <p className="">Ordered by most frequently mentioned, grouped by category</p>
       </div>
 
       {rootConcepts.concat(otherRootConcept).map((rootConcept) => {
@@ -53,54 +110,19 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
         if (!hasConcepts) return null;
 
         return (
-          <div key={rootConcept.wikibase_id} className="pt-6 pb-6 relative group">
+          <div key={rootConcept.wikibase_id} className="relative group">
             <div className="flex items-center gap-2">
-              <p className="capitalize text-neutral-800 text-base font-medium leading-normal flex-grow">{rootConcept.preferred_label}</p>
-              <div className="relative pr-3">
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setOpenPopoverIds(
-                      openPopoverIds.includes(rootConcept.wikibase_id)
-                        ? openPopoverIds.filter((id) => id !== rootConcept.wikibase_id)
-                        : [...openPopoverIds, rootConcept.wikibase_id]
-                    );
-                  }}
-                  className="text-text-primary flex items-center z-50 opacity-20 group-hover:opacity-40 transition-opacity duration-150"
-                >
-                  <LuInfo className="text-xl" />
-                </button>
-
-                {openPopoverIds.includes(rootConcept.wikibase_id) && (
-                  <div className="absolute z-50 top-full right-3 mt-2">
-                    <ConceptsPopover
-                      concept={rootConcept}
-                      onClose={() => setOpenPopoverIds(openPopoverIds.filter((id) => id !== rootConcept.wikibase_id))}
-                    />
-                  </div>
-                )}
-              </div>
+              <Heading level={3} className="text-[15px] leading-tight font-medium text-text-primary">
+                {firstCase(rootConcept.preferred_label)}
+              </Heading>
+              <Info
+                title={startCase(rootConcept.preferred_label)}
+                description={rootConcept.description}
+                link={{ href: getConceptStoreLink(rootConcept.wikibase_id), text: "Source", external: true }}
+              />
             </div>
-            <ul className="flex flex-wrap gap-2 mt-4">
-              {conceptsGroupedByRootConcept[rootConcept.wikibase_id].map((concept) => {
-                return (
-                  <li key={concept.wikibase_id}>
-                    <Link
-                      className="capitalize hover:no-underline"
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleConceptClick?.(concept.preferred_label);
-                      }}
-                    >
-                      <Button color="mono" rounded variant="outlined" className="capitalize" data-cy="view-document-viewer-concept">
-                        {concept.preferred_label}
-                        {showCounts && ` (${conceptCountsById[concept.wikibase_id]})`}
-                      </Button>
-                    </Link>
-                  </li>
-                );
-              })}
+            <ul className="flex flex-col gap-2 mt-2 ml-4">
+              <ConceptsList concepts={conceptsGroupedByRootConcept[rootConcept.wikibase_id]} onConceptClick={onConceptClick} />
             </ul>
           </div>
         );

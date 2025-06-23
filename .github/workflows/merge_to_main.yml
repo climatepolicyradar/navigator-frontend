@@ -8,6 +8,44 @@ on:
 # trunk-ignore(checkov/CKV2_GHA_1)
 permissions: write-all
 jobs:
+  lhci-desktop:
+    name: Lighthouse Desktop
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 22.12.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: npm install
+      - run: cp .env.example .env
+      - run: npm run build
+      - name: install Lighthouse CI
+        run: npm install -g @lhci/cli@0.14.x
+      - name: run Lighthouse Desktop
+        run: lhci autorun --collect.settings.preset=desktop
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+  lhci-mobile:
+    name: Lighthouse Mobile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 22.12.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+      - run: npm install
+      - run: cp .env.example .env
+      - run: npm run build
+      - name: install Lighthouse CI
+        run: npm install -g @lhci/cli@0.14.x
+      - name: run Lighthouse Mobile
+        run: lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
   percy:
     runs-on: ubuntu-latest
     env:
@@ -84,7 +122,6 @@ jobs:
           NODE_ENV: production
       - run: npx playwright install --with-deps
       - run: npx playwright test
-        continue-on-error: true
       - name: Upload Test Result
         # Upload the results even if the tests fails to Trunk.io
         if: ${{ !cancelled() }}
@@ -100,40 +137,41 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-  # deploy
+
   release:
     runs-on: ubuntu-latest
     needs: [code-quality, test, test-e2e]
-    environment: production
     strategy:
       fail-fast: false
       matrix:
-        theme: [cpr, cclw, mcf]
+        theme: [cpr, cclw, mcf, ccc]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
+
       # build
       - run: |
           export THEME=${{ matrix.theme }}
           make build
+
       # release
       # most of this is taken from
       # https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-to-amazon-elastic-container-service#creating-the-workflow
-      - name: Configure aws credentials
+      - name: Configure AWS credentials (staging)
         uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-frontend-github-actions
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID_STAGING }}:role/navigator-frontend-github-actions
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: eu-west-1
-      - name: Login to Amazon ECR
-        id: login-ecr
+      - name: Login to Amazon ECR (staging)
+        id: login-ecr-staging
         uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
+      - name: Build, tag, and push image to Amazon ECR (staging)
+        id: build-image-staging
         env:
-          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY_STAGING }}
           IMAGE_TAG: ${{ github.sha }}
           AWS_REGION: eu-west-1
           ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
@@ -142,7 +180,30 @@ jobs:
           docker build --build-arg THEME=${THEME} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-      # TODO: deploy
+
+      - name: Configure aws credentials (production)
+        uses: aws-actions/configure-aws-credentials@v4.1.0
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID_PROD }}:role/navigator-frontend-github-actions
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: eu-west-1
+      - name: Login to Amazon ECR (production)
+        id: login-ecr-prod
+        uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
+
+      - name: Build, tag, and push image to Amazon ECR (production)
+        id: build-image-prod
+        env:
+          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY_PROD }}
+          IMAGE_TAG: ${{ github.sha }}
+          AWS_REGION: eu-west-1
+          ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
+          THEME: ${{ matrix.theme }}
+        run: |
+          docker build --build-arg THEME=${THEME} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
   storybook:
     runs-on: ubuntu-latest
     env:

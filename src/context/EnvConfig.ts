@@ -1,4 +1,4 @@
-/**
+/*
  * This implementation gives us runtime, isomorphic env variables.
  *
  * We could use NEXT_PUBLIC_* env variables, but those have to be baked in at build time.
@@ -24,14 +24,14 @@ export const publicRuntimeEnvConfig = [
   "HOSTNAME",
 ] as const;
 
-export type PublicEnvConfig = Record<(typeof publicRuntimeEnvConfig)[number], string>;
+export type TPublicEnvConfig = Record<(typeof publicRuntimeEnvConfig)[number], string>;
 
 /**
  * This method is specifically made to be used with `getServerSideProps`
  * where `pageProps.envConfig` is then read in `_app.tsx` and passed to `EnvConfigContext.Provider`
  */
-export function withEnvConfig<PageProps>(pageProps: PageProps): PageProps & { envConfig: PublicEnvConfig } {
-  const config = {} as PublicEnvConfig;
+export function withEnvConfig<PageProps>(pageProps: PageProps): PageProps & { envConfig: TPublicEnvConfig } {
+  const config = {} as TPublicEnvConfig;
 
   for (const key of publicRuntimeEnvConfig) {
     config[key] = process.env[key];
@@ -43,9 +43,9 @@ export function withEnvConfig<PageProps>(pageProps: PageProps): PageProps & { en
   };
 }
 
-export const EnvConfigContext = createContext<PublicEnvConfig>(undefined);
+export const EnvConfigContext = createContext<TPublicEnvConfig>(undefined);
 
-export function useEnvConfig(): PublicEnvConfig {
+export function useEnvConfig(): TPublicEnvConfig {
   const envConfig = useContext(EnvConfigContext);
 
   if (typeof envConfig === "undefined") {

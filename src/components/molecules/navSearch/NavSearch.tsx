@@ -1,13 +1,15 @@
+import sortBy from "lodash/sortBy";
+import { ArrowRight, CornerDownLeft, Search } from "lucide-react";
+import { Url } from "next/dist/shared/lib/router/router";
+import { useRouter } from "next/router";
+import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";
+
 import { Input } from "@/components/atoms/input/Input";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { systemGeoCodes } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
-import { sortBy } from "lodash";
-import { Url } from "next/dist/shared/lib/router/router";
-import { useRouter } from "next/router";
-import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";
-import { LuArrowRight, LuCornerDownLeft, LuSearch } from "react-icons/lu";
+
 import { NavSearchDropdown } from "./NavSearchDropdown";
 import { NavSearchSuggestion } from "./NavSearchSuggestion";
 
@@ -87,6 +89,7 @@ export const NavSearch = () => {
   // The path to navigate to when submitting the search input
   const searchHref: Url = useMemo(() => {
     const newQuery = CleanRouterQuery({ ...router.query });
+    delete newQuery[QUERY_PARAMS.offset];
 
     if (searchText) {
       newQuery[QUERY_PARAMS.query_string] = searchText;
@@ -141,7 +144,7 @@ export const NavSearch = () => {
             containerClasses={`h-[40px] focus-within:!outline-0`}
             icon={
               <button type="submit" className="w-4 h-4 ml-0.5 shrink-0">
-                <LuSearch height="16" width="16" />
+                <Search height="16" width="16" />
               </button>
             }
             iconOnLeft
@@ -162,7 +165,7 @@ export const NavSearch = () => {
 
       {/* Results */}
       {isFocused && (
-        <div className="absolute top-0 left-0 z-20 right-0 min-h-[56px] outline -outline-offset-1 outline-border-lighter rounded-xl bg-surface-light shadow-[0px_4px_48px_0px_rgba(0,0,0,0.08)]">
+        <div className="absolute top-0 left-0 z-20 right-0 min-h-[56px] outline -outline-offset-1 outline-border-lighter rounded-xl bg-surface-light shadow-lg">
           {showResults && (
             <div className="flex flex-col gap-3 p-2 pt-[56px]">
               {/* Geographies */}
@@ -174,7 +177,7 @@ export const NavSearch = () => {
                       key={geography.id}
                       href={`/geographies/${geography.slug}`}
                       Icon={
-                        <LuArrowRight height="16" width="16" className="opacity-0 group-hover:opacity-100 text-text-brand transition duration-200" />
+                        <ArrowRight height="16" width="16" className="opacity-0 group-hover:opacity-100 text-text-brand transition duration-200" />
                       }
                       onClick={handleSuggestionClick}
                     >
@@ -186,10 +189,10 @@ export const NavSearch = () => {
               {/* Search */}
               <NavSearchSuggestion
                 href={searchHref}
-                Icon={<LuSearch height="16" width="16" />}
+                Icon={<Search height="16" width="16" />}
                 hint={
                   <div className="text-xs text-text-tertiary font-[440]">
-                    Press <LuCornerDownLeft height="12" width="12" className="inline group-hover:text-text-brand transition duration-200" /> ENTER
+                    Press <CornerDownLeft height="12" width="12" className="inline group-hover:text-text-brand transition duration-200" /> ENTER
                   </div>
                 }
                 onClick={handleSuggestionClick}

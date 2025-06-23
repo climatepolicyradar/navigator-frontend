@@ -1,14 +1,12 @@
-/* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
 
-import { SiteWidth } from "@/components/panels/SiteWidth";
-
+import GRI_LINKS, { TLinkItem } from "@/cclw/constants/griLinks";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+
 import { Feedback } from "./Feedback";
 import MENU_LINKS from "../constants/menuLinks";
-
-import GRI_LINKS, { TLinkItem } from "@/cclw/constants/griLinks";
 
 const Footer = () => {
   const renderLink = (item: TLinkItem) => {
@@ -55,12 +53,15 @@ const Footer = () => {
                 <div>Follow Grantham Research Institute</div>
                 <div className="flex items-start gap-6 footer__social-links">
                   <ExternalLink url="https://twitter.com/GRI_LSE">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/social/twitter_col.svg" alt="Twitter Logo" />
                   </ExternalLink>
                   <ExternalLink url="https://www.linkedin.com/company/grantham-research-institute-lse/">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/social/linkedIn_col.svg" alt="LinkedIn Logo" />
                   </ExternalLink>
                   <ExternalLink url="https://www.youtube.com/user/GranthamResearch">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/social/youtube_col.svg" alt="YouTube Logo" />
                   </ExternalLink>
                 </div>
@@ -87,15 +88,19 @@ const Footer = () => {
                 <div>Follow Climate Policy Radar</div>
                 <div className="flex items-start gap-6 footer__social-links">
                   <ExternalLink url="https://twitter.com/climatepolradar">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/social/twitter_col.svg" alt="Twitter Logo" />
                   </ExternalLink>
                   <ExternalLink url="https://www.linkedin.com/company/climate-policy-radar">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/social/linkedIn_col.svg" alt="LinkedIn Logo" />
                   </ExternalLink>
                   <ExternalLink url="https://www.youtube.com/channel/UCjcQnXKzZmo7r9t-RnHjbnA">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/social/youtube_col.svg" alt="YouTube Logo" />
                   </ExternalLink>
                   <ExternalLink url="https://github.com/climatepolicyradar/">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/social/github-white.svg" alt="GitHub Logo" />
                   </ExternalLink>
                 </div>

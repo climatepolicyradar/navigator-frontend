@@ -1,22 +1,18 @@
+import { ParsedUrlQuery } from "querystring";
+
 import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { LuSettings2 } from "react-icons/lu";
 
 import { ApiClient } from "@/api/http-common";
-
-import useConfig from "@/hooks/useConfig";
-import { useDownloadCsv } from "@/hooks/useDownloadCsv";
-import useSearch from "@/hooks/useSearch";
-
-import { MultiCol } from "@/components/panels/MultiCol";
-import { SideCol } from "@/components/panels/SideCol";
-import { SingleCol } from "@/components/panels/SingleCol";
-
 import { ExternalLink } from "@/components/ExternalLink";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import Loader from "@/components/Loader";
-import { NoOfResults } from "@/components/NoOfResults";
+import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
+import { Button } from "@/components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
 import SearchFilters from "@/components/blocks/SearchFilters";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Drawer from "@/components/drawer/Drawer";
@@ -24,51 +20,87 @@ import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
 import { SearchSettings } from "@/components/filters/SearchSettings";
 import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
+import { Info } from "@/components/molecules/info/Info";
 import { SubNav } from "@/components/nav/SubNav";
-import Pagination from "@/components/pagination";
-import SearchResultList from "@/components/search/SearchResultList";
-import { Icon } from "@/components/atoms/icon/Icon";
-import { Button } from "@/components/atoms/button/Button";
 import { ConceptPicker } from "@/components/organisms/ConceptPicker";
-import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
-import { Label } from "@/components/labels/Label";
-
+import Pagination from "@/components/pagination";
+import { MultiCol } from "@/components/panels/MultiCol";
+import { SideCol } from "@/components/panels/SideCol";
+import { SingleCol } from "@/components/panels/SingleCol";
+import SearchResultList from "@/components/search/SearchResultList";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { SEARCH_SETTINGS } from "@/constants/searchSettings";
+import { sortOptions } from "@/constants/sortOptions";
+import { withEnvConfig } from "@/context/EnvConfig";
+import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
+import useConfig from "@/hooks/useConfig";
+import { useDownloadCsv } from "@/hooks/useDownloadCsv";
+import useSearch from "@/hooks/useSearch";
+import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
+import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
+import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
-import { getFeatureFlags } from "@/utils/featureFlags";
 
-import { QUERY_PARAMS } from "@/constants/queryParams";
-
-import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
-
-import { TConcept, TTheme, TThemeConfig } from "@/types";
-import { withEnvConfig } from "@/context/EnvConfig";
-
-type TProps = {
+interface IProps {
   theme: TTheme;
   themeConfig: TThemeConfig;
-  featureFlags: Record<string, string | boolean>;
+  featureFlags: TFeatureFlags;
   conceptsData?: TConcept[];
-};
+}
 
 const SETTINGS_ANIMATION_VARIANTS = {
   hidden: { opacity: 0, transition: { duration: 0.1 } },
   visible: { opacity: 1, transition: { duration: 0 } },
 };
 
-const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig, featureFlags, conceptsData }: TProps) => {
+const getSelectedSortOptionText = (sortOption: string) => {
+  const selectedOptionValue = sortOptions.find(({ value }) => value === sortOption);
+  return selectedOptionValue.label;
+};
+
+// We want to show the KG information under certain rules
+const showKnowledgeGraphInformation = (query: ParsedUrlQuery) => {
+  let show = false;
+  // If we have multiple topics/concepts selected
+  if (Array.isArray(query[QUERY_PARAMS.concept_name]) && query[QUERY_PARAMS.concept_name].length > 1) return true;
+  // If we have a query AND a concept selected
+  if (query[QUERY_PARAMS.query_string] && (query[QUERY_PARAMS.concept_name] || query[QUERY_PARAMS.concept_id])) return true;
+  return show;
+};
+
+const getSelectedConcepts = (selectedConcepts: string | string[], allConcepts: TConcept[] = []): TConcept[] => {
+  const selectedConceptsAsArray = Array.isArray(selectedConcepts) ? selectedConcepts : [selectedConcepts];
+  return allConcepts?.filter((concept) => selectedConceptsAsArray.includes(concept.preferred_label.toLowerCase())) || [];
+};
+
+const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig, featureFlags, conceptsData }: IProps) => {
   const router = useRouter();
-  const qQueryString = router.query[QUERY_PARAMS.query_string];
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
+  const [showSearchOptions, setShowSearchOptions] = useState(false);
+  const [showSortOptions, setShowSortOptions] = useState(false);
   const [drawerFamily, setDrawerFamily] = useState<boolean | number>(false);
   const [searchDirty, setSearchDirty] = useState(false);
-  const settingsButtonRef = useRef(null);
+  const sortSettingsButtonRef = useRef(null);
+  const searchSettingsButtonRef = useRef(null);
 
   const [currentSlideOut, setCurrentSlideOut] = useState<TSlideOutContent>("");
 
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
+
+  useEffect(() => {
+    if (router.query.openConceptsPicker === "true") {
+      // Remove the parameter after opening the picker
+      const query = { ...router.query };
+      delete query.openConceptsPicker;
+      router.replace({ query }, undefined, { shallow: true });
+      setCurrentSlideOut("concepts");
+    }
+  }, [router]);
 
   const configQuery = useConfig();
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
@@ -236,8 +268,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
       delete router.query[QUERY_PARAMS.topic];
       delete router.query[QUERY_PARAMS.sector];
     }
-    delete router.query[QUERY_PARAMS.concept_id];
-    delete router.query[QUERY_PARAMS.concept_name];
     router.query[QUERY_PARAMS.category] = category;
     // Default search is all categories, so we do not need to provide any category if we want all
     if (category === "All") {
@@ -321,7 +351,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
 
   // Concerned only with preventing scrolling when either the drawer or the CSV download popup is open
   useEffect(() => {
-    if (typeof drawerFamily === "number" || showCSVDownloadPopup) {
+    if (typeof drawerFamily === "number" || showCSVDownloadPopup || showFilters) {
       document.body.classList.add("overflow-hidden");
     } else {
       document.body.classList.remove("overflow-hidden");
@@ -331,7 +361,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     return () => {
       document.body.classList.remove("overflow-hidden");
     };
-  }, [drawerFamily, showCSVDownloadPopup]);
+  }, [drawerFamily, showCSVDownloadPopup, showFilters]);
 
   // We want to track changes to search, but only within the context of an open filter panel
   useEffect(() => {
@@ -387,7 +417,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                 <Loader size="20px" />
               ) : (
                 <>
-                  <div className="sticky md:top-[72px] h-screen md:h-[calc(100vh-72px)] px-5 bg-white border-r border-gray-300 pt-5 pb-[70px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pb-0">
+                  <div className="sticky md:top-[72px] h-screen md:h-[calc(100vh-72px)] px-5 bg-white md:border-r border-gray-300 pt-5 pb-[180px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pb-4">
                     <SearchFilters
                       searchCriteria={searchQuery}
                       query={router.query}
@@ -404,19 +434,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                     />
                   </div>
                   <SlideOut showCloseButton={false}>
-                    {currentSlideOut === "concepts" && (
-                      <ConceptPicker
-                        concepts={conceptsData}
-                        title={
-                          <div className="flex items-center gap-2">
-                            <div className="text-[15px] font-medium text-text-primary">Concepts</div>
-                            <Label>Beta</Label>
-                          </div>
-                        }
-                      />
-                    )}
+                    {currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Find mentions of topics" />}
                   </SlideOut>
-                  <div className="absolute z-50 bottom-0 left-0 w-full flex bg-white md:hidden">
+                  <div className="absolute z-50 bottom-0 left-0 w-full flex pb-[100px] bg-white md:hidden">
                     <Button
                       variant={searchDirty ? "solid" : "outlined"}
                       className="m-4 w-full"
@@ -433,54 +453,21 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
               )}
             </SideCol>
             <div
-              className={`flex-1 bg-white transition-[filter] duration-150 ${
-                currentSlideOut ? "md:brightness-50 md:pointer-events-none md:select-none" : ""
+              className={`flex-1 bg-white transition-all duration-150 ${
+                currentSlideOut
+                  ? "md:pointer-events-none md:select-none md:opacity-50 xl:pointer-events-auto xl:select-auto xl:opacity-100 xl:ml-[460px]"
+                  : ""
               }`}
             >
-              <SingleCol extraClasses="px-5 pt-5 relative">
-                <div>
-                  <div className="">
-                    <div className="flex justify-between flex-wrap gap-2 items-center">
-                      <div className="md:hidden">
-                        <Button content="both" className="flex-nowrap" onClick={toggleFilters}>
-                          <span>{showFilters ? "Hide" : "Show"} filters</span>
-                        </Button>
-                      </div>
-                      <div className="relative z-10 md:order-1">
-                        <button
-                          className={`p-4 text-textDark text-xl ${showOptions ? "bg-nearBlack text-white rounded-full" : ""}`}
-                          onClick={() => setShowOptions(!showOptions)}
-                          data-cy="search-options"
-                          ref={settingsButtonRef}
-                        >
-                          <LuSettings2 />
-                        </button>
-                        <AnimatePresence initial={false}>
-                          {showOptions && (
-                            <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
-                              <SearchSettings
-                                queryParams={router.query}
-                                handleSortClick={handleSortClick}
-                                handleSearchChange={handleSearchChange}
-                                setShowOptions={setShowOptions}
-                                settingsButtonRef={settingsButtonRef}
-                              />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                      <div className="text-xs basis-full md:basis-auto md:order-0" data-cy="number-of-results">
-                        {status === "success" && <NoOfResults hits={hits} queryString={qQueryString} />}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-sm md:text-right">
+              <SingleCol extraClasses="px-5 relative">
+                {["error", "success"].includes(downloadCSVStatus) && (
+                  <div className="text-sm mt-2">
                     {downloadCSVStatus === "error" && <span className="text-red-600">There was an error downloading the CSV. Please try again</span>}
                     {downloadCSVStatus === "success" && (
                       <span className="text-green-600">CSV downloaded successfully, please check your downloads folder</span>
                     )}
                   </div>
-                </div>
+                )}
 
                 <div className="mt-5">
                   {status === "loading" ? (
@@ -488,15 +475,107 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       <Loader />
                     </div>
                   ) : (
-                    <section data-cy="search-results" className="min-h-screen">
-                      <h2 className="sr-only">Search results</h2>
-                      <SearchResultList
-                        category={router.query[QUERY_PARAMS.category]?.toString()}
-                        families={families}
-                        onClick={handleMatchesButtonClick}
-                        activeFamilyIndex={drawerFamily}
-                      />
-                    </section>
+                    <>
+                      <div className="md:mb-5">
+                        <div className="md:hidden mb-4">
+                          <Button content="both" className="flex-nowrap" onClick={toggleFilters}>
+                            <span>{showFilters ? "Hide" : "Show"} filters</span>
+                          </Button>
+                        </div>
+                        <div className="flex flex-wrap gap-4 justify-between items-start">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm text-text-primary font-normal">
+                              Results <span className="text-text-secondary">{hits || 0}</span>
+                            </p>
+                            <Info
+                              title="Showing the top 500 results"
+                              description="We limit the number of matches you can see so you get the quickest, most accurate results."
+                              link={{ href: "/faq", text: "Learn more" }}
+                            />
+                          </div>
+                          <div className="flex flex-col lg:flex-row gap-1 lg:gap-4">
+                            <div className="relative z-10 -top-0.5 flex justify-end">
+                              <button
+                                className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
+                                onClick={() => setShowSearchOptions(!showSearchOptions)}
+                                data-cy="search-options"
+                                ref={searchSettingsButtonRef}
+                              >
+                                <span className="font-bold">Search:</span>{" "}
+                                <span>{getCurrentSearchChoice(router.query) === "true" ? SEARCH_SETTINGS.exact : SEARCH_SETTINGS.semantic}</span>
+                                <ChevronDown />
+                              </button>
+                              <AnimatePresence initial={false}>
+                                {showSearchOptions && (
+                                  <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
+                                    <SearchSettings
+                                      queryParams={router.query}
+                                      handleSearchChange={handleSearchChange}
+                                      setShowOptions={setShowSearchOptions}
+                                      settingsButtonRef={searchSettingsButtonRef}
+                                      extraClasses="w-[280px]"
+                                    />
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                            <div className="relative z-8 -top-0.5 flex justify-end">
+                              <button
+                                className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSortOptions ? "bg-surface-ui" : ""}`}
+                                onClick={() => setShowSortOptions(!showSortOptions)}
+                                data-cy="search-options"
+                                ref={sortSettingsButtonRef}
+                              >
+                                <span className="font-bold">Order:</span>{" "}
+                                <span>
+                                  {getSelectedSortOptionText(
+                                    getCurrentSortChoice(
+                                      router.query,
+                                      !router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.query_string]?.toString().trim() === ""
+                                    )
+                                  )}
+                                </span>{" "}
+                                <ChevronDown />
+                              </button>
+                              <AnimatePresence initial={false}>
+                                {showSortOptions && (
+                                  <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
+                                    <SearchSettings
+                                      queryParams={router.query}
+                                      handleSortClick={handleSortClick}
+                                      setShowOptions={setShowSortOptions}
+                                      settingsButtonRef={sortSettingsButtonRef}
+                                    />
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <section data-cy="search-results" className="min-h-screen">
+                        <h2 className="sr-only">Search results</h2>
+                        {showKnowledgeGraphInformation(router.query) && (
+                          <div className="mb-8 p-4 pl-5 text-sm text-black border-l-2 border-[#005EEB] bg-[#005EEB14]">
+                            You are viewing a list of documents containing precise text passages matches related to{" "}
+                            <ResultsTopicsContext
+                              phrase={router.query[QUERY_PARAMS.query_string] as string}
+                              selectedTopics={getSelectedConcepts(router.query[QUERY_PARAMS.concept_name], conceptsData)}
+                            />
+                            .{" "}
+                            <LinkWithQuery href="/faq" target="_blank" hash="topics-faqs" className="underline hover:text-blue-800">
+                              Learn more
+                            </LinkWithQuery>
+                          </div>
+                        )}
+                        <SearchResultList
+                          category={router.query[QUERY_PARAMS.category]?.toString()}
+                          families={families}
+                          onClick={handleMatchesButtonClick}
+                          activeFamilyIndex={drawerFamily}
+                        />
+                      </section>
+                    </>
                   )}
                 </div>
                 {status !== "loading" && hits > 1 && (
@@ -518,12 +597,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
         <Drawer show={drawerFamily !== false} setShow={setDrawerFamily}>
           <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
         </Drawer>
-        <DownloadCsvPopup
-          active={showCSVDownloadPopup}
-          onCancelClick={() => setShowCSVDownloadPopup(false)}
-          onConfirmClick={() => handleDownloadCsvClick()}
-        />
-        <script id="feature-flags" type="text/json" dangerouslySetInnerHTML={{ __html: JSON.stringify(featureFlags) }} />
+        <DownloadCsvPopup isOpen={showCSVDownloadPopup} onClose={() => setShowCSVDownloadPopup(false)} onDownload={handleDownloadCsvClick} />
       </SlideOutContext.Provider>
     </Layout>
   );
@@ -533,27 +607,30 @@ export default Search;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-  const featureFlags = await getFeatureFlags(context.req.cookies);
+  const featureFlags = getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
-  let themeConfig = {};
-  try {
-    themeConfig = await readConfigFile(theme);
-  } catch (error) {}
+  const themeConfig = await readConfigFile(theme);
+
+  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
 
   let conceptsData: TConcept[];
-  try {
-    const client = new ApiClient(process.env.CONCEPTS_API_URL);
-    const conceptsV1 = featureFlags["concepts-v1"];
-    if (conceptsV1) {
+  if (knowledgeGraphEnabled) {
+    try {
+      const client = new ApiClient(process.env.CONCEPTS_API_URL);
       const { data: returnedData } = await client.get(`/concepts/search?limit=10000&has_classifier=true`);
       conceptsData = returnedData;
+    } catch (error) {
+      // TODO: handle error more elegantly
     }
-  } catch (error) {
-    // TODO: handle error more elegantly
   }
 
   return {
-    props: withEnvConfig({ theme, themeConfig, featureFlags, conceptsData: conceptsData ?? null }),
+    props: withEnvConfig({
+      theme,
+      themeConfig,
+      featureFlags,
+      conceptsData: conceptsData ?? null,
+    }),
   };
 };

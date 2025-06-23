@@ -1,31 +1,38 @@
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LuPlus, LuMinus } from "react-icons/lu";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { Heading } from "./Heading";
 
-type TProps = {
+interface IProps {
   title: string;
   startOpen?: boolean;
+  open?: boolean;
   overflowOverride?: boolean;
   children: React.ReactNode;
   className?: string;
   showFade?: "true" | "false";
   fixedHeight?: string;
   headContent?: React.ReactNode;
-};
+}
 
 export const Accordian = ({
   title,
   startOpen = false,
+  open,
   overflowOverride,
   fixedHeight = "300px",
   children,
   showFade = "false",
   headContent,
   ...props
-}: TProps) => {
+}: IProps) => {
   const [isOpen, setIsOpen] = useState(startOpen);
+
+  useEffect(() => {
+    if (open === undefined) return;
+    setIsOpen(open);
+  }, [open]);
 
   return (
     <div {...props}>
@@ -34,7 +41,7 @@ export const Accordian = ({
           <Heading>{title}</Heading>
           {headContent}
         </div>
-        <span className="text-textDark opacity-40 group-hover:opacity-100">{isOpen ? <LuMinus /> : <LuPlus />}</span>
+        <span className="text-textDark opacity-40 group-hover:opacity-100">{isOpen ? <ChevronUp /> : <ChevronDown />}</span>
       </div>
       <AnimatePresence initial={false}>
         {isOpen && (
@@ -45,7 +52,7 @@ export const Accordian = ({
             exit="collapsed"
             variants={{
               collapsed: { opacity: 0, height: 0, marginTop: 0 },
-              open: { opacity: 1, height: "auto", marginTop: "20px" },
+              open: { opacity: 1, height: "auto", marginTop: "14px" },
             }}
             transition={{ duration: 0.35, ease: [0.04, 0.62, 0.23, 0.98] }}
           >

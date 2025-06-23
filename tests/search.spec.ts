@@ -29,7 +29,9 @@ test("search", async ({ page }) => {
    * This finds the first container that has the heading search results.
    * We could probably have a more semantic search markup with lists.
    */
-  const searchResultsHeading = page.getByRole("heading", { name: "Search results" });
+  const searchResultsHeading = page.getByRole("heading", {
+    name: "Search results",
+  });
   const searchResults = page.locator("div").filter({ has: searchResultsHeading }).last();
   await expect(searchResults).toBeVisible();
 
@@ -41,15 +43,15 @@ test("search", async ({ page }) => {
   await expect(firstSearchResult.locator('[data-cy="family-title"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="family-metadata-category"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="family-metadata-year"]')).toBeVisible();
-  await expect(firstSearchResult.locator('[data-cy="family-description"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="country-link"]')).toBeVisible();
 
-  await searchResults.getByRole("link").first().click();
+  // Click first search result family title link
+  await firstSearchResult.locator('[data-cy="family-title"]').click();
 
   /** Document (AKA Family) page */
   await Promise.all([page.waitForURL("/document/*"), page.waitForResponse("**/searches")]);
   await page
-    .getByText(/View (more than )?\d+ matches/)
+    .getByText(/(more than )?\d+ matches/)
     .first()
     .click();
 

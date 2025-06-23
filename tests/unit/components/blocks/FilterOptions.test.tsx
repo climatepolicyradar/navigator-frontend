@@ -1,9 +1,11 @@
 import { render, screen } from "@testing-library/react";
-import { FilterOptions } from "../../../../src/components/blocks/FilterOptions";
+
+import { FilterOptions } from "@/components/blocks/FilterOptions";
+import { TThemeConfig, TThemeConfigFilter } from "@/types";
 
 describe("FilterOptions", () => {
   it("displays the correct filter options when corporaKey is present in themeConfig", () => {
-    const testFilter = {
+    const testFilter: TThemeConfigFilter = {
       label: "Topic",
       taxonomyKey: "topic",
       apiMetaDataKey: "",
@@ -13,12 +15,16 @@ describe("FilterOptions", () => {
       corporaKey: "Laws and Policies",
     };
 
-    const testThemeConfig = {
+    const testThemeConfig: TThemeConfig = {
       filters: [testFilter],
       labelVariations: [],
       links: [],
       metadata: [],
       documentCategories: [],
+      features: {
+        knowledgeGraph: false,
+        searchFamilySummary: true,
+      },
     };
 
     const testTaxonomy = {
@@ -41,7 +47,6 @@ describe("FilterOptions", () => {
             corpus_import_id: "",
             image_url: "",
             text: "",
-
             total: 0,
             count_by_category: {},
             organisation_id: 1,

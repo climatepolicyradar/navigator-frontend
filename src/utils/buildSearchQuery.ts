@@ -1,9 +1,8 @@
-import { initialSearchCriteria } from "@/constants/searchCriteria";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { initialSearchCriteria } from "@/constants/searchCriteria";
+import { TSearchCriteria, TSearchKeywordFilters, TThemeConfig } from "@/types";
 
 import { buildSearchQueryMetadata } from "./buildSearchQueryMetadata";
-
-import { TSearchCriteria, TSearchKeywordFilters, TThemeConfig } from "@/types";
 
 export type TRouterQuery = {
   [key: string]: string | string[];
@@ -43,8 +42,27 @@ export default function buildSearchQuery(
     query.sort_field = "date";
   }
 
-  if (routerQuery[QUERY_PARAMS.exact_match]) {
-    query.exact_match = routerQuery[QUERY_PARAMS.exact_match] === "true";
+  // Default to search using exact match - only look for when exact_match is specifically set to false
+  // TODO: when we change back from exact_match being default, we need to reistate the routerQuery check:
+  // such as: if (routerQuery[QUERY_PARAMS.exact_match]) {}
+  query.exact_match = routerQuery[QUERY_PARAMS.exact_match] !== "false";
+
+  if (routerQuery[QUERY_PARAMS.passages_by_position]) {
+    query.sort_within_page = routerQuery[QUERY_PARAMS.passages_by_position] === "true";
+  }
+
+  // TODO: remove this
+  // Setting the default sort order to "sort_within_page" for a specific search with conditions:
+  // - no search query
+  // - within a document view
+  // - with concepts/classifiers
+  if (
+    !routerQuery[QUERY_PARAMS.passages_by_position] &&
+    !routerQuery[QUERY_PARAMS.query_string] &&
+    documentId &&
+    (routerQuery[QUERY_PARAMS.concept_id] || routerQuery[QUERY_PARAMS.concept_name])
+  ) {
+    query.sort_within_page = true;
   }
 
   if (routerQuery[QUERY_PARAMS.offset]) {
@@ -106,7 +124,7 @@ export default function buildSearchQuery(
   }
 
   if (includeAllTokens) {
-    let allContinuationTokens: string[] = [];
+    const allContinuationTokens: string[] = [];
     const routerQueryToken = routerQuery[QUERY_PARAMS.active_continuation_token] as string;
     const routerQueryTokens = routerQuery[QUERY_PARAMS.continuation_tokens] as string;
     if (routerQueryTokens) {
@@ -151,7 +169,10 @@ export default function buildSearchQuery(
     const configFrameworkLaws = themeConfig.filters.find((f) => f.taxonomyKey === "framework_laws");
     query.metadata = query.metadata.filter((m) => m.name !== configFrameworkLaws.apiMetaDataKey);
     if (routerQuery[QUERY_PARAMS.framework_laws] === "true") {
-      query.metadata.push({ name: configFrameworkLaws.apiMetaDataKey, value: "Mitigation" });
+      query.metadata.push({
+        name: configFrameworkLaws.apiMetaDataKey,
+        value: "Mitigation",
+      });
     }
   }
   if (routerQuery[QUERY_PARAMS.topic]) {
@@ -170,7 +191,7 @@ export default function buildSearchQuery(
   }
 
   if (routerQuery[QUERY_PARAMS.fund]) {
-    let corpusIds: string[] = [];
+    const corpusIds: string[] = [];
     const funds = routerQuery[QUERY_PARAMS.fund];
     const configFunds = themeConfig.filters.find((f) => f.taxonomyKey === "fund");
     if (configFunds) {
@@ -189,7 +210,7 @@ export default function buildSearchQuery(
   }
 
   if (routerQuery[QUERY_PARAMS.fund_doc_type]) {
-    let corpusIds: string[] = [];
+    const corpusIds: string[] = [];
     const funds = routerQuery[QUERY_PARAMS.fund_doc_type];
     const configFundsFromTypes = themeConfig.filters.find((f) => f.taxonomyKey === "fund_doc_type");
     if (configFundsFromTypes) {
@@ -221,12 +242,12 @@ export default function buildSearchQuery(
   }
   // ---- End of MCF specific ----
 
-  // ---- Reports specific ----
-  // These are the filters that are specific to the Reports corpus type
+  // ---- Reports & UNFCCC specific ----
+  // These are the filters that are specific to the Reports and UNFCCC corpus types - note: we pass in the corpusIds to check as there are multiple instances of the same filter
   if (routerQuery[QUERY_PARAMS.author_type]) {
-    query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS.author_type], "author_type", themeConfig);
+    query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS.author_type], "author_type", themeConfig, corpusIds);
   }
-  // ---- End of Reports specific ----
+  // ---- End of Reports & UNFCCC specific specific ----
 
   // ---- UNFCCC specific ----
   // These are the filters that are specific to the UNFCCC corpus type

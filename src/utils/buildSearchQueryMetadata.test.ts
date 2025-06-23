@@ -1,4 +1,5 @@
 import { TThemeConfig } from "@/types";
+
 import { buildSearchQueryMetadata } from "./buildSearchQueryMetadata";
 
 const testThemeConfig: TThemeConfig = {
@@ -16,6 +17,10 @@ const testThemeConfig: TThemeConfig = {
   links: [],
   documentCategories: [],
   metadata: [],
+  features: {
+    knowledgeGraph: false,
+    searchFamilySummary: true,
+  },
 };
 
 describe("buildSearchQueryMetadata: ", () => {

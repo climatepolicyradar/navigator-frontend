@@ -1,23 +1,31 @@
-import { useEffect, useRef, useState } from "react";
+import { TextSearch } from "lucide-react";
 import { NextRouter, useRouter } from "next/router";
+import { useContext, useEffect, useRef, useState } from "react";
 
-import { InputCheck } from "@/components/forms/Checkbox";
+import { Accordian } from "@/components/accordian/Accordian";
+import { Badge } from "@/components/atoms/label/Badge";
 import { Select } from "@/components/atoms/select/Select";
-
-import { fetchAndProcessConcepts } from "@/utils/processConcepts";
-import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
-
+import { InputCheck } from "@/components/forms/Checkbox";
+import { NewFeatureCard } from "@/components/molecules/newFeatures/NewFeatureCard";
+import { NEW_FEATURES } from "@/constants/newFeatures";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-
+import { NewFeatureContext } from "@/context/NewFeatureContext";
 import { TConcept } from "@/types";
+import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
+import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
+import { fetchAndProcessConcepts } from "@/utils/processConcepts";
+import { firstCase } from "@/utils/text";
 
-type TProps = {
+import { ExternalLink } from "../ExternalLink";
+
+interface IProps {
   concepts: TConcept[];
   containerClasses?: string;
+  showBadge?: boolean;
   showSearch?: boolean;
   startingSort?: TSort;
-  title: React.ReactNode;
-};
+  title: string;
+}
 
 const SORT_OPTIONS = ["A-Z", "Grouped"] as const;
 
@@ -52,7 +60,11 @@ const filterConcepts = (concepts: TConcept[], search: string) => {
 };
 
 const onConceptChange = (router: NextRouter, concept: TConcept) => {
-  const query = { ...router.query };
+  const query = CleanRouterQuery({ ...router.query });
+  // Retain any dynamic ids in the query (e.g. document page)
+  if (router.query.id) {
+    query["id"] = router.query.id;
+  }
   let selectedConcepts = query[QUERY_PARAMS.concept_name] ? [query[QUERY_PARAMS.concept_name]].flat() : [];
 
   if (selectedConcepts.includes(concept.preferred_label)) {
@@ -66,13 +78,16 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
   router.push({ query: query }, undefined, { shallow: true });
 };
 
-export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showSearch = true, title }: TProps) => {
+export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showBadge = false, showSearch = true, title }: IProps) => {
   const router = useRouter();
+  const { previousNewFeature } = useContext(NewFeatureContext);
   const ref = useRef(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<TSort>(startingSort);
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
-  const [conceptsGrouped, setConceptsGrouped] = useState<{ [rootConceptId: string]: TConcept[] }>({});
+  const [conceptsGrouped, setConceptsGrouped] = useState<{
+    [rootConceptId: string]: TConcept[];
+  }>({});
   const [filteredConcepts, setFilteredConcepts] = useState<TConcept[]>([]);
 
   const selectOptions = SORT_OPTIONS.map((option) => ({
@@ -89,47 +104,88 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
     });
   }, [concepts]);
 
+  const knowledgeGraphIsNew = previousNewFeature < 0;
+
   return (
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
-      <div className="flex items-center justify-between">
+      {/* HEADER */}
+      {knowledgeGraphIsNew && <NewFeatureCard newFeature={NEW_FEATURES[0]} />}
+      <span className="text-base font-semibold text-text-primary">
+        <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
         {title}
-        <div className="basis-1/3 relative">
-          <Select
-            defaultValue="A-Z"
-            value={sort}
-            onValueChange={(value) => setSort(value as TSort)}
-            options={selectOptions}
-            container={ref.current}
-          />
-        </div>
-      </div>
+        {!knowledgeGraphIsNew && showBadge && <Badge className="ml-2">Beta</Badge>}
+      </span>
+
       {/* SCROLL AREA */}
-      <div className="flex-1 flex flex-col gap-5 overflow-y-scroll scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
-        {showSearch && <input type="text" placeholder="Quick search" value={search} onChange={(e) => setSearch(e.target.value)} />}
-        {search !== "" && <p className="text-xs italic">The results below are also filtered using the concept's alternative labels</p>}
-        <div className="flex flex-col gap-2 text-sm">
+      <div className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
+        {!knowledgeGraphIsNew && (
+          <p className="text-sm text-text-tertiary">
+            Choose a topic to see precisely where it appears. Combine topics to see where they appear together. Accuracy is not 100%.{" "}
+            <ExternalLink url="/faq#topics-faqs" className="underline inline-block">
+              Learn more
+            </ExternalLink>
+          </p>
+        )}
+        <div className="flex gap-2 items-center justify-between">
+          {showSearch && (
+            <input
+              type="text"
+              placeholder="Quick search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="py-1 text-xs h-[30px]"
+            />
+          )}
+          <div className="basis-3/10 shrink-0 relative flex items-center">
+            <label className="text-sm text-text-tertiary">Sort:</label>
+            <Select
+              defaultValue="A-Z"
+              value={sort}
+              onValueChange={(value) => setSort(value as TSort)}
+              options={selectOptions}
+              container={ref.current}
+            />
+          </div>
+        </div>
+        {search !== "" && <p className="text-xs italic">The results below are also filtered using the topic's alternative labels</p>}
+        <div className={`flex flex-col text-sm border-t border-border-light ${sort === "A-Z" ? "gap-2 border-t-0" : ""}`}>
           {/* GROUPED SORT */}
           {sort === "Grouped" &&
-            rootConcepts.map((rootConcept) => {
+            rootConcepts.map((rootConcept, rootConceptIndex) => {
               const filteredConcepts = filterConcepts(conceptsGrouped[rootConcept.wikibase_id] || [], search);
               if (filteredConcepts.length === 0) return null;
+              // Starts open if:
+              // - any of the concepts in the root concept are selected
+              // OR
+              // - it is the first root concept
+              const startOpen =
+                filteredConcepts.some((concept) => isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)) ||
+                rootConceptIndex === 0;
               return (
-                <div className="pb-4 flex flex-col gap-2" key={rootConcept.wikibase_id}>
-                  <h5 className="text-text-primary capitalize font-bold">{rootConcept.preferred_label}</h5>
-                  {filteredConcepts
-                    .sort((a, b) => conceptsSorter(a, b, "A-Z"))
-                    .map((concept) => (
-                      <InputCheck
-                        key={concept.wikibase_id}
-                        label={concept.preferred_label.slice(0, 1).toUpperCase() + concept.preferred_label.slice(1)}
-                        checked={isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)}
-                        onChange={() => {
-                          onConceptChange(router, concept);
-                        }}
-                        name={concept.preferred_label}
-                      />
-                    ))}
-                </div>
+                <Accordian
+                  title={firstCase(rootConcept.preferred_label)}
+                  key={rootConcept.wikibase_id}
+                  fixedHeight="100%"
+                  startOpen={startOpen}
+                  open={search === "" ? undefined : true}
+                  className="py-3 border-b border-border-lighter"
+                >
+                  <div className="flex flex-col gap-2 pb-2">
+                    {filteredConcepts
+                      .sort((a, b) => conceptsSorter(a, b, "A-Z"))
+                      .map((concept) => (
+                        <InputCheck
+                          key={concept.wikibase_id}
+                          label={firstCase(concept.preferred_label)}
+                          checked={isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)}
+                          onChange={() => {
+                            onConceptChange(router, concept);
+                          }}
+                          name={concept.preferred_label}
+                        />
+                      ))}
+                  </div>
+                </Accordian>
               );
             })}
 
@@ -140,7 +196,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
               .map((concept) => (
                 <InputCheck
                   key={concept.wikibase_id}
-                  label={concept.preferred_label.slice(0, 1).toUpperCase() + concept.preferred_label.slice(1)}
+                  label={firstCase(concept.preferred_label)}
                   checked={isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)}
                   onChange={() => {
                     onConceptChange(router, concept);

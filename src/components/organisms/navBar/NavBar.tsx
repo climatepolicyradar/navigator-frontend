@@ -1,6 +1,6 @@
 import { NavSearch } from "@/components/molecules/navSearch/NavSearch";
 
-interface NavBarProps {
+interface IProps {
   headerClasses?: string;
   logo: React.ReactNode;
   menu: React.ReactNode;
@@ -8,7 +8,7 @@ interface NavBarProps {
   showSearch?: boolean;
 }
 
-export const NavBar = ({ headerClasses = "", logo, menu, showLogo = true, showSearch = true }: NavBarProps) => {
+export const NavBar = ({ headerClasses = "", logo, menu, showLogo = true, showSearch = true }: IProps) => {
   return (
     <header data-cy="header" className={`w-full h-[128px] sm:h-[72px] sticky top-0 z-60 ${headerClasses}`}>
       <div

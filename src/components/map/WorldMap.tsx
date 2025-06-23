@@ -2,19 +2,17 @@ import React, { useRef, useState, useMemo, useEffect } from "react";
 import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
 import { Tooltip, TooltipRefProps } from "react-tooltip";
 
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { GEO_CENTER_POINTS } from "@/constants/mapCentres";
+import { GEO_EU_COUNTRIES } from "@/constants/mapEUCountries";
 import useConfig from "@/hooks/useConfig";
 import useGeographies from "@/hooks/useGeographies";
 import { useMcfData } from "@/hooks/useMcfData";
-
-import { LinkWithQuery } from "@/components/LinkWithQuery";
-import GeographySelect from "./GeographySelect";
-import { ZoomControls } from "./ZoomControls";
-import { Legend } from "./Legend";
-
 import { TGeography } from "@/types";
 
-import { GEO_EU_COUNTRIES } from "@/constants/mapEUCountries";
-import { GEO_CENTER_POINTS } from "@/constants/mapCentres";
+import GeographySelect from "./GeographySelect";
+import { Legend } from "./Legend";
+import { ZoomControls } from "./ZoomControls";
 
 const geoUrl = "/data/map/world-countries-50m.json";
 
@@ -43,7 +41,11 @@ type TGeoMarkers = {
   reports: number;
 };
 
-type TGeographyWithCoords = TGeography & { coords: TPoint; familyCounts: TGeoFamilyCounts; markers: TGeoMarkers };
+type TGeographyWithCoords = TGeography & {
+  coords: TPoint;
+  familyCounts: TGeoFamilyCounts;
+  markers: TGeoMarkers;
+};
 
 type TGeographiesWithCoords = { [key: string]: TGeographyWithCoords };
 
@@ -132,11 +134,11 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
   );
 };
 
-type TMapChartProps = {
+interface IProps {
   showLitigation?: boolean;
-};
+}
 
-export default function MapChart({ showLitigation = false }: TMapChartProps) {
+export default function MapChart({ showLitigation = false }: IProps) {
   const configQuery = useConfig();
   const geographiesQuery = useGeographies();
   const { data: { countries: configCountries = [] } = {} } = configQuery;

@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react";
+
 import { BreadCrumbs } from "./Breadcrumbs";
 
 const meta = {
@@ -8,23 +9,23 @@ const meta = {
     layout: "centered",
   },
 } satisfies Meta<typeof BreadCrumbs>;
-type Story = StoryObj<typeof BreadCrumbs>;
+type TStory = StoryObj<typeof BreadCrumbs>;
 
 export default meta;
 
-export const SearchResults: Story = {
+export const SearchResults: TStory = {
   args: {
     label: "Search results",
   },
 };
 
-export const Geography: Story = {
+export const Geography: TStory = {
   args: {
     label: "United Kingdom",
   },
 };
 
-export const Document: Story = {
+export const Document: TStory = {
   args: {
     category: {
       href: "/search",

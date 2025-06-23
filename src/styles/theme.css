@@ -75,6 +75,7 @@
   --color-text-primary: #202020;
   --color-text-secondary: #505050;
   --color-text-tertiary: #707070;
+  --color-text-quaternary: #858585;
   --color-text-light: #ffffff;
   --color-text-brand: #005eeb;
 
@@ -104,6 +105,8 @@
 
   --radius-4xl: 30px;
 
+  --shadow-lg: 0px 4px 48px 0px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0px 4px 16px 0px rgba(0, 0, 0, 0.08);
   --shadow-xs: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
   --shadow-oep: 0px 8px 44px 0px rgba(32, 32, 32, 0.16);
 
@@ -127,4 +130,9 @@
   --spacing-maxSiteWidth: var(--MAX_SITE_WIDTH);
   --spacing-maxContent: var(--MAX_CONTENT_WIDTH);
   --spacing-maxSidebar: var(--MAX_SIDEBAR_WIDTH);
+  --spacing-max-cols: 1500px;
+
+  --breakpoint-cols-2: 540px;
+  --breakpoint-cols-3: 820px;
+  --breakpoint-cols-4: 1100px;
 }

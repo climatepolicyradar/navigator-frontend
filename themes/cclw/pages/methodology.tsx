@@ -1,17 +1,15 @@
 import { Fragment } from "react";
 
-import Layout from "@/components/layouts/Main";
-import { SiteWidth } from "@/components/panels/SiteWidth";
-import { SingleCol } from "@/components/panels/SingleCol";
-import { SubNav } from "@/components/nav/SubNav";
-
+import { AccordianItem } from "@/cclw/components/AccordianItem";
+import { METHODOLOGY } from "@/cclw/constants/methodologyItems";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Layout from "@/components/layouts/Main";
+import { SubNav } from "@/components/nav/SubNav";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
-import { AccordianItem } from "@/cclw/components/AccordianItem";
-
-import { METHODOLOGY } from "@/cclw/constants/methodologyItems";
 
 const Methodology = () => {
   return (
@@ -44,7 +42,10 @@ const Methodology = () => {
                 offered alongside national level climate change laws and policies to help users in gaining a comprehensive understanding of national
                 level climate action. For details of the documents included, please visit our <LinkWithQuery href="/faq">FAQs</LinkWithQuery>. To
                 understand more about how new document types may be added in future, visit the{" "}
-                <ExternalLink url="https://github.com/climatepolicyradar/methodology">Climate Policy Radar methodology page</ExternalLink>.
+                <ExternalLink url="https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md">
+                  Climate Policy Radar methodology page
+                </ExternalLink>
+                .
               </p>
               <p>
                 Classifications described below have been assigned manually. LSE, Climate Policy Radar, and our partners are currently working to
