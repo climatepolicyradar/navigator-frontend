@@ -27,7 +27,7 @@ import { systemGeoNames } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode } from "@/helpers/getCountryFields";
 import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
-import { TTarget, TEvent, TGeography, TTheme } from "@/types";
+import { TTarget, TEvent, TGeography, TTheme, TDocumentCategory } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { readConfigFile } from "@/utils/readConfigFile";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
@@ -40,16 +40,15 @@ interface IProps {
   themeConfig: TThemeConfig;
 }
 
-// Mapping of category index to category name in search
-const categoryByIndex = {
-  0: "All",
-  1: "laws",
-  2: "policies",
-  3: "UNFCCC",
-  4: "laws",
-  5: "multilateral-climate-funds",
-  6: "reports",
-};
+const categories: { title: TDocumentCategory; slug: string }[] = [
+  { title: "All", slug: "all" },
+  { title: "UNFCCC Submissions", slug: "unfccc" },
+  { title: "Laws", slug: "laws" },
+  { title: "Policies", slug: "policies" },
+  { title: "Climate Finance Projects", slug: "climate-finance-projects" },
+  { title: "Industry Reports", slug: "industry-reports" },
+  { title: "Litigation", slug: "litigation" },
+];
 
 const MAX_NUMBER_OF_FAMILIES = 3;
 
@@ -57,7 +56,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
-  const [selectedCategoryIndex, setselectedCategoryIndex] = useState(0);
+  const [selectedCategory, setselectedCategory] = useState<TDocumentCategory>("All");
 
   const hasEvents = !!summary?.events && summary?.events?.length > 0;
   const hasFamilies = !!summary?.top_families;
@@ -80,16 +79,16 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       case "Policies":
         count = summary.family_counts.Executive;
         break;
-      case "UNFCCC":
+      case "UNFCCC Submissions":
         count = summary.family_counts.UNFCCC;
         break;
       case "Litigation":
         count = 0;
         break;
-      case "MCF":
+      case "Climate Finance Projects":
         count = summary.family_counts.MCF;
         break;
-      case "Reports":
+      case "Industry Reports":
         count = summary.family_counts.Reports;
         break;
     }
@@ -100,9 +99,9 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     };
   });
 
-  const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number) => {
+  const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: TDocumentCategory) => {
     e.preventDefault();
-    return setselectedCategoryIndex(index);
+    return setselectedCategory(value);
   };
 
   const handleTargetClick = () => {
@@ -117,7 +116,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
     event.preventDefault();
     const newQuery = {};
     newQuery[QUERY_PARAMS.country] = geography.geography_slug;
-    const documentCategory = categoryByIndex[selectedCategoryIndex] ?? null;
+    const documentCategory = categories.find((cat) => cat.title === selectedCategory)?.slug || undefined;
     if (documentCategory && documentCategory !== "All") {
       newQuery[QUERY_PARAMS.category] = documentCategory;
     }
@@ -128,7 +127,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
 
   const renderDocuments = () => {
     // All docs || All MCF docs if theme is MCF
-    if (selectedCategoryIndex === 0) {
+    if (selectedCategory === "All") {
       let allFamilies = Object.values(summary.top_families).reduce((acc, curr) => acc.concat(curr), []);
       if (allFamilies.length === 0) {
         return renderEmpty();
@@ -149,7 +148,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       });
     }
     // Legislative
-    if (selectedCategoryIndex === 1) {
+    if (selectedCategory === "Laws") {
       return summary.top_families.Legislative.length === 0
         ? renderEmpty("Legislative")
         : summary.top_families.Legislative.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
@@ -159,7 +158,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
           ));
     }
     // Executive
-    if (selectedCategoryIndex === 2) {
+    if (selectedCategory === "Policies") {
       return summary.top_families.Executive.length === 0
         ? renderEmpty("Executive")
         : summary.top_families.Executive.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
@@ -169,7 +168,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
           ));
     }
     // UNFCCC
-    if (selectedCategoryIndex === 3) {
+    if (selectedCategory === "UNFCCC Submissions") {
       return summary.top_families.UNFCCC.length === 0
         ? renderEmpty("UNFCCC")
         : summary.top_families.UNFCCC.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
@@ -179,7 +178,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
           ));
     }
     // Litigation
-    if (selectedCategoryIndex === 4) {
+    if (selectedCategory === "Litigation") {
       return (
         <div className="mt-4 pb-4 border-b">
           Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center’s{" "}
@@ -191,7 +190,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       );
     }
     // MCF
-    if (selectedCategoryIndex === 5) {
+    if (selectedCategory === "Climate Finance Projects") {
       return summary.top_families.MCF.length === 0
         ? renderEmpty("multilateral climate funds")
         : summary.top_families.MCF.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
@@ -201,7 +200,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
           ));
     }
     // Reports
-    if (selectedCategoryIndex === 6) {
+    if (selectedCategory === "Industry Reports") {
       return summary.top_families.Reports.length === 0
         ? renderEmpty("reports")
         : summary.top_families.Reports.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
@@ -262,15 +261,15 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
               </section>
               {hasFamilies && (
                 <>
-                  <section className="mt-10" data-cy="top-documents">
+                  <section className="" data-cy="top-documents">
                     <div className="my-4 md:flex">
                       <div className="flex-grow">
-                        <TabbedNav activeIndex={selectedCategoryIndex} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
+                        <TabbedNav activeItem={selectedCategory} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
                       </div>
                     </div>
                     {renderDocuments()}
                   </section>
-                  {selectedCategoryIndex !== 4 && (
+                  {selectedCategory !== "Litigation" && (
                     <div data-cy="see-more-button">
                       <Button rounded variant="outlined" className="my-5" onClick={handleDocumentSeeMoreClick}>
                         View more documents

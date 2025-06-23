@@ -1,6 +1,6 @@
 import { TConfigFeatures } from "./features";
 
-export type TDocumentCategory = "All" | "Laws" | "Policies" | "UNFCCC" | "Litigation" | "MCF" | "Reports";
+export type TDocumentCategory = "All" | "UNFCCC Submissions" | "Laws" | "Policies" | "Litigation" | "Climate Finance Projects" | "Industry Reports";
 
 export type TLabelVariation = {
   category: string[];
