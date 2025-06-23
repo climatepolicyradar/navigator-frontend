@@ -11,6 +11,7 @@ const meta = {
     children: { control: false },
     containerClasses: { control: "text" },
     maxHeight: { control: "number" },
+    startOpen: { control: "boolean" },
   },
 } satisfies Meta<typeof ShowMore>;
 type TStory = StoryObj<typeof ShowMore>;
@@ -30,6 +31,7 @@ export const LongContent: TStory = {
     children: renderParagraphs(LOREM_IPSUM),
     containerClasses: "",
     maxHeight: 200,
+    startOpen: false,
   },
 };
 
@@ -38,6 +40,7 @@ export const ShortContent: TStory = {
     children: renderParagraphs(LOREM_IPSUM.slice(0, 1)),
     containerClasses: "",
     maxHeight: 200,
+    startOpen: false,
   },
 };
 
@@ -46,5 +49,6 @@ export const Bordered: TStory = {
     children: renderParagraphs(LOREM_IPSUM),
     containerClasses: "p-4 border border-border-light rounded-xl",
     maxHeight: 200,
+    startOpen: false,
   },
 };

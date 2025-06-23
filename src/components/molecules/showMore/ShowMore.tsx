@@ -7,12 +7,13 @@ interface IProps {
   children: ReactNode;
   containerClasses?: string;
   maxHeight: number;
+  startOpen?: boolean;
 }
 
-export const ShowMore = ({ children, containerClasses, maxHeight }: IProps) => {
+export const ShowMore = ({ children, containerClasses, maxHeight, startOpen = false }: IProps) => {
   const contentRef = useRef(null);
   const [contentHeight, setContentHeight] = useState(0);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(startOpen);
 
   useEffect(() => {
     setContentHeight(contentRef.current.clientHeight);
