@@ -134,6 +134,7 @@ const config: TThemeConfig = {
   documentCategories: ["All"],
   features: {
     knowledgeGraph: false,
+    searchFamilySummary: true,
   },
 };
 

@@ -1,7 +1,7 @@
 import startCase from "lodash/startCase";
+import { ChevronUp, TextSearch } from "lucide-react";
 import Link from "next/link";
 import { useContext, useState } from "react";
-import { LuChevronUp } from "react-icons/lu";
 
 import { Button } from "@/components/atoms/button/Button";
 import { NEW_FEATURES } from "@/constants/newFeatures";
@@ -11,8 +11,9 @@ import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { firstCase } from "@/utils/text";
 
-import { LinkWithQuery } from "../LinkWithQuery";
+import { ExternalLink } from "../ExternalLink";
 import { Badge } from "../atoms/label/Badge";
+import { ConceptLink } from "../molecules/conceptLink/ConceptLink";
 import { Info } from "../molecules/info/Info";
 import { NewFeatureCard } from "../molecules/newFeatures/NewFeatureCard";
 import { Heading } from "../typography/Heading";
@@ -20,8 +21,6 @@ import { Heading } from "../typography/Heading";
 interface IProps {
   concepts: TConcept[];
   rootConcepts: TConcept[];
-  conceptCountsById: Record<string, number>;
-  showCounts?: boolean;
   onConceptClick?: (conceptLabel: string) => void;
 }
 
@@ -41,16 +40,7 @@ const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
       {concepts.slice(0, showAll ? undefined : TOP_CONCEPTS_LENGTH).map((concept) => {
         return (
           <li key={concept.wikibase_id} className="">
-            <Link
-              className="inline text-text-primary capitalize underline underline-offset-2 decoration-dotted hover:underline"
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                onConceptClick?.(concept.preferred_label);
-              }}
-            >
-              {firstCase(concept.preferred_label)}
-            </Link>
+            <ConceptLink concept={concept} onClick={() => onConceptClick?.(concept.preferred_label)} />
           </li>
         );
       })}
@@ -60,8 +50,8 @@ const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
             <Button size="x-small" color="mono" variant="faded" onClick={() => setShowAll(!showAll)}>
               {showAll ? (
                 <>
-                  <LuChevronUp />
-                  &nbsp; hide
+                  <ChevronUp size={14} className="mr-0.5" />
+                  hide
                 </>
               ) : (
                 `+${concepts.length - TOP_CONCEPTS_LENGTH} more`
@@ -74,7 +64,7 @@ const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
   );
 };
 
-export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showCounts = false, onConceptClick }: IProps) => {
+export const ConceptsPanel = ({ rootConcepts, concepts, onConceptClick }: IProps) => {
   const { previousNewFeature } = useContext(NewFeatureContext);
 
   const otherRootConcept: TConcept = {
@@ -94,22 +84,25 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
 
   return (
     <div className="flex flex-col gap-4 pb-4 text-sm">
-      <div className="flex flex-col gap-4 pb-4 border-b border-border-light text-text-tertiary">
+      <div className="flex flex-col gap-4 pb-4 border-b border-border-light text-text-secondary">
         {knowledgeGraphIsNew && <NewFeatureCard newFeature={NEW_FEATURES[0]} />}
         <span className="text-base font-semibold text-text-primary">
-          In this document
+          <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
+          Find mentions of topics
           {!knowledgeGraphIsNew && <Badge className="ml-2">Beta</Badge>}
         </span>
         {!knowledgeGraphIsNew && (
           <p>
-            Find mentions of topics. Accuracy is not 100%.
-            <br />
-            <LinkWithQuery href="/faq" className="underline" target="_blank">
+            Find where a topic precisely appears in the main document. Accuracy is not 100%.{" "}
+            <ExternalLink url="/faq#topics-faqs" className="underline inline-block">
               Learn more
-            </LinkWithQuery>
+            </ExternalLink>
           </p>
         )}
-        <p>Sorted by the most frequent mention.</p>
+      </div>
+      <div className="pt-1 pb-4">
+        <span className="block mb-1 text-[15px] text-text-primary font-semibold">Topics in the main document</span>
+        <p className="">Ordered by most frequently mentioned, grouped by category</p>
       </div>
 
       {rootConcepts.concat(otherRootConcept).map((rootConcept) => {
@@ -125,7 +118,7 @@ export const ConceptsPanel = ({ rootConcepts, concepts, conceptCountsById, showC
               <Info
                 title={startCase(rootConcept.preferred_label)}
                 description={rootConcept.description}
-                link={{ href: getConceptStoreLink(rootConcept.wikibase_id), text: "Source" }}
+                link={{ href: getConceptStoreLink(rootConcept.wikibase_id), text: "Source", external: true }}
               />
             </div>
             <ul className="flex flex-col gap-2 mt-2 ml-4">

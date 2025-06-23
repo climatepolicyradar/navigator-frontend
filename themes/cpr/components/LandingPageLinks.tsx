@@ -1,10 +1,14 @@
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useEffect, useState } from "react";
 
 import { Icon } from "@/components/atoms/icon/Icon";
+import { DEFAULT_CONFIG_FEATURES } from "@/constants/features";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { ThemePageFeaturesContext } from "@/context/ThemePageFeaturesContext";
+import { TFeatureFlags, TThemeConfig } from "@/types";
+import { getAllCookies } from "@/utils/cookies";
+import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { readConfigFile } from "@/utils/readConfigFile";
 
 const EXAMPLE_SEARCHES = [
   {
@@ -60,7 +64,7 @@ const KNOWLEDGE_GRAPH_QUICK_SEARCHES = [
     id: 3,
     label: "Zoning and spatial planning + marine",
     params: {
-      [QUERY_PARAMS.concept_name]: "Zoning and spatial planning",
+      [QUERY_PARAMS.concept_name]: "zoning and spatial planning",
       [QUERY_PARAMS.query_string]: "marine",
       [QUERY_PARAMS.exact_match]: "true",
     },
@@ -71,15 +75,41 @@ const KNOWLEDGE_GRAPH_QUICK_SEARCHES = [
     params: {
       [QUERY_PARAMS.category]: "laws",
       [QUERY_PARAMS.framework_laws]: "true",
-      [QUERY_PARAMS.concept_name]: "Emissions reduction target",
+      [QUERY_PARAMS.concept_name]: "emissions reduction target",
     },
   },
 ];
 
 const LandingPageLinks = ({}) => {
   const router = useRouter();
-  const { featureFlags, themeConfig } = useContext(ThemePageFeaturesContext);
-  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+
+  /*
+    The landing page is read in not by using Next.JS, but by our CPR specific page reading logic.
+    This means that we cannot fetch the feature flags directly by using the page context.
+    This function provides a means of working around this so we can conditionally display the
+    quick searches.
+
+    TODO: Remove this once we have hard launched concepts in product.
+  */
+  const [featureFlags, setFeatureFlags] = useState({} as TFeatureFlags);
+  const [localThemeConfig, setLocalThemeConfig] = useState<TThemeConfig>({ features: DEFAULT_CONFIG_FEATURES } as TThemeConfig);
+
+  async function loadConfig() {
+    const allCookies = getAllCookies();
+    const parsedFeatureFlags = getFeatureFlags(allCookies);
+    setFeatureFlags(parsedFeatureFlags);
+
+    const theme = process.env.THEME;
+    const themeConfig = await readConfigFile(theme);
+    setLocalThemeConfig(themeConfig);
+  }
+
+  // TODO: Remove this once we have hard launched concepts in product.
+  useEffect(() => {
+    loadConfig();
+  }, []);
+
+  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, localThemeConfig);
 
   const handleQuickSearch = (params: Record<string, string>) => {
     // Push directly to search page with all parameters

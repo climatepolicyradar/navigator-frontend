@@ -1,5 +1,5 @@
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { TThemeConfig } from "@/types";
+import { TThemeConfig, TThemeConfigFilter } from "@/types";
 
 import { canDisplayFilter } from "./canDisplayFilter";
 
@@ -50,11 +50,15 @@ const testThemeConfig: TThemeConfig = {
   links: [],
   documentCategories: [],
   metadata: [],
+  features: {
+    knowledgeGraph: false,
+    searchFamilySummary: true,
+  },
 };
 
 describe("canDisplayFilter: ", () => {
   it("should return true if the filter does not have a dependant category", () => {
-    const filter = {
+    const filter: TThemeConfigFilter = {
       label: "TEST FILTER",
       category: [],
       taxonomyKey: "test_filter",
@@ -66,22 +70,21 @@ describe("canDisplayFilter: ", () => {
     expect(canDisplay).toBe(true);
   });
 
-  it("should return false if we don't have a category selected"),
-    () => {
-      const filter = {
-        label: "TEST FILTER",
-        category: ["test_category_1"],
-        taxonomyKey: "test_filter",
-        type: "radio",
-      };
-
-      const canDisplay = canDisplayFilter(filter, {}, testThemeConfig);
-
-      expect(canDisplay).toBe(false);
+  it("should return false if we don't have a category selected", () => {
+    const filter: TThemeConfigFilter = {
+      label: "TEST FILTER",
+      category: ["test_category_1"],
+      taxonomyKey: "test_filter",
+      type: "radio",
     };
 
+    const canDisplay = canDisplayFilter(filter, {}, testThemeConfig);
+
+    expect(canDisplay).toBe(false);
+  });
+
   it("should return false if the selected category is not in the theme's categories", () => {
-    const filter = {
+    const filter: TThemeConfigFilter = {
       label: "TEST FILTER",
       category: ["test_category_999"],
       taxonomyKey: "test_filter",
@@ -94,7 +97,7 @@ describe("canDisplayFilter: ", () => {
   });
 
   it("should return true if the selected category is in the filter's category", () => {
-    const filter = {
+    const filter: TThemeConfigFilter = {
       label: "TEST FILTER",
       category: ["test_category_2"],
       taxonomyKey: "test_filter",
@@ -107,7 +110,7 @@ describe("canDisplayFilter: ", () => {
   });
 
   it("should return true if the selected category is in the filter's category alias", () => {
-    const filter = {
+    const filter: TThemeConfigFilter = {
       label: "TEST FILTER",
       category: ["test_category_3_alias"],
       taxonomyKey: "test_filter",
@@ -120,7 +123,7 @@ describe("canDisplayFilter: ", () => {
   });
 
   it("should return true if the selected category is in the filter's category and the category key is set", () => {
-    const filter = {
+    const filter: TThemeConfigFilter = {
       label: "TEST DEPENDANT FILTER",
       taxonomyKey: "test_depdndant_filter",
       type: "radio",
@@ -134,7 +137,13 @@ describe("canDisplayFilter: ", () => {
   });
 
   it("should return true if the category is in a different case", () => {
-    const filter = { label: "TEST FILTER", category: ["test_category_3"], taxonomyKey: "test_filter", corporaKey: "TEST_CATEGORY_3", type: "radio" };
+    const filter: TThemeConfigFilter = {
+      label: "TEST FILTER",
+      category: ["test_category_3"],
+      taxonomyKey: "test_filter",
+      corporaKey: "TEST_CATEGORY_3",
+      type: "radio",
+    };
 
     const canDisplay = canDisplayFilter(filter, { [QUERY_PARAMS.category]: "test_CATEGORY_3" }, testThemeConfig);
 

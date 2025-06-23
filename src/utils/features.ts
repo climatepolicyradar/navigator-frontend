@@ -8,9 +8,8 @@ interface IArgs {
 // Determines if an app feature is on or off by combining app-level config and PostHog feature flags
 export const isFeatureEnabled = ({ configFeature, featureFlag }: IArgs): boolean => {
   if (configFeature === undefined && featureFlag === undefined) return true; // No feature control = on
-  if (configFeature === false) return false; // Config feature off = always off
-  if (configFeature === true && featureFlag === undefined) return true; // Config feature on = on
-  return featureFlag === true; // Config feature on + feature flag = use feature flag
+  if (configFeature === true) return true; // Config feature on = always on regardless of feature flags
+  return featureFlag === true; // Config feature off + feature flag = use feature flag. This will be off is the feature flag is undefined
 };
 
 /* Specific feature shorthand functions */
@@ -34,4 +33,9 @@ export const isLitigationEnabled = (featureFlags: TFeatureFlags) =>
 export const isUNFCCCFiltersEnabled = (featureFlags: TFeatureFlags) =>
   isFeatureEnabled({
     featureFlag: featureFlags["unfccc-filters"],
+  });
+
+export const isSearchFamilySummaryEnabled = (themeConfig: TThemeConfig) =>
+  isFeatureEnabled({
+    configFeature: themeConfig.features.searchFamilySummary,
   });

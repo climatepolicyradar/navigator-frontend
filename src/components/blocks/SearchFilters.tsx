@@ -1,7 +1,7 @@
 import { ParsedUrlQuery } from "querystring";
 
+import { ChevronRight } from "lucide-react";
 import { useEffect, useState, useMemo, useContext } from "react";
-import { LuChevronRight } from "react-icons/lu";
 
 import Loader from "@/components/Loader";
 import { Accordian } from "@/components/accordian/Accordian";
@@ -158,7 +158,7 @@ const SearchFilters = ({
                 currentSlideOut === "concepts" ? "transform rotate-180" : ""
               }`}
             >
-              <LuChevronRight />
+              <ChevronRight />
             </span>
           </button>
         </>

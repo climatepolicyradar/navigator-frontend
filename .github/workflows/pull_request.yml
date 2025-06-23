@@ -89,6 +89,8 @@ jobs:
       - uses: trunk-io/trunk-action@v1
         with:
           arguments: --ci
+      - run: npm run type-check
+
     permissions:
       # For trunk to post annotations
       checks: write

@@ -17,6 +17,10 @@ const testThemeConfig: TThemeConfig = {
   links: [],
   documentCategories: [],
   metadata: [],
+  features: {
+    knowledgeGraph: false,
+    searchFamilySummary: true,
+  },
 };
 
 describe("buildSearchQueryMetadata: ", () => {

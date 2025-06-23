@@ -1,67 +1,105 @@
 # Navigator Frontend
 
-This repository contains the code necessary to build the `navigator-frontend`
-container.
+[![Build Status](https://github.com/climatepolicyradar/navigator-frontend/workflows/CI/badge.svg)](https://github.com/climatepolicyradar/navigator-frontend/actions)
+[![BrowserStack Status](https://automate.browserstack.com/badge.svg?badge_key=YOUR_BADGE_KEY)](https://automate.browserstack.com/public-build/YOUR_BADGE_KEY)
 
-These containers are pushed into AWS ECR (see `ci.yml`) and are used as part of
-the CPR application deployment.
-(see <https://github.com/climatepolicyradar/navigator-infra>)
+A modern, theme-capable frontend application for the Climate Policy Radar Navigator
+platform. This repository contains the code necessary to build and deploy the
+`navigator-frontend` container.
 
-## TL;DR
-
-Run `make` or `make THEME=cclw`
-
-## Requirements
-
-- make
-- Docker
-- Trunk.io (for code quality)
-- Node
-
-If you do not already have trunk.io installed on your machine, run `make install_trunk`
-to install.
-
-## Getting started
-
-Local development can be done via Docker or manual installation.
-
-## Environment
-
-See the `.env.example` file for details of configuration environment variables.
-
-## Testing
-
-This project is tested with BrowserStack.
-
-## Running the project
-
-If you have not yet run an install for the repo
+## 🚀 Quick Start
 
 ```bash
+# Install dependencies
 npm install
-```
 
-Create a .env file
-
-```bash
+# Set up environment
 cp .env.example .env
-```
 
-Run project locally
-
-```bash
+# Run development server (default theme)
 npm run dev
-```
 
-or
-
-```bash
-yarn dev
-```
-
-Set the 'theme' to run the appropriate environment/app i.e. to run the cclw app
-locally update the .env file to 'THEME=cclw' or run the following:
-
-```bash
+# Run with specific theme
 THEME=cclw npm run dev
 ```
+
+## 📋 Prerequisites
+
+- Node.js (v18 or higher)
+- Docker
+- Make
+- [Trunk.io](https://trunk.io) for code quality
+
+First-time setup:
+
+```bash
+make install_trunk  # Only if trunk.io not already installed
+```
+
+## 🏗️ Development
+
+### Local Development Options
+
+1. **Docker (recommended)**
+
+   ```bash
+   make        # Default theme
+   # or
+   make THEME=cclw
+   ```
+
+2. **Manual Setup**
+
+   ```bash
+   npm install
+   npm run dev
+   ```
+
+### Environment Configuration
+
+Configuration is managed through environment variables. See `.env.example` for all
+available options.
+
+Key variables:
+
+- `THEME`: Set the active theme (e.g., 'cclw', 'default')
+- `API_URL`: Backend API endpoint
+- `AUTH_URL`: Authentication service URL
+
+## 🧪 Testing
+
+This project uses:
+
+- Vitest for unit testing
+- Playwright for E2E testing
+- BrowserStack for cross-browser testing
+
+Run tests:
+
+```bash
+# Unit tests
+npm run test
+
+# E2E tests
+npm run test:e2e
+```
+
+## 🏭 Deployment
+
+Containers are automatically:
+
+1. Built and tested via GitHub Actions
+2. Pushed to AWS ECR
+3. Deployed via [navigator-infra](https://github.com/climatepolicyradar/navigator-infra)
+
+## 🎨 Theming
+
+Themes are configured in `themes/[theme-name]/config.ts`. Each theme can override:
+
+- Styling
+- Feature flags
+- Environment-specific configurations
+
+## 📜 License
+
+This project is licensed under the terms specified in [LICENSE.md](LICENSE.md).

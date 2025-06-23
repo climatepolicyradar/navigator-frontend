@@ -12,11 +12,11 @@ interface IProps {
   document: TDocumentPage;
   documentPassageMatches?: TPassage[];
   pageNumber?: number;
-  startingPassageIndex?: number;
+  startingPageNumber?: number;
   searchStatus?: TLoadingStatus;
 }
 
-const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null, startingPassageIndex = 0, searchStatus }: IProps) => {
+const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null, startingPageNumber, searchStatus }: IProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const containerRef = useRef(null);
   const adobeKey = useContext(AdobeContext);
@@ -34,10 +34,10 @@ const EmbeddedPDF = ({ document, documentPassageMatches = [], pageNumber = null,
 
   useEffect(() => {
     setIsLoading(true);
-    registerPassages(documentPassageMatches, startingPassageIndex).finally(() => {
+    registerPassages(documentPassageMatches, startingPageNumber).finally(() => {
       setIsLoading(false);
     });
-  }, [registerPassages, documentPassageMatches, startingPassageIndex]);
+  }, [registerPassages, documentPassageMatches, startingPageNumber]);
 
   return (
     <>
