@@ -62,6 +62,10 @@ const getSelectedSortOptionText = (sortOption: string) => {
   return selectedOptionValue.label;
 };
 
+const showResultInformation = (query: ParsedUrlQuery) => {
+  return showKnowledgeGraphInformation(query) || showCorporateDisclosuresInformation(query);
+};
+
 // We want to show the KG information under certain rules
 const showKnowledgeGraphInformation = (query: ParsedUrlQuery) => {
   let show = false;
@@ -70,6 +74,13 @@ const showKnowledgeGraphInformation = (query: ParsedUrlQuery) => {
   // If we have a query AND a concept selected
   if (query[QUERY_PARAMS.query_string] && (query[QUERY_PARAMS.concept_name] || query[QUERY_PARAMS.concept_id])) return true;
   return show;
+};
+
+// Show Corporate Disclosure information we have the corporate disclosures category selected
+const showCorporateDisclosuresInformation = (query: ParsedUrlQuery) => {
+  if (query[QUERY_PARAMS.category] && query[QUERY_PARAMS.category].toString().toLowerCase() === "corporate-disclosures") return true;
+
+  return false;
 };
 
 const getSelectedConcepts = (selectedConcepts: string | string[], allConcepts: TConcept[] = []): TConcept[] => {
@@ -555,17 +566,38 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       </div>
                       <section data-cy="search-results" className="min-h-screen">
                         <h2 className="sr-only">Search results</h2>
-                        {showKnowledgeGraphInformation(router.query) && (
-                          <div className="mb-8 p-4 pl-5 text-sm text-black border-l-2 border-[#005EEB] bg-[#005EEB14]">
-                            You are viewing a list of documents containing precise text passages matches related to{" "}
-                            <ResultsTopicsContext
-                              phrase={router.query[QUERY_PARAMS.query_string] as string}
-                              selectedTopics={getSelectedConcepts(router.query[QUERY_PARAMS.concept_name], conceptsData)}
-                            />
-                            .{" "}
-                            <LinkWithQuery href="/faq" target="_blank" hash="topics-faqs" className="underline hover:text-blue-800">
-                              Learn more
-                            </LinkWithQuery>
+                        {showResultInformation(router.query) && (
+                          <div className="mb-8 p-4 pl-5 text-sm text-black border-l-2 border-[#005EEB] bg-[#005EEB14] flex flex-col gap-2">
+                            {showCorporateDisclosuresInformation(router.query) && (
+                              <p>
+                                A snapshot of 900+ corporate reports from H1/2025, including climate transition plans and regulatory filings published
+                                by 460 publicly listed high emitting companies. Note, some of the{" "}
+                                <a
+                                  className="underline hover:text-blue-800"
+                                  href="#"
+                                  onClick={(e) => {
+                                    e.preventDefault;
+                                    setCurrentSlideOut("concepts");
+                                  }}
+                                >
+                                  automatic topic filters
+                                </a>{" "}
+                                such as "Climate finance" currently do not perform as well on this dataset.
+                              </p>
+                            )}
+                            {showKnowledgeGraphInformation(router.query) && (
+                              <p>
+                                You are viewing a list of documents containing precise text passages matches related to{" "}
+                                <ResultsTopicsContext
+                                  phrase={router.query[QUERY_PARAMS.query_string] as string}
+                                  selectedTopics={getSelectedConcepts(router.query[QUERY_PARAMS.concept_name], conceptsData)}
+                                />
+                                .{" "}
+                                <LinkWithQuery href="/faq" target="_blank" hash="topics-faqs" className="underline hover:text-blue-800">
+                                  Learn more
+                                </LinkWithQuery>
+                              </p>
+                            )}
                           </div>
                         )}
                         <SearchResultList
