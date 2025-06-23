@@ -43,5 +43,8 @@ export const getCategoryName = (category: TCategory, subCategory?: TCorpusTypeSu
   if (category === "Reports" && source) {
     return getReportsCategory(source);
   }
-  return category === "MCF" && subCategory ? getSubCategoryName(subCategory) : name;
+  if (category === "MCF" && subCategory) {
+    return getSubCategoryName(subCategory);
+  }
+  return name;
 };
