@@ -2,7 +2,10 @@ import { useQuery } from "react-query";
 
 import { ApiClient } from "@/api/http-common";
 import { useEnvConfig } from "@/context/EnvConfig";
-import { TCountry } from "@/types";
+
+import type { components } from "../../geographiesTypes.ts";
+
+type TCountry = components["schemas"]["CountryResponse"];
 
 export default function useCountries() {
   const { CONCEPTS_API_URL } = useEnvConfig();

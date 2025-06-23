@@ -239,7 +239,7 @@ const SearchFilters = ({
           <TypeAhead
             list={availableCountries}
             selectedList={countryFilters}
-            keyField={useOldCountries ? "slug" : "alpha3"}
+            keyField={useOldCountries ? "slug" : "alpha_3"}
             keyFieldDisplay={useOldCountries ? "display_value" : "name"}
             filterType={QUERY_PARAMS.country}
             handleFilterChange={handleFilterChange}
