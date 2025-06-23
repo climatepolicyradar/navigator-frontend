@@ -349,6 +349,7 @@ const config: TThemeConfig = {
     },
   ],
   documentCategories: ["All", "UNFCCC Submissions", "Laws", "Policies", "Climate Finance Projects", "Industry Reports", "Litigation"],
+  defaultDocumentCategory: "Laws",
   features: {
     knowledgeGraph: true,
     searchFamilySummary: false,

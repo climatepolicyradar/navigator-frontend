@@ -71,5 +71,6 @@ export type TThemeConfig = {
   links: TThemeLink[];
   metadata: TThemeMetadata[];
   documentCategories: TDocumentCategory[];
+  defaultDocumentCategory: TDocumentCategory;
   features: TConfigFeatures;
 };
