@@ -23,7 +23,7 @@ export const ShowMore = ({ children, containerClasses, maxHeight }: IProps) => {
   };
 
   const contentIsOverflowing = contentHeight > maxHeight;
-  const allContainerClasses = joinTailwindClasses("relative", isOpen ? "" : "overflow-hidden", containerClasses);
+  const allContainerClasses = joinTailwindClasses("relative", isOpen ? "overflow-visible" : "overflow-hidden", containerClasses);
 
   return (
     <div className="relative mb-4">
