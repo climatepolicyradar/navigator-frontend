@@ -25,7 +25,7 @@ const categories: Record<TCategory, string> = {
   Law: "Legislative",
   Executive: "Policy",
   Policy: "Policy",
-  UNFCCC: "UNFCCC",
+  UNFCCC: "UNFCCC Submissions",
   MCF: "MCF",
   Reports: "Reports",
 };
