@@ -5,11 +5,6 @@ const config: TThemeConfig = {
     label: "Category",
     options: [
       {
-        label: "Climate Policy Radar Reports",
-        slug: "climate_policy_radar_reports",
-        value: ["CPR.corpus.i00000002.n0000"],
-      },
-      {
         label: "All",
         slug: "All",
         value: [
@@ -74,6 +69,11 @@ const config: TThemeConfig = {
           "MCF.corpus.GEF.Guidance",
           "MCF.corpus.GCF.Guidance",
         ],
+      },
+      {
+        label: "Corporate Disclosures",
+        slug: "corporate-disclosures",
+        value: ["CPR.corpus.i00000002.n0000"],
       },
       {
         label: "Reports",
