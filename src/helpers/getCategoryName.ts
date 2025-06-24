@@ -5,13 +5,13 @@ const reportSubCategories = {
   CIF: "Guidance",
   GCF: "Guidance",
   GEF: "Guidance",
-  Reports: "Reports",
-  OEP: "Reports",
+  Reports: "Report",
+  OEP: "Industry Report",
 };
 
 const subCategories: Record<TCorpusTypeSubCategory, string> = {
   AF: "Adaptation Fund",
-  CIF: "Climate Investment Funds",
+  CIF: "Climate Investment Fund",
   GCF: "Green Climate Fund",
   GEF: "Global Environment Facility",
   "Intl. agreements": "Intl. agreements",
@@ -25,9 +25,9 @@ const categories: Record<TCategory, string> = {
   Law: "Legislative",
   Executive: "Policy",
   Policy: "Policy",
-  UNFCCC: "UNFCCC Submissions",
+  UNFCCC: "UNFCCC Submission",
   MCF: "MCF",
-  Reports: "Reports",
+  Reports: "Report",
 };
 
 const getReportsCategory = (source: string): string => {
