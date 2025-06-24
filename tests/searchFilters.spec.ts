@@ -63,7 +63,7 @@ test("search filters", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
   await expect(page.getByText("FILTERS").first()).toBeVisible();
 
-  await expect(page.locator('[data-cy="categories"]:has-text("Category")').last()).toBeVisible();
+  await expect(page.locator('[data-cy="categories"]:has-text("Document Type")').last()).toBeVisible();
 
   const allCategoriesRadioButton = page.getByRole("radio", { name: "All" });
   expect(allCategoriesRadioButton.isChecked()).toBeTruthy();
