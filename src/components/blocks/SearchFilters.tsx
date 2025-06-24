@@ -122,8 +122,7 @@ const SearchFilters = ({
           <InputListContainer>
             {themeConfig.categories?.options?.map(
               (option) =>
-                ((option.slug === "climate_policy_radar_reports" && isCorporateReportsEnabled(featureFlags)) ||
-                  option.slug !== "climate_policy_radar_reports") && (
+                ((option.slug === "corporate-disclosures" && isCorporateReportsEnabled(featureFlags)) || option.slug !== "corporate-disclosures") && (
                   <InputRadio
                     key={option.slug}
                     label={option.label}

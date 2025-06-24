@@ -8,5 +8,6 @@ export const DEFAULT_THEME_CONFIG: TThemeConfig = {
   links: [],
   metadata: [],
   documentCategories: [],
+  defaultDocumentCategory: "All",
   features: DEFAULT_CONFIG_FEATURES,
 };

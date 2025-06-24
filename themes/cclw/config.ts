@@ -10,16 +10,10 @@ const config: TThemeConfig = {
         value: ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000591.n0000", "CPR.corpus.i00000592.n0000", "UNFCCC.corpus.i00000001.n0000"],
       },
       {
-        label: "UNFCCC",
+        label: "UNFCCC Submissions",
         slug: "UNFCCC",
         value: ["UNFCCC.corpus.i00000001.n0000"],
         category: ["UNFCCC"],
-      },
-      {
-        label: "Policies",
-        slug: "policies",
-        value: ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000592.n0000"],
-        category: ["Executive"],
       },
       {
         label: "Laws",
@@ -27,6 +21,12 @@ const config: TThemeConfig = {
         value: ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000592.n0000"],
         category: ["Legislative"],
         alias: "LAWS",
+      },
+      {
+        label: "Policies",
+        slug: "policies",
+        value: ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000592.n0000"],
+        category: ["Executive"],
       },
     ],
   },
@@ -160,7 +160,8 @@ const config: TThemeConfig = {
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
   ],
-  documentCategories: ["All", "Laws", "Policies", "UNFCCC", "Litigation"],
+  documentCategories: ["All", "UNFCCC Submissions", "Laws", "Policies", "Litigation"],
+  defaultDocumentCategory: "All",
   features: {
     knowledgeGraph: false,
     searchFamilySummary: true,
