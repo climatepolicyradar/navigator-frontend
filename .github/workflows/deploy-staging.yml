@@ -9,7 +9,7 @@ on:
       - main
   # b. Allow deployment from the actions tab - this allows feature branch deployment
   workflow_dispatch: {}
-  # c. Label a PR with "deploy:staging" will deply to staging
+  # c. Label a PR with "deploy:staging" will deploy to staging
   pull_request:
     types: [labeled]
 
