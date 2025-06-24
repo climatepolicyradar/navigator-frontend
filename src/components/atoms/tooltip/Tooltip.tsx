@@ -9,10 +9,11 @@ interface IProps {
   children: ReactNode;
   content: string | ReactNode;
   popupClasses?: string;
+  triggerClasses?: string;
   side?: "top" | "bottom";
 }
 
-export const Tooltip = ({ arrow = false, children, content, popupClasses, side = "top" }: IProps) => {
+export const Tooltip = ({ arrow = false, children, content, popupClasses, side = "top", triggerClasses }: IProps) => {
   const allPopupClasses = joinTailwindClasses(
     "px-1.5 py-1 bg-surface-mono-dark text-xs text-text-light leading-none font-bold text-nowrap rounded-md",
     popupClasses
@@ -23,7 +24,7 @@ export const Tooltip = ({ arrow = false, children, content, popupClasses, side =
   return (
     <BaseTooltip.Provider>
       <BaseTooltip.Root>
-        <BaseTooltip.Trigger>{children}</BaseTooltip.Trigger>
+        <BaseTooltip.Trigger className={triggerClasses}>{children}</BaseTooltip.Trigger>
         <BaseTooltip.Portal>
           <BaseTooltip.Positioner side={side} sideOffset={arrow ? 7 : 2}>
             <BaseTooltip.Popup className={allPopupClasses}>

@@ -1,7 +1,10 @@
+import { Menu } from "@base-ui-components/react";
 import orderBy from "lodash/orderBy";
 import { LucideArrowUpDown, LucideInfo } from "lucide-react";
 import { ReactNode, useMemo, useState } from "react";
 
+import { MenuItem } from "@/components/atoms/menu/MenuItem";
+import { MenuPopup } from "@/components/atoms/menu/MenuPopup";
 import { Tooltip } from "@/components/atoms/tooltip/Tooltip";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -60,6 +63,9 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
     );
   }, [rows, sortRules]);
 
+  const onSort = (column: ColumnKey, ascending: boolean) => () => setSortRules({ column, ascending });
+  const onClearSort = () => setSortRules({ column: null, ascending: true });
+
   return (
     <table className="w-full text-sm text-text-secondary leading-tight">
       {/* Heading */}
@@ -67,9 +73,10 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
         <tr className="border-b border-border-light">
           {columns.map((column) => {
             const columnIsSorted = sortRules.column === column.id;
-            const buttonClasses = joinTailwindClasses(
-              "p-1 rounded-sm text-text-tertiary hover:bg-surface-heavy",
-              columnIsSorted ? "[&:not(:hover)]:text-text-brand" : "invisible group-hover:visible"
+
+            const sortButtonClasses = joinTailwindClasses(
+              "p-1 rounded-sm text-text-tertiary focus:bg-surface-heavy focus-visible:outline-none",
+              columnIsSorted ? "[&:not(:focus)]:text-text-brand" : "invisible group-hover:visible"
             );
 
             return (
@@ -84,14 +91,29 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
                       <LucideInfo size={16} className="text-text-tertiary opacity-50 group-hover:opacity-100" />
                     </Tooltip>
                   )}
-                  {/* Sort button */}
+                  {/* Sort button & menu */}
                   {column.sortable && (
                     <div className="flex-1 text-right">
-                      <Tooltip content="Sort">
-                        <button type="button" className={buttonClasses}>
+                      <Menu.Root>
+                        <Menu.Trigger className={sortButtonClasses}>
                           <LucideArrowUpDown size={16} />
-                        </button>
-                      </Tooltip>
+                        </Menu.Trigger>
+                        <Menu.Portal>
+                          <Menu.Backdrop />
+                          <Menu.Positioner align="start" sideOffset={2}>
+                            <MenuPopup>
+                              <MenuItem disabled heading>
+                                Sort
+                              </MenuItem>
+                              <MenuItem onClick={onSort(column.id, true)}>Ascending</MenuItem>
+                              <MenuItem onClick={onSort(column.id, false)}>Descending</MenuItem>
+                              <MenuItem color="brand" onClick={onClearSort}>
+                                Clear sort
+                              </MenuItem>
+                            </MenuPopup>
+                          </Menu.Positioner>
+                        </Menu.Portal>
+                      </Menu.Root>
                     </div>
                   )}
                 </div>
