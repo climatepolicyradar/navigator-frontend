@@ -11,7 +11,6 @@ export const configHandlers = [
     });
   }),
   http.get("*/config", () => {
-    console.log("Getting mock config!!!");
     return HttpResponse.json({
       geographies: [],
       langguages: {},
