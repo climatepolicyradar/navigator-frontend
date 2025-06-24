@@ -3,6 +3,7 @@ import { cleanup } from "@testing-library/react";
 import { vi } from "vitest";
 
 import { server } from "./mocks/server.ts";
+require("dotenv").config({ path: ".env" });
 
 expect.extend(matchers);
 
@@ -64,14 +65,11 @@ beforeAll(() => {
 // so they don't affect other tests.
 afterEach(() => {
   server.resetHandlers();
-
   cleanup();
-  reset();
 });
 
 // Clean up after the tests are finished.
 afterAll(() => {
   server.close();
-
   localStorage.clear();
 });

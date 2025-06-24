@@ -1,9 +1,20 @@
 import { http, HttpResponse } from "msw";
 
 export const configHandlers = [
-  http.get("/api/env", ({ request }) => {
-    return { response: "json" };
+  http.get("/api/env", () => {
     return HttpResponse.json({
+      env: {
+        theme: process.env.THEME,
+        api_url: process.env.BACKEND_API_URL,
+        app_token: process.env.BACKEND_API_TOKEN,
+      },
+    });
+  }),
+  http.get("*/config", () => {
+    console.log("Getting mock config!!!");
+    return HttpResponse.json({
+      geographies: [],
+      langguages: {},
       corpus_types: {
         corpus_type1: {
           corpora: [

@@ -13,6 +13,7 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     exclude: ["**/node_modules/**", "**/.trunk/**"],
+    setupFiles: ["./tests/setup.js"],
     reporters: [process.env.CI ? ["junit", { outputFile: "./vitest.xml" }] : "verbose"],
   },
 });
