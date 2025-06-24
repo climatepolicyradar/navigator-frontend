@@ -120,17 +120,20 @@ const SearchFilters = ({
       {themeConfigStatus === "success" && themeConfig.categories && (
         <Accordian title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
           <InputListContainer>
-            {themeConfig.categories?.options?.map((option) => (
-              <InputRadio
-                key={option.slug}
-                label={option.label}
-                checked={query && isCategoryChecked(query[QUERY_PARAMS.category] as string, option)}
-                onChange={() => {
-                  handleDocumentCategoryClick(option.slug);
-                }}
-                name={`${themeConfig.categories.label}-${option.slug}`}
-              />
-            ))}
+            {themeConfig.categories?.options?.map(
+              (option) =>
+                ((option.slug === "corporate-disclosures" && isCorporateReportsEnabled(featureFlags)) || option.slug !== "corporate-disclosures") && (
+                  <InputRadio
+                    key={option.slug}
+                    label={option.label}
+                    checked={query && isCategoryChecked(query[QUERY_PARAMS.category] as string, option)}
+                    onChange={() => {
+                      handleDocumentCategoryClick(option.slug);
+                    }}
+                    name={`${themeConfig.categories.label}-${option.slug}`}
+                  />
+                )
+            )}
           </InputListContainer>
         </Accordian>
       )}
