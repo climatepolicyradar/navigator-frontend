@@ -39,6 +39,11 @@ export const Generic: TStory<TWainwrightColumns> = {
       {
         id: "region",
         name: "Region",
+        tooltip: (
+          <div className="w-[200px]">
+            Which of Alfred Wainwright's books the Wainwright features in. The series of 7 books divides the Lakeland Fells by geographic region.
+          </div>
+        ),
       },
       {
         id: "link",

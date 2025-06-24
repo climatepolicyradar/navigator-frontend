@@ -1,6 +1,9 @@
 import orderBy from "lodash/orderBy";
-import { LucideArrowUpDown } from "lucide-react";
+import { LucideArrowUpDown, LucideInfo } from "lucide-react";
 import { ReactNode, useMemo, useState } from "react";
+
+import { Tooltip } from "@/components/atoms/tooltip/Tooltip";
+import { joinTailwindClasses } from "@/utils/tailwind";
 
 type TValue = string | number;
 
@@ -8,6 +11,7 @@ interface IInteractiveTableColumn<ColumnKey extends string> {
   id: ColumnKey;
   name: string;
   sortable?: boolean;
+  tooltip?: ReactNode;
 }
 
 export type TInteractiveTableCell =
@@ -61,22 +65,39 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
       {/* Heading */}
       <thead className="text-text-primary font-semibold">
         <tr className="border-b border-border-light">
-          {columns.map((column) => (
-            <td
-              key={`heading-${column.id}`}
-              className="px-2.5 py-1.5 border-l border-border-light first:border-l-0 cursor-default group hover:bg-surface-ui"
-            >
-              <div className="flex items-center">
-                <span className="block flex-1">{column.name}</span>
-                {/* Sort button */}
-                {column.sortable && (
-                  <button type="button" className="p-1 rounded-sm text-text-tertiary hover:bg-surface-heavy invisible group-hover:visible">
-                    <LucideArrowUpDown size={16} />
-                  </button>
-                )}
-              </div>
-            </td>
-          ))}
+          {columns.map((column) => {
+            const columnIsSorted = sortRules.column === column.id;
+            const buttonClasses = joinTailwindClasses(
+              "p-1 rounded-sm text-text-tertiary hover:bg-surface-heavy",
+              columnIsSorted ? "[&:not(:hover)]:text-text-brand" : "invisible group-hover:visible"
+            );
+
+            return (
+              <td
+                key={`heading-${column.id}`}
+                className="px-2.5 py-1.5 border-l border-border-light first:border-l-0 cursor-default group hover:bg-surface-ui"
+              >
+                <div className="flex items-center gap-1">
+                  <span className="block">{column.name}</span>
+                  {column.tooltip && (
+                    <Tooltip content={column.tooltip} popupClasses="text-wrap max-w-[250px]">
+                      <LucideInfo size={16} className="text-text-tertiary opacity-50 group-hover:opacity-100" />
+                    </Tooltip>
+                  )}
+                  {/* Sort button */}
+                  {column.sortable && (
+                    <div className="flex-1 text-right">
+                      <Tooltip content="Sort">
+                        <button type="button" className={buttonClasses}>
+                          <LucideArrowUpDown size={16} />
+                        </button>
+                      </Tooltip>
+                    </div>
+                  )}
+                </div>
+              </td>
+            );
+          })}
         </tr>
       </thead>
       {/* Rows */}
