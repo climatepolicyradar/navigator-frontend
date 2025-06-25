@@ -30,5 +30,4 @@ jobs:
           webhook: ${{ steps.webhook_url.outputs.webhook_url }}
           webhook-type: incoming-webhook
           payload: |
-            🚀 Deploying ${{ github.repository }} to ${{ github.event.deployment.environment }}
-            • *PR*: https://github.com/${{ github.repository }}/pulls/${{ steps.pr_number.outputs.pr_number }}
+            text: "🚀 Deploying ${{ github.repository }} to ${{ github.event.deployment.environment }}\n• *PR*: https://github.com/${{ github.repository }}/pull/${{ steps.pr_number.outputs.pr_number }}"
