@@ -22,7 +22,7 @@ import { SlideOutContext } from "@/context/SlideOutContext";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 import useCountries from "@/hooks/useCountries";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TGeography, TSearchCriteria, TThemeConfigOption, TCountry } from "@/types";
+import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
 import { isCorporateReportsEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
 import { getFilterLabel } from "@/utils/getFilterLabel";
