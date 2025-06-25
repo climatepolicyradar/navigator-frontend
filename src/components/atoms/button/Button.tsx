@@ -34,7 +34,7 @@ export const getButtonClasses = ({
   if (variant)
     switch (variant) {
       case "faded":
-        bgColor = color === "brand" ? "bg-surface-brand/16 hocus:bg-surface-brand/32" : "bg-surface-mono/16 hocus:bg-surface-mono/32";
+        bgColor = color === "brand" ? "bg-surface-brand/16 hocus:bg-surface-brand/32" : "bg-surface-mono/8 hocus:bg-surface-mono/16";
         textColor = color === "brand" ? "text-cpr-blue" : "text-text-primary";
         break;
       case "outlined":
