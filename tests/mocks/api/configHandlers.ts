@@ -13,7 +13,7 @@ export const configHandlers = [
   http.get("*/config", () => {
     return HttpResponse.json({
       geographies: [],
-      langguages: {},
+      languages: {},
       corpus_types: {
         corpus_type1: {
           corpora: [
