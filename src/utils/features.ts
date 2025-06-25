@@ -14,11 +14,6 @@ export const isFeatureEnabled = ({ configFeature, featureFlag }: IArgs): boolean
 
 /* Specific feature shorthand functions */
 
-export const isCorporateReportsEnabled = (featureFlags: TFeatureFlags) =>
-  isFeatureEnabled({
-    featureFlag: featureFlags["corporate-reports"],
-  });
-
 export const isKnowledgeGraphEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
   isFeatureEnabled({
     configFeature: themeConfig.features.knowledgeGraph,
