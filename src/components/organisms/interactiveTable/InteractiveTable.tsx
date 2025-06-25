@@ -43,6 +43,7 @@ interface IProps<ColumnKey extends string> {
 }
 
 export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSort, rows }: IProps<ColumnKey>) => {
+  const [openSortMenu, setOpenSortMenu] = useState<string | null>(null);
   const [sortRules, setSortRules] = useState<ISortRules<ColumnKey>>(
     defaultSort || {
       column: null,
@@ -72,13 +73,21 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
     );
   }, [rows, sortRules]);
 
+  // Track which sort menu is open so header cell styling can stay applied
+  const onToggleMenu = (column: ColumnKey) => (open: boolean) => {
+    setOpenSortMenu(open ? column : null);
+  };
+
   // Button and menu for controlling column sorting
   const renderSortControls = (column: IInteractiveTableColumn<ColumnKey>) => {
     const columnIsSorted = sortRules.column === column.id;
+    const menuIsOpen = openSortMenu === column.id;
 
     const sortButtonClasses = joinTailwindClasses(
-      "p-1 rounded-sm text-text-tertiary focus:bg-surface-heavy focus-visible:outline-none",
-      columnIsSorted ? "[&:not(:focus)]:text-text-brand" : "invisible group-hover:visible"
+      "p-1 rounded-sm focus-visible:outline-none hover:bg-surface-heavy hover:text-text-tertiary",
+      columnIsSorted ? "text-text-brand" : "text-text-tertiary",
+      menuIsOpen && "bg-surface-heavy text-text-tertiary", // Hover styling persists
+      !columnIsSorted && !menuIsOpen && "invisible group-hover:visible"
     );
 
     const onSort = (ascending: boolean) => () => setSortRules({ column: column.id, ascending });
@@ -86,7 +95,7 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
 
     return (
       <div className="flex-1 text-right">
-        <Menu.Root>
+        <Menu.Root onOpenChange={onToggleMenu(column.id)}>
           <Menu.Trigger className={sortButtonClasses}>
             <LucideArrowUpDown size={16} />
           </Menu.Trigger>
@@ -117,22 +126,26 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
       {/* Heading */}
       <thead className="text-text-primary font-semibold">
         <tr className="border-b border-border-light">
-          {columns.map((column) => (
-            <td
-              key={`heading-${column.id}`}
-              className="px-2.5 py-1.5 border-l border-border-light first:border-l-0 cursor-default group hover:bg-surface-ui"
-            >
-              <div className="flex items-center gap-1">
-                <span className="block">{column.name}</span>
-                {column.tooltip && (
-                  <Tooltip content={column.tooltip} popupClasses="text-wrap max-w-[250px]">
-                    <LucideInfo size={16} className="text-text-tertiary opacity-50 group-hover:opacity-100" />
-                  </Tooltip>
-                )}
-                {column.sortable && renderSortControls(column)}
-              </div>
-            </td>
-          ))}
+          {columns.map((column) => {
+            const cellClasses = joinTailwindClasses(
+              "px-2.5 py-1.5 border-l border-border-light first:border-l-0 cursor-default group",
+              openSortMenu === column.id ? "bg-surface-ui" : "hover:bg-surface-ui"
+            );
+
+            return (
+              <td key={`heading-${column.id}`} className={cellClasses}>
+                <div className="flex items-center gap-1">
+                  <span className="block">{column.name}</span>
+                  {column.tooltip && (
+                    <Tooltip content={column.tooltip} popupClasses="text-wrap max-w-[250px]">
+                      <LucideInfo size={16} className="text-text-tertiary opacity-50 group-hover:opacity-100" />
+                    </Tooltip>
+                  )}
+                  {column.sortable && renderSortControls(column)}
+                </div>
+              </td>
+            );
+          })}
         </tr>
       </thead>
 
