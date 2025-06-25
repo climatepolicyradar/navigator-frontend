@@ -13,7 +13,7 @@ export default meta;
 
 /* Generic */
 
-type TWainwrightColumns = "height" | "link" | "region" | "wainwright";
+type TWainwrightColumns = "height" | "link" | "region" | "summited" | "wainwright";
 const linkToCell = (link: string): TInteractiveTableCell => ({
   display: (
     <a href={link} className="text-text-brand underline">
@@ -49,6 +49,11 @@ export const Generic: TStory<TWainwrightColumns> = {
         id: "link",
         name: "WalkLakes",
       },
+      {
+        id: "summited",
+        name: "Summited",
+        sortable: true,
+      },
     ],
     defaultSort: {
       column: "height",
@@ -62,6 +67,10 @@ export const Generic: TStory<TWainwrightColumns> = {
           region: "The Eastern Fells",
           height: 950,
           link: linkToCell("https://www.walklakes.co.uk/hill_2515.html"),
+          summited: {
+            display: "23/05/2025",
+            value: "2025-05-23T10:24:00.000Z",
+          },
         },
       },
       {
@@ -71,6 +80,7 @@ export const Generic: TStory<TWainwrightColumns> = {
           region: "The Southern Fells",
           height: 978,
           link: linkToCell("https://www.walklakes.co.uk/hill_2359.html"),
+          summited: null,
         },
       },
       {
@@ -80,6 +90,10 @@ export const Generic: TStory<TWainwrightColumns> = {
           region: "The Northern Fells",
           height: 931,
           link: linkToCell("https://www.walklakes.co.uk/hill_2319.html"),
+          summited: {
+            display: "20/04/2024",
+            value: "2024-04-20T10:32:00.000Z",
+          },
         },
       },
       {
@@ -89,6 +103,10 @@ export const Generic: TStory<TWainwrightColumns> = {
           region: "The Far Eastern Fells",
           height: 828,
           link: linkToCell("https://www.walklakes.co.uk/hill_2528.html"),
+          summited: {
+            display: "26/10/2024",
+            value: "2024-10-26T11:24:00.000Z",
+          },
         },
       },
     ],

@@ -8,7 +8,9 @@ import { MenuPopup } from "@/components/atoms/menu/MenuPopup";
 import { Tooltip } from "@/components/atoms/tooltip/Tooltip";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-type TValue = string | number;
+const NULL_VALUE_DISPLAY = "–";
+
+type TValue = string | number | null;
 
 interface IInteractiveTableColumn<ColumnKey extends string> {
   id: ColumnKey;
@@ -54,12 +56,19 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
     return orderBy(
       rows,
       [
+        // null values are always sorted last
         (row) => {
           const cell = row.cells[sortRules.column];
+          return cell === null || (typeof cell === "object" && cell.value === null);
+        },
+        // Sort by value
+        (row) => {
+          const cell = row.cells[sortRules.column];
+          if (cell === null) return "";
           return typeof cell === "object" ? cell.value : cell;
         },
       ],
-      [sortRules.ascending ? "asc" : "desc"]
+      ["asc", sortRules.ascending ? "asc" : "desc"]
     );
   }, [rows, sortRules]);
 
@@ -108,26 +117,22 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
       {/* Heading */}
       <thead className="text-text-primary font-semibold">
         <tr className="border-b border-border-light">
-          {columns.map((column) => {
-            const columnIsSorted = sortRules.column === column.id;
-
-            return (
-              <td
-                key={`heading-${column.id}`}
-                className="px-2.5 py-1.5 border-l border-border-light first:border-l-0 cursor-default group hover:bg-surface-ui"
-              >
-                <div className="flex items-center gap-1">
-                  <span className="block">{column.name}</span>
-                  {column.tooltip && (
-                    <Tooltip content={column.tooltip} popupClasses="text-wrap max-w-[250px]">
-                      <LucideInfo size={16} className="text-text-tertiary opacity-50 group-hover:opacity-100" />
-                    </Tooltip>
-                  )}
-                  {column.sortable && renderSortControls(column)}
-                </div>
-              </td>
-            );
-          })}
+          {columns.map((column) => (
+            <td
+              key={`heading-${column.id}`}
+              className="px-2.5 py-1.5 border-l border-border-light first:border-l-0 cursor-default group hover:bg-surface-ui"
+            >
+              <div className="flex items-center gap-1">
+                <span className="block">{column.name}</span>
+                {column.tooltip && (
+                  <Tooltip content={column.tooltip} popupClasses="text-wrap max-w-[250px]">
+                    <LucideInfo size={16} className="text-text-tertiary opacity-50 group-hover:opacity-100" />
+                  </Tooltip>
+                )}
+                {column.sortable && renderSortControls(column)}
+              </div>
+            </td>
+          ))}
         </tr>
       </thead>
 
@@ -137,7 +142,8 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
           <tr key={`row-${row.id}`} className="border-b border-border-light">
             {columns.map((column) => {
               const cell = row.cells[column.id];
-              const cellDisplay = typeof cell === "object" ? cell.display : `${cell}`;
+              let cellDisplay: ReactNode = NULL_VALUE_DISPLAY;
+              if (cell !== null) cellDisplay = typeof cell === "object" ? cell.display : `${cell}`;
 
               return (
                 <td key={`row-${row.id}-${column.id}`} className="px-2.5 py-3 border-l border-border-light first:border-l-0">
