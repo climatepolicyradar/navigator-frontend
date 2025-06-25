@@ -49,6 +49,7 @@ const testThemeConfig: TThemeConfig = {
   labelVariations: [],
   links: [],
   documentCategories: [],
+  defaultDocumentCategory: "All",
   metadata: [],
   features: {
     knowledgeGraph: false,

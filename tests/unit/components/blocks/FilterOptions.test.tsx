@@ -21,6 +21,7 @@ describe("FilterOptions", () => {
       links: [],
       metadata: [],
       documentCategories: [],
+      defaultDocumentCategory: "All",
       features: {
         knowledgeGraph: false,
         searchFamilySummary: true,

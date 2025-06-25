@@ -112,16 +112,9 @@ const TermsOfUse = () => {
                 </li>
 
                 <li>
-                  <p>When citing a specific data point(s), for example, if citing a summary of a document, please use the following citation:</p>
-                  <p className="italic">
-                    “This summary was written by researchers at the Grantham Research Institute at the London School of Economics, sourced from
-                    Climate Policy Radar, https://app.climatepolicyradar.org and made available under and under the Creative Commons CC-BY licence”
-                  </p>
                   <p>
-                    <span className="font-medium">Note</span>: As of May 2023, all climate law and policy summaries in the CPR App were written by
-                    researchers at the Grantham Research Institute (as reflected on every document page). Documents from the UNFCCC document
-                    registries and data portals are out of the scope for this declaration (see further “Data from third party sources”). This section
-                    and recommended citation will be updated to reflect any changes to this.
+                    When citing a specific data point(s) (for example, if citing a summary of a document), please refer to Terms and Conditions by our{" "}
+                    <a href="/terms-of-use#data-from-third-party-sources">third party data providers</a>.
                   </p>
                 </li>
               </ul>
@@ -163,7 +156,9 @@ const TermsOfUse = () => {
                 sites or services. Climate Policy Radar strongly advises you to read the terms and conditions and privacy policy of any third-party
                 site that you visit.
               </p>
-              <Heading level={3}>Data from Third Party Sources</Heading>
+              <Heading level={3} id="data-from-third-party-sources">
+                Data from Third Party Sources
+              </Heading>
               <p>
                 The CPR Database and App contains data that were created by third parties. The data includes document summaries that were written by
                 third parties and/or information about the documents (”meta-data”) assigned by third parties, e.g. classifications to sector or legal
@@ -335,6 +330,18 @@ const TermsOfUse = () => {
                     <td>January 2025</td>
                     <td>
                       <ExternalLink url="https://oceanenergypathway.org/terms-conditions/">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://www.lseg.com/en">LSEG</ExternalLink>
+                    </td>
+                    <td>
+                      <ExternalLink url="https://permid.org/">PermID</ExternalLink> Uniform Resource Identifier (URI)
+                    </td>
+                    <td>May 2025</td>
+                    <td>
+                      <ExternalLink url="https://permid.org/terms">View</ExternalLink>
                     </td>
                   </tr>
                   <tr>
