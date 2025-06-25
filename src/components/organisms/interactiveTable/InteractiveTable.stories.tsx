@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
 
-import { InteractiveTable, TInteractiveTableCell } from "./InteractiveTable";
+import { InteractiveTable, IProps, TInteractiveTableCell } from "./InteractiveTable";
 
 const meta = {
   title: "Organisms/InteractiveTable",
@@ -30,6 +30,7 @@ export const Generic: TStory<TWainwrightColumns> = {
         id: "wainwright",
         name: "Wainwright",
         sortable: true,
+        fraction: 2,
       },
       {
         id: "height",
@@ -44,6 +45,7 @@ export const Generic: TStory<TWainwrightColumns> = {
             Which of Alfred Wainwright's books the Wainwright features in. The series of 7 books divides the Lakeland Fells by geographic region.
           </div>
         ),
+        fraction: 2,
       },
       {
         id: "link",
@@ -110,7 +112,22 @@ export const Generic: TStory<TWainwrightColumns> = {
         },
       },
     ],
+    tableClasses: "min-w-[650px]",
   },
 };
 
-/* Entries */
+/* Cell styling */
+
+export const CellStyling: TStory<TWainwrightColumns> = {
+  args: {
+    ...Generic.args,
+    columns: Generic.args.columns.map((column) => {
+      if (column.id !== "height") return column;
+      return { ...column, classes: "bg-amber-50" };
+    }),
+    rows: Generic.args.rows.map((row) => {
+      if (row.id !== "skiddaw") return row;
+      return { ...row, classes: "bg-green-50" };
+    }),
+  },
+};

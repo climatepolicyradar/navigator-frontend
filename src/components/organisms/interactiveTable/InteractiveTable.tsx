@@ -13,6 +13,8 @@ const NULL_VALUE_DISPLAY = "–";
 type TValue = string | number | null;
 
 interface IInteractiveTableColumn<ColumnKey extends string> {
+  classes?: string; // Styles every cell in the column
+  fraction?: number; // CSS grid fractional units - the column's relative width
   id: ColumnKey;
   name: string;
   sortable?: boolean;
@@ -29,6 +31,7 @@ export type TInteractiveTableCell =
 interface IInteractiveTableRow<ColumnKey extends string> {
   id: string;
   cells: Record<ColumnKey, TInteractiveTableCell>;
+  classes?: string; // Styles every cell in the row
 }
 
 interface ISortRules<ColumnKey extends string> {
@@ -36,13 +39,14 @@ interface ISortRules<ColumnKey extends string> {
   ascending: boolean;
 }
 
-interface IProps<ColumnKey extends string> {
+export interface IProps<ColumnKey extends string> {
   columns: IInteractiveTableColumn<ColumnKey>[];
   defaultSort?: ISortRules<ColumnKey>;
   rows: IInteractiveTableRow<ColumnKey>[];
+  tableClasses?: string;
 }
 
-export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSort, rows }: IProps<ColumnKey>) => {
+export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSort, rows, tableClasses }: IProps<ColumnKey>) => {
   const [openSortMenu, setOpenSortMenu] = useState<string | null>(null);
   const [sortRules, setSortRules] = useState<ISortRules<ColumnKey>>(
     defaultSort || {
@@ -121,52 +125,59 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
     );
   };
 
+  const allTableClasses = joinTailwindClasses("grid text-sm text-text-secondary leading-tight", tableClasses);
+  const gridTemplateColumns = columns.map((column) => `${column.fraction || 1}fr`).join(" ");
+
   return (
-    <table className="w-full text-sm text-text-secondary leading-tight">
+    <div className={allTableClasses} style={{ gridTemplateColumns }}>
       {/* Heading */}
-      <thead className="text-text-primary font-semibold">
-        <tr className="border-b border-border-light">
+      <div className="contents">
+        {columns.map((column) => {
+          const cellClasses = joinTailwindClasses(
+            "px-2.5 py-1.5 border-b border-l border-border-light first:border-l-0 text-text-primary font-semibold cursor-default group",
+            openSortMenu === column.id ? "bg-surface-ui" : "hover:bg-surface-ui",
+            column.classes
+          );
+
+          return (
+            <div key={`heading-${column.id}`} className={cellClasses}>
+              <div className="flex items-center gap-1 min-h-6">
+                <span className="block">{column.name}</span>
+                {column.tooltip && (
+                  <Tooltip content={column.tooltip} popupClasses="text-wrap max-w-[250px]">
+                    <LucideInfo size={16} className="text-text-tertiary opacity-50 group-hover:opacity-100" />
+                  </Tooltip>
+                )}
+                {column.sortable && renderSortControls(column)}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Rows */}
+      {sortedRows.map((row) => (
+        <div key={`row-${row.id}`} className="contents">
           {columns.map((column) => {
+            const cell = row.cells[column.id];
+
+            let cellDisplay: ReactNode = NULL_VALUE_DISPLAY;
+            if (cell !== null) cellDisplay = typeof cell === "object" ? cell.display : `${cell}`;
+
             const cellClasses = joinTailwindClasses(
-              "px-2.5 py-1.5 border-l border-border-light first:border-l-0 cursor-default group",
-              openSortMenu === column.id ? "bg-surface-ui" : "hover:bg-surface-ui"
+              "px-2.5 py-3 border-b border-l border-border-light first:border-l-0",
+              column.classes,
+              row.classes
             );
 
             return (
-              <td key={`heading-${column.id}`} className={cellClasses}>
-                <div className="flex items-center gap-1">
-                  <span className="block">{column.name}</span>
-                  {column.tooltip && (
-                    <Tooltip content={column.tooltip} popupClasses="text-wrap max-w-[250px]">
-                      <LucideInfo size={16} className="text-text-tertiary opacity-50 group-hover:opacity-100" />
-                    </Tooltip>
-                  )}
-                  {column.sortable && renderSortControls(column)}
-                </div>
-              </td>
+              <div key={`row-${row.id}-${column.id}`} className={cellClasses}>
+                {cellDisplay}
+              </div>
             );
           })}
-        </tr>
-      </thead>
-
-      {/* Rows */}
-      <tbody>
-        {sortedRows.map((row) => (
-          <tr key={`row-${row.id}`} className="border-b border-border-light">
-            {columns.map((column) => {
-              const cell = row.cells[column.id];
-              let cellDisplay: ReactNode = NULL_VALUE_DISPLAY;
-              if (cell !== null) cellDisplay = typeof cell === "object" ? cell.display : `${cell}`;
-
-              return (
-                <td key={`row-${row.id}-${column.id}`} className="px-2.5 py-3 border-l border-border-light first:border-l-0">
-                  {cellDisplay}
-                </td>
-              );
-            })}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+        </div>
+      ))}
+    </div>
   );
 };
