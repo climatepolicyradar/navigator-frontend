@@ -1,5 +1,4 @@
 import { screen } from "@testing-library/react";
-
 import { renderWithQueryClient } from "tests/mocks/renderWithQueryClient";
 
 import Instructions from "@/cclw/components/Instructions";
