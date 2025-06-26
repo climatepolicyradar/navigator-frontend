@@ -1,5 +1,5 @@
 import sortBy from "lodash/sortBy";
-import { ArrowRight, CornerDownLeft, Search } from "lucide-react";
+import { ArrowRight, CornerDownLeft, LucideSearch, Search } from "lucide-react";
 import { Url } from "next/dist/shared/lib/router/router";
 import { useRouter } from "next/router";
 import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";
@@ -141,13 +141,9 @@ export const NavSearch = () => {
           <Input
             autoComplete="off"
             clearable
-            containerClasses={`h-[40px] focus-within:!outline-0`}
-            icon={
-              <button type="submit" className="w-4 h-4 ml-0.5 shrink-0">
-                <Search height="16" width="16" />
-              </button>
-            }
-            iconOnLeft
+            containerClasses={`w-full h-[40px] pl-1.5 bg-surface-ui border-none focus-within:!outline-0 font-medium`}
+            Icon={LucideSearch}
+            iconButtonType="submit"
             inputClasses="text-sm"
             onChange={(event) => setSearchText(event.target.value)}
             onClear={handleClear}

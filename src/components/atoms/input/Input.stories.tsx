@@ -1,7 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
+import { LucideSearch } from "lucide-react";
 import { useState } from "react";
-
-import { iconNames } from "@/components/atoms/icon/Icon";
 
 import { Input } from "./Input";
 
@@ -9,12 +8,9 @@ const meta = {
   title: "Atoms/Input",
   component: Input,
   argTypes: {
-    icon: {
-      control: "select",
-      options: iconNames,
-    },
+    Icon: { control: false },
     onClear: { control: false },
-    placeholder: { control: "text" },
+    onIconClick: { control: false },
   },
 } satisfies Meta<typeof Input>;
 type TStory = StoryObj<typeof Input>;
@@ -37,32 +33,19 @@ export const Default: TStory = {
 export const Clearable: TStory = {
   args: {
     clearable: true,
-    icon: undefined,
-    iconOnLeft: false,
-    placeholder: "Type something",
-    size: "medium",
+    containerClasses: "",
+    inputClasses: "",
   },
   render: useInputContext,
 };
 
-export const IconRight: TStory = {
+export const Icon: TStory = {
   args: {
     clearable: false,
-    icon: "search",
-    iconOnLeft: false,
-    placeholder: "Search",
-    size: "medium",
-  },
-  render: useInputContext,
-};
-
-export const IconLeft: TStory = {
-  args: {
-    clearable: false,
-    icon: "add",
-    iconOnLeft: true,
-    placeholder: "Add...",
-    size: "medium",
+    containerClasses: "",
+    Icon: LucideSearch,
+    onIconClick: (value) => alert(`Searched for: ${value}`),
+    placeholder: "Search...",
   },
   render: useInputContext,
 };
