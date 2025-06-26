@@ -28,16 +28,11 @@ export const Generic: TStory<TWainwrightColumns> = {
     columns: [
       {
         id: "wainwright",
-        name: "Wainwright",
         fraction: 2,
       },
-      {
-        id: "height",
-        name: "Height",
-      },
+      { id: "height" },
       {
         id: "region",
-        name: "Region",
         fraction: 2,
         tooltip: (
           <div className="w-[200px]">
@@ -50,10 +45,7 @@ export const Generic: TStory<TWainwrightColumns> = {
         name: "WalkLakes",
         sortable: false,
       },
-      {
-        id: "summited",
-        name: "Summited",
-      },
+      { id: "summited" },
     ],
     defaultSort: {
       column: "height",
