@@ -31,6 +31,9 @@ jobs:
       - name: install Lighthouse CI
         run: npm install -g @lhci/cli@0.14.x
       - name: run Lighthouse Desktop
+        # The --baseHash parameter compares the current commit (the one being tested) against the specified base hash.
+        # E.g., if your PR branch has commit abc123, and the main branch has commit def456,
+        # --baseHash=def456 tells Lighthouse: "Compare abc123 against def456"
         run: lhci autorun --collect.settings.preset=desktop --baseHash=${{ github.event.pull_request.base.sha }}
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
@@ -50,6 +53,9 @@ jobs:
       - name: install Lighthouse CI
         run: npm install -g @lhci/cli@0.14.x
       - name: run Lighthouse Mobile
+        # The --baseHash parameter compares the current commit (the one being tested) against the specified base hash.
+        # E.g., if your PR branch has commit abc123, and the main branch has commit def456,
+        # --baseHash=def456 tells Lighthouse: "Compare abc123 against def456"
         run: lhci autorun --baseHash=${{ github.event.pull_request.base.sha }}
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
