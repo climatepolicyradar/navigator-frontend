@@ -50,7 +50,7 @@ export const Popover = ({ children, description, link, onOpenChange, openOnHover
         <BasePopover.Positioner positionMethod="fixed" sideOffset={8}>
           <BasePopover.Popup className={allPopupClasses}>
             <BasePopover.Arrow className="flex -top-2">
-              <BaseUIArrow fill="fill-surface-light" />
+              <BaseUIArrow fill="fill-surface-light" stroke="fill-border-light" />
             </BasePopover.Arrow>
             {children || (
               <>
