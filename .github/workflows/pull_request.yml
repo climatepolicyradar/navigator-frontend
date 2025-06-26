@@ -34,23 +34,14 @@ jobs:
         # The --baseHash parameter compares the current commit (the one being tested) against the specified base hash.
         # E.g., if your PR branch has commit abc123, and the main branch has commit def456,
         # --baseHash=def456 tells Lighthouse: "Compare abc123 against def456"
-        run: lhci autorun --collect.settings.preset=desktop --baseHash=${{ github.event.pull_request.base.sha }} 2>&1 | tee lighthouse-output.log
+        run: lhci autorun --collect.settings.preset=desktop --baseHash=${{ github.event.pull_request.base.sha }}
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
           LHCI_BASE_HASH: ${{ github.event.pull_request.base.sha }}
-      - name: Extract build ID and check for performance regressions (Desktop)
-        run: |
-          BUILD_ID=$(grep "Saving CI build" lighthouse-output.log | sed 's/.*(\([^)]*\)).*/\1/')
-          if [ -n "$BUILD_ID" ]; then
-            echo "LHCI_BUILD_ID=$BUILD_ID" >> $GITHUB_ENV
-            node scripts/check-lighthouse-regression.js
-          else
-            echo "⚠️  Could not extract build ID from Lighthouse output"
-            exit 0
-          fi
+      - name: Check for performance regressions (Desktop)
+        run: node scripts/check-lighthouse-regression.js
         env:
           LHCI_BASE_HASH: ${{ github.event.pull_request.base.sha }}
-          LHCI_BUILD_ID: ${{ env.LHCI_BUILD_ID }}
 
   lhci-mobile:
     name: Lighthouse Mobile
@@ -70,23 +61,14 @@ jobs:
         # The --baseHash parameter compares the current commit (the one being tested) against the specified base hash.
         # E.g., if your PR branch has commit abc123, and the main branch has commit def456,
         # --baseHash=def456 tells Lighthouse: "Compare abc123 against def456"
-        run: lhci autorun --baseHash=${{ github.event.pull_request.base.sha }} 2>&1 | tee lighthouse-output.log
+        run: lhci autorun --baseHash=${{ github.event.pull_request.base.sha }}
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
           LHCI_BASE_HASH: ${{ github.event.pull_request.base.sha }}
-      - name: Extract build ID and check for performance regressions (Mobile)
-        run: |
-          BUILD_ID=$(grep "Saving CI build" lighthouse-output.log | sed 's/.*(\([^)]*\)).*/\1/')
-          if [ -n "$BUILD_ID" ]; then
-            echo "LHCI_BUILD_ID=$BUILD_ID" >> $GITHUB_ENV
-            node scripts/check-lighthouse-regression.js
-          else
-            echo "⚠️  Could not extract build ID from Lighthouse output"
-            exit 0
-          fi
+      - name: Check for performance regressions (Mobile)
+        run: node scripts/check-lighthouse-regression.js
         env:
           LHCI_BASE_HASH: ${{ github.event.pull_request.base.sha }}
-          LHCI_BUILD_ID: ${{ env.LHCI_BUILD_ID }}
 
   percy:
     runs-on: ubuntu-latest
