@@ -12,7 +12,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
-    exclude: ["**/node_modules/**", "**/.trunk/**", "**/tests/**"],
+    exclude: ["**/node_modules/**", "**/.trunk/**", "**/tests/*.spec.ts"],
+    setupFiles: ["./tests/setup.js"],
     reporters: [process.env.CI ? ["junit", { outputFile: "./vitest.xml" }] : "verbose"],
   },
 });

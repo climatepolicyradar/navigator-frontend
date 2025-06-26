@@ -15,6 +15,25 @@ vi.mock("next/router", () => ({
   },
 }));
 
+vi.mock("react", async (importOriginal) => {
+  const actual = (await importOriginal()) as Record<string, unknown>;
+  return {
+    ...actual,
+    useContext: () => ({
+      theme: "cpr",
+      themeConfig: {
+        documentCategories: ["All"],
+        metadata: [
+          {
+            key: "geography",
+            title: "{text} climate laws and policies",
+          },
+        ],
+      },
+    }),
+  };
+});
+
 vi.mock("react-query", () => ({
   useQuery: vi.fn(() => ({
     data: {},
