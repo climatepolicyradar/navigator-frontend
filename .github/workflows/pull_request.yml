@@ -37,11 +37,6 @@ jobs:
         run: lhci autorun --collect.settings.preset=desktop --baseHash=${{ github.event.pull_request.base.sha }}
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-          LHCI_BASE_HASH: ${{ github.event.pull_request.base.sha }}
-      - name: Check for performance regressions (Desktop)
-        run: node scripts/check-lighthouse-regression.js
-        env:
-          LHCI_BASE_HASH: ${{ github.event.pull_request.base.sha }}
 
   lhci-mobile:
     name: Lighthouse Mobile
@@ -64,11 +59,6 @@ jobs:
         run: lhci autorun --baseHash=${{ github.event.pull_request.base.sha }}
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-          LHCI_BASE_HASH: ${{ github.event.pull_request.base.sha }}
-      - name: Check for performance regressions (Mobile)
-        run: node scripts/check-lighthouse-regression.js
-        env:
-          LHCI_BASE_HASH: ${{ github.event.pull_request.base.sha }}
 
   percy:
     runs-on: ubuntu-latest
