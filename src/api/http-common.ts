@@ -39,7 +39,6 @@ class ApiClient {
    * Submit a GET request and return the response as a mapped promise.
    */
   get<T = any>(url: string, params?: any): Promise<AxiosResponse<T>> {
-    // console.log(`GET: ${this.baseUrl}${url}`);
     return this.axiosClient
       .get<T>(url, { params })
       .then((res: any) => res)
@@ -50,7 +49,6 @@ class ApiClient {
   }
 
   post<T>(url: string, values: any, config = {}) {
-    // console.log(`POST: ${this.baseUrl}${url}`);
     return this.axiosClient
       .post<T>(url, values, config)
       .then((res) => res)
@@ -65,7 +63,6 @@ class ApiClient {
   }
 
   put(url: string, values: any) {
-    // console.log(`PUT: ${this.baseUrl}${url}`);
     return this.axiosClient
       .put(url, values)
       .then((res) => res)
