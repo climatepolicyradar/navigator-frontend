@@ -10,14 +10,14 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 
 const NULL_VALUE_DISPLAY = "–";
 
-type TValue = string | number | null;
+export type TValue = string | number | null;
 
-interface IInteractiveTableColumn<ColumnKey extends string> {
+export interface IInteractiveTableColumn<ColumnKey extends string> {
   classes?: string; // Styles every cell in the column
   fraction?: number; // CSS grid fractional units - the column's relative width
   id: ColumnKey;
   name: string;
-  sortable?: boolean;
+  sortable?: boolean; // true by default
   tooltip?: ReactNode;
 }
 
@@ -28,13 +28,13 @@ export type TInteractiveTableCell =
       value: TValue;
     };
 
-interface IInteractiveTableRow<ColumnKey extends string> {
+export interface IInteractiveTableRow<ColumnKey extends string> {
   id: string;
   cells: Record<ColumnKey, TInteractiveTableCell>;
   classes?: string; // Styles every cell in the row
 }
 
-interface ISortRules<ColumnKey extends string> {
+export interface ISortRules<ColumnKey extends string> {
   column: ColumnKey | null;
   ascending: boolean;
 }
@@ -133,6 +133,7 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
       {/* Heading */}
       <div className="contents">
         {columns.map((column) => {
+          const columnIsSortable = column.sortable ?? true;
           const cellClasses = joinTailwindClasses(
             "px-2.5 py-1.5 border-b border-l border-border-light first:border-l-0 text-text-primary font-semibold cursor-default group",
             openSortMenu === column.id ? "bg-surface-ui" : "hover:bg-surface-ui",
@@ -148,7 +149,7 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
                     <LucideInfo size={16} className="text-text-tertiary opacity-50 group-hover:opacity-100" />
                   </Tooltip>
                 )}
-                {column.sortable && renderSortControls(column)}
+                {columnIsSortable && renderSortControls(column)}
               </div>
             </div>
           );
