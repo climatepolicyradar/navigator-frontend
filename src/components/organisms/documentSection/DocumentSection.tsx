@@ -33,6 +33,15 @@ const TABLE_COLUMNS: IInteractiveTableColumn<TColumnKeys>[] = [
   },
 ];
 
+/**
+ * TODO Jess Thu 26th June:
+ * [ ] Add documents type to IProps so an array of documents can be passed in.
+ * [ ] Map data from each document to InteractiveTable's columns prop. Use TColumnKeys as the generic.
+ * [ ] If not all litigation-specific data is present, work with backend to figure out how to API it.
+ * [ ] Smaller screen breakpoints using cols-3: etc (see Columns component for example)
+ * [ ] Mysterious list view 👀
+ */
+
 interface IProps {}
 
 export const DocumentSection = ({}: IProps) => {
