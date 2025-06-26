@@ -6,7 +6,7 @@ import { NewFeatureContext } from "@/context/NewFeatureContext";
 import { NewFeatureBanner } from "./NewFeatureBanner";
 
 const meta = {
-  title: "Molecules/New Featurees/NewFeatureBanner",
+  title: "Molecules/New Features/NewFeatureBanner",
   component: NewFeatureBanner,
   argTypes: {},
 } satisfies Meta<typeof NewFeatureBanner>;
