@@ -25,10 +25,10 @@ export const Default: TStory = {
   },
   render: ({ ...props }) => (
     <ToggleGroup {...props}>
-      <Toggle Icon={LucideTable} value="table">
+      <Toggle Icon={LucideTable} value="table" rounded>
         Table
       </Toggle>
-      <Toggle Icon={LucideScrollText} value="list">
+      <Toggle Icon={LucideScrollText} value="list" rounded>
         List
       </Toggle>
     </ToggleGroup>
