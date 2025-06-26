@@ -40,12 +40,15 @@ jobs:
           LHCI_BASE_HASH: ${{ github.event.pull_request.base.sha }}
       - name: Extract build ID and check for performance regressions (Desktop)
         run: |
-          BUILD_ID=$(grep "Saving CI build" lighthouse-output.log | sed 's/.*(\([^)]*\)).*/\1/')
+          BUILD_ID=$(grep "Saving CI build" lighthouse-output.log | grep -o '[a-f0-9]\{8\}-[a-f0-9]\{4\}-[a-f0-9]\{4\}-[a-f0-9]\{4\}-[a-f0-9]\{12\}' | head -1)
           if [ -n "$BUILD_ID" ]; then
             echo "LHCI_BUILD_ID=$BUILD_ID" >> $GITHUB_ENV
+            echo "🔍 Extracted build ID: $BUILD_ID"
             node scripts/check-lighthouse-regression.js
           else
             echo "⚠️  Could not extract build ID from Lighthouse output"
+            echo "📄 Lighthouse output:"
+            cat lighthouse-output.log
             exit 0
           fi
         env:
@@ -76,12 +79,15 @@ jobs:
           LHCI_BASE_HASH: ${{ github.event.pull_request.base.sha }}
       - name: Extract build ID and check for performance regressions (Mobile)
         run: |
-          BUILD_ID=$(grep "Saving CI build" lighthouse-output.log | sed 's/.*(\([^)]*\)).*/\1/')
+          BUILD_ID=$(grep "Saving CI build" lighthouse-output.log | grep -o '[a-f0-9]\{8\}-[a-f0-9]\{4\}-[a-f0-9]\{4\}-[a-f0-9]\{4\}-[a-f0-9]\{12\}' | head -1)
           if [ -n "$BUILD_ID" ]; then
             echo "LHCI_BUILD_ID=$BUILD_ID" >> $GITHUB_ENV
+            echo "🔍 Extracted build ID: $BUILD_ID"
             node scripts/check-lighthouse-regression.js
           else
             echo "⚠️  Could not extract build ID from Lighthouse output"
+            echo "📄 Lighthouse output:"
+            cat lighthouse-output.log
             exit 0
           fi
         env:
