@@ -11,10 +11,12 @@ module.exports = {
     },
     assert: {
       assertions: {
-        "categories:performance": ["warn", { minScore: 0.6 }],
-        "categories:accessibility": ["warn", { minScore: 0.9 }],
-        "categories:best-practices": ["warn", { minScore: 0.9 }],
-        "categories:seo": ["warn", { minScore: 0.6 }],
+        // Lighthouse runs 3 times by default, so this checks each time the score is above the threshold.
+        // If any of the runs are below the threshold, the build will fail [error].
+        "categories:performance": ["error", { minScore: 0.6 }],
+        "categories:accessibility": ["error", { minScore: 0.75 }],
+        "categories:best-practices": ["error", { minScore: 0.75 }],
+        "categories:seo": ["error", { minScore: 0.6 }],
       },
     },
   },
