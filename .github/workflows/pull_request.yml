@@ -31,7 +31,7 @@ jobs:
       - name: install Lighthouse CI
         run: npm install -g @lhci/cli@0.14.x
       - name: run Lighthouse Desktop
-        run: lhci autorun --collect.settings.preset=desktop
+        run: lhci autorun --collect.settings.preset=desktop --baseHash=${{ github.event.pull_request.base.sha }}
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
@@ -50,7 +50,7 @@ jobs:
       - name: install Lighthouse CI
         run: npm install -g @lhci/cli@0.14.x
       - name: run Lighthouse Mobile
-        run: lhci autorun
+        run: lhci autorun --baseHash=${{ github.event.pull_request.base.sha }}
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
