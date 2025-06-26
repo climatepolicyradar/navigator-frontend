@@ -13,20 +13,11 @@ type TStory = StoryObj<typeof Section>;
 
 export default meta;
 
-const useSectionContext = ({ children, ...props }: IProps) => (
-  <Columns>
-    <main className="cols-3:col-span-2 cols-4:col-span-3 grid grid-cols-subgrid gap-6">
-      <Section {...props}>{children}</Section>
-    </main>
-  </Columns>
-);
-
 export const Minimal: TStory = {
   args: {
     title: "Minimal",
     children: <div className="bg-emerald-200 min-h-[300px]">Content</div>,
   },
-  render: useSectionContext,
 };
 
 export const FullyFeatured: TStory = {
@@ -45,5 +36,4 @@ export const FullyFeatured: TStory = {
       </p>
     ),
   },
-  render: useSectionContext,
 };
