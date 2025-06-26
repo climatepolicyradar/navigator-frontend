@@ -36,7 +36,7 @@ export const Input = ({
     inputClasses
   );
 
-  const iconClasses = "p-1 text-text-tertiary";
+  const iconClasses = "p-1 text-text-tertiary shrink-0";
   const iconHasButton = iconButtonType === "submit" || Boolean(onIconClick);
   const handleIconClick = () => {
     onIconClick?.(value);
@@ -50,7 +50,9 @@ export const Input = ({
             <Icon size={16} />
           </button>
         ) : (
-          <Icon size={16} className={iconClasses} />
+          <div className={iconClasses}>
+            <Icon size={16} />
+          </div>
         ))}
       <BaseInput className={allInputClasses} value={value} {...props} />
       {clearable && (
