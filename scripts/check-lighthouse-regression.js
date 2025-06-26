@@ -3,27 +3,60 @@
 /**
  * Lighthouse CI Regression Checker
  *
- * Parses Lighthouse CI comparison output and fails if any metric degrades
+ * Fetches comparison data from Lighthouse CI server and fails if any metric degrades
  * compared to the baseline branch.
  */
 
 const fs = require("fs");
+const http = require("http");
+const https = require("https");
 const path = require("path");
+
+/**
+ * Make HTTP request to fetch data
+ *
+ * @param {string} url - URL to fetch
+ * @returns {Promise<string>} Response data
+ */
+function fetchData(url) {
+  return new Promise((resolve, reject) => {
+    const client = url.startsWith("https:") ? https : http;
+
+    client
+      .get(url, (res) => {
+        let data = "";
+
+        res.on("data", (chunk) => {
+          data += chunk;
+        });
+
+        res.on("end", () => {
+          if (res.statusCode === 200) {
+            resolve(data);
+          } else {
+            reject(new Error(`HTTP ${res.statusCode}: ${res.statusMessage}`));
+          }
+        });
+      })
+      .on("error", (err) => {
+        reject(err);
+      });
+  });
+}
 
 /**
  * Parse Lighthouse CI comparison data and check for regressions
  *
- * @param {string} comparisonData - JSON string containing comparison data
+ * @param {Object} comparisonData - Comparison data from Lighthouse server
  * @returns {Object} Object containing regression status and details
  */
 function checkForRegressions(comparisonData) {
   try {
-    const data = JSON.parse(comparisonData);
     const regressions = [];
 
     // Check each URL's metrics
-    Object.keys(data).forEach((url) => {
-      const urlData = data[url];
+    Object.keys(comparisonData).forEach((url) => {
+      const urlData = comparisonData[url];
 
       // Check category scores
       if (urlData.categories) {
@@ -71,7 +104,7 @@ function checkForRegressions(comparisonData) {
 /**
  * Main function to run the regression check
  */
-function main() {
+async function main() {
   console.log("🔍 Checking Lighthouse CI for performance regressions...");
 
   // Check if we're in a PR context (baseHash should be provided)
@@ -81,23 +114,23 @@ function main() {
     process.exit(0);
   }
 
-  // Look for Lighthouse CI output files
-  const lhciDir = path.join(process.cwd(), ".lighthouseci");
-  if (!fs.existsSync(lhciDir)) {
-    console.log("⚠️  No Lighthouse CI output found, skipping regression check");
-    process.exit(0);
-  }
+  // Get Lighthouse server details from environment or config
+  const serverBaseUrl = process.env.LHCI_SERVER_BASE_URL || "http://ec2-54-217-16-2.eu-west-1.compute.amazonaws.com:9001";
+  const projectId = process.env.LHCI_PROJECT_ID || "lighthouse-ci-server";
+  const buildId = process.env.LHCI_BUILD_ID;
 
-  // Find comparison data
-  const comparisonFile = path.join(lhciDir, "comparison.json");
-  if (!fs.existsSync(comparisonFile)) {
-    console.log("⚠️  No comparison data found, skipping regression check");
+  if (!buildId) {
+    console.log("⚠️  No build ID found, skipping regression check");
     process.exit(0);
   }
 
   try {
-    const comparisonData = fs.readFileSync(comparisonFile, "utf8");
-    const result = checkForRegressions(comparisonData);
+    // Fetch comparison data from Lighthouse server
+    const comparisonUrl = `${serverBaseUrl}/api/projects/${projectId}/builds/${buildId}/comparison`;
+    console.log(`📡 Fetching comparison data from: ${comparisonUrl}`);
+
+    const comparisonData = await fetchData(comparisonUrl);
+    const result = checkForRegressions(JSON.parse(comparisonData));
 
     if (result.hasRegressions) {
       console.error("❌ Performance regressions detected:");
@@ -113,14 +146,17 @@ function main() {
       process.exit(0);
     }
   } catch (error) {
-    console.error("❌ Error reading Lighthouse comparison data:", error.message);
+    console.error("❌ Error fetching Lighthouse comparison data:", error.message);
     process.exit(1);
   }
 }
 
 // Run the script
 if (require.main === module) {
-  main();
+  main().catch((error) => {
+    console.error("❌ Script failed:", error.message);
+    process.exit(1);
+  });
 }
 
 module.exports = { checkForRegressions };
