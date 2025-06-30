@@ -10,9 +10,57 @@ export const configHandlers = [
       },
     });
   }),
+  http.get("/api/theme-config", () => {
+    return HttpResponse.json({
+      categories: {
+        label: "Category",
+        options: [
+          {
+            label: "All",
+            slug: "all",
+          },
+        ],
+      },
+      documentCategories: ["All"],
+      filters: [
+        {
+          label: "Published jurisdiction",
+          taxonomyKey: "country",
+          options: [],
+        },
+      ],
+      features: { knowledgeGraph: false, searchFamilySummary: false },
+      metadata: [
+        {
+          key: "search",
+          title: "Law and Policy Search",
+        },
+      ],
+    });
+  }),
   http.get("*/config", () => {
     return HttpResponse.json({
-      geographies: [],
+      geographies: [
+        {
+          node: {
+            display_value: "South Asia",
+            slug: "south-asia",
+            type: "region",
+            value: "South Asia",
+          },
+          children: [
+            {
+              node: {
+                display_value: "Afghanistan",
+                slug: "AFG",
+                type: "country",
+                value: "Afghanistan",
+              },
+              children: [],
+            },
+          ],
+        },
+      ],
       languages: {},
       corpus_types: {
         corpus_type1: {
