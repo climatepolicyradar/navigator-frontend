@@ -24,7 +24,7 @@ import useCountries from "@/hooks/useCountries";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
 import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TGeography, TSearchCriteria, TThemeConfigOption, TCountry } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
-import { isCorporateReportsEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 
 const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption<any>) => {
@@ -125,21 +125,17 @@ const SearchFilters = ({
       {themeConfigStatus === "success" && themeConfig.categories && (
         <Accordian title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
           <InputListContainer>
-            {themeConfig.categories?.options?.map(
-              (option) =>
-                ((option.slug === "climate_policy_radar_reports" && isCorporateReportsEnabled(featureFlags)) ||
-                  option.slug !== "climate_policy_radar_reports") && (
-                  <InputRadio
-                    key={option.slug}
-                    label={option.label}
-                    checked={query && isCategoryChecked(query[QUERY_PARAMS.category] as string, option)}
-                    onChange={() => {
-                      handleDocumentCategoryClick(option.slug);
-                    }}
-                    name={`${themeConfig.categories.label}-${option.slug}`}
-                  />
-                )
-            )}
+            {themeConfig.categories?.options?.map((option) => (
+              <InputRadio
+                key={option.slug}
+                label={option.label}
+                checked={query && isCategoryChecked(query[QUERY_PARAMS.category] as string, option)}
+                onChange={() => {
+                  handleDocumentCategoryClick(option.slug);
+                }}
+                name={`${themeConfig.categories.label}-${option.slug}`}
+              />
+            ))}
           </InputListContainer>
         </Accordian>
       )}
