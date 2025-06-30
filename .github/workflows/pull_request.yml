@@ -37,6 +37,7 @@ jobs:
         run: lhci autorun --collect.settings.preset=desktop --baseHash=${{ github.event.pull_request.base.sha }}
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          LHCI_TOKEN: ${{ secrets.LHCI_CPR_DESKTOP_TOKEN }}
 
   lhci-mobile:
     name: Lighthouse Mobile
@@ -59,6 +60,7 @@ jobs:
         run: lhci autorun --baseHash=${{ github.event.pull_request.base.sha }}
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          LHCI_TOKEN: ${{ secrets.LHCI_CPR_MOBILE_TOKEN }}
 
   percy:
     runs-on: ubuntu-latest
