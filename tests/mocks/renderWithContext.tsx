@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { ThemeContext } from "@/context/ThemeContext";
 
-export const renderWithContext = (Component: React.ComponentType<any>, pageProps: any) => {
+export const renderWithContext = (Component: React.ComponentType<any>, pageProps?: any) => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {

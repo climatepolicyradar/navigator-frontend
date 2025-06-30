@@ -1,4 +1,5 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
+import { renderWithContext } from "tests/mocks/renderWithContext";
 
 import CountryPage from "../../../src/pages/geographies/[id]";
 
@@ -15,36 +16,14 @@ vi.mock("next/router", () => ({
   },
 }));
 
-vi.mock("react", async (importOriginal) => {
-  const actual = (await importOriginal()) as Record<string, unknown>;
-  return {
-    ...actual,
-    useContext: () => ({
-      theme: "cpr",
-      themeConfig: {
-        documentCategories: ["All"],
-        metadata: [
-          {
-            key: "geography",
-            title: "{text} climate laws and policies",
-          },
-        ],
-      },
-    }),
-  };
-});
-
-vi.mock("react-query", () => ({
-  useQuery: vi.fn(() => ({
-    data: {},
-    isLoading: false,
-    error: null,
-  })),
+vi.mock("next/dynamic", () => ({
+  default: () => {
+    // Return a dummy component
+    return function DummyComponent({ children }) {
+      return <div>{children}</div>;
+    };
+  },
 }));
-
-vi.mock("next/dynamic", () => {
-  return { default: () => "cpr" };
-});
 
 describe("CountryPage", () => {
   it.each(["cpr", "cclw"])("displays alert with Sabin tracker link on us geography page for %s", async (theme) => {
@@ -65,7 +44,7 @@ describe("CountryPage", () => {
     };
 
     // @ts-ignore
-    render(<CountryPage {...usa_props} />);
+    renderWithContext(CountryPage, usa_props);
     expect(screen.getByRole("heading", { name: "United States of America", level: 1 })).toBeDefined();
     expect(screen.getByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).toBeDefined();
 
@@ -91,7 +70,7 @@ describe("CountryPage", () => {
     };
 
     // @ts-ignore
-    render(<CountryPage {...props} />);
+    renderWithContext(CountryPage, props);
     expect(screen.getByRole("heading", { name: "Brazil", level: 1 })).toBeDefined();
     expect(screen.queryByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).toBeNull();
 
@@ -117,7 +96,7 @@ describe("CountryPage", () => {
     };
 
     // @ts-ignore
-    render(<CountryPage {...usa_props} />);
+    renderWithContext(CountryPage, usa_props);
     expect(screen.getByRole("heading", { name: "United States of America", level: 1 })).toBeDefined();
     expect(screen.queryByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).toBeNull();
 
