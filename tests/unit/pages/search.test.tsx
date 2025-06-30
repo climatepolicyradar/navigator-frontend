@@ -1,9 +1,11 @@
-import { fireEvent, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { fireEvent, screen, within } from "@testing-library/react";
 import React from "react";
 import { renderWithContext } from "tests/mocks/renderWithContext";
 
 import Search from "@/pages/search";
+
+import { prettyDOM } from "@testing-library/react";
+import fs from "fs";
 
 vi.mock("next/router", () => ({
   useRouter: () => {
@@ -12,6 +14,7 @@ vi.mock("next/router", () => ({
       pathname: "/search",
       query: {},
       asPath: "/search",
+      push: vi.fn(),
     };
   },
 }));
@@ -55,6 +58,14 @@ describe("SearchPage", async () => {
     });
 
     expect(countryInput).toBeInTheDocument();
-    userEvent.type(countryInput, "Country");
+    fireEvent.change(countryInput, { target: { value: "Belize" } });
+    expect(countryInput).toHaveValue("Belize");
+
+    const domOutput = prettyDOM(document.body, 300000, { highlight: false });
+    fs.writeFileSync("debug-output.html", domOutput);
+
+    const countryOptions = within(screen.getByTestId("countries")).getAllByRole("listitem");
+    expect(countryOptions).toHaveLength(1);
+    fireEvent.click(countryOptions[0]);
   });
 });

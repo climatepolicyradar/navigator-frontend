@@ -1,0 +1,318 @@
+<body>
+  <div>
+    <div class="h-full min-h-lvh flex flex-col">
+      <a class="sr-only" href="#main"> Skip to content </a>
+      <div>
+        <section>
+          <div class="border-b border-gray-200 py-4">
+            <div class="max-w-maxSiteWidth w-full px-5 mx-auto md:flex justify-between items-center">
+              <ul class="flex items-baseline flex-wrap gap-2 text-sm" data-cy="breadcrumbs">
+                <li class="false" data-cy="breadcrumb home">
+                  <a class="underline hover:text-blue-800 text-textNormal" href="/"> Home </a>
+                </li>
+                <li>›</li>
+                <li class="text-textDark font-medium" data-cy="breadcrumb current">Search results</li>
+              </ul>
+              <div>
+                <span class="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
+                  <span> Download data (.csv): </span>
+                  <a
+                    class="flex gap-2 items-center justify-end text-blue-600 hover:underline hover:text-blue-800"
+                    data-cy="download-search-csv"
+                    href="#"
+                  >
+                    this search
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="max-w-maxSiteWidth mx-auto flex items-stretch" id="search">
+            <div
+              class="md:block md:w-maxSidebar md:grow-0 md:shrink-0 absolute z-99 top-0 w-screen bg-white duration-250 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] fixed translate-y-[100vh] md:translate-y-[0%] md:h-full md:sticky md:top-[72px] md:z-50"
+            >
+              <div
+                class="sticky md:top-[72px] h-screen md:h-[calc(100vh-72px)] px-5 bg-white md:border-r border-gray-300 pt-5 pb-[180px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pb-4"
+              >
+                <div class="text-sm text-text-secondary flex flex-col gap-5" data-cy="seach-filters" id="search_filters">
+                  <div class="flex justify-between">
+                    <div class="flex items-center gap-2">
+                      <p class="text-[15px] text-text-primary font-normal">Filters</p>
+                      <div aria-expanded="false" aria-haspopup="dialog" class="cursor-help text-text-secondary" role="button" tabindex="0">
+                        <svg
+                          aria-hidden="true"
+                          class="lucide lucide-info"
+                          fill="none"
+                          height="16"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                          width="16"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 16v-4" />
+                          <path d="M12 8h.01" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div data-cy="categories">
+                    <div class="flex items-center justify-between cursor-pointer group" data-cy="accordian-control">
+                      <div class="flex items-center gap-2">
+                        <div class="text-[15px] font-medium text-textDark">Category</div>
+                      </div>
+                      <span class="text-textDark opacity-40 group-hover:opacity-100">
+                        <svg
+                          aria-hidden="true"
+                          class="lucide lucide-chevron-up"
+                          fill="none"
+                          height="24"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                          width="24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="m18 15-6-6-6 6" />
+                        </svg>
+                      </span>
+                    </div>
+                    <div style="opacity: 1; height: auto; margin-top: 14px">
+                      <div
+                        class="relative max-h-[300px] overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500"
+                      >
+                        <div class="flex flex-col gap-2">
+                          <label class="flex gap-2 cursor-pointer font-medium text-textDark">
+                            <input checked="" class="w-[24px] h-[24px]" name="Category-all" type="radio" />
+                            <span class="flex items-center"> All </span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div data-cy="regions">
+                    <div class="flex items-center justify-between cursor-pointer group" data-cy="accordian-control">
+                      <div class="flex items-center gap-2">
+                        <div class="text-[15px] font-medium text-textDark">Region</div>
+                      </div>
+                      <span class="text-textDark opacity-40 group-hover:opacity-100">
+                        <svg
+                          aria-hidden="true"
+                          class="lucide lucide-chevron-down"
+                          fill="none"
+                          height="24"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                          width="24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="m6 9 6 6 6-6" />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="relative z-10" data-cy="countries">
+                    <div class="flex items-center justify-between cursor-pointer group" data-cy="accordian-control">
+                      <div class="flex items-center gap-2">
+                        <div class="text-[15px] font-medium text-textDark">Published jurisdiction</div>
+                      </div>
+                      <span class="text-textDark opacity-40 group-hover:opacity-100">
+                        <svg
+                          aria-hidden="true"
+                          class="lucide lucide-chevron-up"
+                          fill="none"
+                          height="24"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                          width="24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="m18 15-6-6-6 6" />
+                        </svg>
+                      </span>
+                    </div>
+                    <div style="opacity: 0; height: 0px; margin-top: 0px">
+                      <div class="relative max-h-[300px] overflow-visible">
+                        <div class="flex flex-col gap-2">
+                          <div class="relative">
+                            <div class="relative default">
+                              <span class="input-icon icon-left">
+                                <svg fill="none" style="width: 16px; height: 16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                  <mask height="24" id="mask0_785_11660" maskUnits="userSpaceOnUse" style="mask-type: alpha" width="24" x="0" y="0">
+                                    <rect fill="currentColor" height="24" width="24" />
+                                  </mask>
+                                  <g mask="url(#mask0_785_11660)">
+                                    <path
+                                      d="M19.6 21L13.3 14.7C12.8 15.1 12.225 15.4167 11.575 15.65C10.925 15.8833 10.2333 16 9.5 16C7.68333 16 6.14583 15.3708 4.8875 14.1125C3.62917 12.8542 3 11.3167 3 9.5C3 7.68333 3.62917 6.14583 4.8875 4.8875C6.14583 3.62917 7.68333 3 9.5 3C11.3167 3 12.8542 3.62917 14.1125 4.8875C15.3708 6.14583 16 7.68333 16 9.5C16 10.2333 15.8833 10.925 15.65 11.575C15.4167 12.225 15.1 12.8 14.7 13.3L21 19.6L19.6 21ZM9.5 14C10.75 14 11.8125 13.5625 12.6875 12.6875C13.5625 11.8125 14 10.75 14 9.5C14 8.25 13.5625 7.1875 12.6875 6.3125C11.8125 5.4375 10.75 5 9.5 5C8.25 5 7.1875 5.4375 6.3125 6.3125C5.4375 7.1875 5 8.25 5 9.5C5 10.75 5.4375 11.8125 6.3125 12.6875C7.1875 13.5625 8.25 14 9.5 14Z"
+                                      fill="currentColor"
+                                    />
+                                  </g>
+                                </svg>
+                              </span>
+                              <input
+                                aria-label="Search for a jurisdiction"
+                                class="default extra-content-left !rounded-t-xl !border-b-transparent !rounded-b-none !outline-none !ring-0 hover:!border-borderNormal focus:!border-borderNormal !bg-white"
+                                name="jurisdiction-search"
+                                placeholder="Start typing..."
+                                type="text"
+                                value="Belize"
+                              />
+                            </div>
+                            <div class="absolute top-full left-0 w-full z-30 mt-[-1px]">
+                              <ul class="bg-white rounded-b-xl border border-borderNormal border-t-0 m-0">
+                                <li class="cursor-pointer p-2 hover:text-textDark hover:font-medium hover:bg-blue-100 last:rounded-b-xl">Belize</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div data-cy="date-range">
+                    <div class="flex items-center justify-between cursor-pointer group" data-cy="accordian-control">
+                      <div class="flex items-center gap-2">
+                        <div class="text-[15px] font-medium text-textDark">Date</div>
+                      </div>
+                      <span class="text-textDark opacity-40 group-hover:opacity-100">
+                        <svg
+                          aria-hidden="true"
+                          class="lucide lucide-chevron-down"
+                          fill="none"
+                          height="24"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                          width="24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="m6 9 6 6 6-6" />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="absolute z-50 bottom-0 left-0 w-full flex pb-[100px] bg-white md:hidden">
+                <button
+                  class="flex flex-row items-center justify-center leading-3.5 font-medium transition duration-200 focus-visible:outline-2 outline-offset-2 px-4 py-3 text-sm bg-surface-brand hocus:bg-surface-brand-dark outline-surface-brand-dark rounded-md text-text-light m-4 w-full"
+                >
+                  Apply
+                </button>
+              </div>
+            </div>
+            <div class="flex-1 bg-white transition-all duration-150">
+              <div class="max-w-maxContent basis-maxContent mx-auto px-5 relative">
+                <div class="mt-5">
+                  <div class="w-full flex justify-center h-96">
+                    <div class="flex items-start justify-center">
+                      <object class="radar" data="/images/radar-loader.svg" style="width: 80px" type="image/svg+xml" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <div
+          class="fixed top-0 bottom-0 right-0 w-11/12 bg-white z-70 transition duration-150 origin-left transform shadow-2xl shadow-black/40 md:w-2/3 xl:w-5/12 overflow-y-scroll scrollbar-narrow translate-x-[110%]"
+        >
+          <div class="flex absolute z-20 top-3 right-3">
+            <button
+              class="flex flex-row items-center justify-center leading-3.5 font-medium transition duration-200 focus-visible:outline-2 outline-offset-2 w-9 h-9 text-sm bg-transparent hover:bg-surface-ui outline-surface-mono-dark rounded-md text-text-primary text-text-secondary"
+            >
+              <svg
+                fill="currentColor"
+                id="Capa_1"
+                style="width: 16px; height: 16px"
+                version="1.1"
+                viewBox="0 0 341.751 341.751"
+                x="0px"
+                xmlns="http://www.w3.org/2000/svg"
+                y="0px"
+              >
+                <g>
+                  <g>
+                    <rect height="42.667" transform="matrix(0.7072 -0.707 0.707 0.7072 -70.7868 170.8326)" width="440.528" x="-49.415" y="149.542" />
+                  </g>
+                </g>
+                <g>
+                  <g>
+                    <rect height="440.528" transform="matrix(0.707 -0.7072 0.7072 0.707 -70.7712 170.919)" width="42.667" x="149.569" y="-49.388" />
+                  </g>
+                </g>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div
+          class="fixed inset-0 z-2000 flex flex-col justify-center items-center bg-surface-mono-dark/50 overflow-hidden transition duration-200 opacity-0 pointer-events-none"
+        >
+          <div
+            class="px-5 py-4 rounded-md bg-surface-light border border-border-light text-text-primary relative max-w-[460px] max-h-[calc(100vh-32px)] sm:max-h-[calc(100vh-64px)] px-8 py-6 m-4 !border-0 !rounded-2xl overflow-hidden"
+          >
+            <div class="mb-3 flex flex-row-reverse justify-between items-center gap-3">
+              <button class="text-text-brand">
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-x"
+                  fill="none"
+                  height="18"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="18"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
+              </button>
+              <h1 class="text-lg leading-tight font-semibold text-text-primary flex-1">Download CSV</h1>
+            </div>
+            <div class="flex flex-col gap-4 text-sm text-text-secondary">
+              <p>
+                Please read our
+                <a href="/terms-of-use"> terms of use </a>
+                , including any specific terms relevant to commercial use. Please contact
+
+                <a class="text-text-brand underline" href="mailto:partners@climatepolicyradar.org" rel="noopener noreferrer" target="_blank">
+                  partners@climatepolicyradar.org
+                </a>
+
+                with any questions. Note that the actual number of entries returned may be 1 or 2 below the total indicated on the search results
+                page.
+              </p>
+              <div class="flex gap-2">
+                <button
+                  class="flex flex-row items-center justify-center leading-3.5 font-medium transition duration-200 focus-visible:outline-2 outline-offset-2 px-4 py-3 text-sm bg-surface-brand hocus:bg-surface-brand-dark outline-surface-brand-dark rounded-md text-text-light"
+                >
+                  Download
+                </button>
+                <button
+                  class="flex flex-row items-center justify-center leading-3.5 font-medium transition duration-200 focus-visible:outline-2 outline-offset-2 px-4 py-3 text-sm bg-transparent hover:bg-surface-ui outline-surface-brand-dark rounded-md text-cpr-blue"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>

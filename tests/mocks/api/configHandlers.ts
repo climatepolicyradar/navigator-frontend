@@ -51,10 +51,10 @@ export const configHandlers = [
           children: [
             {
               node: {
-                display_value: "Afghanistan",
-                slug: "AFG",
+                display_value: "Belize",
+                slug: "BLZ",
                 type: "country",
-                value: "Afghanistan",
+                value: "Belize",
               },
               children: [],
             },
