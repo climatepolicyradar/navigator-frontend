@@ -66,9 +66,11 @@ describe("SearchPage", async () => {
     expect(countryOptions).toHaveLength(1);
     fireEvent.click(countryOptions[0]);
 
-    expect(screen.getByText("Results")).toBeDefined();
+    const domOutput = prettyDOM(document.body, 300000, { highlight: false });
+    fs.writeFileSync("debug-output.html", domOutput);
 
-    // const domOutput = prettyDOM(document.body, 300000, { highlight: false });
-    // fs.writeFileSync("debug-output.html", domOutput);
+    expect(screen.getByText("Results")).toBeDefined();
+    expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeDefined();
+    expect(screen.queryByText("Argentina Biennial Transparency Report. BTR1")).not.toBeDefined();
   });
 });
