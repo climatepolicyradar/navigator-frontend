@@ -31,6 +31,10 @@ vi.mock("next/dynamic", () => ({
 describe("SearchPage", async () => {
   it("", async () => {
     const search_props = {
+      envConfig: {
+        BACKEND_API_URL: process.env.BACKEND_API_URL,
+        CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
+      },
       theme: "cpr",
       themeConfig: {
         documentCategories: ["All"],
