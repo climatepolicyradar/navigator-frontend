@@ -6,9 +6,6 @@ import { renderWithContext } from "tests/mocks/renderWithContext";
 
 import Search from "@/pages/search";
 
-import { prettyDOM } from "@testing-library/react";
-import fs from "fs";
-
 vi.mock("next/dynamic", () => ({
   default: () => {
     // Return a dummy component
