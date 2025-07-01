@@ -1,6 +1,7 @@
+vi.mock("next/router", () => require("next-router-mock"));
+
 import { fireEvent, screen, within } from "@testing-library/react";
 import React from "react";
-import { setupMockRouter } from "tests/mocks/mockNextRouter";
 import { renderWithContext } from "tests/mocks/renderWithContext";
 
 import Search from "@/pages/search";
@@ -17,17 +18,11 @@ vi.mock("next/dynamic", () => ({
   },
 }));
 
-beforeEach(() => {
-  setupMockRouter("/search", {});
-});
-
-afterEach(() => {
-  vi.resetModules();
-});
-
 describe("SearchPage", async () => {
   it("filters search results by country", async () => {
     const search_props = {
+      initialUrl: "/search",
+      initialQuery: {},
       envConfig: {
         BACKEND_API_URL: process.env.BACKEND_API_URL,
         CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
@@ -47,7 +42,7 @@ describe("SearchPage", async () => {
     // @ts-ignore
     renderWithContext(Search, search_props);
 
-    expect(screen.getByRole("heading", { level: 2, name: "Search results" })).toBeDefined();
+    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeDefined();
 
     const countryFilterControl = await screen.findByText(/Published jurisdiction/i);
 
@@ -66,11 +61,8 @@ describe("SearchPage", async () => {
     expect(countryOptions).toHaveLength(1);
     fireEvent.click(countryOptions[0]);
 
-    const domOutput = prettyDOM(document.body, 300000, { highlight: false });
-    fs.writeFileSync("debug-output.html", domOutput);
-
-    expect(screen.getByText("Results")).toBeDefined();
+    expect(await screen.findByText("Results")).toBeDefined();
     expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeDefined();
-    expect(screen.queryByText("Argentina Biennial Transparency Report. BTR1")).not.toBeDefined();
+    expect(screen.queryByText("Argentina Biennial Transparency Report. BTR1")).toBeNull();
   });
 });
