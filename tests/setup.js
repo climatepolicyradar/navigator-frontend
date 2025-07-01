@@ -75,3 +75,8 @@ afterAll(() => {
   server.close();
   localStorage.clear();
 });
+
+Object.defineProperty(window, "scrollTo", {
+  value: () => {},
+  writable: true,
+});
