@@ -61,11 +61,13 @@ describe("SearchPage", async () => {
     fireEvent.change(countryInput, { target: { value: "Belize" } });
     expect(countryInput).toHaveValue("Belize");
 
-    const domOutput = prettyDOM(document.body, 300000, { highlight: false });
-    fs.writeFileSync("debug-output.html", domOutput);
-
     const countryOptions = within(screen.getByTestId("countries")).getAllByRole("listitem");
     expect(countryOptions).toHaveLength(1);
     fireEvent.click(countryOptions[0]);
+
+    expect(screen.getByText("Results")).toBeDefined();
+
+    const domOutput = prettyDOM(document.body, 300000, { highlight: false });
+    fs.writeFileSync("debug-output.html", domOutput);
   });
 });

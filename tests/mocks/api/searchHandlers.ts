@@ -11,8 +11,8 @@ export const searchHandlers = [
   }),
   http.post("*/searches", () => {
     return HttpResponse.json({
-      hits: 12,
-      total_family_hits: 12,
+      hits: 2,
+      total_family_hits: 2,
       query_time_ms: 17,
       total_time_ms: 18,
       continuation_token: null,
