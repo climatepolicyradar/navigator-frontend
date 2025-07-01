@@ -9,26 +9,6 @@ expect.extend(matchers);
 
 configure({ testIdAttribute: "data-cy" });
 
-// Mock matchMedia
-//
-// This is used for testing responsive design features as many UI components from Chakra UI
-// depend on this to determine the current viewport size & to apply responsive styles.
-//
-// The browsers's window.matchMedia is not available in the JSDOM test env.
-Object.defineProperty(window, "matchMedia", {
-  writable: true,
-  value: vi.fn().mockImplementation((query) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(), // deprecated
-    removeListener: vi.fn(), // deprecated
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
-});
-
 // Mock ResizeObserver
 //
 // This is used to detect changes in element dimensions that components often use to
