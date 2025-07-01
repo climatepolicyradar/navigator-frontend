@@ -92,7 +92,6 @@
     "globals": "^16.2.0",
     "jsdom": "^26.0.0",
     "msw": "^2.10.2",
-    "next-router-mock": "^1.0.2",
     "postcss": "^8.5.1",
     "postcss-preset-env": "^7.0.2",
     "prettier": "^3.5.3",
