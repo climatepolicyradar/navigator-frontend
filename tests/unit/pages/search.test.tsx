@@ -1,23 +1,12 @@
 import { fireEvent, screen, within } from "@testing-library/react";
 import React from "react";
+import { setupMockRouter } from "tests/mocks/mockNextRouter";
 import { renderWithContext } from "tests/mocks/renderWithContext";
 
 import Search from "@/pages/search";
 
 import { prettyDOM } from "@testing-library/react";
 import fs from "fs";
-
-vi.mock("next/router", () => ({
-  useRouter: () => {
-    return {
-      route: "/search",
-      pathname: "/search",
-      query: {},
-      asPath: "/search",
-      push: vi.fn(),
-    };
-  },
-}));
 
 vi.mock("next/dynamic", () => ({
   default: () => {
@@ -28,8 +17,16 @@ vi.mock("next/dynamic", () => ({
   },
 }));
 
+beforeEach(() => {
+  setupMockRouter("/search", {});
+});
+
+afterEach(() => {
+  vi.resetModules();
+});
+
 describe("SearchPage", async () => {
-  it("", async () => {
+  it("filters search results by country", async () => {
     const search_props = {
       envConfig: {
         BACKEND_API_URL: process.env.BACKEND_API_URL,
@@ -71,7 +68,7 @@ describe("SearchPage", async () => {
 
     expect(screen.getByText("Results")).toBeDefined();
 
-    const domOutput = prettyDOM(document.body, 300000, { highlight: false });
-    fs.writeFileSync("debug-output.html", domOutput);
+    // const domOutput = prettyDOM(document.body, 300000, { highlight: false });
+    // fs.writeFileSync("debug-output.html", domOutput);
   });
 });
