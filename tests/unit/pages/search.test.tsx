@@ -1,4 +1,5 @@
-import { fireEvent, screen, within } from "@testing-library/react";
+import { act, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { renderWithAppContext } from "tests/mocks/renderWithAppContext";
 
 import Search from "@/pages/search";
@@ -30,19 +31,29 @@ describe("SearchPage", async () => {
     const countryFilterControl = await screen.findByText(/Published jurisdiction/i);
 
     expect(countryFilterControl).toBeDefined();
-    fireEvent.click(countryFilterControl);
+    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
+    // like animations that were causing warnings in the console.
+    await act(async () => {
+      await userEvent.click(countryFilterControl);
+    });
 
     const countryInput = screen.getByRole("textbox", {
       name: "Search for a jurisdiction",
     });
 
     expect(countryInput).toBeInTheDocument();
-    fireEvent.change(countryInput, { target: { value: "Belize" } });
+
+    await act(async () => {
+      await userEvent.type(countryInput, "Belize");
+    });
     expect(countryInput).toHaveValue("Belize");
 
     const countryOptions = within(screen.getByTestId("countries")).getAllByRole("listitem");
     expect(countryOptions).toHaveLength(1);
-    fireEvent.click(countryOptions[0]);
+
+    await act(async () => {
+      await userEvent.click(countryOptions[0]);
+    });
 
     expect(await screen.findByText("Results")).toBeDefined();
     expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeDefined();
