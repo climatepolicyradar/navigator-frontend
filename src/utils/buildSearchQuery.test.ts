@@ -29,7 +29,7 @@ describe("buildSearchQuery: ", () => {
       metadata: [],
       documentCategories: ["All"],
       defaultDocumentCategory: "All",
-      features: { knowledgeGraph: true, searchFamilySummary: true },
+      features: { knowledgeGraph: true, searchFamilySummary: true, familyConceptsSearch: false },
     };
 
     const searchQueryWithNoCategory = buildSearchQuery({}, themeConfig);
@@ -52,7 +52,7 @@ describe("buildSearchQuery: ", () => {
       metadata: [],
       documentCategories: [],
       defaultDocumentCategory: "All",
-      features: { knowledgeGraph: true, searchFamilySummary: true },
+      features: { knowledgeGraph: true, searchFamilySummary: true, familyConceptsSearch: false },
     };
 
     const searchQuery = buildSearchQuery({}, themeConfig);

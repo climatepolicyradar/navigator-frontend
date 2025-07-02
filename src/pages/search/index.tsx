@@ -37,8 +37,9 @@ import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import useSearch from "@/hooks/useSearch";
 import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
+import { FamilyConcept, groupFamilyConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { isFamilyConceptsSearchEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
@@ -654,6 +655,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       const { data: returnedData } = await client.get(`/concepts/search?limit=10000&has_classifier=true`);
       conceptsData = returnedData;
     } catch (error) {
+      // TODO: handle error more elegantly
+    }
+  }
+
+  // TODO: Next - start rendering this data
+  let familyConceptsData: { data: FamilyConcept[] } | undefined;
+  let groupedFamilyConcepts: ReturnType<typeof groupFamilyConcepts> | undefined;
+  if (isFamilyConceptsSearchEnabled(themeConfig)) {
+    try {
+      const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts`);
+      familyConceptsData = await familyConceptsResponse.json();
+      groupedFamilyConcepts = groupFamilyConcepts(familyConceptsData.data);
+    } catch (e) {
       // TODO: handle error more elegantly
     }
   }
