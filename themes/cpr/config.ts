@@ -2,13 +2,8 @@ import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
   categories: {
-    label: "Category",
+    label: "Document Type",
     options: [
-      {
-        label: "Climate Policy Radar Reports",
-        slug: "climate_policy_radar_reports",
-        value: ["CPR.corpus.i00000002.n0000"],
-      },
       {
         label: "All",
         slug: "All",
@@ -31,22 +26,10 @@ const config: TThemeConfig = {
         ],
       },
       {
-        label: "UNFCCC",
+        label: "UNFCCC Submissions",
         slug: "UNFCCC",
         value: ["UNFCCC.corpus.i00000001.n0000"],
         category: ["UNFCCC"],
-      },
-      {
-        label: "Policies",
-        slug: "policies",
-        value: [
-          "CCLW.corpus.i00000001.n0000",
-          "CPR.corpus.i00000589.n0000",
-          "CPR.corpus.i00000591.n0000",
-          "CPR.corpus.i00000592.n0000",
-          "CPR.corpus.Goldstandard.n0000",
-        ],
-        category: ["Executive"],
       },
       {
         label: "Laws",
@@ -62,8 +45,20 @@ const config: TThemeConfig = {
         alias: "LAWS",
       },
       {
-        label: "Multilateral Climate Funds",
-        slug: "multilateral-climate-funds",
+        label: "Policies",
+        slug: "policies",
+        value: [
+          "CCLW.corpus.i00000001.n0000",
+          "CPR.corpus.i00000589.n0000",
+          "CPR.corpus.i00000591.n0000",
+          "CPR.corpus.i00000592.n0000",
+          "CPR.corpus.Goldstandard.n0000",
+        ],
+        category: ["Executive"],
+      },
+      {
+        label: "Climate Finance Projects",
+        slug: "climate-finance-projects",
         value: [
           "MCF.corpus.GCF.n0000",
           "MCF.corpus.GEF.n0000",
@@ -76,12 +71,17 @@ const config: TThemeConfig = {
         ],
       },
       {
-        label: "Reports",
-        slug: "Reports",
+        label: "Corporate Disclosures",
+        slug: "corporate-disclosures",
+        value: ["CPR.corpus.i00000002.n0000"],
+      },
+      {
+        label: "Industry Reports",
+        slug: "industry-reports",
         value: ["OEP.corpus.i00000001.n0000"],
       },
       {
-        label: "Litigation",
+        label: "Litigation (coming soon)",
         slug: "Litigation",
         category: ["Litigation"],
         value: ["LITIGATION-COMING-SOON"],
@@ -348,7 +348,8 @@ const config: TThemeConfig = {
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
   ],
-  documentCategories: ["All", "Laws", "Policies", "UNFCCC", "Litigation", "MCF", "Reports"],
+  documentCategories: ["All", "UNFCCC Submissions", "Laws", "Policies", "Climate Finance Projects", "Industry Reports", "Litigation"],
+  defaultDocumentCategory: "Laws",
   features: {
     knowledgeGraph: true,
     searchFamilySummary: false,

@@ -20,10 +20,11 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { currentYear, minYear } from "@/constants/timedate";
 import { SlideOutContext } from "@/context/SlideOutContext";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
+import useCountries from "@/hooks/useCountries";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
+import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TGeography, TSearchCriteria, TThemeConfigOption, TCountry } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
-import { isCorporateReportsEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 
 const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption<any>) => {
@@ -70,21 +71,25 @@ const SearchFilters = ({
   const { status: themeConfigStatus, themeConfig } = useGetThemeConfig();
   const [showClear, setShowClear] = useState(false);
   const { currentSlideOut, setCurrentSlideOut } = useContext(SlideOutContext);
+  const { data: geographies } = useCountries();
 
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
   } = searchCriteria;
 
   const thisYear = currentYear();
+  const useOldCountries = regionFilters.length > 0;
 
   // memoize the filtered countries
   const availableCountries = useMemo(() => {
-    return getCountriesFromRegions({
-      regions,
-      countries,
-      selectedRegions: regionFilters,
-    });
-  }, [regionFilters, regions, countries]);
+    return useOldCountries
+      ? getCountriesFromRegions({
+          regions,
+          countries,
+          selectedRegions: regionFilters,
+        })
+      : geographies;
+  }, [regionFilters, regions, useOldCountries, countries, geographies]);
 
   // Show clear button if there are filters applied
   useEffect(() => {
@@ -120,21 +125,17 @@ const SearchFilters = ({
       {themeConfigStatus === "success" && themeConfig.categories && (
         <Accordian title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
           <InputListContainer>
-            {themeConfig.categories?.options?.map(
-              (option) =>
-                ((option.slug === "climate_policy_radar_reports" && isCorporateReportsEnabled(featureFlags)) ||
-                  option.slug !== "climate_policy_radar_reports") && (
-                  <InputRadio
-                    key={option.slug}
-                    label={option.label}
-                    checked={query && isCategoryChecked(query[QUERY_PARAMS.category] as string, option)}
-                    onChange={() => {
-                      handleDocumentCategoryClick(option.slug);
-                    }}
-                    name={`${themeConfig.categories.label}-${option.slug}`}
-                  />
-                )
-            )}
+            {themeConfig.categories?.options?.map((option) => (
+              <InputRadio
+                key={option.slug}
+                label={option.label}
+                checked={query && isCategoryChecked(query[QUERY_PARAMS.category] as string, option)}
+                onChange={() => {
+                  handleDocumentCategoryClick(option.slug);
+                }}
+                name={`${themeConfig.categories.label}-${option.slug}`}
+              />
+            ))}
           </InputListContainer>
         </Accordian>
       )}
@@ -234,8 +235,8 @@ const SearchFilters = ({
           <TypeAhead
             list={availableCountries}
             selectedList={countryFilters}
-            keyField="slug"
-            keyFieldDisplay="display_value"
+            keyField={useOldCountries ? "slug" : "alpha_3"}
+            keyFieldDisplay={useOldCountries ? "display_value" : "name"}
             filterType={QUERY_PARAMS.country}
             handleFilterChange={handleFilterChange}
           />
