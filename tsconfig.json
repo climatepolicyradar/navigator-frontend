@@ -31,7 +31,8 @@
       "@/ccc/*": ["themes/ccc/*"],
       "@/cclw/*": ["themes/cclw/*"],
       "@/cpr/*": ["themes/cpr/*"],
-      "@/mcf/*": ["themes/mcf/*"]
+      "@/mcf/*": ["themes/mcf/*"],
+      "@/mocks/*": ["tests/mocks/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/api/pdf.js", "vitest.config.mts"],

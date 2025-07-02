@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
-import { renderWithAppContext } from "tests/mocks/renderWithAppContext";
+
+import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 
 import CountryPage from "./[id]";
 
