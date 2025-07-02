@@ -54,6 +54,7 @@ const testThemeConfig: TThemeConfig = {
   features: {
     knowledgeGraph: false,
     searchFamilySummary: true,
+    familyConceptsSearch: false,
   },
 };
 
