@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { renderWithAppContext } from "tests/mocks/renderWithAppContext";
 
-import LandingPage from "../../../../themes/mcf/pages/homepage";
+import LandingPage from "./homepage";
 
 const mockHandleSearchInput = vi.fn();
 const mockSearchInput = "mockSearchInput";
