@@ -1,5 +1,6 @@
 import { act, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
 import { renderWithAppContext } from "tests/mocks/renderWithAppContext";
 
 import Search from "@/pages/search";
