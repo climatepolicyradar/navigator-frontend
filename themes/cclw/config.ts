@@ -165,6 +165,7 @@ const config: TThemeConfig = {
   features: {
     knowledgeGraph: true,
     searchFamilySummary: true,
+    familyConceptsSearch: false,
   },
 };
 
