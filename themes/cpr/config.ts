@@ -353,6 +353,7 @@ const config: TThemeConfig = {
   features: {
     knowledgeGraph: true,
     searchFamilySummary: false,
+    familyConceptsSearch: false,
   },
 };
 

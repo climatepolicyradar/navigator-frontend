@@ -100,6 +100,15 @@ Themes are configured in `themes/[theme-name]/config.ts`. Each theme can overrid
 - Feature flags
 - Environment-specific configurations
 
+## 🏴‍☠️ Feature flags
+
+### Theme features
+
+We have the ability to turn features on per theme. These are controlled via the
+[`themeConfig.features`](./src/types/themeConfig.ts#l75).
+
+These are accessed via [`./src/utils/features.ts`](./src/utils/features.ts).
+
 ## 📜 License
 
 This project is licensed under the terms specified in [LICENSE.md](LICENSE.md).

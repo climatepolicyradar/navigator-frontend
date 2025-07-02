@@ -34,3 +34,8 @@ export const isSearchFamilySummaryEnabled = (themeConfig: TThemeConfig) =>
   isFeatureEnabled({
     configFeature: themeConfig.features.searchFamilySummary,
   });
+
+export const isFamilyConceptsSearchEnabled = (themeConfig: TThemeConfig) =>
+  isFeatureEnabled({
+    configFeature: themeConfig.features.familyConceptsSearch,
+  });

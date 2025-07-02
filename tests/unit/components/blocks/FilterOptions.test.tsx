@@ -25,6 +25,7 @@ describe("FilterOptions", () => {
       features: {
         knowledgeGraph: false,
         searchFamilySummary: true,
+        familyConceptsSearch: false,
       },
     };
 
