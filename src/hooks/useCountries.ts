@@ -11,7 +11,7 @@ export default function useCountries() {
     "geographies",
     async () => {
       const client = new ApiClient();
-      const geographiesUrl = `${CONCEPTS_API_URL}/geographies`;
+      const geographiesUrl = `${CONCEPTS_API_URL}/geographies/`;
       const query_response = await client.get(geographiesUrl);
       const countries: TCountry[] = query_response.data;
       return countries;
