@@ -1,25 +1,11 @@
-vi.mock("next/router", () => require("next-router-mock"));
-
 import { fireEvent, screen, within } from "@testing-library/react";
-import React from "react";
-import { renderWithContext } from "tests/mocks/renderWithContext";
+import { renderWithAppContext } from "tests/mocks/renderWithAppContext";
 
 import Search from "@/pages/search";
-
-vi.mock("next/dynamic", () => ({
-  default: () => {
-    // Return a dummy component
-    return function DummyComponent({ children }) {
-      return <div>{children}</div>;
-    };
-  },
-}));
 
 describe("SearchPage", async () => {
   it("filters search results by country", async () => {
     const search_props = {
-      initialUrl: "/search",
-      initialQuery: {},
       envConfig: {
         BACKEND_API_URL: process.env.BACKEND_API_URL,
         CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
@@ -37,7 +23,7 @@ describe("SearchPage", async () => {
       },
     };
     // @ts-ignore
-    renderWithContext(Search, search_props);
+    renderWithAppContext(Search, search_props);
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeDefined();
 

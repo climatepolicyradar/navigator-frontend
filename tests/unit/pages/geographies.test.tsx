@@ -1,20 +1,7 @@
 import { screen } from "@testing-library/react";
-import { renderWithContext } from "tests/mocks/renderWithContext";
+import { renderWithAppContext } from "tests/mocks/renderWithAppContext";
 
 import CountryPage from "../../../src/pages/geographies/[id]";
-
-vi.mock("next/router", () => ({
-  useRouter: () => {
-    return {
-      route: "/geographies/[id]",
-      pathname: "/geographies/united-states-of-america",
-      query: {
-        id: "united-states-of-america",
-      },
-      asPath: "/geographies/united-states-of-america",
-    };
-  },
-}));
 
 vi.mock("next/dynamic", () => ({
   default: () => {
@@ -44,7 +31,7 @@ describe("CountryPage", () => {
     };
 
     // @ts-ignore
-    renderWithContext(CountryPage, usa_props);
+    renderWithAppContext(CountryPage, usa_props);
     expect(screen.getByRole("heading", { name: "United States of America", level: 1 })).toBeDefined();
     expect(screen.getByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).toBeDefined();
 
@@ -70,7 +57,7 @@ describe("CountryPage", () => {
     };
 
     // @ts-ignore
-    renderWithContext(CountryPage, props);
+    renderWithAppContext(CountryPage, props);
     expect(screen.getByRole("heading", { name: "Brazil", level: 1 })).toBeDefined();
     expect(screen.queryByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).toBeNull();
 
@@ -96,7 +83,7 @@ describe("CountryPage", () => {
     };
 
     // @ts-ignore
-    renderWithContext(CountryPage, usa_props);
+    renderWithAppContext(CountryPage, usa_props);
     expect(screen.getByRole("heading", { name: "United States of America", level: 1 })).toBeDefined();
     expect(screen.queryByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).toBeNull();
 
