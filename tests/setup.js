@@ -1,10 +1,12 @@
 import * as matchers from "@testing-library/jest-dom/matchers";
-import { cleanup } from "@testing-library/react";
+import { cleanup, configure } from "@testing-library/react";
 
 import { server } from "./mocks/server.ts";
 require("dotenv").config({ path: ".env" });
 
 expect.extend(matchers);
+
+configure({ testIdAttribute: "data-cy" });
 
 // Mock ResizeObserver
 //

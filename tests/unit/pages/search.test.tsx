@@ -36,6 +36,7 @@ describe("SearchPage", async () => {
         ],
       },
     };
+    // @ts-ignore
     renderWithContext(Search, search_props);
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeDefined();
