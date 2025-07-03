@@ -1,7 +1,7 @@
 import { FC, ReactNode } from "react";
 
 import { systemGeoCodes } from "@/constants/systemGeos";
-import { getCountrySlug } from "@/helpers/getCountryFields";
+import { getCountrySlugOld } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
 
 import { LinkWithQuery } from "./LinkWithQuery";
@@ -16,9 +16,9 @@ type TCountryLink = {
 
 export const CountryLink: FC<TCountryLink> = ({ countryCode, className = "", emptyContentFallback, children, showFlag = true }) => {
   const configQuery = useConfig();
-  const { data: { countries = [] } = {} } = configQuery;
+  const { data: { countries = [] } = {} } = configQuery; // TODO: Update as part of APP-841
 
-  const slug = getCountrySlug(countryCode, countries);
+  const slug = getCountrySlugOld(countryCode, countries);
   // Force render without any empty content fallback the children without a link
   if (!slug && emptyContentFallback) return <>{emptyContentFallback}</>;
   if (!slug && !emptyContentFallback) return <>{children}</>;

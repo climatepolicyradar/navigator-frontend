@@ -14,7 +14,7 @@ interface IProps {
 
 export const CountryHeader = ({ country, targetCount, onTargetClick, theme, totalProjects }: IProps) => {
   const configQuery = useConfig();
-  const { data: { regions = [], countries = [] } = {} } = configQuery;
+  const { data: { regions = [], countries = [] } = {} } = configQuery; // TODO: Update as part of APP-841
 
   const countryGeography = countries.find((c: TGeography) => c.display_value === country.name);
 

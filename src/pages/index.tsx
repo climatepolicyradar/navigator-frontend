@@ -15,7 +15,7 @@ const IndexPage = () => {
   const { mutate: updateCountries } = useUpdateCountries();
 
   const configQuery = useConfig();
-  const { data: { regions = [], countries = [] } = {} } = configQuery;
+  const { data: { regions = [], countries = [] } = {} } = configQuery; // TODO: Update as part of APP-841
 
   const handleSearchInput = (term: string, filter?: string, filterValue?: string) => {
     triggerNewSearch(router, term, filter, filterValue);
