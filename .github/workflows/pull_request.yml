@@ -46,7 +46,7 @@ jobs:
         # The --baseHash parameter compares the current commit (the one being tested) against the specified base hash.
         # E.g., if your PR branch has commit abc123, and the main branch has commit def456,
         # --baseHash=def456 tells Lighthouse: "Compare abc123 against def456"
-        run: lhci autorun --collect.settings.preset=desktop --baseHash=${{ github.event.pull_request.base.sha }}
+        run: lhci autorun --config=lighthouserc.desktop.js --collect.settings.preset=desktop --baseHash=${{ github.event.pull_request.base.sha }}
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
           LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_DESKTOP_TOKEN', steps.upper-theme.outputs.theme)] }}
@@ -83,7 +83,7 @@ jobs:
         # The --baseHash parameter compares the current commit (the one being tested) against the specified base hash.
         # E.g., if your PR branch has commit abc123, and the main branch has commit def456,
         # --baseHash=def456 tells Lighthouse: "Compare abc123 against def456"
-        run: lhci autorun --baseHash=${{ github.event.pull_request.base.sha }}
+        run: lhci autorun --config=lighthouserc.mobile.js --baseHash=${{ github.event.pull_request.base.sha }}
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
           LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_MOBILE_TOKEN', steps.upper-theme.outputs.theme)] }}
