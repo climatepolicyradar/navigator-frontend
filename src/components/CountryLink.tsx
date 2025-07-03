@@ -1,7 +1,7 @@
 import { FC, ReactNode } from "react";
 
 import { systemGeoCodes } from "@/constants/systemGeos";
-import { getCountrySlug, getCountrySlugOld } from "@/helpers/getCountryFields";
+import { getCountrySlugOld } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
 
 import { LinkWithQuery } from "./LinkWithQuery";
