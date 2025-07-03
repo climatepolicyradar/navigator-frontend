@@ -25,7 +25,7 @@ import { Heading } from "@/components/typography/Heading";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { systemGeoNames } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { getCountryCode } from "@/helpers/getCountryFields";
+import { getCountryCodeOld } from "@/helpers/getCountryFields";
 import { TGeographyStats, TGeographySummary, TThemeConfig } from "@/types";
 import { TTarget, TEvent, TGeography, TTheme, TDocumentCategory } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
@@ -409,7 +409,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const configData = await client.getConfig();
     const response_geo = extractNestedData<TGeography>(configData.data?.geographies || []);
     countries = response_geo[1];
-    const country = getCountryCode(id as string, countries);
+    const country = getCountryCodeOld(id as string, countries);
     if (country) {
       const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${country.toLowerCase()}.json`);
       targetsData = targetsRaw.data;
