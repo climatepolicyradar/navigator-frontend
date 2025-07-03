@@ -1,9 +1,29 @@
-import { TCountry } from "@/types";
+import { TCountry, TGeography } from "@/types";
 
+// Old
+const findCountryObjectOld = (countrySearch: string, dataSet: TGeography[]) => {
+  let country = dataSet.find((c) => c.value.toLowerCase() === countrySearch.toLowerCase());
+  if (!country) country = dataSet.find((c) => c.slug.toLowerCase() === countrySearch.toLowerCase());
+  if (!country) country = dataSet.find((c) => c.display_value.toLowerCase() === countrySearch.toLowerCase());
+  if (!country) return null;
+  return country;
+};
+
+export const getCountrySlugOld = (countrySearch: string, dataSet: TGeography[]) => {
+  return findCountryObjectOld(countrySearch, dataSet)?.slug;
+};
+
+export const getCountryNameOld = (countrySearch: string, dataSet: TGeography[]) => {
+  // Official name is sometimes null.
+  return findCountryObjectOld(countrySearch, dataSet)?.display_value;
+};
+
+export const getCountryCodeOld = (countrySearch: string, dataSet: TGeography[]) => {
+  return findCountryObjectOld(countrySearch, dataSet)?.value;
+};
+
+// New geographies-api
 const findCountryObject = (countrySearch: string, dataSet: TCountry[]) => {
-  if (dataSet.length === 0) return null;
-  if (!dataSet[0].alpha_3) return null; // FIXME Remove
-
   let country = dataSet.find((c) => c.alpha_3.toLowerCase() === countrySearch.toLowerCase());
   if (!country) country = dataSet.find((c) => c.alpha_2.toLowerCase() === countrySearch.toLowerCase());
   if (!country) country = dataSet.find((c) => c.name.toLowerCase() === countrySearch.toLowerCase());

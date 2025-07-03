@@ -11,7 +11,7 @@ import { SubNav } from "@/components/nav/SubNav";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
-import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
+import { getCountryNameOld, getCountrySlug, getCountrySlugOld } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
 import { TDocumentPage, TFamilyPage } from "@/types";
 import { truncateString } from "@/utils/truncateString";
@@ -32,11 +32,11 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
   const [summary, setSummary] = useState("");
 
   const configQuery = useConfig();
-  const { data: { countries = [], languages = {} } = {} } = configQuery;
+  const { data: { countries = [], languages = {} } = {} } = configQuery; // TODO: Update as part of APP-841
 
-  const geographyNames = family.geographies ? family.geographies.map((geo) => getCountryName(geo, countries)) : null;
+  const geographyNames = family.geographies ? family.geographies.map((geo) => getCountryNameOld(geo, countries)) : null;
   const geoName = geographyNames ? geographyNames[0] : "";
-  const geoSlug = family.geographies ? getCountrySlug(family.geographies[0], countries) : "";
+  const geoSlug = family.geographies ? getCountrySlugOld(family.geographies[0], countries) : "";
   const isMain = document.document_role.toLowerCase().includes("main");
   const breadcrumbGeography = family.geographies && family.geographies.length > 1 ? null : { label: geoName, href: `/geographies/${geoSlug}` };
   const breadcrumbFamily = {

@@ -31,7 +31,7 @@ import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCorpusInfo } from "@/helpers/getCorpusInfo";
-import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
+import { getCountryNameOld, getCountrySlug, getCountrySlugOld } from "@/helpers/getCountryFields";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import useSearch from "@/hooks/useSearch";
@@ -94,9 +94,10 @@ const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
 
-  const geographyNames = page.geographies ? page.geographies.map((geo) => getCountryName(geo, countries)) : null;
+  // Update as part of APP-841
+  const geographyNames = page.geographies ? page.geographies.map((geo) => getCountryNameOld(geo, countries)) : null;
   const geographyName = geographyNames ? geographyNames[0] : "";
-  const geographySlug = page.geographies ? getCountrySlug(page.geographies[0], countries) : "";
+  const geographySlug = page.geographies ? getCountrySlugOld(page.geographies[0], countries) : "";
   const breadcrumbCategory = { label: "Search results", href: "/search" };
   const breadcrumbGeography =
     page.geographies && page.geographies.length > 1 ? null : { label: geographyName, href: `/geographies/${geographySlug}` };

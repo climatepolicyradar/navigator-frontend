@@ -1,5 +1,5 @@
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { getCountryName } from "@/helpers/getCountryFields";
+import { getCountryNameOld } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
 
 import FilterTag from "../labels/FilterTag";
@@ -13,7 +13,7 @@ interface IProps {
 
 const MultiList = ({ list, removeFilter, type, dataCy }: IProps) => {
   const configQuery = useConfig();
-  const { data: { countries = [] } = {} } = configQuery;
+  const { data: { countries = [] } = {} } = configQuery; // TODO: Update as part of APP-841
 
   const handleClick = (item: string) => {
     removeFilter(type, item);
@@ -24,7 +24,7 @@ const MultiList = ({ list, removeFilter, type, dataCy }: IProps) => {
       {list.length > 0
         ? list.map((item, index) => (
             <div key={`tag${index}`} className="mr-2 mt-1">
-              <FilterTag onClick={() => handleClick(item)} item={type === QUERY_PARAMS.country ? getCountryName(item, countries) : item} />
+              <FilterTag onClick={() => handleClick(item)} item={type === QUERY_PARAMS.country ? getCountryNameOld(item, countries) : item} />
             </div>
           ))
         : null}

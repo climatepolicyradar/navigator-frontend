@@ -5,7 +5,7 @@ import { convertDate } from "@/utils/timedate";
 
 export const DocumentMeta = ({ family, isMain, document, document_type }: { family: any; isMain: boolean; document: any; document_type: any }) => {
   const configQuery = useConfig();
-  const { data: { countries = [], languages = {} } = {} } = configQuery;
+  const { data: { countries = [], languages = {} } = {} } = configQuery; // TODO: Update as part of APP-841
   const [year] = convertDate(family.published_date);
 
   return (
