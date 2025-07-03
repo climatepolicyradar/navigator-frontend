@@ -76,8 +76,8 @@ const config: TThemeConfig = {
         value: ["CPR.corpus.i00000002.n0000"],
       },
       {
-        label: "Industry Reports",
-        slug: "industry-reports",
+        label: "Offshore Wind Reports",
+        slug: "offshore-wind-reports",
         value: ["OEP.corpus.i00000001.n0000"],
       },
       {
@@ -348,7 +348,7 @@ const config: TThemeConfig = {
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
   ],
-  documentCategories: ["All", "UNFCCC Submissions", "Laws", "Policies", "Climate Finance Projects", "Industry Reports", "Litigation"],
+  documentCategories: ["All", "UNFCCC Submissions", "Laws", "Policies", "Climate Finance Projects", "Offshore Wind Reports", "Litigation"],
   defaultDocumentCategory: "Laws",
   features: {
     knowledgeGraph: true,

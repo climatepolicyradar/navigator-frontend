@@ -6,7 +6,7 @@ const reportSubCategories = {
   GCF: "Guidance",
   GEF: "Guidance",
   Reports: "Report",
-  OEP: "Industry Report",
+  OEP: "Offshore Wind Report",
 };
 
 const subCategories: Record<TCorpusTypeSubCategory, string> = {

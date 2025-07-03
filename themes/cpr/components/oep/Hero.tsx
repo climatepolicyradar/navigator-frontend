@@ -24,7 +24,7 @@ export const Hero = () => {
   };
 
   const handleSubmit = (query?: string) => {
-    router.push({ pathname: "/search", query: { [QUERY_PARAMS.query_string]: query ?? term, [QUERY_PARAMS.category]: "Reports" } });
+    router.push({ pathname: "/search", query: { [QUERY_PARAMS.query_string]: query ?? term, [QUERY_PARAMS.category]: "offshore-wind-reports" } });
   };
 
   return (
