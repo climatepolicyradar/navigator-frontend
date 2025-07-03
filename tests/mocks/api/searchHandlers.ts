@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
-import { getFilteredFamilies } from "tests/mocks/repository";
 
+import { getFilteredFamilies } from "@/mocks/repository";
 import { TSearchCriteria } from "@/types";
 
 export const searchHandlers = [
