@@ -46,7 +46,7 @@ const categories: { title: TDocumentCategory; slug: string }[] = [
   { title: "Laws", slug: "laws" },
   { title: "Policies", slug: "policies" },
   { title: "Climate Finance Projects", slug: "climate-finance-projects" },
-  { title: "Industry Reports", slug: "industry-reports" },
+  { title: "Offshore Wind Reports", slug: "offshore-wind-reports" },
   { title: "Litigation", slug: "litigation" },
 ];
 
@@ -88,7 +88,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
       case "Climate Finance Projects":
         count = summary.family_counts.MCF;
         break;
-      case "Industry Reports":
+      case "Offshore Wind Reports":
         count = summary.family_counts.Reports;
         break;
     }
@@ -200,7 +200,7 @@ const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ g
           ));
     }
     // Reports
-    if (selectedCategory === "Industry Reports") {
+    if (selectedCategory === "Offshore Wind Reports") {
       return summary.top_families.Reports.length === 0
         ? renderEmpty("reports")
         : summary.top_families.Reports.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (

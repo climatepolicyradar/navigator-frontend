@@ -67,7 +67,7 @@ const config: TThemeConfig = {
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
   ],
-  documentCategories: ["All", "Laws", "Policies", "UNFCCC Submissions", "Litigation", "Climate Finance Projects", "Industry Reports"],
+  documentCategories: ["All", "Laws", "Policies", "UNFCCC Submissions", "Litigation", "Climate Finance Projects", "Offshore Wind Reports"],
   defaultDocumentCategory: "All",
   features: {
     knowledgeGraph: false,
