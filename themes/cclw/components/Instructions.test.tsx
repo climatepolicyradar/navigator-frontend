@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
-import { renderWithAppContext } from "tests/mocks/renderWithAppContext";
 
 import Instructions from "@/cclw/components/Instructions";
+import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 
 describe("Instructions: ", () => {
   it("displays the correct aggregated statistics for the number of documents available per category", async () => {
