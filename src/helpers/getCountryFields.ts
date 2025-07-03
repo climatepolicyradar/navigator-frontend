@@ -14,7 +14,6 @@ export const getCountrySlugOld = (countrySearch: string, dataSet: TGeography[]) 
 };
 
 export const getCountryNameOld = (countrySearch: string, dataSet: TGeography[]) => {
-  // Official name is sometimes null.
   return findCountryObjectOld(countrySearch, dataSet)?.display_value;
 };
 
