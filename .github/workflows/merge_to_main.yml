@@ -35,7 +35,7 @@ jobs:
           theme=$(echo ${{ matrix.theme }} | tr '[:lower:]' '[:upper:]')
           echo "theme=$theme" >> $GITHUB_OUTPUT
       - name: run Lighthouse Desktop
-        run: lhci autorun --collect.settings.preset=desktop
+        run: lhci autorun --config=lighthouserc.desktop.js --collect.settings.preset=desktop
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
           LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_DESKTOP_TOKEN', steps.upper-theme.outputs.theme)] }}
@@ -67,7 +67,7 @@ jobs:
           theme=$(echo ${{ matrix.theme }} | tr '[:lower:]' '[:upper:]')
           echo "theme=$theme" >> $GITHUB_OUTPUT
       - name: run Lighthouse Mobile
-        run: lhci autorun
+        run: lhci autorun --config=lighthouserc.mobile.js
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
           LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_MOBILE_TOKEN', steps.upper-theme.outputs.theme)] }}
