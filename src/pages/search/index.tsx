@@ -185,6 +185,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     delete router.query[QUERY_PARAMS.continuation_tokens];
 
     // Special handling for exact_match - toggle between true and false
+    // Without this, the exact_match pill will not be displayed if it is not present in the query string
+    // and the exact match param is removed from the query string, which is confusing now we
+    // have temporarily set exact match search as the default
     if (type === QUERY_PARAMS.exact_match) {
       const currentValue = router.query[type];
       const newValue = currentValue === "true" ? "false" : "true";
