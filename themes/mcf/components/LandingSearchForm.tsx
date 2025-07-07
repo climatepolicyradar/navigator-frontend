@@ -1,3 +1,4 @@
+import router from "next/router";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
@@ -5,16 +6,33 @@ import { Icon } from "@/components/atoms/icon/Icon";
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
-// See the method handleSearchInput in the index.tsx file for the processing of the example searches
 const EXAMPLE_SEARCHES = [
-  { id: 1, term: "Adaptation" },
-  { id: 2, term: "Extreme Weather" },
-  { id: 3, filterValue: "Philippines", filterType: QUERY_PARAMS.country },
+  {
+    id: 1,
+    label: "Adaptation",
+    params: {
+      [QUERY_PARAMS.query_string]: "Adaptation",
+    },
+  },
+  {
+    id: 2,
+    label: "Extreme Weather",
+    params: {
+      [QUERY_PARAMS.query_string]: "Extreme Weather",
+    },
+  },
+  {
+    id: 3,
+    label: "Philippines",
+    params: {
+      [QUERY_PARAMS.country]: "philippines",
+    },
+  },
 ];
 
 interface IProps {
   placeholder?: string;
-  handleSearchInput(term: string, filter?: string, filterValue?: string): void;
+  handleSearchInput: (term: string) => void;
   input?: string;
 }
 
@@ -45,6 +63,17 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
   }, [formRef]);
 
   const displayPlaceholder = placeholder ?? "Search the full text of any document";
+
+  const handleQuickSearch = (params: Record<string, string>) => {
+    // Push directly to search page with all parameters
+    router.push({
+      pathname: "/search",
+      query: {
+        ...params,
+        [QUERY_PARAMS.exact_match]: "true", // TODO: Remove this once we fix semantic search.
+      },
+    });
+  };
 
   return (
     <>
@@ -78,10 +107,10 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
             size="small"
             variant="ghost"
             className="hover:!bg-gray-100 !text-gray-500 underline"
-            onClick={() => handleSearchInput(example.term, example.filterType, example.filterValue)}
+            onClick={() => handleQuickSearch(example.params)}
             data-cy={`example-search-${example.id}`}
           >
-            {example.term ?? example.filterValue}
+            {example.label}
           </Button>
         ))}
       </div>
