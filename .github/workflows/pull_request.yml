@@ -50,6 +50,7 @@ jobs:
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
           LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_DESKTOP_TOKEN', steps.upper-theme.outputs.theme)] }}
+          ROBOTS: true
 
   lhci-mobile:
     name: Lighthouse Mobile (${{ matrix.theme }})
@@ -87,6 +88,7 @@ jobs:
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
           LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_MOBILE_TOKEN', steps.upper-theme.outputs.theme)] }}
+          ROBOTS: true
 
   percy:
     runs-on: ubuntu-latest
