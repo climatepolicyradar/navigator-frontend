@@ -8,6 +8,35 @@ import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
+interface SearchSuggestion {
+  label: string;
+  params?: Record<string, string>;
+}
+
+const SEARCH_SUGGESTIONS: SearchSuggestion[] = [
+  {
+    label: "Offshore wind development",
+    params: {
+      [QUERY_PARAMS.query_string]: "Offshore wind development",
+      [QUERY_PARAMS.exact_match]: "true",
+    },
+  },
+  {
+    label: "Floating offshore wind",
+    params: {
+      [QUERY_PARAMS.query_string]: "Floating offshore wind",
+      [QUERY_PARAMS.exact_match]: "true",
+    },
+  },
+  {
+    label: "Zoning and spatial planning",
+    params: {
+      [QUERY_PARAMS.concept_name]: "zoning and spatial planning",
+      [QUERY_PARAMS.exact_match]: "true",
+    },
+  },
+];
+
 export const Hero = () => {
   const router = useRouter();
   const [term, setTerm] = useState("");
@@ -24,7 +53,16 @@ export const Hero = () => {
   };
 
   const handleSubmit = (query?: string) => {
-    router.push({ pathname: "/search", query: { [QUERY_PARAMS.query_string]: query ?? term, [QUERY_PARAMS.category]: "offshore-wind-reports" } });
+    const suggestion = SEARCH_SUGGESTIONS.find((s) => s.label === term);
+
+    // Handle concept-based search
+    router.push({
+      pathname: "/search",
+      query: {
+        ...suggestion.params,
+        [QUERY_PARAMS.category]: "offshore-wind-reports",
+      },
+    });
   };
 
   return (
@@ -67,16 +105,13 @@ export const Hero = () => {
               <div className="flex gap-4 relative z-2 text-sm">
                 <p className="font-medium text-textDark">Suggestions:</p>
                 <ul className="flex flex-col md:flex-row gap-2 md:gap-4">
-                  <li>
-                    <a href="" onClick={handleSuggestionClick} className="text-textDark opacity-60 hover:opacity-100">
-                      Offshore wind development
-                    </a>
-                  </li>
-                  <li>
-                    <a href="" onClick={handleSuggestionClick} className="text-textDark opacity-60 hover:opacity-100">
-                      Floating offshore wind
-                    </a>
-                  </li>
+                  {SEARCH_SUGGESTIONS.map((suggestion, index) => (
+                    <li key={index}>
+                      <a href="" onClick={handleSuggestionClick} className="text-textDark opacity-60 hover:opacity-100">
+                        {suggestion.label}
+                      </a>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
