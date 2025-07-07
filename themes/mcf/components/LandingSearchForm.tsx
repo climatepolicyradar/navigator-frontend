@@ -32,10 +32,11 @@ const EXAMPLE_SEARCHES = [
 
 interface IProps {
   placeholder?: string;
+  handleSearchInput: (term: string) => void;
   input?: string;
 }
 
-const LandingSearchForm = ({ placeholder, input }: IProps) => {
+const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) => {
   const [term, setTerm] = useState("");
   const [formFocus, setFormFocus] = useState(false);
   const formRef = useRef(null);
