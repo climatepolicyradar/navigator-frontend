@@ -1,7 +1,13 @@
 module.exports = {
   ci: {
     collect: {
-      url: ["http://localhost:3000/", "http://localhost:3000/search"],
+      url: [
+        "http://localhost:3000/",
+        "http://localhost:3000/search",
+        "http://localhost:3000/geographies/chile",
+        "http://localhost:3000/document/climate-change-2022-impacts-adaptation-and-vulnerability_1f01",
+        "http://localhost:3000/documents/update-of-the-national-hydrogen-strategy-d2a6",
+      ],
       startServerCommand: "npm run start",
     },
     upload: {
