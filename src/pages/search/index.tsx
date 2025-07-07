@@ -361,14 +361,14 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     if (previousSearchQuery && previousSearchQuery.length > 0) {
       const newQuery = { [QUERY_PARAMS.query_string]: previousSearchQuery };
       if (exactMatchValue) {
-        newQuery[QUERY_PARAMS.exact_match] = exactMatchValue;
+        newQuery[QUERY_PARAMS.exact_match] = Array.isArray(exactMatchValue) ? exactMatchValue[0] : exactMatchValue;
       }
       router.push({ query: newQuery }, undefined, { shallow: true });
       return scrollTo(0, 0);
     }
     const newQuery = {};
     if (exactMatchValue) {
-      newQuery[QUERY_PARAMS.exact_match] = exactMatchValue;
+      newQuery[QUERY_PARAMS.exact_match] = Array.isArray(exactMatchValue) ? exactMatchValue[0] : exactMatchValue;
     }
     router.push({ query: newQuery }, undefined, { shallow: true });
     return scrollTo(0, 0);
