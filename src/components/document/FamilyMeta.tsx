@@ -17,7 +17,7 @@ interface IProps {
 
 export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name, document_type, source }: IProps) => {
   const configQuery = useConfig();
-  const { data: { countries = [] } = {} } = configQuery; // TODO: Update as part of APP-841
+  const { data: { countries = [] } = {} } = configQuery;
 
   const [year] = convertDate(date);
 
