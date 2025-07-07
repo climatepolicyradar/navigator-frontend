@@ -53,9 +53,9 @@ export const Hero = () => {
   };
 
   const handleSubmit = (query?: string) => {
-    const suggestion = SEARCH_SUGGESTIONS.find((s) => s.label === term);
+    const suggestion = SEARCH_SUGGESTIONS.find((s) => s.label === query);
+    if (!suggestion?.params) suggestion.params[QUERY_PARAMS.query_string] = query;
 
-    // Handle concept-based search
     router.push({
       pathname: "/search",
       query: {
