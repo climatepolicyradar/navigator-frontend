@@ -100,7 +100,7 @@ const SearchFilters = ({
   }, [query]);
 
   return (
-    <div id="search_filters" data-cy="seach-filters" className="text-sm text-text-secondary flex flex-col gap-5">
+    <div id="search_filters" data-cy="search-filters" className="text-sm text-text-secondary flex flex-col gap-5">
       {themeConfigStatus === "loading" && <Loader size="20px" />}
       <div className="flex justify-between">
         <div className="flex items-center gap-2">

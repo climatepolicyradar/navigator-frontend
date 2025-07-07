@@ -110,19 +110,6 @@ const handleFilterDisplay = (
     return null;
   }
 
-  // Special handling for exact_match - toggle between true and false
-  // Without this, the exact_match pill will not be displayed if it is not present in the query string
-  // and the exact match param is removed from the query string, which is confusing now we
-  // have temporarily set exact match search as the default
-  if (key === "exact_match") {
-    const toggleValue = value === "true" ? "false" : "true";
-    return (
-      <Pill key={value} onClick={() => filterChange(QUERY_PARAMS[key], toggleValue)}>
-        {filterLabel}
-      </Pill>
-    );
-  }
-
   return (
     <Pill key={value} onClick={() => filterChange(QUERY_PARAMS[key], filterValue)}>
       {filterLabel}
@@ -147,13 +134,6 @@ const generatePills = (
 
     // Exclude the search query from pills as it displays in NavSearch instead
     if (key === "query_string") return;
-
-    // Special handling for exact_match - always show a pill since it's always present
-    if (key === "exact_match") {
-      const isExactMatch = value === "true";
-      const pillValue = isExactMatch ? "true" : "false";
-      return pills.push(handleFilterDisplay(filterChange, queryParams, key, pillValue, countries, regions, themeConfig, concepts));
-    }
 
     if (value) {
       if (key === "year_range")

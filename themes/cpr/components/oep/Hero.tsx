@@ -18,14 +18,12 @@ const SEARCH_SUGGESTIONS: SearchSuggestion[] = [
     label: "Offshore wind development",
     params: {
       [QUERY_PARAMS.query_string]: "Offshore wind development",
-      [QUERY_PARAMS.exact_match]: "true",
     },
   },
   {
     label: "Floating offshore wind",
     params: {
       [QUERY_PARAMS.query_string]: "Floating offshore wind",
-      [QUERY_PARAMS.exact_match]: "true",
     },
   },
   {
@@ -61,6 +59,7 @@ export const Hero = () => {
       query: {
         ...suggestion.params,
         [QUERY_PARAMS.category]: "offshore-wind-reports",
+        [QUERY_PARAMS.exact_match]: "true", // TODO: Remove this once we fix semantic search.
       },
     });
   };

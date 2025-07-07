@@ -150,7 +150,10 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
     // Push directly to search page with all parameters
     router.push({
       pathname: "/search",
-      query: params,
+      query: {
+        ...params,
+        [QUERY_PARAMS.exact_match]: "true", // TODO: Remove this once we fix semantic search.
+      },
     });
   };
 
