@@ -184,6 +184,20 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
 
+    // Special handling for exact_match - toggle between true and false
+    // Without this, the exact_match pill will not be displayed if it is not present in the query string
+    // and the exact match param is removed from the query string, which is confusing now we
+    // have temporarily set exact match search as the default
+    if (type === QUERY_PARAMS.exact_match) {
+      const currentValue = router.query[type];
+      const newValue = currentValue === "true" ? "false" : "true";
+      router.query[type] = newValue;
+      router.push({ query: router.query }, undefined, { shallow: true });
+      scrollTo(0, 0);
+      resetCSVStatus();
+      return;
+    }
+
     let queryCollection: string[] = [];
 
     if (router.query[type]) {
@@ -248,10 +262,17 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     // Clear any continuation tokens when a new search query is made
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
-    router.query[type] = value;
-    if (!value || reset) {
-      delete router.query[type];
+
+    // Special handling for exact_match - always ensure it's present
+    if (type === QUERY_PARAMS.exact_match) {
+      router.query[type] = value;
+    } else {
+      router.query[type] = value;
+      if (!value || reset) {
+        delete router.query[type];
+      }
     }
+
     router.push({ query: router.query }, undefined, { shallow: true });
     scrollTo(0, 0);
     resetCSVStatus();
@@ -336,11 +357,20 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
 
   const handleClearSearch = () => {
     const previousSearchQuery = router.query[QUERY_PARAMS.query_string] as string;
+    const exactMatchValue = router.query[QUERY_PARAMS.exact_match];
     if (previousSearchQuery && previousSearchQuery.length > 0) {
-      router.push({ query: { [QUERY_PARAMS.query_string]: previousSearchQuery } }, undefined, { shallow: true });
+      const newQuery = { [QUERY_PARAMS.query_string]: previousSearchQuery };
+      if (exactMatchValue) {
+        newQuery[QUERY_PARAMS.exact_match] = Array.isArray(exactMatchValue) ? exactMatchValue[0] : exactMatchValue;
+      }
+      router.push({ query: newQuery }, undefined, { shallow: true });
       return scrollTo(0, 0);
     }
-    router.push({ query: {} }, undefined, { shallow: true });
+    const newQuery = {};
+    if (exactMatchValue) {
+      newQuery[QUERY_PARAMS.exact_match] = Array.isArray(exactMatchValue) ? exactMatchValue[0] : exactMatchValue;
+    }
+    router.push({ query: newQuery }, undefined, { shallow: true });
     return scrollTo(0, 0);
   };
 
