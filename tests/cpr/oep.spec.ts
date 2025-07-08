@@ -72,7 +72,7 @@ test.describe("OEP Landing Page Search", () => {
     // Verify the category filter is applied using correct URL parameters
     const url = page.url();
     expect(url).toContain("c=offshore-wind-reports");
-    expect(url).toContain("e=true");
+    expect(url).not.toContain("e=true");
   });
 
   test("should perform search with user input via search button", async ({ page }) => {
@@ -93,7 +93,7 @@ test.describe("OEP Landing Page Search", () => {
     const url = page.url();
     expect(url).toContain(`q=${urlify(searchTerm)}`);
     expect(url).toContain("c=offshore-wind-reports");
-    expect(url).toContain("e=true");
+    expect(url).not.toContain("e=true");
 
     // Verify we're on the search page
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
@@ -116,7 +116,7 @@ test.describe("OEP Landing Page Search", () => {
     const url = page.url();
     expect(url).toContain(`q=${urlify(searchTerm)}`);
     expect(url).toContain("c=offshore-wind-reports");
-    expect(url).toContain("e=true");
+    expect(url).not.toContain("e=true");
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
   });
 
@@ -132,7 +132,7 @@ test.describe("OEP Landing Page Search", () => {
     const url = page.url();
     expect(url).toContain("q=Offshore+wind+development");
     expect(url).toContain("c=offshore-wind-reports");
-    expect(url).toContain("e=true");
+    expect(url).not.toContain("e=true");
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
 
     // Navigate back to homepage for next test
@@ -150,7 +150,7 @@ test.describe("OEP Landing Page Search", () => {
     const url2 = page.url();
     expect(url2).toContain("q=Floating+offshore+wind");
     expect(url2).toContain("c=offshore-wind-reports");
-    expect(url2).toContain("e=true");
+    expect(url2).not.toContain("e=true");
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
 
     // Navigate back to homepage for next test
@@ -169,7 +169,7 @@ test.describe("OEP Landing Page Search", () => {
     const url3 = page.url();
     expect(url3).toContain("cfn=zoning+and+spatial+planning");
     expect(url3).toContain("c=offshore-wind-reports");
-    expect(url3).toContain("e=true");
+    expect(url3).not.toContain("e=true");
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
   });
 
@@ -207,7 +207,7 @@ test.describe("OEP Landing Page Search", () => {
     const url = page.url();
     expect(url).toContain("q=wind+%26+solar+energy+%282023%29");
     expect(url).toContain("c=offshore-wind-reports");
-    expect(url).toContain("e=true");
+    expect(url).not.toContain("e=true");
   });
 
   test("should handle very long search terms", async ({ page }) => {
@@ -229,7 +229,7 @@ test.describe("OEP Landing Page Search", () => {
       "q=offshore+wind+energy+development+and+environmental+impact+assessment+for+sustainable+renewable+energy+projects+in+coastal+regions"
     );
     expect(url).toContain("c=offshore-wind-reports");
-    expect(url).toContain("e=true");
+    expect(url).not.toContain("e=true");
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
   });
 });
