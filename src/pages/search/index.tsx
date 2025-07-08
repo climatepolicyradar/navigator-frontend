@@ -37,7 +37,7 @@ import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import useSearch from "@/hooks/useSearch";
 import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
-import { FamilyConcept, groupFamilyConcepts } from "@/utils/familyConcepts";
+import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isFamilyConceptsSearchEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
@@ -45,12 +45,14 @@ import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
+import { FamilyConceptPicker } from "@/components/organisms/FamilyConceptPicker";
 
 interface IProps {
   theme: TTheme;
   themeConfig: TThemeConfig;
   featureFlags: TFeatureFlags;
-  conceptsData?: TConcept[];
+  conceptsData?: TConcept[] | null;
+  familyConceptsData?: TConcept[] | null;
 }
 
 const SETTINGS_ANIMATION_VARIANTS = {
@@ -89,7 +91,13 @@ const getSelectedConcepts = (selectedConcepts: string | string[], allConcepts: T
   return allConcepts?.filter((concept) => selectedConceptsAsArray.includes(concept.preferred_label.toLowerCase())) || [];
 };
 
-const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme, themeConfig, featureFlags, conceptsData }: IProps) => {
+const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
+  theme,
+  themeConfig,
+  featureFlags,
+  conceptsData,
+  familyConceptsData,
+}: IProps) => {
   const router = useRouter();
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
@@ -384,6 +392,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     setSearchDirty(false);
   }, [showFilters]);
 
+  const groupedFamilyConcepts = Object.groupBy(familyConceptsData, (familyConcept) => familyConcept.type);
+
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
       <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
@@ -437,6 +447,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       countries={countries}
                       corpus_types={corpus_types}
                       conceptsData={conceptsData}
+                      familyConceptsData={familyConceptsData}
                       handleFilterChange={handleFilterChange}
                       handleYearChange={handleYearChange}
                       handleRegionChange={handleRegionChange}
@@ -445,9 +456,16 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
                       featureFlags={featureFlags}
                     />
                   </div>
-                  <SlideOut showCloseButton={false}>
-                    {currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Find mentions of topics" />}
-                  </SlideOut>
+
+                  {(conceptsData || familyConceptsData) && (
+                    <SlideOut showCloseButton={false}>
+                      {conceptsData && currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Find mentions of topics" />}
+                      {familyConceptsData && currentSlideOut === "familyConcepts" && (
+                        <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories concepts" />
+                      )}
+                    </SlideOut>
+                  )}
+
                   <div className="absolute z-50 bottom-0 left-0 w-full flex pb-[100px] bg-white md:hidden">
                     <Button
                       variant={searchDirty ? "solid" : "outlined"}
@@ -660,13 +678,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   // TODO: Next - start rendering this data
-  let familyConceptsData: { data: FamilyConcept[] } | undefined;
-  let groupedFamilyConcepts: ReturnType<typeof groupFamilyConcepts> | undefined;
+  let familyConceptsData: TConcept[] | undefined;
   if (isFamilyConceptsSearchEnabled(themeConfig)) {
     try {
       const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts`);
-      familyConceptsData = await familyConceptsResponse.json();
-      groupedFamilyConcepts = groupFamilyConcepts(familyConceptsData.data);
+      const familyConceptsJson: { data: FamilyConcept[] } = await familyConceptsResponse.json();
+      familyConceptsData = mapFamilyConceptsToConcepts(familyConceptsJson.data);
     } catch (e) {
       // TODO: handle error more elegantly
     }
@@ -678,6 +695,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       themeConfig,
       featureFlags,
       conceptsData: conceptsData ?? null,
+      familyConceptsData: familyConceptsData ?? null,
     }),
   };
 };

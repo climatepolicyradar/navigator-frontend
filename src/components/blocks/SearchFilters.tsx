@@ -46,6 +46,7 @@ interface IProps {
   countries: TGeography[];
   corpus_types: TCorpusTypeDictionary;
   conceptsData?: TConcept[];
+  familyConceptsData?: TConcept[];
   handleFilterChange(type: string, value: string, clearOthersOfType?: boolean): void;
   handleYearChange(values: string[], reset?: boolean): void;
   handleRegionChange(region: string): void;
@@ -61,6 +62,7 @@ const SearchFilters = ({
   countries,
   corpus_types,
   conceptsData,
+  familyConceptsData,
   handleFilterChange,
   handleYearChange,
   handleRegionChange,
@@ -144,7 +146,7 @@ const SearchFilters = ({
         <>
           <button
             className="items-center justify-between cursor-pointer group flex"
-            onClick={() => setCurrentSlideOut(currentSlideOut === "" ? "concepts" : "")}
+            onClick={() => setCurrentSlideOut(currentSlideOut === "concepts" ? "" : "concepts")}
             data-cy="concepts-control"
             {...{ [SLIDE_OUT_DATA_KEY]: "concepts" }}
           >
@@ -157,6 +159,31 @@ const SearchFilters = ({
             <span
               className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
                 currentSlideOut === "concepts" ? "transform rotate-180" : ""
+              }`}
+            >
+              <ChevronRight />
+            </span>
+          </button>
+        </>
+      )}
+
+      {familyConceptsData && (
+        <>
+          <button
+            className="items-center justify-between cursor-pointer group flex"
+            onClick={() => setCurrentSlideOut(currentSlideOut === "familyConcepts" ? "" : "familyConcepts")}
+            data-cy="familyConcepts-control"
+            {...{ [SLIDE_OUT_DATA_KEY]: "familyConcepts" }}
+          >
+            <Heading>
+              Family concepts
+              <Badge size="small" className="ml-2">
+                Beta
+              </Badge>
+            </Heading>
+            <span
+              className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
+                currentSlideOut === "familyConcepts" ? "transform rotate-180" : ""
               }`}
             >
               <ChevronRight />

@@ -1,39 +1,44 @@
+import { TConcept } from "@/types";
+
 export type FamilyConcept = {
   relation: "category" | "jurisdiction" | "principle_law";
   preferred_label: string;
   subconcept_of_labels: string[];
 };
 
-export function groupFamilyConcepts(items: FamilyConcept[]) {
-  const rootFamilyConcepts = items.filter((item) => item.subconcept_of_labels.length === 0);
-  const findRootAncestor = (item: FamilyConcept) => {
-    const root = rootFamilyConcepts.find((root) => item.subconcept_of_labels.find((label) => label === root.preferred_label));
-    return root;
-  };
-
-  const groupedByRoot = Object.groupBy(items, (item: FamilyConcept) => {
-    if (item.subconcept_of_labels.length === 0) {
-      return item.preferred_label;
-    } else {
-      const root = findRootAncestor(item);
-      if (!root) {
-        // We shouldn't really reach this - but the data is whacky
-        // so: Fallback to the item's preferred label
-        return item.preferred_label;
-      }
-      return root.preferred_label;
-    }
+export function getRecursiveParentLabels(item: FamilyConcept, items: FamilyConcept[]): string[] {
+  // Get all recursive parents
+  const parentLabels = item.subconcept_of_labels.flatMap((label) => {
+    return items.filter((i) => i.preferred_label === label);
   });
 
-  // Order these by how many subconcepts they have
-  // And then their preferred_label
-  for (const group in groupedByRoot) {
-    groupedByRoot[group].sort((a, b) => {
-      if (a.subconcept_of_labels.length === b.subconcept_of_labels.length) {
-        return a.preferred_label.localeCompare(b.preferred_label);
-      }
-      return a.subconcept_of_labels.length - b.subconcept_of_labels.length;
-    });
+  // If there are no parents, return an empty array
+  if (parentLabels.length === 0) {
+    return [];
   }
-  return groupedByRoot;
+
+  // Otherwise, recursively get the labels of the parents
+  const recursiveParentLabels = parentLabels.flatMap((parent) => {
+    return [parent.preferred_label, ...getRecursiveParentLabels(parent, items)];
+  });
+
+  // we reverse this to make sure we have the root parent first and
+  return recursiveParentLabels.toReversed();
+}
+
+export function mapFamilyConceptsToConcepts(familyConcepts: FamilyConcept[]): TConcept[] {
+  return familyConcepts.map((familyConcept) => {
+    return {
+      wikibase_id: familyConcept.preferred_label,
+      preferred_label: familyConcept.preferred_label,
+      subconcept_of: familyConcept.subconcept_of_labels,
+      recursive_subconcept_of: getRecursiveParentLabels(familyConcept, familyConcepts),
+      type: familyConcept.relation,
+      alternative_labels: [],
+      negative_labels: [],
+      description: "",
+      related_concepts: [],
+      has_subconcept: [],
+    };
+  });
 }
