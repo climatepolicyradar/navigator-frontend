@@ -109,6 +109,7 @@ const handleFilterDisplay = (
   if (!filterLabel) {
     return null;
   }
+
   return (
     <Pill key={value} onClick={() => filterChange(QUERY_PARAMS[key], filterValue)}>
       {filterLabel}

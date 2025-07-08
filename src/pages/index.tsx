@@ -34,13 +34,22 @@ const IndexPage = () => {
     });
   }, [updateCountries, regions, countries]);
 
+  // Set default exact match parameter if not present
+  useEffect(() => {
+    const exactMatchParam = router.query[QUERY_PARAMS.exact_match];
+    if (!exactMatchParam && router.isReady) {
+      const newQuery = { ...router.query, [QUERY_PARAMS.exact_match]: "true" };
+      router.replace({ query: newQuery }, undefined, { shallow: true });
+    }
+  }, [router, router.isReady]);
+
   return (
     <>
       <Homepage
         handleSearchInput={handleSearchInput}
         handleSearchChange={handleSearchChange}
         searchInput={(router.query[QUERY_PARAMS.query_string] as string) ?? ""}
-        exactMatch={router.query[QUERY_PARAMS.exact_match] === "true"}
+        exactMatch={router.query[QUERY_PARAMS.exact_match] === "true" || !router.query[QUERY_PARAMS.exact_match]}
       />
     </>
   );

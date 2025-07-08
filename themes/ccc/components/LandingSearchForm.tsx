@@ -1,3 +1,4 @@
+import router from "next/router";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
@@ -5,12 +6,37 @@ import { Icon } from "@/components/atoms/icon/Icon";
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
-// See the method handleSearchInput in the index.tsx file for the processing of the example searches
 const EXAMPLE_SEARCHES = [
-  { id: 1, term: "Adaptation" },
-  { id: 2, filterValue: "Brazil", filterType: QUERY_PARAMS.country },
-  { id: 3, term: "Climate framework laws" },
-  { id: 4, term: "Coastal zones" },
+  {
+    id: 1,
+    label: "Adaptation",
+    params: {
+      [QUERY_PARAMS.query_string]: "Adaptation",
+    },
+  },
+  {
+    id: 2,
+    label: "Brazil",
+    params: {
+      [QUERY_PARAMS.country]: "brazil",
+    },
+  },
+  {
+    id: 3,
+    label: "Climate framework laws",
+    params: {
+      [QUERY_PARAMS.category]: "laws",
+      [QUERY_PARAMS.framework_laws]: "true",
+      [QUERY_PARAMS.concept_name]: "emissions reduction target",
+    },
+  },
+  {
+    id: 4,
+    label: "Coastal zones",
+    params: {
+      [QUERY_PARAMS.concept_name]: "coastal zone",
+    },
+  },
 ];
 
 interface IProps {
@@ -47,6 +73,17 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
 
   const displayPlaceholder = placeholder ?? "Search the full text of any document";
 
+  const handleQuickSearch = (params: Record<string, string>) => {
+    // Push directly to search page with all parameters
+    router.push({
+      pathname: "/search",
+      query: {
+        ...params,
+        [QUERY_PARAMS.exact_match]: "true", // TODO: Remove this once we fix semantic search.
+      },
+    });
+  };
+
   return (
     <>
       <form data-cy="search-form" ref={formRef} onSubmit={(e) => e.preventDefault()}>
@@ -77,14 +114,8 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
       <div className="hidden mt-4 md:flex flex-wrap items-center gap-2">
         <span className="text-gray-200">Search by:</span>
         {EXAMPLE_SEARCHES.map((example) => (
-          <Button
-            key={example.id}
-            color="mono"
-            rounded
-            onClick={() => handleSearchInput(example.term, example.filterType, example.filterValue)}
-            data-cy={`example-search-${example.id}`}
-          >
-            {example.term ?? example.filterValue}
+          <Button key={example.id} color="mono" rounded onClick={() => handleQuickSearch(example.params)} data-cy={`example-search-${example.id}`}>
+            {example.label}
           </Button>
         ))}
       </div>

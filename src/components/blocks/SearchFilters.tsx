@@ -20,21 +20,20 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { currentYear, minYear } from "@/constants/timedate";
 import { SlideOutContext } from "@/context/SlideOutContext";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
-import useCountries from "@/hooks/useCountries";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TGeography, TSearchCriteria, TThemeConfigOption, TCountry } from "@/types";
+import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
 import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 
-const isCategoryChecked = (selectedCatgeory: string | undefined, themeConfigCategory: TThemeConfigOption<any>) => {
-  if (selectedCatgeory) {
-    if (selectedCatgeory.toLowerCase() === themeConfigCategory.slug.toLowerCase()) {
+const isCategoryChecked = (selectedCategory: string | undefined, themeConfigCategory: TThemeConfigOption<any>) => {
+  if (selectedCategory) {
+    if (selectedCategory.toLowerCase() === themeConfigCategory.slug.toLowerCase()) {
       return true;
     }
   }
 
-  if (!selectedCatgeory && themeConfigCategory.slug.toLowerCase() === "all") return true;
+  if (!selectedCategory && themeConfigCategory.slug.toLowerCase() === "all") return true;
 
   return false;
 };
@@ -73,25 +72,23 @@ const SearchFilters = ({
   const { status: themeConfigStatus, themeConfig } = useGetThemeConfig();
   const [showClear, setShowClear] = useState(false);
   const { currentSlideOut, setCurrentSlideOut } = useContext(SlideOutContext);
-  const { data: geographies } = useCountries();
 
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
   } = searchCriteria;
 
   const thisYear = currentYear();
-  const useOldCountries = regionFilters.length > 0;
 
   // memoize the filtered countries
   const availableCountries = useMemo(() => {
-    return useOldCountries
+    return regionFilters.length > 0
       ? getCountriesFromRegions({
           regions,
           countries,
           selectedRegions: regionFilters,
         })
-      : geographies;
-  }, [regionFilters, regions, useOldCountries, countries, geographies]);
+      : countries;
+  }, [regionFilters, regions, countries]);
 
   // Show clear button if there are filters applied
   useEffect(() => {
@@ -105,7 +102,7 @@ const SearchFilters = ({
   }, [query]);
 
   return (
-    <div id="search_filters" data-cy="seach-filters" className="text-sm text-text-secondary flex flex-col gap-5">
+    <div id="search_filters" data-cy="search-filters" className="text-sm text-text-secondary flex flex-col gap-5">
       {themeConfigStatus === "loading" && <Loader size="20px" />}
       <div className="flex justify-between">
         <div className="flex items-center gap-2">
@@ -262,8 +259,8 @@ const SearchFilters = ({
           <TypeAhead
             list={availableCountries}
             selectedList={countryFilters}
-            keyField={useOldCountries ? "slug" : "alpha_3"}
-            keyFieldDisplay={useOldCountries ? "display_value" : "name"}
+            keyField={"slug"}
+            keyFieldDisplay={"display_value"}
             filterType={QUERY_PARAMS.country}
             handleFilterChange={handleFilterChange}
           />
