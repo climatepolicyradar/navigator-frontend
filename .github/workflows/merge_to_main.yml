@@ -138,6 +138,10 @@ jobs:
   test-e2e:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        theme: [cpr, mcf]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -145,11 +149,11 @@ jobs:
           node-version: 22.12.0
       - run: npm ci
       - run: cp .env.example .env
-      - run: npm run build
+      - run: THEME=${{ matrix.theme }} npm run build
         env:
           NODE_ENV: production
       - run: npx playwright install --with-deps
-      - run: npx playwright test
+      - run: npx playwright test tests/core/ tests/${{ matrix.theme }}/
       - name: Upload Test Result
         # Upload the results even if the tests fails to Trunk.io
         if: ${{ !cancelled() }}
