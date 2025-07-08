@@ -41,7 +41,7 @@ export const Hero = () => {
 
   const handleKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleSubmit();
+      handleSubmit(term);
     }
   };
 
@@ -52,12 +52,16 @@ export const Hero = () => {
 
   const handleSubmit = (query?: string) => {
     const suggestion = SEARCH_SUGGESTIONS.find((s) => s.label === query);
-    if (!suggestion?.params) suggestion.params[QUERY_PARAMS.query_string] = query;
+    const searchParams = suggestion?.params || {};
+
+    if (query) {
+      searchParams[QUERY_PARAMS.query_string] = query;
+    }
 
     router.push({
       pathname: "/search",
       query: {
-        ...suggestion.params,
+        ...searchParams,
         [QUERY_PARAMS.category]: "offshore-wind-reports",
         [QUERY_PARAMS.exact_match]: "true", // TODO: Remove this once we fix semantic search.
       },
@@ -83,7 +87,7 @@ export const Hero = () => {
               </h1>
               <p className="my-6 text-xl text-textDark md:text-2xl">Helping the offshore wind sector design effective strategies</p>
               <div className="relative z-1 mb-4">
-                <button className="h-full absolute left-0 px-4 text-textNormal" onClick={() => handleSubmit()} aria-label="Search">
+                <button className="h-full absolute left-0 px-4 text-textNormal" onClick={() => handleSubmit(term)} aria-label="Search">
                   <span className="block">
                     <Icon name="search" height="20" width="20" />
                   </span>
