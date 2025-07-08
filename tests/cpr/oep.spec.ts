@@ -121,7 +121,7 @@ test.describe("OEP Landing Page Search", () => {
   });
 
   test("should handle search suggestions correctly", async ({ page }) => {
-    // Test clicking on "Offshore wind development" suggestion - use more specific selector
+    // Test clicking on "Offshore wind development" suggestion
     const suggestion = page.getByRole("link", { name: "Offshore wind development" }).first();
     await suggestion.click();
 
@@ -134,22 +134,42 @@ test.describe("OEP Landing Page Search", () => {
     expect(url).toContain("c=offshore-wind-reports");
     expect(url).toContain("e=true");
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
-  });
 
-  test("should handle special suggestion with concept_name parameter", async ({ page }) => {
+    // Navigate back to homepage for next test
+    await page.goto("/offshorewind");
+    await page.waitForLoadState("networkidle");
+
+    // Test clicking on "Floating offshore wind" suggestion
+    const suggestion2 = page.getByRole("link", { name: "Floating offshore wind" }).first();
+    await suggestion2.click();
+
+    // Should navigate to search page with the suggestion as query
+    await page.waitForURL("/search*");
+
+    // Verify the suggestion term is in the URL using correct parameters
+    const url2 = page.url();
+    expect(url2).toContain("q=Floating+offshore+wind");
+    expect(url2).toContain("c=offshore-wind-reports");
+    expect(url2).toContain("e=true");
+    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+
+    // Navigate back to homepage for next test
+    await page.goto("/offshorewind");
+    await page.waitForLoadState("networkidle");
+
     // Test clicking on "Zoning and spatial planning" suggestion
-    const suggestion = page.getByRole("link", { name: "Zoning and spatial planning" }).first();
-    await suggestion.click();
+    const suggestion3 = page.getByRole("link", { name: "Zoning and spatial planning" }).first();
+    await suggestion3.click();
 
     // Should navigate to search page with the special parameters
     await page.waitForURL("/search*");
 
     // Verify the special parameters are in the URL using correct parameters
     // This suggestion uses concept_name instead of query_string
-    const url = page.url();
-    expect(url).toContain("cfn=zoning+and+spatial+planning");
-    expect(url).toContain("c=offshore-wind-reports");
-    expect(url).toContain("e=true");
+    const url3 = page.url();
+    expect(url3).toContain("cfn=zoning+and+spatial+planning");
+    expect(url3).toContain("c=offshore-wind-reports");
+    expect(url3).toContain("e=true");
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
   });
 
