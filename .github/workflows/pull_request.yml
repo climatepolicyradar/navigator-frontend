@@ -175,7 +175,10 @@ jobs:
         env:
           NODE_ENV: production
       - run: npx playwright install --with-deps
-      - run: npx playwright test tests/core/ tests/${{ matrix.theme }}/ --output-dir=test-results-${{ matrix.theme }}
+      - run: npx playwright test tests/core/ tests/${{ matrix.theme }}/
+        env:
+          THEME: ${{ matrix.theme }}
+
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
