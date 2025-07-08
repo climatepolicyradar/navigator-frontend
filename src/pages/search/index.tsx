@@ -23,6 +23,7 @@ import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
 import { Info } from "@/components/molecules/info/Info";
 import { SubNav } from "@/components/nav/SubNav";
 import { ConceptPicker } from "@/components/organisms/ConceptPicker";
+import { FamilyConceptPicker } from "@/components/organisms/FamilyConceptPicker";
 import Pagination from "@/components/pagination";
 import { MultiCol } from "@/components/panels/MultiCol";
 import { SideCol } from "@/components/panels/SideCol";
@@ -45,7 +46,6 @@ import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
-import { FamilyConceptPicker } from "@/components/organisms/FamilyConceptPicker";
 
 interface IProps {
   theme: TTheme;

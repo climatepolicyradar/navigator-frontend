@@ -73,7 +73,6 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
   }
 
   query[QUERY_PARAMS.concept_name] = selectedConcepts;
-  console.info(selectedConcepts, "Selected concepts after change");
 
   router.push({ query: query }, undefined, { shallow: true });
 };

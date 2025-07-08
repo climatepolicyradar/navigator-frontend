@@ -1,4 +1,5 @@
 import { TConcept } from "@/types";
+
 import { FamilyConcept, getRecursiveParentLabels, mapFamilyConceptsToConcepts } from "./familyConcepts";
 
 const familyConcepts: FamilyConcept[] = [
