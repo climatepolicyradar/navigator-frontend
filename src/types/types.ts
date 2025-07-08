@@ -332,6 +332,7 @@ export type TConcept = {
   related_concepts: string[];
   subconcept_of: string[];
   wikibase_id: string;
+  type?: "principal_law" | "jurisdiction" | "category";
 };
 
 export type TSearchResponse = {
