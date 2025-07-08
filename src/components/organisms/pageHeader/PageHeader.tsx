@@ -36,7 +36,15 @@ export interface IPageHeaderTabsProps<Tab extends string> extends IPageHeaderGen
 
 type TProps<Tab extends string = string> = IPageHeaderMetadataProps | IPageHeaderTabsProps<Tab>;
 
-export const PageHeader = <Tab extends string>({ coloured = false, currentTab, label, metadata = [], onTabChange, tabs, title }: TProps<Tab>) => {
+export const PageHeader = <Tab extends string>({
+  coloured = false,
+  currentTab,
+  label,
+  metadata = [],
+  onTabChange,
+  tabs = [],
+  title,
+}: TProps<Tab>) => {
   const onTabClick = (clickedTab: string) => () => {
     onTabChange?.(clickedTab);
   };
@@ -51,7 +59,10 @@ export const PageHeader = <Tab extends string>({ coloured = false, currentTab, l
   const tertiaryTextClasses = coloured ? "text-text-light/60" : "text-text-tertiary";
 
   const labelClasses = joinTailwindClasses(largeTextClasses, tertiaryTextClasses);
-  const titleClasses = joinTailwindClasses(largeTextClasses, "block pb-24 cols-3:w-[80%] cols-3:col-span-2 cols-4:col-span-3");
+  const titleClasses = joinTailwindClasses(
+    largeTextClasses,
+    "block pt-8 pb-12 cols-3:pt-0 cols-3:pb-24 cols-3:w-[80%] cols-2:col-span-2 cols-4:col-span-3"
+  );
 
   return (
     <Columns containerClasses={containerClasses} gridClasses="gap-y-0">
@@ -60,8 +71,8 @@ export const PageHeader = <Tab extends string>({ coloured = false, currentTab, l
       <h1 className={titleClasses}>{title}</h1>
 
       {/* Metadata */}
-      {metadata && (
-        <div className="pb-4 flex gap-8 col-start-2 cols-3:col-end-4 cols-4:col-end-5 text-sm  leading-none">
+      {metadata.length > 0 && (
+        <div className="pb-4 flex gap-8 col-start-1 cols-2:col-end-3 cols-3:col-start-2 cols-3:col-end-4 cols-4:col-end-5 text-sm leading-none">
           {metadata.map((property) => (
             <div key={property.label} className="flex flex-col gap-2.5">
               <div className={tertiaryTextClasses}>{property.label}</div>
@@ -72,8 +83,8 @@ export const PageHeader = <Tab extends string>({ coloured = false, currentTab, l
       )}
 
       {/* Tabs */}
-      {tabs && (
-        <div className="flex gap-8 col-start-2 cols-3:col-end-4 cols-4:col-end-5 text-lg leading-tight font-[660]">
+      {tabs.length > 0 && (
+        <div className="flex gap-8 cols-3:col-start-2 cols-3:col-end-4 cols-4:col-end-5 text-lg leading-tight font-[660]">
           {tabs.map((tab) => {
             const tabIsActive = tab.tab === currentTab;
             const tabClasses = joinTailwindClasses("pb-4 mb-[1px] border-b-[3px]", !tabIsActive && `${tertiaryTextClasses} border-b-transparent`);
