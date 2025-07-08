@@ -248,17 +248,10 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     // Clear any continuation tokens when a new search query is made
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
-
-    // Special handling for exact_match - always ensure it's present
-    if (type === QUERY_PARAMS.exact_match) {
-      router.query[type] = value;
-    } else {
-      router.query[type] = value;
-      if (!value || reset) {
-        delete router.query[type];
-      }
+    router.query[type] = value;
+    if (!value || reset) {
+      delete router.query[type];
     }
-
     router.push({ query: router.query }, undefined, { shallow: true });
     scrollTo(0, 0);
     resetCSVStatus();
@@ -345,6 +338,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
     const previousSearchQuery = router.query[QUERY_PARAMS.query_string] as string;
     if (previousSearchQuery && previousSearchQuery.length > 0) {
       router.push({ query: { [QUERY_PARAMS.query_string]: previousSearchQuery } }, undefined, { shallow: true });
+      return scrollTo(0, 0);
     }
     router.push({ query: {} }, undefined, { shallow: true });
     return scrollTo(0, 0);
