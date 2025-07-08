@@ -1,7 +1,7 @@
 import { TConcept } from "@/types";
 
 export type FamilyConcept = {
-  relation: "category" | "jurisdiction" | "principle_law";
+  relation: "category" | "jurisdiction" | "principal_law";
   preferred_label: string;
   subconcept_of_labels: string[];
 };
