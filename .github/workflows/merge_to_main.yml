@@ -28,7 +28,7 @@ jobs:
       - run: cp .env.example .env
       - run: ROBOTS=true npm run build
       - name: install Lighthouse CI
-        run: npm install -g @lhci/cli@0.15
+        run: npm install -g @lhci/cli@0.14.x
       - id: upper-theme
         name: Theme to uppercase
         run: |
@@ -61,7 +61,7 @@ jobs:
       - run: cp .env.example .env
       - run: ROBOTS=true npm run build
       - name: install Lighthouse CI
-        run: npm install -g @lhci/cli@0.15
+        run: npm install -g @lhci/cli@0.14.x
       - id: upper-theme
         name: Theme to uppercase
         run: |
