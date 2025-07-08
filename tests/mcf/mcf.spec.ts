@@ -30,7 +30,7 @@ test.describe("MCF Hero Search", () => {
     await page.click('[data-cy="search-form"] button[aria-label="Search"]');
 
     // Should not crash - page should remain on homepage
-    await expect(page).toHaveURL(/e=true/);
+    await expect(page).not.toHaveURL(/e=true/);
     await expect(page.getByRole("heading", { name: "Multilateral Climate Funds" })).toBeVisible();
   });
 
@@ -48,7 +48,7 @@ test.describe("MCF Hero Search", () => {
 
     // Should have correct query parameters
     await expect(page).toHaveURL(/q=climate\+adaptation/);
-    await expect(page).toHaveURL(/e=true/);
+    await expect(page).not.toHaveURL(/e=true/);
   });
 
   test("should search with Enter key", async ({ page }) => {
@@ -63,7 +63,7 @@ test.describe("MCF Hero Search", () => {
 
     // Should have correct query parameters
     await expect(page).toHaveURL(/q=renewable\+energy/);
-    await expect(page).toHaveURL(/e=true/);
+    await expect(page).not.toHaveURL(/e=true/);
   });
 
   test("should handle search suggestions correctly", async ({ page }) => {
@@ -76,7 +76,7 @@ test.describe("MCF Hero Search", () => {
     // Verify the suggestion term is in the URL using correct parameters
     const url = page.url();
     expect(url).toContain("q=Adaptation");
-    expect(url).toContain("e=true");
+    expect(url).not.toContain("e=true");
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
 
     // Navigate back to homepage for next test
@@ -92,7 +92,7 @@ test.describe("MCF Hero Search", () => {
     // Verify the suggestion term is in the URL using correct parameters
     const url2 = page.url();
     expect(url2).toContain("q=Extreme+Weather");
-    expect(url2).toContain("e=true");
+    expect(url2).not.toContain("e=true");
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
 
     // Navigate back to homepage for next test
@@ -109,7 +109,7 @@ test.describe("MCF Hero Search", () => {
     // This suggestion uses country parameter instead of query_string
     const url3 = page.url();
     expect(url3).toContain("l=philippines");
-    expect(url3).toContain("e=true");
+    expect(url3).not.toContain("e=true");
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
   });
 
@@ -127,7 +127,7 @@ test.describe("MCF Hero Search", () => {
 
     // Should have correctly encoded query parameters
     await expect(page).toHaveURL(/q=climate\+%28adaptation%29/);
-    await expect(page).toHaveURL(/e=true/);
+    await expect(page).not.toHaveURL(/e=true/);
   });
 
   test("should handle long search terms", async ({ page }) => {
@@ -144,7 +144,7 @@ test.describe("MCF Hero Search", () => {
 
     // Should have correctly encoded query parameters
     await expect(page).toHaveURL(/q=multilateral\+climate\+fund\+adaptation\+projects\+in\+developing\+countries/);
-    await expect(page).toHaveURL(/e=true/);
+    await expect(page).not.toHaveURL(/e=true/);
   });
 
   test("should clear input when navigating back", async ({ page }) => {
@@ -175,7 +175,7 @@ test.describe("MCF Hero Search", () => {
 
     // Should have correct query parameters
     await expect(page).toHaveURL(/q=Adaptation/);
-    await expect(page).toHaveURL(/e=true/);
+    await expect(page).not.toHaveURL(/e=true/);
   });
 
   test("should handle country example search", async ({ page }) => {
@@ -187,7 +187,7 @@ test.describe("MCF Hero Search", () => {
 
     // Should have correct query parameters for country search
     await expect(page).toHaveURL(/l=philippines/);
-    await expect(page).toHaveURL(/e=true/);
+    await expect(page).not.toHaveURL(/e=true/);
   });
 
   test("should maintain search state on page refresh", async ({ page }) => {
@@ -208,6 +208,6 @@ test.describe("MCF Hero Search", () => {
     // Should still be on search results page with same parameters
     await expect(page).toHaveURL(/\/search/);
     await expect(page).toHaveURL(/q=climate\+finance/);
-    await expect(page).toHaveURL(/e=true/);
+    await expect(page).not.toHaveURL(/e=true/);
   });
 });

@@ -117,7 +117,6 @@ const LandingPageLinks = ({}) => {
       pathname: "/search",
       query: {
         ...params,
-        [QUERY_PARAMS.exact_match]: "true", // TODO: Remove this once we fix semantic search.
       },
     });
   };

@@ -59,19 +59,21 @@ export function PostHogProvider({ children, consent }: IProps) {
    * @see: https://posthog.com/docs/privacy#is-it-ok-for-my-api-key-to-be-exposed-and-public
    */
   useEffect(() => {
-    /** If consent is granted, initialize our cookied PostHog instance */
     posthog.init("phc_zaZYaLxsAeMjCLPsU2YvFqu4oaXRJ8uAkgXY8DancyL", {
       api_host: "https://eu.i.posthog.com",
       capture_pageview: false,
       capture_pageleave: true,
-      persistence: "memory",
     });
     window.sessionStorage.setItem("posthogLoaded", "true");
   }, []);
 
   useEffect(() => {
+    // We only set the config value based on consent
+    // This approach fixes the previous issue of not persisting user data between sessions
     if (consent) {
       posthog.set_config({ persistence: "localStorage+cookie" });
+    } else {
+      posthog.set_config({ persistence: "memory" });
     }
   }, [consent]);
 

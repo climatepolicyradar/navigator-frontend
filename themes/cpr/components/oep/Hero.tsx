@@ -30,7 +30,6 @@ const SEARCH_SUGGESTIONS: SearchSuggestion[] = [
     label: "Zoning and spatial planning",
     params: {
       [QUERY_PARAMS.concept_name]: "zoning and spatial planning",
-      [QUERY_PARAMS.exact_match]: "true",
     },
   },
 ];
@@ -45,25 +44,23 @@ export const Hero = () => {
     }
   };
 
-  const handleSuggestionClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    handleSubmit(e.currentTarget.textContent);
-  };
-
   const handleSubmit = (query?: string) => {
-    const suggestion = SEARCH_SUGGESTIONS.find((s) => s.label === query);
-    const searchParams = suggestion?.params || {};
-
-    if (query) {
-      searchParams[QUERY_PARAMS.query_string] = query;
-    }
-
     router.push({
       pathname: "/search",
       query: {
-        ...searchParams,
+        [QUERY_PARAMS.query_string]: query ?? term,
         [QUERY_PARAMS.category]: "offshore-wind-reports",
-        [QUERY_PARAMS.exact_match]: "true", // TODO: Remove this once we fix semantic search.
+      },
+    });
+  };
+
+  const handleQuickSearch = (params: Record<string, string>) => {
+    // Push directly to search page with all parameters
+    router.push({
+      pathname: "/search",
+      query: {
+        ...params,
+        [QUERY_PARAMS.category]: "offshore-wind-reports",
       },
     });
   };
@@ -110,7 +107,14 @@ export const Hero = () => {
                 <ul className="flex flex-col md:flex-row gap-2 md:gap-4">
                   {SEARCH_SUGGESTIONS.map((suggestion, index) => (
                     <li key={index}>
-                      <a href="" onClick={handleSuggestionClick} className="text-textDark opacity-60 hover:opacity-100">
+                      <a
+                        href=""
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleQuickSearch(suggestion.params);
+                        }}
+                        className="text-textDark opacity-60 hover:opacity-100"
+                      >
                         {suggestion.label}
                       </a>
                     </li>
