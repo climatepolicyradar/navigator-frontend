@@ -1,6 +1,6 @@
-import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   resolve: {
@@ -12,7 +12,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
-    exclude: ["**/node_modules/**", "**/.trunk/**", "**/tests/*.spec.ts", "**/themes/**"],
+    exclude: ["**/node_modules/**", "**/.trunk/**", "**/tests/**/*.spec.ts", "**/themes/**"],
     setupFiles: ["./tests/setup.js"],
     reporters: [process.env.CI ? ["junit", { outputFile: "./vitest.xml" }] : "verbose"],
   },
