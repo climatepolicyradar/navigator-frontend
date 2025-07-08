@@ -52,12 +52,16 @@ export const Hero = () => {
 
   const handleSubmit = (query?: string) => {
     const suggestion = SEARCH_SUGGESTIONS.find((s) => s.label === query);
-    if (!suggestion?.params) suggestion.params[QUERY_PARAMS.query_string] = query;
+    const searchParams = suggestion?.params || {};
+
+    if (query) {
+      searchParams[QUERY_PARAMS.query_string] = query;
+    }
 
     router.push({
       pathname: "/search",
       query: {
-        ...suggestion.params,
+        ...searchParams,
         [QUERY_PARAMS.category]: "offshore-wind-reports",
         [QUERY_PARAMS.exact_match]: "true", // TODO: Remove this once we fix semantic search.
       },
