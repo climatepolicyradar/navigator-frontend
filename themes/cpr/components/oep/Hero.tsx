@@ -41,7 +41,7 @@ export const Hero = () => {
 
   const handleKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleSubmit();
+      handleSubmit(term);
     }
   };
 
@@ -87,7 +87,7 @@ export const Hero = () => {
               </h1>
               <p className="my-6 text-xl text-textDark md:text-2xl">Helping the offshore wind sector design effective strategies</p>
               <div className="relative z-1 mb-4">
-                <button className="h-full absolute left-0 px-4 text-textNormal" onClick={() => handleSubmit()} aria-label="Search">
+                <button className="h-full absolute left-0 px-4 text-textNormal" onClick={() => handleSubmit(term)} aria-label="Search">
                   <span className="block">
                     <Icon name="search" height="20" width="20" />
                   </span>
