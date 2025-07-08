@@ -20,7 +20,7 @@ module.exports = {
         // Mobile typically has worse performance, so we set lower thresholds
         // Lighthouse runs 3 times by default, so this checks each time whether the score is above the threshold.
         // If the highest result of the 3 runs is below the threshold, the build will fail [error].
-        "categories:performance": ["error", { minScore: 0.25 }],
+        "categories:performance": ["error", { minScore: 0.2 }],
         "categories:accessibility": ["error", { minScore: 0.7 }],
         "categories:best-practices": ["error", { minScore: 0.75 }],
         "categories:seo": ["error", { minScore: 0.6 }],

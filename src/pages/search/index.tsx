@@ -115,7 +115,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ theme,
   }, [router]);
 
   const configQuery = useConfig();
-  const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery; // TODO: Update as part of APP-841
+  const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 

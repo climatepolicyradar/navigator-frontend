@@ -27,7 +27,7 @@ interface MultipleValuesContentProps {
 
 const ListOfCountries = ({ countryCodes, label }: ListOfCountriesProps) => {
   const configQuery = useConfig();
-  const { data: { countries = [] } = {} } = configQuery; // TODO: Update as part of APP-841
+  const { data: { countries = [] } = {} } = configQuery;
 
   return (
     <>

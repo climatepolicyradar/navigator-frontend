@@ -8,11 +8,9 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { sortOptions } from "@/constants/sortOptions";
 import { getConceptName } from "@/helpers/getConceptFields";
 import { getCountryName } from "@/helpers/getCountryFields";
-import { getRegionName } from "@/helpers/getRegionFields";
 import useConfig from "@/hooks/useConfig";
-import useCountries from "@/hooks/useCountries";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { TConcept, TCountry, TGeography, TThemeConfig } from "@/types";
+import { TConcept, TGeography, TThemeConfig } from "@/types";
 
 type TFilterChange = (type: string, value: string) => void;
 
@@ -21,12 +19,8 @@ interface IProps {
   concepts?: TConcept[];
 }
 
-const handleCountry = (slug: string, dataSet: TCountry[]) => {
+const handleCountryRegion = (slug: string, dataSet: TGeography[]) => {
   return getCountryName(slug, dataSet);
-};
-
-const handleRegion = (slug: string, dataSet: TGeography[]) => {
-  return getRegionName(slug, dataSet);
 };
 
 const handleConceptName = (label: string, concepts: TConcept[]) => {
@@ -54,7 +48,7 @@ const handleFilterDisplay = (
   queryParams: ParsedUrlQuery,
   key: TFilterKeys,
   value: string,
-  countries: TCountry[],
+  countries: TGeography[],
   regions: TGeography[],
   themeConfig: TThemeConfig,
   concepts?: TConcept[]
@@ -67,10 +61,10 @@ const handleFilterDisplay = (
       filterLabel = configCategory ? configCategory.label : value;
       break;
     case "country":
-      filterLabel = handleCountry(value, countries);
+      filterLabel = handleCountryRegion(value, countries);
       break;
     case "region":
-      filterLabel = handleRegion(value, regions);
+      filterLabel = handleCountryRegion(value, regions);
       break;
     case "concept_name":
       filterLabel = handleConceptName(value, concepts);
@@ -128,7 +122,7 @@ const handleFilterDisplay = (
 const generatePills = (
   queryParams: ParsedUrlQuery,
   filterChange: TFilterChange,
-  countries: TCountry[],
+  countries: TGeography[],
   regions: TGeography[],
   themeConfig: TThemeConfig,
   concepts?: TConcept[]
@@ -162,10 +156,7 @@ export const AppliedFilters = ({ filterChange, concepts }: IProps) => {
   const router = useRouter();
   const configQuery = useConfig();
   const { themeConfig } = useGetThemeConfig();
-  const { data: { regions = [] } = {} } = configQuery;
-
-  const countriesQuery = useCountries();
-  const { data: countries = [] } = countriesQuery;
+  const { data: { countries = [], regions = [] } = {} } = configQuery;
 
   const appliedFilters = useMemo(
     () => generatePills(router.query, filterChange, countries, regions, themeConfig, concepts).map((pill) => pill),
