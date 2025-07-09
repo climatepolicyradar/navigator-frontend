@@ -26,11 +26,11 @@ describe("SearchPage", async () => {
     // @ts-ignore
     renderWithAppContext(Search, search_props);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeDefined();
+    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
     const geographyFilterControl = await screen.findByText(/Geography/);
 
-    expect(geographyFilterControl).toBeDefined();
+    expect(geographyFilterControl).toBeInTheDocument();
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
     // like animations that were causing warnings in the console.
     await act(async () => {
@@ -39,7 +39,7 @@ describe("SearchPage", async () => {
 
     const countryFilterControl = await screen.findByText(/Published jurisdiction/i);
 
-    expect(countryFilterControl).toBeDefined();
+    expect(countryFilterControl).toBeInTheDocument();
     await act(async () => {
       await userEvent.click(countryFilterControl);
     });
@@ -62,9 +62,9 @@ describe("SearchPage", async () => {
       await userEvent.click(countryOptions[0]);
     });
 
-    expect(await screen.findByText("Results")).toBeDefined();
-    expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeDefined();
-    expect(screen.queryByText("Argentina Biennial Transparency Report. BTR1")).toBeNull();
+    expect(await screen.findByText("Results")).toBeInTheDocument();
+    expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeInTheDocument();
+    expect(screen.queryByText("Argentina Biennial Transparency Report. BTR1")).not.toBeInTheDocument();
   });
 
   it("filters search results by region", async () => {
@@ -88,11 +88,11 @@ describe("SearchPage", async () => {
     // @ts-ignore
     renderWithAppContext(Search, search_props);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeDefined();
+    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
     const geographyFilterControl = await screen.findByText(/Geography/);
 
-    expect(geographyFilterControl).toBeDefined();
+    expect(geographyFilterControl).toBeInTheDocument();
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
     // like animations that were causing warnings in the console.
     await act(async () => {
@@ -101,7 +101,7 @@ describe("SearchPage", async () => {
 
     const regionFilterControl = await screen.findByText(/Region/i);
 
-    expect(regionFilterControl).toBeDefined();
+    expect(regionFilterControl).toBeInTheDocument();
     await act(async () => {
       await userEvent.click(regionFilterControl);
     });
@@ -110,13 +110,13 @@ describe("SearchPage", async () => {
       await userEvent.click(await screen.findByRole("checkbox", { name: "Latin America & Caribbean" }));
     });
 
-    expect(await screen.findByText("Results")).toBeDefined();
-    expect(screen.getByText("Argentina Biennial Transparency Report. BTR1")).toBeDefined();
-    expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeDefined();
+    expect(await screen.findByText("Results")).toBeInTheDocument();
+    expect(screen.getByText("Argentina Biennial Transparency Report. BTR1")).toBeInTheDocument();
+    expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeInTheDocument();
     expect(
       screen.queryByText(
         "Technical analysis of the first biennial update report of Afghanistan submitted on 13 October 2019. Summary report by the team of technical experts"
       )
-    ).toBeNull();
+    ).not.toBeInTheDocument();
   });
 });
