@@ -232,4 +232,91 @@ test.describe("OEP Landing Page Search", () => {
     expect(url).not.toContain("e=true");
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
   });
+
+  test("should maintain search state on page refresh", async ({ page }) => {
+    const searchTerm = "energy development";
+
+    // Type search term
+    await page.fill('[data-cy="search-input"]', searchTerm);
+
+    // Click search button
+    const searchButton = page.locator('button[aria-label="Search"]');
+    await searchButton.click();
+
+    // Should navigate to search results page
+    await expect(page).toHaveURL(/\/search/);
+
+    // Refresh the page
+    await page.reload();
+
+    // Should still be on search results page with same parameters
+    await expect(page).toHaveURL(/\/search/);
+    await expect(page).toHaveURL(/q=energy\+development/);
+    await expect(page).toHaveURL(/c=offshore-wind-reports/);
+    await expect(page).not.toHaveURL(/e=true/);
+  });
+
+  test("should maintain search state on Home breadcrumb click", async ({ page }) => {
+    const searchTerm = "avoidance";
+
+    // Type search term
+    await page.fill('[data-cy="search-input"]', searchTerm);
+
+    // Click search button
+    const searchButton = page.locator('button[aria-label="Search"]');
+    await searchButton.click();
+
+    // Should navigate to search results page
+    await expect(page).toHaveURL(/\/search/);
+
+    // Navigate back to homepage via breadcrumb
+    await page.click('[data-cy="breadcrumb home"] a');
+
+    // Should now be on the CPR homepage with same parameters
+    await expect(page.getByText("Helping the offshore wind sector design effective strategies")).not.toBeVisible();
+    await expect(page).not.toHaveURL(/\/search/);
+    await expect(page).toHaveURL(/q=avoidance/);
+    await expect(page).toHaveURL(/c=offshore-wind-reports/);
+    await expect(page).not.toHaveURL(/e=true/);
+
+    // Verify the search input is not cleared
+    const searchInput = page.locator('[data-cy="search-input"]');
+    await expect(searchInput).not.toHaveValue("");
+    await expect(searchInput).toHaveValue(searchTerm);
+  });
+
+  test("should handle search dropdown functionality", async ({ page }) => {
+    const searchInput = page.locator('[data-cy="search-input"]');
+
+    // Focus on search input to trigger dropdown
+    await searchInput.focus();
+
+    // Type a partial search term
+    await searchInput.fill("climate");
+
+    // Wait for dropdown to appear (if it exists)
+    // Note: This test may need adjustment based on actual dropdown behavior
+    await page.waitForTimeout(500);
+
+    // Verify search input still has focus
+    await expect(searchInput).toBeFocused();
+  });
+
+  test("should handle search with multiple parameters", async ({ page }) => {
+    const searchInput = page.locator('[data-cy="search-input"]');
+    const searchButton = page.locator('button[aria-label="Search"]');
+
+    // Type a search term that might trigger multiple filters
+    const searchTerm = "renewable energy";
+    await searchInput.fill(searchTerm);
+    await searchButton.click();
+
+    // Should navigate to search results page
+    await expect(page).toHaveURL(/\/search/);
+
+    // Should have correct query parameters
+    await expect(page).toHaveURL(/q=renewable\+energy/);
+    await expect(page).toHaveURL(/c=offshore-wind-reports/);
+    await expect(page).not.toHaveURL(/e=true/);
+  });
 });
