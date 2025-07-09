@@ -20,6 +20,7 @@ import Drawer from "@/components/drawer/Drawer";
 import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
 import { InputListContainer } from "@/components/filters/InputListContainer";
 import { SearchSettings } from "@/components/filters/SearchSettings";
+import { InputCheck } from "@/components/forms/Checkbox";
 import { TypeAhead } from "@/components/forms/TypeAhead";
 import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
@@ -462,14 +463,11 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                     <SearchFilters
                       searchCriteria={searchQuery}
                       query={router.query}
-                      regions={regions}
-                      countries={countries}
                       corpus_types={corpus_types}
                       conceptsData={conceptsData}
                       familyConceptsData={familyConceptsData}
                       handleFilterChange={handleFilterChange}
                       handleYearChange={handleYearChange}
-                      handleRegionChange={handleRegionChange}
                       handleClearSearch={handleClearSearch}
                       handleDocumentCategoryClick={handleDocumentCategoryClick}
                       featureFlags={featureFlags}
@@ -500,6 +498,26 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           filterType={QUERY_PARAMS.country}
                           handleFilterChange={handleFilterChange}
                         />
+                      </InputListContainer>
+                    </Accordian>
+
+                    <Accordian
+                      title={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
+                      data-cy="regions"
+                      startOpen={!!router.query[QUERY_PARAMS.region]}
+                    >
+                      <InputListContainer>
+                        {regions.map((region) => (
+                          <InputCheck
+                            key={region.slug}
+                            label={region.display_value}
+                            checked={regionFilters && regionFilters.includes(region.slug)}
+                            onChange={() => {
+                              handleRegionChange(region.slug);
+                            }}
+                            name={`region-${region.slug}`}
+                          />
+                        ))}
                       </InputListContainer>
                     </Accordian>
                   </SlideOut>

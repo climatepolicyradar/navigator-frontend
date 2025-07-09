@@ -90,6 +90,15 @@ describe("SearchPage", async () => {
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeDefined();
 
+    const geographyFilterControl = await screen.findByText(/Geography/);
+
+    expect(geographyFilterControl).toBeDefined();
+    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
+    // like animations that were causing warnings in the console.
+    await act(async () => {
+      await userEvent.click(geographyFilterControl);
+    });
+
     const regionFilterControl = await screen.findByText(/Region/i);
 
     expect(regionFilterControl).toBeDefined();
