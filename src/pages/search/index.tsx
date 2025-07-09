@@ -483,43 +483,44 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                     </SlideOut>
                   )}
                   <SlideOut showCloseButton={false}>
-                    <Accordian
-                      title={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
-                      data-cy="countries"
-                      overflowOverride
-                      className="relative z-10"
-                    >
-                      <InputListContainer>
-                        <TypeAhead
-                          list={availableCountries}
-                          selectedList={countryFilters}
-                          keyField={"slug"}
-                          keyFieldDisplay={"display_value"}
-                          filterType={QUERY_PARAMS.country}
-                          handleFilterChange={handleFilterChange}
-                        />
-                      </InputListContainer>
-                    </Accordian>
-
-                    <Accordian
-                      title={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
-                      data-cy="regions"
-                      startOpen={!!router.query[QUERY_PARAMS.region]}
-                    >
-                      <InputListContainer>
-                        {regions.map((region) => (
-                          <InputCheck
-                            key={region.slug}
-                            label={region.display_value}
-                            checked={regionFilters && regionFilters.includes(region.slug)}
-                            onChange={() => {
-                              handleRegionChange(region.slug);
-                            }}
-                            name={`region-${region.slug}`}
+                    <div className="text-sm text-text-secondary flex flex-col gap-5">
+                      <Accordian
+                        title={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
+                        data-cy="regions"
+                        startOpen={!!router.query[QUERY_PARAMS.region]}
+                      >
+                        <InputListContainer>
+                          {regions.map((region) => (
+                            <InputCheck
+                              key={region.slug}
+                              label={region.display_value}
+                              checked={regionFilters && regionFilters.includes(region.slug)}
+                              onChange={() => {
+                                handleRegionChange(region.slug);
+                              }}
+                              name={`region-${region.slug}`}
+                            />
+                          ))}
+                        </InputListContainer>
+                      </Accordian>
+                      <Accordian
+                        title={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
+                        data-cy="countries"
+                        overflowOverride
+                        className="relative z-10"
+                      >
+                        <InputListContainer>
+                          <TypeAhead
+                            list={availableCountries}
+                            selectedList={countryFilters}
+                            keyField={"slug"}
+                            keyFieldDisplay={"display_value"}
+                            filterType={QUERY_PARAMS.country}
+                            handleFilterChange={handleFilterChange}
                           />
-                        ))}
-                      </InputListContainer>
-                    </Accordian>
+                        </InputListContainer>
+                      </Accordian>
+                    </div>
                   </SlideOut>
 
                   <div className="absolute z-50 bottom-0 left-0 w-full flex pb-[100px] bg-white md:hidden">

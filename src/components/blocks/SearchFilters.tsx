@@ -1,7 +1,7 @@
 import { ParsedUrlQuery } from "querystring";
 
 import { ChevronRight } from "lucide-react";
-import { useEffect, useState, useMemo, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 
 import Loader from "@/components/Loader";
 import { Accordian } from "@/components/accordian/Accordian";
