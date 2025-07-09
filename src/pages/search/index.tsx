@@ -4,12 +4,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import Loader from "@/components/Loader";
+import { Accordian } from "@/components/accordian/Accordian";
 import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
 import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
@@ -17,7 +18,9 @@ import SearchFilters from "@/components/blocks/SearchFilters";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Drawer from "@/components/drawer/Drawer";
 import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
+import { InputListContainer } from "@/components/filters/InputListContainer";
 import { SearchSettings } from "@/components/filters/SearchSettings";
+import { TypeAhead } from "@/components/forms/TypeAhead";
 import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
 import { Info } from "@/components/molecules/info/Info";
@@ -34,6 +37,7 @@ import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { sortOptions } from "@/constants/sortOptions";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
+import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import useSearch from "@/hooks/useSearch";
@@ -43,6 +47,7 @@ import { getFeatureFlags } from "@/utils/featureFlags";
 import { isFamilyConceptsSearchEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
+import { getFilterLabel } from "@/utils/getFilterLabel";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
@@ -124,6 +129,20 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   const configQuery = useConfig();
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
+
+  const {
+    keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
+  } = searchQuery;
+
+  const availableCountries = useMemo(() => {
+    return regionFilters.length > 0
+      ? getCountriesFromRegions({
+          regions,
+          countries,
+          selectedRegions: regionFilters,
+        })
+      : countries;
+  }, [regionFilters, regions, countries]);
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 
@@ -465,6 +484,25 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       )}
                     </SlideOut>
                   )}
+                  <SlideOut showCloseButton={false}>
+                    <Accordian
+                      title={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
+                      data-cy="countries"
+                      overflowOverride
+                      className="relative z-10"
+                    >
+                      <InputListContainer>
+                        <TypeAhead
+                          list={availableCountries}
+                          selectedList={countryFilters}
+                          keyField={"slug"}
+                          keyFieldDisplay={"display_value"}
+                          filterType={QUERY_PARAMS.country}
+                          handleFilterChange={handleFilterChange}
+                        />
+                      </InputListContainer>
+                    </Accordian>
+                  </SlideOut>
 
                   <div className="absolute z-50 bottom-0 left-0 w-full flex pb-[100px] bg-white md:hidden">
                     <Button

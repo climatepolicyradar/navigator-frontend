@@ -249,23 +249,22 @@ const SearchFilters = ({
         </InputListContainer>
       </Accordian>
 
-      <Accordian
-        title={getFilterLabel("Published jurisdiction", "country", query[QUERY_PARAMS.category], themeConfig)}
-        data-cy="countries"
-        overflowOverride
-        className="relative z-10"
-      >
-        <InputListContainer>
-          <TypeAhead
-            list={availableCountries}
-            selectedList={countryFilters}
-            keyField={"slug"}
-            keyFieldDisplay={"display_value"}
-            filterType={QUERY_PARAMS.country}
-            handleFilterChange={handleFilterChange}
-          />
-        </InputListContainer>
-      </Accordian>
+      <>
+        <button
+          className="items-center justify-between cursor-pointer group flex"
+          onClick={() => setCurrentSlideOut(currentSlideOut === "geographies" ? "" : "geographies")}
+          {...{ [SLIDE_OUT_DATA_KEY]: "geographies" }}
+        >
+          <Heading>Geography</Heading>
+          <span
+            className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
+              currentSlideOut === "geographies" ? "transform rotate-180" : ""
+            }`}
+          >
+            <ChevronRight />
+          </span>
+        </button>
+      </>
 
       <Accordian
         title={getFilterLabel("Date", "date", query[QUERY_PARAMS.category], themeConfig)}
