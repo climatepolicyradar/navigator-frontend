@@ -101,11 +101,11 @@ export default function buildSearchQuery(
     Array.isArray(conceptPreferredLabelFilters)
       ? conceptPreferredLabelFilters.map((name) => {
           query.metadata.push({
-            name: "concept_preferred_label",
+            name: "family.concept_preferred_label",
             value: name,
           });
         })
-      : query.metadata.push({ name: "concept_preferred_label", value: conceptPreferredLabelFilters });
+      : query.metadata.push({ name: "family.concept_preferred_label", value: conceptPreferredLabelFilters });
   }
 
   const qCategory = (routerQuery[QUERY_PARAMS.category] as string) ?? "All";
