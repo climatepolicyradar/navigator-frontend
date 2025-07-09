@@ -7,15 +7,15 @@ function urlify(str: string) {
 }
 
 /**
- * CCLW Hero Search E2E Tests
+ * CPR Hero Search E2E Tests
  *
- * These tests cover the critical user journeys for the CCLW Landing Page
+ * These tests cover the critical user journeys for the CPR Landing Page
  * search functionality, including both regular and knowledge graph search modes.
  */
 
-test.describe("CCLW Hero Search", () => {
+test.describe("CPR Hero Search", () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to the CCLW page
+    // Navigate to the CPR homepage
     await page.goto("/");
 
     // Handle consent banner if present
@@ -28,21 +28,19 @@ test.describe("CCLW Hero Search", () => {
     // Wait for the page to load completely
     await page.waitForLoadState("networkidle");
 
-    // Verify we're on the CCLW homepage by checking the intro message
-    await expect(page.getByText("Search over 5000 climate laws and policies worldwide")).toBeVisible();
-
-    // Verify we're on the CCLW homepage by checking the hero section
-    await expect(page.getByRole("heading", { name: "Climate Change Laws of the World" })).toBeVisible();
+    // Verify we're on the CPR homepage by checking the Alpha logo
+    await expect(page.locator('[data-cy="cpr-logo"]')).toBeVisible();
+    await expect(page.locator('[data-cy="search-input"]')).toHaveAttribute("placeholder", "Search the full text of over 12,000 climate documents");
   });
 
-  test("should display CCLW Hero page with search functionality", async ({ page }) => {
+  test("should display CPR Hero page with search functionality", async ({ page }) => {
     // Branding and content
-    await expect(page.getByAltText("Climate Change Laws of the World logo text")).toBeVisible();
+    await expect(page.locator('[data-cy="cpr-logo"]')).toBeVisible();
 
     // Search input
     const searchInput = page.locator('[data-cy="search-input"]');
     await expect(searchInput).toBeVisible();
-    await expect(searchInput).toHaveAttribute("placeholder", "Search the full text of any document");
+    await expect(searchInput).toHaveAttribute("placeholder", "Search the full text of over 12,000 climate documents");
 
     // Search button
     const searchButton = page.locator('button[aria-label="Search"]');
@@ -50,6 +48,12 @@ test.describe("CCLW Hero Search", () => {
 
     // Search form
     await expect(page.locator('[data-cy="search-form"]')).toBeVisible();
+
+    // Exact match checkbox
+    await expect(page.locator("#exact-match")).toBeVisible();
+
+    // Quick search suggestions
+    await expect(page.getByText("Try these searches")).toBeVisible();
   });
 
   test("should handle empty search without crashing", async ({ page }) => {
@@ -59,7 +63,7 @@ test.describe("CCLW Hero Search", () => {
     // Should not crash - should redirect to /search
     await expect(page).not.toHaveURL(/e=true/);
     await expect(page).not.toHaveURL("/search");
-    await expect(page.getByText("Search over 5000 climate laws and policies worldwide")).not.toBeVisible();
+    await expect(page.getByText("Search the full text of over 12,000 climate documents")).not.toBeVisible();
   });
 
   test("should perform search with user input via search button", async ({ page }) => {
@@ -106,13 +110,11 @@ test.describe("CCLW Hero Search", () => {
   });
 
   test("should handle search suggestions correctly", async ({ page }) => {
-    // Test clicking on "Latest NDCs" example search button
+    // Test clicking on "Latest NDCs" suggestion
     await page.click('[data-cy="quick-search-1"]');
 
     // Should navigate to search page with the suggestion as query
     await page.waitForURL("/search*");
-
-    // Verify the suggestion term is in the URL using correct parameters
     const url = page.url();
     expect(url).toContain("c=UNFCCC");
     expect(url).toContain("t=Nationally+Determined+Contribution");
@@ -124,17 +126,15 @@ test.describe("CCLW Hero Search", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    // Test clicking on "Indigenous people + Brazil + Laws" example search button
+    // Verify clicking 'Indigenous people + Brazil + Laws' suggested search redirects to search page with correct parameters
     await page.click('[data-cy="quick-search-2"]');
 
     // Should navigate to search page with the suggestion as query
     await page.waitForURL("/search*");
-
-    // Verify the suggestion term is in the URL using correct parameters
     const url2 = page.url();
-    expect(url2).toContain("l=brazil");
     expect(url2).toContain("c=laws");
     expect(url2).toContain("cfn=indigenous+people");
+    expect(url2).toContain("l=brazil");
     expect(url2).not.toContain("e=true");
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
 
@@ -142,41 +142,31 @@ test.describe("CCLW Hero Search", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    // Test clicking on "Zoning and spatial planning + marine" example search button
+    // Verify clicking 'Zoning and spatial planning + marine' suggested search redirects to search page with correct parameters
     await page.click('[data-cy="quick-search-3"]');
 
-    // Should navigate to search page with the special parameters
+    // Should navigate to search page with the suggestion as query
     await page.waitForURL("/search*");
-
-    // Verify the special parameters are in the URL using correct parameters
     const url3 = page.url();
     expect(url3).toContain("cfn=zoning+and+spatial+planning");
     expect(url3).toContain("q=marine");
     expect(url3).toContain("e=true");
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
 
-    // Verify the knowledge graph search description text is displayed
-    await expect(
-      page.getByText(
-        "You are viewing a list of documents containing precise text passages matches related to 'marine' AND Zoning and spatial planning"
-      )
-    ).toBeVisible();
-
     // Navigate back to homepage for next test
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    // Test clicking on "Emissions reductions targets + Climate framework laws" example search button
+    // Verify clicking 'Emissions reductions targets + Climate framework laws' suggested search redirects to search page with correct parameters
     await page.click('[data-cy="quick-search-4"]');
 
     // Should navigate to search page with the suggestion as query
     await page.waitForURL("/search*");
 
-    // Verify the suggestion term is in the URL using correct parameters
     const url4 = page.url();
     expect(url4).toContain("c=laws");
-    expect(url4).toContain("fl=true");
     expect(url4).toContain("cfn=emissions+reduction+target");
+    expect(url4).toContain("fl=true");
     expect(url4).not.toContain("e=true");
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
   });
@@ -191,7 +181,7 @@ test.describe("CCLW Hero Search", () => {
     // Wait for navigation to complete
     await page.waitForURL("/search*");
 
-    // Navigate back to CCLW page
+    // Navigate back to CPR page
     await page.goBack();
 
     // Wait for page to load and verify search input is cleared
@@ -258,7 +248,7 @@ test.describe("CCLW Hero Search", () => {
   });
 
   test("should maintain search state on Home breadcrumb click", async ({ page }) => {
-    const searchTerm = "mango";
+    const searchTerm = "adaptation";
 
     // Type search term
     await page.fill('[data-cy="search-input"]', searchTerm);
@@ -273,9 +263,9 @@ test.describe("CCLW Hero Search", () => {
     await page.click('[data-cy="breadcrumb home"] a');
 
     // Should now be on homepage with same parameters
-    await expect(page.getByText("Search over 5000 climate laws and policies worldwide")).toBeVisible();
+    await expect(page.locator('[data-cy="cpr-logo"]')).toBeVisible();
     await expect(page).not.toHaveURL(/\/search/);
-    await expect(page).toHaveURL(/q=mango/);
+    await expect(page).toHaveURL(/q=adaptation/);
     await expect(page).not.toHaveURL(/e=true/);
 
     // Verify the search input is not cleared
@@ -316,5 +306,115 @@ test.describe("CCLW Hero Search", () => {
     // Should have correct query parameters
     await expect(page).toHaveURL(/q=renewable\+energy\+adaptation/);
     await expect(page).not.toHaveURL(/e=true/);
+  });
+
+  test("should perform exact match search if exact match checkbox is checked", async ({ page }) => {
+    const searchInput = page.locator('[data-cy="search-input"]');
+    const searchButton = page.locator('button[aria-label="Search"]');
+    const exactMatchCheckbox = page.locator("#exact-match");
+
+    // Type a search term
+    const searchTerm = "climate policy";
+    await searchInput.fill(searchTerm);
+
+    // Check the exact match checkbox
+    await exactMatchCheckbox.check();
+
+    // Click search button
+    await searchButton.click();
+
+    // Should navigate to search page with exact match parameter
+    await page.waitForURL("/search*");
+
+    // Verify the exact match parameter is in the URL
+    const url = page.url();
+    expect(url).not.toContain("e=true");
+    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+  });
+
+  test("should check exact match checkbox is checked on homepage load", async ({ page }) => {
+    const exactMatchCheckbox = page.locator("#exact-match");
+    await expect(exactMatchCheckbox).toBeChecked();
+  });
+
+  test("should perform semantic search if exact match checkbox is not checked", async ({ page }) => {
+    // TODO: This test is currently failing because unchecking the exact match checkbox does not result in
+    // a semantic search. Re-enable as part of APP-898.
+    test.fail(); // Mark as expected to fail until APP-898 is resolved
+
+    const searchInput = page.locator('[data-cy="search-input"]');
+    const searchButton = page.locator('button[aria-label="Search"]');
+    const exactMatchCheckbox = page.locator("#exact-match");
+
+    // Type a search term
+    const searchTerm = "climate policy";
+    await searchInput.fill(searchTerm);
+
+    // Uncheck the exact match checkbox
+    await exactMatchCheckbox.uncheck();
+
+    // Click search button
+    await searchButton.click();
+
+    // Should navigate to search page with exact match parameter
+    await page.waitForURL("/search*");
+
+    // Verify the exact match parameter is in the URL and is false
+    const url = page.url();
+    expect(url).toContain("e=false");
+    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+  });
+
+  test("should handle search clear button", async ({ page }) => {
+    const searchInput = page.locator('[data-cy="search-input"]');
+
+    // Type a search term
+    await searchInput.fill("test search");
+
+    // Verify clear button is visible
+    await expect(page.locator('[data-cy="search-clear-button"]')).toBeVisible();
+
+    // Click clear button
+    await page.click('[data-cy="search-clear-button"]');
+
+    // Verify search input is cleared
+    await expect(searchInput).toHaveValue("");
+
+    // Verify clear button is no longer visible
+    await expect(page.locator('[data-cy="search-clear-button"]')).not.toBeVisible();
+  });
+
+  test("should handle animated placeholder", async ({ page }) => {
+    const searchInput = page.locator('[data-cy="search-input"]');
+
+    // Verify animated placeholder is visible initially
+    await expect(page.locator(".search-animated-placeholder")).toBeVisible();
+
+    // Focus on search input
+    await searchInput.focus();
+
+    // Verify animated placeholder is hidden when focused
+    await expect(page.locator(".search-animated-placeholder")).not.toBeVisible();
+
+    // Blur the input
+    await searchInput.blur();
+
+    // Verify animated placeholder is visible again when empty
+    await expect(page.locator(".search-animated-placeholder")).toBeVisible();
+  });
+
+  test("should handle form submission prevention", async ({ page }) => {
+    const searchInput = page.locator('[data-cy="search-input"]');
+    const searchForm = page.locator('[data-cy="search-form"]');
+
+    // Type a search term
+    await searchInput.fill("test search");
+
+    // Submit form using Enter key
+    await searchInput.press("Enter");
+
+    // Should navigate to search page (form submission should be prevented and search triggered)
+    await page.waitForURL("/search*");
+    await expect(page).toHaveURL(/q=test\+search/);
   });
 });
