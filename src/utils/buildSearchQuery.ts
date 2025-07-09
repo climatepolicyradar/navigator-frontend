@@ -95,6 +95,19 @@ export default function buildSearchQuery(
       : [{ name: "name", value: conceptFilters }];
   }
 
+  if (routerQuery[QUERY_PARAMS.concept_preferred_label]) {
+    const conceptPreferredLabelFilters = routerQuery[QUERY_PARAMS.concept_preferred_label];
+
+    Array.isArray(conceptPreferredLabelFilters)
+      ? conceptPreferredLabelFilters.map((name) => {
+          query.metadata.push({
+            name: "concept_preferred_label",
+            value: name,
+          });
+        })
+      : query.metadata.push({ name: "concept_preferred_label", value: conceptPreferredLabelFilters });
+  }
+
   const qCategory = (routerQuery[QUERY_PARAMS.category] as string) ?? "All";
   let category: string[];
   let corpusIds: string[] = [];
