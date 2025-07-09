@@ -6,6 +6,7 @@
  */
 
 import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { Suspense, useEffect } from "react";
@@ -50,6 +51,8 @@ export function SuspendedPostHogPageView() {
 }
 
 export function PostHogProvider({ children, consent }: IProps) {
+  // const router = useRouter();
+
   /**
    * The sessionStorage is read by tag manager to not re-init posthog
    * We don't use something like posthog.__loaded as posthog isn't available on the window
@@ -61,7 +64,7 @@ export function PostHogProvider({ children, consent }: IProps) {
   useEffect(() => {
     posthog.init("phc_zaZYaLxsAeMjCLPsU2YvFqu4oaXRJ8uAkgXY8DancyL", {
       api_host: "https://eu.i.posthog.com",
-      capture_pageview: false,
+      capture_pageview: true,
       capture_pageleave: true,
     });
     window.sessionStorage.setItem("posthogLoaded", "true");
