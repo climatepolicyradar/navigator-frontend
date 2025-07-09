@@ -56,9 +56,10 @@ test.describe("CCLW Hero Search", () => {
     // Click search button with empty input
     await page.click('[data-cy="search-form"] button[aria-label="Search"]');
 
-    // Should not crash - page should remain on homepage
+    // Should not crash - should redirect to /search
     await expect(page).not.toHaveURL(/e=true/);
-    await expect(page.getByText("Search over 5000 climate laws and policies worldwide")).toBeVisible();
+    await expect(page).not.toHaveURL("/search");
+    await expect(page.getByText("Search over 5000 climate laws and policies worldwide")).not.toBeVisible();
   });
 
   test("should perform search with user input via search button", async ({ page }) => {
