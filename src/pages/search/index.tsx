@@ -489,7 +489,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       <Accordian
                         title={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
                         data-cy="regions"
-                        startOpen={!!router.query[QUERY_PARAMS.region]}
+                        startOpen
                       >
                         <InputListContainer>
                           {regions.map((region) => (

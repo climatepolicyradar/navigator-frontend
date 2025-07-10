@@ -88,12 +88,7 @@ describe("SearchPage", async () => {
       await userEvent.click(geographyFilterControl);
     });
 
-    const regionFilterControl = await screen.findByText(/Region/i);
-
-    expect(regionFilterControl).toBeInTheDocument();
-    await act(async () => {
-      await userEvent.click(regionFilterControl);
-    });
+    expect(await screen.findByText(/Region/i)).toBeInTheDocument();
 
     await act(async () => {
       await userEvent.click(await screen.findByRole("checkbox", { name: "Latin America & Caribbean" }));
