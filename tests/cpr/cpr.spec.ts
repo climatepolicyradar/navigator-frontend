@@ -220,8 +220,11 @@ test.describe("CPR Hero Search", () => {
     // Should navigate to search results page
     await expect(page).toHaveURL(/\/search/);
 
-    // Refresh the page
-    await page.reload();
+    // Wait for the page to be fully loaded before refresh
+    await page.waitForLoadState("networkidle");
+
+    // Refresh the page with explicit wait
+    await page.reload({ waitUntil: "networkidle" });
 
     // Should still be on search results page with same parameters
     await expect(page).toHaveURL(/\/search/);
