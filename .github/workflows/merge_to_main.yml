@@ -136,7 +136,7 @@ jobs:
         continue-on-error: true
 
   test-e2e:
-    timeout-minutes: 60
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
