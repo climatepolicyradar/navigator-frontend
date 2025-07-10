@@ -276,9 +276,6 @@ test.describe("OEP Landing Page Search", () => {
     // Type a country name
     await page.fill('[data-cy="search-input"]', searchTerm);
 
-    // Wait for dropdown to appear
-    await page.waitForTimeout(100);
-
     // We don't expect to see a dropdown or suggested geography profile
     await expect(page.getByRole("link", { name: "India Geography profile" })).not.toBeVisible();
 
@@ -302,9 +299,6 @@ test.describe("OEP Landing Page Search", () => {
   test("should not show dropdown when typing country with additional terms", async ({ page }) => {
     const searchTerm = "renewable energy france";
     await page.fill('[data-cy="search-input"]', searchTerm);
-
-    // Wait for dropdown to update
-    await page.waitForTimeout(100);
 
     // Verify "Did you mean" suggestion for France is not visible
     await expect(page.getByText("Did you mean to search for renewable energy in France")).not.toBeVisible();

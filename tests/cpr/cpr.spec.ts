@@ -269,9 +269,6 @@ test.describe("CPR Hero Search", () => {
     // Type a country name
     await searchInput.fill("spain");
 
-    // Wait for dropdown to appear
-    await page.waitForTimeout(100);
-
     // Click on Spain geography profile
     await page.getByRole("link", { name: "Spain Geography profile" }).click();
 
@@ -290,9 +287,6 @@ test.describe("CPR Hero Search", () => {
     await searchForm.click();
 
     await searchInput.fill("renewable energy france");
-
-    // Wait for dropdown to update
-    await page.waitForTimeout(100);
 
     // Verify "Did you mean" suggestion for France
     await expect(page.getByText("Did you mean to search for renewable energy in France")).toBeVisible();
@@ -371,9 +365,6 @@ test.describe("CPR Hero Search", () => {
     if (await exactMatchCheckbox.isChecked()) {
       // Use click instead of uncheck to trigger the onChange handler properly
       await exactMatchCheckbox.click();
-
-      // Wait a moment for the state to update
-      await page.waitForTimeout(100);
 
       // Verify it's actually unchecked
       await expect(exactMatchCheckbox).not.toBeChecked();
