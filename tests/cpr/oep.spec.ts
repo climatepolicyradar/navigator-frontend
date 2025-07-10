@@ -314,6 +314,32 @@ test.describe("OEP Landing Page Search", () => {
     await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
   });
 
+  test("should not show dropdown when typing country with additional terms", async ({ page }) => {
+    const searchTerm = "renewable energy france";
+    await page.fill('[data-cy="search-input"]', searchTerm);
+
+    // Wait for dropdown to update
+    await page.waitForTimeout(100);
+
+    // Verify "Did you mean" suggestion for France is not visible
+    await expect(page.getByText("Did you mean to search for renewable energy in France")).not.toBeVisible();
+    await expect(page.getByRole("link", { name: "France Geography profile" })).not.toBeVisible();
+
+    // Click search button
+    const searchButton = page.locator('button[aria-label="Search"]');
+    await searchButton.click();
+
+    // Should navigate to search page with the suggestion parameters
+    await page.waitForURL("/search*");
+
+    // Verify the search term and country filter are applied
+    const url = page.url();
+    expect(url).toContain("q=renewable+energy+france");
+    expect(url).not.toContain("l=france");
+    expect(url).not.toContain("e=true");
+    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+  });
+
   test("should handle search with multiple parameters", async ({ page }) => {
     const searchInput = page.locator('[data-cy="search-input"]');
     const searchButton = page.locator('button[aria-label="Search"]');
