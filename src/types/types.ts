@@ -4,6 +4,7 @@ export type TSearchKeywordFilters = {
   categories?: string[];
   regions?: string[];
   countries?: string[];
+  subdivisions?: string[];
 };
 
 export type TSearchConceptFilters = {

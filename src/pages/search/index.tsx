@@ -41,6 +41,7 @@ import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
+import useGeographySubdivisions from "@/hooks/useGeographySubdivisions";
 import useSearch from "@/hooks/useSearch";
 import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
@@ -132,8 +133,13 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
 
   const {
-    keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
+    keyword_filters: { countries: countryFilters = [], regions: regionFilters = [], subdivisions: subdivisionFilters = [] },
   } = searchQuery;
+
+  const countryFiltersIsoCodes = countries.filter((country) => countryFilters.includes(country.slug)).map((country) => country.value);
+
+  const subdivisionQuery = useGeographySubdivisions(countryFiltersIsoCodes);
+  const { data: subdivisions } = subdivisionQuery;
 
   const availableCountries = useMemo(() => {
     return regionFilters.length > 0
@@ -516,6 +522,18 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                             keyField={"slug"}
                             keyFieldDisplay={"display_value"}
                             filterType={QUERY_PARAMS.country}
+                            handleFilterChange={handleFilterChange}
+                          />
+                        </InputListContainer>
+                      </Accordian>
+                      <Accordian title={"Subdivision"} overflowOverride className="relative z-10">
+                        <InputListContainer>
+                          <TypeAhead
+                            list={subdivisions}
+                            selectedList={subdivisionFilters}
+                            keyField={"alpha_3"}
+                            keyFieldDisplay={"name"}
+                            filterType={QUERY_PARAMS.subdivision}
                             handleFilterChange={handleFilterChange}
                           />
                         </InputListContainer>

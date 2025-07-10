@@ -5,6 +5,59 @@ import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import Search from "@/pages/search";
 
 describe("SearchPage", async () => {
+  it("filters search results by region", async () => {
+    const search_props = {
+      envConfig: {
+        BACKEND_API_URL: process.env.BACKEND_API_URL,
+        CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
+      },
+      theme: "cpr",
+      themeConfig: {
+        documentCategories: ["All"],
+        features: { knowledgeGraph: false, searchFamilySummary: false },
+        metadata: [
+          {
+            key: "search",
+            title: "Law and Policy Search",
+          },
+        ],
+      },
+    };
+    // @ts-ignore
+    renderWithAppContext(Search, search_props);
+
+    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+
+    const geographyFilterControl = await screen.findByText(/Geography/);
+
+    expect(geographyFilterControl).toBeInTheDocument();
+    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
+    // like animations that were causing warnings in the console.
+    await act(async () => {
+      await userEvent.click(geographyFilterControl);
+    });
+
+    const regionFilterControl = await screen.findByText(/Region/i);
+
+    expect(regionFilterControl).toBeInTheDocument();
+    await act(async () => {
+      await userEvent.click(regionFilterControl);
+    });
+
+    await act(async () => {
+      await userEvent.click(await screen.findByRole("checkbox", { name: "Latin America & Caribbean" }));
+    });
+
+    expect(await screen.findByText("Results")).toBeInTheDocument();
+    expect(screen.getByText("Argentina Biennial Transparency Report. BTR1")).toBeInTheDocument();
+    expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        "Technical analysis of the first biennial update report of Afghanistan submitted on 13 October 2019. Summary report by the team of technical experts"
+      )
+    ).not.toBeInTheDocument();
+  });
+
   it("filters search results by country", async () => {
     const search_props = {
       envConfig: {
@@ -67,7 +120,7 @@ describe("SearchPage", async () => {
     expect(screen.queryByText("Argentina Biennial Transparency Report. BTR1")).not.toBeInTheDocument();
   });
 
-  it("filters search results by region", async () => {
+  it("filters search results by subdivision", async () => {
     const search_props = {
       envConfig: {
         BACKEND_API_URL: process.env.BACKEND_API_URL,
@@ -99,24 +152,44 @@ describe("SearchPage", async () => {
       await userEvent.click(geographyFilterControl);
     });
 
-    const regionFilterControl = await screen.findByText(/Region/i);
+    const countryFilterControl = await screen.findByText(/Published jurisdiction/i);
 
-    expect(regionFilterControl).toBeInTheDocument();
+    expect(countryFilterControl).toBeInTheDocument();
     await act(async () => {
-      await userEvent.click(regionFilterControl);
+      await userEvent.click(countryFilterControl);
     });
 
-    await act(async () => {
-      await userEvent.click(await screen.findByRole("checkbox", { name: "Latin America & Caribbean" }));
+    const countryInput = screen.getByRole("textbox", {
+      name: "Search for a jurisdiction",
     });
+
+    expect(countryInput).toBeInTheDocument();
+
+    await act(async () => {
+      await userEvent.type(countryInput, "Australia");
+    });
+    expect(countryInput).toHaveValue("Australia");
+
+    const subdivisionFilterControl = await screen.findByText(/Subdivision/i);
+
+    expect(subdivisionFilterControl).toBeInTheDocument();
+    await act(async () => {
+      await userEvent.click(subdivisionFilterControl);
+    });
+
+    const subdivisionInput = screen.getByRole("textbox", {
+      name: "Search for a jurisdiction",
+    });
+
+    expect(subdivisionInput).toBeInTheDocument();
+
+    await act(async () => {
+      await userEvent.type(subdivisionInput, "New South Wales");
+    });
+    expect(subdivisionInput).toHaveValue("New South Wales");
 
     expect(await screen.findByText("Results")).toBeInTheDocument();
-    expect(screen.getByText("Argentina Biennial Transparency Report. BTR1")).toBeInTheDocument();
-    expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeInTheDocument();
-    expect(
-      screen.queryByText(
-        "Technical analysis of the first biennial update report of Afghanistan submitted on 13 October 2019. Summary report by the team of technical experts"
-      )
-    ).not.toBeInTheDocument();
+    expect(screen.getByText("New South Wales Litigation Case")).toBeInTheDocument();
+    expect(screen.queryByText("Australia Litigation Case")).not.toBeInTheDocument();
   });
 });
