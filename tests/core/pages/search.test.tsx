@@ -37,12 +37,7 @@ describe("SearchPage", async () => {
       await userEvent.click(geographyFilterControl);
     });
 
-    const countryFilterControl = await screen.findByText(/Published jurisdiction/i);
-
-    expect(countryFilterControl).toBeInTheDocument();
-    await act(async () => {
-      await userEvent.click(countryFilterControl);
-    });
+    expect(await screen.findByText(/Published jurisdiction/i));
 
     await act(async () => {
       await userEvent.click(await screen.findByRole("checkbox", { name: "Belize" }));

@@ -509,7 +509,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                         title={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
                         data-cy="countries"
                         className="relative z-10"
-                        showFade={"true"}
+                        showFade="true"
+                        startOpen
                       >
                         <InputListContainer>
                           {alphabetisedCountries.map((country) => (
