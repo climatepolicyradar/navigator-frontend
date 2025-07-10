@@ -64,7 +64,7 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
   if (router.query.id) {
     query["id"] = router.query.id;
   }
-  let selectedConcepts = query[QUERY_PARAMS.concept_name] ? [query[QUERY_PARAMS.concept_name]].flat() : [];
+  let selectedConcepts = query[QUERY_PARAMS.concept_preferred_label] ? [query[QUERY_PARAMS.concept_preferred_label]].flat() : [];
 
   if (selectedConcepts.includes(concept.preferred_label)) {
     selectedConcepts = selectedConcepts.filter((c) => c !== concept.preferred_label);
@@ -72,7 +72,7 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
     selectedConcepts = [...selectedConcepts, concept.preferred_label];
   }
 
-  query[QUERY_PARAMS.concept_name] = selectedConcepts;
+  query[QUERY_PARAMS.concept_preferred_label] = selectedConcepts;
 
   router.push({ query: query }, undefined, { shallow: true });
 };
@@ -163,7 +163,7 @@ export const FamilyConceptPicker = ({
                         <InputCheck
                           key={concept.wikibase_id + i}
                           label={firstCase(concept.preferred_label)}
-                          checked={isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)}
+                          checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], concept.preferred_label)}
                           onChange={() => {
                             onConceptChange(router, concept);
                           }}
@@ -183,7 +183,7 @@ export const FamilyConceptPicker = ({
                 <InputCheck
                   key={concept.wikibase_id}
                   label={firstCase(concept.preferred_label)}
-                  checked={isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)}
+                  checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], concept.preferred_label)}
                   onChange={() => {
                     onConceptChange(router, concept);
                   }}

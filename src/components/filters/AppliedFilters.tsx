@@ -39,7 +39,7 @@ type TFilterKeys = keyof typeof QUERY_PARAMS;
 const MAX_FILTER_CHARACTERS = 32;
 
 const getFilterDisplayValue = (key: TFilterKeys, value: string, themeConfig: TThemeConfig) => {
-  const filterDisplayLabel = themeConfig?.filters.find((f) => f.taxonomyKey === key).options.find((f) => f.slug === value);
+  const filterDisplayLabel = themeConfig?.filters.find((f) => f.taxonomyKey === key)?.options.find((f) => f.slug === value);
   return filterDisplayLabel ? filterDisplayLabel.label : value;
 };
 
