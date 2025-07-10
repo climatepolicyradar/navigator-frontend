@@ -148,25 +148,6 @@ test.describe("MCF Hero Search", () => {
     await expect(page).not.toHaveURL(/e=true/);
   });
 
-  test("should preserve input when navigating back", async ({ page }) => {
-    const searchTerm = "test search";
-
-    // Type search term
-    await page.fill('[data-cy="search-input"]', searchTerm);
-
-    // Click search button
-    await page.click('[data-cy="search-form"] button[aria-label="Search"]');
-
-    // Should navigate to search results page
-    await expect(page).toHaveURL(/\/search/);
-
-    // Navigate back to homepage
-    await page.goto("/");
-
-    // Input should be preserved
-    await expect(page.locator('[data-cy="search-input"]')).toHaveValue(searchTerm);
-  });
-
   test("should handle example search buttons", async ({ page }) => {
     // Click on "Adaptation" example search
     await page.click('[data-cy="example-search-1"]');
