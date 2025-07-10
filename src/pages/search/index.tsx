@@ -21,7 +21,6 @@ import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
 import { InputListContainer } from "@/components/filters/InputListContainer";
 import { SearchSettings } from "@/components/filters/SearchSettings";
 import { InputCheck } from "@/components/forms/Checkbox";
-import { TypeAhead } from "@/components/forms/TypeAhead";
 import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
 import { Info } from "@/components/molecules/info/Info";
@@ -38,7 +37,6 @@ import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { sortOptions } from "@/constants/sortOptions";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
-import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import useGeographySubdivisions from "@/hooks/useGeographySubdivisions";
@@ -141,16 +139,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const subdivisionQuery = useGeographySubdivisions(countryFiltersIsoCodes);
   const { data: subdivisions } = subdivisionQuery;
   const alphabetisedCountries = countries.sort((c1, c2) => c1.display_value.localeCompare(c2.display_value));
-
-  const availableCountries = useMemo(() => {
-    return regionFilters.length > 0
-      ? getCountriesFromRegions({
-          regions,
-          countries,
-          selectedRegions: regionFilters,
-        })
-      : countries;
-  }, [regionFilters, regions, countries]);
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 
