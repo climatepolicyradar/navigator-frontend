@@ -12,8 +12,9 @@ export const triggerNewSearch = (router: NextRouter, term: string, filter?: stri
   if (filter && filterValue && filter.length && filterValue.length) {
     newQuery[filter] = [filterValue.toLowerCase()];
   }
-  if (router.query[QUERY_PARAMS.exact_match] === "true") {
-    newQuery[QUERY_PARAMS.exact_match] = "true";
+  // Preserve exact_match parameter if it exists (both true and false)
+  if (router.query[QUERY_PARAMS.exact_match] !== undefined) {
+    newQuery[QUERY_PARAMS.exact_match] = router.query[QUERY_PARAMS.exact_match];
   }
   router.push({ pathname: "/search", query: { ...newQuery } });
 };
