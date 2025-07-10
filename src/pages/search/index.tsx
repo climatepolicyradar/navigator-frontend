@@ -508,8 +508,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       <Accordian
                         title={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
                         data-cy="countries"
-                        overflowOverride
                         className="relative z-10"
+                        showFade={"true"}
                       >
                         <InputListContainer>
                           {alphabetisedCountries.map((country) => (
