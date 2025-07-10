@@ -44,23 +44,12 @@ describe("SearchPage", async () => {
       await userEvent.click(countryFilterControl);
     });
 
-    const countryInput = screen.getByRole("textbox", {
-      name: "Search for a jurisdiction",
-    });
-
-    expect(countryInput).toBeInTheDocument();
-
     await act(async () => {
-      await userEvent.type(countryInput, "Belize");
+      await userEvent.click(await screen.findByRole("checkbox", { name: "Belize" }));
     });
-    expect(countryInput).toHaveValue("Belize");
 
-    const countryOptions = within(screen.getByTestId("countries")).getAllByRole("listitem");
-    expect(countryOptions).toHaveLength(1);
-
-    await act(async () => {
-      await userEvent.click(countryOptions[0]);
-    });
+    const countryOptions = within(screen.getByTestId("countries")).getAllByRole("checkbox");
+    expect(countryOptions).toHaveLength(3);
 
     expect(await screen.findByText("Results")).toBeInTheDocument();
     expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeInTheDocument();
