@@ -22,7 +22,16 @@ const IndexPage = () => {
   };
 
   const handleSearchChange = (type: string, value: any) => {
-    router.query[type] = [value];
+    // Handle exact_match specially - only include when false
+    if (type === QUERY_PARAMS.exact_match) {
+      if (value === false) {
+        router.query[type] = "false";
+      } else {
+        delete router.query[type];
+      }
+    } else {
+      router.query[type] = [value];
+    }
     router.push({ query: router.query });
   };
 

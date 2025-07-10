@@ -374,10 +374,6 @@ test.describe("CPR Hero Search", () => {
   });
 
   test("should perform semantic search if exact match checkbox is not checked", async ({ page }) => {
-    // TODO: This test is currently failing because unchecking the exact match checkbox does not result in
-    // a semantic search. Re-enable as part of APP-898.
-    test.fail(); // Mark as expected to fail until APP-898 is resolved
-
     const searchInput = page.locator('[data-cy="search-input"]');
     const searchButton = page.locator('button[aria-label="Search"]');
     const exactMatchCheckbox = page.locator("#exact-match");
@@ -386,8 +382,17 @@ test.describe("CPR Hero Search", () => {
     const searchTerm = "climate policy";
     await searchInput.fill(searchTerm);
 
-    // Uncheck the exact match checkbox
-    await exactMatchCheckbox.uncheck();
+    // Uncheck only if currently checked
+    if (await exactMatchCheckbox.isChecked()) {
+      // Use click instead of uncheck to trigger the onChange handler properly
+      await exactMatchCheckbox.click();
+
+      // Wait a moment for the state to update
+      await page.waitForTimeout(100);
+
+      // Verify it's actually unchecked
+      await expect(exactMatchCheckbox).not.toBeChecked();
+    }
 
     // Click search button
     await searchButton.click();
