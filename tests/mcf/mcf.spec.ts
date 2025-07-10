@@ -32,7 +32,7 @@ test.describe("MCF Hero Search", () => {
     // Should not crash - should redirect to /search
     await expect(page).not.toHaveURL(/e=true/);
     await expect(page).toHaveURL(/search/);
-    await expect(page.getByRole("heading", { name: "Multilateral Climate Funds" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
   });
 
   test("should search with button click", async ({ page }) => {
