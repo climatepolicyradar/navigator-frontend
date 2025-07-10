@@ -1,4 +1,5 @@
 import { screen } from "@testing-library/react";
+import { vi } from "vitest";
 
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 

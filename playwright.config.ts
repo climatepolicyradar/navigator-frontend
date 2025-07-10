@@ -6,7 +6,7 @@ const config = {
     useWebserver: true,
   },
   staging: {
-    baseURL: "https://app.dev.climatepolicyradar.org",
+    baseURL: "https://cpr.staging.climatepolicyradar.org",
     useWebserver: false,
   },
   production: {
