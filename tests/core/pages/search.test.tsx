@@ -90,30 +90,14 @@ describe("SearchPage", async () => {
       await userEvent.click(geographyFilterControl);
     });
 
-    const countryFilterControl = await screen.findByText(/Published jurisdiction/i);
-
-    expect(countryFilterControl).toBeInTheDocument();
-    await act(async () => {
-      await userEvent.click(countryFilterControl);
-    });
-
-    const countryInput = screen.getByRole("textbox", {
-      name: "Search for a jurisdiction",
-    });
-
-    expect(countryInput).toBeInTheDocument();
+    expect(await screen.findByText(/Published jurisdiction/i));
 
     await act(async () => {
-      await userEvent.type(countryInput, "Belize");
+      await userEvent.click(await screen.findByRole("checkbox", { name: "Belize" }));
     });
-    expect(countryInput).toHaveValue("Belize");
 
-    const countryOptions = within(screen.getByTestId("countries")).getAllByRole("listitem");
-    expect(countryOptions).toHaveLength(1);
-
-    await act(async () => {
-      await userEvent.click(countryOptions[0]);
-    });
+    const countryOptions = within(screen.getByTestId("countries")).getAllByRole("checkbox");
+    expect(countryOptions).toHaveLength(3);
 
     expect(await screen.findByText("Results")).toBeInTheDocument();
     expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeInTheDocument();
@@ -158,6 +142,7 @@ describe("SearchPage", async () => {
     await act(async () => {
       await userEvent.click(countryFilterControl);
     });
+    expect(await screen.findByText(/Region/i)).toBeInTheDocument();
 
     const countryInput = screen.getByRole("textbox", {
       name: "Search for a jurisdiction",

@@ -140,6 +140,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   const subdivisionQuery = useGeographySubdivisions(countryFiltersIsoCodes);
   const { data: subdivisions } = subdivisionQuery;
+  const alphabetisedCountries = countries.sort((c1, c2) => c1.display_value.localeCompare(c2.display_value));
 
   const availableCountries = useMemo(() => {
     return regionFilters.length > 0
@@ -493,7 +494,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       <Accordian
                         title={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
                         data-cy="regions"
-                        startOpen={!!router.query[QUERY_PARAMS.region]}
+                        startOpen
                       >
                         <InputListContainer>
                           {regions.map((region) => (
@@ -512,18 +513,22 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       <Accordian
                         title={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
                         data-cy="countries"
-                        overflowOverride
                         className="relative z-10"
+                        showFade="true"
+                        startOpen
                       >
                         <InputListContainer>
-                          <TypeAhead
-                            list={availableCountries}
-                            selectedList={countryFilters}
-                            keyField={"slug"}
-                            keyFieldDisplay={"display_value"}
-                            filterType={QUERY_PARAMS.country}
-                            handleFilterChange={handleFilterChange}
-                          />
+                          {alphabetisedCountries.map((country) => (
+                            <InputCheck
+                              key={country.slug}
+                              label={country.display_value}
+                              checked={countryFilters && countryFilters.includes(country.slug)}
+                              onChange={() => {
+                                handleFilterChange(QUERY_PARAMS["country"], country.slug);
+                              }}
+                              name={`country-${country.slug}`}
+                            />
+                          ))}
                         </InputListContainer>
                       </Accordian>
                       <Accordian title={"Subdivision"} overflowOverride className="relative z-10">
