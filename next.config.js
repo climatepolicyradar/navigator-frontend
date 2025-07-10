@@ -18,13 +18,6 @@ const nextConfig = {
   // Supports dynamic component imports
   webpack(config) {
     config.experiments = { ...config.experiments, topLevelAwait: true };
-
-    // Exclude test files from the build
-    config.module.rules.push({
-      test: /\.(test|spec)\.(js|jsx|ts|tsx)$/,
-      use: "ignore-loader",
-    });
-
     return config;
   },
   // Redirects
