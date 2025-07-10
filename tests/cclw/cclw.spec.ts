@@ -284,21 +284,57 @@ test.describe("CCLW Hero Search", () => {
     await expect(searchInput).toHaveValue(searchTerm);
   });
 
-  test("should handle search dropdown functionality", async ({ page }) => {
+  test("should navigate to geography profile when clicking country suggestion", async ({ page }) => {
     const searchInput = page.locator('[data-cy="search-input"]');
+    const searchForm = page.locator('[data-cy="search-form"]');
 
-    // Focus on search input to trigger dropdown
-    await searchInput.focus();
+    // Click on the search form to trigger formFocus state
+    await searchForm.click();
 
-    // Type a partial search term
-    await searchInput.fill("climate");
+    // Type a country name
+    await searchInput.fill("spain");
 
-    // Wait for dropdown to appear (if it exists)
-    // Note: This test may need adjustment based on actual dropdown behavior
-    await page.waitForTimeout(500);
+    // Wait for dropdown to appear
+    await page.waitForTimeout(100);
 
-    // Verify search input still has focus
-    await expect(searchInput).toBeFocused();
+    // Click on Spain geography profile
+    await page.getByRole("link", { name: "Spain Geography profile" }).click();
+
+    // Should navigate to Spain geography page
+    await page.waitForURL("/geographies/spain");
+
+    // Verify we're on the geography page
+    await expect(page.getByRole("heading", { name: "Spain" })).toBeVisible();
+  });
+
+  test("should handle 'Did you mean to search for X in Y?' search suggestion when typing country with additional terms", async ({ page }) => {
+    const searchInput = page.locator('[data-cy="search-input"]');
+    const searchForm = page.locator('[data-cy="search-form"]');
+
+    // Click on the search form to trigger formFocus state
+    await searchForm.click();
+
+    await searchInput.fill("renewable energy france");
+
+    // Wait for dropdown to update
+    await page.waitForTimeout(100);
+
+    // Verify "Did you mean" suggestion for France
+    await expect(page.getByText("Did you mean to search for renewable energy in France")).toBeVisible();
+    await expect(page.getByRole("link", { name: "France Geography profile" })).toBeVisible();
+
+    // Test that clicking the suggestion navigates to search with correct parameters
+    await page.getByText("Did you mean to search for").click();
+
+    // Should navigate to search page with the suggestion parameters
+    await page.waitForURL("/search*");
+
+    // Verify the search term and country filter are applied
+    const url = page.url();
+    expect(url).toContain("q=renewable+energy");
+    expect(url).toContain("l=france");
+    expect(url).not.toContain("e=true");
+    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
   });
 
   test("should handle search with multiple parameters", async ({ page }) => {
