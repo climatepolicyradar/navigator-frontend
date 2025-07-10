@@ -60,6 +60,6 @@ describe("FilterOptions", () => {
 
     render(<FilterOptions filter={testFilter} query={{}} handleFilterChange={() => {}} corpus_types={testTaxonomy} themeConfig={testThemeConfig} />);
 
-    expect(screen.getByText("Allowed topic")).toBeDefined();
+    expect(screen.getByText("Allowed topic")).toBeInTheDocument();
   });
 });

@@ -4,12 +4,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import Loader from "@/components/Loader";
+import { Accordian } from "@/components/accordian/Accordian";
 import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
 import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
@@ -17,7 +18,9 @@ import SearchFilters from "@/components/blocks/SearchFilters";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Drawer from "@/components/drawer/Drawer";
 import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
+import { InputListContainer } from "@/components/filters/InputListContainer";
 import { SearchSettings } from "@/components/filters/SearchSettings";
+import { InputCheck } from "@/components/forms/Checkbox";
 import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
 import { Info } from "@/components/molecules/info/Info";
@@ -43,6 +46,7 @@ import { getFeatureFlags } from "@/utils/featureFlags";
 import { isFamilyConceptsSearchEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
+import { getFilterLabel } from "@/utils/getFilterLabel";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
@@ -124,6 +128,12 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   const configQuery = useConfig();
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
+
+  const {
+    keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
+  } = searchQuery;
+
+  const alphabetisedCountries = countries.sort((c1, c2) => c1.display_value.localeCompare(c2.display_value));
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 
@@ -443,14 +453,11 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                     <SearchFilters
                       searchCriteria={searchQuery}
                       query={router.query}
-                      regions={regions}
-                      countries={countries}
                       corpus_types={corpus_types}
                       conceptsData={conceptsData}
                       familyConceptsData={familyConceptsData}
                       handleFilterChange={handleFilterChange}
                       handleYearChange={handleYearChange}
-                      handleRegionChange={handleRegionChange}
                       handleClearSearch={handleClearSearch}
                       handleDocumentCategoryClick={handleDocumentCategoryClick}
                       featureFlags={featureFlags}
@@ -465,6 +472,50 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       )}
                     </SlideOut>
                   )}
+                  <SlideOut showCloseButton={false}>
+                    <div className="text-sm text-text-secondary flex flex-col gap-5">
+                      <Accordian
+                        title={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
+                        data-cy="regions"
+                        startOpen
+                      >
+                        <InputListContainer>
+                          {regions.map((region) => (
+                            <InputCheck
+                              key={region.slug}
+                              label={region.display_value}
+                              checked={regionFilters && regionFilters.includes(region.slug)}
+                              onChange={() => {
+                                handleRegionChange(region.slug);
+                              }}
+                              name={`region-${region.slug}`}
+                            />
+                          ))}
+                        </InputListContainer>
+                      </Accordian>
+                      <Accordian
+                        title={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
+                        data-cy="countries"
+                        className="relative z-10"
+                        showFade="true"
+                        startOpen
+                      >
+                        <InputListContainer>
+                          {alphabetisedCountries.map((country) => (
+                            <InputCheck
+                              key={country.slug}
+                              label={country.display_value}
+                              checked={countryFilters && countryFilters.includes(country.slug)}
+                              onChange={() => {
+                                handleFilterChange(QUERY_PARAMS["country"], country.slug);
+                              }}
+                              name={`country-${country.slug}`}
+                            />
+                          ))}
+                        </InputListContainer>
+                      </Accordian>
+                    </div>
+                  </SlideOut>
 
                   <div className="absolute z-50 bottom-0 left-0 w-full flex pb-[100px] bg-white md:hidden">
                     <Button

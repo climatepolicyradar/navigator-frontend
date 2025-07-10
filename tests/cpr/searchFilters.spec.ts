@@ -68,8 +68,6 @@ test("search filters", async ({ page }) => {
   const allCategoriesRadioButton = page.getByRole("radio", { name: "All" });
   expect(allCategoriesRadioButton.isChecked()).toBeTruthy();
 
-  await expect(page.locator('[data-cy="regions"]:has-text("Region")').last()).toBeVisible();
-  await expect(page.locator('[data-cy="countries"]:has-text("Published jurisdiction")').last()).toBeVisible();
   await expect(page.locator('[data-cy="date-range"]:has-text("Date")').last()).toBeVisible();
 
   const policiesRadioButton = page.getByRole("radio", { name: "Policies" });
@@ -85,4 +83,8 @@ test("search filters", async ({ page }) => {
   await expect(sectorAccordion).toBeVisible();
   sectorAccordion.click();
   await expect(page.getByRole("radio", { name: "Energy" })).toBeVisible();
+
+  await page.getByRole("button", { name: "Geography" }).click();
+  await expect(page.getByText("Region")).toBeVisible();
+  await expect(page.getByText("Published jurisdiction")).toBeVisible();
 });
