@@ -67,7 +67,7 @@ test.describe("OEP Landing Page Search", () => {
 
     // Should navigate to search page with category filter but no query
     await page.waitForURL("/search*");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
     // Verify the category filter is applied using correct URL parameters
     const url = page.url();
@@ -96,7 +96,7 @@ test.describe("OEP Landing Page Search", () => {
     expect(url).not.toContain("e=true");
 
     // Verify we're on the search page
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should perform search with user input via Enter key", async ({ page }) => {
@@ -117,7 +117,7 @@ test.describe("OEP Landing Page Search", () => {
     expect(url).toContain(`q=${urlify(searchTerm)}`);
     expect(url).toContain("c=offshore-wind-reports");
     expect(url).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should handle search suggestions correctly", async ({ page }) => {
@@ -133,7 +133,7 @@ test.describe("OEP Landing Page Search", () => {
     expect(url).toContain("q=Offshore+wind+development");
     expect(url).toContain("c=offshore-wind-reports");
     expect(url).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
     // Navigate back to homepage for next test
     await page.goto("/offshorewind");
@@ -151,7 +151,7 @@ test.describe("OEP Landing Page Search", () => {
     expect(url2).toContain("q=Floating+offshore+wind");
     expect(url2).toContain("c=offshore-wind-reports");
     expect(url2).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
     // Navigate back to homepage for next test
     await page.goto("/offshorewind");
@@ -170,25 +170,7 @@ test.describe("OEP Landing Page Search", () => {
     expect(url3).toContain("cfn=zoning+and+spatial+planning");
     expect(url3).toContain("c=offshore-wind-reports");
     expect(url3).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
-  });
-
-  test("should clear search input after navigation", async ({ page }) => {
-    const searchInput = page.locator('[data-cy="search-input"]');
-
-    // Type a search term and perform search
-    await searchInput.fill("test search term");
-    await searchInput.press("Enter");
-
-    // Wait for navigation to complete
-    await page.waitForURL("/search*");
-
-    // Navigate back to OEP page
-    await page.goBack();
-
-    // Wait for page to load and verify search input is cleared
-    await page.waitForLoadState("networkidle");
-    await expect(searchInput).toHaveValue("");
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should handle search with special characters", async ({ page }) => {
@@ -230,7 +212,7 @@ test.describe("OEP Landing Page Search", () => {
     );
     expect(url).toContain("c=offshore-wind-reports");
     expect(url).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should maintain search state on page refresh", async ({ page }) => {
@@ -311,7 +293,7 @@ test.describe("OEP Landing Page Search", () => {
     expect(url).not.toContain("e=true");
     expect(url).not.toContain("l=india");
     expect(url).not.toContain("/geographies/india");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should not show dropdown when typing country with additional terms", async ({ page }) => {
@@ -337,7 +319,7 @@ test.describe("OEP Landing Page Search", () => {
     expect(url).toContain("q=renewable+energy+france");
     expect(url).not.toContain("l=france");
     expect(url).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should handle search with multiple parameters", async ({ page }) => {

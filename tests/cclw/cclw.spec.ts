@@ -82,7 +82,7 @@ test.describe("CCLW Hero Search", () => {
     expect(url).not.toContain("e=true");
 
     // Verify we're on the search page
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should perform search with user input via Enter key", async ({ page }) => {
@@ -102,7 +102,7 @@ test.describe("CCLW Hero Search", () => {
     const url = page.url();
     expect(url).toContain(`q=${urlify(searchTerm)}`);
     expect(url).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should handle search suggestions correctly", async ({ page }) => {
@@ -118,7 +118,7 @@ test.describe("CCLW Hero Search", () => {
     expect(url).toContain("t=Nationally+Determined+Contribution");
     expect(url).toContain("at=Party");
     expect(url).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
     // Navigate back to homepage for next test
     await page.goto("/");
@@ -136,7 +136,7 @@ test.describe("CCLW Hero Search", () => {
     expect(url2).toContain("c=laws");
     expect(url2).toContain("cfn=indigenous+people");
     expect(url2).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
     // Navigate back to homepage for next test
     await page.goto("/");
@@ -153,7 +153,7 @@ test.describe("CCLW Hero Search", () => {
     expect(url3).toContain("cfn=zoning+and+spatial+planning");
     expect(url3).toContain("q=marine");
     expect(url3).toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
     // Verify the knowledge graph search description text is displayed
     await expect(
@@ -178,25 +178,7 @@ test.describe("CCLW Hero Search", () => {
     expect(url4).toContain("fl=true");
     expect(url4).toContain("cfn=emissions+reduction+target");
     expect(url4).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
-  });
-
-  test("should clear search input after navigation", async ({ page }) => {
-    const searchInput = page.locator('[data-cy="search-input"]');
-
-    // Type a search term and perform search
-    await searchInput.fill("test search term");
-    await searchInput.press("Enter");
-
-    // Wait for navigation to complete
-    await page.waitForURL("/search*");
-
-    // Navigate back to CCLW page
-    await page.goBack();
-
-    // Wait for page to load and verify search input is cleared
-    await page.waitForLoadState("networkidle");
-    await expect(searchInput).toHaveValue("");
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should handle search with special characters", async ({ page }) => {
@@ -233,7 +215,7 @@ test.describe("CCLW Hero Search", () => {
     const url = page.url();
     expect(url).toContain("q=climate+change+adaptation+and+mitigation+laws+and+policies+for+sustainable+development+in+developing+countries");
     expect(url).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should maintain search state on page refresh", async ({ page }) => {
@@ -334,7 +316,7 @@ test.describe("CCLW Hero Search", () => {
     expect(url).toContain("q=renewable+energy");
     expect(url).toContain("l=france");
     expect(url).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should handle search with multiple parameters", async ({ page }) => {

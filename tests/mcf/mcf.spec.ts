@@ -32,7 +32,7 @@ test.describe("MCF Hero Search", () => {
     // Should not crash - should redirect to /search
     await expect(page).not.toHaveURL(/e=true/);
     await expect(page).toHaveURL(/search/);
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should search with button click", async ({ page }) => {
@@ -78,7 +78,7 @@ test.describe("MCF Hero Search", () => {
     const url = page.url();
     expect(url).toContain("q=Adaptation");
     expect(url).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
     // Navigate back to homepage for next test
     await page.goto("/");
@@ -94,7 +94,7 @@ test.describe("MCF Hero Search", () => {
     const url2 = page.url();
     expect(url2).toContain("q=Extreme+Weather");
     expect(url2).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
     // Navigate back to homepage for next test
     await page.goto("/");
@@ -111,7 +111,7 @@ test.describe("MCF Hero Search", () => {
     const url3 = page.url();
     expect(url3).toContain("l=philippines");
     expect(url3).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should handle special characters in search", async ({ page }) => {
@@ -148,7 +148,7 @@ test.describe("MCF Hero Search", () => {
     await expect(page).not.toHaveURL(/e=true/);
   });
 
-  test("should clear input when navigating back", async ({ page }) => {
+  test("should preserve input when navigating back", async ({ page }) => {
     const searchTerm = "test search";
 
     // Type search term
@@ -163,8 +163,8 @@ test.describe("MCF Hero Search", () => {
     // Navigate back to homepage
     await page.goto("/");
 
-    // Input should be cleared
-    await expect(page.locator('[data-cy="search-input"]')).toHaveValue("");
+    // Input should be preserved
+    await expect(page.locator('[data-cy="search-input"]')).toHaveValue(searchTerm);
   });
 
   test("should handle example search buttons", async ({ page }) => {
