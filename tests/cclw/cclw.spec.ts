@@ -58,7 +58,7 @@ test.describe("CCLW Hero Search", () => {
 
     // Should not crash - should redirect to /search
     await expect(page).not.toHaveURL(/e=true/);
-    await expect(page).not.toHaveURL("/search");
+    await expect(page).toHaveURL(/search/);
     await expect(page.getByText("Search over 5000 climate laws and policies worldwide")).not.toBeVisible();
   });
 

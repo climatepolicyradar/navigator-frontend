@@ -62,7 +62,7 @@ test.describe("CPR Hero Search", () => {
 
     // Should not crash - should redirect to /search
     await expect(page).not.toHaveURL(/e=true/);
-    await expect(page).not.toHaveURL("/search");
+    await expect(page).toHaveURL(/search/);
     await expect(page.getByText("Search the full text of over 12,000 climate documents")).not.toBeVisible();
   });
 

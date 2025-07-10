@@ -25,12 +25,13 @@ test.describe("MCF Hero Search", () => {
     await expect(page.getByRole("heading", { name: "Multilateral Climate Funds" })).toBeVisible();
   });
 
-  test("should handle empty search gracefully", async ({ page }) => {
+  test("should handle empty search without crashing", async ({ page }) => {
     // Click search button with empty input
     await page.click('[data-cy="search-form"] button[aria-label="Search"]');
 
-    // Should not crash - page should remain on homepage
+    // Should not crash - should redirect to /search
     await expect(page).not.toHaveURL(/e=true/);
+    await expect(page).toHaveURL(/search/);
     await expect(page.getByRole("heading", { name: "Multilateral Climate Funds" })).toBeVisible();
   });
 
