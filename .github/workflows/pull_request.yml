@@ -146,7 +146,11 @@ jobs:
       - run: npm run build
         env:
           NODE_ENV: production
+          THEME: cpr
       - run: npm run test
+        env:
+          THEME: cpr
+
       - name: Upload results
         # Run this step even if the test step ahead fails
         if: ${{ !cancelled() }}
