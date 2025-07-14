@@ -20,8 +20,9 @@ export const isKnowledgeGraphEnabled = (featureFlags: TFeatureFlags, themeConfig
     featureFlag: featureFlags["concepts-v1"],
   });
 
-export const isLitigationEnabled = (featureFlags: TFeatureFlags) =>
+export const isLitigationEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
   isFeatureEnabled({
+    configFeature: themeConfig.features.litigation,
     featureFlag: featureFlags["litigation"],
   });
 

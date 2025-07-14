@@ -19,9 +19,10 @@ const testThemeConfig: TThemeConfig = {
   defaultDocumentCategory: "All",
   metadata: [],
   features: {
-    knowledgeGraph: false,
-    searchFamilySummary: true,
     familyConceptsSearch: false,
+    knowledgeGraph: false,
+    litigation: false,
+    searchFamilySummary: true,
   },
 };
 
