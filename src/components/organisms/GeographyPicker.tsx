@@ -1,10 +1,8 @@
-import { getFilterLabel } from "@/utils/getFilterLabel";
 import { Accordian } from "@/components/accordian/Accordian";
-import router from "next/router";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { InputListContainer } from "../filters/InputListContainer";
 import { InputCheck } from "../forms/Checkbox";
-import { TGeography, TSearchCriteria, TThemeConfig } from "@/types";
+import { TGeography, TSearchCriteria } from "@/types";
 import { useMemo, useState } from "react";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 
@@ -16,10 +14,19 @@ interface IProps {
   handleFilterChange: (t: string, v: string) => void;
   searchQuery: TSearchCriteria;
   countries: TGeography[];
-  themeConfig: TThemeConfig;
+  regionFilterLabel: string;
+  countryFilterLabel: string;
 }
 
-export const GeographyPicker = ({ regions, handleRegionChange, handleFilterChange, searchQuery, countries, themeConfig }: IProps) => {
+export const GeographyPicker = ({
+  regions,
+  handleRegionChange,
+  handleFilterChange,
+  searchQuery,
+  countries,
+  regionFilterLabel,
+  countryFilterLabel,
+}: IProps) => {
   const [search, setSearch] = useState("");
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
@@ -41,7 +48,7 @@ export const GeographyPicker = ({ regions, handleRegionChange, handleFilterChang
 
   return (
     <div className="text-sm text-text-secondary flex flex-col gap-5">
-      <Accordian title={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)} data-cy="regions" startOpen>
+      <Accordian title={regionFilterLabel} data-cy="regions" startOpen>
         <InputListContainer>
           {regions.map((region) => (
             <InputCheck
@@ -56,13 +63,7 @@ export const GeographyPicker = ({ regions, handleRegionChange, handleFilterChang
           ))}
         </InputListContainer>
       </Accordian>
-      <Accordian
-        title={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
-        data-cy="countries"
-        className="relative z-10"
-        showFade="true"
-        startOpen
-      >
+      <Accordian title={countryFilterLabel} data-cy="countries" className="relative z-10" showFade="true" startOpen>
         <InputListContainer>
           <div className="mb-2" key="quick-search-box">
             <TextInput size="small" onChange={(v) => setSearch(v)} value={search} placeholder="Quick search" />

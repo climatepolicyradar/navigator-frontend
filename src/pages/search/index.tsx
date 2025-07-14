@@ -43,6 +43,7 @@ import { getFeatureFlags } from "@/utils/featureFlags";
 import { isFamilyConceptsSearchEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
+import { getFilterLabel } from "@/utils/getFilterLabel";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
@@ -468,7 +469,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           handleFilterChange={handleFilterChange}
                           searchQuery={searchQuery}
                           countries={countries}
-                          themeConfig={themeConfig}
+                          regionFilterLabel={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
+                          countryFilterLabel={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
                         />
                       )}
                     </SlideOut>
