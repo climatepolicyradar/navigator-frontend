@@ -78,7 +78,7 @@
     "@types/react-simple-maps": "^3.0.4",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
-    "@vitejs/plugin-react": "4.5.0",
+    "@vitejs/plugin-react": "^4.3.4",
     "babel-eslint": "^10.1.0",
     "dotenv": "^16.5.0",
     "eslint": "^8.57.1",
@@ -105,7 +105,7 @@
     "ts-node": "^10.9.2",
     "typescript": "5.8.2",
     "typescript-eslint": "^8.33.0",
-    "vite-tsconfig-paths": "4.3.1",
-    "vitest": "1.4.0"
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^2.1.8"
   }
 }
