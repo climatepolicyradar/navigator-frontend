@@ -5,8 +5,10 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { InputListContainer } from "../filters/InputListContainer";
 import { InputCheck } from "../forms/Checkbox";
 import { TGeography, TSearchCriteria, TThemeConfig } from "@/types";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
+
+import { TextInput } from "../forms/TextInput";
 
 interface IProps {
   regions: TGeography[];
@@ -18,11 +20,12 @@ interface IProps {
 }
 
 export const GeographyPicker = ({ regions, handleRegionChange, handleFilterChange, searchQuery, countries, themeConfig }: IProps) => {
+  const [search, setSearch] = useState("");
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
   } = searchQuery;
 
-  const availableCountries = useMemo(() => {
+  const countriesByRegion = useMemo(() => {
     return regionFilters.length > 0
       ? getCountriesFromRegions({
           regions,
@@ -32,7 +35,9 @@ export const GeographyPicker = ({ regions, handleRegionChange, handleFilterChang
       : countries;
   }, [regionFilters, regions, countries]);
 
-  const alphabetisedCountries = availableCountries.sort((c1, c2) => c1.display_value.localeCompare(c2.display_value));
+  const alphabetisedFilteredCountries = countriesByRegion
+    .sort((c1, c2) => c1.display_value.localeCompare(c2.display_value))
+    .filter((geo) => geo.display_value.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="text-sm text-text-secondary flex flex-col gap-5">
@@ -59,7 +64,10 @@ export const GeographyPicker = ({ regions, handleRegionChange, handleFilterChang
         startOpen
       >
         <InputListContainer>
-          {alphabetisedCountries.map((country) => (
+          <div className="mb-2" key="quick-search-box">
+            <TextInput size="small" onChange={(v) => setSearch(v)} value={search} placeholder="Quick search" />
+          </div>
+          {alphabetisedFilteredCountries.map((country) => (
             <InputCheck
               key={country.slug}
               label={country.display_value}
