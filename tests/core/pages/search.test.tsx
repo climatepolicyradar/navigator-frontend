@@ -99,7 +99,7 @@ describe("SearchPage", async () => {
     ).not.toBeInTheDocument();
   });
 
-  it("shows topics filters when topics slideout is opened", async () => {
+  it("filters search results by topic", async () => {
     const search_props = {
       envConfig: {
         BACKEND_API_URL: process.env.BACKEND_API_URL,
@@ -116,7 +116,19 @@ describe("SearchPage", async () => {
           },
         ],
       },
-      conceptsData: [{}],
+      conceptsData: [
+        {
+          alternative_labels: [],
+          description: "test concept 1",
+          has_subconcept: [],
+          negative_labels: [],
+          preferred_label: "child topic 1",
+          recursive_subconcept_of: [],
+          related_concepts: [],
+          subconcept_of: [],
+          wikibase_id: "1",
+        },
+      ],
     };
     // @ts-ignore
     renderWithAppContext(Search, search_props);
@@ -133,5 +145,15 @@ describe("SearchPage", async () => {
     });
 
     expect(await screen.findByText(/Find mentions of topics/i));
+
+    expect(screen.getByText(/Parent topic/)).toBeInTheDocument();
+    const topic = screen.getByRole("checkbox", { name: "Child topic 1" });
+
+    await act(async () => {
+      await userEvent.click(topic);
+    });
+
+    expect(screen.getByRole("link", { name: "Family with topic 1" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Family with topic 2" })).not.toBeInTheDocument();
   });
 });
