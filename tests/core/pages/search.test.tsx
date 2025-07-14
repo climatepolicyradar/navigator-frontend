@@ -28,7 +28,7 @@ describe("SearchPage", async () => {
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
-    const geographyFilterControl = await screen.findByText(/Geography/);
+    const geographyFilterControl = await screen.findByRole("button", { name: /Geography/ });
 
     expect(geographyFilterControl).toBeInTheDocument();
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
@@ -74,7 +74,7 @@ describe("SearchPage", async () => {
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
-    const geographyFilterControl = await screen.findByText(/Geography/);
+    const geographyFilterControl = await screen.findByRole("button", { name: /Geography/ });
 
     expect(geographyFilterControl).toBeInTheDocument();
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
@@ -123,7 +123,7 @@ describe("SearchPage", async () => {
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
-    const topicsFilterControl = await screen.findByText(/Topics/);
+    const topicsFilterControl = await screen.findByRole("button", { name: /Topics/ });
 
     expect(topicsFilterControl).toBeInTheDocument();
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
