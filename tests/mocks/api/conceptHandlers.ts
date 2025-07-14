@@ -3,7 +3,7 @@ import { http, HttpResponse } from "msw";
 export const conceptHandlers = [
   http.get("*/concepts/:id.json", ({ params }) => {
     const { id } = params;
-    // console.log("Getting mock concept: ", id.split(".")[0])
+
     const concepts = [
       {
         alternative_labels: [],
@@ -40,6 +40,6 @@ export const conceptHandlers = [
       },
     ];
 
-    return HttpResponse.json(concepts.find((c) => c.wikibase_id === id.split(".")[0]));
+    return HttpResponse.json(concepts.find((c) => c.wikibase_id === (id as string).split(".")[0]));
   }),
 ];

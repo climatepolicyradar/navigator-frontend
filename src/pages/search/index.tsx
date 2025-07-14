@@ -24,6 +24,7 @@ import { Info } from "@/components/molecules/info/Info";
 import { SubNav } from "@/components/nav/SubNav";
 import { ConceptPicker } from "@/components/organisms/ConceptPicker";
 import { FamilyConceptPicker } from "@/components/organisms/FamilyConceptPicker";
+import { GeographyPicker } from "@/components/organisms/GeographyPicker";
 import Pagination from "@/components/pagination";
 import { MultiCol } from "@/components/panels/MultiCol";
 import { SideCol } from "@/components/panels/SideCol";
@@ -47,7 +48,6 @@ import { getFilterLabel } from "@/utils/getFilterLabel";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
-import { GeographyPicker } from "@/components/organisms/GeographyPicker";
 
 interface IProps {
   theme: TTheme;

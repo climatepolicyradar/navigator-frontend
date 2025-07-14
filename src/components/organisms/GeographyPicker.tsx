@@ -1,11 +1,12 @@
+import { useMemo, useState } from "react";
+
 import { Accordian } from "@/components/accordian/Accordian";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
+import { TGeography, TSearchCriteria } from "@/types";
+
 import { InputListContainer } from "../filters/InputListContainer";
 import { InputCheck } from "../forms/Checkbox";
-import { TGeography, TSearchCriteria } from "@/types";
-import { useMemo, useState } from "react";
-import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
-
 import { TextInput } from "../forms/TextInput";
 
 interface IProps {
