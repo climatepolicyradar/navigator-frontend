@@ -33,10 +33,11 @@ vi.mock("@/hooks/useConfig", () => ({
 
 // Mock Next.js router
 const mockPush = vi.fn();
+const mockQuery = {};
 vi.mock("next/router", () => ({
   useRouter: () => ({
     push: mockPush,
-    query: {},
+    query: mockQuery,
   }),
 }));
 
@@ -67,6 +68,7 @@ function textContentMatcher(text: string) {
 describe("SearchDropdown", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    Object.keys(mockQuery).forEach((key) => delete mockQuery[key]);
   });
 
   it("should not render when show is false", async () => {
@@ -184,6 +186,22 @@ describe("SearchDropdown", () => {
     });
   });
 
+  it("should preserve query parameters when clicking geography profile link", async () => {
+    // Set up initial query parameters
+    Object.assign(mockQuery, { someParam: "value", anotherParam: "test" });
+
+    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "spain" });
+
+    // Click on Spain geography profile
+    fireEvent.click(screen.getByRole("link", { name: "Spain Geography profile" }));
+
+    // Verify router.push was called with the correct URL and preserved query params
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: "/geographies/spain",
+      query: { someParam: "value", anotherParam: "test" },
+    });
+  });
+
   it.fails("should fail (handle multiple geography matches by showing all geography profiles)", async () => {
     await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "sudan policy" });
 
@@ -230,14 +248,14 @@ describe("SearchDropdown", () => {
     expect(dropdown).not.toHaveClass("search-dropdown_large");
   });
 
-  it("should handle case-insensitive country matching", async () => {
+  it("should handle case insensitive country matching", async () => {
     await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "SPAIN" });
 
     // Should still find Spain despite different case
     expect(screen.getByRole("link", { name: "Spain Geography profile" })).toBeInTheDocument();
   });
 
-  it("should handle case-insensitive partial matching", async () => {
+  it("should handle case insensitive partial country matches", async () => {
     await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "FR" });
 
     // Should still find countries that contain "fr" despite different case
