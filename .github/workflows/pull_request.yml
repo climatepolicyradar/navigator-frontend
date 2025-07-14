@@ -142,6 +142,8 @@ jobs:
         with:
           node-version: 22.12.0
       - run: npm install
+      - run: npm list vite
+      - run: npm list vitest
       - run: cp .env.example .env
       - run: npm run build
         env:
