@@ -14,7 +14,7 @@ export const searchHandlers = [
   }),
   http.post("*/searches", async ({ request }) => {
     const body = (await request.json()) as TSearchCriteria;
-
+    console.log("Search filters: ", body.keyword_filters);
     const filteredFamilies = getFilteredFamilies(body.keyword_filters);
 
     return HttpResponse.json({

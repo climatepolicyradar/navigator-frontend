@@ -62,6 +62,14 @@ export type TGeography = {
   slug: string;
 };
 
+export type TGeographySubdivision = {
+  code: string;
+  name: string;
+  type: string;
+  country_alpha_2: string;
+  country_alpha_3: string;
+};
+
 export type TTarget = {
   ID: string;
   "Target type": string;

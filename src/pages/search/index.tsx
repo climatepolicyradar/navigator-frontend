@@ -51,6 +51,7 @@ import { getFilterLabel } from "@/utils/getFilterLabel";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
+import useSubdivisions from "@/hooks/useSubdivisions";
 
 interface IProps {
   theme: TTheme;
@@ -136,8 +137,15 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   const countryFiltersIsoCodes = countries.filter((country) => countryFilters.includes(country.slug)).map((country) => country.value);
 
-  const subdivisionQuery = useGeographySubdivisions(countryFiltersIsoCodes);
-  const { data: subdivisions } = subdivisionQuery;
+  const countrySubdivisionQuery = useGeographySubdivisions(countryFiltersIsoCodes);
+  const { data: countrySubdivisions = [] } = countrySubdivisionQuery;
+
+  const subdivisionQuery = useSubdivisions();
+  const { data: subdivisions = [] } = subdivisionQuery;
+
+  const availableSubdivisions = countrySubdivisions && countrySubdivisions.length > 0 ? countrySubdivisions : subdivisions;
+
+  const alphabetisedSubdivisions = availableSubdivisions.sort((s1, s2) => s1.name.localeCompare(s2.name));
   const alphabetisedCountries = countries.sort((c1, c2) => c1.display_value.localeCompare(c2.display_value));
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
@@ -519,16 +527,19 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           ))}
                         </InputListContainer>
                       </Accordian>
-                      <Accordian title={"Subdivision"} overflowOverride className="relative z-10">
+                      <Accordian title={"Subdivision"} overflowOverride className="relative z-10" showFade="true" startOpen>
                         <InputListContainer>
-                          <TypeAhead
-                            list={subdivisions}
-                            selectedList={subdivisionFilters}
-                            keyField={"alpha_3"}
-                            keyFieldDisplay={"name"}
-                            filterType={QUERY_PARAMS.subdivision}
-                            handleFilterChange={handleFilterChange}
-                          />
+                          {alphabetisedSubdivisions.map((subdivision) => (
+                            <InputCheck
+                              key={subdivision.code}
+                              label={subdivision.name}
+                              checked={subdivisionFilters && subdivisionFilters.includes(subdivision.code)}
+                              onChange={() => {
+                                handleFilterChange(QUERY_PARAMS["subdivision"], subdivision.code);
+                              }}
+                              name={`subdivision-${subdivision.code}`}
+                            />
+                          ))}
                         </InputListContainer>
                       </Accordian>
                     </div>

@@ -43,6 +43,29 @@ export const configHandlers = [
       geographies: [
         {
           node: {
+            id: 172,
+            display_value: "East Asia & Pacific",
+            slug: "east-asia-pacific",
+            value: "East Asia & Pacific",
+            type: "World Bank Region",
+            parent_id: null,
+          },
+          children: [
+            {
+              node: {
+                id: 173,
+                display_value: "Australia",
+                slug: "australia",
+                value: "AUS",
+                type: "ISO-3166",
+                parent_id: 172,
+              },
+              children: [],
+            },
+          ],
+        },
+        {
+          node: {
             id: 1,
             display_value: "South Asia",
             slug: "south-asia",
