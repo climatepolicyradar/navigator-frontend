@@ -2,7 +2,8 @@ import { screen } from "@testing-library/react";
 import { vi } from "vitest";
 
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
-import CountryPage from "@/pages/geographies/[id]";
+
+import CountryPage from "../../../src/pages/geographies/[id]";
 
 // this mock is needed for any tests of pages that use dynamic imports
 vi.mock("next/dynamic", () => ({
