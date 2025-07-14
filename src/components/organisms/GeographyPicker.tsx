@@ -5,6 +5,8 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { InputListContainer } from "../filters/InputListContainer";
 import { InputCheck } from "../forms/Checkbox";
 import { TGeography, TSearchCriteria, TThemeConfig } from "@/types";
+import { useMemo } from "react";
+import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 
 interface IProps {
   regions: TGeography[];
@@ -20,7 +22,17 @@ export const GeographyPicker = ({ regions, handleRegionChange, handleFilterChang
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
   } = searchQuery;
 
-  const alphabetisedCountries = countries.sort((c1, c2) => c1.display_value.localeCompare(c2.display_value));
+  const availableCountries = useMemo(() => {
+    return regionFilters.length > 0
+      ? getCountriesFromRegions({
+          regions,
+          countries,
+          selectedRegions: regionFilters,
+        })
+      : countries;
+  }, [regionFilters, regions, countries]);
+
+  const alphabetisedCountries = availableCountries.sort((c1, c2) => c1.display_value.localeCompare(c2.display_value));
 
   return (
     <div className="text-sm text-text-secondary flex flex-col gap-5">
