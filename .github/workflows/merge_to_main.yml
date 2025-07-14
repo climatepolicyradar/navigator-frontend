@@ -136,12 +136,12 @@ jobs:
         continue-on-error: true
 
   test-e2e:
-    timeout-minutes: 60
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        theme: [cpr, mcf]
+        theme: [cpr, cclw, mcf]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
