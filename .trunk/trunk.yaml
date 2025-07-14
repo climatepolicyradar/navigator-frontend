@@ -59,4 +59,4 @@ actions:
     - trunk-fmt-pre-commit
     - trunk-check-pre-commit
     - trunk-upgrade-available
-    - npm-check
+    - npm-check-pre-push
