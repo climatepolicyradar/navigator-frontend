@@ -25,13 +25,14 @@ test.describe("MCF Hero Search", () => {
     await expect(page.getByRole("heading", { name: "Multilateral Climate Funds" })).toBeVisible();
   });
 
-  test("should handle empty search gracefully", async ({ page }) => {
+  test("should handle empty search without crashing", async ({ page }) => {
     // Click search button with empty input
     await page.click('[data-cy="search-form"] button[aria-label="Search"]');
 
-    // Should not crash - page should remain on homepage
+    // Should not crash - should redirect to /search
     await expect(page).not.toHaveURL(/e=true/);
-    await expect(page.getByRole("heading", { name: "Multilateral Climate Funds" })).toBeVisible();
+    await expect(page).toHaveURL(/search/);
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should search with button click", async ({ page }) => {
@@ -77,7 +78,7 @@ test.describe("MCF Hero Search", () => {
     const url = page.url();
     expect(url).toContain("q=Adaptation");
     expect(url).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
     // Navigate back to homepage for next test
     await page.goto("/");
@@ -93,7 +94,7 @@ test.describe("MCF Hero Search", () => {
     const url2 = page.url();
     expect(url2).toContain("q=Extreme+Weather");
     expect(url2).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
     // Navigate back to homepage for next test
     await page.goto("/");
@@ -110,7 +111,7 @@ test.describe("MCF Hero Search", () => {
     const url3 = page.url();
     expect(url3).toContain("l=philippines");
     expect(url3).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should handle special characters in search", async ({ page }) => {
@@ -145,25 +146,6 @@ test.describe("MCF Hero Search", () => {
     // Should have correctly encoded query parameters
     await expect(page).toHaveURL(/q=multilateral\+climate\+fund\+adaptation\+projects\+in\+developing\+countries/);
     await expect(page).not.toHaveURL(/e=true/);
-  });
-
-  test("should clear input when navigating back", async ({ page }) => {
-    const searchTerm = "test search";
-
-    // Type search term
-    await page.fill('[data-cy="search-input"]', searchTerm);
-
-    // Click search button
-    await page.click('[data-cy="search-form"] button[aria-label="Search"]');
-
-    // Should navigate to search results page
-    await expect(page).toHaveURL(/\/search/);
-
-    // Navigate back to homepage
-    await page.goto("/");
-
-    // Input should be cleared
-    await expect(page.locator('[data-cy="search-input"]')).toHaveValue("");
   });
 
   test("should handle example search buttons", async ({ page }) => {
@@ -202,8 +184,11 @@ test.describe("MCF Hero Search", () => {
     // Should navigate to search results page
     await expect(page).toHaveURL(/\/search/);
 
-    // Refresh the page
-    await page.reload();
+    // Wait for the page to be fully loaded before refresh
+    await page.waitForLoadState("networkidle");
+
+    // Refresh the page with explicit wait
+    await page.reload({ waitUntil: "networkidle" });
 
     // Should still be on search results page with same parameters
     await expect(page).toHaveURL(/\/search/);

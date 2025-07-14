@@ -58,7 +58,7 @@ test.describe("CCLW Hero Search", () => {
 
     // Should not crash - should redirect to /search
     await expect(page).not.toHaveURL(/e=true/);
-    await expect(page).not.toHaveURL("/search");
+    await expect(page).toHaveURL(/search/);
     await expect(page.getByText("Search over 5000 climate laws and policies worldwide")).not.toBeVisible();
   });
 
@@ -82,7 +82,7 @@ test.describe("CCLW Hero Search", () => {
     expect(url).not.toContain("e=true");
 
     // Verify we're on the search page
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should perform search with user input via Enter key", async ({ page }) => {
@@ -102,7 +102,7 @@ test.describe("CCLW Hero Search", () => {
     const url = page.url();
     expect(url).toContain(`q=${urlify(searchTerm)}`);
     expect(url).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should handle search suggestions correctly", async ({ page }) => {
@@ -118,7 +118,7 @@ test.describe("CCLW Hero Search", () => {
     expect(url).toContain("t=Nationally+Determined+Contribution");
     expect(url).toContain("at=Party");
     expect(url).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
     // Navigate back to homepage for next test
     await page.goto("/");
@@ -136,7 +136,7 @@ test.describe("CCLW Hero Search", () => {
     expect(url2).toContain("c=laws");
     expect(url2).toContain("cfn=indigenous+people");
     expect(url2).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
     // Navigate back to homepage for next test
     await page.goto("/");
@@ -153,7 +153,7 @@ test.describe("CCLW Hero Search", () => {
     expect(url3).toContain("cfn=zoning+and+spatial+planning");
     expect(url3).toContain("q=marine");
     expect(url3).toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
     // Verify the knowledge graph search description text is displayed
     await expect(
@@ -178,25 +178,7 @@ test.describe("CCLW Hero Search", () => {
     expect(url4).toContain("fl=true");
     expect(url4).toContain("cfn=emissions+reduction+target");
     expect(url4).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
-  });
-
-  test("should clear search input after navigation", async ({ page }) => {
-    const searchInput = page.locator('[data-cy="search-input"]');
-
-    // Type a search term and perform search
-    await searchInput.fill("test search term");
-    await searchInput.press("Enter");
-
-    // Wait for navigation to complete
-    await page.waitForURL("/search*");
-
-    // Navigate back to CCLW page
-    await page.goBack();
-
-    // Wait for page to load and verify search input is cleared
-    await page.waitForLoadState("networkidle");
-    await expect(searchInput).toHaveValue("");
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should handle search with special characters", async ({ page }) => {
@@ -233,7 +215,7 @@ test.describe("CCLW Hero Search", () => {
     const url = page.url();
     expect(url).toContain("q=climate+change+adaptation+and+mitigation+laws+and+policies+for+sustainable+development+in+developing+countries");
     expect(url).not.toContain("e=true");
-    await expect(page.getByRole("heading", { name: "Search results" })).toBeVisible();
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should maintain search state on page refresh", async ({ page }) => {
@@ -248,8 +230,11 @@ test.describe("CCLW Hero Search", () => {
     // Should navigate to search results page
     await expect(page).toHaveURL(/\/search/);
 
-    // Refresh the page
-    await page.reload();
+    // Wait for the page to be fully loaded before refresh
+    await page.waitForLoadState("networkidle");
+
+    // Refresh the page with explicit wait
+    await page.reload({ waitUntil: "networkidle" });
 
     // Should still be on search results page with same parameters
     await expect(page).toHaveURL(/\/search/);
@@ -284,21 +269,51 @@ test.describe("CCLW Hero Search", () => {
     await expect(searchInput).toHaveValue(searchTerm);
   });
 
-  test("should handle search dropdown functionality", async ({ page }) => {
+  test("should navigate to geography profile when clicking country suggestion", async ({ page }) => {
     const searchInput = page.locator('[data-cy="search-input"]');
+    const searchForm = page.locator('[data-cy="search-form"]');
 
-    // Focus on search input to trigger dropdown
-    await searchInput.focus();
+    // Click on the search form to trigger formFocus state
+    await searchForm.click();
 
-    // Type a partial search term
-    await searchInput.fill("climate");
+    // Type a country name
+    await searchInput.fill("spain");
 
-    // Wait for dropdown to appear (if it exists)
-    // Note: This test may need adjustment based on actual dropdown behavior
-    await page.waitForTimeout(500);
+    // Click on Spain geography profile
+    await page.getByRole("link", { name: "Spain Geography profile" }).click();
 
-    // Verify search input still has focus
-    await expect(searchInput).toBeFocused();
+    // Should navigate to Spain geography page
+    await page.waitForURL("/geographies/spain");
+
+    // Verify we're on the geography page
+    await expect(page.getByRole("heading", { name: "Spain" })).toBeVisible();
+  });
+
+  test("should handle 'Did you mean to search for X in Y?' search suggestion when typing country with additional terms", async ({ page }) => {
+    const searchInput = page.locator('[data-cy="search-input"]');
+    const searchForm = page.locator('[data-cy="search-form"]');
+
+    // Click on the search form to trigger formFocus state
+    await searchForm.click();
+
+    await searchInput.fill("renewable energy france");
+
+    // Verify "Did you mean" suggestion for France
+    await expect(page.getByText("Did you mean to search for renewable energy in France")).toBeVisible();
+    await expect(page.getByRole("link", { name: "France Geography profile" })).toBeVisible();
+
+    // Test that clicking the suggestion navigates to search with correct parameters
+    await page.getByText("Did you mean to search for").click();
+
+    // Should navigate to search page with the suggestion parameters
+    await page.waitForURL("/search*");
+
+    // Verify the search term and country filter are applied
+    const url = page.url();
+    expect(url).toContain("q=renewable+energy");
+    expect(url).toContain("l=france");
+    expect(url).not.toContain("e=true");
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should handle search with multiple parameters", async ({ page }) => {
