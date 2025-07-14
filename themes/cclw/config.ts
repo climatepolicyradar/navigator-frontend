@@ -7,7 +7,13 @@ const config: TThemeConfig = {
       {
         label: "All",
         slug: "All",
-        value: ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000591.n0000", "CPR.corpus.i00000592.n0000", "UNFCCC.corpus.i00000001.n0000"],
+        value: [
+          "CCLW.corpus.i00000001.n0000",
+          "CPR.corpus.i00000001.n0000",
+          "CPR.corpus.i00000591.n0000",
+          "CPR.corpus.i00000592.n0000",
+          "UNFCCC.corpus.i00000001.n0000",
+        ],
       },
       {
         label: "UNFCCC Submissions",
