@@ -50,6 +50,7 @@ import { getFilterLabel } from "@/utils/getFilterLabel";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
+import { GeographyPicker } from "@/components/organisms/GeographyPicker";
 
 interface IProps {
   theme: TTheme;
@@ -128,12 +129,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   const configQuery = useConfig();
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
-
-  const {
-    keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
-  } = searchQuery;
-
-  const alphabetisedCountries = countries.sort((c1, c2) => c1.display_value.localeCompare(c2.display_value));
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 
@@ -464,58 +459,24 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                     />
                   </div>
 
-                  {(conceptsData || familyConceptsData) && (
+                  {(conceptsData || familyConceptsData || (regions && countries)) && (
                     <SlideOut showCloseButton={false}>
                       {conceptsData && currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Find mentions of topics" />}
                       {familyConceptsData && currentSlideOut === "familyConcepts" && (
                         <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories concepts" />
                       )}
+                      {regions && countries && currentSlideOut === "geographies" && (
+                        <GeographyPicker
+                          regions={regions}
+                          handleRegionChange={handleRegionChange}
+                          handleFilterChange={handleFilterChange}
+                          searchQuery={searchQuery}
+                          countries={countries}
+                          themeConfig={themeConfig}
+                        />
+                      )}
                     </SlideOut>
                   )}
-                  <SlideOut showCloseButton={false}>
-                    <div className="text-sm text-text-secondary flex flex-col gap-5">
-                      <Accordian
-                        title={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
-                        data-cy="regions"
-                        startOpen
-                      >
-                        <InputListContainer>
-                          {regions.map((region) => (
-                            <InputCheck
-                              key={region.slug}
-                              label={region.display_value}
-                              checked={regionFilters && regionFilters.includes(region.slug)}
-                              onChange={() => {
-                                handleRegionChange(region.slug);
-                              }}
-                              name={`region-${region.slug}`}
-                            />
-                          ))}
-                        </InputListContainer>
-                      </Accordian>
-                      <Accordian
-                        title={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
-                        data-cy="countries"
-                        className="relative z-10"
-                        showFade="true"
-                        startOpen
-                      >
-                        <InputListContainer>
-                          {alphabetisedCountries.map((country) => (
-                            <InputCheck
-                              key={country.slug}
-                              label={country.display_value}
-                              checked={countryFilters && countryFilters.includes(country.slug)}
-                              onChange={() => {
-                                handleFilterChange(QUERY_PARAMS["country"], country.slug);
-                              }}
-                              name={`country-${country.slug}`}
-                            />
-                          ))}
-                        </InputListContainer>
-                      </Accordian>
-                    </div>
-                  </SlideOut>
 
                   <div className="absolute z-50 bottom-0 left-0 w-full flex pb-[100px] bg-white md:hidden">
                     <Button
