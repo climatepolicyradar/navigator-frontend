@@ -8,7 +8,6 @@ export const searchHandlers = [
     const body = (await request.json()) as TSearchCriteria;
 
     const filteredFamilies = getFilteredFamilies(body.keyword_filters, body.concept_filters);
-
     return HttpResponse.json({
       hits: 2,
       total_family_hits: 2,

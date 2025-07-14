@@ -144,7 +144,7 @@ const getFilteredFamilies = (keyword_filters: any, concept_filters: any) => {
     });
     return filteredFamilies;
   }
-  if (concept_filters) {
+  if (concept_filters.length > 0) {
     concept_filters.forEach((conceptFilter) => {
       const filteredFamily = families.filter((family) => {
         return (
@@ -161,6 +161,7 @@ const getFilteredFamilies = (keyword_filters: any, concept_filters: any) => {
     });
     return filteredFamilies;
   }
+
   return families;
 };
 
