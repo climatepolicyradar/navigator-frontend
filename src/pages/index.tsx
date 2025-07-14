@@ -8,7 +8,7 @@ import useConfig from "@/hooks/useConfig";
 import useUpdateCountries from "@/hooks/useUpdateCountries";
 import { triggerNewSearch } from "@/utils/triggerNewSearch";
 
-const Homepage = dynamic<HomepageProps>(() => import(`/themes/${process.env.THEME}/pages/homepage`));
+const Homepage = dynamic<HomepageProps>(() => import(`../../themes/${process.env.THEME}/pages/homepage`));
 
 const IndexPage = () => {
   const router = useRouter();

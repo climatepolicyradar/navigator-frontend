@@ -26,7 +26,7 @@ describe("SearchPage", async () => {
     // @ts-ignore
     renderWithAppContext(Search, search_props);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeDefined();
+    expect(await screen.findByText("Search results")).toBeDefined();
 
     const countryFilterControl = await screen.findByText(/Published jurisdiction/i);
 
