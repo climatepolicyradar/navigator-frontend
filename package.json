@@ -70,7 +70,6 @@
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/gtag.js": "^0.0.14",
-    "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.16",
     "@types/node": "^22.10.5",
     "@types/react": "18.2.0",
