@@ -12,16 +12,19 @@ import { withEnvConfig } from "@/context/EnvConfig";
 import { TCollection, TTheme } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isLitigationEnabled } from "@/utils/features";
+import { readConfigFile } from "@/utils/readConfigFile";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
   const featureFlags = getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
+  const themeConfig = await readConfigFile(theme);
+
   const id = context.params.id;
   const client = new ApiClient(process.env.BACKEND_API_URL);
 
-  if (!isLitigationEnabled(featureFlags)) {
+  if (!isLitigationEnabled(featureFlags, themeConfig)) {
     return { notFound: true };
   }
 

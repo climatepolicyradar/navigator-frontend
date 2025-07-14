@@ -134,9 +134,10 @@ const config: TThemeConfig = {
   documentCategories: ["All"],
   defaultDocumentCategory: "All",
   features: {
-    knowledgeGraph: false,
-    searchFamilySummary: true,
     familyConceptsSearch: false,
+    knowledgeGraph: false,
+    litigation: false,
+    searchFamilySummary: true,
   },
 };
 

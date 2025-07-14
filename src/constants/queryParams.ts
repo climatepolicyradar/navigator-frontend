@@ -28,4 +28,5 @@ export const QUERY_PARAMS = {
   // Pass through
   concept_id: "cfi",
   concept_name: "cfn",
+  concept_preferred_label: "cpl",
 };
