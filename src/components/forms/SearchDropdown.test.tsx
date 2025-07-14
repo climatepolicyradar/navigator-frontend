@@ -1,10 +1,9 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import React from "react";
+import { screen, fireEvent } from "@testing-library/react";
 import { vi, it } from "vitest";
 
-import { SearchDropdown } from "@/components/forms/SearchDropdown";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
-import { TGeography } from "@/types";
+
+import { SearchDropdown } from "../../components/forms/SearchDropdown";
 
 // Mock useConfig hook
 vi.mock("@/hooks/useConfig", () => ({
