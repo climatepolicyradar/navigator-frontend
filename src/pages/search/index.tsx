@@ -4,13 +4,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import Loader from "@/components/Loader";
-import { Accordian } from "@/components/accordian/Accordian";
 import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
 import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
@@ -18,15 +17,14 @@ import SearchFilters from "@/components/blocks/SearchFilters";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Drawer from "@/components/drawer/Drawer";
 import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
-import { InputListContainer } from "@/components/filters/InputListContainer";
 import { SearchSettings } from "@/components/filters/SearchSettings";
-import { InputCheck } from "@/components/forms/Checkbox";
 import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
 import { Info } from "@/components/molecules/info/Info";
 import { SubNav } from "@/components/nav/SubNav";
 import { ConceptPicker } from "@/components/organisms/ConceptPicker";
 import { FamilyConceptPicker } from "@/components/organisms/FamilyConceptPicker";
+import { GeographyPicker } from "@/components/organisms/GeographyPicker";
 import Pagination from "@/components/pagination";
 import { MultiCol } from "@/components/panels/MultiCol";
 import { SideCol } from "@/components/panels/SideCol";
@@ -477,73 +475,40 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                     />
                   </div>
 
-                  {(conceptsData || familyConceptsData) && (
+                  {(conceptsData || familyConceptsData || (regions && countries)) && (
                     <SlideOut showCloseButton={false}>
                       {conceptsData && currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Find mentions of topics" />}
                       {familyConceptsData && currentSlideOut === "familyConcepts" && (
                         <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories concepts" />
                       )}
+                      {regions && countries && currentSlideOut === "geographies" && (
+                        <GeographyPicker
+                          regions={regions}
+                          handleRegionChange={handleRegionChange}
+                          handleFilterChange={handleFilterChange}
+                          searchQuery={searchQuery}
+                          countries={countries}
+                          regionFilterLabel={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
+                          countryFilterLabel={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
+                        />
+                        //   <Accordian title={"Subdivision"} overflowOverride className="relative z-10" showFade="true" startOpen>
+                        //   <InputListContainer>
+                        //     {alphabetisedSubdivisions.map((subdivision) => (
+                        //       <InputCheck
+                        //         key={subdivision.code}
+                        //         label={subdivision.name}
+                        //         checked={subdivisionFilters && subdivisionFilters.includes(subdivision.code)}
+                        //         onChange={() => {
+                        //           handleFilterChange(QUERY_PARAMS["subdivision"], subdivision.code);
+                        //         }}
+                        //         name={`subdivision-${subdivision.code}`}
+                        //       />
+                        //     ))}
+                        //   </InputListContainer>
+                        // </Accordian>
+                      )}
                     </SlideOut>
                   )}
-                  <SlideOut showCloseButton={false}>
-                    <div className="text-sm text-text-secondary flex flex-col gap-5">
-                      <Accordian
-                        title={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
-                        data-cy="regions"
-                        startOpen
-                      >
-                        <InputListContainer>
-                          {regions.map((region) => (
-                            <InputCheck
-                              key={region.slug}
-                              label={region.display_value}
-                              checked={regionFilters && regionFilters.includes(region.slug)}
-                              onChange={() => {
-                                handleRegionChange(region.slug);
-                              }}
-                              name={`region-${region.slug}`}
-                            />
-                          ))}
-                        </InputListContainer>
-                      </Accordian>
-                      <Accordian
-                        title={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
-                        data-cy="countries"
-                        className="relative z-10"
-                        showFade="true"
-                        startOpen
-                      >
-                        <InputListContainer>
-                          {alphabetisedCountries.map((country) => (
-                            <InputCheck
-                              key={country.slug}
-                              label={country.display_value}
-                              checked={countryFilters && countryFilters.includes(country.slug)}
-                              onChange={() => {
-                                handleFilterChange(QUERY_PARAMS["country"], country.slug);
-                              }}
-                              name={`country-${country.slug}`}
-                            />
-                          ))}
-                        </InputListContainer>
-                      </Accordian>
-                      <Accordian title={"Subdivision"} overflowOverride className="relative z-10" showFade="true" startOpen>
-                        <InputListContainer>
-                          {alphabetisedSubdivisions.map((subdivision) => (
-                            <InputCheck
-                              key={subdivision.code}
-                              label={subdivision.name}
-                              checked={subdivisionFilters && subdivisionFilters.includes(subdivision.code)}
-                              onChange={() => {
-                                handleFilterChange(QUERY_PARAMS["subdivision"], subdivision.code);
-                              }}
-                              name={`subdivision-${subdivision.code}`}
-                            />
-                          ))}
-                        </InputListContainer>
-                      </Accordian>
-                    </div>
-                  </SlideOut>
 
                   <div className="absolute z-50 bottom-0 left-0 w-full flex pb-[100px] bg-white md:hidden">
                     <Button
