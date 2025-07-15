@@ -35,17 +35,17 @@ export const GeographyPicker = ({
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [], subdivisions: subdivisionFilters = [] },
   } = searchQuery;
 
-  const countryFiltersIsoCodes = countries.filter((country) => countryFilters.includes(country.slug)).map((country) => country.value);
+  //   const countryFiltersIsoCodes = countries.filter((country) => countryFilters.includes(country.slug)).map((country) => country.value);
 
-  const countrySubdivisionQuery = useGeographySubdivisions(countryFiltersIsoCodes);
-  const { data: countrySubdivisions = [] } = countrySubdivisionQuery;
+  //   const countrySubdivisionQuery = useGeographySubdivisions(countryFiltersIsoCodes);
+  //   const { data: countrySubdivisions = [] } = countrySubdivisionQuery;
 
   const subdivisionQuery = useSubdivisions();
   const { data: subdivisions = [] } = subdivisionQuery;
 
-  const availableSubdivisions = countrySubdivisions && countrySubdivisions.length > 0 ? countrySubdivisions : subdivisions;
+  //   const availableSubdivisions = countrySubdivisions && countrySubdivisions.length > 0 ? countrySubdivisions : subdivisions;
 
-  const alphabetisedSubdivisions = availableSubdivisions.sort((s1, s2) => s1.name.localeCompare(s2.name));
+  const alphabetisedSubdivisions = subdivisions.sort((s1, s2) => s1.name.localeCompare(s2.name));
 
   const countriesByRegion = useMemo(() => {
     return regionFilters.length > 0
@@ -96,7 +96,7 @@ export const GeographyPicker = ({
           ))}
         </InputListContainer>
       </Accordian>
-      <Accordian title={"Subdivision"} overflowOverride className="relative z-10" showFade="true" startOpen>
+      <Accordian title={"Subdivision"} className="relative z-10" showFade="true" startOpen>
         <InputListContainer>
           {alphabetisedSubdivisions.map((subdivision) => (
             <InputCheck

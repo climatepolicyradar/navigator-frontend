@@ -131,6 +131,11 @@ export default function buildSearchQuery(
     keyword_filters.countries = Array.isArray(countries) ? countries : [countries];
   }
 
+  if (routerQuery[QUERY_PARAMS.subdivision]) {
+    const subdivisions = routerQuery[QUERY_PARAMS.subdivision];
+    keyword_filters.subdivisions = Array.isArray(subdivisions) ? subdivisions : [subdivisions];
+  }
+
   if (routerQuery[QUERY_PARAMS.active_continuation_token]) {
     // Array containing only 1 token - the active token
     query.continuation_tokens = [routerQuery[QUERY_PARAMS.active_continuation_token] as string];

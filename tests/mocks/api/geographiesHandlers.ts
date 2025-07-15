@@ -4,11 +4,11 @@ export const geographiesHandlers = [
   http.get("*/geographies/subdivisions", () => {
     return HttpResponse.json([
       {
+        code: "AU-NSW",
         name: "New South Wales",
-        code: "",
-        type: "",
-        country_alpha_2: "",
-        country_alpha_3: "",
+        type: "State",
+        country_alpha_2: "AU",
+        country_alpha_3: "AUS",
       },
     ]);
   }),

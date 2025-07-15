@@ -1,16 +1,16 @@
 import { useQuery } from "react-query";
 
-import { ApiClient, getEnvFromServer } from "../api/http-common";
+import { ApiClient } from "../api/http-common";
+import { useEnvConfig } from "@/context/EnvConfig";
 import { TGeographySubdivision } from "@/types";
 
 export default function useSubdivisions() {
+  const { CONCEPTS_API_URL } = useEnvConfig();
   return useQuery(
     ["all-subdivisions"],
     async () => {
-      const { data } = await getEnvFromServer();
-      const client = new ApiClient(process.env.CONCEPTS_API_URL, data?.env?.app_token);
-
-      const queryResponse = await client.get(`/geographies/subdivisions`, null);
+      const client = new ApiClient();
+      const queryResponse = await client.get(`${CONCEPTS_API_URL}/geographies/subdivisions`, null);
       const subdivisions: TGeographySubdivision[] = queryResponse.data;
       return subdivisions;
     },
