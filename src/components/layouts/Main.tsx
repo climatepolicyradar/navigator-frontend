@@ -10,7 +10,7 @@ import { getCanonicalUrl } from "@/utils/getCanonicalUrl";
 import { getPageDescription } from "@/utils/getPageDescription";
 import { getPageTitle } from "@/utils/getPageTitle";
 
-const Wrapper = dynamic<{ children: ReactNode }>(() => import(`/themes/${process.env.THEME}/layouts/main`));
+const Wrapper = dynamic<{ children: ReactNode }>(() => import(`../../themes/${process.env.THEME}/layouts/main.tsx`));
 
 interface IProps {
   title?: string;

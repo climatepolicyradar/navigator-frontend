@@ -10,7 +10,7 @@ import getDomain from "@/utils/getDomain";
 
 import { Card } from "../atoms/card/Card";
 
-const ThemeAnalytics = dynamic<{ enableAnalytics: boolean }>(() => import(`/themes/${process.env.THEME}/components/Analytics`));
+const ThemeAnalytics = dynamic<{ enableAnalytics: boolean }>(() => import(`../../themes/${process.env.THEME}/components/Analytics.tsx`));
 
 declare let gtag: Function;
 
