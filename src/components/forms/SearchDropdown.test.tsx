@@ -30,16 +30,6 @@ vi.mock("@/hooks/useConfig", () => ({
   }),
 }));
 
-// Mock Next.js router
-const mockPush = vi.fn();
-const mockQuery = {};
-vi.mock("next/router", () => ({
-  useRouter: () => ({
-    push: mockPush,
-    query: mockQuery,
-  }),
-}));
-
 // Mock system geocodes
 vi.mock("@/constants/systemGeos", () => ({
   systemGeoCodes: ["global", "regional"],
@@ -65,9 +55,20 @@ function textContentMatcher(text: string) {
 }
 
 describe("SearchDropdown", () => {
+  let mockPush: any;
+  let mockQuery: any;
+
   beforeEach(() => {
     vi.clearAllMocks();
-    Object.keys(mockQuery).forEach((key) => delete mockQuery[key]);
+
+    // Create fresh mocks for each test
+    mockPush = vi.fn();
+    mockQuery = {};
+
+    // Configure next-router-mock to use our custom push function
+    const routerMock = require("next-router-mock");
+    routerMock.default.push = mockPush;
+    routerMock.default.query = mockQuery;
   });
 
   it("should not render when show is false", async () => {
@@ -172,7 +173,7 @@ describe("SearchDropdown", () => {
     expect(handleSearchClick).toHaveBeenCalledWith("climate", "l", "spain");
   });
 
-  it.fails("should handle clicking on geography profile link", async () => {
+  it("should handle clicking on geography profile link", async () => {
     await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "spain" });
 
     // Click on Spain geography profile
@@ -185,7 +186,7 @@ describe("SearchDropdown", () => {
     });
   });
 
-  it.fails("should preserve query parameters when clicking geography profile link", async () => {
+  it("should preserve query parameters when clicking geography profile link", async () => {
     // Set up initial query parameters
     Object.assign(mockQuery, { someParam: "value", anotherParam: "test" });
 
