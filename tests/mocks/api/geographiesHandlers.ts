@@ -1,30 +1,37 @@
 import { http, HttpResponse } from "msw";
 
+const subdivisions = [
+  {
+    code: "AU-NSW",
+    name: "New South Wales",
+    type: "State",
+    country_alpha_2: "AU",
+    country_alpha_3: "AUS",
+  },
+  {
+    code: "AR-B",
+    name: "Buenos Aires",
+    type: "Province",
+    country_alpha_2: "AR",
+    country_alpha_3: "ARG",
+  },
+  {
+    code: "CU-12",
+    name: "Granma",
+    type: "Province",
+    country_alpha_2: "CU",
+    country_alpha_3: "CUB",
+  },
+];
+
 export const geographiesHandlers = [
   http.get("*/geographies/subdivisions", () => {
-    return HttpResponse.json([
-      {
-        code: "AU-NSW",
-        name: "New South Wales",
-        type: "State",
-        country_alpha_2: "AU",
-        country_alpha_3: "AUS",
-      },
-      {
-        code: "AR-B",
-        name: "Buenos Aires",
-        type: "Province",
-        country_alpha_2: "AR",
-        country_alpha_3: "ARG",
-      },
-      {
-        code: "CU-12",
-        name: "Granma",
-        type: "Province",
-        country_alpha_2: "CU",
-        country_alpha_3: "CUB",
-      },
-    ]);
+    return HttpResponse.json(subdivisions);
+  }),
+  http.get("*/geographies/subdivisions/:id", ({ params }) => {
+    const { id } = params;
+
+    return HttpResponse.json(subdivisions.find((s) => s.country_alpha_3 === id));
   }),
   http.get("*/geographies/", () => {
     return HttpResponse.json([

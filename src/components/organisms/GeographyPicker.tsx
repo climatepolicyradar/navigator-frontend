@@ -35,18 +35,6 @@ export const GeographyPicker = ({
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [], subdivisions: subdivisionFilters = [] },
   } = searchQuery;
 
-  //   const countryFiltersIsoCodes = countries.filter((country) => countryFilters.includes(country.slug)).map((country) => country.value);
-
-  //   const countrySubdivisionQuery = useGeographySubdivisions(countryFiltersIsoCodes);
-  //   const { data: countrySubdivisions = [] } = countrySubdivisionQuery;
-
-  const subdivisionQuery = useSubdivisions();
-  const { data: subdivisions = [] } = subdivisionQuery;
-
-  //   const availableSubdivisions = countrySubdivisions && countrySubdivisions.length > 0 ? countrySubdivisions : subdivisions;
-
-  const alphabetisedSubdivisions = subdivisions.sort((s1, s2) => s1.name.localeCompare(s2.name));
-
   const countriesByRegion = useMemo(() => {
     return regionFilters.length > 0
       ? getCountriesFromRegions({
@@ -60,6 +48,19 @@ export const GeographyPicker = ({
   const alphabetisedFilteredCountries = countriesByRegion
     .sort((c1, c2) => c1.display_value.localeCompare(c2.display_value))
     .filter((geo) => geo.display_value.toLowerCase().includes(search.toLowerCase()));
+
+  const countryFiltersIsoCodes = alphabetisedFilteredCountries
+    .filter((country) => (regionFilters.length > 0 && countriesByRegion.includes(country)) || countryFilters.includes(country.slug))
+    .map((country) => country.value);
+
+  const countrySubdivisionQuery = useGeographySubdivisions(countryFiltersIsoCodes);
+  const { data: countrySubdivisions = [] } = countrySubdivisionQuery;
+
+  const subdivisionQuery = useSubdivisions();
+  const { data: subdivisions = [] } = subdivisionQuery;
+
+  const availableSubdivisions = countrySubdivisions && countrySubdivisions.length > 0 ? countrySubdivisions : subdivisions;
+  const alphabetisedSubdivisions = availableSubdivisions.sort((s1, s2) => s1.name.localeCompare(s2.name));
 
   return (
     <div className="text-sm text-text-secondary flex flex-col gap-5">
