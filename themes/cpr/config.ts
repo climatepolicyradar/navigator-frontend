@@ -10,6 +10,7 @@ const config: TThemeConfig = {
         value: [
           "CCLW.corpus.i00000001.n0000",
           "CPR.corpus.Goldstandard.n0000",
+          "CPR.corpus.i00000001.n0000",
           "CPR.corpus.i00000589.n0000",
           "CPR.corpus.i00000591.n0000",
           "CPR.corpus.i00000592.n0000",
@@ -36,6 +37,7 @@ const config: TThemeConfig = {
         slug: "laws",
         value: [
           "CCLW.corpus.i00000001.n0000",
+          "CPR.corpus.i00000001.n0000",
           "CPR.corpus.i00000589.n0000",
           "CPR.corpus.i00000591.n0000",
           "CPR.corpus.i00000592.n0000",
@@ -49,6 +51,7 @@ const config: TThemeConfig = {
         slug: "policies",
         value: [
           "CCLW.corpus.i00000001.n0000",
+          "CPR.corpus.i00000001.n0000",
           "CPR.corpus.i00000589.n0000",
           "CPR.corpus.i00000591.n0000",
           "CPR.corpus.i00000592.n0000",
@@ -351,9 +354,10 @@ const config: TThemeConfig = {
   documentCategories: ["All", "UNFCCC Submissions", "Laws", "Policies", "Climate Finance Projects", "Offshore Wind Reports", "Litigation"],
   defaultDocumentCategory: "Laws",
   features: {
-    knowledgeGraph: true,
-    searchFamilySummary: false,
     familyConceptsSearch: false,
+    knowledgeGraph: true,
+    litigation: false,
+    searchFamilySummary: false,
   },
 };
 
