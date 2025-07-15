@@ -10,6 +10,20 @@ export const geographiesHandlers = [
         country_alpha_2: "AU",
         country_alpha_3: "AUS",
       },
+      {
+        code: "AR-B",
+        name: "Buenos Aires",
+        type: "Province",
+        country_alpha_2: "AR",
+        country_alpha_3: "ARG",
+      },
+      {
+        code: "CU-12",
+        name: "Granma",
+        type: "Province",
+        country_alpha_2: "CU",
+        country_alpha_3: "CUB",
+      },
     ]);
   }),
   http.get("*/geographies/", () => {
