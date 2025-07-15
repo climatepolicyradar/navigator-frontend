@@ -1,11 +1,18 @@
 import { act, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import router from "next-router-mock";
 
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import Search from "@/pages/search";
 
+afterEach(() => {
+  // clear router state between tests
+  // we store query params in the router state so this resets everything
+  router.reset();
+});
+
 describe("SearchPage", async () => {
-  it.skip("filters search results by region", async () => {
+  it("filters search results by region", async () => {
     const search_props = {
       envConfig: {
         BACKEND_API_URL: process.env.BACKEND_API_URL,
@@ -58,7 +65,7 @@ describe("SearchPage", async () => {
     ).not.toBeInTheDocument();
   });
 
-  it.skip("filters search results by country", async () => {
+  it("filters search results by country", async () => {
     const search_props = {
       envConfig: {
         BACKEND_API_URL: process.env.BACKEND_API_URL,
@@ -97,7 +104,7 @@ describe("SearchPage", async () => {
     });
 
     const countryOptions = within(screen.getByTestId("countries")).getAllByRole("checkbox");
-    expect(countryOptions).toHaveLength(3);
+    expect(countryOptions).toHaveLength(4);
 
     expect(await screen.findByText("Results")).toBeInTheDocument();
     expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeInTheDocument();
