@@ -3,6 +3,8 @@ import { useMemo, useState } from "react";
 import { Accordian } from "@/components/accordian/Accordian";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
+import useGeographySubdivisions from "@/hooks/useGeographySubdivisions";
+import useSubdivisions from "@/hooks/useSubdivisions";
 import { TGeography, TSearchCriteria } from "@/types";
 
 import { InputListContainer } from "../filters/InputListContainer";
@@ -30,8 +32,20 @@ export const GeographyPicker = ({
 }: IProps) => {
   const [search, setSearch] = useState("");
   const {
-    keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
+    keyword_filters: { countries: countryFilters = [], regions: regionFilters = [], subdivisions: subdivisionFilters = [] },
   } = searchQuery;
+
+  const countryFiltersIsoCodes = countries.filter((country) => countryFilters.includes(country.slug)).map((country) => country.value);
+
+  const countrySubdivisionQuery = useGeographySubdivisions(countryFiltersIsoCodes);
+  const { data: countrySubdivisions = [] } = countrySubdivisionQuery;
+
+  const subdivisionQuery = useSubdivisions();
+  const { data: subdivisions = [] } = subdivisionQuery;
+
+  const availableSubdivisions = countrySubdivisions && countrySubdivisions.length > 0 ? countrySubdivisions : subdivisions;
+
+  const alphabetisedSubdivisions = availableSubdivisions.sort((s1, s2) => s1.name.localeCompare(s2.name));
 
   const countriesByRegion = useMemo(() => {
     return regionFilters.length > 0
@@ -78,6 +92,21 @@ export const GeographyPicker = ({
                 handleFilterChange(QUERY_PARAMS["country"], country.slug);
               }}
               name={`country-${country.slug}`}
+            />
+          ))}
+        </InputListContainer>
+      </Accordian>
+      <Accordian title={"Subdivision"} overflowOverride className="relative z-10" showFade="true" startOpen>
+        <InputListContainer>
+          {alphabetisedSubdivisions.map((subdivision) => (
+            <InputCheck
+              key={subdivision.code}
+              label={subdivision.name}
+              checked={subdivisionFilters && subdivisionFilters.includes(subdivision.code)}
+              onChange={() => {
+                handleFilterChange(QUERY_PARAMS["subdivision"], subdivision.code);
+              }}
+              name={`subdivision-${subdivision.code}`}
             />
           ))}
         </InputListContainer>

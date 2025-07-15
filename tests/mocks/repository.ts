@@ -64,8 +64,9 @@ const families = [
     family_title_match: false,
     family_description_match: false,
     total_passage_hits: 1,
-    family_documents: []},
-    {
+    family_documents: [],
+  },
+  {
     family_slug: "family-with-topic-1-btr1_17c7",
     family_name: "Family with topic 1",
     family_description: "<p>Family with topic 1</p>",
@@ -130,8 +131,9 @@ const families = [
     family_title_match: false,
     family_description_match: false,
     total_passage_hits: 1,
-    family_documents: []},
-    {
+    family_documents: [],
+  },
+  {
     family_slug: "family-with-topic-2-btr1_17c78",
     family_name: "Family with topic 2",
     family_description: "<p>Family with topic 2</p>",

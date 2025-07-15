@@ -37,7 +37,6 @@ import { withEnvConfig } from "@/context/EnvConfig";
 import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
-import useGeographySubdivisions from "@/hooks/useGeographySubdivisions";
 import useSearch from "@/hooks/useSearch";
 import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
@@ -49,7 +48,6 @@ import { getFilterLabel } from "@/utils/getFilterLabel";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
-import useSubdivisions from "@/hooks/useSubdivisions";
 
 interface IProps {
   theme: TTheme;
@@ -128,23 +126,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   const configQuery = useConfig();
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
-
-  const {
-    keyword_filters: { countries: countryFilters = [], regions: regionFilters = [], subdivisions: subdivisionFilters = [] },
-  } = searchQuery;
-
-  const countryFiltersIsoCodes = countries.filter((country) => countryFilters.includes(country.slug)).map((country) => country.value);
-
-  const countrySubdivisionQuery = useGeographySubdivisions(countryFiltersIsoCodes);
-  const { data: countrySubdivisions = [] } = countrySubdivisionQuery;
-
-  const subdivisionQuery = useSubdivisions();
-  const { data: subdivisions = [] } = subdivisionQuery;
-
-  const availableSubdivisions = countrySubdivisions && countrySubdivisions.length > 0 ? countrySubdivisions : subdivisions;
-
-  const alphabetisedSubdivisions = availableSubdivisions.sort((s1, s2) => s1.name.localeCompare(s2.name));
-  const alphabetisedCountries = countries.sort((c1, c2) => c1.display_value.localeCompare(c2.display_value));
 
   const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 
@@ -491,21 +472,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           regionFilterLabel={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
                           countryFilterLabel={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
                         />
-                        //   <Accordian title={"Subdivision"} overflowOverride className="relative z-10" showFade="true" startOpen>
-                        //   <InputListContainer>
-                        //     {alphabetisedSubdivisions.map((subdivision) => (
-                        //       <InputCheck
-                        //         key={subdivision.code}
-                        //         label={subdivision.name}
-                        //         checked={subdivisionFilters && subdivisionFilters.includes(subdivision.code)}
-                        //         onChange={() => {
-                        //           handleFilterChange(QUERY_PARAMS["subdivision"], subdivision.code);
-                        //         }}
-                        //         name={`subdivision-${subdivision.code}`}
-                        //       />
-                        //     ))}
-                        //   </InputListContainer>
-                        // </Accordian>
                       )}
                     </SlideOut>
                   )}
