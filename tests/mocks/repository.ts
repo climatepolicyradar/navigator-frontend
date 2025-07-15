@@ -43,12 +43,100 @@ const families = [
     continuation_token: null,
     prev_continuation_token: null,
   },
+  {
+    family_slug: "family-with-topic-1-btr1_17c7",
+    family_name: "Family with topic 1",
+    family_description: "<p>Family with topic 1</p>",
+    family_category: "UNFCCC",
+    family_date: "2024-12-19T00:00:00+00:00",
+    family_last_updated_date: "2024-12-19T00:00:00+00:00",
+    family_source: "UNFCCC",
+    corpus_import_id: "UNFCCC.corpus.i00000001.n0000",
+    corpus_type_name: "Intl. agreements",
+    family_geographies: ["USA"],
+    family_metadata: {
+      author: ["USA"],
+      author_type: ["Party"],
+    },
+    family_title_match: true,
+    family_description_match: true,
+    total_passage_hits: 2,
+    family_documents: [
+      {
+        document_passage_matches: {
+          concepts: [
+            {
+              id: "1",
+              name: "child topic 1",
+              parent_concepts: [
+                {
+                  name: "",
+                  id: "Q1651",
+                },
+              ],
+              parent_concept_ids_flat: "Q1651,",
+              model: "",
+              end: 776,
+              start: 0,
+              timestamp: "2025-05-27T11:51:54.039195",
+            },
+          ],
+        },
+      },
+    ],
+    continuation_token: null,
+    prev_continuation_token: null,
+  },
+  {
+    family_slug: "family-with-topic-2-btr1_17c78",
+    family_name: "Family with topic 2",
+    family_description: "<p>Family with topic 2</p>",
+    family_category: "UNFCCC",
+    family_date: "2024-12-19T00:00:00+00:00",
+    family_last_updated_date: "2024-12-19T00:00:00+00:00",
+    family_source: "UNFCCC",
+    corpus_import_id: "UNFCCC.corpus.i00000001.n0000",
+    corpus_type_name: "Intl. agreements",
+    family_geographies: ["USA"],
+    family_metadata: {
+      author: ["USA"],
+      author_type: ["Party"],
+    },
+    family_title_match: true,
+    family_description_match: true,
+    total_passage_hits: 2,
+    family_documents: [
+      {
+        document_passage_matches: {
+          concepts: [
+            {
+              id: "2",
+              name: "child topic 2",
+              parent_concepts: [
+                {
+                  name: "",
+                  id: "Q1651",
+                },
+              ],
+              parent_concept_ids_flat: "Q1651,",
+              model: "",
+              end: 776,
+              start: 0,
+              timestamp: "2025-05-27T11:51:54.039195",
+            },
+          ],
+        },
+      },
+    ],
+    continuation_token: null,
+    prev_continuation_token: null,
+  },
 ];
 
-const getFilteredFamilies = (filters: any) => {
-  if (filters.countries) {
-    const filteredFamilies = [];
-    filters.countries.forEach((country: string) => {
+const getFilteredFamilies = (keyword_filters: any, concept_filters: any) => {
+  const filteredFamilies = [];
+  if (keyword_filters.countries) {
+    keyword_filters.countries.forEach((country: string) => {
       const filteredFamily = families.filter((family) => {
         return family.family_geographies.includes(country);
       });
@@ -56,6 +144,24 @@ const getFilteredFamilies = (filters: any) => {
     });
     return filteredFamilies;
   }
+  if (concept_filters.length > 0) {
+    concept_filters.forEach((conceptFilter) => {
+      const filteredFamily = families.filter((family) => {
+        return (
+          family.family_documents &&
+          family.family_documents.some(
+            (doc) =>
+              doc.document_passage_matches &&
+              doc.document_passage_matches.concepts &&
+              doc.document_passage_matches.concepts.some((concept) => concept.name === conceptFilter.value)
+          )
+        );
+      });
+      filteredFamilies.push(...filteredFamily);
+    });
+    return filteredFamilies;
+  }
+
   return families;
 };
 
