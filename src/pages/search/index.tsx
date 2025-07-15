@@ -25,6 +25,7 @@ import { Warning } from "@/components/molecules/warning/Warning";
 import { SubNav } from "@/components/nav/SubNav";
 import { ConceptPicker } from "@/components/organisms/ConceptPicker";
 import { FamilyConceptPicker } from "@/components/organisms/FamilyConceptPicker";
+import { GeographyPicker } from "@/components/organisms/GeographyPicker";
 import Pagination from "@/components/pagination";
 import { MultiCol } from "@/components/panels/MultiCol";
 import { SideCol } from "@/components/panels/SideCol";
@@ -44,6 +45,7 @@ import { getFeatureFlags } from "@/utils/featureFlags";
 import { isFamilyConceptsSearchEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
+import { getFilterLabel } from "@/utils/getFilterLabel";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
@@ -462,25 +464,33 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                     <SearchFilters
                       searchCriteria={searchQuery}
                       query={router.query}
-                      regions={regions}
-                      countries={countries}
                       corpus_types={corpus_types}
                       conceptsData={conceptsData}
                       familyConceptsData={familyConceptsData}
                       handleFilterChange={handleFilterChange}
                       handleYearChange={handleYearChange}
-                      handleRegionChange={handleRegionChange}
                       handleClearSearch={handleClearSearch}
                       handleDocumentCategoryClick={handleDocumentCategoryClick}
                       featureFlags={featureFlags}
                     />
                   </div>
 
-                  {(conceptsData || familyConceptsData) && (
+                  {(conceptsData || familyConceptsData || (regions && countries)) && (
                     <SlideOut showCloseButton={false}>
                       {conceptsData && currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Find mentions of topics" />}
                       {familyConceptsData && currentSlideOut === "familyConcepts" && (
                         <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories concepts" />
+                      )}
+                      {regions && countries && currentSlideOut === "geographies" && (
+                        <GeographyPicker
+                          regions={regions}
+                          handleRegionChange={handleRegionChange}
+                          handleFilterChange={handleFilterChange}
+                          searchQuery={searchQuery}
+                          countries={countries}
+                          regionFilterLabel={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
+                          countryFilterLabel={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
+                        />
                       )}
                     </SlideOut>
                   )}
