@@ -44,7 +44,7 @@ describe("SearchPage", async () => {
     });
 
     const countryOptions = within(screen.getByTestId("countries")).getAllByRole("checkbox");
-    expect(countryOptions).toHaveLength(3);
+    expect(countryOptions).toHaveLength(9);
 
     expect(await screen.findByText("Results")).toBeInTheDocument();
     expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeInTheDocument();
