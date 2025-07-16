@@ -56,13 +56,9 @@ describe("SearchPage", async () => {
     });
 
     expect(await screen.findByText("Results")).toBeInTheDocument();
-    expect(screen.getByText("Argentina Biennial Transparency Report. BTR1")).toBeInTheDocument();
-    expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeInTheDocument();
-    expect(
-      screen.queryByText(
-        "Technical analysis of the first biennial update report of Afghanistan submitted on 13 October 2019. Summary report by the team of technical experts"
-      )
-    ).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Argentina Report" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Belize NDC" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Afghanistan report" })).not.toBeInTheDocument();
   });
 
   it("filters search results by country", async () => {
@@ -99,16 +95,19 @@ describe("SearchPage", async () => {
 
     expect(await screen.findByText(/Published jurisdiction/i));
 
+    const countryOption = await screen.findByRole("checkbox", { name: "Belize" });
+
     await act(async () => {
-      await userEvent.click(await screen.findByRole("checkbox", { name: "Belize" }));
+      await userEvent.click(countryOption);
     });
 
-    const countryOptions = within(screen.getByTestId("countries")).getAllByRole("checkbox");
-    expect(countryOptions).toHaveLength(4);
+    expect(countryOption).toBeChecked();
+    // check for applied filter button
+    expect(screen.getByRole("button", { name: "Belize" })).toBeInTheDocument();
 
     expect(await screen.findByText("Results")).toBeInTheDocument();
-    expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeInTheDocument();
-    expect(screen.queryByText("Argentina Biennial Transparency Report. BTR1")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Belize NDC" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Argentina Report" })).not.toBeInTheDocument();
   });
 
   it("filters search results by subdivision", async () => {
@@ -152,8 +151,8 @@ describe("SearchPage", async () => {
     });
 
     expect(await screen.findByText("Results")).toBeInTheDocument();
-    expect(screen.getByText("New South Wales Litigation Case")).toBeInTheDocument();
-    expect(screen.queryByText("Australia Litigation Case")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "New South Wales Litigation Case" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Australia Litigation Case" })).not.toBeInTheDocument();
   });
 
   it("filters search results by topic", async () => {

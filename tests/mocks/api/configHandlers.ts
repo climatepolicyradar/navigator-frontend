@@ -43,7 +43,7 @@ export const configHandlers = [
       geographies: [
         {
           node: {
-            id: 172,
+            id: 1,
             display_value: "East Asia & Pacific",
             slug: "east-asia-pacific",
             value: "East Asia & Pacific",
@@ -53,33 +53,10 @@ export const configHandlers = [
           children: [
             {
               node: {
-                id: 173,
+                id: 2,
                 display_value: "Australia",
                 slug: "australia",
                 value: "AUS",
-                type: "ISO-3166",
-                parent_id: 172,
-              },
-              children: [],
-            },
-          ],
-        },
-        {
-          node: {
-            id: 1,
-            display_value: "South Asia",
-            slug: "south-asia",
-            value: "South Asia",
-            type: "World Bank Region",
-            parent_id: null,
-          },
-          children: [
-            {
-              node: {
-                id: 2,
-                display_value: "Afghanistan",
-                slug: "afghanistan",
-                value: "AFG",
                 type: "ISO-3166",
                 parent_id: 1,
               },
@@ -89,7 +66,30 @@ export const configHandlers = [
         },
         {
           node: {
-            id: 138,
+            id: 2,
+            display_value: "South Asia",
+            slug: "south-asia",
+            value: "South Asia",
+            type: "World Bank Region",
+            parent_id: null,
+          },
+          children: [
+            {
+              node: {
+                id: 3,
+                display_value: "Afghanistan",
+                slug: "afghanistan",
+                value: "AFG",
+                type: "ISO-3166",
+                parent_id: 2,
+              },
+              children: [],
+            },
+          ],
+        },
+        {
+          node: {
+            id: 3,
             display_value: "Latin America & Caribbean",
             slug: "latin-america-caribbean",
             value: "Latin America & Caribbean",
@@ -99,10 +99,12 @@ export const configHandlers = [
           children: [
             {
               node: {
+                id: 4,
                 display_value: "Belize",
-                slug: "BLZ",
-                type: "country",
-                value: "Belize",
+                slug: "belize",
+                type: "ISO-3166",
+                value: "BLZ",
+                parent_id: 3,
               },
               children: [],
             },
