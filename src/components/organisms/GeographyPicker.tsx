@@ -67,70 +67,72 @@ export const GeographyPicker = ({
     .filter((geo) => geo?.name?.toLowerCase().includes(subdivisionQuickSearch.toLowerCase()));
 
   return (
-    <div className="text-sm text-text-secondary flex flex-col gap-5">
-      <Accordian title={regionFilterLabel} data-cy="regions" startOpen>
-        <InputListContainer>
-          {regions.map((region) => (
-            <InputCheck
-              key={region.slug}
-              label={region.display_value}
-              checked={regionFilters && regionFilters.includes(region.slug)}
-              onChange={() => {
-                handleRegionChange(region.slug);
-              }}
-              name={`region-${region.slug}`}
-            />
-          ))}
-        </InputListContainer>
-      </Accordian>
-      <Accordian title={countryFilterLabel} data-cy="countries" className="relative z-10" showFade="true" startOpen>
-        <InputListContainer>
-          <div className="mb-2" key="quick-search-box">
-            <TextInput
-              size="small"
-              onChange={(v) => setCountryQuickSearch(v)}
-              value={countryQuickSearch}
-              placeholder="Quick search"
-              aria-label="Country quick search"
-            />
-          </div>
-          {alphabetisedFilteredCountries.map((country) => (
-            <InputCheck
-              key={country.slug}
-              label={country.display_value}
-              checked={countryFilters && countryFilters.includes(country.slug)}
-              onChange={() => {
-                handleFilterChange(QUERY_PARAMS["country"], country.slug);
-              }}
-              name={`country-${country.slug}`}
-            />
-          ))}
-        </InputListContainer>
-      </Accordian>
-      <Accordian title={"Subdivision"} className="relative z-10" showFade="true" startOpen>
-        <InputListContainer>
-          <div className="mb-2" key="quick-search-box">
-            <TextInput
-              size="small"
-              onChange={(v) => setSubdivisionQuickSearch(v)}
-              value={subdivisionQuickSearch}
-              placeholder="Quick search"
-              aria-label="Subdivision quick search"
-            />
-          </div>
-          {alphabetisedFilteredSubdivisions.map((subdivision) => (
-            <InputCheck
-              key={subdivision.code}
-              label={subdivision.name}
-              checked={subdivisionFilters && subdivisionFilters.includes(subdivision.code)}
-              onChange={() => {
-                handleFilterChange(QUERY_PARAMS["subdivision"], subdivision.code);
-              }}
-              name={`subdivision-${subdivision.code}`}
-            />
-          ))}
-        </InputListContainer>
-      </Accordian>
+    <div className="text-sm text-text-secondary relative flex flex-col gap-5 max-h-full pb-5">
+      <div className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
+        <Accordian title={regionFilterLabel} data-cy="regions" startOpen>
+          <InputListContainer>
+            {regions.map((region) => (
+              <InputCheck
+                key={region.slug}
+                label={region.display_value}
+                checked={regionFilters && regionFilters.includes(region.slug)}
+                onChange={() => {
+                  handleRegionChange(region.slug);
+                }}
+                name={`region-${region.slug}`}
+              />
+            ))}
+          </InputListContainer>
+        </Accordian>
+        <Accordian title={countryFilterLabel} data-cy="countries" className="relative z-10" showFade="true" startOpen>
+          <InputListContainer>
+            <div className="mb-2" key="quick-search-box">
+              <TextInput
+                size="small"
+                onChange={(v) => setCountryQuickSearch(v)}
+                value={countryQuickSearch}
+                placeholder="Quick search"
+                aria-label="Country quick search"
+              />
+            </div>
+            {alphabetisedFilteredCountries.map((country) => (
+              <InputCheck
+                key={country.slug}
+                label={country.display_value}
+                checked={countryFilters && countryFilters.includes(country.slug)}
+                onChange={() => {
+                  handleFilterChange(QUERY_PARAMS["country"], country.slug);
+                }}
+                name={`country-${country.slug}`}
+              />
+            ))}
+          </InputListContainer>
+        </Accordian>
+        <Accordian title={"Subdivision"} className="relative z-10" showFade="true" startOpen>
+          <InputListContainer>
+            <div className="mb-2" key="quick-search-box">
+              <TextInput
+                size="small"
+                onChange={(v) => setSubdivisionQuickSearch(v)}
+                value={subdivisionQuickSearch}
+                placeholder="Quick search"
+                aria-label="Subdivision quick search"
+              />
+            </div>
+            {alphabetisedFilteredSubdivisions.map((subdivision) => (
+              <InputCheck
+                key={subdivision.code}
+                label={subdivision.name}
+                checked={subdivisionFilters && subdivisionFilters.includes(subdivision.code)}
+                onChange={() => {
+                  handleFilterChange(QUERY_PARAMS["subdivision"], subdivision.code);
+                }}
+                name={`subdivision-${subdivision.code}`}
+              />
+            ))}
+          </InputListContainer>
+        </Accordian>
+      </div>
     </div>
   );
 };
