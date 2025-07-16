@@ -196,7 +196,7 @@ describe("SearchPage", async () => {
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
-    const topicsFilterControl = await screen.findByRole("button", { name: "Topics" });
+    const topicsFilterControl = await screen.findByText("Topics");
 
     expect(topicsFilterControl).toBeInTheDocument();
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
