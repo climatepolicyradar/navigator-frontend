@@ -15,11 +15,13 @@ GitHub debugging tools for your CI woes using `act`.
 ./debug-pull-request-workflow.sh
 ```
 
-This provides an interactive menu to test individual jobs, dry running each first.
+This provides an interactive menu to test individual jobs, dry running each
+first.
 
 ## Manual Testing
 
-The `pull_request` here refers to the event that should trigger the GitHub workflow.
+The `pull_request` here refers to the event that should trigger the GitHub
+workflow.
 
 ### List Available Jobs
 
@@ -49,15 +51,18 @@ act pull_request --job test --verbose
 
 ### 1. Missing .env File
 
-The workflow expects `.env.example` but it doesn't exist. The scripts create a minimal `.env` file.
+The workflow expects `.env.example` but it doesn't exist. The scripts create a
+minimal `.env` file.
 
 ### 2. Node.js Version
 
-The workflow uses Node.js 22.12.0. Ensure your local environment matches or act will use the container.
+The workflow uses Node.js 22.12.0. Ensure your local environment matches or act
+will use the container.
 
 ### 3. Dependencies
 
-Some jobs require external services (Lighthouse CI, Percy, etc.). These will fail locally without proper tokens.
+Some jobs require external services (Lighthouse CI, Percy, etc.). These will
+fail locally without proper tokens.
 
 ### 4. Matrix Jobs
 
@@ -101,7 +106,7 @@ act pull_request --job test --secret-file .secrets
 
 Create a `.secrets` file for testing:
 
-```
+```env
 GITHUB_TOKEN=your-token
 LHCI_GITHUB_APP_TOKEN=your-lighthouse-token
 PERCY_TOKEN=your-percy-token

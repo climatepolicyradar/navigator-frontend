@@ -66,6 +66,7 @@ test_job() {
 
 	log_info "Testing job: ${job_name} - ${description}"
 
+	# shellcheck disable=SC2310
 	if act pull_request --workflows .github/workflows/pull_request.yml --job "${job_name}" --list; then
 		log_success "Job ${job_name} can be executed"
 	else
@@ -93,6 +94,7 @@ test_all_jobs() {
 	for job_info in "${jobs[@]}"; do
 		IFS=':' read -r job_name description <<<"${job_info}"
 
+		# shellcheck disable=SC2310
 		if test_job "${job_name}" "${description}"; then
 			log_success "Job ${job_name} passed listing test"
 		else
@@ -119,7 +121,7 @@ test_job_execution() {
 	act pull_request --workflows .github/workflows/pull_request.yml --job "${job_name}" --dryrun
 
 	echo
-	read -p "Execute job ${job_name}? (y/N): " -n 1 -r
+	read -r -p "Execute job ${job_name}? (y/N): " -n 1
 	echo
 
 	if [[ ${REPLY} =~ ^[Yy]$ ]]; then
@@ -157,7 +159,7 @@ main() {
 
 	while true; do
 		show_menu
-		read -p "Select an option: " -n 1 -r
+		read -r -p "Select an option: " -n 1 -r
 		echo
 
 		case ${REPLY} in
@@ -186,7 +188,7 @@ main() {
 			test_job_execution "test-e2e"
 			;;
 		9)
-			read -p "Enter job name: " job_name
+			read -r -p "Enter job name: " job_name
 			test_job_execution "${job_name}"
 			;;
 		0)
@@ -199,7 +201,7 @@ main() {
 		esac
 
 		echo
-		read -p "Press Enter to continue..."
+		read -r -p "Press Enter to continue..."
 	done
 }
 
