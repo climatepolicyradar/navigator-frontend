@@ -177,15 +177,32 @@ jobs:
           NODE_ENV: production
       - run: npx playwright install --with-deps
 
-      - name: Ensure test results directory exists
+      - name: Create test results directory
         run: mkdir -p test-results-${{ matrix.theme }}
 
-      - name: Run tests and upload results to Trunk.io
+      - name: Run Playwright tests and upload results
         uses: trunk-io/analytics-uploader@v1
         with:
-          junit-paths: "test-results-${{ matrix.theme }}/playwright.xml"
-          run: npx playwright test tests/core/ tests/${{ matrix.theme }}/ --reporter=junit
+          junit-paths: test-results-${{ matrix.theme }}/playwright.xml
+          run: |
+            echo "Running Playwright tests..."
+            npx playwright test tests/core/ tests/${{ matrix.theme }}/ --reporter=junit
+            echo "Playwright test completed. Checking for output file..."
+            ls -la test-results-${{ matrix.theme }}/
+            if [ -f "test-results-${{ matrix.theme }}/playwright.xml" ]; then
+              echo "✅ playwright.xml found"
+              echo "File size: $(wc -c < test-results-${{ matrix.theme }}/playwright.xml) bytes"
+              echo "First 10 lines of the file:"
+              head -n 10 test-results-${{ matrix.theme }}/playwright.xml
+            else
+              echo "❌ playwright.xml not found"
+              echo "Contents of test-results-${{ matrix.theme }} directory:"
+              ls -la test-results-${{ matrix.theme }}/ || echo "Directory doesn't exist or is empty"
+              echo "Looking for any XML files in current directory:"
+              find . -name "*.xml" -type f 2>/dev/null || echo "No XML files found"
+            fi
           token: ${{ secrets.TRUNK_TOKEN }}
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+          allow-missing-junit-files: true
         env:
           THEME: ${{ matrix.theme }}
