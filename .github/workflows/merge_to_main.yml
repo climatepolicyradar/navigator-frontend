@@ -155,8 +155,8 @@ jobs:
       - name: Run tests and upload results to Trunk.io
         uses: trunk-io/analytics-uploader@v1
         with:
-          junit-paths: "test-results-${{ matrix.theme }}/**/playwright.xml"
-          run: npx playwright test tests/core/ tests/${{ matrix.theme }}/ --reporter=junit
+          junit-paths: test-results-${{ matrix.theme }}/**/playwright.xml
+          run: npx playwright test tests/core/ tests/${{ matrix.theme }}/ --reporter=junit -reporter-options output=test-results-${{ matrix.theme }}/playwright.xml
           token: ${{ secrets.TRUNK_TOKEN }}
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
         env:
