@@ -193,7 +193,7 @@ export const configHandlers = [
                 parent_id: 12,
               },
               // Subdivisions
-              children: [], 
+              children: [],
             },
           ],
         },
