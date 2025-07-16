@@ -153,25 +153,15 @@ jobs:
         env:
           NODE_ENV: production
       - run: npx playwright install --with-deps
-      - run: npx playwright test tests/core/ tests/${{ matrix.theme }}/
-        env:
-          THEME: ${{ matrix.theme }}
-
-      - name: Upload Test Result
-        # Upload the results even if the tests fails to Trunk.io
-        if: ${{ !cancelled() }}
-        continue-on-error: true
-        uses: trunk-io/analytics-uploader@main
+      - name: Run tests and upload results to Trunk.io
+        uses: trunk-io/analytics-uploader@v1
         with:
           junit-paths: "test-results-${{ matrix.theme }}/**/playwright.xml"
-          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+          run: npx playwright test tests/core/ tests/${{ matrix.theme }}/ --reporter=junit
           token: ${{ secrets.TRUNK_TOKEN }}
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report-${{ matrix.theme }}
-          path: test-results-${{ matrix.theme }}/
-          retention-days: 30
+          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+        env:
+          THEME: ${{ matrix.theme }}
 
   release:
     runs-on: ubuntu-latest
