@@ -43,10 +43,35 @@ export const configHandlers = [
       geographies: [
         {
           node: {
+            id: 1,
             display_value: "South Asia",
             slug: "south-asia",
-            type: "region",
             value: "South Asia",
+            type: "World Bank Region",
+            parent_id: null,
+          },
+          children: [
+            {
+              node: {
+                id: 2,
+                display_value: "Afghanistan",
+                slug: "afghanistan",
+                value: "AFG",
+                type: "ISO-3166",
+                parent_id: 1,
+              },
+              children: [],
+            },
+          ],
+        },
+        {
+          node: {
+            id: 138,
+            display_value: "Latin America & Caribbean",
+            slug: "latin-america-caribbean",
+            value: "Latin America & Caribbean",
+            type: "World Bank Region",
+            parent_id: null,
           },
           children: [
             {
@@ -55,6 +80,17 @@ export const configHandlers = [
                 slug: "BLZ",
                 type: "country",
                 value: "Belize",
+              },
+              children: [],
+            },
+            {
+              node: {
+                id: 140,
+                display_value: "Argentina",
+                slug: "argentina",
+                value: "ARG",
+                type: "ISO-3166",
+                parent_id: 138,
               },
               children: [],
             },
