@@ -124,16 +124,15 @@ jobs:
       - run: npm run build
         env:
           NODE_ENV: production
-      - run: npm run test
-      - name: Upload results
-        # Run this step even if the test step ahead fails
-        if: ${{ !cancelled() }}
-        uses: trunk-io/analytics-uploader@main
+      - name: Run tests and upload results to Trunk.io
+        uses: trunk-io/analytics-uploader@v1
         with:
-          junit-paths: "**/vitest.xml"
-          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+          junit-paths: "test-results/**/vitest.xml"
+          run: npm run test
           token: ${{ secrets.TRUNK_TOKEN }}
-        continue-on-error: true
+          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+        env:
+          THEME: cpr
 
   test-e2e:
     timeout-minutes: 20
