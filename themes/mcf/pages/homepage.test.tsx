@@ -13,6 +13,6 @@ describe("Landing Page: ", () => {
 
     renderWithAppContext(LandingPage, landingPageProps);
 
-    expect(screen.getByText("Multilateral Climate Funds")).toBeDefined();
+    expect(screen.getByText("Multilateral Climate Funds")).toBeInTheDocument();
   });
 });
