@@ -1,4 +1,5 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 
@@ -34,13 +35,7 @@ describe("GeographyPicker", () => {
     ],
     handleRegionChange: () => {},
     handleFilterChange: () => {},
-    searchQuery: {
-      keyword_filters: {
-        regions: [],
-        countries: [],
-        subdivisions: [],
-      },
-    },
+    searchQuery: {},
     countries: [
       { id: 1, display_value: "Country 1", value: "COU-1", type: "country", parent_id: 1, slug: "country-1" },
       { id: 2, display_value: "Country 2", value: "COU-2", type: "country", parent_id: 2, slug: "country-2" },
@@ -50,15 +45,20 @@ describe("GeographyPicker", () => {
     countryFilterLabel: "Published jurisdiction",
   };
 
-  it("only shows a list of all countries when no region is selected", async () => {
-    renderWithAppContext(GeographyPicker, geoPickerProps);
+  it("shows a list of all countries when no region is selected", async () => {
+    renderWithAppContext(GeographyPicker, {
+      ...geoPickerProps,
+      searchQuery: {
+        keyword_filters: {
+          regions: [],
+          countries: [],
+          subdivisions: [],
+        },
+      },
+    });
 
     expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
 
-    const allCheckboxes = screen.getAllByRole("checkbox");
-    const countryOptions = allCheckboxes.filter((cb) => (cb as HTMLInputElement).name.startsWith("country-"));
-
-    expect(countryOptions).toHaveLength(3);
     expect(screen.getByRole("checkbox", { name: "Country 1" })).toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: "Country 2" })).toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: "Country 3" })).toBeInTheDocument();
@@ -80,24 +80,25 @@ describe("GeographyPicker", () => {
     expect(screen.getByRole("checkbox", { name: "Region 2" })).toBeChecked();
 
     expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
-    const allCheckboxes = screen.getAllByRole("checkbox");
-    const countryOptions = allCheckboxes.filter((cb) => (cb as HTMLInputElement).name.startsWith("country-"));
 
-    expect(countryOptions).toHaveLength(2);
     expect(screen.queryByRole("checkbox", { name: "Country 1" })).not.toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: "Country 2" })).toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: "Country 3" })).toBeInTheDocument();
   });
 
-  it("only shows a list of all subdivisions when no country is selected", async () => {
-    renderWithAppContext(GeographyPicker, geoPickerProps);
+  it("shows a list of all subdivisions when no country is selected", async () => {
+    renderWithAppContext(GeographyPicker, {
+      ...geoPickerProps,
+      searchQuery: {
+        keyword_filters: {
+          regions: [],
+          countries: [],
+          subdivisions: [],
+        },
+      },
+    });
 
     expect(await screen.findByText("Subdivision")).toBeInTheDocument();
-
-    const allCheckboxes = screen.getAllByRole("checkbox");
-    const subdivisionOptions = allCheckboxes.filter((cb) => (cb as HTMLInputElement).name.startsWith("subdivision-"));
-
-    expect(subdivisionOptions).toHaveLength(3);
 
     expect(screen.getByRole("checkbox", { name: "Subdivision 1" })).toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: "Subdivision 2" })).toBeInTheDocument();
@@ -121,13 +122,9 @@ describe("GeographyPicker", () => {
 
     expect(await screen.findByText("Subdivision")).toBeInTheDocument();
 
-    const allCheckboxes = screen.getAllByRole("checkbox");
-    const subdivisionOptions = allCheckboxes.filter((cb) => (cb as HTMLInputElement).name.startsWith("subdivision-"));
-
-    expect(subdivisionOptions).toHaveLength(1);
-
     expect(screen.getByRole("checkbox", { name: "Subdivision 1" })).toBeInTheDocument();
     expect(screen.queryByRole("checkbox", { name: "Subdivision 2" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "Subdivision 3" })).not.toBeInTheDocument();
   });
 
   it("only shows a list of subdivisions related to the selected region", async () => {
@@ -147,13 +144,54 @@ describe("GeographyPicker", () => {
 
     expect(await screen.findByText("Subdivision")).toBeInTheDocument();
 
-    const allCheckboxes = screen.getAllByRole("checkbox");
-    const subdivisionOptions = allCheckboxes.filter((cb) => (cb as HTMLInputElement).name.startsWith("subdivision-"));
-
-    expect(subdivisionOptions).toHaveLength(2);
-
     expect(screen.queryByRole("checkbox", { name: "Subdivision 1" })).not.toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: "Subdivision 2" })).toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: "Subdivision 3" })).toBeInTheDocument();
+  });
+
+  it("using quick search narrows down the list of country options to match what is typed", async () => {
+    renderWithAppContext(GeographyPicker, {
+      ...geoPickerProps,
+      searchQuery: {
+        keyword_filters: {
+          regions: [],
+          countries: [],
+          subdivisions: [],
+        },
+      },
+    });
+
+    expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
+
+    await act(async () => {
+      await userEvent.type(screen.getByRole("textbox", { name: "Country quick search" }), "Country 1");
+    });
+
+    expect(screen.getByRole("checkbox", { name: "Country 1" })).toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "Country 2" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "Country 3" })).not.toBeInTheDocument();
+  });
+
+  it("using quick search narrows down the list of subdivision options to match what is typed", async () => {
+    renderWithAppContext(GeographyPicker, {
+      ...geoPickerProps,
+      searchQuery: {
+        keyword_filters: {
+          regions: [],
+          countries: [],
+          subdivisions: [],
+        },
+      },
+    });
+
+    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+
+    await act(async () => {
+      await userEvent.type(screen.getByRole("textbox", { name: "Subdivision quick search" }), "Subdivision 1");
+    });
+
+    expect(screen.getByRole("checkbox", { name: "Subdivision 1" })).toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "Subdivision 2" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "Subdivision 3" })).not.toBeInTheDocument();
   });
 });

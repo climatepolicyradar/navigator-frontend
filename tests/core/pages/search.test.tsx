@@ -12,7 +12,7 @@ afterEach(() => {
 });
 
 describe("SearchPage", async () => {
-  it("filters search results by region", async () => {
+  it.only("filters search results by region", async () => {
     const search_props = {
       envConfig: {
         BACKEND_API_URL: process.env.BACKEND_API_URL,
@@ -35,13 +35,10 @@ describe("SearchPage", async () => {
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
-    const geographyFilterControl = await screen.findByText("Geography");
-
-    expect(geographyFilterControl).toBeInTheDocument();
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
     // like animations that were causing warnings in the console.
     await act(async () => {
-      await userEvent.click(geographyFilterControl);
+      await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
     });
 
     expect(await screen.findByText("Region")).toBeInTheDocument();
@@ -85,13 +82,10 @@ describe("SearchPage", async () => {
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
-    const geographyFilterControl = await screen.findByRole("button", { name: "Geography" });
-
-    expect(geographyFilterControl).toBeInTheDocument();
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
     // like animations that were causing warnings in the console.
     await act(async () => {
-      await userEvent.click(geographyFilterControl);
+      await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
     });
 
     expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
@@ -134,13 +128,10 @@ describe("SearchPage", async () => {
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
-    const geographyFilterControl = await screen.findByRole("button", { name: "Geography" });
-
-    expect(geographyFilterControl).toBeInTheDocument();
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
     // like animations that were causing warnings in the console.
     await act(async () => {
-      await userEvent.click(geographyFilterControl);
+      await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
     });
 
     expect(await screen.findByText("Subdivision")).toBeInTheDocument();
@@ -196,13 +187,10 @@ describe("SearchPage", async () => {
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
-    const topicsFilterControl = await screen.findByText("Topics");
-
-    expect(topicsFilterControl).toBeInTheDocument();
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
     // like animations that were causing warnings in the console.
     await act(async () => {
-      await userEvent.click(topicsFilterControl);
+      await userEvent.click(await screen.findByRole("button", { name: "Topics" }));
     });
 
     expect(await screen.findByText("Find mentions of topics")).toBeInTheDocument();

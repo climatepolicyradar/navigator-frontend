@@ -30,7 +30,9 @@ export const GeographyPicker = ({
   regionFilterLabel,
   countryFilterLabel,
 }: IProps) => {
-  const [search, setSearch] = useState("");
+  const [countryQuickSearch, setCountryQuickSearch] = useState("");
+  const [subdivisionQuickSearch, setSubdivisionQuickSearch] = useState("");
+
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [], subdivisions: subdivisionFilters = [] },
   } = searchQuery;
@@ -47,7 +49,7 @@ export const GeographyPicker = ({
 
   const alphabetisedFilteredCountries = countriesByRegion
     .sort((c1, c2) => c1.display_value.localeCompare(c2.display_value))
-    .filter((geo) => geo.display_value.toLowerCase().includes(search.toLowerCase()));
+    .filter((geo) => geo.display_value.toLowerCase().includes(countryQuickSearch.toLowerCase()));
 
   const countryFiltersIsoCodes = alphabetisedFilteredCountries
     .filter((country) => (regionFilters.length > 0 && countriesByRegion.includes(country)) || countryFilters.includes(country.slug))
@@ -60,7 +62,9 @@ export const GeographyPicker = ({
   const { data: subdivisions = [] } = subdivisionQuery;
 
   const availableSubdivisions = countrySubdivisions && countrySubdivisions.length > 0 ? countrySubdivisions : subdivisions;
-  const alphabetisedSubdivisions = availableSubdivisions.sort((s1, s2) => s1.name.localeCompare(s2.name));
+  const alphabetisedFilteredSubdivisions = availableSubdivisions
+    .sort((s1, s2) => s1.name.localeCompare(s2.name))
+    .filter((geo) => geo?.name?.toLowerCase().includes(subdivisionQuickSearch.toLowerCase()));
 
   return (
     <div className="text-sm text-text-secondary flex flex-col gap-5">
@@ -82,7 +86,13 @@ export const GeographyPicker = ({
       <Accordian title={countryFilterLabel} data-cy="countries" className="relative z-10" showFade="true" startOpen>
         <InputListContainer>
           <div className="mb-2" key="quick-search-box">
-            <TextInput size="small" onChange={(v) => setSearch(v)} value={search} placeholder="Quick search" />
+            <TextInput
+              size="small"
+              onChange={(v) => setCountryQuickSearch(v)}
+              value={countryQuickSearch}
+              placeholder="Quick search"
+              aria-label="Country quick search"
+            />
           </div>
           {alphabetisedFilteredCountries.map((country) => (
             <InputCheck
@@ -99,7 +109,16 @@ export const GeographyPicker = ({
       </Accordian>
       <Accordian title={"Subdivision"} className="relative z-10" showFade="true" startOpen>
         <InputListContainer>
-          {alphabetisedSubdivisions.map((subdivision) => (
+          <div className="mb-2" key="quick-search-box">
+            <TextInput
+              size="small"
+              onChange={(v) => setSubdivisionQuickSearch(v)}
+              value={subdivisionQuickSearch}
+              placeholder="Quick search"
+              aria-label="Subdivision quick search"
+            />
+          </div>
+          {alphabetisedFilteredSubdivisions.map((subdivision) => (
             <InputCheck
               key={subdivision.code}
               label={subdivision.name}
