@@ -5,7 +5,7 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 
 type TProps = {
   className?: string;
-  variant?: "info" | "disclaimer";
+  variant?: "info" | "error";
   hideableId?: string;
   children?: React.ReactNode;
 };
@@ -13,22 +13,20 @@ type TProps = {
 export const Warning = ({ className, variant = "info", hideableId, children }: TProps) => {
   const [displayWarning, setDisplayWarning] = useState(false);
 
-  const baseClasses = "mb-4 p-4 text-sm flex flex-col gap-2 relative";
+  const baseClasses = "mb-4 p-4 text-sm rounded-md flex flex-col gap-2 relative";
   let bgColor = "";
   let textColor = "";
-  let border = "";
   let spacing = hideableId ? "pr-10" : "";
 
   if (variant)
     switch (variant) {
       case "info":
-        bgColor = "bg-surface-brand/16 rounded-md";
-        textColor = "text-black";
-        break;
-      case "disclaimer":
         bgColor = "bg-surface-brand/16";
         textColor = "text-black";
-        border = "pl-5 border-l-2 border-surface-brand";
+        break;
+      case "error":
+        bgColor = "bg-red-600/16";
+        textColor = "text-black";
         break;
     }
 
@@ -48,7 +46,7 @@ export const Warning = ({ className, variant = "info", hideableId, children }: T
   if (!displayWarning) return null;
 
   return (
-    <div className={joinTailwindClasses(baseClasses, bgColor, textColor, border, spacing, className)}>
+    <div className={joinTailwindClasses(baseClasses, bgColor, textColor, spacing, className)}>
       {hideableId && (
         <button onClick={onHideClick} className="text-text-brand absolute top-4 right-4 hover:opacity-80 transition-opacity">
           <X size="16" />

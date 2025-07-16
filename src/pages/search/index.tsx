@@ -615,7 +615,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       <section data-cy="search-results" className="min-h-screen">
                         <h2 className="sr-only">Search results</h2>
                         {showCorporateDisclosuresInformation(router.query) && (
-                          <Warning variant="disclaimer">
+                          <Warning variant="info">
                             <p className="font-semibold">New data</p>
                             <p>
                               A snapshot of 900+ corporate reports from H1/2025, including climate transition plans and regulatory filings published
@@ -635,7 +635,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           </Warning>
                         )}
                         {showKnowledgeGraphInformation(router.query) && (
-                          <Warning variant="disclaimer">
+                          <Warning variant="info">
                             <p>
                               You are viewing a list of documents containing precise text passages matches related to{" "}
                               <ResultsTopicsContext

@@ -19,7 +19,7 @@ export const Primary: TStory = {
     children: (
       <p>
         The warning component is used to display important information or alerts to users. It can be styled with different variants such as "info" or
-        "disclaimer". The component can also be hideable, allowing users to dismiss it and not see it again in the current session.
+        "error". The component can also be hideable, allowing users to dismiss it and not see it again in the current session.
       </p>
     ),
     variant: "info",
@@ -29,12 +29,12 @@ export const Primary: TStory = {
 };
 
 export const WarningStory: TStory = {
-  name: "Disclaimer variant",
+  name: "Error",
   args: {
-    variant: "disclaimer",
+    variant: "error",
     children: (
       <>
-        <p>The default variant is "info", but you can also use the "disclaimer" variant to indicate a less critical warning or information.</p>
+        <p>The default variant is "info", but you can also use the "error" variant to indicate an error-type message.</p>
         <p>If no hideableId is provided, the Warning cannot be dismissed.</p>
       </>
     ),
