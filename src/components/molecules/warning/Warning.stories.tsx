@@ -31,6 +31,7 @@ export const Primary: TStory = {
 export const WarningStory: TStory = {
   name: "Disclaimer variant",
   args: {
+    variant: "disclaimer",
     children: (
       <>
         <p>The default variant is "info", but you can also use the "disclaimer" variant to indicate a less critical warning or information.</p>
