@@ -35,7 +35,7 @@ describe("SearchPage", async () => {
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
-    const geographyFilterControl = await screen.findByText(/Geography/);
+    const geographyFilterControl = await screen.findByText("Geography");
 
     expect(geographyFilterControl).toBeInTheDocument();
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
@@ -44,16 +44,17 @@ describe("SearchPage", async () => {
       await userEvent.click(geographyFilterControl);
     });
 
-    const regionFilterControl = await screen.findByText(/Region/i);
+    expect(await screen.findByText("Region")).toBeInTheDocument();
 
-    expect(regionFilterControl).toBeInTheDocument();
-    await act(async () => {
-      await userEvent.click(regionFilterControl);
-    });
+    const regionFilterOption = await screen.findByRole("checkbox", { name: "Latin America & Caribbean" });
 
     await act(async () => {
-      await userEvent.click(await screen.findByRole("checkbox", { name: "Latin America & Caribbean" }));
+      await userEvent.click(regionFilterOption);
     });
+
+    expect(regionFilterOption).toBeChecked();
+    // check for applied filter button
+    expect(screen.getByRole("button", { name: "Latin America & Caribbean" })).toBeInTheDocument();
 
     expect(await screen.findByText("Results")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Argentina Report" })).toBeInTheDocument();
@@ -84,7 +85,7 @@ describe("SearchPage", async () => {
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
-    const geographyFilterControl = await screen.findByRole("button", { name: /Geography/ });
+    const geographyFilterControl = await screen.findByRole("button", { name: "Geography" });
 
     expect(geographyFilterControl).toBeInTheDocument();
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
@@ -93,7 +94,7 @@ describe("SearchPage", async () => {
       await userEvent.click(geographyFilterControl);
     });
 
-    expect(await screen.findByText(/Published jurisdiction/i));
+    expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
 
     const countryOption = await screen.findByRole("checkbox", { name: "Belize" });
 
@@ -133,7 +134,7 @@ describe("SearchPage", async () => {
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
-    const geographyFilterControl = await screen.findByRole("button", { name: /Geography/ });
+    const geographyFilterControl = await screen.findByRole("button", { name: "Geography" });
 
     expect(geographyFilterControl).toBeInTheDocument();
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
@@ -142,13 +143,17 @@ describe("SearchPage", async () => {
       await userEvent.click(geographyFilterControl);
     });
 
-    expect(await screen.findByText(/Region/i)).toBeInTheDocument();
-    expect(await screen.findByText(/Published jurisdiction/i));
-    expect(await screen.findByText(/Subdivision/i)).toBeInTheDocument();
+    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+
+    const subdivisionOption = await screen.findByRole("checkbox", { name: "New South Wales" });
 
     await act(async () => {
-      await userEvent.click(await screen.findByRole("checkbox", { name: "New South Wales" }));
+      await userEvent.click(subdivisionOption);
     });
+
+    expect(subdivisionOption).toBeChecked();
+    // check for applied filter button
+    expect(screen.getByRole("button", { name: "New South Wales" })).toBeInTheDocument();
 
     expect(await screen.findByText("Results")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "New South Wales Litigation Case" })).toBeInTheDocument();
@@ -191,7 +196,7 @@ describe("SearchPage", async () => {
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
-    const topicsFilterControl = await screen.findByRole("button", { name: /Topics/ });
+    const topicsFilterControl = await screen.findByRole("button", { name: "Topics" });
 
     expect(topicsFilterControl).toBeInTheDocument();
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
@@ -200,14 +205,18 @@ describe("SearchPage", async () => {
       await userEvent.click(topicsFilterControl);
     });
 
-    expect(await screen.findByText(/Find mentions of topics/i));
+    expect(await screen.findByText("Find mentions of topics")).toBeInTheDocument();
+    expect(screen.getByText("Parent topic")).toBeInTheDocument();
 
-    expect(screen.getByText(/Parent topic/)).toBeInTheDocument();
-    const topic = screen.getByRole("checkbox", { name: "Child topic 1" });
+    const topicOption = screen.getByRole("checkbox", { name: "Child topic 1" });
 
     await act(async () => {
-      await userEvent.click(topic);
+      await userEvent.click(topicOption);
     });
+
+    expect(topicOption).toBeChecked();
+    // check for applied filter button
+    expect(screen.getByRole("button", { name: "Child topic 1" }));
 
     expect(screen.getByRole("link", { name: "Family with topic 1" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Family with topic 2" })).not.toBeInTheDocument();
