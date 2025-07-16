@@ -226,6 +226,10 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
         queryCollection.push(value);
       }
     }
+    // If we are removing a country, clear non-applicable subdivisions
+    if (type === QUERY_PARAMS.country) {
+      delete router.query[QUERY_PARAMS.subdivision];
+    }
 
     // If we are changing the fund or func document type for MCFs, clear non-applicable filters
     if (type === QUERY_PARAMS.fund) {
