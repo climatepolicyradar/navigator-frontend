@@ -35,16 +35,16 @@ export const FamilyPage: TStory = {
   },
 };
 
-type CollectionTab = "about" | "cases" | "events";
+type TCollectionTab = "about" | "cases" | "events";
 
-const useTabsRender = ({ ...props }: IPageHeaderTabsProps<CollectionTab>) => {
-  const [currentTab, setCurrentTab] = useState<CollectionTab>("cases");
-  const handleChange = (newTab: CollectionTab) => setCurrentTab(newTab);
+const useTabsRender = ({ ...props }: IPageHeaderTabsProps<TCollectionTab>) => {
+  const [currentTab, setCurrentTab] = useState<TCollectionTab>("cases");
+  const handleChange = (newTab: TCollectionTab) => setCurrentTab(newTab);
 
-  return <PageHeader<CollectionTab> currentTab={currentTab} onTabChange={handleChange} {...props} />;
+  return <PageHeader<TCollectionTab> currentTab={currentTab} onTabChange={handleChange} {...props} />;
 };
 
-export const CollectionPage: TStory<CollectionTab> = {
+export const CollectionPage: TStory<TCollectionTab> = {
   args: {
     coloured: true,
     label: "Collection",
