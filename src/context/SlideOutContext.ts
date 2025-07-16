@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-export type TSlideOutContent = "concepts" | "familyConcepts" | "";
+export type TSlideOutContent = "concepts" | "familyConcepts" | "geographies" | "";
 
 interface IProps {
   currentSlideOut: TSlideOutContent;

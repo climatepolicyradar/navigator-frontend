@@ -21,9 +21,11 @@ import { SearchSettings } from "@/components/filters/SearchSettings";
 import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
 import { Info } from "@/components/molecules/info/Info";
+import { Warning } from "@/components/molecules/warning/Warning";
 import { SubNav } from "@/components/nav/SubNav";
 import { ConceptPicker } from "@/components/organisms/ConceptPicker";
 import { FamilyConceptPicker } from "@/components/organisms/FamilyConceptPicker";
+import { GeographyPicker } from "@/components/organisms/GeographyPicker";
 import Pagination from "@/components/pagination";
 import { MultiCol } from "@/components/panels/MultiCol";
 import { SideCol } from "@/components/panels/SideCol";
@@ -43,6 +45,7 @@ import { getFeatureFlags } from "@/utils/featureFlags";
 import { isFamilyConceptsSearchEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
+import { getFilterLabel } from "@/utils/getFilterLabel";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { readConfigFile } from "@/utils/readConfigFile";
@@ -83,6 +86,24 @@ const showKnowledgeGraphInformation = (query: ParsedUrlQuery) => {
 const showCorporateDisclosuresInformation = (query: ParsedUrlQuery) => {
   if (query[QUERY_PARAMS.category] && query[QUERY_PARAMS.category].toString().toLowerCase() === "corporate-disclosures") return true;
 
+  return false;
+};
+
+// Show search onboarding if no search or filters are applied
+const showSearchOboarding = (query: ParsedUrlQuery) => {
+  // Some query params are for sorting, ordering or pagination, do not count them as applied filters
+  const appliedQueryKeys = Object.keys(query).filter(
+    (key) =>
+      ![
+        QUERY_PARAMS.sort_field,
+        QUERY_PARAMS.sort_order,
+        QUERY_PARAMS.continuation_tokens,
+        QUERY_PARAMS.active_continuation_token,
+        QUERY_PARAMS.offset,
+        QUERY_PARAMS.passages_by_position,
+      ].includes(key)
+  );
+  if (appliedQueryKeys.length === 0) return true;
   return false;
 };
 
@@ -443,25 +464,33 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                     <SearchFilters
                       searchCriteria={searchQuery}
                       query={router.query}
-                      regions={regions}
-                      countries={countries}
                       corpus_types={corpus_types}
                       conceptsData={conceptsData}
                       familyConceptsData={familyConceptsData}
                       handleFilterChange={handleFilterChange}
                       handleYearChange={handleYearChange}
-                      handleRegionChange={handleRegionChange}
                       handleClearSearch={handleClearSearch}
                       handleDocumentCategoryClick={handleDocumentCategoryClick}
                       featureFlags={featureFlags}
                     />
                   </div>
 
-                  {(conceptsData || familyConceptsData) && (
+                  {(conceptsData || familyConceptsData || (regions && countries)) && (
                     <SlideOut showCloseButton={false}>
                       {conceptsData && currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Find mentions of topics" />}
                       {familyConceptsData && currentSlideOut === "familyConcepts" && (
                         <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories concepts" />
+                      )}
+                      {regions && countries && currentSlideOut === "geographies" && (
+                        <GeographyPicker
+                          regions={regions}
+                          handleRegionChange={handleRegionChange}
+                          handleFilterChange={handleFilterChange}
+                          searchQuery={searchQuery}
+                          countries={countries}
+                          regionFilterLabel={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
+                          countryFilterLabel={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
+                        />
                       )}
                     </SlideOut>
                   )}
@@ -586,8 +615,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       <section data-cy="search-results" className="min-h-screen">
                         <h2 className="sr-only">Search results</h2>
                         {showCorporateDisclosuresInformation(router.query) && (
-                          <div className="mb-4 p-4 pl-5 text-sm text-black border-l-2 border-[#005EEB] bg-[#005EEB14] flex flex-col gap-2">
-                            <p className="font-[600]">New data</p>
+                          <Warning variant="info">
+                            <p className="font-semibold">New data</p>
                             <p>
                               A snapshot of 900+ corporate reports from H1/2025, including climate transition plans and regulatory filings published
                               by 460 publicly listed high emitting companies. Note, some of the{" "}
@@ -595,7 +624,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                 className="underline hover:text-blue-800"
                                 href="#"
                                 onClick={(e) => {
-                                  e.preventDefault;
+                                  e.preventDefault();
                                   setCurrentSlideOut("concepts");
                                 }}
                               >
@@ -603,10 +632,10 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                               </a>{" "}
                               such as "Climate finance" currently do not perform as well on this dataset.
                             </p>
-                          </div>
+                          </Warning>
                         )}
                         {showKnowledgeGraphInformation(router.query) && (
-                          <div className="mb-4 p-4 pl-5 text-sm text-black border-l-2 border-[#005EEB] bg-[#005EEB14] flex flex-col gap-2">
+                          <Warning variant="info">
                             <p>
                               You are viewing a list of documents containing precise text passages matches related to{" "}
                               <ResultsTopicsContext
@@ -618,7 +647,27 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                 Learn more
                               </LinkWithQuery>
                             </p>
-                          </div>
+                          </Warning>
+                        )}
+                        {showSearchOboarding(router.query) && (
+                          <Warning variant="info" hideableId="search-onboarding-info">
+                            <p className="font-semibold text-text-brand">Get better results</p>
+                            <p>
+                              You are currently viewing all of the documents in our database. Narrow your search by document type, geography, date,
+                              and more. You can also use the AI-supported{" "}
+                              <a
+                                className="underline hover:text-blue-800"
+                                href="#"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setCurrentSlideOut("concepts");
+                                }}
+                              >
+                                Topics filter
+                              </a>{" "}
+                              to help refine your search.
+                            </p>
+                          </Warning>
                         )}
                         <SearchResultList
                           category={router.query[QUERY_PARAMS.category]?.toString()}

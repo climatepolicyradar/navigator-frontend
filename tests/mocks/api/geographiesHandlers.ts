@@ -4,6 +4,14 @@ export const geographiesHandlers = [
   http.get("*/geographies/", () => {
     return HttpResponse.json([
       {
+        alpha_2: "AR",
+        alpha_3: "ARG",
+        name: "Argentina",
+        official_name: "Argentine Republic",
+        numeric: "032",
+        flag: "🇦🇷",
+      },
+      {
         alpha_3: "BLZ",
         official_name: null,
         name: "Belize",
@@ -44,6 +52,14 @@ export const geographiesHandlers = [
         official_name: "Republic of South Sudan",
         name: "South Sudan",
         alpha_2: "SS",
+      },
+      {
+        alpha_2: "CU",
+        alpha_3: "CUB",
+        name: "Cuba",
+        official_name: "Republic of Cuba",
+        numeric: "192",
+        flag: "🇨🇺",
       },
     ]);
   }),

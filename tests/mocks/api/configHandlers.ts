@@ -129,6 +129,17 @@ export const configHandlers = [
               value: "Belize",
               parent_id: null,
             },
+            {
+              node: {
+                id: 140,
+                display_value: "Argentina",
+                slug: "argentina",
+                value: "ARG",
+                type: "ISO-3166",
+                parent_id: 138,
+              },
+              children: [],
+            },
           ],
         },
       ],

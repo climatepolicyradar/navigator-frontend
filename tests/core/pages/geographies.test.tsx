@@ -1,9 +1,12 @@
 import { screen } from "@testing-library/react";
 import { vi } from "vitest";
 
+import { DEFAULT_FEATURE_FLAGS } from "@/constants/features";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 
 import CountryPage from "../../../src/pages/geographies/[id]";
+
+const featureFlags = { ...DEFAULT_FEATURE_FLAGS };
 
 // this mock is needed for any tests of pages that use dynamic imports
 vi.mock("next/dynamic", () => ({
@@ -30,13 +33,15 @@ describe("CountryPage", () => {
             title: "{text} climate laws and policies",
           },
         ],
+        features: { litigation: false },
       },
+      featureFlags: featureFlags,
     };
 
     // @ts-ignore
     renderWithAppContext(CountryPage, usa_props);
-    expect(screen.getByRole("heading", { name: "United States of America", level: 1 })).toBeDefined();
-    expect(screen.getByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).toBeDefined();
+    expect(screen.getByRole("heading", { name: "United States of America", level: 1 })).toBeInTheDocument();
+    expect(screen.getByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).toBeInTheDocument();
 
     const link = screen.getByRole("link", { name: "Sabin Center's Climate Backtracker" });
     expect(link.getAttribute("href")).toBe("https://climate.law.columbia.edu/content/climate-backtracker");
@@ -56,16 +61,18 @@ describe("CountryPage", () => {
             title: "{text} climate laws and policies",
           },
         ],
+        features: { litigation: false },
       },
+      featureFlags: featureFlags,
     };
 
     // @ts-ignore
     renderWithAppContext(CountryPage, props);
-    expect(screen.getByRole("heading", { name: "Brazil", level: 1 })).toBeDefined();
-    expect(screen.queryByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).toBeNull();
+    expect(screen.getByRole("heading", { name: "Brazil", level: 1 })).toBeInTheDocument();
+    expect(screen.queryByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).not.toBeInTheDocument();
 
     const link = screen.queryByRole("link", { name: "Sabin Center's Climate Backtracker" });
-    expect(link).toBeNull();
+    expect(link).not.toBeInTheDocument();
   });
 
   it("does not display alert with Sabin tracker link on the mcf theme", async () => {
@@ -82,15 +89,17 @@ describe("CountryPage", () => {
             title: "{text} climate laws and policies",
           },
         ],
+        features: { litigation: false },
       },
+      featureFlags: featureFlags,
     };
 
     // @ts-ignore
     renderWithAppContext(CountryPage, usa_props);
-    expect(screen.getByRole("heading", { name: "United States of America", level: 1 })).toBeDefined();
-    expect(screen.queryByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).toBeNull();
+    expect(screen.getByRole("heading", { name: "United States of America", level: 1 })).toBeInTheDocument();
+    expect(screen.queryByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).not.toBeInTheDocument();
 
     const link = screen.queryByRole("link", { name: "Sabin Center's Climate Backtracker" });
-    expect(link).toBeNull();
+    expect(link).not.toBeInTheDocument();
   });
 });
