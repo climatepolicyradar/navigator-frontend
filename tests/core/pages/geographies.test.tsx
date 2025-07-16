@@ -1,9 +1,12 @@
 import { screen } from "@testing-library/react";
 import { vi } from "vitest";
 
+import { DEFAULT_FEATURE_FLAGS } from "@/constants/features";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 
 import CountryPage from "../../../src/pages/geographies/[id]";
+
+const featureFlags = { ...DEFAULT_FEATURE_FLAGS };
 
 // this mock is needed for any tests of pages that use dynamic imports
 vi.mock("next/dynamic", () => ({
@@ -30,7 +33,9 @@ describe("CountryPage", () => {
             title: "{text} climate laws and policies",
           },
         ],
+        features: { litigation: false },
       },
+      featureFlags: featureFlags,
     };
 
     // @ts-ignore
@@ -56,7 +61,9 @@ describe("CountryPage", () => {
             title: "{text} climate laws and policies",
           },
         ],
+        features: { litigation: false },
       },
+      featureFlags: featureFlags,
     };
 
     // @ts-ignore
@@ -82,7 +89,9 @@ describe("CountryPage", () => {
             title: "{text} climate laws and policies",
           },
         ],
+        features: { litigation: false },
       },
+      featureFlags: featureFlags,
     };
 
     // @ts-ignore
