@@ -218,28 +218,32 @@ test.describe("CCLW Hero Search", () => {
     await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
-  test("should maintain search state on page refresh", async ({ page }) => {
+  /**
+   * This test is known to be flaky due to page reload timing issues across browsers.
+   */
+  test("should maintain search state on page refresh", async ({ page }, testInfo) => {
     const searchTerm = "climate framework laws";
 
-    // Type search term
     await page.fill('[data-cy="search-input"]', searchTerm);
-
-    // Click search button
     await page.click('[data-cy="search-form"] button[aria-label="Search"]');
-
-    // Should navigate to search results page
     await expect(page).toHaveURL(/\/search/);
 
-    // Wait for the page to be fully loaded before refresh
-    await page.waitForLoadState("networkidle");
+    // Wait for the search input to be visible on the results page
+    await page.waitForSelector('[data-cy="search-input"]', { state: "visible", timeout: 10000 });
 
-    // Refresh the page with explicit wait
-    await page.reload({ waitUntil: "networkidle" });
+    // Reload the page
+    await page.reload();
 
-    // Should still be on search results page with same parameters
+    // Wait for the search input to be visible on the results page
+    await page.waitForSelector('[data-cy="search-input"]', { state: "visible", timeout: 10000 });
+
     await expect(page).toHaveURL(/\/search/);
     await expect(page).toHaveURL(/q=climate\+framework\+laws/);
     await expect(page).not.toHaveURL(/e=true/);
+
+    // Check that the search input is still populated
+    const searchInput = page.locator('[data-cy="search-input"]');
+    await expect(searchInput).toHaveValue(searchTerm);
   });
 
   test("should maintain search state on Home breadcrumb click", async ({ page }) => {
