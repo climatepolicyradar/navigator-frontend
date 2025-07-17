@@ -42,7 +42,7 @@ import useSearch from "@/hooks/useSearch";
 import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isFamilyConceptsSearchEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
+import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
 import { getFilterLabel } from "@/utils/getFilterLabel";
@@ -728,7 +728,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   // TODO: Next - start rendering this data
   let familyConceptsData: TConcept[] | undefined;
-  if (isFamilyConceptsSearchEnabled(themeConfig)) {
+  if (isLitigationEnabled(featureFlags, themeConfig)) {
     try {
       const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts`);
       const familyConceptsJson: { data: FamilyConcept[] } = await familyConceptsResponse.json();
