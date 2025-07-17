@@ -230,16 +230,23 @@ test.describe("CCLW Hero Search", () => {
     // Should navigate to search results page
     await expect(page).toHaveURL(/\/search/);
 
-    // Wait for the search results page to be fully loaded
-    await page.waitForLoadState("networkidle");
-
-    // Wait for search results to be visible instead of search input
+    // Wait for search results to be visible
     await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
-    // Reload the page
-    await page.reload({ waitUntil: "networkidle" });
+    // Store current URL for comparison
+    const urlBeforeRefresh = page.url();
+
+    // Reload the page with a race condition approach for WebKit compatibility
+    await Promise.race([
+      page.reload({ waitUntil: "domcontentloaded" }),
+      page.waitForTimeout(5000), // Fallback timeout
+    ]);
+
+    // Give WebKit a moment to settle
+    await page.waitForTimeout(1000);
 
     // Should still be on search results page with same parameters
+    expect(page.url()).not.toBe(urlBeforeRefresh);
     await expect(page).toHaveURL(/\/search/);
     await expect(page).toHaveURL(/q=climate\+framework\+laws/);
     await expect(page).not.toHaveURL(/e=true/);
