@@ -151,8 +151,8 @@ jobs:
       - name: Run tests and upload results to Trunk.io
         uses: trunk-io/analytics-uploader@v1
         with:
-          junit-paths: test-results/**/vitest.xml
-          run: npm run test -- --reporter=junit
+          junit-paths: "**/vitest.xml"
+          run: npm run test
           token: ${{ secrets.TRUNK_TOKEN }}
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
         env:
@@ -188,12 +188,8 @@ jobs:
             echo "Running Playwright tests..."
             npx playwright test tests/core/ tests/${{ matrix.theme }}/
             echo "Playwright test completed. Checking for output file..."
-            ls -la test-results-${{ matrix.theme }}/
             if [ -f "test-results-${{ matrix.theme }}/playwright.xml" ]; then
-              echo "✅ playwright.xml found"
-              echo "File size: $(wc -c < test-results-${{ matrix.theme }}/playwright.xml) bytes"
-              echo "First 10 lines of the file:"
-              head -n 10 test-results-${{ matrix.theme }}/playwright.xml
+              echo "✅ playwright.xml found, file size: $(wc -c < test-results-${{ matrix.theme }}/playwright.xml) bytes"
             else
               echo "❌ playwright.xml not found"
               echo "Contents of test-results-${{ matrix.theme }} directory:"

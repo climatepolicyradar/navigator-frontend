@@ -127,7 +127,7 @@ jobs:
       - name: Run tests and upload results to Trunk.io
         uses: trunk-io/analytics-uploader@v1
         with:
-          junit-paths: test-results/**/vitest.xml
+          junit-paths: "**/vitest.xml"
           run: npm run test
           token: ${{ secrets.TRUNK_TOKEN }}
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
@@ -160,7 +160,19 @@ jobs:
         uses: trunk-io/analytics-uploader@v1
         with:
           junit-paths: test-results-${{ matrix.theme }}/playwright.xml
-          run: npx playwright test tests/core/ tests/${{ matrix.theme }}/
+          run: |
+            echo "Running Playwright tests..."
+            npx playwright test tests/core/ tests/${{ matrix.theme }}/
+            echo "Playwright test completed. Checking for output file..."
+            if [ -f "test-results-${{ matrix.theme }}/playwright.xml" ]; then
+              echo "✅ playwright.xml found, file size: $(wc -c < test-results-${{ matrix.theme }}/playwright.xml) bytes"
+            else
+              echo "❌ playwright.xml not found"
+              echo "Contents of test-results-${{ matrix.theme }} directory:"
+              ls -la test-results-${{ matrix.theme }}/ || echo "Directory doesn't exist or is empty"
+              echo "Looking for any XML files in current directory:"
+              find . -name "*.xml" -type f 2>/dev/null || echo "No XML files found"
+            fi
           token: ${{ secrets.TRUNK_TOKEN }}
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
         env:
