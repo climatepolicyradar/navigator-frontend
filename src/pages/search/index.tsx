@@ -654,18 +654,24 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                             <p className="font-semibold text-text-brand">Get better results</p>
                             <p>
                               You are currently viewing all of the documents in our database. Narrow your search by document type, geography, date,
-                              and more. You can also use the AI-supported{" "}
-                              <a
-                                className="underline hover:text-blue-800"
-                                href="#"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setCurrentSlideOut("concepts");
-                                }}
-                              >
-                                Topics filter
-                              </a>{" "}
-                              to help refine your search.
+                              and more.
+                              {isKnowledgeGraphEnabled(featureFlags, themeConfig) && (
+                                <>
+                                  {" "}
+                                  You can also use the AI-supported{" "}
+                                  <a
+                                    className="underline hover:text-blue-800"
+                                    href="#"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setCurrentSlideOut("concepts");
+                                    }}
+                                  >
+                                    Topics filter
+                                  </a>{" "}
+                                  to help refine your search.
+                                </>
+                              )}
                             </p>
                           </Warning>
                         )}
