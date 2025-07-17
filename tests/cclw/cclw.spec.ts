@@ -246,7 +246,7 @@ test.describe("CCLW Hero Search", () => {
     await page.waitForTimeout(1000);
 
     // Should still be on search results page with same parameters
-    expect(page.url()).not.toBe(urlBeforeRefresh);
+    expect(page.url()).toBe(urlBeforeRefresh);
     await expect(page).toHaveURL(/\/search/);
     await expect(page).toHaveURL(/q=climate\+framework\+laws/);
     await expect(page).not.toHaveURL(/e=true/);
