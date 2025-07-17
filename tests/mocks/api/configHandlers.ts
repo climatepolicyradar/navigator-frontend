@@ -44,9 +44,9 @@ export const configHandlers = [
         {
           node: {
             id: 1,
-            display_value: "East Asia & Pacific",
-            slug: "east-asia-pacific",
-            value: "East Asia & Pacific",
+            display_value: "Europe & Central Asia",
+            slug: "europe-central-asia",
+            value: "Europe & Central Asia",
             type: "World Bank Region",
             parent_id: null,
           },
@@ -54,35 +54,85 @@ export const configHandlers = [
             {
               node: {
                 id: 2,
-                display_value: "Australia",
-                slug: "australia",
-                value: "AUS",
-                type: "ISO-3166",
+                slug: "france",
+                display_value: "France",
+                value: "france",
+                type: "country",
                 parent_id: 1,
               },
+              // Subdivisions
+              children: [],
+            },
+            {
+              node: {
+                id: 3,
+                slug: "spain",
+                display_value: "Spain",
+                value: "spain",
+                type: "country",
+                parent_id: 1,
+              },
+              // Subdivisions
               children: [],
             },
           ],
         },
         {
           node: {
-            id: 2,
-            display_value: "South Asia",
-            slug: "south-asia",
-            value: "South Asia",
+            id: 4,
+            display_value: "Sub-Saharan Africa",
+            slug: "sub-saharan-africa",
+            value: "Sub-Saharan Africa",
             type: "World Bank Region",
             parent_id: null,
           },
           children: [
             {
               node: {
-                id: 3,
-                display_value: "Afghanistan",
-                slug: "afghanistan",
-                value: "AFG",
-                type: "ISO-3166",
-                parent_id: 2,
+                id: 5,
+                slug: "south-africa",
+                display_value: "South Africa",
+                value: "south-africa",
+                type: "country",
+                parent_id: 4,
               },
+              // Subdivisions
+              children: [],
+            },
+            {
+              node: {
+                id: 6,
+                slug: "central-african-republic",
+                display_value: "Central African Republic",
+                value: "central-african-republic",
+                type: "country",
+                parent_id: 4,
+              },
+              // Subdivisions
+              children: [],
+            },
+            {
+              node: {
+                id: 7,
+                slug: "sudan",
+                display_value: "Sudan",
+                value: "sudan",
+                type: "country",
+                parent_id: 4,
+              },
+              // Subdivisions
+              children: [],
+            },
+            {
+              node: {
+                id: 8,
+                slug: "south-sudan",
+                display_value: "South Sudan",
+                value: "south-sudan",
+                type: "country",
+                parent_id: 4,
+              },
+              // Subdivisions
               children: [],
             },
           ],
@@ -117,6 +167,53 @@ export const configHandlers = [
                 type: "ISO-3166",
                 parent_id: 138,
               },
+              // Subdivisions
+              children: [],
+            },
+          ],
+        },
+        {
+          node: {
+            id: 12,
+            display_value: "East Asia & Pacific",
+            slug: "east-asia-pacific",
+            value: "East Asia & Pacific",
+            type: "World Bank Region",
+            parent_id: null,
+          },
+          children: [
+            {
+              node: {
+                id: 2,
+                display_value: "Australia",
+                slug: "australia",
+                value: "AUS",
+                type: "ISO-3166",
+                parent_id: 12,
+              },
+              children: [],
+            },
+          ],
+        },
+        {
+          node: {
+            id: 2,
+            display_value: "South Asia",
+            slug: "south-asia",
+            value: "South Asia",
+            type: "World Bank Region",
+            parent_id: null,
+          },
+          children: [
+            {
+              node: {
+                id: 3,
+                display_value: "Afghanistan",
+                slug: "afghanistan",
+                value: "AFG",
+                type: "ISO-3166",
+                parent_id: 2,
+              },
               children: [],
             },
           ],
@@ -133,6 +230,7 @@ export const configHandlers = [
                 Legislative: 1,
                 UNFCCC: 1,
                 MCF: 0,
+                Reports: 0,
               },
             },
           ],
@@ -146,6 +244,7 @@ export const configHandlers = [
                 Legislative: 1,
                 UNFCCC: 3,
                 MCF: 0,
+                Reports: 0,
               },
             },
           ],
