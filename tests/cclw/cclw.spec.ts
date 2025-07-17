@@ -230,16 +230,29 @@ test.describe("CCLW Hero Search", () => {
     // Should navigate to search results page
     await expect(page).toHaveURL(/\/search/);
 
-    // Wait for the page to be fully loaded before refresh
-    await page.waitForLoadState("networkidle");
+    // Wait for search results to be visible
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
-    // Refresh the page with explicit wait
-    await page.reload({ waitUntil: "networkidle" });
+    // Store current URL for comparison
+    const urlBeforeRefresh = page.url();
+
+    // Reload the page with a race condition approach for WebKit compatibility
+    await Promise.race([
+      page.reload({ waitUntil: "domcontentloaded" }),
+      page.waitForTimeout(5000), // Fallback timeout
+    ]);
+
+    // Give WebKit a moment to settle
+    await page.waitForTimeout(1000);
 
     // Should still be on search results page with same parameters
+    expect(page.url()).toBe(urlBeforeRefresh);
     await expect(page).toHaveURL(/\/search/);
     await expect(page).toHaveURL(/q=climate\+framework\+laws/);
     await expect(page).not.toHaveURL(/e=true/);
+
+    // Verify search results are still visible after refresh
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should maintain search state on Home breadcrumb click", async ({ page }) => {

@@ -73,6 +73,7 @@ This project uses:
 - Vitest for unit testing
 - Playwright for E2E testing
 - BrowserStack for cross-browser testing
+- Act for GitHub workflows debugging/testing (click here for [our act scripts](.github/workflows/scripts/))
 
 Run tests:
 
