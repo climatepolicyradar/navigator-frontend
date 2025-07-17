@@ -139,34 +139,33 @@ export const configHandlers = [
         },
         {
           node: {
-            id: 9,
+            id: 3,
             display_value: "Latin America & Caribbean",
             slug: "latin-america-caribbean",
-            type: "World Bank Region",
             value: "Latin America & Caribbean",
+            type: "World Bank Region",
             parent_id: null,
           },
           children: [
             {
               node: {
-                id: 10,
+                id: 4,
                 display_value: "Belize",
-                slug: "BLZ",
-                type: "country",
-                value: "Belize",
-                parent_id: 9,
+                slug: "belize",
+                type: "ISO-3166",
+                value: "BLZ",
+                parent_id: 3,
               },
-              // Subdivisions
               children: [],
             },
             {
               node: {
-                id: 11,
+                id: 140,
                 display_value: "Argentina",
                 slug: "argentina",
                 value: "ARG",
                 type: "ISO-3166",
-                parent_id: 9,
+                parent_id: 138,
               },
               // Subdivisions
               children: [],
@@ -176,6 +175,29 @@ export const configHandlers = [
         {
           node: {
             id: 12,
+            display_value: "East Asia & Pacific",
+            slug: "east-asia-pacific",
+            value: "East Asia & Pacific",
+            type: "World Bank Region",
+            parent_id: null,
+          },
+          children: [
+            {
+              node: {
+                id: 2,
+                display_value: "Australia",
+                slug: "australia",
+                value: "AUS",
+                type: "ISO-3166",
+                parent_id: 12,
+              },
+              children: [],
+            },
+          ],
+        },
+        {
+          node: {
+            id: 2,
             display_value: "South Asia",
             slug: "south-asia",
             value: "South Asia",
@@ -185,14 +207,13 @@ export const configHandlers = [
           children: [
             {
               node: {
-                id: 13,
+                id: 3,
                 display_value: "Afghanistan",
                 slug: "afghanistan",
                 value: "AFG",
                 type: "ISO-3166",
-                parent_id: 12,
+                parent_id: 2,
               },
-              // Subdivisions
               children: [],
             },
           ],

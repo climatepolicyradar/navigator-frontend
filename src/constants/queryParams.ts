@@ -4,6 +4,7 @@ export const QUERY_PARAMS = {
   category: "c",
   continuation_tokens: "cts",
   country: "l",
+  subdivision: "sd",
   exact_match: "e",
   offset: "o",
   passages_by_position: "sp",
