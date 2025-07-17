@@ -42,7 +42,7 @@ describe("SearchPage", async () => {
     // @ts-ignore
     renderWithAppContext(Search, search_props);
 
-    expect(screen.queryByText("Get better results")).not.toBeInTheDocument();
+    expect(screen.queryByText(/Get better results/)).not.toBeInTheDocument();
     expect(screen.queryByText(/You are currently viewing all of the documents in our database/)).not.toBeInTheDocument();
   });
 
