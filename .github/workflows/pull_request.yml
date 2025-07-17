@@ -186,7 +186,7 @@ jobs:
           junit-paths: test-results-${{ matrix.theme }}/playwright.xml
           run: |
             echo "Running Playwright tests..."
-            npx playwright test tests/core/ tests/${{ matrix.theme }}/ --reporter=junit
+            npx playwright test tests/core/ tests/${{ matrix.theme }}/
             echo "Playwright test completed. Checking for output file..."
             ls -la test-results-${{ matrix.theme }}/
             if [ -f "test-results-${{ matrix.theme }}/playwright.xml" ]; then
