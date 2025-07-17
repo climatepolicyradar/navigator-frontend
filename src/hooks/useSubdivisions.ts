@@ -1,8 +1,9 @@
 import { useQuery } from "react-query";
 
-import { ApiClient } from "../api/http-common";
 import { useEnvConfig } from "@/context/EnvConfig";
 import { TGeographySubdivision } from "@/types";
+
+import { ApiClient } from "../api/http-common";
 
 export default function useSubdivisions() {
   const { CONCEPTS_API_URL } = useEnvConfig();
