@@ -23,12 +23,6 @@ vi.mock("@/hooks/useGeographySubdivisions", () => ({
   }),
 }));
 
-vi.mock("@/utils/featureFlags", () => ({
-  getFeatureFlags: () => ({
-    litigation: true,
-  }),
-}));
-
 describe("GeographyPicker", () => {
   const geoPickerProps = {
     envConfig: {
