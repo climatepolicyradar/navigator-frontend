@@ -218,9 +218,6 @@ test.describe("CCLW Hero Search", () => {
     await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
-  /**
-   * This test is known to be flaky due to page reload timing issues across browsers.
-   */
   test("should maintain search state on page refresh", async ({ page }, testInfo) => {
     const searchTerm = "climate framework laws";
 
@@ -228,11 +225,17 @@ test.describe("CCLW Hero Search", () => {
     await page.click('[data-cy="search-form"] button[aria-label="Search"]');
     await expect(page).toHaveURL(/\/search/);
 
+    // Verify we're on the search page
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
+
     // Wait for the search input to be visible on the results page
     await page.waitForSelector('[data-cy="search-input"]', { state: "visible", timeout: 10000 });
 
     // Reload the page
     await page.reload();
+
+    // Verify we're on the search page
+    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
 
     // Wait for the search input to be visible on the results page
     await page.waitForSelector('[data-cy="search-input"]', { state: "visible", timeout: 10000 });
