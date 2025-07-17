@@ -23,6 +23,12 @@ vi.mock("@/hooks/useGeographySubdivisions", () => ({
   }),
 }));
 
+vi.mock("@/utils/featureFlags", () => ({
+  getFeatureFlags: () => ({
+    litigation: true,
+  }),
+}));
+
 describe("GeographyPicker", () => {
   const geoPickerProps = {
     envConfig: {
@@ -43,6 +49,7 @@ describe("GeographyPicker", () => {
     ],
     regionFilterLabel: "Region",
     countryFilterLabel: "Published jurisdiction",
+    litigationEnabled: true,
   };
 
   it("shows a list of all countries when no region is selected", async () => {

@@ -495,6 +495,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           countries={countries}
                           regionFilterLabel={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
                           countryFilterLabel={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
+                          litigationEnabled={isLitigationEnabled(featureFlags, themeConfig)}
                         />
                       )}
                     </SlideOut>

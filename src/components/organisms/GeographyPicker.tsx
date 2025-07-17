@@ -5,7 +5,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 import useGeographySubdivisions from "@/hooks/useGeographySubdivisions";
 import useSubdivisions from "@/hooks/useSubdivisions";
-import { TGeography, TSearchCriteria } from "@/types";
+import { TGeography, TGeographySubdivision, TSearchCriteria } from "@/types";
 
 import { InputListContainer } from "../filters/InputListContainer";
 import { InputCheck } from "../forms/Checkbox";
@@ -19,6 +19,7 @@ interface IProps {
   countries: TGeography[];
   regionFilterLabel: string;
   countryFilterLabel: string;
+  litigationEnabled: boolean;
 }
 
 export const GeographyPicker = ({
@@ -29,10 +30,10 @@ export const GeographyPicker = ({
   countries,
   regionFilterLabel,
   countryFilterLabel,
+  litigationEnabled,
 }: IProps) => {
   const [countryQuickSearch, setCountryQuickSearch] = useState("");
   const [subdivisionQuickSearch, setSubdivisionQuickSearch] = useState("");
-
   const {
     keyword_filters: { countries: countryFilters = [], regions: regionFilters = [], subdivisions: subdivisionFilters = [] },
   } = searchQuery;
@@ -59,15 +60,23 @@ export const GeographyPicker = ({
     .map((country) => country.value);
 
   const countrySubdivisionQuery = useGeographySubdivisions(countryFiltersIsoCodes);
-  const { data: countrySubdivisions = [] } = countrySubdivisionQuery;
+  const { data: countrySubdivisionsData = [] } = countrySubdivisionQuery;
 
   const subdivisionQuery = useSubdivisions();
-  const { data: subdivisions = [] } = subdivisionQuery;
+  const { data: subdivisionsData = [] } = subdivisionQuery;
 
-  const availableSubdivisions = countrySubdivisions && countrySubdivisions.length > 0 ? countrySubdivisions : subdivisions;
-  const alphabetisedFilteredSubdivisions = availableSubdivisions
-    .sort((s1, s2) => s1.name.localeCompare(s2.name))
-    .filter((geo) => geo?.name?.toLowerCase().includes(subdivisionQuickSearch.toLowerCase()));
+  let countrySubdivisions: TGeographySubdivision[] = [];
+  let subdivisions: TGeographySubdivision[] = [];
+  let alphabetisedFilteredSubdivisions: TGeographySubdivision[] = [];
+
+  if (litigationEnabled) {
+    countrySubdivisions = countrySubdivisionsData;
+    subdivisions = subdivisionsData;
+    const availableSubdivisions = countrySubdivisions && countrySubdivisions.length > 0 ? countrySubdivisions : subdivisions;
+    alphabetisedFilteredSubdivisions = availableSubdivisions
+      .sort((s1, s2) => s1.name.localeCompare(s2.name))
+      .filter((geo) => geo?.name?.toLowerCase().includes(subdivisionQuickSearch.toLowerCase()));
+  }
 
   return (
     <div className="text-sm text-text-secondary relative flex flex-col gap-5 max-h-full pb-5">
@@ -111,30 +120,32 @@ export const GeographyPicker = ({
             ))}
           </InputListContainer>
         </Accordian>
-        <Accordian title={"Subdivision"} className="relative z-10" showFade="true" startOpen>
-          <InputListContainer>
-            <div className="mb-2" key="quick-search-box">
-              <TextInput
-                size="small"
-                onChange={(v) => setSubdivisionQuickSearch(v)}
-                value={subdivisionQuickSearch}
-                placeholder="Quick search"
-                aria-label="Subdivision quick search"
-              />
-            </div>
-            {alphabetisedFilteredSubdivisions.map((subdivision) => (
-              <InputCheck
-                key={subdivision.code}
-                label={subdivision.name}
-                checked={subdivisionFilters && subdivisionFilters.includes(subdivision.code)}
-                onChange={() => {
-                  handleFilterChange(QUERY_PARAMS["subdivision"], subdivision.code);
-                }}
-                name={`subdivision-${subdivision.code}`}
-              />
-            ))}
-          </InputListContainer>
-        </Accordian>
+        {subdivisions && (
+          <Accordian title={"Subdivision"} className="relative z-10" showFade="true" startOpen>
+            <InputListContainer>
+              <div className="mb-2" key="quick-search-box">
+                <TextInput
+                  size="small"
+                  onChange={(v) => setSubdivisionQuickSearch(v)}
+                  value={subdivisionQuickSearch}
+                  placeholder="Quick search"
+                  aria-label="Subdivision quick search"
+                />
+              </div>
+              {alphabetisedFilteredSubdivisions.map((subdivision) => (
+                <InputCheck
+                  key={subdivision.code}
+                  label={subdivision.name}
+                  checked={subdivisionFilters && subdivisionFilters.includes(subdivision.code)}
+                  onChange={() => {
+                    handleFilterChange(QUERY_PARAMS["subdivision"], subdivision.code);
+                  }}
+                  name={`subdivision-${subdivision.code}`}
+                />
+              ))}
+            </InputListContainer>
+          </Accordian>
+        )}
       </div>
     </div>
   );

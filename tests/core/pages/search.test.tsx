@@ -12,26 +12,28 @@ afterEach(() => {
 });
 
 describe("SearchPage", async () => {
+  const test_props = {
+    envConfig: {
+      BACKEND_API_URL: process.env.BACKEND_API_URL,
+      CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
+    },
+    theme: "cpr",
+    themeConfig: {
+      documentCategories: ["All"],
+      features: { knowledgeGraph: false, searchFamilySummary: false, litigation: true },
+      metadata: [
+        {
+          key: "search",
+          title: "Law and Policy Search",
+        },
+      ],
+    },
+    featureFlags: { litigation: true },
+  };
+
   it("filters search results by region", async () => {
-    const search_props = {
-      envConfig: {
-        BACKEND_API_URL: process.env.BACKEND_API_URL,
-        CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
-      },
-      theme: "cpr",
-      themeConfig: {
-        documentCategories: ["All"],
-        features: { knowledgeGraph: false, searchFamilySummary: false },
-        metadata: [
-          {
-            key: "search",
-            title: "Law and Policy Search",
-          },
-        ],
-      },
-    };
     // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    renderWithAppContext(Search, test_props);
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
@@ -60,25 +62,8 @@ describe("SearchPage", async () => {
   });
 
   it("filters search results by country", async () => {
-    const search_props = {
-      envConfig: {
-        BACKEND_API_URL: process.env.BACKEND_API_URL,
-        CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
-      },
-      theme: "cpr",
-      themeConfig: {
-        documentCategories: ["All"],
-        features: { knowledgeGraph: false, searchFamilySummary: false },
-        metadata: [
-          {
-            key: "search",
-            title: "Law and Policy Search",
-          },
-        ],
-      },
-    };
     // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    renderWithAppContext(Search, test_props);
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
@@ -106,25 +91,8 @@ describe("SearchPage", async () => {
   });
 
   it("filters search results by subdivision", async () => {
-    const search_props = {
-      envConfig: {
-        BACKEND_API_URL: process.env.BACKEND_API_URL,
-        CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
-      },
-      theme: "cpr",
-      themeConfig: {
-        documentCategories: ["All"],
-        features: { knowledgeGraph: false, searchFamilySummary: false },
-        metadata: [
-          {
-            key: "search",
-            title: "Law and Policy Search",
-          },
-        ],
-      },
-    };
     // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    renderWithAppContext(Search, test_props);
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
@@ -152,25 +120,8 @@ describe("SearchPage", async () => {
   });
 
   it("removes country and subdivision filters when a region filter is removed ", async () => {
-    const search_props = {
-      envConfig: {
-        BACKEND_API_URL: process.env.BACKEND_API_URL,
-        CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
-      },
-      theme: "cpr",
-      themeConfig: {
-        documentCategories: ["All"],
-        features: { knowledgeGraph: false, searchFamilySummary: false },
-        metadata: [
-          {
-            key: "search",
-            title: "Law and Policy Search",
-          },
-        ],
-      },
-    };
     // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    renderWithAppContext(Search, test_props);
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
@@ -213,25 +164,8 @@ describe("SearchPage", async () => {
   });
 
   it("removes subdivision filters when a country filter is removed", async () => {
-    const search_props = {
-      envConfig: {
-        BACKEND_API_URL: process.env.BACKEND_API_URL,
-        CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
-      },
-      theme: "cpr",
-      themeConfig: {
-        documentCategories: ["All"],
-        features: { knowledgeGraph: false, searchFamilySummary: false },
-        metadata: [
-          {
-            key: "search",
-            title: "Law and Policy Search",
-          },
-        ],
-      },
-    };
     // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    renderWithAppContext(Search, test_props);
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
@@ -264,22 +198,9 @@ describe("SearchPage", async () => {
   });
 
   it("filters search results by topic", async () => {
-    const search_props = {
-      envConfig: {
-        BACKEND_API_URL: process.env.BACKEND_API_URL,
-        CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
-      },
-      theme: "cpr",
-      themeConfig: {
-        documentCategories: ["All"],
-        features: { knowledgeGraph: true, searchFamilySummary: false },
-        metadata: [
-          {
-            key: "search",
-            title: "Law and Policy Search",
-          },
-        ],
-      },
+    // @ts-ignore
+    renderWithAppContext(Search, {
+      ...test_props,
       conceptsData: [
         {
           alternative_labels: [],
@@ -293,9 +214,7 @@ describe("SearchPage", async () => {
           wikibase_id: "1",
         },
       ],
-    };
-    // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    });
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
