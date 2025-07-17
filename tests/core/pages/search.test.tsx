@@ -151,7 +151,68 @@ describe("SearchPage", async () => {
     expect(screen.queryByRole("link", { name: "Australia Litigation Case" })).not.toBeInTheDocument();
   });
 
-  it("removing a country filter also removes the subdivision filter from applied filters", async () => {
+  it("removes country and subdivision filters when a region filter is removed ", async () => {
+    const search_props = {
+      envConfig: {
+        BACKEND_API_URL: process.env.BACKEND_API_URL,
+        CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
+      },
+      theme: "cpr",
+      themeConfig: {
+        documentCategories: ["All"],
+        features: { knowledgeGraph: false, searchFamilySummary: false },
+        metadata: [
+          {
+            key: "search",
+            title: "Law and Policy Search",
+          },
+        ],
+      },
+    };
+    // @ts-ignore
+    renderWithAppContext(Search, search_props);
+
+    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+
+    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
+    // like animations that were causing warnings in the console.
+    await act(async () => {
+      await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
+    });
+
+    expect(await screen.findByText("Region")).toBeInTheDocument();
+    expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
+    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+
+    const regionFilterOption = screen.getByRole("checkbox", { name: "East Asia & Pacific" });
+    const countryFilterOption = screen.getByRole("checkbox", { name: "Australia" });
+    const subdivisionFilterOption = screen.getByRole("checkbox", { name: "New South Wales" });
+
+    await act(async () => {
+      await userEvent.click(regionFilterOption);
+      await userEvent.click(countryFilterOption);
+      await userEvent.click(subdivisionFilterOption);
+    });
+
+    const appliedRegionFilter = screen.getByRole("button", { name: "East Asia & Pacific" });
+    const appliedCountryFilter = screen.getByRole("button", { name: "Australia" });
+    const appliedSubdivisionFilter = screen.getByRole("button", { name: "New South Wales" });
+
+    // uncheck filter for region
+    await act(async () => {
+      await userEvent.click(regionFilterOption);
+    });
+
+    expect(regionFilterOption).not.toBeChecked();
+    expect(countryFilterOption).not.toBeChecked();
+    expect(subdivisionFilterOption).not.toBeChecked();
+
+    expect(appliedRegionFilter).not.toBeInTheDocument();
+    expect(appliedCountryFilter).not.toBeInTheDocument();
+    expect(appliedSubdivisionFilter).not.toBeInTheDocument();
+  });
+
+  it("removes subdivision filters when a country filter is removed", async () => {
     const search_props = {
       envConfig: {
         BACKEND_API_URL: process.env.BACKEND_API_URL,

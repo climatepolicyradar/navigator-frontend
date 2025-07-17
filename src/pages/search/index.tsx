@@ -165,6 +165,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
     delete router.query[QUERY_PARAMS.country];
+    delete router.query[QUERY_PARAMS.subdivision];
     const query = { ...router.query };
     const regions = (query[QUERY_PARAMS.region] as string[]) || [];
 
