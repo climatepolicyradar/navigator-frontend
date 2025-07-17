@@ -149,6 +149,28 @@ describe("GeographyPicker", () => {
     expect(screen.getByRole("checkbox", { name: "Subdivision 3" })).toBeInTheDocument();
   });
 
+  it("only shows a list of subdivisions related to the selected country if both country and region are selected", async () => {
+    renderWithAppContext(GeographyPicker, {
+      ...geoPickerProps,
+      searchQuery: {
+        keyword_filters: {
+          regions: ["region-2"],
+          countries: ["country-3"],
+          subdivisions: [],
+        },
+      },
+    });
+
+    expect(await screen.findByText("Region")).toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: "Region 2" })).toBeChecked();
+
+    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+
+    expect(screen.queryByRole("checkbox", { name: "Subdivision 1" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "Subdivision 2" })).not.toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: "Subdivision 3" })).toBeInTheDocument();
+  });
+
   it("using quick search narrows down the list of country options to match what is typed", async () => {
     renderWithAppContext(GeographyPicker, {
       ...geoPickerProps,

@@ -52,7 +52,10 @@ export const GeographyPicker = ({
     .filter((geo) => geo.display_value.toLowerCase().includes(countryQuickSearch.toLowerCase()));
 
   const countryFiltersIsoCodes = alphabetisedFilteredCountries
-    .filter((country) => (regionFilters.length > 0 && countriesByRegion.includes(country)) || countryFilters.includes(country.slug))
+    .filter(
+      (country) =>
+        (regionFilters.length > 0 && countryFilters.length === 0 && countriesByRegion.includes(country)) || countryFilters.includes(country.slug)
+    )
     .map((country) => country.value);
 
   const countrySubdivisionQuery = useGeographySubdivisions(countryFiltersIsoCodes);
