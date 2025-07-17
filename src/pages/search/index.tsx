@@ -483,8 +483,14 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                   {(conceptsData || familyConceptsData || (regions && countries)) && (
                     <SlideOut showCloseButton={false}>
                       {conceptsData && currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Find mentions of topics" />}
-                      {familyConceptsData && currentSlideOut === "familyConcepts" && (
-                        <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories concepts" />
+                      {familyConceptsData && currentSlideOut === "categories" && (
+                        <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories" />
+                      )}
+                      {familyConceptsData && currentSlideOut === "principalLaws" && (
+                        <FamilyConceptPicker concepts={groupedFamilyConcepts.principal_law} title="Principle laws" />
+                      )}
+                      {familyConceptsData && currentSlideOut === "jurisdictions" && (
+                        <FamilyConceptPicker concepts={groupedFamilyConcepts.jurisdiction} title="Jurisdictions" />
                       )}
                       {regions && countries && currentSlideOut === "geographies" && (
                         <GeographyPicker
