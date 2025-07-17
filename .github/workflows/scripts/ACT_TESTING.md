@@ -2,6 +2,8 @@
 
 GitHub debugging tools for your CI woes using `act`.
 
+More information on other forms of testing in this repo can be found in our [README](../../../README.md).
+
 ## Prerequisites
 
 1. **Install act**: `brew install act` (macOS) or visit [nektos/act](https://github.com/nektos/act)
