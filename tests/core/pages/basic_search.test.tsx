@@ -22,6 +22,8 @@ const baseSearchProps = {
     ],
   },
   featureFlags: mockFeatureFlagsWithoutConcepts,
+  conceptsData: null,
+  familyConceptsData: null,
 };
 
 describe("SearchPage", async () => {
@@ -104,5 +106,45 @@ describe("SearchPage", async () => {
         "Technical analysis of the first biennial update report of Afghanistan submitted on 13 October 2019. Summary report by the team of technical experts"
       )
     ).not.toBeInTheDocument();
+  });
+
+  it("handles search settings dropdown", async () => {
+    const search_props = { ...baseSearchProps };
+    // @ts-ignore
+    renderWithAppContext(Search, search_props);
+
+    const buttons = await screen.findAllByTestId("search-options");
+    const searchOptionsButton = buttons[0]; // First button is the search options
+    expect(searchOptionsButton).toBeInTheDocument();
+
+    await act(async () => {
+      await userEvent.click(searchOptionsButton);
+    });
+
+    // Expect length of 2: 1 in the search options and one as the selected option title
+    expect(await screen.findAllByText(/Exact phrases/)).toHaveLength(2);
+
+    // Expect length of only 1 as it'll only be in the search options and won't appear again as it isn't selected
+    expect(await screen.findAllByText(/Related phrases/)).toHaveLength(1);
+  });
+
+  it("handles sort settings dropdown", async () => {
+    const search_props = { ...baseSearchProps };
+    // @ts-ignore
+    renderWithAppContext(Search, search_props);
+
+    const sortOptionsButtons = await screen.findAllByTestId("search-options");
+    const sortOptionsButton = sortOptionsButtons[1]; // Second button is the sort options
+    expect(sortOptionsButton).toBeInTheDocument();
+
+    await act(async () => {
+      await userEvent.click(sortOptionsButton);
+    });
+
+    // Expect length of 3 because we have 2 date options and 1 title option
+    expect(await screen.findAllByText(/Date:/)).toHaveLength(3);
+
+    // Expect length of 2 because we have 2 title options and Date is selected by default
+    expect(await screen.findAllByText(/Title:/)).toHaveLength(2);
   });
 });
