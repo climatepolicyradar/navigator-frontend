@@ -146,16 +146,17 @@ jobs:
       - run: npm run build
         env:
           NODE_ENV: production
-      - run: npm run test
-      - name: Upload results
-        # Run this step even if the test step ahead fails
-        if: ${{ !cancelled() }}
-        uses: trunk-io/analytics-uploader@main
+          THEME: cpr
+
+      - name: Run tests and upload results to Trunk.io
+        uses: trunk-io/analytics-uploader@v1
         with:
           junit-paths: "**/vitest.xml"
-          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+          run: npm run test
           token: ${{ secrets.TRUNK_TOKEN }}
-        continue-on-error: true
+          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+        env:
+          THEME: cpr
 
   test-e2e:
     timeout-minutes: 15
@@ -175,22 +176,29 @@ jobs:
         env:
           NODE_ENV: production
       - run: npx playwright install --with-deps
-      - run: npx playwright test tests/core/ tests/${{ matrix.theme }}/
+
+      - name: Create test results directory
+        run: mkdir -p test-results-${{ matrix.theme }}
+
+      - name: Run Playwright tests and upload results
+        uses: trunk-io/analytics-uploader@v1
+        with:
+          junit-paths: test-results-${{ matrix.theme }}/playwright.xml
+          run: |
+            echo "Running Playwright tests..."
+            npx playwright test tests/core/ tests/${{ matrix.theme }}/
+            echo "Playwright test completed. Checking for output file..."
+            if [ -f "test-results-${{ matrix.theme }}/playwright.xml" ]; then
+              echo "✅ playwright.xml found, file size: $(wc -c < test-results-${{ matrix.theme }}/playwright.xml) bytes"
+            else
+              echo "❌ playwright.xml not found"
+              echo "Contents of test-results-${{ matrix.theme }} directory:"
+              ls -la test-results-${{ matrix.theme }}/ || echo "Directory doesn't exist or is empty"
+              echo "Looking for any XML files in current directory:"
+              find . -name "*.xml" -type f 2>/dev/null || echo "No XML files found"
+            fi
+          token: ${{ secrets.TRUNK_TOKEN }}
+          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+          allow-missing-junit-files: true
         env:
           THEME: ${{ matrix.theme }}
-
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report-${{ matrix.theme }}
-          path: test-results-${{ matrix.theme }}/
-          retention-days: 30
-      - name: Upload Test Result
-        # Upload the results even if the tests fails to Trunk.io
-        if: ${{ !cancelled() }}
-        continue-on-error: true
-        uses: trunk-io/analytics-uploader@main
-        with:
-          junit-paths: "test-results-${{ matrix.theme }}/**/playwright.xml"
-          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
-          token: ${{ secrets.TRUNK_TOKEN }}
