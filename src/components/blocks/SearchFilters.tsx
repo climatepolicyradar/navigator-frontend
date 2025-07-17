@@ -144,19 +144,44 @@ const SearchFilters = ({
         <>
           <button
             className="items-center justify-between cursor-pointer group flex"
-            onClick={() => setCurrentSlideOut(currentSlideOut === "familyConcepts" ? "" : "familyConcepts")}
-            data-cy="familyConcepts-control"
-            {...{ [SLIDE_OUT_DATA_KEY]: "familyConcepts" }}
+            onClick={() => setCurrentSlideOut(currentSlideOut === "categories" ? "" : "categories")}
+            data-cy="categories-control"
+            {...{ [SLIDE_OUT_DATA_KEY]: "categories" }}
           >
-            <Heading>
-              Family concepts
-              <Badge size="small" className="ml-2">
-                Beta
-              </Badge>
-            </Heading>
+            <Heading>Case categories</Heading>
             <span
               className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
-                currentSlideOut === "familyConcepts" ? "transform rotate-180" : ""
+                currentSlideOut === "categories" ? "transform rotate-180" : ""
+              }`}
+            >
+              <ChevronRight />
+            </span>
+          </button>
+          <button
+            className="items-center justify-between cursor-pointer group flex"
+            onClick={() => setCurrentSlideOut(currentSlideOut === "principalLaws" ? "" : "principalLaws")}
+            data-cy="principalLaws-control"
+            {...{ [SLIDE_OUT_DATA_KEY]: "principalLaws" }}
+          >
+            <Heading>Principle laws</Heading>
+            <span
+              className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
+                currentSlideOut === "principalLaws" ? "transform rotate-180" : ""
+              }`}
+            >
+              <ChevronRight />
+            </span>
+          </button>
+          <button
+            className="items-center justify-between cursor-pointer group flex"
+            onClick={() => setCurrentSlideOut(currentSlideOut === "jurisdictions" ? "" : "jurisdictions")}
+            data-cy="jurisdictions-control"
+            {...{ [SLIDE_OUT_DATA_KEY]: "jurisdictions" }}
+          >
+            <Heading>Jusrisdictions</Heading>
+            <span
+              className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
+                currentSlideOut === "jurisdictions" ? "transform rotate-180" : ""
               }`}
             >
               <ChevronRight />

@@ -42,7 +42,7 @@ import useSearch from "@/hooks/useSearch";
 import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isFamilyConceptsSearchEnabled, isKnowledgeGraphEnabled } from "@/utils/features";
+import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
 import { getFilterLabel } from "@/utils/getFilterLabel";
@@ -478,8 +478,14 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                   {(conceptsData || familyConceptsData || (regions && countries)) && (
                     <SlideOut showCloseButton={false}>
                       {conceptsData && currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Find mentions of topics" />}
-                      {familyConceptsData && currentSlideOut === "familyConcepts" && (
-                        <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories concepts" />
+                      {familyConceptsData && currentSlideOut === "categories" && (
+                        <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories" />
+                      )}
+                      {familyConceptsData && currentSlideOut === "principalLaws" && (
+                        <FamilyConceptPicker concepts={groupedFamilyConcepts.principal_law} title="Principle laws" />
+                      )}
+                      {familyConceptsData && currentSlideOut === "jurisdictions" && (
+                        <FamilyConceptPicker concepts={groupedFamilyConcepts.jurisdiction} title="Jurisdictions" />
                       )}
                       {regions && countries && currentSlideOut === "geographies" && (
                         <GeographyPicker
@@ -734,7 +740,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   // TODO: Next - start rendering this data
   let familyConceptsData: TConcept[] | undefined;
-  if (isFamilyConceptsSearchEnabled(themeConfig)) {
+  if (isLitigationEnabled(featureFlags, themeConfig)) {
     try {
       const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts`);
       const familyConceptsJson: { data: FamilyConcept[] } = await familyConceptsResponse.json();
