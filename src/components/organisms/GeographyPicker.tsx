@@ -59,8 +59,7 @@ export const GeographyPicker = ({
     )
     .map((country) => country.value);
 
-  const countrySubdivisionQuery = useGeographySubdivisions(countryFiltersIsoCodes);
-  const { data: countrySubdivisionsData = [] } = countrySubdivisionQuery;
+  const { data: countrySubdivisionsData = [] } = useGeographySubdivisions(countryFiltersIsoCodes);
 
   const subdivisionQuery = useSubdivisions();
   const { data: subdivisionsData = [] } = subdivisionQuery;
