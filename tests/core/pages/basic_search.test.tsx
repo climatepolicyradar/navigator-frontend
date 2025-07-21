@@ -1,10 +1,16 @@
-import { act, screen, within } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import router from "next-router-mock";
 
-import { mockFeatureFlagsWithoutConcepts } from "@/mocks/featureFlags";
+import { createFeatureFlags, mockFeatureFlagsWithoutConcepts } from "@/mocks/featureFlags";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import Search from "@/pages/search";
+
+afterEach(() => {
+  // clear router state between tests
+  // we store query params in the router state so this resets everything
+  router.reset();
+});
 
 const baseSearchProps = {
   envConfig: {
@@ -14,7 +20,7 @@ const baseSearchProps = {
   theme: "cpr",
   themeConfig: {
     documentCategories: ["All"],
-    features: { knowledgeGraph: false, searchFamilySummary: false },
+    features: { knowledgeGraph: false, searchFamilySummary: false, litigation: true },
     metadata: [
       {
         key: "search",
@@ -22,7 +28,10 @@ const baseSearchProps = {
       },
     ],
   },
-  featureFlags: mockFeatureFlagsWithoutConcepts,
+  featureFlags: createFeatureFlags({
+    "concepts-v1": false,
+    litigation: true,
+  }),
   conceptsData: null,
   familyConceptsData: null,
 };
@@ -46,68 +55,6 @@ describe("SearchPage", async () => {
 
     expect(screen.queryByText(/Get better results/)).not.toBeInTheDocument();
     expect(screen.queryByText(/You are currently viewing all of the documents in our database/)).not.toBeInTheDocument();
-  });
-
-  it("filters search results by country", async () => {
-    const search_props = { ...baseSearchProps };
-    // @ts-ignore
-    renderWithAppContext(Search, search_props);
-
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
-
-    const geographyFilterControl = await screen.findByRole("button", { name: /Geography/ });
-
-    expect(geographyFilterControl).toBeInTheDocument();
-    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
-    // like animations that were causing warnings in the console.
-    await act(async () => {
-      await userEvent.click(geographyFilterControl);
-    });
-
-    expect(await screen.findByText(/Published jurisdiction/i));
-
-    await act(async () => {
-      await userEvent.click(await screen.findByRole("checkbox", { name: "Belize" }));
-    });
-
-    const countryOptions = within(screen.getByTestId("countries")).getAllByRole("checkbox");
-    expect(countryOptions).toHaveLength(9);
-
-    expect(await screen.findByText("Results")).toBeInTheDocument();
-    expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeInTheDocument();
-    expect(screen.queryByText("Argentina Biennial Transparency Report. BTR1")).not.toBeInTheDocument();
-  });
-
-  it("filters search results by region", async () => {
-    const search_props = { ...baseSearchProps };
-    // @ts-ignore
-    renderWithAppContext(Search, search_props);
-
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
-
-    const geographyFilterControl = await screen.findByRole("button", { name: /Geography/ });
-
-    expect(geographyFilterControl).toBeInTheDocument();
-    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
-    // like animations that were causing warnings in the console.
-    await act(async () => {
-      await userEvent.click(geographyFilterControl);
-    });
-
-    expect(await screen.findByText(/Region/i)).toBeInTheDocument();
-
-    await act(async () => {
-      await userEvent.click(await screen.findByRole("checkbox", { name: "Latin America & Caribbean" }));
-    });
-
-    expect(await screen.findByText("Results")).toBeInTheDocument();
-    expect(screen.getByText("Argentina Biennial Transparency Report. BTR1")).toBeInTheDocument();
-    expect(screen.getByText("Belize Nationally Determined Contribution. NDC3 (Update)")).toBeInTheDocument();
-    expect(
-      screen.queryByText(
-        "Technical analysis of the first biennial update report of Afghanistan submitted on 13 October 2019. Summary report by the team of technical experts"
-      )
-    ).not.toBeInTheDocument();
   });
 
   it("handles search settings dropdown", async () => {
@@ -144,9 +91,219 @@ describe("SearchPage", async () => {
     });
 
     // Expect length of 3 because we have 2 date options and 1 title option
-    expect(await screen.findAllByText(/Date:/)).toHaveLength(2);
+    expect(await screen.findAllByText(/Date:/)).toHaveLength(3);
 
     // Expect length of 2 because we have 2 title options and Date is selected by default
     expect(await screen.findAllByText(/Title:/)).toHaveLength(2);
+  });
+
+  it("filters search results by region", async () => {
+    // @ts-ignore
+    renderWithAppContext(Search, baseSearchProps);
+
+    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+
+    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
+    // like animations that were causing warnings in the console.
+    await act(async () => {
+      await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
+    });
+
+    expect(await screen.findByText("Region")).toBeInTheDocument();
+
+    const regionFilterOption = await screen.findByRole("checkbox", { name: "Latin America & Caribbean" });
+
+    await act(async () => {
+      await userEvent.click(regionFilterOption);
+    });
+
+    expect(regionFilterOption).toBeChecked();
+    // check for applied filter button
+    expect(screen.getByRole("button", { name: "Latin America & Caribbean" })).toBeInTheDocument();
+
+    expect(await screen.findByText("Results")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Argentina Report" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Belize NDC" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Afghanistan report" })).not.toBeInTheDocument();
+  });
+
+  it("filters search results by country", async () => {
+    // @ts-ignore
+    renderWithAppContext(Search, baseSearchProps);
+
+    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+
+    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
+    // like animations that were causing warnings in the console.
+    await act(async () => {
+      await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
+    });
+
+    expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
+
+    const countryOption = await screen.findByRole("checkbox", { name: "Belize" });
+
+    await act(async () => {
+      await userEvent.click(countryOption);
+    });
+
+    expect(countryOption).toBeChecked();
+    // check for applied filter button
+    expect(screen.getByRole("button", { name: "Belize" })).toBeInTheDocument();
+
+    expect(await screen.findByText("Results")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Belize NDC" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Argentina Report" })).not.toBeInTheDocument();
+  });
+
+  it("filters search results by subdivision", async () => {
+    // @ts-ignore
+    renderWithAppContext(Search, baseSearchProps);
+
+    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+
+    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
+    // like animations that were causing warnings in the console.
+    await act(async () => {
+      await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
+    });
+
+    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+
+    const subdivisionOption = await screen.findByRole("checkbox", { name: "New South Wales" });
+
+    await act(async () => {
+      await userEvent.click(subdivisionOption);
+    });
+
+    expect(subdivisionOption).toBeChecked();
+    // check for applied filter button
+    expect(screen.getByRole("button", { name: "New South Wales" })).toBeInTheDocument();
+
+    expect(await screen.findByText("Results")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "New South Wales Litigation Case" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Australia Litigation Case" })).not.toBeInTheDocument();
+  });
+
+  it("removes country and subdivision filters when a region filter is removed ", async () => {
+    // @ts-ignore
+    renderWithAppContext(Search, baseSearchProps);
+
+    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+
+    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
+    // like animations that were causing warnings in the console.
+    await act(async () => {
+      await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
+    });
+
+    expect(await screen.findByText("Region")).toBeInTheDocument();
+    expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
+    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+
+    const regionFilterOption = screen.getByRole("checkbox", { name: "East Asia & Pacific" });
+    const countryFilterOption = screen.getByRole("checkbox", { name: "Australia" });
+    const subdivisionFilterOption = screen.getByRole("checkbox", { name: "New South Wales" });
+
+    await act(async () => {
+      await userEvent.click(regionFilterOption);
+      await userEvent.click(countryFilterOption);
+      await userEvent.click(subdivisionFilterOption);
+    });
+
+    const appliedRegionFilter = screen.getByRole("button", { name: "East Asia & Pacific" });
+    const appliedCountryFilter = screen.getByRole("button", { name: "Australia" });
+    const appliedSubdivisionFilter = screen.getByRole("button", { name: "New South Wales" });
+
+    // uncheck filter for region
+    await act(async () => {
+      await userEvent.click(regionFilterOption);
+    });
+
+    expect(regionFilterOption).not.toBeChecked();
+    expect(countryFilterOption).not.toBeChecked();
+    expect(subdivisionFilterOption).not.toBeChecked();
+
+    expect(appliedRegionFilter).not.toBeInTheDocument();
+    expect(appliedCountryFilter).not.toBeInTheDocument();
+    expect(appliedSubdivisionFilter).not.toBeInTheDocument();
+  });
+
+  it("removes subdivision filters when a country filter is removed", async () => {
+    // @ts-ignore
+    renderWithAppContext(Search, baseSearchProps);
+
+    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+
+    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
+    // like animations that were causing warnings in the console.
+    await act(async () => {
+      await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
+    });
+
+    expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
+    await act(async () => {
+      await userEvent.click(await screen.findByRole("checkbox", { name: "Australia" }));
+    });
+
+    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+    await act(async () => {
+      await userEvent.click(await screen.findByRole("checkbox", { name: "New South Wales" }));
+    });
+
+    const countryFilter = screen.getByRole("button", { name: "Australia" });
+    const subdivisionFilter = screen.getByRole("button", { name: "New South Wales" });
+
+    // remove applied filter for country
+    await act(async () => {
+      await userEvent.click(countryFilter);
+    });
+
+    expect(countryFilter).not.toBeInTheDocument();
+    expect(subdivisionFilter).not.toBeInTheDocument();
+  });
+
+  it("filters search results by topic", async () => {
+    // @ts-ignore
+    renderWithAppContext(Search, {
+      ...baseSearchProps,
+      conceptsData: [
+        {
+          alternative_labels: [],
+          description: "test concept 1",
+          has_subconcept: [],
+          negative_labels: [],
+          preferred_label: "child topic 1",
+          recursive_subconcept_of: [],
+          related_concepts: [],
+          subconcept_of: [],
+          wikibase_id: "1",
+        },
+      ],
+    });
+
+    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+
+    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
+    // like animations that were causing warnings in the console.
+    await act(async () => {
+      await userEvent.click(await screen.findByRole("button", { name: "Topics Beta" }));
+    });
+
+    expect(await screen.findByText("Find mentions of topics")).toBeInTheDocument();
+    expect(screen.getByText("Parent topic")).toBeInTheDocument();
+
+    const topicOption = screen.getByRole("checkbox", { name: "Child topic 1" });
+
+    await act(async () => {
+      await userEvent.click(topicOption);
+    });
+
+    expect(topicOption).toBeChecked();
+    // check for applied filter button
+    expect(screen.getByRole("button", { name: "Child topic 1" }));
+
+    expect(screen.getByRole("link", { name: "Family with topic 1" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Family with topic 2" })).not.toBeInTheDocument();
   });
 });
