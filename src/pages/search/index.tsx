@@ -90,7 +90,7 @@ const showCorporateDisclosuresInformation = (query: ParsedUrlQuery) => {
 };
 
 // Show search onboarding if no search or filters are applied
-const showSearchOboarding = (query: ParsedUrlQuery) => {
+const showSearchOnboarding = (query: ParsedUrlQuery) => {
   // Some query params are for sorting, ordering or pagination, do not count them as applied filters
   const appliedQueryKeys = Object.keys(query).filter(
     (key) =>
@@ -655,23 +655,29 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                             </p>
                           </Warning>
                         )}
-                        {showSearchOboarding(router.query) && (
+                        {showSearchOnboarding(router.query) && (
                           <Warning variant="info" hideableId="search-onboarding-info">
                             <p className="font-semibold text-text-brand">Get better results</p>
                             <p>
                               You are currently viewing all of the documents in our database. Narrow your search by document type, geography, date,
-                              and more. You can also use the AI-supported{" "}
-                              <a
-                                className="underline hover:text-blue-800"
-                                href="#"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setCurrentSlideOut("concepts");
-                                }}
-                              >
-                                Topics filter
-                              </a>{" "}
-                              to help refine your search.
+                              and more.
+                              {isKnowledgeGraphEnabled(featureFlags, themeConfig) && (
+                                <>
+                                  {" "}
+                                  You can also use the AI-supported{" "}
+                                  <a
+                                    className="underline hover:text-blue-800"
+                                    href="#"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setCurrentSlideOut("concepts");
+                                    }}
+                                  >
+                                    Topics filter
+                                  </a>{" "}
+                                  to help refine your search.
+                                </>
+                              )}
                             </p>
                           </Warning>
                         )}
