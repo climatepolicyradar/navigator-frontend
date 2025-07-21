@@ -6,6 +6,12 @@ import { mockFeatureFlagsWithConcepts } from "@/mocks/featureFlags";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import Search from "@/pages/search";
 
+afterEach(() => {
+  // clear router state between tests
+  // we store query params in the router state so this resets everything
+  router.reset();
+});
+
 const baseSearchProps = {
   envConfig: {
     BACKEND_API_URL: process.env.BACKEND_API_URL,
@@ -47,7 +53,8 @@ describe("SearchPage", async () => {
   });
 
   it("filters search results by topic", async () => {
-    const search_props = {
+    // @ts-ignore
+    renderWithAppContext(Search, {
       ...baseSearchProps,
       conceptsData: [
         {
@@ -62,29 +69,28 @@ describe("SearchPage", async () => {
           wikibase_id: "1",
         },
       ],
-    };
-    // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    });
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
-    const topicsFilterControl = await screen.findByRole("button", { name: /Topics/ });
-
-    expect(topicsFilterControl).toBeInTheDocument();
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
     // like animations that were causing warnings in the console.
     await act(async () => {
-      await userEvent.click(topicsFilterControl);
+      await userEvent.click(await screen.findByRole("button", { name: "Topics Beta" }));
     });
 
-    expect(await screen.findByText(/Find mentions of topics/i));
+    expect(await screen.findByText("Find mentions of topics")).toBeInTheDocument();
+    expect(screen.getByText("Parent topic")).toBeInTheDocument();
 
-    expect(screen.getByText(/Parent topic/)).toBeInTheDocument();
-    const topic = screen.getByRole("checkbox", { name: "Child topic 1" });
+    const topicOption = screen.getByRole("checkbox", { name: "Child topic 1" });
 
     await act(async () => {
-      await userEvent.click(topic);
+      await userEvent.click(topicOption);
     });
+
+    expect(topicOption).toBeChecked();
+    // check for applied filter button
+    expect(screen.getByRole("button", { name: "Child topic 1" }));
 
     expect(screen.getByRole("link", { name: "Family with topic 1" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Family with topic 2" })).not.toBeInTheDocument();
