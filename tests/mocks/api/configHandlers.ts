@@ -57,7 +57,7 @@ export const configHandlers = [
                 slug: "france",
                 display_value: "France",
                 value: "france",
-                type: "country",
+                type: "ISO-3166",
                 parent_id: 1,
               },
               // Subdivisions
@@ -69,7 +69,7 @@ export const configHandlers = [
                 slug: "spain",
                 display_value: "Spain",
                 value: "spain",
-                type: "country",
+                type: "ISO-3166",
                 parent_id: 1,
               },
               // Subdivisions
@@ -93,7 +93,7 @@ export const configHandlers = [
                 slug: "south-africa",
                 display_value: "South Africa",
                 value: "south-africa",
-                type: "country",
+                type: "ISO-3166",
                 parent_id: 4,
               },
               // Subdivisions
@@ -105,7 +105,7 @@ export const configHandlers = [
                 slug: "central-african-republic",
                 display_value: "Central African Republic",
                 value: "central-african-republic",
-                type: "country",
+                type: "ISO-3166",
                 parent_id: 4,
               },
               // Subdivisions
@@ -117,7 +117,7 @@ export const configHandlers = [
                 slug: "sudan",
                 display_value: "Sudan",
                 value: "sudan",
-                type: "country",
+                type: "ISO-3166",
                 parent_id: 4,
               },
               // Subdivisions
@@ -129,7 +129,7 @@ export const configHandlers = [
                 slug: "south-sudan",
                 display_value: "South Sudan",
                 value: "south-sudan",
-                type: "country",
+                type: "ISO-3166",
                 parent_id: 4,
               },
               // Subdivisions
@@ -139,7 +139,7 @@ export const configHandlers = [
         },
         {
           node: {
-            id: 3,
+            id: 9,
             display_value: "Latin America & Caribbean",
             slug: "latin-america-caribbean",
             value: "Latin America & Caribbean",
@@ -149,23 +149,23 @@ export const configHandlers = [
           children: [
             {
               node: {
-                id: 4,
+                id: 10,
                 display_value: "Belize",
                 slug: "belize",
                 type: "ISO-3166",
                 value: "BLZ",
-                parent_id: 3,
+                parent_id: 9,
               },
               children: [],
             },
             {
               node: {
-                id: 140,
+                id: 11,
                 display_value: "Argentina",
                 slug: "argentina",
                 value: "ARG",
                 type: "ISO-3166",
-                parent_id: 138,
+                parent_id: 9,
               },
               // Subdivisions
               children: [],
@@ -184,7 +184,7 @@ export const configHandlers = [
           children: [
             {
               node: {
-                id: 2,
+                id: 13,
                 display_value: "Australia",
                 slug: "australia",
                 value: "AUS",
@@ -197,7 +197,7 @@ export const configHandlers = [
         },
         {
           node: {
-            id: 2,
+            id: 14,
             display_value: "South Asia",
             slug: "south-asia",
             value: "South Asia",
@@ -207,12 +207,12 @@ export const configHandlers = [
           children: [
             {
               node: {
-                id: 3,
+                id: 15,
                 display_value: "Afghanistan",
                 slug: "afghanistan",
                 value: "AFG",
                 type: "ISO-3166",
-                parent_id: 2,
+                parent_id: 14,
               },
               children: [],
             },
