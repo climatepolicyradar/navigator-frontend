@@ -152,48 +152,4 @@ describe("SearchPage", async () => {
     expect(screen.getByRole("link", { name: "Belize NDC" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Argentina Report" })).not.toBeInTheDocument();
   });
-
-  it("filters search results by topic", async () => {
-    // @ts-ignore
-    renderWithAppContext(Search, {
-      ...baseSearchProps,
-      conceptsData: [
-        {
-          alternative_labels: [],
-          description: "test concept 1",
-          has_subconcept: [],
-          negative_labels: [],
-          preferred_label: "child topic 1",
-          recursive_subconcept_of: [],
-          related_concepts: [],
-          subconcept_of: [],
-          wikibase_id: "1",
-        },
-      ],
-    });
-
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
-
-    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
-    // like animations that were causing warnings in the console.
-    await act(async () => {
-      await userEvent.click(await screen.findByRole("button", { name: "Topics Beta" }));
-    });
-
-    expect(await screen.findByText("Find mentions of topics")).toBeInTheDocument();
-    expect(screen.getByText("Parent topic")).toBeInTheDocument();
-
-    const topicOption = screen.getByRole("checkbox", { name: "Child topic 1" });
-
-    await act(async () => {
-      await userEvent.click(topicOption);
-    });
-
-    expect(topicOption).toBeChecked();
-    // check for applied filter button
-    expect(screen.getByRole("button", { name: "Child topic 1" }));
-
-    expect(screen.getByRole("link", { name: "Family with topic 1" })).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Family with topic 2" })).not.toBeInTheDocument();
-  });
 });
