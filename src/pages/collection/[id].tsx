@@ -1,9 +1,11 @@
 import { GetServerSideProps, InferGetStaticPropsType } from "next";
+import { useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { Columns } from "@/components/atoms/columns/Columns";
 import Layout from "@/components/layouts/Main";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
+import { IPageHeaderTab, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { TCollection, TTheme, TThemeConfig } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -16,9 +18,24 @@ interface IProps {
   themeConfig: TThemeConfig;
 }
 
+type TCollectionTab = "about" | "cases" | "events";
+const COLLECTION_TABS: IPageHeaderTab<TCollectionTab>[] = [{ tab: "cases" }, { tab: "events" }, { tab: "about" }];
+
 const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ collection, theme, themeConfig }: IProps) => {
+  const [currentTab, setCurrentTab] = useState<TCollectionTab>("cases");
+
+  const onTabChange = (tab: TCollectionTab) => setCurrentTab(tab);
+
   return (
     <Layout title={collection.title} description={collection.description} theme={theme} themeConfig={themeConfig} metadataKey="collection">
+      <PageHeader<TCollectionTab>
+        coloured
+        label="Collection"
+        title={collection.title}
+        tabs={COLLECTION_TABS}
+        currentTab={currentTab}
+        onTabChange={onTabChange}
+      />
       <Columns>
         <ContentsSideBar items={[]} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
         <main className="py-3 cols-2:py-6 cols-3:py-8 cols-3:col-span-2 cols-4:col-span-3">
