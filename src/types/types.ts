@@ -4,6 +4,7 @@ export type TSearchKeywordFilters = {
   categories?: string[];
   regions?: string[];
   countries?: string[];
+  subdivisions?: string[];
 };
 
 export type TSearchConceptFilters = {
@@ -59,6 +60,14 @@ export type TGeography = {
   type: string;
   parent_id: number | null;
   slug: string;
+};
+
+export type TGeographySubdivision = {
+  code: string;
+  name: string;
+  type: string;
+  country_alpha_2: string;
+  country_alpha_3: string;
 };
 
 export type TTarget = {

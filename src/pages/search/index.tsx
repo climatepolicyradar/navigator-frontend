@@ -184,6 +184,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
     delete router.query[QUERY_PARAMS.country];
+    delete router.query[QUERY_PARAMS.subdivision];
     const query = { ...router.query };
     const regions = (query[QUERY_PARAMS.region] as string[]) || [];
 
@@ -244,6 +245,10 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
       } else {
         queryCollection.push(value);
       }
+    }
+    // If we are removing a country, clear non-applicable subdivisions
+    if (type === QUERY_PARAMS.country) {
+      delete router.query[QUERY_PARAMS.subdivision];
     }
 
     // If we are changing the fund or func document type for MCFs, clear non-applicable filters
@@ -496,6 +501,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           countries={countries}
                           regionFilterLabel={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
                           countryFilterLabel={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
+                          litigationEnabled={isLitigationEnabled(featureFlags, themeConfig)}
                         />
                       )}
                     </SlideOut>

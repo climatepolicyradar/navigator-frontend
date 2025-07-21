@@ -57,7 +57,7 @@ export const configHandlers = [
                 slug: "france",
                 display_value: "France",
                 value: "france",
-                type: "country",
+                type: "ISO-3166",
                 parent_id: 1,
               },
               // Subdivisions
@@ -69,7 +69,7 @@ export const configHandlers = [
                 slug: "spain",
                 display_value: "Spain",
                 value: "spain",
-                type: "country",
+                type: "ISO-3166",
                 parent_id: 1,
               },
               // Subdivisions
@@ -93,7 +93,7 @@ export const configHandlers = [
                 slug: "south-africa",
                 display_value: "South Africa",
                 value: "south-africa",
-                type: "country",
+                type: "ISO-3166",
                 parent_id: 4,
               },
               // Subdivisions
@@ -105,7 +105,7 @@ export const configHandlers = [
                 slug: "central-african-republic",
                 display_value: "Central African Republic",
                 value: "central-african-republic",
-                type: "country",
+                type: "ISO-3166",
                 parent_id: 4,
               },
               // Subdivisions
@@ -117,7 +117,7 @@ export const configHandlers = [
                 slug: "sudan",
                 display_value: "Sudan",
                 value: "sudan",
-                type: "country",
+                type: "ISO-3166",
                 parent_id: 4,
               },
               // Subdivisions
@@ -129,7 +129,7 @@ export const configHandlers = [
                 slug: "south-sudan",
                 display_value: "South Sudan",
                 value: "south-sudan",
-                type: "country",
+                type: "ISO-3166",
                 parent_id: 4,
               },
               // Subdivisions
@@ -142,8 +142,8 @@ export const configHandlers = [
             id: 9,
             display_value: "Latin America & Caribbean",
             slug: "latin-america-caribbean",
-            type: "World Bank Region",
             value: "Latin America & Caribbean",
+            type: "World Bank Region",
             parent_id: null,
           },
           children: [
@@ -151,12 +151,11 @@ export const configHandlers = [
               node: {
                 id: 10,
                 display_value: "Belize",
-                slug: "BLZ",
-                type: "country",
-                value: "Belize",
+                slug: "belize",
+                type: "ISO-3166",
+                value: "BLZ",
                 parent_id: 9,
               },
-              // Subdivisions
               children: [],
             },
             {
@@ -176,6 +175,29 @@ export const configHandlers = [
         {
           node: {
             id: 12,
+            display_value: "East Asia & Pacific",
+            slug: "east-asia-pacific",
+            value: "East Asia & Pacific",
+            type: "World Bank Region",
+            parent_id: null,
+          },
+          children: [
+            {
+              node: {
+                id: 13,
+                display_value: "Australia",
+                slug: "australia",
+                value: "AUS",
+                type: "ISO-3166",
+                parent_id: 12,
+              },
+              children: [],
+            },
+          ],
+        },
+        {
+          node: {
+            id: 14,
             display_value: "South Asia",
             slug: "south-asia",
             value: "South Asia",
@@ -185,14 +207,13 @@ export const configHandlers = [
           children: [
             {
               node: {
-                id: 13,
+                id: 15,
                 display_value: "Afghanistan",
                 slug: "afghanistan",
                 value: "AFG",
                 type: "ISO-3166",
-                parent_id: 12,
+                parent_id: 14,
               },
-              // Subdivisions
               children: [],
             },
           ],
