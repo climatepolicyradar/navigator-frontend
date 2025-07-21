@@ -149,4 +149,47 @@ describe("SearchPage", async () => {
     // Expect length of 2 because we have 2 title options and Date is selected by default
     expect(await screen.findAllByText(/Title:/)).toHaveLength(2);
   });
+
+  it("handles applied filter removal", async () => {
+    const search_props = { ...baseSearchProps };
+    router.query = { q: "climate", c: "laws", l: "spain" };
+    // @ts-ignore
+    renderWithAppContext(Search, search_props);
+
+    // Wait for the applied filters to appear
+    const appliedFilters = await screen.findByTestId("applied-filters");
+    expect(appliedFilters).toBeInTheDocument();
+
+    // Find the country filter pill and click it to remove
+    const countryFilterPill = screen.getByText("Spain");
+    expect(countryFilterPill).toBeInTheDocument();
+
+    await act(async () => {
+      await userEvent.click(countryFilterPill);
+    });
+
+    // Verify the country filter was removed
+    expect(screen.queryByText("Spain")).not.toBeInTheDocument();
+  });
+
+  it("clears all applied filters", async () => {
+    const search_props = { ...baseSearchProps, searchParams: { q: "climate", c: "laws", l: "spain" } };
+    router.query = { q: "climate", c: "laws", l: "spain" };
+    // @ts-ignore
+    renderWithAppContext(Search, search_props);
+
+    // Wait for the search results to load first
+    await screen.findByRole("heading", { level: 2, name: "Search results" });
+
+    // Wait for the clear all button to appear
+    const clearAllFiltersButton = await screen.findByText((content, element) => element?.textContent?.replace(/\s+/g, " ").includes("Clear all"));
+    expect(clearAllFiltersButton).toBeInTheDocument();
+
+    await act(async () => {
+      await userEvent.click(clearAllFiltersButton);
+    });
+
+    // Verify all filters were cleared by checking the applied filters container is gone
+    expect(screen.queryByTestId("applied-filters")).not.toBeInTheDocument();
+  });
 });
