@@ -7,7 +7,7 @@ export const ROOT_LEVEL_CONCEPTS = {
   Q975: "Climate risk",
   Q638: "Fossil fuels",
   Q672: "Impacted groups",
-  Q1343: "Climate foooinance",
+  Q1343: "Climate finance",
   Q1171: "Instruments",
   Q218: "Greenhouse gases",
   Q1367: "Public finance actors",

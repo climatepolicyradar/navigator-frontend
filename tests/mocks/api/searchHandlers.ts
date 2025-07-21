@@ -4,19 +4,10 @@ import { getFilteredFamilies } from "@/mocks/repository";
 import { TSearchCriteria } from "@/types";
 
 export const searchHandlers = [
-  http.options("*/searches", () => {
-    return new HttpResponse("", {
-      status: 200,
-      headers: {
-        "access-control-allow-methods": "DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT",
-      },
-    });
-  }),
   http.post("*/searches", async ({ request }) => {
     const body = (await request.json()) as TSearchCriteria;
 
-    const filteredFamilies = getFilteredFamilies(body.keyword_filters);
-
+    const filteredFamilies = getFilteredFamilies(body.keyword_filters, body.concept_filters);
     return HttpResponse.json({
       hits: 2,
       total_family_hits: 2,

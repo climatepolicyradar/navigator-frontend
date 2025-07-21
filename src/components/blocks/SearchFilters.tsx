@@ -1,7 +1,7 @@
 import { ParsedUrlQuery } from "querystring";
 
 import { ChevronRight } from "lucide-react";
-import { useEffect, useState, useMemo, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 
 import Loader from "@/components/Loader";
 import { Accordian } from "@/components/accordian/Accordian";
@@ -11,17 +11,14 @@ import { FilterOptions } from "@/components/blocks/FilterOptions";
 import { AppliedFilters } from "@/components/filters/AppliedFilters";
 import { DateRange } from "@/components/filters/DateRange";
 import { InputListContainer } from "@/components/filters/InputListContainer";
-import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
-import { TypeAhead } from "@/components/forms/TypeAhead";
 import { Info } from "@/components/molecules/info/Info";
 import { SLIDE_OUT_DATA_KEY } from "@/constants/dataAttributes";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { currentYear, minYear } from "@/constants/timedate";
 import { SlideOutContext } from "@/context/SlideOutContext";
-import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TGeography, TSearchCriteria, TThemeConfigOption } from "@/types";
+import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TSearchCriteria, TThemeConfigOption } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
 import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { getFilterLabel } from "@/utils/getFilterLabel";
@@ -41,14 +38,11 @@ const isCategoryChecked = (selectedCategory: string | undefined, themeConfigCate
 interface IProps {
   searchCriteria: TSearchCriteria;
   query: ParsedUrlQuery;
-  regions: TGeography[];
-  countries: TGeography[];
   corpus_types: TCorpusTypeDictionary;
   conceptsData?: TConcept[];
   familyConceptsData?: TConcept[];
   handleFilterChange(type: string, value: string, clearOthersOfType?: boolean): void;
   handleYearChange(values: string[], reset?: boolean): void;
-  handleRegionChange(region: string): void;
   handleClearSearch(): void;
   handleDocumentCategoryClick(value: string): void;
   featureFlags: TFeatureFlags;
@@ -57,14 +51,11 @@ interface IProps {
 const SearchFilters = ({
   searchCriteria,
   query,
-  regions,
-  countries,
   corpus_types,
   conceptsData,
   familyConceptsData,
   handleFilterChange,
   handleYearChange,
-  handleRegionChange,
   handleClearSearch,
   handleDocumentCategoryClick,
   featureFlags,
@@ -73,22 +64,7 @@ const SearchFilters = ({
   const [showClear, setShowClear] = useState(false);
   const { currentSlideOut, setCurrentSlideOut } = useContext(SlideOutContext);
 
-  const {
-    keyword_filters: { countries: countryFilters = [], regions: regionFilters = [] },
-  } = searchCriteria;
-
   const thisYear = currentYear();
-
-  // memoize the filtered countries
-  const availableCountries = useMemo(() => {
-    return regionFilters.length > 0
-      ? getCountriesFromRegions({
-          regions,
-          countries,
-          selectedRegions: regionFilters,
-        })
-      : countries;
-  }, [regionFilters, regions, countries]);
 
   // Show clear button if there are filters applied
   useEffect(() => {
@@ -168,19 +144,44 @@ const SearchFilters = ({
         <>
           <button
             className="items-center justify-between cursor-pointer group flex"
-            onClick={() => setCurrentSlideOut(currentSlideOut === "familyConcepts" ? "" : "familyConcepts")}
-            data-cy="familyConcepts-control"
-            {...{ [SLIDE_OUT_DATA_KEY]: "familyConcepts" }}
+            onClick={() => setCurrentSlideOut(currentSlideOut === "categories" ? "" : "categories")}
+            data-cy="categories-control"
+            {...{ [SLIDE_OUT_DATA_KEY]: "categories" }}
           >
-            <Heading>
-              Family concepts
-              <Badge size="small" className="ml-2">
-                Beta
-              </Badge>
-            </Heading>
+            <Heading>Case categories</Heading>
             <span
               className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
-                currentSlideOut === "familyConcepts" ? "transform rotate-180" : ""
+                currentSlideOut === "categories" ? "transform rotate-180" : ""
+              }`}
+            >
+              <ChevronRight />
+            </span>
+          </button>
+          <button
+            className="items-center justify-between cursor-pointer group flex"
+            onClick={() => setCurrentSlideOut(currentSlideOut === "principalLaws" ? "" : "principalLaws")}
+            data-cy="principalLaws-control"
+            {...{ [SLIDE_OUT_DATA_KEY]: "principalLaws" }}
+          >
+            <Heading>Principle laws</Heading>
+            <span
+              className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
+                currentSlideOut === "principalLaws" ? "transform rotate-180" : ""
+              }`}
+            >
+              <ChevronRight />
+            </span>
+          </button>
+          <button
+            className="items-center justify-between cursor-pointer group flex"
+            onClick={() => setCurrentSlideOut(currentSlideOut === "jurisdictions" ? "" : "jurisdictions")}
+            data-cy="jurisdictions-control"
+            {...{ [SLIDE_OUT_DATA_KEY]: "jurisdictions" }}
+          >
+            <Heading>Jusrisdictions</Heading>
+            <span
+              className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
+                currentSlideOut === "jurisdictions" ? "transform rotate-180" : ""
               }`}
             >
               <ChevronRight />
@@ -229,43 +230,22 @@ const SearchFilters = ({
           );
         })}
 
-      <Accordian
-        title={getFilterLabel("Region", "region", query[QUERY_PARAMS.category], themeConfig)}
-        data-cy="regions"
-        startOpen={!!query[QUERY_PARAMS.region]}
-      >
-        <InputListContainer>
-          {regions.map((region) => (
-            <InputCheck
-              key={region.slug}
-              label={region.display_value}
-              checked={regionFilters && regionFilters.includes(region.slug)}
-              onChange={() => {
-                handleRegionChange(region.slug);
-              }}
-              name={`region-${region.slug}`}
-            />
-          ))}
-        </InputListContainer>
-      </Accordian>
-
-      <Accordian
-        title={getFilterLabel("Published jurisdiction", "country", query[QUERY_PARAMS.category], themeConfig)}
-        data-cy="countries"
-        overflowOverride
-        className="relative z-10"
-      >
-        <InputListContainer>
-          <TypeAhead
-            list={availableCountries}
-            selectedList={countryFilters}
-            keyField={"slug"}
-            keyFieldDisplay={"display_value"}
-            filterType={QUERY_PARAMS.country}
-            handleFilterChange={handleFilterChange}
-          />
-        </InputListContainer>
-      </Accordian>
+      <>
+        <button
+          className="items-center justify-between cursor-pointer group flex"
+          onClick={() => setCurrentSlideOut(currentSlideOut === "geographies" ? "" : "geographies")}
+          {...{ [SLIDE_OUT_DATA_KEY]: "geographies" }}
+        >
+          <Heading>Geography</Heading>
+          <span
+            className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
+              currentSlideOut === "geographies" ? "transform rotate-180" : ""
+            }`}
+          >
+            <ChevronRight />
+          </span>
+        </button>
+      </>
 
       <Accordian
         title={getFilterLabel("Date", "date", query[QUERY_PARAMS.category], themeConfig)}
