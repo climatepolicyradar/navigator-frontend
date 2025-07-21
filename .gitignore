@@ -50,3 +50,4 @@ storybook-static
 
 # vitest
 vitest.xml
+.env.backup
