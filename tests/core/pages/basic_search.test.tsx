@@ -39,6 +39,7 @@ describe("SearchPage", async () => {
   });
 
   it("hides search onboarding info when filters are applied", async () => {
+    const search_props = { ...baseSearchProps, searchParams: { q: "climate policy" } };
     router.query = { q: "climate policy" };
     // @ts-ignore
     renderWithAppContext(Search, search_props);
