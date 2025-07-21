@@ -1,5 +1,6 @@
 import { act, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import router from "next-router-mock";
 
 import { mockFeatureFlagsWithConcepts } from "@/mocks/featureFlags";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
@@ -37,6 +38,7 @@ describe("SearchPage", async () => {
 
   it("hides search onboarding info when filters are applied", async () => {
     const search_props = { ...baseSearchProps, searchParams: { q: "climate policy" } };
+    router.query = { q: "climate policy" };
     // @ts-ignore
     renderWithAppContext(Search, search_props);
 
