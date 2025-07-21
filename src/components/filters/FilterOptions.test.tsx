@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import { FilterOptions } from "@/components/blocks/FilterOptions";
+import { FilterOptions } from "@/components/filters/FilterOptions";
 import { TThemeConfig, TThemeConfigFilter } from "@/types";
 
 describe("FilterOptions", () => {
