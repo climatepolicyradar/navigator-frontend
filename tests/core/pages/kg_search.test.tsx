@@ -1,9 +1,10 @@
 import { act, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import router from "next-router-mock";
 
+import { mockFeatureFlagsWithConcepts } from "@/mocks/featureFlags";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import Search from "@/pages/search";
-import { mockFeatureFlagsWithConcepts } from "@/mocks/featureFlags";
 
 const baseSearchProps = {
   envConfig: {
@@ -37,10 +38,11 @@ describe("SearchPage", async () => {
 
   it("hides search onboarding info when filters are applied", async () => {
     const search_props = { ...baseSearchProps, searchParams: { q: "climate policy" } };
+    router.query = { q: "climate policy" };
     // @ts-ignore
     renderWithAppContext(Search, search_props);
 
-    expect(screen.queryByText("Get better results")).not.toBeInTheDocument();
+    expect(screen.queryByText(/Get better results/)).not.toBeInTheDocument();
     expect(screen.queryByText(/You are currently viewing all of the documents in our database/)).not.toBeInTheDocument();
   });
 

@@ -90,7 +90,7 @@ const showCorporateDisclosuresInformation = (query: ParsedUrlQuery) => {
 };
 
 // Show search onboarding if no search or filters are applied
-const showSearchOboarding = (query: ParsedUrlQuery) => {
+const showSearchOnboarding = (query: ParsedUrlQuery) => {
   // Some query params are for sorting, ordering or pagination, do not count them as applied filters
   const appliedQueryKeys = Object.keys(query).filter(
     (key) =>
@@ -655,7 +655,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                             </p>
                           </Warning>
                         )}
-                        {showSearchOboarding(router.query) && (
+                        {showSearchOnboarding(router.query) && (
                           <Warning variant="info" hideableId="search-onboarding-info">
                             <p className="font-semibold text-text-brand">Get better results</p>
                             <p>

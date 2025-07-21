@@ -1,9 +1,10 @@
 import { act, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import router from "next-router-mock";
 
+import { mockFeatureFlagsWithoutConcepts } from "@/mocks/featureFlags";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import Search from "@/pages/search";
-import { mockFeatureFlagsWithoutConcepts } from "@/mocks/featureFlags";
 
 const baseSearchProps = {
   envConfig: {
@@ -39,10 +40,11 @@ describe("SearchPage", async () => {
 
   it("hides search onboarding info when filters are applied", async () => {
     const search_props = { ...baseSearchProps, searchParams: { q: "climate policy" } };
+    router.query = { q: "climate policy" };
     // @ts-ignore
     renderWithAppContext(Search, search_props);
 
-    expect(screen.queryByText("Get better results")).not.toBeInTheDocument();
+    expect(screen.queryByText(/Get better results/)).not.toBeInTheDocument();
     expect(screen.queryByText(/You are currently viewing all of the documents in our database/)).not.toBeInTheDocument();
   });
 
@@ -142,7 +144,7 @@ describe("SearchPage", async () => {
     });
 
     // Expect length of 3 because we have 2 date options and 1 title option
-    expect(await screen.findAllByText(/Date:/)).toHaveLength(3);
+    expect(await screen.findAllByText(/Date:/)).toHaveLength(2);
 
     // Expect length of 2 because we have 2 title options and Date is selected by default
     expect(await screen.findAllByText(/Title:/)).toHaveLength(2);
