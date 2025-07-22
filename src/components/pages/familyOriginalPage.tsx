@@ -27,7 +27,7 @@ import { MAX_FAMILY_SUMMARY_LENGTH } from "@/constants/document";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getCorpusInfo } from "@/helpers/getCorpusInfo";
-import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
+import { getGeographyName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import useSearch from "@/hooks/useSearch";
@@ -85,7 +85,7 @@ export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page,
   const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
 
-  const geographyNames = page.geographies ? page.geographies.map((geo) => getCountryName(geo, countries)) : null;
+  const geographyNames = page.geographies ? page.geographies.map((geo) => getGeographyName(geo, countries)) : null;
   const geographyName = geographyNames ? geographyNames[0] : "";
   const geographySlug = page.geographies ? getCountrySlug(page.geographies[0], countries) : "";
   const breadcrumbCategory = { label: "Search results", href: "/search" };

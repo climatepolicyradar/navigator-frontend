@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 
 import { CountryLink } from "@/components/CountryLink";
-import { getCountryName } from "@/helpers/getCountryFields";
+import { getGeographyName } from "@/helpers/getCountryFields";
 import { TGeography } from "@/types";
 import { isSystemGeo, isSystemInternational } from "@/utils/isSystemGeo";
 
@@ -14,7 +14,7 @@ type TCountriesLink = {
 export const CountryLinks = ({ geographies, countries, showFlag = true }: TCountriesLink) => (
   <>
     {geographies?.map((geography) => {
-      const countryName = getCountryName(geography, countries);
+      const countryName = getGeographyName(geography, countries);
       if (!countryName) return null;
 
       return (
@@ -43,7 +43,7 @@ export const CountryLinksAsList = ({ geographies, countries, showFlag = true }: 
       <Fragment key={geography}>
         {isSystemInternational(geography) && (
           <div className="flex">
-            <>{getCountryName(geography, countries)}</>
+            <>{getGeographyName(geography, countries)}</>
             {index !== geographies.length - 1 && <span>,</span>}
           </div>
         )}
@@ -54,7 +54,7 @@ export const CountryLinksAsList = ({ geographies, countries, showFlag = true }: 
               showFlag={showFlag}
               className="text-blue-600 underline truncate text-sm capitalize hover:text-blue-800"
             >
-              <span>{getCountryName(geography, countries)}</span>
+              <span>{getGeographyName(geography, countries)}</span>
             </CountryLink>
             {index !== geographies.length - 1 && <span>,</span>}
           </div>

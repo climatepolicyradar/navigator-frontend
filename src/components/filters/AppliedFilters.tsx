@@ -7,7 +7,7 @@ import Pill from "@/components/Pill";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { sortOptions } from "@/constants/sortOptions";
 import { getConceptName } from "@/helpers/getConceptFields";
-import { getCountryName } from "@/helpers/getCountryFields";
+import { getGeographyName } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
 import useSubdivisions from "@/hooks/useSubdivisions";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
@@ -21,7 +21,7 @@ interface IProps {
 }
 
 const handleCountryRegion = (slug: string, dataSet: TGeography[]) => {
-  return getCountryName(slug, dataSet);
+  return getGeographyName(slug, dataSet);
 };
 
 const handleSubdivision = (alpha_3: string, subdivisions: TGeographySubdivision[]): string => {
