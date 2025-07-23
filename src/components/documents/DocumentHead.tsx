@@ -11,7 +11,7 @@ import { SubNav } from "@/components/nav/SubNav";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
-import { getGeographyName, getCountrySlug } from "@/helpers/getCountryFields";
+import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
 import { TDocumentPage, TFamilyPage } from "@/types";
 import { truncateString } from "@/utils/truncateString";
@@ -34,7 +34,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
   const configQuery = useConfig();
   const { data: { countries = [], languages = {} } = {} } = configQuery;
 
-  const geographyNames = family.geographies ? family.geographies.map((geo) => getGeographyName(geo, countries)) : null;
+  const geographyNames = family.geographies ? family.geographies.map((geo) => getCountryName(geo, countries)) : null;
   const geoName = geographyNames ? geographyNames[0] : "";
   const geoSlug = family.geographies ? getCountrySlug(family.geographies[0], countries) : "";
   const isMain = document.document_role.toLowerCase().includes("main");

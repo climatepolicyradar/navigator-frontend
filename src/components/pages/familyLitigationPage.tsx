@@ -5,7 +5,7 @@ import { ContentsSideBar } from "@/components/organisms/contentsSideBar/Contents
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { FAMILY_PAGE_SIDE_BAR_ITEMS_SORTED } from "@/constants/sideBarItems";
 import { getCategoryName } from "@/helpers/getCategoryName";
-import { getGeographyName, getCountrySlug } from "@/helpers/getCountryFields";
+import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { joinNodes } from "@/utils/reactNode";
 import { convertDate } from "@/utils/timedate";
@@ -23,7 +23,7 @@ export const FamilyLitigationPage = ({ countries, family, theme, themeConfig }: 
       value: joinNodes(
         family.geographies.map((geo) => (
           <LinkWithQuery key={geo} href={`/geographies/${getCountrySlug(geo, countries)}`} className="underline">
-            {getGeographyName(geo, countries)}
+            {getCountryName(geo, countries)}
           </LinkWithQuery>
         )),
         ", "

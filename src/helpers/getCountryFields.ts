@@ -1,21 +1,21 @@
 import { TGeography } from "@/types";
 
-const findGeographyObject = (geographySearch: string, dataSet: TGeography[]) => {
-  let geography = dataSet.find((c) => c.value.toLowerCase() === geographySearch.toLowerCase());
-  if (!geography) geography = dataSet.find((c) => c.display_value.toLowerCase() === geographySearch.toLowerCase());
-  if (!geography) geography = dataSet.find((c) => c.slug.toLowerCase() === geographySearch.toLowerCase());
-  if (!geography) return null;
-  return geography;
+const findCountryObject = (countrySearch: string, dataSet: TGeography[]) => {
+  let country = dataSet.find((c) => c.value.toLowerCase() === countrySearch.toLowerCase());
+  if (!country) country = dataSet.find((c) => c.display_value.toLowerCase() === countrySearch.toLowerCase());
+  if (!country) country = dataSet.find((c) => c.slug.toLowerCase() === countrySearch.toLowerCase());
+  if (!country) return null;
+  return country;
 };
 
 export const getCountrySlug = (countrySearch: string, dataSet: TGeography[]) => {
-  return findGeographyObject(countrySearch, dataSet)?.slug;
+  return findCountryObject(countrySearch, dataSet)?.slug;
 };
 
-export const getGeographyName = (geographySearch: string, dataSet: TGeography[]) => {
-  return findGeographyObject(geographySearch, dataSet)?.display_value;
+export const getCountryName = (countrySearch: string, dataSet: TGeography[]) => {
+  return findCountryObject(countrySearch, dataSet)?.display_value;
 };
 
 export const getCountryCode = (countrySearch: string, dataSet: TGeography[]) => {
-  return findGeographyObject(countrySearch, dataSet)?.value;
+  return findCountryObject(countrySearch, dataSet)?.value;
 };
