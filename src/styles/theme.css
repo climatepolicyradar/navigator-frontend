@@ -99,11 +99,12 @@
   --color-surface-mono: #202020;
   --color-surface-mono-dark: #000000;
 
-  --font-inter: "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    "Noto Color Emoji";
+  --font-inter:
+    "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-tenez: "tenez", "system-ui", serif;
-  --font-greycliff: "greycliff-cf", "InterVariable", "Inter", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol", "Noto Color Emoji";
+  --font-greycliff:
+    "greycliff-cf", "InterVariable", "Inter", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
 
   --radius-4xl: 30px;
 
@@ -137,4 +138,6 @@
   --breakpoint-cols-2: 540px;
   --breakpoint-cols-3: 820px;
   --breakpoint-cols-4: 1100px;
+
+  --info-grid: 200px 1fr;
 }
