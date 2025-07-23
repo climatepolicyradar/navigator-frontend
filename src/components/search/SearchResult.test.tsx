@@ -30,7 +30,7 @@ describe("SearchResult", () => {
     expect(screen.getByRole("link", { name: "Argentina" })).toBeInTheDocument();
   });
 
-  it.only("displays all subdivision links if family has subdivision geographies", async () => {
+  it("displays all subdivision links if family has subdivision geographies", async () => {
     const searchResultProps = {
       themeConfig: { features: {} },
       family: {
