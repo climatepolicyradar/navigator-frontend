@@ -25,7 +25,7 @@ export const TextBlock = ({ children, maxHeight = 150 }: IProps) => {
   const containerClasses = joinTailwindClasses("relative", isOpen ? "overflow-visible" : "overflow-hidden");
 
   return (
-    <Section id="summary" title="Summary">
+    <Section id="section-summary" title="Summary">
       <div className="relative">
         <div className={containerClasses} style={{ maxHeight: isOpen ? undefined : maxHeight }}>
           {/* DOM element to measure height of */}

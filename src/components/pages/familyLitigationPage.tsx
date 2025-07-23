@@ -1,5 +1,6 @@
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Columns } from "@/components/atoms/columns/Columns";
+import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import Layout from "@/components/layouts/Main";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
@@ -51,7 +52,10 @@ export const FamilyLitigationPage = ({ countries, family, theme, themeConfig }: 
       <PageHeader label={categoryName} title={family.title} metadata={pageHeaderMetadata} />
       <Columns>
         <ContentsSideBar items={FAMILY_PAGE_SIDE_BAR_ITEMS_SORTED} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
-        <main className="py-3 cols-2:py-6 cols-3:py-8 cols-3:col-span-2 cols-4:col-span-3">
+        <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-3:py-8 cols-3:gap-8 cols-3:col-span-2 cols-4:col-span-3">
+          <TextBlock>
+            <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
+          </TextBlock>
           <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(family, null, 2)}</pre>
         </main>
       </Columns>
