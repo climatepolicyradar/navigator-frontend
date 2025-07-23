@@ -34,7 +34,7 @@ export const TextBlock = ({ children, maxHeight = 150 }: IProps) => {
         {contentIsOverflowing && (
           <div className="pt-4">
             <button type="button" onClick={onToggle} className="text-sm text-text-tertiary hover:underline">
-              {isOpen ? "+ View less" : "+ View more"}
+              {isOpen ? "- View less" : "+ View more"}
             </button>
           </div>
         )}

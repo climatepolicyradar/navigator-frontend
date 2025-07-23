@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 export interface IProps {
   children: ReactNode;
   id: string;
-  title?: string;
+  title?: ReactNode;
 }
 
 export const Section = ({ children, id, title }: IProps) => {
