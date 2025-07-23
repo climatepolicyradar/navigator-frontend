@@ -40,14 +40,16 @@ export const CountryLinkWithSubdivisions: FC<TCountryLinkWithSubdivisions> = ({
         {selectedCountry?.display_value}
       </LinkWithQuery>
       <span> / </span>
-      {selectedSubdivisions.map((subdivision, index) => (
-        <Fragment key={subdivision.slug}>
-          <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center gap-1 hover:underline hover:text-blue-800 ${className}`}>
-            {subdivision.display_value}
-          </LinkWithQuery>
-          {index !== selectedSubdivisions.length - 1 && <span>,</span>}
-        </Fragment>
-      ))}
+      <div className="flex">
+        {selectedSubdivisions.map((subdivision, index) => (
+          <Fragment key={subdivision.slug}>
+            <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center hover:underline hover:text-blue-800 ${className}`}>
+              {subdivision.display_value}
+            </LinkWithQuery>
+            {index !== selectedSubdivisions.length - 1 && <span>,&nbsp;</span>}
+          </Fragment>
+        ))}
+      </div>
     </span>
   );
 };

@@ -27,13 +27,11 @@ export const FamilyMeta = ({ category, date, geographies, topics, author, corpus
     subdivisions.some((subdivision) => subdivision.value.toLowerCase() === geography.toLowerCase())
   );
 
+  const CountryLinkComponent = includeSubdivisions ? CountryLinkWithSubdivisions : CountryLinks;
+
   return (
     <>
-      {includeSubdivisions ? (
-        <CountryLinkWithSubdivisions geographies={geographies} countries={countries} subdivisions={subdivisions} />
-      ) : (
-        <CountryLinks geographies={geographies} countries={countries} />
-      )}
+      <CountryLinkComponent geographies={geographies} countries={countries} subdivisions={subdivisions} />
       {/* TODO: we need to revisit this once we have updated the config, so that we can determine this output based on the corpora */}
       {!isNaN(year) && <span data-cy="family-metadata-year">{`${category === "MCF" ? "Approval FY: " + year : year}`}</span>}
       {topics && topics.length > 0 && (
