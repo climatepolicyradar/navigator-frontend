@@ -30,7 +30,7 @@ describe("SearchResult", () => {
     expect(screen.getByRole("link", { name: "Argentina" })).toBeInTheDocument();
   });
 
-  it.only("displays subdivision name if family has a subdivision geography", async () => {
+  it("displays all subdivision links if family has subdivision geographies", async () => {
     const searchResultProps = {
       themeConfig: { features: {} },
       family: {
@@ -38,7 +38,7 @@ describe("SearchResult", () => {
         family_category: "",
         family_description: "",
         family_documents: [],
-        family_geographies: ["AUS", "AU-NSW"],
+        family_geographies: ["AUS", "AU-NSW", "AU-QLD"],
         family_metadata: {},
         family_name: "Subdivision Test Family",
         family_slug: "",
@@ -53,5 +53,6 @@ describe("SearchResult", () => {
 
     expect(await screen.findByRole("link", { name: "Australia" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "New South Wales" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Queensland" })).toBeInTheDocument();
   });
 });
