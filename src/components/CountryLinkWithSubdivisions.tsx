@@ -35,18 +35,14 @@ export const CountryLinkWithSubdivisions: FC<TCountryLinkWithSubdivisions> = ({
 
   return (
     <span className="flex gap-1">
-      <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center gap-1 hover:underline hover:text-blue-800 ${className}`} passHref>
-        {showFlag && <span className={`rounded-xs border border-black flag-icon-background flag-icon-${slug}`} />}
+      <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center gap-1 hover:underline hover:text-blue-800 ${className}`}>
+        {showFlag && <span className={`rounded-xs border border-black flag-icon-background flag-icon-${selectedCountry?.value.toLowerCase()}`} />}
         {selectedCountry?.display_value}
       </LinkWithQuery>
       <span> / </span>
       {selectedSubdivisions.map((subdivision, index) => (
         <Fragment key={subdivision.slug}>
-          <LinkWithQuery
-            href={`/geographies/${slug}`}
-            className={`flex items-center gap-1 hover:underline hover:text-blue-800 ${className}`}
-            passHref
-          >
+          <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center gap-1 hover:underline hover:text-blue-800 ${className}`}>
             {subdivision.display_value}
           </LinkWithQuery>
           {index !== selectedSubdivisions.length - 1 && <span>,</span>}

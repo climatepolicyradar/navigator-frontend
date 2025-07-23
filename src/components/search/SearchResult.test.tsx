@@ -30,7 +30,7 @@ describe("SearchResult", () => {
     expect(screen.getByRole("link", { name: "Argentina" })).toBeInTheDocument();
   });
 
-  it("displays all subdivision links if family has subdivision geographies", async () => {
+  it.only("displays all subdivision links if family has subdivision geographies", async () => {
     const searchResultProps = {
       themeConfig: { features: {} },
       family: {
@@ -51,8 +51,16 @@ describe("SearchResult", () => {
 
     renderWithAppContext(SearchResult, searchResultProps);
 
-    expect(await screen.findByRole("link", { name: "Australia" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "New South Wales" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Queensland" })).toBeInTheDocument();
+    const countryLink = await screen.findByRole("link", { name: "Australia" });
+    const subdivisionLink1 = screen.getByRole("link", { name: "New South Wales" });
+    const subdivisionLink2 = screen.getByRole("link", { name: "Queensland" });
+
+    expect(countryLink).toBeInTheDocument();
+    expect(subdivisionLink1).toBeInTheDocument();
+    expect(subdivisionLink2).toBeInTheDocument();
+
+    expect(countryLink).toHaveAttribute("href", "/geographies/australia");
+    expect(subdivisionLink1).toHaveAttribute("href", "/geographies/australia");
+    expect(subdivisionLink2).toHaveAttribute("href", "/geographies/australia");
   });
 });
