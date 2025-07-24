@@ -6,6 +6,7 @@ const meta = {
   title: "Blocks/MetadataBlock",
   component: MetadataBlock,
   argTypes: {
+    title: { control: "text" },
     metadata: { control: false },
   },
 } satisfies Meta<typeof MetadataBlock>;
@@ -51,6 +52,7 @@ const metadataExample = [
 
 export const Default: TStory = {
   args: {
+    title: "About this case",
     metadata: metadataExample,
   },
 };
