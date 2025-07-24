@@ -21,11 +21,11 @@ export const DocumentsBlock: TStory = {
     bordered: false,
     children: (
       <>
+        <Toggle Icon={LucideScrollText} text="Card" value="card" />
         <Toggle Icon={LucideTable} text="Table" value="table" />
-        <Toggle Icon={LucideScrollText} text="List" value="list" />
       </>
     ),
     className: "",
-    defaultValue: ["table"],
+    defaultValue: ["card"],
   },
 };
