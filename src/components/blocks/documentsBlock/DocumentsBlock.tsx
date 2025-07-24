@@ -3,14 +3,14 @@ import { useMemo, useState } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Card } from "@/components/atoms/card/Card";
+import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 import { Section } from "@/components/molecules/section/Section";
 import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
 import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { InteractiveTable, IInteractiveTableColumn, IInteractiveTableRow } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName } from "@/helpers/getCountryFields";
-import useConfig from "@/hooks/useConfig";
-import { TDocumentPage, TFamily, TFamilyPage, TLoadingStatus } from "@/types";
+import { TFamilyPage, TGeography, TLoadingStatus } from "@/types";
 import { convertDate } from "@/utils/timedate";
 
 type TTableColumn = "year" | "geography" | "type" | "document";
@@ -22,15 +22,19 @@ const TABLE_COLUMNS: IInteractiveTableColumn<TTableColumn>[] = [
 ];
 
 interface IProps {
-  documents: (TDocumentPage & { matches?: number })[];
+  countries: TGeography[];
   family: TFamilyPage;
   status: TLoadingStatus;
 }
 
-export const DocumentsBlock = ({ documents, family }: IProps) => {
-  const configQuery = useConfig();
-  const { data: { countries = [] } = {} } = configQuery;
+/**
+ * TODO LIST
+ * - Better matches handling (including loading state)
+ */
+
+export const DocumentsBlock = ({ countries, family }: IProps) => {
   const [view, setView] = useState("card");
+  const { documents } = family;
 
   const onToggleChange = (toggleValue: string[]) => {
     setView(toggleValue[0]);
@@ -50,7 +54,11 @@ export const DocumentsBlock = ({ documents, family }: IProps) => {
           geography: family.geographies.map((geo) => getCountryName(geo, countries)).join(", "),
           type: categoryName,
           document: {
-            display: <LinkWithQuery href={`/documents/${doc.slug}`}>{doc.title}</LinkWithQuery>,
+            display: (
+              <LinkWithQuery href={`/documents/${doc.slug}`} className="text-text-brand underline">
+                {doc.title}
+              </LinkWithQuery>
+            ),
             value: doc.title,
           },
         },
@@ -70,6 +78,15 @@ export const DocumentsBlock = ({ documents, family }: IProps) => {
         </div>
 
         {/* Cards TODO */}
+        {view === "card" && (
+          <div className="flex flex-col gap-4">
+            {documents.map((doc) => (
+              <LinkWithQuery key={doc.slug} href={`/documents/${doc.slug}`}>
+                <DocumentCard countries={countries} document={doc} family={family} />
+              </LinkWithQuery>
+            ))}
+          </div>
+        )}
 
         {/* Table */}
         {view === "table" && <InteractiveTable columns={TABLE_COLUMNS} rows={tableRows} />}
