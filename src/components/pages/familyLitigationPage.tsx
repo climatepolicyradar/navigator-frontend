@@ -1,5 +1,6 @@
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Columns } from "@/components/atoms/columns/Columns";
+import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import Layout from "@/components/layouts/Main";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
@@ -8,12 +9,13 @@ import { FAMILY_PAGE_SIDE_BAR_ITEMS_SORTED } from "@/constants/sideBarItems";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
+import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
 import { joinNodes } from "@/utils/reactNode";
 import { convertDate } from "@/utils/timedate";
 
 import { IProps } from "./familyOriginalPage";
 
-export const FamilyLitigationPage = ({ countries, family, theme, themeConfig }: IProps) => {
+export const FamilyLitigationPage = ({ countries, family, theme, themeConfig, newFamilyData }: IProps) => {
   const categoryName = getCategoryName(family.category, family.corpus_type_name, family.organisation);
   const [year] = convertDate(family.published_date);
 
@@ -56,7 +58,11 @@ export const FamilyLitigationPage = ({ countries, family, theme, themeConfig }: 
           <TextBlock>
             <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
           </TextBlock>
-          <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(family, null, 2)}</pre>
+          <MetadataBlock title="About this case" metadata={getFamilyMetadata(family)} />
+          <pre className="w-full max-h-[1000px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(family, null, 2)}</pre>
+          <pre className="w-full max-h-[1000px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">
+            {JSON.stringify(newFamilyData, null, 2)}
+          </pre>
         </main>
       </Columns>
     </Layout>

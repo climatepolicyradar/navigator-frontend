@@ -44,6 +44,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let targetsData: TTarget[] = [];
   let countriesData: TGeography[] = [];
   let corpus_types: TCorpusTypeDictionary;
+  let newFamilyData: any = null;
 
   try {
     const { data: returnedData } = await client.get(`/documents/${id}`);
@@ -80,6 +81,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
+  if (familyData) {
+    try {
+      const { data: newFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
+      newFamilyData = newFamilyDataResponse;
+    } catch (error) {}
+  }
+
   return {
     props: withEnvConfig({
       corpus_types,
@@ -90,6 +98,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       theme,
       themeConfig,
       vespaFamilyData: vespaFamilyData ?? null,
+      newFamilyData: newFamilyData,
     }),
   };
 };
