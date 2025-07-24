@@ -144,7 +144,7 @@ describe("SearchPage", async () => {
     expect(subdivisionFilter).not.toBeInTheDocument();
   });
 
-  it.only("filters search results by case category", async () => {
+  it("filters search results by case category", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
       ...baseSearchProps,

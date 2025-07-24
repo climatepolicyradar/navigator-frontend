@@ -58,6 +58,10 @@ const filterConcepts = (concepts: TConcept[], search: string) => {
   );
 };
 
+const getHierarchicalConceptLabel = (concept: TConcept) => {
+  return `${concept.type}/${concept.preferred_label}`;
+};
+
 const onConceptChange = (router: NextRouter, concept: TConcept) => {
   const query = CleanRouterQuery({ ...router.query });
   // Retain any dynamic ids in the query (e.g. document page)
@@ -66,7 +70,7 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
   }
   let selectedConcepts = query[QUERY_PARAMS.concept_preferred_label] ? [query[QUERY_PARAMS.concept_preferred_label]].flat() : [];
 
-  const selectedConceptLabel = `${concept.type}/${concept.preferred_label}`;
+  const selectedConceptLabel = getHierarchicalConceptLabel(concept);
   if (selectedConcepts.includes(selectedConceptLabel)) {
     selectedConcepts = selectedConcepts.filter((c) => c !== selectedConceptLabel);
   } else {
@@ -164,7 +168,7 @@ export const FamilyConceptPicker = ({
                         <InputCheck
                           key={concept.wikibase_id + i}
                           label={firstCase(concept.preferred_label)}
-                          checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], `${concept.type}/${concept.preferred_label}`)}
+                          checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], getHierarchicalConceptLabel(concept))}
                           onChange={() => {
                             onConceptChange(router, concept);
                           }}
