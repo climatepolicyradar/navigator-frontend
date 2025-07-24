@@ -190,6 +190,7 @@ export type TFamilyPage = {
   collections: TCollection[];
   published_date: string | null;
   last_updated_date: string | null;
+  status?: string;
 };
 
 export type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
@@ -232,6 +233,12 @@ export type TFamilyMetadata = {
   author_type?: string[];
   author?: string[];
   document_type?: string;
+  // Litigation specific metadata
+  status?: string;
+  case_number?: string[];
+  concept_preferred_label?: string[];
+  core_object?: string[];
+  original_case_name?: string[];
 };
 
 export type TMCFFamilyMetadata = {
