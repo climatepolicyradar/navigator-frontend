@@ -66,10 +66,11 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
   }
   let selectedConcepts = query[QUERY_PARAMS.concept_preferred_label] ? [query[QUERY_PARAMS.concept_preferred_label]].flat() : [];
 
-  if (selectedConcepts.includes(concept.preferred_label)) {
-    selectedConcepts = selectedConcepts.filter((c) => c !== concept.preferred_label);
+  const selectedConceptLabel = `${concept.type}/${concept.preferred_label}`;
+  if (selectedConcepts.includes(selectedConceptLabel)) {
+    selectedConcepts = selectedConcepts.filter((c) => c !== selectedConceptLabel);
   } else {
-    selectedConcepts = [...selectedConcepts, concept.preferred_label];
+    selectedConcepts = [...selectedConcepts, selectedConceptLabel];
   }
 
   query[QUERY_PARAMS.concept_preferred_label] = selectedConcepts;

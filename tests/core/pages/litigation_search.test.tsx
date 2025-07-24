@@ -143,4 +143,76 @@ describe("SearchPage", async () => {
     expect(countryFilter).not.toBeInTheDocument();
     expect(subdivisionFilter).not.toBeInTheDocument();
   });
+
+  it("filters search results by case category", async () => {
+    // @ts-ignore
+    renderWithAppContext(Search, {
+      ...baseSearchProps,
+      familyConceptsData: [
+        {
+          wikibase_id: "Parent Test Case Category",
+          preferred_label: "Parent Test Case Category",
+          subconcept_of: [],
+          recursive_subconcept_of: [],
+          type: "category",
+          alternative_labels: [],
+          negative_labels: [],
+          description: "",
+          related_concepts: [],
+          has_subconcept: [],
+        },
+        {
+          wikibase_id: "Test Case Category 1",
+          preferred_label: "Test Case Category 1",
+          subconcept_of: ["Parent Test Case Category"],
+          recursive_subconcept_of: ["Parent Test Case Category"],
+          type: "category",
+          alternative_labels: [],
+          negative_labels: [],
+          description: "",
+          related_concepts: [],
+          has_subconcept: [],
+        },
+        {
+          wikibase_id: "Test Case Category 2",
+          preferred_label: "Test Case Category 2",
+          subconcept_of: ["Parent Test Case Category"],
+          recursive_subconcept_of: ["Parent Test Case Category"],
+          type: "category",
+          alternative_labels: [],
+          negative_labels: [],
+          description: "",
+          related_concepts: [],
+          has_subconcept: [],
+        },
+      ],
+    });
+
+    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+
+    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
+    // like animations that were causing warnings in the console.
+    await act(async () => {
+      await userEvent.click(await screen.findByRole("button", { name: "Case categories" }));
+    });
+
+    expect(await screen.findAllByText("Parent Test Case Category")).toHaveLength(2);
+
+    const caseCategoryOption1 = screen.getByRole("checkbox", { name: "Test Case Category 1" });
+    const caseCategoryOption2 = screen.getByRole("checkbox", { name: "Test Case Category 2" });
+    expect(caseCategoryOption1).toBeInTheDocument();
+    expect(caseCategoryOption2).toBeInTheDocument();
+
+    await act(async () => {
+      await userEvent.click(caseCategoryOption1);
+    });
+
+    // expect(caseCategoryOption1).toBeChecked();
+    // check for applied filter button
+    // expect(screen.getByRole("button", { name: "Test Category 1" })).toBeInTheDocument();
+
+    expect(await screen.findByText("Results")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Family With Test Case Category 1" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Family With Test Case Category 2" })).not.toBeInTheDocument();
+  });
 });
