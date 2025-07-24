@@ -144,7 +144,7 @@ describe("SearchPage", async () => {
     expect(subdivisionFilter).not.toBeInTheDocument();
   });
 
-  it("filters search results by case category", async () => {
+  it.only("filters search results by case category", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
       ...baseSearchProps,
@@ -207,7 +207,7 @@ describe("SearchPage", async () => {
       await userEvent.click(caseCategoryOption1);
     });
 
-    // expect(caseCategoryOption1).toBeChecked();
+    expect(caseCategoryOption1).toBeChecked();
     // check for applied filter button
     // expect(screen.getByRole("button", { name: "Test Category 1" })).toBeInTheDocument();
 

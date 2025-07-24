@@ -164,7 +164,7 @@ export const FamilyConceptPicker = ({
                         <InputCheck
                           key={concept.wikibase_id + i}
                           label={firstCase(concept.preferred_label)}
-                          checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], concept.preferred_label)}
+                          checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], `${concept.type}/${concept.preferred_label}`)}
                           onChange={() => {
                             onConceptChange(router, concept);
                           }}
