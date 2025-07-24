@@ -29,7 +29,8 @@ interface IProps {
 
 /**
  * TODO LIST
- * - Better matches handling (including loading state)
+ * - Add matches counts, handle loading state
+ * - Better unify the data used by both DocumentCard and InteractiveTable to remove compute repetition
  */
 
 export const DocumentsBlock = ({ countries, family }: IProps) => {
