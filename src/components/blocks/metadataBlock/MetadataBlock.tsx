@@ -1,14 +1,8 @@
-import { ReactNode } from "react";
-
 import { Section } from "@/components/molecules/section/Section";
-
-interface IMetaData {
-  label: ReactNode;
-  value: ReactNode;
-}
+import { IMetadata } from "@/types";
 
 interface IProps {
-  metadata: IMetaData[];
+  metadata: IMetadata[];
 }
 
 export const MetadataBlock = ({ metadata }: IProps) => {
