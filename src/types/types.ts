@@ -233,9 +233,12 @@ export type TFamilyMetadata = {
   author_type?: string[];
   author?: string[];
   document_type?: string;
+  // Litigation specific metadata
   status?: string;
   case_number?: string[];
   concept_preferred_label?: string[];
+  core_object?: string[];
+  original_case_name?: string[];
 };
 
 export type TMCFFamilyMetadata = {

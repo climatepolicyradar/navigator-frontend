@@ -18,9 +18,10 @@ function getLitigationMetaData(family: TFamilyPage): IMetadata[] {
   const metadata = [];
 
   if (family.published_date) {
+    const year = new Date(family.published_date).getFullYear();
     metadata.push({
       label: "Filing year",
-      value: family.published_date,
+      value: year,
     });
   }
 
@@ -42,6 +43,20 @@ function getLitigationMetaData(family: TFamilyPage): IMetadata[] {
     metadata.push({
       label: "Concept preferred label",
       value: <div className="grid">{family.metadata.concept_preferred_label?.map((label) => <span key={label}>{label}</span>) || "N/A"}</div>,
+    });
+  }
+
+  if (family.metadata.core_object) {
+    metadata.push({
+      label: "Core object",
+      value: <div className="grid">{family.metadata.core_object?.map((label) => <span key={label}>{label}</span>) || "N/A"}</div>,
+    });
+  }
+
+  if (family.metadata.original_case_name) {
+    metadata.push({
+      label: "Original case name",
+      value: <div className="grid">{family.metadata.original_case_name?.map((label) => <span key={label}>{label}</span>) || "N/A"}</div>,
     });
   }
 

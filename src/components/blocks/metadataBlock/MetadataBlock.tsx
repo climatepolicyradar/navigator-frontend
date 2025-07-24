@@ -12,7 +12,7 @@ export const MetadataBlock = ({ metadata }: IProps) => {
         <div className="grid gap-3">
           {metadata.length === 0 && <div className="text-text-secondary">Sorry, there is no data available at this time.</div>}
           {metadata.map((item, index) => (
-            <div key={index} className="grid md:gap-3 md:grid-cols-(--info-grid)">
+            <div key={index} className="grid md:gap-3 md:grid-cols-(--metadata-grid)">
               <div className="text-text-primary font-semibold">{item.label}</div>
               <div>{item.value}</div>
             </div>
