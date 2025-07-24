@@ -209,7 +209,7 @@ describe("SearchPage", async () => {
 
     expect(caseCategoryOption1).toBeChecked();
     // check for applied filter button
-    // expect(screen.getByRole("button", { name: "Test Category 1" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Test Category 1" })).toBeInTheDocument();
 
     expect(await screen.findByText("Results")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Family With Test Case Category 1" })).toBeInTheDocument();

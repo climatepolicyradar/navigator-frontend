@@ -1,21 +1,16 @@
 import { TextSearch } from "lucide-react";
 import { NextRouter, useRouter } from "next/router";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Accordian } from "@/components/accordian/Accordian";
 import { Badge } from "@/components/atoms/label/Badge";
 import { Select } from "@/components/atoms/select/Select";
 import { InputCheck } from "@/components/forms/Checkbox";
-import { NewFeatureCard } from "@/components/molecules/newFeatures/NewFeatureCard";
-import { NEW_FEATURES } from "@/constants/newFeatures";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { NewFeatureContext } from "@/context/NewFeatureContext";
 import { TConcept } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { firstCase } from "@/utils/text";
-
-import { ExternalLink } from "../ExternalLink";
 
 interface IProps {
   concepts: TConcept[];
