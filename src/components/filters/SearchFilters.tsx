@@ -96,7 +96,7 @@ const SearchFilters = ({
         )}
       </div>
 
-      <AppliedFilters filterChange={handleFilterChange} concepts={conceptsData} />
+      <AppliedFilters filterChange={handleFilterChange} concepts={conceptsData} familyConcepts={familyConceptsData} />
       {themeConfigStatus === "success" && themeConfig.categories && (
         <Accordian title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
           <InputListContainer>

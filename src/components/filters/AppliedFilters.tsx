@@ -18,6 +18,7 @@ type TFilterChange = (type: string, value: string) => void;
 interface IProps {
   filterChange: TFilterChange;
   concepts?: TConcept[];
+  familyConcepts?: TConcept[];
 }
 
 const handleCountryRegion = (slug: string, dataSet: TGeography[]) => {
@@ -61,7 +62,8 @@ const handleFilterDisplay = (
   regions: TGeography[],
   subdivisions: TGeographySubdivision[],
   themeConfig: TThemeConfig,
-  concepts?: TConcept[]
+  concepts?: TConcept[],
+  familyConcepts?: TConcept[]
 ) => {
   let filterLabel: string | null | undefined = null;
   let filterValue = value;
@@ -81,6 +83,9 @@ const handleFilterDisplay = (
       break;
     case "concept_name":
       filterLabel = handleConceptName(value, concepts);
+      break;
+    case "concept_preferred_label":
+      filterLabel = handleConceptName(value.split("/")[1], familyConcepts);
       break;
     case "exact_match":
       filterLabel = value === "true" ? "Exact phrases only" : "Related phrases";
@@ -139,7 +144,8 @@ const generatePills = (
   regions: TGeography[],
   subdivisions: TGeographySubdivision[],
   themeConfig: TThemeConfig,
-  concepts?: TConcept[]
+  concepts?: TConcept[],
+  familyConcepts?: TConcept[]
 ) => {
   const pills: JSX.Element[] = [];
 
@@ -152,14 +158,29 @@ const generatePills = (
     if (value) {
       if (key === "year_range")
         return pills.push(
-          handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions, subdivisions, themeConfig, concepts)
+          handleFilterDisplay(
+            filterChange,
+            queryParams,
+            key,
+            value.toString(),
+            countries,
+            regions,
+            subdivisions,
+            themeConfig,
+            concepts,
+            familyConcepts
+          )
         );
       if (Array.isArray(value)) {
         return value.map((v: string) => {
-          return pills.push(handleFilterDisplay(filterChange, queryParams, key, v, countries, regions, subdivisions, themeConfig, concepts));
+          return pills.push(
+            handleFilterDisplay(filterChange, queryParams, key, v, countries, regions, subdivisions, themeConfig, concepts, familyConcepts)
+          );
         });
       }
-      return pills.push(handleFilterDisplay(filterChange, queryParams, key, value, countries, regions, subdivisions, themeConfig, concepts));
+      return pills.push(
+        handleFilterDisplay(filterChange, queryParams, key, value, countries, regions, subdivisions, themeConfig, concepts, familyConcepts)
+      );
     } else {
       return;
     }
@@ -168,7 +189,7 @@ const generatePills = (
   return pills;
 };
 
-export const AppliedFilters = ({ filterChange, concepts }: IProps) => {
+export const AppliedFilters = ({ filterChange, concepts, familyConcepts }: IProps) => {
   const router = useRouter();
   const configQuery = useConfig();
   const { themeConfig } = useGetThemeConfig();
@@ -177,8 +198,8 @@ export const AppliedFilters = ({ filterChange, concepts }: IProps) => {
   const { data: subdivisions = [] } = subdivisionQuery;
 
   const appliedFilters = useMemo(
-    () => generatePills(router.query, filterChange, countries, regions, subdivisions, themeConfig, concepts).map((pill) => pill),
-    [router.query, filterChange, countries, regions, subdivisions, themeConfig, concepts]
+    () => generatePills(router.query, filterChange, countries, regions, subdivisions, themeConfig, concepts, familyConcepts).map((pill) => pill),
+    [router.query, filterChange, countries, regions, subdivisions, themeConfig, concepts, familyConcepts]
   );
 
   if (appliedFilters.length === 0) {
