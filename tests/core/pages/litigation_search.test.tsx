@@ -144,7 +144,7 @@ describe("SearchPage", async () => {
     expect(subdivisionFilter).not.toBeInTheDocument();
   });
 
-  it.only("filters search results by legal concepts", async () => {
+  it("filters search results by legal concepts", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
       ...baseSearchProps,
