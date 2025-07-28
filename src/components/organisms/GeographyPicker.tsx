@@ -71,7 +71,16 @@ export const GeographyPicker = ({
   if (litigationEnabled) {
     countrySubdivisions = countrySubdivisionsData;
     subdivisions = subdivisionsData;
-    const availableSubdivisions = countrySubdivisions && countrySubdivisions.length > 0 ? countrySubdivisions : subdivisions;
+
+    let availableSubdivisions: TGeographySubdivision[] | TGeographyWithDocumentCounts[] = [];
+
+    if (countrySubdivisions?.length > 0) {
+      const subdivisionCodes = new Set(subdivisionsData.map((sd) => sd.code));
+      availableSubdivisions = countrySubdivisions.filter((cs) => subdivisionCodes.has(cs.code));
+    } else {
+      availableSubdivisions = subdivisionsData;
+    }
+
     alphabetisedFilteredSubdivisions = availableSubdivisions
       .sort((s1, s2) => s1.name.localeCompare(s2.name))
       .filter((geo) => geo?.name?.toLowerCase().includes(subdivisionQuickSearch.toLowerCase()));
