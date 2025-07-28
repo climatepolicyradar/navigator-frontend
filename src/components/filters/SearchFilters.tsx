@@ -96,7 +96,7 @@ const SearchFilters = ({
         )}
       </div>
 
-      <AppliedFilters filterChange={handleFilterChange} concepts={conceptsData} />
+      <AppliedFilters filterChange={handleFilterChange} concepts={conceptsData} familyConcepts={familyConceptsData} />
       {themeConfigStatus === "success" && themeConfig.categories && (
         <Accordian title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
           <InputListContainer>
@@ -163,7 +163,7 @@ const SearchFilters = ({
             data-cy="principalLaws-control"
             {...{ [SLIDE_OUT_DATA_KEY]: "principalLaws" }}
           >
-            <Heading>Principle laws</Heading>
+            <Heading>Principal laws</Heading>
             <span
               className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
                 currentSlideOut === "principalLaws" ? "transform rotate-180" : ""

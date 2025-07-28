@@ -81,7 +81,35 @@ const families = [
       status: ["Decided"],
       case_number: ["2022/00114664; [2022] NSWSC 575"],
       core_object: ["Australia Litigation Case"],
-      concept_preferred_label: ["Australia", "Suits against governments"],
+      concept_preferred_label: ["jurisdiction/Australia", "category/Suits against governments"],
+    },
+    family_title_match: false,
+    family_description_match: false,
+    total_passage_hits: 1,
+    family_documents: [],
+  },
+  {
+    family_slug: "new-south-wales-case-ca17",
+    family_name: "New South Wales Litigation Case",
+    family_description: "<p>New South Wales Case</p>",
+    family_category: "Litigation",
+    family_date: "2019-12-31T00:00:00+00:00",
+    family_last_updated_date: "2019-12-31T00:00:00+00:00",
+    family_source: "Sabin",
+    corpus_import_id: "Academic.corpus.Litigation.n0000",
+    corpus_type_name: "Litigation",
+    family_geographies: ["AUS", "AU-NSW"],
+    family_metadata: {
+      id: ["16951"],
+      status: ["Decided"],
+      case_number: ["2022/00114664; [2022] NSWSC 576"],
+      core_object: ["New South Wales Case."],
+      concept_preferred_label: [
+        "jurisdiction/Australia",
+        "jurisdiction/New South Wales",
+        "category/Corporations",
+        "category/Suits against corporations, individuals",
+      ],
     },
     family_title_match: false,
     family_description_match: false,
@@ -133,29 +161,6 @@ const families = [
     prev_continuation_token: null,
   },
   {
-    family_slug: "new-south-wales-case-ca17",
-    family_name: "New South Wales Litigation Case",
-    family_description: "<p>New South Wales Case</p>",
-    family_category: "Litigation",
-    family_date: "2019-12-31T00:00:00+00:00",
-    family_last_updated_date: "2019-12-31T00:00:00+00:00",
-    family_source: "Sabin",
-    corpus_import_id: "Academic.corpus.Litigation.n0000",
-    corpus_type_name: "Litigation",
-    family_geographies: ["AUS", "AU-NSW"],
-    family_metadata: {
-      id: ["16951"],
-      status: ["Decided"],
-      case_number: ["2022/00114664; [2022] NSWSC 576"],
-      core_object: ["New South Wales Case."],
-      concept_preferred_label: ["Australia", "New South Wales", "Corporations", "Suits against corporations, individuals"],
-    },
-    family_title_match: false,
-    family_description_match: false,
-    total_passage_hits: 1,
-    family_documents: [],
-  },
-  {
     family_slug: "family-with-topic-2-btr1_17c78",
     family_name: "Family with topic 2",
     family_description: "<p>Family with topic 2</p>",
@@ -199,33 +204,79 @@ const families = [
     continuation_token: null,
     prev_continuation_token: null,
   },
+  {
+    family_slug: "family-with-test-case-category-1-ca17",
+    family_name: "Family With Test Case Category 1",
+    family_description: "<p>Family With Test Case Category 1</p>",
+    family_category: "Litigation",
+    family_date: "2019-12-31T00:00:00+00:00",
+    family_last_updated_date: "2019-12-31T00:00:00+00:00",
+    family_source: "Sabin",
+    corpus_import_id: "Academic.corpus.Litigation.n0000",
+    corpus_type_name: "Litigation",
+    family_geographies: ["XAA"],
+    family_metadata: {
+      id: [""],
+      status: [""],
+      case_number: ["2022/00114664; [2022] NSWSC 576"],
+      core_object: ["Family With Test Case Category 1"],
+      concept_preferred_label: ["category/Test Case Category 1"],
+    },
+    family_title_match: false,
+    family_description_match: false,
+    total_passage_hits: 1,
+    family_documents: [],
+  },
+  {
+    family_slug: "family-with-test-case-category-2-ca17",
+    family_name: "Family With Test Case Category 2",
+    family_description: "<p>Family With Test Case Category 2</p>",
+    family_category: "Litigation",
+    family_date: "2019-12-31T00:00:00+00:00",
+    family_last_updated_date: "2019-12-31T00:00:00+00:00",
+    family_source: "Sabin",
+    corpus_import_id: "Academic.corpus.Litigation.n0000",
+    corpus_type_name: "Litigation",
+    family_geographies: ["XAA"],
+    family_metadata: {
+      id: [""],
+      status: [""],
+      case_number: ["2022/00114664; [2022] NSWSC 576"],
+      core_object: ["Family With Test Case Category 2"],
+      concept_preferred_label: ["category/Test Case Category 2"],
+    },
+    family_title_match: false,
+    family_description_match: false,
+    total_passage_hits: 1,
+    family_documents: [],
+  },
 ];
 
 const iso_slug_mapping = { belize: "BLZ", argentina: "ARG", australia: "AUS", afghanistan: "AFG", "united-states": "USA" };
 
-const getFilteredFamilies = (keyword_filters: any, concept_filters: any) => {
+const getFilteredFamilies = (keyword_filters: any, concept_filters: any, metadata: any) => {
   const filteredFamilies = [];
   if (keyword_filters.countries) {
     keyword_filters.countries.forEach((country: string) => {
-      const filteredFamily = families.filter((family) => {
+      const countryFilteredFamily = families.filter((family) => {
         return family.family_geographies.includes(iso_slug_mapping[country]);
       });
-      filteredFamilies.push(...filteredFamily);
+      filteredFamilies.push(...countryFilteredFamily);
     });
     return filteredFamilies;
   }
   if (keyword_filters.subdivisions && keyword_filters.subdivisions.length > 0) {
     keyword_filters.subdivisions.forEach((subdivision: string) => {
-      const filteredFamily = families.filter((family) => {
+      const subdivisionFilteredFamily = families.filter((family) => {
         return family.family_geographies.includes(subdivision);
       });
-      filteredFamilies.push(...filteredFamily);
+      filteredFamilies.push(...subdivisionFilteredFamily);
     });
     return filteredFamilies;
   }
   if (concept_filters.length > 0) {
     concept_filters.forEach((conceptFilter) => {
-      const filteredFamily = families.filter((family) => {
+      const conceptFilteredFamily = families.filter((family) => {
         return (
           family.family_documents &&
           family.family_documents.some(
@@ -236,7 +287,20 @@ const getFilteredFamilies = (keyword_filters: any, concept_filters: any) => {
           )
         );
       });
-      filteredFamilies.push(...filteredFamily);
+      filteredFamilies.push(...conceptFilteredFamily);
+    });
+    return filteredFamilies;
+  }
+  if (metadata.length > 0) {
+    metadata.forEach((metadataFilter) => {
+      const metadataFilteredFamily = families.filter((family) => {
+        return (
+          family.family_metadata &&
+          family.family_metadata.concept_preferred_label &&
+          family.family_metadata.concept_preferred_label.some((concept_preferred_label) => concept_preferred_label === metadataFilter.value)
+        );
+      });
+      filteredFamilies.push(...metadataFilteredFamily);
     });
     return filteredFamilies;
   }
