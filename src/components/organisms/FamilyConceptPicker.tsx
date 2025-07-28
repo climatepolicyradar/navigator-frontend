@@ -53,10 +53,6 @@ const filterConcepts = (concepts: IConcept[], search: string) => {
   );
 };
 
-const getHierarchicalConceptLabel = (concept: IConcept) => {
-  return `${concept.type}/${concept.preferred_label}`;
-};
-
 const onConceptChange = (router: NextRouter, concept: IConcept) => {
   const query = CleanRouterQuery({ ...router.query });
   // Retain any dynamic ids in the query (e.g. document page)
@@ -65,7 +61,7 @@ const onConceptChange = (router: NextRouter, concept: IConcept) => {
   }
   let selectedConcepts = query[QUERY_PARAMS.concept_preferred_label] ? [query[QUERY_PARAMS.concept_preferred_label]].flat() : [];
 
-  const selectedConceptLabel = getHierarchicalConceptLabel(concept);
+  const selectedConceptLabel = concept.wikibase_id;
   if (selectedConcepts.includes(selectedConceptLabel)) {
     selectedConcepts = selectedConcepts.filter((c) => c !== selectedConceptLabel);
   } else {
@@ -146,7 +142,6 @@ export const FamilyConceptPicker = ({
             rootConcepts.map((rootConcept, rootConceptIndex) => {
               const filteredConcepts = filterConcepts(conceptsGrouped[rootConcept.wikibase_id] || [], search);
               if (filteredConcepts.length === 0) return null;
-
               return (
                 <Accordian
                   title={firstCase(rootConcept.preferred_label)}
@@ -163,7 +158,7 @@ export const FamilyConceptPicker = ({
                         <InputCheck
                           key={concept.wikibase_id + i}
                           label={firstCase(concept.preferred_label)}
-                          checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], getHierarchicalConceptLabel(concept))}
+                          checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], concept.wikibase_id)}
                           onChange={() => {
                             onConceptChange(router, concept);
                           }}

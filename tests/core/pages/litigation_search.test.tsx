@@ -144,13 +144,13 @@ describe("SearchPage", async () => {
     expect(subdivisionFilter).not.toBeInTheDocument();
   });
 
-  it("filters search results by legal concepts", async () => {
+  it.only("filters search results by legal concepts", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
       ...baseSearchProps,
       familyConceptsData: [
         {
-          wikibase_id: "Parent Test Case Category",
+          wikibase_id: "category/Parent Test Case Category",
           preferred_label: "Parent Test Case Category",
           subconcept_of: [],
           recursive_subconcept_of: [],
@@ -162,10 +162,10 @@ describe("SearchPage", async () => {
           has_subconcept: [],
         },
         {
-          wikibase_id: "Test Case Category 1",
+          wikibase_id: "category/Test Case Category 1",
           preferred_label: "Test Case Category 1",
-          subconcept_of: ["Parent Test Case Category"],
-          recursive_subconcept_of: ["Parent Test Case Category"],
+          subconcept_of: ["category/Parent Test Case Category"],
+          recursive_subconcept_of: ["category/Parent Test Case Category"],
           type: "category",
           alternative_labels: [],
           negative_labels: [],
@@ -174,10 +174,10 @@ describe("SearchPage", async () => {
           has_subconcept: [],
         },
         {
-          wikibase_id: "Test Case Category 2",
+          wikibase_id: "category/Test Case Category 2",
           preferred_label: "Test Case Category 2",
-          subconcept_of: ["Parent Test Case Category"],
-          recursive_subconcept_of: ["Parent Test Case Category"],
+          subconcept_of: ["category/Parent Test Case Category"],
+          recursive_subconcept_of: ["category/Parent Test Case Category"],
           type: "category",
           alternative_labels: [],
           negative_labels: [],

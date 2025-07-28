@@ -39,7 +39,7 @@ import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import useSearch from "@/hooks/useSearch";
-import { IConcept, ILegalConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
+import { IConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToLegalConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
@@ -55,7 +55,7 @@ interface IProps {
   themeConfig: TThemeConfig;
   featureFlags: TFeatureFlags;
   conceptsData?: IConcept[] | null;
-  familyConceptsData?: ILegalConcept[] | null;
+  familyConceptsData?: IConcept[] | null;
 }
 
 const SETTINGS_ANIMATION_VARIANTS = {

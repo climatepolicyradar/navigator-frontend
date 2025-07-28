@@ -85,7 +85,7 @@ const handleFilterDisplay = (
       filterLabel = handleConceptName(value, concepts);
       break;
     case "concept_preferred_label":
-      filterLabel = handleConceptName(value.split("/")[1], familyConcepts);
+      filterLabel = handleConceptName(value, familyConcepts);
       break;
     case "exact_match":
       filterLabel = value === "true" ? "Exact phrases only" : "Related phrases";
