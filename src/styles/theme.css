@@ -139,4 +139,6 @@
   --breakpoint-cols-2: 540px;
   --breakpoint-cols-3: 820px;
   --breakpoint-cols-4: 1100px;
+
+  --metadata-grid: 200px 1fr;
 }
