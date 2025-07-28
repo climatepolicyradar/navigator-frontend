@@ -5,7 +5,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 import useGeographySubdivisions from "@/hooks/useGeographySubdivisions";
 import useSubdivisions from "@/hooks/useSubdivisions";
-import { TGeography, TGeographySubdivision, TSearchCriteria } from "@/types";
+import { TGeography, TGeographySubdivision, TSearchCriteria, TGeographyWithDocumentCounts } from "@/types";
 
 import { InputListContainer } from "../filters/InputListContainer";
 import { InputCheck } from "../forms/Checkbox";
@@ -65,8 +65,8 @@ export const GeographyPicker = ({
   const { data: subdivisionsData = [] } = subdivisionQuery;
 
   let countrySubdivisions: TGeographySubdivision[] = [];
-  let subdivisions: TGeographySubdivision[] = [];
-  let alphabetisedFilteredSubdivisions: TGeographySubdivision[] = [];
+  let subdivisions: TGeographyWithDocumentCounts[] = [];
+  let alphabetisedFilteredSubdivisions: (TGeographySubdivision | TGeographyWithDocumentCounts)[] = [];
 
   if (litigationEnabled) {
     countrySubdivisions = countrySubdivisionsData;
