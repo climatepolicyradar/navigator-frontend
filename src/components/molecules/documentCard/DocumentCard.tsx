@@ -1,27 +1,27 @@
 import { Card } from "@/components/atoms/card/Card";
-import { getDocumentType } from "@/helpers/getDocumentType";
-import { getLanguage } from "@/helpers/getLanguage";
-import { TDocumentPage, TLanguages } from "@/types";
+import { getCategoryName } from "@/helpers/getCategoryName";
+import { getCountryName } from "@/helpers/getCountryFields";
+import { TDocumentPage, TFamilyPage, TGeography } from "@/types";
 import { pluralise } from "@/utils/pluralise";
-import { firstCase } from "@/utils/text";
+import { convertDate } from "@/utils/timedate";
 
 interface IProps {
+  countries: TGeography[];
   document: TDocumentPage;
-  languages: TLanguages;
+  family: TFamilyPage;
   matches?: number;
 }
 
-export const DocumentCard = ({ document, languages, matches }: IProps) => {
-  const { content_type, document_role, language } = document;
-
-  const isMain = Boolean(document_role?.toLowerCase().includes("main"));
+export const DocumentCard = ({ countries, document, family, matches }: IProps) => {
+  const [year] = convertDate(family.published_date);
+  const categoryName = getCategoryName(family.category, family.corpus_type_name, family.organisation);
 
   return (
     <Card className="!p-8 bg-surface-brand-darker/4 rounded-sm">
       <div className="mb-2 flex gap-4 flex-wrap text-sm text-text-tertiary leading-none">
-        <span>{language && getLanguage(language, languages)}</span>
-        {!isMain && <span>{firstCase(document_role?.toLowerCase())}</span>}
-        <span>{getDocumentType(content_type)}</span>
+        {family.geographies.length > 0 && <span>{getCountryName(family.geographies[0], countries)}</span>}
+        <span>{year}</span>
+        <span>{categoryName}</span>
       </div>
       <span className="text-lg text-text-brand-darker font-[660] leading-tight">{document.title}</span>
       {matches && (
