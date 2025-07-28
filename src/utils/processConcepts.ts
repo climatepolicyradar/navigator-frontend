@@ -49,14 +49,14 @@ export const fetchAndProcessConcepts = async (conceptIds: string[]) => {
   return { rootConcepts: rootConceptsResults, concepts: conceptsResults };
 };
 
-interface TConcept {
+interface IConcept {
   name: string;
   count: number;
   wikibaseId: string;
 }
 
 interface IConceptMap {
-  [subconcept: string]: TConcept;
+  [subconcept: string]: IConcept;
 }
 
 interface IRootConceptsMapped {
