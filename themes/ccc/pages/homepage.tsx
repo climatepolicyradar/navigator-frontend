@@ -25,7 +25,7 @@ const LandingPage = ({ handleSearchInput, searchInput }: IProps) => {
         </div>
       </main>
       <FullWidth extraClasses="hidden my-6 md:block">
-        <WorldMap showLitigation />
+        <WorldMap showLitigation showCategorySelect={false} />
       </FullWidth>
     </Layout>
   );
