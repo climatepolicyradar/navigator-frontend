@@ -1,4 +1,4 @@
-import { TConcept } from "@/types";
+import { IConcept } from "@/types";
 
 import { FamilyConcept, getRecursiveParentLabels, mapFamilyConceptsToConcepts } from "./familyConcepts";
 
@@ -35,7 +35,7 @@ const familyConcepts: FamilyConcept[] = [
   },
 ];
 
-const expectedGroupMappedConcepts: TConcept[] = [
+const expectedGroupMappedConcepts: IConcept[] = [
   {
     wikibase_id: "Australia",
     preferred_label: "Australia",

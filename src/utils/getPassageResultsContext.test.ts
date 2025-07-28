@@ -1,4 +1,4 @@
-import { TConcept } from "@/types";
+import { IConcept } from "@/types";
 
 import { getPassageResultsContext } from "./getPassageResultsContext";
 
@@ -6,7 +6,7 @@ describe.skip("getPassageResultsContext", () => {
   const isExactSearch = false;
   const passageMatches = 512;
   const queryTerm = "banana";
-  const selectedTopics: TConcept[] = [{ preferred_label: "Agriculture sector" }, { preferred_label: "Marine risk" }] as unknown[] as TConcept[];
+  const selectedTopics: IConcept[] = [{ preferred_label: "Agriculture sector" }, { preferred_label: "Marine risk" }] as unknown[] as IConcept[];
 
   it("describes an exact match", () => {
     expect(getPassageResultsContext({ isExactSearch: true, passageMatches, queryTerm, selectedTopics: [] })).toBe(`Top 500 matches for "banana".`);

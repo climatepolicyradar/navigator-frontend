@@ -328,7 +328,7 @@ export interface IDictionary<T> {
 export type TOrganisationDictionary = IDictionary<TOrganisation>;
 export type TCorpusTypeDictionary = IDictionary<TCorpusType>;
 
-export type TConcept = {
+export interface IConcept {
   alternative_labels: string[];
   count?: number;
   definition?: string;
@@ -342,7 +342,11 @@ export type TConcept = {
   subconcept_of: string[];
   wikibase_id: string;
   type?: "principal_law" | "jurisdiction" | "category";
-};
+}
+
+export interface LegalConcept extends IConcept {
+  type: "principal_law" | "jurisdiction" | "category";
+}
 
 export type TSearchResponse = {
   total_hits: number;

@@ -1,4 +1,4 @@
-import { TConcept } from "@/types";
+import { IConcept } from "@/types";
 
 // Define the root level concepts
 export const ROOT_LEVEL_CONCEPTS = {
@@ -14,7 +14,7 @@ export const ROOT_LEVEL_CONCEPTS = {
 };
 export const rootLevelConceptsIds = Object.keys(ROOT_LEVEL_CONCEPTS);
 
-const fetchConcept = async (conceptId: string): Promise<TConcept> => {
+const fetchConcept = async (conceptId: string): Promise<IConcept> => {
   return fetch(`https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`).then((response) => response.json());
 };
 
@@ -28,7 +28,7 @@ export const fetchAndProcessConcepts = async (conceptIds: string[]) => {
         preferred_label: ROOT_LEVEL_CONCEPTS[conceptId] || "Other",
         description: "Topic data unavailable",
         subconcept_of: [],
-      } as TConcept;
+      } as IConcept;
     }
   });
 
@@ -38,12 +38,12 @@ export const fetchAndProcessConcepts = async (conceptIds: string[]) => {
   /** We currently fail silently for some concepts, but we will see errors in the network panel */
   const rootConceptsResults = filteredConcepts
     .slice(0, rootConceptsS3Promises.length)
-    .filter((promiseSettledResult): promiseSettledResult is PromiseFulfilledResult<TConcept> => promiseSettledResult.status === "fulfilled")
+    .filter((promiseSettledResult): promiseSettledResult is PromiseFulfilledResult<IConcept> => promiseSettledResult.status === "fulfilled")
     .map((promiseSettledResult) => promiseSettledResult.value);
 
   const conceptsResults = filteredConcepts
     .slice(rootConceptsS3Promises.length)
-    .filter((promiseSettledResult): promiseSettledResult is PromiseFulfilledResult<TConcept> => promiseSettledResult.status === "fulfilled")
+    .filter((promiseSettledResult): promiseSettledResult is PromiseFulfilledResult<IConcept> => promiseSettledResult.status === "fulfilled")
     .map((promiseSettledResult) => promiseSettledResult.value);
 
   return { rootConcepts: rootConceptsResults, concepts: conceptsResults };
@@ -63,7 +63,7 @@ interface IRootConceptsMapped {
   [rootConcept: string]: IConceptMap;
 }
 
-export const processConcepts = (concepts: (TConcept & { count: number })[]): IRootConceptsMapped => {
+export const processConcepts = (concepts: (IConcept & { count: number })[]): IRootConceptsMapped => {
   const conceptMap: IRootConceptsMapped = {};
   const otherConcepts: IConceptMap = {};
 

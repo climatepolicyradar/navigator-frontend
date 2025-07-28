@@ -10,7 +10,7 @@ import { NewFeatureCard } from "@/components/molecules/newFeatures/NewFeatureCar
 import { NEW_FEATURES } from "@/constants/newFeatures";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { NewFeatureContext } from "@/context/NewFeatureContext";
-import { TConcept } from "@/types";
+import { IConcept } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
@@ -19,7 +19,7 @@ import { firstCase } from "@/utils/text";
 import { ExternalLink } from "../ExternalLink";
 
 interface IProps {
-  concepts: TConcept[];
+  concepts: IConcept[];
   containerClasses?: string;
   showBadge?: boolean;
   showSearch?: boolean;
@@ -42,7 +42,7 @@ const isSelected = (queryValue: string | string[] | undefined, option: string) =
   }
 };
 
-const conceptsSorter = (a: TConcept, b: TConcept, sort: TSort) => {
+const conceptsSorter = (a: IConcept, b: IConcept, sort: TSort) => {
   if (sort === "A-Z") {
     return a.preferred_label.localeCompare(b.preferred_label);
   } else if (sort === "Grouped") {
@@ -51,7 +51,7 @@ const conceptsSorter = (a: TConcept, b: TConcept, sort: TSort) => {
   return 0;
 };
 
-const filterConcepts = (concepts: TConcept[], search: string) => {
+const filterConcepts = (concepts: IConcept[], search: string) => {
   return concepts.filter(
     (concept) =>
       concept.preferred_label.toLowerCase().includes(search.toLowerCase()) ||
@@ -59,7 +59,7 @@ const filterConcepts = (concepts: TConcept[], search: string) => {
   );
 };
 
-const onConceptChange = (router: NextRouter, concept: TConcept) => {
+const onConceptChange = (router: NextRouter, concept: IConcept) => {
   const query = CleanRouterQuery({ ...router.query });
   // Retain any dynamic ids in the query (e.g. document page)
   if (router.query.id) {
@@ -84,11 +84,11 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
   const ref = useRef(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<TSort>(startingSort);
-  const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
+  const [rootConcepts, setRootConcepts] = useState<IConcept[]>([]);
   const [conceptsGrouped, setConceptsGrouped] = useState<{
-    [rootConceptId: string]: TConcept[];
+    [rootConceptId: string]: IConcept[];
   }>({});
-  const [filteredConcepts, setFilteredConcepts] = useState<TConcept[]>([]);
+  const [filteredConcepts, setFilteredConcepts] = useState<IConcept[]>([]);
 
   const selectOptions = SORT_OPTIONS.map((option) => ({
     value: option,

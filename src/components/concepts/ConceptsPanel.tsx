@@ -6,7 +6,7 @@ import { useContext, useState } from "react";
 import { Button } from "@/components/atoms/button/Button";
 import { NEW_FEATURES } from "@/constants/newFeatures";
 import { NewFeatureContext } from "@/context/NewFeatureContext";
-import { TConcept } from "@/types";
+import { IConcept } from "@/types";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { firstCase } from "@/utils/text";
@@ -19,13 +19,13 @@ import { NewFeatureCard } from "../molecules/newFeatures/NewFeatureCard";
 import { Heading } from "../typography/Heading";
 
 interface IProps {
-  concepts: TConcept[];
-  rootConcepts: TConcept[];
+  concepts: IConcept[];
+  rootConcepts: IConcept[];
   onConceptClick?: (conceptLabel: string) => void;
 }
 
 interface IConceptListProps {
-  concepts: TConcept[];
+  concepts: IConcept[];
   onConceptClick?: (conceptLabel: string) => void;
 }
 
@@ -67,7 +67,7 @@ const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
 export const ConceptsPanel = ({ rootConcepts, concepts, onConceptClick }: IProps) => {
   const { previousNewFeature } = useContext(NewFeatureContext);
 
-  const otherRootConcept: TConcept = {
+  const otherRootConcept: IConcept = {
     wikibase_id: "Q000",
     preferred_label: "Other",
     subconcept_of: [],

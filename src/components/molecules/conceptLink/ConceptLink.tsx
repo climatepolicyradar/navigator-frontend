@@ -1,14 +1,14 @@
 import { useState } from "react";
 
 import { Popover } from "@/components/atoms/popover/Popover";
-import { TConcept } from "@/types";
+import { IConcept } from "@/types";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { firstCase } from "@/utils/text";
 
 interface IProps {
-  concept: TConcept;
-  onClick?: (concept: TConcept) => void;
+  concept: IConcept;
+  onClick?: (concept: IConcept) => void;
   triggerClasses?: string;
 }
 

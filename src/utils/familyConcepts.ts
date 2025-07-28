@@ -1,4 +1,4 @@
-import { TConcept } from "@/types";
+import { IConcept } from "@/types";
 
 export type FamilyConcept = {
   relation: "category" | "jurisdiction" | "principal_law";
@@ -26,7 +26,7 @@ export function getRecursiveParentLabels(item: FamilyConcept, items: FamilyConce
   return recursiveParentLabels.toReversed();
 }
 
-export function mapFamilyConceptsToConcepts(familyConcepts: FamilyConcept[]): TConcept[] {
+export function mapFamilyConceptsToConcepts(familyConcepts: FamilyConcept[]): IConcept[] {
   return familyConcepts.map((familyConcept) => {
     return {
       wikibase_id: familyConcept.preferred_label,
