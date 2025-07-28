@@ -157,20 +157,7 @@ const generatePills = (
 
     if (value) {
       if (key === "year_range")
-        return pills.push(
-          handleFilterDisplay(
-            filterChange,
-            queryParams,
-            key,
-            value.toString(),
-            countries,
-            regions,
-            subdivisions,
-            themeConfig,
-            concepts,
-            familyConcepts
-          )
-        );
+        return pills.push(handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions, subdivisions, themeConfig));
       if (Array.isArray(value)) {
         return value.map((v: string) => {
           return pills.push(
