@@ -7,17 +7,18 @@ import { MenuItem } from "@/components/atoms/menu/MenuItem";
 import { MenuPopup } from "@/components/atoms/menu/MenuPopup";
 import { Tooltip } from "@/components/atoms/tooltip/Tooltip";
 import { joinTailwindClasses } from "@/utils/tailwind";
+import { firstCase } from "@/utils/text";
 
 const NULL_VALUE_DISPLAY = "–";
 
 type TValue = string | number | null;
 
-interface IInteractiveTableColumn<ColumnKey extends string> {
+export interface IInteractiveTableColumn<ColumnKey extends string> {
   classes?: string; // Styles every cell in the column
   fraction?: number; // CSS grid fractional units - the column's relative width
   id: ColumnKey;
-  name: string;
-  sortable?: boolean;
+  name?: string; // defaults to first-cased id
+  sortable?: boolean; // defaults to true
   tooltip?: ReactNode;
 }
 
@@ -28,7 +29,7 @@ export type TInteractiveTableCell =
       value: TValue;
     };
 
-interface IInteractiveTableRow<ColumnKey extends string> {
+export interface IInteractiveTableRow<ColumnKey extends string> {
   id: string;
   cells: Record<ColumnKey, TInteractiveTableCell>;
   classes?: string; // Styles every cell in the row
@@ -142,13 +143,13 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
           return (
             <div key={`heading-${column.id}`} className={cellClasses}>
               <div className="flex items-center gap-1 min-h-6">
-                <span className="block">{column.name}</span>
+                <span className="block">{column.name || firstCase(column.id)}</span>
                 {column.tooltip && (
                   <Tooltip content={column.tooltip} popupClasses="text-wrap max-w-[250px]">
                     <LucideInfo size={16} className="text-text-tertiary opacity-50 group-hover:opacity-100" />
                   </Tooltip>
                 )}
-                {column.sortable && renderSortControls(column)}
+                {column.sortable !== false && renderSortControls(column)}
               </div>
             </div>
           );
