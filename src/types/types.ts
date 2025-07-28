@@ -343,7 +343,7 @@ export interface IConcept {
   wikibase_id: string;
 }
 
-export interface LegalConcept extends IConcept {
+export interface ILegalConcept extends IConcept {
   type: "principal_law" | "jurisdiction" | "category";
 }
 
