@@ -40,7 +40,7 @@ import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import useSearch from "@/hooks/useSearch";
 import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
-import { FamilyConcept, mapFamilyConceptsToLegalConcepts } from "@/utils/familyConcepts";
+import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
@@ -750,7 +750,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     try {
       const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts`);
       const familyConceptsJson: { data: FamilyConcept[] } = await familyConceptsResponse.json();
-      familyConceptsData = mapFamilyConceptsToLegalConcepts(familyConceptsJson.data);
+      familyConceptsData = mapFamilyConceptsToConcepts(familyConceptsJson.data);
     } catch (e) {
       // TODO: handle error more elegantly
     }

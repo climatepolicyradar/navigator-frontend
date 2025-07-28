@@ -26,7 +26,7 @@ export function getRecursiveParentLabels(item: FamilyConcept, items: FamilyConce
   return recursiveParentLabels.toReversed();
 }
 
-export function mapFamilyConceptsToLegalConcepts(familyConcepts: FamilyConcept[]): TConcept[] {
+export function mapFamilyConceptsToConcepts(familyConcepts: FamilyConcept[]): TConcept[] {
   return familyConcepts.map((familyConcept) => {
     return {
       wikibase_id: `${familyConcept.relation}/${familyConcept.preferred_label}`,

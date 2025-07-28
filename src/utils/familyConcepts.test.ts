@@ -1,6 +1,6 @@
 import { TConcept } from "@/types";
 
-import { FamilyConcept, getRecursiveParentLabels, mapFamilyConceptsToLegalConcepts } from "./familyConcepts";
+import { FamilyConcept, getRecursiveParentLabels, mapFamilyConceptsToConcepts } from "./familyConcepts";
 
 const familyConcepts: FamilyConcept[] = [
   {
@@ -118,7 +118,7 @@ const expectedGroupMappedConcepts: TConcept[] = [
 
 describe("groupFamilyConcepts", () => {
   it("should group family concepts by their root ancestor", () => {
-    const result = mapFamilyConceptsToLegalConcepts(familyConcepts);
+    const result = mapFamilyConceptsToConcepts(familyConcepts);
     expect(result).toEqual(expect.arrayContaining(expectedGroupMappedConcepts));
   });
 });
