@@ -12,7 +12,7 @@ module.exports = {
     },
     upload: {
       target: "lhci",
-      serverBaseUrl: "http://ec2-54-217-16-2.eu-west-1.compute.amazonaws.com:9001/",
+      serverBaseUrl: "https://lhci.staging.climatepolicyradar.org/",
       token: "b68259a3-808c-4c71-84c0-ae91a43e0d9d",
     },
     assert: {
