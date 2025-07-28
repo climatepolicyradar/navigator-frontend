@@ -163,7 +163,7 @@ const SearchFilters = ({
             data-cy="principalLaws-control"
             {...{ [SLIDE_OUT_DATA_KEY]: "principalLaws" }}
           >
-            <Heading>Principle laws</Heading>
+            <Heading>Principal laws</Heading>
             <span
               className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
                 currentSlideOut === "principalLaws" ? "transform rotate-180" : ""

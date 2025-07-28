@@ -341,7 +341,6 @@ export interface IConcept {
   related_concepts: string[];
   subconcept_of: string[];
   wikibase_id: string;
-  type?: "principal_law" | "jurisdiction" | "category";
 }
 
 export interface LegalConcept extends IConcept {
