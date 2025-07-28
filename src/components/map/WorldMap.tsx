@@ -136,6 +136,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
 
 interface IProps {
   showLitigation?: boolean;
+  showCategorySelect?: boolean;
 }
 
 export default function MapChart({ showLitigation = false, showCategorySelect = true }: IProps) {
