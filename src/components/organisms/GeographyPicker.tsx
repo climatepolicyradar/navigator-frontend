@@ -5,7 +5,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 import useGeographySubdivisions from "@/hooks/useGeographySubdivisions";
 import useSubdivisions from "@/hooks/useSubdivisions";
-import { TGeography, TGeographySubdivision, TSearchCriteria } from "@/types";
+import { TGeography, TGeographySubdivision, TSearchCriteria, TGeographyWithDocumentCounts } from "@/types";
 
 import { InputListContainer } from "../filters/InputListContainer";
 import { InputCheck } from "../forms/Checkbox";
@@ -65,13 +65,22 @@ export const GeographyPicker = ({
   const { data: subdivisionsData = [] } = subdivisionQuery;
 
   let countrySubdivisions: TGeographySubdivision[] = [];
-  let subdivisions: TGeographySubdivision[] = [];
-  let alphabetisedFilteredSubdivisions: TGeographySubdivision[] = [];
+  let subdivisions: TGeographyWithDocumentCounts[] = [];
+  let alphabetisedFilteredSubdivisions: (TGeographySubdivision | TGeographyWithDocumentCounts)[] = [];
 
   if (litigationEnabled) {
     countrySubdivisions = countrySubdivisionsData;
     subdivisions = subdivisionsData;
-    const availableSubdivisions = countrySubdivisions && countrySubdivisions.length > 0 ? countrySubdivisions : subdivisions;
+
+    let availableSubdivisions: TGeographySubdivision[] | TGeographyWithDocumentCounts[] = [];
+
+    if (countrySubdivisions?.length > 0) {
+      const subdivisionCodes = new Set(subdivisionsData.map((sd) => sd.code));
+      availableSubdivisions = countrySubdivisions.filter((cs) => subdivisionCodes.has(cs.code));
+    } else {
+      availableSubdivisions = subdivisionsData;
+    }
+
     alphabetisedFilteredSubdivisions = availableSubdivisions
       .sort((s1, s2) => s1.name.localeCompare(s2.name))
       .filter((geo) => geo?.name?.toLowerCase().includes(subdivisionQuickSearch.toLowerCase()));

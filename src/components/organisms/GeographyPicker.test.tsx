@@ -5,21 +5,28 @@ import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 
 import { GeographyPicker } from "./GeographyPicker";
 
-const subdivisions = [
+const subdivisionsByCountries = [
   { code: "SUB-1", name: "Subdivision 1", country_alpha_3: "COU-1" },
   { code: "SUB-2", name: "Subdivision 2", country_alpha_3: "COU-2" },
   { code: "SUB-3", name: "Subdivision 3", country_alpha_3: "COU-3" },
+  { code: "SUB-4", name: "Subdivision 4", country_alpha_3: "COU-3" },
+];
+
+const subdivisionsWithCounts = [
+  { code: "SUB-1", name: "Subdivision 1", type: "ISO-3166-2", count: 5 },
+  { code: "SUB-2", name: "Subdivision 2", type: "ISO-3166-2", count: 3 },
+  { code: "SUB-3", name: "Subdivision 3", type: "ISO-3166-2", count: 7 },
 ];
 
 vi.mock("@/hooks/useSubdivisions", () => ({
   default: () => ({
-    data: subdivisions,
+    data: subdivisionsWithCounts,
   }),
 }));
 
 vi.mock("@/hooks/useGeographySubdivisions", () => ({
   default: (ids: string[]) => ({
-    data: subdivisions.filter((s) => ids?.includes(s.country_alpha_3)),
+    data: subdivisionsByCountries.filter((s) => ids?.includes(s.country_alpha_3)),
   }),
 }));
 
@@ -87,7 +94,7 @@ describe("GeographyPicker", () => {
     expect(screen.getByRole("checkbox", { name: "Country 3" })).toBeInTheDocument();
   });
 
-  it("shows a list of all subdivisions when no country is selected", async () => {
+  it("shows a list of all subdivisions with valid data and document counts when no country is selected", async () => {
     renderWithAppContext(GeographyPicker, {
       ...geoPickerProps,
       searchQuery: {
@@ -104,9 +111,31 @@ describe("GeographyPicker", () => {
     expect(screen.getByRole("checkbox", { name: "Subdivision 1" })).toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: "Subdivision 2" })).toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: "Subdivision 3" })).toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "Subdivision 4" })).not.toBeInTheDocument();
   });
 
   it("only shows a list of subdivisions related to the selected country", async () => {
+    renderWithAppContext(GeographyPicker, {
+      ...geoPickerProps,
+      searchQuery: {
+        keyword_filters: {
+          regions: [],
+          countries: ["country-3"],
+          subdivisions: [],
+        },
+      },
+    });
+
+    expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: "Country 3" })).toBeChecked();
+
+    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+
+    expect(screen.getByRole("checkbox", { name: "Subdivision 3" })).toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "Subdivision 4" })).not.toBeInTheDocument();
+  });
+
+  it("only shows a list of subdivisions with valid document counts when a country is selected", async () => {
     renderWithAppContext(GeographyPicker, {
       ...geoPickerProps,
       searchQuery: {
@@ -126,6 +155,7 @@ describe("GeographyPicker", () => {
     expect(screen.getByRole("checkbox", { name: "Subdivision 1" })).toBeInTheDocument();
     expect(screen.queryByRole("checkbox", { name: "Subdivision 2" })).not.toBeInTheDocument();
     expect(screen.queryByRole("checkbox", { name: "Subdivision 3" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "Subdivision 4" })).not.toBeInTheDocument();
   });
 
   it("only shows a list of subdivisions related to the selected region when no country is selected", async () => {

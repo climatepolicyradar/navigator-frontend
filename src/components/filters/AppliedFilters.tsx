@@ -11,7 +11,7 @@ import { getCountryName } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
 import useSubdivisions from "@/hooks/useSubdivisions";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { TConcept, TGeography, TGeographySubdivision, TThemeConfig } from "@/types";
+import { TConcept, TGeography, TGeographySubdivision, TThemeConfig, TGeographyWithDocumentCounts } from "@/types";
 
 type TFilterChange = (type: string, value: string) => void;
 
@@ -25,11 +25,11 @@ const handleCountryRegion = (slug: string, dataSet: TGeography[]) => {
   return getCountryName(slug, dataSet);
 };
 
-const handleSubdivision = (alpha_3: string, subdivisions: TGeographySubdivision[]): string => {
+const handleSubdivision = (iso_code: string, subdivisions: TGeographyWithDocumentCounts[]): string => {
   if (!subdivisions) {
     return null;
   }
-  const subdivisionMatch = subdivisions.find((s) => s.code === alpha_3);
+  const subdivisionMatch = subdivisions.find((s) => s.code === iso_code);
   return subdivisionMatch?.name;
 };
 
@@ -60,7 +60,7 @@ const handleFilterDisplay = (
   value: string,
   countries: TGeography[],
   regions: TGeography[],
-  subdivisions: TGeographySubdivision[],
+  subdivisions: TGeographyWithDocumentCounts[],
   themeConfig: TThemeConfig,
   concepts?: TConcept[],
   familyConcepts?: TConcept[]
@@ -142,7 +142,7 @@ const generatePills = (
   filterChange: TFilterChange,
   countries: TGeography[],
   regions: TGeography[],
-  subdivisions: TGeographySubdivision[],
+  subdivisions: TGeographyWithDocumentCounts[],
   themeConfig: TThemeConfig,
   concepts?: TConcept[],
   familyConcepts?: TConcept[]
