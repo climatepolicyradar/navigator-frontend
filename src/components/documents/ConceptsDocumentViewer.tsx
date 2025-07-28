@@ -15,7 +15,7 @@ import { MAX_RESULTS } from "@/constants/paging";
 import { SEARCH_PASSAGE_ORDER } from "@/constants/searchPassagesOrder";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
-import { IConcept, TDocumentPage, TLoadingStatus, TMatchedFamily, TPassage, TSearchResponse } from "@/types";
+import { TConcept, TDocumentPage, TLoadingStatus, TMatchedFamily, TPassage, TSearchResponse } from "@/types";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
 import { getCurrentPassagesOrderChoice } from "@/utils/getPassagesSortOrder";
@@ -83,7 +83,7 @@ export const ConceptsDocumentViewer = ({
     totalNoOfMatches: 0,
   });
 
-  const [familyConcepts, setFamilyConcepts] = useState<IConcept[]>([]);
+  const [familyConcepts, setFamilyConcepts] = useState<TConcept[]>([]);
 
   const canPreview = !!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf");
 
@@ -105,8 +105,8 @@ export const ConceptsDocumentViewer = ({
     });
   });
 
-  const documentConcepts: IConcept[] = useMemo(() => {
-    const uniqueConceptMap = new Map<string, { concept: IConcept; count: number }>();
+  const documentConcepts: TConcept[] = useMemo(() => {
+    const uniqueConceptMap = new Map<string, { concept: TConcept; count: number }>();
 
     (vespaDocumentData?.families ?? []).forEach((family) => {
       family.hits.forEach((hit) => {

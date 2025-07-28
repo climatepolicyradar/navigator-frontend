@@ -11,14 +11,14 @@ import { getCountryName } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
 import useSubdivisions from "@/hooks/useSubdivisions";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { IConcept, TGeography, TGeographySubdivision, TThemeConfig } from "@/types";
+import { TConcept, TGeography, TGeographySubdivision, TThemeConfig } from "@/types";
 
 type TFilterChange = (type: string, value: string) => void;
 
 interface IProps {
   filterChange: TFilterChange;
-  concepts?: IConcept[];
-  familyConcepts?: IConcept[];
+  concepts?: TConcept[];
+  familyConcepts?: TConcept[];
 }
 
 const handleCountryRegion = (slug: string, dataSet: TGeography[]) => {
@@ -33,7 +33,7 @@ const handleSubdivision = (alpha_3: string, subdivisions: TGeographySubdivision[
   return subdivisionMatch?.name;
 };
 
-const handleConceptName = (label: string, concepts: IConcept[]) => {
+const handleConceptName = (label: string, concepts: TConcept[]) => {
   if (!concepts) {
     return label;
   }
@@ -62,8 +62,8 @@ const handleFilterDisplay = (
   regions: TGeography[],
   subdivisions: TGeographySubdivision[],
   themeConfig: TThemeConfig,
-  concepts?: IConcept[],
-  familyConcepts?: IConcept[]
+  concepts?: TConcept[],
+  familyConcepts?: TConcept[]
 ) => {
   let filterLabel: string | null | undefined = null;
   let filterValue = value;
@@ -144,8 +144,8 @@ const generatePills = (
   regions: TGeography[],
   subdivisions: TGeographySubdivision[],
   themeConfig: TThemeConfig,
-  concepts?: IConcept[],
-  familyConcepts?: IConcept[]
+  concepts?: TConcept[],
+  familyConcepts?: TConcept[]
 ) => {
   const pills: JSX.Element[] = [];
 

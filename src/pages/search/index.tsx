@@ -39,7 +39,7 @@ import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
 import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import useSearch from "@/hooks/useSearch";
-import { IConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
+import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToLegalConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
@@ -54,8 +54,8 @@ interface IProps {
   theme: TTheme;
   themeConfig: TThemeConfig;
   featureFlags: TFeatureFlags;
-  conceptsData?: IConcept[] | null;
-  familyConceptsData?: IConcept[] | null;
+  conceptsData?: TConcept[] | null;
+  familyConceptsData?: TConcept[] | null;
 }
 
 const SETTINGS_ANIMATION_VARIANTS = {
@@ -107,7 +107,7 @@ const showSearchOnboarding = (query: ParsedUrlQuery) => {
   return false;
 };
 
-const getSelectedConcepts = (selectedConcepts: string | string[], allConcepts: IConcept[] = []): IConcept[] => {
+const getSelectedConcepts = (selectedConcepts: string | string[], allConcepts: TConcept[] = []): TConcept[] => {
   const selectedConceptsAsArray = Array.isArray(selectedConcepts) ? selectedConcepts : [selectedConcepts];
   return allConcepts?.filter((concept) => selectedConceptsAsArray.includes(concept.preferred_label.toLowerCase())) || [];
 };
@@ -733,7 +733,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
 
-  let conceptsData: IConcept[];
+  let conceptsData: TConcept[];
   if (knowledgeGraphEnabled) {
     try {
       const client = new ApiClient(process.env.CONCEPTS_API_URL);
@@ -745,7 +745,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   // TODO: Next - start rendering this data
-  let familyConceptsData: IConcept[] | undefined;
+  let familyConceptsData: TConcept[] | undefined;
   if (isLitigationEnabled(featureFlags, themeConfig)) {
     try {
       const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts`);

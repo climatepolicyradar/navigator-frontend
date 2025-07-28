@@ -2,16 +2,16 @@ import React from "react";
 
 import { ConceptLink } from "@/components/molecules/conceptLink/ConceptLink";
 import { MAX_PASSAGES } from "@/constants/paging";
-import { IConcept } from "@/types";
+import { TConcept } from "@/types";
 
 interface IArgs {
   isExactSearch?: boolean;
   passageMatches: number;
   queryTerm: string | string[];
-  selectedTopics: IConcept[];
+  selectedTopics: TConcept[];
 }
 
-export const ResultsTopicsContext = ({ phrase, selectedTopics }: { phrase: string; selectedTopics: IConcept[] }) => {
+export const ResultsTopicsContext = ({ phrase, selectedTopics }: { phrase: string; selectedTopics: TConcept[] }) => {
   return (
     <>
       {phrase && <>'{phrase}'&nbsp;</>}

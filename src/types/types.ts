@@ -328,7 +328,7 @@ export interface IDictionary<T> {
 export type TOrganisationDictionary = IDictionary<TOrganisation>;
 export type TCorpusTypeDictionary = IDictionary<TCorpusType>;
 
-export type IConcept = {
+export type TConcept = {
   alternative_labels: string[];
   count?: number;
   definition?: string;

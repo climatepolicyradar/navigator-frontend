@@ -32,7 +32,7 @@ import { getMainDocuments } from "@/helpers/getMainDocuments";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import useSearch from "@/hooks/useSearch";
 import {
-  IConcept,
+  TConcept,
   TCorpusTypeDictionary,
   TDocumentPage,
   TFamilyPage,
@@ -164,8 +164,8 @@ export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page,
   }, [pathname]);
 
   /** Concepts */
-  const [concepts, setConcepts] = useState<IConcept[]>([]);
-  const [rootConcepts, setRootConcepts] = useState<IConcept[]>([]);
+  const [concepts, setConcepts] = useState<TConcept[]>([]);
+  const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
   const conceptCounts: { conceptKey: string; count: number }[] = useMemo(() => {
     const uniqueConceptMap = new Map<string, number>();
 

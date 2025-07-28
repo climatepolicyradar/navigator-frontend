@@ -1,11 +1,11 @@
-import { IConcept } from "@/types";
+import { TConcept } from "@/types";
 
 // TODO: remove this concept tech-debt
 // Ticket: APP-711
 const DISABLED_CONCEPTS = ["Q777", "Q778", "Q639", "Q650", "Q661", "Q221"];
 
-export const groupByRootConcept = (concepts: IConcept[], rootConcepts: IConcept[]): { [rootConceptId: string]: IConcept[] } => {
-  const otherRootConcept: IConcept = {
+export const groupByRootConcept = (concepts: TConcept[], rootConcepts: TConcept[]): { [rootConceptId: string]: TConcept[] } => {
+  const otherRootConcept: TConcept = {
     wikibase_id: "Q000",
     preferred_label: "Other",
     subconcept_of: [],

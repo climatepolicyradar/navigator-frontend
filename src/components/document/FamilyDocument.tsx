@@ -5,7 +5,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getDocumentType } from "@/helpers/getDocumentType";
 import { getLanguage } from "@/helpers/getLanguage";
 import useConfig from "@/hooks/useConfig";
-import { IConcept, TDocumentPage, TLoadingStatus } from "@/types";
+import { TConcept, TDocumentPage, TLoadingStatus } from "@/types";
 import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
 
 interface IProps {
@@ -13,7 +13,7 @@ interface IProps {
   matches?: number;
   status?: TLoadingStatus;
   familyMatches?: number;
-  concepts?: IConcept[];
+  concepts?: TConcept[];
 }
 
 const loadingIndicator = (
