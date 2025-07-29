@@ -29,7 +29,7 @@ export const getFamilyMetadata = (family: TFamilyPage, countries: TGeography[]):
   const familyMetadata = [];
 
   // TODO: handle more categories and their specific metadata later
-  if (family.category.toLowerCase() === "litigation") {
+  if (family.corpus_type_name.toLowerCase() === "litigation") {
     familyMetadata.push(...getLitigationMetaData(family, countries));
   }
 
@@ -67,7 +67,11 @@ function getLitigationMetaData(family: TFamilyPage, countries: TGeography[]): IM
 
   metadata.push({
     label: "Docket number",
-    value: <div className="grid">{family.metadata.case_number?.map((label) => <span key={label}>{label}</span>) || "N/A"}</div>,
+    value: (
+      <div className="grid">
+        {family.metadata.case_number?.length > 0 ? family.metadata.case_number?.map((label) => <span key={label}>{label}</span>) : "N/A"}
+      </div>
+    ),
   });
 
   metadata.push({
@@ -77,43 +81,22 @@ function getLitigationMetaData(family: TFamilyPage, countries: TGeography[]): IM
 
   // Court/Admin entity
   const legalEntities = hierarchy.filter((concept) => concept.type === "legal_entity");
-  if (legalEntities.length > 0) {
-    metadata.push({
-      label: "Court/Admin entity",
-      value: <div className="grid">{legalEntities.map((entity) => displayConceptChildren(entity))}</div>,
-    });
-  } else {
-    metadata.push({
-      label: "Court/Admin entity",
-      value: "N/A",
-    });
-  }
+  metadata.push({
+    label: "Court/Admin entity",
+    value: <div className="grid">{legalEntities.length > 0 ? legalEntities.map((entity) => displayConceptChildren(entity)) : "N/A"}</div>,
+  });
 
   const caseCategories = hierarchy.filter((concept) => concept.type === "legal_category");
-  if (caseCategories.length > 0) {
-    metadata.push({
-      label: "Case category",
-      value: <div className="grid">{caseCategories.map((category) => displayConceptChildren(category))}</div>,
-    });
-  } else {
-    metadata.push({
-      label: "Case category",
-      value: "N/A",
-    });
-  }
+  metadata.push({
+    label: "Case category",
+    value: <div className="grid">{caseCategories.length > 0 ? caseCategories.map((category) => displayConceptChildren(category)) : "N/A"}</div>,
+  });
 
   const principalLaws = hierarchy.filter((concept) => concept.type === "law");
-  if (principalLaws.length > 0) {
-    metadata.push({
-      label: "Principal law",
-      value: <div className="grid">{principalLaws.map((law) => displayConceptChildren(law))}</div>,
-    });
-  } else {
-    metadata.push({
-      label: "Principal law",
-      value: "N/A",
-    });
-  }
+  metadata.push({
+    label: "Principal law",
+    value: <div className="grid">{principalLaws.length > 0 ? principalLaws.map((law) => displayConceptChildren(law)) : "N/A"}</div>,
+  });
 
   return metadata;
 }

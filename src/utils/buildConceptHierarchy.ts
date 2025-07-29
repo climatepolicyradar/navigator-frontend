@@ -26,9 +26,9 @@ function buildTree(
   }
   visited.add(concept.id);
 
-  // Find children: concepts where this concept is a parent
+  // Find children: concepts where this concept is a parent and of the same type
   const children = allConcepts
-    .filter((child) => child.subconcept_of_labels.includes(concept.preferred_label))
+    .filter((child) => child.subconcept_of_labels.includes(concept.preferred_label) && child.type === concept.type)
     .map((child) => buildTree(child, labelMap, allConcepts, new Set(visited)));
 
   return {
