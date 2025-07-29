@@ -70,6 +70,13 @@ export type TGeographySubdivision = {
   country_alpha_3: string;
 };
 
+export type TGeographyWithDocumentCounts = {
+  code: string;
+  name: string;
+  type: string;
+  count: number;
+};
+
 export type TTarget = {
   ID: string;
   "Target type": string;
