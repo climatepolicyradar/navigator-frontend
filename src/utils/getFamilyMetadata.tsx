@@ -3,6 +3,26 @@ import { Fragment } from "react";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { TFamilyPage, IMetadata, TGeography } from "@/types";
+import { buildConceptHierarchy, TFamilyConceptTreeNode } from "@/utils/buildConceptHierarchy";
+
+// Recursively display the children of a concept
+function displayConceptChildren(concept: TFamilyConceptTreeNode): React.ReactNode {
+  if (concept.children.length === 0) {
+    return <span key={concept.id}>{concept.preferred_label}</span>;
+  }
+  return (
+    <span key={concept.id}>
+      {concept.preferred_label}
+      {concept.children.length > 0 && " → "}
+      {concept.children.map((child, index) => (
+        <Fragment key={child.id}>
+          {index > 0 && " → "}
+          {displayConceptChildren(child)}
+        </Fragment>
+      ))}
+    </span>
+  );
+}
 
 // Format the family metadata into a shape suitable for the MetadataBlock component
 export const getFamilyMetadata = (family: TFamilyPage, countries: TGeography[]): IMetadata[] => {
@@ -18,6 +38,9 @@ export const getFamilyMetadata = (family: TFamilyPage, countries: TGeography[]):
 
 function getLitigationMetaData(family: TFamilyPage, countries: TGeography[]): IMetadata[] {
   const metadata = [];
+
+  // Structure concepts into a hierarchy for use later
+  const hierarchy = buildConceptHierarchy(family.concepts);
 
   const filingYearEvent = family.events.find((event) => event.event_type === "Filing Year For Action");
   if (filingYearEvent) {
@@ -42,17 +65,27 @@ function getLitigationMetaData(family: TFamilyPage, countries: TGeography[]): IM
     });
   }
 
-  if (family.metadata.case_number?.length > 0) {
-    metadata.push({
-      label: "Docket number",
-      value: <div className="grid">{family.metadata.case_number?.map((label) => <span key={label}>{label}</span>) || "N/A"}</div>,
-    });
-  }
+  metadata.push({
+    label: "Docket number",
+    value: <div className="grid">{family.metadata.case_number?.map((label) => <span key={label}>{label}</span>) || "N/A"}</div>,
+  });
 
-  if (family.metadata.status) {
+  metadata.push({
+    label: "Status",
+    value: family.metadata.status ?? "N/A",
+  });
+
+  // Court/Admin entity
+  const legalEntities = hierarchy.filter((concept) => concept.type === "legal_entity");
+  if (legalEntities.length > 0) {
     metadata.push({
-      label: "Status",
-      value: family.metadata.status,
+      label: "Court/Admin entity",
+      value: <div className="grid">{legalEntities.map((entity) => displayConceptChildren(entity))}</div>,
+    });
+  } else {
+    metadata.push({
+      label: "Court/Admin entity",
+      value: "N/A",
     });
   }
 
