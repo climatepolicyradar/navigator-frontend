@@ -15,6 +15,9 @@ export default meta;
 
 export const Default: TStory = {
   args: {
-    family: FAMILY_PAGE_STUB,
+    family: {
+      ...FAMILY_PAGE_STUB,
+      documents: [...FAMILY_PAGE_STUB.documents, ...FAMILY_PAGE_STUB.documents],
+    },
   },
 };

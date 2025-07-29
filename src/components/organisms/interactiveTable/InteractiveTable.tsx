@@ -157,28 +157,33 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
       </div>
 
       {/* Rows */}
-      {sortedRows.map((row) => (
-        <div key={`row-${row.id}`} className="contents">
-          {columns.map((column) => {
-            const cell = row.cells[column.id];
+      {sortedRows.map((row, rowIndex) => {
+        const lastRow = rowIndex + 1 === sortedRows.length;
 
-            let cellDisplay: ReactNode = NULL_VALUE_DISPLAY;
-            if (cell !== null) cellDisplay = typeof cell === "object" ? cell.display : `${cell}`;
+        return (
+          <div key={`row-${row.id}`} className="contents">
+            {columns.map((column) => {
+              const cell = row.cells[column.id];
 
-            const cellClasses = joinTailwindClasses(
-              "px-2.5 py-3 border-b border-l border-border-light first:border-l-0",
-              column.classes,
-              row.classes
-            );
+              let cellDisplay: ReactNode = NULL_VALUE_DISPLAY;
+              if (cell !== null) cellDisplay = typeof cell === "object" ? cell.display : `${cell}`;
 
-            return (
-              <div key={`row-${row.id}-${column.id}`} className={cellClasses}>
-                {cellDisplay}
-              </div>
-            );
-          })}
-        </div>
-      ))}
+              const cellClasses = joinTailwindClasses(
+                "px-2.5 py-3 border-l border-border-light first:border-l-0",
+                !lastRow && "border-b",
+                column.classes,
+                row.classes
+              );
+
+              return (
+                <div key={`row-${row.id}-${column.id}`} className={cellClasses}>
+                  {cellDisplay}
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 };
