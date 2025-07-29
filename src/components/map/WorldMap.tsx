@@ -136,9 +136,10 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
 
 interface IProps {
   showLitigation?: boolean;
+  showCategorySelect?: boolean;
 }
 
-export default function MapChart({ showLitigation = false }: IProps) {
+export default function MapChart({ showLitigation = false, showCategorySelect = true }: IProps) {
   const configQuery = useConfig();
   const geographiesQuery = useGeographies();
   const { data: { countries: configCountries = [] } = {} } = configQuery;
@@ -270,23 +271,26 @@ export default function MapChart({ showLitigation = false }: IProps) {
   return (
     <>
       <div className="flex justify-between items-center my-4">
-        <div>
-          <select
-            className="border border-gray-300 small rounded-full !pl-4"
-            onChange={(e) => {
-              setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc" | "mcf" | "reports" | "litigation");
-            }}
-            value={selectedFamCategory}
-            aria-label="Select a document type to display on the map"
-            name="Document type selector"
-          >
-            <option value="lawsPolicies">Laws and policies</option>
-            <option value="unfccc">UNFCCC</option>
-            {showMcf && <option value="mcf">MCF projects</option>}
-            <option value="reports">Reports</option>
-            {showLitigation && <option value="litigation">Litigation</option>}
-          </select>
-        </div>
+        {showCategorySelect && (
+          <div>
+            <select
+              className="border border-gray-300 small rounded-full !pl-4"
+              onChange={(e) => {
+                setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc" | "mcf" | "reports" | "litigation");
+              }}
+              value={selectedFamCategory}
+              aria-label="Select a document type to display on the map"
+              name="Document type selector"
+            >
+              <option value="lawsPolicies">Laws and policies</option>
+              <option value="unfccc">UNFCCC</option>
+              {showMcf && <option value="mcf">MCF projects</option>}
+              <option value="reports">Reports</option>
+              {showLitigation && <option value="litigation">Litigation</option>}
+            </select>
+          </div>
+        )}
+
         <div>
           <div className="flex items-center gap-4">
             <div className="relative w-[300px]" data-cy="geographies">
