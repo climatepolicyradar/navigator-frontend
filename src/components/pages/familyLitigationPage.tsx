@@ -16,7 +16,7 @@ import { convertDate } from "@/utils/timedate";
 
 import { IProps } from "./familyOriginalPage";
 
-export const FamilyLitigationPage = ({ countries, family, theme, themeConfig, newFamilyData }: IProps) => {
+export const FamilyLitigationPage = ({ countries, family, theme, themeConfig }: IProps) => {
   const categoryName = getCategoryName(family.category, family.corpus_type_name, family.organisation);
   const [year] = convertDate(family.published_date);
 
@@ -62,9 +62,6 @@ export const FamilyLitigationPage = ({ countries, family, theme, themeConfig, ne
           </TextBlock>
           <MetadataBlock title="About this case" metadata={getFamilyMetadata(family)} />
           <pre className="w-full max-h-[1000px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(family, null, 2)}</pre>
-          <pre className="w-full max-h-[1000px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">
-            {JSON.stringify(newFamilyData, null, 2)}
-          </pre>
         </main>
       </Columns>
     </Layout>
