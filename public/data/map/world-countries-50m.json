@@ -14,7 +14,7 @@
           "properties": { "name": "Vietnam" }
         },
         { "type": "MultiPolygon", "arcs": [[[28]], [[29]], [[30]], [[31]], [[32, 33, 34, 35]]], "id": "862", "properties": { "name": "Venezuela" } },
-        { "type": "Polygon", "arcs": [[36]], "id": "336", "properties": { "name": "Vatican" } },
+        { "type": "Polygon", "arcs": [[36]], "id": "336", "properties": { "name": "Holy See (Vatican City State)" } },
         {
           "type": "MultiPolygon",
           "arcs": [[[37]], [[38]], [[39]], [[40]], [[41]], [[42]], [[43]], [[44]], [[45]], [[46]], [[47]], [[48]], [[49]], [[50]]],
@@ -23,15 +23,20 @@
         },
         { "type": "MultiPolygon", "arcs": [[[51, 52, 53, 54, 55], [56]], [[57]], [[58]]], "id": "860", "properties": { "name": "Uzbekistan" } },
         { "type": "Polygon", "arcs": [[59, 60, 61]], "id": "858", "properties": { "name": "Uruguay" } },
-        { "type": "MultiPolygon", "arcs": [[[62]], [[63]], [[64]], [[65]], [[66]]], "id": "583", "properties": { "name": "Micronesia" } },
+        {
+          "type": "MultiPolygon",
+          "arcs": [[[62]], [[63]], [[64]], [[65]], [[66]]],
+          "id": "583",
+          "properties": { "name": "Micronesia, Federated States of" }
+        },
         { "type": "MultiPolygon", "arcs": [[[67]], [[68]], [[69]], [[70]], [[71]]], "id": "584", "properties": { "name": "Marshall Islands" } },
         {
           "type": "MultiPolygon",
           "arcs": [[[72]], [[73]], [[74]], [[75]], [[76]], [[77]]],
           "id": "580",
-          "properties": { "name": "N. Mariana Islands" }
+          "properties": { "name": "Northern Mariana Islands" }
         },
-        { "type": "MultiPolygon", "arcs": [[[78]], [[79]], [[80]]], "id": "850", "properties": { "name": "U.S. Virgin Islands" } },
+        { "type": "MultiPolygon", "arcs": [[[78]], [[79]], [[80]]], "id": "850", "properties": { "name": "Virgin Islands, U.S." } },
         { "type": "Polygon", "arcs": [[81]], "id": "316", "properties": { "name": "Guam" } },
         { "type": "Polygon", "arcs": [[82]], "id": "016", "properties": { "name": "American Samoa" } },
         { "type": "MultiPolygon", "arcs": [[[83]], [[84]], [[85]]], "id": "630", "properties": { "name": "Puerto Rico" } },
@@ -344,12 +349,12 @@
           "id": "682",
           "properties": { "name": "Saudi Arabia" }
         },
-        { "type": "MultiPolygon", "arcs": [[[509]], [[510]]], "id": "678", "properties": { "name": "São Tomé and Principe" } },
+        { "type": "MultiPolygon", "arcs": [[[509]], [[510]]], "id": "678", "properties": { "name": "Sao Tome and Principe" } },
         { "type": "Polygon", "arcs": [[511]], "id": "674", "properties": { "name": "San Marino" } },
         { "type": "MultiPolygon", "arcs": [[[512]], [[513]]], "id": "882", "properties": { "name": "Samoa" } },
-        { "type": "MultiPolygon", "arcs": [[[514]], [[515]], [[516]]], "id": "670", "properties": { "name": "St. Vin. and Gren." } },
+        { "type": "MultiPolygon", "arcs": [[[514]], [[515]], [[516]]], "id": "670", "properties": { "name": "Saint Vincent and the Grenadines" } },
         { "type": "Polygon", "arcs": [[517]], "id": "662", "properties": { "name": "Saint Lucia" } },
-        { "type": "MultiPolygon", "arcs": [[[518]], [[519]]], "id": "659", "properties": { "name": "St. Kitts and Nevis" } },
+        { "type": "MultiPolygon", "arcs": [[[518]], [[519]]], "id": "659", "properties": { "name": "Saint Kitts and Nevis" } },
         { "type": "Polygon", "arcs": [[-295, -353, 520, 521]], "id": "646", "properties": { "name": "Rwanda" } },
         {
           "type": "MultiPolygon",
@@ -684,7 +689,7 @@
           "type": "Polygon",
           "arcs": [[-485, 922, 923, 924, 925]],
           "id": "807",
-          "properties": { "name": "North Macedonia (Republic of North Macedonia)" }
+          "properties": { "name": "North Macedonia" }
         },
         { "type": "Polygon", "arcs": [[926, 927, 928]], "id": "442", "properties": { "name": "Luxembourg" } },
         { "type": "MultiPolygon", "arcs": [[[-639, 929]], [[-636, 930, 931, 932, -660]]], "id": "440", "properties": { "name": "Lithuania" } },
@@ -781,7 +786,7 @@
           "properties": { "name": "Italy" }
         },
         { "type": "Polygon", "arcs": [[-367, -987, 1032, -985, 1033, 1034, 1035, 1036, -942]], "id": "376", "properties": { "name": "Israel" } },
-        { "type": "MultiPolygon", "arcs": [[[-1036, 1037, 1038]], [[-986, -1033]]], "id": "275", "properties": { "name": "Palestine" } },
+        { "type": "MultiPolygon", "arcs": [[[-1036, 1037, 1038]], [[-986, -1033]]], "id": "275", "properties": { "name": "Palestine, State of" } },
         { "type": "MultiPolygon", "arcs": [[[1039]], [[-269, 1040]]], "id": "372", "properties": { "name": "Ireland" } },
         { "type": "Polygon", "arcs": [[-309, 1041, 1042, -953, -503, -983, -365]], "id": "368", "properties": { "name": "Iraq" } },
         {
@@ -1039,10 +1044,10 @@
           "id": "250",
           "properties": { "name": "France" }
         },
-        { "type": "MultiPolygon", "arcs": [[[1317]], [[1318]]], "id": "666", "properties": { "name": "St. Pierre and Miquelon" } },
-        { "type": "MultiPolygon", "arcs": [[[1319]], [[1320]]], "id": "876", "properties": { "name": "Wallis and Futuna Islands" } },
-        { "type": "Polygon", "arcs": [[1321, 1322]], "id": "663", "properties": { "name": "St-Martin" } },
-        { "type": "Polygon", "arcs": [[1323]], "id": "652", "properties": { "name": "St-Barthélemy" } },
+        { "type": "MultiPolygon", "arcs": [[[1317]], [[1318]]], "id": "666", "properties": { "name": "Saint-Pierre-et-Miquelon" } },
+        { "type": "MultiPolygon", "arcs": [[[1319]], [[1320]]], "id": "876", "properties": { "name": "Wallis-et-Futuna" } },
+        { "type": "Polygon", "arcs": [[1321, 1322]], "id": "663", "properties": { "name": "Saint-Martin" } },
+        { "type": "Polygon", "arcs": [[1323]], "id": "652", "properties": { "name": "Saint-Barthélemy" } },
         {
           "type": "MultiPolygon",
           "arcs": [
@@ -1069,7 +1074,7 @@
             [[1344]]
           ],
           "id": "258",
-          "properties": { "name": "French Polynesia" }
+          "properties": { "name": "Polynésie française" }
         },
         {
           "type": "MultiPolygon",
@@ -1203,7 +1208,7 @@
           "type": "Polygon",
           "arcs": [[-7, 1479, 1480, 1481, 1482, 1483, -390, -296, -522, 1484, -351]],
           "id": "180",
-          "properties": { "name": "Congo, Democratic Republic of the" }
+          "properties": { "name": "Congo, The Democratic Republic of the" }
         },
         { "type": "Polygon", "arcs": [[-1299, 1485, 1486, -1483, 1487, 1488]], "id": "178", "properties": { "name": "Congo" } },
         { "type": "MultiPolygon", "arcs": [[[1489]], [[1490]], [[1491]]], "id": "174", "properties": { "name": "Comoros" } },
@@ -1238,7 +1243,7 @@
           "id": "156",
           "properties": { "name": "China" }
         },
-        { "type": "Polygon", "arcs": [[-1515, 1517]], "id": "446", "properties": { "name": "Macao" } },
+        { "type": "Polygon", "arcs": [[-1515, 1517]], "id": "446", "properties": { "name": "Macao SAR" } },
         { "type": "MultiPolygon", "arcs": [[[-1513, 1518]], [[1519]], [[1520]]], "id": "344", "properties": { "name": "Hong Kong" } },
         {
           "type": "MultiPolygon",
@@ -1600,7 +1605,7 @@
           "id": "032",
           "properties": { "name": "Argentina" }
         },
-        { "type": "MultiPolygon", "arcs": [[[1843]], [[1844]]], "id": "028", "properties": { "name": "Antigua and Barbados" } },
+        { "type": "MultiPolygon", "arcs": [[[1843]], [[1844]]], "id": "028", "properties": { "name": "Antigua and Barbuda" } },
         { "type": "MultiPolygon", "arcs": [[[-1482, 1845, -1488]], [[-6, -855, 1846, -1480]]], "id": "024", "properties": { "name": "Angola" } },
         { "type": "Polygon", "arcs": [[-410, -1306]], "id": "020", "properties": { "name": "Andorra" } },
         { "type": "Polygon", "arcs": [[-316, -938, -811, -900, -896, -863, -860, 1847]], "id": "012", "properties": { "name": "Algeria" } },
