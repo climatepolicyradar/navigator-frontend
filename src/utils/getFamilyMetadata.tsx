@@ -39,7 +39,7 @@ export const getFamilyMetadata = (family: TFamilyPage, countries: TGeography[]):
 function getLitigationMetaData(family: TFamilyPage, countries: TGeography[]): IMetadata[] {
   const metadata = [];
 
-  // Structure concepts into a hierarchy for use later
+  // Structure concepts into a hierarchy
   const hierarchy = buildConceptHierarchy(family.concepts);
 
   const filingYearEvent = family.events.find((event) => event.event_type === "Filing Year For Action");
@@ -89,17 +89,29 @@ function getLitigationMetaData(family: TFamilyPage, countries: TGeography[]): IM
     });
   }
 
-  if (family.metadata.concept_preferred_label) {
+  const caseCategories = hierarchy.filter((concept) => concept.type === "legal_category");
+  if (caseCategories.length > 0) {
     metadata.push({
-      label: "Concept preferred label",
-      value: <div className="grid">{family.metadata.concept_preferred_label?.map((label) => <span key={label}>{label}</span>) || "N/A"}</div>,
+      label: "Case category",
+      value: <div className="grid">{caseCategories.map((category) => displayConceptChildren(category))}</div>,
+    });
+  } else {
+    metadata.push({
+      label: "Case category",
+      value: "N/A",
     });
   }
 
-  if (family.metadata.original_case_name.length > 0) {
+  const principalLaws = hierarchy.filter((concept) => concept.type === "law");
+  if (principalLaws.length > 0) {
     metadata.push({
-      label: "Original case name",
-      value: <div className="grid">{family.metadata.original_case_name?.map((label) => <span key={label}>{label}</span>) || "N/A"}</div>,
+      label: "Principal law",
+      value: <div className="grid">{principalLaws.map((law) => displayConceptChildren(law))}</div>,
+    });
+  } else {
+    metadata.push({
+      label: "Principal law",
+      value: "N/A",
     });
   }
 
