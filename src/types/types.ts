@@ -168,6 +168,22 @@ export type TFamilyDocument = {
   document_url: string;
 };
 
+export type TFamilyConcept = {
+  id: string;
+  ids: unknown[];
+  preferred_label: string;
+  relation: string;
+  subconcept_of_labels: string[];
+  type: string;
+};
+
+export type TFamilyCorpus = {
+  corpus_type_name: string;
+  import_id: string;
+  organisation_id: number;
+  title: string;
+};
+
 export type TFamily = {
   corpus_type_name: TCorpusTypeSubCategory;
   family_category: TCategory;
@@ -182,11 +198,11 @@ export type TFamily = {
 };
 
 export type TFamilyPage = {
-  organisation: string;
+  import_id: string;
   title: string;
+  organisation: string;
   summary: string;
   geographies: string[];
-  import_id: string;
   category: TCategory;
   corpus_type_name: TCorpusTypeSubCategory;
   metadata: TFamilyMetadata;
@@ -198,6 +214,11 @@ export type TFamilyPage = {
   published_date: string | null;
   last_updated_date: string | null;
   status?: string;
+};
+
+export type TFamilyNew = TFamilyPage & {
+  concepts: TFamilyConcept[];
+  corpus: TFamilyCorpus;
 };
 
 export type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
@@ -241,7 +262,8 @@ export type TFamilyMetadata = {
   author?: string[];
   document_type?: string;
   // Litigation specific metadata
-  status?: string;
+  id?: string[];
+  status?: string[];
   case_number?: string[];
   concept_preferred_label?: string[];
   core_object?: string[];
