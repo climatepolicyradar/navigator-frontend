@@ -199,6 +199,7 @@ export type TFamilyPage = {
   last_updated_date: string | null;
   status?: string;
   organisation_attribution_url?: string | null;
+  concepts: TFamilyConcept[];
 };
 
 export type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
@@ -357,6 +358,15 @@ export type TConcept = {
   subconcept_of: string[];
   wikibase_id: string;
   type?: "principal_law" | "jurisdiction" | "category";
+};
+
+export type TFamilyConcept = {
+  id: string;
+  ids: string[];
+  type: string;
+  relation: string;
+  preferred_label: string;
+  subconcept_of_labels: string[];
 };
 
 export type TSearchResponse = {
