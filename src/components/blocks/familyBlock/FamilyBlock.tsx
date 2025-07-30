@@ -5,8 +5,27 @@ import { Button } from "@/components/atoms/button/Button";
 import { Card } from "@/components/atoms/card/Card";
 import { Section } from "@/components/molecules/section/Section";
 import { IInteractiveTableColumn, IInteractiveTableRow, InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { TFamilyPage } from "@/types";
+import { TDocumentNew, TEvent, TFamilyNew } from "@/types";
 import { pluralise } from "@/utils/pluralise";
+import { formatDateShort } from "@/utils/timedate";
+
+type TEventAndDocument = {
+  event: TEvent;
+  document?: TDocumentNew;
+};
+
+export const getEventId = (event: TEvent) => [event.title, event.event_type, event.date].join("-");
+
+// Matches documents up to events (inversion of API response shape)
+export const getEventsAndDocuments = (family: TFamilyNew): TEventAndDocument[] => {
+  const eventsWithDocuments: TEventAndDocument[] = family.documents.map((doc) => doc.events.map((event) => ({ event, document: doc }))).flat();
+
+  return family.events.map((event) => {
+    const eventWithDocument = eventsWithDocuments.find((pair) => getEventId(event) === getEventId(pair.event));
+
+    return eventWithDocument || { event };
+  });
+};
 
 type TTableColumn = "date" | "type" | "action" | "document" | "summary";
 const TABLE_COLUMNS: IInteractiveTableColumn<TTableColumn>[] = [
@@ -19,52 +38,46 @@ const TABLE_COLUMNS: IInteractiveTableColumn<TTableColumn>[] = [
 const MAX_ENTRIES_SHOWN = 4;
 
 interface IProps {
-  family: TFamilyPage;
+  family: TFamilyNew;
 }
 
 export const FamilyBlock = ({ family }: IProps) => {
   const [showAllEntries, setShowAllEntries] = useState(false);
-  const { documents } = family;
 
-  const documentsToHide = documents.length > MAX_ENTRIES_SHOWN;
+  const tableRows: IInteractiveTableRow<TTableColumn>[] = useMemo(
+    () =>
+      getEventsAndDocuments(family).map(({ event, document }) => {
+        const date = new Date(event.date);
+
+        return {
+          id: getEventId(event),
+          cells: {
+            date: {
+              display: formatDateShort(date),
+              value: date.getUTCSeconds(),
+            },
+            type: event.event_type,
+            action: event.title,
+            document: document
+              ? {
+                  display: (
+                    <LinkWithQuery href={`/documents/${document.slug}`} className="underline">
+                      View
+                    </LinkWithQuery>
+                  ),
+                  value: document.slug,
+                }
+              : null,
+            summary: event.metadata.description?.[0] ?? null,
+          },
+        };
+      }),
+    [family]
+  );
 
   const toggleShowAll = () => {
     setShowAllEntries((current) => !current);
   };
-
-  const formatDate = (date: Date): string => {
-    if (isNaN(date.getTime())) return "";
-
-    return new Intl.DateTimeFormat(navigator?.language ?? "en-GB", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(date);
-  };
-
-  const tableRows: IInteractiveTableRow<TTableColumn>[] = useMemo(() => {
-    if (documents.length === 0) return [];
-
-    const shownDocuments = documentsToHide && !showAllEntries ? documents.slice(0, 4) : documents;
-
-    return shownDocuments.map((doc) => ({
-      id: doc.slug,
-      cells: {
-        date: formatDate(new Date(family.published_date)),
-        type: doc.document_type,
-        action: "Action taken",
-        document: {
-          display: (
-            <LinkWithQuery href={`/documents/${doc.slug}`} className="underline">
-              View
-            </LinkWithQuery>
-          ),
-          value: doc.slug,
-        },
-        summary: "Summary",
-      },
-    }));
-  }, [documents, documentsToHide, family.published_date, showAllEntries]);
 
   return (
     <Section id={`section-${family.slug}`}>
@@ -78,7 +91,7 @@ export const FamilyBlock = ({ family }: IProps) => {
           </LinkWithQuery>
           <div className="mt-2 flex gap-4 flex-wrap text-sm text-text-tertiary leading-none">
             <span>
-              {documents.length} {pluralise(documents.length, "entry", "entries")}
+              {tableRows.length} {pluralise(tableRows.length, "entry", "entries")}
             </span>
           </div>
           <InteractiveTable<TTableColumn> columns={TABLE_COLUMNS} rows={tableRows} tableClasses="pt-8" />

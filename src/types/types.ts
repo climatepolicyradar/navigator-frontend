@@ -135,7 +135,7 @@ export type TGeographySummary = {
 };
 
 export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC" | "MCF" | "Reports";
-export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Reports";
+export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Reports" | "Litigation";
 export type TDisplayCategory = "All" | TCategory;
 export type TEventCategory = TCategory | "Target";
 
@@ -144,6 +144,7 @@ export type TEvent = {
   date: string;
   event_type: string;
   status: string;
+  metadata: Record<string, unknown> | null;
 };
 
 export type TAssociatedDocument = {
@@ -216,9 +217,10 @@ export type TFamilyPage = {
   status?: string;
 };
 
-export type TFamilyNew = TFamilyPage & {
+export type TFamilyNew = Omit<TFamilyPage, "documents"> & {
   concepts: TFamilyConcept[];
   corpus: TFamilyCorpus;
+  documents: TDocumentNew[];
 };
 
 export type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
@@ -236,6 +238,10 @@ export type TDocumentPage = {
   languages: string[];
   document_type: string | null;
   document_role: string;
+};
+
+export type TDocumentNew = TDocumentPage & {
+  events: TEvent[];
 };
 
 export type TCollection = {

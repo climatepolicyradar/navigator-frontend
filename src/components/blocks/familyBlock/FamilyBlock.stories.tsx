@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
 
-import { FAMILY_PAGE_STUB } from "@/stubs/familyPageStub";
+import { FAMILY_NEW_STUB } from "@/stubs/familyNewStub";
 
 import { FamilyBlock } from "./FamilyBlock";
 
@@ -15,9 +15,6 @@ export default meta;
 
 export const Default: TStory = {
   args: {
-    family: {
-      ...FAMILY_PAGE_STUB,
-      documents: [...FAMILY_PAGE_STUB.documents, ...FAMILY_PAGE_STUB.documents],
-    },
+    family: FAMILY_NEW_STUB,
   },
 };
