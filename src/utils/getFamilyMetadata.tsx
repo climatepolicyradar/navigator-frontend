@@ -75,6 +75,15 @@ function getLitigationMetaData(family: TFamilyPage, countries: TGeography[]): IM
   });
 
   metadata.push({
+    label: "At issue",
+    value: (
+      <div className="grid">
+        {family.metadata.core_object.length > 0 ? family.metadata.core_object.map((label) => <span key={label}>{label}</span>) : "N/A"}
+      </div>
+    ),
+  });
+
+  metadata.push({
     label: "Status",
     value: family.metadata.status ?? "N/A",
   });
