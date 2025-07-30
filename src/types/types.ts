@@ -215,6 +215,7 @@ export type TFamilyPage = {
   published_date: string | null;
   last_updated_date: string | null;
   status?: string;
+  organisation_attribution_url?: string | null;
   concepts: TFamilyConcept[];
 };
 
