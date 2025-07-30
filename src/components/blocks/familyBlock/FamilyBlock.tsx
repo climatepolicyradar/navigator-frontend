@@ -64,7 +64,7 @@ export const FamilyBlock = ({ family, showValues = false }: IProps) => {
                   value: document.slug,
                 }
               : null,
-            summary: event.metadata.description?.[0] || null,
+            summary: event.metadata.description?.[0] || null, // TODO handle long descriptions
           },
         };
       }),
