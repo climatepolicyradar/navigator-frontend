@@ -43,11 +43,12 @@ interface ISortRules<ColumnKey extends string> {
 export interface IProps<ColumnKey extends string> {
   columns: IInteractiveTableColumn<ColumnKey>[];
   defaultSort?: ISortRules<ColumnKey>;
+  maxRows?: number;
   rows: IInteractiveTableRow<ColumnKey>[];
   tableClasses?: string;
 }
 
-export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSort, rows, tableClasses }: IProps<ColumnKey>) => {
+export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSort, maxRows = 0, rows, tableClasses }: IProps<ColumnKey>) => {
   const [openSortMenu, setOpenSortMenu] = useState<string | null>(null);
   const [sortRules, setSortRules] = useState<ISortRules<ColumnKey>>(
     defaultSort || {
@@ -75,8 +76,8 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
         },
       ],
       ["asc", sortRules.ascending ? "asc" : "desc"]
-    );
-  }, [rows, sortRules]);
+    ).slice(0, maxRows > 0 ? maxRows : undefined);
+  }, [maxRows, rows, sortRules]);
 
   // Track which sort menu is open so header cell styling can stay applied
   const onToggleMenu = (column: ColumnKey) => (open: boolean) => {
