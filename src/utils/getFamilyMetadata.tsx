@@ -39,7 +39,7 @@ export const getFamilyMetadata = (family: TFamilyPage, countries: TGeography[]):
 function getLitigationMetaData(family: TFamilyPage, countries: TGeography[]): IMetadata[] {
   const metadata = [];
 
-  // Structure concepts into a hierarchy
+  // Structure concepts into a hierarchy we can use
   const hierarchy = buildConceptHierarchy(family.concepts);
 
   const filingYearEvent = family.events.find((event) => event.event_type === "Filing Year For Action");
