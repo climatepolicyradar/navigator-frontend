@@ -40,6 +40,14 @@ interface ISortRules<ColumnKey extends string> {
   ascending: boolean;
 }
 
+const renderCellDisplay = (cell: TInteractiveTableCell, showValues: boolean) => {
+  if (cell === null) return NULL_VALUE_DISPLAY;
+
+  let content: ReactNode = `${cell}`;
+  if (typeof cell === "object") content = showValues ? cell.value : cell.display;
+  return showValues ? <div className="inline-block bg-surface-ui text-sm text-text-tertiary font-mono">{content}</div> : content;
+};
+
 export interface IProps<ColumnKey extends string> {
   columns: IInteractiveTableColumn<ColumnKey>[];
   defaultSort?: ISortRules<ColumnKey>;
@@ -136,14 +144,6 @@ export const InteractiveTable = <ColumnKey extends string>({
     );
   };
 
-  const renderCellDisplay = (cell: Record<ColumnKey, TInteractiveTableCell>[ColumnKey]) => {
-    if (cell === null) return NULL_VALUE_DISPLAY;
-
-    let content: ReactNode = `${cell}`;
-    if (typeof cell === "object") content = showValues ? cell.value : cell.display;
-    return showValues ? <div className="inline-block bg-surface-ui text-sm text-text-tertiary font-mono">{content}</div> : content;
-  };
-
   const allTableClasses = joinTailwindClasses("grid text-sm text-text-secondary leading-tight", tableClasses);
   const gridTemplateColumns = columns.map((column) => `${column.fraction || 1}fr`).join(" ");
 
@@ -191,7 +191,7 @@ export const InteractiveTable = <ColumnKey extends string>({
 
               return (
                 <div key={`row-${row.id}-${column.id}`} className={cellClasses}>
-                  {renderCellDisplay(cell)}
+                  {renderCellDisplay(cell, showValues)}
                 </div>
               );
             })}
