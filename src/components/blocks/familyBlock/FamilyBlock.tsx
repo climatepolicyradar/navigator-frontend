@@ -9,33 +9,27 @@ import { TDocumentNew, TEvent, TFamilyNew } from "@/types";
 import { pluralise } from "@/utils/pluralise";
 import { formatDateShort } from "@/utils/timedate";
 
-type TEventAndDocument = {
+type TEventWithDocument = {
   event: TEvent;
   document?: TDocumentNew;
 };
 
-const getEventId = (event: TEvent) => [event.title, event.event_type, event.date].join("-");
+// Gets all events in a family. Family events and document events do not overlap
+export const getEventsWithDocuments = (family: TFamilyNew): TEventWithDocument[] => [
+  ...family.events.map((event) => ({ event })),
+  ...family.documents.map((document) => document.events.map((event) => ({ event, document }))).flat(),
+];
 
-// Matches documents up to events (inversion of API response shape)
-export const getEventsAndDocuments = (family: TFamilyNew): TEventAndDocument[] => {
-  const eventsWithDocuments: TEventAndDocument[] = family.documents.map((doc) => doc.events.map((event) => ({ event, document: doc }))).flat();
-
-  return family.events.map((event) => {
-    const eventWithDocument = eventsWithDocuments.find((pair) => getEventId(event) === getEventId(pair.event));
-
-    return eventWithDocument || { event };
-  });
-};
+const MAX_ENTRIES_SHOWN = 4;
 
 type TTableColumn = "date" | "type" | "action" | "document" | "summary";
 const TABLE_COLUMNS: IInteractiveTableColumn<TTableColumn>[] = [
   { id: "date", name: "Filing Date", fraction: 2 },
   { id: "type", fraction: 3 },
-  { id: "action", name: "Action taken", fraction: 4 },
+  { id: "action", name: "Action taken", fraction: 3 },
   { id: "document" },
-  { id: "summary", fraction: 4 },
+  { id: "summary", fraction: 6 },
 ];
-const MAX_ENTRIES_SHOWN = 4;
 
 interface IProps {
   family: TFamilyNew;
@@ -46,11 +40,11 @@ export const FamilyBlock = ({ family }: IProps) => {
 
   const tableRows: IInteractiveTableRow<TTableColumn>[] = useMemo(
     () =>
-      getEventsAndDocuments(family).map(({ event, document }) => {
+      getEventsWithDocuments(family).map(({ event, document }) => {
         const date = new Date(event.date);
 
         return {
-          id: getEventId(event),
+          id: [event.date, event.event_type, event.title].join("-"), // TODO replace with event.id once added
           cells: {
             date: {
               display: formatDateShort(date),
@@ -68,7 +62,7 @@ export const FamilyBlock = ({ family }: IProps) => {
                   value: document.slug,
                 }
               : null,
-            summary: event.metadata.description?.[0] ?? null,
+            summary: event.metadata.description?.[0] || null,
           },
         };
       }),
