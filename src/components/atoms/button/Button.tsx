@@ -69,7 +69,7 @@ export const getButtonClasses = ({
       textSize = "text-xs";
       break;
     case "small":
-      sizing = isIcon ? "w-7 h-7" : "px-2.5 py-2";
+      sizing = isIcon ? "w-7 h-7" : "px-2.5 py-2.25";
       textSize = "text-sm";
       break;
     case "medium":

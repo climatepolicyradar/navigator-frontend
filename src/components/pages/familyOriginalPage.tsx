@@ -35,6 +35,7 @@ import {
   TConcept,
   TCorpusTypeDictionary,
   TDocumentPage,
+  TFamilyNew,
   TFamilyPage,
   TFeatureFlags,
   TGeography,
@@ -53,7 +54,7 @@ import { truncateString } from "@/utils/truncateString";
 export interface IProps {
   corpus_types: TCorpusTypeDictionary;
   countries: TGeography[];
-  family: TFamilyPage;
+  family: TFamilyPage | TFamilyNew;
   featureFlags: TFeatureFlags;
   targets: TTarget[];
   theme: TTheme;
