@@ -215,6 +215,7 @@ export type TFamilyPage = {
   published_date: string | null;
   last_updated_date: string | null;
   status?: string;
+  concepts: TFamilyConcept[];
 };
 
 export type TFamilyNew = Omit<TFamilyPage, "documents"> & {
@@ -384,6 +385,15 @@ export type TConcept = {
   subconcept_of: string[];
   wikibase_id: string;
   type?: "principal_law" | "jurisdiction" | "category";
+};
+
+export type TFamilyConcept = {
+  id: string;
+  ids: string[];
+  type: string;
+  relation: string;
+  preferred_label: string;
+  subconcept_of_labels: string[];
 };
 
 export type TSearchResponse = {

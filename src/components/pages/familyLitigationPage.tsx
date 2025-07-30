@@ -68,7 +68,7 @@ export const FamilyLitigationPage = ({ countries, family, theme, themeConfig }: 
           <TextBlock>
             <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
           </TextBlock>
-          <MetadataBlock title="About this case" metadata={getFamilyMetadata(family)} />
+          <MetadataBlock title="About this case" metadata={getFamilyMetadata(family, countries)} />
           <pre className="w-full max-h-[1000px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(family, null, 2)}</pre>
         </main>
       </Columns>
