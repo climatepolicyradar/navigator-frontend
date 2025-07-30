@@ -76,8 +76,9 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
         },
       ],
       ["asc", sortRules.ascending ? "asc" : "desc"]
-    ).slice(0, maxRows > 0 ? maxRows : undefined);
-  }, [maxRows, rows, sortRules]);
+    );
+  }, [rows, sortRules]);
+  const displayedRows = sortedRows.slice(0, maxRows || undefined);
 
   // Track which sort menu is open so header cell styling can stay applied
   const onToggleMenu = (column: ColumnKey) => (open: boolean) => {
@@ -158,8 +159,8 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
       </div>
 
       {/* Rows */}
-      {sortedRows.map((row, rowIndex) => {
-        const lastRow = rowIndex + 1 === sortedRows.length;
+      {displayedRows.map((row, rowIndex) => {
+        const lastRow = rowIndex + 1 === displayedRows.length;
 
         return (
           <div key={`row-${row.id}`} className="contents">

@@ -14,7 +14,7 @@ type TEventAndDocument = {
   document?: TDocumentNew;
 };
 
-export const getEventId = (event: TEvent) => [event.title, event.event_type, event.date].join("-");
+const getEventId = (event: TEvent) => [event.title, event.event_type, event.date].join("-");
 
 // Matches documents up to events (inversion of API response shape)
 export const getEventsAndDocuments = (family: TFamilyNew): TEventAndDocument[] => {
@@ -54,7 +54,7 @@ export const FamilyBlock = ({ family }: IProps) => {
           cells: {
             date: {
               display: formatDateShort(date),
-              value: date.getUTCSeconds(),
+              value: date.getTime(),
             },
             type: event.event_type,
             action: event.title,
@@ -75,6 +75,8 @@ export const FamilyBlock = ({ family }: IProps) => {
     [family]
   );
 
+  const entriesToHide = family.events.length > MAX_ENTRIES_SHOWN;
+
   const toggleShowAll = () => {
     setShowAllEntries((current) => !current);
   };
@@ -94,11 +96,19 @@ export const FamilyBlock = ({ family }: IProps) => {
               {tableRows.length} {pluralise(tableRows.length, "entry", "entries")}
             </span>
           </div>
-          <InteractiveTable<TTableColumn> columns={TABLE_COLUMNS} rows={tableRows} tableClasses="pt-8" />
+          <InteractiveTable<TTableColumn>
+            columns={TABLE_COLUMNS}
+            defaultSort={{ column: "date", ascending: false }}
+            rows={tableRows}
+            maxRows={showAllEntries ? 0 : MAX_ENTRIES_SHOWN}
+            tableClasses="pt-8"
+          />
         </Card>
-        <Button color="mono" size="small" rounded onClick={toggleShowAll} className="absolute -bottom-4 left-5">
-          {showAllEntries ? "Show less" : "Show all"}
-        </Button>
+        {entriesToHide && (
+          <Button color="mono" size="small" rounded onClick={toggleShowAll} className="absolute -bottom-4 left-5">
+            {showAllEntries ? "Show less" : "Show all"}
+          </Button>
+        )}
       </div>
     </Section>
   );
