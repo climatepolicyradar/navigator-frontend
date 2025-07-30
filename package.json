@@ -108,5 +108,13 @@
     "typescript-eslint": "^8.33.0",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^2.1.8"
+  },
+  "overrides": {
+    "react-simple-maps": {
+      "d3-geo": "^3.1.0",
+      "d3-color": "^3.1.0",
+      "d3-selection": "^3.0.0",
+      "d3-zoom": "^3.0.0"
+    }
   }
 }
