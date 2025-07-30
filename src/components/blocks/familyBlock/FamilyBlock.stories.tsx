@@ -16,5 +16,6 @@ export default meta;
 export const Default: TStory = {
   args: {
     family: FAMILY_NEW_STUB,
+    showValues: false,
   },
 };

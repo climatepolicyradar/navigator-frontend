@@ -109,6 +109,7 @@ export const Generic: TStory<TWainwrightColumns> = {
     ],
     maxRows: 0,
     tableClasses: "min-w-[650px]",
+    showValues: false,
   },
 };
 

@@ -46,9 +46,17 @@ export interface IProps<ColumnKey extends string> {
   maxRows?: number;
   rows: IInteractiveTableRow<ColumnKey>[];
   tableClasses?: string;
+  showValues?: boolean; // Debug mode for understanding sorting
 }
 
-export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSort, maxRows = 0, rows, tableClasses }: IProps<ColumnKey>) => {
+export const InteractiveTable = <ColumnKey extends string>({
+  columns,
+  defaultSort,
+  maxRows = 0,
+  rows,
+  showValues = false,
+  tableClasses,
+}: IProps<ColumnKey>) => {
   const [openSortMenu, setOpenSortMenu] = useState<string | null>(null);
   const [sortRules, setSortRules] = useState<ISortRules<ColumnKey>>(
     defaultSort || {
@@ -128,6 +136,14 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
     );
   };
 
+  const renderCellDisplay = (cell: Record<ColumnKey, TInteractiveTableCell>[ColumnKey]) => {
+    if (cell === null) return NULL_VALUE_DISPLAY;
+
+    let content: ReactNode = `${cell}`;
+    if (typeof cell === "object") content = showValues ? cell.value : cell.display;
+    return showValues ? <div className="inline-block bg-surface-ui text-sm text-text-tertiary font-mono">{content}</div> : content;
+  };
+
   const allTableClasses = joinTailwindClasses("grid text-sm text-text-secondary leading-tight", tableClasses);
   const gridTemplateColumns = columns.map((column) => `${column.fraction || 1}fr`).join(" ");
 
@@ -166,10 +182,6 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
           <div key={`row-${row.id}`} className="contents">
             {columns.map((column) => {
               const cell = row.cells[column.id];
-
-              let cellDisplay: ReactNode = NULL_VALUE_DISPLAY;
-              if (cell !== null) cellDisplay = typeof cell === "object" ? cell.display : `${cell}`;
-
               const cellClasses = joinTailwindClasses(
                 "px-2.5 py-3 border-l border-border-light first:border-l-0",
                 !lastRow && "border-b",
@@ -179,7 +191,7 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
 
               return (
                 <div key={`row-${row.id}-${column.id}`} className={cellClasses}>
-                  {cellDisplay}
+                  {renderCellDisplay(cell)}
                 </div>
               );
             })}

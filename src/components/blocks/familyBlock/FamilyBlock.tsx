@@ -14,7 +14,8 @@ type TEventWithDocument = {
   document?: TDocumentNew;
 };
 
-// Gets all events in a family. Family events and document events do not overlap
+// Gets a flat list of all events in a family
+// TODO investigate duplicates between family events and document events
 export const getEventsWithDocuments = (family: TFamilyNew): TEventWithDocument[] => [
   ...family.events.map((event) => ({ event })),
   ...family.documents.map((document) => document.events.map((event) => ({ event, document }))).flat(),
@@ -28,23 +29,24 @@ const TABLE_COLUMNS: IInteractiveTableColumn<TTableColumn>[] = [
   { id: "type", fraction: 3 },
   { id: "action", name: "Action taken", fraction: 3 },
   { id: "document" },
-  { id: "summary", fraction: 6 },
+  { id: "summary", sortable: false, fraction: 6 },
 ];
 
 interface IProps {
   family: TFamilyNew;
+  showValues?: boolean; // Debug mode for understanding table sorting
 }
 
-export const FamilyBlock = ({ family }: IProps) => {
+export const FamilyBlock = ({ family, showValues = false }: IProps) => {
   const [showAllEntries, setShowAllEntries] = useState(false);
 
   const tableRows: IInteractiveTableRow<TTableColumn>[] = useMemo(
     () =>
-      getEventsWithDocuments(family).map(({ event, document }) => {
+      getEventsWithDocuments(family).map(({ event, document }, eventIndex) => {
         const date = new Date(event.date);
 
         return {
-          id: [event.date, event.event_type, event.title].join("-"), // TODO replace with event.id once added
+          id: `${eventIndex}`, // TODO replace with event.id once added
           cells: {
             date: {
               display: formatDateShort(date),
@@ -96,6 +98,7 @@ export const FamilyBlock = ({ family }: IProps) => {
             rows={tableRows}
             maxRows={showAllEntries ? 0 : MAX_ENTRIES_SHOWN}
             tableClasses="pt-8"
+            showValues={showValues}
           />
         </Card>
         {entriesToHide && (
