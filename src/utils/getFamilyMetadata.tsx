@@ -79,7 +79,6 @@ function getLitigationMetaData(family: TFamilyPage, countries: TGeography[]): IM
     value: family.metadata.status ?? "N/A",
   });
 
-  // Court/Admin entity
   const legalEntities = hierarchy.filter((concept) => concept.type === "legal_entity");
   metadata.push({
     label: "Court/Admin entity",
