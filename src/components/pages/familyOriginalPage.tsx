@@ -84,6 +84,7 @@ export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page,
 
   const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
+  const attributionUrl = page?.organisation_attribution_url;
 
   const geographyNames = page.geographies ? page.geographies.map((geo) => getCountryName(geo, countries)) : null;
   const geographyName = geographyNames ? geographyNames[0] : "";
@@ -212,7 +213,12 @@ export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page,
   };
 
   return (
-    <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)} theme={theme}>
+    <Layout
+      title={`${page.title}`}
+      description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)}
+      theme={theme}
+      attributionUrl={attributionUrl}
+    >
       <Script id="analytics">
         analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "
         {page.geographies?.join(",")}";

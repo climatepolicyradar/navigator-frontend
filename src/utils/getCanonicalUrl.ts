@@ -6,8 +6,8 @@ import getThemeDomain from "./getThemeDomain";
 
 // Get the canonical URL for the current page
 // This is used to tell search engines the preferred URL for the current page
-export const getCanonicalUrl = (router: NextRouter, theme: TTheme): string => {
-  const themeDomain = getThemeDomain(theme);
+export const getCanonicalUrl = (router: NextRouter, theme: TTheme, attribution_url = null): string => {
+  const themeDomain = attribution_url ? attribution_url : getThemeDomain(theme);
 
   // Get the length of the path slice to remove query params and hash
   // We specifically do not want to include query params or hash in the canonical URL

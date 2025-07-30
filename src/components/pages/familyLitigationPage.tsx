@@ -19,6 +19,7 @@ import { IProps } from "./familyOriginalPage";
 export const FamilyLitigationPage = ({ countries, family, theme, themeConfig }: IProps) => {
   const categoryName = getCategoryName(family.category, family.corpus_type_name, family.organisation);
   const [year] = convertDate(family.published_date);
+  const attributionUrl = family?.organisation_attribution_url;
 
   const pageHeaderMetadata: IPageHeaderMetadata[] = [
     { label: "Date", value: isNaN(year) ? "" : year },
@@ -51,6 +52,7 @@ export const FamilyLitigationPage = ({ countries, family, theme, themeConfig }: 
       theme={theme}
       themeConfig={themeConfig}
       metadataKey="family"
+      attributionUrl={attributionUrl}
     >
       <PageHeader label={categoryName} title={family.title} metadata={pageHeaderMetadata} />
       <Columns>
