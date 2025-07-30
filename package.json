@@ -12,6 +12,7 @@
     "add-dev": "docker-compose exec -w /opt/node_app frontend npm install -D",
     "remove": "docker-compose exec -w /opt/node_app frontend npm uninstall",
     "test": "vitest",
+    "test-list": "vitest list",
     "test-e2e": "npx playwright test",
     "test-e2e-ui": "npx playwright test --ui",
     "test-e2e-staging": "PLAYWRIGHT_ENV=staging npx playwright test",
