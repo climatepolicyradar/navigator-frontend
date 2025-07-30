@@ -6,7 +6,7 @@ import { TFamilyPage, IMetadata, TGeography } from "@/types";
 import { buildConceptHierarchy, TFamilyConceptTreeNode } from "@/utils/buildConceptHierarchy";
 
 // Recursively display the children of a concept
-function displayConceptChildren(concept: TFamilyConceptTreeNode): React.ReactNode {
+function displayConceptHierarchy(concept: TFamilyConceptTreeNode): React.ReactNode {
   if (concept.children.length === 0) {
     return <span key={concept.id}>{concept.preferred_label}</span>;
   }
@@ -17,7 +17,7 @@ function displayConceptChildren(concept: TFamilyConceptTreeNode): React.ReactNod
       {concept.children.map((child, index) => (
         <Fragment key={child.id}>
           {index > 0 && " → "}
-          {displayConceptChildren(child)}
+          {displayConceptHierarchy(child)}
         </Fragment>
       ))}
     </span>
@@ -83,19 +83,19 @@ function getLitigationMetaData(family: TFamilyPage, countries: TGeography[]): IM
   const legalEntities = hierarchy.filter((concept) => concept.type === "legal_entity");
   metadata.push({
     label: "Court/Admin entity",
-    value: <div className="grid">{legalEntities.length > 0 ? legalEntities.map((entity) => displayConceptChildren(entity)) : "N/A"}</div>,
+    value: <div className="grid">{legalEntities.length > 0 ? legalEntities.map((entity) => displayConceptHierarchy(entity)) : "N/A"}</div>,
   });
 
   const caseCategories = hierarchy.filter((concept) => concept.type === "legal_category");
   metadata.push({
     label: "Case category",
-    value: <div className="grid">{caseCategories.length > 0 ? caseCategories.map((category) => displayConceptChildren(category)) : "N/A"}</div>,
+    value: <div className="grid">{caseCategories.length > 0 ? caseCategories.map((category) => displayConceptHierarchy(category)) : "N/A"}</div>,
   });
 
   const principalLaws = hierarchy.filter((concept) => concept.type === "law");
   metadata.push({
     label: "Principal law",
-    value: <div className="grid">{principalLaws.length > 0 ? principalLaws.map((law) => displayConceptChildren(law)) : "N/A"}</div>,
+    value: <div className="grid">{principalLaws.length > 0 ? principalLaws.map((law) => displayConceptHierarchy(law)) : "N/A"}</div>,
   });
 
   return metadata;
