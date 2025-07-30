@@ -24,7 +24,6 @@
   },
   "dependencies": {
     "@base-ui-components/react": "^1.0.0-alpha.6",
-    "@hookform/resolvers": "^2.8.8",
     "axios": "^0.30.0",
     "babel-loader": "^9.1.0",
     "cypress-pseudo-localization": "^1.0.0",
