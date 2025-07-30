@@ -52,11 +52,6 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
   const dynamicAdobeKey = adobeApiKey ?? adobeKey;
 
   useEffect(() => {
-    // For access inside Cypress:
-    if (window?.Cypress) {
-      window.queryClient = queryClient;
-    }
-
     // Determine the last feature the user saw
     const updateCookie = parseInt(getCookie(COOKIE_FEATURES_NAME));
     setPreviousNewFeature(Number.isNaN(updateCookie) ? -1 : updateCookie);

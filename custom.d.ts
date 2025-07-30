@@ -2,7 +2,6 @@ interface Window {
   _paq?: (Dimensions | number[] | string[] | number | string | null | undefined)[][] | null;
   _mtm?: any;
   dataLayer?: any;
-  Cypress?: any;
   queryClient: any;
   AdobeDC: any;
 }
@@ -11,7 +10,6 @@ declare namespace NodeJS {
     _paq?: (Dimensions | number[] | string[] | number | string | null | undefined)[][] | null;
     _mtm?: any;
     dataLayer?: any;
-    Cypress?: any;
     queryClient: any;
   }
 }
