@@ -135,7 +135,7 @@ export type TGeographySummary = {
 };
 
 export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC" | "MCF" | "Reports";
-export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Reports";
+export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Reports" | "Litigation";
 export type TDisplayCategory = "All" | TCategory;
 export type TEventCategory = TCategory | "Target";
 
@@ -144,6 +144,7 @@ export type TEvent = {
   date: string;
   event_type: string;
   status: string;
+  metadata: Record<string, unknown> | null;
 };
 
 export type TAssociatedDocument = {
@@ -168,6 +169,22 @@ export type TFamilyDocument = {
   document_url: string;
 };
 
+export type TFamilyConcept = {
+  id: string;
+  ids: unknown[];
+  preferred_label: string;
+  relation: string;
+  subconcept_of_labels: string[];
+  type: string;
+};
+
+export type TFamilyCorpus = {
+  corpus_type_name: string;
+  import_id: string;
+  organisation_id: number;
+  title: string;
+};
+
 export type TFamily = {
   corpus_type_name: TCorpusTypeSubCategory;
   family_category: TCategory;
@@ -182,11 +199,11 @@ export type TFamily = {
 };
 
 export type TFamilyPage = {
-  organisation: string;
+  import_id: string;
   title: string;
+  organisation: string;
   summary: string;
   geographies: string[];
-  import_id: string;
   category: TCategory;
   corpus_type_name: TCorpusTypeSubCategory;
   metadata: TFamilyMetadata;
@@ -200,6 +217,13 @@ export type TFamilyPage = {
   status?: string;
   organisation_attribution_url?: string | null;
   concepts: TFamilyConcept[];
+};
+
+export type TFamilyNew = Omit<TFamilyPage, "documents"> & {
+  concepts: TFamilyConcept[];
+  corpus: TFamilyCorpus;
+  documents: TDocumentNew[];
+  organisation_attribution_url: string | null;
 };
 
 export type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
@@ -217,6 +241,10 @@ export type TDocumentPage = {
   languages: string[];
   document_type: string | null;
   document_role: string;
+};
+
+export type TDocumentNew = TDocumentPage & {
+  events: TEvent[];
 };
 
 export type TCollection = {
@@ -243,7 +271,8 @@ export type TFamilyMetadata = {
   author?: string[];
   document_type?: string;
   // Litigation specific metadata
-  status?: string;
+  id?: string[];
+  status?: string[];
   case_number?: string[];
   concept_preferred_label?: string[];
   core_object?: string[];
@@ -358,15 +387,6 @@ export type TConcept = {
   subconcept_of: string[];
   wikibase_id: string;
   type?: "principal_law" | "jurisdiction" | "category";
-};
-
-export type TFamilyConcept = {
-  id: string;
-  ids: string[];
-  type: string;
-  relation: string;
-  preferred_label: string;
-  subconcept_of_labels: string[];
 };
 
 export type TSearchResponse = {

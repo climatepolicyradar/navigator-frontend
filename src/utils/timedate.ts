@@ -24,3 +24,13 @@ export const formatDate = (data: string) => {
   const month = dateObj.getMonth();
   return [year, day, months[month]];
 };
+
+export const formatDateShort = (date: Date): string => {
+  if (isNaN(date.getTime())) return "";
+
+  return new Intl.DateTimeFormat(navigator?.language ?? "en-GB", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+};

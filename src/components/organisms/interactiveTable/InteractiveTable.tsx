@@ -40,14 +40,31 @@ interface ISortRules<ColumnKey extends string> {
   ascending: boolean;
 }
 
+const renderCellDisplay = (cell: TInteractiveTableCell, showValues: boolean) => {
+  if (cell === null) return NULL_VALUE_DISPLAY;
+
+  let content: ReactNode = `${cell}`;
+  if (typeof cell === "object") content = showValues ? cell.value : cell.display;
+  return showValues ? <div className="inline-block bg-surface-ui text-sm text-text-tertiary font-mono">{content}</div> : content;
+};
+
 export interface IProps<ColumnKey extends string> {
   columns: IInteractiveTableColumn<ColumnKey>[];
   defaultSort?: ISortRules<ColumnKey>;
+  maxRows?: number;
   rows: IInteractiveTableRow<ColumnKey>[];
   tableClasses?: string;
+  showValues?: boolean; // Debug mode for understanding sorting
 }
 
-export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSort, rows, tableClasses }: IProps<ColumnKey>) => {
+export const InteractiveTable = <ColumnKey extends string>({
+  columns,
+  defaultSort,
+  maxRows = 0,
+  rows,
+  showValues = false,
+  tableClasses,
+}: IProps<ColumnKey>) => {
   const [openSortMenu, setOpenSortMenu] = useState<string | null>(null);
   const [sortRules, setSortRules] = useState<ISortRules<ColumnKey>>(
     defaultSort || {
@@ -77,6 +94,7 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
       ["asc", sortRules.ascending ? "asc" : "desc"]
     );
   }, [rows, sortRules]);
+  const displayedRows = sortedRows.slice(0, maxRows || undefined);
 
   // Track which sort menu is open so header cell styling can stay applied
   const onToggleMenu = (column: ColumnKey) => (open: boolean) => {
@@ -157,28 +175,29 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
       </div>
 
       {/* Rows */}
-      {sortedRows.map((row) => (
-        <div key={`row-${row.id}`} className="contents">
-          {columns.map((column) => {
-            const cell = row.cells[column.id];
+      {displayedRows.map((row, rowIndex) => {
+        const lastRow = rowIndex + 1 === displayedRows.length;
 
-            let cellDisplay: ReactNode = NULL_VALUE_DISPLAY;
-            if (cell !== null) cellDisplay = typeof cell === "object" ? cell.display : `${cell}`;
+        return (
+          <div key={`row-${row.id}`} className="contents">
+            {columns.map((column) => {
+              const cell = row.cells[column.id];
+              const cellClasses = joinTailwindClasses(
+                "px-2.5 py-3 border-l border-border-light first:border-l-0",
+                !lastRow && "border-b",
+                column.classes,
+                row.classes
+              );
 
-            const cellClasses = joinTailwindClasses(
-              "px-2.5 py-3 border-b border-l border-border-light first:border-l-0",
-              column.classes,
-              row.classes
-            );
-
-            return (
-              <div key={`row-${row.id}-${column.id}`} className={cellClasses}>
-                {cellDisplay}
-              </div>
-            );
-          })}
-        </div>
-      ))}
+              return (
+                <div key={`row-${row.id}-${column.id}`} className={cellClasses}>
+                  {renderCellDisplay(cell, showValues)}
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 };

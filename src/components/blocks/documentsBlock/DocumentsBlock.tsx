@@ -47,24 +47,22 @@ export const DocumentsBlock = ({ countries, family }: IProps) => {
   const tableRows: IInteractiveTableRow<TTableColumn>[] = useMemo(() => {
     if (documents.length === 0) return [];
 
-    return documents.map((doc) => {
-      return {
-        id: doc.slug,
-        cells: {
-          year,
-          geography: family.geographies.map((geo) => getCountryName(geo, countries)).join(", "),
-          type: categoryName,
-          document: {
-            display: (
-              <LinkWithQuery href={`/documents/${doc.slug}`} className="text-text-brand underline">
-                {doc.title}
-              </LinkWithQuery>
-            ),
-            value: doc.title,
-          },
+    return documents.map((doc) => ({
+      id: doc.slug,
+      cells: {
+        year,
+        geography: family.geographies.map((geo) => getCountryName(geo, countries)).join(", "),
+        type: categoryName,
+        document: {
+          display: (
+            <LinkWithQuery href={`/documents/${doc.slug}`} className="text-text-brand underline">
+              {doc.title}
+            </LinkWithQuery>
+          ),
+          value: doc.title,
         },
-      };
-    });
+      },
+    }));
   }, [categoryName, countries, documents, family, year]);
 
   return (
@@ -90,7 +88,7 @@ export const DocumentsBlock = ({ countries, family }: IProps) => {
         )}
 
         {/* Table */}
-        {view === "table" && <InteractiveTable columns={TABLE_COLUMNS} rows={tableRows} />}
+        {view === "table" && <InteractiveTable<TTableColumn> columns={TABLE_COLUMNS} rows={tableRows} />}
       </Card>
     </Section>
   );

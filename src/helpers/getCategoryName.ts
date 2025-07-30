@@ -16,6 +16,7 @@ const subCategories: Record<TCorpusTypeSubCategory, string> = {
   GEF: "Global Environment Facility",
   "Intl. agreements": "Intl. agreements",
   "Laws and Policies": "Laws and Policies",
+  Litigation: "Litigation",
   Reports: "Guidance",
 };
 
