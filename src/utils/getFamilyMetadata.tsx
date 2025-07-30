@@ -1,64 +1,110 @@
-import { ReactNode } from "react";
+import { Fragment } from "react";
 
-import { TFamilyPage, IMetadata } from "@/types";
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
+import { TFamilyPage, IMetadata, TGeography } from "@/types";
+import { buildConceptHierarchy, TFamilyConceptTreeNode } from "@/utils/buildConceptHierarchy";
+
+// Recursively display the children of a concept
+function displayConceptHierarchy(concept: TFamilyConceptTreeNode): React.ReactNode {
+  if (concept.children.length === 0) {
+    return <span key={concept.id}>{concept.preferred_label}</span>;
+  }
+  return (
+    <span key={concept.id}>
+      {concept.preferred_label}
+      {concept.children.length > 0 && " → "}
+      {concept.children.map((child, index) => (
+        <Fragment key={child.id}>
+          {index > 0 && " → "}
+          {displayConceptHierarchy(child)}
+        </Fragment>
+      ))}
+    </span>
+  );
+}
 
 // Format the family metadata into a shape suitable for the MetadataBlock component
-export const getFamilyMetadata = (family: TFamilyPage): IMetadata[] => {
+export const getFamilyMetadata = (family: TFamilyPage, countries: TGeography[]): IMetadata[] => {
   const familyMetadata = [];
 
   // TODO: handle more categories and their specific metadata later
-  if (family.category === "Litigation") {
-    familyMetadata.push(...getLitigationMetaData(family));
+  if (family.corpus_type_name.toLowerCase() === "litigation") {
+    familyMetadata.push(...getLitigationMetaData(family, countries));
   }
 
   return familyMetadata;
 };
 
-function getLitigationMetaData(family: TFamilyPage): IMetadata[] {
+function getLitigationMetaData(family: TFamilyPage, countries: TGeography[]): IMetadata[] {
   const metadata = [];
 
-  if (family.published_date) {
-    const year = new Date(family.published_date).getFullYear();
+  // Structure concepts into a hierarchy we can use
+  const hierarchy = buildConceptHierarchy(family.concepts);
+
+  const filingYearEvent = family.events.find((event) => event.event_type === "Filing Year For Action");
+  if (filingYearEvent) {
+    const year = new Date(filingYearEvent.date).getFullYear();
     metadata.push({
       label: "Filing year",
       value: year,
     });
   }
 
-  if (family.metadata.case_number?.length > 0) {
+  if (family.geographies.length > 0) {
     metadata.push({
-      label: "Docket number",
-      value: <div className="grid">{family.metadata.case_number?.map((label) => <span key={label}>{label}</span>) || "N/A"}</div>,
+      label: "Geography",
+      value: family.geographies.map((geo, index) => (
+        <Fragment key={geo}>
+          {index > 0 && getCountrySlug(geo, countries) && " → "}
+          <LinkWithQuery key={geo} href={`/geographies/${getCountrySlug(geo, countries)}`} className="underline">
+            {getCountryName(geo, countries)}
+          </LinkWithQuery>
+        </Fragment>
+      )),
     });
   }
 
-  if (family.metadata.status) {
-    metadata.push({
-      label: "Status",
-      value: family.metadata.status,
-    });
-  }
+  metadata.push({
+    label: "Docket number",
+    value: (
+      <div className="grid">
+        {family.metadata.case_number?.length > 0 ? family.metadata.case_number?.map((label) => <span key={label}>{label}</span>) : "N/A"}
+      </div>
+    ),
+  });
 
-  if (family.metadata.concept_preferred_label) {
-    metadata.push({
-      label: "Concept preferred label",
-      value: <div className="grid">{family.metadata.concept_preferred_label?.map((label) => <span key={label}>{label}</span>) || "N/A"}</div>,
-    });
-  }
+  metadata.push({
+    label: "At issue",
+    value: (
+      <div className="grid">
+        {family.metadata.core_object.length > 0 ? family.metadata.core_object.map((label) => <span key={label}>{label}</span>) : "N/A"}
+      </div>
+    ),
+  });
 
-  if (family.metadata.core_object) {
-    metadata.push({
-      label: "Core object",
-      value: <div className="grid">{family.metadata.core_object?.map((label) => <span key={label}>{label}</span>) || "N/A"}</div>,
-    });
-  }
+  metadata.push({
+    label: "Status",
+    value: family.metadata.status ?? "N/A",
+  });
 
-  if (family.metadata.original_case_name) {
-    metadata.push({
-      label: "Original case name",
-      value: <div className="grid">{family.metadata.original_case_name?.map((label) => <span key={label}>{label}</span>) || "N/A"}</div>,
-    });
-  }
+  const legalEntities = hierarchy.filter((concept) => concept.type === "legal_entity");
+  metadata.push({
+    label: "Court/Admin entity",
+    value: <div className="grid">{legalEntities.length > 0 ? legalEntities.map((entity) => displayConceptHierarchy(entity)) : "N/A"}</div>,
+  });
+
+  const caseCategories = hierarchy.filter((concept) => concept.type === "legal_category");
+  metadata.push({
+    label: "Case category",
+    value: <div className="grid">{caseCategories.length > 0 ? caseCategories.map((category) => displayConceptHierarchy(category)) : "N/A"}</div>,
+  });
+
+  const principalLaws = hierarchy.filter((concept) => concept.type === "law");
+  metadata.push({
+    label: "Principal law",
+    value: <div className="grid">{principalLaws.length > 0 ? principalLaws.map((law) => displayConceptHierarchy(law)) : "N/A"}</div>,
+  });
 
   return metadata;
 }
