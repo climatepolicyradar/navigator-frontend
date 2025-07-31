@@ -16,15 +16,18 @@ type TEventWithDocument = {
 
 // Gets a flat list of all events in a family
 // TODO investigate duplicates between family events and document events
-export const getEventsWithDocuments = (family: TFamilyNew): TEventWithDocument[] => [
-  ...family.events.map((event) => ({ event })),
-  ...family.documents.map((document) => document.events.map((event) => ({ event, document }))).flat(),
-];
+export const getEventsWithDocuments = (families: TFamilyNew[]): TEventWithDocument[] =>
+  families
+    .map((family) => [
+      ...family.events.map((event) => ({ event })),
+      ...family.documents.map((document) => document.events.map((event) => ({ event, document }))).flat(1),
+    ])
+    .flat(1);
 
 const MAX_ENTRIES_SHOWN = 4;
 
-type TTableColumn = "date" | "type" | "action" | "document" | "summary";
-const TABLE_COLUMNS: IInteractiveTableColumn<TTableColumn>[] = [
+export type TTableColumn = "date" | "type" | "action" | "document" | "summary";
+export const TABLE_COLUMNS: IInteractiveTableColumn<TTableColumn>[] = [
   { id: "date", name: "Filing Date", fraction: 2 },
   { id: "type", fraction: 3 },
   { id: "action", name: "Action taken", fraction: 3 },
@@ -42,7 +45,7 @@ export const FamilyBlock = ({ family, showValues = false }: IProps) => {
 
   const tableRows: IInteractiveTableRow<TTableColumn>[] = useMemo(
     () =>
-      getEventsWithDocuments(family).map(({ event, document }, eventIndex) => {
+      getEventsWithDocuments([family]).map(({ event, document }, eventIndex) => {
         const date = new Date(event.date);
 
         return {
@@ -71,7 +74,7 @@ export const FamilyBlock = ({ family, showValues = false }: IProps) => {
     [family]
   );
 
-  const entriesToHide = family.events.length > MAX_ENTRIES_SHOWN;
+  const entriesToHide = tableRows.length > MAX_ENTRIES_SHOWN;
 
   const toggleShowAll = () => {
     setShowAllEntries((current) => !current);

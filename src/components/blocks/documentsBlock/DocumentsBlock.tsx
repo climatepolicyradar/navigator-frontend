@@ -51,7 +51,7 @@ export const DocumentsBlock = ({ countries, family }: IProps) => {
       id: doc.slug,
       cells: {
         year,
-        geography: family.geographies.map((geo) => getCountryName(geo, countries)).join(", "),
+        geography: family.geographies.map((geo) => getCountryName(geo, countries) || geo).join(", "),
         type: categoryName,
         document: {
           display: (

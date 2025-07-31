@@ -78,10 +78,14 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
   ],
   corpus: {
-    title: "Litigation",
     import_id: "Academic.corpus.Litigation.n0000",
+    title: "Litigation",
     corpus_type_name: "Litigation",
-    organisation_id: 11,
+    organisation: {
+      name: "Sabin",
+      attribution_url: null,
+      id: 11,
+    },
   },
   corpus_id: "Academic.corpus.Litigation.n0000",
   organisation: "Sabin",
@@ -100,102 +104,15 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       title: "Juliana v. United States",
       description:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-      families: [
-        {
-          description:
-            "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-          slug: "juliana-v-united-states_fb95",
-          title: "Juliana v. United States",
-        },
-        {
-          description:
-            "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-          slug: "juliana-v-united-states_83df",
-          title: "Juliana v. United States",
-        },
-        {
-          description:
-            "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-          slug: "juliana-v-united-states_522f",
-          title: "Juliana v. United States",
-        },
-        {
-          description:
-            "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-          slug: "in-re-juliana_7029",
-          title: "In re Juliana",
-        },
-        {
-          description:
-            "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-          slug: "united-states-v-u-s-district-court-for-the-district-of-oregon_98ff",
-          title: "United States v. U.S. District Court for the District of Oregon",
-        },
-        {
-          description:
-            "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-          slug: "juliana-v-united-states_83f7",
-          title: "Juliana v. United States",
-        },
-        {
-          description:
-            "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-          slug: "juliana-v-united-states_5218",
-          title: "Juliana v. United States",
-        },
-        {
-          description:
-            "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-          slug: "united-states-v-u-s-district-court-for-district-of-oregon_e6b4",
-          title: "United States v. U.S. District Court for District of Oregon",
-        },
-        {
-          description:
-            "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-          slug: "in-re-united-states_b264",
-          title: "In re United States",
-        },
-        {
-          description:
-            "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-          slug: "in-re-united-states_04ac",
-          title: "In re United States",
-        },
-        {
-          description:
-            "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-          slug: "united-states-v-u-s-district-court-for-district-of-oregon_140a",
-          title: "United States v. U.S. District Court for District of Oregon",
-        },
-        {
-          description:
-            "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-          slug: "united-states-v-u-s-district-court-for-the-district-of-oregon_52f5",
-          title: "United States v. U.S. District Court for the District of Oregon",
-        },
-        {
-          description:
-            "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-          slug: "united-states-v-u-s-district-court-for-the-district-of-oregon_d4c6",
-          title: "United States v. U.S. District Court for the District of Oregon",
-        },
-        {
-          description:
-            "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-          slug: "united-states-v-u-s-district-court-for-the-district-of-oregon_94c4",
-          title: "United States v. U.S. District Court for the District of Oregon",
-        },
-        {
-          description:
-            "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
-          slug: "united-states-v-u-s-district-court-for-district-of-oregon_a0a6",
-          title: "United States v. U.S. District Court for District of Oregon",
-        },
-      ],
+      metadata: {
+        id: ["154"],
+      },
+      slug: "juliana-v-united-states_f8231e",
     },
   ],
   events: [
     {
+      import_id: "Sabin.event.14255.n0000",
       title: "Filing Year For Action",
       date: "2015-01-01T00:00:00Z",
       event_type: "Filing Year For Action",
@@ -207,6 +124,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0001",
       title: "opinion and order",
       date: "2024-04-19T00:00:00Z",
       event_type: "Opinion And Order",
@@ -220,6 +138,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0002",
       title: "order",
       date: "2024-04-19T00:00:00Z",
       event_type: "Order",
@@ -233,6 +152,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0003",
       title: "answer",
       date: "2024-02-27T00:00:00Z",
       event_type: "Answer",
@@ -244,6 +164,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0004",
       title: "reply",
       date: "2024-02-15T00:00:00Z",
       event_type: "Reply",
@@ -255,6 +176,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0005",
       title: "opposition",
       date: "2024-02-01T00:00:00Z",
       event_type: "Opposition",
@@ -266,6 +188,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0006",
       title: "motion",
       date: "2024-01-18T00:00:00Z",
       event_type: "Motion",
@@ -279,6 +202,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0007",
       title: "opinion and order",
       date: "2023-12-29T00:00:00Z",
       event_type: "Opinion And Order",
@@ -292,6 +216,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0008",
       title: "response",
       date: "2023-09-05T00:00:00Z",
       event_type: "Response",
@@ -303,6 +228,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0009",
       title: "notice",
       date: "2023-08-21T00:00:00Z",
       event_type: "Notice",
@@ -314,6 +240,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0010",
       title: "reply",
       date: "2023-08-04T00:00:00Z",
       event_type: "Reply",
@@ -325,6 +252,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0011",
       title: "reply",
       date: "2023-08-04T00:00:00Z",
       event_type: "Reply",
@@ -336,6 +264,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0012",
       title: "declaration",
       date: "2023-07-21T00:00:00Z",
       event_type: "Declaration",
@@ -347,6 +276,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0013",
       title: "opposition",
       date: "2023-07-21T00:00:00Z",
       event_type: "Opposition",
@@ -358,6 +288,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0014",
       title: "opposition",
       date: "2023-07-21T00:00:00Z",
       event_type: "Opposition",
@@ -369,6 +300,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0015",
       title: "reply",
       date: "2023-07-20T00:00:00Z",
       event_type: "Reply",
@@ -380,6 +312,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0016",
       title: "motion",
       date: "2023-07-07T00:00:00Z",
       event_type: "Motion",
@@ -391,6 +324,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0017",
       title: "reply",
       date: "2023-07-07T00:00:00Z",
       event_type: "Reply",
@@ -402,6 +336,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0018",
       title: "opposition",
       date: "2023-07-06T00:00:00Z",
       event_type: "Opposition",
@@ -413,6 +348,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0019",
       title: "response",
       date: "2023-06-27T00:00:00Z",
       event_type: "Response",
@@ -426,6 +362,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0020",
       title: "motion to dismiss",
       date: "2023-06-22T00:00:00Z",
       event_type: "Motion To Dismiss",
@@ -439,6 +376,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0021",
       title: "declaration",
       date: "2023-06-13T00:00:00Z",
       event_type: "Declaration",
@@ -450,6 +388,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0022",
       title: "motion",
       date: "2023-06-13T00:00:00Z",
       event_type: "Motion",
@@ -463,6 +402,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0023",
       title: "complaint",
       date: "2023-06-08T00:00:00Z",
       event_type: "Complaint",
@@ -474,6 +414,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0024",
       title: "opinion and order",
       date: "2023-06-01T00:00:00Z",
       event_type: "Opinion And Order",
@@ -487,6 +428,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0025",
       title: "opinion and order",
       date: "2023-06-01T00:00:00Z",
       event_type: "Opinion And Order",
@@ -500,6 +442,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0026",
       title: "response",
       date: "2023-05-10T00:00:00Z",
       event_type: "Response",
@@ -511,6 +454,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0027",
       title: "notice",
       date: "2023-05-05T00:00:00Z",
       event_type: "Notice",
@@ -522,6 +466,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0028",
       title: "order",
       date: "2023-03-14T00:00:00Z",
       event_type: "Order",
@@ -535,6 +480,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0029",
       title: "response",
       date: "2022-03-04T00:00:00Z",
       event_type: "Response",
@@ -546,6 +492,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0030",
       title: "notice",
       date: "2022-02-17T00:00:00Z",
       event_type: "Notice",
@@ -557,6 +504,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0031",
       title: "notice",
       date: "2021-11-29T00:00:00Z",
       event_type: "Notice",
@@ -570,6 +518,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0032",
       title: "press release",
       date: "2021-11-01T00:00:00Z",
       event_type: "Press Release",
@@ -583,6 +532,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0033",
       title: "reply",
       date: "2021-10-07T00:00:00Z",
       event_type: "Reply",
@@ -594,6 +544,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0034",
       title: "declaration",
       date: "2021-09-23T00:00:00Z",
       event_type: "Declaration",
@@ -605,6 +556,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0035",
       title: "opposition",
       date: "2021-09-23T00:00:00Z",
       event_type: "Opposition",
@@ -618,6 +570,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0036",
       title: "motion",
       date: "2021-09-09T00:00:00Z",
       event_type: "Motion",
@@ -631,6 +584,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0037",
       title: "reply",
       date: "2021-07-20T00:00:00Z",
       event_type: "Reply",
@@ -644,6 +598,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0038",
       title: "response",
       date: "2021-07-16T00:00:00Z",
       event_type: "Response",
@@ -657,6 +612,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0039",
       title: "supplement",
       date: "2021-07-16T00:00:00Z",
       event_type: "Supplement",
@@ -670,6 +626,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0040",
       title: "amicus motion",
       date: "2021-07-13T00:00:00Z",
       event_type: "Amicus Motion",
@@ -683,6 +640,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0041",
       title: "amicus motion",
       date: "2021-07-06T00:00:00Z",
       event_type: "Amicus Motion",
@@ -696,6 +654,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0042",
       title: "declaration",
       date: "2021-07-06T00:00:00Z",
       event_type: "Declaration",
@@ -707,6 +666,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0043",
       title: "opposition",
       date: "2021-07-06T00:00:00Z",
       event_type: "Opposition",
@@ -718,6 +678,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0044",
       title: "reply",
       date: "2021-07-06T00:00:00Z",
       event_type: "Reply",
@@ -729,6 +690,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0045",
       title: "notice",
       date: "2021-07-01T00:00:00Z",
       event_type: "Notice",
@@ -740,6 +702,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       },
     },
     {
+      import_id: "Sabin.event.14255.n0046",
       title: "transcript",
       date: "2021-06-25T00:00:00Z",
       event_type: "Transcript",
@@ -754,6 +717,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
   documents: [
     {
       import_id: "Sabin.document.14255.54809",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["54809"],
+      },
       slug: "juliana-v-united-states-answer_0720",
       title: "Juliana v. United States - answer",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_b5e7fda56a569d69e73d0b1f6b534f54.pdf",
@@ -767,6 +734,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0003",
           title: "answer",
           date: "2024-02-27T00:00:00Z",
           event_type: "Answer",
@@ -781,6 +749,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.25257",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["25257"],
+      },
       slug: "oregon-federal-court-said-youth-plaintiffs-could-proceed-with-due-process-and-public-trust-claims-in-climate-suit_46d0",
       title: "Oregon Federal Court Said Youth Plaintiffs Could Proceed with Due Process and Public Trust Claims in Climate Suit",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_58b1bcdc5ec5511c66763ec6d4b5549d.pdf",
@@ -794,6 +766,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0007",
           title: "opinion and order",
           date: "2023-12-29T00:00:00Z",
           event_type: "Opinion And Order",
@@ -810,6 +783,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.68113",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["68113"],
+      },
       slug: "district-court-declined-to-stay-proceedings_3889",
       title: "District Court Declined to Stay Proceedings",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_c36b67e16494ed0611fd34a4a8e2f378.pdf",
@@ -823,6 +800,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0001",
           title: "opinion and order",
           date: "2024-04-19T00:00:00Z",
           event_type: "Opinion And Order",
@@ -839,6 +817,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.68114",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["68114"],
+      },
       slug: "juliana-v-united-states-order_8745",
       title: "Juliana v. United States - order",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_3ebcb54739c21b0b2b2697d0c4f0f42b.pdf",
@@ -852,6 +834,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0002",
           title: "order",
           date: "2024-04-19T00:00:00Z",
           event_type: "Order",
@@ -868,6 +851,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.43061",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["43061"],
+      },
       slug: "federal-defendants-sought-stay-in-juliana-while-they-ask-ninth-circuit-to-order-dismissal-of-case_86ef",
       title: "Federal Defendants Sought Stay in Juliana While They Ask Ninth Circuit to Order Dismissal of Case",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_0bbacf0ab7ccde70e26124d7eff62948.pdf",
@@ -881,6 +868,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0006",
           title: "motion",
           date: "2024-01-18T00:00:00Z",
           event_type: "Motion",
@@ -897,6 +885,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.43059",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["43059"],
+      },
       slug: "juliana-v-united-states-opposition_d2d3",
       title: "Juliana v. United States - opposition",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_aaf3fbc504e58f523e3b06e7c7e9e853.pdf",
@@ -910,6 +902,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0005",
           title: "opposition",
           date: "2024-02-01T00:00:00Z",
           event_type: "Opposition",
@@ -924,6 +917,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.21621",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["21621"],
+      },
       slug: "juliana-v-united-states-opposition_b1ae",
       title: "Juliana v. United States - opposition",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_13f27bc2d6bf7a09f9c00c1f7f5a3117.pdf",
@@ -937,6 +934,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0018",
           title: "opposition",
           date: "2023-07-06T00:00:00Z",
           event_type: "Opposition",
@@ -951,6 +949,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.14267",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["14267"],
+      },
       slug: "juliana-v-united-states-declaration_9285",
       title: "Juliana v. United States - declaration",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_f23db323775d77b573a46f090e0a9f74.pdf",
@@ -964,6 +966,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0042",
           title: "declaration",
           date: "2021-07-06T00:00:00Z",
           event_type: "Declaration",
@@ -978,6 +981,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.19421",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["19421"],
+      },
       slug: "juliana-v-united-states-notice_6692",
       title: "Juliana v. United States - notice",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_ee0a8476c40690f12c2a7f55536f9af9.pdf",
@@ -991,6 +998,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0027",
           title: "notice",
           date: "2023-05-05T00:00:00Z",
           event_type: "Notice",
@@ -1005,6 +1013,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.19319",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["19319"],
+      },
       slug: "oregon-federal-court-allowed-juliana-plaintiffs-to-amend-complaint-to-rectify-deficiency-identified-by-ninth-circuit_5d93",
       title: "Oregon Federal Court Allowed Juliana Plaintiffs to Amend Complaint to Rectify Deficiency Identified by Ninth Circuit",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_9ccbe04e5ca3bfe5404468e6ebebec8c.pdf",
@@ -1018,6 +1030,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0024",
           title: "opinion and order",
           date: "2023-06-01T00:00:00Z",
           event_type: "Opinion And Order",
@@ -1034,6 +1047,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.21627",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["21627"],
+      },
       slug: "juliana-v-united-states-declaration_8b03",
       title: "Juliana v. United States - declaration",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_ca733ab477f413d2271cb80955f990b8.pdf",
@@ -1047,6 +1064,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0012",
           title: "declaration",
           date: "2023-07-21T00:00:00Z",
           event_type: "Declaration",
@@ -1061,6 +1079,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.21625",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["21625"],
+      },
       slug: "juliana-v-united-states-opposition_51a1",
       title: "Juliana v. United States - opposition",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_8372129c816fabe58444476ae71b28cc.pdf",
@@ -1074,6 +1096,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0013",
           title: "opposition",
           date: "2023-07-21T00:00:00Z",
           event_type: "Opposition",
@@ -1088,6 +1111,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.14565",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["14565"],
+      },
       slug: "federal-government-sought-final-judgment-against-organizational-plaintiff-in-juliana_9960",
       title: "Federal Government Sought Final Judgment Against Organizational Plaintiff in Juliana",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_25d317eb8d3d6b2511fa82240eed4e3e.pdf",
@@ -1101,6 +1128,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0036",
           title: "motion",
           date: "2021-09-09T00:00:00Z",
           event_type: "Motion",
@@ -1117,6 +1145,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.14820",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["14820"],
+      },
       slug: "juliana-plaintiffs-announced-end-of-settlement-talks_c78c",
       title: "Juliana Plaintiffs Announced End of Settlement Talks",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_11a7ac717ce9e051b9fbbda906032774.pdf",
@@ -1130,6 +1162,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0032",
           title: "press release",
           date: "2021-11-01T00:00:00Z",
           event_type: "Press Release",
@@ -1146,6 +1179,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.21622",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["21622"],
+      },
       slug: "juliana-v-united-states-reply_ee98",
       title: "Juliana v. United States - reply",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_257b711f293e8c6d06ca3445f365f8a5.pdf",
@@ -1159,6 +1196,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0017",
           title: "reply",
           date: "2023-07-07T00:00:00Z",
           event_type: "Reply",
@@ -1173,6 +1211,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.21620",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["21620"],
+      },
       slug: "juliana-v-united-states-notice_092e",
       title: "Juliana v. United States - notice",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_c4e1f4009c729f78300607df3695f301.pdf",
@@ -1186,6 +1228,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0009",
           title: "notice",
           date: "2023-08-21T00:00:00Z",
           event_type: "Notice",
@@ -1200,6 +1243,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.14257",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["14257"],
+      },
       slug: "juliana-v-united-states-supplement_c7ac",
       title: "Juliana v. United States - supplement",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_097e443732d41eadcd5e0e6b6c70be52.pdf",
@@ -1213,6 +1260,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0039",
           title: "supplement",
           date: "2021-07-16T00:00:00Z",
           event_type: "Supplement",
@@ -1229,6 +1277,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.19478",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["19478"],
+      },
       slug: "federal-defendants-asked-oregon-federal-court-to-dismiss-juliana-plaintiffs-amended-complaint-said-they-would-request-interlocutory-appeal-of-order-granting-leave-to-amend_ba2c",
       title:
         "Federal Defendants Asked Oregon Federal Court to Dismiss Juliana Plaintiffs’ Amended Complaint, Said They Would Request Interlocutory Appeal of Order Granting Leave to Amend",
@@ -1243,6 +1295,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0020",
           title: "motion to dismiss",
           date: "2023-06-22T00:00:00Z",
           event_type: "Motion To Dismiss",
@@ -1259,6 +1312,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.14265",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["14265"],
+      },
       slug: "juliana-v-united-states-reply_75ed",
       title: "Juliana v. United States - reply",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_53780b3a0e59a62624b76395281bd497.pdf",
@@ -1272,6 +1329,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0044",
           title: "reply",
           date: "2021-07-06T00:00:00Z",
           event_type: "Reply",
@@ -1286,6 +1344,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.21628",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["21628"],
+      },
       slug: "juliana-v-united-states-reply_1d0e",
       title: "Juliana v. United States - reply",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_5a96ab503d917171ce302ce1ad7bcd22.pdf",
@@ -1299,6 +1361,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0010",
           title: "reply",
           date: "2023-08-04T00:00:00Z",
           event_type: "Reply",
@@ -1313,6 +1376,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.19645",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["19645"],
+      },
       slug: "juliana-v-united-states-response_b4b2",
       title: "Juliana v. United States - response",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_84692b106b432b82bb4572c161a7f6df.pdf",
@@ -1326,6 +1393,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0019",
           title: "response",
           date: "2023-06-27T00:00:00Z",
           event_type: "Response",
@@ -1342,6 +1410,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.14258",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["14258"],
+      },
       slug: "juliana-v-united-states-amicus-motion_c72d",
       title: "Juliana v. United States - amicus motion",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_ea9dd420fa33fd378b1e9b839b501519.pdf",
@@ -1355,6 +1427,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0040",
           title: "amicus motion",
           date: "2021-07-13T00:00:00Z",
           event_type: "Amicus Motion",
@@ -1371,6 +1444,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.21624",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["21624"],
+      },
       slug: "juliana-v-united-states-reply_fe5f",
       title: "Juliana v. United States - reply",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_893bddbcd76fcc9b28bb32fd84364dcc.pdf",
@@ -1384,6 +1461,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0015",
           title: "reply",
           date: "2023-07-20T00:00:00Z",
           event_type: "Reply",
@@ -1398,6 +1476,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.21623",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["21623"],
+      },
       slug: "juliana-v-united-states-motion_d21b",
       title: "Juliana v. United States - motion",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_991e859b522ddeac7a6b4082d3886f66.pdf",
@@ -1411,6 +1493,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0016",
           title: "motion",
           date: "2023-07-07T00:00:00Z",
           event_type: "Motion",
@@ -1425,6 +1508,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.14256",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["14256"],
+      },
       slug: "juliana-v-united-states-response_ff2a",
       title: "Juliana v. United States - response",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_c5794d9e07c572db6b5dccd2ab8fdd95.pdf",
@@ -1438,6 +1525,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0038",
           title: "response",
           date: "2021-07-16T00:00:00Z",
           event_type: "Response",
@@ -1454,6 +1542,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.14566",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["14566"],
+      },
       slug: "juliana-v-united-states-opposition_7e98",
       title: "Juliana v. United States - opposition",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_d37166be95436d6809697190b45316a0.pdf",
@@ -1467,6 +1559,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0035",
           title: "opposition",
           date: "2021-09-23T00:00:00Z",
           event_type: "Opposition",
@@ -1483,6 +1576,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.21618",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["21618"],
+      },
       slug: "juliana-v-united-states-response_d9bc",
       title: "Juliana v. United States - response",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_5d7583d5dbfb0ffcaaad99d4bb201d25.pdf",
@@ -1496,6 +1593,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0008",
           title: "response",
           date: "2023-09-05T00:00:00Z",
           event_type: "Response",
@@ -1510,6 +1608,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.14261",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["14261"],
+      },
       slug: "juliana-v-united-states-opposition_409f",
       title: "Juliana v. United States - opposition",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_8ffdcfda1e1c505f73031753e4633bf1.pdf",
@@ -1523,6 +1625,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0043",
           title: "opposition",
           date: "2021-07-06T00:00:00Z",
           event_type: "Opposition",
@@ -1537,6 +1640,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.21626",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["21626"],
+      },
       slug: "juliana-v-united-states-opposition_cf93",
       title: "Juliana v. United States - opposition",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_204f10c19502cdfdefaed7e09c6dac18.pdf",
@@ -1550,6 +1657,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0014",
           title: "opposition",
           date: "2023-07-21T00:00:00Z",
           event_type: "Opposition",
@@ -1564,6 +1672,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.14564",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["14564"],
+      },
       slug: "juliana-v-united-states-declaration_05c7",
       title: "Juliana v. United States - declaration",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_4d6deca85964d61ca91ba912d7896784.pdf",
@@ -1577,6 +1689,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0034",
           title: "declaration",
           date: "2021-09-23T00:00:00Z",
           event_type: "Declaration",
@@ -1591,6 +1704,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.14266",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["14266"],
+      },
       slug: "juliana-v-united-states-transcript_90c1",
       title: "Juliana v. United States - transcript",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_a28121d49e1c1810bdb18419f775fff2.pdf",
@@ -1604,6 +1721,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0046",
           title: "transcript",
           date: "2021-06-25T00:00:00Z",
           event_type: "Transcript",
@@ -1618,6 +1736,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.14263",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["14263"],
+      },
       slug: "juliana-v-united-states-reply_d86b",
       title: "Juliana v. United States - reply",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_d8f9fe43d3a279fbb3a5b72d203f1175.pdf",
@@ -1631,6 +1753,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0037",
           title: "reply",
           date: "2021-07-20T00:00:00Z",
           event_type: "Reply",
@@ -1647,6 +1770,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.14264",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["14264"],
+      },
       slug: "juliana-v-united-states-amicus-motion_4775",
       title: "Juliana v. United States - amicus motion",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_a281087194b0af6b27bb1402e03e40bd.pdf",
@@ -1660,6 +1787,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0041",
           title: "amicus motion",
           date: "2021-07-06T00:00:00Z",
           event_type: "Amicus Motion",
@@ -1676,6 +1804,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.16372",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["16372"],
+      },
       slug: "juliana-v-united-states-response_820b",
       title: "Juliana v. United States - response",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_1dcd1c33770c611333826a578023abdd.pdf",
@@ -1689,6 +1821,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0029",
           title: "response",
           date: "2022-03-04T00:00:00Z",
           event_type: "Response",
@@ -1703,6 +1836,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.19646",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["19646"],
+      },
       slug: "juliana-v-united-states-complaint_8f1c",
       title: "Juliana v. United States - complaint",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_44dd53e455d68a349bf61778c6df908c.pdf",
@@ -1716,6 +1853,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0023",
           title: "complaint",
           date: "2023-06-08T00:00:00Z",
           event_type: "Complaint",
@@ -1730,6 +1868,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.19422",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["19422"],
+      },
       slug: "juliana-v-united-states-response_4e83",
       title: "Juliana v. United States - response",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_6267dbc00719c4135536c6e1a3361df9.pdf",
@@ -1743,6 +1885,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0026",
           title: "response",
           date: "2023-05-10T00:00:00Z",
           event_type: "Response",
@@ -1757,6 +1900,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.14262",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["14262"],
+      },
       slug: "juliana-v-united-states-notice_803a",
       title: "Juliana v. United States - notice",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_fae96461fa21495c6e04c7902f4ac716.pdf",
@@ -1770,6 +1917,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0045",
           title: "notice",
           date: "2021-07-01T00:00:00Z",
           event_type: "Notice",
@@ -1784,6 +1932,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.14904",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["14904"],
+      },
       slug: "juliana-v-united-states-reply_ad6d",
       title: "Juliana v. United States - reply",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_47024494d6f66f42ded2ac759780da9c.pdf",
@@ -1797,6 +1949,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0033",
           title: "reply",
           date: "2021-10-07T00:00:00Z",
           event_type: "Reply",
@@ -1811,6 +1964,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.19643",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["19643"],
+      },
       slug: "juliana-v-united-states-motion_21d4",
       title: "Juliana v. United States - motion",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_3335a41afde8d00d063f867429e0e0e6.pdf",
@@ -1824,6 +1981,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0022",
           title: "motion",
           date: "2023-06-13T00:00:00Z",
           event_type: "Motion",
@@ -1840,6 +1998,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.16371",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["16371"],
+      },
       slug: "juliana-v-united-states-notice_fa80",
       title: "Juliana v. United States - notice",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_989a235c13e3c1c238d3e7d60dcb372d.pdf",
@@ -1853,6 +2015,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0030",
           title: "notice",
           date: "2022-02-17T00:00:00Z",
           event_type: "Notice",
@@ -1867,6 +2030,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.19644",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["19644"],
+      },
       slug: "juliana-v-united-states-declaration_249c",
       title: "Juliana v. United States - declaration",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_5ae154979d9bfd225b9eaef7f5f7d4c9.pdf",
@@ -1880,6 +2047,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0021",
           title: "declaration",
           date: "2023-06-13T00:00:00Z",
           event_type: "Declaration",
@@ -1894,6 +2062,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.15057",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["15057"],
+      },
       slug: "juliana-plaintiffs-said-supreme-court-water-rights-decision-supported-their-request-to-amend-complaint_8499",
       title: "Juliana Plaintiffs Said Supreme Court Water Rights Decision Supported Their Request to Amend Complaint",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_5683a1764cdace200a551a32f88fefe1.pdf",
@@ -1907,6 +2079,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0031",
           title: "notice",
           date: "2021-11-29T00:00:00Z",
           event_type: "Notice",
@@ -1923,6 +2096,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.21629",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["21629"],
+      },
       slug: "juliana-v-united-states-reply_be85",
       title: "Juliana v. United States - reply",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_0c6ebdb71a5343b07985226f40fd2f26.pdf",
@@ -1936,6 +2113,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0011",
           title: "reply",
           date: "2023-08-04T00:00:00Z",
           event_type: "Reply",
@@ -1950,6 +2128,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.19420",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["19420"],
+      },
       slug: "juliana-v-united-states-opinion-and-order_d970",
       title: "Juliana v. United States - opinion and order",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_59d648a1e39e2ff9ac098012be836e66.pdf",
@@ -1963,6 +2145,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0025",
           title: "opinion and order",
           date: "2023-06-01T00:00:00Z",
           event_type: "Opinion And Order",
@@ -1979,6 +2162,10 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
     },
     {
       import_id: "Sabin.document.14255.54811",
+      variant_name: "Original Language",
+      valid_metadata: {
+        id: ["54811"],
+      },
       slug: "juliana-v-united-states-reply_f1cf",
       title: "Oregon Federal Court Denied States’ Motion to Intervene to Oppose Youth Plaintiffs’ Motion to Amend in Juliana",
       cdn_object: "https://cdn.climatepolicyradar.org/USA/2015/juliana-v-united-states_c63762c7ca5dd892d22acf783e91b440.pdf",
@@ -1992,6 +2179,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
       document_role: null,
       events: [
         {
+          import_id: "Sabin.event.14255.n0004",
           title: "reply",
           date: "2024-02-15T00:00:00Z",
           event_type: "Reply",
@@ -2003,6 +2191,7 @@ export const FAMILY_NEW_STUB: TFamilyNew = {
           },
         },
         {
+          import_id: "Sabin.event.14255.n0028",
           title: "order",
           date: "2023-03-14T00:00:00Z",
           event_type: "Order",
