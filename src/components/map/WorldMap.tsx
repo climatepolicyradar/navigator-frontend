@@ -153,12 +153,6 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
   const [selectedFamCategory, setSelectedFamCategory] = useState<"lawsPolicies" | "unfccc" | "mcf" | "reports" | "litigation">("lawsPolicies");
   const showMcf = useMcfData();
 
-  useEffect(() => {
-    if (!showMcf && selectedFamCategory === "mcf") {
-      setSelectedFamCategory("lawsPolicies");
-    }
-  }, [showMcf, selectedFamCategory]);
-
   // Combine the data from the coordinates and the map data from the API into a unified object
   const mapData: TMapData = useMemo(() => {
     // Calculate size of marker
