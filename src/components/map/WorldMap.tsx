@@ -137,6 +137,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
 interface IProps {
   showLitigation?: boolean;
   showCategorySelect?: boolean;
+  customApp: "ccc" | "cclw" | "cpr";
 }
 
 export default function MapChart({ showLitigation = false, showCategorySelect = true }: IProps) {
