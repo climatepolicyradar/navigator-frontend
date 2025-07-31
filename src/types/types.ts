@@ -140,6 +140,7 @@ export type TDisplayCategory = "All" | TCategory;
 export type TEventCategory = TCategory | "Target";
 
 export type TEvent = {
+  import_id: string;
   title: string;
   date: string;
   event_type: string;
@@ -179,10 +180,14 @@ export type TFamilyConcept = {
 };
 
 export type TFamilyCorpus = {
-  corpus_type_name: string;
   import_id: string;
-  organisation_id: number;
   title: string;
+  corpus_type_name: string;
+  organisation: {
+    id: number;
+    name: string;
+    attribution_url: string | null;
+  };
 };
 
 export type TFamily = {
@@ -211,7 +216,7 @@ export type TFamilyPage = {
   corpus_id: string;
   events: TEvent[];
   documents: TDocumentPage[];
-  collections: TCollection[];
+  collections: Omit<TCollection, "families">[];
   published_date: string | null;
   last_updated_date: string | null;
   status?: string;
@@ -245,17 +250,15 @@ export type TDocumentPage = {
 
 export type TDocumentNew = TDocumentPage & {
   events: TEvent[];
+  variant_name: string | null;
+  valid_metadata: Record<string, string[]>;
 };
 
 export type TCollection = {
+  description: string;
+  families: TFamilyNew[];
   import_id: string;
-  title: string;
-  description: string;
-  families: TCollectionFamily[];
-};
-
-export type TCollectionFamily = {
-  description: string;
+  metadata: Record<string, string[]>;
   slug: string;
   title: string;
 };
