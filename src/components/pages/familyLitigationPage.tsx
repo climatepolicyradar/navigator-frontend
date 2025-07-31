@@ -36,7 +36,7 @@ export const FamilyLitigationPage = ({ countries, family, theme, themeConfig }: 
       value: joinNodes(
         family.geographies.map((geo) => (
           <LinkWithQuery key={geo} href={`/geographies/${getCountrySlug(geo, countries)}`} className="underline">
-            {getCountryName(geo, countries)}
+            {getCountryName(geo, countries) || geo}
           </LinkWithQuery>
         )),
         ", "
@@ -47,7 +47,11 @@ export const FamilyLitigationPage = ({ countries, family, theme, themeConfig }: 
     pageHeaderMetadata.push({
       label: "Part of",
       value: joinNodes(
-        family.collections.map((collection) => collection.title),
+        family.collections.map((collection) => (
+          <LinkWithQuery key={collection.import_id} href={`/collection/${collection.import_id}`} className="underline">
+            {collection.title}
+          </LinkWithQuery>
+        )),
         ", "
       ),
     });

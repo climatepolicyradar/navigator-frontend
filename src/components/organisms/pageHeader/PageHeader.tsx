@@ -76,7 +76,7 @@ export const PageHeader = <Tab extends string>({
           {metadata.map((property) => (
             <div key={property.label} className="flex flex-col gap-2.5">
               <div className={tertiaryTextClasses}>{property.label}</div>
-              {property.value}
+              <div className="inline-block">{property.value}</div>
             </div>
           ))}
         </div>
