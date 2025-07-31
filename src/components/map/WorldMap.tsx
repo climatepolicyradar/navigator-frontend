@@ -140,7 +140,7 @@ interface IProps {
   customApp: "ccc" | "cclw" | "cpr";
 }
 
-export default function MapChart({ showLitigation = false, showCategorySelect = true }: IProps) {
+export default function MapChart({ showLitigation = false, showCategorySelect = true, customApp }: IProps) {
   const configQuery = useConfig();
   const geographiesQuery = useGeographies();
   const { data: { countries: configCountries = [] } = {} } = configQuery;
@@ -153,6 +153,12 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
   const [showUnifiedEU, setShowUnifiedEU] = useState(false);
   const [selectedFamCategory, setSelectedFamCategory] = useState<"lawsPolicies" | "unfccc" | "mcf" | "reports" | "litigation">("lawsPolicies");
   const showMcf = useMcfData();
+
+  useEffect(() => {
+    if (customApp === "ccc") {
+      setSelectedFamCategory("litigation");
+    }
+  }, [customApp]);
 
   // Combine the data from the coordinates and the map data from the API into a unified object
   const mapData: TMapData = useMemo(() => {
