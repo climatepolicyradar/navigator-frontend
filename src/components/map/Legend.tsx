@@ -1,6 +1,8 @@
+import { TTheme } from "@/types";
+
 interface IProps {
   max: number;
-  theme: string;
+  theme: TTheme;
   showLitigation: boolean;
   showMcf: boolean;
 }

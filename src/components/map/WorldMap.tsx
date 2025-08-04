@@ -8,7 +8,7 @@ import { GEO_EU_COUNTRIES } from "@/constants/mapEUCountries";
 import useConfig from "@/hooks/useConfig";
 import useGeographies from "@/hooks/useGeographies";
 import { useMcfData } from "@/hooks/useMcfData";
-import { TGeography } from "@/types";
+import { TGeography, TTheme } from "@/types";
 
 import GeographySelect from "./GeographySelect";
 import { Legend } from "./Legend";
@@ -137,7 +137,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
 interface IProps {
   showLitigation?: boolean;
   showCategorySelect?: boolean;
-  theme: "ccc" | "cclw" | "cpr";
+  theme: TTheme;
 }
 
 export default function MapChart({ showLitigation = false, showCategorySelect = true, theme }: IProps) {
