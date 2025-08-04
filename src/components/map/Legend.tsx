@@ -1,11 +1,11 @@
 interface IProps {
   max: number;
-  customApp: string;
+  theme: string;
   showLitigation: boolean;
   showMcf: boolean;
 }
 
-export const Legend = ({ max, showLitigation, showMcf, customApp }: IProps) => {
+export const Legend = ({ max, showLitigation, showMcf, theme }: IProps) => {
   const scale = [1, Math.round(max * 0.25), Math.round(max * 0.5), Math.round(max * 0.75), max];
 
   return (
@@ -34,7 +34,7 @@ export const Legend = ({ max, showLitigation, showMcf, customApp }: IProps) => {
           <p>{scale[4]}</p>
         </div>
       </div>
-      {customApp === "ccc" ? (
+      {theme === "ccc" ? (
         <p>Size and colour show the number of litigation submissions in our databases.</p>
       ) : (
         <p>

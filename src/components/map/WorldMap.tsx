@@ -137,10 +137,10 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
 interface IProps {
   showLitigation?: boolean;
   showCategorySelect?: boolean;
-  customApp: "ccc" | "cclw" | "cpr";
+  theme: "ccc" | "cclw" | "cpr";
 }
 
-export default function MapChart({ showLitigation = false, showCategorySelect = true, customApp }: IProps) {
+export default function MapChart({ showLitigation = false, showCategorySelect = true, theme }: IProps) {
   const configQuery = useConfig();
   const geographiesQuery = useGeographies();
   const { data: { countries: configCountries = [] } = {} } = configQuery;
@@ -155,10 +155,10 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
   const showMcf = useMcfData();
 
   useEffect(() => {
-    if (customApp === "ccc") {
+    if (theme === "ccc") {
       setSelectedFamCategory("litigation");
     }
-  }, [customApp]);
+  }, [theme]);
 
   // Combine the data from the coordinates and the map data from the API into a unified object
   const mapData: TMapData = useMemo(() => {
@@ -430,7 +430,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           </label>
         </div>
       </div>
-      <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} customApp={customApp} />
+      <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} theme={theme} />
     </>
   );
 }
