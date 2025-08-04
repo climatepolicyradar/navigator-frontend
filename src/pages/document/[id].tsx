@@ -6,7 +6,7 @@ import { ApiClient } from "@/api/http-common";
 import { FamilyLitigationPage } from "@/components/pages/familyLitigationPage";
 import { FamilyOriginalPage, IProps } from "@/components/pages/familyOriginalPage";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { TFamilyPage, TTarget, TGeography, TCorpusTypeDictionary, TSearchResponse, TFamilyNew } from "@/types";
+import { TFamilyPage, TTarget, TGeography, TCorpusTypeDictionary, TSearchResponse, TFamilyNew, TGeographySubdivision } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
@@ -45,6 +45,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let targetsData: TTarget[] = [];
   let countriesData: TGeography[] = [];
   let corpus_types: TCorpusTypeDictionary;
+  let subdivisionsData: TGeographySubdivision[] = [];
 
   try {
     const { data: returnedData } = await backendApiClient.get(`/documents/${id}`);
@@ -85,6 +86,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     } catch (error) {}
   }
 
+  if (familyData) {
+    const allSubdivisions = await Promise.all<TGeographySubdivision[]>(
+      familyData.geographies
+        .filter((country) => country.length === 3)
+        .map(async (country) => {
+          try {
+            const { data: subDivisionResponse } = await apiClient.get(`/geographies/subdivisions/${country}`);
+            return subDivisionResponse;
+          } catch (error) {}
+        })
+    );
+    subdivisionsData = allSubdivisions.flat();
+  }
+
   if (!familyData) {
     return {
       notFound: true,
@@ -97,6 +112,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       countries: countriesData,
       family: familyData,
       featureFlags,
+      subdivisions: subdivisionsData,
       targets: targetsData,
       theme,
       themeConfig,
