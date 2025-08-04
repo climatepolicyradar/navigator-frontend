@@ -35,7 +35,7 @@ import {
   TConcept,
   TCorpusTypeDictionary,
   TDocumentPage,
-  TFamilyNew,
+  TFamilyPublic,
   TFamilyPage,
   TFeatureFlags,
   TGeography,
@@ -51,12 +51,12 @@ import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { truncateString } from "@/utils/truncateString";
 
-export const isNewEndpointData = (family: TFamilyPage | TFamilyNew): family is TFamilyNew => "concepts" in family;
+export const isNewEndpointData = (family: TFamilyPage | TFamilyPublic): family is TFamilyPublic => "concepts" in family;
 
 export interface IProps {
   corpus_types: TCorpusTypeDictionary;
   countries: TGeography[];
-  family: TFamilyPage | TFamilyNew;
+  family: TFamilyPage | TFamilyPublic;
   featureFlags: TFeatureFlags;
   targets: TTarget[];
   theme: TTheme;

@@ -5,18 +5,18 @@ import { Button } from "@/components/atoms/button/Button";
 import { Card } from "@/components/atoms/card/Card";
 import { Section } from "@/components/molecules/section/Section";
 import { IInteractiveTableColumn, IInteractiveTableRow, InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { TDocumentNew, TEvent, TFamilyNew } from "@/types";
+import { TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic } from "@/types";
 import { pluralise } from "@/utils/pluralise";
 import { formatDateShort } from "@/utils/timedate";
 
 type TEventWithDocument = {
-  event: TEvent;
-  document?: TDocumentNew;
+  event: TFamilyEventPublic;
+  document?: TFamilyDocumentPublic;
 };
 
 // Gets a flat list of all events in a family
 // TODO investigate duplicates between family events and document events
-export const getEventsWithDocuments = (families: TFamilyNew[]): TEventWithDocument[] =>
+export const getEventsWithDocuments = (families: TFamilyPublic[]): TEventWithDocument[] =>
   families
     .map((family) => [
       ...family.events.map((event) => ({ event })),
@@ -36,7 +36,7 @@ export const TABLE_COLUMNS: IInteractiveTableColumn<TTableColumn>[] = [
 ];
 
 interface IProps {
-  family: TFamilyNew;
+  family: TFamilyPublic;
   showValues?: boolean; // Debug mode for understanding table sorting
 }
 

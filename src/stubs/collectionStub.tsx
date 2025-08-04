@@ -1,6 +1,6 @@
-import { TCollection } from "@/types";
+import { TCollectionPublicWithFamilies } from "@/types";
 
-export const COLLECTION_STUB: TCollection = {
+export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
   import_id: "Sabin.collection.154.0",
   title: "Juliana v. United States",
   description:

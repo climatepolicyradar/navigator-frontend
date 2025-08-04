@@ -6,7 +6,7 @@ import { ApiClient } from "@/api/http-common";
 import { FamilyLitigationPage } from "@/components/pages/familyLitigationPage";
 import { FamilyOriginalPage, IProps } from "@/components/pages/familyOriginalPage";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { TFamilyPage, TTarget, TGeography, TCorpusTypeDictionary, TSearchResponse, TFamilyNew } from "@/types";
+import { TFamilyPage, TTarget, TGeography, TCorpusTypeDictionary, TSearchResponse, TFamilyPublic } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
@@ -40,7 +40,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
-  let familyData: TFamilyPage | TFamilyNew;
+  let familyData: TFamilyPage | TFamilyPublic;
   let vespaFamilyData: TSearchResponse;
   let targetsData: TTarget[] = [];
   let countriesData: TGeography[] = [];

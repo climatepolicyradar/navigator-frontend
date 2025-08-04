@@ -10,13 +10,13 @@ import Layout from "@/components/layouts/Main";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { IPageHeaderTab, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { TCollection, TTheme, TThemeConfig } from "@/types";
+import { TCollectionPublicWithFamilies, TTheme, TThemeConfig } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isLitigationEnabled } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 interface IProps {
-  collection: TCollection;
+  collection: TCollectionPublicWithFamilies;
   theme: TTheme;
   themeConfig: TThemeConfig;
 }
@@ -94,7 +94,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const import_id = context.params.id;
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
-  let collectionData: TCollection;
+  let collectionData: TCollectionPublicWithFamilies;
 
   try {
     const { data: collectionResponse } = await apiClient.get(`/families/collections/${import_id}`);

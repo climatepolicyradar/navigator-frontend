@@ -1,6 +1,6 @@
 import { TFamilyPage } from "@/types";
 
-export const FAMILY_PAGE_STUB = {
+export const FAMILY_PAGE_STUB: TFamilyPage = {
   organisation: "UNFCCC",
   import_id: "UNFCCC.family.i00002894.n0000",
   title: "Hungary National Inventory Report (NIR). 2025",
@@ -8,9 +8,19 @@ export const FAMILY_PAGE_STUB = {
   geographies: ["HUN"],
   category: "UNFCCC",
   status: "Published",
-  metadata: { author: ["Hungary"], author_type: ["Party"] },
+  metadata: {
+    author: ["Hungary"],
+    author_type: ["Party"],
+  },
   slug: "hungary-national-inventory-report-nir-2025_73b2",
-  events: [{ title: "Submitted", date: "2025-06-10T00:00:00Z", event_type: "Passed/Approved", status: "Ok" }],
+  events: [
+    {
+      title: "Submitted",
+      date: "2025-06-10T00:00:00Z",
+      event_type: "Passed/Approved",
+      status: "Ok",
+    },
+  ],
   published_date: "2025-06-10T00:00:00Z",
   last_updated_date: "2025-06-10T00:00:00Z",
   documents: [
@@ -111,4 +121,4 @@ export const FAMILY_PAGE_STUB = {
     },
   ],
   corpus_id: "UNFCCC.corpus.i00000001.n0000",
-} as unknown as TFamilyPage;
+};

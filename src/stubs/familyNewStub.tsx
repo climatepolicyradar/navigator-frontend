@@ -1,6 +1,6 @@
-import { TFamilyNew } from "@/types";
+import { TFamilyPublic } from "@/types";
 
-export const FAMILY_NEW_STUB: TFamilyNew = {
+export const FAMILY_NEW_STUB: TFamilyPublic = {
   import_id: "Sabin.family.14255.0",
   title: "Juliana v. United States",
   concepts: [

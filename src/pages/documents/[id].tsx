@@ -32,7 +32,7 @@ import { readConfigFile } from "@/utils/readConfigFile";
 
 interface IProps {
   document: TDocumentPage;
-  family: TFamilyPage;
+  family: TFamilyPage; // TODO switch to V2 API and use TFamilyPublic
   theme: TTheme;
   vespaFamilyData?: TSearchResponse;
   vespaDocumentData?: TSearchResponse;

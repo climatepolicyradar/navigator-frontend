@@ -1,5 +1,5 @@
 import { getApprovedYearFromEvents } from "@/helpers/getApprovedYearFromEvents";
-import { TFamilyMetadata, TMCFFamilyMetadata, TFamilyPage } from "@/types";
+import { TFamilyMetadata, TMCFFamilyMetadata, TFamilyPublic } from "@/types";
 
 import { FamilyMeta } from "../FamilyMeta";
 import { McfFamilyMeta } from "../McfFamilyMeta";
@@ -7,7 +7,7 @@ import { McfFamilyMeta } from "../McfFamilyMeta";
 const MultilateralClimateFunds = "MCF";
 
 interface IProps {
-  family: TFamilyPage;
+  family: TFamilyPublic;
 }
 
 type TFamilyMetadataUnion = TFamilyMetadata | TMCFFamilyMetadata;
@@ -22,7 +22,7 @@ export const MetadataRenderer = ({ family }: IProps) => {
     ...metadata,
     organisation,
     category,
-    document_type: document_type,
+    document_type: [document_type],
   };
 
   if (category !== MultilateralClimateFunds) {

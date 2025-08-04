@@ -5,13 +5,13 @@ import { Button } from "@/components/atoms/button/Button";
 import { Card } from "@/components/atoms/card/Card";
 import { getEventsWithDocuments, TABLE_COLUMNS, TTableColumn } from "@/components/blocks/familyBlock/FamilyBlock";
 import { IInteractiveTableRow, InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { TFamilyNew } from "@/types";
+import { TFamilyPublic } from "@/types";
 import { formatDateShort } from "@/utils/timedate";
 
 const MAX_ENTRIES_SHOWN = 8;
 
 interface IProps {
-  families: TFamilyNew[];
+  families: TFamilyPublic[];
   showValues?: boolean; // Debug mode for understanding table sorting
 }
 
