@@ -1,5 +1,5 @@
 import { getApprovedYearFromEvents } from "@/helpers/getApprovedYearFromEvents";
-import { TFamilyMetadata, TMCFFamilyMetadata, TFamilyPublic } from "@/types";
+import { TFamilyMetadata, TMCFFamilyMetadata, TFamilyPage } from "@/types";
 
 import { FamilyMeta } from "../FamilyMeta";
 import { McfFamilyMeta } from "../McfFamilyMeta";
@@ -7,7 +7,7 @@ import { McfFamilyMeta } from "../McfFamilyMeta";
 const MultilateralClimateFunds = "MCF";
 
 interface IProps {
-  family: TFamilyPublic;
+  family: TFamilyPage;
 }
 
 type TFamilyMetadataUnion = TFamilyMetadata | TMCFFamilyMetadata;
