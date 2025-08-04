@@ -1,10 +1,13 @@
 import { TGeographySubdivision } from "@/types";
 
 const findSubdivision = (search: string, dataSet: TGeographySubdivision[]) => {
-  let subdivision = dataSet.find((c) => c.code.toLowerCase() === search.toLowerCase());
-  if (!subdivision) subdivision = dataSet.find((c) => c.name.toLowerCase() === search.toLowerCase());
-  if (!subdivision) return null;
-  return subdivision;
+  const searchLowerCase = search.toLowerCase();
+  for (const dataItem of dataSet) {
+    if (dataItem.code.toLowerCase() === searchLowerCase || dataItem.name.toLowerCase() === searchLowerCase) {
+      return dataItem;
+    }
+  }
+  return null;
 };
 
 export const getSubdivisionName = (search: string, dataSet: TGeographySubdivision[]) => {
