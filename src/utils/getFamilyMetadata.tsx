@@ -1,3 +1,4 @@
+import sortBy from "lodash/sortBy";
 import { Fragment } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -42,11 +43,7 @@ function getLitigationMetaData(family: TFamilyNew, countries: TGeography[], subd
 
   // Structure concepts into a hierarchy we can use
   const hierarchy = buildConceptHierarchy(family.concepts);
-  const geosOrdered = family.geographies.sort((a, b) => {
-    if (a.length === 3 && b.length !== 3) return -1;
-    if (a.length !== 3 && b.length === 3) return 1;
-    return 0;
-  });
+  const geosOrdered = sortBy(family.geographies, [(geo) => geo.length !== 3, (geo) => geo.toLowerCase()]);
 
   const filingYearEvent = family.events.find((event) => event.event_type === "Filing Year For Action");
   if (filingYearEvent) {
