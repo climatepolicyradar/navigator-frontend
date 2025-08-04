@@ -51,6 +51,8 @@ import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { truncateString } from "@/utils/truncateString";
 
+export const isNewEndpointData = (family: TFamilyPage | TFamilyNew): family is TFamilyNew => "concepts" in family;
+
 export interface IProps {
   corpus_types: TCorpusTypeDictionary;
   countries: TGeography[];
@@ -74,6 +76,11 @@ const documentIsPublished = (familyDocuments: TDocumentPage[], documentImportId:
 };
 
 export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page, targets = [], theme, vespaFamilyData }: IProps) => {
+  // TODO remove when only the newer API endpoint is being called in getServerSideProps
+  if (isNewEndpointData(page)) {
+    throw new Error("Cannot render FamilyOriginalPage with V2 API data");
+  }
+
   const router = useRouter();
   const pathname = usePathname();
   const startingNumberOfTargetsToDisplay = 5;

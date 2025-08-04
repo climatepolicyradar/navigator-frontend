@@ -9,15 +9,12 @@ import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHead
 import { FAMILY_PAGE_SIDE_BAR_ITEMS_SORTED } from "@/constants/sideBarItems";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { TFamilyNew, TFamilyPage } from "@/types";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
 import { joinNodes } from "@/utils/reactNode";
 import { convertDate } from "@/utils/timedate";
 
-import { IProps } from "./familyOriginalPage";
-
-const isNewEndpointData = (family: TFamilyPage | TFamilyNew): family is TFamilyNew => "concepts" in family;
+import { IProps, isNewEndpointData } from "./familyOriginalPage";
 
 export const FamilyLitigationPage = ({ countries, family, theme, themeConfig }: IProps) => {
   // TODO remove when only the newer API endpoint is being called in getServerSideProps
