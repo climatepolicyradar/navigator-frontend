@@ -1,10 +1,11 @@
 interface IProps {
   max: number;
+  customApp: string;
   showLitigation: boolean;
   showMcf: boolean;
 }
 
-export const Legend = ({ max, showLitigation, showMcf }: IProps) => {
+export const Legend = ({ max, showLitigation, showMcf, customApp }: IProps) => {
   const scale = [1, Math.round(max * 0.25), Math.round(max * 0.5), Math.round(max * 0.75), max];
 
   return (
@@ -33,10 +34,14 @@ export const Legend = ({ max, showLitigation, showMcf }: IProps) => {
           <p>{scale[4]}</p>
         </div>
       </div>
-      <p>
-        Size and colour show the number of laws, policies, reports{showLitigation ? ", litigation" : ""}
-        {showMcf ? ", MCF projects" : ""} or UNFCCC submissions in our databases.
-      </p>
+      {customApp === "ccc" ? (
+        <p>Size and colour show the number of litigation submissions in our databases.</p>
+      ) : (
+        <p>
+          Size and colour show the number of laws, policies, reports{showLitigation ? ", litigation" : ""}
+          {showMcf ? ", MCF projects" : ""} or UNFCCC submissions in our databases.
+        </p>
+      )}
     </div>
   );
 };

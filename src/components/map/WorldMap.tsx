@@ -124,7 +124,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
       {geography.familyCounts?.UNFCCC > 0 && <p>UNFCCC: {geography.familyCounts?.UNFCCC || 0}</p>}
       {geography.familyCounts?.MCF > 0 && <p>MCF projects: {geography.familyCounts?.MCF || 0}</p>}
       {geography.familyCounts?.REPORTS > 0 && <p>Reports: {geography.familyCounts?.REPORTS || 0}</p>}
-      {geography.familyCounts?.LITIGATION > 0 && <p>Litigation: {geography.familyCounts?.LITIGATION || 0}</p>}
+      {geography.familyCounts?.LITIGATION > 0 ? <p>Litigation: {geography.familyCounts?.LITIGATION || 0}</p> : <p>No litigation data available</p>}
       <p>
         <LinkWithQuery href={`/geographies/${geography.slug}`} className="text-blue-600 underline hover:text-blue-800">
           View more
@@ -268,6 +268,23 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
   if (mapDataStatus === "error") {
     return <p>There was an error loading the data for the map.</p>;
   }
+
+  const getMaxValue = () => {
+    switch (selectedFamCategory) {
+      case "lawsPolicies":
+        return mapData.maxLawsPolicies;
+      case "unfccc":
+        return mapData.maxUnfccc;
+      case "reports":
+        return mapData.maxReports;
+      case "mcf":
+        return mapData.maxMcf;
+      case "litigation":
+        return mapData.maxLitigation;
+      default:
+        return mapData.maxLawsPolicies;
+    }
+  };
 
   return (
     <>
@@ -413,23 +430,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           </label>
         </div>
       </div>
-      {!!mapData.maxLawsPolicies && !!mapData.maxUnfccc && (
-        <Legend
-          max={
-            selectedFamCategory === "lawsPolicies"
-              ? mapData.maxLawsPolicies
-              : selectedFamCategory === "unfccc"
-                ? mapData.maxUnfccc
-                : selectedFamCategory === "reports"
-                  ? mapData.maxReports
-                  : selectedFamCategory === "mcf"
-                    ? mapData.maxMcf
-                    : mapData.maxLitigation
-          }
-          showMcf={showMcf}
-          showLitigation={showLitigation}
-        />
-      )}
+      <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} customApp={customApp} />
     </>
   );
 }
