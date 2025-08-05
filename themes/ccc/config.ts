@@ -70,7 +70,7 @@ const config: TThemeConfig = {
   documentCategories: ["All", "Laws", "Policies", "UNFCCC Submissions", "Litigation", "Climate Finance Projects", "Offshore Wind Reports"],
   defaultDocumentCategory: "All",
   features: {
-    familyConceptsSearch: false,
+    familyConceptsSearch: true,
     knowledgeGraph: false,
     litigation: true,
     searchFamilySummary: true,
