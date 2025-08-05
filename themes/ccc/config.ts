@@ -71,7 +71,7 @@ const config: TThemeConfig = {
   defaultDocumentCategory: "All",
   features: {
     familyConceptsSearch: true,
-    knowledgeGraph: true,
+    knowledgeGraph: false,
     litigation: true,
     searchFamilySummary: true,
   },
