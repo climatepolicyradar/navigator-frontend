@@ -39,6 +39,7 @@ import {
   TFamilyPage,
   TFeatureFlags,
   TGeography,
+  TGeographySubdivision,
   TMatchedFamily,
   TSearchResponse,
   TTarget,
@@ -58,6 +59,7 @@ export interface IProps {
   countries: TGeography[];
   family: TFamilyPage | TFamilyPublic;
   featureFlags: TFeatureFlags;
+  subdivisions: TGeographySubdivision[];
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
