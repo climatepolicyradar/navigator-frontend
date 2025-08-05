@@ -8,7 +8,7 @@ export interface IProps {
 
 export const Section = ({ children, id, title }: IProps) => {
   return (
-    <section className="cols-3:col-span-2 cols-4:col-span-3" id={id}>
+    <section className="cols-3:col-span-2 cols-4:col-span-3 scroll-mt-35 sm:scroll-mt-21" id={id}>
       {title && <h2 className="mb-5 text-xl text-text-primary font-semibold leading-tight">{title}</h2>}
       {children}
     </section>
