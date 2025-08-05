@@ -26,6 +26,12 @@ export const isLitigationEnabled = (featureFlags: TFeatureFlags, themeConfig: TT
     featureFlag: featureFlags["litigation"],
   });
 
+export const isFamilyConceptsEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
+  isFeatureEnabled({
+    configFeature: themeConfig.features.familyConceptsSearch,
+    featureFlag: featureFlags["family-concepts"],
+  });
+
 export const isUNFCCCFiltersEnabled = (featureFlags: TFeatureFlags) =>
   isFeatureEnabled({
     featureFlag: featureFlags["unfccc-filters"],
