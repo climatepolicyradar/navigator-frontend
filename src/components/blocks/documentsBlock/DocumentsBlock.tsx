@@ -10,7 +10,7 @@ import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { InteractiveTable, IInteractiveTableColumn, IInteractiveTableRow } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName } from "@/helpers/getCountryFields";
-import { TFamilyPage, TGeography, TLoadingStatus } from "@/types";
+import { TFamilyPublic, TGeography, TLoadingStatus } from "@/types";
 import { convertDate } from "@/utils/timedate";
 
 type TTableColumn = "year" | "geography" | "type" | "document";
@@ -23,7 +23,7 @@ const TABLE_COLUMNS: IInteractiveTableColumn<TTableColumn>[] = [
 
 interface IProps {
   countries: TGeography[];
-  family: TFamilyPage;
+  family: TFamilyPublic;
   status: TLoadingStatus;
 }
 
@@ -51,7 +51,7 @@ export const DocumentsBlock = ({ countries, family }: IProps) => {
       id: doc.slug,
       cells: {
         year,
-        geography: family.geographies.map((geo) => getCountryName(geo, countries)).join(", "),
+        geography: family.geographies.map((geo) => getCountryName(geo, countries) || geo).join(", "),
         type: categoryName,
         document: {
           display: (

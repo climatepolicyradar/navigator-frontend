@@ -19,7 +19,8 @@ export function getRecursiveParentLabels(item: FamilyConcept, items: FamilyConce
 
   // Otherwise, recursively get the labels of the parents
   const recursiveParentLabels = parentLabels.flatMap((parent) => {
-    return [parent.preferred_label, ...getRecursiveParentLabels(parent, items)];
+    const parentIdentifier = parent.relation ? `${parent.relation}/${parent.preferred_label}` : parent.preferred_label;
+    return [parentIdentifier, ...getRecursiveParentLabels(parent, items)];
   });
 
   // we reverse this to make sure we have the root parent first and

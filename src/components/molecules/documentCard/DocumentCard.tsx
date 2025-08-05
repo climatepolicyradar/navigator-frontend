@@ -1,14 +1,14 @@
 import { Card } from "@/components/atoms/card/Card";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName } from "@/helpers/getCountryFields";
-import { TDocumentPage, TFamilyPage, TGeography } from "@/types";
+import { TDocumentPage, TFamilyDocumentPublic, TFamilyPublic, TGeography } from "@/types";
 import { pluralise } from "@/utils/pluralise";
 import { convertDate } from "@/utils/timedate";
 
 interface IProps {
   countries: TGeography[];
-  document: TDocumentPage;
-  family: TFamilyPage;
+  document: TFamilyDocumentPublic;
+  family: TFamilyPublic;
   matches?: number;
 }
 

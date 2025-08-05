@@ -9,17 +9,14 @@ import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHead
 import { FAMILY_PAGE_SIDE_BAR_ITEMS_SORTED } from "@/constants/sideBarItems";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { TFamilyNew, TFamilyPage } from "@/types";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
 import { joinNodes } from "@/utils/reactNode";
 import { convertDate } from "@/utils/timedate";
 
-import { IProps } from "./familyOriginalPage";
+import { IProps, isNewEndpointData } from "./familyOriginalPage";
 
-const isNewEndpointData = (family: TFamilyPage | TFamilyNew): family is TFamilyNew => "concepts" in family;
-
-export const FamilyLitigationPage = ({ countries, family, theme, themeConfig }: IProps) => {
+export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig }: IProps) => {
   // TODO remove when only the newer API endpoint is being called in getServerSideProps
   if (!isNewEndpointData(family)) {
     throw new Error("Cannot render FamilyLitigationPage with V1 API data");
@@ -36,7 +33,7 @@ export const FamilyLitigationPage = ({ countries, family, theme, themeConfig }: 
       value: joinNodes(
         family.geographies.map((geo) => (
           <LinkWithQuery key={geo} href={`/geographies/${getCountrySlug(geo, countries)}`} className="underline">
-            {getCountryName(geo, countries)}
+            {getCountryName(geo, countries) || geo}
           </LinkWithQuery>
         )),
         ", "
@@ -47,7 +44,11 @@ export const FamilyLitigationPage = ({ countries, family, theme, themeConfig }: 
     pageHeaderMetadata.push({
       label: "Part of",
       value: joinNodes(
-        family.collections.map((collection) => collection.title),
+        family.collections.map((collection) => (
+          <LinkWithQuery key={collection.import_id} href={`/collection/${collection.import_id}`} className="underline">
+            {collection.title}
+          </LinkWithQuery>
+        )),
         ", "
       ),
     });
@@ -70,7 +71,7 @@ export const FamilyLitigationPage = ({ countries, family, theme, themeConfig }: 
           <TextBlock>
             <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
           </TextBlock>
-          <MetadataBlock title="About this case" metadata={getFamilyMetadata(family, countries)} />
+          <MetadataBlock title="About this case" metadata={getFamilyMetadata(family, countries, subdivisions)} />
           <pre className="w-full max-h-[1000px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(family, null, 2)}</pre>
         </main>
       </Columns>

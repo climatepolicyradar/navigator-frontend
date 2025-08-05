@@ -1,8 +1,10 @@
+import sortBy from "lodash/sortBy";
 import { Fragment } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { IMetadata, TGeography, TFamilyNew } from "@/types";
+import { getSubdivisionName } from "@/helpers/getSubdivision";
+import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
 import { buildConceptHierarchy, TFamilyConceptTreeNode } from "@/utils/buildConceptHierarchy";
 
 // Recursively display the children of a concept
@@ -25,22 +27,23 @@ function displayConceptHierarchy(concept: TFamilyConceptTreeNode): React.ReactNo
 }
 
 // Format the family metadata into a shape suitable for the MetadataBlock component
-export const getFamilyMetadata = (family: TFamilyNew, countries: TGeography[]): IMetadata[] => {
+export const getFamilyMetadata = (family: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]): IMetadata[] => {
   const familyMetadata = [];
 
   // TODO: handle more categories and their specific metadata later
   if (family.corpus_type_name.toLowerCase() === "litigation") {
-    familyMetadata.push(...getLitigationMetaData(family, countries));
+    familyMetadata.push(...getLitigationMetaData(family, countries, subdivisions));
   }
 
   return familyMetadata;
 };
 
-function getLitigationMetaData(family: TFamilyNew, countries: TGeography[]): IMetadata[] {
+function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]): IMetadata[] {
   const metadata = [];
 
   // Structure concepts into a hierarchy we can use
   const hierarchy = buildConceptHierarchy(family.concepts);
+  const geosOrdered = sortBy(family.geographies, [(geo) => geo.length !== 3, (geo) => geo.toLowerCase()]);
 
   const filingYearEvent = family.events.find((event) => event.event_type === "Filing Year For Action");
   if (filingYearEvent) {
@@ -51,17 +54,24 @@ function getLitigationMetaData(family: TFamilyNew, countries: TGeography[]): IMe
     });
   }
 
-  if (family.geographies.length > 0) {
+  if (geosOrdered.length > 0) {
     metadata.push({
       label: "Geography",
-      value: family.geographies.map((geo, index) => (
-        <Fragment key={geo}>
-          {index > 0 && getCountrySlug(geo, countries) && " → "}
-          <LinkWithQuery key={geo} href={`/geographies/${getCountrySlug(geo, countries)}`} className="underline">
-            {getCountryName(geo, countries)}
-          </LinkWithQuery>
-        </Fragment>
-      )),
+      value: geosOrdered.map((geo, index) => {
+        const geoSlug = getCountrySlug(geo, countries);
+        return (
+          <Fragment key={geo}>
+            {geoSlug ? (
+              <LinkWithQuery key={geo} href={`/geographies/${geoSlug}`} className="underline">
+                {getCountryName(geo, countries)}
+              </LinkWithQuery>
+            ) : (
+              <>{getSubdivisionName(geo, subdivisions)}</>
+            )}
+            {index + 1 < geosOrdered.length && " → "}
+          </Fragment>
+        );
+      }),
     });
   }
 
