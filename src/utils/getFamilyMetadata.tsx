@@ -4,7 +4,7 @@ import { Fragment } from "react";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
-import { IMetadata, TGeography, TFamilyNew, TGeographySubdivision } from "@/types";
+import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
 import { buildConceptHierarchy, TFamilyConceptTreeNode } from "@/utils/buildConceptHierarchy";
 
 // Recursively display the children of a concept
@@ -27,7 +27,7 @@ function displayConceptHierarchy(concept: TFamilyConceptTreeNode): React.ReactNo
 }
 
 // Format the family metadata into a shape suitable for the MetadataBlock component
-export const getFamilyMetadata = (family: TFamilyNew, countries: TGeography[], subdivisions: TGeographySubdivision[]): IMetadata[] => {
+export const getFamilyMetadata = (family: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]): IMetadata[] => {
   const familyMetadata = [];
 
   // TODO: handle more categories and their specific metadata later
@@ -38,7 +38,7 @@ export const getFamilyMetadata = (family: TFamilyNew, countries: TGeography[], s
   return familyMetadata;
 };
 
-function getLitigationMetaData(family: TFamilyNew, countries: TGeography[], subdivisions: TGeographySubdivision[]): IMetadata[] {
+function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]): IMetadata[] {
   const metadata = [];
 
   // Structure concepts into a hierarchy we can use

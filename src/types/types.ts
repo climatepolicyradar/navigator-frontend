@@ -135,7 +135,7 @@ export type TGeographySummary = {
 };
 
 export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC" | "MCF" | "Reports";
-export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Reports" | "Litigation";
+export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Litigation" | "Reports";
 export type TDisplayCategory = "All" | TCategory;
 export type TEventCategory = TCategory | "Target";
 
@@ -144,7 +144,6 @@ export type TEvent = {
   date: string;
   event_type: string;
   status: string;
-  metadata: Record<string, unknown> | null;
 };
 
 export type TAssociatedDocument = {
@@ -169,22 +168,6 @@ export type TFamilyDocument = {
   document_url: string;
 };
 
-export type TFamilyConcept = {
-  id: string;
-  ids: unknown[];
-  preferred_label: string;
-  relation: string;
-  subconcept_of_labels: string[];
-  type: string;
-};
-
-export type TFamilyCorpus = {
-  corpus_type_name: string;
-  import_id: string;
-  organisation_id: number;
-  title: string;
-};
-
 export type TFamily = {
   corpus_type_name: TCorpusTypeSubCategory;
   family_category: TCategory;
@@ -199,52 +182,40 @@ export type TFamily = {
 };
 
 export type TFamilyPage = {
-  import_id: string;
-  title: string;
-  organisation: string;
-  summary: string;
-  geographies: string[];
   category: TCategory;
-  corpus_type_name: TCorpusTypeSubCategory;
-  metadata: TFamilyMetadata;
-  slug: string;
-  corpus_id: string;
-  events: TEvent[];
-  documents: TDocumentPage[];
   collections: TCollection[];
-  published_date: string | null;
+  corpus_id: string;
+  corpus_type_name?: TCorpusTypeSubCategory;
+  documents: TDocumentPage[];
+  events: TEvent[];
+  geographies: string[];
+  import_id: string;
   last_updated_date: string | null;
-  status?: string;
+  metadata: TFamilyMetadata;
+  organisation: string;
   organisation_attribution_url?: string | null;
-  concepts: TFamilyConcept[];
-};
-
-export type TFamilyNew = Omit<TFamilyPage, "documents"> & {
-  concepts: TFamilyConcept[];
-  corpus: TFamilyCorpus;
-  documents: TDocumentNew[];
-  organisation_attribution_url: string | null;
+  published_date: string | null;
+  slug: string;
+  status?: string;
+  summary: string;
+  title: string;
 };
 
 export type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
 
 export type TDocumentPage = {
-  import_id: string;
-  variant?: string | null;
-  slug: string;
-  title: string;
-  md5_sum?: string | null;
   cdn_object?: string | null;
-  source_url: string;
   content_type: TDocumentContentType;
+  document_role: string;
+  document_type: string | null;
+  import_id: string;
   language: string;
   languages: string[];
-  document_type: string | null;
-  document_role: string;
-};
-
-export type TDocumentNew = TDocumentPage & {
-  events: TEvent[];
+  md5_sum: string | null;
+  slug: string;
+  source_url: string;
+  title: string;
+  variant: string | null;
 };
 
 export type TCollection = {
@@ -252,6 +223,7 @@ export type TCollection = {
   title: string;
   description: string;
   families: TCollectionFamily[];
+  slug: string;
 };
 
 export type TCollectionFamily = {
@@ -260,24 +232,28 @@ export type TCollectionFamily = {
   title: string;
 };
 
-export type TFamilyMetadata = {
-  topic?: string[];
-  hazard?: string[];
-  sector?: string[];
-  keyword?: string[];
-  framework?: string[];
-  instrument?: string[];
-  author_type?: string[];
-  author?: string[];
-  document_type?: string;
-  // Litigation specific metadata
-  id?: string[];
-  status?: string[];
-  case_number?: string[];
-  concept_preferred_label?: string[];
-  core_object?: string[];
-  original_case_name?: string[];
+export type TMetadata<Key extends string> = {
+  [K in Key]?: string[];
 };
+
+export type TFamilyMetadata = TMetadata<
+  | "author_type"
+  | "author"
+  | "document_type"
+  | "framework"
+  | "hazard"
+  | "id"
+  | "instrument"
+  | "keyword"
+  | "sector"
+  | "topic"
+  // Litigation specific
+  | "case_number"
+  | "concept_preferred_label"
+  | "core_object"
+  | "original_case_name"
+  | "status"
+>;
 
 export type TMCFFamilyMetadata = {
   approval_date?: string;
@@ -389,6 +365,15 @@ export type TConcept = {
   type?: "principal_law" | "jurisdiction" | "category";
 };
 
+export type TFamilyConcept = {
+  id: string;
+  ids: string[];
+  type: string;
+  relation: string;
+  preferred_label: string;
+  subconcept_of_labels: string[];
+};
+
 export type TSearchResponse = {
   total_hits: number;
   total_family_hits: number;
@@ -404,4 +389,66 @@ export type TSearchResponse = {
   continuation_token?: string;
   this_continuation_token: string;
   prev_continuation_token: string;
+};
+
+/* /families API response types */
+
+export type TCollectionPublic = {
+  description: string;
+  import_id: string;
+  metadata: TMetadata<"event_type" | "description" | "datetime_event_name" | "id">;
+  slug: string;
+  title: string;
+};
+
+export type TCorpusPublic = {
+  corpus_type_name: string;
+  import_id: string;
+  organisation: {
+    id: number;
+    name: string;
+    attribution_url?: string | null;
+  };
+  title: string;
+};
+
+export type TFamilyEventPublic = TEvent & {
+  import_id: string;
+  metadata: TMetadata<string>;
+};
+
+export type TFamilyDocumentPublic = {
+  cdn_object: string;
+  content_type: TDocumentContentType | null;
+  document_role: string | null;
+  document_type: string | null;
+  events: TFamilyEventPublic[];
+  import_id: string;
+  language: string | null;
+  languages: string[];
+  md5_sum: string | null;
+  slug: string;
+  source_url: string | null;
+  title: string;
+  valid_metadata: TMetadata<"id">;
+  variant_name: string | null;
+  variant: string | null;
+};
+
+export type TFamilyPublic = Omit<TFamilyPage, "collections" | "documents" | "events" | "organisation_attribution_url" | "status"> & {
+  collections: TCollectionPublic[];
+  concepts: TFamilyConcept[];
+  corpus: TCorpusPublic;
+  documents: TFamilyDocumentPublic[];
+  events: TFamilyEventPublic[];
+  organisation_attribution_url: string | null;
+};
+
+export type TCollectionPublicWithFamilies = {
+  description: string;
+  families: TFamilyPublic[];
+  import_id: string;
+  metadata: TMetadata<"id">;
+  slug: string;
+  title: string;
 };
