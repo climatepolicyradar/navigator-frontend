@@ -22,7 +22,7 @@ export const MetadataRenderer = ({ family }: IProps) => {
     ...metadata,
     organisation,
     category,
-    document_type: document_type,
+    document_type: [document_type],
   };
 
   if (category !== MultilateralClimateFunds) {
