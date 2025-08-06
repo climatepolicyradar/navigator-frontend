@@ -1,5 +1,5 @@
 import { GetServerSideProps, InferGetStaticPropsType } from "next";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { Columns } from "@/components/atoms/columns/Columns";
@@ -7,7 +7,8 @@ import { EventsBlock } from "@/components/blocks/eventsBlock/EventsBlock";
 import { FamilyBlock } from "@/components/blocks/familyBlock/FamilyBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import Layout from "@/components/layouts/Main";
-import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
+import { Section } from "@/components/molecules/section/Section";
+import { ContentsSideBar, ISideBarItem } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { IPageHeaderTab, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { TCollectionPublicWithFamilies, TTheme, TThemeConfig } from "@/types";
@@ -32,6 +33,11 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
 
   const onTabChange = (tab: TCollectionTab) => setCurrentTab(tab);
 
+  const sideBarItems: ISideBarItem[] = families.map((family) => ({
+    id: `section-${family.slug}`,
+    display: family.title,
+  }));
+
   return (
     <Layout title={collection.title} description={collection.description} theme={theme} themeConfig={themeConfig} metadataKey="collection">
       <PageHeader<TCollectionTab>
@@ -45,7 +51,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
       <Columns>
         {currentTab === "cases" && (
           <>
-            <ContentsSideBar items={[]} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
+            <ContentsSideBar items={sideBarItems} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
             <main className="flex flex-col py-3 gap-4 cols-2:py-6 cols-2:gap-8 cols-3:py-8 cols-3:gap-12 cols-3:col-span-2 cols-4:col-span-3">
               {families.map((family) => (
                 <FamilyBlock key={family.slug} family={family} />
@@ -67,9 +73,11 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
               <TextBlock>
                 <div className="text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
               </TextBlock>
-              <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">
-                {JSON.stringify(collection, null, 2)}
-              </pre>
+              <Section id="section-debug" title="Debug">
+                <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">
+                  {JSON.stringify(collection, null, 2)}
+                </pre>
+              </Section>
             </main>
           </>
         )}

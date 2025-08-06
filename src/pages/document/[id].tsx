@@ -89,7 +89,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (familyData) {
     const allSubdivisions = await Promise.all<TGeographySubdivision[]>(
       familyData.geographies
-        .filter((country) => country.length === 3)
+        .filter((country) => country.length === 3 && !["XAA", "XAB"].includes(country))
         .map(async (country) => {
           try {
             const { data: subDivisionResponse } = await apiClient.get(`/geographies/subdivisions/${country}`);
@@ -97,7 +97,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           } catch (error) {}
         })
     );
-    subdivisionsData = allSubdivisions.flat();
+    subdivisionsData = allSubdivisions.flat().filter((subdivision) => subdivision !== undefined);
   }
 
   if (!familyData) {
