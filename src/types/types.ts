@@ -452,3 +452,11 @@ export type TCollectionPublicWithFamilies = {
   slug: string;
   title: string;
 };
+
+export type TSlugResponse = {
+  name: string;
+  family_import_id: string | null;
+  family_document_import_id: string | null;
+  collection_import_id: string | null;
+  created: string;
+};
