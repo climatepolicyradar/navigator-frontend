@@ -6,5 +6,5 @@ const stripHtml = (html: string) => {
 };
 
 export const getFamilyMetaDescription = (summary: string, geo: string, category: TCategory) => {
-  return `${geo} | ${getCategoryName(category)} | ${stripHtml(summary).substring(0, 600)}`;
+  return `${geo} | ${getCategoryName(category) ?? category} | ${stripHtml(summary).substring(0, 600)}`;
 };
