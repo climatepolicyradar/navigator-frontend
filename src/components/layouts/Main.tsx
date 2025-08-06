@@ -14,27 +14,30 @@ const Wrapper = dynamic<{ children: ReactNode }>(() => import(`../../../themes/$
 
 interface IProps {
   title?: string;
-  theme?: TTheme;
   description?: string;
-  themeConfig?: TThemeConfig;
   metadataKey?: string;
   text?: string;
+  theme?: TTheme;
+  themeConfig?: TThemeConfig;
   children?: ReactNode;
   attributionUrl?: string | null;
 }
 
-const Layout: FC<IProps> = ({ children, title, theme, description, themeConfig, metadataKey, text, attributionUrl }) => {
+const Layout: FC<IProps> = ({ children, title, description, metadataKey, text, attributionUrl, themeConfig, theme }) => {
   const router = useRouter();
-  const { theme: contextTheme } = useContext(ThemeContext);
+  const { themeConfig: contextThemeConfig } = useContext(ThemeContext);
 
   return (
     <div className="h-full min-h-lvh flex flex-col">
       <Head>
-        <title>{`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppTitle(theme, contextTheme)}`}</title>
-        <meta property="og:title" content={`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppTitle(theme, contextTheme)}`} />
-        <meta name="description" content={description ?? getPageDescription(themeConfig, metadataKey, text)} key="desc" />
-        <meta property="og:description" content={description ?? getPageDescription(themeConfig, metadataKey, text)} />
-        <link rel="canonical" href={getCanonicalUrl(router, contextTheme, attributionUrl)} />
+        <title>{`${title ?? getPageTitle(themeConfig ?? contextThemeConfig, metadataKey, text)} - ${getAppTitle(themeConfig ?? contextThemeConfig)}`}</title>
+        <meta
+          property="og:title"
+          content={`${title ?? getPageTitle(themeConfig ?? contextThemeConfig, metadataKey, text)} - ${getAppTitle(themeConfig ?? contextThemeConfig)}`}
+        />
+        <meta name="description" content={description ?? getPageDescription(themeConfig ?? contextThemeConfig, metadataKey, text)} key="desc" />
+        <meta property="og:description" content={description ?? getPageDescription(themeConfig ?? contextThemeConfig, metadataKey, text)} />
+        <link rel="canonical" href={getCanonicalUrl(router, theme, attributionUrl)} />
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>

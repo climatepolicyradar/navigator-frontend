@@ -24,8 +24,8 @@ const Layout = ({ children, title, theme, description, themeConfig, metadataKey,
   return (
     <>
       <Head>
-        <title>{`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppTitle(theme)}`}</title>
-        <meta property="og:title" content={`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppTitle(theme)}`} />
+        <title>{`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppTitle(themeConfig)}`}</title>
+        <meta property="og:title" content={`${title ?? getPageTitle(themeConfig, metadataKey, text)} - ${getAppTitle(themeConfig)}`} />
         <meta name="description" content={description ?? getPageDescription(themeConfig, metadataKey, text)} key="desc" />
         <meta property="og:description" content={description ?? getPageDescription(themeConfig, metadataKey, text)} />
         <link rel="canonical" href={getCanonicalUrl(router, theme)} />

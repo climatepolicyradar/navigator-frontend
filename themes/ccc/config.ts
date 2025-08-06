@@ -51,19 +51,25 @@ const config: TThemeConfig = {
   ],
   metadata: [
     {
+      // default - used for app title (i.e. on each page after the title)
       key: "default",
-      title: "Climate Case Chart",
-      description: "WIP",
+      title: "Sabin Center for Climate Change Law",
+      description: "",
+    },
+    {
+      key: "homepage",
+      title: "Climate Change Litigation Databases",
+      description:
+        "Sabin Center for Climate Change Law provides two comprehensive databases of climate change caselaw - US Climate Change Litigation and Global Climate Change Litigation.",
     },
     {
       key: "geography",
-      title: "{text} climate laws and policies",
-      description:
-        "Find climate change laws, policies, targets and other climate policy data and indicators for {text}, alongside information about their legislative process.",
+      title: "{text} litigation",
+      description: "Find climate change litigation data and indicators for {text}.",
     },
     {
       key: "search",
-      title: "Law and Policy Search",
+      title: "Search the Climate Case Chart database",
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
   ],
