@@ -334,20 +334,26 @@ const config: TThemeConfig = {
   ],
   metadata: [
     {
+      // default - used for app title (i.e. on each page after the title)
       key: "default",
       title: "Climate Policy Radar",
+      description: "",
+    },
+    {
+      key: "homepage",
+      title: "Law and Policy Search",
       description:
         "Use Climate Policy Radar's data science and AI-powered platform to search and explore thousands of climate change laws, policies and legal cases worldwide.",
     },
     {
       key: "geography",
-      title: "{text} climate laws and policies",
+      title: "{text} climate laws, policies and reports",
       description:
         "Find climate change laws, policies, targets and other climate policy data and indicators for {text}, alongside information about their legislative process.",
     },
     {
       key: "search",
-      title: "Law and Policy Search",
+      title: "Search the Climate Policy Radar database",
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
   ],
