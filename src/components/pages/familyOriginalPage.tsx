@@ -77,7 +77,7 @@ const documentIsPublished = (familyDocuments: TDocumentPage[], documentImportId:
   return isPublished;
 };
 
-export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page, targets = [], theme, vespaFamilyData }: IProps) => {
+export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page, targets = [], theme, themeConfig, vespaFamilyData }: IProps) => {
   // TODO remove when only the newer API endpoint is being called in getServerSideProps
   if (isNewEndpointData(page)) {
     throw new Error("Cannot render FamilyOriginalPage with V2 API data");
@@ -227,6 +227,7 @@ export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page,
       title={`${page.title}`}
       description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)}
       theme={theme}
+      themeConfig={themeConfig}
       attributionUrl={attributionUrl}
     >
       <Script id="analytics">
