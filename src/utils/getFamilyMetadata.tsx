@@ -54,6 +54,16 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
 
   /* Filing year */
 
+  let filingTimestamp = family.events.find((event) => event.event_type === "Filing Year For Action")?.date;
+  if (isUSA && family.published_date) filingTimestamp = family.published_date;
+
+  metadata.push({
+    label: "Filing year",
+    value: filingTimestamp ? new Date(filingTimestamp).getFullYear() : EN_DASH,
+  });
+
+  // ---
+
   if (isUSA && family.published_date) {
     metadata.push({
       label: "Filing year",
