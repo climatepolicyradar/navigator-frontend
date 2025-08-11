@@ -10,16 +10,18 @@ import {
   ContextualSearchContent,
   AboutClimateProjectExplorer,
 } from "@/mcf/components";
-import { PAGE_DESCRIPTION, APP_NAME } from "@/mcf/constants/pageMetadata";
+import { TTheme, TThemeConfig } from "@/types";
 
 interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   searchInput: string;
+  theme: TTheme;
+  themeConfig: TThemeConfig;
 }
 
-const LandingPage = ({ handleSearchInput, searchInput }: IProps) => {
+const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig }: IProps) => {
   return (
-    <Layout title="Climate Fund Search" theme={APP_NAME} description={PAGE_DESCRIPTION}>
+    <Layout theme={theme} themeConfig={themeConfig} metadataKey="homepage">
       <main id="main" className="flex flex-col flex-1">
         <div>
           <Header />
