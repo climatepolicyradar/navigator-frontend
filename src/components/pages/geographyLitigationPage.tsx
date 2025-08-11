@@ -9,7 +9,7 @@ export const GeographyLitigationPage = ({ geography, theme, themeConfig }: IProp
   const pageHeaderMetadata: IPageHeaderMetadata[] = [{ label: "Metadata", value: "TODO" }];
 
   return (
-    <Layout metadataKey="geography" theme={theme} themeConfig={themeConfig} title={geography.name}>
+    <Layout metadataKey="geography" theme={theme} themeConfig={themeConfig} title={geography.name} text={geography.name}>
       <PageHeader label="Geography" title={geography.name} metadata={pageHeaderMetadata} />
       <Columns>
         <ContentsSideBar items={[]} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />

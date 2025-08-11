@@ -22,7 +22,7 @@ import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { withEnvConfig } from "@/context/EnvConfig";
 import useSearch from "@/hooks/useSearch";
-import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TSlugResponse } from "@/types";
+import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TSlugResponse, TThemeConfig } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled } from "@/utils/features";
@@ -34,6 +34,7 @@ interface IProps {
   document: TDocumentPage;
   family: TFamilyPage; // TODO switch to V2 API and use TFamilyPublic
   theme: TTheme;
+  themeConfig: TThemeConfig;
   vespaFamilyData?: TSearchResponse;
   vespaDocumentData?: TSearchResponse;
 }
@@ -62,6 +63,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   document,
   family,
   theme,
+  themeConfig,
   vespaFamilyData,
   vespaDocumentData,
 }: IProps) => {
@@ -155,6 +157,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
       title={`${document.title}`}
       description={getDocumentDescription(document.title)}
       theme={theme}
+      themeConfig={themeConfig}
       attributionUrl={family.organisation_attribution_url}
     >
       <section
@@ -354,6 +357,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       document: documentData,
       family: familyData,
       theme: theme,
+      themeConfig: themeConfig,
       vespaFamilyData: vespaFamilyData ?? null,
       vespaDocumentData: vespaDocumentData ?? null,
     }),
