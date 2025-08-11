@@ -1,22 +1,7 @@
 import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
-  categories: {
-    label: "Category",
-    options: [
-      {
-        label: "All",
-        slug: "All",
-        value: ["Academic.corpus.Litigation.n0000"],
-      },
-      {
-        label: "Litigation",
-        slug: "Litigation",
-        value: ["Academic.corpus.Litigation.n0000"],
-        category: ["Litigation"],
-      },
-    ],
-  },
+  defaultCorpora: ["Academic.corpus.Litigation.n0000"],
   filters: [
     {
       label: "Type",
@@ -40,7 +25,7 @@ const config: TThemeConfig = {
     {
       key: "date",
       label: "First published",
-      category: ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"],
+      category: [],
     },
   ],
   links: [
