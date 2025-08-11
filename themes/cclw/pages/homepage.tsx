@@ -11,11 +11,10 @@ import { HelpUs } from "@/cclw/components/HelpUs";
 import { Hero } from "@/cclw/components/Hero";
 import { Partners } from "@/cclw/components/Partners";
 import { PoweredBy } from "@/cclw/components/PoweredBy";
-import { PAGE_DESCRIPTION, APP_NAME } from "@/cclw/constants/pageMetadata";
 import Layout from "@/components/layouts/LandingPage";
-import { FullWidth } from "@/components/panels/FullWidth";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
+import { TTheme, TThemeConfig } from "@/types";
 
 // TODO temporarily disabled: https://climate-policy-radar.slack.com/archives/C08Q8GD1CUT/p1745941756888349
 // const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {
@@ -26,11 +25,13 @@ import { Heading } from "@/components/typography/Heading";
 interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   searchInput: string;
+  theme: TTheme;
+  themeConfig: TThemeConfig;
 }
 
-const LandingPage = ({ handleSearchInput, searchInput }: IProps) => {
+const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig }: IProps) => {
   return (
-    <Layout title="Law and Policy Search" theme={APP_NAME} description={PAGE_DESCRIPTION}>
+    <Layout theme={theme} themeConfig={themeConfig} metadataKey="homepage">
       <main id="main" className="flex flex-col flex-1">
         <div className="bg-cclw-dark">
           <BrazilImplementingNDCBanner />
