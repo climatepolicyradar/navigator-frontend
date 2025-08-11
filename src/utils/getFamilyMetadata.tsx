@@ -62,23 +62,6 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
     value: filingTimestamp ? new Date(filingTimestamp).getFullYear() : EN_DASH,
   });
 
-  // ---
-
-  if (isUSA && family.published_date) {
-    metadata.push({
-      label: "Filing year",
-      value: formatDateShort(new Date(family.published_date)),
-    });
-  } else {
-    const filingYearEvent = family.events.find((event) => event.event_type === "Filing Year For Action");
-    if (filingYearEvent) {
-      metadata.push({
-        label: "Filing year",
-        value: new Date(filingYearEvent.date).getFullYear(),
-      });
-    }
-  }
-
   /* Status */
 
   metadata.push({
