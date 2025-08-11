@@ -2,10 +2,15 @@ import sortBy from "lodash/sortBy";
 import { Fragment } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { ARROW_RIGHT, EN_DASH } from "@/constants/chars";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
 import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
 import { buildConceptHierarchy, TFamilyConceptTreeNode } from "@/utils/buildConceptHierarchy";
+
+import { formatDateShort } from "./timedate";
+
+const hierarchyArrow = ` ${ARROW_RIGHT} `;
 
 // Recursively display the children of a concept
 function displayConceptHierarchy(concept: TFamilyConceptTreeNode): React.ReactNode {
@@ -15,10 +20,10 @@ function displayConceptHierarchy(concept: TFamilyConceptTreeNode): React.ReactNo
   return (
     <span key={concept.id}>
       {concept.preferred_label}
-      {concept.children.length > 0 && " → "}
+      {concept.children.length > 0 && hierarchyArrow}
       {concept.children.map((child, index) => (
         <Fragment key={child.id}>
-          {index > 0 && " → "}
+          {index > 0 && hierarchyArrow}
           {displayConceptHierarchy(child)}
         </Fragment>
       ))}
@@ -45,14 +50,33 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
   const hierarchy = buildConceptHierarchy(family.concepts);
   const geosOrdered = sortBy(family.geographies, [(geo) => geo.length !== 3, (geo) => geo.toLowerCase()]);
 
-  const filingYearEvent = family.events.find((event) => event.event_type === "Filing Year For Action");
-  if (filingYearEvent) {
-    const year = new Date(filingYearEvent.date).getFullYear();
+  const isUSA = geosOrdered.includes("USA");
+
+  /* Filing year */
+
+  if (isUSA && family.published_date) {
     metadata.push({
       label: "Filing year",
-      value: year,
+      value: formatDateShort(new Date(family.published_date)),
     });
+  } else {
+    const filingYearEvent = family.events.find((event) => event.event_type === "Filing Year For Action");
+    if (filingYearEvent) {
+      metadata.push({
+        label: "Filing year",
+        value: new Date(filingYearEvent.date).getFullYear(),
+      });
+    }
   }
+
+  /* Status */
+
+  metadata.push({
+    label: "Status",
+    value: family.metadata.status ?? EN_DASH,
+  });
+
+  /* Geography */
 
   if (geosOrdered.length > 0) {
     metadata.push({
@@ -68,47 +92,43 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
             ) : (
               <>{getSubdivisionName(geo, subdivisions)}</>
             )}
-            {index + 1 < geosOrdered.length && " → "}
+            {index + 1 < geosOrdered.length && hierarchyArrow}
           </Fragment>
         );
       }),
     });
   }
 
-  metadata.push({
-    label: "Docket number",
-    value: (
-      <div className="grid">
-        {family.metadata.case_number?.length > 0 ? family.metadata.case_number?.map((label) => <span key={label}>{label}</span>) : "N/A"}
-      </div>
-    ),
-  });
+  /* Docket number */
 
-  metadata.push({
-    label: "At issue",
-    value: (
-      <div className="grid">
-        {family.metadata.core_object.length > 0 ? family.metadata.core_object.map((label) => <span key={label}>{label}</span>) : "N/A"}
-      </div>
-    ),
-  });
+  if (isUSA) {
+    metadata.push({
+      label: "Docket number",
+      value: (
+        <div className="grid">
+          {family.metadata.case_number?.length > 0 ? family.metadata.case_number?.map((label) => <span key={label}>{label}</span>) : EN_DASH}
+        </div>
+      ),
+    });
+  }
 
-  metadata.push({
-    label: "Status",
-    value: family.metadata.status ?? "N/A",
-  });
+  /* Court/admin entity */
 
   const legalEntities = hierarchy.filter((concept) => concept.type === "legal_entity");
   metadata.push({
-    label: "Court/Admin entity",
+    label: "Court/admin entity",
     value: <div className="grid">{legalEntities.length > 0 ? legalEntities.map((entity) => displayConceptHierarchy(entity)) : "N/A"}</div>,
   });
+
+  /* Case category */
 
   const caseCategories = hierarchy.filter((concept) => concept.type === "legal_category");
   metadata.push({
     label: "Case category",
     value: <div className="grid">{caseCategories.length > 0 ? caseCategories.map((category) => displayConceptHierarchy(category)) : "N/A"}</div>,
   });
+
+  /* Principal law */
 
   const principalLaws = hierarchy.filter((concept) => concept.type === "law");
   metadata.push({

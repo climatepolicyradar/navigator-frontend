@@ -6,10 +6,9 @@ import { ReactNode, useMemo, useState } from "react";
 import { MenuItem } from "@/components/atoms/menu/MenuItem";
 import { MenuPopup } from "@/components/atoms/menu/MenuPopup";
 import { Tooltip } from "@/components/atoms/tooltip/Tooltip";
+import { EN_DASH } from "@/constants/chars";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { firstCase } from "@/utils/text";
-
-const NULL_VALUE_DISPLAY = "–";
 
 type TValue = string | number | null;
 
@@ -41,7 +40,7 @@ interface ISortRules<ColumnKey extends string> {
 }
 
 const renderCellDisplay = (cell: TInteractiveTableCell, showValues: boolean) => {
-  if (cell === null) return NULL_VALUE_DISPLAY;
+  if (cell === null) return EN_DASH;
 
   let content: ReactNode = `${cell}`;
   if (typeof cell === "object") content = showValues ? cell.value : cell.display;
