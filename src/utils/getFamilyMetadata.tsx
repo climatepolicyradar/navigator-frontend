@@ -129,5 +129,16 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
     value: <div className="grid">{principalLaws.length > 0 ? principalLaws.map((law) => displayConceptHierarchy(law)) : "N/A"}</div>,
   });
 
+  /* At issue */
+
+  metadata.push({
+    label: "At issue",
+    value: (
+      <div className="grid">
+        {family.metadata.core_object.length > 0 ? family.metadata.core_object.map((label) => <span key={label}>{label}</span>) : "N/A"}
+      </div>
+    ),
+  });
+
   return metadata;
 }
