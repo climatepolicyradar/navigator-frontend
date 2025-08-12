@@ -4,11 +4,12 @@ import { IMetadata } from "@/types";
 interface IProps {
   title: string;
   metadata: IMetadata[];
+  id?: string;
 }
 
-export const MetadataBlock = ({ title, metadata }: IProps) => {
+export const MetadataBlock = ({ title, metadata, id = "section-metadata" }: IProps) => {
   return (
-    <Section title={title} id="section-metadata">
+    <Section title={title} id={id}>
       <div className="rounded border border-border-light p-12">
         <div className="grid gap-3">
           {metadata.length === 0 && <div className="text-text-secondary">Sorry, there is no data available at this time.</div>}

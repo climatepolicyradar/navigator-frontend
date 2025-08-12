@@ -5,6 +5,7 @@ import { ApiClient } from "@/api/http-common";
 import { Columns } from "@/components/atoms/columns/Columns";
 import { EventsBlock } from "@/components/blocks/eventsBlock/EventsBlock";
 import { FamilyBlock } from "@/components/blocks/familyBlock/FamilyBlock";
+import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
@@ -38,6 +39,11 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
     display: family.title,
   }));
 
+  sideBarItems.unshift({
+    id: "section-collection-metadata",
+    display: "About",
+  });
+
   return (
     <Layout title={collection.title} description={collection.description} theme={theme} themeConfig={themeConfig} metadataKey="collection">
       <PageHeader<TCollectionTab>
@@ -53,6 +59,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
           <>
             <ContentsSideBar items={sideBarItems} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
             <main className="flex flex-col py-3 gap-4 cols-2:py-6 cols-2:gap-8 cols-3:py-8 cols-3:gap-12 cols-3:col-span-2 cols-4:col-span-3">
+              <MetadataBlock title="About this collection" metadata={[]} id="section-collection-metadata" />
               {families.map((family) => (
                 <FamilyBlock key={family.slug} family={family} />
               ))}
