@@ -15,6 +15,7 @@ import { withEnvConfig } from "@/context/EnvConfig";
 import { TCollectionPublicWithFamilies, TTheme, TThemeConfig } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isLitigationEnabled } from "@/utils/features";
+import { getCollectionMetadata } from "@/utils/getCollectionMetadata";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 interface IProps {
@@ -59,7 +60,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
           <>
             <ContentsSideBar items={sideBarItems} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
             <main className="flex flex-col py-3 gap-4 cols-2:py-6 cols-2:gap-8 cols-3:py-8 cols-3:gap-12 cols-3:col-span-2 cols-4:col-span-3">
-              <MetadataBlock title="About this collection" metadata={[]} id="section-collection-metadata" />
+              <MetadataBlock title="About this collection" metadata={getCollectionMetadata(collection)} id="section-collection-metadata" />
               {families.map((family) => (
                 <FamilyBlock key={family.slug} family={family} />
               ))}
