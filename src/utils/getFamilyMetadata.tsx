@@ -6,30 +6,10 @@ import { ARROW_RIGHT, EN_DASH } from "@/constants/chars";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
 import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
-import { buildConceptHierarchy, TFamilyConceptTreeNode } from "@/utils/buildConceptHierarchy";
-
-import { formatDateShort } from "./timedate";
+import { buildConceptHierarchy } from "@/utils/buildConceptHierarchy";
+import { displayConceptHierarchy } from "@/utils/displayConceptHierarchy";
 
 const hierarchyArrow = ` ${ARROW_RIGHT} `;
-
-// Recursively display the children of a concept
-function displayConceptHierarchy(concept: TFamilyConceptTreeNode): React.ReactNode {
-  if (concept.children.length === 0) {
-    return <span key={concept.id}>{concept.preferred_label}</span>;
-  }
-  return (
-    <span key={concept.id}>
-      {concept.preferred_label}
-      {concept.children.length > 0 && hierarchyArrow}
-      {concept.children.map((child, index) => (
-        <Fragment key={child.id}>
-          {index > 0 && hierarchyArrow}
-          {displayConceptHierarchy(child)}
-        </Fragment>
-      ))}
-    </span>
-  );
-}
 
 // Format the family metadata into a shape suitable for the MetadataBlock component
 export const getFamilyMetadata = (family: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]): IMetadata[] => {

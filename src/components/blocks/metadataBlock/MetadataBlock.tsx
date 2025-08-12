@@ -1,8 +1,10 @@
+import { ReactNode } from "react";
+
 import { Section } from "@/components/molecules/section/Section";
 import { IMetadata } from "@/types";
 
 interface IProps {
-  title: string;
+  title?: ReactNode;
   metadata: IMetadata[];
   id?: string;
 }

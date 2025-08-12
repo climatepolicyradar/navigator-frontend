@@ -1,7 +1,7 @@
-import { ARROW_RIGHT, EN_DASH } from "@/constants/chars";
+import { EN_DASH } from "@/constants/chars";
 import { IMetadata, TCollectionPublicWithFamilies } from "@/types";
-
-const hierarchyArrow = ` ${ARROW_RIGHT} `;
+import { buildConceptHierarchy } from "@/utils/buildConceptHierarchy";
+import { displayConceptHierarchy } from "@/utils/displayConceptHierarchy";
 
 export const getCollectionMetadata = (collection: TCollectionPublicWithFamilies): IMetadata[] => {
   const collectionMetadata: IMetadata[] = [];
@@ -30,6 +30,19 @@ export const getCollectionMetadata = (collection: TCollectionPublicWithFamilies)
   collectionMetadata.push({
     label: "At issue",
     value: collection.description,
+  });
+
+  // Each family within the collection shares the same case categories and principle laws
+  const hierarchy = buildConceptHierarchy(collection.families[0].concepts);
+  const caseCategories = hierarchy.filter((concept) => concept.type === "legal_category");
+  collectionMetadata.push({
+    label: "Case category",
+    value: <div className="grid">{caseCategories.length > 0 ? caseCategories.map((category) => displayConceptHierarchy(category)) : EN_DASH}</div>,
+  });
+  const principalLaws = hierarchy.filter((concept) => concept.type === "law");
+  collectionMetadata.push({
+    label: "Principal law",
+    value: <div className="grid">{principalLaws.length > 0 ? principalLaws.map((law) => displayConceptHierarchy(law)) : EN_DASH}</div>,
   });
 
   return collectionMetadata;
