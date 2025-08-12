@@ -45,9 +45,9 @@ type TEventWithDocument = {
   document?: TFamilyDocumentPublic;
 };
 
-const getMostSpecificCourt = (concepts: TFamilyConcept[]): TFamilyConcept | null => {
+const getMostSpecificCourts = (concepts: TFamilyConcept[]): TFamilyConcept[] => {
   let courtConcepts = concepts.filter((concept) => concept.type === "legal_entity");
-  if (courtConcepts.length === 0) return null;
+  if (courtConcepts.length === 0) return [];
 
   // On each loop, remove legal entities without parents. Stops when the deepest level court remains
   while (courtConcepts.length > 1) {
@@ -56,10 +56,10 @@ const getMostSpecificCourt = (concepts: TFamilyConcept[]): TFamilyConcept | null
     );
 
     // Prevent a situation where number of concepts goes from 2 to 0 on the last loop
-    courtConcepts = moreSpecificConcepts.length === 0 ? courtConcepts.slice(0, 1) : moreSpecificConcepts;
+    if (moreSpecificConcepts.length === 0) return courtConcepts;
   }
 
-  return courtConcepts[0];
+  return courtConcepts;
 };
 
 const getFamilyEvents = (family: TFamilyPublic): TEventWithDocument[] =>
@@ -89,7 +89,7 @@ export const getEventTableRows = ({
           action: event.status,
           caseNumber: family.metadata.case_number?.[0] || null,
           caseTitle: family.title,
-          court: getMostSpecificCourt(family.concepts)?.preferred_label || null,
+          court: getMostSpecificCourts(family.concepts).join(" / ") || null,
           date: {
             display: formatDateShort(date),
             value: date.getTime(),
