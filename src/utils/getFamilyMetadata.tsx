@@ -2,12 +2,12 @@ import sortBy from "lodash/sortBy";
 import { Fragment } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { ConceptHierarchy } from "@/components/molecules/conceptHierarchy/ConceptHierarchy";
 import { ARROW_RIGHT, EN_DASH } from "@/constants/chars";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
 import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
 import { buildConceptHierarchy } from "@/utils/buildConceptHierarchy";
-import { displayConceptHierarchy } from "@/utils/displayConceptHierarchy";
 
 const hierarchyArrow = ` ${ARROW_RIGHT} `;
 
@@ -90,7 +90,11 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
   const legalEntities = hierarchy.filter((concept) => concept.type === "legal_entity");
   metadata.push({
     label: "Court/admin entity",
-    value: <div className="grid">{legalEntities.length > 0 ? legalEntities.map((entity) => displayConceptHierarchy(entity)) : "N/A"}</div>,
+    value: (
+      <div className="grid">
+        {legalEntities.length > 0 ? legalEntities.map((entity) => <ConceptHierarchy key={entity.id} concept={entity} />) : "N/A"}
+      </div>
+    ),
   });
 
   /* Case category */
@@ -98,7 +102,11 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
   const caseCategories = hierarchy.filter((concept) => concept.type === "legal_category");
   metadata.push({
     label: "Case category",
-    value: <div className="grid">{caseCategories.length > 0 ? caseCategories.map((category) => displayConceptHierarchy(category)) : "N/A"}</div>,
+    value: (
+      <div className="grid">
+        {caseCategories.length > 0 ? caseCategories.map((category) => <ConceptHierarchy key={category.id} concept={category} />) : "N/A"}
+      </div>
+    ),
   });
 
   /* Principal law */
@@ -106,7 +114,9 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
   const principalLaws = hierarchy.filter((concept) => concept.type === "law");
   metadata.push({
     label: "Principal law",
-    value: <div className="grid">{principalLaws.length > 0 ? principalLaws.map((law) => displayConceptHierarchy(law)) : "N/A"}</div>,
+    value: (
+      <div className="grid">{principalLaws.length > 0 ? principalLaws.map((law) => <ConceptHierarchy key={law.id} concept={law} />) : "N/A"}</div>
+    ),
   });
 
   return metadata;

@@ -5,7 +5,11 @@ import { TFamilyConceptTreeNode } from "@/utils/buildConceptHierarchy";
 
 const hierarchyArrow = ` ${ARROW_RIGHT} `;
 
-export const displayConceptHierarchy = (concept: TFamilyConceptTreeNode): ReactNode => {
+type TProps = {
+  concept: TFamilyConceptTreeNode;
+};
+
+export const ConceptHierarchy = ({ concept }: TProps) => {
   if (concept.children.length === 0) {
     return <span key={concept.id}>{concept.preferred_label}</span>;
   }
@@ -16,7 +20,7 @@ export const displayConceptHierarchy = (concept: TFamilyConceptTreeNode): ReactN
       {concept.children.map((child, index) => (
         <Fragment key={child.id}>
           {index > 0 && hierarchyArrow}
-          {displayConceptHierarchy(child)}
+          <ConceptHierarchy concept={child} />
         </Fragment>
       ))}
     </span>
