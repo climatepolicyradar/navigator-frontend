@@ -18,13 +18,13 @@ export const getCollectionMetadata = (collection: TCollectionPublicWithFamilies)
     const earliestFilingDate = new Date(Math.min(...filingDates.map((date) => date.getTime())));
     collectionMetadata.push({
       label: "Filing date",
-      value: earliestFilingDate ? earliestFilingDate.getFullYear() : EN_DASH,
+      value: earliestFilingDate && !isNaN(earliestFilingDate.getFullYear()) ? earliestFilingDate.getFullYear() : EN_DASH,
     });
   }
 
   collectionMetadata.push({
     label: "Status",
-    value: collection.families[0]?.metadata?.status || EN_DASH,
+    value: collection.families[0]?.metadata?.status?.join(", ") || EN_DASH,
   });
 
   collectionMetadata.push({
@@ -33,8 +33,8 @@ export const getCollectionMetadata = (collection: TCollectionPublicWithFamilies)
   });
 
   // Each family within the collection shares the same case categories and principle laws
-  const hierarchy = buildConceptHierarchy(collection.families[0].concepts);
-  const caseCategories = hierarchy.filter((concept) => concept.type === "legal_category");
+  const hierarchy = buildConceptHierarchy(collection.families[0]?.concepts) || [];
+  const caseCategories = hierarchy?.filter((concept) => concept.type === "legal_category");
   collectionMetadata.push({
     label: "Case category",
     value: (
