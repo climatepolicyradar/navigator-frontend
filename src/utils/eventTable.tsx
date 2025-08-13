@@ -52,7 +52,7 @@ const getMostSpecificCourts = (concepts: TFamilyConcept[]): TFamilyConcept[] => 
   // On each loop, remove legal entities without parents. Stops when the deepest level court remains
   while (courtConcepts.length > 1) {
     const moreSpecificConcepts = courtConcepts.filter((concept) =>
-      concept.subconcept_of_labels.some((id) => concepts.findIndex((con) => con.id === id) !== -1)
+      concept.subconcept_of_labels.some((id) => courtConcepts.findIndex((con) => con.id === id) !== -1)
     );
 
     // Prevent a situation where number of concepts goes from 2 to 0 on the last loop
