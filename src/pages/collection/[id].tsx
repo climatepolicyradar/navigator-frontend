@@ -40,11 +40,6 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
     display: family.title,
   }));
 
-  sideBarItems.unshift({
-    id: "section-collection-metadata",
-    display: "About",
-  });
-
   return (
     <Layout title={collection.title} description={collection.description} theme={theme} themeConfig={themeConfig} metadataKey="collection">
       <PageHeader<TCollectionTab>
