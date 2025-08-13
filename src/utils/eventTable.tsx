@@ -56,7 +56,11 @@ const getMostSpecificCourts = (concepts: TFamilyConcept[]): TFamilyConcept[] => 
     );
 
     // Prevent a situation where number of concepts goes from 2 to 0 on the last loop
-    if (moreSpecificConcepts.length === 0) return courtConcepts;
+    if (moreSpecificConcepts.length === 0) {
+      return courtConcepts;
+    } else {
+      courtConcepts = moreSpecificConcepts;
+    }
   }
 
   return courtConcepts;
