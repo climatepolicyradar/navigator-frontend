@@ -111,27 +111,13 @@ export type TGeographyStats = {
   visibility_status: string;
 };
 
-type TGeoFamilyCounts = {
-  Legislative: number;
-  Executive: number;
-  UNFCCC: number;
-  MCF: number;
-  Reports: number;
-};
-
-type TGeoFamilys = {
-  Legislative: TFamily[];
-  Executive: TFamily[];
-  UNFCCC: TFamily[];
-  MCF: TFamily[];
-  Reports: TFamily[];
-};
+export type TGeographySummaryCategory = "Executive" | "Legislative" | "Litigation" | "MCF" | "Reports" | "UNFCCC";
 
 export type TGeographySummary = {
-  family_counts: TGeoFamilyCounts;
+  family_counts: Record<TGeographySummaryCategory, number>;
   events: TEvent[];
   targets: string[];
-  top_families: TGeoFamilys;
+  top_families: Record<TGeographySummaryCategory, TFamily[]>;
 };
 
 export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC" | "MCF" | "Reports";
@@ -414,7 +400,17 @@ export type TCorpusPublic = {
 
 export type TFamilyEventPublic = TEvent & {
   import_id: string;
-  metadata: TMetadata<string>;
+  metadata: TMetadata<
+    | "case_number"
+    | "concept_preferred_label"
+    | "core_object"
+    | "datetime_event_name"
+    | "description"
+    | "event_type"
+    | "id"
+    | "original_case_name"
+    | "status"
+  >;
 };
 
 export type TFamilyDocumentPublic = {
@@ -459,4 +455,23 @@ export type TSlugResponse = {
   family_document_import_id: string | null;
   collection_import_id: string | null;
   created: string;
+};
+
+/* /geographies API response types */
+
+export type TCountryResponse = {
+  alpha_2: string;
+  alpha_3: string;
+  flag?: string | null;
+  name: string;
+  numeric: string;
+  official_name?: string | null;
+};
+
+export type TSubdivisionResponse = {
+  code: string;
+  country_alpha_2: string;
+  country_alpha_3: string;
+  name: string;
+  type: string;
 };
