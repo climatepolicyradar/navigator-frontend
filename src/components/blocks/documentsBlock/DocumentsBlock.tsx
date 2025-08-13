@@ -7,19 +7,9 @@ import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 import { Section } from "@/components/molecules/section/Section";
 import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
 import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
-import { InteractiveTable, IInteractiveTableColumn, IInteractiveTableRow } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { getCategoryName } from "@/helpers/getCategoryName";
-import { getCountryName } from "@/helpers/getCountryFields";
+import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { TFamilyPublic, TGeography, TLoadingStatus } from "@/types";
-import { convertDate } from "@/utils/timedate";
-
-type TTableColumn = "year" | "geography" | "type" | "document";
-const TABLE_COLUMNS: IInteractiveTableColumn<TTableColumn>[] = [
-  { id: "year" },
-  { id: "geography", fraction: 2 },
-  { id: "type", fraction: 2 },
-  { id: "document", fraction: 4 },
-];
+import { getEventTableColumns, getEventTableRows, TEventTableColumnId } from "@/utils/eventTable";
 
 interface IProps {
   countries: TGeography[];
@@ -30,40 +20,18 @@ interface IProps {
 /**
  * TODO LIST
  * - Add matches counts, handle loading state
- * - Better unify the data used by both DocumentCard and InteractiveTable to remove compute repetition
  */
 
 export const DocumentsBlock = ({ countries, family }: IProps) => {
   const [view, setView] = useState("card");
-  const { documents } = family;
+
+  const isUSA = family.geographies.includes("USA");
+  const tableColumns = useMemo(() => getEventTableColumns({ isUSA, showMatches: true }), [isUSA]);
+  const tableRows = useMemo(() => getEventTableRows({ families: [family], documentEventsOnly: true }), [family]);
 
   const onToggleChange = (toggleValue: string[]) => {
     setView(toggleValue[0]);
   };
-
-  const [year] = convertDate(family.published_date);
-  const categoryName = getCategoryName(family.category, family.corpus_type_name, family.organisation);
-
-  const tableRows: IInteractiveTableRow<TTableColumn>[] = useMemo(() => {
-    if (documents.length === 0) return [];
-
-    return documents.map((doc) => ({
-      id: doc.slug,
-      cells: {
-        year,
-        geography: family.geographies.map((geo) => getCountryName(geo, countries) || geo).join(", "),
-        type: categoryName,
-        document: {
-          display: (
-            <LinkWithQuery href={`/documents/${doc.slug}`} className="text-text-brand underline">
-              {doc.title}
-            </LinkWithQuery>
-          ),
-          value: doc.title,
-        },
-      },
-    }));
-  }, [categoryName, countries, documents, family, year]);
 
   return (
     <Section id="section-documents" title="Documents">
@@ -79,16 +47,16 @@ export const DocumentsBlock = ({ countries, family }: IProps) => {
         {/* Cards TODO */}
         {view === "card" && (
           <div className="flex flex-col gap-4">
-            {documents.map((doc) => (
-              <LinkWithQuery key={doc.slug} href={`/documents/${doc.slug}`}>
-                <DocumentCard countries={countries} document={doc} family={family} />
+            {family.documents.map((document) => (
+              <LinkWithQuery key={document.slug} href={`/documents/${document.slug}`}>
+                <DocumentCard countries={countries} document={document} family={family} />
               </LinkWithQuery>
             ))}
           </div>
         )}
 
         {/* Table */}
-        {view === "table" && <InteractiveTable<TTableColumn> columns={TABLE_COLUMNS} rows={tableRows} />}
+        {view === "table" && <InteractiveTable<TEventTableColumnId> columns={tableColumns} rows={tableRows} />}
       </Card>
     </Section>
   );

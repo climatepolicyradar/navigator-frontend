@@ -4,76 +4,23 @@ import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Button } from "@/components/atoms/button/Button";
 import { Card } from "@/components/atoms/card/Card";
 import { Section } from "@/components/molecules/section/Section";
-import { IInteractiveTableColumn, IInteractiveTableRow, InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic } from "@/types";
+import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
+import { TFamilyPublic } from "@/types";
+import { getEventTableColumns, getEventTableRows, TEventTableColumnId } from "@/utils/eventTable";
 import { pluralise } from "@/utils/pluralise";
-import { formatDateShort } from "@/utils/timedate";
-
-type TEventWithDocument = {
-  event: TFamilyEventPublic;
-  document?: TFamilyDocumentPublic;
-};
-
-// Gets a flat list of all events in a family
-// TODO investigate duplicates between family events and document events
-export const getEventsWithDocuments = (families: TFamilyPublic[]): TEventWithDocument[] =>
-  families
-    .map((family) => [
-      ...family.events.map((event) => ({ event })),
-      ...family.documents.map((document) => document.events.map((event) => ({ event, document }))).flat(1),
-    ])
-    .flat(1);
 
 const MAX_ENTRIES_SHOWN = 4;
 
-export type TTableColumn = "date" | "type" | "action" | "document" | "summary";
-export const TABLE_COLUMNS: IInteractiveTableColumn<TTableColumn>[] = [
-  { id: "date", name: "Filing Date", fraction: 2 },
-  { id: "type", fraction: 3 },
-  { id: "action", name: "Action taken", fraction: 3 },
-  { id: "document" },
-  { id: "summary", sortable: false, fraction: 6 },
-];
-
 interface IProps {
   family: TFamilyPublic;
-  showValues?: boolean; // Debug mode for understanding table sorting
 }
 
-export const FamilyBlock = ({ family, showValues = false }: IProps) => {
+export const FamilyBlock = ({ family }: IProps) => {
   const [showAllEntries, setShowAllEntries] = useState(false);
 
-  const tableRows: IInteractiveTableRow<TTableColumn>[] = useMemo(
-    () =>
-      getEventsWithDocuments([family]).map(({ event, document }, eventIndex) => {
-        const date = new Date(event.date);
-
-        return {
-          id: `${eventIndex}`, // TODO replace with event.id once added
-          cells: {
-            date: {
-              display: formatDateShort(date),
-              value: date.getTime(),
-            },
-            type: event.event_type,
-            action: event.title,
-            document: document
-              ? {
-                  display: (
-                    <LinkWithQuery href={`/documents/${document.slug}`} className="underline">
-                      View
-                    </LinkWithQuery>
-                  ),
-                  value: document.slug,
-                }
-              : null,
-            summary: event.metadata.description?.[0] || null, // TODO handle long descriptions
-          },
-        };
-      }),
-    [family]
-  );
-
+  const isUSA = family.geographies.includes("USA");
+  const tableColumns = useMemo(() => getEventTableColumns({ isUSA }), [isUSA]);
+  const tableRows = useMemo(() => getEventTableRows({ families: [family] }), [family]);
   const entriesToHide = tableRows.length > MAX_ENTRIES_SHOWN;
 
   const toggleShowAll = () => {
@@ -95,13 +42,12 @@ export const FamilyBlock = ({ family, showValues = false }: IProps) => {
               {tableRows.length} {pluralise(tableRows.length, "entry", "entries")}
             </span>
           </div>
-          <InteractiveTable<TTableColumn>
-            columns={TABLE_COLUMNS}
+          <InteractiveTable<TEventTableColumnId>
+            columns={tableColumns}
             defaultSort={{ column: "date", ascending: false }}
             rows={tableRows}
             maxRows={showAllEntries ? 0 : MAX_ENTRIES_SHOWN}
             tableClasses="pt-8"
-            showValues={showValues}
           />
         </Card>
         {entriesToHide && (

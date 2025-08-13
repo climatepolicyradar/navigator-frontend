@@ -1,54 +1,22 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Button } from "@/components/atoms/button/Button";
 import { Card } from "@/components/atoms/card/Card";
-import { getEventsWithDocuments, TABLE_COLUMNS, TTableColumn } from "@/components/blocks/familyBlock/FamilyBlock";
-import { IInteractiveTableRow, InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
+import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { TFamilyPublic } from "@/types";
-import { formatDateShort } from "@/utils/timedate";
+import { getEventTableColumns, getEventTableRows, TEventTableColumnId } from "@/utils/eventTable";
 
 const MAX_ENTRIES_SHOWN = 8;
 
 interface IProps {
   families: TFamilyPublic[];
-  showValues?: boolean; // Debug mode for understanding table sorting
 }
 
-export const EventsBlock = ({ families, showValues = false }: IProps) => {
+export const EventsBlock = ({ families }: IProps) => {
   const [showAllEntries, setShowAllEntries] = useState(false);
 
-  const tableRows: IInteractiveTableRow<TTableColumn>[] = useMemo(
-    () =>
-      getEventsWithDocuments(families).map(({ event, document }, eventIndex) => {
-        const date = new Date(event.date);
-
-        return {
-          id: `${eventIndex}`, // TODO replace with event.id once added
-          cells: {
-            date: {
-              display: formatDateShort(date),
-              value: date.getTime(),
-            },
-            type: event.event_type,
-            action: event.title,
-            document: document
-              ? {
-                  display: (
-                    <LinkWithQuery href={`/documents/${document.slug}`} className="underline">
-                      View
-                    </LinkWithQuery>
-                  ),
-                  value: document.slug,
-                }
-              : null,
-            summary: event.metadata.description?.[0] || null, // TODO handle long descriptions
-          },
-        };
-      }),
-    [families]
-  );
-
+  const tableColumns = getEventTableColumns({ showFamilyColumns: true });
+  const tableRows = getEventTableRows({ families });
   const entriesToHide = tableRows.length > MAX_ENTRIES_SHOWN;
 
   const toggleShowAll = () => {
@@ -59,13 +27,12 @@ export const EventsBlock = ({ families, showValues = false }: IProps) => {
     <div className="relative">
       <Card variant="outlined" className="rounded-lg !p-5">
         <h2 className="text-xl text-text-primary font-semibold leading-tight">Events</h2>
-        <InteractiveTable<TTableColumn>
-          columns={TABLE_COLUMNS}
+        <InteractiveTable<TEventTableColumnId>
+          columns={tableColumns}
           defaultSort={{ column: "date", ascending: false }}
           rows={tableRows}
           maxRows={showAllEntries ? 0 : MAX_ENTRIES_SHOWN}
           tableClasses="pt-8"
-          showValues={showValues}
         />
       </Card>
       {entriesToHide && (
