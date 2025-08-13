@@ -1,7 +1,7 @@
+import { ConceptHierarchy } from "@/components/molecules/conceptHierarchy/ConceptHierarchy";
 import { EN_DASH } from "@/constants/chars";
 import { IMetadata, TCollectionPublicWithFamilies } from "@/types";
 import { buildConceptHierarchy } from "@/utils/buildConceptHierarchy";
-import { displayConceptHierarchy } from "@/utils/displayConceptHierarchy";
 
 export const getCollectionMetadata = (collection: TCollectionPublicWithFamilies): IMetadata[] => {
   const collectionMetadata: IMetadata[] = [];
@@ -37,12 +37,18 @@ export const getCollectionMetadata = (collection: TCollectionPublicWithFamilies)
   const caseCategories = hierarchy.filter((concept) => concept.type === "legal_category");
   collectionMetadata.push({
     label: "Case category",
-    value: <div className="grid">{caseCategories.length > 0 ? caseCategories.map((category) => displayConceptHierarchy(category)) : EN_DASH}</div>,
+    value: (
+      <div className="grid">
+        {caseCategories.length > 0 ? caseCategories.map((category) => <ConceptHierarchy key={category.id} concept={category} />) : EN_DASH}
+      </div>
+    ),
   });
   const principalLaws = hierarchy.filter((concept) => concept.type === "law");
   collectionMetadata.push({
     label: "Principal law",
-    value: <div className="grid">{principalLaws.length > 0 ? principalLaws.map((law) => displayConceptHierarchy(law)) : EN_DASH}</div>,
+    value: (
+      <div className="grid">{principalLaws.length > 0 ? principalLaws.map((law) => <ConceptHierarchy key={law.id} concept={law} />) : EN_DASH}</div>
+    ),
   });
 
   return collectionMetadata;
