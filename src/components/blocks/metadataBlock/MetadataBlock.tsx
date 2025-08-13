@@ -9,7 +9,7 @@ interface IProps {
   id?: string;
 }
 
-export const MetadataBlock = ({ title, metadata, id = "section-metadata" }: IProps) => {
+export const MetadataBlock = ({ title, metadata, id }: IProps) => {
   return (
     <Section title={title} id={id}>
       <div className="rounded border border-border-light p-12">
