@@ -38,14 +38,17 @@ describe("buildConceptHierarchy", () => {
     expect(rootB.children.every((c) => c.type === "B")).toBe(true);
   });
 
-  // it("should throw an error if a cycle is detected", () => {
-  //   const cyclicConcepts: TFamilyConcept[] = [
-  //     { id: "1", preferred_label: "A", subconcept_of_labels: ["B"], type: "A", ids: [], relation: "" },
-  //     { id: "2", preferred_label: "B", subconcept_of_labels: ["A"], type: "A", ids: [], relation: "" },
-  //   ];
-  //   console.log(buildConceptHierarchy(cyclicConcepts));
-  //   expect(() => buildConceptHierarchy(cyclicConcepts)).toThrow(/Cycle detected/);
-  // });
+  it("should ignore cyclic references", () => {
+    const cyclicConcepts: TFamilyConcept[] = [
+      { id: "1", preferred_label: "Root", subconcept_of_labels: [], type: "Root", ids: [], relation: "" },
+      { id: "1", preferred_label: "A", subconcept_of_labels: ["Root", "B"], type: "A", ids: [], relation: "" },
+      { id: "1", preferred_label: "A2", subconcept_of_labels: ["A"], type: "A", ids: [], relation: "" },
+      { id: "2", preferred_label: "B", subconcept_of_labels: ["A"], type: "A", ids: [], relation: "" },
+    ];
+    const tree = buildConceptHierarchy(cyclicConcepts);
+    expect(tree).toHaveLength(1);
+    expect(tree[0].preferred_label).toBe("Root");
+  });
 
   it("should return an empty array if no concepts are provided", () => {
     expect(buildConceptHierarchy([])).toEqual([]);

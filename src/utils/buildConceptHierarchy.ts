@@ -5,9 +5,13 @@ export type TFamilyConceptTreeNode = TFamilyConcept & {
 };
 
 function buildTree(concept: TFamilyConcept, allConcepts: TFamilyConcept[], visited: Set<string>): TFamilyConceptTreeNode {
-  // Prevent infinite cycles
+  // If the concept has already been visited, return it with no children to avoid cycles
+  // This is important to prevent infinite loops in case of cyclic references
   if (visited.has(concept.id)) {
-    throw new Error(`Cycle detected at concept id: ${concept.id}`);
+    return {
+      ...concept,
+      children: [],
+    };
   }
   visited.add(concept.id);
 
