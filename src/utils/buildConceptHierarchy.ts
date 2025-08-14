@@ -22,10 +22,10 @@ function buildTree(concept: TFamilyConcept, allConcepts: TFamilyConcept[], visit
   };
 }
 
-export function buildConceptHierarchy(concepts: TFamilyConcept[]): TFamilyConceptTreeNode[] {
+export function buildConceptHierarchy(concepts?: TFamilyConcept[]): TFamilyConceptTreeNode[] {
   // Root concepts: those with no parents
   const roots = concepts?.filter((concept) => concept.subconcept_of_labels.length === 0) || [];
 
   // Build the tree for each root
-  return roots.map((root) => buildTree(root, concepts, new Set()));
+  return roots.map((root) => buildTree(root, concepts || [], new Set()));
 }
