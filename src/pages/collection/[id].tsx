@@ -5,6 +5,7 @@ import { ApiClient } from "@/api/http-common";
 import { Columns } from "@/components/atoms/columns/Columns";
 import { EventsBlock } from "@/components/blocks/eventsBlock/EventsBlock";
 import { FamilyBlock } from "@/components/blocks/familyBlock/FamilyBlock";
+import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
@@ -14,6 +15,7 @@ import { withEnvConfig } from "@/context/EnvConfig";
 import { TCollectionPublicWithFamilies, TTheme, TThemeConfig } from "@/types";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isLitigationEnabled } from "@/utils/features";
+import { getCollectionMetadata } from "@/utils/getCollectionMetadata";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 interface IProps {
@@ -73,6 +75,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
               <TextBlock>
                 <div className="text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
               </TextBlock>
+              <MetadataBlock metadata={getCollectionMetadata(collection)} id="section-collection-metadata" />
               <Section id="section-debug" title="Debug">
                 <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">
                   {JSON.stringify(collection, null, 2)}

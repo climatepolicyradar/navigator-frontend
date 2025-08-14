@@ -5,9 +5,13 @@ export type TFamilyConceptTreeNode = TFamilyConcept & {
 };
 
 function buildTree(concept: TFamilyConcept, allConcepts: TFamilyConcept[], visited: Set<string>): TFamilyConceptTreeNode {
-  // Prevent infinite cycles
+  // If the concept has already been visited, return it with no children to avoid cycles
+  // This is important to prevent infinite loops in case of cyclic references
   if (visited.has(concept.id)) {
-    throw new Error(`Cycle detected at concept id: ${concept.id}`);
+    return {
+      ...concept,
+      children: [],
+    };
   }
   visited.add(concept.id);
 
@@ -22,10 +26,10 @@ function buildTree(concept: TFamilyConcept, allConcepts: TFamilyConcept[], visit
   };
 }
 
-export function buildConceptHierarchy(concepts: TFamilyConcept[]): TFamilyConceptTreeNode[] {
+export function buildConceptHierarchy(concepts?: TFamilyConcept[]): TFamilyConceptTreeNode[] {
   // Root concepts: those with no parents
-  const roots = concepts.filter((concept) => concept.subconcept_of_labels.length === 0);
+  const roots = concepts?.filter((concept) => concept.subconcept_of_labels.length === 0) || [];
 
   // Build the tree for each root
-  return roots.map((root) => buildTree(root, concepts, new Set()));
+  return roots.map((root) => buildTree(root, concepts || [], new Set()));
 }
