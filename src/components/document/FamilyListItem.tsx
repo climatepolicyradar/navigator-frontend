@@ -30,7 +30,7 @@ export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = tru
   const allTitleClasses = joinTailwindClasses("result-title text-left font-medium text-lg duration-300 flex items-start", titleClasses);
 
   return (
-    <div className="family-list-item relative">
+    <li className="family-list-item relative">
       <div className="flex flex-wrap text-sm gap-1 my-2 items-center middot-between">
         <FamilyMeta
           category={family_category}
@@ -54,6 +54,6 @@ export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = tru
         />
       )}
       {children}
-    </div>
+    </li>
   );
 };

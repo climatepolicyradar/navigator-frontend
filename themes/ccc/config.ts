@@ -31,7 +31,7 @@ const config: TThemeConfig = {
   links: [
     {
       key: "download-database",
-      url: "https://form.jotform.com/250202141318339",
+      url: "https://form.jotform.com/252292116187356",
     },
   ],
   metadata: [

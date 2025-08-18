@@ -442,6 +442,7 @@ export type TFamilyPublic = Omit<TFamilyPage, "collections" | "documents" | "eve
   documents: TFamilyDocumentPublic[];
   events: TFamilyEventPublic[];
   organisation_attribution_url: string | null;
+  metadata: TMetadata<"id">;
 };
 
 export type TCollectionPublicWithFamilies = {
