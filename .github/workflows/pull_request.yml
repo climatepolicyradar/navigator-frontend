@@ -226,3 +226,4 @@ jobs:
           allow-missing-junit-files: true
         env:
           THEME: ${{ matrix.theme }}
+          PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
