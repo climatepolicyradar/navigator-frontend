@@ -19,3 +19,31 @@ export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
     badge: "Developer",
   },
 ];
+
+export const GEOGRAPHY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
+  {
+    id: "section-recent-documents",
+    display: "Recent documents",
+  },
+  {
+    id: "section-subdivisions",
+    display: "Geographic sub-divisions",
+  },
+  {
+    id: "section-statistics",
+    display: "Statistics",
+  },
+  {
+    id: "section-targets",
+    display: "Targets",
+  },
+  {
+    id: "section-legislative-process",
+    display: "Legislative process",
+  },
+  {
+    id: "section-debug",
+    display: "Debug",
+    badge: "Developer",
+  },
+];

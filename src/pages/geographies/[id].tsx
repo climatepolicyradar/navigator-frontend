@@ -7,7 +7,7 @@ import { GeographyOriginalPage, IProps } from "@/components/pages/geographyOrigi
 import { systemGeoNames } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode } from "@/helpers/getCountryFields";
-import { TGeographyStats, TGeographySummary } from "@/types";
+import { TGeographyStats, TGeographySubdivision, TGeographySummary } from "@/types";
 import { TTarget, TGeography, TDocumentCategory } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -37,27 +37,29 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const client = new ApiClient();
+  const backendApiClient = new ApiClient();
+  const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
   let geographyData: TGeographyStats;
   let summaryData: TGeographySummary;
   let targetsData: TTarget[] = [];
+  let subdivisions: TGeographySubdivision[] = [];
 
   try {
-    const { data: returnedData }: { data: TGeographyStats } = await client.get(`/geo_stats/${id}`);
+    const { data: returnedData }: { data: TGeographyStats } = await backendApiClient.get(`/geo_stats/${id}`);
     geographyData = returnedData;
   } catch (error) {
     // TODO: handle error more elegantly
   }
   try {
-    const { data: returnedData }: { data: TGeographySummary } = await client.get(`/summaries/geography/${id}`);
+    const { data: returnedData }: { data: TGeographySummary } = await backendApiClient.get(`/summaries/geography/${id}`);
     summaryData = returnedData;
   } catch {
     // TODO: handle error more elegantly
   }
   try {
     let countries: TGeography[] = [];
-    const configData = await client.getConfig();
+    const configData = await backendApiClient.getConfig();
     const response_geo = extractNestedData<TGeography>(configData.data?.geographies || []);
     countries = response_geo[1];
     const country = getCountryCode(id as string, countries);
@@ -65,6 +67,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${country.toLowerCase()}.json`);
       targetsData = targetsRaw.data;
     }
+  } catch {
+    // TODO: handle error more elegantly
+  }
+  try {
+    const { data: returnedData }: { data: TGeographySubdivision[] } = await apiClient.get(`/geographies/subdivisions/USA`);
+    subdivisions = returnedData;
   } catch {
     // TODO: handle error more elegantly
   }
@@ -79,6 +87,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: withEnvConfig({
       featureFlags,
       geography: geographyData,
+      subdivisions,
       summary: summaryData,
       targets: theme === "mcf" ? [] : targetsData,
       theme,
