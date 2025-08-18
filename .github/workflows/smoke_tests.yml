@@ -35,6 +35,16 @@ jobs:
       - run: THEME=${{ github.event.inputs.theme }} npm run build
         env:
           NODE_ENV: production
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+
+      - run: npx playwright install --with-deps
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
       - run: npx playwright install --with-deps
       - run: npx playwright test tests/core/ tests/${{ github.event.inputs.theme }}/
         env:
