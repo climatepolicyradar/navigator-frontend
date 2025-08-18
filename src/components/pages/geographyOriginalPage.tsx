@@ -133,9 +133,9 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
       return allFamilies.map((family) => {
         if (family)
           return (
-            <div key={family.family_slug} className="mb-10">
+            <ol key={family.family_slug} className="mb-10">
               <FamilyListItem family={family} />
-            </div>
+            </ol>
           );
       });
     }
@@ -144,9 +144,9 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
       return summary.top_families.Legislative.length === 0
         ? renderEmpty("Legislative")
         : summary.top_families.Legislative.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <div key={family.family_slug} className="mb-10">
+            <ol key={family.family_slug} className="mb-10">
               <FamilyListItem family={family} />
-            </div>
+            </ol>
           ));
     }
     // Executive
@@ -154,9 +154,9 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
       return summary.top_families.Executive.length === 0
         ? renderEmpty("Executive")
         : summary.top_families.Executive.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <div key={family.family_slug} className="mb-10">
+            <ol key={family.family_slug} className="mb-10">
               <FamilyListItem family={family} />
-            </div>
+            </ol>
           ));
     }
     // UNFCCC
@@ -164,9 +164,9 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
       return summary.top_families.UNFCCC.length === 0
         ? renderEmpty("UNFCCC")
         : summary.top_families.UNFCCC.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <div key={family.family_slug} className="mb-10">
+            <ol key={family.family_slug} className="mb-10">
               <FamilyListItem family={family} />
-            </div>
+            </ol>
           ));
     }
     // Litigation
@@ -186,9 +186,9 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
       return summary.top_families.MCF.length === 0
         ? renderEmpty("multilateral climate funds")
         : summary.top_families.MCF.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <div key={family.family_slug} className="mb-10">
+            <ol key={family.family_slug} className="mb-10">
               <FamilyListItem family={family} />
-            </div>
+            </ol>
           ));
     }
     // Reports
@@ -196,9 +196,9 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
       return summary.top_families.Reports.length === 0
         ? renderEmpty("reports")
         : summary.top_families.Reports.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <div key={family.family_slug} className="mb-10">
+            <ol key={family.family_slug} className="mb-10">
               <FamilyListItem family={family} />
-            </div>
+            </ol>
           ));
     }
   };
