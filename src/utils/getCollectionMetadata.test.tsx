@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 
 import { EN_DASH } from "@/constants/chars";
 import { TCollectionPublicWithFamilies } from "@/types";
-import { containsStringInReactNode } from "@/utils/test-utils/containsStringInReactNodeTEMP";
+import { containsStringInReactNode } from "@/utils/test-utils/containsStringInReactNode";
 
 import { getCollectionMetadata } from "./getCollectionMetadata";
 
