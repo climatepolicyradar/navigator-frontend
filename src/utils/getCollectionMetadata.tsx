@@ -20,6 +20,11 @@ export const getCollectionMetadata = (collection: TCollectionPublicWithFamilies)
       label: "Filing date",
       value: earliestFilingDate && !isNaN(earliestFilingDate.getFullYear()) ? earliestFilingDate.getFullYear() : EN_DASH,
     });
+  } else {
+    collectionMetadata.push({
+      label: "Filing date",
+      value: EN_DASH,
+    });
   }
 
   collectionMetadata.push({

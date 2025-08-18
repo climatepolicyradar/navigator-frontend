@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 
 import { EN_DASH } from "@/constants/chars";
 import { TCollectionPublicWithFamilies } from "@/types";
-import { containsStringInReactNode } from "@/utils/test-utils/containsStringinReactNode";
+import { containsStringInReactNode } from "@/utils/test-utils/containsStringInReactNodeTEMP";
 
 import { getCollectionMetadata } from "./getCollectionMetadata";
 
@@ -66,9 +66,17 @@ describe("getCollectionMetadata", () => {
     expect(result[0].value).toBe(2019);
   });
 
-  it("returns EN_DASH if no filing dates", () => {
+  it("returns EN_DASH if no date is present", () => {
     const collection = baseCollection;
     collection.families[0].events = [{ title: "Filing Date", date: "", event_type: "Filing", status: "Active", import_id: "event-1", metadata: {} }];
+    const result = getCollectionMetadata(collection);
+    expect(result[0].label).toBe("Filing date");
+    expect(result[0].value).toBe(EN_DASH);
+  });
+
+  it("returns EN_DASH if no events are present", () => {
+    const collection = baseCollection;
+    collection.families[0].events = [];
     const result = getCollectionMetadata(collection);
     expect(result[0].label).toBe("Filing date");
     expect(result[0].value).toBe(EN_DASH);
