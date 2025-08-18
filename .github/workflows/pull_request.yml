@@ -182,6 +182,8 @@ jobs:
       fail-fast: false
       matrix:
         theme: [cpr, cclw, mcf]
+        shard: [1, 2]
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -212,7 +214,7 @@ jobs:
           junit-paths: test-results-${{ matrix.theme }}/playwright.xml
           run: |
             echo "Running Playwright tests..."
-            npx playwright test tests/core/ tests/${{ matrix.theme }}/
+            npx playwright test tests/core/ tests/${{ matrix.theme }}/ --shard=${{ matrix.shard }}/2
             echo "Playwright test completed. Checking for output file..."
             if [ -f "test-results-${{ matrix.theme }}/playwright.xml" ]; then
               echo "✅ playwright.xml found, file size: $(wc -c < test-results-${{ matrix.theme }}/playwright.xml) bytes"

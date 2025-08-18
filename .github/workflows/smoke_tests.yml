@@ -25,6 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions: write-all # trunk-ignore(checkov/CKV2_GHA_1)
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     env:
       PLAYWRIGHT_BROWSERS_PATH: $HOME/.cache/ms-playwright
     steps:
@@ -47,7 +51,7 @@ jobs:
       - run: npx playwright install --with-deps
         env:
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
-      - run: npx playwright test tests/core/ tests/${{ github.event.inputs.theme }}/
+      - run: npx playwright test tests/core/ tests/${{ github.event.inputs.theme }}/ --shard=${{ matrix.shard }}/2
         env:
           PLAYWRIGHT_ENV: ${{ format('{0}_{1}', github.event.inputs.theme, github.event.inputs.environment) }}
           THEME: ${{ github.event.inputs.theme }}
