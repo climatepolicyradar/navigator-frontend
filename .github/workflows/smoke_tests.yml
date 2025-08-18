@@ -36,6 +36,7 @@ jobs:
         env:
           NODE_ENV: production
       - run: npx playwright install --with-deps
-      - run: npx playwright test
+      - run: npx playwright test tests/core/ tests/${{ github.event.inputs.theme }}/
         env:
           PLAYWRIGHT_ENV: ${{ format('{0}_{1}', github.event.inputs.theme, github.event.inputs.environment) }}
+          THEME: ${{ github.event.inputs.theme }}
