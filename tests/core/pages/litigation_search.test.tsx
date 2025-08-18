@@ -4,6 +4,7 @@ import router from "next-router-mock";
 
 import { createFeatureFlags } from "@/mocks/featureFlags";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
+import { setUpFamiliesRepo } from "@/mocks/repository";
 import Search from "@/pages/search";
 
 afterEach(() => {
@@ -216,7 +217,7 @@ describe("SearchPage", async () => {
     expect(screen.queryByRole("link", { name: "Family With Test Case Category 2" })).not.toBeInTheDocument();
   });
 
-  it("removing a legal concept filter updates search results", async () => {
+  it.only("removing a legal concept filter updates search results", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
       ...baseSearchProps,
@@ -233,8 +234,82 @@ describe("SearchPage", async () => {
           related_concepts: [],
           has_subconcept: [],
         },
+        {
+          wikibase_id: "category/Test Case Category 1",
+          preferred_label: "Test Case Category 1",
+          subconcept_of: ["category/Parent Test Case Category"],
+          recursive_subconcept_of: ["category/Parent Test Case Category"],
+          type: "category",
+          alternative_labels: [],
+          negative_labels: [],
+          description: "",
+          related_concepts: [],
+          has_subconcept: [],
+        },
+        {
+          wikibase_id: "category/Test Case Category 2",
+          preferred_label: "Test Case Category 2",
+          subconcept_of: ["category/Parent Test Case Category"],
+          recursive_subconcept_of: ["category/Parent Test Case Category"],
+          type: "category",
+          alternative_labels: [],
+          negative_labels: [],
+          description: "",
+          related_concepts: [],
+          has_subconcept: [],
+        },
       ],
     });
+
+    const familyWithCategory1 = {
+      family_slug: "family-with-test-case-category-1-ca23",
+      family_name: "Family With Test Case Category 1",
+      family_description: "<p>Family With Test Case Category 1</p>",
+      family_category: "Litigation",
+      family_date: "2019-12-31T00:00:00+00:00",
+      family_last_updated_date: "2019-12-31T00:00:00+00:00",
+      family_source: "Sabin",
+      corpus_import_id: "Academic.corpus.Litigation.n0000",
+      corpus_type_name: "Litigation",
+      family_geographies: ["XAA"],
+      family_metadata: {
+        id: [""],
+        status: [""],
+        case_number: ["2022/00114664; [2022] NSWSC 576"],
+        core_object: ["Family With Test Case Category 1"],
+        concept_preferred_label: ["category/Test Case Category 1"],
+      },
+      family_title_match: false,
+      family_description_match: false,
+      total_passage_hits: 1,
+      family_documents: [],
+    };
+
+    const familyWithCategory2 = {
+      family_slug: "family-with-test-case-category-2-ca23",
+      family_name: "Family With Test Case Category 2",
+      family_description: "<p>Family With Test Case Category 2</p>",
+      family_category: "Litigation",
+      family_date: "2019-12-31T00:00:00+00:00",
+      family_last_updated_date: "2019-12-31T00:00:00+00:00",
+      family_source: "Sabin",
+      corpus_import_id: "Academic.corpus.Litigation.n0000",
+      corpus_type_name: "Litigation",
+      family_geographies: ["XAA"],
+      family_metadata: {
+        id: [""],
+        status: [""],
+        case_number: ["2022/00114664; [2022] NSWSC 576"],
+        core_object: ["Family With Test Case Category 2"],
+        concept_preferred_label: ["category/Test Case Category 2"],
+      },
+      family_title_match: false,
+      family_description_match: false,
+      total_passage_hits: 1,
+      family_documents: [],
+    };
+
+    setUpFamiliesRepo([familyWithCategory1, familyWithCategory2]);
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
@@ -245,13 +320,21 @@ describe("SearchPage", async () => {
     });
 
     await act(async () => {
-      await userEvent.click(screen.getByRole("checkbox", { name: "Parent Test Case Category" }));
+      await userEvent.click(screen.getByRole("checkbox", { name: "Test Case Category 1" }));
     });
 
-    // check for applied filter button
-    expect(screen.getByRole("button", { name: "Parent Test Case Category" })).toBeInTheDocument();
+    const appliedFilter = screen.getByRole("button", { name: "Test Case Category 1" });
+    expect(appliedFilter).toBeInTheDocument();
 
-    expect(await screen.findByText(/Results 1/)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Family With Parent Test Case Category" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Family With Test Case Category 1" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Family With Test Case Category 2" })).not.toBeInTheDocument();
+
+    // remove applied filter
+    await act(async () => {
+      await userEvent.click(appliedFilter);
+    });
+
+    expect(screen.getByRole("link", { name: "Family With Test Case Category 1" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Family With Test Case Category 2" })).toBeInTheDocument();
   });
 });
