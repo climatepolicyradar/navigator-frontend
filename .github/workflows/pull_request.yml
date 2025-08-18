@@ -176,6 +176,8 @@ jobs:
   test-e2e:
     timeout-minutes: 15
     runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: $HOME/.cache/ms-playwright
     strategy:
       fail-fast: false
       matrix:
@@ -194,12 +196,12 @@ jobs:
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
-          path: ~/.cache/ms-playwright
+          path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
 
       - run: npx playwright install --with-deps
         env:
-          PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
 
       - name: Create test results directory
         run: mkdir -p test-results-${{ matrix.theme }}
@@ -226,4 +228,4 @@ jobs:
           allow-missing-junit-files: true
         env:
           THEME: ${{ matrix.theme }}
-          PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
