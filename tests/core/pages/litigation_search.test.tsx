@@ -215,4 +215,43 @@ describe("SearchPage", async () => {
     expect(screen.getByRole("link", { name: "Family With Test Case Category 1" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Family With Test Case Category 2" })).not.toBeInTheDocument();
   });
+
+  it("removing a legal concept filter updates search results", async () => {
+    // @ts-ignore
+    renderWithAppContext(Search, {
+      ...baseSearchProps,
+      familyConceptsData: [
+        {
+          wikibase_id: "category/Parent Test Case Category",
+          preferred_label: "Parent Test Case Category",
+          subconcept_of: [],
+          recursive_subconcept_of: [],
+          type: "category",
+          alternative_labels: [],
+          negative_labels: [],
+          description: "",
+          related_concepts: [],
+          has_subconcept: [],
+        },
+      ],
+    });
+
+    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+
+    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
+    // like animations that were causing warnings in the console.
+    await act(async () => {
+      await userEvent.click(await screen.findByRole("button", { name: "Case categories" }));
+    });
+
+    await act(async () => {
+      await userEvent.click(screen.getByRole("checkbox", { name: "Parent Test Case Category" }));
+    });
+
+    // check for applied filter button
+    expect(screen.getByRole("button", { name: "Parent Test Case Category" })).toBeInTheDocument();
+
+    expect(await screen.findByText(/Results 1/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Family With Parent Test Case Category" })).toBeInTheDocument();
+  });
 });

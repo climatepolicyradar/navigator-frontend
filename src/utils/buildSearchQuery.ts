@@ -95,6 +95,7 @@ export default function buildSearchQuery(
       : [{ name: "name", value: conceptFilters }];
   }
 
+  console.log(">>>> router.query", routerQuery);
   if (routerQuery[QUERY_PARAMS.concept_preferred_label]) {
     const conceptPreferredLabelFilters = routerQuery[QUERY_PARAMS.concept_preferred_label];
 
@@ -106,6 +107,8 @@ export default function buildSearchQuery(
           });
         })
       : query.metadata.push({ name: "family.concept_preferred_label", value: conceptPreferredLabelFilters });
+
+    console.log(">>>> search query", query);
   }
 
   const qCategory = (routerQuery[QUERY_PARAMS.category] as string) ?? "All";
