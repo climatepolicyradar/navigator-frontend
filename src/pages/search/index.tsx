@@ -624,7 +624,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           </div>
                         </div>
                       </div>
-                      <section data-cy="search-results" className="min-h-screen">
+                      <section data-cy="search-results">
                         <h2 className="sr-only">Search results</h2>
                         {showCorporateDisclosuresInformation(router.query) && (
                           <Warning variant="info">
