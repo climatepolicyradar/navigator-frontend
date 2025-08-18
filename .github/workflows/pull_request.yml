@@ -182,7 +182,6 @@ jobs:
       fail-fast: false
       matrix:
         theme: [cpr, cclw, mcf]
-
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

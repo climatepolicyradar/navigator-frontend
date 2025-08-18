@@ -141,7 +141,6 @@ jobs:
       fail-fast: false
       matrix:
         theme: [cpr, cclw, mcf]
-
     env:
       PLAYWRIGHT_BROWSERS_PATH: $HOME/.cache/ms-playwright
     steps:
