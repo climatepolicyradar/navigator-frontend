@@ -5,12 +5,40 @@ const config = {
     baseURL: "http://localhost:3000",
     useWebserver: true,
   },
-  staging: {
+  // CPR
+  cpr_staging: {
     baseURL: "https://cpr.staging.climatepolicyradar.org",
     useWebserver: false,
   },
-  production: {
+  cpr_production: {
     baseURL: "https://app.climatepolicyradar.org",
+    useWebserver: false,
+  },
+  // CCLW
+  cclw_staging: {
+    baseURL: "https://cclw.staging.climatepolicyradar.org",
+    useWebserver: false,
+  },
+  cclw_production: {
+    baseURL: "https://climate-laws.org",
+    useWebserver: false,
+  },
+  // MCF
+  mcf_staging: {
+    baseURL: "https://mcf.staging.climatepolicyradar.org",
+    useWebserver: false,
+  },
+  mcf_production: {
+    baseURL: "https://climateprojectexplorer.org",
+    useWebserver: false,
+  },
+  // CCC
+  ccc_staging: {
+    baseURL: "https://ccc.staging.climatepolicyradar.org",
+    useWebserver: false,
+  },
+  ccc_production: {
+    baseURL: "https://ccc.production.climatepolicyradar.org",
     useWebserver: false,
   },
 };
@@ -36,7 +64,8 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: envConfig.baseURL,
-
+    video: "off",
+    screenshot: "off",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
   },
