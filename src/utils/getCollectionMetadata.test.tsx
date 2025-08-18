@@ -133,7 +133,10 @@ describe("getCollectionMetadata", () => {
   it("handles missing families gracefully", () => {
     const collection = { ...baseCollection, families: [] };
     const result = getCollectionMetadata(collection);
-    expect(containsStringInReactNode(result[2].value, EN_DASH)).toBe(true);
+    expect(containsStringInReactNode(result[0].value, EN_DASH)).toBe(true);
+    expect(containsStringInReactNode(result[1].value, EN_DASH)).toBe(true);
+    expect(containsStringInReactNode(result[2].value, "Test Description")).toBe(true);
     expect(containsStringInReactNode(result[3].value, EN_DASH)).toBe(true);
+    expect(containsStringInReactNode(result[4].value, EN_DASH)).toBe(true);
   });
 });
