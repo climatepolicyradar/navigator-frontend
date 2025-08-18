@@ -25,6 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions: write-all # trunk-ignore(checkov/CKV2_GHA_1)
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: $HOME/.cache/ms-playwright
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -35,8 +37,18 @@ jobs:
       - run: THEME=${{ github.event.inputs.theme }} npm run build
         env:
           NODE_ENV: production
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+
       - run: npx playwright install --with-deps
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
       - run: npx playwright test tests/core/ tests/${{ github.event.inputs.theme }}/
         env:
           PLAYWRIGHT_ENV: ${{ format('{0}_{1}', github.event.inputs.theme, github.event.inputs.environment) }}
           THEME: ${{ github.event.inputs.theme }}
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
