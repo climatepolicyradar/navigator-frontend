@@ -3,7 +3,7 @@ import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisi
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
-import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
+import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { GEOGRAPHY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
 
 import { IProps } from "./geographyOriginalPage";
