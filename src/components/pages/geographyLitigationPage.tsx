@@ -9,11 +9,9 @@ import { GEOGRAPHY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
 import { IProps } from "./geographyOriginalPage";
 
 export const GeographyLitigationPage = ({ geography, summary, theme, themeConfig, subdivisions }: IProps) => {
-  const pageHeaderMetadata: IPageHeaderMetadata[] = [{ label: "Metadata", value: "TODO" }];
-
   return (
     <Layout metadataKey="geography" theme={theme} themeConfig={themeConfig} title={geography.name} text={geography.name}>
-      <PageHeader label="Geography" title={geography.name} metadata={pageHeaderMetadata} />
+      <PageHeader coloured label="Geography" title={geography.name} metadata={[]} />
       <Columns>
         <ContentsSideBar items={GEOGRAPHY_PAGE_SIDE_BAR_ITEMS} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
         <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-3:py-8 cols-3:gap-8 cols-3:col-span-2 cols-4:col-span-3">

@@ -77,6 +77,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // TODO: handle error more elegantly
   }
 
+  // TODO:
+  // Frontend
+  // fetch geo from geographies API
+  // use response to fetch families data from families API
+
   if (!geographyData || !summaryData) {
     return {
       notFound: true,
