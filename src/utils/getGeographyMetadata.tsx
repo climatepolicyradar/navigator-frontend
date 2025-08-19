@@ -65,7 +65,29 @@ export const getGeographyMetaData = (stats: TGeographyStats): IMetadata[] => {
   if (stats.global_emissions_percent) {
     metadata.push({
       label: "Share of global emissions",
-      value: stats.global_emissions_percent + "%",
+      value: (
+        <Tooltip
+          arrow
+          content={
+            <>
+              <p className="mb-4">
+                The share of global emissions data is from{" "}
+                <ExternalLink className="underline" url="https://www.climatewatchdata.org/">
+                  Climate Watch
+                </ExternalLink>
+                , managed by the World Resources Institute.
+              </p>
+              <p className="mb-4">
+                This percentage is based on emissions data from 2020. This data was last updated on this site on 18 September 2023.
+              </p>
+            </>
+          }
+          popupClasses="w-[350px] px-3 py-3 !text-sm text-wrap leading-normal font-normal"
+          side="bottom"
+        >
+          <span className="inline underline underline-offset-2 decoration-dotted cursor-help">{stats.global_emissions_percent + "%"}</span>
+        </Tooltip>
+      ),
     });
   }
 
