@@ -210,7 +210,7 @@ test.describe("CCC Hero Search", () => {
 
     // Should still be on search results page with same parameters
     await expect(page).toHaveURL(/\/search/);
-    await expect(page).toHaveURL(/q=federal\+grant\+funds/);
+    await expect(page).toHaveURL(/q=coastal\+zones/);
     await expect(page).not.toHaveURL(/e=true/);
   });
 
