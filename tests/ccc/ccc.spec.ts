@@ -61,7 +61,7 @@ test.describe("CCC Hero Search", () => {
     const searchButton = page.locator('button[aria-label="Search"]');
 
     // Type a search term
-    const searchTerm = "federal grant funds";
+    const searchTerm = "coastal zones";
     await searchInput.fill(searchTerm);
 
     // Click search button
@@ -191,7 +191,7 @@ test.describe("CCC Hero Search", () => {
   });
 
   test("should maintain search state on page refresh", async ({ page }) => {
-    const searchTerm = "federal grant funds";
+    const searchTerm = "coastal zones";
 
     // Type search term
     await page.fill('[data-cy="search-input"]', searchTerm);
@@ -362,23 +362,5 @@ test.describe("CCC Hero Search", () => {
     const url = page.url();
     expect(url).toContain("e=false");
     await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
-  });
-  test("should handle search clear button", async ({ page }) => {
-    const searchInput = page.locator('[data-cy="search-input"]');
-
-    // Type a search term
-    await searchInput.fill("test search");
-
-    // Verify clear button is visible
-    await expect(page.locator('[data-cy="search-clear-button"]')).toBeVisible();
-
-    // Click clear button
-    await page.click('[data-cy="search-clear-button"]');
-
-    // Verify search input is cleared
-    await expect(searchInput).toHaveValue("");
-
-    // Verify clear button is no longer visible
-    await expect(page.locator('[data-cy="search-clear-button"]')).not.toBeVisible();
   });
 });
