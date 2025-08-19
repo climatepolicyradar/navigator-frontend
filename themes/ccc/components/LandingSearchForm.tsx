@@ -16,25 +16,23 @@ const EXAMPLE_SEARCHES = [
   },
   {
     id: 2,
-    label: "Brazil",
+    label: "U.S. Cases",
     params: {
-      [QUERY_PARAMS.country]: "brazil",
-    },
-  },
-  {
-    id: 3,
-    label: "Climate framework laws",
-    params: {
-      [QUERY_PARAMS.category]: "laws",
-      [QUERY_PARAMS.framework_laws]: "true",
-      [QUERY_PARAMS.concept_name]: "emissions reduction target",
+      [QUERY_PARAMS.country]: "united-states-of-america",
     },
   },
   {
     id: 4,
-    label: "Coastal zones",
+    label: "Electric Vehicle Infrastructure",
     params: {
-      [QUERY_PARAMS.concept_name]: "coastal zone",
+      [QUERY_PARAMS.query_string]: "electric vehicle infrastructure",
+    },
+  },
+  {
+    id: 3,
+    label: "Connecticut",
+    params: {
+      [QUERY_PARAMS.subdivision]: "US-CT",
     },
   },
 ];
