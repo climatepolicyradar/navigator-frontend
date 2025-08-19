@@ -22,14 +22,14 @@ const EXAMPLE_SEARCHES = [
     },
   },
   {
-    id: 4,
+    id: 3,
     label: "Electric Vehicle Infrastructure",
     params: {
       [QUERY_PARAMS.query_string]: "electric vehicle infrastructure",
     },
   },
   {
-    id: 3,
+    id: 4,
     label: "Connecticut",
     params: {
       [QUERY_PARAMS.subdivision]: "US-CT",
