@@ -29,6 +29,93 @@ const baseSearchProps = {
   familyConceptsData: null,
 };
 
+const basicLegalConcepts = [
+  {
+    wikibase_id: "category/Parent Test Case Category",
+    preferred_label: "Parent Test Case Category",
+    subconcept_of: [],
+    recursive_subconcept_of: [],
+    type: "category",
+    alternative_labels: [],
+    negative_labels: [],
+    description: "",
+    related_concepts: [],
+    has_subconcept: [],
+  },
+  {
+    wikibase_id: "category/Test Case Category 1",
+    preferred_label: "Test Case Category 1",
+    subconcept_of: ["category/Parent Test Case Category"],
+    recursive_subconcept_of: ["category/Parent Test Case Category"],
+    type: "category",
+    alternative_labels: [],
+    negative_labels: [],
+    description: "",
+    related_concepts: [],
+    has_subconcept: [],
+  },
+  {
+    wikibase_id: "category/Test Case Category 2",
+    preferred_label: "Test Case Category 2",
+    subconcept_of: ["category/Parent Test Case Category"],
+    recursive_subconcept_of: ["category/Parent Test Case Category"],
+    type: "category",
+    alternative_labels: [],
+    negative_labels: [],
+    description: "",
+    related_concepts: [],
+    has_subconcept: [],
+  },
+  {
+    wikibase_id: "principal_law/Test Principal Law 1",
+    preferred_label: "Test Principal Law 1",
+    subconcept_of: [],
+    recursive_subconcept_of: [],
+    type: "principal_law",
+    alternative_labels: [],
+    negative_labels: [],
+    description: "",
+    related_concepts: [],
+    has_subconcept: [],
+  },
+  {
+    wikibase_id: "principal_law/Test Principal Law 2",
+    preferred_label: "Test Principal Law 2",
+    subconcept_of: [],
+    recursive_subconcept_of: [],
+    type: "principal_law",
+    alternative_labels: [],
+    negative_labels: [],
+    description: "",
+    related_concepts: [],
+    has_subconcept: [],
+  },
+  {
+    wikibase_id: "jurisdiction/Test Jurisdiction 1",
+    preferred_label: "Test Jurisdiction 1",
+    subconcept_of: [],
+    recursive_subconcept_of: [],
+    type: "jurisdiction",
+    alternative_labels: [],
+    negative_labels: [],
+    description: "",
+    related_concepts: [],
+    has_subconcept: [],
+  },
+  {
+    wikibase_id: "jurisdiction/Test Jurisdiction 2",
+    preferred_label: "Test Jurisdiction 2",
+    subconcept_of: [],
+    recursive_subconcept_of: [],
+    type: "jurisdiction",
+    alternative_labels: [],
+    negative_labels: [],
+    description: "",
+    related_concepts: [],
+    has_subconcept: [],
+  },
+];
+
 describe("SearchPage", async () => {
   it("filters search results by subdivision", async () => {
     // @ts-ignore
@@ -137,48 +224,11 @@ describe("SearchPage", async () => {
     expect(subdivisionFilter).not.toBeInTheDocument();
   });
 
-  it("filters search results by legal concepts", async () => {
+  it("filters search results by case category", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
       ...baseSearchProps,
-      familyConceptsData: [
-        {
-          wikibase_id: "category/Parent Test Case Category",
-          preferred_label: "Parent Test Case Category",
-          subconcept_of: [],
-          recursive_subconcept_of: [],
-          type: "category",
-          alternative_labels: [],
-          negative_labels: [],
-          description: "",
-          related_concepts: [],
-          has_subconcept: [],
-        },
-        {
-          wikibase_id: "category/Test Case Category 1",
-          preferred_label: "Test Case Category 1",
-          subconcept_of: ["category/Parent Test Case Category"],
-          recursive_subconcept_of: ["category/Parent Test Case Category"],
-          type: "category",
-          alternative_labels: [],
-          negative_labels: [],
-          description: "",
-          related_concepts: [],
-          has_subconcept: [],
-        },
-        {
-          wikibase_id: "category/Test Case Category 2",
-          preferred_label: "Test Case Category 2",
-          subconcept_of: ["category/Parent Test Case Category"],
-          recursive_subconcept_of: ["category/Parent Test Case Category"],
-          type: "category",
-          alternative_labels: [],
-          negative_labels: [],
-          description: "",
-          related_concepts: [],
-          has_subconcept: [],
-        },
-      ],
+      familyConceptsData: basicLegalConcepts,
     });
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
@@ -213,44 +263,7 @@ describe("SearchPage", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
       ...baseSearchProps,
-      familyConceptsData: [
-        {
-          wikibase_id: "category/Parent Test Case Category",
-          preferred_label: "Parent Test Case Category",
-          subconcept_of: [],
-          recursive_subconcept_of: [],
-          type: "category",
-          alternative_labels: [],
-          negative_labels: [],
-          description: "",
-          related_concepts: [],
-          has_subconcept: [],
-        },
-        {
-          wikibase_id: "category/Test Case Category 1",
-          preferred_label: "Test Case Category 1",
-          subconcept_of: ["category/Parent Test Case Category"],
-          recursive_subconcept_of: ["category/Parent Test Case Category"],
-          type: "category",
-          alternative_labels: [],
-          negative_labels: [],
-          description: "",
-          related_concepts: [],
-          has_subconcept: [],
-        },
-        {
-          wikibase_id: "category/Test Case Category 2",
-          preferred_label: "Test Case Category 2",
-          subconcept_of: ["category/Parent Test Case Category"],
-          recursive_subconcept_of: ["category/Parent Test Case Category"],
-          type: "category",
-          alternative_labels: [],
-          negative_labels: [],
-          description: "",
-          related_concepts: [],
-          has_subconcept: [],
-        },
-      ],
+      familyConceptsData: basicLegalConcepts,
     });
 
     const familyWithCategory1 = {
@@ -328,5 +341,173 @@ describe("SearchPage", async () => {
 
     expect(screen.getByRole("link", { name: "Family With Test Case Category 1" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Family With Test Case Category 2" })).toBeInTheDocument();
+  });
+
+  it("removing a principal law filter updates search results", async () => {
+    // @ts-ignore
+    renderWithAppContext(Search, {
+      ...baseSearchProps,
+      familyConceptsData: basicLegalConcepts,
+    });
+
+    const familyWithPrincipalLaw1 = {
+      family_slug: "family-with-test-principal-law-1-ca23",
+      family_name: "Family With Test Principal Law 1",
+      family_description: "<p>Family With Test Principal Law 1</p>",
+      family_category: "Litigation",
+      family_date: "2019-12-31T00:00:00+00:00",
+      family_last_updated_date: "2019-12-31T00:00:00+00:00",
+      family_source: "Sabin",
+      corpus_import_id: "Academic.corpus.Litigation.n0000",
+      corpus_type_name: "Litigation",
+      family_geographies: ["XAA"],
+      family_metadata: {
+        id: [""],
+        status: [""],
+        case_number: ["2022/00114664; [2022] NSWSC 576"],
+        core_object: ["Family With Test Principal Law 1"],
+        concept_preferred_label: ["principal_law/Test Principal Law 1"],
+      },
+      family_title_match: false,
+      family_description_match: false,
+      total_passage_hits: 1,
+      family_documents: [],
+    };
+
+    const familyWithCategory2 = {
+      family_slug: "family-with-test-principal-law-2-ca23",
+      family_name: "Family With Test Principal Law 2",
+      family_description: "<p>Family With Test Principal Law 2</p>",
+      family_category: "Litigation",
+      family_date: "2019-12-31T00:00:00+00:00",
+      family_last_updated_date: "2019-12-31T00:00:00+00:00",
+      family_source: "Sabin",
+      corpus_import_id: "Academic.corpus.Litigation.n0000",
+      corpus_type_name: "Litigation",
+      family_geographies: ["XAA"],
+      family_metadata: {
+        id: [""],
+        status: [""],
+        case_number: ["2022/00114664; [2022] NSWSC 576"],
+        core_object: ["Family With Test Principal Law 2"],
+        concept_preferred_label: ["category/Test Principal Law 2"],
+      },
+      family_title_match: false,
+      family_description_match: false,
+      total_passage_hits: 1,
+      family_documents: [],
+    };
+
+    setUpFamiliesRepo([familyWithPrincipalLaw1, familyWithCategory2]);
+
+    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+
+    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
+    // like animations that were causing warnings in the console.
+    await act(async () => {
+      await userEvent.click(await screen.findByRole("button", { name: "Principal laws" }));
+    });
+
+    await act(async () => {
+      await userEvent.click(screen.getByRole("checkbox", { name: "Test Principal Law 1" }));
+    });
+
+    const appliedFilter = screen.getByRole("button", { name: "Test Principal Law 1" });
+    expect(appliedFilter).toBeInTheDocument();
+
+    expect(screen.getByRole("link", { name: "Family With Test Principal Law 1" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Family With Test Principal Law 2" })).not.toBeInTheDocument();
+
+    // remove applied filter
+    await act(async () => {
+      await userEvent.click(appliedFilter);
+    });
+
+    expect(screen.getByRole("link", { name: "Family With Test Principal Law 1" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Family With Test Principal Law 2" })).toBeInTheDocument();
+  });
+
+  it("removing a jurisdiction filter updates search results", async () => {
+    // @ts-ignore
+    renderWithAppContext(Search, {
+      ...baseSearchProps,
+      familyConceptsData: basicLegalConcepts,
+    });
+
+    const familyWithJurisdiction1 = {
+      family_slug: "family-with-test-jurisdiction-1-ca23",
+      family_name: "Family With Test Jurisdiction 1",
+      family_description: "<p>Family With Test Jurisdiction 1</p>",
+      family_category: "Litigation",
+      family_date: "2019-12-31T00:00:00+00:00",
+      family_last_updated_date: "2019-12-31T00:00:00+00:00",
+      family_source: "Sabin",
+      corpus_import_id: "Academic.corpus.Litigation.n0000",
+      corpus_type_name: "Litigation",
+      family_geographies: ["XAA"],
+      family_metadata: {
+        id: [""],
+        status: [""],
+        case_number: ["2022/00114664; [2022] NSWSC 576"],
+        core_object: ["Family With Test Jurisdiction 1"],
+        concept_preferred_label: ["jurisdiction/Test Jurisdiction 1"],
+      },
+      family_title_match: false,
+      family_description_match: false,
+      total_passage_hits: 1,
+      family_documents: [],
+    };
+
+    const familyWithJurisdiction2 = {
+      family_slug: "family-with-test-principal-law-2-ca23",
+      family_name: "Family With Test Jurisdiction 2",
+      family_description: "<p>Family With Test Jurisdiction 2</p>",
+      family_category: "Litigation",
+      family_date: "2019-12-31T00:00:00+00:00",
+      family_last_updated_date: "2019-12-31T00:00:00+00:00",
+      family_source: "Sabin",
+      corpus_import_id: "Academic.corpus.Litigation.n0000",
+      corpus_type_name: "Litigation",
+      family_geographies: ["XAA"],
+      family_metadata: {
+        id: [""],
+        status: [""],
+        case_number: ["2022/00114664; [2022] NSWSC 576"],
+        core_object: ["Family With Test Jurisdiction 2"],
+        concept_preferred_label: ["jurisdiction/Test Jurisdiction 2"],
+      },
+      family_title_match: false,
+      family_description_match: false,
+      total_passage_hits: 1,
+      family_documents: [],
+    };
+
+    setUpFamiliesRepo([familyWithJurisdiction1, familyWithJurisdiction2]);
+
+    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+
+    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
+    // like animations that were causing warnings in the console.
+    await act(async () => {
+      await userEvent.click(await screen.findByRole("button", { name: "Jurisdictions" }));
+    });
+
+    await act(async () => {
+      await userEvent.click(screen.getByRole("checkbox", { name: "Test Jurisdiction 1" }));
+    });
+
+    const appliedFilter = screen.getByRole("button", { name: "Test Jurisdiction 1" });
+    expect(appliedFilter).toBeInTheDocument();
+
+    expect(screen.getByRole("link", { name: "Family With Test Jurisdiction 1" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Family With Test Jurisdiction 2" })).not.toBeInTheDocument();
+
+    // remove applied filter
+    await act(async () => {
+      await userEvent.click(appliedFilter);
+    });
+
+    expect(screen.getByRole("link", { name: "Family With Test Jurisdiction 1" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Family With Test Jurisdiction 2" })).toBeInTheDocument();
   });
 });
