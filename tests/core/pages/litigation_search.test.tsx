@@ -1,7 +1,8 @@
-import { act, screen } from "@testing-library/react";
+import { act, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import router from "next-router-mock";
 
+import cccConfig from "@/ccc/config";
 import { createFeatureFlags } from "@/mocks/featureFlags";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import { setUpFamiliesRepo } from "@/mocks/repository";
@@ -18,17 +19,8 @@ const baseSearchProps = {
     BACKEND_API_URL: process.env.BACKEND_API_URL,
     CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
   },
-  theme: "cpr",
-  themeConfig: {
-    documentCategories: ["All"],
-    features: { knowledgeGraph: false, searchFamilySummary: false, litigation: true },
-    metadata: [
-      {
-        key: "search",
-        title: "Law and Policy Search",
-      },
-    ],
-  },
+  theme: "ccc",
+  themeConfig: cccConfig,
   featureFlags: createFeatureFlags({
     "concepts-v1": false,
     litigation: true,
