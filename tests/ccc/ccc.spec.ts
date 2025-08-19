@@ -230,7 +230,7 @@ test.describe("CCC Hero Search", () => {
     await page.click('[data-cy="breadcrumb home"] a');
 
     // Should now be on homepage with same parameters
-    await expect(page.locator('[data-cy="cpr-logo"]')).toBeVisible();
+    await expect(page.locator("h1").filter({ hasText: "Climate Case Chart" })).toBeVisible();
     await expect(page).not.toHaveURL(/\/search/);
     await expect(page).toHaveURL(/q=adaptation/);
     await expect(page).not.toHaveURL(/e=true/);
