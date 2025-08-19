@@ -252,13 +252,19 @@ const families = [
   },
 ];
 
+let familiesRepo = families;
+
 const iso_slug_mapping = { belize: "BLZ", argentina: "ARG", australia: "AUS", afghanistan: "AFG", "united-states": "USA" };
+
+const setUpFamiliesRepo = (test_families: any[]) => {
+  familiesRepo = test_families;
+};
 
 const getFilteredFamilies = (keyword_filters: any, concept_filters: any, metadata: any) => {
   const filteredFamilies = [];
   if (keyword_filters.countries) {
     keyword_filters.countries.forEach((country: string) => {
-      const countryFilteredFamily = families.filter((family) => {
+      const countryFilteredFamily = familiesRepo.filter((family) => {
         return family.family_geographies.includes(iso_slug_mapping[country]);
       });
       filteredFamilies.push(...countryFilteredFamily);
@@ -267,7 +273,7 @@ const getFilteredFamilies = (keyword_filters: any, concept_filters: any, metadat
   }
   if (keyword_filters.subdivisions && keyword_filters.subdivisions.length > 0) {
     keyword_filters.subdivisions.forEach((subdivision: string) => {
-      const subdivisionFilteredFamily = families.filter((family) => {
+      const subdivisionFilteredFamily = familiesRepo.filter((family) => {
         return family.family_geographies.includes(subdivision);
       });
       filteredFamilies.push(...subdivisionFilteredFamily);
@@ -276,7 +282,7 @@ const getFilteredFamilies = (keyword_filters: any, concept_filters: any, metadat
   }
   if (concept_filters.length > 0) {
     concept_filters.forEach((conceptFilter) => {
-      const conceptFilteredFamily = families.filter((family) => {
+      const conceptFilteredFamily = familiesRepo.filter((family) => {
         return (
           family.family_documents &&
           family.family_documents.some(
@@ -293,7 +299,7 @@ const getFilteredFamilies = (keyword_filters: any, concept_filters: any, metadat
   }
   if (metadata.length > 0) {
     metadata.forEach((metadataFilter) => {
-      const metadataFilteredFamily = families.filter((family) => {
+      const metadataFilteredFamily = familiesRepo.filter((family) => {
         return (
           family.family_metadata &&
           family.family_metadata.concept_preferred_label &&
@@ -305,7 +311,7 @@ const getFilteredFamilies = (keyword_filters: any, concept_filters: any, metadat
     return filteredFamilies;
   }
 
-  return families;
+  return familiesRepo;
 };
 
-export { getFilteredFamilies };
+export { getFilteredFamilies, setUpFamiliesRepo };

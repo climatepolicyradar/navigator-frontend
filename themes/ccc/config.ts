@@ -4,21 +4,13 @@ const config: TThemeConfig = {
   defaultCorpora: ["Academic.corpus.Litigation.n0000"],
   filters: [
     {
-      label: "Type",
-      taxonomyKey: "framework_laws",
-      apiMetaDataKey: "family.framework",
+      label: "Legal concepts",
+      taxonomyKey: "concept_preferred_label",
+      apiMetaDataKey: "family.concept_preferred_label",
       type: "checkbox",
-      category: ["LAWS"],
-      startOpen: "true",
-      options: [
-        {
-          label: "Framework laws",
-          slug: "true",
-          value: "true",
-          additionalInfo: "Framework laws create overarching governance structures for countries' climate policy responses.",
-          learnMoreUrl: "/framework-laws",
-        },
-      ],
+      category: [],
+      startOpen: "false",
+      options: [],
     },
   ],
   labelVariations: [
@@ -58,8 +50,8 @@ const config: TThemeConfig = {
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
   ],
-  documentCategories: ["All", "Laws", "Policies", "UNFCCC Submissions", "Litigation", "Climate Finance Projects", "Offshore Wind Reports"],
-  defaultDocumentCategory: "All",
+  documentCategories: [],
+  defaultDocumentCategory: null,
   features: {
     familyConceptsSearch: true,
     knowledgeGraph: false,
