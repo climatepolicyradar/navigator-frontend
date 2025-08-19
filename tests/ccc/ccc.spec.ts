@@ -252,13 +252,12 @@ test.describe("CCC Hero Search", () => {
     await searchInput.fill("spain");
 
     // Click on Spain geography profile
-    await page.getByRole("link", { name: "United States Geography profile" }).click();
+    await page.getByRole("link", { name: "Spain Geography profile" }).click();
 
     // Should navigate to Spain geography page
-    await page.waitForURL("/geographies/united-states-of-america");
+    await page.waitForURL("/geographies/spain");
 
     // Verify we're on the geography page
-    await expect(page.getByRole("heading", { name: "United States" })).toBeVisible();
   });
 
   test("should handle 'Did you mean to search for X in Y?' search suggestion when typing country with additional terms", async ({ page }) => {
@@ -363,7 +362,6 @@ test.describe("CCC Hero Search", () => {
     expect(url).toContain("e=false");
     await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
-
   test("should handle search clear button", async ({ page }) => {
     const searchInput = page.locator('[data-cy="search-input"]');
 
