@@ -16,15 +16,17 @@ interface IProps {
   searchInput: string;
   theme: TTheme;
   themeConfig: TThemeConfig;
+  exactMatch: boolean;
+  handleSearchChange: (type: string, value: any) => void;
 }
 
-const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig }: IProps) => {
+const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig, exactMatch, handleSearchChange }: IProps) => {
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="homepage">
       <main id="main" className="h-screen flex flex-col bg-[rebeccapurple]">
         <Header />
         <div className="flex-1 flex items-center justify-center">
-          <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} />
+          <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} exactMatch={exactMatch} handleSearchChange={handleSearchChange} />
         </div>
       </main>
       <FullWidth extraClasses="hidden my-6 md:block">
