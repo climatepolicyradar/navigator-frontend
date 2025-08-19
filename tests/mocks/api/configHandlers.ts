@@ -1,5 +1,16 @@
 import { http, HttpResponse } from "msw";
 
+import cprConfig from "@/cpr/config";
+import { TThemeConfig } from "@/types";
+
+let themeConfig: TThemeConfig = cprConfig;
+
+export const setUpThemeConfig = (testThemeConfig: TThemeConfig) => {
+  if (testThemeConfig) {
+    themeConfig = testThemeConfig;
+  }
+};
+
 export const configHandlers = [
   http.get("/api/env", () => {
     return HttpResponse.json({
@@ -11,32 +22,7 @@ export const configHandlers = [
     });
   }),
   http.get("/api/theme-config", () => {
-    return HttpResponse.json({
-      categories: {
-        label: "Category",
-        options: [
-          {
-            label: "All",
-            slug: "all",
-          },
-        ],
-      },
-      documentCategories: ["All"],
-      filters: [
-        {
-          label: "Published jurisdiction",
-          taxonomyKey: "country",
-          options: [],
-        },
-      ],
-      features: { knowledgeGraph: false, searchFamilySummary: false },
-      metadata: [
-        {
-          key: "search",
-          title: "Law and Policy Search",
-        },
-      ],
-    });
+    return HttpResponse.json(themeConfig);
   }),
   http.get("*/config", () => {
     return HttpResponse.json({

@@ -6,7 +6,11 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { ThemeContext } from "@/context/ThemeContext";
 
+import { setUpThemeConfig } from "./api/configHandlers";
+
 export const renderWithAppContext = async (Component: React.ComponentType<any>, pageProps?: any) => {
+  setUpThemeConfig(pageProps?.themeConfig);
+
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {

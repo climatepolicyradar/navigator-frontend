@@ -178,7 +178,7 @@ const SearchFilters = ({
             data-cy="jurisdictions-control"
             {...{ [SLIDE_OUT_DATA_KEY]: "jurisdictions" }}
           >
-            <Heading>Jusrisdictions</Heading>
+            <Heading>Jurisdictions</Heading>
             <span
               className={`text-textDark opacity-40 group-hover:opacity-100 transition-transform pointer-events-none ${
                 currentSlideOut === "jurisdictions" ? "transform rotate-180" : ""
