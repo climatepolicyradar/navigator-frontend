@@ -11,6 +11,9 @@ type TProps = {
 };
 
 export const SubDivisionBlock = ({ title, id, subdivisions }: TProps) => {
+  if (!subdivisions || subdivisions.length === 0) {
+    return null;
+  }
   return (
     <Section title={title} id={id}>
       <div className="rounded bg-surface-ui py-6 px-10">

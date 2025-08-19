@@ -70,12 +70,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch {
     // TODO: handle error more elegantly
   }
-  try {
-    const { data: returnedData }: { data: TGeographySubdivision[] } = await apiClient.get(`/geographies/subdivisions/USA`);
-    subdivisions = returnedData;
-  } catch {
-    // TODO: handle error more elegantly
-  }
+  // TODO: implement when slugs are supported
+  // try {
+  //   const { data: returnedData }: { data: TGeographySubdivision[] } = await apiClient.get(`/geographies/subdivisions/USA`);
+  //   subdivisions = returnedData;
+  // } catch {
+  //   // TODO: handle error more elegantly
+  // }
 
   // TODO:
   // Frontend
