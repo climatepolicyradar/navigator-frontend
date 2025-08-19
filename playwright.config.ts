@@ -58,8 +58,14 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [["junit", { outputFile: process.env.THEME ? `test-results-${process.env.THEME}/playwright.xml` : "playwright.xml" }]],
+  /*
+   * Reporter to use. See https://playwright.dev/docs/test-reporters
+   * The generated XML file is used in merge_to_main and pull_request gitHub workflows
+   * junit is used to report to Trunk
+   */
+  reporter: process.env.CI
+    ? [["junit", { outputFile: process.env.THEME ? `test-results-${process.env.THEME}/playwright.xml` : "playwright.xml" }]]
+    : "list",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */

@@ -87,11 +87,21 @@ npm run test-e2e
 
 ## 🏭 Deployment
 
-Containers are automatically:
+- Go to the [Deploy to production](https://github.com/climatepolicyradar/navigator-frontend/actions/workflows/deploy-production.yml)
+  GitHub action
+- You can only deploy from from `main`
+- Select the app you want to deploy
+- "Run workflow"
 
-1. Built and tested via GitHub Actions
-2. Pushed to AWS ECR
-3. Deployed via [navigator-infra](https://github.com/climatepolicyradar/navigator-infra)
+This builds and pushes to the ECR `latest` tag which then
+[automatically triggers a deploy](https://docs.aws.amazon.com/apprunner/latest/dg/manage-deploy.html).
+
+### 🔙 Rollback
+
+- To rollback find [the merge commit](https://github.com/climatepolicyradar/navigator-frontend/commits/main/)
+  which will have a corresponding ECR container built
+- use the navigator-infra [Deploy frontend GitHub action](https://github.com/climatepolicyradar/navigator-infra/actions/workflows/deploy-frontend.yml)
+  to deploy the SHA
 
 ## 🎨 Theming
 
