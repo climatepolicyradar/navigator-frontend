@@ -42,7 +42,7 @@ export const getLitigationJSONLD = (familyCase: TFamilyPublic, countries: TGeogr
   }
 
   // Case metadata for JSON-LD
-  if (familyCase.metadata.case_number.length) {
+  if (familyCase.metadata?.case_number?.length) {
     jsonLd += `,
     "legislationIdentifier": "${familyCase.metadata.case_number}"
     `;
