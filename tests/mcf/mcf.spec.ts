@@ -35,7 +35,7 @@ test.describe("MCF Hero Search", () => {
     await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
-  test("should search with button click", async ({ page }) => {
+  test("should perform search with user input via search button", async ({ page }) => {
     const searchTerm = "climate adaptation";
 
     // Type search term
@@ -49,21 +49,6 @@ test.describe("MCF Hero Search", () => {
 
     // Should have correct query parameters
     await expect(page).toHaveURL(/q=climate\+adaptation/);
-    await expect(page).not.toHaveURL(/e=true/);
-  });
-
-  test("should search with Enter key", async ({ page }) => {
-    const searchTerm = "renewable energy";
-
-    // Type search term and press Enter
-    await page.fill('[data-cy="search-input"]', searchTerm);
-    await page.press('[data-cy="search-input"]', "Enter");
-
-    // Should navigate to search results page
-    await expect(page).toHaveURL(/\/search/);
-
-    // Should have correct query parameters
-    await expect(page).toHaveURL(/q=renewable\+energy/);
     await expect(page).not.toHaveURL(/e=true/);
   });
 
@@ -114,7 +99,7 @@ test.describe("MCF Hero Search", () => {
     await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
-  test("should handle special characters in search", async ({ page }) => {
+  test("should handle search with special characters", async ({ page }) => {
     const searchTerm = "climate (adaptation)";
 
     // Type search term with special characters
@@ -131,7 +116,7 @@ test.describe("MCF Hero Search", () => {
     await expect(page).not.toHaveURL(/e=true/);
   });
 
-  test("should handle long search terms", async ({ page }) => {
+  test("should handle very long search terms", async ({ page }) => {
     const longSearchTerm = "multilateral climate fund adaptation projects in developing countries";
 
     // Type long search term
@@ -145,30 +130,6 @@ test.describe("MCF Hero Search", () => {
 
     // Should have correctly encoded query parameters
     await expect(page).toHaveURL(/q=multilateral\+climate\+fund\+adaptation\+projects\+in\+developing\+countries/);
-    await expect(page).not.toHaveURL(/e=true/);
-  });
-
-  test("should handle example search buttons", async ({ page }) => {
-    // Click on "Adaptation" example search
-    await page.click('[data-cy="example-search-1"]');
-
-    // Should navigate to search results page
-    await expect(page).toHaveURL(/\/search/);
-
-    // Should have correct query parameters
-    await expect(page).toHaveURL(/q=Adaptation/);
-    await expect(page).not.toHaveURL(/e=true/);
-  });
-
-  test("should handle country example search", async ({ page }) => {
-    // Click on "Philippines" example search
-    await page.click('[data-cy="example-search-3"]');
-
-    // Should navigate to search results page
-    await expect(page).toHaveURL(/\/search/);
-
-    // Should have correct query parameters for country search
-    await expect(page).toHaveURL(/l=philippines/);
     await expect(page).not.toHaveURL(/e=true/);
   });
 

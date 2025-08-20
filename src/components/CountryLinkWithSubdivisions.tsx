@@ -35,7 +35,11 @@ export const CountryLinkWithSubdivisions: FC<TCountryLinkWithSubdivisions> = ({
 
   return (
     <span className="flex gap-1">
-      <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center gap-1 hover:underline hover:text-blue-800 ${className}`}>
+      <LinkWithQuery
+        href={`/geographies/${slug}`}
+        className={`flex items-center gap-1 hover:underline hover:text-blue-800 ${className}`}
+        cypress="country-link"
+      >
         {showFlag && <span className={`rounded-xs border border-black flag-icon-background flag-icon-${selectedCountry?.value.toLowerCase()}`} />}
         {selectedCountry?.display_value}
       </LinkWithQuery>
