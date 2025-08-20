@@ -31,7 +31,7 @@ export const getGeographyMetaData = (stats: TGeographyStats): IMetadata[] => {
                 The annually published Global Climate Risk Index analyses to what extent countries have been affected by the impacts of
                 weather-related loss events (storms, floods, heat waves etc.).
               </p>
-              <p className="mb-4">
+              <p>
                 This data is from the Global Risk Index 2021 published by{" "}
                 <ExternalLink className="underline" url="https://www.germanwatch.org/en/cri">
                   German Watch
@@ -65,7 +65,27 @@ export const getGeographyMetaData = (stats: TGeographyStats): IMetadata[] => {
   if (stats.global_emissions_percent) {
     metadata.push({
       label: "Share of global emissions",
-      value: stats.global_emissions_percent + "%",
+      value: (
+        <Tooltip
+          arrow
+          content={
+            <>
+              <p className="mb-4">
+                The share of global emissions data is from{" "}
+                <ExternalLink className="underline" url="https://www.climatewatchdata.org/">
+                  Climate Watch
+                </ExternalLink>
+                , managed by the World Resources Institute.
+              </p>
+              <p>This percentage is based on emissions data from 2020. This data was last updated on this site on 18 September 2023.</p>
+            </>
+          }
+          popupClasses="w-[350px] px-3 py-3 !text-sm text-wrap leading-normal font-normal"
+          side="bottom"
+        >
+          <span className="inline underline underline-offset-2 decoration-dotted cursor-help">{stats.global_emissions_percent + "%"}</span>
+        </Tooltip>
+      ),
     });
   }
 
