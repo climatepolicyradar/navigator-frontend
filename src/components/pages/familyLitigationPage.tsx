@@ -1,3 +1,5 @@
+import Head from "next/head";
+
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Columns } from "@/components/atoms/columns/Columns";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
@@ -10,12 +12,31 @@ import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHead
 import { FAMILY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
+import { TFamilyPublic } from "@/types";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
 import { joinNodes } from "@/utils/reactNode";
 import { convertDate } from "@/utils/timedate";
 
 import { IProps, isNewEndpointData } from "./familyOriginalPage";
+
+const generateLitigationJSONLD = (familyCase: TFamilyPublic) => {
+  let jsonLd = `"@context": "https://schema.org",
+    "@type": "Legislation",
+    "@id": "${process.env.HOSTNAME}/document/${familyCase.slug}",
+    "url": "${process.env.HOSTNAME}/document/${familyCase.slug}",
+    "name": "${familyCase.title}",
+    "description": "${familyCase.summary}",
+    "legislationDate": "${familyCase.published_date}"`;
+
+  if (familyCase.metadata.case_number.length) {
+    jsonLd += `,
+    "legislationIdentifier": "${familyCase.metadata.case_number}"
+    `;
+  }
+
+  return jsonLd;
+};
 
 export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig }: IProps) => {
   // TODO remove when only the newer API endpoint is being called in getServerSideProps
@@ -78,6 +99,14 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
           </Section>
         </main>
       </Columns>
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: `{${generateLitigationJSONLD(family)}}`,
+          }}
+        />
+      </Head>
     </Layout>
   );
 };
