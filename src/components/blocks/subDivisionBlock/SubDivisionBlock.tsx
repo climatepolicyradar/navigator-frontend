@@ -24,6 +24,7 @@ const get3ColumnClass = (index: number, length: number): string => {
   } else if (index >= third) {
     return "xl:col-start-2";
   }
+  return "";
 };
 
 export const SubDivisionBlock = ({ title, id, subdivisions }: TProps) => {
