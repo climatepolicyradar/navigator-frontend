@@ -11,17 +11,17 @@ type TProps = {
 };
 
 const get2ColumnClass = (index: number, length: number): string => {
-  if (index > length / 2) {
+  if (index >= length / 2) {
     return "md:col-start-2";
   }
   return "";
 };
 
 const get3ColumnClass = (index: number, length: number): string => {
-  const third = Math.floor(length / 3);
-  if (index + 1 > third * 2) {
+  const third = length / 3;
+  if (index >= third * 2) {
     return "xl:col-start-3";
-  } else if (index + 1 > third) {
+  } else if (index >= third) {
     return "xl:col-start-2";
   }
 };
