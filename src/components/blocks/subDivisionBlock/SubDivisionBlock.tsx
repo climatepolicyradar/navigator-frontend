@@ -10,6 +10,22 @@ type TProps = {
   subdivisions: TGeographySubdivision[];
 };
 
+const get2ColumnClass = (index: number, length: number): string => {
+  if (index > length / 2) {
+    return "md:col-start-2";
+  }
+  return "";
+};
+
+const get3ColumnClass = (index: number, length: number): string => {
+  const third = Math.floor(length / 3);
+  if (index + 1 > third * 2) {
+    return "xl:col-start-3";
+  } else if (index + 1 > third) {
+    return "xl:col-start-2";
+  }
+};
+
 export const SubDivisionBlock = ({ title, id, subdivisions }: TProps) => {
   if (!subdivisions || subdivisions.length === 0) {
     return null;
@@ -17,9 +33,12 @@ export const SubDivisionBlock = ({ title, id, subdivisions }: TProps) => {
   return (
     <Section title={title} id={id}>
       <div className="rounded bg-surface-ui py-6 px-10">
-        <ol className="text-sm list-none pl-5 grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+        <ol className="text-sm list-none pl-5 grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3 grid-flow-dense">
           {subdivisions.map((subdivision, index) => (
-            <li key={index} className="text-text-secondary">
+            <li
+              key={index}
+              className={`text-text-secondary col-start-1 ${get2ColumnClass(index, subdivisions.length)} ${get3ColumnClass(index, subdivisions.length)}`}
+            >
               <LinkWithQuery href={`/geographies/${subdivision.code}`} className="underline text-text-primary hover:text-text-brand-darker">
                 {subdivision.name}
               </LinkWithQuery>
