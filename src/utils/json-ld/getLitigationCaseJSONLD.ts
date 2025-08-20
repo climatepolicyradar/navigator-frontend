@@ -50,16 +50,10 @@ export const getLitigationJSONLD = (familyCase: TFamilyPublic, countries: TGeogr
 
   // Geography related JSON-LD
   if (geosOrdered.length > 0) {
-    let jurisdictions = [];
     let spatialCoverage = [];
     geosOrdered.forEach((geo) => {
       const countryName = getCountryName(geo, countries);
       if (countryName) {
-        jurisdictions.push(`{
-          "@type": "Country",
-          "name": "${countryName}",
-          "url": "${process.env.HOSTNAME}/geographies/${getCountrySlug(geo, countries)}"
-        }`);
         spatialCoverage.push(`{
           "@type": "Place",
           "name": "${countryName}",
@@ -68,11 +62,6 @@ export const getLitigationJSONLD = (familyCase: TFamilyPublic, countries: TGeogr
       } else {
         const subdivision = subdivisions.find((sub) => sub.code === geo);
         if (subdivision) {
-          jurisdictions.push(`{
-            "@type": "AdministrativeArea",
-            "name": "${subdivision.name}",
-            "url": "${process.env.HOSTNAME}/geographies/${subdivision.code}"
-          }`);
           spatialCoverage.push(`{
             "@type": "Place",
             "name": "${subdivision.name}",
