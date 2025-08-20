@@ -85,7 +85,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: `{${getLitigationJSONLD(family, countries, subdivisions)}}`,
+            __html: JSON.stringify(getLitigationJSONLD(family, countries, subdivisions)),
           }}
         />
       </Head>
