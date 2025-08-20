@@ -1,3 +1,4 @@
+import sortBy from "lodash/sortBy";
 import Head from "next/head";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -12,7 +13,7 @@ import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHead
 import { FAMILY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { TFamilyPublic } from "@/types";
+import { TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
 import { joinNodes } from "@/utils/reactNode";
@@ -20,7 +21,9 @@ import { convertDate } from "@/utils/timedate";
 
 import { IProps, isNewEndpointData } from "./familyOriginalPage";
 
-const generateLitigationJSONLD = (familyCase: TFamilyPublic) => {
+const generateLitigationJSONLD = (familyCase: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]) => {
+  const geosOrdered = sortBy(familyCase.geographies, [(geo) => geo.length !== 3, (geo) => geo.toLowerCase()]);
+
   let jsonLd = `"@context": "https://schema.org",
     "@type": "Legislation",
     "@id": "${process.env.HOSTNAME}/document/${familyCase.slug}",
@@ -33,6 +36,33 @@ const generateLitigationJSONLD = (familyCase: TFamilyPublic) => {
     jsonLd += `,
     "legislationIdentifier": "${familyCase.metadata.case_number}"
     `;
+  }
+
+  if (geosOrdered.length > 0) {
+    let jsonLdGeos = [];
+    geosOrdered.forEach((geo) => {
+      const countryName = getCountryName(geo, countries);
+      if (countryName) {
+        jsonLdGeos.push(`{
+          "@type": "Country",
+          "name": "${countryName}",
+          "url": "${process.env.HOSTNAME}/geographies/${getCountrySlug(geo, countries)}"
+        }`);
+      } else {
+        const subdivision = subdivisions.find((sub) => sub.code === geo);
+        if (subdivision) {
+          jsonLdGeos.push(`{
+            "@type": "AdministrativeArea",
+            "name": "${subdivision.name}",
+            "url": "${process.env.HOSTNAME}/geographies/${subdivision.code}"
+          }`);
+        }
+      }
+    });
+    if (jsonLdGeos.length > 0) {
+      jsonLd += `,
+      "jurisdiction": [${jsonLdGeos.join(", ")}]`;
+    }
   }
 
   return jsonLd;
@@ -103,7 +133,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: `{${generateLitigationJSONLD(family)}}`,
+            __html: `{${generateLitigationJSONLD(family, countries, subdivisions)}}`,
           }}
         />
       </Head>
