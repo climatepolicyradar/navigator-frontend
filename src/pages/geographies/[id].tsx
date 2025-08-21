@@ -72,9 +72,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
   // TODO: make this not less double nested
   try {
+    // TODO: remove the workaround for the US
+    const slug = id === "united-states-of-america" ? "united-states" : id;
     const {
       data: { data: returnedData },
-    }: { data: { data: TGeographyNewParent } } = await apiClient.get(`/geographies/${id === "united-states-of-america" ? "united-states" : id}`);
+    }: { data: { data: TGeographyNewParent } } = await apiClient.get(`/geographies/${slug}`);
     subdivisions = returnedData.has_subconcept.sort((a, b) => a.name.localeCompare(b.name));
   } catch {
     // TODO: handle error more elegantly
