@@ -15,15 +15,17 @@ export const Footer = () => {
 
       <Columns containerClasses="max-w-7xl mx-auto">
         <aside className="flex flex-col items-start">
-          {/* trunk-ignore(eslint/@next/next/no-img-element) */}
-          <img src="/images/ccc/sabin-logo-large.png" alt="Sabin Center for Climate Change logo" className="w-full mb-2" />
+          <LinkWithQuery href="/">
+            {/* trunk-ignore(eslint/@next/next/no-img-element) */}
+            <img src="/images/ccc/sabin-logo-large.png" alt="Sabin Center for Climate Change logo" className="w-full mb-2" />
+          </LinkWithQuery>
         </aside>
 
         <main className="cols-2:col-span-1 cols-3:col-span-2 cols-4:col-span-3 grid grid-cols-subgrid gap-6">
           <div className="flex flex-col items-start gap-2">
             <ul className="space-y-1">
               <li>
-                <LinkWithQuery href="/home" className={`${link} ${strong}`}>
+                <LinkWithQuery href="/" className={`${link} ${strong}`}>
                   Home
                 </LinkWithQuery>
               </li>
