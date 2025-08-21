@@ -17,7 +17,7 @@ export const groupByRootConcept = (concepts: TConcept[], rootConcepts: TConcept[
     has_subconcept: [],
   };
 
-  // TODO: remove this ceoncept tech-debt
+  // TODO: remove this concept tech-debt
   // Ticket: APP-711
   const conceptsWithoutDisabled = concepts.filter((concept) => !DISABLED_CONCEPTS.includes(concept.wikibase_id));
 
