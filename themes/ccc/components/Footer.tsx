@@ -4,19 +4,19 @@ import { Columns } from "@/components/atoms/columns/Columns";
 import { Divider } from "@/components/dividers/Divider";
 
 export const Footer = () => {
-  const link = "text-sm text-black hover:underline";
+  const link = "text-sm color-text-primary hover:underline";
   const strong = "font-semibold";
 
   return (
-    <footer className="bg-white text-black py-10 mt-16">
-      <div className="max-w-7xl mx-auto px-3 cols-2:px-6 cols-3:px-8 my-8">
+    <footer className="py-10 mt-16">
+      <div className="w-full mx-auto px-3 my-8">
         <Divider />
       </div>
 
       <Columns containerClasses="max-w-7xl mx-auto">
         <aside className="flex flex-col items-start">
           {/* trunk-ignore(eslint/@next/next/no-img-element) */}
-          <img src="/images/ccc/sabin-logo-large.png" alt="Sabin Center for Climate Change logo" className="h-8 w-auto mb-2" />
+          <img src="/images/ccc/sabin-logo-large.png" alt="Sabin Center for Climate Change logo" className="w-full mb-2" />
         </aside>
 
         <main className="cols-2:col-span-1 cols-3:col-span-2 cols-4:col-span-3 grid grid-cols-subgrid gap-6">
@@ -89,12 +89,12 @@ export const Footer = () => {
             </ul>
           </div>
 
-          <div className="col-span-full mt-8 text-sm text-black/80 flex flex-col">
+          <div className="col-span-full color-text-secondary text-sm flex flex-col">
             <span>
               The materials on this website are intended to provide a general summary of the law and do not constitute legal advice. You should
               consult with counsel to determine applicable legal requirements in a specific fact situation.
             </span>
-            <span className="mt-2">© 2025 Sabin Center for Climate Change Law</span>
+            <span className="mt-2 color-text-tertiary text-xs">© 2025 Sabin Center for Climate Change Law</span>
           </div>
         </main>
       </Columns>
