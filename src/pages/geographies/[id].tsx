@@ -7,7 +7,7 @@ import { GeographyOriginalPage, IProps } from "@/components/pages/geographyOrigi
 import { systemGeoNames } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode } from "@/helpers/getCountryFields";
-import { TGeographyStats, TGeographySubdivision, TGeographySummary } from "@/types";
+import { TGeographyNewParent, TGeographyStats, TGeographySubdivision, TGeographySubDivisionNew, TGeographySummary } from "@/types";
 import { TTarget, TGeography, TDocumentCategory } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let geographyData: TGeographyStats;
   let summaryData: TGeographySummary;
   let targetsData: TTarget[] = [];
-  let subdivisions: TGeographySubdivision[] = [];
+  let subdivisions: TGeographySubDivisionNew[] = [];
 
   try {
     const { data: returnedData }: { data: TGeographyStats } = await backendApiClient.get(`/geo_stats/${id}`);
@@ -70,13 +70,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch {
     // TODO: handle error more elegantly
   }
-  // TODO: implement when slugs are supported
-  // try {
-  //   const { data: returnedData }: { data: TGeographySubdivision[] } = await apiClient.get(`/geographies/subdivisions/USA`);
-  //   subdivisions = returnedData;
-  // } catch {
-  //   // TODO: handle error more elegantly
-  // }
+  // TODO: make this not less double nested
+  try {
+    const {
+      data: { data: returnedData },
+    }: { data: { data: TGeographyNewParent } } = await apiClient.get(`/geographies/${id === "united-states-of-america" ? "united-states" : id}`);
+    subdivisions = returnedData.has_subconcept.sort((a, b) => a.name.localeCompare(b.name));
+  } catch {
+    // TODO: handle error more elegantly
+  }
 
   // TODO:
   // Frontend

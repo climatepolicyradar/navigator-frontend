@@ -2,12 +2,12 @@ import { ReactNode } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Section } from "@/components/molecules/section/Section";
-import { TGeographySubdivision } from "@/types";
+import { TGeographySubDivisionNew } from "@/types";
 
 type TProps = {
   title?: ReactNode;
   id: string;
-  subdivisions: TGeographySubdivision[];
+  subdivisions: TGeographySubDivisionNew[];
 };
 
 const get2ColumnClass = (index: number, length: number): string => {
@@ -40,9 +40,10 @@ export const SubDivisionBlock = ({ title, id, subdivisions }: TProps) => {
               key={index}
               className={`text-text-secondary col-start-1 ${get2ColumnClass(index, subdivisions.length)} ${get3ColumnClass(index, subdivisions.length)}`}
             >
-              <LinkWithQuery href={`/geographies/${subdivision.code}`} className="underline text-text-primary hover:text-text-brand-darker">
+              {/* TODO: implement links if we have data <LinkWithQuery href={`/geographies/${subdivision.slug}`} className="underline text-text-primary hover:text-text-brand-darker">
                 {subdivision.name}
-              </LinkWithQuery>
+              </LinkWithQuery> */}
+              {subdivision.name}
             </li>
           ))}
         </ol>

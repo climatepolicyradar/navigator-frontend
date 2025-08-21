@@ -26,6 +26,7 @@ import {
   TFeatureFlags,
   TGeographyStats,
   TGeographySubdivision,
+  TGeographySubDivisionNew,
   TGeographySummary,
   TTarget,
   TTheme,
@@ -37,7 +38,7 @@ export interface IProps {
   featureFlags: TFeatureFlags;
   geography: TGeographyStats;
   summary: TGeographySummary;
-  subdivisions?: TGeographySubdivision[];
+  subdivisions?: TGeographySubDivisionNew[];
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
