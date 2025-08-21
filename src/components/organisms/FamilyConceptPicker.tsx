@@ -135,7 +135,6 @@ export const FamilyConceptPicker = ({
             />
           </div>
         </div>
-        {search !== "" && <p className="text-xs italic">The results below are also filtered using the topic's alternative labels</p>}
         <div className={`flex flex-col text-sm border-t border-border-light ${sort === "A-Z" ? "gap-2 border-t-0" : ""}`}>
           {/* GROUPED SORT */}
           {sort === "Grouped" &&

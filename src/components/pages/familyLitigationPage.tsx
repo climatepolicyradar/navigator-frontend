@@ -1,3 +1,5 @@
+import Head from "next/head";
+
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Columns } from "@/components/atoms/columns/Columns";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
@@ -12,6 +14,7 @@ import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
+import { getLitigationJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 import { joinNodes } from "@/utils/reactNode";
 import { convertDate } from "@/utils/timedate";
 
@@ -78,6 +81,14 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
           </Section>
         </main>
       </Columns>
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(getLitigationJSONLD(family, countries, subdivisions)),
+          }}
+        />
+      </Head>
     </Layout>
   );
 };

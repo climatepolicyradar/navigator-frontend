@@ -1,10 +1,12 @@
 import { Columns } from "@/components/atoms/columns/Columns";
+import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisionBlock";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { GEOGRAPHY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
+import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 
 import { IProps } from "./geographyOriginalPage";
 
@@ -25,6 +27,7 @@ export const GeographyLitigationPage = ({ geography, summary, theme, themeConfig
               </>
             }
           />
+          <MetadataBlock title="Statistics" metadata={getGeographyMetaData(geography)} id="section-statistics" />
           <Section id="section-debug" title="Debug">
             <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(geography, null, 2)}</pre>
             <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(summary, null, 2)}</pre>
