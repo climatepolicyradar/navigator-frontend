@@ -20,13 +20,25 @@ import { Event } from "@/components/timeline/Event";
 import { Timeline } from "@/components/timeline/Timeline";
 import { Heading } from "@/components/typography/Heading";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { TDocumentCategory, TEvent, TFeatureFlags, TGeographyStats, TGeographySummary, TTarget, TTheme, TThemeConfig } from "@/types";
+import {
+  TDocumentCategory,
+  TEvent,
+  TFeatureFlags,
+  TGeographyStats,
+  TGeographySubdivision,
+  TGeographySubDivisionNew,
+  TGeographySummary,
+  TTarget,
+  TTheme,
+  TThemeConfig,
+} from "@/types";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 export interface IProps {
   featureFlags: TFeatureFlags;
   geography: TGeographyStats;
   summary: TGeographySummary;
+  subdivisions?: TGeographySubDivisionNew[];
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
