@@ -7,21 +7,13 @@ import { GeographyOriginalPage, IProps } from "@/components/pages/geographyOrigi
 import { systemGeoNames } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode } from "@/helpers/getCountryFields";
-import {
-  TGeographyNewParent,
-  TGeographyStats,
-  TGeographySubdivision,
-  TGeographySubDivisionNew,
-  TGeographySummary,
-  TSearch,
-  TSearchResponse,
-} from "@/types";
+import { TGeographyNewParent, TGeographyStats, TGeographySubdivision, TGeographySubDivisionNew, TGeographySummary, TSearch } from "@/types";
 import { TTarget, TGeography, TDocumentCategory } from "@/types";
+import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isLitigationEnabled, isVespaSearchOnGeographiesEnabled } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
-import buildSearchQuery from "@/utils/buildSearchQuery";
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags, themeConfig, ...props }: IProps) => {
   const litigationIsEnabled = isLitigationEnabled(featureFlags, themeConfig);
