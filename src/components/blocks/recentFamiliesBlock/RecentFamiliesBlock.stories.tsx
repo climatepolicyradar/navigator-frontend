@@ -27,8 +27,14 @@ const DOCUMENT_CATEGORIES: TDocumentCategory[] = [
 
 const categorySummaries: TCategorySummary[] = DOCUMENT_CATEGORIES.map((category) => getFamilyCategorySummary(GEOGRAPHY_SUMMARY_STUB, category));
 
-export const Default: TStory = {
+export const MultipleCategories: TStory = {
   args: {
     categorySummaries,
+  },
+};
+
+export const SingleCategory: TStory = {
+  args: {
+    categorySummaries: [categorySummaries[0]],
   },
 };
