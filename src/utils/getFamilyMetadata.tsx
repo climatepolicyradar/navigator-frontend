@@ -2,34 +2,14 @@ import sortBy from "lodash/sortBy";
 import { Fragment } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { ConceptHierarchy } from "@/components/molecules/conceptHierarchy/ConceptHierarchy";
 import { ARROW_RIGHT, EN_DASH } from "@/constants/chars";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
 import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
-import { buildConceptHierarchy, TFamilyConceptTreeNode } from "@/utils/buildConceptHierarchy";
-
-import { formatDateShort } from "./timedate";
+import { buildConceptHierarchy } from "@/utils/buildConceptHierarchy";
 
 const hierarchyArrow = ` ${ARROW_RIGHT} `;
-
-// Recursively display the children of a concept
-function displayConceptHierarchy(concept: TFamilyConceptTreeNode): React.ReactNode {
-  if (concept.children.length === 0) {
-    return <span key={concept.id}>{concept.preferred_label}</span>;
-  }
-  return (
-    <span key={concept.id}>
-      {concept.preferred_label}
-      {concept.children.length > 0 && hierarchyArrow}
-      {concept.children.map((child, index) => (
-        <Fragment key={child.id}>
-          {index > 0 && hierarchyArrow}
-          {displayConceptHierarchy(child)}
-        </Fragment>
-      ))}
-    </span>
-  );
-}
 
 // Format the family metadata into a shape suitable for the MetadataBlock component
 export const getFamilyMetadata = (family: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]): IMetadata[] => {
@@ -110,7 +90,11 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
   const legalEntities = hierarchy.filter((concept) => concept.type === "legal_entity");
   metadata.push({
     label: "Court/admin entity",
-    value: <div className="grid">{legalEntities.length > 0 ? legalEntities.map((entity) => displayConceptHierarchy(entity)) : "N/A"}</div>,
+    value: (
+      <div className="grid">
+        {legalEntities.length > 0 ? legalEntities.map((entity) => <ConceptHierarchy key={entity.id} concept={entity} />) : "N/A"}
+      </div>
+    ),
   });
 
   /* Case category */
@@ -118,7 +102,11 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
   const caseCategories = hierarchy.filter((concept) => concept.type === "legal_category");
   metadata.push({
     label: "Case category",
-    value: <div className="grid">{caseCategories.length > 0 ? caseCategories.map((category) => displayConceptHierarchy(category)) : "N/A"}</div>,
+    value: (
+      <div className="grid">
+        {caseCategories.length > 0 ? caseCategories.map((category) => <ConceptHierarchy key={category.id} concept={category} />) : "N/A"}
+      </div>
+    ),
   });
 
   /* Principal law */
@@ -126,7 +114,9 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
   const principalLaws = hierarchy.filter((concept) => concept.type === "law");
   metadata.push({
     label: "Principal law",
-    value: <div className="grid">{principalLaws.length > 0 ? principalLaws.map((law) => displayConceptHierarchy(law)) : "N/A"}</div>,
+    value: (
+      <div className="grid">{principalLaws.length > 0 ? principalLaws.map((law) => <ConceptHierarchy key={law.id} concept={law} />) : "N/A"}</div>
+    ),
   });
 
   /* At issue */

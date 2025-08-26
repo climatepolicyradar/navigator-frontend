@@ -27,6 +27,7 @@ describe("FilterOptions", () => {
         knowledgeGraph: false,
         litigation: false,
         searchFamilySummary: true,
+        vespaSearchOnGeographies: false,
       },
     };
 

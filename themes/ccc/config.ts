@@ -4,21 +4,13 @@ const config: TThemeConfig = {
   defaultCorpora: ["Academic.corpus.Litigation.n0000"],
   filters: [
     {
-      label: "Type",
-      taxonomyKey: "framework_laws",
-      apiMetaDataKey: "family.framework",
+      label: "Legal concepts",
+      taxonomyKey: "concept_preferred_label",
+      apiMetaDataKey: "family.concept_preferred_label",
       type: "checkbox",
-      category: ["LAWS"],
-      startOpen: "true",
-      options: [
-        {
-          label: "Framework laws",
-          slug: "true",
-          value: "true",
-          additionalInfo: "Framework laws create overarching governance structures for countries' climate policy responses.",
-          learnMoreUrl: "/framework-laws",
-        },
-      ],
+      category: [],
+      startOpen: "false",
+      options: [],
     },
   ],
   labelVariations: [
@@ -31,7 +23,7 @@ const config: TThemeConfig = {
   links: [
     {
       key: "download-database",
-      url: "https://form.jotform.com/250202141318339",
+      url: "https://form.jotform.com/252292116187356",
     },
   ],
   metadata: [
@@ -65,6 +57,7 @@ const config: TThemeConfig = {
     knowledgeGraph: false,
     litigation: true,
     searchFamilySummary: true,
+    vespaSearchOnGeographies: false,
   },
 };
 

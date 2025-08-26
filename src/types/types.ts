@@ -70,6 +70,23 @@ export type TGeographySubdivision = {
   country_alpha_3: string;
 };
 
+export type TGeographyNewParent = {
+  id: string;
+  name: string;
+  type: string;
+  alpha_2: string;
+  subconcept_of: [];
+  slug: string;
+  has_subconcept: TGeographySubDivisionNew[];
+};
+
+export type TGeographySubDivisionNew = {
+  id: string;
+  name: string;
+  type: string;
+  slug: string;
+};
+
 export type TGeographyWithDocumentCounts = {
   code: string;
   name: string;
@@ -445,6 +462,7 @@ export type TFamilyPublic = Omit<TFamilyPage, "collections" | "documents" | "eve
   documents: TFamilyDocumentPublic[];
   events: TFamilyEventPublic[];
   organisation_attribution_url: string | null;
+  metadata: TMetadata<"id">;
 };
 
 export type TCollectionPublicWithFamilies = {

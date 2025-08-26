@@ -1,3 +1,5 @@
+import Head from "next/head";
+
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Columns } from "@/components/atoms/columns/Columns";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
@@ -12,6 +14,7 @@ import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
+import { getLitigationJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 import { joinNodes } from "@/utils/reactNode";
 import { convertDate } from "@/utils/timedate";
 
@@ -72,12 +75,20 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
           <TextBlock>
             <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
           </TextBlock>
-          <MetadataBlock title="About this case" metadata={getFamilyMetadata(family, countries, subdivisions)} />
+          <MetadataBlock title="About this case" metadata={getFamilyMetadata(family, countries, subdivisions)} id="section-metadata" />
           <Section id="section-debug" title="Debug">
             <pre className="w-full max-h-[1000px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(family, null, 2)}</pre>
           </Section>
         </main>
       </Columns>
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(getLitigationJSONLD(family, countries, subdivisions)),
+          }}
+        />
+      </Head>
     </Layout>
   );
 };
