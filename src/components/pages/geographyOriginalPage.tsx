@@ -28,6 +28,7 @@ import {
   TGeographySubdivision,
   TGeographySubDivisionNew,
   TGeographySummary,
+  TSearch,
   TTarget,
   TTheme,
   TThemeConfig,
@@ -42,6 +43,7 @@ export interface IProps {
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
+  vespaSearchResults?: TSearch;
 }
 
 const categories: { title: TDocumentCategory; slug: string }[] = [
@@ -56,7 +58,7 @@ const categories: { title: TDocumentCategory; slug: string }[] = [
 
 const MAX_NUMBER_OF_FAMILIES = 3;
 
-export const GeographyOriginalPage = ({ geography, summary, targets, theme, themeConfig }: IProps) => {
+export const GeographyOriginalPage = ({ geography, summary, targets, theme, themeConfig, vespaSearchResults }: IProps) => {
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
@@ -263,7 +265,7 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
               <section className="mt-8">
                 <Heading level={2}>Documents</Heading>
               </section>
-              {hasFamilies && (
+              {!vespaSearchResults && hasFamilies && (
                 <>
                   <section className="" data-cy="top-documents">
                     <div className="my-4 md:flex">
@@ -283,6 +285,31 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
                   )}
                 </>
               )}
+              {vespaSearchResults && (
+                <>
+                  <section className="" data-cy="top-documents">
+                    <div className="my-4 md:flex">
+                      <div className="flex-grow">
+                        <TabbedNav activeItem={selectedCategory} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
+                      </div>
+                    </div>
+                    <ol className="mb-10">
+                      {vespaSearchResults.families.map((family) => (
+                        <FamilyListItem family={family} key={family.family_slug} />
+                      ))}
+                    </ol>
+                  </section>
+                  {selectedCategory !== "Litigation" && (
+                    <div data-cy="see-more-button">
+                      <Button rounded variant="outlined" className="my-5" onClick={handleDocumentSeeMoreClick}>
+                        View more documents
+                      </Button>
+                      <Divider />
+                    </div>
+                  )}
+                </>
+              )}
+
               {hasTargets && (
                 <>
                   <section className="mt-10" id="targets">
