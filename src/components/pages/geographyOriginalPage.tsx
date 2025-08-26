@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
+import { ApiClient } from "@/api/http-common";
 import { BrazilImplementingNDCCard } from "@/cclw/components/BrazilImplementingNDCCard";
 import { Alert } from "@/components/Alert";
 import { ExternalLink } from "@/components/ExternalLink";
@@ -20,6 +21,7 @@ import { Event } from "@/components/timeline/Event";
 import { Timeline } from "@/components/timeline/Timeline";
 import { Heading } from "@/components/typography/Heading";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { TPublicEnvConfig } from "@/context/EnvConfig";
 import {
   TDocumentCategory,
   TEvent,
@@ -33,6 +35,7 @@ import {
   TTheme,
   TThemeConfig,
 } from "@/types";
+import buildSearchQuery from "@/utils/buildSearchQuery";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 export interface IProps {
@@ -44,6 +47,7 @@ export interface IProps {
   theme: TTheme;
   themeConfig: TThemeConfig;
   vespaSearchResults?: TSearch;
+  envConfig: TPublicEnvConfig;
 }
 
 const categories: { title: TDocumentCategory; slug: string }[] = [
@@ -58,7 +62,7 @@ const categories: { title: TDocumentCategory; slug: string }[] = [
 
 const MAX_NUMBER_OF_FAMILIES = 3;
 
-export const GeographyOriginalPage = ({ geography, summary, targets, theme, themeConfig, vespaSearchResults }: IProps) => {
+export const GeographyOriginalPage = ({ geography, summary, targets, theme, themeConfig, vespaSearchResults, envConfig }: IProps) => {
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
@@ -217,6 +221,37 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
     }
   };
 
+  /**
+   * Vespa search results
+   */
+  const [currentVespaSearchSelectedCategory, setCurrentVespaSearchSelectedCategory] = useState(themeConfig.categories.options[0].label);
+  const [currentVespaSearchResults, setCurrentVespaSearchResults] = useState(vespaSearchResults);
+  const vespaSearchTabbedNavItems = themeConfig.categories.options.map((category) => {
+    return {
+      title: category.label,
+      // TODO: Make this work
+      count: 0,
+    };
+  });
+  const handleVespaSearchTabClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string) => {
+    const currentThemeCategory = themeConfig.categories.options.find((category) => category.label === value);
+    const categoryFilter = currentThemeCategory.slug;
+
+    const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
+    const searchQuery = buildSearchQuery({ l: geography?.geography_slug, c: categoryFilter }, themeConfig);
+
+    const newVespaSearchResults = await backendApiClient
+      .post<TSearch>("/searches", searchQuery, {
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => response.data);
+    setCurrentVespaSearchResults(newVespaSearchResults);
+    setCurrentVespaSearchSelectedCategory(value);
+  };
+
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="geography" text={geography.name}>
       {!geography ? (
@@ -285,16 +320,20 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
                   )}
                 </>
               )}
-              {vespaSearchResults && (
+              {currentVespaSearchResults && (
                 <>
                   <section className="" data-cy="top-documents">
                     <div className="my-4 md:flex">
                       <div className="flex-grow">
-                        <TabbedNav activeItem={selectedCategory} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
+                        <TabbedNav
+                          activeItem={currentVespaSearchSelectedCategory}
+                          items={vespaSearchTabbedNavItems}
+                          handleTabClick={handleVespaSearchTabClick}
+                        />
                       </div>
                     </div>
                     <ol className="mb-10">
-                      {vespaSearchResults.families.map((family) => (
+                      {currentVespaSearchResults.families.map((family) => (
                         <FamilyListItem family={family} key={family.family_slug} />
                       ))}
                     </ol>
