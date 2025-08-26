@@ -96,7 +96,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const vespaSearchOnGeographiesEnabled = isVespaSearchOnGeographiesEnabled(featureFlags, themeConfig);
   let vespaSearchResults: TSearch = null;
-  if (vespaSearchOnGeographiesEnabled || true) {
+  if (vespaSearchOnGeographiesEnabled) {
     const searchQuery = buildSearchQuery(
       {
         l: slug,
