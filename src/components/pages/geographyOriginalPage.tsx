@@ -221,21 +221,32 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
     }
   };
 
-  /**
-   * Vespa search results
-   */
-  const [currentVespaSearchSelectedCategory, setCurrentVespaSearchSelectedCategory] = useState(themeConfig.categories.options[0].label);
+  /** Vespa search results */
+  const vespaSearchTabbedNavItems = themeConfig.categories
+    ? themeConfig.categories.options.map((category) => {
+        return {
+          title: category.label,
+          /** We need to maintain the slug to to know what to send to Vespa for querying. */
+          slug: category.slug,
+          // TODO: Make this work
+          count: 0,
+        };
+      })
+    : /** We generate an `All` for when themeConfig.categories are not available e.g. MCFs */
+      [
+        {
+          title: "All",
+          slug: undefined,
+          // TODO: Make this work
+          count: 0,
+        },
+      ];
+  const [currentVespaSearchSelectedCategory, setCurrentVespaSearchSelectedCategory] = useState(vespaSearchTabbedNavItems[0].title);
   const [currentVespaSearchResults, setCurrentVespaSearchResults] = useState(vespaSearchResults);
-  const vespaSearchTabbedNavItems = themeConfig.categories.options.map((category) => {
-    return {
-      title: category.label,
-      // TODO: Make this work
-      count: 0,
-    };
-  });
+
   const handleVespaSearchTabClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string) => {
-    const currentThemeCategory = themeConfig.categories.options.find((category) => category.label === value);
-    const categoryFilter = currentThemeCategory.slug;
+    const selectedThemeCategory = vespaSearchTabbedNavItems.find((category) => category.title === value);
+    const categoryFilter = selectedThemeCategory.slug;
 
     const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
     const searchQuery = buildSearchQuery({ l: geography?.geography_slug, c: categoryFilter }, themeConfig);
