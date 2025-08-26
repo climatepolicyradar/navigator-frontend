@@ -217,10 +217,6 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
     }
   };
 
-  const renderVespaSearchResults = (vespaSearchResults: TSearch) => {
-    vespaSearchResults;
-  };
-
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="geography" text={geography.name}>
       {!geography ? (
