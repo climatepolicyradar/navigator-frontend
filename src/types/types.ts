@@ -155,16 +155,23 @@ export type TFamilyDocument = {
 };
 
 export type TFamily = {
+  continuation_token?: string;
+  corpus_import_id: string;
   corpus_type_name: TCorpusTypeSubCategory;
   family_category: TCategory;
+  family_date: string;
+  family_description_match: boolean;
   family_description: string;
   family_documents: TFamilyDocument[];
   family_geographies: string[];
+  family_last_updated_date: string;
   family_metadata: {}; // TODO: type this
   family_name: string;
   family_slug: string;
   family_source: string;
-  family_date: string;
+  family_title_match: boolean;
+  prev_continuation_token?: string;
+  total_passage_hits: number;
 };
 
 export type TFamilyPage = {

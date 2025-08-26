@@ -1,54 +1,18 @@
 import { useState } from "react";
 
 import { Section } from "@/components/molecules/section/Section";
-import { categoryMap, TCategorySummary } from "@/helpers/getFamilyCategorySummary";
-import { TDocumentCategory } from "@/types";
+import { TCategorySummary } from "@/helpers/getFamilyCategorySummary";
 
 import { RecentFamiliesCategory } from "./RecentFamiliesCategory";
 
 interface IProps {
-  documentCategories: TDocumentCategory[];
+  categorySummaries: TCategorySummary[];
 }
 
-const TEST_CATEGORY_SUMMARY = {
-  count: 21,
-  families: [
-    {
-      family_date: "2025-08-13T12:59:10.003Z",
-      family_name: "United States of America National Adaptation Plan. NAP1",
-      family_slug: "x",
-    },
-    {
-      family_date: "2025-08-13T12:59:10.003Z",
-      family_name: "United States of America Nationally Determined Contribution. NDC3.0",
-      family_slug: "x",
-    },
-    {
-      family_date: "2025-08-13T12:59:10.003Z",
-      family_name: "Submission of the United States - Elements for the Consideration of Outputs Component of the First Global Stocktake",
-      family_slug: "x",
-    },
-    {
-      family_date: "2025-08-13T12:59:10.003Z",
-      family_name: "United States of America National Adaptation Plan. NAP1",
-      family_slug: "x",
-    },
-  ],
-  title: "Litigation",
-  unit: ["Litigation document", "Litigation documents"],
-} as unknown as TCategorySummary;
+export const RecentFamiliesBlock = ({ categorySummaries }: IProps) => {
+  const [expandedCategories, setExpandedCategories] = useState([categorySummaries[0].title]);
 
-/**
- * TODO
- * - Set up data props and move test data to Storybook story
- * - Render one RecentFamiliesCategory per themeConfig.documentCategories
- * - Don't render category headings (no accordion) when documentCategories is ["All"]
- */
-
-export const RecentFamiliesBlock = ({ documentCategories }: IProps) => {
-  const [expandedCategories, setExpandedCategories] = useState(["Climate Finance Projects"]);
-
-  const hideAccordion = documentCategories.length === 1 && documentCategories[0] === "All";
+  const hideAccordion = categorySummaries.length === 1 && categorySummaries[0].title === "All";
 
   const onAccordionInteract = (interactedCategory: string) => {
     setExpandedCategories((currentCategories) =>
@@ -60,17 +24,15 @@ export const RecentFamiliesBlock = ({ documentCategories }: IProps) => {
 
   return (
     <Section id="section-recents" title="Recent documents">
-      {Object.entries(categoryMap)
-        .slice(1)
-        .map(([category, summary]) => (
-          <RecentFamiliesCategory
-            key={summary.summaryCategory}
-            categorySummary={{ count: 21, families: TEST_CATEGORY_SUMMARY.families, title: category, unit: summary.unit }}
-            showAccordion={!hideAccordion}
-            isExpanded={expandedCategories.includes(category)}
-            onAccordionClick={() => onAccordionInteract(category)}
-          />
-        ))}
+      {categorySummaries.map((category) => (
+        <RecentFamiliesCategory
+          key={category.title}
+          categorySummary={category}
+          showAccordion={!hideAccordion}
+          isExpanded={expandedCategories.includes(category.title)}
+          onAccordionClick={() => onAccordionInteract(category.title)}
+        />
+      ))}
     </Section>
   );
 };
