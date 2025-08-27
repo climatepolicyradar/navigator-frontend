@@ -481,22 +481,3 @@ export type TSlugResponse = {
   collection_import_id: string | null;
   created: string;
 };
-
-/* /geographies API response types */
-
-export type TCountryResponse = {
-  alpha_2: string;
-  alpha_3: string;
-  flag?: string | null;
-  name: string;
-  numeric: string;
-  official_name?: string | null;
-};
-
-export type TSubdivisionResponse = {
-  code: string;
-  country_alpha_2: string;
-  country_alpha_3: string;
-  name: string;
-  type: string;
-};
