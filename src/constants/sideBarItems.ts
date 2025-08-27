@@ -22,7 +22,9 @@ export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
 ];
 
 export const getGeographyPageSidebarItems = (geography: TGeographyStats): ISideBarItem[] => {
-  const sidebarItems = [
+  const legislativeProcessId = "section-legislative-process";
+
+  let sidebarItems = [
     {
       id: "section-recent-documents",
       display: "Recent documents",
@@ -40,7 +42,7 @@ export const getGeographyPageSidebarItems = (geography: TGeographyStats): ISideB
       display: "Targets",
     },
     {
-      id: "section-legislative-process",
+      id: legislativeProcessId,
       display: "Legislative process",
     },
     {
@@ -51,7 +53,7 @@ export const getGeographyPageSidebarItems = (geography: TGeographyStats): ISideB
   ];
 
   if (geography.legislative_process.length === 0) {
-    sidebarItems.splice(4, 1);
+    sidebarItems = sidebarItems.filter((item) => item.id !== legislativeProcessId);
   }
 
   return sidebarItems;
