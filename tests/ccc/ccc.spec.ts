@@ -127,7 +127,7 @@ test.describe("CCC Hero Search", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    // Verify clicking 'Zoning and spatial planning + marine' suggested search redirects to search page with correct parameters
+    // Verify clicking 'Electric vehicle infrastructure' suggested search redirects to search page with correct parameters
     await page.click('[data-cy="quick-search-3"]');
 
     // Should navigate to search page with the suggestion as query
@@ -141,7 +141,7 @@ test.describe("CCC Hero Search", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    // Verify clicking 'Emissions reductions targets + Climate framework laws' suggested search redirects to search page with correct parameters
+    // Verify clicking 'Connecticut' suggested search redirects to search page with correct parameters
     await page.click('[data-cy="quick-search-4"]');
 
     // Should navigate to search page with the suggestion as query
