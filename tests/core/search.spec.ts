@@ -19,7 +19,7 @@ test("search", async ({ page }) => {
   /** Test tap submission  */
   await page.goBack();
   await expect(page.getByLabel("Search").first()).toBeVisible();
-  await page.getByLabel("Search").first().fill("Adaptation strategy");
+  await page.getByLabel("Search").first().fill("Fossil fuels");
   await page.getByRole("button", { name: "Search" }).click();
 
   /** Search */
@@ -44,8 +44,27 @@ test("search", async ({ page }) => {
   await expect(firstSearchResult.locator('[data-cy="family-metadata-category"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="family-metadata-year"]')).toBeVisible();
 
-  // Wait for the country link to be present and visible
+  // Debug: Check if country link exists at all
   const countryLink = firstSearchResult.locator('[data-cy="country-link"]');
+  const countryLinkCount = await countryLink.count();
+  console.log(`Country link count: ${countryLinkCount}`);
+
+  if (countryLinkCount === 0) {
+    // If no country link found, let's see what's actually in the search result
+    const searchResultHtml = await firstSearchResult.innerHTML();
+    console.log("Search result HTML:", searchResultHtml);
+
+    // Check if there are any geographies being rendered
+    const geographyElements = firstSearchResult.locator('[data-cy="family-metadata-category"]').locator("..").locator("span");
+    const geographyCount = await geographyElements.count();
+    console.log(`Geography elements count: ${geographyCount}`);
+
+    // Check the actual text content
+    const metadataText = await firstSearchResult.locator('[data-cy="family-metadata-category"]').textContent();
+    console.log("Metadata text:", metadataText);
+  }
+
+  // Wait for the country link to be present and visible
   await expect(countryLink).toBeVisible();
 
   // Click first search result family title link
