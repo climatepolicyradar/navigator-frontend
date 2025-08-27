@@ -1,7 +1,7 @@
 import { Card } from "@/components/atoms/card/Card";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName } from "@/helpers/getCountryFields";
-import { TDocumentPage, TFamilyDocumentPublic, TFamilyPublic, TGeography } from "@/types";
+import { TFamilyDocumentPublic, TFamilyPublic, TGeography } from "@/types";
 import { pluralise } from "@/utils/pluralise";
 import { convertDate } from "@/utils/timedate";
 

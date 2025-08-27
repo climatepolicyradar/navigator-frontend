@@ -22,7 +22,7 @@ export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
 
 export const GEOGRAPHY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
   {
-    id: "section-recent-documents",
+    id: "section-recents",
     display: "Recent documents",
   },
   {
