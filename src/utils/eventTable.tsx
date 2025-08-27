@@ -93,7 +93,10 @@ export const getEventTableRows = ({
           action: event.status,
           caseNumber: family.metadata.case_number?.[0] || null,
           caseTitle: family.title,
-          court: getMostSpecificCourts(family.concepts).join(" / ") || null,
+          court:
+            getMostSpecificCourts(family.concepts)
+              .map((concept) => concept.preferred_label)
+              .join(" / ") || null,
           date: {
             display: formatDateShort(date),
             value: date.getTime(),
