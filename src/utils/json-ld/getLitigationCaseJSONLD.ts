@@ -77,7 +77,7 @@ export const getLitigationJSONLD = (familyCase: TFamilyPublic, countries: TGeogr
 
   // Translating concepts into JSON-LD attributes
   if (familyCase.concepts.length > 0) {
-    // Add any concepts of principle laws as keywords
+    // Add any concepts of principal laws as keywords
     const keywords = familyCase.concepts.filter((concept) => concept.type === "law");
     jsonLd.keywords = keywords.map((keyword) => keyword.preferred_label);
 
