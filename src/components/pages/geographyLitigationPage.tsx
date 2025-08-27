@@ -9,6 +9,7 @@ import { GEOGRAPHY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 
 import { IProps } from "./geographyOriginalPage";
+import { TextBlock } from "../blocks/textBlock/TextBlock";
 
 export const GeographyLitigationPage = ({ geography, summary, theme, themeConfig, subdivisions }: IProps) => {
   return (
@@ -28,6 +29,9 @@ export const GeographyLitigationPage = ({ geography, summary, theme, themeConfig
             }
           />
           <MetadataBlock title="Statistics" metadata={getGeographyMetaData(geography)} id="section-statistics" />
+          <TextBlock id="section-legislative-process" title="Legislative process">
+            <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
+          </TextBlock>
           <Section id="section-debug" title="Debug">
             <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(geography, null, 2)}</pre>
             <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(summary, null, 2)}</pre>
