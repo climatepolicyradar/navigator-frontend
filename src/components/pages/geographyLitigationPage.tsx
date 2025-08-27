@@ -6,17 +6,22 @@ import { Section } from "@/components/molecules/section/Section";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { GEOGRAPHY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
+import { getFamilyCategorySummary } from "@/helpers/getFamilyCategorySummary";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 
 import { IProps } from "./geographyOriginalPage";
+import { RecentFamiliesBlock } from "../blocks/recentFamiliesBlock/RecentFamiliesBlock";
 
-export const GeographyLitigationPage = ({ geography, summary, theme, themeConfig, subdivisions }: IProps) => {
+export const GeographyLitigationPage = ({ geography, subdivisions, summary, theme, themeConfig }: IProps) => {
+  const categorySummaries = themeConfig.documentCategories.map((category) => getFamilyCategorySummary(summary, category));
+
   return (
     <Layout metadataKey="geography" theme={theme} themeConfig={themeConfig} title={geography.name} text={geography.name}>
       <PageHeader coloured label="Geography" title={geography.name} metadata={[]} />
       <Columns>
         <ContentsSideBar items={GEOGRAPHY_PAGE_SIDE_BAR_ITEMS} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
         <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-3:py-8 cols-3:gap-8 cols-3:col-span-2 cols-4:col-span-3">
+          <RecentFamiliesBlock categorySummaries={categorySummaries} />
           <SubDivisionBlock
             id="section-subdivisions"
             subdivisions={subdivisions}

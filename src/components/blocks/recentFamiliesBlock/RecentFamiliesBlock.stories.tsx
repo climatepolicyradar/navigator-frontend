@@ -15,6 +15,7 @@ type TStory = StoryObj<typeof RecentFamiliesBlock>;
 
 export default meta;
 
+// Equivalent to themeConfig.documentCategories
 const DOCUMENT_CATEGORIES: TDocumentCategory[] = [
   "All",
   "UNFCCC Submissions",
