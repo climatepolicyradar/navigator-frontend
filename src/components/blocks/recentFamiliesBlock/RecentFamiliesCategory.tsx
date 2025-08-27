@@ -44,6 +44,7 @@ export const RecentFamiliesCategory = ({
               {families.slice(0, 4).map((family, familyIndex) => (
                 <RecentFamilyCard key={familyIndex} family={family} />
               ))}
+              {/* TODO link to the search page with the given category filtered */}
               <LinkWithQuery
                 href={`#`}
                 className="min-w-16 max-w-25 flex-1 flex justify-center items-center bg-surface-brand-darker/8 text-text-brand-darker font-semibold leading-tight"
