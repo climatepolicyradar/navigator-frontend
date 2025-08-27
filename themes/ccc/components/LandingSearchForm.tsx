@@ -16,25 +16,23 @@ const EXAMPLE_SEARCHES = [
   },
   {
     id: 2,
-    label: "Brazil",
+    label: "U.S. Cases",
     params: {
-      [QUERY_PARAMS.country]: "brazil",
+      [QUERY_PARAMS.country]: "united-states-of-america",
     },
   },
   {
     id: 3,
-    label: "Climate framework laws",
+    label: "Electric Vehicle Infrastructure",
     params: {
-      [QUERY_PARAMS.category]: "laws",
-      [QUERY_PARAMS.framework_laws]: "true",
-      [QUERY_PARAMS.concept_name]: "emissions reduction target",
+      [QUERY_PARAMS.query_string]: "electric vehicle infrastructure",
     },
   },
   {
     id: 4,
-    label: "Coastal zones",
+    label: "Connecticut",
     params: {
-      [QUERY_PARAMS.concept_name]: "coastal zone",
+      [QUERY_PARAMS.subdivision]: "US-CT",
     },
   },
 ];
@@ -113,7 +111,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
       <div className="hidden mt-4 md:flex flex-wrap items-center gap-2">
         <span className="text-gray-200">Search by:</span>
         {EXAMPLE_SEARCHES.map((example) => (
-          <Button key={example.id} color="mono" rounded onClick={() => handleQuickSearch(example.params)} data-cy={`example-search-${example.id}`}>
+          <Button key={example.id} color="mono" rounded onClick={() => handleQuickSearch(example.params)} data-cy={`quick-search-${example.id}`}>
             {example.label}
           </Button>
         ))}

@@ -128,27 +128,13 @@ export type TGeographyStats = {
   visibility_status: string;
 };
 
-type TGeoFamilyCounts = {
-  Legislative: number;
-  Executive: number;
-  UNFCCC: number;
-  MCF: number;
-  Reports: number;
-};
-
-type TGeoFamilys = {
-  Legislative: TFamily[];
-  Executive: TFamily[];
-  UNFCCC: TFamily[];
-  MCF: TFamily[];
-  Reports: TFamily[];
-};
+export type TGeographySummaryCategory = "Executive" | "Legislative" | "Litigation" | "MCF" | "Reports" | "UNFCCC";
 
 export type TGeographySummary = {
-  family_counts: TGeoFamilyCounts;
+  family_counts: Record<TGeographySummaryCategory, number>;
   events: TEvent[];
   targets: string[];
-  top_families: TGeoFamilys;
+  top_families: Record<TGeographySummaryCategory, TFamily[]>;
 };
 
 export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC" | "MCF" | "Reports";
@@ -186,16 +172,23 @@ export type TFamilyDocument = {
 };
 
 export type TFamily = {
+  continuation_token?: string;
+  corpus_import_id: string;
   corpus_type_name: TCorpusTypeSubCategory;
   family_category: TCategory;
+  family_date: string;
+  family_description_match: boolean;
   family_description: string;
   family_documents: TFamilyDocument[];
   family_geographies: string[];
+  family_last_updated_date: string;
   family_metadata: {}; // TODO: type this
   family_name: string;
   family_slug: string;
   family_source: string;
-  family_date: string;
+  family_title_match: boolean;
+  prev_continuation_token?: string;
+  total_passage_hits: number;
 };
 
 export type TFamilyPage = {
@@ -265,6 +258,7 @@ export type TFamilyMetadata = TMetadata<
   | "sector"
   | "topic"
   // Litigation specific
+  | "action_taken"
   | "case_number"
   | "concept_preferred_label"
   | "core_object"
@@ -431,7 +425,17 @@ export type TCorpusPublic = {
 
 export type TFamilyEventPublic = TEvent & {
   import_id: string;
-  metadata: TMetadata<string>;
+  metadata: TMetadata<
+    | "case_number"
+    | "concept_preferred_label"
+    | "core_object"
+    | "datetime_event_name"
+    | "description"
+    | "event_type"
+    | "id"
+    | "original_case_name"
+    | "status"
+  >;
 };
 
 export type TFamilyDocumentPublic = {

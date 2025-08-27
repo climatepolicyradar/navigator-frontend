@@ -90,10 +90,13 @@ export const getEventTableRows = ({
       rows.push({
         id: [family.import_id, eventIndex].join("/"),
         cells: {
-          action: event.status,
+          action: family.metadata.action_taken?.[0] || null,
           caseNumber: family.metadata.case_number?.[0] || null,
           caseTitle: family.title,
-          court: getMostSpecificCourts(family.concepts).join(" / ") || null,
+          court:
+            getMostSpecificCourts(family.concepts)
+              .map((concept) => concept.preferred_label)
+              .join(" / ") || null,
           date: {
             display: formatDateShort(date),
             value: date.getTime(),

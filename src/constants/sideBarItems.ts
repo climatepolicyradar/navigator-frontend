@@ -26,7 +26,7 @@ export const getGeographyPageSidebarItems = (geography: TGeographyStats): ISideB
 
   let sidebarItems = [
     {
-      id: "section-recent-documents",
+      id: "section-recents",
       display: "Recent documents",
     },
     {
