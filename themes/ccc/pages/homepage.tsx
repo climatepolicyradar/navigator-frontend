@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 
+import { Footer } from "@/ccc/components/Footer";
 import Header from "@/ccc/components/Header";
 import { Hero } from "@/ccc/components/Hero";
 import Layout from "@/components/layouts/LandingPage";
@@ -32,6 +33,7 @@ const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig, exact
       <FullWidth extraClasses="hidden my-6 md:block">
         <WorldMap showLitigation showCategorySelect={false} theme="ccc" />
       </FullWidth>
+      <Footer />
     </Layout>
   );
 };

@@ -2,6 +2,7 @@ import { act, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import router from "next-router-mock";
 
+import cprConfig from "@/cpr/config";
 import { mockFeatureFlagsWithConcepts } from "@/mocks/featureFlags";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import Search from "@/pages/search";
@@ -18,16 +19,7 @@ const baseSearchProps = {
     CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
   },
   theme: "cpr",
-  themeConfig: {
-    documentCategories: ["All"],
-    features: { knowledgeGraph: true, searchFamilySummary: false },
-    metadata: [
-      {
-        key: "search",
-        title: "Law and Policy Search",
-      },
-    ],
-  },
+  themeConfig: cprConfig,
   featureFlags: mockFeatureFlagsWithConcepts,
 };
 

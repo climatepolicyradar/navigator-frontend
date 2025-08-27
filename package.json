@@ -37,7 +37,8 @@
     "react-query": "^3.39.0",
     "react-simple-maps": "^3.0.0",
     "react-tooltip": "^5.26.3",
-    "sass": "^1.45.0"
+    "sass": "^1.45.0",
+    "schema-dts": "^1.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.16.5",
