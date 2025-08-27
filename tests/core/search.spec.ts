@@ -44,8 +44,9 @@ test("search", async ({ page }) => {
   await expect(firstSearchResult.locator('[data-cy="family-metadata-category"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="family-metadata-year"]')).toBeVisible();
 
-  // Wait for the country link to be present and visible
+  // Debug: Check if country link exists at all
   const countryLink = firstSearchResult.locator('[data-cy="country-link"]');
+  await countryLink.count();
   await expect(countryLink).toBeVisible();
 
   // Click first search result family title link
