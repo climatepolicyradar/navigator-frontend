@@ -1,5 +1,6 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { Button } from "@/components/atoms/button/Button";
 import { IProps as ISectionProps } from "@/components/molecules/section/Section";
 import { Section } from "@/components/molecules/section/Section";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -33,9 +34,9 @@ export const TextBlock = ({ children, maxHeight = 150, ...sectionProps }: IProps
         </div>
         {contentIsOverflowing && (
           <div className="pt-4">
-            <button type="button" onClick={onToggle} className="text-sm text-text-tertiary hover:underline">
-              {isOpen ? "- View less" : "+ View more"}
-            </button>
+            <Button color="mono" size="small" rounded variant="faded" onClick={onToggle}>
+              {isOpen ? "View less" : "View more"}
+            </Button>
           </div>
         )}
       </div>
