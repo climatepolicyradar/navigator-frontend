@@ -22,16 +22,7 @@ export const GeographyLitigationPage = ({ geography, subdivisions, summary, them
         <ContentsSideBar items={GEOGRAPHY_PAGE_SIDE_BAR_ITEMS} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
         <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-3:py-8 cols-3:gap-8 cols-3:col-span-2 cols-4:col-span-3">
           <RecentFamiliesBlock categorySummaries={categorySummaries} />
-          <SubDivisionBlock
-            id="section-subdivisions"
-            subdivisions={subdivisions}
-            title={
-              <>
-                <span>Geographic sub-divisions</span>
-                <span className="font-normal text-text-tertiary ml-2">{subdivisions.length}</span>
-              </>
-            }
-          />
+          <SubDivisionBlock subdivisions={subdivisions} />
           <MetadataBlock title="Statistics" metadata={getGeographyMetaData(geography)} id="section-statistics" />
           <Section id="section-debug" title="Debug">
             <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(geography, null, 2)}</pre>

@@ -28,7 +28,8 @@ const useSectionContext = ({ children, ...props }: IProps) => (
 export const WithTitle: TStory = {
   args: {
     id: "with-title",
-    title: "Title",
+    title: "Targets",
+    count: 30,
   },
   render: useSectionContext,
 };
