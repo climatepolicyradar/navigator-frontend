@@ -90,7 +90,7 @@ export const getEventTableRows = ({
       rows.push({
         id: [family.import_id, eventIndex].join("/"),
         cells: {
-          action: event.status,
+          action: family.metadata.action_taken?.[0] || null,
           caseNumber: family.metadata.case_number?.[0] || null,
           caseTitle: family.title,
           court:
