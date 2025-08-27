@@ -19,7 +19,7 @@ test("search", async ({ page }) => {
   /** Test tap submission  */
   await page.goBack();
   await expect(page.getByLabel("Search").first()).toBeVisible();
-  await page.getByLabel("Search").first().fill("Adaptation strategy");
+  await page.getByLabel("Search").first().fill("Fossil fuels");
   await page.getByRole("button", { name: "Search" }).click();
 
   /** Search */
