@@ -1,4 +1,5 @@
 import { ISideBarItem } from "@/components/organisms/contentsSideBar/ContentsSideBar";
+import { TGeographyStats } from "@/types";
 
 export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
   {
@@ -20,30 +21,40 @@ export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
   },
 ];
 
-export const GEOGRAPHY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
-  {
-    id: "section-recents",
-    display: "Recent documents",
-  },
-  {
-    id: "section-subdivisions",
-    display: "Geographic sub-divisions",
-  },
-  {
-    id: "section-statistics",
-    display: "Statistics",
-  },
-  {
-    id: "section-targets",
-    display: "Targets",
-  },
-  {
-    id: "section-legislative-process",
-    display: "Legislative process",
-  },
-  {
-    id: "section-debug",
-    display: "Debug",
-    badge: "Developer",
-  },
-];
+export const getGeographyPageSidebarItems = (geography: TGeographyStats): ISideBarItem[] => {
+  const legislativeProcessId = "section-legislative-process";
+
+  let sidebarItems = [
+    {
+      id: "section-recents",
+      display: "Recent documents",
+    },
+    {
+      id: "section-subdivisions",
+      display: "Geographic sub-divisions",
+    },
+    {
+      id: "section-statistics",
+      display: "Statistics",
+    },
+    {
+      id: "section-targets",
+      display: "Targets",
+    },
+    {
+      id: legislativeProcessId,
+      display: "Legislative process",
+    },
+    {
+      id: "section-debug",
+      display: "Debug",
+      badge: "Developer",
+    },
+  ];
+
+  if (geography.legislative_process.length === 0) {
+    sidebarItems = sidebarItems.filter((item) => item.id !== legislativeProcessId);
+  }
+
+  return sidebarItems;
+};
