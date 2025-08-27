@@ -43,7 +43,10 @@ test("search", async ({ page }) => {
   await expect(firstSearchResult.locator('[data-cy="family-title"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="family-metadata-category"]')).toBeVisible();
   await expect(firstSearchResult.locator('[data-cy="family-metadata-year"]')).toBeVisible();
-  await expect(firstSearchResult.locator('[data-cy="country-link"]')).toBeVisible();
+
+  // Wait for the country link to be present and visible
+  const countryLink = firstSearchResult.locator('[data-cy="country-link"]');
+  await expect(countryLink).toBeVisible();
 
   // Click first search result family title link
   await firstSearchResult.locator('[data-cy="family-title"]').click();
