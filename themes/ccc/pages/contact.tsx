@@ -42,7 +42,7 @@ const Contact = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">
                 <div className="space-y-3">
                   <h3 className="text-lg font-semibold mb-4">Address</h3>
-                  <ExternalLink url="https://climate.law.columbia.edu/" className="text-blue-700 hover:text-blue-900">
+                  <ExternalLink url="https://climate.law.columbia.edu/" className="color-text-tertiary hover:color-text-quaternary">
                     The Sabin Center for Climate Change Law
                   </ExternalLink>
                   <address className="color-text-secondary space-y-1">
@@ -59,20 +59,23 @@ const Contact = () => {
                   <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
                   <ul className="space-y-3">
                     <li className="flex items-start">
-                      <span className="font-semibold text-gray-900 min-w-[60px]">Phone:</span>
-                      <a href="tel:+12128548213" className="text-blue-700 hover:text-blue-900 underline ml-2">
+                      <span className="font-semibold color-text-secondary min-w-[60px]">Phone:</span>
+                      <a href="tel:+12128548213" className="color-text-tertiary hover:color-text-quaternary underline ml-2">
                         +1 212-854-8213
                       </a>
                     </li>
                     <li className="flex items-start">
-                      <span className="font-semibold text-gray-900 min-w-[60px]">Fax:</span>
-                      <a href="tel:+12128547946" className="text-blue-700 hover:text-blue-900 underline ml-2">
+                      <span className="font-semibold color-text-secondary min-w-[60px]">Fax:</span>
+                      <a href="tel:+12128547946" className="color-text-tertiary hover:color-text-quaternary underline ml-2">
                         +1 212-854-7946
                       </a>
                     </li>
                     <li className="flex items-start">
-                      <span className="font-semibold text-gray-900 min-w-[60px]">Email:</span>
-                      <a href="mailto:manager@climatecasechart.com" className="text-blue-700 hover:text-blue-900 underline ml-2 break-all">
+                      <span className="font-semibold color-text-secondary min-w-[60px]">Email:</span>
+                      <a
+                        href="mailto:manager@climatecasechart.com"
+                        className="color-text-tertiary hover:color-text-quaternary underline ml-2 break-all"
+                      >
                         manager@climatecasechart.com
                       </a>
                     </li>
