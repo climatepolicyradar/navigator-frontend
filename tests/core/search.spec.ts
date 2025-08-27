@@ -46,19 +46,38 @@ test("search", async ({ page }) => {
 
   // Debug: Check if country link exists at all
   const countryLink = firstSearchResult.locator('[data-cy="country-link"]');
+  const countryLinkCount = await countryLink.count();
+  console.log(`Country link count: ${countryLinkCount}`);
+
+  if (countryLinkCount === 0) {
+    // If no country link found, let's see what's actually in the search result
+    const searchResultHtml = await firstSearchResult.innerHTML();
+    console.log("Search result HTML:", searchResultHtml);
+
+    // Check if there are any geographies being rendered
+    const geographyElements = firstSearchResult.locator('[data-cy="family-metadata-category"]').locator("..").locator("span");
+    const geographyCount = await geographyElements.count();
+    console.log(`Geography elements count: ${geographyCount}`);
+
+    // Check the actual text content
+    const metadataText = await firstSearchResult.locator('[data-cy="family-metadata-category"]').textContent();
+    console.log("Metadata text:", metadataText);
+  }
+
+  // Wait for the country link to be present and visible
   await expect(countryLink).toBeVisible();
 
   // Click first search result family title link
   await firstSearchResult.locator('[data-cy="family-title"]').click();
 
-  /** Family page */
-  await page.waitForURL("/document/*");
+  /** Document (AKA Family) page */
+  await Promise.all([page.waitForURL("/document/*"), page.waitForResponse("**/searches")]);
   await page
     .getByText(/(more than )?\d+ matches/)
     .first()
     .click();
 
-  /** Document Page */
+  /** Documents Page */
   await Promise.all([page.waitForURL("/documents/*"), page.waitForResponse("**/searches")]);
   await expect(page.getByText("View source document")).toBeVisible();
 });
