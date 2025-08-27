@@ -212,7 +212,11 @@ jobs:
           junit-paths: test-results-${{ matrix.theme }}/playwright.xml
           run: |
             echo "Running Playwright tests..."
-            npx playwright test tests/core/ tests/${{ matrix.theme }}/
+            if [ "${{ matrix.theme }}" = "ccc" ]; then
+              npx playwright test tests/${{ matrix.theme }}/
+            else
+              npx playwright test tests/core/ tests/${{ matrix.theme }}/
+            fi
             echo "Playwright test completed. Checking for output file..."
             if [ -f "test-results-${{ matrix.theme }}/playwright.xml" ]; then
               echo "✅ playwright.xml found, file size: $(wc -c < test-results-${{ matrix.theme }}/playwright.xml) bytes"
