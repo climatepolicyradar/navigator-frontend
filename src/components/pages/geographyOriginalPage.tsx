@@ -62,7 +62,7 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
-  const [selectedCategory, setselectedCategory] = useState<TDocumentCategory>(themeConfig.defaultDocumentCategory || "All");
+  const [selectedCategory, setselectedCategory] = useState<TDocumentCategory>(themeConfig.defaultDocumentCategory);
 
   const hasEvents = !!summary?.events && summary?.events?.length > 0;
   const hasFamilies = !!summary?.top_families;

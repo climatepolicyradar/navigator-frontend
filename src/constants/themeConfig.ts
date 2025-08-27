@@ -7,7 +7,7 @@ export const DEFAULT_THEME_CONFIG: TThemeConfig = {
   labelVariations: [],
   links: [],
   metadata: [],
-  documentCategories: [],
+  documentCategories: ["All"],
   defaultDocumentCategory: "All",
   features: DEFAULT_CONFIG_FEATURES,
 };
