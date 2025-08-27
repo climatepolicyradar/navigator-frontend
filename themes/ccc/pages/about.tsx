@@ -38,7 +38,9 @@ const About = () => {
               </p>
               <p className="text-content mb-6">
                 Today, these two resources are combined in one searchable database, giving researchers, policymakers, advocates, and the public a
-                broad view of climate change litigation worldwide.
+                broad view of climate change litigation worldwide. Subscribe to our{" "}
+                <ExternalLink url="https://mailchi.mp/law/sabin-center-litigation-newsletter">newsletter</ExternalLink> to receive updates on new
+                cases and features.
               </p>
             </div>
           </SingleCol>
