@@ -51,14 +51,14 @@ test("search", async ({ page }) => {
   // Click first search result family title link
   await firstSearchResult.locator('[data-cy="family-title"]').click();
 
-  /** Document (AKA Family) page */
+  /** Family page */
   await Promise.all([page.waitForURL("/document/*"), page.waitForResponse("**/searches")]);
   await page
     .getByText(/(more than )?\d+ matches/)
     .first()
     .click();
 
-  /** Documents Page */
+  /** Document Page */
   await Promise.all([page.waitForURL("/documents/*"), page.waitForResponse("**/searches")]);
   await expect(page.getByText("View source document")).toBeVisible();
 });
