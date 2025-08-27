@@ -258,6 +258,7 @@ export type TFamilyMetadata = TMetadata<
   | "sector"
   | "topic"
   // Litigation specific
+  | "action_taken"
   | "case_number"
   | "concept_preferred_label"
   | "core_object"
