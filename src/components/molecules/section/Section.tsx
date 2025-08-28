@@ -13,7 +13,7 @@ export const Section = ({ children, count, id, title }: IProps) => {
       {title && (
         <h2 className="mb-5 text-xl text-text-primary font-[660] leading-tight">
           <span>{title}</span>
-          {count && <span className="ml-2 text-text-tertiary font-normal">{count}</span>}
+          {count !== undefined && <span className="ml-2 text-text-tertiary font-normal">{count}</span>}
         </h2>
       )}
       {children}

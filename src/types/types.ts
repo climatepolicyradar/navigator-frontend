@@ -111,6 +111,7 @@ export type TTarget = {
   "Visibility status": string;
   "CPR family ID": string;
   "Net zero target?": "TRUE" | "FALSE";
+  Comment: string;
   "family-slug": string;
   "family-name": string;
 };

@@ -12,7 +12,7 @@ import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 import { IProps } from "./geographyOriginalPage";
 import { RecentFamiliesBlock } from "../blocks/recentFamiliesBlock/RecentFamiliesBlock";
 
-export const GeographyLitigationPage = ({ geography, subdivisions, summary, theme, themeConfig }: IProps) => {
+export const GeographyLitigationPage = ({ geography, subdivisions, summary, targets, theme, themeConfig }: IProps) => {
   const categorySummaries = themeConfig.documentCategories.map((category) => getFamilyCategorySummary(summary, category));
 
   return (
@@ -30,6 +30,7 @@ export const GeographyLitigationPage = ({ geography, subdivisions, summary, them
             <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">
               {JSON.stringify(subdivisions, null, 2)}
             </pre>
+            <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(targets, null, 2)}</pre>
           </Section>
         </main>
       </Columns>
