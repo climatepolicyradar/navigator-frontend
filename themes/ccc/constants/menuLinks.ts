@@ -18,7 +18,7 @@ const menuLinks = [
     cy: "methodology",
   },
   {
-    text: "FAQ",
+    text: "FAQs",
     href: "/faq",
     external: false,
     cy: "faq",
@@ -28,12 +28,6 @@ const menuLinks = [
     href: "/search",
     external: false,
     cy: "search",
-  },
-  {
-    text: "Framework laws",
-    href: "/framework-laws",
-    external: false,
-    cy: "framework-laws",
   },
   {
     text: "Contact",
