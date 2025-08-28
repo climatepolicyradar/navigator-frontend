@@ -21,12 +21,11 @@ import { Timeline } from "@/components/timeline/Timeline";
 import { Heading } from "@/components/typography/Heading";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import {
+  GeographyV2,
   TDocumentCategory,
   TEvent,
   TFeatureFlags,
   TGeographyStats,
-  TGeographySubdivision,
-  TGeographySubDivisionNew,
   TGeographySummary,
   TSearch,
   TTarget,
@@ -38,8 +37,8 @@ import { sortFilterTargets } from "@/utils/sortFilterTargets";
 export interface IProps {
   featureFlags: TFeatureFlags;
   geography: TGeographyStats;
+  geographyV2: GeographyV2;
   summary: TGeographySummary;
-  subdivisions?: TGeographySubDivisionNew[];
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;

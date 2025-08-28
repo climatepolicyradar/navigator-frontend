@@ -53,6 +53,19 @@ export type TDataNode<T> = {
   children: TDataNode<T>[];
 };
 
+export type ApiItemResponse<T> = {
+  data: T;
+};
+type GeographyTypeV2 = "region" | "country" | "subdivision";
+export type GeographyV2 = {
+  id: string;
+  type: GeographyTypeV2;
+  slug: string;
+  subconcept_of: GeographyV2[];
+  has_subconcept: GeographyV2[];
+  name: string;
+};
+
 export type TGeography = {
   id: number;
   display_value: string;
@@ -68,23 +81,6 @@ export type TGeographySubdivision = {
   type: string;
   country_alpha_2: string;
   country_alpha_3: string;
-};
-
-export type TGeographyNewParent = {
-  id: string;
-  name: string;
-  type: string;
-  alpha_2: string;
-  subconcept_of: [];
-  slug: string;
-  has_subconcept: TGeographySubDivisionNew[];
-};
-
-export type TGeographySubDivisionNew = {
-  id: string;
-  name: string;
-  type: string;
-  slug: string;
 };
 
 export type TGeographyWithDocumentCounts = {

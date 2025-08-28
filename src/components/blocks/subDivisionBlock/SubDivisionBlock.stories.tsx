@@ -12,26 +12,40 @@ type TStory = StoryObj<typeof SubDivisionBlock>;
 
 export default meta;
 
+const unitedStates = {
+  id: "1",
+  name: "United States",
+  type: "country" as const,
+  slug: "united-states",
+  has_subconcept: [],
+  subconcept_of: [],
+};
 export const Default: TStory = {
   args: {
     subdivisions: [
       {
         id: "1",
         name: "Alaska",
-        type: "State",
+        type: "subdivision",
         slug: "alaska",
+        subconcept_of: [unitedStates],
+        has_subconcept: [],
       },
       {
         id: "2",
         name: "Alabama",
-        type: "State",
+        type: "subdivision",
         slug: "alabama",
+        subconcept_of: [unitedStates],
+        has_subconcept: [],
       },
       {
         id: "3",
         name: "Arkansas",
-        type: "State",
+        type: "subdivision",
         slug: "arkansas",
+        subconcept_of: [unitedStates],
+        has_subconcept: [],
       },
     ],
   },
