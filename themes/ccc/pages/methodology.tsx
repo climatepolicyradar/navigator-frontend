@@ -164,7 +164,7 @@ const Methodology = () => {
               {getThemeConfigLink(themeConfig, "download-database") && (
                 <>
                   <p>
-                    Request a download the Global Climate Change Litigation database{" "}
+                    Request a download of the Global Climate Change Litigation database{" "}
                     <ExternalLink url={getThemeConfigLink(themeConfig, "download-database").url} cy="download-entire-search-csv">
                       here
                     </ExternalLink>
