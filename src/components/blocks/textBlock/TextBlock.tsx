@@ -1,14 +1,15 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { Button } from "@/components/atoms/button/Button";
+import { IProps as ISectionProps } from "@/components/molecules/section/Section";
 import { Section } from "@/components/molecules/section/Section";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-interface IProps {
-  children: ReactNode;
+interface IProps extends ISectionProps {
   maxHeight?: number;
 }
 
-export const TextBlock = ({ children, maxHeight = 150 }: IProps) => {
+export const TextBlock = ({ children, maxHeight = 150, ...sectionProps }: IProps) => {
   const contentRef = useRef(null);
   const [contentHeight, setContentHeight] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +26,7 @@ export const TextBlock = ({ children, maxHeight = 150 }: IProps) => {
   const containerClasses = joinTailwindClasses("relative", isOpen ? "overflow-visible" : "overflow-hidden");
 
   return (
-    <Section id="section-summary" title="Summary">
+    <Section {...sectionProps}>
       <div className="relative">
         <div className={containerClasses} style={{ maxHeight: isOpen ? undefined : maxHeight }}>
           {/* DOM element to measure height of */}
@@ -33,9 +34,9 @@ export const TextBlock = ({ children, maxHeight = 150 }: IProps) => {
         </div>
         {contentIsOverflowing && (
           <div className="pt-4">
-            <button type="button" onClick={onToggle} className="text-sm text-text-tertiary hover:underline">
-              {isOpen ? "- View less" : "+ View more"}
-            </button>
+            <Button color="mono" size="small" rounded variant="faded" onClick={onToggle}>
+              {isOpen ? "View less" : "View more"}
+            </Button>
           </div>
         )}
       </div>
