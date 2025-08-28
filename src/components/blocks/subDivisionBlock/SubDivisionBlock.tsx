@@ -1,12 +1,7 @@
-import { ReactNode } from "react";
-
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Section } from "@/components/molecules/section/Section";
 import { TGeographySubDivisionNew } from "@/types";
 
 type TProps = {
-  title?: ReactNode;
-  id: string;
   subdivisions: TGeographySubDivisionNew[];
 };
 
@@ -27,12 +22,12 @@ const get3ColumnClass = (index: number, length: number): string => {
   return "";
 };
 
-export const SubDivisionBlock = ({ title, id, subdivisions }: TProps) => {
+export const SubDivisionBlock = ({ subdivisions }: TProps) => {
   if (!subdivisions || subdivisions.length === 0) {
     return null;
   }
   return (
-    <Section title={title} id={id}>
+    <Section id="section-subdivisions" title="Geographic sub-divisions" count={subdivisions.length}>
       <div className="rounded bg-surface-ui py-6 px-10">
         <ol className="text-sm list-none pl-5 grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3 grid-flow-dense">
           {subdivisions.map((subdivision, index) => (

@@ -1,5 +1,5 @@
 import { ISideBarItem } from "@/components/organisms/contentsSideBar/ContentsSideBar";
-import { TGeographyStats } from "@/types";
+import { TGeographyStats, TTarget } from "@/types";
 
 export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
   {
@@ -21,10 +21,8 @@ export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
   },
 ];
 
-export const getGeographyPageSidebarItems = (geography: TGeographyStats): ISideBarItem[] => {
-  const legislativeProcessId = "section-legislative-process";
-
-  let sidebarItems = [
+export const getGeographyPageSidebarItems = (geography: TGeographyStats, targets: TTarget[]): ISideBarItem[] => {
+  const sidebarItems = [
     {
       id: "section-recents",
       display: "Recent documents",
@@ -42,7 +40,7 @@ export const getGeographyPageSidebarItems = (geography: TGeographyStats): ISideB
       display: "Targets",
     },
     {
-      id: legislativeProcessId,
+      id: "section-legislative-process",
       display: "Legislative process",
     },
     {
@@ -52,9 +50,10 @@ export const getGeographyPageSidebarItems = (geography: TGeographyStats): ISideB
     },
   ];
 
-  if (geography.legislative_process.length === 0) {
-    sidebarItems = sidebarItems.filter((item) => item.id !== legislativeProcessId);
-  }
+  const idsToRemove: string[] = [];
 
-  return sidebarItems;
+  if (geography.legislative_process.length === 0) idsToRemove.push("section-legislative-process");
+  if (targets.length === 0) idsToRemove.push("section-targets");
+
+  return sidebarItems.filter((item) => !idsToRemove.includes(item.id));
 };

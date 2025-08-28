@@ -7,8 +7,8 @@ import { GeographyOriginalPage, IProps } from "@/components/pages/geographyOrigi
 import { systemGeoNames } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode } from "@/helpers/getCountryFields";
-import { TGeographyNewParent, TGeographyStats, TGeographySubdivision, TGeographySubDivisionNew, TGeographySummary, TSearch } from "@/types";
-import { TTarget, TGeography, TDocumentCategory } from "@/types";
+import { TGeographyNewParent, TGeographyStats, TGeographySubDivisionNew, TGeographySummary, TSearch } from "@/types";
+import { TTarget, TGeography } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
