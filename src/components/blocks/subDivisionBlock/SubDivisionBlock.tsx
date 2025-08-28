@@ -1,8 +1,8 @@
 import { Section } from "@/components/molecules/section/Section";
-import { TGeographySubDivisionNew } from "@/types";
+import { GeographyV2 } from "@/types";
 
 type TProps = {
-  subdivisions: TGeographySubDivisionNew[];
+  subdivisions: GeographyV2[];
 };
 
 const get2ColumnClass = (index: number, length: number): string => {
