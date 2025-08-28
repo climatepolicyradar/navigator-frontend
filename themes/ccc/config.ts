@@ -2,17 +2,7 @@ import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
   defaultCorpora: ["Academic.corpus.Litigation.n0000"],
-  filters: [
-    {
-      label: "Legal concepts",
-      taxonomyKey: "concept_preferred_label",
-      apiMetaDataKey: "family.concept_preferred_label",
-      type: "checkbox",
-      category: [],
-      startOpen: "false",
-      options: [],
-    },
-  ],
+  filters: [],
   labelVariations: [
     {
       key: "date",
