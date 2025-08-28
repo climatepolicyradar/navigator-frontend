@@ -8,12 +8,15 @@ import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { GEOGRAPHY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
 import { getFamilyCategorySummary } from "@/helpers/getFamilyCategorySummary";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
+import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 import { IProps } from "./geographyOriginalPage";
 import { RecentFamiliesBlock } from "../blocks/recentFamiliesBlock/RecentFamiliesBlock";
+import { TargetsBlock } from "../blocks/targetsBlock/TargetsBlock";
 
 export const GeographyLitigationPage = ({ geography, subdivisions, summary, targets, theme, themeConfig }: IProps) => {
   const categorySummaries = themeConfig.documentCategories.map((category) => getFamilyCategorySummary(summary, category));
+  const publishedTargets = sortFilterTargets(targets);
 
   return (
     <Layout metadataKey="geography" theme={theme} themeConfig={themeConfig} title={geography.name} text={geography.name}>
@@ -24,6 +27,7 @@ export const GeographyLitigationPage = ({ geography, subdivisions, summary, targ
           <RecentFamiliesBlock categorySummaries={categorySummaries} />
           <SubDivisionBlock subdivisions={subdivisions} />
           <MetadataBlock title="Statistics" metadata={getGeographyMetaData(geography)} id="section-statistics" />
+          <TargetsBlock targets={publishedTargets} theme={theme} />
           <Section id="section-debug" title="Debug">
             <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(geography, null, 2)}</pre>
             <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(summary, null, 2)}</pre>

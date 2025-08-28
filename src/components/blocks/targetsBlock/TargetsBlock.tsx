@@ -6,6 +6,7 @@ import { Card } from "@/components/atoms/card/Card";
 import { Section } from "@/components/molecules/section/Section";
 import { MIDDOT } from "@/constants/chars";
 import { TTarget, TTheme } from "@/types";
+import { joinTailwindClasses } from "@/utils/tailwind";
 
 const MAX_ENTRIES_SHOWN = 3;
 
@@ -37,10 +38,11 @@ export const TargetsBlock = ({ targets, theme }: IProps) => {
   const linkDomain = theme === "ccc" ? "https://app.climatepolicyradar.org" : "";
   const shownTargets = showAllEntries ? targets : targets.slice(0, MAX_ENTRIES_SHOWN);
   const entriesToHide = targets.length > MAX_ENTRIES_SHOWN;
+  const containerClasses = joinTailwindClasses("relative", entriesToHide && "pb-4");
 
   return (
     <Section id="section-targets" title="Targets" count={targets.length}>
-      <div className="relative">
+      <div className={containerClasses}>
         <Card className="!p-12 flex flex-col gap-10 bg-surface-ui rounded-sm">
           {shownTargets.map((target) => {
             return (
@@ -60,7 +62,7 @@ export const TargetsBlock = ({ targets, theme }: IProps) => {
           })}
         </Card>
         {entriesToHide && (
-          <Button color="mono" size="small" rounded onClick={toggleShowAll} className="absolute -bottom-4 left-12">
+          <Button color="mono" size="small" rounded onClick={toggleShowAll} className="absolute bottom-0 left-12">
             {showAllEntries ? "Show less" : "Show all"}
           </Button>
         )}
