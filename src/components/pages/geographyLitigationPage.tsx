@@ -7,10 +7,12 @@ import { ContentsSideBar } from "@/components/organisms/contentsSideBar/Contents
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { getGeographyPageSidebarItems } from "@/constants/sideBarItems";
 import { getFamilyCategorySummary } from "@/helpers/getFamilyCategorySummary";
+import { v2GeoSlugToV1 } from "@/utils/geography";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 import { IProps } from "./geographyOriginalPage";
+import { LinkWithQuery } from "../LinkWithQuery";
 import { RecentFamiliesBlock } from "../blocks/recentFamiliesBlock/RecentFamiliesBlock";
 import { TargetsBlock } from "../blocks/targetsBlock/TargetsBlock";
 import { TextBlock } from "../blocks/textBlock/TextBlock";
@@ -19,25 +21,44 @@ export const GeographyLitigationPage = ({ geography, summary, targets, theme, th
   const categorySummaries = themeConfig.documentCategories.map((category) => getFamilyCategorySummary(summary, category));
   const publishedTargets = sortFilterTargets(targets);
 
-  const sidebarItems = getGeographyPageSidebarItems(geography, publishedTargets);
+  const legislativeProcess = geography ? geography.legislative_process : "";
+  const geographyMetaData = geography ? getGeographyMetaData(geography) : [];
+
+  const sidebarItems = getGeographyPageSidebarItems(geographyMetaData, publishedTargets, legislativeProcess);
+
+  const isCountry = geographyV2.type === "country";
+  const pageTitle = isCountry ? (
+    geographyV2.name
+  ) : (
+    <>
+      <LinkWithQuery href={`/geographies/${v2GeoSlugToV1(geographyV2.subconcept_of[0].slug)}`} className="hover:underline">
+        {geographyV2.subconcept_of[0].name}
+      </LinkWithQuery>
+      <span className="text-text-light/60"> / </span>
+      <span>{geographyV2.name}</span>
+    </>
+  );
 
   return (
-    <Layout metadataKey="geography" theme={theme} themeConfig={themeConfig} title={geography.name} text={geography.name}>
-      <PageHeader coloured label="Geography" title={geography.name} metadata={[]} />
+    <Layout metadataKey="geography" theme={theme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
+      <PageHeader coloured label="Geography" title={pageTitle} metadata={[]} />
       <Columns>
         <ContentsSideBar items={sidebarItems} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
         <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-3:py-8 cols-3:gap-8 cols-3:col-span-2 cols-4:col-span-3">
           <RecentFamiliesBlock categorySummaries={categorySummaries} />
           <SubDivisionBlock subdivisions={geographyV2.has_subconcept} />
-          <MetadataBlock title="Statistics" metadata={getGeographyMetaData(geography)} id="section-statistics" />
+          <MetadataBlock title="Statistics" metadata={geographyMetaData} id="section-statistics" />
           <TargetsBlock targets={publishedTargets} theme={theme} />
-          {geography.legislative_process.length > 0 && (
+          {legislativeProcess.length > 0 && (
             <TextBlock id="section-legislative-process" title="Legislative process">
-              <div className="text-content" dangerouslySetInnerHTML={{ __html: geography.legislative_process }} />
+              <div className="text-content" dangerouslySetInnerHTML={{ __html: legislativeProcess }} />
             </TextBlock>
           )}
           <Section id="section-debug" title="Debug">
             <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(geography, null, 2)}</pre>
+            <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">
+              {JSON.stringify(geographyV2, null, 2)}
+            </pre>
             <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(summary, null, 2)}</pre>
             <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">
               {JSON.stringify(geographyV2.has_subconcept, null, 2)}

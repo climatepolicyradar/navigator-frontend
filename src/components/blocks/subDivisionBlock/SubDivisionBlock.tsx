@@ -26,6 +26,7 @@ export const SubDivisionBlock = ({ subdivisions }: TProps) => {
   if (!subdivisions || subdivisions.length === 0) {
     return null;
   }
+
   return (
     <Section id="section-subdivisions" title="Geographic sub-divisions" count={subdivisions.length}>
       <div className="rounded bg-surface-ui py-6 px-10">
