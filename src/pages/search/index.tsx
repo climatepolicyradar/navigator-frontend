@@ -33,6 +33,7 @@ import { SingleCol } from "@/components/panels/SingleCol";
 import SearchResultList from "@/components/search/SearchResultList";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
+import { SLIDEOUT_VALUES } from "@/constants/slideOutValues";
 import { sortOptions } from "@/constants/sortOptions";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
@@ -149,8 +150,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1); // Remove the # symbol
-      const slideOuts = ["concepts", "categories", "principalLaws", "jurisdictions", "geographies"]; // @related to TSlideOutContent
-      if (hash && slideOuts.includes(hash)) {
+      if (hash && SLIDEOUT_VALUES.includes(hash as any)) {
         setCurrentSlideOut(hash as TSlideOutContent);
       } else if (!hash) {
         setCurrentSlideOut("");
