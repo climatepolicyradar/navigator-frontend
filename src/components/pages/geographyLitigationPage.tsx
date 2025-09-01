@@ -1,6 +1,11 @@
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Columns } from "@/components/atoms/columns/Columns";
+import { Debug } from "@/components/atoms/debug/Debug";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
+import { RecentFamiliesBlock } from "@/components/blocks/recentFamiliesBlock/RecentFamiliesBlock";
 import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisionBlock";
+import { TargetsBlock } from "@/components/blocks/targetsBlock/TargetsBlock";
+import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
@@ -12,11 +17,6 @@ import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 import { IProps } from "./geographyOriginalPage";
-import { LinkWithQuery } from "../LinkWithQuery";
-import { Debug } from "../atoms/debug/Debug";
-import { RecentFamiliesBlock } from "../blocks/recentFamiliesBlock/RecentFamiliesBlock";
-import { TargetsBlock } from "../blocks/targetsBlock/TargetsBlock";
-import { TextBlock } from "../blocks/textBlock/TextBlock";
 
 export const GeographyLitigationPage = ({ geography, geographyV2, parentGeographyV2, summary, targets, theme, themeConfig }: IProps) => {
   const categorySummaries = themeConfig.documentCategories.map((category) => getFamilyCategorySummary(summary, category));
