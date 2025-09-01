@@ -131,7 +131,7 @@ describe("SearchPage", async () => {
       await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
     });
 
-    expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
+    expect(document.querySelector('button[data-cy="jurisdictions-control"]')).toBeInTheDocument();
 
     const countryOption = await screen.findByRole("checkbox", { name: "Belize" });
 
