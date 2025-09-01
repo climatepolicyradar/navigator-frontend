@@ -134,7 +134,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
   // Utility function to update hash without triggering navigation for redirects.
-  // TODO: To be removed once we've fully migrated CCC.
   const updateHash = (hash: string | null) => {
     if (hash) {
       window.location.hash = hash;
@@ -147,7 +146,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   };
 
   // Handle URL hash changes for slideout navigation.
-  // TODO: To be removed once we've fully migrated CCC.
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1); // Remove the # symbol
@@ -166,20 +164,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   }, []);
 
   // Update URL hash when slideout state changes.
-  // TODO: To be removed once we've fully migrated CCC.
   useEffect(() => {
     updateHash(currentSlideOut || null);
   }, [currentSlideOut]);
-
-  useEffect(() => {
-    if (router.query.openConceptsPicker === "true") {
-      // Remove the parameter after opening the picker
-      const query = { ...router.query };
-      delete query.openConceptsPicker;
-      router.replace({ query }, undefined, { shallow: true });
-      setCurrentSlideOut("concepts");
-    }
-  }, [router]);
 
   const configQuery = useConfig();
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
