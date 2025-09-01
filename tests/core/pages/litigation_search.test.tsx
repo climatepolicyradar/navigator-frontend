@@ -155,12 +155,14 @@ describe("SearchPage", async () => {
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
     // like animations that were causing warnings in the console.
     await act(async () => {
-      await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
+      const geographyButton = await screen.findByRole("button", { name: "Geography" });
+      expect(geographyButton).toBeVisible();
+      await userEvent.click(geographyButton);
     });
 
-    expect(await screen.findByText("Region")).toBeInTheDocument();
-    expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
-    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+    expect(document.querySelector('button[data-cy="regions"]')).toBeVisible();
+    expect(document.querySelector('button[data-cy="countries"]')).toBeVisible();
+    expect(document.querySelector('button[data-cy="subdivisions"]')).toBeVisible();
 
     const regionFilterOption = screen.getByRole("checkbox", { name: "East Asia & Pacific" });
     const countryFilterOption = screen.getByRole("checkbox", { name: "Australia" });
