@@ -133,6 +133,44 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
+  // Utility function to update hash without triggering navigation for redirects.
+  // TODO: To be removed once we've fully migrated CCC.
+  const updateHash = (hash: string | null) => {
+    if (hash) {
+      window.location.hash = hash;
+    } else {
+      // Remove hash if no slideout is open
+      if (window.location.hash) {
+        window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+    }
+  };
+
+  // Handle URL hash changes for slideout navigation.
+  // TODO: To be removed once we've fully migrated CCC.
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1); // Remove the # symbol
+      const slideOuts = ["concepts", "categories", "principalLaws", "jurisdictions", "geographies"]; // @related to TSlideOutContent
+      if (hash && slideOuts.includes(hash)) {
+        setCurrentSlideOut(hash as TSlideOutContent);
+      } else if (!hash) {
+        setCurrentSlideOut("");
+      }
+    };
+
+    handleHashChange();
+    window.addEventListener("hashchange", handleHashChange);
+
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  // Update URL hash when slideout state changes.
+  // TODO: To be removed once we've fully migrated CCC.
+  useEffect(() => {
+    updateHash(currentSlideOut || null);
+  }, [currentSlideOut]);
+
   useEffect(() => {
     if (router.query.openConceptsPicker === "true") {
       // Remove the parameter after opening the picker
