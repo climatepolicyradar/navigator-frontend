@@ -20,9 +20,9 @@ export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
   },
 ];
 
-type TProps = Record<"legislativeProcess" | "metadata" | "targets", boolean>;
+type TProps = Record<"isCountry" | "legislativeProcess" | "metadata" | "subdivisions" | "targets", boolean>;
 
-export const getGeographyPageSidebarItems = ({ legislativeProcess, metadata, targets }: TProps): ISideBarItem[] => {
+export const getGeographyPageSidebarItems = (settings: TProps): ISideBarItem[] => {
   const sidebarItems = [
     {
       id: "section-recents",
@@ -30,7 +30,7 @@ export const getGeographyPageSidebarItems = ({ legislativeProcess, metadata, tar
     },
     {
       id: "section-subdivisions",
-      display: "Geographic sub-divisions",
+      display: settings.isCountry ? "Geographic sub-divisions" : "Related geographic sub-divisions",
     },
     {
       id: "section-statistics",
@@ -54,9 +54,10 @@ export const getGeographyPageSidebarItems = ({ legislativeProcess, metadata, tar
   const idsToRemove: string[] = [];
 
   // Remove rather than add so that there is a full ordered list defined above
-  if (!metadata) idsToRemove.push("section-statistics");
-  if (!targets) idsToRemove.push("section-targets");
-  if (!legislativeProcess) idsToRemove.push("section-legislative-process");
+  if (!settings.subdivisions) idsToRemove.push("section-subdivisions");
+  if (!settings.metadata) idsToRemove.push("section-statistics");
+  if (!settings.targets) idsToRemove.push("section-targets");
+  if (!settings.legislativeProcess) idsToRemove.push("section-legislative-process");
 
   return sidebarItems.filter((item) => !idsToRemove.includes(item.id));
 };
