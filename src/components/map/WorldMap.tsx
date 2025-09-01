@@ -137,10 +137,11 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
 interface IProps {
   showLitigation?: boolean;
   showCategorySelect?: boolean;
+  showEUCheckbox?: boolean;
   theme: TTheme;
 }
 
-export default function MapChart({ showLitigation = false, showCategorySelect = true, theme }: IProps) {
+export default function MapChart({ showLitigation = false, showCategorySelect = true, showEUCheckbox = false, theme }: IProps) {
   const configQuery = useConfig();
   const geographiesQuery = useGeographies();
   const { data: { countries: configCountries = [] } = {} } = configQuery;
@@ -412,23 +413,25 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           handleZoomOut={() => setMapZoom(mapZoom - 1)}
           handleReset={handleResetMapClick}
         />
-        <div className="absolute top-0 right-0 p-4">
-          <label
-            className="checkbox-input flex items-center p-2 px-4 rounded-full cursor-pointer border border-gray-300 bg-white"
-            htmlFor="show_eu_aggregated"
-          >
-            <input
-              className="border-gray-300 cursor-pointer"
-              id="show_eu_aggregated"
-              type="checkbox"
-              name="exact_match"
-              value={0}
-              checked={showUnifiedEU}
-              onChange={() => setShowUnifiedEU(!showUnifiedEU)}
-            />
-            <span className="px-2 text-sm">Show aggregated EU data</span>
-          </label>
-        </div>
+        {showEUCheckbox && (
+          <div className="absolute top-0 right-0 p-4">
+            <label
+              className="checkbox-input flex items-center p-2 px-4 rounded-full cursor-pointer border border-gray-300 bg-white"
+              htmlFor="show_eu_aggregated"
+            >
+              <input
+                className="border-gray-300 cursor-pointer"
+                id="show_eu_aggregated"
+                type="checkbox"
+                name="exact_match"
+                value={0}
+                checked={showUnifiedEU}
+                onChange={() => setShowUnifiedEU(!showUnifiedEU)}
+              />
+              <span className="px-2 text-sm">Show aggregated EU data</span>
+            </label>
+          </div>
+        )}
       </div>
       <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} theme={theme} />
     </>
