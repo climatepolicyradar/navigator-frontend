@@ -1,3 +1,4 @@
+import { motion, AnimatePresence } from "framer-motion";
 import { LucideChevronDownCircle } from "lucide-react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -37,27 +38,39 @@ export const RecentFamiliesCategory = ({
           </button>
         </div>
       )}
-      {(!showAccordion || isExpanded) && (
-        <>
-          {families.length > 0 && (
-            <div className="flex gap-5 items-stretch overflow-x-auto pb-2">
-              {families.slice(0, 4).map((family, familyIndex) => (
-                <RecentFamilyCard key={familyIndex} family={family} />
-              ))}
-              {/* TODO link to the search page with the given category filtered */}
-              <LinkWithQuery
-                href={`#`}
-                className="min-w-16 max-w-25 flex-1 flex justify-center items-center bg-surface-brand-darker/8 text-text-brand-darker font-semibold leading-tight"
-              >
-                All {ARROW_RIGHT}
-              </LinkWithQuery>
-            </div>
-          )}
-          <p className="mt-4 mb-12 text-sm text-text-tertiary">
-            There {pluralise(count, "is", "are")} {count} {pluralise(count, ...unit)} in the database.
-          </p>
-        </>
-      )}
+      <AnimatePresence initial={false}>
+        {(!showAccordion || isExpanded) && (
+          <motion.div
+            key="content"
+            initial="collapsed"
+            animate="open"
+            exit="closed"
+            variants={{
+              collapsed: { opacity: 1, height: 0 },
+              open: { opacity: 1, height: "auto", transition: { duration: 0.25, ease: [0.04, 0.62, 0.23, 0.98] } },
+              closed: { opacity: 0, height: 0, transition: { duration: 0 } },
+            }}
+          >
+            {families.length > 0 && (
+              <div className="flex gap-5 items-stretch overflow-x-auto pb-2">
+                {families.slice(0, 4).map((family, familyIndex) => (
+                  <RecentFamilyCard key={familyIndex} family={family} />
+                ))}
+                {/* TODO link to the search page with the given category filtered */}
+                <LinkWithQuery
+                  href={`#`}
+                  className="min-w-16 max-w-25 flex-1 flex justify-center items-center bg-surface-brand-darker/8 text-text-brand-darker font-semibold leading-tight"
+                >
+                  All {ARROW_RIGHT}
+                </LinkWithQuery>
+              </div>
+            )}
+            <p className="mt-4 mb-12 text-sm text-text-tertiary">
+              There {pluralise(count, "is", "are")} {count} {pluralise(count, ...unit)} in the database.
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
