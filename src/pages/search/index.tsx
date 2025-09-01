@@ -33,12 +33,12 @@ import { SingleCol } from "@/components/panels/SingleCol";
 import SearchResultList from "@/components/search/SearchResultList";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
-import { SLIDEOUT_VALUES } from "@/constants/slideOutValues";
 import { sortOptions } from "@/constants/sortOptions";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
+import { SlideOutContext } from "@/context/SlideOutContext";
 import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
+import { useHashNavigation } from "@/hooks/useHashNavigation";
 import useSearch from "@/hooks/useSearch";
 import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
@@ -130,43 +130,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const sortSettingsButtonRef = useRef(null);
   const searchSettingsButtonRef = useRef(null);
 
-  const [currentSlideOut, setCurrentSlideOut] = useState<TSlideOutContent>("");
-
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
-  // Utility function to update hash without triggering navigation for redirects.
-  const updateHash = (hash: string | null) => {
-    if (hash) {
-      window.location.hash = hash;
-    } else {
-      // Remove hash if no slideout is open
-      if (window.location.hash) {
-        window.history.replaceState(null, "", window.location.pathname + window.location.search);
-      }
-    }
-  };
-
-  // Handle URL hash changes for slideout navigation.
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.slice(1); // Remove the # symbol
-      if (hash && SLIDEOUT_VALUES.includes(hash as any)) {
-        setCurrentSlideOut(hash as TSlideOutContent);
-      } else if (!hash) {
-        setCurrentSlideOut("");
-      }
-    };
-
-    handleHashChange();
-    window.addEventListener("hashchange", handleHashChange);
-
-    return () => window.removeEventListener("hashchange", handleHashChange);
-  }, []);
-
-  // Update URL hash when slideout state changes.
-  useEffect(() => {
-    updateHash(currentSlideOut || null);
-  }, [currentSlideOut]);
+  const { currentSlideOut, setCurrentSlideOut } = useHashNavigation();
 
   const configQuery = useConfig();
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
