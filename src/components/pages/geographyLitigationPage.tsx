@@ -13,11 +13,12 @@ import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 import { IProps } from "./geographyOriginalPage";
 import { LinkWithQuery } from "../LinkWithQuery";
+import { Debug } from "../atoms/debug/Debug";
 import { RecentFamiliesBlock } from "../blocks/recentFamiliesBlock/RecentFamiliesBlock";
 import { TargetsBlock } from "../blocks/targetsBlock/TargetsBlock";
 import { TextBlock } from "../blocks/textBlock/TextBlock";
 
-export const GeographyLitigationPage = ({ geography, summary, targets, theme, themeConfig, geographyV2 }: IProps) => {
+export const GeographyLitigationPage = ({ geography, geographyV2, parentGeographyV2, summary, targets, theme, themeConfig }: IProps) => {
   const categorySummaries = themeConfig.documentCategories.map((category) => getFamilyCategorySummary(summary, category));
   const publishedTargets = sortFilterTargets(targets);
 
@@ -30,17 +31,16 @@ export const GeographyLitigationPage = ({ geography, summary, targets, theme, th
     legislativeProcess: Boolean(legislativeProcess),
   });
 
-  const isCountry = geographyV2.type === "country";
-  const pageTitle = isCountry ? (
-    geographyV2.name
-  ) : (
+  const pageTitle = parentGeographyV2 ? (
     <>
-      <LinkWithQuery href={`/geographies/${v2GeoSlugToV1(geographyV2.subconcept_of[0].slug)}`} className="hover:underline">
-        {geographyV2.subconcept_of[0].name}
+      <LinkWithQuery href={`/geographies/${v2GeoSlugToV1(parentGeographyV2.slug)}`} className="hover:underline">
+        {parentGeographyV2.name}
       </LinkWithQuery>
       <span className="text-text-light/60"> / </span>
       <span>{geographyV2.name}</span>
     </>
+  ) : (
+    geographyV2.name
   );
 
   return (
@@ -59,15 +59,11 @@ export const GeographyLitigationPage = ({ geography, summary, targets, theme, th
             </TextBlock>
           )}
           <Section id="section-debug" title="Debug">
-            <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(geography, null, 2)}</pre>
-            <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">
-              {JSON.stringify(geographyV2, null, 2)}
-            </pre>
-            <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(summary, null, 2)}</pre>
-            <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">
-              {JSON.stringify(geographyV2.has_subconcept, null, 2)}
-            </pre>
-            <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(targets, null, 2)}</pre>
+            <Debug data={geography} title="Geography V1" />
+            <Debug data={geographyV2} title="Geography V2" />
+            <Debug data={parentGeographyV2} title="Parent geography V2" />
+            <Debug data={summary} title="Summary" />
+            <Debug data={targets} title="Targets" />
           </Section>
         </main>
       </Columns>

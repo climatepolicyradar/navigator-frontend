@@ -38,6 +38,7 @@ export interface IProps {
   featureFlags: TFeatureFlags;
   geography: TGeographyStats;
   geographyV2: GeographyV2;
+  parentGeographyV2?: GeographyV2;
   summary: TGeographySummary;
   targets: TTarget[];
   theme: TTheme;

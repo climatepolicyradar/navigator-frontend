@@ -79,9 +79,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   let geographyV2: GeographyV2;
+  let parentGeographyV2: GeographyV2 = null;
   try {
     const geographyV2Data = await apiClient.get(`/geographies/${slug}`);
     geographyV2 = geographyV2Data.data.data;
+
+    if (geographyV2.subconcept_of[0]) {
+      const parentGeographyV2Data = await apiClient.get(`/geographies/${geographyV2.subconcept_of[0].slug}`);
+      parentGeographyV2 = parentGeographyV2Data.data.data;
+    }
+
+    // TODO if a subdivision, fetch peer subdivisions
   } catch {}
 
   if (geographyV2 && geographyV2.type === "region") {
@@ -120,7 +128,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: withEnvConfig({
       featureFlags,
       geography: geographyData,
-      geographyV2: geographyV2,
+      geographyV2,
+      parentGeographyV2,
       summary: summaryData,
       targets: theme === "mcf" ? [] : targetsData,
       theme,
