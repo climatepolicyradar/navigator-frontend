@@ -96,19 +96,6 @@ vi.mock("@/hooks/useMcfData", () => ({
   useMcfData: () => false,
 }));
 
-vi.mock("@/constants/mapEUCountries", () => ({
-  GEO_EU_COUNTRIES: ["FRA", "DEU"],
-}));
-
-vi.mock("@/constants/mapCentres", () => ({
-  GEO_CENTER_POINTS: {
-    GBR: [0, 55],
-    FRA: [2, 46],
-    DEU: [10, 51],
-    EUR: [10, 50],
-  },
-}));
-
 const theme: TTheme = "ccc";
 
 const renderWorldMap = (props: { showLitigation?: boolean; showCategorySelect?: boolean; showEUCheckbox?: boolean; theme: TTheme }) => {
