@@ -7,7 +7,7 @@ import { GeographyOriginalPage, IProps } from "@/components/pages/geographyOrigi
 import { systemGeoNames } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode } from "@/helpers/getCountryFields";
-import { ApiItemResponse, GeographyV2, TGeographyStats, TGeographySummary, TSearch } from "@/types";
+import { GeographyV2, TGeographyStats, TGeographySummary, TSearch } from "@/types";
 import { TTarget, TGeography } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
@@ -64,13 +64,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   try {
-    let countries: TGeography[] = [];
+    let geographies: TGeography[] = [];
     const configData = await backendApiClient.getConfig();
     const response_geo = extractNestedData<TGeography>(configData.data?.geographies || []);
-    countries = response_geo[1];
-    const country = getCountryCode(id as string, countries);
-    if (country) {
-      const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${country.toLowerCase()}.json`);
+    geographies = [...response_geo[1], ...response_geo[2]];
+    const geography = getCountryCode(id as string, geographies);
+
+    if (geography) {
+      const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${geography.toLowerCase()}.json`);
       targetsData = targetsRaw.data;
     }
   } catch {

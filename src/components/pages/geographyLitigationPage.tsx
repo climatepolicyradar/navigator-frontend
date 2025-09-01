@@ -21,10 +21,14 @@ export const GeographyLitigationPage = ({ geography, summary, targets, theme, th
   const categorySummaries = themeConfig.documentCategories.map((category) => getFamilyCategorySummary(summary, category));
   const publishedTargets = sortFilterTargets(targets);
 
-  const legislativeProcess = geography ? geography.legislative_process : "";
+  const legislativeProcess = geography?.legislative_process || "";
   const geographyMetaData = geography ? getGeographyMetaData(geography) : [];
 
-  const sidebarItems = getGeographyPageSidebarItems(geographyMetaData, publishedTargets, legislativeProcess);
+  const sidebarItems = getGeographyPageSidebarItems({
+    metadata: geographyMetaData.length > 0,
+    targets: targets.length > 0,
+    legislativeProcess: Boolean(legislativeProcess),
+  });
 
   const isCountry = geographyV2.type === "country";
   const pageTitle = isCountry ? (

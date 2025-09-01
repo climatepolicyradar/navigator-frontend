@@ -1,5 +1,4 @@
 import { ISideBarItem } from "@/components/organisms/contentsSideBar/ContentsSideBar";
-import { IMetadata, TGeographyStats, TMetadata, TTarget } from "@/types";
 
 export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
   {
@@ -21,7 +20,9 @@ export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
   },
 ];
 
-export const getGeographyPageSidebarItems = (geographyMetadata: IMetadata[], targets: TTarget[], legislativeProcess: string): ISideBarItem[] => {
+type TProps = Record<"legislativeProcess" | "metadata" | "targets", boolean>;
+
+export const getGeographyPageSidebarItems = ({ legislativeProcess, metadata, targets }: TProps): ISideBarItem[] => {
   const sidebarItems = [
     {
       id: "section-recents",
@@ -52,9 +53,10 @@ export const getGeographyPageSidebarItems = (geographyMetadata: IMetadata[], tar
 
   const idsToRemove: string[] = [];
 
-  if (geographyMetadata.length === 0) idsToRemove.push("section-statistics");
-  if (targets.length === 0) idsToRemove.push("section-targets");
-  if (legislativeProcess.length === 0) idsToRemove.push("section-legislative-process");
+  // Remove rather than add so that there is a full ordered list defined above
+  if (!metadata) idsToRemove.push("section-statistics");
+  if (!targets) idsToRemove.push("section-targets");
+  if (!legislativeProcess) idsToRemove.push("section-legislative-process");
 
   return sidebarItems.filter((item) => !idsToRemove.includes(item.id));
 };
