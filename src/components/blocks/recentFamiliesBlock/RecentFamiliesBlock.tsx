@@ -10,17 +10,13 @@ interface IProps {
 }
 
 export const RecentFamiliesBlock = ({ categorySummaries }: IProps) => {
-  const [expandedCategories, setExpandedCategories] = useState([categorySummaries[0].title]);
+  const [expandedCategory, setExpandedCategory] = useState(categorySummaries[0].title);
 
   const hideAccordion = categorySummaries.length === 1 && categorySummaries[0].title === "All";
 
   // TODO once powered by search queries, only one should be open at a time
   const onAccordionInteract = (interactedCategory: string) => {
-    setExpandedCategories((currentCategories) =>
-      currentCategories.includes(interactedCategory)
-        ? currentCategories.filter((cat) => cat !== interactedCategory)
-        : [...currentCategories, interactedCategory]
-    );
+    setExpandedCategory((currentCategory) => (currentCategory === interactedCategory ? "" : interactedCategory));
   };
 
   return (
@@ -30,7 +26,7 @@ export const RecentFamiliesBlock = ({ categorySummaries }: IProps) => {
           key={category.title}
           categorySummary={category}
           showAccordion={!hideAccordion}
-          isExpanded={expandedCategories.includes(category.title)}
+          isExpanded={expandedCategory === category.title}
           onAccordionClick={() => onAccordionInteract(category.title)}
         />
       ))}
