@@ -6,18 +6,18 @@ import { ReactNode, useMemo, useState } from "react";
 import { MenuItem } from "@/components/atoms/menu/MenuItem";
 import { MenuPopup } from "@/components/atoms/menu/MenuPopup";
 import { Tooltip } from "@/components/atoms/tooltip/Tooltip";
+import { EN_DASH } from "@/constants/chars";
 import { joinTailwindClasses } from "@/utils/tailwind";
-
-const NULL_VALUE_DISPLAY = "–";
+import { firstCase } from "@/utils/text";
 
 type TValue = string | number | null;
 
-interface IInteractiveTableColumn<ColumnKey extends string> {
+export interface IInteractiveTableColumn<ColumnKey extends string> {
   classes?: string; // Styles every cell in the column
   fraction?: number; // CSS grid fractional units - the column's relative width
   id: ColumnKey;
-  name: string;
-  sortable?: boolean;
+  name?: string; // defaults to first-cased id
+  sortable?: boolean; // defaults to true
   tooltip?: ReactNode;
 }
 
@@ -28,7 +28,7 @@ export type TInteractiveTableCell =
       value: TValue;
     };
 
-interface IInteractiveTableRow<ColumnKey extends string> {
+export interface IInteractiveTableRow<ColumnKey extends string> {
   id: string;
   cells: Record<ColumnKey, TInteractiveTableCell>;
   classes?: string; // Styles every cell in the row
@@ -39,14 +39,31 @@ interface ISortRules<ColumnKey extends string> {
   ascending: boolean;
 }
 
+const renderCellDisplay = (cell: TInteractiveTableCell, showValues: boolean) => {
+  if (cell === null) return EN_DASH;
+
+  let content: ReactNode = `${cell}`;
+  if (typeof cell === "object") content = showValues ? cell.value : cell.display;
+  return showValues ? <div className="inline-block bg-surface-ui text-sm text-text-tertiary font-mono">{content}</div> : content;
+};
+
 export interface IProps<ColumnKey extends string> {
   columns: IInteractiveTableColumn<ColumnKey>[];
   defaultSort?: ISortRules<ColumnKey>;
+  maxRows?: number;
   rows: IInteractiveTableRow<ColumnKey>[];
   tableClasses?: string;
+  showValues?: boolean; // Debug mode for understanding sorting
 }
 
-export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSort, rows, tableClasses }: IProps<ColumnKey>) => {
+export const InteractiveTable = <ColumnKey extends string>({
+  columns,
+  defaultSort,
+  maxRows = 0,
+  rows,
+  showValues = false,
+  tableClasses,
+}: IProps<ColumnKey>) => {
   const [openSortMenu, setOpenSortMenu] = useState<string | null>(null);
   const [sortRules, setSortRules] = useState<ISortRules<ColumnKey>>(
     defaultSort || {
@@ -76,6 +93,7 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
       ["asc", sortRules.ascending ? "asc" : "desc"]
     );
   }, [rows, sortRules]);
+  const displayedRows = sortedRows.slice(0, maxRows || undefined);
 
   // Track which sort menu is open so header cell styling can stay applied
   const onToggleMenu = (column: ColumnKey) => (open: boolean) => {
@@ -142,13 +160,13 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
           return (
             <div key={`heading-${column.id}`} className={cellClasses}>
               <div className="flex items-center gap-1 min-h-6">
-                <span className="block">{column.name}</span>
+                <span className="block">{column.name || firstCase(column.id)}</span>
                 {column.tooltip && (
                   <Tooltip content={column.tooltip} popupClasses="text-wrap max-w-[250px]">
                     <LucideInfo size={16} className="text-text-tertiary opacity-50 group-hover:opacity-100" />
                   </Tooltip>
                 )}
-                {column.sortable && renderSortControls(column)}
+                {column.sortable !== false && renderSortControls(column)}
               </div>
             </div>
           );
@@ -156,28 +174,29 @@ export const InteractiveTable = <ColumnKey extends string>({ columns, defaultSor
       </div>
 
       {/* Rows */}
-      {sortedRows.map((row) => (
-        <div key={`row-${row.id}`} className="contents">
-          {columns.map((column) => {
-            const cell = row.cells[column.id];
+      {displayedRows.map((row, rowIndex) => {
+        const lastRow = rowIndex + 1 === displayedRows.length;
 
-            let cellDisplay: ReactNode = NULL_VALUE_DISPLAY;
-            if (cell !== null) cellDisplay = typeof cell === "object" ? cell.display : `${cell}`;
+        return (
+          <div key={`row-${row.id}`} className="contents">
+            {columns.map((column) => {
+              const cell = row.cells[column.id];
+              const cellClasses = joinTailwindClasses(
+                "px-2.5 py-3 border-l border-border-light first:border-l-0",
+                !lastRow && "border-b",
+                column.classes,
+                row.classes
+              );
 
-            const cellClasses = joinTailwindClasses(
-              "px-2.5 py-3 border-b border-l border-border-light first:border-l-0",
-              column.classes,
-              row.classes
-            );
-
-            return (
-              <div key={`row-${row.id}-${column.id}`} className={cellClasses}>
-                {cellDisplay}
-              </div>
-            );
-          })}
-        </div>
-      ))}
+              return (
+                <div key={`row-${row.id}-${column.id}`} className={cellClasses}>
+                  {renderCellDisplay(cell, showValues)}
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 };

@@ -3,9 +3,14 @@ import { MouseEvent, useState } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
 import { Badge } from "@/components/atoms/label/Badge";
-import { ISideBarItem } from "@/constants/sideBarItems";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { joinTailwindClasses } from "@/utils/tailwind";
+
+export interface ISideBarItem {
+  id: string;
+  display: string;
+  badge?: string;
+}
 
 interface IProps {
   items: ISideBarItem[];
@@ -17,7 +22,7 @@ export const ContentsSideBar = ({ containerClasses, items, stickyClasses }: IPro
   const [activeId, setActiveId] = useState("");
   useIntersectionObserver({ elementsQuery: "section", rootMargin: "-15% 0px 0px 0px", setActiveId });
 
-  const scrollToItem = (id: string, itemIndex: number) => (event: MouseEvent<HTMLAnchorElement>) => {
+  const scrollToItem = (id: string) => (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
 
     const element = document.getElementById(id);
@@ -34,13 +39,13 @@ export const ContentsSideBar = ({ containerClasses, items, stickyClasses }: IPro
         <div className="pt-2">
           {items.map((item, itemIndex) => {
             const buttonClasses = joinTailwindClasses(
-              "inline-block !px-2 !text-base leading-none text-text-tertiary",
+              "inline-block !px-2 !text-base text-text-tertiary text-left leading-none",
               item.id === activeId ? "font-semibold" : "font-normal"
             );
 
             return (
               <div key={item.id}>
-                <Link href={`#${item.id}`} onClick={scrollToItem(item.id, itemIndex)}>
+                <Link href={`#${item.id}`} onClick={scrollToItem(item.id)}>
                   <Button color="mono" size="small" variant="ghost" className={buttonClasses}>
                     {item.display}
                   </Button>

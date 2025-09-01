@@ -9,18 +9,28 @@ import { sortOptions } from "@/constants/sortOptions";
 import { getConceptName } from "@/helpers/getConceptFields";
 import { getCountryName } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
+import useSubdivisions from "@/hooks/useSubdivisions";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { TConcept, TGeography, TThemeConfig } from "@/types";
+import { TConcept, TGeography, TGeographySubdivision, TThemeConfig, TGeographyWithDocumentCounts } from "@/types";
 
 type TFilterChange = (type: string, value: string) => void;
 
 interface IProps {
   filterChange: TFilterChange;
   concepts?: TConcept[];
+  familyConcepts?: TConcept[];
 }
 
 const handleCountryRegion = (slug: string, dataSet: TGeography[]) => {
   return getCountryName(slug, dataSet);
+};
+
+const handleSubdivision = (iso_code: string, subdivisions: TGeographyWithDocumentCounts[]): string => {
+  if (!subdivisions) {
+    return null;
+  }
+  const subdivisionMatch = subdivisions.find((s) => s.code === iso_code);
+  return subdivisionMatch?.name;
 };
 
 const handleConceptName = (label: string, concepts: TConcept[]) => {
@@ -50,8 +60,10 @@ const handleFilterDisplay = (
   value: string,
   countries: TGeography[],
   regions: TGeography[],
+  subdivisions: TGeographyWithDocumentCounts[],
   themeConfig: TThemeConfig,
-  concepts?: TConcept[]
+  concepts?: TConcept[],
+  familyConcepts?: TConcept[]
 ) => {
   let filterLabel: string | null | undefined = null;
   let filterValue = value;
@@ -66,8 +78,14 @@ const handleFilterDisplay = (
     case "region":
       filterLabel = handleCountryRegion(value, regions);
       break;
+    case "subdivision":
+      filterLabel = handleSubdivision(value, subdivisions);
+      break;
     case "concept_name":
       filterLabel = handleConceptName(value, concepts);
+      break;
+    case "concept_preferred_label":
+      filterLabel = handleConceptName(value, familyConcepts);
       break;
     case "exact_match":
       filterLabel = value === "true" ? "Exact phrases only" : "Related phrases";
@@ -124,8 +142,10 @@ const generatePills = (
   filterChange: TFilterChange,
   countries: TGeography[],
   regions: TGeography[],
+  subdivisions: TGeographyWithDocumentCounts[],
   themeConfig: TThemeConfig,
-  concepts?: TConcept[]
+  concepts?: TConcept[],
+  familyConcepts?: TConcept[]
 ) => {
   const pills: JSX.Element[] = [];
 
@@ -137,13 +157,17 @@ const generatePills = (
 
     if (value) {
       if (key === "year_range")
-        return pills.push(handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions, themeConfig, concepts));
+        return pills.push(handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions, subdivisions, themeConfig));
       if (Array.isArray(value)) {
         return value.map((v: string) => {
-          return pills.push(handleFilterDisplay(filterChange, queryParams, key, v, countries, regions, themeConfig, concepts));
+          return pills.push(
+            handleFilterDisplay(filterChange, queryParams, key, v, countries, regions, subdivisions, themeConfig, concepts, familyConcepts)
+          );
         });
       }
-      return pills.push(handleFilterDisplay(filterChange, queryParams, key, value, countries, regions, themeConfig, concepts));
+      return pills.push(
+        handleFilterDisplay(filterChange, queryParams, key, value, countries, regions, subdivisions, themeConfig, concepts, familyConcepts)
+      );
     } else {
       return;
     }
@@ -152,15 +176,17 @@ const generatePills = (
   return pills;
 };
 
-export const AppliedFilters = ({ filterChange, concepts }: IProps) => {
+export const AppliedFilters = ({ filterChange, concepts, familyConcepts }: IProps) => {
   const router = useRouter();
   const configQuery = useConfig();
   const { themeConfig } = useGetThemeConfig();
   const { data: { countries = [], regions = [] } = {} } = configQuery;
+  const subdivisionQuery = useSubdivisions();
+  const { data: subdivisions = [] } = subdivisionQuery;
 
   const appliedFilters = useMemo(
-    () => generatePills(router.query, filterChange, countries, regions, themeConfig, concepts).map((pill) => pill),
-    [router.query, filterChange, countries, regions, themeConfig, concepts]
+    () => generatePills(router.query, filterChange, countries, regions, subdivisions, themeConfig, concepts, familyConcepts).map((pill) => pill),
+    [router.query, filterChange, countries, regions, subdivisions, themeConfig, concepts, familyConcepts]
   );
 
   if (appliedFilters.length === 0) {

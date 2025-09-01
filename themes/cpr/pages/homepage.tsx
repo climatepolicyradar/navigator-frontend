@@ -9,7 +9,7 @@ import LandingPageLinks from "@/cpr/components/LandingPageLinks";
 import LandingSearchForm from "@/cpr/components/LandingSearchForm";
 import Partners from "@/cpr/components/Partners";
 import Summary from "@/cpr/components/Summary";
-import { PAGE_DESCRIPTION, APP_NAME } from "@/cpr/constants/pageMetadata";
+import { TTheme, TThemeConfig } from "@/types";
 
 // TODO temporarily disabled: https://climate-policy-radar.slack.com/archives/C08Q8GD1CUT/p1745941756888349
 // const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {
@@ -26,11 +26,13 @@ export interface IProps {
   handleSearchChange: (type: string, value: any) => void;
   searchInput: string;
   exactMatch: boolean;
+  theme: TTheme;
+  themeConfig: TThemeConfig;
 }
 
-const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exactMatch }: IProps) => {
+const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exactMatch, theme, themeConfig }: IProps) => {
   return (
-    <Layout title="Law and Policy Search" theme={APP_NAME} description={PAGE_DESCRIPTION}>
+    <Layout metadataKey="homepage" theme={theme} themeConfig={themeConfig}>
       <div className="relative">
         <Header />
         <main className="relative h-full">

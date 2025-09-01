@@ -6,7 +6,7 @@ import { ApiClient } from "@/api/http-common";
 import { FamilyLitigationPage } from "@/components/pages/familyLitigationPage";
 import { FamilyOriginalPage, IProps } from "@/components/pages/familyOriginalPage";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { TFamilyPage, TTarget, TGeography, TCorpusTypeDictionary, TSearchResponse } from "@/types";
+import { TCorpusTypeDictionary, TFamilyPage, TFamilyPublic, TGeography, TGeographySubdivision, TSearchResponse, TTarget } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
@@ -37,25 +37,37 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
 
   const id = context.params.id;
-  const client = new ApiClient(process.env.BACKEND_API_URL);
+  const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
+  const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
-  let familyData: TFamilyPage;
+  let familyData: TFamilyPage | TFamilyPublic;
   let vespaFamilyData: TSearchResponse;
   let targetsData: TTarget[] = [];
   let countriesData: TGeography[] = [];
   let corpus_types: TCorpusTypeDictionary;
+  let subdivisionsData: TGeographySubdivision[] = [];
 
   try {
-    const { data: returnedData } = await client.get(`/documents/${id}`);
+    const { data: returnedData } = await backendApiClient.get(`/documents/${id}`);
     familyData = returnedData;
 
     if (knowledgeGraphEnabled) {
       // fetch the families
-      const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
+      const { data: vespaFamilyDataResponse } = await backendApiClient.get(`/families/${familyData.import_id}`);
       vespaFamilyData = vespaFamilyDataResponse;
     }
   } catch (error) {
     // TODO: handle error more elegantly
+  }
+
+  // We're using the new families-api for litigation work
+  // This is slightly inefficient as we're making 2 API calls but we'll deprecate ☝️ once this becomes universal
+  const litigationEnabled = isLitigationEnabled(featureFlags, themeConfig);
+  if (litigationEnabled) {
+    try {
+      const { data: familyResponse } = await apiClient.get(`/families/${familyData.import_id}`);
+      familyData = familyResponse.data;
+    } catch (error) {}
   }
 
   if (familyData) {
@@ -67,11 +79,25 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   if (familyData) {
     try {
-      const configRaw = await client.getConfig();
+      const configRaw = await backendApiClient.getConfig();
       const response_geo = extractNestedData<TGeography>(configRaw.data.geographies);
       countriesData = response_geo[1];
       corpus_types = configRaw.data.corpus_types;
     } catch (error) {}
+  }
+
+  if (familyData) {
+    const allSubdivisions = await Promise.all<TGeographySubdivision[]>(
+      familyData.geographies
+        .filter((country) => country.length === 3 && !["XAA", "XAB"].includes(country))
+        .map(async (country) => {
+          try {
+            const { data: subDivisionResponse } = await apiClient.get(`/geographies/subdivisions/${country}`);
+            return subDivisionResponse;
+          } catch (error) {}
+        })
+    );
+    subdivisionsData = allSubdivisions.flat().filter((subdivision) => subdivision !== undefined);
   }
 
   if (!familyData) {
@@ -86,6 +112,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       countries: countriesData,
       family: familyData,
       featureFlags,
+      subdivisions: subdivisionsData,
       targets: targetsData,
       theme,
       themeConfig,

@@ -1,19 +1,9 @@
-import { TTheme } from "@/types";
+import { TThemeConfig } from "@/types";
 
-const DEFAULT_APP_NAME = "Climate Policy Radar";
-
-export const getAppTitle = (site: TTheme, contextTheme?: TTheme) => {
-  let title = DEFAULT_APP_NAME;
-
-  const theme = site ?? contextTheme;
-
-  switch (theme) {
-    case "cclw":
-      title = "Climate Change Laws of the World";
-      break;
-    case "mcf":
-      title = "Climate Project Explorer";
-      break;
+export const getAppTitle = (themeConfig?: TThemeConfig) => {
+  let title = "";
+  if (themeConfig) {
+    title = themeConfig.metadata.find((meta) => meta.key === "default")?.title ?? "";
   }
   return title;
 };

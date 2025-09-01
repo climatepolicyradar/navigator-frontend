@@ -27,6 +27,7 @@
       "@/interfaces/*": ["src/interfaces/*"],
       "@/types": ["src/types/index"],
       "@/pages/*": ["src/pages/*"],
+      "@/stubs/*": ["src/stubs/*"],
       "@/utils/*": ["src/utils/*"],
       "@/ccc/*": ["themes/ccc/*"],
       "@/cclw/*": ["themes/cclw/*"],
@@ -36,6 +37,5 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/api/pdf.js", "vitest.config.mts"],
-  "exclude": ["node_modules"],
-  "types": ["cypress", "cypress-file-upload"]
+  "exclude": ["node_modules"]
 }

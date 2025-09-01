@@ -10,14 +10,9 @@
     "contentPath": "contact"
   },
   {
-    "title": "FAQ",
+    "title": "FAQs",
     "path": "faq",
     "contentPath": "faq"
-  },
-  {
-    "title": "Framework Laws",
-    "path": "framework-laws",
-    "contentPath": "framework-laws"
   },
   {
     "title": "Methodology",

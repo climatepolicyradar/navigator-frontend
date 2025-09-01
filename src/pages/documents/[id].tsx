@@ -22,7 +22,7 @@ import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { withEnvConfig } from "@/context/EnvConfig";
 import useSearch from "@/hooks/useSearch";
-import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse } from "@/types";
+import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TSlugResponse, TThemeConfig } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled } from "@/utils/features";
@@ -32,8 +32,9 @@ import { readConfigFile } from "@/utils/readConfigFile";
 
 interface IProps {
   document: TDocumentPage;
-  family: TFamilyPage;
+  family: TFamilyPage; // TODO switch to V2 API and use TFamilyPublic
   theme: TTheme;
+  themeConfig: TThemeConfig;
   vespaFamilyData?: TSearchResponse;
   vespaDocumentData?: TSearchResponse;
 }
@@ -62,6 +63,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   document,
   family,
   theme,
+  themeConfig,
   vespaFamilyData,
   vespaDocumentData,
 }: IProps) => {
@@ -151,7 +153,13 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   );
 
   return (
-    <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
+    <Layout
+      title={`${document.title}`}
+      description={getDocumentDescription(document.title)}
+      theme={theme}
+      themeConfig={themeConfig}
+      attributionUrl={family.organisation_attribution_url}
+    >
       <section
         className="pb-8 flex-1 flex flex-col"
         data-analytics-date={family.published_date}
@@ -302,29 +310,40 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
 
   const id = context.params.id;
-  const client = new ApiClient(process.env.BACKEND_API_URL);
+  const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
+  const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
   let documentData: TDocumentPage;
   let familyData: TFamilyPage;
   let vespaFamilyData: TSearchResponse | null = null;
   let vespaDocumentData: TSearchResponse | null = null;
+  let slug: TSlugResponse;
 
   try {
-    const { data: returnedDocumentData } = await client.get(`/documents/${id}`);
-    documentData = returnedDocumentData.document;
-    const familySlug = returnedDocumentData.family?.slug;
-    const { data: returnedFamilyData } = await client.get(`/documents/${familySlug}`);
-    familyData = returnedFamilyData;
+    const { data: slugData } = await apiClient.get(`/families/slugs/${id}`);
+    slug = slugData.data;
+  } catch (error) {
+    return {
+      notFound: true,
+    };
+  }
 
-    // Fetch Vespa family data for concepts (similar to document/[id].tsx)
+  try {
+    const { data: returnedDocumentData } = await apiClient.get(`/families/documents/${slug.family_document_import_id}`);
+    const { family, ...otherDocumentData } = returnedDocumentData.data;
+    familyData = family;
+    documentData = otherDocumentData;
+
     if (knowledgeGraphEnabled) {
-      const { data: vespaDocumentDataResponse } = await client.get(`/document/${documentData.import_id}`);
+      const { data: vespaDocumentDataResponse } = await backendApiClient.get(`/document/${documentData.import_id}`);
       vespaDocumentData = vespaDocumentDataResponse;
-      const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
+      const { data: vespaFamilyDataResponse } = await backendApiClient.get(`/families/${familyData.import_id}`);
       vespaFamilyData = vespaFamilyDataResponse;
     }
-  } catch {
-    // TODO: Handle error more elegantly
+  } catch (error) {
+    return {
+      notFound: true,
+    };
   }
 
   if (!documentData || !familyData) {
@@ -338,6 +357,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       document: documentData,
       family: familyData,
       theme: theme,
+      themeConfig: themeConfig,
       vespaFamilyData: vespaFamilyData ?? null,
       vespaDocumentData: vespaDocumentData ?? null,
     }),

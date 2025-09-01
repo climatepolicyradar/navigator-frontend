@@ -37,12 +37,23 @@ const familyConcepts: FamilyConcept[] = [
 
 const expectedGroupMappedConcepts: TConcept[] = [
   {
-    wikibase_id: "Australia",
+    wikibase_id: "jurisdiction/New South Wales",
+    preferred_label: "New South Wales",
+    subconcept_of: ["Australia"],
+    recursive_subconcept_of: ["jurisdiction/Australia"],
+    type: "jurisdiction",
+    alternative_labels: [],
+    negative_labels: [],
+    description: "",
+    related_concepts: [],
+    has_subconcept: [],
+  },
+  {
+    wikibase_id: "jurisdiction/Australia",
     preferred_label: "Australia",
     subconcept_of: [],
     recursive_subconcept_of: [],
     type: "jurisdiction",
-    // Not bothered
     alternative_labels: [],
     negative_labels: [],
     description: "",
@@ -50,25 +61,11 @@ const expectedGroupMappedConcepts: TConcept[] = [
     has_subconcept: [],
   },
   {
-    wikibase_id: "New South Wales",
-    preferred_label: "New South Wales",
-    subconcept_of: ["Australia"],
-    recursive_subconcept_of: ["Australia"],
-    type: "jurisdiction",
-    // Not bothered
-    alternative_labels: [],
-    negative_labels: [],
-    description: "",
-    related_concepts: [],
-    has_subconcept: [],
-  },
-  {
-    wikibase_id: "Supreme Court of New south Wales",
+    wikibase_id: "jurisdiction/Supreme Court of New south Wales",
     preferred_label: "Supreme Court of New south Wales",
     subconcept_of: ["New South Wales"],
-    recursive_subconcept_of: ["Australia", "New South Wales"],
+    recursive_subconcept_of: ["jurisdiction/Australia", "jurisdiction/New South Wales"],
     type: "jurisdiction",
-    // Not bothered
     alternative_labels: [],
     negative_labels: [],
     description: "",
@@ -76,38 +73,35 @@ const expectedGroupMappedConcepts: TConcept[] = [
     has_subconcept: [],
   },
   {
+    wikibase_id: "jurisdiction/Bucharest Court of First Instance",
+    preferred_label: "Bucharest Court of First Instance",
+    subconcept_of: ["Romania"],
+    recursive_subconcept_of: ["jurisdiction/Romania"],
+    type: "jurisdiction",
+    alternative_labels: [],
+    negative_labels: [],
+    description: "",
+    related_concepts: [],
+    has_subconcept: [],
+  },
+  {
+    wikibase_id: "jurisdiction/Bucharest Court of Appeal",
+    preferred_label: "Bucharest Court of Appeal",
+    subconcept_of: ["Romania"],
+    recursive_subconcept_of: ["jurisdiction/Romania"],
+    type: "jurisdiction",
+    alternative_labels: [],
+    negative_labels: [],
+    description: "",
+    related_concepts: [],
+    has_subconcept: [],
+  },
+  {
+    wikibase_id: "jurisdiction/Romania",
     preferred_label: "Romania",
-    wikibase_id: "Romania",
     subconcept_of: [],
     recursive_subconcept_of: [],
     type: "jurisdiction",
-    // Not bothered
-    alternative_labels: [],
-    negative_labels: [],
-    description: "",
-    related_concepts: [],
-    has_subconcept: [],
-  },
-  {
-    wikibase_id: "Bucharest Court of Appeal",
-    preferred_label: "Bucharest Court of Appeal",
-    subconcept_of: ["Romania"],
-    recursive_subconcept_of: ["Romania"],
-    type: "jurisdiction",
-    // Not bothered
-    alternative_labels: [],
-    negative_labels: [],
-    description: "",
-    related_concepts: [],
-    has_subconcept: [],
-  },
-  {
-    wikibase_id: "Bucharest Court of First Instance",
-    preferred_label: "Bucharest Court of First Instance",
-    subconcept_of: ["Romania"],
-    recursive_subconcept_of: ["Romania"],
-    type: "jurisdiction",
-    // Not bothered
     alternative_labels: [],
     negative_labels: [],
     description: "",
@@ -119,6 +113,7 @@ const expectedGroupMappedConcepts: TConcept[] = [
 describe("groupFamilyConcepts", () => {
   it("should group family concepts by their root ancestor", () => {
     const result = mapFamilyConceptsToConcepts(familyConcepts);
+
     expect(result).toEqual(expect.arrayContaining(expectedGroupMappedConcepts));
   });
 });
@@ -126,6 +121,6 @@ describe("groupFamilyConcepts", () => {
 describe("getRecursiveParentLabels", () => {
   it("", () => {
     const result = getRecursiveParentLabels(familyConcepts[2], familyConcepts);
-    expect(result).toEqual(["Australia", "New South Wales"]);
+    expect(result).toEqual(["jurisdiction/Australia", "jurisdiction/New South Wales"]);
   });
 });

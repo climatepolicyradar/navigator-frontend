@@ -117,6 +117,11 @@ const config: TThemeConfig = {
     {
       key: "default",
       title: "Climate Project Explorer",
+      description: "",
+    },
+    {
+      key: "homepage",
+      title: "Climate Fund Search",
       description:
         "Climate Project Explorer is a single point of entry for navigating and exploring the MCF's documents (including project documents and policies).",
     },
@@ -127,7 +132,7 @@ const config: TThemeConfig = {
     },
     {
       key: "search",
-      title: "Climate Project Search",
+      title: "Search the Climate Project Explorer database",
       description: "Quickly and easily search through the complete text of thousands of project documents.",
     },
   ],
@@ -138,6 +143,7 @@ const config: TThemeConfig = {
     knowledgeGraph: false,
     litigation: false,
     searchFamilySummary: true,
+    vespaSearchOnGeographies: false,
   },
 };
 

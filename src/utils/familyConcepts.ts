@@ -19,7 +19,8 @@ export function getRecursiveParentLabels(item: FamilyConcept, items: FamilyConce
 
   // Otherwise, recursively get the labels of the parents
   const recursiveParentLabels = parentLabels.flatMap((parent) => {
-    return [parent.preferred_label, ...getRecursiveParentLabels(parent, items)];
+    const parentIdentifier = parent.relation ? `${parent.relation}/${parent.preferred_label}` : parent.preferred_label;
+    return [parentIdentifier, ...getRecursiveParentLabels(parent, items)];
   });
 
   // we reverse this to make sure we have the root parent first and
@@ -29,7 +30,7 @@ export function getRecursiveParentLabels(item: FamilyConcept, items: FamilyConce
 export function mapFamilyConceptsToConcepts(familyConcepts: FamilyConcept[]): TConcept[] {
   return familyConcepts.map((familyConcept) => {
     return {
-      wikibase_id: familyConcept.preferred_label,
+      wikibase_id: `${familyConcept.relation}/${familyConcept.preferred_label}`,
       preferred_label: familyConcept.preferred_label,
       subconcept_of: familyConcept.subconcept_of_labels,
       recursive_subconcept_of: getRecursiveParentLabels(familyConcept, familyConcepts),

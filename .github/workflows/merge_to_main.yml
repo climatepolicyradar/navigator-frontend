@@ -140,7 +140,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        theme: [cpr, cclw, mcf]
+        theme: [cpr, cclw, mcf, ccc]
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: $HOME/.cache/ms-playwright
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -151,7 +153,16 @@ jobs:
       - run: THEME=${{ matrix.theme }} npm run build
         env:
           NODE_ENV: production
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+
       - run: npx playwright install --with-deps
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
 
       - name: Ensure test results directory exists
         run: mkdir -p test-results-${{ matrix.theme }}
@@ -162,7 +173,11 @@ jobs:
           junit-paths: test-results-${{ matrix.theme }}/playwright.xml
           run: |
             echo "Running Playwright tests..."
-            npx playwright test tests/core/ tests/${{ matrix.theme }}/
+            if [ "${{ matrix.theme }}" = "ccc" ]; then
+              npx playwright test tests/${{ matrix.theme }}/
+            else
+              npx playwright test tests/core/ tests/${{ matrix.theme }}/
+            fi
             echo "Playwright test completed. Checking for output file..."
             if [ -f "test-results-${{ matrix.theme }}/playwright.xml" ]; then
               echo "✅ playwright.xml found, file size: $(wc -c < test-results-${{ matrix.theme }}/playwright.xml) bytes"
@@ -177,6 +192,7 @@ jobs:
           org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
         env:
           THEME: ${{ matrix.theme }}
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
 
   release:
     runs-on: ubuntu-latest
@@ -268,3 +284,16 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-west-1
+
+  cleanup-lhci-pr-data:
+    runs-on: ubuntu-latest
+    needs: [lhci-desktop, lhci-mobile]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trigger downstream workflow
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository_owner }}/navigator-infra/dispatches \
+            -d '{"event_type":"cleanup_lhci","client_payload":{"commit_hash":"${{ github.sha }}","source_repo":"${{ github.repository }}"}}'

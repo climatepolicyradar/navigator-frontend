@@ -8,7 +8,7 @@ import { GEO_EU_COUNTRIES } from "@/constants/mapEUCountries";
 import useConfig from "@/hooks/useConfig";
 import useGeographies from "@/hooks/useGeographies";
 import { useMcfData } from "@/hooks/useMcfData";
-import { TGeography } from "@/types";
+import { TGeography, TTheme } from "@/types";
 
 import GeographySelect from "./GeographySelect";
 import { Legend } from "./Legend";
@@ -124,7 +124,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
       {geography.familyCounts?.UNFCCC > 0 && <p>UNFCCC: {geography.familyCounts?.UNFCCC || 0}</p>}
       {geography.familyCounts?.MCF > 0 && <p>MCF projects: {geography.familyCounts?.MCF || 0}</p>}
       {geography.familyCounts?.REPORTS > 0 && <p>Reports: {geography.familyCounts?.REPORTS || 0}</p>}
-      {geography.familyCounts?.LITIGATION > 0 && <p>Litigation: {geography.familyCounts?.LITIGATION || 0}</p>}
+      {geography.familyCounts?.LITIGATION > 0 ? <p>Litigation: {geography.familyCounts?.LITIGATION || 0}</p> : <p>No litigation data available</p>}
       <p>
         <LinkWithQuery href={`/geographies/${geography.slug}`} className="text-blue-600 underline hover:text-blue-800">
           View more
@@ -136,9 +136,11 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
 
 interface IProps {
   showLitigation?: boolean;
+  showCategorySelect?: boolean;
+  theme: TTheme;
 }
 
-export default function MapChart({ showLitigation = false }: IProps) {
+export default function MapChart({ showLitigation = false, showCategorySelect = true, theme }: IProps) {
   const configQuery = useConfig();
   const geographiesQuery = useGeographies();
   const { data: { countries: configCountries = [] } = {} } = configQuery;
@@ -153,10 +155,10 @@ export default function MapChart({ showLitigation = false }: IProps) {
   const showMcf = useMcfData();
 
   useEffect(() => {
-    if (!showMcf && selectedFamCategory === "mcf") {
-      setSelectedFamCategory("lawsPolicies");
+    if (theme === "ccc") {
+      setSelectedFamCategory("litigation");
     }
-  }, [showMcf, selectedFamCategory]);
+  }, [theme]);
 
   // Combine the data from the coordinates and the map data from the API into a unified object
   const mapData: TMapData = useMemo(() => {
@@ -267,26 +269,46 @@ export default function MapChart({ showLitigation = false }: IProps) {
     return <p>There was an error loading the data for the map.</p>;
   }
 
+  const getMaxValue = () => {
+    switch (selectedFamCategory) {
+      case "lawsPolicies":
+        return mapData.maxLawsPolicies;
+      case "unfccc":
+        return mapData.maxUnfccc;
+      case "reports":
+        return mapData.maxReports;
+      case "mcf":
+        return mapData.maxMcf;
+      case "litigation":
+        return mapData.maxLitigation;
+      default:
+        return mapData.maxLawsPolicies;
+    }
+  };
+
   return (
     <>
       <div className="flex justify-between items-center my-4">
-        <div>
-          <select
-            className="border border-gray-300 small rounded-full !pl-4"
-            onChange={(e) => {
-              setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc" | "mcf" | "reports" | "litigation");
-            }}
-            value={selectedFamCategory}
-            aria-label="Select a document type to display on the map"
-            name="Document type selector"
-          >
-            <option value="lawsPolicies">Laws and policies</option>
-            <option value="unfccc">UNFCCC</option>
-            {showMcf && <option value="mcf">MCF projects</option>}
-            <option value="reports">Reports</option>
-            {showLitigation && <option value="litigation">Litigation</option>}
-          </select>
-        </div>
+        {showCategorySelect && (
+          <div>
+            <select
+              className="border border-gray-300 small rounded-full !pl-4"
+              onChange={(e) => {
+                setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc" | "mcf" | "reports" | "litigation");
+              }}
+              value={selectedFamCategory}
+              aria-label="Select a document type to display on the map"
+              name="Document type selector"
+            >
+              <option value="lawsPolicies">Laws and policies</option>
+              <option value="unfccc">UNFCCC</option>
+              {showMcf && <option value="mcf">MCF projects</option>}
+              <option value="reports">Reports</option>
+              {showLitigation && <option value="litigation">Litigation</option>}
+            </select>
+          </div>
+        )}
+
         <div>
           <div className="flex items-center gap-4">
             <div className="relative w-[300px]" data-cy="geographies">
@@ -408,23 +430,7 @@ export default function MapChart({ showLitigation = false }: IProps) {
           </label>
         </div>
       </div>
-      {!!mapData.maxLawsPolicies && !!mapData.maxUnfccc && (
-        <Legend
-          max={
-            selectedFamCategory === "lawsPolicies"
-              ? mapData.maxLawsPolicies
-              : selectedFamCategory === "unfccc"
-                ? mapData.maxUnfccc
-                : selectedFamCategory === "reports"
-                  ? mapData.maxReports
-                  : selectedFamCategory === "mcf"
-                    ? mapData.maxMcf
-                    : mapData.maxLitigation
-          }
-          showMcf={showMcf}
-          showLitigation={showLitigation}
-        />
-      )}
+      <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} theme={theme} />
     </>
   );
 }

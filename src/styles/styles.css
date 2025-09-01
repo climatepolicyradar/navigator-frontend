@@ -353,9 +353,8 @@ ul li.selected {
 .text-content a {
   @apply text-blue-600 underline hover:text-blue-800;
 }
-.text-content p,
-.search-results p {
-  @apply my-5;
+.text-content p + p {
+  @apply mt-5;
 }
 .text-content ul,
 .search-results ul {
@@ -442,6 +441,9 @@ ul li.selected {
 .text-content h4,
 .search-results h4 {
   @apply text-lg mb-5;
+}
+.search-results p {
+  @apply my-5;
 }
 
 /* Circle icons used in timeline */

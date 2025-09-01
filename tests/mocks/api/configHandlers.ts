@@ -1,5 +1,16 @@
 import { http, HttpResponse } from "msw";
 
+import cprConfig from "@/cpr/config";
+import { TThemeConfig } from "@/types";
+
+let themeConfig: TThemeConfig = cprConfig;
+
+export const setUpThemeConfig = (testThemeConfig: TThemeConfig) => {
+  if (testThemeConfig) {
+    themeConfig = testThemeConfig;
+  }
+};
+
 export const configHandlers = [
   http.get("/api/env", () => {
     return HttpResponse.json({
@@ -11,32 +22,7 @@ export const configHandlers = [
     });
   }),
   http.get("/api/theme-config", () => {
-    return HttpResponse.json({
-      categories: {
-        label: "Category",
-        options: [
-          {
-            label: "All",
-            slug: "all",
-          },
-        ],
-      },
-      documentCategories: ["All"],
-      filters: [
-        {
-          label: "Published jurisdiction",
-          taxonomyKey: "country",
-          options: [],
-        },
-      ],
-      features: { knowledgeGraph: false, searchFamilySummary: false },
-      metadata: [
-        {
-          key: "search",
-          title: "Law and Policy Search",
-        },
-      ],
-    });
+    return HttpResponse.json(themeConfig);
   }),
   http.get("*/config", () => {
     return HttpResponse.json({
@@ -56,8 +42,8 @@ export const configHandlers = [
                 id: 2,
                 slug: "france",
                 display_value: "France",
-                value: "france",
-                type: "country",
+                value: "FRA",
+                type: "ISO-3166",
                 parent_id: 1,
               },
               // Subdivisions
@@ -68,8 +54,8 @@ export const configHandlers = [
                 id: 3,
                 slug: "spain",
                 display_value: "Spain",
-                value: "spain",
-                type: "country",
+                value: "ESP",
+                type: "ISO-3166",
                 parent_id: 1,
               },
               // Subdivisions
@@ -92,8 +78,8 @@ export const configHandlers = [
                 id: 5,
                 slug: "south-africa",
                 display_value: "South Africa",
-                value: "south-africa",
-                type: "country",
+                value: "ZAF",
+                type: "ISO-3166",
                 parent_id: 4,
               },
               // Subdivisions
@@ -104,8 +90,8 @@ export const configHandlers = [
                 id: 6,
                 slug: "central-african-republic",
                 display_value: "Central African Republic",
-                value: "central-african-republic",
-                type: "country",
+                value: "CAF",
+                type: "ISO-3166",
                 parent_id: 4,
               },
               // Subdivisions
@@ -116,8 +102,8 @@ export const configHandlers = [
                 id: 7,
                 slug: "sudan",
                 display_value: "Sudan",
-                value: "sudan",
-                type: "country",
+                value: "SDN",
+                type: "ISO-3166",
                 parent_id: 4,
               },
               // Subdivisions
@@ -128,8 +114,8 @@ export const configHandlers = [
                 id: 8,
                 slug: "south-sudan",
                 display_value: "South Sudan",
-                value: "south-sudan",
-                type: "country",
+                value: "SSD",
+                type: "ISO-3166",
                 parent_id: 4,
               },
               // Subdivisions
@@ -142,8 +128,8 @@ export const configHandlers = [
             id: 9,
             display_value: "Latin America & Caribbean",
             slug: "latin-america-caribbean",
-            type: "World Bank Region",
             value: "Latin America & Caribbean",
+            type: "World Bank Region",
             parent_id: null,
           },
           children: [
@@ -151,12 +137,11 @@ export const configHandlers = [
               node: {
                 id: 10,
                 display_value: "Belize",
-                slug: "BLZ",
-                type: "country",
-                value: "Belize",
+                slug: "belize",
+                type: "ISO-3166",
+                value: "BLZ",
                 parent_id: 9,
               },
-              // Subdivisions
               children: [],
             },
             {
@@ -176,6 +161,52 @@ export const configHandlers = [
         {
           node: {
             id: 12,
+            display_value: "East Asia & Pacific",
+            slug: "east-asia-pacific",
+            value: "East Asia & Pacific",
+            type: "World Bank Region",
+            parent_id: null,
+          },
+          children: [
+            {
+              node: {
+                id: 13,
+                display_value: "Australia",
+                slug: "australia",
+                value: "AUS",
+                type: "ISO-3166",
+                parent_id: 12,
+              },
+              children: [
+                {
+                  node: {
+                    id: 349,
+                    display_value: "New South Wales",
+                    slug: "au-nsw",
+                    value: "AU-NSW",
+                    type: "ISO-3166-2",
+                    parent_id: 13,
+                  },
+                  children: [],
+                },
+                {
+                  node: {
+                    id: 351,
+                    display_value: "Queensland",
+                    slug: "au-qld",
+                    value: "AU-QLD",
+                    type: "ISO-3166-2",
+                    parent_id: 13,
+                  },
+                  children: [],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          node: {
+            id: 14,
             display_value: "South Asia",
             slug: "south-asia",
             value: "South Asia",
@@ -185,14 +216,13 @@ export const configHandlers = [
           children: [
             {
               node: {
-                id: 13,
+                id: 15,
                 display_value: "Afghanistan",
                 slug: "afghanistan",
                 value: "AFG",
                 type: "ISO-3166",
-                parent_id: 12,
+                parent_id: 14,
               },
-              // Subdivisions
               children: [],
             },
           ],

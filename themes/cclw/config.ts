@@ -149,8 +149,14 @@ const config: TThemeConfig = {
   ],
   metadata: [
     {
+      // default - used for app title (i.e. on each page after the title)
       key: "default",
       title: "Climate Change Laws of the World",
+      description: "",
+    },
+    {
+      key: "homepage",
+      title: "Law and Policy Search",
       description:
         "The Climate Change Laws of the World database gives you access to national-level climate change legislation and policies from around the world.",
     },
@@ -162,7 +168,7 @@ const config: TThemeConfig = {
     },
     {
       key: "search",
-      title: "Law and Policy Search",
+      title: "Search the Climate Change Laws of the World database",
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
   ],
@@ -173,6 +179,7 @@ const config: TThemeConfig = {
     knowledgeGraph: true,
     litigation: false,
     searchFamilySummary: true,
+    vespaSearchOnGeographies: false,
   },
 };
 

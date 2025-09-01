@@ -76,7 +76,7 @@ export const PageHeader = <Tab extends string>({
           {metadata.map((property) => (
             <div key={property.label} className="flex flex-col gap-2.5">
               <div className={tertiaryTextClasses}>{property.label}</div>
-              {property.value}
+              <div className="inline-block">{property.value}</div>
             </div>
           ))}
         </div>
@@ -87,7 +87,11 @@ export const PageHeader = <Tab extends string>({
         <div className="flex gap-8 cols-3:col-start-2 cols-3:col-end-4 cols-4:col-end-5 text-lg leading-tight font-[660]">
           {tabs.map((tab) => {
             const tabIsActive = tab.tab === currentTab;
-            const tabClasses = joinTailwindClasses("pb-4 mb-[1px] border-b-[3px]", !tabIsActive && `${tertiaryTextClasses} border-b-transparent`);
+            const tabClasses = joinTailwindClasses(
+              "pb-4 mb-[1px] border-b-[3px]",
+              coloured ? "hover:text-text-light" : "hover:text-text-primary",
+              !tabIsActive && `${tertiaryTextClasses} border-b-transparent`
+            );
 
             return (
               <button key={tab.tab} type="button" onClick={onTabClick(tab.tab)} className={tabClasses}>

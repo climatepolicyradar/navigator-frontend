@@ -96,16 +96,12 @@ export default function buildSearchQuery(
   }
 
   if (routerQuery[QUERY_PARAMS.concept_preferred_label]) {
-    const conceptPreferredLabelFilters = routerQuery[QUERY_PARAMS.concept_preferred_label];
-
-    Array.isArray(conceptPreferredLabelFilters)
-      ? conceptPreferredLabelFilters.map((name) => {
-          query.metadata.push({
-            name: "family.concept_preferred_label",
-            value: name,
-          });
-        })
-      : query.metadata.push({ name: "family.concept_preferred_label", value: conceptPreferredLabelFilters });
+    query.metadata = buildSearchQueryMetadata(
+      query.metadata,
+      routerQuery[QUERY_PARAMS.concept_preferred_label],
+      "concept_preferred_label",
+      themeConfig
+    );
   }
 
   const qCategory = (routerQuery[QUERY_PARAMS.category] as string) ?? "All";
@@ -129,6 +125,11 @@ export default function buildSearchQuery(
   if (routerQuery[QUERY_PARAMS.country]) {
     const countries = routerQuery[QUERY_PARAMS.country];
     keyword_filters.countries = Array.isArray(countries) ? countries : [countries];
+  }
+
+  if (routerQuery[QUERY_PARAMS.subdivision]) {
+    const subdivisions = routerQuery[QUERY_PARAMS.subdivision];
+    keyword_filters.subdivisions = Array.isArray(subdivisions) ? subdivisions : [subdivisions];
   }
 
   if (routerQuery[QUERY_PARAMS.active_continuation_token]) {
@@ -196,9 +197,7 @@ export default function buildSearchQuery(
   }
   // ---- End of Laws and Policies specific ----
 
-  // ---- MCF specific ----
-  // These are the filters that are specific to the MCFs corpus types
-  // TODO: handle this more elegantly and scaleably
+  // defaultCorpora is defined in apps without any category filters
   if (themeConfig.defaultCorpora) {
     query.corpus_import_ids = themeConfig.defaultCorpora;
   }
@@ -219,7 +218,7 @@ export default function buildSearchQuery(
         if (fundOption?.value) corpusIds.push(...fundOption.value);
       }
     }
-    query.corpus_import_ids = corpusIds; // this will overrite the defaultCorpora - which is fine
+    query.corpus_import_ids = corpusIds; // this will overwrite the defaultCorpora - which is fine
   }
 
   if (routerQuery[QUERY_PARAMS.fund_doc_type]) {
@@ -242,7 +241,7 @@ export default function buildSearchQuery(
       // If the user has also selected a fund, we only want to display the selected type of document for that fund
       query.corpus_import_ids = query.corpus_import_ids.filter((id) => corpusIds.includes(id));
     } else {
-      query.corpus_import_ids = corpusIds; // this will overrite the defaultCorpora - which is fine
+      query.corpus_import_ids = corpusIds; // this will overwrite the defaultCorpora - which is fine
     }
   }
 
@@ -253,7 +252,6 @@ export default function buildSearchQuery(
   if (routerQuery[QUERY_PARAMS.implementing_agency]) {
     query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS.implementing_agency], "implementing_agency", themeConfig);
   }
-  // ---- End of MCF specific ----
 
   // ---- Reports & UNFCCC specific ----
   // These are the filters that are specific to the Reports and UNFCCC corpus types - note: we pass in the corpusIds to check as there are multiple instances of the same filter

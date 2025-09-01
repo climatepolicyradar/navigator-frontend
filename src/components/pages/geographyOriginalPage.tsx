@@ -7,8 +7,8 @@ import { ExternalLink } from "@/components/ExternalLink";
 import { Targets } from "@/components/Targets";
 import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
-import { CountryHeader } from "@/components/blocks/CountryHeader";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import { CountryHeader } from "@/components/deprecated/CountryHeader";
 import { Divider } from "@/components/dividers/Divider";
 import { FamilyListItem } from "@/components/document/FamilyListItem";
 import Layout from "@/components/layouts/Main";
@@ -20,16 +20,29 @@ import { Event } from "@/components/timeline/Event";
 import { Timeline } from "@/components/timeline/Timeline";
 import { Heading } from "@/components/typography/Heading";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { TDocumentCategory, TEvent, TFeatureFlags, TGeographyStats, TGeographySummary, TTarget, TTheme, TThemeConfig } from "@/types";
+import {
+  GeographyV2,
+  TDocumentCategory,
+  TEvent,
+  TFeatureFlags,
+  TGeographyStats,
+  TGeographySummary,
+  TSearch,
+  TTarget,
+  TTheme,
+  TThemeConfig,
+} from "@/types";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 export interface IProps {
   featureFlags: TFeatureFlags;
   geography: TGeographyStats;
+  geographyV2: GeographyV2;
   summary: TGeographySummary;
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
+  vespaSearchResults?: TSearch;
 }
 
 const categories: { title: TDocumentCategory; slug: string }[] = [
@@ -44,11 +57,11 @@ const categories: { title: TDocumentCategory; slug: string }[] = [
 
 const MAX_NUMBER_OF_FAMILIES = 3;
 
-export const GeographyOriginalPage = ({ geography, summary, targets, theme, themeConfig }: IProps) => {
+export const GeographyOriginalPage = ({ geography, summary, targets, theme, themeConfig, vespaSearchResults }: IProps) => {
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
-  const [selectedCategory, setselectedCategory] = useState<TDocumentCategory>(themeConfig.defaultDocumentCategory || "All");
+  const [selectedCategory, setselectedCategory] = useState<TDocumentCategory>(themeConfig.defaultDocumentCategory);
 
   const hasEvents = !!summary?.events && summary?.events?.length > 0;
   const hasFamilies = !!summary?.top_families;
@@ -133,9 +146,9 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
       return allFamilies.map((family) => {
         if (family)
           return (
-            <div key={family.family_slug} className="mb-10">
+            <ol key={family.family_slug} className="mb-10">
               <FamilyListItem family={family} />
-            </div>
+            </ol>
           );
       });
     }
@@ -144,9 +157,9 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
       return summary.top_families.Legislative.length === 0
         ? renderEmpty("Legislative")
         : summary.top_families.Legislative.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <div key={family.family_slug} className="mb-10">
+            <ol key={family.family_slug} className="mb-10">
               <FamilyListItem family={family} />
-            </div>
+            </ol>
           ));
     }
     // Executive
@@ -154,9 +167,9 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
       return summary.top_families.Executive.length === 0
         ? renderEmpty("Executive")
         : summary.top_families.Executive.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <div key={family.family_slug} className="mb-10">
+            <ol key={family.family_slug} className="mb-10">
               <FamilyListItem family={family} />
-            </div>
+            </ol>
           ));
     }
     // UNFCCC
@@ -164,9 +177,9 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
       return summary.top_families.UNFCCC.length === 0
         ? renderEmpty("UNFCCC")
         : summary.top_families.UNFCCC.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <div key={family.family_slug} className="mb-10">
+            <ol key={family.family_slug} className="mb-10">
               <FamilyListItem family={family} />
-            </div>
+            </ol>
           ));
     }
     // Litigation
@@ -186,9 +199,9 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
       return summary.top_families.MCF.length === 0
         ? renderEmpty("multilateral climate funds")
         : summary.top_families.MCF.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <div key={family.family_slug} className="mb-10">
+            <ol key={family.family_slug} className="mb-10">
               <FamilyListItem family={family} />
-            </div>
+            </ol>
           ));
     }
     // Reports
@@ -196,9 +209,9 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
       return summary.top_families.Reports.length === 0
         ? renderEmpty("reports")
         : summary.top_families.Reports.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <div key={family.family_slug} className="mb-10">
+            <ol key={family.family_slug} className="mb-10">
               <FamilyListItem family={family} />
-            </div>
+            </ol>
           ));
     }
   };
@@ -251,7 +264,7 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
               <section className="mt-8">
                 <Heading level={2}>Documents</Heading>
               </section>
-              {hasFamilies && (
+              {!vespaSearchResults && hasFamilies && (
                 <>
                   <section className="" data-cy="top-documents">
                     <div className="my-4 md:flex">
@@ -271,6 +284,31 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
                   )}
                 </>
               )}
+              {vespaSearchResults && (
+                <>
+                  <section className="" data-cy="top-documents">
+                    <div className="my-4 md:flex">
+                      <div className="flex-grow">
+                        <TabbedNav activeItem={selectedCategory} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
+                      </div>
+                    </div>
+                    <ol className="mb-10">
+                      {vespaSearchResults.families.map((family) => (
+                        <FamilyListItem family={family} key={family.family_slug} />
+                      ))}
+                    </ol>
+                  </section>
+                  {selectedCategory !== "Litigation" && (
+                    <div data-cy="see-more-button">
+                      <Button rounded variant="outlined" className="my-5" onClick={handleDocumentSeeMoreClick}>
+                        View more documents
+                      </Button>
+                      <Divider />
+                    </div>
+                  )}
+                </>
+              )}
+
               {hasTargets && (
                 <>
                   <section className="mt-10" id="targets">

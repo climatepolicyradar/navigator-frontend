@@ -1,21 +1,16 @@
 import { TextSearch } from "lucide-react";
 import { NextRouter, useRouter } from "next/router";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Accordian } from "@/components/accordian/Accordian";
 import { Badge } from "@/components/atoms/label/Badge";
 import { Select } from "@/components/atoms/select/Select";
 import { InputCheck } from "@/components/forms/Checkbox";
-import { NewFeatureCard } from "@/components/molecules/newFeatures/NewFeatureCard";
-import { NEW_FEATURES } from "@/constants/newFeatures";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { NewFeatureContext } from "@/context/NewFeatureContext";
 import { TConcept } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { firstCase } from "@/utils/text";
-
-import { ExternalLink } from "../ExternalLink";
 
 interface IProps {
   concepts: TConcept[];
@@ -66,10 +61,11 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
   }
   let selectedConcepts = query[QUERY_PARAMS.concept_preferred_label] ? [query[QUERY_PARAMS.concept_preferred_label]].flat() : [];
 
-  if (selectedConcepts.includes(concept.preferred_label)) {
-    selectedConcepts = selectedConcepts.filter((c) => c !== concept.preferred_label);
+  const selectedConceptLabel = concept.wikibase_id;
+  if (selectedConcepts.includes(selectedConceptLabel)) {
+    selectedConcepts = selectedConcepts.filter((c) => c !== selectedConceptLabel);
   } else {
-    selectedConcepts = [...selectedConcepts, concept.preferred_label];
+    selectedConcepts = [...selectedConcepts, selectedConceptLabel];
   }
 
   query[QUERY_PARAMS.concept_preferred_label] = selectedConcepts;
@@ -139,14 +135,12 @@ export const FamilyConceptPicker = ({
             />
           </div>
         </div>
-        {search !== "" && <p className="text-xs italic">The results below are also filtered using the topic's alternative labels</p>}
         <div className={`flex flex-col text-sm border-t border-border-light ${sort === "A-Z" ? "gap-2 border-t-0" : ""}`}>
           {/* GROUPED SORT */}
           {sort === "Grouped" &&
             rootConcepts.map((rootConcept, rootConceptIndex) => {
               const filteredConcepts = filterConcepts(conceptsGrouped[rootConcept.wikibase_id] || [], search);
               if (filteredConcepts.length === 0) return null;
-
               return (
                 <Accordian
                   title={firstCase(rootConcept.preferred_label)}
@@ -163,7 +157,7 @@ export const FamilyConceptPicker = ({
                         <InputCheck
                           key={concept.wikibase_id + i}
                           label={firstCase(concept.preferred_label)}
-                          checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], concept.preferred_label)}
+                          checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], concept.wikibase_id)}
                           onChange={() => {
                             onConceptChange(router, concept);
                           }}

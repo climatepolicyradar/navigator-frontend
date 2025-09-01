@@ -13,10 +13,10 @@ import Loader from "@/components/Loader";
 import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
 import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
-import SearchFilters from "@/components/blocks/SearchFilters";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Drawer from "@/components/drawer/Drawer";
 import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
+import SearchFilters from "@/components/filters/SearchFilters";
 import { SearchSettings } from "@/components/filters/SearchSettings";
 import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
@@ -42,7 +42,7 @@ import useSearch from "@/hooks/useSearch";
 import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
+import { isFamilyConceptsEnabled, isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
 import { getFilterLabel } from "@/utils/getFilterLabel";
@@ -184,6 +184,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     delete router.query[QUERY_PARAMS.active_continuation_token];
     delete router.query[QUERY_PARAMS.continuation_tokens];
     delete router.query[QUERY_PARAMS.country];
+    delete router.query[QUERY_PARAMS.subdivision];
     const query = { ...router.query };
     const regions = (query[QUERY_PARAMS.region] as string[]) || [];
 
@@ -244,6 +245,10 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
       } else {
         queryCollection.push(value);
       }
+    }
+    // If we are removing a country, clear non-applicable subdivisions
+    if (type === QUERY_PARAMS.country) {
+      delete router.query[QUERY_PARAMS.subdivision];
     }
 
     // If we are changing the fund or func document type for MCFs, clear non-applicable filters
@@ -482,7 +487,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                         <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories" />
                       )}
                       {familyConceptsData && currentSlideOut === "principalLaws" && (
-                        <FamilyConceptPicker concepts={groupedFamilyConcepts.principal_law} title="Principle laws" />
+                        <FamilyConceptPicker concepts={groupedFamilyConcepts.principal_law} title="Principal laws" />
                       )}
                       {familyConceptsData && currentSlideOut === "jurisdictions" && (
                         <FamilyConceptPicker concepts={groupedFamilyConcepts.jurisdiction} title="Jurisdictions" />
@@ -496,6 +501,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           countries={countries}
                           regionFilterLabel={getFilterLabel("Region", "region", router.query[QUERY_PARAMS.category], themeConfig)}
                           countryFilterLabel={getFilterLabel("Published jurisdiction", "country", router.query[QUERY_PARAMS.category], themeConfig)}
+                          litigationEnabled={isLitigationEnabled(featureFlags, themeConfig)}
                         />
                       )}
                     </SlideOut>
@@ -618,7 +624,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           </div>
                         </div>
                       </div>
-                      <section data-cy="search-results" className="min-h-screen">
+                      <section data-cy="search-results">
                         <h2 className="sr-only">Search results</h2>
                         {showCorporateDisclosuresInformation(router.query) && (
                           <Warning variant="info">
@@ -740,7 +746,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   // TODO: Next - start rendering this data
   let familyConceptsData: TConcept[] | undefined;
-  if (isLitigationEnabled(featureFlags, themeConfig)) {
+  if (isFamilyConceptsEnabled(featureFlags, themeConfig)) {
     try {
       const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts`);
       const familyConceptsJson: { data: FamilyConcept[] } = await familyConceptsResponse.json();

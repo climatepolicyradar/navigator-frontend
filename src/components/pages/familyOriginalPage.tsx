@@ -35,9 +35,11 @@ import {
   TConcept,
   TCorpusTypeDictionary,
   TDocumentPage,
+  TFamilyPublic,
   TFamilyPage,
   TFeatureFlags,
   TGeography,
+  TGeographySubdivision,
   TMatchedFamily,
   TSearchResponse,
   TTarget,
@@ -50,11 +52,14 @@ import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { truncateString } from "@/utils/truncateString";
 
+export const isNewEndpointData = (family: TFamilyPage | TFamilyPublic): family is TFamilyPublic => "concepts" in family;
+
 export interface IProps {
   corpus_types: TCorpusTypeDictionary;
   countries: TGeography[];
-  family: TFamilyPage;
+  family: TFamilyPage | TFamilyPublic;
   featureFlags: TFeatureFlags;
+  subdivisions: TGeographySubdivision[];
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
@@ -72,7 +77,12 @@ const documentIsPublished = (familyDocuments: TDocumentPage[], documentImportId:
   return isPublished;
 };
 
-export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page, targets = [], theme, vespaFamilyData }: IProps) => {
+export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page, targets = [], theme, themeConfig, vespaFamilyData }: IProps) => {
+  // TODO remove when only the newer API endpoint is being called in getServerSideProps
+  if (isNewEndpointData(page)) {
+    throw new Error("Cannot render FamilyOriginalPage with V2 API data");
+  }
+
   const router = useRouter();
   const pathname = usePathname();
   const startingNumberOfTargetsToDisplay = 5;
@@ -84,6 +94,7 @@ export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page,
 
   const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
+  const attributionUrl = page?.organisation_attribution_url;
 
   const geographyNames = page.geographies ? page.geographies.map((geo) => getCountryName(geo, countries)) : null;
   const geographyName = geographyNames ? geographyNames[0] : "";
@@ -212,7 +223,13 @@ export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page,
   };
 
   return (
-    <Layout title={`${page.title}`} description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)} theme={theme}>
+    <Layout
+      title={`${page.title}`}
+      description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)}
+      theme={theme}
+      themeConfig={themeConfig}
+      attributionUrl={attributionUrl}
+    >
       <Script id="analytics">
         analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "
         {page.geographies?.join(",")}";

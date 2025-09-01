@@ -5,12 +5,40 @@ const config = {
     baseURL: "http://localhost:3000",
     useWebserver: true,
   },
-  staging: {
+  // CPR
+  cpr_staging: {
     baseURL: "https://cpr.staging.climatepolicyradar.org",
     useWebserver: false,
   },
-  production: {
+  cpr_production: {
     baseURL: "https://app.climatepolicyradar.org",
+    useWebserver: false,
+  },
+  // CCLW
+  cclw_staging: {
+    baseURL: "https://cclw.staging.climatepolicyradar.org",
+    useWebserver: false,
+  },
+  cclw_production: {
+    baseURL: "https://climate-laws.org",
+    useWebserver: false,
+  },
+  // MCF
+  mcf_staging: {
+    baseURL: "https://mcf.staging.climatepolicyradar.org",
+    useWebserver: false,
+  },
+  mcf_production: {
+    baseURL: "https://climateprojectexplorer.org",
+    useWebserver: false,
+  },
+  // CCC
+  ccc_staging: {
+    baseURL: "https://ccc.staging.climatepolicyradar.org",
+    useWebserver: false,
+  },
+  ccc_production: {
+    baseURL: "https://ccc.production.climatepolicyradar.org",
     useWebserver: false,
   },
 };
@@ -30,13 +58,20 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [["junit", { outputFile: process.env.THEME ? `test-results-${process.env.THEME}/playwright.xml` : "playwright.xml" }]],
+  /*
+   * Reporter to use. See https://playwright.dev/docs/test-reporters
+   * The generated XML file is used in merge_to_main and pull_request gitHub workflows
+   * junit is used to report to Trunk
+   */
+  reporter: process.env.CI
+    ? [["junit", { outputFile: process.env.THEME ? `test-results-${process.env.THEME}/playwright.xml` : "playwright.xml" }]]
+    : "list",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: envConfig.baseURL,
-
+    video: "off",
+    screenshot: "off",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
   },
