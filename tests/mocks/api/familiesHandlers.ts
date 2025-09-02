@@ -53,20 +53,49 @@ const defaultFamiliesWithDocumentCounts = {
   ],
 };
 
-export const publishedFamiliesWithDocumentCounts = {
+export const testCorpus1FamiliesWithSubdivisionCounts = [
+  {
+    code: "US-DC",
+    name: "District of Columbia",
+    type: "ISO-3166-2",
+    count: 3133,
+  },
+  {
+    code: "US-CA",
+    name: "California",
+    type: "ISO-3166-2",
+    count: 1952,
+  },
+];
+
+export const testCorpus2FamiliesWithSubdivisionCounts = [
+  {
+    code: "US-MI",
+    name: "Michigan",
+    type: "ISO-3166-2",
+    count: 17,
+  },
+];
+
+export const testCorpus3FamiliesWithSubdivisionCounts = [
+  {
+    code: "AU-NSW",
+    name: "New South Wales",
+    type: "ISO-3166-2",
+    count: 62,
+  },
+];
+
+const familyCountsPerCorpus = {
+  "Test.corpus.n0000": testCorpus1FamiliesWithSubdivisionCounts,
+  "Test.corpus.n0001": testCorpus2FamiliesWithSubdivisionCounts,
+  "Test.corpus.n0002": testCorpus3FamiliesWithSubdivisionCounts,
+};
+
+export const allPublishedFamiliesWithDocumentCounts = {
   data: [
-    {
-      code: "US-DC",
-      name: "District of Columbia",
-      type: "ISO-3166-2",
-      count: 3133,
-    },
-    {
-      code: "US-CA",
-      name: "California",
-      type: "ISO-3166-2",
-      count: 1952,
-    },
+    ...testCorpus1FamiliesWithSubdivisionCounts,
+    ...testCorpus2FamiliesWithSubdivisionCounts,
     {
       code: "AU-NSW",
       name: "New South Wales",
@@ -76,35 +105,19 @@ export const publishedFamiliesWithDocumentCounts = {
   ],
 };
 
-export const testCorpusPublishedFamiliesWithDocumentCounts = {
-  data: [
-    {
-      code: "US-DC",
-      name: "District of Columbia",
-      type: "ISO-3166-2",
-      count: 3133,
-    },
-    {
-      code: "US-CA",
-      name: "California",
-      type: "ISO-3166-2",
-      count: 1952,
-    },
-  ],
-};
-
 export const familiesHandlers = [
   http.get("*/families/aggregations/by-geography", ({ request }) => {
     const url = new URL(request.url);
     const document_status = url.searchParams.get("documents.document_status");
-    const corpus_import_id = url.searchParams.get("corpus.import_id");
+    const corpora = url.searchParams.getAll("corpus.import_id");
 
-    if (corpus_import_id === "Test.corpus.n0000") {
-      return HttpResponse.json(testCorpusPublishedFamiliesWithDocumentCounts);
+    if (corpora.length > 0) {
+      const familyCounts = corpora.map((corpus) => familyCountsPerCorpus[corpus]);
+      return HttpResponse.json(familyCounts);
     }
 
     if (document_status === "published") {
-      return HttpResponse.json(publishedFamiliesWithDocumentCounts);
+      return HttpResponse.json(allPublishedFamiliesWithDocumentCounts);
     }
 
     return HttpResponse.json(defaultFamiliesWithDocumentCounts);

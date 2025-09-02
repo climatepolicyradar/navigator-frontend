@@ -16,7 +16,7 @@ export default function useSubdivisions() {
     async () => {
       const client = new ApiClient();
       const queryResponse = await client.get(
-        `${CONCEPTS_API_URL}/families/aggregations/by-geography?documents.document_status=published&corpus.import_id=${defaultCorpus}`,
+        `${CONCEPTS_API_URL}/families/aggregations/by-geography?documents.document_status=published&corpus.import_id=${defaultCorpus}&corpus.import_id=Test.corpus.n0001`,
         null
       );
       const geographies: TGeographyWithDocumentCounts[] = queryResponse.data.data;
