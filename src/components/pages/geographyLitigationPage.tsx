@@ -33,9 +33,9 @@ export const GeographyLitigationPage = ({ summary, targets, theme, themeConfig, 
             <MetadataBlock title="Statistics" metadata={getGeographyMetaData(geographyV2.statistics)} id="section-statistics" />
           )}
           <TargetsBlock targets={publishedTargets} theme={theme} />
-          {geographyV2?.statistics.legislative_process && (
+          {geographyV2.statistics?.legislative_process && (
             <TextBlock id="section-legislative-process" title="Legislative process">
-              <div className="text-content" dangerouslySetInnerHTML={{ __html: geographyV2?.statistics.legislative_process }} />
+              <div className="text-content" dangerouslySetInnerHTML={{ __html: geographyV2.statistics?.legislative_process }} />
             </TextBlock>
           )}
           <Section id="section-debug" title="Debug">

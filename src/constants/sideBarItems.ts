@@ -52,7 +52,7 @@ export const getGeographyPageSidebarItems = (geography: GeographyV2, targets: TT
 
   const idsToRemove: string[] = [];
 
-  if (geography?.statistics.legislative_process) idsToRemove.push("section-legislative-process");
+  if (geography.statistics?.legislative_process) idsToRemove.push("section-legislative-process");
   if (targets.length === 0) idsToRemove.push("section-targets");
 
   return sidebarItems.filter((item) => !idsToRemove.includes(item.id));
