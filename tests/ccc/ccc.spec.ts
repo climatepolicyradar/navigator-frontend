@@ -258,7 +258,7 @@ test.describe("CCC Hero Search", () => {
     await page.waitForURL("/geographies/spain");
 
     // Verify we're on the geography page
-    expect(await page.getByRole("heading", { name: "Spain" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Spain" })).toBeVisible();
   });
 
   test("should handle 'Did you mean to search for X in Y?' search suggestion when typing country with additional terms", async ({ page }) => {
