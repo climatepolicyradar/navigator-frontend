@@ -24,6 +24,7 @@ permissions:
 
 jobs:
   deploy-production:
+    name: Deploy ${{ github.sha }} to ${{ inputs.theme }} production
     runs-on: ubuntu-latest
     environment:
       name: production
