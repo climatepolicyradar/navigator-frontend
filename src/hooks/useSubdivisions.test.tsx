@@ -31,59 +31,59 @@ describe("useSubdivisions", () => {
     expect(result.current.data).toEqual(allPublishedFamiliesWithDocumentCounts.data);
   });
 
-  // it("only returns a list subdivision data for single default corpus in the relevant theme config", async () => {
-  //   setUpThemeConfig({
-  //     defaultCorpora: ["Test.corpus.n0000"],
-  //     filters: [],
-  //     labelVariations: [],
-  //     links: [],
-  //     metadata: [],
-  //     documentCategories: [],
-  //     defaultDocumentCategory: "All",
-  //     features: {} as TConfigFeatures,
-  //   });
+  it("only returns a list subdivision data for single default corpus in the relevant theme config", async () => {
+    setUpThemeConfig({
+      defaultCorpora: ["Test.corpus.n0000"],
+      filters: [],
+      labelVariations: [],
+      links: [],
+      metadata: [],
+      documentCategories: [],
+      defaultDocumentCategory: "All",
+      features: {} as TConfigFeatures,
+    });
 
-  //   const queryClient = new QueryClient();
+    const queryClient = new QueryClient();
 
-  //   const wrapper = ({ children }) => (
-  //     <QueryClientProvider client={queryClient}>
-  //       {/* @ts-ignore */}
-  //       <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
-  //     </QueryClientProvider>
-  //   );
+    const wrapper = ({ children }) => (
+      <QueryClientProvider client={queryClient}>
+        {/* @ts-ignore */}
+        <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
+      </QueryClientProvider>
+    );
 
-  //   const { result } = renderHook(() => useSubdivisions(), { wrapper });
+    const { result } = renderHook(() => useSubdivisions(), { wrapper });
 
-  //   await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-  //   expect(result.current.data).toEqual(testCorpus1FamiliesWithSubdivisionCounts);
-  // });
+    expect(result.current.data).toEqual(testCorpus1FamiliesWithSubdivisionCounts);
+  });
 
-  // it("only returns a list subdivision data for multiple default corpora in the relevant theme config", async () => {
-  //   setUpThemeConfig({
-  //     defaultCorpora: ["Test.corpus.n0000", "Test.corpus.n0001"],
-  //     filters: [],
-  //     labelVariations: [],
-  //     links: [],
-  //     metadata: [],
-  //     documentCategories: [],
-  //     defaultDocumentCategory: "All",
-  //     features: {} as TConfigFeatures,
-  //   });
+  it("only returns a list subdivision data for multiple default corpora in the relevant theme config", async () => {
+    setUpThemeConfig({
+      defaultCorpora: ["Test.corpus.n0000", "Test.corpus.n0001"],
+      filters: [],
+      labelVariations: [],
+      links: [],
+      metadata: [],
+      documentCategories: [],
+      defaultDocumentCategory: "All",
+      features: {} as TConfigFeatures,
+    });
 
-  //   const queryClient = new QueryClient();
+    const queryClient = new QueryClient();
 
-  //   const wrapper = ({ children }) => (
-  //     <QueryClientProvider client={queryClient}>
-  //       {/* @ts-ignore */}
-  //       <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
-  //     </QueryClientProvider>
-  //   );
+    const wrapper = ({ children }) => (
+      <QueryClientProvider client={queryClient}>
+        {/* @ts-ignore */}
+        <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
+      </QueryClientProvider>
+    );
 
-  //   const { result } = renderHook(() => useSubdivisions(), { wrapper });
+    const { result } = renderHook(() => useSubdivisions(), { wrapper });
 
-  //   await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-  //   expect(result.current.data).toEqual([...testCorpus1FamiliesWithSubdivisionCounts, ...testCorpus2FamiliesWithSubdivisionCounts]);
-  // });
+    expect(result.current.data).toEqual([...testCorpus1FamiliesWithSubdivisionCounts, ...testCorpus2FamiliesWithSubdivisionCounts]);
+  });
 });
