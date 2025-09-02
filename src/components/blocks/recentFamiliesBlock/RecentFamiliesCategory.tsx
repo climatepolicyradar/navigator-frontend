@@ -1,8 +1,10 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { LucideChevronDownCircle } from "lucide-react";
+import Link from "next/link";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { ARROW_RIGHT } from "@/constants/chars";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TCategorySummary } from "@/helpers/getFamilyCategorySummary";
 import { pluralise } from "@/utils/pluralise";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -14,6 +16,7 @@ interface IProps {
   showAccordion?: boolean;
   isExpanded?: boolean;
   onAccordionClick?: () => void;
+  geographySlug: string;
 }
 
 export const RecentFamiliesCategory = ({
@@ -21,6 +24,7 @@ export const RecentFamiliesCategory = ({
   showAccordion = false,
   isExpanded = true,
   onAccordionClick,
+  geographySlug,
 }: IProps) => {
   const clickAccordion = () => {
     onAccordionClick?.();
@@ -57,12 +61,15 @@ export const RecentFamiliesCategory = ({
                   <RecentFamilyCard key={familyIndex} family={family} />
                 ))}
                 {/* TODO link to the search page with the given category filtered */}
-                <LinkWithQuery
-                  href={`#`}
+                <Link
+                  href={{
+                    pathname: "/search",
+                    query: { [QUERY_PARAMS.country]: geographySlug, [QUERY_PARAMS.category]: title },
+                  }}
                   className="min-w-16 max-w-25 flex-1 flex justify-center items-center bg-surface-brand-darker/8 text-text-brand-darker font-semibold leading-tight"
                 >
                   All {ARROW_RIGHT}
-                </LinkWithQuery>
+                </Link>
               </div>
             )}
             <p className="mt-4 mb-12 text-sm text-text-tertiary">

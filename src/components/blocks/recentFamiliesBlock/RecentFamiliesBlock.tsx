@@ -7,9 +7,10 @@ import { RecentFamiliesCategory } from "./RecentFamiliesCategory";
 
 interface IProps {
   categorySummaries: TCategorySummary[];
+  geographySlug: string;
 }
 
-export const RecentFamiliesBlock = ({ categorySummaries }: IProps) => {
+export const RecentFamiliesBlock = ({ categorySummaries, geographySlug }: IProps) => {
   const [expandedCategory, setExpandedCategory] = useState(categorySummaries[0].title);
 
   const hideAccordion = categorySummaries.length === 1 && categorySummaries[0].title === "All";
@@ -28,6 +29,7 @@ export const RecentFamiliesBlock = ({ categorySummaries }: IProps) => {
           showAccordion={!hideAccordion}
           isExpanded={expandedCategory === category.title}
           onAccordionClick={() => onAccordionInteract(category.title)}
+          geographySlug={geographySlug}
         />
       ))}
     </Section>
