@@ -40,8 +40,8 @@ const config: TThemeConfig = {
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
   ],
-  documentCategories: [],
-  defaultDocumentCategory: null,
+  documentCategories: ["All"],
+  defaultDocumentCategory: "All",
   features: {
     familyConceptsSearch: true,
     knowledgeGraph: false,

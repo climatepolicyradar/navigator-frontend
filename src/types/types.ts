@@ -53,6 +53,19 @@ export type TDataNode<T> = {
   children: TDataNode<T>[];
 };
 
+export type ApiItemResponse<T> = {
+  data: T;
+};
+type GeographyTypeV2 = "region" | "country" | "subdivision";
+export type GeographyV2 = {
+  id: string;
+  type: GeographyTypeV2;
+  slug: string;
+  subconcept_of: GeographyV2[];
+  has_subconcept: GeographyV2[];
+  name: string;
+};
+
 export type TGeography = {
   id: number;
   display_value: string;
@@ -68,23 +81,6 @@ export type TGeographySubdivision = {
   type: string;
   country_alpha_2: string;
   country_alpha_3: string;
-};
-
-export type TGeographyNewParent = {
-  id: string;
-  name: string;
-  type: string;
-  alpha_2: string;
-  subconcept_of: [];
-  slug: string;
-  has_subconcept: TGeographySubDivisionNew[];
-};
-
-export type TGeographySubDivisionNew = {
-  id: string;
-  name: string;
-  type: string;
-  slug: string;
 };
 
 export type TGeographyWithDocumentCounts = {
@@ -111,6 +107,7 @@ export type TTarget = {
   "Visibility status": string;
   "CPR family ID": string;
   "Net zero target?": "TRUE" | "FALSE";
+  Comment: string;
   "family-slug": string;
   "family-name": string;
 };
@@ -128,27 +125,13 @@ export type TGeographyStats = {
   visibility_status: string;
 };
 
-type TGeoFamilyCounts = {
-  Legislative: number;
-  Executive: number;
-  UNFCCC: number;
-  MCF: number;
-  Reports: number;
-};
-
-type TGeoFamilys = {
-  Legislative: TFamily[];
-  Executive: TFamily[];
-  UNFCCC: TFamily[];
-  MCF: TFamily[];
-  Reports: TFamily[];
-};
+export type TGeographySummaryCategory = "Executive" | "Legislative" | "Litigation" | "MCF" | "Reports" | "UNFCCC";
 
 export type TGeographySummary = {
-  family_counts: TGeoFamilyCounts;
+  family_counts: Record<TGeographySummaryCategory, number>;
   events: TEvent[];
   targets: string[];
-  top_families: TGeoFamilys;
+  top_families: Record<TGeographySummaryCategory, TFamily[]>;
 };
 
 export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC" | "MCF" | "Reports";
@@ -186,16 +169,23 @@ export type TFamilyDocument = {
 };
 
 export type TFamily = {
+  continuation_token?: string;
+  corpus_import_id: string;
   corpus_type_name: TCorpusTypeSubCategory;
   family_category: TCategory;
+  family_date: string;
+  family_description_match: boolean;
   family_description: string;
   family_documents: TFamilyDocument[];
   family_geographies: string[];
+  family_last_updated_date: string;
   family_metadata: {}; // TODO: type this
   family_name: string;
   family_slug: string;
   family_source: string;
-  family_date: string;
+  family_title_match: boolean;
+  prev_continuation_token?: string;
+  total_passage_hits: number;
 };
 
 export type TFamilyPage = {
@@ -265,6 +255,7 @@ export type TFamilyMetadata = TMetadata<
   | "sector"
   | "topic"
   // Litigation specific
+  | "action_taken"
   | "case_number"
   | "concept_preferred_label"
   | "core_object"
@@ -431,7 +422,17 @@ export type TCorpusPublic = {
 
 export type TFamilyEventPublic = TEvent & {
   import_id: string;
-  metadata: TMetadata<string>;
+  metadata: TMetadata<
+    | "case_number"
+    | "concept_preferred_label"
+    | "core_object"
+    | "datetime_event_name"
+    | "description"
+    | "event_type"
+    | "id"
+    | "original_case_name"
+    | "status"
+  >;
 };
 
 export type TFamilyDocumentPublic = {

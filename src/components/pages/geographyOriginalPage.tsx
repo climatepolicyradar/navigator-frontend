@@ -23,12 +23,11 @@ import { Heading } from "@/components/typography/Heading";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TPublicEnvConfig } from "@/context/EnvConfig";
 import {
+  GeographyV2,
   TDocumentCategory,
   TEvent,
   TFeatureFlags,
   TGeographyStats,
-  TGeographySubdivision,
-  TGeographySubDivisionNew,
   TGeographySummary,
   TSearch,
   TTarget,
@@ -41,8 +40,8 @@ import { sortFilterTargets } from "@/utils/sortFilterTargets";
 export interface IProps {
   featureFlags: TFeatureFlags;
   geography: TGeographyStats;
+  geographyV2: GeographyV2;
   summary: TGeographySummary;
-  subdivisions?: TGeographySubDivisionNew[];
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
@@ -66,7 +65,7 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
-  const [selectedCategory, setselectedCategory] = useState<TDocumentCategory>(themeConfig.defaultDocumentCategory || "All");
+  const [selectedCategory, setselectedCategory] = useState<TDocumentCategory>(themeConfig.defaultDocumentCategory);
 
   const hasEvents = !!summary?.events && summary?.events?.length > 0;
   const hasFamilies = !!summary?.top_families;

@@ -4,9 +4,9 @@ import { Section } from "@/components/molecules/section/Section";
 import { IMetadata } from "@/types";
 
 interface IProps {
-  title?: ReactNode;
+  title?: string;
   metadata: IMetadata[];
-  id?: string;
+  id: string;
 }
 
 export const MetadataBlock = ({ title, metadata, id }: IProps) => {

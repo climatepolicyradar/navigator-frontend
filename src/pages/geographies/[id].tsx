@@ -7,8 +7,8 @@ import { GeographyOriginalPage, IProps } from "@/components/pages/geographyOrigi
 import { systemGeoNames } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode } from "@/helpers/getCountryFields";
-import { TGeographyNewParent, TGeographyStats, TGeographySubdivision, TGeographySubDivisionNew, TGeographySummary, TSearch } from "@/types";
-import { TTarget, TGeography, TDocumentCategory } from "@/types";
+import { ApiItemResponse, GeographyV2, TGeographyStats, TGeographySummary, TSearch } from "@/types";
+import { TTarget, TGeography } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -46,7 +46,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let geographyData: TGeographyStats;
   let summaryData: TGeographySummary;
   let targetsData: TTarget[] = [];
-  let subdivisions: TGeographySubDivisionNew[] = [];
 
   try {
     const { data: returnedData }: { data: TGeographyStats } = await backendApiClient.get(`/geo_stats/${id}`);
@@ -73,15 +72,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch {
     // TODO: handle error more elegantly
   }
-  // TODO: make this not less double nested
+
+  let geographyV2: GeographyV2 = null;
   try {
-    const {
-      data: { data: returnedData },
-    }: { data: { data: TGeographyNewParent } } = await apiClient.get(`/geographies/${slug}`);
-    subdivisions = returnedData.has_subconcept.sort((a, b) => a.name.localeCompare(b.name));
-  } catch {
-    // TODO: handle error more elegantly
-  }
+    const geographyV2Data: ApiItemResponse<GeographyV2> = await apiClient.get(`/geographies/${slug}`);
+    geographyV2 = geographyV2Data.data;
+  } catch {}
 
   // TODO:
   // Frontend
@@ -117,7 +113,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: withEnvConfig({
       featureFlags,
       geography: geographyData,
-      subdivisions,
+      geographyV2: geographyV2,
       summary: summaryData,
       targets: theme === "mcf" ? [] : targetsData,
       theme,
