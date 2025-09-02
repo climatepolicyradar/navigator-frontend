@@ -7,7 +7,7 @@ import { GeographyOriginalPage, IProps } from "@/components/pages/geographyOrigi
 import { systemGeoNames } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode } from "@/helpers/getCountryFields";
-import { ApiItemResponse, GeographyV2, TGeographyStats, TGeographySummary, TSearch } from "@/types";
+import { ApiItemResponse, GeographyV2, TGeographySummary, TSearch } from "@/types";
 import { TTarget, TGeography } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
@@ -43,16 +43,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const backendApiClient = new ApiClient();
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
-  let geographyData: TGeographyStats;
   let summaryData: TGeographySummary;
   let targetsData: TTarget[] = [];
 
-  try {
-    const { data: returnedData }: { data: TGeographyStats } = await backendApiClient.get(`/geo_stats/${id}`);
-    geographyData = returnedData;
-  } catch (error) {
-    // TODO: handle error more elegantly
-  }
   try {
     const { data: returnedData }: { data: TGeographySummary } = await backendApiClient.get(`/summaries/geography/${id}`);
     summaryData = returnedData;
@@ -75,8 +68,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   let geographyV2: GeographyV2 = null;
   try {
-    const geographyV2Data: ApiItemResponse<GeographyV2> = await apiClient.get(`/geographies/${slug}`);
-    geographyV2 = geographyV2Data.data;
+    const geographyV2Data = await apiClient.get<ApiItemResponse<GeographyV2>>(`/geographies/${slug}`);
+    geographyV2 = geographyV2Data.data.data;
   } catch {}
 
   // TODO:
@@ -84,7 +77,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // fetch geo from geographies API
   // use response to fetch families data from families API
 
-  if (!geographyData || !summaryData) {
+  if (!geographyV2 || !summaryData) {
     return {
       notFound: true,
     };
@@ -112,7 +105,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: withEnvConfig({
       featureFlags,
-      geography: geographyData,
       geographyV2: geographyV2,
       summary: summaryData,
       targets: theme === "mcf" ? [] : targetsData,
