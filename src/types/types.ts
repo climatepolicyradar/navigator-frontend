@@ -67,7 +67,7 @@ export type GeographyV2 = {
   statistics?: {
     name: string;
     legislative_process: string;
-    federal: string;
+    federal: boolean;
     federal_details: string;
     political_groups: string;
     global_emissions_percent: string;
