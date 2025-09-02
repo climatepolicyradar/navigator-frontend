@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
@@ -68,7 +68,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   let geographyV2: GeographyV2 = null;
   try {
-    const geographyV2Data: AxiosResponse<ApiItemResponse<GeographyV2>> = await apiClient.get(`/geographies/${slug}`);
+    const geographyV2Data = await apiClient.get<ApiItemResponse<GeographyV2>>(`/geographies/${slug}`);
     geographyV2 = geographyV2Data.data.data;
   } catch {}
 
