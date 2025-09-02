@@ -2,15 +2,17 @@ import { useState } from "react";
 
 import { Section } from "@/components/molecules/section/Section";
 import { TCategorySummary } from "@/helpers/getFamilyCategorySummary";
+import { TSearch } from "@/types";
 
 import { RecentFamiliesCategory } from "./RecentFamiliesCategory";
 
 interface IProps {
   categorySummaries: TCategorySummary[];
+  vespaSearchResults?: TSearch;
   geographySlug: string;
 }
 
-export const RecentFamiliesBlock = ({ categorySummaries, geographySlug }: IProps) => {
+export const RecentFamiliesBlock = ({ categorySummaries, geographySlug, vespaSearchResults }: IProps) => {
   const [expandedCategory, setExpandedCategory] = useState(categorySummaries[0].title);
 
   const hideAccordion = categorySummaries.length === 1 && categorySummaries[0].title === "All";

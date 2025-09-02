@@ -15,7 +15,7 @@ import { RecentFamiliesBlock } from "../blocks/recentFamiliesBlock/RecentFamilie
 import { TargetsBlock } from "../blocks/targetsBlock/TargetsBlock";
 import { TextBlock } from "../blocks/textBlock/TextBlock";
 
-export const GeographyLitigationPage = ({ geography, summary, targets, theme, themeConfig, geographyV2 }: IProps) => {
+export const GeographyLitigationPage = ({ geography, summary, targets, theme, themeConfig, geographyV2, vespaSearchResults }: IProps) => {
   const categorySummaries = themeConfig.documentCategories.map((category) => getFamilyCategorySummary(summary, category));
   const publishedTargets = sortFilterTargets(targets);
 
@@ -27,7 +27,7 @@ export const GeographyLitigationPage = ({ geography, summary, targets, theme, th
       <Columns>
         <ContentsSideBar items={sidebarItems} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
         <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-3:py-8 cols-3:gap-8 cols-3:col-span-2 cols-4:col-span-3">
-          <RecentFamiliesBlock categorySummaries={categorySummaries} geographySlug={geographyV2.slug} />
+          <RecentFamiliesBlock categorySummaries={categorySummaries} geographySlug={geographyV2.slug} vespaSearchResults={vespaSearchResults} />
           <SubDivisionBlock subdivisions={geographyV2.has_subconcept} />
           <MetadataBlock title="Statistics" metadata={getGeographyMetaData(geography)} id="section-statistics" />
           <TargetsBlock targets={publishedTargets} theme={theme} />
