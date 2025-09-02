@@ -19,6 +19,7 @@ permissions:
 
 jobs:
   deploy-staging:
+    name: Deploy ${{ github.sha }} to staging
     # relating to a, b, c in the `on` section
     if: |
       github.event.workflow_run.conclusion == 'success' ||
