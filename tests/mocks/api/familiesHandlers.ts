@@ -76,10 +76,32 @@ export const publishedFamiliesWithDocumentCounts = {
   ],
 };
 
+export const testCorpusPublishedFamiliesWithDocumentCounts = {
+  data: [
+    {
+      code: "US-DC",
+      name: "District of Columbia",
+      type: "ISO-3166-2",
+      count: 3133,
+    },
+    {
+      code: "US-CA",
+      name: "California",
+      type: "ISO-3166-2",
+      count: 1952,
+    },
+  ],
+};
+
 export const familiesHandlers = [
   http.get("*/families/aggregations/by-geography", ({ request }) => {
     const url = new URL(request.url);
     const document_status = url.searchParams.get("documents.document_status");
+    const corpus_import_id = url.searchParams.get("corpus.import_id");
+
+    if (corpus_import_id === "Test.corpus.n0000") {
+      return HttpResponse.json(testCorpusPublishedFamiliesWithDocumentCounts);
+    }
 
     if (document_status === "published") {
       return HttpResponse.json(publishedFamiliesWithDocumentCounts);
