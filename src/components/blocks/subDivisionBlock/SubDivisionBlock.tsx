@@ -30,17 +30,19 @@ export const SubDivisionBlock = ({ subdivisions }: TProps) => {
     <Section id="section-subdivisions" title="Geographic sub-divisions" count={subdivisions.length}>
       <div className="rounded bg-surface-ui py-6 px-10">
         <ol className="text-sm list-none pl-5 grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3 grid-flow-dense">
-          {subdivisions.map((subdivision, index) => (
-            <li
-              key={index}
-              className={`text-text-secondary col-start-1 ${get2ColumnClass(index, subdivisions.length)} ${get3ColumnClass(index, subdivisions.length)}`}
-            >
-              {/* TODO: implement links if we have data <LinkWithQuery href={`/geographies/${subdivision.slug}`} className="underline text-text-primary hover:text-text-brand-darker">
+          {subdivisions
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((subdivision, index) => (
+              <li
+                key={index}
+                className={`text-text-secondary col-start-1 ${get2ColumnClass(index, subdivisions.length)} ${get3ColumnClass(index, subdivisions.length)}`}
+              >
+                {/* TODO: implement links if we have data <LinkWithQuery href={`/geographies/${subdivision.slug}`} className="underline text-text-primary hover:text-text-brand-darker">
                 {subdivision.name}
               </LinkWithQuery> */}
-              {subdivision.name}
-            </li>
-          ))}
+                {subdivision.name}
+              </li>
+            ))}
         </ol>
       </div>
     </Section>
