@@ -93,16 +93,7 @@ const familyCountsPerCorpus = {
 };
 
 export const allPublishedFamiliesWithDocumentCounts = {
-  data: [
-    ...testCorpus1FamiliesWithSubdivisionCounts,
-    ...testCorpus2FamiliesWithSubdivisionCounts,
-    {
-      code: "AU-NSW",
-      name: "New South Wales",
-      type: "ISO-3166-2",
-      count: 62,
-    },
-  ],
+  data: [...testCorpus1FamiliesWithSubdivisionCounts, ...testCorpus2FamiliesWithSubdivisionCounts, ...testCorpus3FamiliesWithSubdivisionCounts],
 };
 
 export const familiesHandlers = [
@@ -112,8 +103,8 @@ export const familiesHandlers = [
     const corpora = url.searchParams.getAll("corpus.import_id");
 
     if (corpora.length > 0) {
-      const familyCounts = corpora.map((corpus) => familyCountsPerCorpus[corpus]);
-      return HttpResponse.json(familyCounts);
+      const familyCounts = corpora.flatMap((corpus) => familyCountsPerCorpus[corpus]);
+      return HttpResponse.json({ data: familyCounts });
     }
 
     if (document_status === "published") {

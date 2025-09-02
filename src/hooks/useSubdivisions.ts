@@ -9,27 +9,27 @@ import { ApiClient } from "../api/http-common";
 export default function useSubdivisions() {
   const { CONCEPTS_API_URL } = useEnvConfig();
   const { themeConfig } = useThemeConfig();
-  const defaultCorpus = themeConfig?.defaultCorpora?.[0];
+  const defaultCorpora = themeConfig?.defaultCorpora;
+  const corpusFilters = defaultCorpora ? defaultCorpora?.map((corpus) => `&corpus.import_id=${corpus}`).join("") : "";
 
   return useQuery(
-    ["all-subdivisions", defaultCorpus],
+    ["all-subdivisions", themeConfig],
     async () => {
       const client = new ApiClient();
       const queryResponse = await client.get(
-        `${CONCEPTS_API_URL}/families/aggregations/by-geography?documents.document_status=published&corpus.import_id=${defaultCorpus}&corpus.import_id=Test.corpus.n0001`,
+        `${CONCEPTS_API_URL}/families/aggregations/by-geography?documents.document_status=published${corpusFilters}`,
         null
       );
       const geographies: TGeographyWithDocumentCounts[] = queryResponse.data.data;
 
       const subdivisions = geographies.filter((item) => item.type === "ISO-3166-2");
-
       return subdivisions;
     },
     {
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       cacheTime: 1000 * 60 * 60 * 24,
-      enabled: Boolean(defaultCorpus),
+      enabled: Boolean(themeConfig),
     }
   );
 }
