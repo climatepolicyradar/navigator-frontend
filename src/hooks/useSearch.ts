@@ -32,26 +32,16 @@ async function getSearch(query = initialSearchCriteria) {
   return results;
 }
 
-const useSearch = (
-  query: TRouterQuery,
-  familyId = "",
-  documentId = "",
-  runFreshSearch: boolean = true,
-  noOfPassagesPerDoc: number = undefined,
-  themeConfig?: TThemeConfig
-) => {
-  const { themeConfig: hookThemeConfig } = useGetThemeConfig();
+const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFreshSearch: boolean = true, noOfPassagesPerDoc: number = undefined) => {
+  const { themeConfig } = useGetThemeConfig();
   const [status, setStatus] = useState<TLoadingStatus>("idle");
   const [families, setFamilies] = useState<TMatchedFamily[]>([]);
   const [hits, setHits] = useState<number>(null);
   const [continuationToken, setContinuationToken] = useState<string | null>(null);
 
-  // Use the passed themeConfig if provided, otherwise use the one from the hook
-  const effectiveThemeConfig = themeConfig || hookThemeConfig;
-
   const searchQuery = useMemo(() => {
-    return buildSearchQuery({ ...query }, effectiveThemeConfig, familyId, documentId, undefined, noOfPassagesPerDoc);
-  }, [query, effectiveThemeConfig, familyId, documentId, noOfPassagesPerDoc]);
+    return buildSearchQuery({ ...query }, themeConfig, familyId, documentId, undefined, noOfPassagesPerDoc);
+  }, [query, themeConfig, familyId, documentId, noOfPassagesPerDoc]);
 
   useEffect(() => {
     setStatus("loading");
@@ -96,38 +86,31 @@ const useSearch = (
 
     const resultsQuery = getSearch(searchQuery);
 
-    resultsQuery
-      .then((res) => {
-        if (res.status === 200) {
-          // Catch missing attributes from the API response
-          setFamilies(res.data.families || []);
-          setHits(res.data.total_family_hits || 0);
-          setContinuationToken(res.data.continuation_token || null);
+    resultsQuery.then((res) => {
+      if (res.status === 200) {
+        // Catch missing attributes from the API response
+        setFamilies(res.data.families || []);
+        setHits(res.data.total_family_hits || 0);
+        setContinuationToken(res.data.continuation_token || null);
 
-          if (CACHE_ENABLED) {
-            const searchToCache: TCacheResult = {
-              ...cacheId,
-              families: res.data.families,
-              hits: res.data.total_family_hits,
-              continuation_token: res.data.continuation_token,
-              timestamp: new Date().getTime(),
-            };
-            updateCacheSearch(searchToCache);
-          }
-        } else {
-          setFamilies([]);
-          setHits(0);
-          setContinuationToken(null);
-          setStatus("error");
+        if (CACHE_ENABLED) {
+          const searchToCache: TCacheResult = {
+            ...cacheId,
+            families: res.data.families,
+            hits: res.data.total_family_hits,
+            continuation_token: res.data.continuation_token,
+            timestamp: new Date().getTime(),
+          };
+          updateCacheSearch(searchToCache);
         }
-        setStatus("success");
-      })
-      .catch((error) => {
+      } else {
         setFamilies([]);
         setHits(0);
         setContinuationToken(null);
         setStatus("error");
-      });
+      }
+      setStatus("success");
+    });
   }, [searchQuery, runFreshSearch]);
 
   return { status, families, hits, continuationToken, searchQuery };

@@ -130,7 +130,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const sortSettingsButtonRef = useRef(null);
   const searchSettingsButtonRef = useRef(null);
 
-  const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query, "", "", true, undefined, themeConfig);
+  const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
   const { currentSlideOut, setCurrentSlideOut } = useHashNavigation();
 
