@@ -243,7 +243,7 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
     fetch(`/api/geography-counts?l=${geographyV2.slug}&${countCategories.join("&c=")}`)
       .then((res) => res.json())
       .then((data) => setCounts(data.counts));
-    // We onnly ever want this to run once
+    // We only ever want this to run once
     /* trunk-ignore(eslint/react-hooks/exhaustive-deps)*/
   }, []);
 
