@@ -2,6 +2,8 @@ import { screen } from "@testing-library/react";
 import { vi } from "vitest";
 
 import { DEFAULT_FEATURE_FLAGS } from "@/constants/features";
+import brazil from "@/mocks/geographies-api/brazil";
+import unitedStates from "@/mocks/geographies-api/united-states";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 
 import CountryPage from "../../../src/pages/geographies/[id]";
@@ -21,7 +23,7 @@ vi.mock("next/dynamic", () => ({
 describe("CountryPage", () => {
   it.each(["cpr", "cclw"])("displays alert with Sabin tracker link on us geography page for %s", async (theme) => {
     const usa_props = {
-      geography: { name: "United States of America", geography_slug: "united-states-of-america", legislative_process: "", political_groups: "" },
+      geographyV2: unitedStates,
       summary: { family_counts: [] },
       targets: [],
       theme: theme,
@@ -40,7 +42,7 @@ describe("CountryPage", () => {
 
     // @ts-ignore
     renderWithAppContext(CountryPage, usa_props);
-    expect(screen.getByRole("heading", { name: "United States of America", level: 1 })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "United States", level: 1 })).toBeInTheDocument();
     expect(screen.getByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).toBeInTheDocument();
 
     const link = screen.getByRole("link", { name: "Sabin Center's Climate Backtracker" });
@@ -49,7 +51,7 @@ describe("CountryPage", () => {
 
   it.each(["cpr", "cclw"])("does not display alert with Sabin tracker link on non-us geography pages for %s", async (theme) => {
     const props = {
-      geography: { name: "Brazil", geography_slug: "brazil", legislative_process: "", political_groups: "" },
+      geographyV2: brazil,
       summary: { family_counts: [] },
       targets: [],
       theme: theme,
@@ -77,7 +79,7 @@ describe("CountryPage", () => {
 
   it("does not display alert with Sabin tracker link on the mcf theme", async () => {
     const usa_props = {
-      geography: { name: "United States of America", geography_slug: "united-states-of-america", legislative_process: "", political_groups: "" },
+      geographyV2: unitedStates,
       summary: { family_counts: [] },
       targets: [],
       theme: "mcf",
@@ -96,7 +98,7 @@ describe("CountryPage", () => {
 
     // @ts-ignore
     renderWithAppContext(CountryPage, usa_props);
-    expect(screen.getByRole("heading", { name: "United States of America", level: 1 })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "United States", level: 1 })).toBeInTheDocument();
     expect(screen.queryByText(/To see developments in the Trump-Vance administration's climate rollback, visit the/)).not.toBeInTheDocument();
 
     const link = screen.queryByRole("link", { name: "Sabin Center's Climate Backtracker" });
