@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { BrazilImplementingNDCCard } from "@/cclw/components/BrazilImplementingNDCCard";
@@ -22,7 +22,18 @@ import { Timeline } from "@/components/timeline/Timeline";
 import { Heading } from "@/components/typography/Heading";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TPublicEnvConfig } from "@/context/EnvConfig";
-import { GeographyV2, TDocumentCategory, TEvent, TFeatureFlags, TGeographySummary, TSearch, TTarget, TTheme, TThemeConfig } from "@/types";
+import {
+  GeographyV2,
+  TDocumentCategory,
+  TEvent,
+  TFeatureFlags,
+  TGeographySummary,
+  TSearch,
+  TSearchCriteria,
+  TTarget,
+  TTheme,
+  TThemeConfig,
+} from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
@@ -209,43 +220,56 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
   };
 
   /** Vespa search results */
+  const [counts, setCounts] = useState({});
   const vespaSearchTabbedNavItems = themeConfig.categories
     ? themeConfig.categories.options.map((category) => {
         return {
           title: category.label,
           /** We need to maintain the slug to to know what to send to Vespa for querying. */
           slug: category.slug,
-          // TODO: Make this work
-          count: 0,
         };
       })
     : /** We generate an `All` for when themeConfig.categories are not available e.g. MCFs */
       [
         {
           title: "All",
-          slug: undefined,
-          // TODO: Make this work
-          count: 0,
+          slug: "All",
         },
       ];
+
+  const countCategories = vespaSearchTabbedNavItems.map((item) => item.slug.toLocaleLowerCase()).filter((slug) => slug !== "litigation");
+
+  useEffect(() => {
+    fetch(`/api/geography-counts?l=${geographyV2.slug}&${countCategories.join("&c=")}`)
+      .then((res) => res.json())
+      .then((data) => setCounts(data.counts));
+    // We onnly ever want this to run once
+    /* trunk-ignore(eslint/react-hooks/exhaustive-deps)*/
+  }, []);
+
   const [currentVespaSearchSelectedCategory, setCurrentVespaSearchSelectedCategory] = useState(vespaSearchTabbedNavItems[0].title);
   const [currentVespaSearchResults, setCurrentVespaSearchResults] = useState(vespaSearchResults);
 
-  const handleVespaSearchTabClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string) => {
-    const selectedThemeCategory = vespaSearchTabbedNavItems.find((category) => category.title === value);
-    const categoryFilter = selectedThemeCategory.slug;
-
-    const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
-    const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: categoryFilter }, themeConfig);
-
-    const newVespaSearchResults = await backendApiClient
-      .post<TSearch>("/searches", searchQuery, {
+  const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
+  const vespaSearch = async (searchQuery: TSearchCriteria) => {
+    const search: Promise<TSearch> = await backendApiClient
+      .post("/searches", searchQuery, {
         headers: {
           accept: "application/json",
           "Content-Type": "application/json",
         },
       })
       .then((response) => response.data);
+    return search;
+  };
+
+  const handleVespaSearchTabClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string) => {
+    const selectedThemeCategory = vespaSearchTabbedNavItems.find((category) => category.title === value);
+    const categoryFilter = selectedThemeCategory.slug;
+
+    const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: categoryFilter }, themeConfig);
+
+    const newVespaSearchResults = await vespaSearch(searchQuery);
     setCurrentVespaSearchResults(newVespaSearchResults);
     setCurrentVespaSearchSelectedCategory(value);
   };
@@ -317,7 +341,12 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
                     <div className="flex-grow">
                       <TabbedNav
                         activeItem={currentVespaSearchSelectedCategory}
-                        items={vespaSearchTabbedNavItems}
+                        items={vespaSearchTabbedNavItems.map((item) => {
+                          return {
+                            ...item,
+                            count: counts[item.slug.toLocaleLowerCase()],
+                          };
+                        })}
                         handleTabClick={handleVespaSearchTabClick}
                       />
                     </div>
