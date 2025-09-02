@@ -8,7 +8,7 @@ import { ThemeContext } from "@/context/ThemeContext";
 
 import { setUpThemeConfig } from "./api/configHandlers";
 
-export const renderWithAppContext = async (Component: React.ComponentType<any>, pageProps?: any) => {
+export const renderWithAppContext = (Component: React.ComponentType<any>, pageProps?: any) => {
   setUpThemeConfig(pageProps?.themeConfig);
 
   const queryClient = new QueryClient({
@@ -19,7 +19,7 @@ export const renderWithAppContext = async (Component: React.ComponentType<any>, 
     },
   });
 
-  render(
+  return render(
     <QueryClientProvider client={queryClient}>
       <ThemeContext.Provider value={{ theme: pageProps?.theme, themeConfig: pageProps?.themeConfig }}>
         <EnvConfigContext.Provider value={pageProps?.envConfig}>
