@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
 
-const familiesWithDocumentCounts = {
+const defaultFamiliesWithDocumentCounts = {
   data: [
     {
       code: "USA",
@@ -44,11 +44,47 @@ const familiesWithDocumentCounts = {
       type: "ISO-3166-2",
       count: 62,
     },
+    {
+      code: "AU-QLD",
+      name: "Queensland",
+      type: "ISO-3166-2",
+      count: 7,
+    },
+  ],
+};
+
+export const publishedFamiliesWithDocumentCounts = {
+  data: [
+    {
+      code: "US-DC",
+      name: "District of Columbia",
+      type: "ISO-3166-2",
+      count: 3133,
+    },
+    {
+      code: "US-CA",
+      name: "California",
+      type: "ISO-3166-2",
+      count: 1952,
+    },
+    {
+      code: "AU-NSW",
+      name: "New South Wales",
+      type: "ISO-3166-2",
+      count: 62,
+    },
   ],
 };
 
 export const familiesHandlers = [
-  http.get("*/families/aggregations/by-geography", () => {
-    return HttpResponse.json(familiesWithDocumentCounts);
+  http.get("*/families/aggregations/by-geography", ({ request }) => {
+    const url = new URL(request.url);
+    const document_status = url.searchParams.get("documents.document_status");
+
+    if (document_status === "published") {
+      return HttpResponse.json(publishedFamiliesWithDocumentCounts);
+    }
+
+    return HttpResponse.json(defaultFamiliesWithDocumentCounts);
   }),
 ];

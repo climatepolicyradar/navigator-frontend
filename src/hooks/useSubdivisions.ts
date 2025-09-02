@@ -11,7 +11,7 @@ export default function useSubdivisions() {
     ["all-subdivisions"],
     async () => {
       const client = new ApiClient();
-      const queryResponse = await client.get(`${CONCEPTS_API_URL}/families/aggregations/by-geography`, null);
+      const queryResponse = await client.get(`${CONCEPTS_API_URL}/families/aggregations/by-geography?documents.document_status=published`, null);
       const geographies: TGeographyWithDocumentCounts[] = queryResponse.data.data;
 
       const subdivisions = geographies.filter((item) => item.type === "ISO-3166-2");
