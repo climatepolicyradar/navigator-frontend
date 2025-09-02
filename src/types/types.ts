@@ -61,8 +61,8 @@ export type GeographyV2 = {
   id: string;
   type: GeographyTypeV2;
   slug: string;
-  subconcept_of: GeographyV2[];
-  has_subconcept: GeographyV2[];
+  subconcept_of?: GeographyV2[];
+  has_subconcept?: GeographyV2[];
   name: string;
   statistics?: {
     name: string;
