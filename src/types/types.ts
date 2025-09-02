@@ -123,19 +123,6 @@ export type TTarget = {
   "family-name": string;
 };
 
-export type TGeographyStats = {
-  name: string;
-  geography_slug: string;
-  legislative_process: string;
-  federal: boolean;
-  federal_details: string;
-  political_groups: string;
-  global_emissions_percent: number;
-  climate_risk_index: number;
-  worldbank_income_group: string;
-  visibility_status: string;
-};
-
 export type TGeographySummaryCategory = "Executive" | "Legislative" | "Litigation" | "MCF" | "Reports" | "UNFCCC";
 
 export type TGeographySummary = {

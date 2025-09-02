@@ -2,10 +2,10 @@ import { ExternalLink } from "@/components/ExternalLink";
 import Tooltip from "@/components/tooltip";
 import { Heading } from "@/components/typography/Heading";
 import useConfig from "@/hooks/useConfig";
-import { TGeographyStats, TGeography, TTheme } from "@/types";
+import { TGeography, TTheme, GeographyV2 } from "@/types";
 
 interface IProps {
-  country: TGeographyStats;
+  country: GeographyV2;
   targetCount: number;
   onTargetClick: () => void;
   theme: TTheme;
@@ -25,7 +25,9 @@ export const CountryHeader = ({ country, targetCount, onTargetClick, theme, tota
   };
 
   const countryRegion = getCountryRegion();
-  const { name, political_groups, federal, federal_details, worldbank_income_group, climate_risk_index, global_emissions_percent } = country;
+  const { name } = country;
+  const { political_groups, federal, federal_details, worldbank_income_group, climate_risk_index, global_emissions_percent } =
+    country.statistics || {};
 
   const renderHeaderContent = () => {
     if (theme === "mcf") {
@@ -44,7 +46,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick, theme, tota
             </div>
           )}
           <div data-cy="political-group" className="col-span-1 md:col-span-2">
-            {political_groups !== "" && (
+            {political_groups && (
               <>
                 <div className="text-sm font-medium text-textDark">Political Groups</div>
                 <div>{political_groups.split(";").join(", ")}</div>
@@ -52,7 +54,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick, theme, tota
             )}
           </div>
           <div data-cy="global-climate-risk-index" className="col-span-1 md:col-span-2">
-            {climate_risk_index !== null && (
+            {climate_risk_index && (
               <>
                 <div className="text-sm font-medium text-textDark">Global Climate Risk Index</div>
                 <div className="flex items-center">
@@ -94,7 +96,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick, theme, tota
             )}
           </div>
           <div data-cy="world-bank-income-group" className="col-span-1 md:col-span-2">
-            {worldbank_income_group !== "" && (
+            {worldbank_income_group && (
               <>
                 <div className="text-sm font-medium text-textDark">World Bank Income Group</div>
                 <div>{worldbank_income_group}</div>
@@ -102,7 +104,7 @@ export const CountryHeader = ({ country, targetCount, onTargetClick, theme, tota
             )}
           </div>
           <div data-cy="share-of-global-emissions" className="col-span-1 md:col-span-2">
-            {global_emissions_percent !== null && (
+            {global_emissions_percent && (
               <>
                 <div className="text-sm font-medium text-textDark">Share of Global Emissions</div>
                 <div className="flex items-center">
