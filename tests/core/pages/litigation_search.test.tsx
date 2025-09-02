@@ -1,4 +1,4 @@
-import { act, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import router from "next-router-mock";
 
