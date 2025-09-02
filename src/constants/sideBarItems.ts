@@ -1,5 +1,5 @@
 import { ISideBarItem } from "@/components/organisms/contentsSideBar/ContentsSideBar";
-import { TGeographyStats, TTarget } from "@/types";
+import { GeographyV2, TTarget } from "@/types";
 
 export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
   {
@@ -21,7 +21,7 @@ export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
   },
 ];
 
-export const getGeographyPageSidebarItems = (geography: TGeographyStats, targets: TTarget[]): ISideBarItem[] => {
+export const getGeographyPageSidebarItems = (geography: GeographyV2, targets: TTarget[]): ISideBarItem[] => {
   const sidebarItems = [
     {
       id: "section-recents",
@@ -52,7 +52,7 @@ export const getGeographyPageSidebarItems = (geography: TGeographyStats, targets
 
   const idsToRemove: string[] = [];
 
-  if (geography.legislative_process.length === 0) idsToRemove.push("section-legislative-process");
+  if (geography?.statistics.legislative_process) idsToRemove.push("section-legislative-process");
   if (targets.length === 0) idsToRemove.push("section-targets");
 
   return sidebarItems.filter((item) => !idsToRemove.includes(item.id));

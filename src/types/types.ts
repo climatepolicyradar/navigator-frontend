@@ -64,6 +64,17 @@ export type GeographyV2 = {
   subconcept_of: GeographyV2[];
   has_subconcept: GeographyV2[];
   name: string;
+  statistics?: {
+    name: string;
+    legislative_process: string;
+    federal: string;
+    federal_details: string;
+    political_groups: string;
+    global_emissions_percent: string;
+    climate_risk_index: string;
+    worldbank_income_group: string;
+    visibility_status: string;
+  };
 };
 
 export type TGeography = {
