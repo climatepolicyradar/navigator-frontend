@@ -10,7 +10,8 @@ export default function useSubdivisions() {
   const { CONCEPTS_API_URL } = useEnvConfig();
   const { themeConfig } = useThemeConfig();
   const defaultCorpora = themeConfig?.defaultCorpora;
-  const corpusFilters = defaultCorpora ? defaultCorpora?.map((corpus) => `&corpus.import_id=${corpus}`).join("") : "";
+  const corpora = defaultCorpora ?? themeConfig?.categories?.options.find((option) => option.slug === "All")?.value;
+  const corpusFilters = corpora ? corpora?.map((corpus) => `&corpus.import_id=${corpus}`).join("") : "";
 
   return useQuery(
     ["all-subdivisions", themeConfig],

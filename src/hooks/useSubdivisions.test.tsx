@@ -86,4 +86,41 @@ describe("useSubdivisions", () => {
 
     expect(result.current.data).toEqual([...testCorpus1FamiliesWithSubdivisionCounts, ...testCorpus2FamiliesWithSubdivisionCounts]);
   });
+
+  it("only returns a list subdivision data for corpora in the All category if no default corpora in the relevant theme config", async () => {
+    setUpThemeConfig({
+      categories: {
+        label: "Category",
+        options: [
+          {
+            label: "All",
+            slug: "All",
+            value: ["Test.corpus.n0000", "Test.corpus.n0001"],
+          },
+        ],
+      },
+      filters: [],
+      labelVariations: [],
+      links: [],
+      metadata: [],
+      documentCategories: [],
+      defaultDocumentCategory: "All",
+      features: {} as TConfigFeatures,
+    });
+
+    const queryClient = new QueryClient();
+
+    const wrapper = ({ children }) => (
+      <QueryClientProvider client={queryClient}>
+        {/* @ts-ignore */}
+        <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
+      </QueryClientProvider>
+    );
+
+    const { result } = renderHook(() => useSubdivisions(), { wrapper });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(result.current.data).toEqual([...testCorpus1FamiliesWithSubdivisionCounts, ...testCorpus2FamiliesWithSubdivisionCounts]);
+  });
 });
