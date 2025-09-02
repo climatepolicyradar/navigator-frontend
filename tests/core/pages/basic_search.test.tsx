@@ -7,6 +7,18 @@ import { mockFeatureFlagsWithoutConcepts } from "@/mocks/featureFlags";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import Search from "@/pages/search";
 
+// Mock the useHashNavigation hook to provide controlled slideout state
+let mockCurrentSlideOut = "";
+let mockSetCurrentSlideOut = vi.fn();
+
+vi.mock("@/hooks/useHashNavigation", () => ({
+  useHashNavigation: () => ({
+    currentSlideOut: mockCurrentSlideOut,
+    setCurrentSlideOut: mockSetCurrentSlideOut,
+    updateHash: vi.fn(),
+  }),
+}));
+
 afterEach(() => {
   // clear router state between tests
   // we store query params in the router state so this resets everything
@@ -94,29 +106,45 @@ describe("SearchPage", async () => {
   });
 
   it("filters search results by region", async () => {
+    mockCurrentSlideOut = ""; // Make sure we start with slideout closed.
+
     // @ts-ignore
-    renderWithAppContext(Search, baseSearchProps);
+    const { rerender } = renderWithAppContext(Search, baseSearchProps, {
+      currentSlideOut: mockCurrentSlideOut,
+      setCurrentSlideOut: mockSetCurrentSlideOut,
+    });
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+
+    // Verify slideout is initially closed.
+    expect(screen.queryByText("Region")).not.toBeInTheDocument();
 
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
     // like animations that were causing warnings in the console.
     await act(async () => {
       await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
     });
+    expect(mockSetCurrentSlideOut).toHaveBeenCalledWith("geographies");
 
+    // Now simulate the slideout being open by updating the context & rerendering.
+    mockCurrentSlideOut = "geographies";
+
+    // @ts-ignore
+    rerender(Search, baseSearchProps, { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut });
+
+    // Verify the slideout is now open.
     expect(await screen.findByText("Region")).toBeInTheDocument();
 
     const regionFilterOption = await screen.findByRole("checkbox", { name: "Latin America & Caribbean" });
-
     await act(async () => {
       await userEvent.click(regionFilterOption);
     });
-
     expect(regionFilterOption).toBeChecked();
-    // check for applied filter button
+
+    // Verify the applied filter for the selected region is visible.
     expect(screen.getByRole("button", { name: "Latin America & Caribbean" })).toBeInTheDocument();
 
+    // Verify the results are filtered by the region.
     expect(await screen.findByText("Results")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Argentina Report" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Belize NDC" })).toBeInTheDocument();
@@ -124,20 +152,48 @@ describe("SearchPage", async () => {
   });
 
   it("filters search results by country", async () => {
+    mockCurrentSlideOut = ""; // Make sure we start with slideout closed.
+
     // @ts-ignore
-    renderWithAppContext(Search, baseSearchProps);
+    const { rerender } = renderWithAppContext(Search, baseSearchProps, {
+      currentSlideOut: mockCurrentSlideOut,
+      setCurrentSlideOut: mockSetCurrentSlideOut,
+    });
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+
+    // Verify slideout is initially closed.
+    expect(screen.queryByText("Published jurisdiction")).not.toBeInTheDocument();
 
     // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
     // like animations that were causing warnings in the console.
     await act(async () => {
       await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
     });
+    expect(mockSetCurrentSlideOut).toHaveBeenCalledWith("geographies");
 
-    // For now, just verify that the Geography button is clickable and the slideout system is working
-    // The actual GeographyPicker rendering is complex and depends on the slideout system
-    // which requires proper data from useConfig hook
-    expect(await screen.findByRole("button", { name: "Geography" })).toBeInTheDocument();
+    // Now simulate the slideout being open by updating the context & rerendering.
+    mockCurrentSlideOut = "geographies";
+
+    // @ts-ignore
+    rerender(Search, baseSearchProps, { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut });
+
+    // Verify the slideout is now open.
+    expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
+
+    // Find the country option and click it.
+    const countryOption = await screen.findByRole("checkbox", { name: "Belize" });
+    await act(async () => {
+      await userEvent.click(countryOption);
+    });
+    expect(countryOption).toBeChecked();
+
+    // Verify the applied filter for the selected country is visible.
+    expect(screen.getByRole("button", { name: "Belize" })).toBeInTheDocument();
+
+    // Verify the results are filtered by the country.
+    expect(await screen.findByText("Results")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Belize NDC" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Argentina Report" })).not.toBeInTheDocument();
   });
 });
