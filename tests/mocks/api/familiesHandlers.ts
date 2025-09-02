@@ -103,8 +103,10 @@ export const familiesHandlers = [
     const corpora = url.searchParams.getAll("corpus.import_id");
 
     if (corpora.length > 0) {
-      const familyCounts = corpora.flatMap((corpus) => familyCountsPerCorpus[corpus]);
-      return HttpResponse.json({ data: familyCounts });
+      const familyCounts = corpora.flatMap((corpus) => familyCountsPerCorpus[corpus] ?? []).filter((v) => v !== null);
+      if (familyCounts.length > 0) {
+        return HttpResponse.json({ data: familyCounts });
+      }
     }
 
     if (document_status === "published") {
