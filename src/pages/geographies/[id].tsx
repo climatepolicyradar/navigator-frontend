@@ -75,8 +75,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   let geographyV2: GeographyV2 = null;
   try {
-    const geographyV2Data: ApiItemResponse<GeographyV2> = await apiClient.get(`/geographies/${slug}`);
-    geographyV2 = geographyV2Data.data;
+    const geographyV2Data = await apiClient.get<ApiItemResponse<GeographyV2>>(`/geographies/${slug}`);
+    geographyV2 = geographyV2Data.data.data;
   } catch {}
 
   // TODO:
