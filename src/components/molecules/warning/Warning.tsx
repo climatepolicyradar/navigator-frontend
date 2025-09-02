@@ -40,7 +40,8 @@ export const Warning = ({ className, variant = "info", hideableId, children }: T
   useEffect(() => {
     // Need to check if the hideableId is set in sessionStorage
     // Also check if the window object is available (to avoid SSR hydration issues)
-    typeof window !== "undefined" && sessionStorage.getItem(hideableId) !== "true" ? setDisplayWarning(true) : setDisplayWarning(false);
+    const shouldDisplay = typeof window !== "undefined" && sessionStorage.getItem(hideableId) !== "true";
+    setDisplayWarning(shouldDisplay);
   }, [hideableId]);
 
   if (!displayWarning) return null;
