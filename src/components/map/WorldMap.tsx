@@ -103,7 +103,7 @@ const getMarkerColour = (value: number, min: number, max: number, active: boolea
   return `hsl(200, 50%, ${100 - offset}%)`;
 };
 
-const getMarketStroke = (active: boolean) => {
+const getMarkerStroke = (active: boolean) => {
   return active ? "#fff" : "#1D2939";
 };
 
@@ -395,7 +395,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
                       <circle
                         r={geo.markers[selectedFamCategory]}
                         fill={getMarkerColour(geo.markers[selectedFamCategory], minMarkerSize, maxMarkerSize, activeGeography === geo.display_value)}
-                        stroke={getMarketStroke(activeGeography === geo.display_value)}
+                        stroke={getMarkerStroke(activeGeography === geo.display_value)}
                         strokeWidth={0.25}
                       />
                     </Marker>
