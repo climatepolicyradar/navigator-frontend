@@ -26,7 +26,7 @@ export const GeographyLitigationPage = ({ summary, targets, theme, themeConfig, 
       <PageHeader coloured label="Geography" title={geographyV2.name} metadata={[]} />
       <Columns>
         <ContentsSideBar items={sidebarItems} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
-        <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-3:py-8 cols-3:gap-8 cols-3:col-span-2 cols-4:col-span-3">
+        <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-2:col-span-2 cols-3:py-8 cols-3:gap-8 cols-4:col-span-3">
           <RecentFamiliesBlock categorySummaries={categorySummaries} />
           <SubDivisionBlock subdivisions={geographyV2.has_subconcept} />
           {geographyV2.statistics && (
