@@ -53,6 +53,7 @@ export interface IProps<ColumnKey extends string> {
   maxRows?: number;
   rows: IInteractiveTableRow<ColumnKey>[];
   tableClasses?: string;
+  scrollable?: boolean; // Adds horizontal padding and overflow scroll
   showValues?: boolean; // Debug mode for understanding sorting
 }
 
@@ -61,6 +62,7 @@ export const InteractiveTable = <ColumnKey extends string>({
   defaultSort,
   maxRows = 0,
   rows,
+  scrollable = true,
   showValues = false,
   tableClasses,
 }: IProps<ColumnKey>) => {
@@ -143,60 +145,63 @@ export const InteractiveTable = <ColumnKey extends string>({
     );
   };
 
+  const scrollableClasses = joinTailwindClasses(scrollable && "-mx-5 px-5 overflow-y-auto");
   const allTableClasses = joinTailwindClasses("grid text-sm text-text-secondary leading-tight", tableClasses);
   const gridTemplateColumns = columns.map((column) => `${column.fraction || 1}fr`).join(" ");
 
   return (
-    <div className={allTableClasses} style={{ gridTemplateColumns }}>
-      {/* Heading */}
-      <div className="contents">
-        {columns.map((column) => {
-          const cellClasses = joinTailwindClasses(
-            "px-2.5 py-1.5 border-b border-l border-border-light first:border-l-0 text-text-primary font-semibold cursor-default group",
-            openSortMenu === column.id ? "bg-surface-ui" : "hover:bg-surface-ui",
-            column.classes
-          );
+    <div className={scrollableClasses}>
+      <div className={allTableClasses} style={{ gridTemplateColumns }}>
+        {/* Heading */}
+        <div className="contents">
+          {columns.map((column) => {
+            const cellClasses = joinTailwindClasses(
+              "px-2.5 py-1.5 border-b border-l border-border-light first:border-l-0 text-text-primary font-semibold cursor-default group",
+              openSortMenu === column.id ? "bg-surface-ui" : "hover:bg-surface-ui",
+              column.classes
+            );
+
+            return (
+              <div key={`heading-${column.id}`} className={cellClasses}>
+                <div className="flex items-center gap-1 min-h-6">
+                  <span className="block">{column.name || firstCase(column.id)}</span>
+                  {column.tooltip && (
+                    <Tooltip content={column.tooltip} popupClasses="text-wrap max-w-[250px]">
+                      <LucideInfo size={16} className="text-text-tertiary opacity-50 group-hover:opacity-100" />
+                    </Tooltip>
+                  )}
+                  {column.sortable !== false && renderSortControls(column)}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Rows */}
+        {displayedRows.map((row, rowIndex) => {
+          const lastRow = rowIndex + 1 === displayedRows.length;
 
           return (
-            <div key={`heading-${column.id}`} className={cellClasses}>
-              <div className="flex items-center gap-1 min-h-6">
-                <span className="block">{column.name || firstCase(column.id)}</span>
-                {column.tooltip && (
-                  <Tooltip content={column.tooltip} popupClasses="text-wrap max-w-[250px]">
-                    <LucideInfo size={16} className="text-text-tertiary opacity-50 group-hover:opacity-100" />
-                  </Tooltip>
-                )}
-                {column.sortable !== false && renderSortControls(column)}
-              </div>
+            <div key={`row-${row.id}`} className="contents">
+              {columns.map((column) => {
+                const cell = row.cells[column.id];
+                const cellClasses = joinTailwindClasses(
+                  "px-2.5 py-3 border-l border-border-light first:border-l-0",
+                  !lastRow && "border-b",
+                  column.classes,
+                  row.classes
+                );
+
+                return (
+                  <div key={`row-${row.id}-${column.id}`} className={cellClasses}>
+                    {renderCellDisplay(cell, showValues)}
+                  </div>
+                );
+              })}
             </div>
           );
         })}
       </div>
-
-      {/* Rows */}
-      {displayedRows.map((row, rowIndex) => {
-        const lastRow = rowIndex + 1 === displayedRows.length;
-
-        return (
-          <div key={`row-${row.id}`} className="contents">
-            {columns.map((column) => {
-              const cell = row.cells[column.id];
-              const cellClasses = joinTailwindClasses(
-                "px-2.5 py-3 border-l border-border-light first:border-l-0",
-                !lastRow && "border-b",
-                column.classes,
-                row.classes
-              );
-
-              return (
-                <div key={`row-${row.id}-${column.id}`} className={cellClasses}>
-                  {renderCellDisplay(cell, showValues)}
-                </div>
-              );
-            })}
-          </div>
-        );
-      })}
     </div>
   );
 };
