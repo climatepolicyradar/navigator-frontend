@@ -129,7 +129,7 @@ export const GeographyPicker = ({
           </InputListContainer>
         </Accordian>
         {subdivisions.length > 0 && (
-          <Accordian title={"Subdivision"} className="relative z-10" showFade="true" startOpen>
+          <Accordian title={"Subdivision"} data-cy="subdivisions" className="relative z-10" showFade="true" startOpen>
             <InputListContainer>
               <div className="mb-2" key="quick-search-box">
                 <TextInput
