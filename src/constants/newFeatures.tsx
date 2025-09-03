@@ -23,7 +23,7 @@ export const NEW_FEATURES: INewFeature[] = [
       <>
         <p>We have introduced a new layer of structure to the data, automatically identifying mentions of key climate topics in documents.</p>
         <p>
-          <ExternalLink url="/search?openConceptsPicker=true" className="underline">
+          <ExternalLink url="/search#concepts" className="underline">
             Find topics in documents
           </ExternalLink>
         </p>
