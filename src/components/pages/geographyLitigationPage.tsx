@@ -21,12 +21,12 @@ import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 import { IProps } from "./geographyOriginalPage";
 
-export const GeographyLitigationPage = ({ geography, geographyV2, parentGeographyV2, summary, targets, theme, themeConfig }: IProps) => {
+export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, summary, targets, theme, themeConfig }: IProps) => {
   const categorySummaries = themeConfig.documentCategories.map((category) => getFamilyCategorySummary(summary, category));
   const publishedTargets = sortFilterTargets(targets);
 
-  const legislativeProcess = geography?.legislative_process || "";
-  const geographyMetaData = geography ? getGeographyMetaData(geography) : [];
+  const legislativeProcess = geographyV2.statistics?.legislative_process || "";
+  const geographyMetaData = getGeographyMetaData(geographyV2.statistics);
 
   const isCountry = geographyV2.type === "country";
 
@@ -75,7 +75,6 @@ export const GeographyLitigationPage = ({ geography, geographyV2, parentGeograph
             </TextBlock>
           )}
           <Section id="section-debug" title="Debug">
-            <Debug data={geography} title="Geography V1" />
             <Debug data={geographyV2} title="Geography V2" />
             <Debug data={parentGeographyV2} title="Parent geography V2" />
             <Debug data={summary} title="Summary" />

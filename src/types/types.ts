@@ -63,9 +63,20 @@ export type GeographyV2 = {
   id: string;
   type: GeographyTypeV2;
   slug: string;
-  subconcept_of: GeographyV2[];
-  has_subconcept: GeographyV2[];
+  subconcept_of?: GeographyV2[];
+  has_subconcept?: GeographyV2[];
   name: string;
+  statistics?: {
+    name: string;
+    legislative_process: string;
+    federal: boolean;
+    federal_details: string;
+    political_groups: string;
+    global_emissions_percent: string;
+    climate_risk_index: string;
+    worldbank_income_group: string;
+    visibility_status: string;
+  };
 };
 
 export type TGeography = {
@@ -112,19 +123,6 @@ export type TTarget = {
   Comment: string;
   "family-slug": string;
   "family-name": string;
-};
-
-export type TGeographyStats = {
-  name: string;
-  geography_slug: string;
-  legislative_process: string;
-  federal: boolean;
-  federal_details: string;
-  political_groups: string;
-  global_emissions_percent: number;
-  climate_risk_index: number;
-  worldbank_income_group: string;
-  visibility_status: string;
 };
 
 export type TGeographySummaryCategory = "Executive" | "Legislative" | "Litigation" | "MCF" | "Reports" | "UNFCCC";

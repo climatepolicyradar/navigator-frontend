@@ -35,9 +35,10 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { sortOptions } from "@/constants/sortOptions";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { SlideOutContext, TSlideOutContent } from "@/context/SlideOutContext";
+import { SlideOutContext } from "@/context/SlideOutContext";
 import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
+import { useHashNavigation } from "@/hooks/useHashNavigation";
 import useSearch from "@/hooks/useSearch";
 import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
@@ -129,19 +130,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const sortSettingsButtonRef = useRef(null);
   const searchSettingsButtonRef = useRef(null);
 
-  const [currentSlideOut, setCurrentSlideOut] = useState<TSlideOutContent>("");
-
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
 
-  useEffect(() => {
-    if (router.query.openConceptsPicker === "true") {
-      // Remove the parameter after opening the picker
-      const query = { ...router.query };
-      delete query.openConceptsPicker;
-      router.replace({ query }, undefined, { shallow: true });
-      setCurrentSlideOut("concepts");
-    }
-  }, [router]);
+  const { currentSlideOut, setCurrentSlideOut } = useHashNavigation();
 
   const configQuery = useConfig();
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
