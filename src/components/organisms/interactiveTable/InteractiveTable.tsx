@@ -145,7 +145,7 @@ export const InteractiveTable = <ColumnKey extends string>({
     );
   };
 
-  const scrollableClasses = joinTailwindClasses(scrollable && "-mx-5 px-5 overflow-y-auto");
+  const scrollableClasses = joinTailwindClasses(scrollable && "-mx-5 px-5 overflow-x-auto");
   const allTableClasses = joinTailwindClasses("grid text-sm text-text-secondary leading-tight", tableClasses);
   const gridTemplateColumns = columns.map((column) => `${column.fraction || 1}fr`).join(" ");
 
