@@ -208,7 +208,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           unfccc: maxUnfccc > 0 ? Math.max(minMarkerSize, (unfcccCount / maxUnfccc) * maxMarkerSize) : 0,
           mcf: maxMcf > 0 ? Math.max(minMarkerSize, (mcfCount / maxMcf) * maxMarkerSize) : 0,
           reports: maxReports > 0 ? Math.max(minMarkerSize, (reportsCount / maxReports) * maxMarkerSize) : 0,
-          litigation: maxLitigation > 0 ? Math.max(minMarkerSize, (litigationCount / maxLitigation) * maxMarkerSize) : 0,
+          litigation: minMarkerSize,
         },
       };
       return acc;
