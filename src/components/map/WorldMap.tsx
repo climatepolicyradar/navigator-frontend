@@ -197,7 +197,6 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
       const unfcccCount = geoStats?.family_counts?.UNFCCC || 0;
       const mcfCount = geoStats?.family_counts?.MCF || 0;
       const reportsCount = geoStats?.family_counts?.REPORTS || 0;
-      const litigationCount = geoStats?.family_counts?.LITIGATION || 0;
 
       acc[country.value] = {
         ...country,
@@ -435,7 +434,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           </div>
         )}
       </div>
-      <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} theme={theme} />
+      {selectedFamCategory !== "litigation" && <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} theme={theme} />}
     </>
   );
 }
