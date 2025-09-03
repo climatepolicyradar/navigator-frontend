@@ -329,8 +329,8 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           </div>
         </div>
       </div>
-        <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 160 }} height={340}>
       <div ref={mapRef} className="map-container relative" data-cy="world-map">
+        <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 125 }} height={340}>
           <ZoomableGroup
             maxZoom={MAX_ZOOM}
             minZoom={MIN_ZOOM}
