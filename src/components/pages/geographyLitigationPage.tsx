@@ -26,7 +26,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, summar
   const publishedTargets = sortFilterTargets(targets);
 
   const legislativeProcess = geographyV2.statistics?.legislative_process || "";
-  const geographyMetaData = getGeographyMetaData(geographyV2.statistics);
+  const geographyMetaData = geographyV2.statistics ? getGeographyMetaData(geographyV2.statistics) : [];
 
   const isCountry = geographyV2.type === "country";
 
