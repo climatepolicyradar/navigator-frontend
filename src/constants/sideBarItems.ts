@@ -1,5 +1,4 @@
 import { ISideBarItem } from "@/components/organisms/contentsSideBar/ContentsSideBar";
-import { GeographyV2, TTarget } from "@/types";
 
 export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
   {
@@ -21,7 +20,9 @@ export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
   },
 ];
 
-export const getGeographyPageSidebarItems = (geography: GeographyV2, targets: TTarget[]): ISideBarItem[] => {
+type TProps = Record<"isCountry" | "legislativeProcess" | "metadata" | "subdivisions" | "targets", boolean>;
+
+export const getGeographyPageSidebarItems = (settings: TProps): ISideBarItem[] => {
   const sidebarItems = [
     {
       id: "section-recents",
@@ -29,7 +30,7 @@ export const getGeographyPageSidebarItems = (geography: GeographyV2, targets: TT
     },
     {
       id: "section-subdivisions",
-      display: "Geographic sub-divisions",
+      display: settings.isCountry ? "Geographic sub-divisions" : "Related geographic sub-divisions",
     },
     {
       id: "section-statistics",
@@ -52,8 +53,11 @@ export const getGeographyPageSidebarItems = (geography: GeographyV2, targets: TT
 
   const idsToRemove: string[] = [];
 
-  if (geography.statistics?.legislative_process) idsToRemove.push("section-legislative-process");
-  if (targets.length === 0) idsToRemove.push("section-targets");
+  // Remove rather than add so that there is a full ordered list defined above
+  if (!settings.subdivisions) idsToRemove.push("section-subdivisions");
+  if (!settings.metadata) idsToRemove.push("section-statistics");
+  if (!settings.targets) idsToRemove.push("section-targets");
+  if (!settings.legislativeProcess) idsToRemove.push("section-legislative-process");
 
   return sidebarItems.filter((item) => !idsToRemove.includes(item.id));
 };

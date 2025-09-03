@@ -56,7 +56,9 @@ export type TDataNode<T> = {
 export type ApiItemResponse<T> = {
   data: T;
 };
+
 type GeographyTypeV2 = "region" | "country" | "subdivision";
+
 export type GeographyV2 = {
   id: string;
   type: GeographyTypeV2;

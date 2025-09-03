@@ -10,6 +10,8 @@ interface IProps {
 }
 
 export const MetadataBlock = ({ title, metadata, id }: IProps) => {
+  if (metadata.length === 0) return null;
+
   return (
     <Section title={title} id={id}>
       <div className="rounded border border-border-light p-12">
