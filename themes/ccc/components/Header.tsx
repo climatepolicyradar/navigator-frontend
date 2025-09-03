@@ -7,7 +7,7 @@ import { NavBar } from "@/components/organisms/navBar/NavBar";
 
 export const CCLWLogo = (
   <LinkWithQuery href={`/`} cypress="cclw-logo">
-    <span className="text-text-light text-2xl font-medium">Climate Case Chart</span>
+    <span className="text-text-primary text-2xl font-medium">Climate Case Chart</span>
   </LinkWithQuery>
 );
 
@@ -19,7 +19,7 @@ const Header = () => {
 
   return (
     <NavBar
-      headerClasses={`min-h-12 bg-[rebeccapurple] ${!showLogo && !showSearch ? "!h-[72px]" : ""}`}
+      headerClasses={`min-h-12 bg-surface-light ${!showLogo && !showSearch ? "!h-[72px]" : ""}`}
       logo={CCLWLogo}
       menu={<Menu />}
       showLogo={showLogo}
