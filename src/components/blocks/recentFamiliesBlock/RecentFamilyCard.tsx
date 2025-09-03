@@ -21,7 +21,7 @@ export const RecentFamilyCard = ({ family }: IProps) => {
         <ul className="flex flex-col gap-1.5 text-[13px] text-text-tertiary leading-none">
           <li className="overflow-hidden whitespace-nowrap text-ellipsis">{categoryName}</li>
           <li className="overflow-hidden whitespace-nowrap text-ellipsis">{geography}</li>
-          <li className="overflow-hidden whitespace-nowrap text-ellipsis">{year}</li>
+          {!isNaN(year) && <li className="overflow-hidden whitespace-nowrap text-ellipsis">{year}</li>}
         </ul>
       </div>
     </LinkWithQuery>

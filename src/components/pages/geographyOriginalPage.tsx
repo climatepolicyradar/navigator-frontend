@@ -29,6 +29,7 @@ import { sortFilterTargets } from "@/utils/sortFilterTargets";
 export interface IProps {
   featureFlags: TFeatureFlags;
   geographyV2: GeographyV2;
+  parentGeographyV2?: GeographyV2;
   summary: TGeographySummary;
   targets: TTarget[];
   theme: TTheme;
