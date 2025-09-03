@@ -15,7 +15,7 @@ import { RecentFamiliesBlock } from "../blocks/recentFamiliesBlock/RecentFamilie
 import { TargetsBlock } from "../blocks/targetsBlock/TargetsBlock";
 import { TextBlock } from "../blocks/textBlock/TextBlock";
 
-export const GeographyLitigationPage = ({ summary, targets, theme, themeConfig, geographyV2 }: IProps) => {
+export const GeographyLitigationPage = ({ summary, targets, theme, themeConfig, geographyV2, vespaSearchResults }: IProps) => {
   const categorySummaries = themeConfig.documentCategories.map((category) => getFamilyCategorySummary(summary, category));
   const publishedTargets = sortFilterTargets(targets);
 
