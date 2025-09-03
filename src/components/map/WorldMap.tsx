@@ -13,6 +13,7 @@ import { TGeography, TTheme } from "@/types";
 import GeographySelect from "./GeographySelect";
 import { Legend } from "./Legend";
 import { ZoomControls } from "./ZoomControls";
+import { Heading } from "../typography/Heading";
 
 const geoUrl = "/data/map/world-countries-50m.json";
 
@@ -290,6 +291,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
   return (
     <>
       <div className="flex justify-between items-center my-4">
+        <Heading level={2}>Search the globe</Heading>
         {showCategorySelect && (
           <div>
             <select
@@ -327,8 +329,8 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           </div>
         </div>
       </div>
-      <div ref={mapRef} className="map-container relative border border-gray-300" data-cy="world-map">
         <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 160 }} height={340}>
+      <div ref={mapRef} className="map-container relative" data-cy="world-map">
           <ZoomableGroup
             maxZoom={MAX_ZOOM}
             minZoom={MIN_ZOOM}
