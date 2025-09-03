@@ -59,16 +59,21 @@ type TMapData = {
   geographies: TGeographiesWithCoords;
 };
 
-const geoStyle = (isActive: boolean) => {
+const geoStyle = (isActive: boolean, count: number, max: number) => {
+  const maxLog = Math.log10(max);
+  const countLog = Math.log10(count || 1);
+
+  const luminosity = isActive ? 1 : (countLog / maxLog) * 100 || 5;
+
   return {
     default: {
-      fill: isActive ? "#1F93FF" : "#dfdfdf",
+      fill: isActive ? "#002CA3" : `hsl(200, 50%, ${100 - luminosity}%)`,
       stroke: "#fff",
       strokeWidth: 0.25,
       outline: "none",
     },
     hover: {
-      fill: "#1F93FF",
+      fill: "#002CA3",
       cursor: "pointer",
       outline: "none",
     },
@@ -97,7 +102,7 @@ const minMarkerSize = 1.5;
 
 const getMarkerColour = (value: number, min: number, max: number, active: boolean) => {
   if (active) {
-    return "#1F93FF";
+    return "#002CA3";
   }
   const offset = ((value - min) / (max - min)) * 100;
   return `hsl(200, 50%, ${100 - offset}%)`;
@@ -198,7 +203,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
       const mcfCount = geoStats?.family_counts?.MCF || 0;
       const reportsCount = geoStats?.family_counts?.REPORTS || 0;
 
-      acc[country.value] = {
+      acc[country.display_value] = {
         ...country,
         coords: GEO_CENTER_POINTS[country.value],
         familyCounts: geoStats?.family_counts,
@@ -352,21 +357,24 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
             <Graticule stroke="#E4E5E6" strokeWidth={0.2} />
             <Geographies geography={geoUrl}>
               {({ geographies }) =>
-                geographies.map((geo) => (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    style={geoStyle(activeGeography === geo.properties.name)}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleGeoClick(e, geo);
-                    }}
-                    onMouseOver={(e) => {
-                      handleGeoHover(e, geo.properties.name);
-                    }}
-                  />
-                ))
+                geographies.map((geo) => {
+                  const geoData = mapData.geographies[geo.properties.name];
+                  return (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      style={geoStyle(activeGeography === geo.properties.name, geoData?.familyCounts.LITIGATION, mapData.maxLitigation)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleGeoClick(e, geo);
+                      }}
+                      onMouseOver={(e) => {
+                        handleGeoHover(e, geo.properties.name);
+                      }}
+                    />
+                  );
+                })
               }
             </Geographies>
             {mapDataStatus === "success" && (
