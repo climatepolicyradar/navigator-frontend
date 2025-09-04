@@ -22,6 +22,7 @@ import { Timeline } from "@/components/timeline/Timeline";
 import { Heading } from "@/components/typography/Heading";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TPublicEnvConfig } from "@/context/EnvConfig";
+import { GeographyCountsResponse } from "@/pages/api/geography-counts";
 import {
   GeographyV2,
   TDocumentCategory,
@@ -36,7 +37,6 @@ import {
 } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
-import { GeographyCountsResponse } from "@/pages/api/geography-counts";
 
 export interface IProps {
   featureFlags: TFeatureFlags;
