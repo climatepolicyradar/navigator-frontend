@@ -21,7 +21,7 @@ export const getEventTableColumns = ({
   let columns: TEventTableColumn[] = [
     { id: "date", name: "Filing Date", fraction: 2 },
     { id: "type", fraction: 3 },
-    { id: "action", name: "Action taken", fraction: 3 },
+    { id: "action", name: "Action taken", fraction: 4 },
     { id: "document" },
     { id: "summary", sortable: false, fraction: 6, classes: "min-w-75" },
   ];
@@ -97,7 +97,7 @@ export const getEventTableRows = ({
       rows.push({
         id: [family.import_id, eventIndex].join("/"),
         cells: {
-          action: family.metadata.action_taken?.[0] || null,
+          action: event.metadata.action_taken?.[0] || null,
           caseNumber: getCaseNumbers(family),
           caseTitle: family.title,
           court: getCourts(family),
