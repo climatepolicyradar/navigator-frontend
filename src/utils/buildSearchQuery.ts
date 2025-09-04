@@ -96,12 +96,14 @@ export default function buildSearchQuery(
   }
 
   if (routerQuery[QUERY_PARAMS.concept_preferred_label]) {
-    query.metadata = buildSearchQueryMetadata(
-      query.metadata,
-      routerQuery[QUERY_PARAMS.concept_preferred_label],
-      "concept_preferred_label",
-      themeConfig
-    );
+    const conceptPreferredLabel = routerQuery[QUERY_PARAMS.concept_preferred_label];
+    const conceptPreferredLabelFilters = Array.isArray(conceptPreferredLabel)
+      ? conceptPreferredLabel.map((name) => ({
+          name: "family.concept_preferred_label",
+          value: name,
+        }))
+      : [{ name: "family.concept_preferred_label", value: conceptPreferredLabel }];
+    query.metadata = [...query.metadata, ...conceptPreferredLabelFilters];
   }
 
   const qCategory = (routerQuery[QUERY_PARAMS.category] as string) ?? "All";

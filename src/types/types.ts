@@ -56,7 +56,9 @@ export type TDataNode<T> = {
 export type ApiItemResponse<T> = {
   data: T;
 };
+
 type GeographyTypeV2 = "region" | "country" | "subdivision";
+
 export type GeographyV2 = {
   id: string;
   type: GeographyTypeV2;
@@ -253,7 +255,6 @@ export type TFamilyMetadata = TMetadata<
   | "sector"
   | "topic"
   // Litigation specific
-  | "action_taken"
   | "case_number"
   | "concept_preferred_label"
   | "core_object"
@@ -422,6 +423,7 @@ export type TCorpusPublic = {
 export type TFamilyEventPublic = TEvent & {
   import_id: string;
   metadata: TMetadata<
+    | "action_taken"
     | "case_number"
     | "concept_preferred_label"
     | "core_object"

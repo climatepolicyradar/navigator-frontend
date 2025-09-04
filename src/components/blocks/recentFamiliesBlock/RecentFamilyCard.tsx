@@ -15,13 +15,13 @@ export const RecentFamilyCard = ({ family }: IProps) => {
   const [year] = formatDate(family.family_date);
 
   return (
-    <LinkWithQuery href={`/documents/${family_slug}`} className="w-51 h-65 shrink-0 border-t-2 border-t-surface-brand-darker">
+    <LinkWithQuery href={`/document/${family_slug}`} className="w-51 h-65 shrink-0 border-t-2 border-t-surface-brand-darker">
       <div className="flex flex-col justify-between gap-5 h-full p-5 border border-border-light border-t-0">
         <div className=" text-text-brand-darker font-semibold leading-tight line-clamp-7">{family_name}</div>
         <ul className="flex flex-col gap-1.5 text-[13px] text-text-tertiary leading-none">
           <li className="overflow-hidden whitespace-nowrap text-ellipsis">{categoryName}</li>
           <li className="overflow-hidden whitespace-nowrap text-ellipsis">{geography}</li>
-          <li className="overflow-hidden whitespace-nowrap text-ellipsis">{year}</li>
+          {!isNaN(year) && <li className="overflow-hidden whitespace-nowrap text-ellipsis">{year}</li>}
         </ul>
       </div>
     </LinkWithQuery>

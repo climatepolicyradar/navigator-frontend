@@ -354,7 +354,7 @@ ul li.selected {
   @apply text-blue-600 underline hover:text-blue-800;
 }
 .text-content p + p {
-  @apply mt-5;
+  @apply mt-6;
 }
 .text-content ul,
 .search-results ul {

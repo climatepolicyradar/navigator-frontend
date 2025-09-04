@@ -19,7 +19,7 @@ export const Menu = () => {
   return (
     <div ref={menuRef} className="flex items-center relative z-[41]">
       <button data-cy="menu-icon" onClick={toggleMenu} aria-label="Toggle menu">
-        <Icon name="menu" color="white" width="32" height="32" />
+        <Icon name="menu" color="black" width="32" height="32" />
       </button>
       {showMenu && (
         <div className="absolute right-0 top-[100%] z-50">
