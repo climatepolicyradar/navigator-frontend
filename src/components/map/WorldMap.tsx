@@ -59,15 +59,17 @@ type TMapData = {
   geographies: TGeographiesWithCoords;
 };
 
+// For converting Hex to HSL for use in our calculation
+// https://htmlcolors.com/hex-to-hsl
 const geoStyle = (isActive: boolean, count: number, max: number) => {
   const maxLog = Math.log10(max);
   const countLog = Math.log10(count || 1);
 
-  const luminosity = isActive ? 1 : (countLog / maxLog) * 100 || 5;
+  const ratio = countLog / maxLog;
 
   return {
     default: {
-      fill: isActive ? "#002CA3" : `hsl(200, 50%, ${100 - luminosity}%)`,
+      fill: isActive ? "#002CA3" : `hsl(206, 14%, ${67 - ratio * 14}%)`,
       stroke: "#fff",
       strokeWidth: 0.25,
       outline: "none",
