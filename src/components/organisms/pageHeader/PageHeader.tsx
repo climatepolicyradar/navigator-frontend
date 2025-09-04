@@ -7,7 +7,7 @@ import { firstCase } from "@/utils/text";
 interface IPageHeaderGenericProps {
   coloured?: boolean;
   label: string;
-  title: string;
+  title: ReactNode;
 }
 
 export interface IPageHeaderMetadata {

@@ -47,7 +47,7 @@ export const CountryLinkWithSubdivisions: FC<TCountryLinkWithSubdivisions> = ({
       <div className="flex">
         {selectedSubdivisions.map((subdivision, index) => (
           <Fragment key={subdivision.slug}>
-            <LinkWithQuery href={`/geographies/${slug}`} className={`flex items-center hover:underline hover:text-blue-800 ${className}`}>
+            <LinkWithQuery href={`/geographies/${subdivision.slug}`} className={`flex items-center hover:underline hover:text-blue-800 ${className}`}>
               {subdivision.display_value}
             </LinkWithQuery>
             {index !== selectedSubdivisions.length - 1 && <span>,&nbsp;</span>}

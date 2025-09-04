@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { Columns } from "@/components/atoms/columns/Columns";
+import { Debug } from "@/components/atoms/debug/Debug";
 import { EventsBlock } from "@/components/blocks/eventsBlock/EventsBlock";
 import { FamilyBlock } from "@/components/blocks/familyBlock/FamilyBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
@@ -77,9 +78,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
               </TextBlock>
               <MetadataBlock metadata={getCollectionMetadata(collection)} id="section-collection-metadata" />
               <Section id="section-debug" title="Debug">
-                <pre className="w-full max-h-[700px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">
-                  {JSON.stringify(collection, null, 2)}
-                </pre>
+                <Debug data={collection} title="Collection" />
               </Section>
             </main>
           </>

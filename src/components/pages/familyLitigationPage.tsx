@@ -2,6 +2,7 @@ import Head from "next/head";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Columns } from "@/components/atoms/columns/Columns";
+import { Debug } from "@/components/atoms/debug/Debug";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
@@ -70,14 +71,14 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
       <PageHeader label={categoryName} title={family.title} metadata={pageHeaderMetadata} />
       <Columns>
         <ContentsSideBar items={FAMILY_PAGE_SIDE_BAR_ITEMS} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
-        <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-3:py-8 cols-3:gap-8 cols-3:col-span-2 cols-4:col-span-3">
+        <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-2:col-span-2 cols-3:py-8 cols-3:gap-8 cols-4:col-span-3">
           <DocumentsBlock countries={countries} family={family} status="success" />
           <TextBlock id="section-summary" title="Summary">
             <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
           </TextBlock>
           <MetadataBlock title="About this case" metadata={getFamilyMetadata(family, countries, subdivisions)} id="section-metadata" />
           <Section id="section-debug" title="Debug">
-            <pre className="w-full max-h-[1000px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(family, null, 2)}</pre>
+            <Debug data={family} title="Family" />
           </Section>
         </main>
       </Columns>
