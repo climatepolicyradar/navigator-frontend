@@ -7,8 +7,6 @@ import { Debug } from "@/components/atoms/debug/Debug";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { RecentFamiliesBlock } from "@/components/blocks/recentFamiliesBlock/RecentFamiliesBlock";
 import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisionBlock";
-import { TargetsBlock } from "@/components/blocks/targetsBlock/TargetsBlock";
-import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
@@ -68,12 +66,13 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, summar
           <RecentFamiliesBlock categorySummaries={categorySummaries} />
           <SubDivisionBlock subdivisions={subdivisions} title={isCountry ? "Geographic sub-divisions" : "Related geographic sub-divisions"} />
           <MetadataBlock title="Statistics" metadata={geographyMetaData} id="section-statistics" />
+          {/* TODO handle block sorting/hiding programmatically (APP-1110)
           <TargetsBlock targets={publishedTargets} theme={theme} />
           {legislativeProcess.length > 0 && (
             <TextBlock id="section-legislative-process" title="Legislative process">
               <div className="text-content" dangerouslySetInnerHTML={{ __html: legislativeProcess }} />
             </TextBlock>
-          )}
+          )} */}
           <Section id="section-debug" title="Debug">
             <Debug data={geographyV2} title="Geography V2" />
             <Debug data={parentGeographyV2} title="Parent geography V2" />
