@@ -66,6 +66,13 @@ const getMostSpecificCourts = (concepts: TFamilyConcept[]): TFamilyConcept[] => 
   return courtConcepts;
 };
 
+export const getCaseNumbers = (family: TFamilyPublic): string | null => family.metadata.case_number?.join(", ") || null;
+
+export const getCourts = (family: TFamilyPublic): string | null =>
+  getMostSpecificCourts(family.concepts)
+    .map((concept) => concept.preferred_label)
+    .join(" / ") || null;
+
 const getFamilyEvents = (family: TFamilyPublic): TEventWithDocument[] =>
   [
     ...family.events.map((event) => ({ event })),
@@ -91,12 +98,9 @@ export const getEventTableRows = ({
         id: [family.import_id, eventIndex].join("/"),
         cells: {
           action: family.metadata.action_taken?.[0] || null,
-          caseNumber: family.metadata.case_number?.[0] || null,
+          caseNumber: getCaseNumbers(family),
           caseTitle: family.title,
-          court:
-            getMostSpecificCourts(family.concepts)
-              .map((concept) => concept.preferred_label)
-              .join(" / ") || null,
+          court: getCourts(family),
           date: {
             display: formatDateShort(date),
             value: date.getTime(),
