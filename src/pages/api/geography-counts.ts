@@ -22,6 +22,11 @@ async function vespaSearch(searchQuery: TSearchCriteria) {
 
 const themeConfig = themes[process.env.THEME];
 
+export type GeographyCountsResponse = {
+  counts: {
+    [category: string]: number;
+  };
+};
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { l, c } = req.query;
 

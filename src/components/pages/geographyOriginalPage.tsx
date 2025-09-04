@@ -36,6 +36,7 @@ import {
 } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
+import { GeographyCountsResponse } from "@/pages/api/geography-counts";
 
 export interface IProps {
   featureFlags: TFeatureFlags;
@@ -220,7 +221,7 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
   };
 
   /** Vespa search results */
-  const [counts, setCounts] = useState({});
+  const [counts, setCounts] = useState<GeographyCountsResponse["counts"]>({});
   const vespaSearchTabbedNavItems = themeConfig.categories
     ? themeConfig.categories.options.map((category) => {
         return {
@@ -241,7 +242,7 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
 
   useEffect(() => {
     fetch(`/api/geography-counts?l=${geographyV2.slug}&${countCategories.join("&c=")}`)
-      .then((res) => res.json())
+      .then((res) => res.json() as Promise<GeographyCountsResponse>)
       .then((data) => setCounts(data.counts));
     // We only ever want this to run once
     /* trunk-ignore(eslint/react-hooks/exhaustive-deps)*/
