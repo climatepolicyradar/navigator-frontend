@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const searchResults = await Promise.all(vespaSearches);
   const counts = cArray.reduce((acc, category, index) => {
-    acc[category] = searchResults[index].hits;
+    acc[category] = searchResults[index].total_family_hits;
     return acc;
   }, {});
 

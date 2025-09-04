@@ -287,6 +287,7 @@ export type TSearch = {
   hits: number;
   query_time_ms: number;
   families: TMatchedFamily[];
+  total_family_hits: number;
 };
 
 export type TLoadingStatus = "idle" | "loading" | "success" | "error";

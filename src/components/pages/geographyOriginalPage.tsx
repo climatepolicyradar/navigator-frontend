@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { BrazilImplementingNDCCard } from "@/cclw/components/BrazilImplementingNDCCard";
@@ -222,31 +222,36 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
 
   /** Vespa search results */
   const [counts, setCounts] = useState<GeographyCountsResponse["counts"]>({});
-  const vespaSearchTabbedNavItems = themeConfig.categories
-    ? themeConfig.categories.options.map((category) => {
-        return {
-          title: category.label,
-          /** We need to maintain the slug to to know what to send to Vespa for querying. */
-          slug: category.slug,
-        };
-      })
-    : /** We generate an `All` for when themeConfig.categories are not available e.g. MCFs */
-      [
-        {
-          title: "All",
-          slug: "All",
-        },
-      ];
+  const vespaSearchTabbedNavItems = useMemo(
+    () =>
+      themeConfig.categories
+        ? themeConfig.categories.options.map((category) => {
+            return {
+              title: category.label,
+              /** We need to maintain the slug to to know what to send to Vespa for querying. */
+              slug: category.slug,
+            };
+          })
+        : /** We generate an `All` for when themeConfig.categories are not available e.g. MCFs */
+          [
+            {
+              title: "All",
+              slug: "All",
+            },
+          ],
+    [themeConfig.categories]
+  );
 
-  const countCategories = vespaSearchTabbedNavItems.map((item) => item.slug.toLocaleLowerCase()).filter((slug) => slug !== "litigation");
+  const countCategories = useMemo(
+    () => vespaSearchTabbedNavItems.map((item) => item.slug.toLocaleLowerCase()).filter((slug) => slug !== "litigation"),
+    [vespaSearchTabbedNavItems]
+  );
 
   useEffect(() => {
-    fetch(`/api/geography-counts?l=${geographyV2.slug}&${countCategories.join("&c=")}`)
+    fetch(`/api/geography-counts?l=${geographyV2.slug}&c=${countCategories.join("&c=")}`)
       .then((res) => res.json() as Promise<GeographyCountsResponse>)
       .then((data) => setCounts(data.counts));
-    // We only ever want this to run once
-    /* trunk-ignore(eslint/react-hooks/exhaustive-deps)*/
-  }, []);
+  }, [geographyV2.slug, countCategories]);
 
   const [currentVespaSearchSelectedCategory, setCurrentVespaSearchSelectedCategory] = useState(vespaSearchTabbedNavItems[0].title);
   const [currentVespaSearchResults, setCurrentVespaSearchResults] = useState(vespaSearchResults);
@@ -345,7 +350,7 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
                         items={vespaSearchTabbedNavItems.map((item) => {
                           return {
                             ...item,
-                            count: counts[item.slug.toLocaleLowerCase()],
+                            count: item.slug !== "Litigation" ? counts[item.slug.toLocaleLowerCase()] : undefined,
                           };
                         })}
                         handleTabClick={handleVespaSearchTabClick}
