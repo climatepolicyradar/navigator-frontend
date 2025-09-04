@@ -69,7 +69,7 @@ const geoStyle = (isActive: boolean, count: number, max: number) => {
 
   return {
     default: {
-      fill: isActive ? "#002CA3" : `hsl(206, 14%, ${67 - ratio * 14}%)`,
+      fill: isActive ? "#002CA3" : `hsl(206, 14%, ${72 - ratio * 25}%)`,
       stroke: "#fff",
       strokeWidth: 0.25,
       outline: "none",
