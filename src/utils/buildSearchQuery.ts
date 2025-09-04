@@ -268,6 +268,12 @@ export default function buildSearchQuery(
     query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS["_document.type"]], "_document.type", themeConfig);
   }
 
+  // ---- page_size ----
+  const maybePageSize = Number.isInteger(Number(routerQuery[QUERY_PARAMS["page_size"]])) ? Number(routerQuery[QUERY_PARAMS["page_size"]]) : undefined;
+  if (maybePageSize !== undefined) {
+    query.page_size = maybePageSize;
+  }
+
   query = {
     ...query,
     keyword_filters,

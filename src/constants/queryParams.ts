@@ -30,4 +30,5 @@ export const QUERY_PARAMS = {
   concept_id: "cfi",
   concept_name: "cfn",
   concept_preferred_label: "cpl",
+  page_size: "page_size",
 };
