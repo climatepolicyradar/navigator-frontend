@@ -239,6 +239,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
   };
 
   const handleGeographySelected = (selectedCountry: TGeographyWithCoords) => {
+    if (!selectedCountry || !selectedCountry.coords) return;
     setMapCenter(selectedCountry.coords);
     setMapZoom(5);
     const mapElement = mapRef.current;
@@ -324,11 +325,11 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
               <GeographySelect
                 title="Search for a country or territory"
                 list={mapData.geographies}
-                keyField="value"
+                keyField="display_value"
                 keyFieldDisplay="display_value"
                 filterType="geography"
                 handleFilterChange={(_, value) => {
-                  handleGeographySelected(mapData.geographies[value]);
+                  handleGeographySelected(mapData.geographies[value]); //TODO: fix this because we are using the name as key
                 }}
               />
             </div>
