@@ -16,7 +16,7 @@ export const Hero = ({ handleSearchInput, searchInput, exactMatch, handleSearchC
     <div className="pb-[33vh] text-white">
       <SiteWidth>
         <div className="flex flex-col items-center justify-center mb-6">
-          <Heading level={1} extraClasses="!text-text-light text-5xl font-medium">
+          <Heading level={1} extraClasses="!text-text-primary text-5xl font-medium">
             Climate Case Chart
           </Heading>
         </div>

@@ -23,7 +23,7 @@ export const getEventTableColumns = ({
     { id: "type", fraction: 3 },
     { id: "action", name: "Action taken", fraction: 3 },
     { id: "document" },
-    { id: "summary", sortable: false, fraction: 6 },
+    { id: "summary", sortable: false, fraction: 6, classes: "min-w-75" },
   ];
 
   if (showFamilyColumns) {

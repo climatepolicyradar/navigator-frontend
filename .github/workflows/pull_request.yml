@@ -11,7 +11,7 @@ jobs:
       CI_JOB_NUMBER: 1
       THEME: cpr
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: andresz1/size-limit-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -27,7 +27,7 @@ jobs:
       checks: write
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Use Node.js 22.12.0
         uses: actions/setup-node@v4
         with:
@@ -71,7 +71,7 @@ jobs:
       checks: write
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Use Node.js 22.12.0
         uses: actions/setup-node@v4
         with:
@@ -110,7 +110,7 @@ jobs:
     env:
       THEME: cpr
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
@@ -132,7 +132,7 @@ jobs:
   code-quality:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
@@ -152,7 +152,7 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
@@ -160,7 +160,7 @@ jobs:
       - run: cp .env.example .env
 
       - name: Run tests and upload results to Trunk.io
-        uses: trunk-io/analytics-uploader@v1
+        uses: trunk-io/analytics-uploader@v2
         with:
           junit-paths: "**/vitest.xml"
           run: npm run test
@@ -179,7 +179,7 @@ jobs:
       matrix:
         theme: [cpr, cclw, mcf, ccc]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
@@ -203,7 +203,7 @@ jobs:
         run: mkdir -p test-results-${{ matrix.theme }}
 
       - name: Run Playwright tests and upload results
-        uses: trunk-io/analytics-uploader@v1
+        uses: trunk-io/analytics-uploader@v2
         with:
           junit-paths: test-results-${{ matrix.theme }}/playwright.xml
           run: |

@@ -109,7 +109,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
         </div>
       </form>
       <div className="hidden mt-4 md:flex flex-wrap items-center gap-2">
-        <span className="text-gray-200">Search by:</span>
+        <span className="text-text-tertiary">Search by:</span>
         {EXAMPLE_SEARCHES.map((example) => (
           <Button key={example.id} color="mono" rounded onClick={() => handleQuickSearch(example.params)} data-cy={`quick-search-${example.id}`}>
             {example.label}

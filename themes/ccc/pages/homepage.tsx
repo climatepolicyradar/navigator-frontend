@@ -24,7 +24,7 @@ interface IProps {
 const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig, exactMatch, handleSearchChange }: IProps) => {
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="homepage">
-      <main id="main" className="h-screen flex flex-col bg-[rebeccapurple]">
+      <main id="main" className="h-screen flex flex-col bg-surface-light text-text-primary">
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} exactMatch={exactMatch} handleSearchChange={handleSearchChange} />

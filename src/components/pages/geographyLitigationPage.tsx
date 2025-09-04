@@ -7,8 +7,6 @@ import { Debug } from "@/components/atoms/debug/Debug";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { RecentFamiliesBlock } from "@/components/blocks/recentFamiliesBlock/RecentFamiliesBlock";
 import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisionBlock";
-import { TargetsBlock } from "@/components/blocks/targetsBlock/TargetsBlock";
-import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
@@ -64,7 +62,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, summar
       <PageHeader coloured label="Geography" title={pageTitle} metadata={[]} />
       <Columns>
         <ContentsSideBar items={sidebarItems} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
-        <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-3:py-8 cols-3:gap-8 cols-3:col-span-2 cols-4:col-span-3">
+        <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-2:col-span-2 cols-3:py-8 cols-3:gap-8 cols-4:col-span-3">
           <RecentFamiliesBlock categorySummaries={categorySummaries} />
           <SubDivisionBlock subdivisions={subdivisions} title={isCountry ? "Geographic sub-divisions" : "Related geographic sub-divisions"} />
           <MetadataBlock title="Statistics" metadata={geographyMetaData} id="section-statistics" />
