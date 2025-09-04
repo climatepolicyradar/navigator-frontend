@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { TSearch, TSearchCriteria } from "src/types/types";
 
 import { ApiClient } from "@/api/http-common";
+import { TSearch, TSearchCriteria } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 
 import themes from "../../../themes";
@@ -42,6 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   });
 
   const searchResults = await Promise.all(vespaSearches);
+
   const counts = cArray.reduce((acc, category, index) => {
     acc[category] = searchResults[index].total_family_hits;
     return acc;
