@@ -118,7 +118,7 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
     router.push({ pathname: "/search", query: { ...newQuery } });
   };
 
-  const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geographyV2.name}.`}</p>;
+  const renderEmpty = (documentType: string = "") => <li className="mt-4">{`There are no ${documentType} documents for ${geographyV2.name}.`}</li>;
 
   const renderDocuments = () => {
     // All docs || All MCF docs if theme is MCF
@@ -136,9 +136,12 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
       return allFamilies.map((family) => {
         if (family)
           return (
-            <ol key={family.family_slug} className="mb-10">
-              <FamilyListItem family={family} />
-            </ol>
+            <FamilyListItem
+              key={family.family_slug}
+              titleClasses="text-[#0041A3] hover:underline"
+              family={family}
+              className={`pb-8 border-border-light`}
+            />
           );
       });
     }
@@ -147,9 +150,12 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
       return summary.top_families.Legislative.length === 0
         ? renderEmpty("Legislative")
         : summary.top_families.Legislative.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <ol key={family.family_slug} className="mb-10">
-              <FamilyListItem family={family} />
-            </ol>
+            <FamilyListItem
+              key={family.family_slug}
+              titleClasses="text-[#0041A3] hover:underline"
+              family={family}
+              className={`pb-8 border-border-light`}
+            />
           ));
     }
     // Executive
@@ -157,9 +163,12 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
       return summary.top_families.Executive.length === 0
         ? renderEmpty("Executive")
         : summary.top_families.Executive.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <ol key={family.family_slug} className="mb-10">
-              <FamilyListItem family={family} />
-            </ol>
+            <FamilyListItem
+              key={family.family_slug}
+              titleClasses="text-[#0041A3] hover:underline"
+              family={family}
+              className={`pb-8 border-border-light`}
+            />
           ));
     }
     // UNFCCC
@@ -167,9 +176,12 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
       return summary.top_families.UNFCCC.length === 0
         ? renderEmpty("UNFCCC")
         : summary.top_families.UNFCCC.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <ol key={family.family_slug} className="mb-10">
-              <FamilyListItem family={family} />
-            </ol>
+            <FamilyListItem
+              key={family.family_slug}
+              titleClasses="text-[#0041A3] hover:underline"
+              family={family}
+              className={`pb-8 border-border-light`}
+            />
           ));
     }
     // Litigation
@@ -189,9 +201,12 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
       return summary.top_families.MCF.length === 0
         ? renderEmpty("multilateral climate funds")
         : summary.top_families.MCF.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <ol key={family.family_slug} className="mb-10">
-              <FamilyListItem family={family} />
-            </ol>
+            <FamilyListItem
+              key={family.family_slug}
+              family={family}
+              titleClasses="text-[#0041A3] hover:underline"
+              className={`pb-8 border-border-light`}
+            />
           ));
     }
     // Reports
@@ -199,9 +214,12 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
       return summary.top_families.Reports.length === 0
         ? renderEmpty("reports")
         : summary.top_families.Reports.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <ol key={family.family_slug} className="mb-10">
-              <FamilyListItem family={family} />
-            </ol>
+            <FamilyListItem
+              key={family.family_slug}
+              family={family}
+              titleClasses="text-[#0041A3] hover:underline"
+              className={`pb-8 border-border-light`}
+            />
           ));
     }
   };
@@ -296,15 +314,17 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
                       <TabbedNav activeItem={selectedCategory} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
                     </div>
                   </div>
-                  {renderDocuments()}
+                  <ol className="mt-8 divide-y flex flex-col gap-6">{renderDocuments()}</ol>
                 </section>
                 {selectedCategory !== "Litigation" && (
-                  <div data-cy="see-more-button">
-                    <Button rounded variant="outlined" className="my-5" onClick={handleDocumentSeeMoreClick}>
-                      View more documents
-                    </Button>
+                  <>
+                    <div data-cy="see-more-button" className="mb-4">
+                      <Button rounded variant="outlined" onClick={handleDocumentSeeMoreClick}>
+                        View more documents
+                      </Button>
+                    </div>
                     <Divider />
-                  </div>
+                  </>
                 )}
               </>
             )}
