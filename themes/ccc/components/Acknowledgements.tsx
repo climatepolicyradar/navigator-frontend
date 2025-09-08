@@ -9,18 +9,31 @@ type TAcknowledgement = {
     imageUrl: string;
     imageAlt: string;
   };
+  partnerImages?: Array<{
+    url: string;
+    imageUrl: string;
+    imageAlt: string;
+  }>;
   children?: ReactNode;
 };
 
-const Acknowledgement = ({ partnerImage, children }: TAcknowledgement) => {
+const Acknowledgement = ({ partnerImage, partnerImages, children }: TAcknowledgement) => {
+  const images = partnerImages || (partnerImage ? [partnerImage] : []);
+
   return (
     <div className="mb-6 md:flex">
-      {partnerImage && (
-        <div className="mb-4 md:mb-0 md:basis-1/2 lg:basis-1/3 flex">
-          <ExternalLink className="" url={partnerImage.url}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`/images/ccc/partners/${partnerImage.imageUrl}`} alt={partnerImage.imageAlt} className="max-h-[96px]" />
-          </ExternalLink>
+      {images.length > 0 && (
+        <div className="mb-4 md:mb-0 md:basis-1/2 lg:basis-1/3 flex gap-4">
+          {images.map((img, index) => (
+            <ExternalLink key={index} className="" url={img.url}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={img.imageUrl.startsWith("/") ? img.imageUrl : `/images/ccc/partners/${img.imageUrl}`}
+                alt={img.imageAlt}
+                className="max-h-[96px]"
+              />
+            </ExternalLink>
+          ))}
         </div>
       )}
       <div className="md:basis-1/2 lg:basis-2/3 md:pl-6">{children}</div>
@@ -116,11 +129,18 @@ export const Acknowledgements = () => {
         </p>
       </Acknowledgement>
       <Acknowledgement
-        partnerImage={{
-          url: "https://www.lse.ac.uk/granthaminstitute/",
-          imageUrl: "LSE_GR_logo.jpg",
-          imageAlt: "Grantham Research Institute for Climate Change and the Environment logo",
-        }}
+        partnerImages={[
+          {
+            url: "https://www.lse.ac.uk/",
+            imageUrl: "/images/partners/lse-logo.png",
+            imageAlt: "London School of Economics logo",
+          },
+          {
+            url: "https://www.lse.ac.uk/granthaminstitute/",
+            imageUrl: "/images/partners/grantham-logo.png",
+            imageAlt: "Grantham Research Institute for Climate Change and the Environment logo",
+          },
+        ]}
       >
         <p>
           The Sabin Center often collaborates with the{" "}
