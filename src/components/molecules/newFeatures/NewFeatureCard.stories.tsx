@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 
 import { NEW_FEATURES } from "@/constants/newFeatures";
 import { NewFeatureContext } from "@/context/NewFeatureContext";

@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 
 import { Columns } from "@/components/atoms/columns/Columns";
 import { FAMILY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
