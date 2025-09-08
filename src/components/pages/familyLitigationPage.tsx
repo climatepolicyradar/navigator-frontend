@@ -13,6 +13,7 @@ import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHead
 import { FAMILY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
+import { getSubdivisionName } from "@/helpers/getSubdivision";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
 import { getLitigationJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
@@ -31,16 +32,27 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
   const [year] = convertDate(family.published_date);
   const attributionUrl = family?.organisation_attribution_url;
 
+  // TODO use the new geography endpoint + GeographyV2
+  const geographiesToDisplay = family.geographies.some((code) => code.includes("-"))
+    ? family.geographies.filter((code) => code.includes("-"))
+    : family.geographies;
+
   const pageHeaderMetadata: IPageHeaderMetadata[] = [
     { label: "Date", value: isNaN(year) ? "" : year },
     {
       label: "Geography",
       value: joinNodes(
-        family.geographies.map((geo) => (
-          <LinkWithQuery key={geo} href={`/geographies/${getCountrySlug(geo, countries)}`} className="underline">
-            {getCountryName(geo, countries) || geo}
-          </LinkWithQuery>
-        )),
+        geographiesToDisplay.map((code) => {
+          const isCountry = !code.includes("-");
+          const slug = isCountry ? getCountrySlug(code, countries) : code.toLowerCase();
+          const name = isCountry ? getCountryName(code, countries) : getSubdivisionName(code, subdivisions);
+
+          return (
+            <LinkWithQuery key={code} href={`/geographies/${slug}`} className="underline">
+              {name}
+            </LinkWithQuery>
+          );
+        }),
         ", "
       ),
     },
@@ -79,6 +91,8 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
           <MetadataBlock title="About this case" metadata={getFamilyMetadata(family, countries, subdivisions)} id="section-metadata" />
           <Section id="section-debug" title="Debug">
             <Debug data={family} title="Family" />
+            <Debug data={countries} title="Countries" />
+            <Debug data={subdivisions} title="Subdivisions" />
           </Section>
         </main>
       </Columns>
