@@ -118,7 +118,9 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
     router.push({ pathname: "/search", query: { ...newQuery } });
   };
 
-  const renderEmpty = (documentType: string = "") => <li className="mt-4">{`There are no ${documentType} documents for ${geographyV2.name}.`}</li>;
+  const renderEmpty = (documentType: string = "") => (
+    <li className="mb-4 text-sm">{`There are no ${documentType} documents for ${geographyV2.name}.`}</li>
+  );
 
   const renderDocuments = () => {
     // All docs || All MCF docs if theme is MCF
