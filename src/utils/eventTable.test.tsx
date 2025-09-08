@@ -4,7 +4,7 @@ import { TCategory, TCorpusPublic, TFamilyDocumentPublic } from "@/types";
 import { getEventTableRows } from "./eventTable";
 
 describe("getEventTableRows", () => {
-  it("returns a list of family events", () => {
+  it("returns a list of family event rows", () => {
     const familyWithoutDocuments = {
       category: "Litigation" as TCategory,
       collections: [],
@@ -66,7 +66,7 @@ describe("getEventTableRows", () => {
     ]);
   });
 
-  it("returns a list of document events", () => {
+  it("returns a list of document event rows", () => {
     const familyWithoutEvents = {
       category: "Litigation" as TCategory,
       collections: [],
@@ -142,7 +142,7 @@ describe("getEventTableRows", () => {
     ]);
   });
 
-  it("returns a list of family and document events", () => {
+  it("returns a list of family and document event rows", () => {
     const familyWithoutEvents = {
       category: "Litigation" as TCategory,
       collections: [],
@@ -249,7 +249,7 @@ describe("getEventTableRows", () => {
     ]);
   });
 
-  it("returns a deduplicated list of family and document events if same event linked to both family and document", () => {
+  it("returns a deduplicated list of family and document event rows if same event linked to both family and document", () => {
     const familyWithoutEvents = {
       category: "Litigation" as TCategory,
       collections: [],
