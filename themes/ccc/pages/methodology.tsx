@@ -28,195 +28,275 @@ const Methodology = () => {
               <Heading level={1} extraClasses="custom-header mb-8">
                 Methodology
               </Heading>
-              <p>To fall within the scope of the Climate Change Litigation Database, cases must satisfy two key criteria.</p>
-              <p>
-                First, cases must generally be brought before judicial bodies (though in some exemplary instances matters brought before
-                administrative or investigatory bodies are also included). Historically, the term “cases” in the U.S. database included more than
-                judicial actions and proceedings. Other types of “cases” formerly contained in the database included quasi-judicial administrative
-                proceedings, rulemaking petitions, requests for reconsideration of regulations, notices of intent to sue (in situations where lawsuits
-                were not subsequently filed), and subpoenas. Since 2018, these other types of cases have not been added to the U.S. database, and
-                approximately 100 older such cases were removed from the database in November 2021.
-              </p>
-              <p>
-                Second, climate change law, policy, or science must be a material issue of law or fact in the case. Cases that make only a passing
-                reference to climate change, but do not address climate-relevant laws, policies, or actions in a meaningful way are not included.
-              </p>
-              <p>
-                In general, cases that may have a direct impact on climate change, but do not explicitly raise climate issues, are also not included
-                in the database. Examples of such cases may include challenges to government inaction on local air pollution or challenges to the
-                development of fossil fuel infrastructure on the basis of other types of harm to human health and/or the environment. The intent of
-                the litigants with regard to the climate-related consequences of such cases is not considered during the assessment process.
-              </p>
-              <p>
-                The Global database also includes a number of cases brought before arbitral tribunals under the terms of bilateral and multilateral
-                investment agreements, commonly referred to as Investor-State Dispute Settlement (ISDS). Investor-state cases are considered to be
-                within the scope of the database insofar as they relate directly to the enactment or withdrawal of a domestic measure explicitly
-                adopted to meet a country's climate goals and objectives. More information on these cases and their inclusion in the database can be
-                found here.
-              </p>
-            </div>
-            <div className="text-content mb-8">
               <Heading level={2} extraClasses="custom-header">
-                Categorization in the Global Database
+                Methodology at a Glance
               </Heading>
-              <p>Prior to addition to the Global database, cases are categorized according to:</p>
+              <p>
+                The Sabin Center's Climate Litigation Database tracks cases where climate change law, policy, or science is a{" "}
+                <strong>material issue</strong>.
+              </p>
               <ul>
                 <li>
-                  Case categories, including the type of defendant (governments or corporations and individuals) and the main cause of action (e.g.,
-                  greenhouse gas emissions reduction and trading, environmental assessment and permitting, human rights, etc.);
+                  <strong>Scope:</strong> Judicial cases, selected administrative and investigatory proceedings, investor-state disputes, and certain
+                  proceedings before UN and regional bodies.
                 </li>
-                <li>Jurisdiction, including the court or tribunal before which the case was filed;</li>
-                <li>The climate-relevant principal law to which the litigation relates (i.e., the main laws invoked in the case);</li>
-                <li>The status of the case (e.g., whether the case is pending or decided).</li>
+                <li>
+                  <strong>Exclusions:</strong> Cases that only mention climate change in passing, or that affect climate outcomes without raising
+                  climate arguments directly.
+                </li>
+                <li>
+                  <strong>Categorization:</strong> Each case is tagged by case category, principal laws invoked, jurisdiction, geography, and filing
+                  year. Some cases are also tagged by status.
+                </li>
+                <li>
+                  <strong>Sources:</strong> Court documents, media, academic literature, legal databases, and partnerships with global research
+                  networks.
+                </li>
+                <li>
+                  <strong>Limitations:</strong> Coverage is not exhaustive; some cases may be missing due to language barriers, document availability,
+                  or limited reporting.
+                </li>
               </ul>
-              <p>
-                A single case may be categorized in multiple case categories, multiple jurisdictions (if the case is heard on appeal), and multiple
-                principal laws. You can filter by case category, jurisdiction, principal law, and jurisdiction here.
-              </p>
-            </div>
-            <div className="text-content mb-8">
               <Heading level={2} extraClasses="custom-header">
-                Categorization in the U.S. Database
-              </Heading>
-              <p>Prior to addition to the U.S. database, cases are categorized according to:</p>
-              <ul>
-                <li>Type of claim (e.g., federal statutory, constitutional, state law); and</li>
-                <li>Principal law (e.g., specific statutes or doctrines).</li>
-              </ul>
-              <p>
-                A single U.S. case may be categorized in multiple types of claim and principal laws. You can see all of the types (and sub-types) of
-                claims here. You can filter by type of claim, principal law, filing year, and jurisdiction here.
-              </p>
-            </div>
-            <div className="text-content mb-8">
-              <Heading level={2} extraClasses="custom-header">
-                Data Collection Process
+                Suggested Language when referencing the database
               </Heading>
               <p>
-                Cases are identified on a rolling basis by the Sabin Center for Climate Change Law. Common sources of information relied on by
-                researchers include media reports, legal databases, court websites and newsletters, social media, academic articles, and other online
-                sources. We take a collaborative approach to data gathering, and many cases have been reported through networks of plaintiffs and
-                defendants, academics and researchers, or crowdsourced through other channels.
+                The Sabin Center's Climate Litigation Database compiles judicial and certain quasi-judicial cases worldwide where climate change law,
+                policy, or science is materially at issue. It provides searchable information on case type, principal laws, jurisdiction, and
+                geography. While comprehensive, the database is not exhaustive, and coverage varies across jurisdictions.
               </p>
-              <p>
-                The Sabin Center's Peer Review Network of Climate Litigation ensures that the database is comprehensive and up to date. For some
-                specific types of litigation, data is collected in partnership with other institutions and individuals. The Sabin Center regularly
-                collaborates with researchers at the Grantham Research Institute on Climate Change and the Environment. The primary source of cases
-                from Australia is the University of Melbourne, which maintains the Australian Climate Change Litigation Database. The primary source
-                of cases from the Asia-Pacific region is the Asia Development Bank. The primary source of cases from Brazil is the Grupo de Pesquisa
-                Direito, Ambiente e Justiça no Antropoceno, Pontifícia Universidade Católica do Rio de Janeiro (JUMA/NIMA/PUC-Rio). The Sabin Center
-                also collaborates with the Interamerican Association for Environmental Defense (AIDA) on climate litigation cases in Latin America.
-                The Peer Review Network receives financial support from the United Nations Environment Program.
-              </p>
-              <p>
-                Data regarding ISDS cases is collected in partnership with Hasselt University, Centre for Government and Law, Faculty of Law. The
-                primary source of cases is the UNCTAD Investment Policy Hub database, which collects over 1,000 existing ISDS cases worldwide. Another
-                source of information is the ICSID database on its website. Full details of complaints, decisions, and arbitral awards in ISDS cases
-                are not always made public, but original documents are included in the database where these have been identified.
-              </p>
-              <p>
-                Once a case is identified, it is reviewed by researchers at the Sabin Center for Climate Change Law with relevant expertise in the
-                field of environmental and climate change law. Researchers draft case summaries and categorize cases according to the categories
-                described above prior to entry into the databases.
-              </p>
-            </div>
-            <div className="text-content mb-8">
-              <Heading level={2} extraClasses="custom-header">
-                Data Limitations
+              <Heading level={3} extraClasses="custom-header">
+                Suggested Citation
+              </Heading>
+              <Heading level={4} extraClasses="custom-header">
+                Bluebook style
               </Heading>
               <p>
-                The database has helped highlight and inform a global field of research and practice in climate change law. While we have sought to
-                identify as many cases as possible that may fall within the scope outlined above, the database is not exhaustive. Key limitations
-                include language barriers, levels of media coverage, and public availability of court documents. As a result, coverage in some
-                jurisdictions is more comprehensive than in others. This may contribute to the wide discrepancy in the numbers of climate cases
-                identified in different jurisdictions, although the legal culture in different jurisdictions should also be considered a key factor.
-                In some instances, cases which are identical in subject matter may also have been recorded in the database in one entry. In the U.S.
-                database, one case may involve multiple complaints or petitions that have been consolidated, and the entry for a single case may
-                include multiple decisions at the trial and appellate levels. Similarly, the fact that no climate litigation has yet been identified
-                in a given jurisdiction should not be taken as a certain indication that no such litigation has been filed or decided.
+                Sabin Ctr. for Climate Change Law, <em>Climate Litigation Database</em>,{" "}
+                <ExternalLink url="https://climatecasechart.com">https://climatecasechart.com</ExternalLink> (last visited [DATE]).
               </p>
-              <p>
-                At present, the categorization of cases is limited in scope. For example, in the Global database, the term “government” is used to
-                identify a wide range of governments and institutions and may refer to national or subnational governments, or to specific government
-                entities such as banks or other institutions. To mitigate this limitation, we do our best to specify the name of the government
-                entities implicated in the litigation.
-              </p>
-              <p>
-                The definition of climate change litigation found in some academic and practitioner-oriented literature may be broader than that used
-                to determine whether a case falls within the scope of these databases. The criteria for inclusion set out above have been adopted to
-                facilitate both the process of data collection and to emphasize the distinct nature and importance of cases where climate change is
-                material to the outcome. Climate change touches on a vast range of law and policy issues in the fields of environment, energy, natural
-                resources, land use, and securities and financial regulation, among others; these criteria provide meaningful limits on researchers'
-                discretion to determine whether a case has climate relevance and help define climate litigation as a distinct field. While the dataset
-                is sufficiently comprehensive and cross-cutting to provide wide-ranging insights, data-users should be aware that individual cases
-                that meet these criteria may be missing and certain trends may not currently be captured in the database. In addition, cases that
-                appear to meet these criteria at the outset may develop and evolve so that climate change is no longer material to their outcome. Some
-                cases in the database are identified with the support of pro-climate litigants and their allies, which may mean that these cases are
-                captured in more detail than cases seeking to challenge climate action. Our data collection processes are subject to continual
-                evolution and may in the future be modified to include additional categories of cases or to better capture the volume of cases of a
-                given type.
-              </p>
-            </div>
-            <div className="text-content mb-8">
-              <Heading level={2} extraClasses="custom-header">
-                Data Files
-              </Heading>
-              {getThemeConfigLink(themeConfig, "download-database") && (
-                <>
-                  <p>
-                    Request a download of the Global Climate Change Litigation database{" "}
-                    <ExternalLink url={getThemeConfigLink(themeConfig, "download-database").url} cy="download-entire-search-csv">
-                      here
-                    </ExternalLink>
-                    . It contains information that appears on the case webpages outside the green frames. We currently cannot provide files with the
-                    remainder of the U.S. data.
-                  </p>
-                </>
-              )}
-
-              <p>This work is licensed under a Creative Commons Attribution-Noncommercial 4.0 International License.</p>
-              <p>
-                The data file is intended to be a useful resource for research and does not constitute legal advice. No warranty of accuracy or
-                completeness is made. You should consult with counsel to determine applicable legal requirements in a specific factual situation.
-              </p>
-            </div>
-            <div className="text-content mb-8">
-              <Heading level={2} extraClasses="custom-header">
-                Litigation Newsletter and Updates
+              <Heading level={4} extraClasses="custom-header">
+                OSCOLA style
               </Heading>
               <p>
-                You can subscribe to the Sabin Center Climate Litigation Newsletter{" "}
-                <ExternalLink url="https://mailchi.mp/law/sabin-center-litigation-newsletter">here</ExternalLink> and view past newsletters{" "}
-                <ExternalLink url="https://climate.law.columbia.edu/content/climate-litigation-newsletter">here</ExternalLink>. The newsletter was
-                launched in March 2025. It will be sent twice a month and will include links to the Sabin Center's climate litigation updates, which
-                will be published twice a month starting in March 2025. You can view litigation updates published since September 2021{" "}
-                <ExternalLink url="https://climate.law.columbia.edu/node/1890">here</ExternalLink>. A document that includes monthly U.S. climate
-                litigation updates from August 2008 to January 2025 is available{" "}
-                <ExternalLink url="https://climatecasechart.com/wp-content/uploads/2025/01/climate-chart-email-update-list-reverse-chron.-order-2025-01.pdf">
-                  here
+                Sabin Center for Climate Change Law, <em>Climate Litigation Database</em> (rev [ADD DATE]){" "}
+                <ExternalLink url="https://climatecasechart.com">https://climatecasechart.com</ExternalLink> accessed [ADD DATE].
+                <br />
+                Short reference: (Sabin Center, Climate Litigation Database 2025).
+              </p>
+              <Heading level={2} extraClasses="custom-header">
+                Detailed Methodology
+              </Heading>
+              <Heading level={3} extraClasses="custom-header">
+                What counts as a climate case?
+              </Heading>
+              <p>To fall within the scope of the Sabin Center's Climate Litigation Database, cases must satisfy two key criteria:</p>
+              <p>
+                <strong>1. Judicial or quasi-judicial proceedings</strong>. Cases must generally be brought before judicial bodies. However, in
+                certain instances, matters brought before administrative or investigatory bodies and arbitral tribunals are also included. In
+                addition, the database includes certain proceedings before international or regional bodies where climate change is materially at
+                issue. These include, for example, proceedings before United Nations human rights treaty bodies, compliance committees established
+                under multilateral environmental agreements, or other UN mechanisms addressing climate-related obligations.
+              </p>
+              <p>
+                <strong>2. Material climate relevance</strong>. Climate change law, policy, and/or science must be a material issue of law or fact in
+                the case. Cases that make only a passing reference to climate change, without addressing climate-relevant laws, policies, or actions
+                in a meaningful way, are excluded.
+              </p>
+              <p>
+                In general, cases that may affect climate change outcomes but do not explicitly raise climate-related issues are also excluded.
+                Examples include challenges to government inaction on local air pollution or challenges to the development of fossil fuel
+                infrastructure based solely on non-climate harm (e.g., public health and/or environmental harm associated with the infrastructure).
+                The intent of the litigants regarding the climate-related consequences of such cases is not considered when assessing whether a case
+                falls within the database's scope. Notably, such cases could be added later if climate issues become central (for example, if a ruling
+                explicitly addresses climate change).
+              </p>
+              <p>
+                The database also includes a number of cases before arbitral tribunals under bilateral and multilateral investment agreements
+                (commonly referred to as Investor-State Dispute Settlement, or ISDS. Investor-state cases are included when they relate directly to
+                the enactment or withdrawal of a domestic measure explicitly adopted to meet a country's climate goals and objectives. For more
+                information on these cases and their inclusion in the database, please visit{" "}
+                <ExternalLink url="https://blogs.law.columbia.edu/climatechange/2021/06/02/investor-state-dispute-settlement-as-a-new-avenue-for-climate-change-litigation/">
+                  this link
                 </ExternalLink>
                 .
               </p>
+              <p>
+                Until September 2025, the Sabin Center maintained separate U.S. and Global climate litigation databases. These differed in scope. In
+                the U.S. database, "cases" historically included quasi-judicial proceedings, rulemaking petitions, requests for reconsideration of
+                regulations, notices of intent to sue (even in situations where lawsuits were not subsequently filed), and subpoenas. Since 2018,
+                these other types of U.S. cases generally have not been added to the database, and approximately 135 older entries of this type have
+                been removed. As of September 2025, all such entries had been removed.
+              </p>
             </div>
             <div className="text-content mb-8">
-              <Heading level={2} extraClasses="custom-header">
-                Other Information
+              <Heading level={3} extraClasses="custom-header">
+                How are cases organized?
               </Heading>
               <p>
-                This site was developed by <ExternalLink url="https://www.climatepolicyradar.org/">Climate Policy Radar</ExternalLink>.
+                <em>Categorization</em> refers to the way cases are organized in the database through a set of descriptive tags. These tags capture
+                key features of each case—such as the type of claim, the laws invoked, the jurisdiction, and—in some cases—its status—so that users
+                can filter, compare, and analyze cases across jurisdictions. Because the U.S. and Global databases were originally developed
+                separately, the tagging systems are not yet fully harmonized. The categorization processes involved similar but slightly different
+                components. The lists below describe the categorization systems currently applied for cases outside the U.S. and for U.S. cases,
+                pending full integration.
+              </p>
+              <p>For cases outside the U.S., categorization considers:</p>
+              <ol>
+                <li>
+                  <strong>Case category</strong>, including the type of defendant (governments or corporations and individuals) and the main cause of
+                  action (e.g., greenhouse gas emissions reduction and trading, environmental assessment and permitting, human rights).
+                </li>
+                <li>
+                  <strong>Jurisdiction</strong>, including the court, tribunal, or other adjudicatory body before which the case was filed.
+                </li>
+                <li>
+                  <strong>Geography</strong>, including country, region, Global North or Global South (for analytical purposes).
+                </li>
+                <li>
+                  <strong>Principal law</strong>, i.e., the main climate-relevant laws invoked.
+                </li>
+                <li>
+                  <strong>Case status</strong>, such as pending or decided.
+                </li>
+              </ol>
+              <p>For U.S. cases, categorization considers:</p>
+              <ol>
+                <li>
+                  <strong>Case category</strong>, e.g., federal statutory claims, constitutional claims, state law claims, adaptation, carbon offsets
+                  and credits.
+                </li>
+                <li>
+                  <strong>Principal law</strong>, e.g., relevant statutes or doctrines.
+                </li>
+                <li>
+                  <strong>Jurisdiction</strong>, (i.e., the court in which the case was filed.
+                </li>
+                <li>
+                  <strong>Geography</strong>, i.e., the U.S. state where filed, or "Federal" for cases originating in a federal court not tied to a
+                  specific U.S. state (e.g., regional federal circuit courts of appeal).
+                </li>
+              </ol>
+              <p>
+                A single case may be included in multiple case categories, jurisdictions, or principal laws. Appeals and transfers are linked to the
+                same case entry for consistency.
+              </p>
+            </div>
+            <div className="text-content mb-8">
+              <Heading level={3} extraClasses="custom-header">
+                Where do the cases come from?
+              </Heading>
+              <p>Cases are identified on a rolling basis by researchers at the Sabin Center for Climate Change Law. Sources include:</p>
+              <ul>
+                <li>Primary sources such as court websites, legal databases, and official documents.</li>
+                <li>
+                  Secondary sources such as media reports, press releases, newsletters, social media, academic articles, NGO reports, and other online
+                  sources.
+                </li>
+              </ul>
+              <p>
+                Data collection is collaborative. Many cases are reported through networks of plaintiffs, defendants, academics, and researchers, or
+                crowdsourced through other channels.
               </p>
               <p>
-                The Sabin Center is grateful to the Asia Development Bank, the Grantham Institute, the University of Melbourne's Australia Climate
-                Change Litigation Database, and the Asociación Interamericana para la Defensa del Ambiente (AIDA) for helping us identify climate
-                change cases. We also appreciate our ongoing partnership with the United Nations Environment Programme in surveying and assessing
-                cases. The Sabin Center's Global Climate Litigation Fellow is generously supported by the Foundation for International Law for the
-                Environment (FILE).
+                The{" "}
+                <ExternalLink url="https://climate.law.columbia.edu/content/global-network-peer-reviewers-climate-litigation">
+                  Sabin Center's Peer Review Network of Climate Litigation
+                </ExternalLink>{" "}
+                helps ensure comprehensiveness and accuracy. As of June 2025, the Network includes 175 practitioners and scholars who serve as
+                national rapporteurs for 198 jurisdictions, as well as for international and regional courts, tribunals, quasi-judicial bodies, and
+                other adjudicatory bodies.
+              </p>
+              <p>For some specific regions, the Sabin Center collaborates with:</p>
+              <ul>
+                <li>
+                  The{" "}
+                  <ExternalLink url="https://www.lse.ac.uk/granthaminstitute/">
+                    Grantham Research Institute on Climate Change and the Environment
+                  </ExternalLink>
+                  .
+                </li>
+                <li>
+                  The University of Melbourne, which maintains the{" "}
+                  <ExternalLink url="https://law.app.unimelb.edu.au/climate-change/index.php">
+                    Australian and Pacific Climate Change Litigation Database
+                  </ExternalLink>
+                  .
+                </li>
+                <li>
+                  The{" "}
+                  <ExternalLink url="https://litigancia.biobd.inf.puc-rio.br/">
+                    Grupo de Pesquisa Direito, Ambiente e Justiça no Antropoceno, Pontifícia Universidade Católica do Rio de Janeiro
+                  </ExternalLink>{" "}
+                  (JUMA/NIMA/PUC-Rio), for Brazil.
+                </li>
+                <li>
+                  The <ExternalLink url="https://aida-americas.org/en">Interamerican Association for Environmental Defense</ExternalLink> (AIDA), for
+                  Latin America and the Caribbean.
+                </li>
+                <li>
+                  The{" "}
+                  <ExternalLink url="https://www.ucc.ie/en/youthclimatejustice/caselawdatabase/">
+                    University College Cork's Youth Climate Justice Program
+                  </ExternalLink>
+                  , for cases involving children and youth.
+                </li>
+              </ul>
+              <p>
+                For ISDS cases, the primary sources are the{" "}
+                <ExternalLink url="https://investmentpolicy.unctad.org/investment-dispute-settlement">
+                  UNCTAD Investment Policy Hub database
+                </ExternalLink>{" "}
+                and the <ExternalLink url="https://icsid.worldbank.org/cases/case-database">ICSID database</ExternalLink>. Because many arbitral
+                awards and decisions are not public, coverage may be incomplete. Original documents are included when available.
               </p>
               <p>
-                Information about new cases or updates or corrections for existing cases should be sent to{" "}
-                <ExternalLink url="mailto:manager@climatecasechart.com">manager@climatecasechart.com</ExternalLink>. You may also submit information
-                through <ExternalLink url="https://form.jotform.com/252302964707357">this online form</ExternalLink>.
+                All cases are reviewed by Sabin Center researchers with relevant expertise. Summaries are drafted and cases categorized prior to entry
+                into the database.
               </p>
+            </div>
+            <div className="text-content mb-8">
+              <Heading level={3} extraClasses="custom-header">
+                What are the limits of the database?
+              </Heading>
+              <p>
+                The database highlights and informs a growing field of climate litigation. While we aim for broad coverage, several limitations
+                remain:
+              </p>
+              <ul>
+                <li>
+                  <strong>Incomplete global coverage.</strong> Language barriers, uneven media reporting, and limited access to court documents mean
+                  some jurisdictions are better represented than others. Absence of cases in a jurisdiction does not necessarily mean no litigation
+                  has occurred.
+                </li>
+                <li>
+                  <strong>Consolidation.</strong> In some instances, multiple complaints or petitions have been consolidated into a single entry. For
+                  U.S. cases, complaints or petitions that have been consolidated can be viewed together as part of a "collection" or "bundle."
+                </li>
+                <li>
+                  <strong>Categorization limits.</strong> Categories such as "government" cover a wide range of actors (national, subnational,
+                  agencies, state-owned entities, banks, etc.). We aim to specify implicated institutions wherever possible and may introduce further
+                  sub-categories in future.
+                </li>
+                <li>
+                  <strong>Scope of "climate litigation."</strong> Our definition is narrower than in some academic and practitioner literature. These
+                  criteria were adopted to ensure consistency, to emphasize cases where climate issues are material to the outcome, and to maintain
+                  the distinct field of climate litigation.
+                </li>
+                <li>
+                  <strong>Potential bias.</strong> Some cases are identified with the assistance of pro-climate litigants and allies. These may be
+                  documented in greater detail than cases challenging climate action. The Sabin Center is actively working to improve balance.
+                </li>
+                <li>
+                  <strong>Evolving cases.</strong> Some cases that initially meet the inclusion criteria may later evolve so that climate issues are
+                  no longer material; these cases remain in the database. Conversely, excluded cases may become relevant if climate issues emerge and
+                  will be added to the database.
+                </li>
+                <li>
+                  <strong>Ongoing evolution.</strong> Our data collection and categorization processes are continually reviewed and may be modified to
+                  capture additional types of litigation. Users will be notified of major methodological updates.
+                </li>
+              </ul>
             </div>
           </SingleCol>
         </SiteWidth>
