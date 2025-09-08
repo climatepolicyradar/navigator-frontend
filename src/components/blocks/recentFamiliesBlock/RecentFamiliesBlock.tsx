@@ -5,7 +5,7 @@ import { TCategorySummary } from "@/helpers/getFamilyCategorySummary";
 
 import { RecentFamiliesCategory } from "./RecentFamiliesCategory";
 
-interface IProps {
+export interface IProps {
   categorySummaries: TCategorySummary[];
 }
 
