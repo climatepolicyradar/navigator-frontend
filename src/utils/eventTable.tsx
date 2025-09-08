@@ -73,11 +73,18 @@ export const getCourts = (family: TFamilyPublic): string | null =>
     .map((concept) => concept.preferred_label)
     .join(" / ") || null;
 
+// Events can be duplicated between the family and document event lists. Use object keys to overwrite the former with the latter.
 const getFamilyEvents = (family: TFamilyPublic): TEventWithDocument[] =>
-  [
-    ...family.events.map((event) => ({ event })),
-    ...family.documents.map((document) => document.events.map((event) => ({ event, document }))).flat(1),
-  ].flat(1);
+  Object.values(
+    Object.fromEntries(
+      (
+        [
+          ...family.events.map((event) => ({ event })),
+          ...family.documents.flatMap((document) => document.events.map((event) => ({ event, document }))),
+        ] as TEventWithDocument[]
+      ).map((item) => [item.event.import_id, item] as const)
+    )
+  );
 
 export const getEventTableRows = ({
   families,

@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 import { LucideInfo } from "lucide-react";
 
 import { Tooltip } from "./Tooltip";
