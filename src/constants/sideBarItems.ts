@@ -16,7 +16,6 @@ export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
   {
     id: "section-debug",
     display: "Debug",
-    badge: "Developer",
   },
 ];
 
