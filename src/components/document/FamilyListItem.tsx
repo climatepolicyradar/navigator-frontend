@@ -12,9 +12,10 @@ interface IProps {
   family: TFamily;
   showSummary?: boolean;
   titleClasses?: string;
+  className?: string;
 }
 
-export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = true, titleClasses = "hover:underline" }) => {
+export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = true, titleClasses = "hover:underline", className }) => {
   const {
     corpus_type_name,
     family_slug,
@@ -33,8 +34,8 @@ export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = tru
   const summaryText = family_category === "Litigation" ? (family_metadata?.core_object?.[0] ?? family_description) : family_description;
 
   return (
-    <li className="family-list-item relative">
-      <div className="flex flex-wrap text-sm gap-1 my-2 items-center middot-between">
+    <li className={`family-list-item relative flex flex-col gap-2 ${className}`}>
+      <div className="flex flex-wrap text-sm gap-4 items-center">
         <FamilyMeta
           category={family_category}
           corpus_type_name={corpus_type_name}
@@ -49,14 +50,14 @@ export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = tru
       </LinkWithQuery>
       {showSummary && (
         <p
-          className="my-3 text-content"
+          className="text-content text-sm"
           data-cy="family-description"
           dangerouslySetInnerHTML={{
             __html: truncateString(summaryText.replace(/(<([^>]+)>)/gi, ""), 375),
           }}
         />
       )}
-      {family_metadata?.status.length > 0 && <p className="my-3">Status: {family_metadata?.status.join(", ")}</p>}
+      {family_metadata?.status.length > 0 && <p className="text-sm">Status: {family_metadata?.status.join(", ")}</p>}
       {children}
     </li>
   );
