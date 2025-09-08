@@ -4,21 +4,34 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import handler from "./geography-counts";
 
-export const handlers = [
-  http.post(`${process.env.BACKEND_API_URL}/searches`, () => {
-    return HttpResponse.json({
-      hits: 23,
-      total_family_hits: 23,
-      query_time_ms: 18,
-      total_time_ms: 19,
-      continuation_token: null,
-      this_continuation_token: "",
-      prev_continuation_token: null,
-      families: [],
-    });
-  }),
-];
-export const server = setupServer(...handlers);
+// This can be used by any pages that make this call
+export const testHandler = http.get(`/api/geographies`, () => {
+  return HttpResponse.json({
+    counts: {
+      UNFCCC: 23,
+      laws: 47,
+      policies: 126,
+      "climate-finance-projects": 65,
+      "corporate-disclosures": 34,
+      "offshore-wind-reports": 7,
+    },
+  });
+});
+
+export const backendApiSearchHandler = http.post(`${process.env.BACKEND_API_URL}/searches`, () => {
+  return HttpResponse.json({
+    hits: 23,
+    total_family_hits: 23,
+    query_time_ms: 18,
+    total_time_ms: 19,
+    continuation_token: null,
+    this_continuation_token: "",
+    prev_continuation_token: null,
+    families: [],
+  });
+});
+
+const server = setupServer(backendApiSearchHandler);
 server.listen();
 
 describe("geography-counts", () => {
