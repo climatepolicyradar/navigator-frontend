@@ -64,10 +64,10 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
     subdivisions: subdivisions.length > 0,
   });
 
-  const [familiesByCategory, setFamiliesByCategory] = useState<{ [categorySlug: string]: TFamily[] }>({
-    All: vespaSearchResults.families,
+  const [searchResultsByCategory, setSearchResultsByCategory] = useState<{ [categorySlug: string]: TSearch }>({
+    All: vespaSearchResults,
   });
-  const [counts, setCounts] = useState({});
+
   const documentCategories = useMemo(
     () =>
       themeConfig.categories
@@ -90,8 +90,8 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
 
   const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
   const fetchFamiliesByCategory = async (category: string) => {
-    if (familiesByCategory[category]) {
-      return familiesByCategory[category];
+    if (searchResultsByCategory[category]) {
+      return searchResultsByCategory[category];
     } else {
       const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: category }, themeConfig);
       const search: TSearch = await backendApiClient
@@ -103,18 +103,12 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
         })
         .then((response) => response.data);
 
-      setFamiliesByCategory((currentFamilies) => ({
+      setSearchResultsByCategory((currentFamilies) => ({
         ...currentFamilies,
-        [category]: search.families,
+        [category]: search,
       }));
     }
   };
-
-  useEffect(() => {
-    fetch(`/api/geography-counts?l=${geographyV2.slug}&c=${documentCategories.map((c) => c.slug).join("&c=")}`)
-      .then((res) => res.json() as Promise<GeographyCountsResponse>)
-      .then((data) => setCounts(data.counts));
-  }, [geographyV2.slug, documentCategories]);
 
   return (
     <GeographiesContext.Provider value={allGeographies}>
@@ -128,8 +122,8 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
                 return {
                   id: categorySummary.slug,
                   title: categorySummary.title,
-                  families: familiesByCategory[categorySummary.slug] || [],
-                  count: counts[categorySummary.slug],
+                  families: searchResultsByCategory[categorySummary.slug]?.families || [],
+                  count: searchResultsByCategory[categorySummary.slug]?.total_family_hits,
                   unit: ["document", "documents"],
                 };
               })}
