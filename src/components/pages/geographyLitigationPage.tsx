@@ -10,7 +10,7 @@ import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisi
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
-import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
+import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { getGeographyPageSidebarItems } from "@/constants/sideBarItems";
 import { GeographiesContext } from "@/context/GeographiesContext";
 import { getFamilyCategorySummary } from "@/helpers/getFamilyCategorySummary";
@@ -40,17 +40,17 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, summar
     [isCountry, geographyV2, parentGeographyV2]
   );
 
-  const pageTitle = isCountry ? (
-    geographyV2.name
-  ) : (
-    <>
-      <LinkWithQuery href={`/geographies/${v2GeoSlugToV1(parentGeographyV2.slug)}`} className="hover:underline">
-        {parentGeographyV2.name}
-      </LinkWithQuery>
-      <span className="text-text-light/60"> / </span>
-      <span>{geographyV2.name}</span>
-    </>
-  );
+  const pageHeaderMetadata: IPageHeaderMetadata[] = [];
+  if (!isCountry) {
+    pageHeaderMetadata.push({
+      label: "Part of",
+      value: (
+        <LinkWithQuery href={`/geographies/${v2GeoSlugToV1(parentGeographyV2.slug)}`} className="underline">
+          {parentGeographyV2.name}
+        </LinkWithQuery>
+      ),
+    });
+  }
 
   const sidebarItems = getGeographyPageSidebarItems({
     isCountry,
@@ -63,7 +63,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, summar
   return (
     <GeographiesContext.Provider value={allGeographies}>
       <Layout metadataKey="geography" theme={theme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
-        <PageHeader coloured label="Geography" title={pageTitle} metadata={[]} />
+        <PageHeader coloured label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
         <Columns>
           <ContentsSideBar items={sidebarItems} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
           <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-2:col-span-2 cols-3:py-8 cols-3:gap-8 cols-4:col-span-3">
