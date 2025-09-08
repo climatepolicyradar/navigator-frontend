@@ -362,7 +362,7 @@ const config: TThemeConfig = {
   features: {
     familyConceptsSearch: false,
     knowledgeGraph: true,
-    litigation: false,
+    litigation: true,
     searchFamilySummary: false,
     vespaSearchOnGeographies: false,
   },
