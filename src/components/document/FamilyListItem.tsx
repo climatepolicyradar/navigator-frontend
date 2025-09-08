@@ -57,7 +57,7 @@ export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = tru
           }}
         />
       )}
-      {family_metadata?.status.length > 0 && <p className="text-sm">Status: {family_metadata?.status.join(", ")}</p>}
+      {family_metadata?.status?.length > 0 && <p className="text-sm">Status: {family_metadata?.status.join(", ")}</p>}
       {children}
     </li>
   );
