@@ -79,7 +79,7 @@ export const Footer = () => {
                 </ExternalLink>
               </li>
               <li>
-                <LinkWithQuery href="/contact" className={`${link} ${strong}`}>
+                <LinkWithQuery href="/contact" className={`${link}`}>
                   Contact us
                 </LinkWithQuery>
               </li>
