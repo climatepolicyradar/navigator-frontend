@@ -1,4 +1,4 @@
-import { TGeography } from "@/types";
+import { TGeography, TGeographySubdivision } from "@/types";
 
 const findCountryObject = (search: string, dataSet: TGeography[]) => {
   const searchLowerCase = search.toLowerCase();

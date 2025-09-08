@@ -57,7 +57,7 @@ export type ApiItemResponse<T> = {
   data: T;
 };
 
-type GeographyTypeV2 = "region" | "country" | "subdivision";
+export type GeographyTypeV2 = "region" | "country" | "subdivision";
 
 export type GeographyV2 = {
   id: string;
@@ -66,6 +66,7 @@ export type GeographyV2 = {
   subconcept_of?: GeographyV2[];
   has_subconcept?: GeographyV2[];
   name: string;
+  alpha_2?: string;
   statistics?: {
     name: string;
     legislative_process: string;
