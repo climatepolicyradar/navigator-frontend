@@ -2,14 +2,12 @@ import Link from "next/link";
 import { MouseEvent, useState } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
-import { Badge } from "@/components/atoms/label/Badge";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 export interface ISideBarItem {
   id: string;
   display: string;
-  badge?: string;
   context?: string;
 }
 
@@ -36,27 +34,24 @@ export const ContentsSideBar = ({ containerClasses, items, stickyClasses }: IPro
   return (
     <aside className={allContainerClasses}>
       <div className={allStickyClasses}>
-        <span className="text-sm font-semibold uppercase">On this page</span>
-        <div className="pt-2">
-          {items.map((item, itemIndex) => {
+        <span className="block pb-2 text-xs text-text-primary font-[660] leading-none uppercase">On this page</span>
+        <div className="flex flex-col gap-1">
+          {items.map((item) => {
+            const isActive = item.id === activeId;
+
             const buttonClasses = joinTailwindClasses(
-              "inline-block !px-2 !text-base text-text-tertiary text-left leading-none",
-              item.id === activeId ? "font-semibold" : "font-normal"
+              "w-full px-2.5 py-3 rounded-sm !flex-col items-start gap-3 text-sm text-left leading-none",
+              isActive ? "!bg-surface-ui text-text-secondary" : "text-text-tertiary"
             );
+            const displayClasses = joinTailwindClasses("block font-[660]", isActive && "text-text-primary");
 
             return (
-              <div key={item.id}>
-                <Link href={`#${item.id}`} onClick={scrollToItem(item.id)}>
-                  <Button color="mono" size="small" variant="ghost" className={buttonClasses}>
-                    {item.display}
-                  </Button>
-                </Link>
-                {item.badge && (
-                  <>
-                    &nbsp;<Badge>{item.badge}</Badge>
-                  </>
-                )}
-              </div>
+              <Link key={item.id} href={`#${item.id}`} onClick={scrollToItem(item.id)}>
+                <Button color="mono" size="small" variant="ghost" className={buttonClasses}>
+                  <span className={displayClasses}>{item.display}</span>
+                  {item.context && <span className="block pl-2.5">{item.context}</span>}
+                </Button>
+              </Link>
             );
           })}
         </div>
