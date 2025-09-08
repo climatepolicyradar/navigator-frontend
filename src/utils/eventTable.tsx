@@ -71,7 +71,7 @@ export const getCaseNumbers = (family: TFamilyPublic): string | null => family.m
 export const getCourts = (family: TFamilyPublic): string | null =>
   getMostSpecificCourts(family.concepts)
     .map((concept) => concept.preferred_label)
-    .join(" / ") || null;
+    .join(", ") || null;
 
 const getFamilyEvents = (family: TFamilyPublic): TEventWithDocument[] =>
   [
