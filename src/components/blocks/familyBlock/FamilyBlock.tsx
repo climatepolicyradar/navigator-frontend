@@ -6,7 +6,7 @@ import { Card } from "@/components/atoms/card/Card";
 import { Section } from "@/components/molecules/section/Section";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { TFamilyPublic } from "@/types";
-import { getEventTableColumns, getEventTableRows, TEventTableColumnId } from "@/utils/eventTable";
+import { getCaseNumbers, getCourts, getEventTableColumns, getEventTableRows, TEventTableColumnId } from "@/utils/eventTable";
 import { pluralise } from "@/utils/pluralise";
 
 const MAX_ENTRIES_SHOWN = 4;
@@ -27,6 +27,9 @@ export const FamilyBlock = ({ family }: IProps) => {
     setShowAllEntries((current) => !current);
   };
 
+  const caseNumbers = getCaseNumbers(family);
+  const courts = getCourts(family);
+
   return (
     <Section id={`section-${family.slug}`}>
       <div className="relative">
@@ -38,6 +41,8 @@ export const FamilyBlock = ({ family }: IProps) => {
             </h2>
           </LinkWithQuery>
           <div className="mt-2 flex gap-4 flex-wrap text-sm text-text-tertiary leading-none">
+            {caseNumbers && <span>{caseNumbers}</span>}
+            {courts && <span>{courts}</span>}
             <span>
               {tableRows.length} {pluralise(tableRows.length, "entry", "entries")}
             </span>

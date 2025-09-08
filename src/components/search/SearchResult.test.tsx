@@ -60,7 +60,7 @@ describe("SearchResult", () => {
     expect(subdivisionLink2).toBeInTheDocument();
 
     expect(countryLink).toHaveAttribute("href", "/geographies/australia");
-    expect(subdivisionLink1).toHaveAttribute("href", "/geographies/australia");
-    expect(subdivisionLink2).toHaveAttribute("href", "/geographies/australia");
+    expect(subdivisionLink1).toHaveAttribute("href", "/geographies/au-nsw");
+    expect(subdivisionLink2).toHaveAttribute("href", "/geographies/au-qld");
   });
 });
