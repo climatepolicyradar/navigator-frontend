@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 import { LucideScrollText, LucideTable } from "lucide-react";
 
 import { Toggle } from "./Toggle";
