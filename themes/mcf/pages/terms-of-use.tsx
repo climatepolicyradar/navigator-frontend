@@ -24,7 +24,7 @@ const TermsOfUse = () => {
               </Heading>
               <div className="text-content mb-12">
                 <p>
-                  Welcome to Climate Case Chart, a platform from the four Multilateral Climate Funds (MCFs) - Adaptation Fund (AF), Funds (CIF),
+                  Welcome to Climate Project Explorer, a platform from the four Multilateral Climate Funds (MCFs) - Adaptation Fund (AF), Funds (CIF),
                   Global Environment Facility (GEF) and Green Climate Fund (GCF), in partnership with Climate Policy Radar CIC (“CPR”).The following
                   Terms govern the use of the CPR Database, the CPR App infrastructure, the Climate Project Explorer and data from the MCFs published
                   in the App.
