@@ -9,23 +9,16 @@ const ExactMatch = ({ id, handleSearchChange, checked, landing = false }) => {
     handleSearchChange(QUERY_PARAMS.exact_match, isChecked);
   };
 
+  // Landing: CCC=dark, others=light. Non-landing: always dark
   const { theme } = useContext(ThemeContext);
-  const themeClass = landing ? (theme === "ccc" ? "checkbox-dark" : "checkbox-light") : "checkbox-dark";
+  const checkboxClass = landing ? (theme === "ccc" ? "checkbox-dark" : "checkbox-light") : "checkbox-dark";
+  const textClass = landing ? (theme === "ccc" ? "text-text-primary" : "text-white") : "text-text-primary";
+
   return (
-    <div className={`${landing ? "landing" : ""}`}>
-      <label className={`${themeClass} flex items-center cursor-pointer`} htmlFor={id}>
-        <input
-          className={`${landing ? "text-indigo-600/0" : "text-text-light"} ${themeClass} rounded`}
-          id={id}
-          type="checkbox"
-          checked={checked}
-          onChange={handleClick}
-        />
-        <span
-          className={`${landing ? "text-lg" : "text-sm"} ${landing ? (theme === "ccc" ? "text-text-primary" : "text-white") : "text-text-primary"} pl-2 leading-none`}
-        >
-          Only show exact matches
-        </span>
+    <div className={landing ? "landing" : ""}>
+      <label className={`${checkboxClass} flex items-center cursor-pointer`} htmlFor={id}>
+        <input className={`${checkboxClass} rounded`} id={id} type="checkbox" checked={checked} onChange={handleClick} />
+        <span className={`${landing ? "text-lg" : "text-sm"} ${textClass} pl-2 leading-none`}>Only show exact matches</span>
       </label>
     </div>
   );
