@@ -21,6 +21,7 @@ import { IProps } from "./geographyOriginalPage";
 
 export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, summary, targets, theme, themeConfig }: IProps) => {
   const categorySummaries = themeConfig.documentCategories.map((category) => getFamilyCategorySummary(summary, category));
+  // TODO handle block sorting/hiding programmatically (APP-1110)
   // const publishedTargets = sortFilterTargets(targets);
 
   const legislativeProcess = geographyV2.statistics?.legislative_process || "";
