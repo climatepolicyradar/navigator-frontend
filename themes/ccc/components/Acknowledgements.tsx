@@ -118,7 +118,7 @@ export const Acknowledgements = () => {
       <Acknowledgement
         partnerImage={{
           url: "https://www.lse.ac.uk/granthaminstitute/",
-          imageUrl: "LSE_GR_logo.jpg",
+          imageUrl: "LSE_GR_logo.png",
           imageAlt: "Grantham Research Institute for Climate Change and the Environment logo",
         }}
       >
