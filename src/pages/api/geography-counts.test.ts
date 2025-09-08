@@ -2,37 +2,28 @@ import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { NextApiRequest, NextApiResponse } from "next";
 
+import { backendApiSearchHandler } from "@/mocks/api/backendApiHandlers";
+
 import handler from "./geography-counts";
 
 // This can be used by any pages that make this call
-export const testHandler = http.get(`/api/geographies`, () => {
-  return HttpResponse.json({
-    counts: {
-      UNFCCC: 23,
-      laws: 47,
-      policies: 126,
-      "climate-finance-projects": 65,
-      "corporate-disclosures": 34,
-      "offshore-wind-reports": 7,
-    },
-  });
-});
+export const testHandler = [
+  http.get(`/api/geography-counts`, () => {
+    return HttpResponse.json({
+      counts: {
+        UNFCCC: 23,
+        laws: 47,
+        policies: 126,
+        "climate-finance-projects": 65,
+        "corporate-disclosures": 34,
+        "offshore-wind-reports": 7,
+      },
+    });
+  }),
+];
 
-export const backendApiSearchHandler = http.post(`${process.env.BACKEND_API_URL}/searches`, () => {
-  return HttpResponse.json({
-    hits: 23,
-    total_family_hits: 23,
-    query_time_ms: 18,
-    total_time_ms: 19,
-    continuation_token: null,
-    this_continuation_token: "",
-    prev_continuation_token: null,
-    families: [],
-  });
-});
-
-const server = setupServer(backendApiSearchHandler);
-server.listen();
+// const server = setupServer(...backendApiSearchHandler);
+// server.listen();
 
 describe("geography-counts", () => {
   const testCases = [

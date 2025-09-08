@@ -3,18 +3,17 @@ import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
 import { DEFAULT_FEATURE_FLAGS } from "@/constants/features";
+import { backendApiSearchHandler } from "@/mocks/api/backendApiHandlers";
+import { configHandlers } from "@/mocks/api/configHandlers";
 import { envConfig } from "@/mocks/envConfig";
 import brazil from "@/mocks/geographies-api/brazil";
 import unitedStates from "@/mocks/geographies-api/united-states";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
-import { testHandler, backendApiSearchHandler } from "@/pages/api/geography-counts.test";
+import { testHandler } from "@/pages/api/geography-counts.test";
 
 import CountryPage from "../../../src/pages/geographies/[id]";
 
 const featureFlags = { ...DEFAULT_FEATURE_FLAGS };
-
-const server = setupServer(testHandler, backendApiSearchHandler);
-server.listen();
 
 // this mock is needed for any tests of pages that use dynamic imports
 vi.mock("next/dynamic", () => ({
