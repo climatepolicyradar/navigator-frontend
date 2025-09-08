@@ -17,8 +17,6 @@ import { SubNav } from "@/components/nav/SubNav";
 import TabbedNav from "@/components/nav/TabbedNav";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
-import { Event } from "@/components/timeline/Event";
-import { Timeline } from "@/components/timeline/Timeline";
 import { Heading } from "@/components/typography/Heading";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TPublicEnvConfig } from "@/context/EnvConfig";
@@ -56,7 +54,6 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
   const [selectedCategory, setselectedCategory] = useState<TDocumentCategory>(themeConfig.defaultDocumentCategory);
 
-  const hasEvents = !!summary?.events && summary?.events?.length > 0;
   const hasFamilies = !!summary?.top_families;
 
   const publishedTargets = sortFilterTargets(targets);
@@ -402,16 +399,7 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
                 )}
               </>
             )}
-            {hasEvents && (
-              <section className="mt-10 hidden">
-                <Heading level={2}>Events</Heading>
-                <Timeline>
-                  {summary.events.map((event: TEvent, index: number) => (
-                    <Event event={event} key={`event-${index}`} index={index} last={index === summary.events.length - 1 ? true : false} />
-                  ))}
-                </Timeline>
-              </section>
-            )}
+
             {geographyV2.statistics?.legislative_process && theme !== "mcf" && (
               <section className="mt-10" data-cy="legislative-process">
                 <Heading level={2} extraClasses="flex items-center gap-2">
