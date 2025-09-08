@@ -74,10 +74,16 @@ export const getCourts = (family: TFamilyPublic): string | null =>
     .join(" / ") || null;
 
 const getFamilyEvents = (family: TFamilyPublic): TEventWithDocument[] =>
-  [
-    ...family.events.map((event) => ({ event })),
-    ...family.documents.map((document) => document.events.map((event) => ({ event, document }))).flat(1),
-  ].flat(1);
+  Array.from(
+    new Map(
+      (
+        [
+          ...family.events.map((event) => ({ event })),
+          ...family.documents.flatMap((document) => document.events.map((event) => ({ event, document }))),
+        ] as TEventWithDocument[]
+      ).map((item) => [item.event.import_id, item] as const)
+    ).values()
+  );
 
 export const getEventTableRows = ({
   families,
