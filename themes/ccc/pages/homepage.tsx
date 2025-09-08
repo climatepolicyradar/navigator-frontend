@@ -3,8 +3,11 @@ import dynamic from "next/dynamic";
 import { Footer } from "@/ccc/components/Footer";
 import Header from "@/ccc/components/Header";
 import { Hero } from "@/ccc/components/Hero";
+import { ExternalLink } from "@/components/ExternalLink";
 import Layout from "@/components/layouts/LandingPage";
 import { FullWidth } from "@/components/panels/FullWidth";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { Heading } from "@/components/typography/Heading";
 import { TTheme, TThemeConfig } from "@/types";
 
 const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {
@@ -24,11 +27,29 @@ interface IProps {
 const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig, exactMatch, handleSearchChange }: IProps) => {
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="homepage">
-      <main id="main" className="h-screen flex flex-col bg-surface-light text-text-primary">
+      <main id="main" className="h-screen flex flex-col bg-surface-light">
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} exactMatch={exactMatch} handleSearchChange={handleSearchChange} />
         </div>
+        <SiteWidth extraClasses="!max-w-[1024px]">
+          <div className="lg:relative lg:h-[824px] w-auto pb-16 lg:pb-0">
+            <div className="max-w-xl lg:relative lg:z-10 ">
+              <Heading level={2} extraClasses="custom-header">
+                About Climate Case Chart
+              </Heading>
+              <p>
+                The <b>Sabin Center for Climate Change Law's Climate Litigation Database</b> is the most comprehensive resource tracking climate
+                change litigation worldwide. It contains more than 3,000 cases that address climate change law, policy, and science.
+              </p>
+              <br />
+              <ExternalLink className="text-blue-500 underline hover:text-blue-800" url="https://mailchi.mp/law/sabin-center-litigation-newsletter">
+                Subscribe to the Sabin Center Climate Litigation Newsletter
+              </ExternalLink>{" "}
+              for twice-monthly updates. Each issue includes the latest case updates, event announcements, and publication highlights.
+            </div>
+          </div>
+        </SiteWidth>
       </main>
       <FullWidth extraClasses="hidden my-6 md:block">
         <WorldMap showLitigation showCategorySelect={false} theme="ccc" />

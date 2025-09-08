@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { BrazilImplementingNDCCard } from "@/cclw/components/BrazilImplementingNDCCard";
@@ -20,7 +20,19 @@ import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TPublicEnvConfig } from "@/context/EnvConfig";
-import { GeographyV2, TDocumentCategory, TEvent, TFeatureFlags, TGeographySummary, TSearch, TTarget, TTheme, TThemeConfig } from "@/types";
+import { GeographyCountsResponse } from "@/pages/api/geography-counts";
+import {
+  GeographyV2,
+  TDocumentCategory,
+  TEvent,
+  TFeatureFlags,
+  TGeographySummary,
+  TSearch,
+  TSearchCriteria,
+  TTarget,
+  TTheme,
+  TThemeConfig,
+} from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
@@ -207,43 +219,61 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
   };
 
   /** Vespa search results */
-  const vespaSearchTabbedNavItems = themeConfig.categories
-    ? themeConfig.categories.options.map((category) => {
-        return {
-          title: category.label,
-          /** We need to maintain the slug to to know what to send to Vespa for querying. */
-          slug: category.slug,
-          // TODO: Make this work
-          count: 0,
-        };
-      })
-    : /** We generate an `All` for when themeConfig.categories are not available e.g. MCFs */
-      [
-        {
-          title: "All",
-          slug: undefined,
-          // TODO: Make this work
-          count: 0,
-        },
-      ];
+  const [counts, setCounts] = useState<GeographyCountsResponse["counts"]>({});
+  const vespaSearchTabbedNavItems = useMemo(
+    () =>
+      themeConfig.categories
+        ? themeConfig.categories.options.map((category) => {
+            return {
+              title: category.label,
+              /** We need to maintain the slug to to know what to send to Vespa for querying. */
+              slug: category.slug,
+            };
+          })
+        : /** We generate an `All` for when themeConfig.categories are not available e.g. MCFs */
+          [
+            {
+              title: "All",
+              slug: "All",
+            },
+          ],
+    [themeConfig.categories]
+  );
+
+  const countCategories = useMemo(
+    () => vespaSearchTabbedNavItems.map((item) => item.slug.toLocaleLowerCase()).filter((slug) => slug !== "litigation"),
+    [vespaSearchTabbedNavItems]
+  );
+
+  useEffect(() => {
+    fetch(`/api/geography-counts?l=${geographyV2.slug}&c=${countCategories.join("&c=")}`)
+      .then((res) => res.json() as Promise<GeographyCountsResponse>)
+      .then((data) => setCounts(data.counts));
+  }, [geographyV2.slug, countCategories]);
+
   const [currentVespaSearchSelectedCategory, setCurrentVespaSearchSelectedCategory] = useState(vespaSearchTabbedNavItems[0].title);
   const [currentVespaSearchResults, setCurrentVespaSearchResults] = useState(vespaSearchResults);
 
-  const handleVespaSearchTabClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string) => {
-    const selectedThemeCategory = vespaSearchTabbedNavItems.find((category) => category.title === value);
-    const categoryFilter = selectedThemeCategory.slug;
-
-    const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
-    const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: categoryFilter }, themeConfig);
-
-    const newVespaSearchResults = await backendApiClient
-      .post<TSearch>("/searches", searchQuery, {
+  const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
+  const vespaSearch = async (searchQuery: TSearchCriteria) => {
+    const search: Promise<TSearch> = await backendApiClient
+      .post("/searches", searchQuery, {
         headers: {
           accept: "application/json",
           "Content-Type": "application/json",
         },
       })
       .then((response) => response.data);
+    return search;
+  };
+
+  const handleVespaSearchTabClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string) => {
+    const selectedThemeCategory = vespaSearchTabbedNavItems.find((category) => category.title === value);
+    const categoryFilter = selectedThemeCategory.slug;
+
+    const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: categoryFilter }, themeConfig);
+
+    const newVespaSearchResults = await vespaSearch(searchQuery);
     setCurrentVespaSearchResults(newVespaSearchResults);
     setCurrentVespaSearchSelectedCategory(value);
   };
@@ -315,7 +345,12 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
                     <div className="flex-grow">
                       <TabbedNav
                         activeItem={currentVespaSearchSelectedCategory}
-                        items={vespaSearchTabbedNavItems}
+                        items={vespaSearchTabbedNavItems.map((item) => {
+                          return {
+                            ...item,
+                            count: item.slug !== "Litigation" ? counts[item.slug.toLocaleLowerCase()] : undefined,
+                          };
+                        })}
                         handleTabClick={handleVespaSearchTabClick}
                       />
                     </div>
