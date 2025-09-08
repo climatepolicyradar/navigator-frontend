@@ -10,9 +10,10 @@ export interface ISideBarItem {
   id: string;
   display: string;
   badge?: string;
+  context?: string;
 }
 
-interface IProps {
+export interface IProps {
   items: ISideBarItem[];
   containerClasses?: string;
   stickyClasses?: string;
