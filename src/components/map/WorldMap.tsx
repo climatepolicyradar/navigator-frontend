@@ -13,6 +13,7 @@ import { TGeography, TTheme } from "@/types";
 import GeographySelect from "./GeographySelect";
 import { Legend } from "./Legend";
 import { ZoomControls } from "./ZoomControls";
+import { Heading } from "../typography/Heading";
 
 const geoUrl = "/data/map/world-countries-50m.json";
 
@@ -58,16 +59,23 @@ type TMapData = {
   geographies: TGeographiesWithCoords;
 };
 
-const geoStyle = (isActive: boolean) => {
+// For converting Hex to HSL for use in our calculation
+// https://htmlcolors.com/hex-to-hsl
+const geoStyle = (isActive: boolean, count: number, max: number) => {
+  const maxLog = Math.log10(max);
+  const countLog = Math.log10(count || 1);
+
+  const ratio = countLog / maxLog;
+
   return {
     default: {
-      fill: isActive ? "#1F93FF" : "#dfdfdf",
+      fill: isActive ? "#002CA3" : `hsl(206, 14%, ${72 - ratio * 25}%)`,
       stroke: "#fff",
       strokeWidth: 0.25,
       outline: "none",
     },
     hover: {
-      fill: "#1F93FF",
+      fill: "#002CA3",
       cursor: "pointer",
       outline: "none",
     },
@@ -96,13 +104,13 @@ const minMarkerSize = 1.5;
 
 const getMarkerColour = (value: number, min: number, max: number, active: boolean) => {
   if (active) {
-    return "#1F93FF";
+    return "#002CA3";
   }
   const offset = ((value - min) / (max - min)) * 100;
   return `hsl(200, 50%, ${100 - offset}%)`;
 };
 
-const getMarketStroke = (active: boolean) => {
+const getMarkerStroke = (active: boolean) => {
   return active ? "#fff" : "#1D2939";
 };
 
@@ -196,9 +204,8 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
       const unfcccCount = geoStats?.family_counts?.UNFCCC || 0;
       const mcfCount = geoStats?.family_counts?.MCF || 0;
       const reportsCount = geoStats?.family_counts?.REPORTS || 0;
-      const litigationCount = geoStats?.family_counts?.LITIGATION || 0;
 
-      acc[country.value] = {
+      acc[country.display_value] = {
         ...country,
         coords: GEO_CENTER_POINTS[country.value],
         familyCounts: geoStats?.family_counts,
@@ -207,7 +214,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           unfccc: maxUnfccc > 0 ? Math.max(minMarkerSize, (unfcccCount / maxUnfccc) * maxMarkerSize) : 0,
           mcf: maxMcf > 0 ? Math.max(minMarkerSize, (mcfCount / maxMcf) * maxMarkerSize) : 0,
           reports: maxReports > 0 ? Math.max(minMarkerSize, (reportsCount / maxReports) * maxMarkerSize) : 0,
-          litigation: maxLitigation > 0 ? Math.max(minMarkerSize, (litigationCount / maxLitigation) * maxMarkerSize) : 0,
+          litigation: minMarkerSize,
         },
       };
       return acc;
@@ -232,6 +239,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
   };
 
   const handleGeographySelected = (selectedCountry: TGeographyWithCoords) => {
+    if (!selectedCountry || !selectedCountry.coords) return;
     setMapCenter(selectedCountry.coords);
     setMapZoom(5);
     const mapElement = mapRef.current;
@@ -290,6 +298,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
   return (
     <>
       <div className="flex justify-between items-center my-4">
+        <Heading level={2}>Search the globe</Heading>
         {showCategorySelect && (
           <div>
             <select
@@ -316,19 +325,19 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
               <GeographySelect
                 title="Search for a country or territory"
                 list={mapData.geographies}
-                keyField="value"
+                keyField="display_value"
                 keyFieldDisplay="display_value"
                 filterType="geography"
                 handleFilterChange={(_, value) => {
-                  handleGeographySelected(mapData.geographies[value]);
+                  handleGeographySelected(mapData.geographies[value]); //TODO: fix this because we are using the name as key
                 }}
               />
             </div>
           </div>
         </div>
       </div>
-      <div ref={mapRef} className="map-container relative border border-gray-300" data-cy="world-map">
-        <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 160 }} height={340}>
+      <div ref={mapRef} className="map-container relative" data-cy="world-map">
+        <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 125 }} height={340}>
           <ZoomableGroup
             maxZoom={MAX_ZOOM}
             minZoom={MIN_ZOOM}
@@ -351,21 +360,24 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
             <Graticule stroke="#E4E5E6" strokeWidth={0.2} />
             <Geographies geography={geoUrl}>
               {({ geographies }) =>
-                geographies.map((geo) => (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    style={geoStyle(activeGeography === geo.properties.name)}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleGeoClick(e, geo);
-                    }}
-                    onMouseOver={(e) => {
-                      handleGeoHover(e, geo.properties.name);
-                    }}
-                  />
-                ))
+                geographies.map((geo) => {
+                  const geoData = mapData.geographies[geo.properties.name];
+                  return (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      style={geoStyle(activeGeography === geo.properties.name, geoData?.familyCounts.LITIGATION, mapData.maxLitigation)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleGeoClick(e, geo);
+                      }}
+                      onMouseOver={(e) => {
+                        handleGeoHover(e, geo.properties.name);
+                      }}
+                    />
+                  );
+                })
               }
             </Geographies>
             {mapDataStatus === "success" && (
@@ -394,7 +406,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
                       <circle
                         r={geo.markers[selectedFamCategory]}
                         fill={getMarkerColour(geo.markers[selectedFamCategory], minMarkerSize, maxMarkerSize, activeGeography === geo.display_value)}
-                        stroke={getMarketStroke(activeGeography === geo.display_value)}
+                        stroke={getMarkerStroke(activeGeography === geo.display_value)}
                         strokeWidth={0.25}
                       />
                     </Marker>
@@ -433,7 +445,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           </div>
         )}
       </div>
-      <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} theme={theme} />
+      {selectedFamCategory !== "litigation" && <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} theme={theme} />}
     </>
   );
 }

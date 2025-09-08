@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { BrazilImplementingNDCCard } from "@/cclw/components/BrazilImplementingNDCCard";
@@ -17,19 +17,18 @@ import { SubNav } from "@/components/nav/SubNav";
 import TabbedNav from "@/components/nav/TabbedNav";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
-import { Event } from "@/components/timeline/Event";
-import { Timeline } from "@/components/timeline/Timeline";
 import { Heading } from "@/components/typography/Heading";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TPublicEnvConfig } from "@/context/EnvConfig";
+import { GeographyCountsResponse } from "@/pages/api/geography-counts";
 import {
   GeographyV2,
   TDocumentCategory,
   TEvent,
   TFeatureFlags,
-  TGeographyStats,
   TGeographySummary,
   TSearch,
+  TSearchCriteria,
   TTarget,
   TTheme,
   TThemeConfig,
@@ -39,8 +38,8 @@ import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 export interface IProps {
   featureFlags: TFeatureFlags;
-  geography: TGeographyStats;
   geographyV2: GeographyV2;
+  parentGeographyV2?: GeographyV2;
   summary: TGeographySummary;
   targets: TTarget[];
   theme: TTheme;
@@ -61,20 +60,19 @@ const categories: { title: TDocumentCategory; slug: string }[] = [
 
 const MAX_NUMBER_OF_FAMILIES = 3;
 
-export const GeographyOriginalPage = ({ geography, summary, targets, theme, themeConfig, vespaSearchResults, envConfig }: IProps) => {
+export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, themeConfig, vespaSearchResults, envConfig }: IProps) => {
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
   const [selectedCategory, setselectedCategory] = useState<TDocumentCategory>(themeConfig.defaultDocumentCategory);
 
-  const hasEvents = !!summary?.events && summary?.events?.length > 0;
   const hasFamilies = !!summary?.top_families;
 
   const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
   const allDocumentsCount = Object.values(summary.family_counts).reduce((acc, count) => acc + (count || 0), 0);
 
-  const displayBrazilNDCBanner = theme === "cclw" && geography?.geography_slug.toLowerCase() === "brazil";
+  const displayBrazilNDCBanner = theme === "cclw" && geographyV2.slug.toLowerCase() === "brazil";
 
   const documentCategories = themeConfig.documentCategories.map((category) => {
     let count = null;
@@ -124,7 +122,7 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
   const handleDocumentSeeMoreClick = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const newQuery = {};
-    newQuery[QUERY_PARAMS.country] = geography.geography_slug;
+    newQuery[QUERY_PARAMS.country] = geographyV2.slug;
     const documentCategory = categories.find((cat) => cat.title === selectedCategory) || undefined;
     if (documentCategory && documentCategory.title !== "All") {
       newQuery[QUERY_PARAMS.category] = documentCategory.slug;
@@ -132,7 +130,7 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
     router.push({ pathname: "/search", query: { ...newQuery } });
   };
 
-  const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geography.name}.`}</p>;
+  const renderEmpty = (documentType: string = "") => <p className="mt-4">{`There are no ${documentType} documents for ${geographyV2.name}.`}</p>;
 
   const renderDocuments = () => {
     // All docs || All MCF docs if theme is MCF
@@ -221,233 +219,238 @@ export const GeographyOriginalPage = ({ geography, summary, targets, theme, them
   };
 
   /** Vespa search results */
-  const vespaSearchTabbedNavItems = themeConfig.categories
-    ? themeConfig.categories.options.map((category) => {
-        return {
-          title: category.label,
-          /** We need to maintain the slug to to know what to send to Vespa for querying. */
-          slug: category.slug,
-          // TODO: Make this work
-          count: 0,
-        };
-      })
-    : /** We generate an `All` for when themeConfig.categories are not available e.g. MCFs */
-      [
-        {
-          title: "All",
-          slug: undefined,
-          // TODO: Make this work
-          count: 0,
-        },
-      ];
+  const [counts, setCounts] = useState<GeographyCountsResponse["counts"]>({});
+  const vespaSearchTabbedNavItems = useMemo(
+    () =>
+      themeConfig.categories
+        ? themeConfig.categories.options.map((category) => {
+            return {
+              title: category.label,
+              /** We need to maintain the slug to to know what to send to Vespa for querying. */
+              slug: category.slug,
+            };
+          })
+        : /** We generate an `All` for when themeConfig.categories are not available e.g. MCFs */
+          [
+            {
+              title: "All",
+              slug: "All",
+            },
+          ],
+    [themeConfig.categories]
+  );
+
+  const countCategories = useMemo(
+    () => vespaSearchTabbedNavItems.map((item) => item.slug.toLocaleLowerCase()).filter((slug) => slug !== "litigation"),
+    [vespaSearchTabbedNavItems]
+  );
+
+  useEffect(() => {
+    fetch(`/api/geography-counts?l=${geographyV2.slug}&c=${countCategories.join("&c=")}`)
+      .then((res) => res.json() as Promise<GeographyCountsResponse>)
+      .then((data) => setCounts(data.counts));
+  }, [geographyV2.slug, countCategories]);
+
   const [currentVespaSearchSelectedCategory, setCurrentVespaSearchSelectedCategory] = useState(vespaSearchTabbedNavItems[0].title);
   const [currentVespaSearchResults, setCurrentVespaSearchResults] = useState(vespaSearchResults);
 
-  const handleVespaSearchTabClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string) => {
-    const selectedThemeCategory = vespaSearchTabbedNavItems.find((category) => category.title === value);
-    const categoryFilter = selectedThemeCategory.slug;
-
-    const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
-    const searchQuery = buildSearchQuery({ l: geography?.geography_slug, c: categoryFilter }, themeConfig);
-
-    const newVespaSearchResults = await backendApiClient
-      .post<TSearch>("/searches", searchQuery, {
+  const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
+  const vespaSearch = async (searchQuery: TSearchCriteria) => {
+    const search: Promise<TSearch> = await backendApiClient
+      .post("/searches", searchQuery, {
         headers: {
           accept: "application/json",
           "Content-Type": "application/json",
         },
       })
       .then((response) => response.data);
+    return search;
+  };
+
+  const handleVespaSearchTabClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string) => {
+    const selectedThemeCategory = vespaSearchTabbedNavItems.find((category) => category.title === value);
+    const categoryFilter = selectedThemeCategory.slug;
+
+    const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: categoryFilter }, themeConfig);
+
+    const newVespaSearchResults = await vespaSearch(searchQuery);
     setCurrentVespaSearchResults(newVespaSearchResults);
     setCurrentVespaSearchSelectedCategory(value);
   };
 
   return (
-    <Layout theme={theme} themeConfig={themeConfig} metadataKey="geography" text={geography.name}>
-      {!geography ? (
-        <SingleCol>
-          <Button variant="ghost" onClick={() => router.back()}>
-            Go back
-          </Button>
-          <p>We were not able to load the data for the country.</p>
-        </SingleCol>
-      ) : (
-        <section className="mb-8">
-          <SubNav>
-            <BreadCrumbs label={geography.name} />
-          </SubNav>
-          <SiteWidth>
-            <SingleCol extraClasses="mt-8">
-              {displayBrazilNDCBanner && <BrazilImplementingNDCCard />}
-              <CountryHeader
-                country={geography}
-                targetCount={hasTargets ? publishedTargets?.length : 0}
-                onTargetClick={handleTargetClick}
-                theme={theme}
-                totalProjects={allDocumentsCount}
-              />
-              {theme !== "mcf" && geography.name === "United States of America" && (
-                <section className="mt-8">
-                  <div className="flex mt-4">
-                    <Alert
-                      message={
-                        <>
-                          To see developments in the Trump-Vance administration's climate rollback, visit the{" "}
-                          <ExternalLink
-                            url="https://climate.law.columbia.edu/content/climate-backtracker"
-                            className="underline text-blue-600 hover:text-blue-800"
-                          >
-                            Sabin Center's Climate Backtracker
-                          </ExternalLink>
-                          .
-                        </>
-                      }
-                      icon={<Icon name="alertCircle" height="16" width="16" />}
-                    />
+    <Layout theme={theme} themeConfig={themeConfig} metadataKey="geography" text={geographyV2.name}>
+      <section className="mb-8">
+        <SubNav>
+          <BreadCrumbs label={geographyV2.name} />
+        </SubNav>
+        <SiteWidth>
+          <SingleCol extraClasses="mt-8">
+            {displayBrazilNDCBanner && <BrazilImplementingNDCCard />}
+            <CountryHeader
+              country={geographyV2}
+              targetCount={hasTargets ? publishedTargets?.length : 0}
+              onTargetClick={handleTargetClick}
+              theme={theme}
+              totalProjects={allDocumentsCount}
+            />
+            {theme !== "mcf" && geographyV2.name === "United States" && (
+              <section className="mt-8">
+                <div className="flex mt-4">
+                  <Alert
+                    message={
+                      <>
+                        To see developments in the Trump-Vance administration's climate rollback, visit the{" "}
+                        <ExternalLink
+                          url="https://climate.law.columbia.edu/content/climate-backtracker"
+                          className="underline text-blue-600 hover:text-blue-800"
+                        >
+                          Sabin Center's Climate Backtracker
+                        </ExternalLink>
+                        .
+                      </>
+                    }
+                    icon={<Icon name="alertCircle" height="16" width="16" />}
+                  />
+                </div>
+              </section>
+            )}
+            <section className="mt-8">
+              <Heading level={2}>Documents</Heading>
+            </section>
+            {!vespaSearchResults && hasFamilies && (
+              <>
+                <section className="" data-cy="top-documents">
+                  <div className="my-4 md:flex">
+                    <div className="flex-grow">
+                      <TabbedNav activeItem={selectedCategory} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
+                    </div>
+                  </div>
+                  {renderDocuments()}
+                </section>
+                {selectedCategory !== "Litigation" && (
+                  <div data-cy="see-more-button">
+                    <Button rounded variant="outlined" className="my-5" onClick={handleDocumentSeeMoreClick}>
+                      View more documents
+                    </Button>
+                    <Divider />
+                  </div>
+                )}
+              </>
+            )}
+            {currentVespaSearchResults && (
+              <>
+                <section className="" data-cy="top-documents">
+                  <div className="my-4 md:flex">
+                    <div className="flex-grow">
+                      <TabbedNav
+                        activeItem={currentVespaSearchSelectedCategory}
+                        items={vespaSearchTabbedNavItems.map((item) => {
+                          return {
+                            ...item,
+                            count: item.slug !== "Litigation" ? counts[item.slug.toLocaleLowerCase()] : undefined,
+                          };
+                        })}
+                        handleTabClick={handleVespaSearchTabClick}
+                      />
+                    </div>
+                  </div>
+                  <ol className="mb-10">
+                    {currentVespaSearchResults.families.map((family) => (
+                      <FamilyListItem family={family} key={family.family_slug} />
+                    ))}
+                  </ol>
+                </section>
+                {selectedCategory !== "Litigation" && (
+                  <div data-cy="see-more-button">
+                    <Button rounded variant="outlined" className="my-5" onClick={handleDocumentSeeMoreClick}>
+                      View more documents
+                    </Button>
+                    <Divider />
+                  </div>
+                )}
+              </>
+            )}
+
+            {hasTargets && (
+              <>
+                <section className="mt-10" id="targets">
+                  <div>
+                    <div>
+                      <Heading level={2}>
+                        Targets <span className="font-normal">({publishedTargets.length})</span>
+                      </Heading>
+
+                      <ExternalLink
+                        url="https://form.jotform.com/233542296946365"
+                        className="text-sm underline text-blue-600 hover:text-blue-800"
+                        cy="download-target-csv"
+                      >
+                        Request to download all target data (.csv)
+                      </ExternalLink>
+                    </div>
+                    <div className="flex mt-4">
+                      <Alert
+                        message={
+                          <>
+                            We are developing the ability to detect targets in documents.{" "}
+                            <ExternalLink url="https://form.jotform.com/233294139336358" className="underline text-blue-600 hover:text-blue-800">
+                              Get notified when this is ready
+                            </ExternalLink>
+                            .
+                          </>
+                        }
+                        icon={<Icon name="alertCircle" height="16" width="16" />}
+                      />
+                    </div>
+                    <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
                   </div>
                 </section>
-              )}
-              <section className="mt-8">
-                <Heading level={2}>Documents</Heading>
-              </section>
-              {!vespaSearchResults && hasFamilies && (
-                <>
-                  <section className="" data-cy="top-documents">
-                    <div className="my-4 md:flex">
-                      <div className="flex-grow">
-                        <TabbedNav activeItem={selectedCategory} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
-                      </div>
-                    </div>
-                    {renderDocuments()}
-                  </section>
-                  {selectedCategory !== "Litigation" && (
-                    <div data-cy="see-more-button">
-                      <Button rounded variant="outlined" className="my-5" onClick={handleDocumentSeeMoreClick}>
-                        View more documents
-                      </Button>
-                      <Divider />
-                    </div>
-                  )}
-                </>
-              )}
-              {currentVespaSearchResults && (
-                <>
-                  <section className="" data-cy="top-documents">
-                    <div className="my-4 md:flex">
-                      <div className="flex-grow">
-                        <TabbedNav
-                          activeItem={currentVespaSearchSelectedCategory}
-                          items={vespaSearchTabbedNavItems}
-                          handleTabClick={handleVespaSearchTabClick}
-                        />
-                      </div>
-                    </div>
-                    <ol className="mb-10">
-                      {currentVespaSearchResults.families.map((family) => (
-                        <FamilyListItem family={family} key={family.family_slug} />
-                      ))}
-                    </ol>
-                  </section>
-                  {selectedCategory !== "Litigation" && (
-                    <div data-cy="see-more-button">
-                      <Button rounded variant="outlined" className="my-5" onClick={handleDocumentSeeMoreClick}>
-                        View more documents
-                      </Button>
-                      <Divider />
-                    </div>
-                  )}
-                </>
-              )}
-
-              {hasTargets && (
-                <>
-                  <section className="mt-10" id="targets">
-                    <div>
-                      <div>
-                        <Heading level={2}>
-                          Targets <span className="font-normal">({publishedTargets.length})</span>
-                        </Heading>
-
-                        <ExternalLink
-                          url="https://form.jotform.com/233542296946365"
-                          className="text-sm underline text-blue-600 hover:text-blue-800"
-                          cy="download-target-csv"
-                        >
-                          Request to download all target data (.csv)
-                        </ExternalLink>
-                      </div>
-                      <div className="flex mt-4">
-                        <Alert
-                          message={
-                            <>
-                              We are developing the ability to detect targets in documents.{" "}
-                              <ExternalLink url="https://form.jotform.com/233294139336358" className="underline text-blue-600 hover:text-blue-800">
-                                Get notified when this is ready
-                              </ExternalLink>
-                              .
-                            </>
-                          }
-                          icon={<Icon name="alertCircle" height="16" width="16" />}
-                        />
-                      </div>
-                      <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} showFamilyInfo />
-                    </div>
-                  </section>
-                  {publishedTargets.length > numberOfTargetsToDisplay && (
-                    <div data-cy="more-targets-button">
-                      <Button
-                        content="both"
-                        rounded
-                        variant="outlined"
-                        className="my-5"
-                        onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
-                      >
+                {publishedTargets.length > numberOfTargetsToDisplay && (
+                  <div data-cy="more-targets-button">
+                    <Button
+                      content="both"
+                      rounded
+                      variant="outlined"
+                      className="my-5"
+                      onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
+                    >
+                      <Icon name="downChevron" />
+                      View more targets
+                    </Button>
+                    <Divider />
+                  </div>
+                )}
+                {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
+                  <div>
+                    <Button content="both" rounded variant="outlined" className="my-5" onClick={() => setNumberOfTargetsToDisplay(5)}>
+                      <div className="rotate-180">
                         <Icon name="downChevron" />
-                        View more targets
-                      </Button>
-                      <Divider />
-                    </div>
-                  )}
-                  {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
-                    <div>
-                      <Button content="both" rounded variant="outlined" className="my-5" onClick={() => setNumberOfTargetsToDisplay(5)}>
-                        <div className="rotate-180">
-                          <Icon name="downChevron" />
-                        </div>
-                        Hide targets
-                      </Button>
-                      <Divider />
-                    </div>
-                  )}
-                </>
-              )}
-              {hasEvents && (
-                <section className="mt-10 hidden">
-                  <Heading level={2}>Events</Heading>
-                  <Timeline>
-                    {summary.events.map((event: TEvent, index: number) => (
-                      <Event event={event} key={`event-${index}`} index={index} last={index === summary.events.length - 1 ? true : false} />
-                    ))}
-                  </Timeline>
-                </section>
-              )}
-              {geography.legislative_process && theme !== "mcf" && (
-                <section className="mt-10" data-cy="legislative-process">
-                  <Heading level={2} extraClasses="flex items-center gap-2">
-                    Legislative Process
-                  </Heading>
-                  <div
-                    className="text-content"
-                    dangerouslySetInnerHTML={{
-                      __html: geography.legislative_process,
-                    }}
-                  />
-                </section>
-              )}
-            </SingleCol>
-          </SiteWidth>
-        </section>
-      )}
+                      </div>
+                      Hide targets
+                    </Button>
+                    <Divider />
+                  </div>
+                )}
+              </>
+            )}
+
+            {geographyV2.statistics?.legislative_process && theme !== "mcf" && (
+              <section className="mt-10" data-cy="legislative-process">
+                <Heading level={2} extraClasses="flex items-center gap-2">
+                  Legislative Process
+                </Heading>
+                <div
+                  className="text-content"
+                  dangerouslySetInnerHTML={{
+                    __html: geographyV2.statistics?.legislative_process,
+                  }}
+                />
+              </section>
+            )}
+          </SingleCol>
+        </SiteWidth>
+      </section>
     </Layout>
   );
 };

@@ -2,6 +2,7 @@ import Head from "next/head";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Columns } from "@/components/atoms/columns/Columns";
+import { Debug } from "@/components/atoms/debug/Debug";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
@@ -12,6 +13,7 @@ import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHead
 import { FAMILY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
+import { getSubdivisionName } from "@/helpers/getSubdivision";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
 import { getLitigationJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
@@ -30,16 +32,27 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
   const [year] = convertDate(family.published_date);
   const attributionUrl = family?.organisation_attribution_url;
 
+  // TODO use the new geography endpoint + GeographyV2
+  const geographiesToDisplay = family.geographies.some((code) => code.includes("-"))
+    ? family.geographies.filter((code) => code.includes("-"))
+    : family.geographies;
+
   const pageHeaderMetadata: IPageHeaderMetadata[] = [
     { label: "Date", value: isNaN(year) ? "" : year },
     {
       label: "Geography",
       value: joinNodes(
-        family.geographies.map((geo) => (
-          <LinkWithQuery key={geo} href={`/geographies/${getCountrySlug(geo, countries)}`} className="underline">
-            {getCountryName(geo, countries) || geo}
-          </LinkWithQuery>
-        )),
+        geographiesToDisplay.map((code) => {
+          const isCountry = !code.includes("-");
+          const slug = isCountry ? getCountrySlug(code, countries) : code.toLowerCase();
+          const name = isCountry ? getCountryName(code, countries) : getSubdivisionName(code, subdivisions);
+
+          return (
+            <LinkWithQuery key={code} href={`/geographies/${slug}`} className="underline">
+              {name}
+            </LinkWithQuery>
+          );
+        }),
         ", "
       ),
     },
@@ -70,14 +83,16 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
       <PageHeader label={categoryName} title={family.title} metadata={pageHeaderMetadata} />
       <Columns>
         <ContentsSideBar items={FAMILY_PAGE_SIDE_BAR_ITEMS} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
-        <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-3:py-8 cols-3:gap-8 cols-3:col-span-2 cols-4:col-span-3">
+        <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-2:col-span-2 cols-3:py-8 cols-3:gap-8 cols-4:col-span-3">
           <DocumentsBlock countries={countries} family={family} status="success" />
           <TextBlock id="section-summary" title="Summary">
             <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
           </TextBlock>
           <MetadataBlock title="About this case" metadata={getFamilyMetadata(family, countries, subdivisions)} id="section-metadata" />
           <Section id="section-debug" title="Debug">
-            <pre className="w-full max-h-[1000px] bg-surface-ui text-sm text-text-tertiary overflow-scroll">{JSON.stringify(family, null, 2)}</pre>
+            <Debug data={family} title="Family" />
+            <Debug data={countries} title="Countries" />
+            <Debug data={subdivisions} title="Subdivisions" />
           </Section>
         </main>
       </Columns>

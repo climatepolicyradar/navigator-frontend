@@ -7,12 +7,13 @@ import { GeographyOriginalPage, IProps } from "@/components/pages/geographyOrigi
 import { systemGeoNames } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode } from "@/helpers/getCountryFields";
-import { ApiItemResponse, GeographyV2, TGeographyStats, TGeographySummary, TSearch } from "@/types";
+import { ApiItemResponse, GeographyV2, TGeographySummary, TSearch } from "@/types";
 import { TTarget, TGeography } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isLitigationEnabled, isVespaSearchOnGeographiesEnabled } from "@/utils/features";
+import { v1GeoSlugToV2 } from "@/utils/geography";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags, themeConfig, ...props }: IProps) => {
@@ -29,10 +30,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const theme = process.env.THEME;
   const themeConfig = await readConfigFile(theme);
+  const litigationIsEnabled = isLitigationEnabled(featureFlags, themeConfig);
 
   const id = context.params.id;
   // TODO: remove the workaround for the US
-  const slug = id === "united-states-of-america" ? "united-states" : id;
+  const slug = v1GeoSlugToV2(id instanceof Array ? id[0] : id);
 
   if (systemGeoNames.includes(id as string)) {
     return {
@@ -43,51 +45,49 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const backendApiClient = new ApiClient();
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
-  let geographyData: TGeographyStats;
   let summaryData: TGeographySummary;
   let targetsData: TTarget[] = [];
 
-  try {
-    const { data: returnedData }: { data: TGeographyStats } = await backendApiClient.get(`/geo_stats/${id}`);
-    geographyData = returnedData;
-  } catch (error) {
-    // TODO: handle error more elegantly
-  }
   try {
     const { data: returnedData }: { data: TGeographySummary } = await backendApiClient.get(`/summaries/geography/${id}`);
     summaryData = returnedData;
   } catch {
     // TODO: handle error more elegantly
   }
+
   try {
-    let countries: TGeography[] = [];
+    let geographies: TGeography[] = [];
     const configData = await backendApiClient.getConfig();
     const response_geo = extractNestedData<TGeography>(configData.data?.geographies || []);
-    countries = response_geo[1];
-    const country = getCountryCode(id as string, countries);
-    if (country) {
-      const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${country.toLowerCase()}.json`);
+    geographies = [...response_geo[1], ...response_geo[2]];
+    const geography = getCountryCode(id as string, geographies);
+
+    if (geography) {
+      const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/geographies/${geography.toLowerCase()}.json`);
       targetsData = targetsRaw.data;
     }
   } catch {
     // TODO: handle error more elegantly
   }
 
-  let geographyV2: GeographyV2 = null;
+  let geographyV2: GeographyV2;
+  let parentGeographyV2: GeographyV2 = null;
   try {
-    const geographyV2Data: ApiItemResponse<GeographyV2> = await apiClient.get(`/geographies/${slug}`);
-    geographyV2 = geographyV2Data.data;
+    const geographyV2Data = await apiClient.get<ApiItemResponse<GeographyV2>>(`/geographies/${slug}`);
+    geographyV2 = geographyV2Data.data.data;
+
+    if (geographyV2.subconcept_of[0]) {
+      const parentGeographyV2Data = await apiClient.get<ApiItemResponse<GeographyV2>>(`/geographies/${geographyV2.subconcept_of[0].slug}`);
+      parentGeographyV2 = parentGeographyV2Data.data.data;
+    }
   } catch {}
 
-  // TODO:
-  // Frontend
-  // fetch geo from geographies API
-  // use response to fetch families data from families API
+  if (geographyV2 && geographyV2.type === "region") {
+    return { notFound: true };
+  }
 
-  if (!geographyData || !summaryData) {
-    return {
-      notFound: true,
-    };
+  if (!geographyV2 || !summaryData) {
+    return { notFound: true };
   }
 
   const vespaSearchOnGeographiesEnabled = isVespaSearchOnGeographiesEnabled(featureFlags, themeConfig);
@@ -112,8 +112,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: withEnvConfig({
       featureFlags,
-      geography: geographyData,
-      geographyV2: geographyV2,
+      geographyV2,
+      parentGeographyV2,
       summary: summaryData,
       targets: theme === "mcf" ? [] : targetsData,
       theme,

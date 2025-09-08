@@ -56,14 +56,17 @@ export type TDataNode<T> = {
 export type ApiItemResponse<T> = {
   data: T;
 };
-type GeographyTypeV2 = "region" | "country" | "subdivision";
+
+export type GeographyTypeV2 = "region" | "country" | "subdivision";
+
 export type GeographyV2 = {
   id: string;
   type: GeographyTypeV2;
   slug: string;
-  subconcept_of: GeographyV2[];
-  has_subconcept: GeographyV2[];
+  subconcept_of?: GeographyV2[];
+  has_subconcept?: GeographyV2[];
   name: string;
+  alpha_2?: string;
   statistics?: {
     name: string;
     legislative_process: string;
@@ -121,19 +124,6 @@ export type TTarget = {
   Comment: string;
   "family-slug": string;
   "family-name": string;
-};
-
-export type TGeographyStats = {
-  name: string;
-  geography_slug: string;
-  legislative_process: string;
-  federal: boolean;
-  federal_details: string;
-  political_groups: string;
-  global_emissions_percent: number;
-  climate_risk_index: number;
-  worldbank_income_group: string;
-  visibility_status: string;
 };
 
 export type TGeographySummaryCategory = "Executive" | "Legislative" | "Litigation" | "MCF" | "Reports" | "UNFCCC";
@@ -266,7 +256,6 @@ export type TFamilyMetadata = TMetadata<
   | "sector"
   | "topic"
   // Litigation specific
-  | "action_taken"
   | "case_number"
   | "concept_preferred_label"
   | "core_object"
@@ -300,6 +289,7 @@ export type TSearch = {
   hits: number;
   query_time_ms: number;
   families: TMatchedFamily[];
+  total_family_hits: number;
 };
 
 export type TLoadingStatus = "idle" | "loading" | "success" | "error";
@@ -434,6 +424,7 @@ export type TCorpusPublic = {
 export type TFamilyEventPublic = TEvent & {
   import_id: string;
   metadata: TMetadata<
+    | "action_taken"
     | "case_number"
     | "concept_preferred_label"
     | "core_object"
