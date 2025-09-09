@@ -128,20 +128,24 @@ export const getEventTableRows = ({
           document: document
             ? {
                 display: (
-                  <LinkWithQuery href={`/documents/${document.slug}`} className="underline">
+                  <LinkWithQuery href={`/documents/${document.slug}`} className="text-text-brand underline">
                     View
                   </LinkWithQuery>
                 ),
                 value: document.slug,
               }
             : null,
-          matches:
-            matchesStatus === "loading"
-              ? {
-                  display: <Icon name="loading" />,
-                  value: 0,
-                }
-              : matches,
+          matches: {
+            display:
+              matchesStatus === "loading" ? (
+                <Icon name="loading" />
+              ) : (
+                <LinkWithQuery href={`/documents/${document.slug}`} className="text-text-brand">
+                  {matches}
+                </LinkWithQuery>
+              ),
+            value: matches,
+          },
           summary: event.metadata.description?.[0] || null,
           type: event.event_type,
         },
