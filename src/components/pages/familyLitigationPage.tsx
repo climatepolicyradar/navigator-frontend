@@ -53,14 +53,26 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
   } else {
     // It's a subdivision - we need both country and subdivision
-    const countryCode = firstGeography.split("-")[0];
-    const countrySlug = getCountrySlug(countryCode, countries);
-    const countryName = getCountryName(countryCode, countries);
+    const subdivisionData = subdivisions.find((sub) => sub.code === firstGeography);
     const subdivisionSlug = firstGeography.toLowerCase();
     const subdivisionName = getSubdivisionName(firstGeography, subdivisions);
 
-    breadcrumbGeography = { label: countryName, href: `/geographies/${countrySlug}` };
-    breadcrumbSubGeography = { label: subdivisionName, href: `/geographies/${subdivisionSlug}` };
+    if (subdivisionData) {
+      // Use the subdivision's country information
+      const countrySlug = getCountrySlug(subdivisionData.country_alpha_3, countries);
+      const countryName = getCountryName(subdivisionData.country_alpha_3, countries);
+
+      breadcrumbGeography = { label: countryName, href: `/geographies/${countrySlug}` };
+      breadcrumbSubGeography = { label: subdivisionName, href: `/geographies/${subdivisionSlug}` };
+    } else {
+      // Fallback to the old method if subdivision data not found
+      const countryCode = firstGeography.split("-")[0];
+      const countrySlug = getCountrySlug(countryCode, countries);
+      const countryName = getCountryName(countryCode, countries);
+
+      breadcrumbGeography = { label: countryName, href: `/geographies/${countrySlug}` };
+      breadcrumbSubGeography = { label: subdivisionName, href: `/geographies/${subdivisionSlug}` };
+    }
   }
 
   const pageHeaderMetadata: IPageHeaderMetadata[] = [
@@ -108,8 +120,8 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     >
       <PageHeader label={categoryName} title={family.title} metadata={pageHeaderMetadata} />
       <BreadCrumbs
-        geography={breadcrumbGeography}
-        parentGeography={breadcrumbSubGeography}
+        geography={isCountry ? breadcrumbGeography : breadcrumbSubGeography}
+        parentGeography={isCountry ? null : breadcrumbGeography}
         isSubdivision={!isCountry}
         category={isCountry ? breadcrumbCategory : null}
         label={family.title}

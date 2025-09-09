@@ -100,13 +100,7 @@ export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdiv
     <ul className="flex items-baseline flex-wrap gap-2 text-sm" data-cy="breadcrumbs">
       <BreadCrumb label="" href="/" cy="home" isHome />
       <BreadCrumb label="Search" href="/search" cy="search" />
-      {breadcrumbGeography && (
-        <BreadCrumb
-          label={breadcrumbGeography.label}
-          href={isSystemGeo(String(breadcrumbGeography.label)) ? null : breadcrumbGeography.href}
-          cy="geography"
-        />
-      )}
+      {breadcrumbGeography && <BreadCrumb label={breadcrumbGeography.label} href={breadcrumbGeography.href} cy="geography" />}
       {breadcrumbSubGeography && <BreadCrumb label={breadcrumbSubGeography.label} href={breadcrumbSubGeography.href} cy="sub-geography" />}
       {category && <BreadCrumb label={category.label} href={category.href} cy="category" />}
       {family && <BreadCrumb label={family.label} href={family.href} cy="family" />}
