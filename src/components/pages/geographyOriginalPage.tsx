@@ -60,7 +60,16 @@ const categories: { title: TDocumentCategory; slug: string }[] = [
 
 const MAX_NUMBER_OF_FAMILIES = 3;
 
-export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, themeConfig, vespaSearchResults, envConfig }: IProps) => {
+export const GeographyOriginalPage = ({
+  geographyV2,
+  parentGeographyV2,
+  summary,
+  targets,
+  theme,
+  themeConfig,
+  vespaSearchResults,
+  envConfig,
+}: IProps) => {
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
@@ -73,6 +82,9 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
   const allDocumentsCount = Object.values(summary.family_counts).reduce((acc, count) => acc + (count || 0), 0);
 
   const displayBrazilNDCBanner = theme === "cclw" && geographyV2.slug.toLowerCase() === "brazil";
+
+  // Determine if this is a subdivision
+  const isCountry = geographyV2.type === "country";
 
   const documentCategories = themeConfig.documentCategories.map((category) => {
     let count = null;
@@ -302,7 +314,12 @@ export const GeographyOriginalPage = ({ geographyV2, summary, targets, theme, th
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="geography" text={geographyV2.name}>
       <section className="mb-8">
         <SubNav>
-          <BreadCrumbs label={geographyV2.name} />
+          <BreadCrumbs
+            geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
+            parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
+            isSubdivision={!isCountry}
+            label={geographyV2.name}
+          />
         </SubNav>
         <SiteWidth>
           <SingleCol extraClasses="mt-8">
