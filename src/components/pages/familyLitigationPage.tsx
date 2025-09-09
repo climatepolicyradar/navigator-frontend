@@ -39,7 +39,6 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     : family.geographies;
 
   // Breadcrumb data
-  const breadcrumbCategory = { label: "Search results", href: "/search" };
   const firstGeography = geographiesToDisplay[0];
   const isCountry = !firstGeography.includes("-");
 
@@ -123,7 +122,6 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
         geography={isCountry ? breadcrumbGeography : breadcrumbSubGeography}
         parentGeography={isCountry ? null : breadcrumbGeography}
         isSubdivision={!isCountry}
-        category={isCountry ? breadcrumbCategory : null}
         label={family.title}
       />
       <Columns>
