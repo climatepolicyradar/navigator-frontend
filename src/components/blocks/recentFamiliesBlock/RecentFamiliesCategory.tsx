@@ -1,12 +1,26 @@
+import sortBy from "lodash/sortBy";
 import { LucideChevronDownCircle } from "lucide-react";
+import { useContext, useMemo } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { EntityCard, IProps as IEntityCardProps } from "@/components/molecules/entityCard/EntityCard";
 import { ARROW_RIGHT } from "@/constants/chars";
+import { GeographiesContext } from "@/context/GeographiesContext";
+import { getCategoryName } from "@/helpers/getCategoryName";
 import { TCategorySummary } from "@/helpers/getFamilyCategorySummary";
+import { GeographyTypeV2, GeographyV2 } from "@/types";
 import { pluralise } from "@/utils/pluralise";
 import { joinTailwindClasses } from "@/utils/tailwind";
+import { formatDate } from "@/utils/timedate";
 
-import { RecentFamilyCard } from "./RecentFamilyCard";
+const MAX_CARDS = 4;
+
+const getMostSpecificGeography = (geographies: GeographyV2[]): GeographyV2 => {
+  if (!geographies.length) return null;
+
+  const GEOGRAPHY_TYPE_WEIGHTING: GeographyTypeV2[] = ["subdivision", "country", "region"];
+  return sortBy(geographies, (geo) => GEOGRAPHY_TYPE_WEIGHTING.indexOf(geo.type))[0];
+};
 
 interface IProps {
   categorySummary: TCategorySummary | null;
@@ -21,6 +35,28 @@ export const RecentFamiliesCategory = ({
   isExpanded = true,
   onAccordionClick,
 }: IProps) => {
+  const allGeographies = useContext(GeographiesContext);
+
+  const cards: IEntityCardProps[] = useMemo(
+    () =>
+      families.slice(0, MAX_CARDS).map((family) => {
+        const geographies = family.family_geographies.map((familyGeo) => allGeographies.find((geo) => geo.id === familyGeo)).filter((geo) => geo);
+
+        const metadata = [
+          getCategoryName(family.family_category, family.corpus_type_name, family.family_source),
+          getMostSpecificGeography(geographies)?.name,
+          formatDate(family.family_date)[0],
+        ].filter((line) => Boolean(line));
+
+        return {
+          href: `/document/${family.family_slug}`,
+          title: family.family_name,
+          metadata,
+        };
+      }),
+    [allGeographies, families]
+  );
+
   const clickAccordion = () => {
     onAccordionClick?.();
   };
@@ -29,6 +65,7 @@ export const RecentFamiliesCategory = ({
 
   return (
     <div className="border-b border-border-light">
+      {/* Accordion */}
       {showAccordion && (
         <div className="pt-5 mb-5">
           <button type="button" onClick={clickAccordion} className="flex items-center gap-3">
@@ -37,12 +74,14 @@ export const RecentFamiliesCategory = ({
           </button>
         </div>
       )}
+
+      {/* Cards */}
       {(!showAccordion || isExpanded) && (
         <>
           {families.length > 0 && (
             <div className="flex gap-5 items-stretch overflow-x-auto pb-2">
-              {families.slice(0, 4).map((family, familyIndex) => (
-                <RecentFamilyCard key={familyIndex} family={family} />
+              {cards.map((card) => (
+                <EntityCard key={card.href} {...card} />
               ))}
               {/* TODO link to the search page with the given category filtered */}
               <LinkWithQuery
