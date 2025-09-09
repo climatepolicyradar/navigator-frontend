@@ -45,15 +45,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const backendApiClient = new ApiClient();
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
-  let summaryData: TGeographySummary;
   let targetsData: TTarget[] = [];
-
-  try {
-    const { data: returnedData }: { data: TGeographySummary } = await backendApiClient.get(`/summaries/geography/${id}`);
-    summaryData = returnedData;
-  } catch {
-    // TODO: handle error more elegantly
-  }
 
   try {
     let geographies: TGeography[] = [];
@@ -86,10 +78,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { notFound: true };
   }
 
-  if (!geographyV2 || !summaryData) {
-    return { notFound: true };
-  }
-
   const vespaSearchOnGeographiesEnabled = isVespaSearchOnGeographiesEnabled(featureFlags, themeConfig);
   let vespaSearchResults: TSearch = null;
   if (vespaSearchOnGeographiesEnabled || litigationIsEnabled) {
@@ -107,6 +95,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         },
       })
       .then((response) => response.data);
+  }
+
+  let summaryData: TGeographySummary = null;
+  if (!litigationIsEnabled) {
+    try {
+      const { data: returnedData }: { data: TGeographySummary } = await backendApiClient.get(`/summaries/geography/${id}`);
+      summaryData = returnedData;
+    } catch {
+      // TODO: handle error more elegantly
+    }
+  }
+
+  if (!geographyV2 || !(summaryData || vespaSearchResults)) {
+    return { notFound: true };
   }
 
   return {

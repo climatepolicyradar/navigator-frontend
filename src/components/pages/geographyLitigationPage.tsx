@@ -10,15 +10,12 @@ import { RecentFamiliesBlock } from "@/components/blocks/recentFamiliesBlock/Rec
 import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisionBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { Section } from "@/components/molecules/section/Section";
 import { SubNav } from "@/components/nav/SubNav";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { getGeographyPageSidebarItems } from "@/constants/sideBarItems";
 import { GeographiesContext } from "@/context/GeographiesContext";
-import { getFamilyCategorySummary, TCategorySummary } from "@/helpers/getFamilyCategorySummary";
-import { GeographyCountsResponse } from "@/pages/api/geography-counts";
-import { TFamily, TSearch } from "@/types";
+import { TSearch } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { v2GeoSlugToV1 } from "@/utils/geography";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
@@ -150,11 +147,11 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
                   <div className="text-content" dangerouslySetInnerHTML={{ __html: legislativeProcess }} />
                 </TextBlock>
             )} */}
-            <Section id="section-debug" title="Debug">
+            {/* <Section id="section-debug" title="Debug">
               <Debug data={geographyV2} title="Geography V2" />
               <Debug data={parentGeographyV2} title="Parent geography V2" />
               <Debug data={targets} title="Targets" />
-            </Section>
+            </Section> */}
           </main>
         </Columns>
       </Layout>

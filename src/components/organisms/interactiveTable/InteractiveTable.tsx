@@ -21,12 +21,12 @@ export interface IInteractiveTableColumn<ColumnKey extends string> {
   tooltip?: ReactNode;
 }
 
-export type TInteractiveTableCell =
-  | TValue
-  | {
-      display: ReactNode;
-      value: TValue;
-    };
+export type TValueWithDisplay = {
+  display: ReactNode;
+  value: TValue;
+};
+
+export type TInteractiveTableCell = TValue | TValueWithDisplay;
 
 export interface IInteractiveTableRow<ColumnKey extends string> {
   id: string;
