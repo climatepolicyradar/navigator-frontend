@@ -6,6 +6,7 @@ import { Debug } from "@/components/atoms/debug/Debug";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
@@ -36,6 +37,31 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
   const geographiesToDisplay = family.geographies.some((code) => code.includes("-"))
     ? family.geographies.filter((code) => code.includes("-"))
     : family.geographies;
+
+  // Breadcrumb data
+  const breadcrumbCategory = { label: "Search results", href: "/search" };
+  const firstGeography = geographiesToDisplay[0];
+  const isCountry = !firstGeography.includes("-");
+
+  let breadcrumbGeography = null;
+  let breadcrumbSubGeography = null;
+
+  if (isCountry) {
+    // It's a country
+    const geographySlug = getCountrySlug(firstGeography, countries);
+    const geographyName = getCountryName(firstGeography, countries);
+    breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
+  } else {
+    // It's a subdivision - we need both country and subdivision
+    const countryCode = firstGeography.split("-")[0];
+    const countrySlug = getCountrySlug(countryCode, countries);
+    const countryName = getCountryName(countryCode, countries);
+    const subdivisionSlug = firstGeography.toLowerCase();
+    const subdivisionName = getSubdivisionName(firstGeography, subdivisions);
+
+    breadcrumbGeography = { label: countryName, href: `/geographies/${countrySlug}` };
+    breadcrumbSubGeography = { label: subdivisionName, href: `/geographies/${subdivisionSlug}` };
+  }
 
   const pageHeaderMetadata: IPageHeaderMetadata[] = [
     { label: "Date", value: isNaN(year) ? "" : year },
@@ -81,6 +107,13 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
       attributionUrl={attributionUrl}
     >
       <PageHeader label={categoryName} title={family.title} metadata={pageHeaderMetadata} />
+      <BreadCrumbs
+        geography={breadcrumbSubGeography}
+        parentGeography={breadcrumbGeography}
+        isSubdivision={!isCountry}
+        category={breadcrumbCategory}
+        label={family.title}
+      />
       <Columns>
         <ContentsSideBar items={FAMILY_PAGE_SIDE_BAR_ITEMS} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
         <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-2:col-span-2 cols-3:py-8 cols-3:gap-8 cols-4:col-span-3">

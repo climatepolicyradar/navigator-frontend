@@ -17,11 +17,17 @@ interface IProps {
   category?: TBreadcrumbLink;
   family?: TBreadcrumbLink;
   geography?: TBreadcrumbLink;
-  subGeography?: TBreadcrumbLink;
+  parentGeography?: TBreadcrumbLink;
+  isSubdivision?: boolean;
   label: string | React.ReactNode;
 }
 
 const BreadCrumb = ({ last = false, label, href = null, cy = "", isHome = false }: TBreadcrumbLink & { isHome?: boolean }) => {
+  // Don't render if label is empty, null, or undefined (unless it's the home icon)
+  if (!isHome && (!label || (typeof label === "string" && label.trim() === ""))) {
+    return null;
+  }
+
   const labelShort =
     typeof label === "string" && label.toString().length > BREADCRUMB_MAXLENGTH ? `${label.toString().substring(0, BREADCRUMB_MAXLENGTH)}...` : label;
 
@@ -49,16 +55,50 @@ const BreadCrumb = ({ last = false, label, href = null, cy = "", isHome = false 
 /**
  * Lists the page hierarchy back to the homepage so that the user can better understand where they are, and to easily go back to a previous page.
  */
-export const BreadCrumbs = ({ geography = null, subGeography = null, category = null, family = null, label }: IProps) => {
+export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdivision = false, category = null, family = null, label }: IProps) => {
+  // Handle subdivision logic internally
+  const isGeographyPage = !category && !family;
+
+  if (isGeographyPage) {
+    // For geography pages, show parent geography as link, current geography as final non-link
+    const breadcrumbGeography = isSubdivision && parentGeography ? parentGeography : null;
+    const finalGeography = isSubdivision ? geography : geography;
+
+    return (
+      <ul className="flex items-baseline flex-wrap gap-2 text-sm" data-cy="breadcrumbs">
+        <BreadCrumb label="" href="/" cy="home" isHome />
+        <BreadCrumb label="Search" href="/search" cy="search" />
+        {breadcrumbGeography && (
+          <BreadCrumb
+            label={breadcrumbGeography.label}
+            href={isSystemGeo(String(breadcrumbGeography.label)) ? null : breadcrumbGeography.href}
+            cy="geography"
+          />
+        )}
+        {finalGeography && <BreadCrumb label={finalGeography.label} last cy="current" />}
+      </ul>
+    );
+  }
+
+  // For family pages, use the original logic
+  const breadcrumbGeography = isSubdivision && parentGeography ? parentGeography : geography;
+  const breadcrumbSubGeography = isSubdivision ? geography : null;
+
   return (
     <ul className="flex items-baseline flex-wrap gap-2 text-sm" data-cy="breadcrumbs">
       <BreadCrumb label="" href="/" cy="home" isHome />
       <BreadCrumb label="Search" href="/search" cy="search" />
-      {geography && <BreadCrumb label={geography.label} href={isSystemGeo(String(geography.label)) ? null : geography.href} cy="geography" />}
-      {subGeography && <BreadCrumb label={subGeography.label} href={subGeography.href} cy="sub-geography" />}
+      {breadcrumbGeography && (
+        <BreadCrumb
+          label={breadcrumbGeography.label}
+          href={isSystemGeo(String(breadcrumbGeography.label)) ? null : breadcrumbGeography.href}
+          cy="geography"
+        />
+      )}
+      {breadcrumbSubGeography && <BreadCrumb label={breadcrumbSubGeography.label} href={breadcrumbSubGeography.href} cy="sub-geography" />}
       {category && <BreadCrumb label={category.label} href={category.href} cy="category" />}
       {family && <BreadCrumb label={family.label} href={family.href} cy="family" />}
-      <BreadCrumb label={label} last cy="current" />
+      {label && <BreadCrumb label={label} last cy="current" />}
     </ul>
   );
 };

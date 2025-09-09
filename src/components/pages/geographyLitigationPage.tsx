@@ -8,6 +8,7 @@ import { Debug } from "@/components/atoms/debug/Debug";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { RecentFamiliesBlock } from "@/components/blocks/recentFamiliesBlock/RecentFamiliesBlock";
 import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisionBlock";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
@@ -114,6 +115,12 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
     <GeographiesContext.Provider value={allGeographies}>
       <Layout metadataKey="geography" theme={theme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
         <PageHeader coloured label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
+        <BreadCrumbs
+          geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
+          parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
+          isSubdivision={!isCountry}
+          label={geographyV2.name}
+        />
         <Columns>
           <ContentsSideBar items={sidebarItems} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
           <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-2:col-span-2 cols-3:py-8 cols-3:gap-8 cols-4:col-span-3">
