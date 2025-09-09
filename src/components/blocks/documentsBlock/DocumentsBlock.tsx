@@ -8,26 +8,26 @@ import { Section } from "@/components/molecules/section/Section";
 import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
 import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { TFamilyPublic, TGeography, TLoadingStatus } from "@/types";
+import { TFamilyPublic, TGeography, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId } from "@/utils/eventTable";
 
 interface IProps {
   countries: TGeography[];
   family: TFamilyPublic;
-  status: TLoadingStatus;
+  matchesFamily?: TMatchedFamily; // The relevant search result family
+  matchesStatus?: TLoadingStatus; // The status of the search
+  showMatches?: boolean; // Whether to show matches from the search result
 }
 
-/**
- * TODO LIST
- * - Add matches counts, handle loading state
- */
-
-export const DocumentsBlock = ({ countries, family }: IProps) => {
+export const DocumentsBlock = ({ countries, family, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
   const [view, setView] = useState("table");
 
   const isUSA = family.geographies.includes("USA");
-  const tableColumns = useMemo(() => getEventTableColumns({ isUSA, showMatches: true }), [isUSA]);
-  const tableRows = useMemo(() => getEventTableRows({ families: [family], documentEventsOnly: true }), [family]);
+  const tableColumns = useMemo(() => getEventTableColumns({ isUSA, showMatches }), [isUSA, showMatches]);
+  const tableRows = useMemo(
+    () => getEventTableRows({ families: [family], documentEventsOnly: true, matchesFamily, matchesStatus }),
+    [family, matchesFamily, matchesStatus]
+  );
 
   const onToggleChange = (toggleValue: string[]) => {
     setView(toggleValue[0]);
@@ -56,7 +56,7 @@ export const DocumentsBlock = ({ countries, family }: IProps) => {
         )}
 
         {/* Table */}
-        {view === "table" && <InteractiveTable<TEventTableColumnId> columns={tableColumns} rows={tableRows} />}
+        {view === "table" && <InteractiveTable<TEventTableColumnId> columns={tableColumns} rows={tableRows} showValues />}
       </Card>
     </Section>
   );
