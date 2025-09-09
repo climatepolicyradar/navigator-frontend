@@ -29,7 +29,6 @@ const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig, exact
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="homepage">
       <main id="main" className="h-screen flex flex-col">
-        {/* <Header /> */}
         <div className="flex-1">
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} exactMatch={exactMatch} handleSearchChange={handleSearchChange} />
         </div>

@@ -1,6 +1,9 @@
-import ExactMatch from "@/components/filters/ExactMatch";
-import { SiteWidth } from "@/components/panels/SiteWidth";
+import Image from "next/image";
+
+import { Columns } from "@/components/atoms/columns/Columns";
+import { LatestItemsBlock } from "@/components/blocks/latestItemsBlock/LatestItemsBlock";
 import { Heading } from "@/components/typography/Heading";
+import { LATEST_ITEMS_STUB } from "@/stubs/latestItemsStub";
 
 import LandingSearchForm from "./LandingSearchForm";
 
@@ -11,22 +14,22 @@ interface IProps {
   handleSearchChange: (type: string, value: any) => void;
 }
 
-export const Hero = ({ handleSearchInput, searchInput, exactMatch, handleSearchChange }: IProps) => {
+export const Hero = ({ handleSearchInput, searchInput, handleSearchChange }: IProps) => {
   return (
-    <div className="pb-[33vh] text-white">
-      <SiteWidth>
-        <div className="flex flex-col items-center justify-center mb-6">
-          <Heading level={1} extraClasses="!text-text-primary text-5xl font-medium">
-            Climate Case Chart
+    <Columns containerClasses="p-10">
+      <div className="cols-4:col-span-2 flex flex-col justify-between">
+        <Image src="/images/ccc/sabin-logo-large.png" alt="Sabin Center for Climate Change logo" width={384} height={36} quality={100} />
+        <div className="">
+          <Heading level={1} extraClasses="!text-text-primary !text-5xl !font-bold pb-4">
+            U.S. and Global Climate Change Litigation Database
           </Heading>
+          <LandingSearchForm handleSearchInput={handleSearchInput} input={searchInput} />
         </div>
-        <div className="max-w-screen-md mx-auto mt-6">
-          <LandingSearchForm handleSearchInput={handleSearchInput} placeholder="Search the full text of any document" input={searchInput} />
-          <div className="mt-4 flex justify-end">
-            <ExactMatch landing={true} checked={exactMatch} id="exact-match" handleSearchChange={handleSearchChange} />
-          </div>
-        </div>
-      </SiteWidth>
-    </div>
+      </div>
+      <div className="cols-4:col-span-1" />
+      <div className="cols-4:col-span-1">
+        <LatestItemsBlock latestItems={LATEST_ITEMS_STUB} />
+      </div>
+    </Columns>
   );
 };
