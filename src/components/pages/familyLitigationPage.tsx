@@ -63,33 +63,28 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     ? family.geographies.filter((code) => code.includes("-"))
     : family.geographies;
 
-  // Breadcrumb data
   const firstGeography = geographiesToDisplay[0];
   const isCountry = !firstGeography.includes("-");
-
   let breadcrumbGeography = null;
   let breadcrumbSubGeography = null;
 
   if (isCountry) {
-    // It's a country
     const geographySlug = getCountrySlug(firstGeography, countries);
     const geographyName = getCountryName(firstGeography, countries);
     breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
   } else {
-    // It's a subdivision - we need both country and subdivision
+    // Get both country and subdivision.
     const subdivisionData = subdivisions.find((sub) => sub.code === firstGeography);
     const subdivisionSlug = firstGeography.toLowerCase();
     const subdivisionName = getSubdivisionName(firstGeography, subdivisions);
 
     if (subdivisionData) {
-      // Use the subdivision's country information
       const countrySlug = getCountrySlug(subdivisionData.country_alpha_3, countries);
       const countryName = getCountryName(subdivisionData.country_alpha_3, countries);
 
       breadcrumbGeography = { label: countryName, href: `/geographies/${countrySlug}` };
       breadcrumbSubGeography = { label: subdivisionName, href: `/geographies/${subdivisionSlug}` };
     } else {
-      // Fallback to the old method if subdivision data not found
       const countryCode = firstGeography.split("-")[0];
       const countrySlug = getCountrySlug(countryCode, countries);
       const countryName = getCountryName(countryCode, countries);

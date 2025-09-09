@@ -56,12 +56,10 @@ const BreadCrumb = ({ last = false, label = null, href = null, cy = "", isHome =
  * Lists the page hierarchy back to the homepage so that the user can better understand where they are, and to easily go back to a previous page.
  */
 export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdivision = false, category = null, family = null, label }: IProps) => {
-  // Handle subdivision logic internally
   const isGeographyPage = !category && !family && geography && !label;
   const isCollectionPage = !category && !family && !geography;
 
   if (isGeographyPage) {
-    // For geography pages, show parent geography as link, current geography as final non-link
     const breadcrumbGeography = isSubdivision && parentGeography ? parentGeography : null;
     const finalGeography = geography;
 
@@ -76,7 +74,6 @@ export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdiv
   }
 
   if (isCollectionPage) {
-    // For collection pages, show just home > search > collection title
     return (
       <ul className="flex items-baseline flex-wrap gap-2 text-sm" data-cy="breadcrumbs">
         <BreadCrumb label="" href="/" cy="home" isHome />
@@ -86,7 +83,6 @@ export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdiv
     );
   }
 
-  // For family pages, use the original logic
   const breadcrumbGeography = isSubdivision && parentGeography ? parentGeography : geography;
   const breadcrumbSubGeography = isSubdivision ? geography : null;
 
