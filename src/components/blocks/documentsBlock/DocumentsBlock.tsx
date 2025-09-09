@@ -23,7 +23,7 @@ interface IProps {
  */
 
 export const DocumentsBlock = ({ countries, family }: IProps) => {
-  const [view, setView] = useState("card");
+  const [view, setView] = useState("table");
 
   const isUSA = family.geographies.includes("USA");
   const tableColumns = useMemo(() => getEventTableColumns({ isUSA, showMatches: true }), [isUSA]);
@@ -39,8 +39,8 @@ export const DocumentsBlock = ({ countries, family }: IProps) => {
         {/* Controls */}
         <div className="pb-6">
           <ToggleGroup value={[view]} onValueChange={onToggleChange}>
-            <Toggle Icon={LucideScrollText} text="Card" value="card" />
             <Toggle Icon={LucideTable} text="Table" value="table" />
+            <Toggle Icon={LucideScrollText} text="Card" value="card" />
           </ToggleGroup>
         </div>
 
