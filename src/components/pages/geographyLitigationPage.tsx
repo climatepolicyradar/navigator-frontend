@@ -64,6 +64,12 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
   const [searchResultsByCategory, setSearchResultsByCategory] = useState<{ [categorySlug: string]: TSearch }>({
     All: vespaSearchResults,
   });
+  // re-render when the page has changed
+  useEffect(() => {
+    setSearchResultsByCategory({
+      All: vespaSearchResults,
+    });
+  }, [vespaSearchResults]);
 
   const documentCategories = useMemo(
     () =>
