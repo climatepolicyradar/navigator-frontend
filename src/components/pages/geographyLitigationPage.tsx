@@ -141,11 +141,11 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
                   <div className="text-content" dangerouslySetInnerHTML={{ __html: legislativeProcess }} />
                 </TextBlock>
             )} */}
-            <Section id="section-debug" title="Debug">
+            {/* <Section id="section-debug" title="Debug">
               <Debug data={geographyV2} title="Geography V2" />
               <Debug data={parentGeographyV2} title="Parent geography V2" />
               <Debug data={targets} title="Targets" />
-            </Section>
+            </Section> */}
           </main>
         </Columns>
       </Layout>

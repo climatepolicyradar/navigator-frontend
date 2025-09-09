@@ -115,11 +115,11 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
             <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
           </TextBlock>
           <MetadataBlock title="About this case" metadata={getFamilyMetadata(family, countries, subdivisions)} id="section-metadata" />
-          <Section id="section-debug" title="Debug">
+          {/* <Section id="section-debug" title="Debug">
             <Debug data={family} title="Family" />
             <Debug data={countries} title="Countries" />
             <Debug data={subdivisions} title="Subdivisions" />
-          </Section>
+          </Section> */}
         </main>
       </Columns>
       <Head>
