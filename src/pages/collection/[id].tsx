@@ -8,6 +8,7 @@ import { EventsBlock } from "@/components/blocks/eventsBlock/EventsBlock";
 import { FamilyBlock } from "@/components/blocks/familyBlock/FamilyBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { ContentsSideBar, ISideBarItem } from "@/components/organisms/contentsSideBar/ContentsSideBar";
@@ -53,6 +54,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
         currentTab={currentTab}
         onTabChange={onTabChange}
       />
+      <BreadCrumbs label={collection.title} />
       <Columns>
         {currentTab === "cases" && (
           <>

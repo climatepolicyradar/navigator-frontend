@@ -57,7 +57,8 @@ const BreadCrumb = ({ last = false, label, href = null, cy = "", isHome = false 
  */
 export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdivision = false, category = null, family = null, label }: IProps) => {
   // Handle subdivision logic internally
-  const isGeographyPage = !category && !family;
+  const isGeographyPage = !category && !family && geography;
+  const isCollectionPage = !category && !family && !geography;
 
   if (isGeographyPage) {
     // For geography pages, show parent geography as link, current geography as final non-link
@@ -76,6 +77,17 @@ export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdiv
           />
         )}
         {finalGeography && <BreadCrumb label={finalGeography.label} last cy="current" />}
+      </ul>
+    );
+  }
+
+  if (isCollectionPage) {
+    // For collection pages, show just home > search > collection title
+    return (
+      <ul className="flex items-baseline flex-wrap gap-2 text-sm" data-cy="breadcrumbs">
+        <BreadCrumb label="" href="/" cy="home" isHome />
+        <BreadCrumb label="Search" href="/search" cy="search" />
+        {label && <BreadCrumb label={label} last cy="current" />}
       </ul>
     );
   }
