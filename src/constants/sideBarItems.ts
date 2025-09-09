@@ -13,11 +13,10 @@ export const FAMILY_PAGE_SIDE_BAR_ITEMS: ISideBarItem[] = [
     id: "section-metadata",
     display: "About",
   },
-  {
-    id: "section-debug",
-    display: "Debug",
-    badge: "Developer",
-  },
+  // {
+  //   id: "section-debug",
+  //   display: "Debug",
+  // },
 ];
 
 type TProps = Record<"isCountry" | "legislativeProcess" | "metadata" | "subdivisions" | "targets", boolean>;
@@ -44,11 +43,11 @@ export const getGeographyPageSidebarItems = (settings: TProps): ISideBarItem[] =
       id: "section-legislative-process",
       display: "Legislative process",
     },
-    {
-      id: "section-debug",
-      display: "Debug",
-      badge: "Developer",
-    },
+    // {
+    //   id: "section-debug",
+    //   display: "Debug",
+    //   badge: "Developer",
+    // },
   ];
 
   const idsToRemove: string[] = [];

@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Columns } from "@/components/atoms/columns/Columns";
@@ -10,10 +11,14 @@ import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
+import { MAX_PASSAGES } from "@/constants/paging";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 import { FAMILY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
+import useSearch from "@/hooks/useSearch";
+import { TMatchedFamily } from "@/types";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
 import { getLitigationJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
@@ -27,6 +32,25 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
   if (!isNewEndpointData(family)) {
     throw new Error("Cannot render FamilyLitigationPage with V1 API data");
   }
+
+  /* Search matches */
+
+  const router = useRouter();
+  const hasSearch = Boolean(
+    router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]
+  );
+
+  let matchesFamily: TMatchedFamily = null;
+  const { status: matchesStatus, families: searchFamilyResults } = useSearch(router.query, family.import_id, null, hasSearch, MAX_PASSAGES);
+  if (hasSearch) {
+    searchFamilyResults.forEach((searchFamilyResult) => {
+      if (family.slug === searchFamilyResult.family_slug) {
+        matchesFamily = searchFamilyResult;
+      }
+    });
+  }
+
+  /* Page header */
 
   const categoryName = getCategoryName(family.category, family.corpus_type_name, family.organisation);
   const [year] = convertDate(family.published_date);
@@ -71,6 +95,8 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     });
   }
 
+  /* Render */
+
   return (
     <Layout
       title={family.title}
@@ -84,16 +110,16 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
       <Columns>
         <ContentsSideBar items={FAMILY_PAGE_SIDE_BAR_ITEMS} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
         <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-2:col-span-2 cols-3:py-8 cols-3:gap-8 cols-4:col-span-3">
-          <DocumentsBlock countries={countries} family={family} status="success" />
+          <DocumentsBlock countries={countries} family={family} matchesFamily={matchesFamily} matchesStatus={matchesStatus} showMatches={hasSearch} />
           <TextBlock id="section-summary" title="Summary">
             <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
           </TextBlock>
           <MetadataBlock title="About this case" metadata={getFamilyMetadata(family, countries, subdivisions)} id="section-metadata" />
-          <Section id="section-debug" title="Debug">
+          {/* <Section id="section-debug" title="Debug">
             <Debug data={family} title="Family" />
             <Debug data={countries} title="Countries" />
             <Debug data={subdivisions} title="Subdivisions" />
-          </Section>
+          </Section> */}
         </main>
       </Columns>
       <Head>

@@ -180,7 +180,7 @@ export type TFamily = {
   family_documents: TFamilyDocument[];
   family_geographies: string[];
   family_last_updated_date: string;
-  family_metadata: {}; // TODO: type this
+  family_metadata: { [key: string]: string[] }; // TODO: type this better
   family_name: string;
   family_slug: string;
   family_source: string;
@@ -283,6 +283,13 @@ export type TMatchedFamily = TFamily & {
   family_title_match: boolean;
   total_passage_hits: number;
   continuation_token?: string; // represents a token for requesting more passage matches
+};
+
+export type TLatestItem = {
+  title: string;
+  date: string;
+  slug: string;
+  url: string;
 };
 
 export type TSearch = {
