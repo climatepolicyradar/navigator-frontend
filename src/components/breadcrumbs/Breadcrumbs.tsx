@@ -41,7 +41,7 @@ const BreadCrumb = ({ last = false, label, href = null, cy = "", isHome = false 
         )}
       </li>
 
-      {!last && <li>&rsaquo;</li>}
+      {!last && <li>/</li>}
     </>
   );
 };
