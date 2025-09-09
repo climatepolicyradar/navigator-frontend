@@ -56,7 +56,6 @@ const testThemeConfig: TThemeConfig = {
     knowledgeGraph: false,
     litigation: false,
     searchFamilySummary: true,
-    vespaSearchOnGeographies: false,
   },
 };
 

@@ -128,13 +128,6 @@ export type TTarget = {
 
 export type TGeographySummaryCategory = "Executive" | "Legislative" | "Litigation" | "MCF" | "Reports" | "UNFCCC";
 
-export type TGeographySummary = {
-  family_counts: Record<TGeographySummaryCategory, number>;
-  events: TEvent[];
-  targets: string[];
-  top_families: Record<TGeographySummaryCategory, TFamily[]>;
-};
-
 export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC" | "MCF" | "Reports";
 export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Litigation" | "Reports";
 export type TDisplayCategory = "All" | TCategory;
@@ -480,4 +473,12 @@ export type TSlugResponse = {
   family_document_import_id: string | null;
   collection_import_id: string | null;
   created: string;
+};
+
+export type TCategorySummary = {
+  id: string;
+  count: number;
+  families: TFamily[];
+  title: string;
+  unit: [string, string];
 };

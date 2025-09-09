@@ -2,7 +2,7 @@ import { LucideChevronDownCircle } from "lucide-react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { ARROW_RIGHT } from "@/constants/chars";
-import { TCategorySummary } from "@/helpers/getFamilyCategorySummary";
+import { TCategorySummary } from "@/types";
 import { pluralise } from "@/utils/pluralise";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
