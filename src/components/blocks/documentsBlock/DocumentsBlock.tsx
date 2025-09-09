@@ -56,7 +56,9 @@ export const DocumentsBlock = ({ countries, family }: IProps) => {
         )}
 
         {/* Table */}
-        {view === "table" && <InteractiveTable<TEventTableColumnId> columns={tableColumns} rows={tableRows} />}
+        {view === "table" && (
+          <InteractiveTable<TEventTableColumnId> columns={tableColumns} rows={tableRows} defaultSort={{ column: "date", ascending: false }} />
+        )}
       </Card>
     </Section>
   );
