@@ -56,7 +56,7 @@ export const DocumentsBlock = ({ countries, family, matchesFamily, matchesStatus
         )}
 
         {/* Table */}
-        {view === "table" && <InteractiveTable<TEventTableColumnId> columns={tableColumns} rows={tableRows} showValues />}
+        {view === "table" && <InteractiveTable<TEventTableColumnId> columns={tableColumns} rows={tableRows} />}
       </Card>
     </Section>
   );
