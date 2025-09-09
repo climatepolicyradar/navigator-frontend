@@ -423,12 +423,14 @@ export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page,
                       }}
                     />
                     <Heading level={4}>Other documents in the {collection.title}</Heading>
-                    <div className="divide-solid divide-y">
+                    <div className="divide-y flex flex-col gap-4">
                       {collection.families.map((collFamily, i) => (
-                        <div key={collFamily.slug} className="pt-4 pb-4">
-                          <LinkWithQuery href={`/document/${collFamily.slug}`}>{collFamily.title}</LinkWithQuery>
+                        <div key={collFamily.slug} className="border-border-light">
+                          <LinkWithQuery href={`/document/${collFamily.slug}`} className="text-[#0041A3] text-left font-medium text-lg underline">
+                            {collFamily.title}
+                          </LinkWithQuery>
                           <div
-                            className="text-content"
+                            className="text-content text-sm"
                             dangerouslySetInnerHTML={{
                               __html: collFamily.description,
                             }}

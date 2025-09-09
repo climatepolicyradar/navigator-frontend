@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 
 import { CCLWLogo } from "@/cclw/components/Header";
 import { Menu as CCLWMenu } from "@/cclw/components/Menu";

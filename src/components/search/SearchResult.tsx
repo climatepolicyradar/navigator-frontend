@@ -12,9 +12,10 @@ interface IProps {
   family: TMatchedFamily;
   active: boolean;
   onClick?: () => void;
+  className?: string;
 }
 
-const SearchResult = ({ family, active, onClick }: IProps) => {
+const SearchResult = ({ family, active, onClick, className }: IProps) => {
   const { themeConfig } = useContext(ThemeContext);
   const { family_documents, total_passage_hits, family_slug } = family;
 
@@ -29,25 +30,21 @@ const SearchResult = ({ family, active, onClick }: IProps) => {
   );
 
   return (
-    <FamilyListItem family={family} showSummary={isSearchFamilySummaryEnabled(themeConfig)} titleClasses={titleClasses}>
+    <FamilyListItem family={family} showSummary={isSearchFamilySummaryEnabled(themeConfig)} titleClasses={titleClasses} className={className}>
       {hasFamilyDocuments && (
-        <>
-          <div>
-            <div className="inline-block">
-              <button
-                type="button"
-                onClick={onClick}
-                className="mt-1 text-text-brand"
-                aria-label={matchesText}
-                data-analytics="search-result-matches-button"
-                data-slug={family_slug}
-              >
-                <TextSearch size={16} className="inline mr-1.5" />
-                <span className="text-sm font-semibold underline">{matchesText}</span>
-              </button>
-            </div>
-          </div>
-        </>
+        <div className="flex">
+          <button
+            type="button"
+            onClick={onClick}
+            className="text-text-brand flex items-center"
+            aria-label={matchesText}
+            data-analytics="search-result-matches-button"
+            data-slug={family_slug}
+          >
+            <TextSearch size={16} className="inline mr-1.5" />
+            <span className="text-sm font-semibold underline">{matchesText}</span>
+          </button>
+        </div>
       )}
     </FamilyListItem>
   );
