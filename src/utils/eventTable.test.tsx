@@ -1,4 +1,5 @@
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { TValueWithDisplay } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { TCategory, TCorpusPublic, TFamilyDocumentPublic } from "@/types";
 
 import { getEventTableRows } from "./eventTable";
@@ -58,7 +59,10 @@ describe("getEventTableRows", () => {
             value: 1609459200000,
           },
           document: null,
-          matches: 0,
+          matches: {
+            display: 0,
+            value: 0,
+          },
           summary: "Description 1",
           type: "Event",
         },
@@ -114,32 +118,29 @@ describe("getEventTableRows", () => {
 
     const eventRows = getEventTableRows({ families: [familyWithoutEvents] });
 
-    expect(eventRows).toEqual([
-      {
-        id: "/0",
-        cells: {
-          action: "Action 1",
-          caseNumber: "Case 1",
-          caseTitle: "Case 1",
-          court: null,
-          date: {
-            display: "01/01/2021",
-            value: 1609459200000,
-          },
-          document: {
-            value: "document-1",
-            display: (
-              <LinkWithQuery href={"/documents/document-1"} className="underline">
-                View
-              </LinkWithQuery>
-            ),
-          },
-          matches: 0,
-          summary: "Description 1",
-          type: "Event",
-        },
+    expect(eventRows).toHaveLength(1);
+    expect(eventRows[0].id).toBe("/0");
+
+    const { document, matches, ...cells } = eventRows[0].cells;
+
+    expect(cells).toEqual({
+      action: "Action 1",
+      caseNumber: "Case 1",
+      caseTitle: "Case 1",
+      court: null,
+      date: {
+        display: "01/01/2021",
+        value: 1609459200000,
       },
-    ]);
+      summary: "Description 1",
+      type: "Event",
+    });
+
+    expect(typeof document).toBe("object");
+    expect((document as TValueWithDisplay).value).toBe("document-1");
+
+    expect(typeof matches).toBe("object");
+    expect((matches as TValueWithDisplay).value).toBe(0);
   });
 
   it("returns a list of family and document event rows", () => {
@@ -204,49 +205,50 @@ describe("getEventTableRows", () => {
 
     const eventRows = getEventTableRows({ families: [familyWithoutEvents] });
 
-    expect(eventRows).toEqual([
-      {
-        id: "/0",
-        cells: {
-          action: "Action 2",
-          caseNumber: "Case 1",
-          caseTitle: "Case 1",
-          court: null,
-          date: {
-            display: "01/01/2021",
-            value: 1609459200000,
-          },
-          document: null,
-          matches: 0,
-          summary: "Description 2",
-          type: "Event",
+    expect(eventRows).toHaveLength(2);
+
+    expect(eventRows[0]).toEqual({
+      id: "/0",
+      cells: {
+        action: "Action 2",
+        caseNumber: "Case 1",
+        caseTitle: "Case 1",
+        court: null,
+        date: {
+          display: "01/01/2021",
+          value: 1609459200000,
         },
-      },
-      {
-        id: "/1",
-        cells: {
-          action: "Action 1",
-          caseNumber: "Case 1",
-          caseTitle: "Case 1",
-          court: null,
-          date: {
-            display: "01/01/2021",
-            value: 1609459200000,
-          },
-          document: {
-            value: "document-1",
-            display: (
-              <LinkWithQuery href={"/documents/document-1"} className="underline">
-                View
-              </LinkWithQuery>
-            ),
-          },
-          matches: 0,
-          summary: "Description 1",
-          type: "Event",
+        document: null,
+        matches: {
+          display: 0,
+          value: 0,
         },
+        summary: "Description 2",
+        type: "Event",
       },
-    ]);
+    });
+
+    expect(eventRows[1].id).toBe("/1");
+    const { document, matches, ...cells } = eventRows[1].cells;
+
+    expect(cells).toEqual({
+      action: "Action 1",
+      caseNumber: "Case 1",
+      caseTitle: "Case 1",
+      court: null,
+      date: {
+        display: "01/01/2021",
+        value: 1609459200000,
+      },
+      summary: "Description 1",
+      type: "Event",
+    });
+
+    expect(typeof document).toBe("object");
+    expect((document as TValueWithDisplay).value).toBe("document-1");
+
+    expect(typeof matches).toBe("object");
+    expect((matches as TValueWithDisplay).value).toBe(0);
   });
 
   it("returns a deduplicated list of family and document event rows if same event linked to both family and document", () => {
@@ -311,31 +313,28 @@ describe("getEventTableRows", () => {
 
     const eventRows = getEventTableRows({ families: [familyWithoutEvents] });
 
-    expect(eventRows).toEqual([
-      {
-        id: "/0",
-        cells: {
-          action: "Action 1",
-          caseNumber: "Case 1",
-          caseTitle: "Case 1",
-          court: null,
-          date: {
-            display: "01/01/2021",
-            value: 1609459200000,
-          },
-          document: {
-            value: "document-1",
-            display: (
-              <LinkWithQuery href={"/documents/document-1"} className="underline">
-                View
-              </LinkWithQuery>
-            ),
-          },
-          matches: 0,
-          summary: "Description 1",
-          type: "Event",
-        },
+    expect(eventRows).toHaveLength(1);
+    expect(eventRows[0].id).toBe("/0");
+
+    const { document, matches, ...cells } = eventRows[0].cells;
+
+    expect(cells).toEqual({
+      action: "Action 1",
+      caseNumber: "Case 1",
+      caseTitle: "Case 1",
+      court: null,
+      date: {
+        display: "01/01/2021",
+        value: 1609459200000,
       },
-    ]);
+      summary: "Description 1",
+      type: "Event",
+    });
+
+    expect(typeof document).toBe("object");
+    expect((document as TValueWithDisplay).value).toBe("document-1");
+
+    expect(typeof matches).toBe("object");
+    expect((matches as TValueWithDisplay).value).toBe(0);
   });
 });

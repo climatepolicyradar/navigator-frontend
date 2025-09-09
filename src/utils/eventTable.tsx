@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { IInteractiveTableColumn, IInteractiveTableRow } from "@/components/organisms/interactiveTable/InteractiveTable";
@@ -114,6 +116,17 @@ export const getEventTableRows = ({
         }
       }
 
+      let matchesDisplay: ReactNode = matches;
+      if (matchesStatus === "loading") {
+        matchesDisplay = <Icon name="loading" />;
+      } else if (document) {
+        matchesDisplay = (
+          <LinkWithQuery href={`/documents/${document.slug}`} className="text-text-brand">
+            {matches}
+          </LinkWithQuery>
+        );
+      }
+
       rows.push({
         id: [family.import_id, eventIndex].join("/"),
         cells: {
@@ -136,14 +149,7 @@ export const getEventTableRows = ({
               }
             : null,
           matches: {
-            display:
-              matchesStatus === "loading" ? (
-                <Icon name="loading" />
-              ) : (
-                <LinkWithQuery href={`/documents/${document.slug}`} className="text-text-brand">
-                  {matches}
-                </LinkWithQuery>
-              ),
+            display: matchesDisplay,
             value: matches,
           },
           summary: event.metadata.description?.[0] || null,
