@@ -1,6 +1,7 @@
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { Icon } from "@/components/atoms/icon/Icon";
 import { IInteractiveTableColumn, IInteractiveTableRow } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { TFamilyConcept, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic } from "@/types";
+import { TFamilyConcept, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
 
 import { formatDateShort } from "./timedate";
 
@@ -89,9 +90,13 @@ const getFamilyEvents = (family: TFamilyPublic): TEventWithDocument[] =>
 export const getEventTableRows = ({
   families,
   documentEventsOnly = false,
+  matchesFamily,
+  matchesStatus = "success",
 }: {
   families: TFamilyPublic[];
   documentEventsOnly?: boolean;
+  matchesFamily?: TMatchedFamily;
+  matchesStatus?: TLoadingStatus;
 }): TEventTableRow[] => {
   const rows: TEventTableRow[] = [];
 
@@ -100,6 +105,14 @@ export const getEventTableRows = ({
       if (documentEventsOnly && !document) return;
 
       const date = new Date(event.date);
+
+      let matches = 0;
+      if (matchesFamily && document) {
+        const matchesDocument = matchesFamily.family_documents.find((doc) => doc.document_slug === document.slug);
+        if (matchesDocument) {
+          matches = matchesDocument.document_passage_matches.length;
+        }
+      }
 
       rows.push({
         id: [family.import_id, eventIndex].join("/"),
@@ -122,7 +135,13 @@ export const getEventTableRows = ({
                 value: document.slug,
               }
             : null,
-          matches: 0, // TODO
+          matches:
+            matchesStatus === "loading"
+              ? {
+                  display: <Icon name="loading" />,
+                  value: 0,
+                }
+              : matches,
           summary: event.metadata.description?.[0] || null,
           type: event.event_type,
         },
