@@ -18,3 +18,14 @@ export const Default: TStory = {
     latestItems: LATEST_ITEMS_STUB,
   },
 };
+
+export const SmallBoundingBox: TStory = {
+  args: {
+    latestItems: LATEST_ITEMS_STUB,
+  },
+  render: ({ ...props }) => (
+    <div className="w-1/2 h-[400px] flex">
+      <LatestItemsBlock {...props} />
+    </div>
+  ),
+};

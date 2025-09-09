@@ -4,41 +4,39 @@ import { formatDate } from "@/utils/timedate";
 
 export interface IProps {
   latestItems: TLatestItem[];
+  itemLimit?: number;
 }
 
-export const LatestItemsBlock = ({ latestItems: latestItems }: IProps) => {
-  const ITEM_LIMIT = 3;
-  const limitedLastItems = latestItems.slice(0, ITEM_LIMIT);
+const ITEM_LIMIT = 3;
+
+export const LatestItemsBlock = ({ latestItems, itemLimit = ITEM_LIMIT }: IProps) => {
+  const limitedLastItems = latestItems.slice(0, itemLimit);
 
   return (
-    <aside aria-labelledby="latest" className="w-[321px] h-[520px] bg-[#E8EBED] p-4 shadow flex flex-col">
-      <h2 id="latest" className="text-m font-bold text-text-primary mb-4 border-b border-gray-300 pb-4">
+    <aside aria-labelledby="latest" className="bg-surface-heavy p-4 flex flex-col space-y-4 text-text-primary">
+      <h2 id="latest" className="font-bold border-b border-border-semi-transparent pb-4">
         Latest
       </h2>
 
-      <div className="flex-1 overflow-auto">
-        <ol className="list-none space-y-4 min-w-0">
-          {limitedLastItems.map((item) => {
-            const [year, day, month] = formatDate(item.date);
-            return (
-              <li key={item.slug} className="border-b border-gray-300 pb-4 min-w-0">
-                <p className="text-sm text-text-primary opacity-60">
-                  {day} {month} {year}
-                </p>
-                <LinkWithQuery href={item.url} className="block w-full break-words text-m font-bold text-text-primary">
-                  {item.title}
-                </LinkWithQuery>
-              </li>
-            );
-          })}
-        </ol>
-      </div>
+      <ol className="flex-1 overflow-auto list-none space-y-4">
+        {limitedLastItems.map((item) => {
+          const [year, day, month] = formatDate(item.date);
+          return (
+            <li key={item.slug} className="border-b border-border-semi-transparent pb-4">
+              <p className="text-sm text-text-tertiary">
+                {day} {month} {year}
+              </p>
+              <LinkWithQuery href={item.url} className="block font-bold">
+                {item.title}
+              </LinkWithQuery>
+            </li>
+          );
+        })}
+      </ol>
 
-      <div className="pt-4">
-        <LinkWithQuery href="/search" className="block text-m font-semi-bold text-text-primary">
-          View all cases →
-        </LinkWithQuery>
-      </div>
+      <LinkWithQuery href="/search" className="block font-semi-bold">
+        View all cases →
+      </LinkWithQuery>
     </aside>
   );
 };
