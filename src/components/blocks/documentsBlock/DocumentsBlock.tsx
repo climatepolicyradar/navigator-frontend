@@ -1,9 +1,6 @@
-import { LucideScrollText, LucideTable } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Card } from "@/components/atoms/card/Card";
-import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
 import { Section } from "@/components/molecules/section/Section";
 import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
 import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
@@ -45,7 +42,7 @@ export const DocumentsBlock = ({ countries, family, matchesFamily, matchesStatus
         </div>
 
         {/* Cards TODO */}
-        {view === "card" && (
+        {/* {view === "card" && (
           <div className="flex flex-col gap-4">
             {family.documents.map((document) => (
               <LinkWithQuery key={document.slug} href={`/documents/${document.slug}`}>
@@ -53,7 +50,7 @@ export const DocumentsBlock = ({ countries, family, matchesFamily, matchesStatus
               </LinkWithQuery>
             ))}
           </div>
-        )}
+        )} */}
 
         {/* Table */}
         {view === "table" && (
