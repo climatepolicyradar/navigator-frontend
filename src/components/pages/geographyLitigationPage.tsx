@@ -1,5 +1,5 @@
 import sortBy from "lodash/fp/sortBy";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { LinkWithQuery } from "@/components/LinkWithQuery";

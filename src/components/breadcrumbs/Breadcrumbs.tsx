@@ -19,10 +19,10 @@ interface IProps {
   geography?: TBreadcrumbLink;
   parentGeography?: TBreadcrumbLink;
   isSubdivision?: boolean;
-  label: string | React.ReactNode;
+  label?: string | React.ReactNode;
 }
 
-const BreadCrumb = ({ last = false, label, href = null, cy = "", isHome = false }: TBreadcrumbLink & { isHome?: boolean }) => {
+const BreadCrumb = ({ last = false, label = null, href = null, cy = "", isHome = false }: TBreadcrumbLink & { isHome?: boolean }) => {
   // Don't render if label is empty, null, or undefined (unless it's the home icon)
   if (!isHome && (!label || (typeof label === "string" && label.trim() === ""))) {
     return null;
