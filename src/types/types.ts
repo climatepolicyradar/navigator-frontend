@@ -285,7 +285,12 @@ export type TMatchedFamily = TFamily & {
   continuation_token?: string; // represents a token for requesting more passage matches
 };
 
-export type TLatestFamily = {};
+export type TLatestItem = {
+  title: string;
+  date: string;
+  slug: string;
+  url: string;
+};
 
 export type TSearch = {
   hits: number;
