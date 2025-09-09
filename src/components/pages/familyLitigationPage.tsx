@@ -9,6 +9,7 @@ import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
+import { SubNav } from "@/components/nav/SubNav";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { FAMILY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
@@ -118,12 +119,14 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
       attributionUrl={attributionUrl}
     >
       <PageHeader label={categoryName} title={family.title} metadata={pageHeaderMetadata} />
-      <BreadCrumbs
-        geography={isCountry ? breadcrumbGeography : breadcrumbSubGeography}
-        parentGeography={isCountry ? null : breadcrumbGeography}
-        isSubdivision={!isCountry}
-        label={family.title}
-      />
+      <SubNav>
+        <BreadCrumbs
+          geography={isCountry ? breadcrumbGeography : breadcrumbSubGeography}
+          parentGeography={isCountry ? null : breadcrumbGeography}
+          isSubdivision={!isCountry}
+          label={family.title}
+        />
+      </SubNav>
       <Columns>
         <ContentsSideBar items={FAMILY_PAGE_SIDE_BAR_ITEMS} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
         <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-2:col-span-2 cols-3:py-8 cols-3:gap-8 cols-4:col-span-3">

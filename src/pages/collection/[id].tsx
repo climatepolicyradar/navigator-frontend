@@ -11,6 +11,7 @@ import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
+import { SubNav } from "@/components/nav/SubNav";
 import { ContentsSideBar, ISideBarItem } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { IPageHeaderTab, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { withEnvConfig } from "@/context/EnvConfig";
@@ -54,7 +55,9 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
         currentTab={currentTab}
         onTabChange={onTabChange}
       />
-      <BreadCrumbs label={collection.title} />
+      <SubNav>
+        <BreadCrumbs label={collection.title} />
+      </SubNav>
       <Columns>
         {currentTab === "cases" && (
           <>
