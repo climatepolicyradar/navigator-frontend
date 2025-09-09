@@ -39,8 +39,8 @@ export const DocumentsBlock = ({ countries, family, matchesFamily, matchesStatus
         {/* Controls */}
         <div className="pb-6">
           <ToggleGroup value={[view]} onValueChange={onToggleChange}>
-            <Toggle Icon={LucideTable} text="Table" value="table" />
-            <Toggle Icon={LucideScrollText} text="Card" value="card" />
+            <Toggle value="table">Table</Toggle>
+            <Toggle value="cards">Cards</Toggle>
           </ToggleGroup>
         </div>
 

@@ -1,5 +1,4 @@
 import { Meta, StoryObj } from "@storybook/nextjs";
-import { LucideScrollText, LucideTable } from "lucide-react";
 
 import { Toggle } from "./Toggle";
 import { ToggleGroup } from "./ToggleGroup";
@@ -8,7 +7,6 @@ const meta = {
   title: "Molecules/ToggleGroup",
   component: ToggleGroup,
   argTypes: {
-    bordered: { control: "boolean" },
     children: { control: false },
   },
 } satisfies Meta<typeof ToggleGroup>;
@@ -18,14 +16,13 @@ export default meta;
 
 export const DocumentsBlock: TStory = {
   args: {
-    bordered: false,
     children: (
       <>
-        <Toggle Icon={LucideScrollText} text="Card" value="card" />
-        <Toggle Icon={LucideTable} text="Table" value="table" />
+        <Toggle value="table">Table</Toggle>
+        <Toggle value="cards">Cards</Toggle>
       </>
     ),
     className: "",
-    defaultValue: ["card"],
+    defaultValue: ["table"],
   },
 };
