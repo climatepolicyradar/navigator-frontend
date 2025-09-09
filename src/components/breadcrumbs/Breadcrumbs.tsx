@@ -1,8 +1,7 @@
 import React from "react";
-import { IoHomeSharp } from "react-icons/io5";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { isSystemGeo } from "@/utils/isSystemGeo";
+import { Icon } from "@/components/atoms/icon/Icon";
 
 const BREADCRUMB_MAXLENGTH = 50;
 
@@ -36,12 +35,20 @@ const BreadCrumb = ({ last = false, label = null, href = null, cy = "", isHome =
       <li data-cy={`breadcrumb ${cy}`} className={`${last && "text-textDark font-medium"}`}>
         {href ? (
           <LinkWithQuery className="underline hover:text-blue-800 text-textNormal flex items-baseline" href={href}>
-            {isHome && <span className="mr-1 translate-y-0.5">{(IoHomeSharp as any)({ size: 16 })}</span>}
+            {isHome && (
+              <span className="mr-1 translate-y-0.5">
+                <Icon name="house" />
+              </span>
+            )}
             {labelShort}
           </LinkWithQuery>
         ) : (
           <span className="flex items-baseline">
-            {isHome && <span className="mr-1 translate-y-0.5">{(IoHomeSharp as any)({ size: 16 })}</span>}
+            {isHome && (
+              <span className="mr-1 translate-y-0.5">
+                <Icon name="house" />
+              </span>
+            )}
             {labelShort}
           </span>
         )}
