@@ -16,8 +16,8 @@ interface IProps {
 
 export const Hero = ({ handleSearchInput, searchInput, handleSearchChange }: IProps) => {
   return (
-    <Columns containerClasses="p-10">
-      <div className="cols-4:col-span-2 flex flex-col justify-between">
+    <>
+      <div className="flex flex-col justify-between">
         <Image src="/images/ccc/sabin-logo-large.png" alt="Sabin Center for Climate Change logo" width={384} height={36} quality={100} />
         <div className="">
           <Heading level={1} extraClasses="!text-text-primary !text-5xl !font-bold pb-4">
@@ -26,10 +26,7 @@ export const Hero = ({ handleSearchInput, searchInput, handleSearchChange }: IPr
           <LandingSearchForm handleSearchInput={handleSearchInput} input={searchInput} />
         </div>
       </div>
-      <div className="cols-4:col-span-1" />
-      <div className="cols-4:col-span-1">
-        <LatestItemsBlock latestItems={LATEST_ITEMS_STUB} />
-      </div>
-    </Columns>
+      <div className="">{/* <LatestItemsBlock latestItems={LATEST_ITEMS_STUB} /> */}</div>
+    </>
   );
 };

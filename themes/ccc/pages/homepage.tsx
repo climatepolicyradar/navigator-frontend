@@ -29,10 +29,10 @@ const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig, exact
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="homepage">
       <main id="main" className="h-screen flex flex-col">
-        <div className="flex-1">
+        <div className="grow flex p-10">
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} exactMatch={exactMatch} handleSearchChange={handleSearchChange} />
         </div>
-        <FullWidth extraClasses="hidden md:block relative h-[344px]">
+        <FullWidth extraClasses="hidden md:block relative basis-[344px] shrink-0">
           <Image src="/images/ccc/water_ice_reflection.jpg" alt="" fill className="w-full" objectFit="cover" />
         </FullWidth>
       </main>
