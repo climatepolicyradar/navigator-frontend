@@ -13,7 +13,6 @@ import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isLitigationEnabled, isVespaSearchOnGeographiesEnabled } from "@/utils/features";
-import { v1GeoSlugToV2 } from "@/utils/geography";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags, themeConfig, ...props }: IProps) => {
@@ -33,8 +32,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const litigationIsEnabled = isLitigationEnabled(featureFlags, themeConfig);
 
   const id = context.params.id;
-  // TODO: remove the workaround for the US
-  const slug = v1GeoSlugToV2(id instanceof Array ? id[0] : id);
 
   if (systemGeoNames.includes(id as string)) {
     return {
@@ -65,12 +62,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let geographyV2: GeographyV2;
   let parentGeographyV2: GeographyV2 = null;
   try {
-    const geographyV2Data = await apiClient.get<ApiItemResponse<GeographyV2>>(`/geographies/${slug}`);
+    // TODO: remove the workaround for the US
+    const v1Slug = Array.isArray(id) ? id[0] : id;
+    const v2Slug = v1Slug === "united-states-of-america" ? "united-states" : v1Slug;
+    const geographyV2Data = await apiClient.get<ApiItemResponse<GeographyV2>>(`/geographies/${v2Slug}`);
     geographyV2 = geographyV2Data.data.data;
+    geographyV2.slug = v1Slug;
 
     if (geographyV2.subconcept_of[0]) {
       const parentGeographyV2Data = await apiClient.get<ApiItemResponse<GeographyV2>>(`/geographies/${geographyV2.subconcept_of[0].slug}`);
       parentGeographyV2 = parentGeographyV2Data.data.data;
+      // TODO: remove the workaround for the US
+      const parentSlug = parentGeographyV2.slug === "united-states" ? "united-states-of-america" : parentGeographyV2.slug;
+      parentGeographyV2.slug = parentSlug;
     }
   } catch {}
 
@@ -83,7 +87,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (vespaSearchOnGeographiesEnabled || litigationIsEnabled) {
     const searchQuery = buildSearchQuery(
       {
-        l: slug,
+        l: geographyV2.slug,
       },
       themeConfig
     );
