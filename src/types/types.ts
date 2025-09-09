@@ -135,7 +135,8 @@ export type TGeographySummary = {
   top_families: Record<TGeographySummaryCategory, TFamily[]>;
 };
 
-export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC" | "MCF" | "Reports";
+// TODO resolve different litigation cases depending on API endpoint used
+export type TCategory = "Legislative" | "Executive" | "Litigation" | "LITIGATION" | "Policy" | "Law" | "UNFCCC" | "MCF" | "Reports";
 export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Litigation" | "Reports";
 export type TDisplayCategory = "All" | TCategory;
 export type TEventCategory = TCategory | "Target";
