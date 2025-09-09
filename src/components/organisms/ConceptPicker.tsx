@@ -2,7 +2,7 @@ import { TextSearch } from "lucide-react";
 import { NextRouter, useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
 
-import { Accordian } from "@/components/accordian/Accordian";
+import { Accordion } from "@/components/accordion/Accordion";
 import { Badge } from "@/components/atoms/label/Badge";
 import { Select } from "@/components/atoms/select/Select";
 import { InputCheck } from "@/components/forms/Checkbox";
@@ -162,7 +162,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
                 filteredConcepts.some((concept) => isSelected(router.query[QUERY_PARAMS.concept_name], concept.preferred_label)) ||
                 rootConceptIndex === 0;
               return (
-                <Accordian
+                <Accordion
                   title={firstCase(rootConcept.preferred_label)}
                   key={rootConcept.wikibase_id}
                   fixedHeight="100%"
@@ -185,7 +185,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
                         />
                       ))}
                   </div>
-                </Accordian>
+                </Accordion>
               );
             })}
 

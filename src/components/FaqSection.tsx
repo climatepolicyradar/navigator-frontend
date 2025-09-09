@@ -1,6 +1,6 @@
 import { Fragment, useEffect } from "react";
 
-import { Accordian } from "@/components/accordian/Accordian";
+import { Accordion } from "@/components/accordion/Accordion";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { Heading } from "@/components/typography/Heading";
 import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
@@ -43,9 +43,9 @@ export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionI
       <div className="text-content mb-14">
         {faqs.map((faq, index) => (
           <Fragment key={faq.title}>
-            <Accordian title={faq.title} headContent={faq.headContent ?? null} open={index === 0} fixedHeight={accordionMaxHeight}>
+            <Accordion title={faq.title} headContent={faq.headContent ?? null} open={index === 0} fixedHeight={accordionMaxHeight}>
               {faq.content}
-            </Accordian>
+            </Accordion>
             <hr />
           </Fragment>
         ))}
