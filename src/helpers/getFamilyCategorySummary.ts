@@ -31,6 +31,7 @@ export const categoryMap: Record<TDocumentCategory, { summaryCategory: TGeograph
 };
 
 export type TCategorySummary = {
+  id: string;
   count: number;
   families: TFamily[];
   title: string;
@@ -43,6 +44,7 @@ export const getFamilyCategorySummary = (summary: TGeographySummary, category: T
   // Specific category
   if (summaryCategory) {
     return {
+      id: summaryCategory,
       count: summary.family_counts[summaryCategory],
       families: summary.top_families[summaryCategory],
       title: category,
@@ -52,6 +54,7 @@ export const getFamilyCategorySummary = (summary: TGeographySummary, category: T
 
   // All
   return {
+    id: "all",
     count: Object.values(summary.family_counts).reduce((total, count) => total + count, 0),
     families: orderBy(Object.values(summary.top_families).flat(), ["family_date"], ["desc"]),
     title: category,

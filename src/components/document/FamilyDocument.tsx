@@ -16,7 +16,7 @@ interface IProps {
   concepts?: TConcept[];
 }
 
-const loadingIndicator = (
+const LoadingIndicator = (
   <span className="flex gap-2 items-center">
     <Icon name="loading" />
     Searching...
@@ -35,13 +35,13 @@ export const FamilyDocument = ({ document, matches, status, familyMatches, conce
   const canViewSource = !canPreview && !!document.source_url;
 
   const renderDocumentInfo = (): string | JSX.Element => {
-    if (status === "loading") return loadingIndicator;
+    if (status === "loading") return LoadingIndicator;
     if (canViewSource) return "Document preview is not currently available";
     return "We do not have this document in our database. Contact us if you can help us find it";
   };
 
   const renderMatchesOverrideText = (): string | JSX.Element => {
-    if (status === "loading") return loadingIndicator;
+    if (status === "loading") return LoadingIndicator;
   };
 
   const getPreviewBehaviour = () => {

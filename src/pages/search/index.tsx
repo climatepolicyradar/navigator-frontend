@@ -73,6 +73,12 @@ const showResultInformation = (query: ParsedUrlQuery) => {
   return showKnowledgeGraphInformation(query) || showCorporateDisclosuresInformation(query);
 };
 
+// We want to show information when using specific litigation filters
+const showLitigationInformation = (query: ParsedUrlQuery) => {
+  if (Array.isArray(query[QUERY_PARAMS.concept_preferred_label]) && query[QUERY_PARAMS.concept_preferred_label].length >= 2) return true;
+  return false;
+};
+
 // We want to show the KG information under certain rules
 const showKnowledgeGraphInformation = (query: ParsedUrlQuery) => {
   let show = false;
@@ -111,6 +117,11 @@ const showSearchOnboarding = (query: ParsedUrlQuery) => {
 const getSelectedConcepts = (selectedConcepts: string | string[], allConcepts: TConcept[] = []): TConcept[] => {
   const selectedConceptsAsArray = Array.isArray(selectedConcepts) ? selectedConcepts : [selectedConcepts];
   return allConcepts?.filter((concept) => selectedConceptsAsArray.includes(concept.preferred_label.toLowerCase())) || [];
+};
+
+const getSelectedFamilyConcepts = (selectedConcepts: string | string[], allConcepts: TConcept[] = []): TConcept[] => {
+  const selectedConceptsAsArray = Array.isArray(selectedConcepts) ? selectedConcepts : [selectedConcepts];
+  return allConcepts?.filter((concept) => selectedConceptsAsArray.includes(concept.wikibase_id)) || [];
 };
 
 const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
@@ -617,6 +628,16 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       </div>
                       <section data-cy="search-results">
                         <h2 className="sr-only">Search results</h2>
+                        {showLitigationInformation(router.query) && (
+                          <Warning variant="info">
+                            <p>
+                              You are viewing a list of litigation cases filtered by{" "}
+                              {getSelectedFamilyConcepts(router.query[QUERY_PARAMS.concept_preferred_label], familyConceptsData)
+                                .map((c) => c.preferred_label)
+                                .join(" AND ")}
+                            </p>
+                          </Warning>
+                        )}
                         {showCorporateDisclosuresInformation(router.query) && (
                           <Warning variant="info">
                             <p className="font-semibold">New data</p>

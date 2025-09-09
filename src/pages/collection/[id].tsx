@@ -1,5 +1,5 @@
 import { GetServerSideProps, InferGetStaticPropsType } from "next";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { Columns } from "@/components/atoms/columns/Columns";
@@ -14,6 +14,7 @@ import { ContentsSideBar, ISideBarItem } from "@/components/organisms/contentsSi
 import { IPageHeaderTab, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { TCollectionPublicWithFamilies, TTheme, TThemeConfig } from "@/types";
+import { getCaseNumbers, getCourts } from "@/utils/eventTable";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isLitigationEnabled } from "@/utils/features";
 import { getCollectionMetadata } from "@/utils/getCollectionMetadata";
@@ -39,6 +40,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
   const sideBarItems: ISideBarItem[] = families.map((family) => ({
     id: `section-${family.slug}`,
     display: family.title,
+    context: [getCaseNumbers(family), getCourts(family)].filter((part) => part).join(" / "),
   }));
 
   return (
@@ -77,9 +79,9 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
                 <div className="text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
               </TextBlock>
               <MetadataBlock metadata={getCollectionMetadata(collection)} id="section-collection-metadata" />
-              <Section id="section-debug" title="Debug">
+              {/* <Section id="section-debug" title="Debug">
                 <Debug data={collection} title="Collection" />
-              </Section>
+              </Section> */}
             </main>
           </>
         )}

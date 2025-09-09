@@ -79,14 +79,9 @@ export const Footer = () => {
                 </ExternalLink>
               </li>
               <li>
-                <ExternalLink url="https://form.jotform.com/252302964707357" className={link}>
+                <LinkWithQuery href="/contact" className={`${link}`}>
                   Contact us
-                </ExternalLink>
-              </li>
-              <li>
-                <ExternalLink url="https://form.jotform.com/252292443502350" className={link}>
-                  Give us feedback
-                </ExternalLink>
+                </LinkWithQuery>
               </li>
             </ul>
           </div>

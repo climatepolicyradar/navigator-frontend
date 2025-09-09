@@ -1,6 +1,9 @@
+import { ReactNode } from "react";
+
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { Icon } from "@/components/atoms/icon/Icon";
 import { IInteractiveTableColumn, IInteractiveTableRow } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { TFamilyConcept, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic } from "@/types";
+import { TFamilyConcept, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
 
 import { formatDateShort } from "./timedate";
 
@@ -71,20 +74,31 @@ export const getCaseNumbers = (family: TFamilyPublic): string | null => family.m
 export const getCourts = (family: TFamilyPublic): string | null =>
   getMostSpecificCourts(family.concepts)
     .map((concept) => concept.preferred_label)
-    .join(" / ") || null;
+    .join(", ") || null;
 
+// Events can be duplicated between the family and document event lists. Use object keys to overwrite the former with the latter.
 const getFamilyEvents = (family: TFamilyPublic): TEventWithDocument[] =>
-  [
-    ...family.events.map((event) => ({ event })),
-    ...family.documents.map((document) => document.events.map((event) => ({ event, document }))).flat(1),
-  ].flat(1);
+  Object.values(
+    Object.fromEntries(
+      (
+        [
+          ...family.events.map((event) => ({ event })),
+          ...family.documents.flatMap((document) => document.events.map((event) => ({ event, document }))),
+        ] as TEventWithDocument[]
+      ).map((item) => [item.event.import_id, item] as const)
+    )
+  );
 
 export const getEventTableRows = ({
   families,
   documentEventsOnly = false,
+  matchesFamily,
+  matchesStatus = "success",
 }: {
   families: TFamilyPublic[];
   documentEventsOnly?: boolean;
+  matchesFamily?: TMatchedFamily;
+  matchesStatus?: TLoadingStatus;
 }): TEventTableRow[] => {
   const rows: TEventTableRow[] = [];
 
@@ -93,6 +107,25 @@ export const getEventTableRows = ({
       if (documentEventsOnly && !document) return;
 
       const date = new Date(event.date);
+
+      let matches = 0;
+      if (matchesFamily && document) {
+        const matchesDocument = matchesFamily.family_documents.find((doc) => doc.document_slug === document.slug);
+        if (matchesDocument) {
+          matches = matchesDocument.document_passage_matches.length;
+        }
+      }
+
+      let matchesDisplay: ReactNode = matches;
+      if (matchesStatus === "loading") {
+        matchesDisplay = <Icon name="loading" />;
+      } else if (document) {
+        matchesDisplay = (
+          <LinkWithQuery href={`/documents/${document.slug}`} className="text-text-brand">
+            {matches}
+          </LinkWithQuery>
+        );
+      }
 
       rows.push({
         id: [family.import_id, eventIndex].join("/"),
@@ -108,14 +141,17 @@ export const getEventTableRows = ({
           document: document
             ? {
                 display: (
-                  <LinkWithQuery href={`/documents/${document.slug}`} className="underline">
+                  <LinkWithQuery href={`/documents/${document.slug}`} className="text-text-brand underline">
                     View
                   </LinkWithQuery>
                 ),
                 value: document.slug,
               }
             : null,
-          matches: 0, // TODO
+          matches: {
+            display: matchesDisplay,
+            value: matches,
+          },
           summary: event.metadata.description?.[0] || null,
           type: event.event_type,
         },
