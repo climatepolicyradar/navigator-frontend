@@ -108,10 +108,10 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     >
       <PageHeader label={categoryName} title={family.title} metadata={pageHeaderMetadata} />
       <BreadCrumbs
-        geography={breadcrumbSubGeography}
-        parentGeography={breadcrumbGeography}
+        geography={breadcrumbGeography}
+        parentGeography={breadcrumbSubGeography}
         isSubdivision={!isCountry}
-        category={breadcrumbCategory}
+        category={isCountry ? breadcrumbCategory : null}
         label={family.title}
       />
       <Columns>

@@ -57,7 +57,7 @@ const BreadCrumb = ({ last = false, label, href = null, cy = "", isHome = false 
  */
 export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdivision = false, category = null, family = null, label }: IProps) => {
   // Handle subdivision logic internally
-  const isGeographyPage = !category && !family && geography;
+  const isGeographyPage = !category && !family && geography && !label;
   const isCollectionPage = !category && !family && !geography;
 
   if (isGeographyPage) {
