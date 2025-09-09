@@ -318,7 +318,6 @@ export const GeographyOriginalPage = ({
             geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
             parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
             isSubdivision={!isCountry}
-            label={geographyV2.name}
           />
         </SubNav>
         <SiteWidth>

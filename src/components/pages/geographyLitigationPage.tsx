@@ -119,7 +119,6 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
           geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
           parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
           isSubdivision={!isCountry}
-          label={geographyV2.name}
         />
         <Columns>
           <ContentsSideBar items={sidebarItems} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
