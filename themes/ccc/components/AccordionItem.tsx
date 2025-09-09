@@ -10,7 +10,7 @@ interface IProps {
   headContent?: JSX.Element;
 }
 
-export const AccordianItem = ({ id, title, children, startOpen = false, className, headContent }: IProps) => {
+export const AccordionItem = ({ id, title, children, startOpen = false, className, headContent }: IProps) => {
   const { asPath } = useRouter();
   const [open, setOpen] = useState(startOpen);
 
@@ -28,7 +28,7 @@ export const AccordianItem = ({ id, title, children, startOpen = false, classNam
 
   return (
     <div className="mb-5" id={id}>
-      <a href="#" className={`accordian-item ${className ?? ""}`} onClick={(e) => handleClick(e)}>
+      <a href="#" className={`accordion-item ${className ?? ""}`} onClick={(e) => handleClick(e)}>
         <span>{title}</span>
         {headContent && <span className="ml-2 mb-1">{headContent}</span>}
         <span className={`arrow border-cpr-dark ml-6 ${open ? "up" : "down"}`} />

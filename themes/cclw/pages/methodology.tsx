@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 
-import { AccordianItem } from "@/cclw/components/AccordianItem";
+import { AccordionItem } from "@/cclw/components/AccordionItem";
 import { METHODOLOGY } from "@/cclw/constants/methodologyItems";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -54,7 +54,7 @@ const Methodology = () => {
 
               {METHODOLOGY.map((item, i) => (
                 <Fragment key={item.title}>
-                  <AccordianItem title={item.title}>{item.content}</AccordianItem>
+                  <AccordionItem title={item.title}>{item.content}</AccordionItem>
                   <hr />
                 </Fragment>
               ))}
