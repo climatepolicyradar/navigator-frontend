@@ -142,7 +142,7 @@ export const GeographyOriginalPage = ({ geographyV2, targets, theme, themeConfig
     const selectedThemeCategory = vespaSearchTabbedNavItems.find((category) => category.title === value);
     const categoryFilter = selectedThemeCategory.slug;
 
-    const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: categoryFilter }, themeConfig);
+    const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: categoryFilter, page_size: "3" }, themeConfig);
 
     const newVespaSearchResults = await vespaSearch(searchQuery);
     setCurrentVespaSearchResults(newVespaSearchResults);
