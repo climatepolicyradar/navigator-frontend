@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
 import { FilterOptions } from "@/components/filters/FilterOptions";
+import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { TThemeConfig, TThemeConfigFilter } from "@/types";
 
 describe("FilterOptions", () => {
@@ -16,12 +17,8 @@ describe("FilterOptions", () => {
     };
 
     const testThemeConfig: TThemeConfig = {
+      ...DEFAULT_THEME_CONFIG,
       filters: [testFilter],
-      labelVariations: [],
-      links: [],
-      metadata: [],
-      documentCategories: [],
-      defaultDocumentCategory: "All",
       features: {
         familyConceptsSearch: false,
         knowledgeGraph: false,
