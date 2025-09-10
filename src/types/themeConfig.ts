@@ -1,5 +1,17 @@
 import { TConfigFeatures } from "./features";
 
+/* Blocks */
+
+export type TFamilyPageBlock = "debug" | "documents" | "metadata" | "summary";
+export type TGeographyPageBlock = "debug" | "legislative-process" | "recents" | "statistics" | "subdivisions" | "targets";
+
+type TThemePageBlocks = {
+  family: TFamilyPageBlock[];
+  geography: TGeographyPageBlock[];
+};
+
+/* Everything else */
+
 export type TDocumentCategory =
   | "All"
   | "UNFCCC Submissions"
@@ -68,14 +80,6 @@ type TThemeMetadata = {
   key: string;
   title: string;
   description: string;
-};
-
-export type TThemePageBlockFamily = "debug" | "documents" | "metadata" | "summary";
-export type TThemePageBlockGeography = "debug" | "legislative-process" | "recents" | "statistics" | "subdivisions" | "targets";
-
-type TThemePageBlocks = {
-  family: TThemePageBlockFamily[];
-  geography: TThemePageBlockGeography[];
 };
 
 export type TThemeConfig = {

@@ -14,7 +14,7 @@ import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { GeographiesContext } from "@/context/GeographiesContext";
-import { TSearch, TThemePageBlockGeography } from "@/types";
+import { TSearch, TGeographyPageBlock } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
@@ -57,7 +57,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
   /* Blocks */
 
   const blocksToRender = themeConfig.pageBlocks.geography;
-  const blockDefinitions: TBlockDefinitions<TThemePageBlockGeography> = {
+  const blockDefinitions: TBlockDefinitions<TGeographyPageBlock> = {
     debug: {
       render: () => (
         <Section id="section-debug" title="Debug">

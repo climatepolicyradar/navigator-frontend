@@ -55,27 +55,27 @@ const FAMILY_ITEMS: ISideBarItem[] = [
   {
     id: "section-1",
     display: "Juliana v. United States",
-    context: "Federal Courts / 24-645",
+    context: ["Federal Courts", "24-645"],
   },
   {
     id: "section-2",
     display: "Juliana v. United States",
-    context: "Federal Courts / DB-485790",
+    context: ["Federal Courts", "DB-485790"],
   },
   {
     id: "section-3",
     display: "Juliana v. United States",
-    context: "Federal Courts / 56580-20",
+    context: ["Federal Courts", "56580-20"],
   },
   {
     id: "section-4",
     display: "In re Juliana",
-    context: "Federal Courts / DB-485790",
+    context: ["Federal Courts", "DB-485790"],
   },
   {
     id: "section-5",
     display: "United States v. U.S. District Court for the District of Oregon",
-    context: "Federal Courts / DB-485790",
+    context: ["Federal Courts", "DB-485790"],
   },
 ];
 

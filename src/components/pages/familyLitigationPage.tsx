@@ -16,7 +16,7 @@ import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
 import useSearch from "@/hooks/useSearch";
-import { TMatchedFamily, TThemePageBlockFamily } from "@/types";
+import { TMatchedFamily, TFamilyPageBlock } from "@/types";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
 import { getLitigationJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
@@ -97,7 +97,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
   /* Blocks */
 
   const blocksToRender = themeConfig.pageBlocks.family;
-  const blockDefinitions: TBlockDefinitions<TThemePageBlockFamily> = {
+  const blockDefinitions: TBlockDefinitions<TFamilyPageBlock> = {
     debug: {
       render: () => (
         <Section id="section-debug" title="Debug">
