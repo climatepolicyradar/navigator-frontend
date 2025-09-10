@@ -14,11 +14,6 @@
     "test": "vitest",
     "test-list": "vitest list",
     "test-e2e": "npx playwright test",
-    "test-e2e-ui": "npx playwright test --ui",
-    "test-e2e-staging": "PLAYWRIGHT_ENV=staging npx playwright test",
-    "test-e2e-staging-ui": "PLAYWRIGHT_ENV=staging npx playwright test --ui",
-    "test-e2e-prod": "PLAYWRIGHT_ENV=production npx playwright test",
-    "test-e2e-prod-ui": "PLAYWRIGHT_ENV=production npx playwright test --ui",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
