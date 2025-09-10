@@ -62,13 +62,7 @@ const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: IP
     <>
       <ol className="divide-y flex flex-col gap-6" data-cy="search-result">
         {families?.map((family, index: number) => (
-          <SearchResult
-            key={index}
-            family={family}
-            onClick={() => onClick(index)}
-            active={activeFamilyIndex === index}
-            className={`pb-8 border-border-light`}
-          />
+          <SearchResult key={index} family={family} onClick={() => onClick(index)} active={activeFamilyIndex === index} />
         ))}
       </ol>
     </>
