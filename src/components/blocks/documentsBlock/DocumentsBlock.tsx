@@ -1,3 +1,4 @@
+import orderBy from "lodash/orderBy";
 import { useMemo, useState } from "react";
 
 import { Card } from "@/components/atoms/card/Card";
@@ -7,19 +8,20 @@ import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
 import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { getCategoryName } from "@/helpers/getCategoryName";
-import { TFamilyPublic, TGeography, TLoadingStatus, TMatchedFamily } from "@/types";
+import { TFamilyDocumentPublic, TFamilyPublic, TGeography, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId } from "@/utils/eventTable";
 import { formatDate } from "@/utils/timedate";
 
+const getOldestEventDate = (document: TFamilyDocumentPublic) => document.events.map((event) => event.date).sort()[0];
+
 interface IProps {
-  countries: TGeography[];
   family: TFamilyPublic;
   matchesFamily?: TMatchedFamily; // The relevant search result family
   matchesStatus?: TLoadingStatus; // The status of the search
   showMatches?: boolean; // Whether to show matches from the search result
 }
 
-export const DocumentsBlock = ({ countries, family, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
+export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
   const [view, setView] = useState("table");
 
   const isUSA = family.geographies.includes("USA");
@@ -33,13 +35,10 @@ export const DocumentsBlock = ({ countries, family, matchesFamily, matchesStatus
 
   const cards: IEntityCardProps[] = useMemo(
     () =>
-      family.documents.map((document) => {
+      orderBy(family.documents, [getOldestEventDate], ["desc"]).map((document) => {
         return {
           title: document.title,
-          metadata: [
-            category,
-            formatDate(document.events.map((event) => event.date).sort()[0])[0], // Date of the oldest document event
-          ],
+          metadata: [category, formatDate(getOldestEventDate(document))[0]],
           href: `/documents/${document.slug}`,
         };
       }),
