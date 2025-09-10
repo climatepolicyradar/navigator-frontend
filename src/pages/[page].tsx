@@ -53,7 +53,7 @@ export default function Page({ page }: IProps) {
   }, []);
 
   // TODO: fix this properly
-  // Next is throwing a NEXT_REDIRECT error under the hood when attemping to navigate to a missing page at root, e.g. /missing-page
+  // Next is throwing a NEXT_REDIRECT error under the hood when attempting to navigate to a missing page at root, e.g. /missing-page
   if (!page || page.notFound) {
     console.warn("Page not found");
     return window.location.replace("/not-found");

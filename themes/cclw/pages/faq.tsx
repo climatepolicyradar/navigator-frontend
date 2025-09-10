@@ -1,6 +1,6 @@
 import { Fragment, useContext } from "react";
 
-import { AccordianItem } from "@/cclw/components/AccordianItem";
+import { AccordionItem } from "@/cclw/components/AccordionItem";
 import { FAQS } from "@/cclw/constants/faqs";
 import FaqSection from "@/components/FaqSection";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
@@ -55,9 +55,9 @@ const FAQ: React.FC = () => {
               <Heading level={2}>FAQs</Heading>
               {FAQS.map((faq, i) => (
                 <Fragment key={faq.title}>
-                  <AccordianItem id={faq.id} title={faq.title} startOpen={i === 0}>
+                  <AccordionItem id={faq.id} title={faq.title} startOpen={i === 0}>
                     {faq.content}
-                  </AccordianItem>
+                  </AccordionItem>
                   <hr />
                 </Fragment>
               ))}

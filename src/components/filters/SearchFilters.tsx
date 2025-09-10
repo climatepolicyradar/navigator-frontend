@@ -4,8 +4,8 @@ import { ChevronRight } from "lucide-react";
 import { useEffect, useState, useContext } from "react";
 
 import Loader from "@/components/Loader";
-import { Accordian } from "@/components/accordian/Accordian";
-import { Heading } from "@/components/accordian/Heading";
+import { Accordion } from "@/components/accordion/Accordion";
+import { Heading } from "@/components/accordion/Heading";
 import { Badge } from "@/components/atoms/label/Badge";
 import { AppliedFilters } from "@/components/filters/AppliedFilters";
 import { DateRange } from "@/components/filters/DateRange";
@@ -98,7 +98,7 @@ const SearchFilters = ({
 
       <AppliedFilters filterChange={handleFilterChange} concepts={conceptsData} familyConcepts={familyConceptsData} />
       {themeConfigStatus === "success" && themeConfig.categories && (
-        <Accordian title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
+        <Accordion title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
           <InputListContainer>
             {themeConfig.categories?.options?.map((option) => (
               <InputRadio
@@ -112,7 +112,7 @@ const SearchFilters = ({
               />
             ))}
           </InputListContainer>
-        </Accordian>
+        </Accordion>
       )}
 
       {conceptsData && (
@@ -195,7 +195,7 @@ const SearchFilters = ({
           // If the filter is not in the selected category, don't display it
           if (!canDisplayFilter(filter, query, themeConfig)) return;
           return (
-            <Accordian
+            <Accordion
               title={filter.label}
               data-cy={filter.label}
               key={filter.label}
@@ -226,7 +226,7 @@ const SearchFilters = ({
                   themeConfig={themeConfig}
                 />
               </InputListContainer>
-            </Accordian>
+            </Accordion>
           );
         })}
 
@@ -247,13 +247,13 @@ const SearchFilters = ({
         </button>
       </>
 
-      <Accordian
+      <Accordion
         title={getFilterLabel("Date", "date", query[QUERY_PARAMS.category], themeConfig)}
         data-cy="date-range"
         startOpen={!!query[QUERY_PARAMS.year_range]}
       >
         <DateRange type="year_range" handleChange={handleYearChange} defaultValues={searchCriteria.year_range} min={minYear} max={thisYear} />
-      </Accordian>
+      </Accordion>
     </div>
   );
 };

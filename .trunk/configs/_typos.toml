@@ -1,0 +1,5 @@
+[default.extend-words]
+playright = "playright"
+
+[default.extend-identifiers]
+NDCs = "NDCs"

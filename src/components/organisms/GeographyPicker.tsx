@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-import { Accordian } from "@/components/accordian/Accordian";
+import { Accordion } from "@/components/accordion/Accordion";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 import useGeographySubdivisions from "@/hooks/useGeographySubdivisions";
@@ -89,7 +89,7 @@ export const GeographyPicker = ({
   return (
     <div className="text-sm text-text-secondary relative flex flex-col gap-5 max-h-full pb-5">
       <div className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
-        <Accordian title={regionFilterLabel} data-cy="regions" startOpen>
+        <Accordion title={regionFilterLabel} data-cy="regions" startOpen>
           <InputListContainer>
             {regions.map((region) => (
               <InputCheck
@@ -103,8 +103,8 @@ export const GeographyPicker = ({
               />
             ))}
           </InputListContainer>
-        </Accordian>
-        <Accordian title={countryFilterLabel} data-cy="countries" className="relative z-10" showFade="true" startOpen>
+        </Accordion>
+        <Accordion title={countryFilterLabel} data-cy="countries" className="relative z-10" showFade="true" startOpen>
           <InputListContainer>
             <div className="mb-2" key="quick-search-box">
               <TextInput
@@ -127,9 +127,9 @@ export const GeographyPicker = ({
               />
             ))}
           </InputListContainer>
-        </Accordian>
+        </Accordion>
         {subdivisions.length > 0 && (
-          <Accordian title={"Subdivision"} data-cy="subdivisions" className="relative z-10" showFade="true" startOpen>
+          <Accordion title={"Subdivision"} data-cy="subdivisions" className="relative z-10" showFade="true" startOpen>
             <InputListContainer>
               <div className="mb-2" key="quick-search-box">
                 <TextInput
@@ -152,7 +152,7 @@ export const GeographyPicker = ({
                 />
               ))}
             </InputListContainer>
-          </Accordian>
+          </Accordion>
         )}
       </div>
     </div>

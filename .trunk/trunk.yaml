@@ -13,6 +13,27 @@ plugins:
       ref: v1.7.1
       uri: https://github.com/trunk-io/plugins
 
+downloads:
+  - name: typos
+    downloads:
+      - os:
+          macos: apple-darwin
+        cpu:
+          x86_64: x86_64
+          arm_64: aarch64
+        url: https://github.com/crate-ci/typos/releases/download/v${version}/typos-v${version}-${cpu}-${os}.tar.gz
+      - os:
+          linux: unknown-linux-musl
+        cpu:
+          x86_64: x86_64
+          arm_64: aarch64
+        url: https://github.com/crate-ci/typos/releases/download/v${version}/typos-v${version}-${cpu}-${os}.tar.gz
+      - os:
+          windows: pc-windows-mscvc
+        cpu:
+          x86_64: x86_64
+        url: https://github.com/crate-ci/typos/releases/download/v${version}/typos-v${version}-${cpu}-${os}.tar.gz
+
 # Many linters and tools depend on runtimes - configure them here.
 # (https://docs.trunk.io/runtimes)
 runtimes:
@@ -20,6 +41,13 @@ runtimes:
     - go@1.21.0
     - node@22.16.0
     - python@3.10.8
+
+tools:
+  definitions:
+    - name: typos
+      download: typos
+      known_good_version: 1.36.2
+      shims: [typos]
 
 # This is the section where you manage your linters.
 # (https://docs.trunk.io/check/configuration)
@@ -35,6 +63,27 @@ lint:
     - linters: [markdownlint]
       paths:
         - LICENSE.md
+    - linters: [typos]
+      paths:
+        - src/constants/mapCentres.ts
+        - src/constants/stories.ts
+
+  definitions:
+    - name: typos
+      files:
+        - python
+        - markdown
+        - xml
+        - shell
+        - java
+        - typescript
+        - javascript
+      tools: [typos]
+      commands:
+        - output: sarif
+          success_codes: [0, 2]
+          run: typos ${target} --format sarif --config ${workspace}/.trunk/configs/_typos.toml --no-unicode
+          read_output_from: stdout
 
   enabled:
     - actionlint@1.7.7
@@ -50,6 +99,7 @@ lint:
     - terrascan@1.19.1
     - trivy@0.64.1
     - trufflehog@3.90.0
+    - typos@1.36.2
     - yamllint@1.37.1
 actions:
   disabled:

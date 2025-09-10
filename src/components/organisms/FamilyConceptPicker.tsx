@@ -2,7 +2,7 @@ import { TextSearch } from "lucide-react";
 import { NextRouter, useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
-import { Accordian } from "@/components/accordian/Accordian";
+import { Accordion } from "@/components/accordion/Accordion";
 import { Badge } from "@/components/atoms/label/Badge";
 import { Select } from "@/components/atoms/select/Select";
 import { InputCheck } from "@/components/forms/Checkbox";
@@ -142,7 +142,7 @@ export const FamilyConceptPicker = ({
               const filteredConcepts = filterConcepts(conceptsGrouped[rootConcept.wikibase_id] || [], search);
               if (filteredConcepts.length === 0) return null;
               return (
-                <Accordian
+                <Accordion
                   title={firstCase(rootConcept.preferred_label)}
                   key={rootConcept.wikibase_id + rootConceptIndex}
                   fixedHeight="100%"
@@ -165,7 +165,7 @@ export const FamilyConceptPicker = ({
                         />
                       ))}
                   </div>
-                </Accordian>
+                </Accordion>
               );
             })}
 
