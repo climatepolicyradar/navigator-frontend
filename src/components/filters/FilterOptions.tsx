@@ -47,7 +47,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
               key={option.slug}
               label={option.label}
               checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option.slug)}
-              onChange={() => null} // supress normal radio behaviour to allow to deselection
+              onChange={() => null} // suppress normal radio behaviour to allow to deselection
               onClick={() => {
                 handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug, true);
               }}
@@ -116,7 +116,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
         key={option}
         label={option}
         checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option)}
-        onChange={() => null} // supress normal radio behaviour to allow to deselection
+        onChange={() => null} // suppress normal radio behaviour to allow to deselection
         onClick={() => {
           handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option, true);
         }}
