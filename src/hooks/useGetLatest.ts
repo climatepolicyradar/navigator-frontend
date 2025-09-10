@@ -4,8 +4,9 @@ import { ApiClient, getEnvFromServer } from "@/api/http-common";
 import { TLatestItem } from "@/types";
 
 type TLatestResponse = {
+  import_id: string;
   title: string;
-  slugs: string[];
+  slug: string;
   created: string;
 };
 
@@ -18,9 +19,9 @@ export default function useGetLatest(limit?: number) {
       const query_response = await client.get<TLatestResponse[]>("/latest", { limit: limit });
       return query_response.data.map((item) => ({
         title: item.title,
-        slug: item.slugs[0],
+        slug: item.slug,
         date: item.created,
-        url: `/document/${item.slugs[0]}`,
+        url: `/document/${item.slug}`,
       })) as TLatestItem[];
     },
     {
