@@ -13,7 +13,7 @@ export const Footer = () => {
         <Divider />
       </div>
 
-      <Columns containerClasses="max-w-7xl mx-auto">
+      <Columns>
         <aside className="flex flex-col items-start">
           <LinkWithQuery href="/">
             {/* trunk-ignore(eslint/@next/next/no-img-element) */}
@@ -21,7 +21,7 @@ export const Footer = () => {
           </LinkWithQuery>
         </aside>
 
-        <main className="cols-2:col-span-1 cols-3:col-span-2 cols-4:col-span-3 grid grid-cols-subgrid gap-6">
+        <main className="cols-2:col-span-2 cols-4:col-span-3 grid grid-cols-subgrid gap-6">
           <div className="flex flex-col items-start gap-2">
             <ul className="space-y-1">
               <li>
