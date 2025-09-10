@@ -360,8 +360,8 @@ ul li.selected {
 .search-results em {
   @apply italic;
 }
-.text-content a.accordian-item,
-.search-results a.accordian-item {
+.text-content a.accordion-item,
+.search-results a.accordion-item {
   @apply text-textNormal text-lg cursor-pointer flex items-center no-underline hover:no-underline md:text-xl;
 }
 .text-content a {
@@ -492,7 +492,7 @@ ul li.selected {
   top: 60px;
 }
 
-.accordian__content p {
+.accordion__content p {
   @apply mb-2;
 }
 
