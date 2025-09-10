@@ -25,20 +25,20 @@ interface IProps {
   handleSearchChange: (type: string, value: any) => void;
 }
 
-const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig, exactMatch, handleSearchChange }: IProps) => {
+const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig, exactMatch }: IProps) => {
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="homepage">
-      <main id="main" className="h-screen flex flex-col">
-        <div className="grow flex p-10">
-          <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} exactMatch={exactMatch} handleSearchChange={handleSearchChange} />
-        </div>
-        <FullWidth extraClasses="hidden md:block relative basis-[344px] shrink-0">
+      <main id="main" className="md:h-screen">
+        <SiteWidth extraClasses="md:flex justify-between p-10 pb-14 h-full md:gap-10 lg:gap-16 md:h-[calc(100%-220px)] lg:h-[calc(100%-280px)] xl:h-[calc(100%-344px)]">
+          <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} exactMatch={exactMatch} />
+        </SiteWidth>
+        <FullWidth extraClasses="hidden md:block relative md:h-[220px] lg:h-[280px] xl:h-[344px]">
           <Image src="/images/ccc/water_ice_reflection.jpg" alt="" fill className="w-full" objectFit="cover" />
         </FullWidth>
       </main>
-      <FullWidth extraClasses="hidden my-6 md:block">
+      <SiteWidth extraClasses="hidden my-6 md:block">
         <WorldMap showLitigation showCategorySelect={false} theme="ccc" />
-      </FullWidth>
+      </SiteWidth>
       <SiteWidth>
         <div>
           <div className="lg:w-1/2 lg:z-10">

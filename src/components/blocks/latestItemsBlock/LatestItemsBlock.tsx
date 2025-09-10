@@ -13,7 +13,7 @@ export const LatestItemsBlock = ({ latestItems, itemLimit = ITEM_LIMIT }: IProps
   const limitedLastItems = latestItems.slice(0, itemLimit);
 
   return (
-    <aside aria-labelledby="latest" className="bg-surface-heavy p-5 flex flex-col space-y-4 text-text-primary">
+    <aside aria-labelledby="latest" className="bg-surface-heavy p-5 flex flex-col space-y-4 text-text-primary h-full">
       <h2 id="latest" className="font-bold border-b border-border-semi-transparent pb-4">
         Latest
       </h2>

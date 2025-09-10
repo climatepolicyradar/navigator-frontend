@@ -52,7 +52,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
   return (
     <>
       <form data-cy="search-form" ref={formRef} onSubmit={(e) => e.preventDefault()}>
-        <div className="max-w-screen-lg mx-auto flex items-stretch relative">
+        <div className="max-w-screen-md flex items-stretch relative">
           <button className="absolute left-0 h-full px-4 text-text-primary" onClick={() => handleSearchInput(term)} aria-label="Search">
             <span className="block">
               <Search height="16" width="16" />
