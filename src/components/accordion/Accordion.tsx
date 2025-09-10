@@ -16,7 +16,7 @@ interface IProps {
   headContent?: React.ReactNode;
 }
 
-export const Accordian = ({
+export const Accordion = ({
   title,
   startOpen = false,
   open,
@@ -36,7 +36,7 @@ export const Accordian = ({
 
   return (
     <div {...props}>
-      <div className={`flex items-center justify-between cursor-pointer group`} onClick={() => setIsOpen(!isOpen)} data-cy="accordian-control">
+      <div className={`flex items-center justify-between cursor-pointer group`} onClick={() => setIsOpen(!isOpen)} data-cy="accordion-control">
         <div className="flex items-center gap-2">
           <Heading>{title}</Heading>
           {headContent}

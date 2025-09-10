@@ -135,7 +135,8 @@ export type TGeographySummary = {
   top_families: Record<TGeographySummaryCategory, TFamily[]>;
 };
 
-export type TCategory = "Legislative" | "Executive" | "Litigation" | "Policy" | "Law" | "UNFCCC" | "MCF" | "Reports";
+// TODO resolve different litigation cases depending on API endpoint used
+export type TCategory = "Legislative" | "Executive" | "Litigation" | "LITIGATION" | "Policy" | "Law" | "UNFCCC" | "MCF" | "Reports";
 export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Litigation" | "Reports";
 export type TDisplayCategory = "All" | TCategory;
 export type TEventCategory = TCategory | "Target";
@@ -283,6 +284,13 @@ export type TMatchedFamily = TFamily & {
   family_title_match: boolean;
   total_passage_hits: number;
   continuation_token?: string; // represents a token for requesting more passage matches
+};
+
+export type TLatestItem = {
+  title: string;
+  date: string;
+  slug: string;
+  url: string;
 };
 
 export type TSearch = {

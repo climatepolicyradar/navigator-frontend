@@ -64,7 +64,7 @@ const SearchForm = ({ input, placeholder, size = "large", handleSearchInput, han
             value={term}
             onChange={onChange}
             data-cy="search-input"
-            data-analytics="seachPage-searchInput"
+            data-analytics="searchPage-searchInput"
             placeholder={placeholder}
             type="search"
             size={size}
