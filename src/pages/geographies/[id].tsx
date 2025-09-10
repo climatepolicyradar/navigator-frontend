@@ -62,19 +62,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let parentGeographyV2: GeographyV2 = null;
 
   try {
-    // TODO: remove the workaround for the US
-    const v1Slug = Array.isArray(id) ? id[0] : id;
-    const v2Slug = v1Slug === "united-states-of-america" ? "united-states" : v1Slug;
-    const geographyV2Data = await apiClient.get<ApiItemResponse<GeographyV2>>(`/geographies/${v2Slug}`);
+    const slug = Array.isArray(id) ? id[0] : id;
+    const geographyV2Data = await apiClient.get<ApiItemResponse<GeographyV2>>(`/geographies/${slug}`);
     geographyV2 = geographyV2Data.data.data;
-    geographyV2.slug = v1Slug;
 
     if (geographyV2.subconcept_of[0]) {
       const parentGeographyV2Data = await apiClient.get<ApiItemResponse<GeographyV2>>(`/geographies/${geographyV2.subconcept_of[0].slug}`);
       parentGeographyV2 = parentGeographyV2Data.data.data;
-      // TODO: remove the workaround for the US
-      const parentSlug = parentGeographyV2.slug === "united-states" ? "united-states-of-america" : parentGeographyV2.slug;
-      parentGeographyV2.slug = parentSlug;
     }
   } catch {}
 
