@@ -1,32 +1,48 @@
-import { LucideScrollText, LucideTable } from "lucide-react";
+import orderBy from "lodash/orderBy";
 import { useMemo, useState } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Card } from "@/components/atoms/card/Card";
-import { DocumentCard } from "@/components/molecules/documentCard/DocumentCard";
+import { EntityCard, IProps as IEntityCardProps } from "@/components/molecules/entityCard/EntityCard";
 import { Section } from "@/components/molecules/section/Section";
 import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
 import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { TFamilyPublic, TGeography, TLoadingStatus, TMatchedFamily } from "@/types";
+import { getCategoryName } from "@/helpers/getCategoryName";
+import { TFamilyDocumentPublic, TFamilyPublic, TGeography, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId } from "@/utils/eventTable";
+import { formatDate } from "@/utils/timedate";
+
+const getOldestEventDate = (document: TFamilyDocumentPublic) => document.events.map((event) => event.date).sort()[0];
 
 interface IProps {
-  countries: TGeography[];
   family: TFamilyPublic;
   matchesFamily?: TMatchedFamily; // The relevant search result family
   matchesStatus?: TLoadingStatus; // The status of the search
   showMatches?: boolean; // Whether to show matches from the search result
 }
 
-export const DocumentsBlock = ({ countries, family, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
+export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
   const [view, setView] = useState("table");
 
   const isUSA = family.geographies.includes("USA");
+  const category = getCategoryName(family.category, family.corpus_type_name, family.organisation);
+
   const tableColumns = useMemo(() => getEventTableColumns({ isUSA, showMatches }), [isUSA, showMatches]);
   const tableRows = useMemo(
     () => getEventTableRows({ families: [family], documentEventsOnly: true, matchesFamily, matchesStatus }),
     [family, matchesFamily, matchesStatus]
+  );
+
+  const cards: IEntityCardProps[] = useMemo(
+    () =>
+      orderBy(family.documents, [getOldestEventDate], ["desc"]).map((document) => {
+        return {
+          title: document.title,
+          metadata: [category, formatDate(getOldestEventDate(document))[0]],
+          href: `/documents/${document.slug}`,
+        };
+      }),
+    [category, family]
   );
 
   const onToggleChange = (toggleValue: string[]) => {
@@ -39,18 +55,16 @@ export const DocumentsBlock = ({ countries, family, matchesFamily, matchesStatus
         {/* Controls */}
         <div className="pb-6">
           <ToggleGroup value={[view]} onValueChange={onToggleChange}>
-            <Toggle Icon={LucideTable} text="Table" value="table" />
-            <Toggle Icon={LucideScrollText} text="Card" value="card" />
+            <Toggle value="table">Table</Toggle>
+            <Toggle value="cards">Cards</Toggle>
           </ToggleGroup>
         </div>
 
-        {/* Cards TODO */}
-        {view === "card" && (
-          <div className="flex flex-col gap-4">
-            {family.documents.map((document) => (
-              <LinkWithQuery key={document.slug} href={`/documents/${document.slug}`}>
-                <DocumentCard countries={countries} document={document} family={family} />
-              </LinkWithQuery>
+        {/* Cards */}
+        {view === "cards" && (
+          <div className="flex gap-5 items-stretch overflow-x-auto pb-2">
+            {cards.map((card) => (
+              <EntityCard key={card.href} {...card} />
             ))}
           </div>
         )}

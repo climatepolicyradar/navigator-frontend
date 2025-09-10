@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Section } from "@/components/molecules/section/Section";
-import { TCategorySummary } from "@/helpers/getFamilyCategorySummary";
+import { TCategorySummary } from "@/types";
 
 import { RecentFamiliesCategory } from "./RecentFamiliesCategory";
 

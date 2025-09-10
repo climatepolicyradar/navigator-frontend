@@ -1,4 +1,6 @@
+import { Columns } from "@/components/atoms/columns/Columns";
 import { NavSearch } from "@/components/molecules/navSearch/NavSearch";
+import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
   headerClasses?: string;
@@ -9,21 +11,29 @@ interface IProps {
 }
 
 export const NavBar = ({ headerClasses = "", logo, menu, showLogo = true, showSearch = true }: IProps) => {
+  const allHeaderClasses = joinTailwindClasses(
+    "w-full cols-3:h-[72px] sticky top-0 z-60",
+    showLogo || showSearch ? "h-[128px]" : "h-[72px]",
+    headerClasses
+  );
+
+  const mainContainerClasses = joinTailwindClasses(
+    "-ml-2 flex  gap-2 cols-2:col-span-2",
+    showSearch ? "justify-between" : "justify-end",
+    showLogo || showSearch ? "cols-4:col-span-3" : "cols-3:col-span-3 cols-4:col-span-4"
+  );
+
   return (
-    <header data-cy="header" className={`w-full h-[128px] sm:h-[72px] sticky top-0 z-60 ${headerClasses}`}>
-      <div
-        className={`max-w-maxSiteWidth sm:px-4 pt-2 sm:pb-2 mx-auto flex justify-between items-center flex-wrap sm:flex-nowrap gap-y-1 sm:gap-y-0 ${
-          !showLogo && !showSearch ? "justify-end" : ""
-        }`}
-      >
-        {showLogo && <div className="lg:flex-1 shrink-4 md:max-w-[30%] px-4 sm:pl-0 sm:pt-0">{logo}</div>}
-        {showSearch && (
-          <div className="flex-[1_1_100%] sm:flex-initial order-1 sm:order-0 lg:min-w-[550px]">
-            <NavSearch />
-          </div>
+    <header data-cy="header" className={allHeaderClasses}>
+      <Columns containerClasses="h-full" gridClasses="h-full items-center gap-y-1">
+        {(showLogo || showSearch) && (
+          <div className="h-[54px] pt-2 cols-3:pt-0 flex items-center cols-2:col-span-2 cols-3:col-span-1">{showLogo && logo}</div>
         )}
-        <div className="lg:flex-1 flex justify-end pt-4 pr-4 sm:pt-0 sm:pr-0">{menu}</div>
-      </div>
+        <div className={mainContainerClasses}>
+          {showSearch && <NavSearch />}
+          {menu}
+        </div>
+      </Columns>
     </header>
   );
 };

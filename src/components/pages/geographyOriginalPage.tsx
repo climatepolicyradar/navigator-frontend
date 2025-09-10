@@ -21,18 +21,7 @@ import { Heading } from "@/components/typography/Heading";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TPublicEnvConfig } from "@/context/EnvConfig";
 import { GeographyCountsResponse } from "@/pages/api/geography-counts";
-import {
-  GeographyV2,
-  TDocumentCategory,
-  TEvent,
-  TFeatureFlags,
-  TGeographySummary,
-  TSearch,
-  TSearchCriteria,
-  TTarget,
-  TTheme,
-  TThemeConfig,
-} from "@/types";
+import { GeographyV2, TDocumentCategory, TFeatureFlags, TSearch, TSearchCriteria, TTarget, TTheme, TThemeConfig } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
@@ -40,7 +29,6 @@ export interface IProps {
   featureFlags: TFeatureFlags;
   geographyV2: GeographyV2;
   parentGeographyV2?: GeographyV2;
-  summary: TGeographySummary;
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
@@ -60,68 +48,20 @@ const categories: { title: TDocumentCategory; slug: string }[] = [
 
 const MAX_NUMBER_OF_FAMILIES = 3;
 
-export const GeographyOriginalPage = ({
-  geographyV2,
-  parentGeographyV2,
-  summary,
-  targets,
-  theme,
-  themeConfig,
-  vespaSearchResults,
-  envConfig,
-}: IProps) => {
+export const GeographyOriginalPage = ({ geographyV2, parentGeographyV2, targets, theme, themeConfig, vespaSearchResults, envConfig }: IProps) => {
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
   const [selectedCategory, setselectedCategory] = useState<TDocumentCategory>(themeConfig.defaultDocumentCategory);
 
-  const hasFamilies = !!summary?.top_families;
-
   const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
-  const allDocumentsCount = Object.values(summary.family_counts).reduce((acc, count) => acc + (count || 0), 0);
+  const allDocumentsCount = vespaSearchResults.total_family_hits;
 
   const displayBrazilNDCBanner = theme === "cclw" && geographyV2.slug.toLowerCase() === "brazil";
 
   // Determine if this is a subdivision
   const isCountry = geographyV2.type === "country";
-
-  const documentCategories = themeConfig.documentCategories.map((category) => {
-    let count = null;
-    switch (category) {
-      case "All":
-        count = allDocumentsCount;
-        break;
-      case "Laws":
-        count = summary.family_counts.Legislative;
-        break;
-      case "Policies":
-        count = summary.family_counts.Executive;
-        break;
-      case "UNFCCC Submissions":
-        count = summary.family_counts.UNFCCC;
-        break;
-      case "Litigation":
-        count = 0;
-        break;
-      case "Climate Finance Projects":
-        count = summary.family_counts.MCF;
-        break;
-      case "Offshore Wind Reports":
-        count = summary.family_counts.Reports;
-        break;
-    }
-
-    return {
-      title: category,
-      count,
-    };
-  });
-
-  const handleDocumentCategoryClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: TDocumentCategory) => {
-    e.preventDefault();
-    return setselectedCategory(value);
-  };
 
   const handleTargetClick = () => {
     setTimeout(() => {
@@ -140,114 +80,6 @@ export const GeographyOriginalPage = ({
       newQuery[QUERY_PARAMS.category] = documentCategory.slug;
     }
     router.push({ pathname: "/search", query: { ...newQuery } });
-  };
-
-  const renderEmpty = (documentType: string = "") => (
-    <li className="mb-4 text-sm">{`There are no ${documentType} documents for ${geographyV2.name}.`}</li>
-  );
-
-  const renderDocuments = () => {
-    // All docs || All MCF docs if theme is MCF
-    if (selectedCategory === "All") {
-      let allFamilies = Object.values(summary.top_families).reduce((acc, curr) => acc.concat(curr), []);
-      if (allFamilies.length === 0) {
-        return renderEmpty();
-      }
-      allFamilies.sort((a, b) => {
-        return new Date(b.family_date).getTime() - new Date(a.family_date).getTime();
-      });
-      if (allFamilies.length > MAX_NUMBER_OF_FAMILIES) {
-        allFamilies = allFamilies.slice(0, MAX_NUMBER_OF_FAMILIES);
-      }
-      return allFamilies.map((family) => {
-        if (family)
-          return (
-            <FamilyListItem
-              key={family.family_slug}
-              titleClasses="text-[#0041A3] hover:underline"
-              family={family}
-              className={`pb-8 border-border-light`}
-            />
-          );
-      });
-    }
-    // Legislative
-    if (selectedCategory === "Laws") {
-      return summary.top_families.Legislative.length === 0
-        ? renderEmpty("Legislative")
-        : summary.top_families.Legislative.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <FamilyListItem
-              key={family.family_slug}
-              titleClasses="text-[#0041A3] hover:underline"
-              family={family}
-              className={`pb-8 border-border-light`}
-            />
-          ));
-    }
-    // Executive
-    if (selectedCategory === "Policies") {
-      return summary.top_families.Executive.length === 0
-        ? renderEmpty("Executive")
-        : summary.top_families.Executive.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <FamilyListItem
-              key={family.family_slug}
-              titleClasses="text-[#0041A3] hover:underline"
-              family={family}
-              className={`pb-8 border-border-light`}
-            />
-          ));
-    }
-    // UNFCCC
-    if (selectedCategory === "UNFCCC Submissions") {
-      return summary.top_families.UNFCCC.length === 0
-        ? renderEmpty("UNFCCC")
-        : summary.top_families.UNFCCC.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <FamilyListItem
-              key={family.family_slug}
-              titleClasses="text-[#0041A3] hover:underline"
-              family={family}
-              className={`pb-8 border-border-light`}
-            />
-          ));
-    }
-    // Litigation
-    if (selectedCategory === "Litigation") {
-      return (
-        <div className="mt-4 pb-4 border-b">
-          Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center’s{" "}
-          <ExternalLink url="http://climatecasechart.com/" className="underline text-blue-600 hover:text-blue-800">
-            Climate Change Litigation Databases
-          </ExternalLink>
-          .
-        </div>
-      );
-    }
-    // MCF
-    if (selectedCategory === "Climate Finance Projects") {
-      return summary.top_families.MCF.length === 0
-        ? renderEmpty("multilateral climate funds")
-        : summary.top_families.MCF.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <FamilyListItem
-              key={family.family_slug}
-              family={family}
-              titleClasses="text-[#0041A3] hover:underline"
-              className={`pb-8 border-border-light`}
-            />
-          ));
-    }
-    // Reports
-    if (selectedCategory === "Offshore Wind Reports") {
-      return summary.top_families.Reports.length === 0
-        ? renderEmpty("reports")
-        : summary.top_families.Reports.slice(0, MAX_NUMBER_OF_FAMILIES).map((family) => (
-            <FamilyListItem
-              key={family.family_slug}
-              family={family}
-              titleClasses="text-[#0041A3] hover:underline"
-              className={`pb-8 border-border-light`}
-            />
-          ));
-    }
   };
 
   /** Vespa search results */
@@ -273,6 +105,7 @@ export const GeographyOriginalPage = ({
   );
 
   const countCategories = useMemo(
+    // This is a hack to get around the hacked value we have for litigation in `themes/cpr/config.ts`
     () => vespaSearchTabbedNavItems.map((item) => item.slug.toLocaleLowerCase()).filter((slug) => slug !== "litigation"),
     [vespaSearchTabbedNavItems]
   );
@@ -300,6 +133,15 @@ export const GeographyOriginalPage = ({
   };
 
   const handleVespaSearchTabClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string) => {
+    setCurrentVespaSearchSelectedCategory(value);
+
+    // This is a hack to get around the hacked value we have for litigation in `themes/cpr/config.ts`
+    if (value.startsWith("Litigation")) {
+      setCurrentVespaSearchResults({ families: [], total_family_hits: 0, hits: 0, query_time_ms: 0 });
+      setselectedCategory("Litigation");
+      return;
+    }
+
     const selectedThemeCategory = vespaSearchTabbedNavItems.find((category) => category.title === value);
     const categoryFilter = selectedThemeCategory.slug;
 
@@ -354,60 +196,46 @@ export const GeographyOriginalPage = ({
             <section className="mt-8">
               <Heading level={2}>Documents</Heading>
             </section>
-            {!vespaSearchResults && hasFamilies && (
-              <>
-                <section className="" data-cy="top-documents">
-                  <div className="my-4 md:flex">
-                    <div className="flex-grow">
-                      <TabbedNav activeItem={selectedCategory} items={documentCategories} handleTabClick={handleDocumentCategoryClick} />
-                    </div>
-                  </div>
-                  <ol className="mt-8 divide-y flex flex-col gap-6">{renderDocuments()}</ol>
-                </section>
-                {selectedCategory !== "Litigation" && (
-                  <>
-                    <div data-cy="see-more-button" className="mb-4">
-                      <Button rounded variant="outlined" onClick={handleDocumentSeeMoreClick}>
-                        View more documents
-                      </Button>
-                    </div>
-                    <Divider />
-                  </>
+
+            <section className="" data-cy="top-documents">
+              <div className="my-4 md:flex">
+                <div className="flex-grow">
+                  <TabbedNav
+                    activeItem={currentVespaSearchSelectedCategory}
+                    items={vespaSearchTabbedNavItems.map((item) => {
+                      return {
+                        ...item,
+                        count: item.slug !== "Litigation" ? counts[item.slug.toLocaleLowerCase()] : undefined,
+                      };
+                    })}
+                    handleTabClick={handleVespaSearchTabClick}
+                  />
+                </div>
+              </div>
+              <ol className="mb-10">
+                {currentVespaSearchResults.families.length > 0 &&
+                  currentVespaSearchResults.families.map((family) => <FamilyListItem family={family} key={family.family_slug} />)}
+
+                {currentVespaSearchResults.families.length === 0 && (
+                  <li className="mb-4 text-sm">{`There are no ${currentVespaSearchSelectedCategory} documents for ${geographyV2.name}.`}</li>
                 )}
-              </>
-            )}
-            {currentVespaSearchResults && (
-              <>
-                <section className="" data-cy="top-documents">
-                  <div className="my-4 md:flex">
-                    <div className="flex-grow">
-                      <TabbedNav
-                        activeItem={currentVespaSearchSelectedCategory}
-                        items={vespaSearchTabbedNavItems.map((item) => {
-                          return {
-                            ...item,
-                            count: item.slug !== "Litigation" ? counts[item.slug.toLocaleLowerCase()] : undefined,
-                          };
-                        })}
-                        handleTabClick={handleVespaSearchTabClick}
-                      />
-                    </div>
-                  </div>
-                  <ol className="mb-10">
-                    {currentVespaSearchResults.families.map((family) => (
-                      <FamilyListItem family={family} key={family.family_slug} />
-                    ))}
-                  </ol>
-                </section>
-                {selectedCategory !== "Litigation" && (
-                  <div data-cy="see-more-button">
-                    <Button rounded variant="outlined" className="my-5" onClick={handleDocumentSeeMoreClick}>
-                      View more documents
-                    </Button>
-                    <Divider />
-                  </div>
-                )}
-              </>
+              </ol>
+              {currentVespaSearchSelectedCategory.startsWith("Litigation") && (
+                <p className="my-4 md:mt-0">
+                  Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center's{" "}
+                  <ExternalLink url="http://climatecasechart.com/" className="underline text-blue-600 hover:text-blue-800">
+                    Climate Change Litigation Databases
+                  </ExternalLink>
+                </p>
+              )}
+            </section>
+            {selectedCategory !== "Litigation" && (
+              <div data-cy="see-more-button">
+                <Button rounded variant="outlined" className="my-5" onClick={handleDocumentSeeMoreClick}>
+                  View more documents
+                </Button>
+                <Divider />
+              </div>
             )}
 
             {hasTargets && (

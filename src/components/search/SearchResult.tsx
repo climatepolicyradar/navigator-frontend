@@ -12,10 +12,9 @@ interface IProps {
   family: TMatchedFamily;
   active: boolean;
   onClick?: () => void;
-  className?: string;
 }
 
-const SearchResult = ({ family, active, onClick, className }: IProps) => {
+const SearchResult = ({ family, active, onClick }: IProps) => {
   const { themeConfig } = useContext(ThemeContext);
   const { family_documents, total_passage_hits, family_slug } = family;
 
@@ -30,7 +29,7 @@ const SearchResult = ({ family, active, onClick, className }: IProps) => {
   );
 
   return (
-    <FamilyListItem family={family} showSummary={isSearchFamilySummaryEnabled(themeConfig)} titleClasses={titleClasses} className={className}>
+    <FamilyListItem family={family} showSummary={isSearchFamilySummaryEnabled(themeConfig)} titleClasses={titleClasses}>
       {hasFamilyDocuments && (
         <div className="flex">
           <button
