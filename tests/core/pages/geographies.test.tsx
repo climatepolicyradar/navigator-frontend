@@ -1,15 +1,12 @@
 import { screen } from "@testing-library/react";
-import { setupServer } from "msw/node";
 import { vi } from "vitest";
 
 import { DEFAULT_FEATURE_FLAGS } from "@/constants/features";
-import { backendApiSearchHandler } from "@/mocks/api/backendApiHandlers";
-import { configHandlers } from "@/mocks/api/configHandlers";
+import { vespaSearchResults } from "@/mocks/backend-api/search";
 import { envConfig } from "@/mocks/envConfig";
 import brazil from "@/mocks/geographies-api/brazil";
 import unitedStates from "@/mocks/geographies-api/united-states";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
-import { testHandler } from "@/pages/api/geography-counts.test";
 
 import CountryPage from "../../../src/pages/geographies/[id]";
 
@@ -29,7 +26,7 @@ describe("CountryPage", () => {
   it.each(["cpr", "cclw"])("displays alert with Sabin tracker link on us geography page for %s", async (theme) => {
     const usa_props = {
       geographyV2: unitedStates,
-      summary: { family_counts: [] },
+      vespaSearchResults,
       targets: [],
       theme: theme,
       themeConfig: {
@@ -58,7 +55,7 @@ describe("CountryPage", () => {
   it.each(["cpr", "cclw"])("does not display alert with Sabin tracker link on non-us geography pages for %s", async (theme) => {
     const props = {
       geographyV2: brazil,
-      summary: { family_counts: [] },
+      vespaSearchResults,
       targets: [],
       theme: theme,
       themeConfig: {
@@ -87,7 +84,7 @@ describe("CountryPage", () => {
   it("does not display alert with Sabin tracker link on the mcf theme", async () => {
     const usa_props = {
       geographyV2: unitedStates,
-      summary: { family_counts: [] },
+      vespaSearchResults,
       targets: [],
       theme: "mcf",
       themeConfig: {
