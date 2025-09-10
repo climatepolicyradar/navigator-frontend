@@ -1,12 +1,15 @@
 import { useMemo, useState } from "react";
 
 import { Card } from "@/components/atoms/card/Card";
+import { EntityCard, IProps as IEntityCardProps } from "@/components/molecules/entityCard/EntityCard";
 import { Section } from "@/components/molecules/section/Section";
 import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
 import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
+import { getCategoryName } from "@/helpers/getCategoryName";
 import { TFamilyPublic, TGeography, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId } from "@/utils/eventTable";
+import { formatDate } from "@/utils/timedate";
 
 interface IProps {
   countries: TGeography[];
@@ -20,10 +23,27 @@ export const DocumentsBlock = ({ countries, family, matchesFamily, matchesStatus
   const [view, setView] = useState("table");
 
   const isUSA = family.geographies.includes("USA");
+  const category = getCategoryName(family.category, family.corpus_type_name, family.organisation);
+
   const tableColumns = useMemo(() => getEventTableColumns({ isUSA, showMatches }), [isUSA, showMatches]);
   const tableRows = useMemo(
     () => getEventTableRows({ families: [family], documentEventsOnly: true, matchesFamily, matchesStatus }),
     [family, matchesFamily, matchesStatus]
+  );
+
+  const cards: IEntityCardProps[] = useMemo(
+    () =>
+      family.documents.map((document) => {
+        return {
+          title: document.title,
+          metadata: [
+            category,
+            formatDate(document.events.map((event) => event.date).sort()[0])[0], // Date of the oldest document event
+          ],
+          href: `/documents/${document.slug}`,
+        };
+      }),
+    [category, family]
   );
 
   const onToggleChange = (toggleValue: string[]) => {
@@ -41,16 +61,14 @@ export const DocumentsBlock = ({ countries, family, matchesFamily, matchesStatus
           </ToggleGroup>
         </div>
 
-        {/* Cards TODO */}
-        {/* {view === "card" && (
-          <div className="flex flex-col gap-4">
-            {family.documents.map((document) => (
-              <LinkWithQuery key={document.slug} href={`/documents/${document.slug}`}>
-                <DocumentCard countries={countries} document={document} family={family} />
-              </LinkWithQuery>
+        {/* Cards */}
+        {view === "cards" && (
+          <div className="flex gap-5 items-stretch overflow-x-auto pb-2">
+            {cards.map((card) => (
+              <EntityCard key={card.href} {...card} />
             ))}
           </div>
-        )} */}
+        )}
 
         {/* Table */}
         {view === "table" && (
