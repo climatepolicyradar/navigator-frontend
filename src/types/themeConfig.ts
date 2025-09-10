@@ -71,7 +71,7 @@ type TThemeMetadata = {
 };
 
 export type TThemePageBlockFamily = "debug" | "documents" | "metadata" | "summary";
-export type TThemePageBlockGeography = "legislative-process" | "recents" | "statistics" | "subdivisions" | "targets";
+export type TThemePageBlockGeography = "debug" | "legislative-process" | "recents" | "statistics" | "subdivisions" | "targets";
 
 type TThemePageBlocks = {
   family: TThemePageBlockFamily[];

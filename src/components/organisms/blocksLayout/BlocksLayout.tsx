@@ -17,30 +17,27 @@ type TBlockDefinition = {
 export type TBlockDefinitions<PageBlock extends string> = Record<PageBlock, TBlockDefinition>;
 
 interface IProps<PageBlock extends string> {
-  blockDefinitions: TBlockDefinitions<PageBlock>;
-  blocksToRender: PageBlock[];
+  blocksToRender: PageBlock[]; // Ordered list of blocks to render
+  blockDefinitions: TBlockDefinitions<PageBlock>; // How to render each block and its sidebar item
 }
-
-/**
- * TODO
- * [ ] Determine typing for listing blocks and their render methods
- * [ ] Memoisation concerns
- * [ ] Generic typing to ensure all blocks are accounted for
- */
 
 export const BlocksLayout = <PageBlock extends string>({ blockDefinitions, blocksToRender }: IProps<PageBlock>) => {
   const blocks: ReactNode[] = [];
   const sideBarItems: ISideBarItem[] = [];
 
-  blocksToRender.forEach((blockId) => {
-    const blockDefinition = blockDefinitions[blockId];
+  blocksToRender.forEach((blockName) => {
+    const blockDefinition = blockDefinitions[blockName];
 
+    // A block can return null for cases where a lack of data means the block shouldn't show
     const renderedBlock = blockDefinition.render();
+
     if (renderedBlock) {
       blocks.push(renderedBlock);
+
+      // Only show a corresponding sidebar item if the block renders something
       sideBarItems.push({
-        id: `section-${blockId}`,
-        display: blockDefinition.sideBarItem?.display || firstCase(blockId),
+        id: `section-${blockName}`, // If you're writing a new block, make sure its section ID and block names line up
+        display: blockDefinition.sideBarItem?.display || firstCase(blockName), // Can be inferred from block name
         context: blockDefinition.sideBarItem?.context || undefined,
       });
     }
@@ -53,8 +50,3 @@ export const BlocksLayout = <PageBlock extends string>({ blockDefinitions, block
     </Columns>
   );
 };
-
-// sidebar item:
-// title
-// metadata (list of strings), slashes between
-// id to link to (matches ID?)
