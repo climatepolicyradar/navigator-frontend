@@ -29,9 +29,15 @@ class ApiClient {
       this.appToken = process.env.BACKEND_API_TOKEN;
     }
 
+    // In Axios, empty or undefined headers throw errors.
+    const headers: Record<string, string> = {};
+    if (this.appToken) {
+      headers["app-token"] = this.appToken;
+    }
+
     this.axiosClient = axios.create({
       baseURL: this.baseUrl,
-      headers: { "app-token": this.appToken },
+      headers,
     });
   }
 
