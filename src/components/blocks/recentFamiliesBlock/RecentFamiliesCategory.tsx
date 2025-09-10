@@ -7,8 +7,7 @@ import { EntityCard, IProps as IEntityCardProps } from "@/components/molecules/e
 import { ARROW_RIGHT } from "@/constants/chars";
 import { GeographiesContext } from "@/context/GeographiesContext";
 import { getCategoryName } from "@/helpers/getCategoryName";
-import { TCategorySummary } from "@/helpers/getFamilyCategorySummary";
-import { GeographyTypeV2, GeographyV2 } from "@/types";
+import { GeographyTypeV2, GeographyV2, TCategorySummary } from "@/types";
 import { pluralise } from "@/utils/pluralise";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { formatDate } from "@/utils/timedate";
