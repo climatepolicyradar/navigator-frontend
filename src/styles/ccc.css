@@ -1,0 +1,10 @@
+#ccc .search-dropdown {
+  margin-left: 8px;
+  width: calc(100% - 16px);
+  border-top: none;
+  @apply hidden sm:block;
+}
+
+#ccc .search-dropdown.search-dropdown_large {
+  top: 48px;
+}

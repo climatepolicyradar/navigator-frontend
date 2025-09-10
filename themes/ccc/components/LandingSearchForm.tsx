@@ -1,41 +1,9 @@
+import { Search } from "lucide-react";
 import router from "next/router";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 
-import { Button } from "@/components/atoms/button/Button";
-import { Icon } from "@/components/atoms/icon/Icon";
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-
-const EXAMPLE_SEARCHES = [
-  {
-    id: 1,
-    label: "Adaptation",
-    params: {
-      [QUERY_PARAMS.query_string]: "Adaptation",
-    },
-  },
-  {
-    id: 2,
-    label: "U.S. Cases",
-    params: {
-      [QUERY_PARAMS.country]: "united-states-of-america",
-    },
-  },
-  {
-    id: 3,
-    label: "Electric Vehicle Infrastructure",
-    params: {
-      [QUERY_PARAMS.query_string]: "electric vehicle infrastructure",
-    },
-  },
-  {
-    id: 4,
-    label: "Connecticut",
-    params: {
-      [QUERY_PARAMS.subdivision]: "US-CT",
-    },
-  },
-];
 
 interface IProps {
   placeholder?: string;
@@ -69,7 +37,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
     };
   }, [formRef]);
 
-  const displayPlaceholder = placeholder ?? "Search the full text of any document";
+  const displayPlaceholder = placeholder ?? "Search the full text of cases";
 
   const handleQuickSearch = (params: Record<string, string>) => {
     // Push directly to search page with all parameters
@@ -84,38 +52,26 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
   return (
     <>
       <form data-cy="search-form" ref={formRef} onSubmit={(e) => e.preventDefault()}>
-        <div className="max-w-screen-lg mx-auto flex items-stretch relative text-indigo-400">
+        <div className="max-w-screen-md flex items-stretch relative">
+          <button className="absolute left-0 h-full px-4 text-text-primary" onClick={() => handleSearchInput(term)} aria-label="Search">
+            <span className="block">
+              <Search height="16" width="16" />
+            </span>
+          </button>
           <input
-            id="landingPage-searchInput-cclw"
+            id="landingPage-searchInput-ccc"
             data-analytics="landingPage-searchInput"
             data-cy="search-input"
             type="search"
-            className="text-xl py-3 h-[48px] pl-6 pr-3 mr-[72px] w-full text-cpr-dark rounded-l-4xl border-0 rounded-r-none"
+            className="text-base py-3 h-[48px] pl-12 pr-3 w-full rounded-lg border-0 placeholder:text-text-tertiary bg-surface-heavy text-text-primary"
             value={term}
             onChange={onChange}
             placeholder={displayPlaceholder}
-            aria-label="Search term"
+            aria-label="Search the full text of cases"
           />
-          <button
-            className="absolute right-0 h-full px-6 text-white bg-surface-mono hover:bg-surface-mono-dark rounded-r-4xl"
-            onClick={() => handleSearchInput(term)}
-            aria-label="Search"
-          >
-            <span className="block">
-              <Icon name="search2" height="24" width="24" />
-            </span>
-          </button>
           <SearchDropdown term={term} show={formFocus} handleSearchClick={handleSearchInput} largeSpacing />
         </div>
       </form>
-      <div className="hidden mt-4 md:flex flex-wrap items-center gap-2">
-        <span className="text-text-tertiary">Search by:</span>
-        {EXAMPLE_SEARCHES.map((example) => (
-          <Button key={example.id} color="mono" rounded onClick={() => handleQuickSearch(example.params)} data-cy={`quick-search-${example.id}`}>
-            {example.label}
-          </Button>
-        ))}
-      </div>
     </>
   );
 };
