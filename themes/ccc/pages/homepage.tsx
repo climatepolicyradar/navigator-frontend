@@ -2,7 +2,6 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 
 import { Footer } from "@/ccc/components/Footer";
-import Header from "@/ccc/components/Header";
 import { Hero } from "@/ccc/components/Hero";
 import { ExternalLink } from "@/components/ExternalLink";
 import Layout from "@/components/layouts/LandingPage";
@@ -33,7 +32,7 @@ const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig, exact
           <Hero handleSearchInput={handleSearchInput} searchInput={searchInput} exactMatch={exactMatch} />
         </SiteWidth>
         <FullWidth extraClasses="hidden md:block relative md:h-[220px] lg:h-[280px] xl:h-[344px]">
-          <Image src="/images/ccc/water_ice_reflection.jpg" alt="" fill className="w-full" objectFit="cover" />
+          <Image src="/images/ccc/water_ice_reflection.jpg" alt="Water reflection in ice" fill className="w-full object-cover" priority />
         </FullWidth>
       </main>
       <SiteWidth extraClasses="hidden my-6 md:block">

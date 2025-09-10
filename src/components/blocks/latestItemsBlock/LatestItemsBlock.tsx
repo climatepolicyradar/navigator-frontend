@@ -17,7 +17,7 @@ export const LatestItemsBlock = ({ latestItems }: IProps) => {
         {latestItems.map((item) => {
           const [year, day, month] = formatDate(item.date);
           return (
-            <li key={item.slug} className="border-b border-border-semi-transparent pb-4">
+            <li key={item.url} className="border-b border-border-semi-transparent pb-4">
               <p className="text-sm text-text-tertiary">
                 {day} {month} {year}
               </p>
