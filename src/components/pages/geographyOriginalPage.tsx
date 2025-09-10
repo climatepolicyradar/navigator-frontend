@@ -102,6 +102,7 @@ export const GeographyOriginalPage = ({ geographyV2, targets, theme, themeConfig
   );
 
   const countCategories = useMemo(
+    // This is a hack to get around the hacked value we have for litigation in `themes/cpr/config.ts`
     () => vespaSearchTabbedNavItems.map((item) => item.slug.toLocaleLowerCase()).filter((slug) => slug !== "litigation"),
     [vespaSearchTabbedNavItems]
   );
@@ -129,6 +130,15 @@ export const GeographyOriginalPage = ({ geographyV2, targets, theme, themeConfig
   };
 
   const handleVespaSearchTabClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string) => {
+    setCurrentVespaSearchSelectedCategory(value);
+
+    // This is a hack to get around the hacked value we have for litigation in `themes/cpr/config.ts`
+    if (value.startsWith("Litigation")) {
+      setCurrentVespaSearchResults({ families: [], total_family_hits: 0, hits: 0, query_time_ms: 0 });
+      setselectedCategory("Litigation");
+      return;
+    }
+
     const selectedThemeCategory = vespaSearchTabbedNavItems.find((category) => category.title === value);
     const categoryFilter = selectedThemeCategory.slug;
 
@@ -203,6 +213,14 @@ export const GeographyOriginalPage = ({ geographyV2, targets, theme, themeConfig
                   <li className="mb-4 text-sm">{`There are no ${currentVespaSearchSelectedCategory} documents for ${geographyV2.name}.`}</li>
                 )}
               </ol>
+              {currentVespaSearchSelectedCategory.startsWith("Litigation") && (
+                <p className="my-4 md:mt-0">
+                  Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center's{" "}
+                  <ExternalLink url="http://climatecasechart.com/" className="underline text-blue-600 hover:text-blue-800">
+                    Climate Change Litigation Databases
+                  </ExternalLink>
+                </p>
+              )}
             </section>
             {selectedCategory !== "Litigation" && (
               <div data-cy="see-more-button">
