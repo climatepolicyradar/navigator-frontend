@@ -1,7 +1,7 @@
 // type one text in the typwriter
 // keeps calling itself until the text is finished
 export function typeWriter(text, i, fnCallback, el) {
-  // chekc if text isn't finished yet
+  // check if text isn't finished yet
   if (i < text.length) {
     // add next character to placeholder
     el.placeholder = text.substring(0, i + 1);
