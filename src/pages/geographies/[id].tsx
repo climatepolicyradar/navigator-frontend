@@ -72,7 +72,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   } catch {}
 
-  if (geographyV2 && geographyV2.type === "region") {
+  // If we don't have a geography - 404
+  if (!geographyV2) {
+    return { notFound: true };
+  }
+
+  // We don't currently support regions - 404
+  if (geographyV2.type === "region") {
     return { notFound: true };
   }
 
@@ -92,7 +98,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     })
     .then((response) => response.data);
 
-  if (!geographyV2 || !vespaSearchResults) {
+  if (!vespaSearchResults) {
     return { notFound: true };
   }
 
