@@ -70,8 +70,8 @@ type TThemeMetadata = {
   description: string;
 };
 
-type TThemePageBlockFamily = "documents" | "metadata" | "summary";
-type TThemePageBlockGeography = "legislative-process" | "recents" | "statistics" | "subdivisions" | "targets";
+export type TThemePageBlockFamily = "debug" | "documents" | "metadata" | "summary";
+export type TThemePageBlockGeography = "legislative-process" | "recents" | "statistics" | "subdivisions" | "targets";
 
 type TThemePageBlocks = {
   family: TThemePageBlockFamily[];

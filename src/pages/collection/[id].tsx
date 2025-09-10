@@ -40,7 +40,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
   const sideBarItems: ISideBarItem[] = families.map((family) => ({
     id: `section-${family.slug}`,
     display: family.title,
-    context: [getCaseNumbers(family), getCourts(family)].filter((part) => part).join(" / "),
+    context: [getCaseNumbers(family), getCourts(family)].filter((part) => part),
   }));
 
   return (
