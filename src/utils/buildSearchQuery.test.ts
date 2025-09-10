@@ -34,7 +34,6 @@ describe("buildSearchQuery: ", () => {
         knowledgeGraph: true,
         litigation: false,
         searchFamilySummary: true,
-        vespaSearchOnGeographies: false,
       },
     };
 
@@ -63,7 +62,6 @@ describe("buildSearchQuery: ", () => {
         knowledgeGraph: true,
         litigation: false,
         searchFamilySummary: true,
-        vespaSearchOnGeographies: false,
       },
     };
 

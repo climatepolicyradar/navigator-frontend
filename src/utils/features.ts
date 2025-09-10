@@ -41,9 +41,3 @@ export const isSearchFamilySummaryEnabled = (themeConfig: TThemeConfig) =>
   isFeatureEnabled({
     configFeature: themeConfig.features.searchFamilySummary,
   });
-
-export const isVespaSearchOnGeographiesEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.vespaSearchOnGeographies,
-    featureFlag: featureFlags["vespa-search-on-geographies"],
-  });

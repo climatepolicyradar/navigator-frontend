@@ -1,17 +1,12 @@
-import { TGeographySummary } from "@/types";
+import { TCategorySummary } from "@/types";
 
-export const GEOGRAPHY_SUMMARY_STUB: TGeographySummary = {
-  events: [],
-  family_counts: {
-    Executive: 74,
-    Legislative: 33,
-    UNFCCC: 19,
-    MCF: 0,
-    Reports: 73,
-    Litigation: 0,
-  },
-  top_families: {
-    Executive: [
+export const CATEGORY_SUMMARY_STUB: TCategorySummary[] = [
+  {
+    id: "Executive",
+    count: 74,
+    title: "Executive",
+    unit: ["Policy", "Policies"],
+    families: [
       {
         family_slug: "clean-power-2030-action-plan_c2c5",
         family_name: "Clean Power 2030 Action Plan",
@@ -96,7 +91,7 @@ export const GEOGRAPHY_SUMMARY_STUB: TGeographySummary = {
         family_slug: "delivering-30by30-on-land-in-england_9dee",
         family_name: "Delivering 30by30 on land in England",
         family_description:
-          "<p>The United Kingdom has committed to protecting 30% of the UK's land by 2030 (also know as '30by30'). The Delivering 30by30 on land in England strategy sets out how the UK government is taking action to achieve its 30 by 30 target and protect nature and biodiversity in the UK. It also introduces the 30by30 criteria, which outlines how different areas can also contribute to achieving land protection targets. The strategy builds on the proposals made in the Environmental Improvement Plan 2023, which recommends achieving the 30 by 30 taget through \"ensuring effective policy and statutory safeguards and powers in place to improve management for nature, prevent degradation and ensure appropriate access for people... designature new protected areas and restore or create wildlife rich habitate outside of these... and invest in habitata restoration across our protected areas and beyond\".&nbsp;</p>\n",
+          "<p>The United Kingdom has committed to protecting 30% of the UK's land by 2030 (also know as '30by30'). The Delivering 30by30 on land in England strategy sets out how the UK government is taking action to achieve its 30 by 30 target and protect nature and biodiversity in the UK. It also introduces the 30by30 criteria, which outlines how different areas can also contribute to achieving land protection targets. The strategy builds on the proposals made in the Environmental Improvement Plan 2023, which recommends achieving the 30 by 30 target through \"ensuring effective policy and statutory safeguards and powers in place to improve management for nature, prevent degradation and ensure appropriate access for people... designature new protected areas and restore or create wildlife rich habitate outside of these... and invest in habitata restoration across our protected areas and beyond\".&nbsp;</p>\n",
         family_category: "Executive",
         family_date: "2023-12-09T00:00:00+00:00",
         family_last_updated_date: "2023-12-09T00:00:00+00:00",
@@ -113,7 +108,13 @@ export const GEOGRAPHY_SUMMARY_STUB: TGeographySummary = {
         prev_continuation_token: null,
       },
     ],
-    Legislative: [
+  },
+  {
+    id: "Legislative",
+    title: "Legislative",
+    count: 33,
+    unit: ["Law", "Laws"],
+    families: [
       {
         family_slug: "the-climate-change-targeted-greenhouse-gases-order-2023_d2ab",
         family_name: "The Climate Change (Targeted Greenhouse Gases) Order 2023",
@@ -215,7 +216,13 @@ export const GEOGRAPHY_SUMMARY_STUB: TGeographySummary = {
         prev_continuation_token: null,
       },
     ],
-    UNFCCC: [
+  },
+  {
+    id: "UNFCCC",
+    title: "UNFCCC",
+    count: 19,
+    unit: ["Document", "Documents"],
+    families: [
       {
         family_slug: "united-kingdom-national-inventory-report-nir-2025_3a70",
         family_name: "United Kingdom National Inventory Report (NIR). 2025",
@@ -312,8 +319,13 @@ export const GEOGRAPHY_SUMMARY_STUB: TGeographySummary = {
         prev_continuation_token: null,
       },
     ],
-    MCF: [],
-    Reports: [
+  },
+  {
+    id: "Reports",
+    title: "Reports",
+    count: 73,
+    unit: ["Report", "Reports"],
+    families: [
       {
         family_slug: "aviva-plc-corporate-transition-plan-2021-2024_2e00",
         family_name: "Aviva plc Corporate Transition Plan 2021 - 2024",
@@ -410,7 +422,19 @@ export const GEOGRAPHY_SUMMARY_STUB: TGeographySummary = {
         prev_continuation_token: null,
       },
     ],
-    Litigation: [],
   },
-  targets: [],
-};
+  {
+    id: "MCF",
+    title: "MCF",
+    count: 0,
+    unit: ["Document", "Documents"],
+    families: [],
+  },
+  {
+    id: "Litigation",
+    title: "Litigation",
+    count: 0,
+    unit: ["Document", "Documents"],
+    families: [],
+  },
+];

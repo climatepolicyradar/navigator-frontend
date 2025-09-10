@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { ApiClient } from "@/api/http-common";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Columns } from "@/components/atoms/columns/Columns";
-import { Debug } from "@/components/atoms/debug/Debug";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { RecentFamiliesBlock } from "@/components/blocks/recentFamiliesBlock/RecentFamiliesBlock";
 import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisionBlock";
@@ -15,7 +14,6 @@ import { getGeographyPageSidebarItems } from "@/constants/sideBarItems";
 import { GeographiesContext } from "@/context/GeographiesContext";
 import { TSearch } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
-import { v2GeoSlugToV1 } from "@/utils/geography";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 
 import { IProps } from "./geographyOriginalPage";
@@ -46,7 +44,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
     pageHeaderMetadata.push({
       label: "Part of",
       value: (
-        <LinkWithQuery href={`/geographies/${v2GeoSlugToV1(parentGeographyV2.slug)}`} className="underline">
+        <LinkWithQuery href={`/geographies/${parentGeographyV2.slug}`} className="underline">
           {parentGeographyV2.name}
         </LinkWithQuery>
       ),
