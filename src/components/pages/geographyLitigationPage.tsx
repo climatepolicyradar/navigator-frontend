@@ -131,6 +131,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
               onAccordionClick={(id) => {
                 fetchFamiliesByCategory(id);
               }}
+              geography={geographyV2}
             />
 
             <SubDivisionBlock subdivisions={subdivisions} title={isCountry ? "Geographic sub-divisions" : "Related geographic sub-divisions"} />

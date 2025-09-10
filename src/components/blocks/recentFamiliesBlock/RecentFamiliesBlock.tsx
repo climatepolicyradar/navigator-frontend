@@ -1,16 +1,17 @@
 import { useState } from "react";
 
 import { Section } from "@/components/molecules/section/Section";
-import { TCategorySummary } from "@/types";
+import { GeographyV2, TCategorySummary } from "@/types";
 
 import { RecentFamiliesCategory } from "./RecentFamiliesCategory";
 
 export interface IProps {
   categorySummaries: TCategorySummary[];
   onAccordionClick?: (id: string) => void;
+  geography: GeographyV2;
 }
 
-export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick }: IProps) => {
+export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick, geography }: IProps) => {
   const [expandedCategories, setExpandedCategories] = useState([categorySummaries[0].title]);
 
   const hideAccordion = categorySummaries.length === 1 && categorySummaries[0].title === "All";
@@ -34,6 +35,7 @@ export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick }: IPr
           showAccordion={!hideAccordion}
           isExpanded={expandedCategories.includes(category.title)}
           onAccordionClick={() => onAccordionInteract(category.title, category.id)}
+          geography={geography}
         />
       ))}
     </Section>
