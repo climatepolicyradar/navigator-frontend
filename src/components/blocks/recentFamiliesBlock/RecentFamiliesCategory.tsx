@@ -1,10 +1,11 @@
 import sortBy from "lodash/sortBy";
 import { LucideChevronDownCircle } from "lucide-react";
+import Link from "next/link";
 import { useContext, useMemo } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { EntityCard, IProps as IEntityCardProps } from "@/components/molecules/entityCard/EntityCard";
 import { ARROW_RIGHT } from "@/constants/chars";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 import { GeographiesContext } from "@/context/GeographiesContext";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { GeographyTypeV2, GeographyV2, TCategorySummary } from "@/types";
@@ -26,6 +27,7 @@ interface IProps {
   showAccordion?: boolean;
   isExpanded?: boolean;
   onAccordionClick?: () => void;
+  geography: GeographyV2;
 }
 
 export const RecentFamiliesCategory = ({
@@ -33,6 +35,7 @@ export const RecentFamiliesCategory = ({
   showAccordion = false,
   isExpanded = true,
   onAccordionClick,
+  geography,
 }: IProps) => {
   const allGeographies = useContext(GeographiesContext);
 
@@ -62,6 +65,14 @@ export const RecentFamiliesCategory = ({
 
   const accordionIconClasses = joinTailwindClasses("text-text-brand-darker", isExpanded && "rotate-180");
 
+  const viewAllUrlQuery = {
+    [QUERY_PARAMS.country]: geography.slug,
+  };
+
+  if (title.toLowerCase() !== "all") {
+    viewAllUrlQuery[QUERY_PARAMS.category] = title;
+  }
+
   return (
     <div className="border-b border-border-light">
       {/* Accordion */}
@@ -82,13 +93,15 @@ export const RecentFamiliesCategory = ({
               {cards.map((card) => (
                 <EntityCard key={card.href} {...card} />
               ))}
-              {/* TODO link to the search page with the given category filtered */}
-              <LinkWithQuery
-                href={`#`}
+              <Link
+                href={{
+                  pathname: "/search",
+                  query: { ...viewAllUrlQuery },
+                }}
                 className="min-w-16 max-w-25 flex-1 flex justify-center items-center bg-surface-brand-darker/8 text-text-brand-darker font-semibold leading-tight"
               >
                 All {ARROW_RIGHT}
-              </LinkWithQuery>
+              </Link>
             </div>
           )}
           <p className="mt-4 mb-12 text-sm text-text-tertiary">
