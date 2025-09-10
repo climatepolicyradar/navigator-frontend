@@ -14,8 +14,8 @@ export const Footer = () => {
       </div>
 
       <Columns>
-        <aside className="flex flex-col items-start">
-          <LinkWithQuery href="/">
+        <aside className="flex flex-col items-start cols-2:col-span-2 cols-3:col-span-1">
+          <LinkWithQuery href="/" className="max-w-70">
             {/* trunk-ignore(eslint/@next/next/no-img-element) */}
             <img src="/images/ccc/sabin-logo-large.png" alt="Sabin Center for Climate Change logo" className="w-full mb-2" />
           </LinkWithQuery>
