@@ -47,6 +47,9 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
 
   return (
     <Layout title={collection.title} description={collection.description} theme={theme} themeConfig={themeConfig} metadataKey="collection">
+      <SubNav>
+        <BreadCrumbs label={collection.title} />
+      </SubNav>
       <PageHeader<TCollectionTab>
         coloured
         label="Collection"
@@ -55,9 +58,6 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
         currentTab={currentTab}
         onTabChange={onTabChange}
       />
-      <SubNav>
-        <BreadCrumbs label={collection.title} />
-      </SubNav>
       <Columns>
         {currentTab === "cases" && (
           <>

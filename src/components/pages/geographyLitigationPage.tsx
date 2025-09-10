@@ -118,7 +118,6 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
   return (
     <GeographiesContext.Provider value={allGeographies}>
       <Layout metadataKey="geography" theme={theme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
-        <PageHeader coloured label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
         <SubNav>
           <BreadCrumbs
             geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
@@ -126,6 +125,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
             isSubdivision={!isCountry}
           />
         </SubNav>
+        <PageHeader coloured label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
         <Columns>
           <ContentsSideBar items={sidebarItems} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
           <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-2:col-span-2 cols-3:py-8 cols-3:gap-8 cols-4:col-span-3">

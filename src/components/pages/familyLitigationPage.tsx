@@ -139,7 +139,6 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
       metadataKey="family"
       attributionUrl={attributionUrl}
     >
-      <PageHeader label={categoryName} title={family.title} metadata={pageHeaderMetadata} />
       <SubNav>
         <BreadCrumbs
           geography={isCountry ? breadcrumbGeography : breadcrumbSubGeography}
@@ -148,6 +147,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
           label={family.title}
         />
       </SubNav>
+      <PageHeader label={categoryName} title={family.title} metadata={pageHeaderMetadata} />
       <Columns>
         <ContentsSideBar items={FAMILY_PAGE_SIDE_BAR_ITEMS} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
         <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-2:col-span-2 cols-3:py-8 cols-3:gap-8 cols-4:col-span-3">
