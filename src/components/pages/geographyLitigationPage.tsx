@@ -135,6 +135,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
             onAccordionClick={(id) => {
               fetchFamiliesByCategory(id);
             }}
+            geography={geographyV2}
           />
         );
       }, [envConfig, geographyV2, searchResultsByCategory, themeConfig]),

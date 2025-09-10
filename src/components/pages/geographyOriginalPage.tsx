@@ -52,7 +52,6 @@ export const GeographyOriginalPage = ({ geographyV2, targets, theme, themeConfig
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
-  const [selectedCategory, setselectedCategory] = useState<TDocumentCategory>(themeConfig.defaultDocumentCategory);
 
   const publishedTargets = sortFilterTargets(targets);
   const hasTargets = !!publishedTargets && publishedTargets?.length > 0;
@@ -72,7 +71,7 @@ export const GeographyOriginalPage = ({ geographyV2, targets, theme, themeConfig
     event.preventDefault();
     const newQuery = {};
     newQuery[QUERY_PARAMS.country] = geographyV2.slug;
-    const documentCategory = categories.find((cat) => cat.title === selectedCategory) || undefined;
+    const documentCategory = categories.find((cat) => cat.title === currentVespaSearchSelectedCategory) || undefined;
     if (documentCategory && documentCategory.title !== "All") {
       newQuery[QUERY_PARAMS.category] = documentCategory.slug;
     }
@@ -102,6 +101,7 @@ export const GeographyOriginalPage = ({ geographyV2, targets, theme, themeConfig
   );
 
   const countCategories = useMemo(
+    // This is a hack to get around the hacked value we have for litigation in `themes/cpr/config.ts`
     () => vespaSearchTabbedNavItems.map((item) => item.slug.toLocaleLowerCase()).filter((slug) => slug !== "litigation"),
     [vespaSearchTabbedNavItems]
   );
@@ -129,10 +129,18 @@ export const GeographyOriginalPage = ({ geographyV2, targets, theme, themeConfig
   };
 
   const handleVespaSearchTabClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string) => {
+    setCurrentVespaSearchSelectedCategory(value);
+
+    // This is a hack to get around the hacked value we have for litigation in `themes/cpr/config.ts`
+    if (value.startsWith("Litigation")) {
+      setCurrentVespaSearchResults({ families: [], total_family_hits: 0, hits: 0, query_time_ms: 0 });
+      return;
+    }
+
     const selectedThemeCategory = vespaSearchTabbedNavItems.find((category) => category.title === value);
     const categoryFilter = selectedThemeCategory.slug;
 
-    const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: categoryFilter }, themeConfig);
+    const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: categoryFilter, page_size: "3" }, themeConfig);
 
     const newVespaSearchResults = await vespaSearch(searchQuery);
     setCurrentVespaSearchResults(newVespaSearchResults);
@@ -203,8 +211,16 @@ export const GeographyOriginalPage = ({ geographyV2, targets, theme, themeConfig
                   <li className="mb-4 text-sm">{`There are no ${currentVespaSearchSelectedCategory} documents for ${geographyV2.name}.`}</li>
                 )}
               </ol>
+              {currentVespaSearchSelectedCategory.startsWith("Litigation") && (
+                <p className="my-4 md:mt-0">
+                  Climate litigation case documents are coming soon. In the meantime, visit the Sabin Center's{" "}
+                  <ExternalLink url="http://climatecasechart.com/" className="underline text-blue-600 hover:text-blue-800">
+                    Climate Change Litigation Databases
+                  </ExternalLink>
+                </p>
+              )}
             </section>
-            {selectedCategory !== "Litigation" && (
+            {currentVespaSearchSelectedCategory !== "Litigation" && (
               <div data-cy="see-more-button">
                 <Button rounded variant="outlined" className="my-5" onClick={handleDocumentSeeMoreClick}>
                   View more documents

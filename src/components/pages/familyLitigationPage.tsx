@@ -109,10 +109,8 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     },
     documents: {
       render: useCallback(
-        () => (
-          <DocumentsBlock countries={countries} family={family} matchesFamily={matchesFamily} matchesStatus={matchesStatus} showMatches={hasSearch} />
-        ),
-        [countries, family, hasSearch, matchesFamily, matchesStatus]
+        () => <DocumentsBlock family={family} matchesFamily={matchesFamily} matchesStatus={matchesStatus} showMatches={hasSearch} />,
+        [family, hasSearch, matchesFamily, matchesStatus]
       ),
     },
     metadata: {
