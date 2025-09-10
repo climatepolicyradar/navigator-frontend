@@ -71,7 +71,7 @@ export const TARGETS_STUB: TTarget[] = [
     "Target type": "trajectory_target",
     Source: "law",
     Description:
-      "Reduction of 40% in the average deforestation rate by 2006-2009 period in relation to the average rate of the ten years reference period used in the Amazon Fund (1996-2005). For each of the next two periods of four years, reach 30% of extra reduction, in relation to the previous period.     In the case of the Amazon bioma, achieving this specific objective can avoid emissions of around 4.8 billion tons of carbon dioxide between 2006 and 2017, considering a biomass carbon stock of 100 tC/ha. This value will be revaluated after the completion of the carbon stocks inventory, to be supported by the National Forest Inventory.  by 2006-2009 compared with a 1996-2005 scenario",
+      "Reduction of 40% in the average deforestation rate by 2006-2009 period in relation to the average rate of the ten years reference period used in the Amazon Fund (1996-2005). For each of the next two periods of four years, reach 30% of extra reduction, in relation to the previous period.     In the case of the Amazon bioma, achieving this specific objective can avoid emissions of around 4.8 billion tons of carbon dioxide between 2006 and 2017, considering a biomass carbon stock of 100 tC/ha. This value will be reevaluated after the completion of the carbon stocks inventory, to be supported by the National Forest Inventory.  by 2006-2009 compared with a 1996-2005 scenario",
     "GHG target": "TRUE",
     Year: "2009",
     "Base year period": "1996-2005",

@@ -22,6 +22,7 @@ const subCategories: Record<TCorpusTypeSubCategory, string> = {
 
 const categories: Record<TCategory, string> = {
   Litigation: "Litigation",
+  LITIGATION: "Litigation",
   Legislative: "Legislative",
   Law: "Legislative",
   Executive: "Policy",

@@ -63,6 +63,10 @@ lint:
     - linters: [markdownlint]
       paths:
         - LICENSE.md
+    - linters: [typos]
+      paths:
+        - src/constants/mapCentres.ts
+        - src/constants/stories.ts
 
   definitions:
     - name: typos
@@ -78,7 +82,7 @@ lint:
       commands:
         - output: sarif
           success_codes: [0, 2]
-          run: typos ${target} --format sarif
+          run: typos ${target} --format sarif --config ${workspace}/.trunk/configs/_typos.toml --no-unicode
           read_output_from: stdout
 
   enabled:
