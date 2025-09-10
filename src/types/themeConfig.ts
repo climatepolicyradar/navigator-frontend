@@ -70,6 +70,14 @@ type TThemeMetadata = {
   description: string;
 };
 
+type TThemePageBlockFamily = "documents" | "metadata" | "summary";
+type TThemePageBlockGeography = "legislative-process" | "recents" | "statistics" | "subdivisions" | "targets";
+
+type TThemePageBlocks = {
+  family: TThemePageBlockFamily[];
+  geography: TThemePageBlockGeography[];
+};
+
 export type TThemeConfig = {
   defaultCorpora?: string[];
   categories?: TThemeConfigCategory;
@@ -79,5 +87,6 @@ export type TThemeConfig = {
   metadata: TThemeMetadata[];
   documentCategories: TDocumentCategory[];
   defaultDocumentCategory: TDocumentCategory;
+  pageBlocks: TThemePageBlocks;
   features: TConfigFeatures;
 };
