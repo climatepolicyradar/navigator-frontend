@@ -13,7 +13,7 @@ interface IProps {
 }
 
 export const Hero = ({ handleSearchInput, searchInput }: IProps) => {
-  const latestQuery = useGetLatest();
+  const latestQuery = useGetLatest(3);
 
   return (
     <>

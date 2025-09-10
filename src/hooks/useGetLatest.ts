@@ -9,13 +9,13 @@ type TLatestReponse = {
   created: string;
 };
 
-export default function useGetLatest() {
+export default function useGetLatest(limit?: number) {
   return useQuery(
     "latest",
     async () => {
       const { data } = await getEnvFromServer();
       const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
-      const query_response = await client.get<TLatestReponse[]>("/latest");
+      const query_response = await client.get<TLatestReponse[]>("/latest", { limit: limit });
       return query_response.data.map((item) => ({
         title: item.title,
         slug: item.slugs[0],
