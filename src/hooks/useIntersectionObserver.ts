@@ -8,7 +8,7 @@ interface IArgs {
 }
 
 export const useIntersectionObserver = ({ rootMargin, elementsQuery, setActiveId }: IArgs) => {
-  const elementEntriesRef = useRef<Record<string, IntersectionObserverEntry>>({}); // Using useRef prevents unecessary rerenders
+  const elementEntriesRef = useRef<Record<string, IntersectionObserverEntry>>({}); // Using useRef prevents unnecessary rerenders
 
   useEffect(() => {
     const matchingElements: Element[] = Array.from(document.querySelectorAll(elementsQuery));
