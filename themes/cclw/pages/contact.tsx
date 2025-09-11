@@ -1,7 +1,6 @@
 import { ExternalLink } from "@/components/ExternalLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { SubNav } from "@/components/nav/SubNav";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
@@ -12,9 +11,7 @@ const Contact = () => {
       title="Contact"
       description="If you have questions or comments about the content of the database, use this page to get in touch with our team."
     >
-      <SubNav>
-        <BreadCrumbs label={"Contact"} />
-      </SubNav>
+      <BreadCrumbs label={"Contact"} />
       <section>
         <SiteWidth>
           <SingleCol>
