@@ -1,8 +1,8 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useCallback } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { Columns } from "@/components/atoms/columns/Columns";
 import { Debug } from "@/components/atoms/debug/Debug";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
@@ -10,16 +10,15 @@ import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
-import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
+import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { FAMILY_PAGE_SIDE_BAR_ITEMS } from "@/constants/sideBarItems";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
 import useSearch from "@/hooks/useSearch";
-import { TMatchedFamily } from "@/types";
+import { TMatchedFamily, TFamilyPageBlock } from "@/types";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
 import { getLitigationJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
@@ -131,6 +130,47 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     });
   }
 
+  /* Blocks */
+
+  const blocksToRender = themeConfig.pageBlocks.family;
+  const blockDefinitions: TBlockDefinitions<TFamilyPageBlock> = {
+    debug: {
+      render: () => (
+        <Section block="debug" title="Debug">
+          <Debug data={family} title="Family" />
+          <Debug data={countries} title="Countries" />
+          <Debug data={subdivisions} title="Subdivisions" />
+        </Section>
+      ),
+    },
+    documents: {
+      render: useCallback(
+        () => <DocumentsBlock family={family} matchesFamily={matchesFamily} matchesStatus={matchesStatus} showMatches={hasSearch} />,
+        [family, hasSearch, matchesFamily, matchesStatus]
+      ),
+    },
+    metadata: {
+      render: useCallback(() => {
+        const metadata = getFamilyMetadata(family, countries, subdivisions);
+        if (metadata.length === 0) return null;
+
+        return <MetadataBlock block="metadata" title="About this case" metadata={metadata} />;
+      }, [countries, family, subdivisions]),
+      sideBarItem: { display: "About" },
+    },
+    summary: {
+      render: () => {
+        if (!family.summary) return null;
+
+        return (
+          <TextBlock block="summary" title="Summary">
+            <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
+          </TextBlock>
+        );
+      },
+    },
+  };
+
   /* Render */
 
   return (
@@ -149,21 +189,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
         label={family.title}
       />
       <PageHeader label={categoryName} title={family.title} metadata={pageHeaderMetadata} />
-      <Columns>
-        <ContentsSideBar items={FAMILY_PAGE_SIDE_BAR_ITEMS} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
-        <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-2:col-span-2 cols-3:py-8 cols-3:gap-8 cols-4:col-span-3">
-          <DocumentsBlock family={family} matchesFamily={matchesFamily} matchesStatus={matchesStatus} showMatches={hasSearch} />
-          <TextBlock id="section-summary" title="Summary">
-            <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
-          </TextBlock>
-          <MetadataBlock title="About this case" metadata={getFamilyMetadata(family, countries, subdivisions)} id="section-metadata" />
-          {/* <Section id="section-debug" title="Debug">
-            <Debug data={family} title="Family" />
-            <Debug data={countries} title="Countries" />
-            <Debug data={subdivisions} title="Subdivisions" />
-          </Section> */}
-        </main>
-      </Columns>
+      <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
       <Head>
         <script
           type="application/ld+json"

@@ -41,7 +41,7 @@ export const TargetsBlock = ({ targets, theme }: IProps) => {
   const containerClasses = joinTailwindClasses("relative", entriesToHide && "pb-4");
 
   return (
-    <Section id="section-targets" title="Targets" count={targets.length}>
+    <Section block="targets" title="Targets" count={targets.length}>
       <div className={containerClasses}>
         <Card className="!p-12 flex flex-col gap-10 bg-surface-ui rounded-sm">
           {shownTargets.map((target) => {

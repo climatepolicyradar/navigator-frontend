@@ -1,3 +1,4 @@
+import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { TThemeConfig } from "@/types";
 
 import buildSearchQuery from "./buildSearchQuery";
@@ -7,6 +8,7 @@ describe("buildSearchQuery: ", () => {
     const allCategories = ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000592.n0000", "MCF.corpus.AF.Guidance"];
     const unfcccCategories = ["UNFCCC.corpus.i00000001.n0000"];
     const themeConfig: TThemeConfig = {
+      ...DEFAULT_THEME_CONFIG,
       defaultCorpora: undefined,
       categories: {
         label: "Category",
@@ -23,12 +25,6 @@ describe("buildSearchQuery: ", () => {
           },
         ],
       },
-      filters: [],
-      labelVariations: [],
-      links: [],
-      metadata: [],
-      documentCategories: ["All"],
-      defaultDocumentCategory: "All",
       features: {
         familyConceptsSearch: false,
         knowledgeGraph: true,
@@ -46,17 +42,12 @@ describe("buildSearchQuery: ", () => {
 
   it("should set the sort order to 'date' 'descending' if no query or sort is provided", () => {
     const themeConfig: TThemeConfig = {
+      ...DEFAULT_THEME_CONFIG,
       defaultCorpora: undefined,
       categories: {
         label: "Category",
         options: [],
       },
-      filters: [],
-      labelVariations: [],
-      links: [],
-      metadata: [],
-      documentCategories: [],
-      defaultDocumentCategory: "All",
       features: {
         familyConceptsSearch: false,
         knowledgeGraph: true,

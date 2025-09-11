@@ -1,7 +1,6 @@
 import { Meta, StoryObj } from "@storybook/nextjs";
 
 import { Columns } from "@/components/atoms/columns/Columns";
-import { getGeographyPageSidebarItems } from "@/constants/sideBarItems";
 import { LOREM_IPSUM } from "@/constants/stories";
 
 import { ContentsSideBar, IProps, ISideBarItem } from "./ContentsSideBar";
@@ -36,15 +35,32 @@ const usePageContext = ({ ...props }: IProps) => (
   </Columns>
 );
 
+const GEOGRAPHY_ITEMS: ISideBarItem[] = [
+  {
+    id: "section-recents",
+    display: "Recent documents",
+  },
+  {
+    id: "section-subdivisions",
+    display: "Geographic sub-divisions",
+  },
+  {
+    id: "section-statistics",
+    display: "Statistics",
+  },
+  {
+    id: "section-targets",
+    display: "Targets",
+  },
+  {
+    id: "section-legislative-process",
+    display: "Legislative process",
+  },
+];
+
 export const GeographyPage: TStory = {
   args: {
-    items: getGeographyPageSidebarItems({
-      isCountry: true,
-      legislativeProcess: true,
-      metadata: true,
-      subdivisions: true,
-      targets: true,
-    }),
+    items: GEOGRAPHY_ITEMS,
     containerClasses: "",
     stickyClasses: "",
   },
@@ -55,27 +71,27 @@ const FAMILY_ITEMS: ISideBarItem[] = [
   {
     id: "section-1",
     display: "Juliana v. United States",
-    context: "Federal Courts / 24-645",
+    context: ["Federal Courts", "24-645"],
   },
   {
     id: "section-2",
     display: "Juliana v. United States",
-    context: "Federal Courts / DB-485790",
+    context: ["Federal Courts", "DB-485790"],
   },
   {
     id: "section-3",
     display: "Juliana v. United States",
-    context: "Federal Courts / 56580-20",
+    context: ["Federal Courts", "56580-20"],
   },
   {
     id: "section-4",
     display: "In re Juliana",
-    context: "Federal Courts / DB-485790",
+    context: ["Federal Courts", "DB-485790"],
   },
   {
     id: "section-5",
     display: "United States v. U.S. District Court for the District of Oregon",
-    context: "Federal Courts / DB-485790",
+    context: ["Federal Courts", "DB-485790"],
   },
 ];
 

@@ -174,6 +174,10 @@ const config: TThemeConfig = {
   ],
   documentCategories: ["All", "UNFCCC Submissions", "Laws", "Policies", "Litigation"],
   defaultDocumentCategory: "All",
+  pageBlocks: {
+    family: [],
+    geography: [],
+  },
   features: {
     familyConceptsSearch: false,
     knowledgeGraph: true,

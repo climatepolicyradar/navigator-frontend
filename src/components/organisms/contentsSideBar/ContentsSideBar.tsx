@@ -8,7 +8,7 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 export interface ISideBarItem {
   id: string;
   display: string;
-  context?: string;
+  context?: string[];
 }
 
 export interface IProps {
@@ -49,7 +49,7 @@ export const ContentsSideBar = ({ containerClasses, items, stickyClasses }: IPro
               <Link key={item.id} href={`#${item.id}`} onClick={scrollToItem(item.id)}>
                 <Button color="mono" size="small" variant="ghost" className={buttonClasses}>
                   <span className={displayClasses}>{item.display}</span>
-                  {item.context && <span className="block pl-2.5">{item.context}</span>}
+                  {item.context?.length > 0 && <span className="block pl-2.5">{item.context.join(" / ")}</span>}
                 </Button>
               </Link>
             );

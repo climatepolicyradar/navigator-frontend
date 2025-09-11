@@ -2,7 +2,7 @@ import { Meta, StoryObj } from "@storybook/nextjs";
 
 import { Columns } from "@/components/atoms/columns/Columns";
 
-import { IProps, Section } from "./Section";
+import { TProps, Section } from "./Section";
 
 const meta = {
   title: "Molecules/Section",
@@ -15,7 +15,7 @@ type TStory = StoryObj<typeof Section>;
 
 export default meta;
 
-const useSectionContext = ({ children, ...props }: IProps) => (
+const useSectionContext = ({ children, ...props }: TProps) => (
   <Columns>
     <main className="cols-3:col-span-2 cols-4:col-span-3 grid grid-cols-subgrid gap-6">
       <Section {...props}>
@@ -36,7 +36,7 @@ export const WithTitle: TStory = {
 
 export const WithoutTitle: TStory = {
   args: {
-    id: "without-title",
+    block: "debug",
   },
   render: useSectionContext,
 };

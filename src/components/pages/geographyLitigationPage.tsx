@@ -1,44 +1,36 @@
 import sortBy from "lodash/fp/sortBy";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { Columns } from "@/components/atoms/columns/Columns";
+import { Debug } from "@/components/atoms/debug/Debug";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { RecentFamiliesBlock } from "@/components/blocks/recentFamiliesBlock/RecentFamiliesBlock";
 import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisionBlock";
+import { TargetsBlock } from "@/components/blocks/targetsBlock/TargetsBlock";
+import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
+import { Section } from "@/components/molecules/section/Section";
+import { SubNav } from "@/components/nav/SubNav";
+import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
-import { getGeographyPageSidebarItems } from "@/constants/sideBarItems";
 import { GeographiesContext } from "@/context/GeographiesContext";
-import { TSearch } from "@/types";
+import { TSearch, TGeographyPageBlock } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
+import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 import { IProps } from "./geographyOriginalPage";
 
 export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, targets, theme, themeConfig, vespaSearchResults, envConfig }: IProps) => {
-  // TODO handle block sorting/hiding programmatically (APP-1110)
-  // const publishedTargets = sortFilterTargets(targets);
-
-  const legislativeProcess = geographyV2.statistics?.legislative_process || "";
-  const geographyMetaData = geographyV2.statistics ? getGeographyMetaData(geographyV2.statistics) : [];
-
   const isCountry = geographyV2.type === "country";
+  const subdivisionsTitle = isCountry ? "Geographic sub-divisions" : "Related geographic sub-divisions";
 
   const allGeographies = [geographyV2, ...(geographyV2.has_subconcept || [])];
   if (parentGeographyV2) allGeographies.push(parentGeographyV2);
 
-  const subdivisions = useMemo(
-    () =>
-      sortBy(
-        "name",
-        isCountry ? geographyV2.has_subconcept : (parentGeographyV2?.has_subconcept || []).filter((subdivision) => subdivision.id !== geographyV2.id)
-      ),
-    [isCountry, geographyV2, parentGeographyV2]
-  );
+  /* Page header */
 
   const pageHeaderMetadata: IPageHeaderMetadata[] = [];
   if (!isCountry) {
@@ -52,13 +44,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
     });
   }
 
-  const sidebarItems = getGeographyPageSidebarItems({
-    isCountry,
-    metadata: geographyMetaData.length > 0,
-    targets: targets.length > 0,
-    legislativeProcess: Boolean(legislativeProcess),
-    subdivisions: subdivisions.length > 0,
-  });
+  /* Search requests */
 
   const [searchResultsByCategory, setSearchResultsByCategory] = useState<{ [categorySlug: string]: TSearch }>({
     All: vespaSearchResults,
@@ -70,47 +56,123 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
     });
   }, [vespaSearchResults]);
 
-  const documentCategories = useMemo(
-    () =>
-      themeConfig.categories
-        ? themeConfig.categories.options.map((category) => {
-            return {
-              title: category.label,
-              /** We need to maintain the slug to to know what to send to Vespa for querying. */
-              slug: category.slug,
-            };
-          })
-        : /** We generate an `All` for when themeConfig.categories are not available e.g. MCFs */
-          [
-            {
-              title: "All",
-              slug: "All",
-            },
-          ],
-    [themeConfig.categories]
-  );
+  /* Blocks */
 
-  const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
-  const fetchFamiliesByCategory = async (category: string) => {
-    if (searchResultsByCategory[category]) {
-      return searchResultsByCategory[category];
-    } else {
-      const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: category }, themeConfig);
-      const search: TSearch = await backendApiClient
-        .post("/searches", searchQuery, {
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => response.data);
+  const blocksToRender = themeConfig.pageBlocks.geography;
+  const blockDefinitions: TBlockDefinitions<TGeographyPageBlock> = {
+    debug: {
+      render: () => (
+        <Section block="debug" title="Debug">
+          <Debug data={geographyV2} title="Geography V2" />
+          <Debug data={parentGeographyV2} title="Parent geography V2" />
+          <Debug data={targets} title="Targets" />
+        </Section>
+      ),
+    },
+    "legislative-process": {
+      render: useCallback(() => {
+        const legislativeProcess = geographyV2.statistics?.legislative_process || "";
+        if (legislativeProcess.length === 0) return null;
 
-      setSearchResultsByCategory((currentFamilies) => ({
-        ...currentFamilies,
-        [category]: search,
-      }));
-    }
+        return (
+          <TextBlock block="legislative-process" title="Legislative process">
+            <div className="text-content" dangerouslySetInnerHTML={{ __html: legislativeProcess }} />
+          </TextBlock>
+        );
+      }, [geographyV2]),
+      sideBarItem: { display: "Legislative Process" },
+    },
+    recents: {
+      render: useCallback(() => {
+        const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
+
+        const fetchFamiliesByCategory = async (category: string) => {
+          if (searchResultsByCategory[category]) {
+            return searchResultsByCategory[category];
+          } else {
+            const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: category }, themeConfig);
+            const search: TSearch = await backendApiClient
+              .post("/searches", searchQuery, {
+                headers: {
+                  accept: "application/json",
+                  "Content-Type": "application/json",
+                },
+              })
+              .then((response) => response.data);
+
+            setSearchResultsByCategory((currentFamilies) => ({
+              ...currentFamilies,
+              [category]: search,
+            }));
+          }
+        };
+
+        const documentCategories = themeConfig.categories
+          ? themeConfig.categories.options.map((category) => {
+              return {
+                // We need to maintain the slug to to know what to send to Vespa for querying.
+                slug: category.slug,
+                title: category.label,
+              };
+            })
+          : [
+              {
+                // We generate an `All` for when themeConfig.categories are not available e.g. MCFs
+                slug: "All",
+                title: "All",
+              },
+            ];
+
+        return (
+          <RecentFamiliesBlock
+            categorySummaries={documentCategories.map((categorySummary) => {
+              return {
+                id: categorySummary.slug,
+                title: categorySummary.title,
+                families: searchResultsByCategory[categorySummary.slug]?.families || [],
+                count: searchResultsByCategory[categorySummary.slug]?.total_family_hits,
+                unit: ["document", "documents"],
+              };
+            })}
+            onAccordionClick={(id) => {
+              fetchFamiliesByCategory(id);
+            }}
+            geography={geographyV2}
+          />
+        );
+      }, [envConfig, geographyV2, searchResultsByCategory, themeConfig]),
+      sideBarItem: { display: "Recent documents" },
+    },
+    statistics: {
+      render: useCallback(() => {
+        const geographyMetaData = geographyV2.statistics ? getGeographyMetaData(geographyV2.statistics) : [];
+        if (geographyMetaData.length === 0) return null;
+
+        return <MetadataBlock block="statistics" title="Statistics" metadata={geographyMetaData} />;
+      }, [geographyV2]),
+    },
+    subdivisions: {
+      render: useCallback(() => {
+        const subdivisions = sortBy(
+          "name",
+          isCountry
+            ? geographyV2.has_subconcept
+            : (parentGeographyV2?.has_subconcept || []).filter((subdivision) => subdivision.id !== geographyV2.id)
+        );
+
+        return <SubDivisionBlock subdivisions={subdivisions} title={subdivisionsTitle} />;
+      }, [geographyV2, isCountry, parentGeographyV2, subdivisionsTitle]),
+      sideBarItem: { display: subdivisionsTitle },
+    },
+    targets: {
+      render: useCallback(() => {
+        const publishedTargets = sortFilterTargets(targets);
+        return <TargetsBlock targets={publishedTargets} theme={theme} />;
+      }, [targets, theme]),
+    },
   };
+
+  /* Render */
 
   return (
     <GeographiesContext.Provider value={allGeographies}>
@@ -121,41 +183,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
           isSubdivision={!isCountry}
         />
         <PageHeader coloured label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
-        <Columns>
-          <ContentsSideBar items={sidebarItems} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
-          <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-2:col-span-2 cols-3:py-8 cols-3:gap-8 cols-4:col-span-3">
-            <RecentFamiliesBlock
-              categorySummaries={documentCategories.map((categorySummary) => {
-                return {
-                  id: categorySummary.slug,
-                  title: categorySummary.title,
-                  families: searchResultsByCategory[categorySummary.slug]?.families || [],
-                  count: searchResultsByCategory[categorySummary.slug]?.total_family_hits,
-                  unit: ["document", "documents"],
-                };
-              })}
-              onAccordionClick={(id) => {
-                fetchFamiliesByCategory(id);
-              }}
-              geography={geographyV2}
-            />
-
-            <SubDivisionBlock subdivisions={subdivisions} title={isCountry ? "Geographic sub-divisions" : "Related geographic sub-divisions"} />
-            <MetadataBlock title="Statistics" metadata={geographyMetaData} id="section-statistics" />
-            {/* TODO handle block sorting/hiding programmatically (APP-1110)
-              <TargetsBlock targets={publishedTargets} theme={theme} />
-              {legislativeProcess.length > 0 && (
-                <TextBlock id="section-legislative-process" title="Legislative process">
-                  <div className="text-content" dangerouslySetInnerHTML={{ __html: legislativeProcess }} />
-                </TextBlock>
-            )} */}
-            {/* <Section id="section-debug" title="Debug">
-              <Debug data={geographyV2} title="Geography V2" />
-              <Debug data={parentGeographyV2} title="Parent geography V2" />
-              <Debug data={targets} title="Targets" />
-            </Section> */}
-          </main>
-        </Columns>
+        <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
       </Layout>
     </GeographiesContext.Provider>
   );

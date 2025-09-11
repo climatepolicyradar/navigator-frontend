@@ -138,6 +138,10 @@ const config: TThemeConfig = {
   ],
   documentCategories: ["All"],
   defaultDocumentCategory: "All",
+  pageBlocks: {
+    family: [],
+    geography: [],
+  },
   features: {
     familyConceptsSearch: false,
     knowledgeGraph: false,
