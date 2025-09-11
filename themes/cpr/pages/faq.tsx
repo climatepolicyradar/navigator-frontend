@@ -3,7 +3,6 @@ import { useContext } from "react";
 import FaqSection from "@/components/FaqSection";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { SubNav } from "@/components/nav/SubNav";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
 import { ThemePageFeaturesContext } from "@/context/ThemePageFeaturesContext";
@@ -20,9 +19,7 @@ const FAQ: React.FC = () => {
       title="FAQ"
       description="Find quick tips for how you can use Climate Policy Radar to explore climate laws, policies, and projects from across the world."
     >
-      <SubNav>
-        <BreadCrumbs label={"Frequently asked questions"} />
-      </SubNav>
+      <BreadCrumbs label={"Frequently asked questions"} />
       <section className="pt-8">
         <SiteWidth>
           <FaqSection title="FAQs" faqs={FAQS} />

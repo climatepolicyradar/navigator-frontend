@@ -22,7 +22,6 @@ import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
 import { Info } from "@/components/molecules/info/Info";
 import { Warning } from "@/components/molecules/warning/Warning";
-import { SubNav } from "@/components/nav/SubNav";
 import { ConceptPicker } from "@/components/organisms/ConceptPicker";
 import { FamilyConceptPicker } from "@/components/organisms/FamilyConceptPicker";
 import { GeographyPicker } from "@/components/organisms/GeographyPicker";
@@ -30,6 +29,7 @@ import Pagination from "@/components/pagination";
 import { MultiCol } from "@/components/panels/MultiCol";
 import { SideCol } from "@/components/panels/SideCol";
 import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 import SearchResultList from "@/components/search/SearchResultList";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
@@ -426,9 +426,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
       <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
         <section>
-          <SubNav>
+          <div className="md:flex justify-between items-center border-b border-gray-200">
             <BreadCrumbs label={"Search results"} />
-            <div>
+            <div className="px-3 cols-2:px-6 cols-3:px-8">
               <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
                 <span>Download data (.csv): </span>
                 <a
@@ -456,7 +456,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 )}
               </span>
             </div>
-          </SubNav>
+          </div>
           <MultiCol id="search">
             <SideCol
               extraClasses={`absolute z-99 top-0 w-screen bg-white duration-250 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] ${

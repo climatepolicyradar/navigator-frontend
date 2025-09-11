@@ -7,7 +7,6 @@ import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { DocumentMetaRenderer } from "@/components/documents/renderers/DocumentMetaRenderer";
-import { SubNav } from "@/components/nav/SubNav";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
@@ -59,13 +58,11 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
 
   return (
     <div className="bg-white border-solid border-lineBorder border-b border-gray-200">
-      <SubNav>
-        <BreadCrumbs
-          geography={breadcrumbGeography}
-          family={breadcrumbFamily}
-          label={breadcrumbLabel ? <span className="capitalize">{breadcrumbLabel}</span> : document.title}
-        />
-      </SubNav>
+      <BreadCrumbs
+        geography={breadcrumbGeography}
+        family={breadcrumbFamily}
+        label={breadcrumbLabel ? <span className="capitalize">{breadcrumbLabel}</span> : document.title}
+      />
       <SiteWidth>
         <div className="flex flex-col justify-between lg:flex-row flex-wrap">
           <div className="flex-1 my-4">

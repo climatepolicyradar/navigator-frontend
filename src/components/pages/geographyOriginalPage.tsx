@@ -13,7 +13,6 @@ import { CountryHeader } from "@/components/deprecated/CountryHeader";
 import { Divider } from "@/components/dividers/Divider";
 import { FamilyListItem } from "@/components/document/FamilyListItem";
 import Layout from "@/components/layouts/Main";
-import { SubNav } from "@/components/nav/SubNav";
 import TabbedNav from "@/components/nav/TabbedNav";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
@@ -153,13 +152,11 @@ export const GeographyOriginalPage = ({ geographyV2, parentGeographyV2, targets,
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="geography" text={geographyV2.name}>
       <section className="mb-8">
-        <SubNav>
-          <BreadCrumbs
-            geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
-            parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
-            isSubdivision={!isCountry}
-          />
-        </SubNav>
+        <BreadCrumbs
+          geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
+          parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
+          isSubdivision={!isCountry}
+        />
         <SiteWidth>
           <SingleCol extraClasses="mt-8">
             {displayBrazilNDCBanner && <BrazilImplementingNDCCard />}
