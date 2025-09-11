@@ -7,8 +7,10 @@ import { Debug } from "@/components/atoms/debug/Debug";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
+import { SubNav } from "@/components/nav/SubNav";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { MAX_PASSAGES } from "@/constants/paging";
@@ -57,9 +59,44 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
   const attributionUrl = family?.organisation_attribution_url;
 
   // TODO use the new geography endpoint + GeographyV2
+  // Grabs the subdivision from the list of geographies if it exists.
   const geographiesToDisplay = family.geographies.some((code) => code.includes("-"))
     ? family.geographies.filter((code) => code.includes("-"))
     : family.geographies;
+
+  const firstGeography = geographiesToDisplay[0];
+  const isCountry = !firstGeography.includes("-");
+  let breadcrumbGeography = null;
+  let breadcrumbSubGeography = null;
+
+  if (isCountry) {
+    // Is a country not a subdivision.
+    const geographySlug = getCountrySlug(firstGeography, countries);
+    const geographyName = getCountryName(firstGeography, countries);
+    breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
+  } else {
+    // Is a subdivision.
+    const subdivisionData = subdivisions.find((sub) => sub.code === firstGeography);
+    const subdivisionSlug = firstGeography.toLowerCase();
+    const subdivisionName = getSubdivisionName(firstGeography, subdivisions);
+
+    // Get parent geography data for the given subdivision.
+    if (subdivisionData) {
+      const countrySlug = getCountrySlug(subdivisionData.country_alpha_3, countries);
+      const countryName = getCountryName(subdivisionData.country_alpha_3, countries);
+
+      breadcrumbGeography = { label: countryName, href: `/geographies/${countrySlug}` };
+      breadcrumbSubGeography = { label: subdivisionName, href: `/geographies/${subdivisionSlug}` };
+    } else {
+      // Fallback to country if subdivision data lookup is not found.
+      const countryCode = firstGeography.split("-")[0];
+      const countrySlug = getCountrySlug(countryCode, countries);
+      const countryName = getCountryName(countryCode, countries);
+
+      breadcrumbGeography = { label: countryName, href: `/geographies/${countrySlug}` };
+      breadcrumbSubGeography = { label: subdivisionName, href: `/geographies/${subdivisionSlug}` };
+    }
+  }
 
   const pageHeaderMetadata: IPageHeaderMetadata[] = [
     { label: "Date", value: isNaN(year) ? "" : year },
@@ -106,6 +143,14 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
       metadataKey="family"
       attributionUrl={attributionUrl}
     >
+      <SubNav>
+        <BreadCrumbs
+          geography={isCountry ? breadcrumbGeography : breadcrumbSubGeography}
+          parentGeography={isCountry ? null : breadcrumbGeography}
+          isSubdivision={!isCountry}
+          label={family.title}
+        />
+      </SubNav>
       <PageHeader label={categoryName} title={family.title} metadata={pageHeaderMetadata} />
       <Columns>
         <ContentsSideBar items={FAMILY_PAGE_SIDE_BAR_ITEMS} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />

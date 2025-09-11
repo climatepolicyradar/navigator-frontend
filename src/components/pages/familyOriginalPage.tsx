@@ -99,7 +99,6 @@ export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page,
   const geographyNames = page.geographies ? page.geographies.map((geo) => getCountryName(geo, countries)) : null;
   const geographyName = geographyNames ? geographyNames[0] : "";
   const geographySlug = page.geographies ? getCountrySlug(page.geographies[0], countries) : "";
-  const breadcrumbCategory = { label: "Search results", href: "/search" };
   const breadcrumbGeography =
     page.geographies && page.geographies.length > 1 ? null : { label: geographyName, href: `/geographies/${geographySlug}` };
 
@@ -241,7 +240,7 @@ export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page,
         data-analytics-geography={page.geographies?.join(",")}
       >
         <SubNav>
-          <BreadCrumbs geography={breadcrumbGeography} category={breadcrumbCategory} label={page.title} />
+          <BreadCrumbs geography={breadcrumbGeography} label={page.title} />
         </SubNav>
         <MultiCol extraClasses="flex-wrap md:flex-nowrap">
           <SingleCol extraClasses={`mt-8 px-5 w-full`}>

@@ -7,7 +7,9 @@ import { Columns } from "@/components/atoms/columns/Columns";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { RecentFamiliesBlock } from "@/components/blocks/recentFamiliesBlock/RecentFamiliesBlock";
 import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisionBlock";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
+import { SubNav } from "@/components/nav/SubNav";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { getGeographyPageSidebarItems } from "@/constants/sideBarItems";
@@ -114,6 +116,13 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
   return (
     <GeographiesContext.Provider value={allGeographies}>
       <Layout metadataKey="geography" theme={theme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
+        <SubNav>
+          <BreadCrumbs
+            geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
+            parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
+            isSubdivision={!isCountry}
+          />
+        </SubNav>
         <PageHeader coloured label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
         <Columns>
           <ContentsSideBar items={sidebarItems} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
