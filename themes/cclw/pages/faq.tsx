@@ -5,7 +5,6 @@ import { FAQS } from "@/cclw/constants/faqs";
 import FaqSection from "@/components/FaqSection";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { SubNav } from "@/components/nav/SubNav";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
@@ -23,9 +22,7 @@ const FAQ: React.FC = () => {
       title="FAQ"
       description="Find quick tips for how you can use this resource to explore national-level climate change laws and policies from across the world."
     >
-      <SubNav>
-        <BreadCrumbs label={"Frequently asked questions"} />
-      </SubNav>
+      <BreadCrumbs label={"Frequently asked questions"} />
       <section>
         <SiteWidth>
           <SingleCol>

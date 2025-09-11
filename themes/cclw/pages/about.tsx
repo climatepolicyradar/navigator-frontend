@@ -5,7 +5,6 @@ import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { SubNav } from "@/components/nav/SubNav";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
@@ -16,9 +15,7 @@ const About = () => {
       title="About"
       description="Climate Change Laws of the World is a database of national-level climate change legislation and policies globally, led by the Grantham Research Institute at LSE."
     >
-      <SubNav>
-        <BreadCrumbs label={"About"} />
-      </SubNav>
+      <BreadCrumbs label={"About"} />
       <section>
         <SiteWidth>
           <SingleCol>

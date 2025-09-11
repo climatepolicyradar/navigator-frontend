@@ -1,7 +1,6 @@
 import { ExternalLink } from "@/components/ExternalLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { SubNav } from "@/components/nav/SubNav";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
@@ -12,9 +11,7 @@ const Contact = () => {
       title="Contact"
       description="Get in touch with us for inquiries, support, or feedback regarding our climate change resources and initiatives."
     >
-      <SubNav>
-        <BreadCrumbs label={"Contact us"} />
-      </SubNav>
+      <BreadCrumbs label={"Contact us"} />
       <section className="pt-8">
         <SiteWidth>
           <SingleCol>

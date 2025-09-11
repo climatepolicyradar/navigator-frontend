@@ -10,7 +10,6 @@ import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
-import { SubNav } from "@/components/nav/SubNav";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { MAX_PASSAGES } from "@/constants/paging";
@@ -183,14 +182,12 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
       metadataKey="family"
       attributionUrl={attributionUrl}
     >
-      <SubNav>
-        <BreadCrumbs
-          geography={isCountry ? breadcrumbGeography : breadcrumbSubGeography}
-          parentGeography={isCountry ? null : breadcrumbGeography}
-          isSubdivision={!isCountry}
-          label={family.title}
-        />
-      </SubNav>
+      <BreadCrumbs
+        geography={isCountry ? breadcrumbGeography : breadcrumbSubGeography}
+        parentGeography={isCountry ? null : breadcrumbGeography}
+        isSubdivision={!isCountry}
+        label={family.title}
+      />
       <PageHeader label={categoryName} title={family.title} metadata={pageHeaderMetadata} />
       <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
       <Head>

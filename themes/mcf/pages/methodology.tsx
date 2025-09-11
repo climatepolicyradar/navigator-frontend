@@ -1,6 +1,5 @@
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { SubNav } from "@/components/nav/SubNav";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
@@ -8,9 +7,7 @@ import { Heading } from "@/components/typography/Heading";
 const Methodology = () => {
   return (
     <Layout title="Methodology" description="Find the definitions, scope and principles we use to collect and categorise the laws and policies.">
-      <SubNav>
-        <BreadCrumbs label={"Methodology"} />
-      </SubNav>
+      <BreadCrumbs label={"Methodology"} />
       <section className="pt-8">
         <SiteWidth>
           <SingleCol>

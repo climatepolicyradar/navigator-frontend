@@ -16,7 +16,6 @@ import { Divider } from "@/components/dividers/Divider";
 import { FamilyDocument } from "@/components/document/FamilyDocument";
 import { FamilyHead } from "@/components/document/FamilyHead";
 import Layout from "@/components/layouts/Main";
-import { SubNav } from "@/components/nav/SubNav";
 import { MultiCol } from "@/components/panels/MultiCol";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { Event } from "@/components/timeline/Event";
@@ -239,9 +238,7 @@ export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page,
         data-analytics-type={getDocumentCategories().join(",")}
         data-analytics-geography={page.geographies?.join(",")}
       >
-        <SubNav>
-          <BreadCrumbs geography={breadcrumbGeography} label={page.title} />
-        </SubNav>
+        <BreadCrumbs geography={breadcrumbGeography} label={page.title} />
         <MultiCol extraClasses="flex-wrap md:flex-nowrap">
           <SingleCol extraClasses={`mt-8 px-5 w-full`}>
             <FamilyHead family={page} onCollectionClick={handleCollectionClick} />
