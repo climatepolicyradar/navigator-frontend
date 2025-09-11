@@ -44,7 +44,6 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
     href: `/document/${family.slug}`,
   };
   const breadcrumbLabel = isMain ? "Document" : document.document_role.toLowerCase();
-  const breadcrumbCategory = { label: "Search results", href: "/search" };
   const translated = document.languages.length === 0 || containsNonEnglish(document.languages);
 
   useEffect(() => {
@@ -63,7 +62,6 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
       <SubNav>
         <BreadCrumbs
           geography={breadcrumbGeography}
-          category={breadcrumbCategory}
           family={breadcrumbFamily}
           label={breadcrumbLabel ? <span className="capitalize">{breadcrumbLabel}</span> : document.title}
         />

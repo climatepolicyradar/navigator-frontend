@@ -9,8 +9,10 @@ import { RecentFamiliesBlock } from "@/components/blocks/recentFamiliesBlock/Rec
 import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisionBlock";
 import { TargetsBlock } from "@/components/blocks/targetsBlock/TargetsBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
+import { SubNav } from "@/components/nav/SubNav";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { GeographiesContext } from "@/context/GeographiesContext";
@@ -175,6 +177,13 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
   return (
     <GeographiesContext.Provider value={allGeographies}>
       <Layout metadataKey="geography" theme={theme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
+        <SubNav>
+          <BreadCrumbs
+            geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
+            parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
+            isSubdivision={!isCountry}
+          />
+        </SubNav>
         <PageHeader coloured label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
         <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
       </Layout>
