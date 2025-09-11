@@ -12,7 +12,6 @@ import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
-import { SubNav } from "@/components/nav/SubNav";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { GeographiesContext } from "@/context/GeographiesContext";
