@@ -122,6 +122,6 @@ Based on the workflow analysis, the most common failure points are:
 2. **code-quality job**: Trunk.io or TypeScript errors
 3. **lhci-\* jobs**: Missing Lighthouse CI tokens
 4. **percy job**: Missing Percy token or visual regressions
-5. **test-e2e\* jobs**: App behaviour regression (playright)
+5. **test-e2e\* jobs**: App behaviour regression (playwright)
 
 Start with the `test` job as it's the most straightforward to debug locally.
