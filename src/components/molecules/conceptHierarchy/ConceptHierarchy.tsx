@@ -17,14 +17,14 @@ export const ConceptHierarchy = ({ concept }: TProps) => {
   }
   return (
     <>
-      {concept.children.map((child, parentIndex) => (
+      {concept.children.map((child) => (
         <span key={child.id}>
           {concept.preferred_label}
-          {concept.children.length > 0 && hierarchyArrow}
+          {hierarchyArrow}
           {child.preferred_label}
           {child.children.map((child) => (
             <Fragment key={child.id}>
-              {parentIndex > 0 && hierarchyArrow}
+              {hierarchyArrow}
               <ConceptHierarchy concept={child} />
             </Fragment>
           ))}
