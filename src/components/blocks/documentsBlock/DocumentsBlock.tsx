@@ -50,7 +50,7 @@ export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatch
   };
 
   return (
-    <Section id="section-documents" title="Documents">
+    <Section block="documents" title="Documents">
       <Card variant="outlined" className="flex flex-col rounded-lg !p-5">
         {/* Controls */}
         <div className="pb-6">

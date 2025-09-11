@@ -27,7 +27,7 @@ export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick, geogr
   };
 
   return (
-    <Section id="section-recents" title="Recent documents">
+    <Section block="recents" title="Recent documents">
       {categorySummaries.map((category) => (
         <RecentFamiliesCategory
           key={category.title}

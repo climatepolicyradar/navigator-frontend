@@ -11,6 +11,7 @@ import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { SubNav } from "@/components/nav/SubNav";
+import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -26,7 +27,6 @@ import { joinNodes } from "@/utils/reactNode";
 import { convertDate } from "@/utils/timedate";
 
 import { IProps, isNewEndpointData } from "./familyOriginalPage";
-import { BlocksLayout, TBlockDefinitions } from "../organisms/blocksLayout/BlocksLayout";
 
 export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig }: IProps) => {
   // TODO remove when only the newer API endpoint is being called in getServerSideProps
@@ -137,7 +137,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
   const blockDefinitions: TBlockDefinitions<TFamilyPageBlock> = {
     debug: {
       render: () => (
-        <Section id="section-debug" title="Debug">
+        <Section block="debug" title="Debug">
           <Debug data={family} title="Family" />
           <Debug data={countries} title="Countries" />
           <Debug data={subdivisions} title="Subdivisions" />
@@ -155,7 +155,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
         const metadata = getFamilyMetadata(family, countries, subdivisions);
         if (metadata.length === 0) return null;
 
-        return <MetadataBlock title="About this case" metadata={metadata} id="section-metadata" />;
+        return <MetadataBlock block="metadata" title="About this case" metadata={metadata} />;
       }, [countries, family, subdivisions]),
       sideBarItem: { display: "About" },
     },
@@ -164,7 +164,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
         if (!family.summary) return null;
 
         return (
-          <TextBlock id="section-summary" title="Summary">
+          <TextBlock block="summary" title="Summary">
             <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
           </TextBlock>
         );

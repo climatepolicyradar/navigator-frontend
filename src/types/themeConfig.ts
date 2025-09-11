@@ -2,8 +2,11 @@ import { TConfigFeatures } from "./features";
 
 /* Blocks */
 
+// All of the possible block names used in TThemeConfig.pageBlocks to specify which blocks to render on each page
+// Adding a new block to a page? Add a new string to the page's type here, then add the new key to the TBlockDefinitions declaration on the page
 export type TFamilyPageBlock = "debug" | "documents" | "metadata" | "summary";
 export type TGeographyPageBlock = "debug" | "legislative-process" | "recents" | "statistics" | "subdivisions" | "targets";
+export type TBlock = TFamilyPageBlock | TGeographyPageBlock;
 
 type TThemePageBlocks = {
   family: TFamilyPageBlock[];

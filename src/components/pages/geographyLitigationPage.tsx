@@ -62,7 +62,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
   const blockDefinitions: TBlockDefinitions<TGeographyPageBlock> = {
     debug: {
       render: () => (
-        <Section id="section-debug" title="Debug">
+        <Section block="debug" title="Debug">
           <Debug data={geographyV2} title="Geography V2" />
           <Debug data={parentGeographyV2} title="Parent geography V2" />
           <Debug data={targets} title="Targets" />
@@ -75,7 +75,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
         if (legislativeProcess.length === 0) return null;
 
         return (
-          <TextBlock id="section-legislative-process" title="Legislative process">
+          <TextBlock block="legislative-process" title="Legislative process">
             <div className="text-content" dangerouslySetInnerHTML={{ __html: legislativeProcess }} />
           </TextBlock>
         );
@@ -148,7 +148,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
         const geographyMetaData = geographyV2.statistics ? getGeographyMetaData(geographyV2.statistics) : [];
         if (geographyMetaData.length === 0) return null;
 
-        return <MetadataBlock title="Statistics" metadata={geographyMetaData} id="section-statistics" />;
+        return <MetadataBlock block="statistics" title="Statistics" metadata={geographyMetaData} />;
       }, [geographyV2]),
     },
     subdivisions: {

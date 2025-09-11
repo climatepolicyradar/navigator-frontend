@@ -21,6 +21,12 @@ interface IProps<PageBlock extends string> {
   blockDefinitions: TBlockDefinitions<PageBlock>; // How to render each block and its sidebar item
 }
 
+/**
+ * Renders a sidebar and main content layout containing multiple block components
+ * If you are expecting a component to render and it isn't:
+ * 1. Check themeConfig.pageBlocks includes the block name for the given page
+ * 2. Check if the blockDefinitions render method is returning null (won't render the block or sidebar item)
+ */
 export const BlocksLayout = <PageBlock extends string>({ blockDefinitions, blocksToRender }: IProps<PageBlock>) => {
   const blocks: ReactNode[] = [];
   const sideBarItems: ISideBarItem[] = [];
