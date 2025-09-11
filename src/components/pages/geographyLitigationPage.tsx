@@ -9,7 +9,6 @@ import { RecentFamiliesBlock } from "@/components/blocks/recentFamiliesBlock/Rec
 import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisionBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { SubNav } from "@/components/nav/SubNav";
 import { ContentsSideBar } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { getGeographyPageSidebarItems } from "@/constants/sideBarItems";

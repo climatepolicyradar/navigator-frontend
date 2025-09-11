@@ -16,7 +16,6 @@ import { Divider } from "@/components/dividers/Divider";
 import { FamilyDocument } from "@/components/document/FamilyDocument";
 import { FamilyHead } from "@/components/document/FamilyHead";
 import Layout from "@/components/layouts/Main";
-import { SubNav } from "@/components/nav/SubNav";
 import { MultiCol } from "@/components/panels/MultiCol";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { Event } from "@/components/timeline/Event";

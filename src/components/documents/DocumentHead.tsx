@@ -7,7 +7,6 @@ import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { DocumentMetaRenderer } from "@/components/documents/renderers/DocumentMetaRenderer";
-import { SubNav } from "@/components/nav/SubNav";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";

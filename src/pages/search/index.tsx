@@ -22,7 +22,6 @@ import Layout from "@/components/layouts/Main";
 import { DownloadCsvPopup } from "@/components/modals/DownloadCsv";
 import { Info } from "@/components/molecules/info/Info";
 import { Warning } from "@/components/molecules/warning/Warning";
-import { SubNav } from "@/components/nav/SubNav";
 import { ConceptPicker } from "@/components/organisms/ConceptPicker";
 import { FamilyConceptPicker } from "@/components/organisms/FamilyConceptPicker";
 import { GeographyPicker } from "@/components/organisms/GeographyPicker";
@@ -426,37 +425,35 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
       <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
         <section>
-          <SubNav>
-            <BreadCrumbs label={"Search results"} />
-            <div>
-              <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
-                <span>Download data (.csv): </span>
-                <a
-                  href="#"
-                  className="flex gap-2 items-center justify-end text-blue-600 hover:underline hover:text-blue-800"
-                  data-cy="download-search-csv"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setShowCSVDownloadPopup(true);
-                  }}
-                >
-                  {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
-                </a>
-                {getThemeConfigLink(themeConfig, "download-database") && (
-                  <>
-                    <span>|</span>
-                    <ExternalLink
-                      url={getThemeConfigLink(themeConfig, "download-database").url}
-                      className="text-blue-600 hover:underline hover:text-blue-800"
-                      cy="download-entire-search-csv"
-                    >
-                      whole database
-                    </ExternalLink>
-                  </>
-                )}
-              </span>
-            </div>
-          </SubNav>
+          <BreadCrumbs label={"Search results"} />
+          <div>
+            <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
+              <span>Download data (.csv): </span>
+              <a
+                href="#"
+                className="flex gap-2 items-center justify-end text-blue-600 hover:underline hover:text-blue-800"
+                data-cy="download-search-csv"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowCSVDownloadPopup(true);
+                }}
+              >
+                {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
+              </a>
+              {getThemeConfigLink(themeConfig, "download-database") && (
+                <>
+                  <span>|</span>
+                  <ExternalLink
+                    url={getThemeConfigLink(themeConfig, "download-database").url}
+                    className="text-blue-600 hover:underline hover:text-blue-800"
+                    cy="download-entire-search-csv"
+                  >
+                    whole database
+                  </ExternalLink>
+                </>
+              )}
+            </span>
+          </div>
           <MultiCol id="search">
             <SideCol
               extraClasses={`absolute z-99 top-0 w-screen bg-white duration-250 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] ${

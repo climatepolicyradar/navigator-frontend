@@ -13,7 +13,6 @@ import { CountryHeader } from "@/components/deprecated/CountryHeader";
 import { Divider } from "@/components/dividers/Divider";
 import { FamilyListItem } from "@/components/document/FamilyListItem";
 import Layout from "@/components/layouts/Main";
-import { SubNav } from "@/components/nav/SubNav";
 import TabbedNav from "@/components/nav/TabbedNav";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
