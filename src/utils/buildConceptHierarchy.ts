@@ -6,7 +6,6 @@ export type TFamilyConceptTreeNode = TFamilyConcept & {
 
 function buildTree(concept: TFamilyConcept, allConcepts: TFamilyConcept[], visited: Set<string>): TFamilyConceptTreeNode {
   // If the concept has already been visited, return it with no children to avoid cycles
-  // This is important to prevent infinite loops in case of cyclic references
   if (visited.has(concept.id)) {
     return {
       ...concept,
@@ -15,14 +14,26 @@ function buildTree(concept: TFamilyConcept, allConcepts: TFamilyConcept[], visit
   }
   visited.add(concept.id);
 
-  // find concepts where this concept is a parent and of the same type
+  // Find all direct children for this concept (same type)
   const children = allConcepts
     .filter((child) => child.subconcept_of_labels.includes(concept.preferred_label) && child.type === concept.type)
     .map((child) => buildTree(child, allConcepts, new Set(visited)));
 
+  // If there are no children, return the node as is
+  if (children.length === 0) {
+    return {
+      ...concept,
+      children: [],
+    };
+  }
+
+  // For each child, create a separate tree (one per parent-child relationship)
   return {
     ...concept,
-    children,
+    children: children.map((child) => ({
+      ...child,
+      children: child.children, // preserve grandchildren
+    })),
   };
 }
 
