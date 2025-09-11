@@ -59,13 +59,11 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
 
   return (
     <div className="bg-white border-solid border-lineBorder border-b border-gray-200">
-      <SubNav>
-        <BreadCrumbs
-          geography={breadcrumbGeography}
-          family={breadcrumbFamily}
-          label={breadcrumbLabel ? <span className="capitalize">{breadcrumbLabel}</span> : document.title}
-        />
-      </SubNav>
+      <BreadCrumbs
+        geography={breadcrumbGeography}
+        family={breadcrumbFamily}
+        label={breadcrumbLabel ? <span className="capitalize">{breadcrumbLabel}</span> : document.title}
+      />
       <SiteWidth>
         <div className="flex flex-col justify-between lg:flex-row flex-wrap">
           <div className="flex-1 my-4">

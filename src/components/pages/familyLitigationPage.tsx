@@ -143,14 +143,12 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
       metadataKey="family"
       attributionUrl={attributionUrl}
     >
-      <SubNav>
-        <BreadCrumbs
-          geography={isCountry ? breadcrumbGeography : breadcrumbSubGeography}
-          parentGeography={isCountry ? null : breadcrumbGeography}
-          isSubdivision={!isCountry}
-          label={family.title}
-        />
-      </SubNav>
+      <BreadCrumbs
+        geography={isCountry ? breadcrumbGeography : breadcrumbSubGeography}
+        parentGeography={isCountry ? null : breadcrumbGeography}
+        isSubdivision={!isCountry}
+        label={family.title}
+      />
       <PageHeader label={categoryName} title={family.title} metadata={pageHeaderMetadata} />
       <Columns>
         <ContentsSideBar items={FAMILY_PAGE_SIDE_BAR_ITEMS} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />

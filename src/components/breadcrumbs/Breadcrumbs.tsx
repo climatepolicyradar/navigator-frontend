@@ -71,7 +71,7 @@ export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdiv
     const finalGeography = geography;
 
     return (
-      <ul className="flex items-baseline flex-wrap gap-2 text-sm" data-cy="breadcrumbs">
+      <ul className="flex items-baseline flex-wrap gap-2 text-sm px-3 cols-2:px-6 cols-3:px-8 py-4 border-b border-gray-200" data-cy="breadcrumbs">
         <BreadCrumb label="" href="/" cy="home" isHome />
         <BreadCrumb label="Search" href="/search" cy="search" />
         {breadcrumbGeography && <BreadCrumb label={breadcrumbGeography.label} href={breadcrumbGeography.href} cy="geography" />}
@@ -82,7 +82,7 @@ export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdiv
 
   if (isCollectionPage) {
     return (
-      <ul className="flex items-baseline flex-wrap gap-2 text-sm" data-cy="breadcrumbs">
+      <ul className="flex items-baseline flex-wrap gap-2 text-sm px-3 cols-2:px-6 cols-3:px-8 py-4 border-b border-gray-200" data-cy="breadcrumbs">
         <BreadCrumb label="" href="/" cy="home" isHome />
         <BreadCrumb label="Search" href="/search" cy="search" />
         {label && <BreadCrumb label={label} last cy="current" />}
@@ -94,7 +94,7 @@ export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdiv
   const breadcrumbSubGeography = isSubdivision ? geography : null;
 
   return (
-    <ul className="flex items-baseline flex-wrap gap-2 text-sm" data-cy="breadcrumbs">
+    <ul className="flex items-baseline flex-wrap gap-2 text-sm px-3 cols-2:px-6 cols-3:px-8 py-4 border-b border-gray-200" data-cy="breadcrumbs">
       <BreadCrumb label="" href="/" cy="home" isHome />
       <BreadCrumb label="Search" href="/search" cy="search" />
       {breadcrumbGeography && <BreadCrumb label={breadcrumbGeography.label} href={breadcrumbGeography.href} cy="geography" />}
