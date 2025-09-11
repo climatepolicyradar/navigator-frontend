@@ -39,6 +39,7 @@ export const getCollectionMetadata = (collection: TCollectionPublicWithFamilies)
 
   // Each family within the collection shares the same case categories and principal laws
   const hierarchy = buildConceptHierarchy(collection.families[0]?.concepts) || [];
+
   const caseCategories = hierarchy?.filter((concept) => concept.type === "legal_category");
   collectionMetadata.push({
     label: "Case category",
