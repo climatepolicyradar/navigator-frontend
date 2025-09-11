@@ -1,9 +1,11 @@
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { TThemeConfig, TThemeConfigFilter } from "@/types";
 
 import { canDisplayFilter } from "./canDisplayFilter";
 
 const testThemeConfig: TThemeConfig = {
+  ...DEFAULT_THEME_CONFIG,
   categories: {
     label: "TEST CATEGORIES",
     options: [
@@ -46,11 +48,6 @@ const testThemeConfig: TThemeConfig = {
       ],
     },
   ],
-  labelVariations: [],
-  links: [],
-  documentCategories: [],
-  defaultDocumentCategory: "All",
-  metadata: [],
   features: {
     familyConceptsSearch: false,
     knowledgeGraph: false,

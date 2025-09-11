@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
-import { IProps as ISectionProps } from "@/components/molecules/section/Section";
+import { TProps as TSectionProps } from "@/components/molecules/section/Section";
 import { Section } from "@/components/molecules/section/Section";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-interface IProps extends ISectionProps {
+type TProps = TSectionProps & {
   maxHeight?: number;
-}
+};
 
-export const TextBlock = ({ children, maxHeight = 150, ...sectionProps }: IProps) => {
+export const TextBlock = ({ children, maxHeight = 150, ...sectionProps }: TProps) => {
   const contentRef = useRef(null);
   const [contentHeight, setContentHeight] = useState(0);
   const [isOpen, setIsOpen] = useState(false);

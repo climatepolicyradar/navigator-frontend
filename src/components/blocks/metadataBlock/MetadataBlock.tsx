@@ -1,19 +1,19 @@
 import { ReactNode } from "react";
 
 import { Section } from "@/components/molecules/section/Section";
-import { IMetadata } from "@/types";
+import { IMetadata, TBlock } from "@/types";
 
 interface IProps {
+  block: TBlock;
   title?: string;
   metadata: IMetadata[];
-  id: string;
 }
 
-export const MetadataBlock = ({ title, metadata, id }: IProps) => {
+export const MetadataBlock = ({ block, metadata, title }: IProps) => {
   if (metadata.length === 0) return null;
 
   return (
-    <Section title={title} id={id}>
+    <Section block={block} title={title}>
       <div className="rounded border border-border-light p-12">
         <div className="grid gap-3">
           {metadata.length === 0 && <div className="text-text-secondary">Sorry, there is no data available at this time.</div>}

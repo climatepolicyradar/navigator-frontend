@@ -42,7 +42,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
   const sideBarItems: ISideBarItem[] = families.map((family) => ({
     id: `section-${family.slug}`,
     display: family.title,
-    context: [getCaseNumbers(family), getCourts(family)].filter((part) => part).join(" / "),
+    context: [getCaseNumbers(family), getCourts(family)].filter((part) => part),
   }));
 
   return (
@@ -83,8 +83,8 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
               <TextBlock id="section-summary" title="Summary">
                 <div className="text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
               </TextBlock>
-              <MetadataBlock metadata={getCollectionMetadata(collection)} id="section-collection-metadata" />
-              {/* <Section id="section-debug" title="Debug">
+              <MetadataBlock block="metadata" metadata={getCollectionMetadata(collection)} />
+              {/* <Section block="debug" title="Debug">
                 <Debug data={collection} title="Collection" />
               </Section> */}
             </main>

@@ -9,5 +9,9 @@ export const DEFAULT_THEME_CONFIG: TThemeConfig = {
   metadata: [],
   documentCategories: ["All"],
   defaultDocumentCategory: "All",
+  pageBlocks: {
+    family: [],
+    geography: [],
+  },
   features: DEFAULT_CONFIG_FEATURES,
 };

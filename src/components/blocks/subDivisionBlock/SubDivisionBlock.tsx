@@ -30,7 +30,7 @@ export const SubDivisionBlock = ({ subdivisions, title = "Geographic sub-divisio
   }
 
   return (
-    <Section id="section-subdivisions" title={title} count={subdivisions.length}>
+    <Section block="subdivisions" title={title} count={subdivisions.length}>
       <div className="rounded bg-surface-ui py-6 px-10">
         <ol className="text-sm list-none pl-5 grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3 grid-flow-dense">
           {subdivisions.map((subdivision, index) => (
