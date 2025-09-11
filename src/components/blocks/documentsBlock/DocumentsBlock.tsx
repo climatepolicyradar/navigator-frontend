@@ -45,6 +45,7 @@ export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatch
     [category, family]
   );
 
+  // If the case is new, there can be one placeholder document with no events. Handle this interim state
   const hasDocumentsToDisplay = tableRows.length > 0;
 
   const onToggleChange = (toggleValue: string[]) => {
