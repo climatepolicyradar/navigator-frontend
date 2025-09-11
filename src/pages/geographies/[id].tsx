@@ -97,7 +97,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         "Content-Type": "application/json",
       },
     })
-    .then((response) => response.data);
+    .then((response) => response.data)
+    /* eslint-disable-next-line no-console -- errors monitored and alerted on */
+    .catch((err) => console.error(`Could not find search results for geography ${geographyV2.slug}:`, err));
 
   if (!vespaSearchResults) {
     return { notFound: true };
