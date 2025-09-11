@@ -63,8 +63,9 @@ const BreadCrumb = ({ last = false, label = null, href = null, cy = "", isHome =
  * Lists the page hierarchy back to the homepage so that the user can better understand where they are, and to easily go back to a previous page.
  */
 export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdivision = false, category = null, family = null, label }: IProps) => {
-  const isGeographyPage = !category && !family && geography && !label;
-  const isCollectionPage = !category && !family && !geography;
+  const isSearchPage = label === "Search results";
+  const isGeographyPage = !isSearchPage && !category && !family && geography && !label;
+  const isCollectionPage = !isSearchPage && !category && !family && !geography;
 
   if (isGeographyPage) {
     const breadcrumbGeography = isSubdivision && parentGeography ? parentGeography : null;
@@ -94,7 +95,10 @@ export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdiv
   const breadcrumbSubGeography = isSubdivision ? geography : null;
 
   return (
-    <ul className="flex items-baseline flex-wrap gap-2 text-sm px-3 cols-2:px-6 cols-3:px-8 py-4 border-b border-gray-200" data-cy="breadcrumbs">
+    <ul
+      className={`flex items-baseline flex-wrap gap-2 text-sm px-3 cols-2:px-6 cols-3:px-8 py-4 ${isSearchPage ? "" : "border-b border-gray-200"}`}
+      data-cy="breadcrumbs"
+    >
       <BreadCrumb label="" href="/" cy="home" isHome />
       <BreadCrumb label="Search" href="/search" cy="search" />
       {breadcrumbGeography && <BreadCrumb label={breadcrumbGeography.label} href={breadcrumbGeography.href} cy="geography" />}
