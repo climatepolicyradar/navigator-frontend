@@ -1,21 +1,7 @@
-name: Deploy to production
+# copy/paste of deploy-production.yml
+name: Deploy all to production
 on:
-  workflow_dispatch:
-    inputs:
-      # This is a gated deploy workflow.
-      # User inputs are intentional and protected by:
-      # 1. Limited theme choices
-      # 2. Only deploying existing images
-      # trunk-ignore(checkov/CKV_GHA_7)
-      theme:
-        description: Theme to deploy
-        type: choice
-        required: true
-        options:
-          - cpr
-          - cclw
-          - mcf
-          - ccc
+  workflow_dispatch: {}
 
 permissions:
   id-token: write
@@ -23,7 +9,10 @@ permissions:
 
 jobs:
   deploy-production:
-    name: Deploy ${{ github.sha }} to ${{ inputs.theme }} production
+    strategy:
+      matrix:
+        theme: [cpr, cclw, mcf, ccc]
+    name: Deploy ${{ github.sha }} to ${{ matrix.theme }} production
     runs-on: ubuntu-latest
     environment:
       name: production
@@ -50,8 +39,8 @@ jobs:
           ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
           IMAGE_TAG: latest
           AWS_REGION: eu-west-1
-          ECR_REPOSITORY: navigator-frontend-${{ inputs.theme }}
-          THEME: ${{ inputs.theme }}
+          ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
+          THEME: ${{ matrix.theme }}
         # @related: GITHUB_SHA_ENV_VAR
         run: |
           docker build --build-arg THEME=${THEME} --build-arg GITHUB_SHA=$(git rev-parse HEAD) -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .

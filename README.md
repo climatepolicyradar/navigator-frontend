@@ -87,6 +87,8 @@ npm run test-e2e
 
 ## 🏭 Deployment
 
+- Go to the [Deploy all to production](https://github.com/climatepolicyradar/navigator-frontend/actions/workflows/deploy-all-production.yml)
+  GitHub action OR 👇
 - Go to the [Deploy to production](https://github.com/climatepolicyradar/navigator-frontend/actions/workflows/deploy-production.yml)
   GitHub action
 - You can only deploy from from `main`
