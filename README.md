@@ -101,6 +101,8 @@ This builds and pushes to the ECR `latest` tag which then
 No worries. Just disable the deployment actions above and let people know in the
 #application and #engineering Slack channels.
 
+![How to disable Github actions from the GitHub UI](./docs/images/disable-production-deployments.png)
+
 ### 🔙 Rollback
 
 - To rollback find [the merge commit](https://github.com/climatepolicyradar/navigator-frontend/commits/main/)
