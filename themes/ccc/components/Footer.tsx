@@ -8,7 +8,7 @@ export const Footer = () => {
   const strong = "font-semibold";
 
   return (
-    <footer>
+    <footer className="pb-4 py-2">
       <div className="w-full mx-auto px-3 mb-4">
         <Divider />
       </div>
