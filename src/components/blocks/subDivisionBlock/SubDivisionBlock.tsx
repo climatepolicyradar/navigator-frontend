@@ -11,6 +11,8 @@ type TProps = {
   title?: string;
 };
 
+type TSubGeoWithData = GeographyV2 & { has_data: boolean };
+
 const get2ColumnClass = (index: number, length: number): string => {
   if (index >= length / 2) {
     return "md:col-start-2";
@@ -28,7 +30,7 @@ const get3ColumnClass = (index: number, length: number): string => {
   return "";
 };
 
-type TSubGeoWithData = GeographyV2 & { has_data: boolean };
+const UK_SUBDIVISION_CODES = new Set(["GB-ENG", "GB-WLS", "GB-SCT", "GB-NIR"]);
 
 export const SubDivisionBlock = ({ subdivisions, title = "Geographic sub-divisions" }: TProps) => {
   const subGeosWithDataQuery = useSubdivisions();
@@ -41,10 +43,14 @@ export const SubDivisionBlock = ({ subdivisions, title = "Geographic sub-divisio
       if (subdivionsWithData.length === 0) {
         setSubGeosWithHasData([]);
       } else {
-        const updatedSubGeos = subdivisions.map((subdivision) => ({
+        let updatedSubGeos = subdivisions.map((subdivision) => ({
           ...subdivision,
           has_data: subGeosWithDataCodes.has(subdivision.id),
         }));
+        // TODO: remove later. Special case for UK - only show the four countries
+        if (updatedSubGeos[0].id.startsWith("GB-")) {
+          updatedSubGeos = updatedSubGeos.filter((sd) => UK_SUBDIVISION_CODES.has(sd.id));
+        }
         setSubGeosWithHasData(updatedSubGeos);
       }
     }
