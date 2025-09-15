@@ -1,5 +1,5 @@
 import sortBy from "lodash/sortBy";
-import { Fragment } from "react";
+import { Fragment, ReactNode } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { ConceptHierarchy } from "@/components/molecules/conceptHierarchy/ConceptHierarchy";
@@ -121,14 +121,20 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
 
   /* At issue */
 
-  metadata.push({
-    label: "At issue",
-    value: (
-      <div className="grid">
-        {family.metadata.core_object.length > 0 ? family.metadata.core_object.map((label) => <span key={label}>{label}</span>) : "N/A"}
-      </div>
-    ),
-  });
+  let atIssueValue: ReactNode = null;
+
+  if (isUSA && family.collections[0]) {
+    atIssueValue = <span>{family.collections[0].description}</span>;
+  } else if (!isUSA && family.metadata.core_object.length > 0) {
+    atIssueValue = family.metadata.core_object.map((label) => <span key={label}>{label}</span>);
+  }
+
+  if (atIssueValue) {
+    metadata.push({
+      label: "At issue",
+      value: <div className="grid">{atIssueValue}</div>,
+    });
+  }
 
   return metadata;
 }
