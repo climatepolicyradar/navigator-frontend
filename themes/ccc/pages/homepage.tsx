@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import { Footer } from "@/ccc/components/Footer";
 import { Hero } from "@/ccc/components/Hero";
+import { PoweredBy } from "@/ccc/components/PoweredBy";
 import { ExternalLink } from "@/components/ExternalLink";
 import Layout from "@/components/layouts/LandingPage";
 import { FullWidth } from "@/components/panels/FullWidth";
@@ -56,6 +57,7 @@ const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig, exact
           </div>
         </div>
       </SiteWidth>
+      <PoweredBy />
       <Footer />
     </Layout>
   );
