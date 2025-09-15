@@ -78,6 +78,13 @@ const nextConfig = {
     ];
   },
   devIndicators: false,
+  /**
+   * this is used for instrumentation.ts
+   * @see: https://github.com/vercel/next.js/issues/65324
+   */
+  experimental: {
+    serverComponentsExternalPackages: ["@vercel/otel"],
+  },
 };
 
 module.exports = nextConfig;

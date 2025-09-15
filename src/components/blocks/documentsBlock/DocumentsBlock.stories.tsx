@@ -44,3 +44,18 @@ export const WithMatches: TStory = {
     showMatches: true,
   },
 };
+
+export const WithAPlaceholderDocument: TStory = {
+  args: {
+    ...WithoutMatches.args,
+    family: {
+      ...FAMILY_NEW_STUB,
+      documents: [
+        {
+          ...FAMILY_NEW_STUB.documents[0],
+          events: [],
+        },
+      ],
+    },
+  },
+};
