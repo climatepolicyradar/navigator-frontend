@@ -16,7 +16,7 @@ export const PoweredBy = () => (
       </aside>
 
       <main className="cols-2:col-span-2 cols-4:col-span-3 grid grid-cols-subgrid gap-6">
-        <div className="col-span-full text-text-secondary flex flex-col justify-center ">
+        <div className="col-span-full text-text-secondary flex flex-col">
           <ExternalLink
             className="text-text-secondary text-base underline leading-normal flex items-center gap-2"
             url="https://www.climatepolicyradar.org"
