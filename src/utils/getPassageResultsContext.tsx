@@ -4,6 +4,8 @@ import { ConceptLink } from "@/components/molecules/conceptLink/ConceptLink";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { TConcept } from "@/types";
 
+import { pluralise } from "./pluralise";
+
 interface IArgs {
   isExactSearch?: boolean;
   passageMatches: number;
@@ -37,13 +39,12 @@ export const getPassageResultsContext = ({ isExactSearch, passageMatches, queryT
     ) : (
       <span className="font-bold">{passageMatches}</span>
     );
-  const matchesPlural = passageMatches === 1 ? "match" : "matches";
 
   const phrase = queryString ? `${isExactSearch ? "" : "phrases related to "}${queryString}` : null;
 
   return (
     <div>
-      {passages} {matchesPlural} for <ResultsTopicsContext phrase={phrase} selectedTopics={selectedTopics} />
+      {passages} {pluralise(passageMatches, ["match", "matches"])} for <ResultsTopicsContext phrase={phrase} selectedTopics={selectedTopics} />
     </div>
   );
 };
