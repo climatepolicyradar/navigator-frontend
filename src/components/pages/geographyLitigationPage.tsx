@@ -57,6 +57,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
 
   /* Blocks */
 
+  // TODO better app-specific family taxonomy
   const recentFamiliesTitle = theme === "ccc" ? "Recent cases" : "Recent families";
 
   const blocksToRender = themeConfig.pageBlocks.geography;
@@ -133,6 +134,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
                 title: categorySummary.title,
                 families: searchResultsByCategory[categorySummary.slug]?.families || [],
                 count: searchResultsByCategory[categorySummary.slug]?.total_family_hits,
+                // TODO better app-specific family taxonomy
                 singularAndPlural: theme === "ccc" ? ["case", "cases"] : ["document", "documents"],
               };
             })}
