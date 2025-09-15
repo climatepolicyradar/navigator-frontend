@@ -31,7 +31,7 @@ interface IProps {
 }
 
 export const RecentFamiliesCategory = ({
-  categorySummary: { count, families, title, unit },
+  categorySummary: { count, families, singularAndPlural, title },
   showAccordion = false,
   isExpanded = true,
   onAccordionClick,
@@ -105,7 +105,7 @@ export const RecentFamiliesCategory = ({
             </div>
           )}
           <p className="mt-4 mb-12 text-sm text-text-tertiary">
-            There {pluralise(count, "is", "are")} {count} {pluralise(count, ...unit)} in the database.
+            There {pluralise(count, ["is", "are"])} {count} {pluralise(count, singularAndPlural)} in the database.
           </p>
         </>
       )}
