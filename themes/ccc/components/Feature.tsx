@@ -5,6 +5,8 @@ import { Columns } from "@/components/atoms/columns/Columns";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 
+import { Card } from "./Card";
+
 interface IProps {
   heading?: string;
   subheading?: string;
@@ -18,19 +20,14 @@ interface IProps {
 export const Feature = ({ heading, subheading, contentSide = "left", image, imageAlt, inline = false, children }: IProps) => {
   if (inline) {
     return (
-      <div className="border border-gray-300 rounded-xl shadow p-8 h-full">
-        {heading && (
-          <Heading level={2} extraClasses="text-3xl xl:text-4xl !text-blue-600 !mb-2 !font-bold">
-            {heading}
-          </Heading>
-        )}
+      <Card heading={heading || ""} extraClasses="h-full">
         {subheading && (
           <Heading level={3} extraClasses="text-xl !text-gray-600 !mb-6 !font-semibold">
             {subheading}
           </Heading>
         )}
         {children}
-      </div>
+      </Card>
     );
   }
 
@@ -39,19 +36,14 @@ export const Feature = ({ heading, subheading, contentSide = "left", image, imag
       <SiteWidth>
         <Columns containerClasses="px-0" gridClasses="grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className={`${contentSide === "right" ? "lg:order-2" : ""}`}>
-            <div className="border border-gray-300 rounded-xl shadow p-8 h-full">
-              {heading && (
-                <Heading level={2} extraClasses="text-3xl xl:text-4xl !text-blue-600 !mb-2 !font-bold">
-                  {heading}
-                </Heading>
-              )}
+            <Card heading={heading || ""} extraClasses="h-full">
               {subheading && (
                 <Heading level={3} extraClasses="text-xl !text-gray-600 !mb-6 !font-semibold">
                   {subheading}
                 </Heading>
               )}
               {children}
-            </div>
+            </Card>
           </div>
           {image && (
             <div className={`${contentSide === "right" ? "lg:order-1" : ""}`}>
