@@ -109,7 +109,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
   return (
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
       {/* HEADER */}
-      {knowledgeGraphIsNew && <NewFeatureCard newFeature={NEW_FEATURES[0]} />}
+      {knowledgeGraphIsNew && <NewFeatureCard order={0} card={NEW_FEATURES[0].card} />}
       <span className="text-base font-semibold text-text-primary">
         <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
         {title}

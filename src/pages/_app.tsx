@@ -11,10 +11,10 @@ import { AdobeContext } from "@/context/AdobeContext";
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { NewFeatureContext } from "@/context/NewFeatureContext";
 import { PostHogProvider } from "@/context/PostHogProvider";
-import { ThemeContext } from "@/context/ThemeContext";
+import { ThemeContext, IProps as IThemeContextProps } from "@/context/ThemeContext";
 import "../styles/flag-icons.css";
 import "../styles/main.css";
-import { TThemeConfig } from "@/types";
+import { TTheme } from "@/types";
 import { getCookie, setCookie } from "@/utils/cookies";
 import getDomain from "@/utils/getDomain";
 import { readConfigFile } from "@/utils/readConfigFile";
@@ -31,10 +31,11 @@ interface IProps extends AppProps {
 function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
   const [siteTheme, setSiteTheme] = useState(null);
   const [adobeKey, setAdobeKey] = useState(null);
-
-  const [previousNewFeature, setPreviousNewFeature] = useState<number | null>(null);
-  const [displayNewFeature, setDisplayNewFeature] = useState<number | null>(null);
-  const [themeConfig, setThemeConfig] = useState<TThemeConfig>(DEFAULT_THEME_CONFIG);
+  const [themeContext, setThemeContext] = useState<IThemeContextProps>({
+    theme: theme as TTheme,
+    themeConfig: DEFAULT_THEME_CONFIG,
+    loaded: false,
+  });
 
   useEffect(() => {
     if (theme && theme !== "") {
@@ -52,13 +53,9 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
   const dynamicAdobeKey = adobeApiKey ?? adobeKey;
 
   useEffect(() => {
-    // Determine the last feature the user saw
-    const updateCookie = parseInt(getCookie(COOKIE_FEATURES_NAME));
-    setPreviousNewFeature(Number.isNaN(updateCookie) ? -1 : updateCookie);
-
     const getThemeConfig = async () => {
-      const config = await readConfigFile(dynamicTheme);
-      setThemeConfig(config);
+      const themeConfig = await readConfigFile(dynamicTheme);
+      setThemeContext((current) => ({ ...current, themeConfig, loaded: true }));
     };
     if (dynamicTheme) getThemeConfig();
   }, [dynamicTheme]);
@@ -68,10 +65,22 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
     setConsent(consent);
   };
 
+  /* New features (onboarding) */
+
+  const [previousNewFeature, setPreviousNewFeature] = useState<number | null>(null);
+  const [displayNewFeature, setDisplayNewFeature] = useState<number | null>(null);
+
+  useEffect(() => {
+    // Determine the last feature the user saw. -1 = none
+    const newFeaturesCookie = parseInt(getCookie(COOKIE_FEATURES_NAME));
+    setPreviousNewFeature(Number.isNaN(newFeaturesCookie) ? -1 : newFeaturesCookie);
+  }, [dynamicTheme]);
+
   const setNewFeatureSeen = (order: number) => {
     setCookie(COOKIE_FEATURES_NAME, order.toString(), getDomain());
     setPreviousNewFeature(order);
   };
+
   const newFeatureContextProviderValue = {
     displayNewFeature,
     setDisplayNewFeature,
@@ -79,9 +88,11 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
     setPreviousNewFeature: setNewFeatureSeen,
   };
 
+  /* Render */
+
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeContext.Provider value={{ theme: dynamicTheme, themeConfig }}>
+      <ThemeContext.Provider value={themeContext}>
         <NewFeatureContext.Provider value={newFeatureContextProviderValue}>
           <AdobeContext.Provider value={dynamicAdobeKey}>
             <PostHogProvider consent={consent}>

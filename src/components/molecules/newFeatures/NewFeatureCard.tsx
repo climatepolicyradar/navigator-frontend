@@ -3,42 +3,57 @@ import { useContext } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
 import { Card } from "@/components/atoms/card/Card";
-import { INewFeature } from "@/constants/newFeatures";
 import { NewFeatureContext } from "@/context/NewFeatureContext";
+import { TNewFeatureButtonAction, TNewFeatureCard } from "@/types";
 
-interface IProps {
+export interface IProps {
   className?: string;
-  newFeature: INewFeature;
+  order: number;
+  card: TNewFeatureCard;
 }
 
-export const NewFeatureCard = ({ className, newFeature: { cardText, order } }: IProps) => {
+export const NewFeatureCard = ({ className, order, card: { buttonPrimary, buttonSecondary, close, text, title } }: IProps) => {
   const { previousNewFeature, setDisplayNewFeature, setPreviousNewFeature } = useContext(NewFeatureContext);
 
   if (previousNewFeature === null || previousNewFeature >= order) return null;
 
-  const onDismiss = () => setPreviousNewFeature(order);
+  const buttonActions: Record<TNewFeatureButtonAction, () => void> = {
+    dismiss: () => setPreviousNewFeature(order),
+    showModal: () => setDisplayNewFeature(order),
+  };
 
   return (
     <Card className={className}>
-      <div className="flex justify-between text-text-light">
-        <span className="text-sm leading-tight font-semibold">New improvement</span>
-        <button type="button" onClick={onDismiss}>
-          <X size="16" />
-        </button>
-      </div>
-      <p className="mt-1.5 mb-3 text-sm text-text-light/85">{cardText}</p>
+      {(title || close) && (
+        <div className="flex justify-end text-text-light">
+          {title && <span className="flex-1 text-sm leading-tight font-semibold">{title}</span>}
+          {close && (
+            <button type="button" onClick={buttonActions.dismiss}>
+              <X size="16" />
+            </button>
+          )}
+        </div>
+      )}
+      <p className="mt-1.5 mb-3 text-sm text-text-light/85">{text}</p>
       <div className="flex gap-2">
         <Button
           size="small"
           variant="outlined"
           className="border-border-light/75 hover:border-border-light hover:!bg-transparent text-text-light"
-          onClick={() => setDisplayNewFeature(order)}
+          onClick={buttonActions[buttonPrimary.action]}
         >
-          Learn more
+          {buttonPrimary.text}
         </Button>
-        <Button size="small" variant="ghost" className="text-text-light/75 hover:text-text-light hover:!bg-transparent" onClick={onDismiss}>
-          Dismiss
-        </Button>
+        {buttonSecondary && (
+          <Button
+            size="small"
+            variant="ghost"
+            className="text-text-light/75 hover:text-text-light hover:!bg-transparent"
+            onClick={buttonActions[buttonSecondary.action]}
+          >
+            {buttonSecondary.text}
+          </Button>
+        )}
       </div>
     </Card>
   );

@@ -1,6 +1,5 @@
 import startCase from "lodash/startCase";
 import { ChevronUp, TextSearch } from "lucide-react";
-import Link from "next/link";
 import { useContext, useState } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
@@ -85,7 +84,7 @@ export const ConceptsPanel = ({ rootConcepts, concepts, onConceptClick }: IProps
   return (
     <div className="flex flex-col gap-4 pb-4 text-sm">
       <div className="flex flex-col gap-4 pb-4 border-b border-border-light text-text-secondary">
-        {knowledgeGraphIsNew && <NewFeatureCard newFeature={NEW_FEATURES[0]} />}
+        {knowledgeGraphIsNew && <NewFeatureCard order={0} card={NEW_FEATURES[0].card} />}
         <span className="text-base font-semibold text-text-primary">
           <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
           Find mentions of topics
