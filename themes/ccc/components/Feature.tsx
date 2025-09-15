@@ -18,15 +18,22 @@ interface IProps {
 }
 
 export const Feature = ({ heading, subheading, contentSide = "left", image, imageAlt, inline = false, children }: IProps) => {
+  const cardContent = (
+    <>
+      {subheading && (
+        // Because this component uses the Card component, we need to override the heading style in order to get the look we want
+        <Heading level={3} extraClasses="text-2xl !text-gray-600 !mb-6 !font-bold">
+          {subheading}
+        </Heading>
+      )}
+      {children}
+    </>
+  );
+
   if (inline) {
     return (
       <Card heading={heading || ""} extraClasses="h-full" headingClasses="text-blue-900 text-2xl font-bold">
-        {subheading && (
-          <Heading level={3} extraClasses="text-2xl !text-gray-600 !mb-6 !font-bold">
-            {subheading}
-          </Heading>
-        )}
-        {children}
+        {cardContent}
       </Card>
     );
   }
@@ -37,27 +44,20 @@ export const Feature = ({ heading, subheading, contentSide = "left", image, imag
         <Columns containerClasses="px-0" gridClasses="grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className={`${contentSide === "right" ? "lg:order-2" : ""}`}>
             <Card heading={heading || ""} extraClasses="h-full" headingClasses="text-blue-900 text-2xl font-bold">
-              {subheading && (
-                <Heading level={3} extraClasses="text-2xl !text-gray-600 !mb-6 !font-bold">
-                  {subheading}
-                </Heading>
-              )}
-              {children}
+              {cardContent}
             </Card>
           </div>
           {image && (
             <div className={`${contentSide === "right" ? "lg:order-1" : ""}`}>
-              <div className="rounded-2xl border-[12px] border-gray-300 bg-gray-300 shadow-2xl">
-                <Image
-                  src={`/images/ccc/images/${image}`}
-                  alt={imageAlt}
-                  width={800}
-                  height={619}
-                  quality={85}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 50vw"
-                  className="rounded-xl"
-                />
-              </div>
+              <Image
+                src={`/images/ccc/images/${image}`}
+                alt={imageAlt}
+                width={800}
+                height={619}
+                quality={85}
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 50vw"
+                className="rounded-2xl border-[12px] border-gray-300 bg-gray-300 shadow-2xl"
+              />
             </div>
           )}
         </Columns>
