@@ -453,7 +453,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           <p className="text-text-secondary">Darker color indicates the number of litigation submissions in our databases.</p>
           <p className="text-text-tertiary">
             This map uses the{" "}
-            <ExternalLink className="underline" url="https://en.wikipedia.org/wiki/ISO_3166">
+            <ExternalLink className="underline" url="https://www.iso.org/iso-3166-country-codes.html">
               ISO 3166
             </ExternalLink>{" "}
             country code standard and is without prejudice to the status of or sovereignty over any territory.
