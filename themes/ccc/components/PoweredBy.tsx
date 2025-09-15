@@ -21,11 +21,18 @@ export const PoweredBy = () => (
             className="text-text-secondary text-base underline leading-normal flex items-center gap-2"
             url="https://www.climatepolicyradar.org"
           >
-            <Image src="/images/climate-text.svg" width={0} height={30} alt="Climate" data-cy="cpr-logo-climate-text" className="w-auto" />
-            <Image src="/images/new-cpr-radar-logo.svg" width={0} height={30} alt="Climate Policy Radar logo" data-cy="cpr-logo" className="w-auto" />
+            <Image src="/images/climate-text.svg" width={50} height={30} alt="Climate" data-cy="cpr-logo-climate-text" className="w-auto" />
+            <Image
+              src="/images/new-cpr-radar-logo.svg"
+              width={30}
+              height={30}
+              alt="Climate Policy Radar logo"
+              data-cy="cpr-logo"
+              className="w-auto"
+            />
             <Image
               src="/images/policy-radar-text.svg"
-              width={0}
+              width={50}
               height={30}
               alt="Policy Radar"
               data-cy="cpr-logo-policy-radar-text"
