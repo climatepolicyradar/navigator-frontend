@@ -61,7 +61,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
   const blockDefinitions: TBlockDefinitions<TGeographyPageBlock> = {
     debug: {
       render: () => (
-        <Section block="debug" title="Debug">
+        <Section key="debug" block="debug" title="Debug">
           <Debug data={geographyV2} title="Geography V2" />
           <Debug data={parentGeographyV2} title="Parent geography V2" />
           <Debug data={targets} title="Targets" />
@@ -74,7 +74,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
         if (legislativeProcess.length === 0) return null;
 
         return (
-          <TextBlock block="legislative-process" title="Legislative process">
+          <TextBlock key="legislative-process" block="legislative-process" title="Legislative process">
             <div className="text-content" dangerouslySetInnerHTML={{ __html: legislativeProcess }} />
           </TextBlock>
         );
@@ -124,6 +124,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
 
         return (
           <RecentFamiliesBlock
+            key="recents"
             categorySummaries={documentCategories.map((categorySummary) => {
               return {
                 id: categorySummary.slug,
@@ -147,7 +148,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
         const geographyMetaData = geographyV2.statistics ? getGeographyMetaData(geographyV2.statistics) : [];
         if (geographyMetaData.length === 0) return null;
 
-        return <MetadataBlock block="statistics" title="Statistics" metadata={geographyMetaData} />;
+        return <MetadataBlock key="statistics" block="statistics" title="Statistics" metadata={geographyMetaData} />;
       }, [geographyV2]),
     },
     subdivisions: {
@@ -159,14 +160,14 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
             : (parentGeographyV2?.has_subconcept || []).filter((subdivision) => subdivision.id !== geographyV2.id)
         );
 
-        return <SubDivisionBlock subdivisions={subdivisions} title={subdivisionsTitle} />;
+        return <SubDivisionBlock key="subdivisions" subdivisions={subdivisions} title={subdivisionsTitle} />;
       }, [geographyV2, isCountry, parentGeographyV2, subdivisionsTitle]),
       sideBarItem: { display: subdivisionsTitle },
     },
     targets: {
       render: useCallback(() => {
         const publishedTargets = sortFilterTargets(targets);
-        return <TargetsBlock targets={publishedTargets} theme={theme} />;
+        return <TargetsBlock key="targets" targets={publishedTargets} theme={theme} />;
       }, [targets, theme]),
     },
   };
