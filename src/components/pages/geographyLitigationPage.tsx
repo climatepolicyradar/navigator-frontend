@@ -57,6 +57,9 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
 
   /* Blocks */
 
+  // TODO better app-specific family taxonomy
+  const recentFamiliesTitle = theme === "ccc" ? "Recent cases" : "Recent families";
+
   const blocksToRender = themeConfig.pageBlocks.geography;
   const blockDefinitions: TBlockDefinitions<TGeographyPageBlock> = {
     debug: {
@@ -131,17 +134,19 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
                 title: categorySummary.title,
                 families: searchResultsByCategory[categorySummary.slug]?.families || [],
                 count: searchResultsByCategory[categorySummary.slug]?.total_family_hits,
-                unit: ["document", "documents"],
+                // TODO better app-specific family taxonomy
+                singularAndPlural: theme === "ccc" ? ["case", "cases"] : ["document", "documents"],
               };
             })}
             onAccordionClick={(id) => {
               fetchFamiliesByCategory(id);
             }}
             geography={geographyV2}
+            title={recentFamiliesTitle}
           />
         );
-      }, [envConfig, geographyV2, searchResultsByCategory, themeConfig]),
-      sideBarItem: { display: "Recent documents" },
+      }, [envConfig, geographyV2, recentFamiliesTitle, searchResultsByCategory, theme, themeConfig]),
+      sideBarItem: { display: recentFamiliesTitle },
     },
     statistics: {
       render: useCallback(() => {

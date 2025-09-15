@@ -44,7 +44,7 @@ export const FamilyBlock = ({ family }: IProps) => {
             {caseNumbers && <span>{caseNumbers}</span>}
             {courts && <span>{courts}</span>}
             <span>
-              {tableRows.length} {pluralise(tableRows.length, "entry", "entries")}
+              {tableRows.length} {pluralise(tableRows.length, ["entry", "entries"])}
             </span>
           </div>
           <InteractiveTable<TEventTableColumnId>

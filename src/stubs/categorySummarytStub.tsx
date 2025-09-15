@@ -5,7 +5,7 @@ export const CATEGORY_SUMMARY_STUB: TCategorySummary[] = [
     id: "Executive",
     count: 74,
     title: "Executive",
-    unit: ["Policy", "Policies"],
+    singularAndPlural: ["Policy", "Policies"],
     families: [
       {
         family_slug: "clean-power-2030-action-plan_c2c5",
@@ -113,7 +113,7 @@ export const CATEGORY_SUMMARY_STUB: TCategorySummary[] = [
     id: "Legislative",
     title: "Legislative",
     count: 33,
-    unit: ["Law", "Laws"],
+    singularAndPlural: ["Law", "Laws"],
     families: [
       {
         family_slug: "the-climate-change-targeted-greenhouse-gases-order-2023_d2ab",
@@ -221,7 +221,7 @@ export const CATEGORY_SUMMARY_STUB: TCategorySummary[] = [
     id: "UNFCCC",
     title: "UNFCCC",
     count: 19,
-    unit: ["Document", "Documents"],
+    singularAndPlural: ["Document", "Documents"],
     families: [
       {
         family_slug: "united-kingdom-national-inventory-report-nir-2025_3a70",
@@ -324,7 +324,7 @@ export const CATEGORY_SUMMARY_STUB: TCategorySummary[] = [
     id: "Reports",
     title: "Reports",
     count: 73,
-    unit: ["Report", "Reports"],
+    singularAndPlural: ["Report", "Reports"],
     families: [
       {
         family_slug: "aviva-plc-corporate-transition-plan-2021-2024_2e00",
@@ -427,14 +427,14 @@ export const CATEGORY_SUMMARY_STUB: TCategorySummary[] = [
     id: "MCF",
     title: "MCF",
     count: 0,
-    unit: ["Document", "Documents"],
+    singularAndPlural: ["Document", "Documents"],
     families: [],
   },
   {
     id: "Litigation",
     title: "Litigation",
     count: 0,
-    unit: ["Document", "Documents"],
+    singularAndPlural: ["Document", "Documents"],
     families: [],
   },
 ];
