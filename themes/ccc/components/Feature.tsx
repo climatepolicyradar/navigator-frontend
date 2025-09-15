@@ -20,9 +20,9 @@ interface IProps {
 export const Feature = ({ heading, subheading, contentSide = "left", image, imageAlt, inline = false, children }: IProps) => {
   if (inline) {
     return (
-      <Card heading={heading || ""} extraClasses="h-full">
+      <Card heading={heading || ""} extraClasses="h-full" headingClasses="text-blue-900 text-2xl font-bold">
         {subheading && (
-          <Heading level={3} extraClasses="text-xl !text-gray-600 !mb-6 !font-semibold">
+          <Heading level={3} extraClasses="text-2xl !text-gray-600 !mb-6 !font-bold">
             {subheading}
           </Heading>
         )}
@@ -36,9 +36,9 @@ export const Feature = ({ heading, subheading, contentSide = "left", image, imag
       <SiteWidth>
         <Columns containerClasses="px-0" gridClasses="grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className={`${contentSide === "right" ? "lg:order-2" : ""}`}>
-            <Card heading={heading || ""} extraClasses="h-full">
+            <Card heading={heading || ""} extraClasses="h-full" headingClasses="text-blue-900 text-2xl font-bold">
               {subheading && (
-                <Heading level={3} extraClasses="text-xl !text-gray-600 !mb-6 !font-semibold">
+                <Heading level={3} extraClasses="text-2xl !text-gray-600 !mb-6 !font-bold">
                   {subheading}
                 </Heading>
               )}

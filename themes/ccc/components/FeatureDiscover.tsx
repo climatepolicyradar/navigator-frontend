@@ -7,7 +7,7 @@ import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Feature } from "./Feature";
 
 export const FeatureDiscover = () => (
-  <div className="bg-white py-16">
+  <div className="pt-12 pb-4">
     <SiteWidth>
       <Columns containerClasses="px-0" gridClasses="grid-cols-1 lg:grid-cols-2 gap-8">
         <Feature heading="About us" subheading="Learn about this project" contentSide="left" inline={true}>
@@ -15,7 +15,7 @@ export const FeatureDiscover = () => (
             The Sabin Center for Climate Change Law's Climate Litigation Database is the most comprehensive resource tracking climate change
             litigation worldwide. It contains more than 3,000 cases that address climate change law, policy, and science.
           </p>
-          <LinkWithQuery href="/about" className="text-blue-600 hover:text-blue-800 underline text-lg font-medium">
+          <LinkWithQuery href="/about" className="text-blue-900 hover:text-blue-800 underline text-lg font-medium">
             Read more →
           </LinkWithQuery>
         </Feature>
@@ -26,7 +26,7 @@ export const FeatureDiscover = () => (
           </p>
           <ExternalLink
             url="https://mailchi.mp/law/sabin-center-litigation-newsletter"
-            className="text-blue-600 hover:text-blue-800 underline text-lg font-medium"
+            className="text-blue-900 hover:text-blue-800 underline text-lg font-medium"
           >
             Subscribe →
           </ExternalLink>
