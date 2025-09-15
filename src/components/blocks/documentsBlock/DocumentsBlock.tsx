@@ -45,35 +45,41 @@ export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatch
     [category, family]
   );
 
+  // If the case is new, there can be one placeholder document with no events. Handle this interim state
+  const hasDocumentsToDisplay = tableRows.length > 0;
+
   const onToggleChange = (toggleValue: string[]) => {
     setView(toggleValue[0]);
   };
 
   return (
     <Section block="documents" title="Documents">
-      <Card variant="outlined" className="flex flex-col rounded-lg !p-5">
-        {/* Controls */}
-        <div className="pb-6">
-          <ToggleGroup value={[view]} onValueChange={onToggleChange}>
-            <Toggle value="table">Table</Toggle>
-            <Toggle value="cards">Cards</Toggle>
-          </ToggleGroup>
-        </div>
-
-        {/* Cards */}
-        {view === "cards" && (
-          <div className="flex gap-5 items-stretch overflow-x-auto pb-2">
-            {cards.map((card) => (
-              <EntityCard key={card.href} {...card} />
-            ))}
+      {hasDocumentsToDisplay && (
+        <Card variant="outlined" className="flex flex-col rounded-lg !p-5">
+          {/* Controls */}
+          <div className="pb-6">
+            <ToggleGroup value={[view]} onValueChange={onToggleChange}>
+              <Toggle value="table">Table</Toggle>
+              <Toggle value="cards">Cards</Toggle>
+            </ToggleGroup>
           </div>
-        )}
 
-        {/* Table */}
-        {view === "table" && (
-          <InteractiveTable<TEventTableColumnId> columns={tableColumns} rows={tableRows} defaultSort={{ column: "date", ascending: false }} />
-        )}
-      </Card>
+          {/* Cards */}
+          {view === "cards" && (
+            <div className="flex gap-5 items-stretch overflow-x-auto pb-2">
+              {cards.map((card) => (
+                <EntityCard key={card.href} {...card} />
+              ))}
+            </div>
+          )}
+
+          {/* Table */}
+          {view === "table" && (
+            <InteractiveTable<TEventTableColumnId> columns={tableColumns} rows={tableRows} defaultSort={{ column: "date", ascending: false }} />
+          )}
+        </Card>
+      )}
+      {!hasDocumentsToDisplay && <p className="italic">There are no documents to display yet. Check back later.</p>}
     </Section>
   );
 };
