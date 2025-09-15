@@ -24,13 +24,13 @@ export const getEventTableColumns = ({
   let columns: TEventTableColumn[] = [
     { id: "date", name: "Filing Date", fraction: 2 },
     { id: "type", fraction: 3 },
-    { id: "action", name: "Action taken", fraction: 4 },
+    { id: "action", name: "Action Taken", fraction: 4 },
     { id: "document" },
     { id: "summary", sortable: false, fraction: 6, classes: "min-w-75" },
   ];
 
   if (showFamilyColumns) {
-    columns = [...columns, { id: "caseNumber", name: "Case", fraction: 2 }, { id: "court" }, { id: "caseTitle", name: "Case", fraction: 2 }];
+    columns = [...columns, { id: "caseNumber", name: "Case Number", fraction: 2 }, { id: "court" }, { id: "caseTitle", name: "Case", fraction: 2 }];
   }
 
   if (!isUSA) columns.splice(2, 1);
