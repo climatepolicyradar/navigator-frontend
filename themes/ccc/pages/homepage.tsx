@@ -1,13 +1,14 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 
-import { FeatureDiscover } from "@/ccc/components/FeatureDiscover";
 import { Footer } from "@/ccc/components/Footer";
 import { Hero } from "@/ccc/components/Hero";
 import { PoweredBy } from "@/ccc/components/PoweredBy";
+import { ExternalLink } from "@/components/ExternalLink";
 import Layout from "@/components/layouts/LandingPage";
 import { FullWidth } from "@/components/panels/FullWidth";
 import { SiteWidth } from "@/components/panels/SiteWidth";
+import { Heading } from "@/components/typography/Heading";
 import { TTheme, TThemeConfig } from "@/types";
 
 const WorldMap = dynamic(() => import("@/components/map/WorldMap"), {
@@ -38,7 +39,24 @@ const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig, exact
       <SiteWidth extraClasses="hidden my-6 md:block">
         <WorldMap showLitigation showCategorySelect={false} theme="ccc" />
       </SiteWidth>
-      <FeatureDiscover />
+      <SiteWidth>
+        <div>
+          <div className="lg:w-1/2 lg:z-10">
+            <Heading level={2} extraClasses="custom-header">
+              About Climate Case Chart
+            </Heading>
+            <p>
+              The <b>Sabin Center for Climate Change Law's Climate Litigation Database</b> is the most comprehensive resource tracking climate change
+              litigation worldwide. It contains more than 3,000 cases that address climate change law, policy, and science.
+            </p>
+            <br />
+            <ExternalLink className="text-blue-500 underline hover:text-blue-800" url="https://mailchi.mp/law/sabin-center-litigation-newsletter">
+              Subscribe to the Sabin Center Climate Litigation Newsletter
+            </ExternalLink>{" "}
+            for twice-monthly updates. Each issue includes the latest case updates, event announcements, and publication highlights.
+          </div>
+        </div>
+      </SiteWidth>
       <PoweredBy />
       <Footer />
     </Layout>

@@ -2,13 +2,12 @@ interface IProps {
   children: React.ReactNode;
   extraClasses?: string;
   heading: string;
-  headingClasses?: string;
   img?: string;
   imgAlt?: string;
   type?: string;
 }
 
-export const Card = ({ heading, type, img, extraClasses, headingClasses, children }: IProps) => {
+export const Card = ({ heading, type, img, extraClasses, children }: IProps) => {
   return (
     <div className={`h-full ${extraClasses}`}>
       <div className="block relative border border-gray-300 rounded-xl h-full shadow p-4">
@@ -24,7 +23,7 @@ export const Card = ({ heading, type, img, extraClasses, headingClasses, childre
               <span className="bg-blue-50 py-2 px-3 text-blue-900 text-xs rounded-xl inline-block">{type}</span>
             </div>
           )}
-          <div className={`pb-2 basis-full ${headingClasses || "text-base font-medium group-hover:underline"}`}>{heading}</div>
+          <div className="pb-2 basis-full text-base font-medium group-hover:underline">{heading}</div>
           {children}
         </div>
       </div>

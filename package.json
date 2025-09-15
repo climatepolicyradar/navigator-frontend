@@ -19,10 +19,6 @@
   },
   "dependencies": {
     "@base-ui-components/react": "^1.0.0-alpha.6",
-    "@opentelemetry/api-logs": "^0.57.2",
-    "@opentelemetry/instrumentation": "^0.57.2",
-    "@opentelemetry/sdk-logs": "^0.57.2",
-    "@vercel/otel": "^1.13.0",
     "axios": "^1.11.0",
     "babel-loader": "^10.0.0",
     "framer-motion": "^12.23.12",
