@@ -2,7 +2,6 @@ import { TextSearch } from "lucide-react";
 import { NextRouter, useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
-import { Accordion } from "@/components/accordion/Accordion";
 import { Badge } from "@/components/atoms/label/Badge";
 import { InputCheck } from "@/components/forms/Checkbox";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -24,14 +23,19 @@ const SORT_OPTIONS = ["A-Z", "Grouped"] as const;
 
 type TSort = (typeof SORT_OPTIONS)[number];
 
-const isSelected = (queryValue: string | string[] | undefined, option: string) => {
+const isSelected = (queryValue: string | string[] | undefined, option: string, parent: string = undefined) => {
   if (!queryValue) {
     return false;
   }
   if (typeof queryValue === "string") {
     return queryValue === option;
   } else {
-    return queryValue.includes(option);
+    // if parent is provided, check if both parent and option are in the query
+    if (parent) {
+      return queryValue.includes(option) && queryValue.includes(parent);
+    } else {
+      return queryValue.includes(option);
+    }
   }
 };
 
@@ -138,7 +142,7 @@ export const FamilyConceptPicker = ({
           )}
         </div>
         <div className={`flex flex-col text-sm border-t border-border-light`}>
-          {rootConcepts.map((rootConcept, rootConceptIndex) => {
+          {rootConcepts.map((rootConcept) => {
             const filteredConcepts = filterConcepts(conceptsGrouped[rootConcept.wikibase_id] || [], search);
             if (filteredConcepts.length === 0) return null;
             return (
@@ -160,7 +164,7 @@ export const FamilyConceptPicker = ({
                       <InputCheck
                         key={concept.wikibase_id + i}
                         label={firstCase(concept.preferred_label)}
-                        checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], concept.wikibase_id)}
+                        checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], concept.wikibase_id, rootConcept.wikibase_id)}
                         onChange={() => {
                           onConceptChange(router, concept, filteredConcepts, rootConcept);
                         }}
