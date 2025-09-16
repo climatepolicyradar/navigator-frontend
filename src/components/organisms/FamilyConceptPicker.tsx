@@ -52,7 +52,7 @@ const filterConcepts = (concepts: TConcept[], search: string) => {
   );
 };
 
-const onConceptChange = (router: NextRouter, concept: TConcept) => {
+const onConceptChange = (router: NextRouter, concept: TConcept, relatedConcepts: TConcept[], rootConcept: TConcept = undefined) => {
   const query = CleanRouterQuery({ ...router.query });
   // Retain any dynamic ids in the query (e.g. document page)
   if (router.query.id) {
@@ -62,9 +62,28 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
 
   const selectedConceptLabel = concept.wikibase_id;
   if (selectedConcepts.includes(selectedConceptLabel)) {
-    selectedConcepts = selectedConcepts.filter((c) => c !== selectedConceptLabel);
+    // deselections
+    // case 1a: root concept selected, previously selected, remove all child concepts
+    if (!rootConcept) {
+      selectedConcepts = selectedConcepts.filter((c) => c !== selectedConceptLabel);
+      selectedConcepts = selectedConcepts.filter((c) => !relatedConcepts.map((rc) => rc.wikibase_id).includes(c));
+    }
+    // case 1b: child concept selected, previously selected
+    if (rootConcept) selectedConcepts = selectedConcepts.filter((c) => c !== selectedConceptLabel);
   } else {
-    selectedConcepts = [...selectedConcepts, selectedConceptLabel];
+    // selections
+    // case 1a: root concept selected, not previously selected
+    if (!rootConcept) selectedConcepts = [...selectedConcepts, selectedConceptLabel];
+    if (rootConcept) {
+      const rootConceptLabel = rootConcept?.wikibase_id;
+      // case 1b: child concept selected, not previously selected & root concept was selected
+      if (selectedConcepts.includes(rootConceptLabel)) {
+        selectedConcepts = [...selectedConcepts, selectedConceptLabel];
+      } else {
+        // case 1c: child concept selected, not previously selected & root concept not selected
+        selectedConcepts = [...selectedConcepts, selectedConceptLabel, rootConceptLabel];
+      }
+    }
   }
 
   query[QUERY_PARAMS.concept_preferred_label] = selectedConcepts;
@@ -94,6 +113,8 @@ export const FamilyConceptPicker = ({
     setConceptsGrouped(groupByRootConcept(concepts, rootConcepts));
   }, [concepts]);
 
+  // console.log(rootConcepts, conceptsGrouped);
+
   return (
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
       {/* HEADER */}
@@ -121,16 +142,19 @@ export const FamilyConceptPicker = ({
             const filteredConcepts = filterConcepts(conceptsGrouped[rootConcept.wikibase_id] || [], search);
             if (filteredConcepts.length === 0) return null;
             return (
-              <Accordion
-                title={firstCase(rootConcept.preferred_label)}
-                key={rootConcept.wikibase_id + rootConceptIndex}
-                fixedHeight="100%"
-                startOpen={true}
-                open={search === "" ? undefined : true}
-                className="py-3 border-b border-border-lighter"
-              >
-                <div className="flex flex-col gap-2 pb-2">
+              <div key={rootConcept.wikibase_id}>
+                <InputCheck
+                  key={rootConcept.wikibase_id}
+                  label={firstCase(rootConcept.preferred_label)}
+                  checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], rootConcept.wikibase_id)}
+                  onChange={() => {
+                    onConceptChange(router, rootConcept, filteredConcepts);
+                  }}
+                  name={rootConcept.preferred_label}
+                />
+                <div className="pl-4">
                   {filteredConcepts
+                    .filter((concept) => concept.wikibase_id !== rootConcept.wikibase_id)
                     .sort((a, b) => conceptsSorter(a, b, "A-Z"))
                     .map((concept, i) => (
                       <InputCheck
@@ -138,13 +162,13 @@ export const FamilyConceptPicker = ({
                         label={firstCase(concept.preferred_label)}
                         checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], concept.wikibase_id)}
                         onChange={() => {
-                          onConceptChange(router, concept);
+                          onConceptChange(router, concept, filteredConcepts, rootConcept);
                         }}
                         name={concept.preferred_label}
                       />
                     ))}
                 </div>
-              </Accordion>
+              </div>
             );
           })}
 
