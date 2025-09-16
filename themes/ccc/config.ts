@@ -6,7 +6,7 @@ const config: TThemeConfig = {
   labelVariations: [
     {
       key: "date",
-      label: "First published",
+      label: "Filing Year",
       category: [],
     },
   ],
