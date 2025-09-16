@@ -33,9 +33,9 @@ export const getEventTableColumns = ({
     { id: "matches" },
   ];
 
-  let columnsToRemove: TEventTableColumnId[] = [];
+  const columnsToRemove: TEventTableColumnId[] = [];
   if (!isUSA) columnsToRemove.push("action");
-  if (!showFamilyColumns) columnsToRemove = ["caseNumber", "court", "caseTitle"];
+  if (!showFamilyColumns) columnsToRemove.push("caseNumber", "court", "caseTitle");
   if (!showMatches) columnsToRemove.push("matches");
 
   return columns.filter((column) => !columnsToRemove.includes(column.id));
