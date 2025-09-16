@@ -6,12 +6,13 @@ interface IProps {
   img?: string;
   imgAlt?: string;
   type?: string;
+  paddingClasses?: string;
 }
 
-export const Card = ({ heading, type, img, extraClasses, headingClasses, children }: IProps) => {
+export const Card = ({ heading, type, img, extraClasses, headingClasses, paddingClasses, children }: IProps) => {
   return (
     <div className={`h-full ${extraClasses}`}>
-      <div className="block relative border border-gray-300 rounded-xl h-full shadow p-4">
+      <div className={`block relative border border-gray-300 rounded-xl h-full shadow ${paddingClasses || "p-4"}`}>
         <div className="min-h-[180px] h-full">
           {img && (
             <div
