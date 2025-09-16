@@ -158,6 +158,12 @@ export const FamilyConceptPicker = ({ concepts, containerClasses = "", showBadge
                     onConceptChange(router, rootConcept, filteredConcepts);
                   }}
                   name={rootConcept.preferred_label}
+                  className={
+                    childConcepts.some((child) => isSelected(router.query[QUERY_PARAMS.concept_preferred_label], child.wikibase_id)) &&
+                    !childConcepts.every((child) => isSelected(router.query[QUERY_PARAMS.concept_preferred_label], child.wikibase_id))
+                      ? "semi-checked"
+                      : ""
+                  }
                 />
                 {childConcepts.length > 0 && (
                   <div className="pl-8 flex flex-col gap-2 mt-2">
