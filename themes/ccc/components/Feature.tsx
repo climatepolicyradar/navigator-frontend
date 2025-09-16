@@ -30,7 +30,7 @@ export const Feature = ({ heading, subheading, image, imageAlt, children }: IPro
       {children}
       {image && (
         <div>
-          <Image src={`/images/climate-project-explorer/${image}`} alt={imageAlt} width={800} height={619} quality={85} className="rounded-lg" />
+          <Image src={`/images/ccc/${image}`} alt={imageAlt} width={800} height={619} quality={85} className="rounded-lg" />
         </div>
       )}
     </Card>
