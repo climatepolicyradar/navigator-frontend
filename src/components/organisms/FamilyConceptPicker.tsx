@@ -120,31 +120,34 @@ export const FamilyConceptPicker = ({ concepts, containerClasses = "", showBadge
   }, [concepts]);
 
   return (
-    <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
+    <div className={`relative flex flex-col max-h-full pb-4 ${containerClasses}`} ref={ref}>
       {/* HEADER */}
-      <span className="text-base font-semibold text-text-primary">
+      <span className="text-base font-semibold text-text-primary pb-4">
         <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
         {title}
         {showBadge && <Badge className="ml-2">Beta</Badge>}
       </span>
+      <div className="flex gap-2 items-center justify-between pb-5 border-b border-border-light">
+        {showSearch && (
+          <input
+            type="text"
+            placeholder="Quick search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="py-1 text-xs h-[30px]"
+          />
+        )}
+      </div>
 
       {/* SCROLL AREA */}
       <div className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
-        <div className="flex gap-2 items-center justify-between">
-          {showSearch && (
-            <input
-              type="text"
-              placeholder="Quick search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="py-1 text-xs h-[30px]"
-            />
-          )}
-        </div>
-        <div className={`flex flex-col text-sm border-t border-border-light`}>
+        <div className={`flex flex-col text-sm gap-2 pt-4`}>
           {rootConcepts.map((rootConcept) => {
             const filteredConcepts = filterConcepts(conceptsGrouped[rootConcept.wikibase_id] || [], search);
             if (filteredConcepts.length === 0) return null;
+            const childConcepts = filteredConcepts
+              .filter((concept) => concept.wikibase_id !== rootConcept.wikibase_id)
+              .sort((a, b) => conceptsSorter(a, b, "A-Z"));
             return (
               <div key={rootConcept.wikibase_id}>
                 <InputCheck
@@ -156,11 +159,9 @@ export const FamilyConceptPicker = ({ concepts, containerClasses = "", showBadge
                   }}
                   name={rootConcept.preferred_label}
                 />
-                <div className="pl-4">
-                  {filteredConcepts
-                    .filter((concept) => concept.wikibase_id !== rootConcept.wikibase_id)
-                    .sort((a, b) => conceptsSorter(a, b, "A-Z"))
-                    .map((concept, i) => (
+                {childConcepts.length > 0 && (
+                  <div className="pl-8 flex flex-col gap-2 mt-2">
+                    {childConcepts.map((concept, i) => (
                       <InputCheck
                         key={concept.wikibase_id + i}
                         label={firstCase(concept.preferred_label)}
@@ -171,7 +172,8 @@ export const FamilyConceptPicker = ({ concepts, containerClasses = "", showBadge
                         name={concept.preferred_label}
                       />
                     ))}
-                </div>
+                  </div>
+                )}
               </div>
             );
           })}

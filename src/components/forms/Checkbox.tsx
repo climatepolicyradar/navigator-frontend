@@ -11,7 +11,7 @@ interface IProps {
 }
 
 const CheckBox = ({ checked, onChange, name }: IProps) => {
-  return <input type="checkbox" checked={checked || false} onChange={onChange} className="w-[24px] h-[24px]" name={name} />;
+  return <input type="checkbox" checked={checked || false} onChange={onChange} className="w-[16px] h-[16px]" name={name} />;
 };
 
 export const InputCheck = ({ label, checked, onChange, name, additionalInfo, learnMoreUrl, learnMoreExternal }: IProps) => {
