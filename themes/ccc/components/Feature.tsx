@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { ReactNode } from "react";
 
-import { Columns } from "@/components/atoms/columns/Columns";
 import { Heading } from "@/components/typography/Heading";
 
 import { Card } from "./Card";

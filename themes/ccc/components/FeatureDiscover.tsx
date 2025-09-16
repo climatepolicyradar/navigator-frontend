@@ -1,8 +1,5 @@
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { getButtonClasses } from "@/components/atoms/button/Button";
-import { Columns } from "@/components/atoms/columns/Columns";
-import { SiteWidth } from "@/components/panels/SiteWidth";
 
 import { Feature } from "./Feature";
 
