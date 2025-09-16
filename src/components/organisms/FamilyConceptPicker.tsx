@@ -23,7 +23,7 @@ const SORT_OPTIONS = ["A-Z", "Grouped"] as const;
 
 type TSort = (typeof SORT_OPTIONS)[number];
 
-const isSelected = (queryValue: string | string[] | undefined, option: string, parent: string = undefined) => {
+const isSelected = (queryValue: string | string[] | undefined, option: string, parent?: string) => {
   if (!queryValue) {
     return false;
   }
