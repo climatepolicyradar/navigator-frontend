@@ -73,11 +73,19 @@ const onConceptChange = (router: NextRouter, concept: TConcept, relatedConcepts:
       selectedConcepts = selectedConcepts.filter((c) => !relatedConcepts.map((rc) => rc.wikibase_id).includes(c));
     }
     // case 1b: child concept selected, previously selected
-    if (rootConcept) selectedConcepts = selectedConcepts.filter((c) => c !== selectedConceptLabel);
+    // - check the root concept, if not selected, remove all concepts and reselect root and concept
+    if (rootConcept) {
+      if (!selectedConcepts.includes(rootConcept.wikibase_id)) {
+        selectedConcepts = [rootConcept.wikibase_id, selectedConceptLabel];
+      } else {
+        selectedConcepts = selectedConcepts.filter((c) => c !== selectedConceptLabel);
+      }
+    }
   } else {
     // selections
     // case 1a: root concept selected, not previously selected
-    if (!rootConcept) selectedConcepts = [...selectedConcepts, selectedConceptLabel];
+    // - remove all other concepts
+    if (!rootConcept) selectedConcepts = [selectedConceptLabel];
     if (rootConcept) {
       const rootConceptLabel = rootConcept?.wikibase_id;
       // case 1b: child concept selected, not previously selected & root concept was selected
@@ -85,7 +93,8 @@ const onConceptChange = (router: NextRouter, concept: TConcept, relatedConcepts:
         selectedConcepts = [...selectedConcepts, selectedConceptLabel];
       } else {
         // case 1c: child concept selected, not previously selected & root concept not selected
-        selectedConcepts = [...selectedConcepts, selectedConceptLabel, rootConceptLabel];
+        // - remove all other concepts
+        selectedConcepts = [selectedConceptLabel, rootConceptLabel];
       }
     }
   }
@@ -95,14 +104,7 @@ const onConceptChange = (router: NextRouter, concept: TConcept, relatedConcepts:
   router.push({ query: query }, undefined, { shallow: true });
 };
 
-export const FamilyConceptPicker = ({
-  concepts,
-  containerClasses = "",
-  startingSort = "Grouped",
-  showBadge = false,
-  showSearch = true,
-  title,
-}: IProps) => {
+export const FamilyConceptPicker = ({ concepts, containerClasses = "", showBadge = false, showSearch = true, title }: IProps) => {
   const router = useRouter();
   const ref = useRef(null);
   const [search, setSearch] = useState("");
@@ -116,8 +118,6 @@ export const FamilyConceptPicker = ({
     setRootConcepts(rootConcepts);
     setConceptsGrouped(groupByRootConcept(concepts, rootConcepts));
   }, [concepts]);
-
-  // console.log(rootConcepts, conceptsGrouped);
 
   return (
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
