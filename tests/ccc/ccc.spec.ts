@@ -21,8 +21,8 @@ test.describe("CCC Hero Search", () => {
     // Wait for the page to load completely
     await page.waitForLoadState("networkidle");
 
-    // Verify we're on the CCC homepage by checking the Alpha logo
-    await expect(page.locator("h1")).toHaveText("Climate Case Chart");
+    // Verify we're on the CCC homepage by checking the name appears
+    await expect(page.locator("h1")).toHaveText("Climate Litigation Database");
     await expect(page.locator('[data-cy="search-input"]')).toHaveAttribute("placeholder", "Search the full text of any document");
   });
 
@@ -230,7 +230,7 @@ test.describe("CCC Hero Search", () => {
     await page.click('[data-cy="breadcrumb home"] a');
 
     // Should now be on homepage with same parameters
-    await expect(page.locator("h1").filter({ hasText: "Climate Case Chart" })).toBeVisible();
+    await expect(page.locator("h1").filter({ hasText: "Climate Litigation Database" })).toBeVisible();
     await expect(page).not.toHaveURL(/\/search/);
     await expect(page).toHaveURL(/q=adaptation/);
     await expect(page).not.toHaveURL(/e=true/);

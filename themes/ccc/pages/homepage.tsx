@@ -43,7 +43,7 @@ const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig, exact
         <div>
           <div className="lg:w-1/2 lg:z-10">
             <Heading level={2} extraClasses="custom-header">
-              About Climate Case Chart
+              About the Climate Litigation Database
             </Heading>
             <p>
               The <b>Sabin Center for Climate Change Law's Climate Litigation Database</b> is the most comprehensive resource tracking climate change

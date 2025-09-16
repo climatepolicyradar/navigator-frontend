@@ -25,7 +25,7 @@ const Contact = () => {
                 <ExternalLink url="https://mailchi.mp/law/sabin-center-litigation-newsletter">newsletter</ExternalLink>.
               </p>
               <p>
-                For general enquiries or to submit updates or corrections, please get in touch with the Climate Case Chart team by emailing{" "}
+                For general enquiries or to submit updates or corrections, please get in touch with the Climate Litigation Database team by emailing{" "}
                 <ExternalLink url="mailto:manager@climatecasechart.com">manager@climatecasechart.com</ExternalLink> or filling in{" "}
                 <ExternalLink url="https://form.jotform.com/252302964707357">this</ExternalLink> contact form.
               </p>
