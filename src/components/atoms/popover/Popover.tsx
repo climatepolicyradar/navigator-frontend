@@ -39,7 +39,7 @@ type TProps = IPopoverElementProps | IPopoverChildrenProps;
 
 export const Popover = ({ children, description, link, onOpenChange, openOnHover = false, popupClasses = "", title, trigger }: TProps) => {
   const allPopupClasses = joinTailwindClasses(
-    "p-3 max-w-[350px] bg-surface-light border border-border-light rounded-md shadow-md text-sm leading-normal select-auto focus-visible:outline-0",
+    "p-3 max-w-[350px] bg-surface-light border border-border-light rounded-md shadow-md text-sm leading-normal select-auto focus-visible:outline-0 z-[99]",
     popupClasses
   );
 
@@ -47,7 +47,7 @@ export const Popover = ({ children, description, link, onOpenChange, openOnHover
     <BasePopover.Root openOnHover={openOnHover} onOpenChangeComplete={onOpenChange}>
       <BasePopover.Trigger render={trigger} />
       <BasePopover.Portal>
-        <BasePopover.Positioner positionMethod="fixed" sideOffset={8}>
+        <BasePopover.Positioner positionMethod="fixed" sideOffset={8} className="z-[99]">
           <BasePopover.Popup className={allPopupClasses}>
             <BasePopover.Arrow className="flex -top-2">
               <BaseUIArrow fill="fill-surface-light" stroke="fill-border-light" />
