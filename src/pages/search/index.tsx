@@ -121,7 +121,13 @@ const getSelectedConcepts = (selectedConcepts: string | string[], allConcepts: T
 
 const getSelectedFamilyConcepts = (selectedConcepts: string | string[], allConcepts: TConcept[] = []): TConcept[] => {
   const selectedConceptsAsArray = Array.isArray(selectedConcepts) ? selectedConcepts : [selectedConcepts];
-  return allConcepts?.filter((concept) => selectedConceptsAsArray.includes(concept.wikibase_id)) || [];
+  return (
+    allConcepts?.filter(
+      (concept) =>
+        selectedConceptsAsArray.includes(concept.wikibase_id) &&
+        (concept.recursive_subconcept_of.length === 0 || concept.recursive_subconcept_of.some((sub) => selectedConceptsAsArray.includes(sub)))
+    ) || []
+  );
 };
 
 const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
