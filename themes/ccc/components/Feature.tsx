@@ -22,7 +22,7 @@ export const Feature = ({ heading, subheading, contentSide = "left", image, imag
     <>
       {subheading && (
         // Because this component uses the Card component, we need to override the heading style in order to get the look we want
-        <Heading level={3} extraClasses="text-2xl !text-gray-600 !mb-6 !font-bold">
+        <Heading level={3} extraClasses="text-2xl !text-text-tertiary !mb-6 !font-bold">
           {subheading}
         </Heading>
       )}
@@ -32,18 +32,18 @@ export const Feature = ({ heading, subheading, contentSide = "left", image, imag
 
   if (inline) {
     return (
-      <Card heading={heading || ""} extraClasses="h-full" headingClasses="text-blue-900 text-2xl font-bold">
+      <Card heading={heading || ""} extraClasses="h-full" headingClasses="text-text-brand-darker text-2xl font-bold">
         {cardContent}
       </Card>
     );
   }
 
   return (
-    <div className="bg-white py-16">
+    <div className="bg-white py-16 text-text-primary">
       <SiteWidth>
         <Columns containerClasses="px-0" gridClasses="grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className={`${contentSide === "right" ? "lg:order-2" : ""}`}>
-            <Card heading={heading || ""} extraClasses="h-full" headingClasses="text-blue-900 text-2xl font-bold">
+            <Card heading={heading || ""} extraClasses="h-full" headingClasses="text-text-brand-darker text-2xl font-bold">
               {cardContent}
             </Card>
           </div>
