@@ -22,11 +22,11 @@ export const getEventTableColumns = ({
   showMatches?: boolean;
 }) => {
   let columns: TEventTableColumn[] = [
-    { id: "date", name: "Filing Date", fraction: 2 },
-    { id: "type", fraction: 3 },
+    { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
+    { id: "type", sortable: true, fraction: 3 },
     { id: "action", name: "Action Taken", fraction: 4 },
     { id: "document" },
-    { id: "summary", sortable: false, fraction: 6, classes: "min-w-75" },
+    { id: "summary", fraction: 6, classes: "min-w-75" },
   ];
 
   if (showFamilyColumns) {
