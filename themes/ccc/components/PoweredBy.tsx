@@ -1,31 +1,59 @@
 import Image from "next/image";
 
 import { ExternalLink } from "@/components/ExternalLink";
+import { Columns } from "@/components/atoms/columns/Columns";
+import { Divider } from "@/components/dividers/Divider";
 
 export const PoweredBy = () => (
-  <div className="md:flex justify-center gap-12 text-center">
-    <div className="mb-12 md:mb-0">
-      <p className="font-base mb-2">Hosted by</p>
-      <div className="flex items-center justify-center gap-6">
-        <ExternalLink className="flex" url="https://www.lse.ac.uk/">
-          <span className="flex" data-cy="lse-logo">
-            <Image src="/images/partners/lse-logo.png" alt="London School of Economics logo" width={51} height={52} />
-          </span>
-        </ExternalLink>
-        <ExternalLink className="flex" url="https://www.lse.ac.uk/granthaminstitute/">
-          <span className="flex" data-cy="gri-logo">
-            <Image src="/images/cclw/partners/gri-logo.png" alt="Grantham Research Institute logo" width={275} height={52} quality={100} />
-          </span>
-        </ExternalLink>
-      </div>
+  <div className="py-6 pb-6">
+    <div className="w-full mx-auto px-3 mb-8">
+      <Divider />
     </div>
-    <div>
-      <p className="font-base mb-2">Powered by</p>
-      <ExternalLink className="flex justify-center" url="https://www.climatepolicyradar.org">
-        <span className="flex" data-cy="cpr-logo">
-          <Image src="/images/cclw/partners/cpr-logo.png" alt="Climate Policy Radar logo" width={287} height={52} />
-        </span>
-      </ExternalLink>
-    </div>
+
+    <Columns>
+      <aside className="flex flex-col items-start cols-2:col-span-2 cols-3:col-span-1">
+        <p className="text-xl font-semibold text-text-primary">Powered by:</p>
+      </aside>
+
+      <main className="cols-2:col-span-2 cols-4:col-span-3 grid grid-cols-subgrid gap-6">
+        <div className="col-span-full text-text-secondary flex flex-col gap-6">
+          <ExternalLink
+            className="text-text-secondary text-base underline leading-normal flex items-center gap-2"
+            url="https://www.climatepolicyradar.org"
+          >
+            <Image src="/images/climate-text.svg" width={50} height={30} alt="Climate" data-cy="cpr-logo-climate-text" className="w-auto" />
+            <Image
+              src="/images/new-cpr-radar-logo.svg"
+              width={30}
+              height={30}
+              alt="Climate Policy Radar logo"
+              data-cy="cpr-logo"
+              className="w-auto"
+            />
+            <Image
+              src="/images/policy-radar-text.svg"
+              width={50}
+              height={30}
+              alt="Policy Radar"
+              data-cy="cpr-logo-policy-radar-text"
+              className="w-auto"
+            />
+          </ExternalLink>
+          <div className="flex flex-col gap-4">
+            <p className="text-text-secondary text-base leading-normal">
+              Climate Policy Radar uses AI and data science
+              <br />
+              to map the world's climate policies.
+            </p>
+            <p className="text-text-secondary text-base leading-normal">
+              Visit{" "}
+              <ExternalLink className="underline" url="https://www.climatepolicyradar.org">
+                climatepolicyradar.org
+              </ExternalLink>
+            </p>
+          </div>
+        </div>
+      </main>
+    </Columns>
   </div>
 );

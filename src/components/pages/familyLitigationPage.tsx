@@ -136,7 +136,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
   const blockDefinitions: TBlockDefinitions<TFamilyPageBlock> = {
     debug: {
       render: () => (
-        <Section block="debug" title="Debug">
+        <Section key="debug" block="debug" title="Debug">
           <Debug data={family} title="Family" />
           <Debug data={countries} title="Countries" />
           <Debug data={subdivisions} title="Subdivisions" />
@@ -145,7 +145,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     },
     documents: {
       render: useCallback(
-        () => <DocumentsBlock family={family} matchesFamily={matchesFamily} matchesStatus={matchesStatus} showMatches={hasSearch} />,
+        () => <DocumentsBlock key="documents" family={family} matchesFamily={matchesFamily} matchesStatus={matchesStatus} showMatches={hasSearch} />,
         [family, hasSearch, matchesFamily, matchesStatus]
       ),
     },
@@ -154,7 +154,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
         const metadata = getFamilyMetadata(family, countries, subdivisions);
         if (metadata.length === 0) return null;
 
-        return <MetadataBlock block="metadata" title="About this case" metadata={metadata} />;
+        return <MetadataBlock key="metadata" block="metadata" title="About this case" metadata={metadata} />;
       }, [countries, family, subdivisions]),
       sideBarItem: { display: "About" },
     },
@@ -163,7 +163,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
         if (!family.summary) return null;
 
         return (
-          <TextBlock block="summary" title="Summary">
+          <TextBlock key="summary" block="summary" title="Summary">
             <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
           </TextBlock>
         );

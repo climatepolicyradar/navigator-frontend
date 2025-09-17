@@ -29,9 +29,11 @@ export const Generic: TStory<TWainwrightColumns> = {
       {
         id: "wainwright",
         fraction: 2,
+        sortable: true,
       },
       {
         id: "height",
+        sortable: true,
       },
       {
         id: "region",
@@ -41,15 +43,14 @@ export const Generic: TStory<TWainwrightColumns> = {
           </div>
         ),
         fraction: 2,
-        sortable: false,
       },
       {
         id: "link",
         name: "WalkLakes",
-        sortable: false,
       },
       {
         id: "summited",
+        sortable: true,
       },
     ],
     defaultSort: {

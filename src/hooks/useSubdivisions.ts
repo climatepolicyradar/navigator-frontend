@@ -14,7 +14,7 @@ export default function useSubdivisions() {
   const corpusFilters = corpora ? corpora?.map((corpus) => `&corpus.import_id=${corpus}`).join("") : "";
 
   return useQuery(
-    ["all-subdivisions", themeConfig],
+    ["all-subdivisions-with-data"],
     async () => {
       const client = new ApiClient();
       const queryResponse = await client.get(
