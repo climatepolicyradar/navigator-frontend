@@ -58,7 +58,7 @@ export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionI
           </Fragment>
         ))}
         {showMore && (
-          <LinkWithQuery href="/faq" className="!text-text-brand-darker font-semibold !no-underline">
+          <LinkWithQuery href="/faq" className="!text-text-brand-darker font-semibold text-sm !no-underline">
             See more FAQs →
           </LinkWithQuery>
         )}
