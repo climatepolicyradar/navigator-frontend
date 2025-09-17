@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -27,6 +28,8 @@ const BreadCrumb = ({ last = false, label = null, href = null, cy = "", isHome =
     return null;
   }
 
+  const LinkComponent = isHome ? Link : LinkWithQuery;
+
   const labelShort =
     typeof label === "string" && label.toString().length > BREADCRUMB_MAXLENGTH ? `${label.toString().substring(0, BREADCRUMB_MAXLENGTH)}...` : label;
 
@@ -34,14 +37,14 @@ const BreadCrumb = ({ last = false, label = null, href = null, cy = "", isHome =
     <>
       <li data-cy={`breadcrumb ${cy}`} className={`${last && "text-textDark font-medium"}`}>
         {href ? (
-          <LinkWithQuery className="underline hover:text-blue-800 text-textNormal flex items-baseline" href={href}>
+          <LinkComponent className="underline hover:text-blue-800 text-textNormal flex items-baseline" href={href}>
             {isHome && (
               <span className="mr-1 translate-y-0.5">
                 <Icon name="house" />
               </span>
             )}
             {labelShort}
-          </LinkWithQuery>
+          </LinkComponent>
         ) : (
           <span className="flex items-baseline">
             {isHome && (
