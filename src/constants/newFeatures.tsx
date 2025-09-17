@@ -86,7 +86,7 @@ export const NEW_FEATURES: TNewFeature[] = [
       title: "Welcome to our new site",
       content: (
         <p>
-          The Climate Litigation Database the is most comprehensive resource tracking climate change litigation worldwide. Please bare with us while
+          The Climate Litigation Database is the most comprehensive resource tracking climate change litigation worldwide. Please bare with us while
           we make some exciting new updates.
         </p>
       ),
