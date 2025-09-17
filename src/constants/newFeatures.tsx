@@ -81,12 +81,20 @@ export const NEW_FEATURES: TNewFeature[] = [
     isEnabled: isLitigationEnabled,
     modal: {
       defaultOpen: true,
-      headerImage: <Image src="/images/features/knowledge-graph.jpg" alt="A screenshot showing a list of topics" width={792} height={446} />,
-      close: false,
-      content: <p>Eventually some content will need to go here, otherwise this modal will be a little pointless, won't it?</p>,
+      headerImage: <Image src="/images/features/ccc.png" alt="The logo of Sabin Center for Climate Change Law" width={920} height={400} />,
+      close: true,
+      title: "Welcome to our new site",
+      content: (
+        <p>
+          The Climate Litigation Database the is most comprehensive resource tracking climate change litigation worldwide. Please bare with us while
+          we make some exciting new updates.
+        </p>
+      ),
       buttonPrimary: {
-        text: "Start browsing",
+        text: "I understand",
         action: "dismiss",
+        color: "mono",
+        variant: "outlined",
       },
     },
   },

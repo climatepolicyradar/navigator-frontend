@@ -29,12 +29,22 @@ export const NewFeatureModal = ({ order, modal: { buttonPrimary, buttonSecondary
       {(buttonPrimary || buttonSecondary) && (
         <div className="flex gap-2">
           {buttonPrimary && (
-            <Button size="small" onClick={buttonActions[buttonPrimary.action]}>
+            <Button
+              size="small"
+              variant={buttonPrimary.variant || "solid"}
+              color={buttonPrimary.color || "brand"}
+              onClick={buttonActions[buttonPrimary.action]}
+            >
               {buttonPrimary.text}
             </Button>
           )}
           {buttonSecondary && (
-            <Button size="small" variant="ghost" onClick={buttonActions[buttonSecondary.action]}>
+            <Button
+              size="small"
+              variant={buttonSecondary.variant || "ghost"}
+              color={buttonSecondary.color || "brand"}
+              onClick={buttonActions[buttonSecondary.action]}
+            >
               {buttonSecondary.text}
             </Button>
           )}

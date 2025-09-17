@@ -37,18 +37,20 @@ export const NewFeatureCard = ({ className, order, card: { buttonPrimary, button
       <p className="mt-1.5 mb-3 text-sm text-text-light/85">{text}</p>
       <div className="flex gap-2">
         <Button
-          size="small"
-          variant="outlined"
           className="border-border-light/75 hover:border-border-light hover:!bg-transparent text-text-light"
+          size="small"
+          variant={buttonPrimary.variant || "outlined"}
+          color={buttonPrimary.color || "brand"}
           onClick={buttonActions[buttonPrimary.action]}
         >
           {buttonPrimary.text}
         </Button>
         {buttonSecondary && (
           <Button
-            size="small"
-            variant="ghost"
             className="text-text-light/75 hover:text-text-light hover:!bg-transparent"
+            size="small"
+            variant={buttonSecondary.variant || "ghost"}
+            color={buttonSecondary.color || "brand"}
             onClick={buttonActions[buttonSecondary.action]}
           >
             {buttonSecondary.text}

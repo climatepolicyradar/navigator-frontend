@@ -2,14 +2,17 @@ import { useMemo } from "react";
 
 import { joinTailwindClasses } from "@/utils/tailwind";
 
+export type TButtonColor = "brand" | "mono";
+export type TButtonVariant = "solid" | "faded" | "outlined" | "ghost";
+
 interface IButtonClassArgs {
   className?: string;
-  color?: "brand" | "mono";
+  color?: TButtonColor;
   content?: "text" | "icon" | "both";
   disabled?: boolean;
   size?: "x-small" | "small" | "medium" | "large";
   rounded?: boolean;
-  variant?: "solid" | "faded" | "outlined" | "ghost";
+  variant?: TButtonVariant;
 }
 
 type TProps = IButtonClassArgs & React.ComponentProps<"button">;

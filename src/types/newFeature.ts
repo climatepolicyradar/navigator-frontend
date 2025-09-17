@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
 
+import { TButtonColor, TButtonVariant } from "@/components/atoms/button/Button";
+
 import { TFeatureFlags } from "./features";
 import { TThemeConfig } from "./themeConfig";
 import { TTheme } from "./types";
@@ -9,6 +11,8 @@ export type TNewFeatureButtonAction = "dismiss" | "showModal";
 export type TNewFeatureButton = {
   text: string;
   action: TNewFeatureButtonAction;
+  color?: TButtonColor;
+  variant?: TButtonVariant;
 };
 
 export type TNewFeatureCard = {

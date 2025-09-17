@@ -24,18 +24,20 @@ export const NewFeatureBanner = ({ order, banner: { buttonPrimary, buttonSeconda
       <span className="text-sm leading-normal text-text-light">{text}</span>
       <div className="flex gap-2">
         <Button
-          size="small"
-          variant="outlined"
           className="border-border-light/75 hover:border-border-light hover:!bg-transparent text-text-light"
+          size="small"
+          variant={buttonPrimary.variant || "outlined"}
+          color={buttonPrimary.color || "brand"}
           onClick={buttonActions[buttonPrimary.action]}
         >
           {buttonPrimary.text}
         </Button>
         {buttonSecondary && (
           <Button
-            size="small"
-            variant="ghost"
             className="text-text-light/75 hover:text-text-light hover:!bg-transparent"
+            size="small"
+            variant={buttonSecondary.variant || "ghost"}
+            color={buttonSecondary.color || "brand"}
             onClick={buttonActions[buttonSecondary.action]}
           >
             {buttonSecondary.text}
