@@ -93,7 +93,8 @@ const onConceptChange = (
     // selections
     // case 1a: root concept selected, not previously selected
     // - remove all other concepts
-    if (!rootConcept) selectedConcepts = [selectedConceptLabel];
+    // if isRootConceptExclusive is false, we allow multiple selections of root and child concepts
+    if (!rootConcept) selectedConcepts = isRootConceptExclusive ? [selectedConceptLabel] : [...selectedConcepts, selectedConceptLabel];
     if (rootConcept) {
       const rootConceptLabel = rootConcept?.wikibase_id;
       // case 1b: child concept selected, not previously selected & root concept was selected
@@ -102,7 +103,10 @@ const onConceptChange = (
       } else {
         // case 1c: child concept selected, not previously selected & root concept not selected
         // - remove all other concepts
-        selectedConcepts = [selectedConceptLabel, rootConceptLabel];
+        // if isRootConceptExclusive is false, we allow multiple selections of root and child concepts
+        selectedConcepts = isRootConceptExclusive
+          ? [selectedConceptLabel, rootConceptLabel]
+          : [...selectedConcepts, selectedConceptLabel, rootConceptLabel];
       }
     }
   }
