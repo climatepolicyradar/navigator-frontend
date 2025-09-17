@@ -8,7 +8,7 @@ type TFAQ = {
 
 export const FAQS: TFAQ[] = [
   {
-    title: "What is Climate Case Chart?",
+    title: "What is the Climate Litigation Database?",
     content: (
       <>
         <p>TODO</p>
@@ -35,7 +35,7 @@ export const FAQS: TFAQ[] = [
 
 export const PLATFORM_FAQS: TFAQ[] = [
   {
-    title: "What can I do with the Climate Case Chart?",
+    title: "What can I do with the Climate Litigation Database?",
     content: (
       <>
         <p>TODO.</p>

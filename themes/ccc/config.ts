@@ -6,7 +6,7 @@ const config: TThemeConfig = {
   labelVariations: [
     {
       key: "date",
-      label: "Filing Year",
+      label: "Filing year",
       category: [],
     },
   ],
@@ -20,14 +20,14 @@ const config: TThemeConfig = {
     {
       // default - used for app title (i.e. on each page after the title)
       key: "default",
-      title: "Sabin Center for Climate Change Law",
+      title: "The Climate Litigation Database",
       description: "",
     },
     {
       key: "homepage",
-      title: "Climate Change Litigation Databases",
+      title: "The Climate Litigation Database",
       description:
-        "Sabin Center for Climate Change Law provides two comprehensive databases of climate change caselaw - US Climate Change Litigation and Global Climate Change Litigation.",
+        "Sabin Center for Climate Change Law provides Climate Litigation Database, a comprehensive database of US and Global climate change caselaw",
     },
     {
       key: "geography",
@@ -36,7 +36,7 @@ const config: TThemeConfig = {
     },
     {
       key: "search",
-      title: "Search the Climate Case Chart database",
+      title: "Search the Climate Litigation Database",
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
   ],
