@@ -6,43 +6,43 @@ import { TFeatureFlags } from "./features";
 import { TThemeConfig } from "./themeConfig";
 import { TTheme } from "./types";
 
-export type TNewFeatureButtonAction = "dismiss" | "showModal";
+export type TTutorialButtonAction = "dismiss" | "showModal";
 
-export type TNewFeatureButton = {
+export type TTutorialButton = {
   text: string;
-  action: TNewFeatureButtonAction;
+  action: TTutorialButtonAction;
   color?: TButtonColor;
   variant?: TButtonVariant;
 };
 
-export type TNewFeatureCard = {
+export type TTutorialCard = {
   title?: string;
   text: string;
   close: boolean;
-  buttonPrimary: TNewFeatureButton;
-  buttonSecondary?: TNewFeatureButton;
+  buttonPrimary: TTutorialButton;
+  buttonSecondary?: TTutorialButton;
 };
 
-export type TNewFeatureBanner = {
+export type TTutorialBanner = {
   text: string;
-  buttonPrimary: TNewFeatureButton;
-  buttonSecondary?: TNewFeatureButton;
+  buttonPrimary: TTutorialButton;
+  buttonSecondary?: TTutorialButton;
 };
 
-export type TNewFeatureModal = {
+export type TTutorialModal = {
   defaultOpen: boolean;
   headerImage?: ReactNode;
   title?: string;
   close: boolean;
   content: ReactNode;
-  buttonPrimary?: TNewFeatureButton;
-  buttonSecondary?: TNewFeatureButton;
+  buttonPrimary?: TTutorialButton;
+  buttonSecondary?: TTutorialButton;
 };
 
-export type TNewFeature = {
+export type TTutorial = {
   order: number; // TODO non-linear feature onboarding
   isEnabled: (featureFlags: TFeatureFlags, themeConfig: TThemeConfig, theme: TTheme) => boolean;
-  banner?: TNewFeatureBanner;
-  card?: TNewFeatureCard;
-  modal?: TNewFeatureModal;
+  banner?: TTutorialBanner;
+  card?: TTutorialCard;
+  modal?: TTutorialModal;
 };

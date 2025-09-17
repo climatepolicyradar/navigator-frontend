@@ -2,10 +2,10 @@ import _ from "lodash";
 import Image from "next/image";
 
 import { ExternalLink } from "@/components/ExternalLink";
-import { TNewFeature } from "@/types";
+import { TTutorial } from "@/types";
 import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
 
-export const NEW_FEATURES: TNewFeature[] = [
+export const TUTORIALS: TTutorial[] = [
   // Knowledge graph (concepts)
   {
     order: 0,

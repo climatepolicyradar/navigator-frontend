@@ -1,22 +1,22 @@
 import { useContext } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
-import { NewFeatureContext } from "@/context/NewFeatureContext";
-import { TNewFeatureBanner, TNewFeatureButtonAction } from "@/types";
+import { TutorialContext } from "@/context/TutorialContext";
+import { TTutorialBanner, TTutorialButtonAction } from "@/types";
 
 export interface IProps {
   order: number;
-  banner: TNewFeatureBanner;
+  banner: TTutorialBanner;
 }
 
-export const NewFeatureBanner = ({ order, banner: { buttonPrimary, buttonSecondary, text } }: IProps) => {
-  const { previousNewFeature, setDisplayNewFeature, setPreviousNewFeature } = useContext(NewFeatureContext);
+export const TutorialBanner = ({ order, banner: { buttonPrimary, buttonSecondary, text } }: IProps) => {
+  const { previousTutorial, setDisplayTutorial, setPreviousTutorial } = useContext(TutorialContext);
 
-  if (previousNewFeature === null || previousNewFeature >= order) return null;
+  if (previousTutorial === null || previousTutorial >= order) return null;
 
-  const buttonActions: Record<TNewFeatureButtonAction, () => void> = {
-    dismiss: () => setPreviousNewFeature(order),
-    showModal: () => setDisplayNewFeature(order),
+  const buttonActions: Record<TTutorialButtonAction, () => void> = {
+    dismiss: () => setPreviousTutorial(order),
+    showModal: () => setDisplayTutorial(order),
   };
 
   return (

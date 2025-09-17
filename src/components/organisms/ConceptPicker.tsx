@@ -6,10 +6,10 @@ import { Accordion } from "@/components/accordion/Accordion";
 import { Badge } from "@/components/atoms/label/Badge";
 import { Select } from "@/components/atoms/select/Select";
 import { InputCheck } from "@/components/forms/Checkbox";
-import { NewFeatureCard } from "@/components/molecules/newFeatures/NewFeatureCard";
-import { NEW_FEATURES } from "@/constants/newFeatures";
+import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { NewFeatureContext } from "@/context/NewFeatureContext";
+import { TUTORIALS } from "@/constants/tutorials";
+import { TutorialContext } from "@/context/TutorialContext";
 import { TConcept } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
@@ -80,7 +80,7 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
 
 export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showBadge = false, showSearch = true, title }: IProps) => {
   const router = useRouter();
-  const { previousNewFeature } = useContext(NewFeatureContext);
+  const { previousTutorial } = useContext(TutorialContext);
   const ref = useRef(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<TSort>(startingSort);
@@ -104,12 +104,12 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
     });
   }, [concepts]);
 
-  const knowledgeGraphIsNew = previousNewFeature < 0;
+  const knowledgeGraphIsNew = previousTutorial < 0;
 
   return (
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
       {/* HEADER */}
-      {knowledgeGraphIsNew && <NewFeatureCard order={0} card={NEW_FEATURES[0].card} />}
+      {knowledgeGraphIsNew && <TutorialCard order={0} card={TUTORIALS[0].card} />}
       <span className="text-base font-semibold text-text-primary">
         <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
         {title}

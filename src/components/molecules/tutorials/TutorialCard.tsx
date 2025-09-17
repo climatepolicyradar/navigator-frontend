@@ -3,23 +3,23 @@ import { useContext } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
 import { Card } from "@/components/atoms/card/Card";
-import { NewFeatureContext } from "@/context/NewFeatureContext";
-import { TNewFeatureButtonAction, TNewFeatureCard } from "@/types";
+import { TutorialContext } from "@/context/TutorialContext";
+import { TTutorialButtonAction, TTutorialCard } from "@/types";
 
 export interface IProps {
   className?: string;
   order: number;
-  card: TNewFeatureCard;
+  card: TTutorialCard;
 }
 
-export const NewFeatureCard = ({ className, order, card: { buttonPrimary, buttonSecondary, close, text, title } }: IProps) => {
-  const { previousNewFeature, setDisplayNewFeature, setPreviousNewFeature } = useContext(NewFeatureContext);
+export const TutorialCard = ({ className, order, card: { buttonPrimary, buttonSecondary, close, text, title } }: IProps) => {
+  const { previousTutorial, setDisplayTutorial, setPreviousTutorial } = useContext(TutorialContext);
 
-  if (previousNewFeature === null || previousNewFeature >= order) return null;
+  if (previousTutorial === null || previousTutorial >= order) return null;
 
-  const buttonActions: Record<TNewFeatureButtonAction, () => void> = {
-    dismiss: () => setPreviousNewFeature(order),
-    showModal: () => setDisplayNewFeature(order),
+  const buttonActions: Record<TTutorialButtonAction, () => void> = {
+    dismiss: () => setPreviousTutorial(order),
+    showModal: () => setDisplayTutorial(order),
   };
 
   return (

@@ -6,13 +6,13 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 import ErrorBoundary from "@/components/error/ErrorBoundary";
 import { Overlays } from "@/components/organisms/overlays/Overlays";
-import { COOKIE_FEATURES_NAME } from "@/constants/cookies";
+import { COOKIE_TUTORIALS_NAME } from "@/constants/cookies";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { AdobeContext } from "@/context/AdobeContext";
 import { EnvConfigContext } from "@/context/EnvConfig";
-import { NewFeatureContext } from "@/context/NewFeatureContext";
 import { PostHogProvider } from "@/context/PostHogProvider";
 import { ThemeContext, IProps as IThemeContextProps } from "@/context/ThemeContext";
+import { TutorialContext } from "@/context/TutorialContext";
 import "../styles/flag-icons.css";
 import "../styles/main.css";
 import { TTheme } from "@/types";
@@ -68,25 +68,25 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
 
   /* New features (onboarding) */
 
-  const [previousNewFeature, setPreviousNewFeature] = useState<number | null>(null);
-  const [displayNewFeature, setDisplayNewFeature] = useState<number | null>(null);
+  const [previousTutorial, setPreviousTutorial] = useState<number | null>(null);
+  const [displayTutorial, setDisplayTutorial] = useState<number | null>(null);
 
   useEffect(() => {
     // Determine the last feature the user saw. -1 = none
-    const newFeaturesCookie = parseInt(getCookie(COOKIE_FEATURES_NAME));
-    setPreviousNewFeature(Number.isNaN(newFeaturesCookie) ? -1 : newFeaturesCookie);
+    const tutorialsCookie = parseInt(getCookie(COOKIE_TUTORIALS_NAME));
+    setPreviousTutorial(Number.isNaN(tutorialsCookie) ? -1 : tutorialsCookie);
   }, [dynamicTheme]);
 
-  const setNewFeatureSeen = (order: number) => {
-    setCookie(COOKIE_FEATURES_NAME, order.toString(), getDomain());
-    setPreviousNewFeature(order);
+  const setTutorialSeen = (order: number) => {
+    setCookie(COOKIE_TUTORIALS_NAME, order.toString(), getDomain());
+    setPreviousTutorial(order);
   };
 
-  const newFeatureContextProviderValue = {
-    displayNewFeature,
-    setDisplayNewFeature,
-    previousNewFeature,
-    setPreviousNewFeature: setNewFeatureSeen,
+  const tutorialContextProviderValue = {
+    displayTutorial,
+    setDisplayTutorial,
+    previousTutorial,
+    setPreviousTutorial: setTutorialSeen,
   };
 
   /* Render */
@@ -94,7 +94,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeContext.Provider value={themeContext}>
-        <NewFeatureContext.Provider value={newFeatureContextProviderValue}>
+        <TutorialContext.Provider value={tutorialContextProviderValue}>
           <AdobeContext.Provider value={dynamicAdobeKey}>
             <PostHogProvider consent={consent}>
               <EnvConfigContext.Provider value={pageProps?.envConfig}>
@@ -110,7 +110,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
               </EnvConfigContext.Provider>
             </PostHogProvider>
           </AdobeContext.Provider>
-        </NewFeatureContext.Provider>
+        </TutorialContext.Provider>
       </ThemeContext.Provider>
       {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>

@@ -2,23 +2,23 @@ import { useContext } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
 import { Modal } from "@/components/molecules/modal/Modal";
-import { NewFeatureContext } from "@/context/NewFeatureContext";
-import { TNewFeatureButtonAction, TNewFeatureModal } from "@/types";
+import { TutorialContext } from "@/context/TutorialContext";
+import { TTutorialButtonAction, TTutorialModal } from "@/types";
 
 interface IProps {
   order: number;
-  modal: TNewFeatureModal;
+  modal: TTutorialModal;
 }
 
-export const NewFeatureModal = ({ order, modal: { buttonPrimary, buttonSecondary, close, content, headerImage, title } }: IProps) => {
-  const { displayNewFeature, setDisplayNewFeature, setPreviousNewFeature } = useContext(NewFeatureContext);
+export const TutorialModal = ({ order, modal: { buttonPrimary, buttonSecondary, close, content, headerImage, title } }: IProps) => {
+  const { displayTutorial, setDisplayTutorial, setPreviousTutorial } = useContext(TutorialContext);
 
-  if (displayNewFeature !== order) return null; // The modal hasn't been opened yet
+  if (displayTutorial !== order) return null; // The modal hasn't been opened yet
 
-  const buttonActions: Record<TNewFeatureButtonAction, () => void> = {
+  const buttonActions: Record<TTutorialButtonAction, () => void> = {
     dismiss: () => {
-      setPreviousNewFeature(order);
-      setDisplayNewFeature(-1);
+      setPreviousTutorial(order);
+      setDisplayTutorial(-1);
     },
     showModal: () => null, // Nothing to do here!
   };
