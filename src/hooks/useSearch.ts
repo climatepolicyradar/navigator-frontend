@@ -15,14 +15,16 @@ type TConfig = {
     accept: string;
     "Content-Type": string;
   };
+  signal: AbortSignal;
 };
 
-async function getSearch(query = initialSearchCriteria) {
+async function getSearch(query = initialSearchCriteria, signal: AbortSignal) {
   const config: TConfig = {
     headers: {
       accept: "application/json",
       "Content-Type": "application/json",
     },
+    signal,
   };
 
   const url = "/searches";
@@ -45,6 +47,9 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
 
   useEffect(() => {
     setStatus("loading");
+
+    // When this useEffect execution is unmounted, send a signal to the Axios request to abort the API request mid-flight
+    const controller = new AbortController();
 
     // If we don't want to trigger an API call, return early
     if (!runFreshSearch || !searchQuery.runSearch) {
@@ -84,33 +89,40 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
       }
     }
 
-    const resultsQuery = getSearch(searchQuery);
+    const resultsQuery = getSearch(searchQuery, controller.signal);
 
     resultsQuery.then((res) => {
-      if (res.status === 200) {
-        // Catch missing attributes from the API response
-        setFamilies(res.data.families || []);
-        setHits(res.data.total_family_hits || 0);
-        setContinuationToken(res.data.continuation_token || null);
+      // If the request is aborted due to unmounting, res is undefined
+      if (typeof res === "object") {
+        if (res.status === 200) {
+          // Catch missing attributes from the API response
+          setFamilies(res.data.families || []);
+          setHits(res.data.total_family_hits || 0);
+          setContinuationToken(res.data.continuation_token || null);
 
-        if (CACHE_ENABLED) {
-          const searchToCache: TCacheResult = {
-            ...cacheId,
-            families: res.data.families,
-            hits: res.data.total_family_hits,
-            continuation_token: res.data.continuation_token,
-            timestamp: new Date().getTime(),
-          };
-          updateCacheSearch(searchToCache);
+          if (CACHE_ENABLED) {
+            const searchToCache: TCacheResult = {
+              ...cacheId,
+              families: res.data.families,
+              hits: res.data.total_family_hits,
+              continuation_token: res.data.continuation_token,
+              timestamp: new Date().getTime(),
+            };
+            updateCacheSearch(searchToCache);
+          }
+        } else {
+          setFamilies([]);
+          setHits(0);
+          setContinuationToken(null);
+          setStatus("error");
         }
-      } else {
-        setFamilies([]);
-        setHits(0);
-        setContinuationToken(null);
-        setStatus("error");
+        setStatus("success");
       }
-      setStatus("success");
     });
+
+    return () => {
+      controller.abort();
+    };
   }, [searchQuery, runFreshSearch]);
 
   return { status, families, hits, continuationToken, searchQuery };
