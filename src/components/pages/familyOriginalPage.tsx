@@ -257,7 +257,7 @@ export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page,
 
             {mainDocuments.length > 0 && theme !== "mcf" && (
               <section className="mt-10">
-                <Heading level={2}>Main {pluralise(mainDocuments.length, "document", "documents")}</Heading>
+                <Heading level={2}>Main {pluralise(mainDocuments.length, ["document", "documents"])}</Heading>
                 <div data-cy="main-documents">
                   {mainDocuments.map((doc) => (
                     <FamilyDocument

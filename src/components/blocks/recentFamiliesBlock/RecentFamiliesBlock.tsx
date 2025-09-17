@@ -9,9 +9,10 @@ export interface IProps {
   categorySummaries: TCategorySummary[];
   onAccordionClick?: (id: string) => void;
   geography: GeographyV2;
+  title?: string;
 }
 
-export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick, geography }: IProps) => {
+export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick, geography, title = "Recent documents" }: IProps) => {
   const [expandedCategories, setExpandedCategories] = useState([categorySummaries[0].title]);
 
   const hideAccordion = categorySummaries.length === 1 && categorySummaries[0].title === "All";
@@ -27,7 +28,7 @@ export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick, geogr
   };
 
   return (
-    <Section block="recents" title="Recent documents">
+    <Section block="recents" title={title}>
       {categorySummaries.map((category) => (
         <RecentFamiliesCategory
           key={category.title}

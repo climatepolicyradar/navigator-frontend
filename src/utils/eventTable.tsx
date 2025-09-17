@@ -21,22 +21,24 @@ export const getEventTableColumns = ({
   showFamilyColumns?: boolean;
   showMatches?: boolean;
 }) => {
-  let columns: TEventTableColumn[] = [
-    { id: "date", name: "Filing Date", fraction: 2 },
-    { id: "type", fraction: 3 },
-    { id: "action", name: "Action taken", fraction: 4 },
+  const columns: TEventTableColumn[] = [
+    { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
+    { id: "type", sortable: true, fraction: 3 },
+    { id: "action", name: "Action Taken", fraction: 4 },
     { id: "document" },
-    { id: "summary", sortable: false, fraction: 6, classes: "min-w-75" },
+    { id: "summary", fraction: 6, classes: "min-w-75" },
+    { id: "caseNumber", name: "Case Number", fraction: 2 },
+    { id: "court" },
+    { id: "caseTitle", name: "Case", fraction: 2 },
+    { id: "matches" },
   ];
 
-  if (showFamilyColumns) {
-    columns = [...columns, { id: "caseNumber", name: "Case", fraction: 2 }, { id: "court" }, { id: "caseTitle", name: "Case", fraction: 2 }];
-  }
+  const columnsToRemove: TEventTableColumnId[] = [];
+  if (!isUSA) columnsToRemove.push("action");
+  if (!showFamilyColumns) columnsToRemove.push("caseNumber", "court", "caseTitle");
+  if (!showMatches) columnsToRemove.push("matches");
 
-  if (!isUSA) columns.splice(2, 1);
-  if (showMatches) columns.push({ id: "matches" });
-
-  return columns;
+  return columns.filter((column) => !columnsToRemove.includes(column.id));
 };
 
 /* Rows */

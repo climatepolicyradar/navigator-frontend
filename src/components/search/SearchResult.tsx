@@ -6,6 +6,7 @@ import { MAX_RESULTS } from "@/constants/paging";
 import { ThemeContext } from "@/context/ThemeContext";
 import { TMatchedFamily } from "@/types";
 import { isSearchFamilySummaryEnabled } from "@/utils/features";
+import { pluralise } from "@/utils/pluralise";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
@@ -21,7 +22,7 @@ const SearchResult = ({ family, active, onClick }: IProps) => {
   const hasFamilyDocuments = family_documents.length > 0;
 
   const matchesNumber = total_passage_hits >= MAX_RESULTS ? `${MAX_RESULTS}+` : `${total_passage_hits}`;
-  const matchesText = `View ${matchesNumber} text ${total_passage_hits === 1 ? "passage" : "passages"} matching your search`;
+  const matchesText = `View ${matchesNumber} text ${pluralise(total_passage_hits, ["passage", "passages"])} matching your search`;
 
   const titleClasses = joinTailwindClasses(
     hasFamilyDocuments ? "text-text-primary" : "text-[#0041A3]",

@@ -17,7 +17,7 @@ export interface IInteractiveTableColumn<ColumnKey extends string> {
   fraction?: number; // CSS grid fractional units - the column's relative width
   id: ColumnKey;
   name?: string; // defaults to first-cased id
-  sortable?: boolean; // defaults to true
+  sortable?: boolean; // defaults to false
   tooltip?: ReactNode;
 }
 
@@ -170,7 +170,7 @@ export const InteractiveTable = <ColumnKey extends string>({
                       <LucideInfo size={16} className="text-text-tertiary opacity-50 group-hover:opacity-100" />
                     </Tooltip>
                   )}
-                  {column.sortable !== false && renderSortControls(column)}
+                  {column.sortable === true && renderSortControls(column)}
                 </div>
               </div>
             );

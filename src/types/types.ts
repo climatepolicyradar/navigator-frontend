@@ -1,3 +1,5 @@
+import { TSingularAndPlural } from "./display";
+
 export type TTheme = "cpr" | "cclw" | "mcf" | "ccc";
 
 export type TSearchKeywordFilters = {
@@ -488,5 +490,5 @@ export type TCategorySummary = {
   count: number;
   families: TFamily[];
   title: string;
-  unit: [string, string];
+  singularAndPlural: TSingularAndPlural;
 };

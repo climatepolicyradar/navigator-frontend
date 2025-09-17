@@ -92,7 +92,7 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
     label: "Court/admin entity",
     value: (
       <div className="grid">
-        {legalEntities.length > 0 ? legalEntities.map((entity) => <ConceptHierarchy key={entity.id} concept={entity} />) : "N/A"}
+        {legalEntities.length > 0 ? legalEntities.map((entity) => <ConceptHierarchy key={entity.id} concept={entity} />) : EN_DASH}
       </div>
     ),
   });
@@ -104,7 +104,7 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
     label: "Case category",
     value: (
       <div className="grid">
-        {caseCategories.length > 0 ? caseCategories.map((category) => <ConceptHierarchy key={category.id} concept={category} />) : "N/A"}
+        {caseCategories.length > 0 ? caseCategories.map((category) => <ConceptHierarchy key={category.id} concept={category} />) : EN_DASH}
       </div>
     ),
   });
@@ -115,7 +115,7 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
   metadata.push({
     label: "Principal law",
     value: (
-      <div className="grid">{principalLaws.length > 0 ? principalLaws.map((law) => <ConceptHierarchy key={law.id} concept={law} />) : "N/A"}</div>
+      <div className="grid">{principalLaws.length > 0 ? principalLaws.map((law) => <ConceptHierarchy key={law.id} concept={law} />) : EN_DASH}</div>
     ),
   });
 
