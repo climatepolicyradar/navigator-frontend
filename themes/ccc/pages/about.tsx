@@ -8,10 +8,7 @@ import { Heading } from "@/components/typography/Heading";
 
 const About = () => {
   return (
-    <Layout
-      title="About"
-      description="Climate Case Chart is a database of climate litigation cases and their documents collated by the Sabin Center for Climate Change Law."
-    >
+    <Layout title="About" description="Find out more about the Sabin Center for Climate Change Law's Climate Litigation Database.">
       <BreadCrumbs label={"About us"} />
       <section className="pt-8 color-text-primary">
         <SiteWidth>
@@ -21,8 +18,8 @@ const About = () => {
                 About
               </Heading>
               <p className="text-content mb-6">
-                The Sabin Center for Climate Change Law's Climate Litigation Database is the most comprehensive resource tracking climate change
-                litigation worldwide. It contains more than 3,000 cases that address climate change law, policy, or science.
+                The Climate Litigation Database is the most comprehensive resource tracking climate change litigation worldwide. It contains more than
+                3,000 cases that address climate change law, policy, or science.
               </p>
               <p className="text-content mb-6">
                 This revamped platform, developed in partnership with{" "}

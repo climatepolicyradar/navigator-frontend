@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Columns } from "@/components/atoms/columns/Columns";
@@ -8,26 +10,26 @@ export const Footer = () => {
   const strong = "font-semibold";
 
   return (
-    <footer className="pb-4">
+    <footer className="pb-4 py-2">
       <div className="w-full mx-auto px-3 mb-4">
         <Divider />
       </div>
 
       <Columns>
         <aside className="flex flex-col items-start cols-2:col-span-2 cols-3:col-span-1">
-          <LinkWithQuery href="/" className="max-w-70">
+          <Link href="/" className="max-w-70">
             {/* trunk-ignore(eslint/@next/next/no-img-element) */}
             <img src="/images/ccc/sabin-logo-large.png" alt="Sabin Center for Climate Change logo" className="w-full mb-2" />
-          </LinkWithQuery>
+          </Link>
         </aside>
 
         <main className="cols-2:col-span-2 cols-4:col-span-3 grid grid-cols-subgrid gap-6">
           <div className="flex flex-col items-start gap-2">
             <ul className="space-y-1">
               <li>
-                <LinkWithQuery href="/" className={`${link} ${strong}`}>
+                <Link href="/" className={`${link} ${strong}`}>
                   Home
-                </LinkWithQuery>
+                </Link>
               </li>
               <li>
                 <LinkWithQuery href="/search" className={`${link} ${strong}`}>

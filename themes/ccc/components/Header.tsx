@@ -1,14 +1,14 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { Menu } from "@/ccc/components/Menu";
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { NavBar } from "@/components/organisms/navBar/NavBar";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-export const CCLWLogo = (
-  <LinkWithQuery href={`/`} cypress="cclw-logo">
-    <span className="text-text-primary text-2xl font-medium">Climate Case Chart</span>
-  </LinkWithQuery>
+export const CCCLogo = (
+  <Link href="/" data-cy="ccc-logo">
+    <span className="text-text-primary text-2xl font-medium">The Climate Litigation Database</span>
+  </Link>
 );
 
 const Header = () => {
@@ -24,7 +24,7 @@ const Header = () => {
     showBorder && "border-b border-gray-200 border-solid"
   );
 
-  return <NavBar headerClasses={headerClasses} logo={CCLWLogo} menu={<Menu />} showLogo={showLogo} showSearch={showSearch} />;
+  return <NavBar headerClasses={headerClasses} logo={CCCLogo} menu={<Menu />} showLogo={showLogo} showSearch={showSearch} />;
 };
 
 export default Header;

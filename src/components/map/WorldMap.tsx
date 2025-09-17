@@ -13,6 +13,7 @@ import { TGeography, TTheme } from "@/types";
 import GeographySelect from "./GeographySelect";
 import { Legend } from "./Legend";
 import { ZoomControls } from "./ZoomControls";
+import { ExternalLink } from "../ExternalLink";
 import { Heading } from "../typography/Heading";
 
 const geoUrl = "/data/map/world-countries-50m.json";
@@ -445,7 +446,20 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           </div>
         )}
       </div>
-      {selectedFamCategory !== "litigation" && <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} theme={theme} />}
+      {selectedFamCategory !== "litigation" ? (
+        <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} theme={theme} />
+      ) : (
+        <div className="flex flex-col items-center justify-center gap-4 text-center text-sm font-normal leading-none py-4">
+          <p className="text-text-secondary">Darker color indicates the number of litigation submissions in our databases.</p>
+          <p className="text-text-tertiary">
+            This map uses the{" "}
+            <ExternalLink className="underline" url="https://www.iso.org/iso-3166-country-codes.html">
+              ISO 3166
+            </ExternalLink>{" "}
+            country code standard and is without prejudice to the status of or sovereignty over any territory.
+          </p>
+        </div>
+      )}
     </>
   );
 }

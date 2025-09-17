@@ -21,7 +21,7 @@ export const Hero = ({ handleSearchInput, searchInput }: IProps) => {
         <Image src="/images/ccc/sabin-logo-large.png" alt="Sabin Center for Climate Change logo" width={384} height={36} />
         <div className="">
           <Heading level={1} extraClasses="!text-text-primary lg:!text-5xl !font-bold pb-4 max-w-screen-sm">
-            U.S. and Global Climate Change Litigation Database
+            The Climate Litigation Database
           </Heading>
           <LandingSearchForm handleSearchInput={handleSearchInput} input={searchInput} />
         </div>
