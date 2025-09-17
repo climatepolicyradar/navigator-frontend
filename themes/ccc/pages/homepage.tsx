@@ -4,6 +4,7 @@ import Image from "next/image";
 import { FeatureDiscover } from "@/ccc/components/FeatureDiscover";
 import { Footer } from "@/ccc/components/Footer";
 import { Hero } from "@/ccc/components/Hero";
+import { HomepageFaqs } from "@/ccc/components/HomepageFaqs";
 import { PoweredBy } from "@/ccc/components/PoweredBy";
 import Layout from "@/components/layouts/LandingPage";
 import { FullWidth } from "@/components/panels/FullWidth";
@@ -39,6 +40,7 @@ const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig, exact
         <WorldMap showLitigation showCategorySelect={false} theme="ccc" />
       </SiteWidth>
       <FeatureDiscover />
+      <HomepageFaqs />
       <PoweredBy />
       <Footer />
     </Layout>
