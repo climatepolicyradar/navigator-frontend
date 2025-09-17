@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Badge } from "@/components/atoms/label/Badge";
 import { InputCheck } from "@/components/forms/Checkbox";
+import { InputRadio } from "@/components/forms/Radio";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TConcept } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
@@ -17,6 +18,7 @@ interface IProps {
   showSearch?: boolean;
   startingSort?: TSort;
   title: string;
+  isRootConceptExclusive?: boolean;
 }
 
 const SORT_OPTIONS = ["A-Z", "Grouped"] as const;
@@ -56,7 +58,13 @@ const filterConcepts = (concepts: TConcept[], search: string) => {
   );
 };
 
-const onConceptChange = (router: NextRouter, concept: TConcept, relatedConcepts: TConcept[], rootConcept: TConcept = undefined) => {
+const onConceptChange = (
+  router: NextRouter,
+  concept: TConcept,
+  relatedConcepts: TConcept[],
+  rootConcept: TConcept = undefined,
+  isRootConceptExclusive: boolean
+) => {
   const query = CleanRouterQuery({ ...router.query });
   // Retain any dynamic ids in the query (e.g. document page)
   if (router.query.id) {
@@ -104,7 +112,24 @@ const onConceptChange = (router: NextRouter, concept: TConcept, relatedConcepts:
   router.push({ query: query }, undefined, { shallow: true });
 };
 
-export const FamilyConceptPicker = ({ concepts, containerClasses = "", showBadge = false, showSearch = true, title }: IProps) => {
+/**
+ * FamilyConceptPicker component allows users to pick concepts from a grouped family structure.
+ * Concepts are grouped by their root concept, and users can search and select/deselect concepts.
+ * - concepts: Array of TConcept objects to display.
+ * - containerClasses: Optional additional CSS classes for the container.
+ * - showBadge: Boolean to show/hide a "Beta" badge next to the title.
+ * - showSearch: Boolean to show/hide the search input field.
+ * - title: Title of the concept picker.
+ * - isRootConceptExclusive: If true, selecting a root concept will deselect all its child concepts and vice versa. (defaults to true)
+ */
+export const FamilyConceptPicker = ({
+  concepts,
+  containerClasses = "",
+  showBadge = false,
+  showSearch = true,
+  title,
+  isRootConceptExclusive = true,
+}: IProps) => {
   const router = useRouter();
   const ref = useRef(null);
   const [search, setSearch] = useState("");
@@ -143,6 +168,7 @@ export const FamilyConceptPicker = ({ concepts, containerClasses = "", showBadge
       <div className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
         <div className={`flex flex-col text-sm gap-2 pt-4`}>
           {rootConcepts.map((rootConcept) => {
+            const InteractiveComponent = isRootConceptExclusive ? InputRadio : InputCheck;
             const filteredConcepts = filterConcepts(conceptsGrouped[rootConcept.wikibase_id] || [], search);
             if (filteredConcepts.length === 0) return null;
             const childConcepts = filteredConcepts
@@ -150,12 +176,17 @@ export const FamilyConceptPicker = ({ concepts, containerClasses = "", showBadge
               .sort((a, b) => conceptsSorter(a, b, "A-Z"));
             return (
               <div key={rootConcept.wikibase_id}>
-                <InputCheck
+                <InteractiveComponent
                   key={rootConcept.wikibase_id}
                   label={firstCase(rootConcept.preferred_label)}
                   checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], rootConcept.wikibase_id)}
                   onChange={() => {
-                    onConceptChange(router, rootConcept, filteredConcepts);
+                    onConceptChange(router, rootConcept, filteredConcepts, undefined, isRootConceptExclusive);
+                  }}
+                  onClick={() => {
+                    if (isRootConceptExclusive) {
+                      onConceptChange(router, rootConcept, filteredConcepts, undefined, isRootConceptExclusive);
+                    }
                   }}
                   name={rootConcept.preferred_label}
                   className={
@@ -173,7 +204,7 @@ export const FamilyConceptPicker = ({ concepts, containerClasses = "", showBadge
                         label={firstCase(concept.preferred_label)}
                         checked={isSelected(router.query[QUERY_PARAMS.concept_preferred_label], concept.wikibase_id, rootConcept.wikibase_id)}
                         onChange={() => {
-                          onConceptChange(router, concept, filteredConcepts, rootConcept);
+                          onConceptChange(router, concept, filteredConcepts, rootConcept, isRootConceptExclusive);
                         }}
                         name={concept.preferred_label}
                       />

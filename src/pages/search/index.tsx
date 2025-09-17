@@ -492,7 +492,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                     <SlideOut showCloseButton={false}>
                       {conceptsData && currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Find mentions of topics" />}
                       {familyConceptsData && currentSlideOut === "categories" && (
-                        <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories" />
+                        <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories" isRootConceptExclusive={false} />
                       )}
                       {familyConceptsData && currentSlideOut === "principalLaws" && (
                         <FamilyConceptPicker concepts={groupedFamilyConcepts.principal_law} title="Principal laws" />
