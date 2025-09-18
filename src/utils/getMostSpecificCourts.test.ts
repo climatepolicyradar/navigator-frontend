@@ -3,7 +3,7 @@ import { TFamilyConcept, TFamilyMetadata } from "@/types";
 import { getMostSpecificCourts, getMostSpecificCourtsFromMetadata } from "./getMostSpecificCourts";
 
 describe("getMostSpecificCourts", () => {
-  it("should extract the court name from concepts hierarchy", () => {
+  it("should return the most specific court concept from hierarchy", () => {
     const concepts: TFamilyConcept[] = [
       {
         id: "Federal Courts",
@@ -24,15 +24,16 @@ describe("getMostSpecificCourts", () => {
     ];
 
     const result = getMostSpecificCourts(concepts);
-    expect(result).toBe("D.D.C.");
+    expect(result).toHaveLength(1);
+    expect(result[0].preferred_label).toBe("D.D.C.");
   });
 
-  it("should return null when no legal entities found", () => {
+  it("should return empty array when no legal entities found", () => {
     const concepts: TFamilyConcept[] = [
       {
         id: "Some Category",
         ids: [],
-        type: "legal_category",
+        type: "some_category",
         relation: "category",
         preferred_label: "Some Category",
         subconcept_of_labels: [],
@@ -40,12 +41,46 @@ describe("getMostSpecificCourts", () => {
     ];
 
     const result = getMostSpecificCourts(concepts);
-    expect(result).toBeNull();
+    expect(result).toEqual([]);
   });
 
-  it("should return null when concepts array is empty", () => {
+  it("should return empty array when concepts array is empty", () => {
     const result = getMostSpecificCourts([]);
-    expect(result).toBeNull();
+    expect(result).toEqual([]);
+  });
+
+  it("should handle multiple most specific courts", () => {
+    const concepts: TFamilyConcept[] = [
+      {
+        id: "Federal Courts",
+        ids: [],
+        type: "legal_entity",
+        relation: "jurisdiction",
+        preferred_label: "Federal Courts",
+        subconcept_of_labels: [],
+      },
+      {
+        id: "D.D.C.",
+        ids: [],
+        type: "legal_entity",
+        relation: "jurisdiction",
+        preferred_label: "D.D.C.",
+        subconcept_of_labels: ["Federal Courts"],
+      },
+      {
+        id: "S.D.N.Y.",
+        ids: [],
+        type: "legal_entity",
+        relation: "jurisdiction",
+        preferred_label: "S.D.N.Y.",
+        subconcept_of_labels: ["Federal Courts"],
+      },
+    ];
+
+    const result = getMostSpecificCourts(concepts);
+    expect(result).toHaveLength(2);
+    expect(result.map((c) => c.preferred_label)).toContain("D.D.C.");
+    expect(result.map((c) => c.preferred_label)).toContain("S.D.N.Y.");
   });
 });
 
