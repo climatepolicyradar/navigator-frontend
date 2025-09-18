@@ -121,7 +121,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
       label: "Part of",
       value: joinNodes(
         family.collections.map((collection) => (
-          <LinkWithQuery key={collection.import_id} href={`/collection/${collection.import_id}`} className="underline">
+          <LinkWithQuery key={collection.import_id} href={`/collections/${collection.slug}`} className="underline">
             {collection.title}
           </LinkWithQuery>
         )),

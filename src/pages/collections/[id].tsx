@@ -105,13 +105,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { notFound: true };
   }
 
-  const import_id = context.params.id;
-  const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
-
   let collectionData: TCollectionPublicWithFamilies;
 
   try {
-    const { data: collectionResponse } = await apiClient.get(`/families/collections/${import_id}`);
+    const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
+    const id = context.params.id;
+    const { data: slugData } = await apiClient.get(`/families/slugs/${id}`);
+    const collection_import_id = slugData.data.collection_import_id;
+
+    const { data: collectionResponse } = await apiClient.get(`/families/collections/${collection_import_id}`);
     collectionData = collectionResponse.data;
   } catch (error) {}
 
