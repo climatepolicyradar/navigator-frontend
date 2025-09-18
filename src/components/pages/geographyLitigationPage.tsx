@@ -82,6 +82,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
       }, [geographyV2]),
       sideBarItem: { display: "Legislative Process" },
     },
+    statistics: null,
     recents: {
       render: useCallback(() => {
         const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
