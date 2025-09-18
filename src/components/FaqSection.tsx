@@ -5,8 +5,10 @@ import { SingleCol } from "@/components/panels/SingleCol";
 import { Heading } from "@/components/typography/Heading";
 import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
 
+import { LinkWithQuery } from "./LinkWithQuery";
+
 interface IProps {
-  title: string;
+  title?: string;
   faqs: {
     id?: string;
     title: string;
@@ -15,9 +17,11 @@ interface IProps {
   }[];
   accordionMaxHeight?: string;
   sectionId?: string;
+  showMore?: boolean;
+  openFirstOnLoad?: boolean;
 }
 
-export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionId = "" }: IProps) => {
+export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionId = "", showMore = false, openFirstOnLoad = true }: IProps) => {
   useEffect(() => {
     // Only run if this component has an ID (meaning it's the target component)
     if (!sectionId) return;
@@ -36,19 +40,28 @@ export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionI
 
   return (
     <SingleCol>
-      <Heading level={1} extraClasses="custom-header" id={sectionId}>
-        {title}
-      </Heading>
-      <VerticalSpacing size="md" />
+      {title && (
+        <>
+          <Heading level={1} extraClasses="custom-header" id={sectionId}>
+            {title}
+          </Heading>
+          <VerticalSpacing size="md" />
+        </>
+      )}
       <div className="text-content mb-14">
         {faqs.map((faq, index) => (
           <Fragment key={faq.title}>
-            <Accordion title={faq.title} headContent={faq.headContent ?? null} open={index === 0} fixedHeight={accordionMaxHeight}>
+            <Accordion title={faq.title} headContent={faq.headContent ?? null} open={openFirstOnLoad && index === 0} fixedHeight={accordionMaxHeight}>
               {faq.content}
             </Accordion>
             <hr />
           </Fragment>
         ))}
+        {showMore && (
+          <LinkWithQuery href="/faq" className="!text-text-brand-darker font-semibold text-sm !no-underline">
+            See more FAQs →
+          </LinkWithQuery>
+        )}
       </div>
     </SingleCol>
   );
