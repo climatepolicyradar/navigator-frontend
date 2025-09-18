@@ -27,6 +27,7 @@ const useGeographiesContext = ({ ...props }: IProps) => (
 export const MultipleCategories: TStory = {
   args: {
     categorySummaries: CATEGORY_SUMMARY_STUB,
+    geography: { slug: "united-kingdom" } as GeographyV2,
   },
   render: useGeographiesContext,
 };
@@ -34,6 +35,7 @@ export const MultipleCategories: TStory = {
 export const SingleCategory: TStory = {
   args: {
     categorySummaries: [CATEGORY_SUMMARY_STUB[0]],
+    geography: { slug: "united-kingdom" } as GeographyV2,
   },
   render: useGeographiesContext,
 };
