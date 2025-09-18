@@ -335,7 +335,7 @@ describe("SearchPage", async () => {
     expect(screen.queryByRole("link", { name: "Family With Test Case Category 2" })).not.toBeInTheDocument();
   });
 
-  it.only("removing a case category filter updates search results", async () => {
+  it("removing a case category filter updates search results", async () => {
     mockCurrentSlideOut = ""; // Make sure we start with slideout closed.
 
     const { rerender } = renderWithAppContext(
