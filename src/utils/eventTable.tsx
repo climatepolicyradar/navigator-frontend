@@ -3,8 +3,9 @@ import { ReactNode } from "react";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { IInteractiveTableColumn, IInteractiveTableRow } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { TFamilyConcept, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
+import { TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
 
+import { getMostSpecificCourts } from "./getMostSpecificCourts";
 import { formatDateShort } from "./timedate";
 
 /* Columns */
@@ -48,27 +49,6 @@ export type TEventTableRow = IInteractiveTableRow<TEventTableColumnId>;
 type TEventWithDocument = {
   event: TFamilyEventPublic;
   document?: TFamilyDocumentPublic;
-};
-
-const getMostSpecificCourts = (concepts: TFamilyConcept[]): TFamilyConcept[] => {
-  let courtConcepts = concepts.filter((concept) => concept.type === "legal_entity");
-  if (courtConcepts.length === 0) return [];
-
-  // On each loop, remove legal entities without parents. Stops when the deepest level court remains
-  while (courtConcepts.length > 1) {
-    const moreSpecificConcepts = courtConcepts.filter((concept) =>
-      concept.subconcept_of_labels.some((id) => courtConcepts.findIndex((con) => con.id === id) !== -1)
-    );
-
-    // Prevent a situation where number of concepts goes from 2 to 0 on the last loop
-    if (moreSpecificConcepts.length === 0) {
-      return courtConcepts;
-    } else {
-      courtConcepts = moreSpecificConcepts;
-    }
-  }
-
-  return courtConcepts;
 };
 
 export const getCaseNumbers = (family: TFamilyPublic): string | null => family.metadata.case_number?.join(", ") || null;

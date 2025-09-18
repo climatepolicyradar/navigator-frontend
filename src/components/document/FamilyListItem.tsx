@@ -42,6 +42,7 @@ export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = tru
           source={family_source}
           date={family_date}
           geographies={family_geographies}
+          metadata={family_metadata}
           {...(corpus_type_name === "Reports" ? { author: (family_metadata as { author: string[] }).author } : {})}
         />
       </div>
