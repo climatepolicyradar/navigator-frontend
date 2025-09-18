@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
+import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import Loader from "@/components/Loader";
 import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
@@ -120,7 +121,13 @@ const getSelectedConcepts = (selectedConcepts: string | string[], allConcepts: T
 
 const getSelectedFamilyConcepts = (selectedConcepts: string | string[], allConcepts: TConcept[] = []): TConcept[] => {
   const selectedConceptsAsArray = Array.isArray(selectedConcepts) ? selectedConcepts : [selectedConcepts];
-  return allConcepts?.filter((concept) => selectedConceptsAsArray.includes(concept.wikibase_id)) || [];
+  return (
+    allConcepts?.filter(
+      (concept) =>
+        selectedConceptsAsArray.includes(concept.wikibase_id) &&
+        (concept.recursive_subconcept_of.length === 0 || concept.recursive_subconcept_of.some((sub) => selectedConceptsAsArray.includes(sub)))
+    ) || []
+  );
 };
 
 const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
@@ -422,8 +429,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const groupedFamilyConcepts = familyConceptsData ? Object.groupBy(familyConceptsData, (familyConcept) => familyConcept.type) : undefined;
 
   return (
-    <FeatureFlagsContext.Provider value={featureFlags}>
-      <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
+    <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
+      <FeatureFlagsContext.Provider value={featureFlags}>
         <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
           <section>
             <div className="md:flex justify-between items-center border-b border-gray-200">
@@ -444,167 +451,14 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                   </a>
                   {getThemeConfigLink(themeConfig, "download-database") && (
                     <>
-                      <div className="md:mb-5">
-                        <div className="md:hidden mb-4">
-                          <Button content="both" className="flex-nowrap" onClick={toggleFilters}>
-                            <span>{showFilters ? "Hide" : "Show"} filters</span>
-                          </Button>
-                        </div>
-                        <div className="flex flex-wrap gap-4 justify-between items-start">
-                          <div className="flex items-center gap-2">
-                            <p className="text-sm text-text-primary font-normal">
-                              Results{" "}
-                              <span className="text-text-secondary">
-                                {hits || 0}
-                                {themeConfig.searchResultCountLabel ? ` ${themeConfig.searchResultCountLabel}` : ""}
-                              </span>
-                            </p>
-                            <Info
-                              title="Showing the top 500 results"
-                              description="We limit the number of matches you can see so you get the quickest, most accurate results."
-                              link={{ href: "/faq", text: "Learn more" }}
-                            />
-                          </div>
-                          <div className="flex flex-col lg:flex-row gap-1 lg:gap-4">
-                            <div className="relative z-10 -top-0.5 flex justify-end">
-                              <button
-                                className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
-                                onClick={() => setShowSearchOptions(!showSearchOptions)}
-                                data-cy="search-options"
-                                ref={searchSettingsButtonRef}
-                              >
-                                <span className="font-bold">Search:</span>{" "}
-                                <span>{getCurrentSearchChoice(router.query) === "true" ? SEARCH_SETTINGS.exact : SEARCH_SETTINGS.semantic}</span>
-                                <ChevronDown />
-                              </button>
-                              <AnimatePresence initial={false}>
-                                {showSearchOptions && (
-                                  <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
-                                    <SearchSettings
-                                      queryParams={router.query}
-                                      handleSearchChange={handleSearchChange}
-                                      setShowOptions={setShowSearchOptions}
-                                      settingsButtonRef={searchSettingsButtonRef}
-                                      extraClasses="w-[280px]"
-                                    />
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
-                            </div>
-                            <div className="relative z-8 -top-0.5 flex justify-end">
-                              <button
-                                className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSortOptions ? "bg-surface-ui" : ""}`}
-                                onClick={() => setShowSortOptions(!showSortOptions)}
-                                data-cy="search-options"
-                                ref={sortSettingsButtonRef}
-                              >
-                                <span className="font-bold">Order:</span>{" "}
-                                <span>
-                                  {getSelectedSortOptionText(
-                                    getCurrentSortChoice(
-                                      router.query,
-                                      !router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.query_string]?.toString().trim() === ""
-                                    )
-                                  )}
-                                </span>{" "}
-                                <ChevronDown />
-                              </button>
-                              <AnimatePresence initial={false}>
-                                {showSortOptions && (
-                                  <motion.div key="content" initial="hidden" animate="visible" exit="hidden" variants={SETTINGS_ANIMATION_VARIANTS}>
-                                    <SearchSettings
-                                      queryParams={router.query}
-                                      handleSortClick={handleSortClick}
-                                      setShowOptions={setShowSortOptions}
-                                      settingsButtonRef={sortSettingsButtonRef}
-                                    />
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <section data-cy="search-results">
-                        <h2 className="sr-only">Search results</h2>
-                        {showLitigationInformation(router.query) && (
-                          <Warning variant="info">
-                            <p>
-                              You are viewing a list of litigation cases filtered by{" "}
-                              {getSelectedFamilyConcepts(router.query[QUERY_PARAMS.concept_preferred_label], familyConceptsData)
-                                .map((c) => c.preferred_label)
-                                .join(" AND ")}
-                            </p>
-                          </Warning>
-                        )}
-                        {showCorporateDisclosuresInformation(router.query) && (
-                          <Warning variant="info">
-                            <p className="font-semibold">New data</p>
-                            <p>
-                              A snapshot of 900+ corporate reports from H1/2025, including climate transition plans and regulatory filings published
-                              by 460 publicly listed high emitting companies. Note, some of the{" "}
-                              <a
-                                className="underline hover:text-blue-800"
-                                href="#"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setCurrentSlideOut("concepts");
-                                }}
-                              >
-                                automatic topic filters
-                              </a>{" "}
-                              such as "Climate finance" currently do not perform as well on this dataset.
-                            </p>
-                          </Warning>
-                        )}
-                        {showKnowledgeGraphInformation(router.query) && (
-                          <Warning variant="info">
-                            <p>
-                              You are viewing a list of documents containing precise text passages matches related to{" "}
-                              <ResultsTopicsContext
-                                phrase={router.query[QUERY_PARAMS.query_string] as string}
-                                selectedTopics={getSelectedConcepts(router.query[QUERY_PARAMS.concept_name], conceptsData)}
-                              />
-                              .{" "}
-                              <LinkWithQuery href="/faq" target="_blank" hash="topics-faqs" className="underline hover:text-blue-800">
-                                Learn more
-                              </LinkWithQuery>
-                            </p>
-                          </Warning>
-                        )}
-                        {showSearchOnboarding(router.query) && (
-                          <Warning variant="info" hideableId="search-onboarding-info">
-                            <p className="font-semibold text-text-brand">Get better results</p>
-                            <p>
-                              You are currently viewing all of the documents in our database. Narrow your search by document type, geography, date,
-                              and more.
-                              {isKnowledgeGraphEnabled(featureFlags, themeConfig) && (
-                                <>
-                                  {" "}
-                                  You can also use the AI-supported{" "}
-                                  <a
-                                    className="underline hover:text-blue-800"
-                                    href="#"
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      setCurrentSlideOut("concepts");
-                                    }}
-                                  >
-                                    Topics filter
-                                  </a>{" "}
-                                  to help refine your search.
-                                </>
-                              )}
-                            </p>
-                          </Warning>
-                        )}
-                        <SearchResultList
-                          category={router.query[QUERY_PARAMS.category]?.toString()}
-                          families={families}
-                          onClick={handleMatchesButtonClick}
-                          activeFamilyIndex={drawerFamily}
-                        />
-                      </section>
+                      <span>|</span>
+                      <ExternalLink
+                        url={getThemeConfigLink(themeConfig, "download-database").url}
+                        className="text-blue-600 hover:underline hover:text-blue-800"
+                        cy="download-entire-search-csv"
+                      >
+                        whole database
+                      </ExternalLink>
                     </>
                   )}
                 </span>
@@ -639,7 +493,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       <SlideOut showCloseButton={false}>
                         {conceptsData && currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Find mentions of topics" />}
                         {familyConceptsData && currentSlideOut === "categories" && (
-                          <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories" />
+                          <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories" isRootConceptExclusive={false} />
                         )}
                         {familyConceptsData && currentSlideOut === "principalLaws" && (
                           <FamilyConceptPicker concepts={groupedFamilyConcepts.principal_law} title="Principal laws" />
@@ -713,7 +567,11 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           <div className="flex flex-wrap gap-4 justify-between items-start">
                             <div className="flex items-center gap-2">
                               <p className="text-sm text-text-primary font-normal">
-                                Results <span className="text-text-secondary">{hits || 0}</span>
+                                Results{" "}
+                                <span className="text-text-secondary">
+                                  {hits || 0}
+                                  {themeConfig.searchResultCountLabel ? ` ${themeConfig.searchResultCountLabel}` : ""}
+                                </span>
                               </p>
                               <Info
                                 title="Showing the top 500 results"
@@ -885,8 +743,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           </Drawer>
           <DownloadCsvPopup isOpen={showCSVDownloadPopup} onClose={() => setShowCSVDownloadPopup(false)} onDownload={handleDownloadCsvClick} />
         </SlideOutContext.Provider>
-      </Layout>
-    </FeatureFlagsContext.Provider>
+      </FeatureFlagsContext.Provider>
+    </Layout>
   );
 };
 
