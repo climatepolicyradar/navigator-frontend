@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ApiClient } from "@/api/http-common";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Debug } from "@/components/atoms/debug/Debug";
+import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { RecentFamiliesBlock } from "@/components/blocks/recentFamiliesBlock/RecentFamiliesBlock";
 import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisionBlock";
 import { TargetsBlock } from "@/components/blocks/targetsBlock/TargetsBlock";
@@ -16,6 +17,7 @@ import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHead
 import { GeographiesContext } from "@/context/GeographiesContext";
 import { TSearch, TGeographyPageBlock } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
+import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 import { IProps } from "./geographyOriginalPage";
@@ -82,7 +84,6 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
       }, [geographyV2]),
       sideBarItem: { display: "Legislative Process" },
     },
-    statistics: null,
     recents: {
       render: useCallback(() => {
         const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
@@ -146,6 +147,14 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
         );
       }, [envConfig, geographyV2, recentFamiliesTitle, searchResultsByCategory, theme, themeConfig]),
       sideBarItem: { display: recentFamiliesTitle },
+    },
+    statistics: {
+      render: useCallback(() => {
+        const geographyMetaData = geographyV2.statistics ? getGeographyMetaData(geographyV2.statistics) : [];
+        if (geographyMetaData.length === 0) return null;
+
+        return <MetadataBlock key="statistics" block="statistics" title="Statistics" metadata={geographyMetaData} />;
+      }, [geographyV2]),
     },
     subdivisions: {
       render: useCallback(() => {

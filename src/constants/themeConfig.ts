@@ -15,4 +15,5 @@ export const DEFAULT_THEME_CONFIG: TThemeConfig = {
   },
   tutorials: [],
   features: DEFAULT_CONFIG_FEATURES,
+  searchResultCountLabel: "",
 };

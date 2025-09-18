@@ -98,4 +98,5 @@ export type TThemeConfig = {
   pageBlocks: TThemePageBlocks;
   tutorials: TTutorialName[];
   features: TConfigFeatures;
+  searchResultCountLabel: string;
 };
