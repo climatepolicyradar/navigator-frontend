@@ -557,7 +557,11 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                         <div className="flex flex-wrap gap-4 justify-between items-start">
                           <div className="flex items-center gap-2">
                             <p className="text-sm text-text-primary font-normal">
-                              Results <span className="text-text-secondary">{hits || 0}</span>
+                              Results{" "}
+                              <span className="text-text-secondary">
+                                {hits || 0}
+                                {themeConfig.searchResultCountLabel ? ` ${themeConfig.searchResultCountLabel}` : ""}
+                              </span>
                             </p>
                             <Info
                               title="Showing the top 500 results"
