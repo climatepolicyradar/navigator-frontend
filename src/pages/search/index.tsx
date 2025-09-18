@@ -216,7 +216,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     resetCSVStatus();
   };
 
-  const handleFilterChange = (type: string, value: string, clearOthersOfType: boolean = false) => {
+  const handleFilterChange = (type: string, value: string, clearOthersOfType: boolean = false, otherValuesToClear: string[] = []) => {
     // Clear pagination controls and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
     delete router.query[QUERY_PARAMS.active_continuation_token];
@@ -245,6 +245,11 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
       // If we are removing a year range, we should also remove the other year range
       if (type === QUERY_PARAMS.year_range) {
         queryCollection = [];
+      }
+
+      // In some scenarios we want to clear other values of the same type
+      if (otherValuesToClear.length > 0) {
+        queryCollection = queryCollection.filter((item) => !otherValuesToClear.includes(item));
       }
     } else {
       // If we want the filter to be exclusive, we clear all other filters of the same type

@@ -13,7 +13,7 @@ import useSubdivisions from "@/hooks/useSubdivisions";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
 import { TConcept, TGeography, TGeographySubdivision, TThemeConfig, TGeographyWithDocumentCounts } from "@/types";
 
-type TFilterChange = (type: string, value: string) => void;
+type TFilterChange = (type: string, value: string, clearOthersOfType?: boolean, otherValuesToClear?: string[]) => void;
 
 interface IProps {
   filterChange: TFilterChange;
@@ -67,6 +67,7 @@ const handleFilterDisplay = (
 ) => {
   let filterLabel: string | null | undefined = null;
   let filterValue = value;
+  let otherValuesToClear: string[] = [];
   switch (key) {
     case "category":
       const configCategory = themeConfig?.categories?.options.find((c) => c.slug === value);
@@ -86,6 +87,8 @@ const handleFilterDisplay = (
       break;
     case "concept_preferred_label":
       filterLabel = handleConceptName(value, familyConcepts);
+      // If we are removing a root concept, we should also remove all child concepts
+      otherValuesToClear = familyConcepts?.filter((c) => c.recursive_subconcept_of.includes(value)).map((c) => c.wikibase_id) || [];
       break;
     case "exact_match":
       filterLabel = value === "true" ? "Exact phrases only" : "Related phrases";
@@ -129,7 +132,7 @@ const handleFilterDisplay = (
   }
 
   return (
-    <Pill key={value} onClick={() => filterChange(QUERY_PARAMS[key], filterValue)}>
+    <Pill key={value} onClick={() => filterChange(QUERY_PARAMS[key], filterValue, false, otherValuesToClear)}>
       {filterLabel}
     </Pill>
   );
