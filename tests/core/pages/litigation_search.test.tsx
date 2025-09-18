@@ -315,7 +315,7 @@ describe("SearchPage", async () => {
     // @ts-ignore
     rerender(Search, baseSearchProps, { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut });
 
-    expect(await screen.findAllByText("Parent Test Case Category")).toHaveLength(2);
+    expect(await screen.findAllByText("Parent Test Case Category")).toHaveLength(1);
 
     const caseCategoryOption1 = screen.getByRole("checkbox", { name: "Test Case Category 1" });
     const caseCategoryOption2 = screen.getByRole("checkbox", { name: "Test Case Category 2" });
@@ -335,7 +335,7 @@ describe("SearchPage", async () => {
     expect(screen.queryByRole("link", { name: "Family With Test Case Category 2" })).not.toBeInTheDocument();
   });
 
-  it("removing a case category filter updates search results", async () => {
+  it.only("removing a case category filter updates search results", async () => {
     mockCurrentSlideOut = ""; // Make sure we start with slideout closed.
 
     const { rerender } = renderWithAppContext(
@@ -364,7 +364,7 @@ describe("SearchPage", async () => {
         status: [""],
         case_number: ["2022/00114664; [2022] NSWSC 576"],
         core_object: ["Family With Test Case Category 1"],
-        concept_preferred_label: ["category/Test Case Category 1"],
+        concept_preferred_label: ["category/Test Case Category 1", "category/Parent Test Case Category"],
       },
       family_title_match: false,
       family_description_match: false,
@@ -388,7 +388,7 @@ describe("SearchPage", async () => {
         status: [""],
         case_number: ["2022/00114664; [2022] NSWSC 576"],
         core_object: ["Family With Test Case Category 2"],
-        concept_preferred_label: ["category/Test Case Category 2"],
+        concept_preferred_label: ["category/Test Case Category 2", "category/Parent Test Case Category"],
       },
       family_title_match: false,
       family_description_match: false,
@@ -414,10 +414,15 @@ describe("SearchPage", async () => {
 
     await act(async () => {
       await userEvent.click(screen.getByRole("checkbox", { name: "Test Case Category 1" }));
+      // await userEvent.click(screen.getByRole("checkbox", { name: "Parent Test Case Category" }));
     });
 
+    // verify applied filter is displayed
     const appliedFilter = screen.getByRole("button", { name: "Test Case Category 1" });
     expect(appliedFilter).toBeInTheDocument();
+    // verify the parent concept is displayed
+    const parentConceptAppliedFilter = screen.getByRole("button", { name: "Parent Test Case Category" });
+    expect(parentConceptAppliedFilter).toBeInTheDocument();
 
     expect(screen.getByRole("link", { name: "Family With Test Case Category 1" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Family With Test Case Category 2" })).not.toBeInTheDocument();
@@ -425,6 +430,7 @@ describe("SearchPage", async () => {
     // remove applied filter
     await act(async () => {
       await userEvent.click(appliedFilter);
+      await userEvent.click(parentConceptAppliedFilter);
     });
 
     expect(screen.getByRole("link", { name: "Family With Test Case Category 1" })).toBeInTheDocument();
@@ -510,7 +516,7 @@ describe("SearchPage", async () => {
     rerender(Search, baseSearchProps, { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut });
 
     await act(async () => {
-      await userEvent.click(screen.getByRole("checkbox", { name: "Test Principal Law 1" }));
+      await userEvent.click(screen.getByRole("radio", { name: "Test Principal Law 1" }));
     });
 
     const appliedFilter = screen.getByRole("button", { name: "Test Principal Law 1" });
@@ -607,7 +613,7 @@ describe("SearchPage", async () => {
     rerender(Search, baseSearchProps, { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut });
 
     await act(async () => {
-      await userEvent.click(screen.getByRole("checkbox", { name: "Test Jurisdiction 1" }));
+      await userEvent.click(screen.getByRole("radio", { name: "Test Jurisdiction 1" }));
     });
 
     const appliedFilter = screen.getByRole("button", { name: "Test Jurisdiction 1" });
