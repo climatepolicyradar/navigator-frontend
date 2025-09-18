@@ -35,6 +35,7 @@ export const MetadataRenderer = ({ family }: IProps) => {
         topics={metadata?.topic}
         author={category === "Reports" ? metadata?.author : metadata?.author_type}
         document_type={document_type}
+        metadata={metadata}
       />
     );
   }
