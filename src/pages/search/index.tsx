@@ -49,6 +49,7 @@ import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
+import { pluralise } from "@/utils/pluralise";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 interface IProps {
@@ -427,6 +428,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   const groupedFamilyConcepts = familyConceptsData ? Object.groupBy(familyConceptsData, (familyConcept) => familyConcept.type) : undefined;
 
+  const displayHits = hits || 0;
+  const searchResultItemName = pluralise(displayHits, [getText("searchResultItemSingular"), getText("searchResultItemPlural")]);
+
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
       <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
@@ -565,8 +569,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                             <p className="text-sm text-text-primary font-normal">
                               Results{" "}
                               <span className="text-text-secondary">
-                                {hits || 0}
-                                {themeConfig.searchResultCountLabel ? ` ${themeConfig.searchResultCountLabel}` : ""}
+                                {displayHits}
+                                {searchResultItemName && " " + searchResultItemName}
                               </span>
                             </p>
                             <Info

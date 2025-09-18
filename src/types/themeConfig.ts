@@ -96,5 +96,4 @@ export type TThemeConfig = {
   defaultDocumentCategory: TDocumentCategory;
   pageBlocks: TThemePageBlocks;
   features: TConfigFeatures;
-  searchResultCountLabel: string;
 };

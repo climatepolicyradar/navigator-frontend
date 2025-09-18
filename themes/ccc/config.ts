@@ -52,7 +52,6 @@ const config: TThemeConfig = {
     litigation: true,
     searchFamilySummary: true,
   },
-  searchResultCountLabel: "cases",
 };
 
 export default config;

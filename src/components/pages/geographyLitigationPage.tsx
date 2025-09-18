@@ -134,8 +134,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
                 title: categorySummary.title,
                 families: searchResultsByCategory[categorySummary.slug]?.families || [],
                 count: searchResultsByCategory[categorySummary.slug]?.total_family_hits,
-                // TODO better app-specific family taxonomy
-                singularAndPlural: theme === "ccc" ? ["case", "cases"] : ["document", "documents"],
+                singularAndPlural: [getText("familySingular"), getText("familyPlural")],
               };
             })}
             onAccordionClick={(id) => {
@@ -144,7 +143,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
             geography={geographyV2}
           />
         );
-      }, [envConfig, geographyV2, searchResultsByCategory, theme, themeConfig]),
+      }, [envConfig, geographyV2, getText, searchResultsByCategory, themeConfig]),
       sideBarItem: { display: getText("recentFamiliesBlockTitle") },
     },
     statistics: {

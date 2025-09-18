@@ -6,6 +6,14 @@ export type TTextDictionary = Record<TTheme, string> | ({ default: string } & Pa
 // All app-specific text strings, by theme value (TTheme)
 // Don't reference this directly, use the useText hook
 export const APP_TEXT = {
+  familySingular: {
+    default: "document",
+    ccc: "case",
+  },
+  familyPlural: {
+    default: "documents",
+    ccc: "cases",
+  },
   recentFamiliesBlockTitle: {
     default: "Recent documents",
     ccc: "Recent cases",
@@ -13,6 +21,14 @@ export const APP_TEXT = {
   searchOnboarding: {
     default: "You are currently viewing all of the documents in our database. Narrow your search by document type, geography, date, and more.",
     ccc: "You are currently viewing all of the cases in the Climate Litigation Database. Narrow your search by case categories, geography, and more.",
+  },
+  searchResultItemSingular: {
+    default: "",
+    ccc: "case",
+  },
+  searchResultItemPlural: {
+    default: "",
+    ccc: "cases",
   },
 } satisfies Record<string, TTextDictionary>;
 

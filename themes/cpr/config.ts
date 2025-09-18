@@ -369,7 +369,6 @@ const config: TThemeConfig = {
     litigation: false,
     searchFamilySummary: false,
   },
-  searchResultCountLabel: "",
 };
 
 export default config;
