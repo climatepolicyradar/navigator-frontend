@@ -9,6 +9,7 @@ interface IProps {
   learnMoreExternal?: boolean;
   className?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLInputElement>) => void; // TODO: fix this as we don't need
 }
 
 const CheckBox = ({ checked, onChange, name }: IProps) => {
