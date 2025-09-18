@@ -44,7 +44,7 @@ const config: TThemeConfig = {
   defaultDocumentCategory: "All",
   pageBlocks: {
     family: ["metadata", "documents", "summary"],
-    geography: ["recents", "subdivisions", "statistics"],
+    geography: ["recents", "subdivisions"],
   },
   features: {
     familyConceptsSearch: true,
