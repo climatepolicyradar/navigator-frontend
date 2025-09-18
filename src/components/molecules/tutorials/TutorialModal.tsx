@@ -3,22 +3,22 @@ import { useContext } from "react";
 import { Button } from "@/components/atoms/button/Button";
 import { Modal } from "@/components/molecules/modal/Modal";
 import { TutorialContext } from "@/context/TutorialContext";
-import { TTutorialButtonAction, TTutorialModal } from "@/types";
+import { TTutorialButtonAction, TTutorialModal, TTutorialName } from "@/types";
 
 interface IProps {
-  order: number;
+  name: TTutorialName;
   modal: TTutorialModal;
 }
 
-export const TutorialModal = ({ order, modal: { buttonPrimary, buttonSecondary, close, content, headerImage, title } }: IProps) => {
-  const { displayTutorial, setDisplayTutorial, setPreviousTutorial } = useContext(TutorialContext);
+export const TutorialModal = ({ name, modal: { buttonPrimary, buttonSecondary, close, content, headerImage, title } }: IProps) => {
+  const { addCompletedTutorial, displayTutorial, setDisplayTutorial } = useContext(TutorialContext);
 
-  if (displayTutorial !== order) return null; // The modal hasn't been opened yet
+  if (displayTutorial !== name) return null; // The modal hasn't been opened yet
 
   const buttonActions: Record<TTutorialButtonAction, () => void> = {
     dismiss: () => {
-      setPreviousTutorial(order);
-      setDisplayTutorial(-1);
+      addCompletedTutorial(name);
+      setDisplayTutorial(null);
     },
     showModal: () => null, // Nothing to do here!
   };

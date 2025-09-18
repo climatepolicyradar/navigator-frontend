@@ -46,6 +46,7 @@ const config: TThemeConfig = {
     family: ["metadata", "documents", "summary"],
     geography: ["recents", "subdivisions", "statistics"],
   },
+  tutorials: ["climateLitigationDatabase"],
   features: {
     familyConceptsSearch: true,
     knowledgeGraph: false,

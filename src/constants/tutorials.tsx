@@ -2,13 +2,11 @@ import _ from "lodash";
 import Image from "next/image";
 
 import { ExternalLink } from "@/components/ExternalLink";
-import { TTutorial } from "@/types";
+import { TTutorials } from "@/types";
 import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
 
-export const TUTORIALS: TTutorial[] = [
-  // Knowledge graph (concepts)
-  {
-    order: 0,
+export const TUTORIALS: TTutorials = {
+  knowledgeGraph: {
     isEnabled: isKnowledgeGraphEnabled,
     banner: {
       text: "You can now find what you're looking for faster",
@@ -75,9 +73,7 @@ export const TUTORIALS: TTutorial[] = [
       },
     },
   },
-  // Litigation
-  {
-    order: 1,
+  climateLitigationDatabase: {
     isEnabled: isLitigationEnabled,
     modal: {
       defaultOpen: true,
@@ -98,4 +94,4 @@ export const TUTORIALS: TTutorial[] = [
       },
     },
   },
-] as const;
+} as const;

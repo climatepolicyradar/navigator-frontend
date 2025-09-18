@@ -9,12 +9,15 @@ import { InputCheck } from "@/components/forms/Checkbox";
 import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TUTORIALS } from "@/constants/tutorials";
+import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
+import { ThemeContext } from "@/context/ThemeContext";
 import { TutorialContext } from "@/context/TutorialContext";
 import { TConcept } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { firstCase } from "@/utils/text";
+import { getFirstIncompleteTutorialName } from "@/utils/tutorials";
 
 import { ExternalLink } from "../ExternalLink";
 
@@ -80,7 +83,9 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
 
 export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showBadge = false, showSearch = true, title }: IProps) => {
   const router = useRouter();
-  const { previousTutorial } = useContext(TutorialContext);
+  const { completedTutorials } = useContext(TutorialContext);
+  const { themeConfig } = useContext(ThemeContext);
+  const featureFlags = useContext(FeatureFlagsContext);
   const ref = useRef(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<TSort>(startingSort);
@@ -104,21 +109,21 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
     });
   }, [concepts]);
 
-  const knowledgeGraphIsNew = previousTutorial < 0;
+  const showKnowledgeGraphTutorial = getFirstIncompleteTutorialName(completedTutorials, themeConfig, featureFlags) === "knowledgeGraph";
 
   return (
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
       {/* HEADER */}
-      {knowledgeGraphIsNew && <TutorialCard order={0} card={TUTORIALS[0].card} />}
+      {showKnowledgeGraphTutorial && <TutorialCard name="knowledgeGraph" card={TUTORIALS.knowledgeGraph.card} />}
       <span className="text-base font-semibold text-text-primary">
         <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
         {title}
-        {!knowledgeGraphIsNew && showBadge && <Badge className="ml-2">Beta</Badge>}
+        {!showKnowledgeGraphTutorial && showBadge && <Badge className="ml-2">Beta</Badge>}
       </span>
 
       {/* SCROLL AREA */}
       <div className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker">
-        {!knowledgeGraphIsNew && (
+        {!showKnowledgeGraphTutorial && (
           <p className="text-sm text-text-tertiary">
             Choose a topic to see precisely where it appears. Combine topics to see where they appear together. Accuracy is not 100%.{" "}
             <ExternalLink url="/faq#topics-faqs" className="underline inline-block">

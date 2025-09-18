@@ -6,6 +6,9 @@ import { TFeatureFlags } from "./features";
 import { TThemeConfig } from "./themeConfig";
 import { TTheme } from "./types";
 
+export const TUTORIAL_NAMES = ["knowledgeGraph", "climateLitigationDatabase"] as const;
+export type TTutorialName = (typeof TUTORIAL_NAMES)[number];
+
 export type TTutorialButtonAction = "dismiss" | "showModal";
 
 export type TTutorialButton = {
@@ -40,9 +43,10 @@ export type TTutorialModal = {
 };
 
 export type TTutorial = {
-  order: number; // TODO non-linear feature onboarding
-  isEnabled: (featureFlags: TFeatureFlags, themeConfig: TThemeConfig, theme: TTheme) => boolean;
+  isEnabled: (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) => boolean;
   banner?: TTutorialBanner;
   card?: TTutorialCard;
   modal?: TTutorialModal;
 };
+
+export type TTutorials = Record<TTutorialName, TTutorial>;

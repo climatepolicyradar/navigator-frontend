@@ -15,17 +15,17 @@ export default meta;
 
 export const KnowledgeGraph: TStory = {
   args: {
+    name: "knowledgeGraph",
     modal: {
-      ...TUTORIALS[0].modal,
+      ...TUTORIALS.knowledgeGraph.modal,
       defaultOpen: true,
     },
-    order: TUTORIALS[0].order,
   },
 };
 
 export const Litigation: TStory = {
   args: {
-    modal: TUTORIALS[1].modal,
-    order: TUTORIALS[1].order,
+    name: "climateLitigationDatabase",
+    modal: TUTORIALS.climateLitigationDatabase.modal,
   },
 };

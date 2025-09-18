@@ -15,10 +15,11 @@ import { ThemeContext, IProps as IThemeContextProps } from "@/context/ThemeConte
 import { TutorialContext } from "@/context/TutorialContext";
 import "../styles/flag-icons.css";
 import "../styles/main.css";
-import { TTheme } from "@/types";
+import { TTheme, TTutorialName } from "@/types";
 import { getCookie, setCookie } from "@/utils/cookies";
 import getDomain from "@/utils/getDomain";
 import { readConfigFile } from "@/utils/readConfigFile";
+import { getCompletedTutorialNamesFromCookie } from "@/utils/tutorials";
 
 const favicon = `/images/favicon/${process.env.THEME}.png`;
 
@@ -68,25 +69,26 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
 
   /* New features (onboarding) */
 
-  const [previousTutorial, setPreviousTutorial] = useState<number | null>(null);
-  const [displayTutorial, setDisplayTutorial] = useState<number | null>(null);
+  const [completedTutorials, setCompletedTutorials] = useState<TTutorialName[]>([]);
+  const [displayTutorial, setDisplayTutorial] = useState<TTutorialName | null>(null);
 
   useEffect(() => {
-    // Determine the last feature the user saw. -1 = none
-    const tutorialsCookie = parseInt(getCookie(COOKIE_TUTORIALS_NAME));
-    setPreviousTutorial(Number.isNaN(tutorialsCookie) ? -1 : tutorialsCookie);
+    setCompletedTutorials(getCompletedTutorialNamesFromCookie(getCookie(COOKIE_TUTORIALS_NAME)));
   }, [dynamicTheme]);
 
-  const setTutorialSeen = (order: number) => {
-    setCookie(COOKIE_TUTORIALS_NAME, order.toString(), getDomain());
-    setPreviousTutorial(order);
+  const addCompletedTutorial = (tutorialName: TTutorialName) => {
+    setCompletedTutorials((alreadyCompletedTutorials) => {
+      const updatedCompletedTutorials = Array.from(new Set([...alreadyCompletedTutorials, tutorialName]));
+      setCookie(COOKIE_TUTORIALS_NAME, JSON.stringify(updatedCompletedTutorials), getDomain());
+      return updatedCompletedTutorials;
+    });
   };
 
   const tutorialContextProviderValue = {
     displayTutorial,
     setDisplayTutorial,
-    previousTutorial,
-    setPreviousTutorial: setTutorialSeen,
+    completedTutorials,
+    addCompletedTutorial,
   };
 
   /* Render */

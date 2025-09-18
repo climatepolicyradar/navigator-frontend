@@ -2,21 +2,19 @@ import { useContext } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
 import { TutorialContext } from "@/context/TutorialContext";
-import { TTutorialBanner, TTutorialButtonAction } from "@/types";
+import { TTutorialBanner, TTutorialButtonAction, TTutorialName } from "@/types";
 
 export interface IProps {
-  order: number;
+  name: TTutorialName;
   banner: TTutorialBanner;
 }
 
-export const TutorialBanner = ({ order, banner: { buttonPrimary, buttonSecondary, text } }: IProps) => {
-  const { previousTutorial, setDisplayTutorial, setPreviousTutorial } = useContext(TutorialContext);
-
-  if (previousTutorial === null || previousTutorial >= order) return null;
+export const TutorialBanner = ({ name, banner: { buttonPrimary, buttonSecondary, text } }: IProps) => {
+  const { addCompletedTutorial, setDisplayTutorial } = useContext(TutorialContext);
 
   const buttonActions: Record<TTutorialButtonAction, () => void> = {
-    dismiss: () => setPreviousTutorial(order),
-    showModal: () => setDisplayTutorial(order),
+    dismiss: () => addCompletedTutorial(name),
+    showModal: () => setDisplayTutorial(name),
   };
 
   return (

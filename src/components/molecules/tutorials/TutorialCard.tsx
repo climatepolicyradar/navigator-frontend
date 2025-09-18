@@ -4,22 +4,20 @@ import { useContext } from "react";
 import { Button } from "@/components/atoms/button/Button";
 import { Card } from "@/components/atoms/card/Card";
 import { TutorialContext } from "@/context/TutorialContext";
-import { TTutorialButtonAction, TTutorialCard } from "@/types";
+import { TTutorialButtonAction, TTutorialCard, TTutorialName } from "@/types";
 
 export interface IProps {
   className?: string;
-  order: number;
+  name: TTutorialName;
   card: TTutorialCard;
 }
 
-export const TutorialCard = ({ className, order, card: { buttonPrimary, buttonSecondary, close, text, title } }: IProps) => {
-  const { previousTutorial, setDisplayTutorial, setPreviousTutorial } = useContext(TutorialContext);
-
-  if (previousTutorial === null || previousTutorial >= order) return null;
+export const TutorialCard = ({ className, name, card: { buttonPrimary, buttonSecondary, close, text, title } }: IProps) => {
+  const { addCompletedTutorial, setDisplayTutorial } = useContext(TutorialContext);
 
   const buttonActions: Record<TTutorialButtonAction, () => void> = {
-    dismiss: () => setPreviousTutorial(order),
-    showModal: () => setDisplayTutorial(order),
+    dismiss: () => addCompletedTutorial(name),
+    showModal: () => setDisplayTutorial(name),
   };
 
   return (

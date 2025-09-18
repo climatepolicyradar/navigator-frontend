@@ -10,11 +10,14 @@ import { Info } from "@/components/molecules/info/Info";
 import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
 import { Heading } from "@/components/typography/Heading";
 import { TUTORIALS } from "@/constants/tutorials";
+import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
+import { ThemeContext } from "@/context/ThemeContext";
 import { TutorialContext } from "@/context/TutorialContext";
 import { TConcept } from "@/types";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { firstCase } from "@/utils/text";
+import { getFirstIncompleteTutorialName } from "@/utils/tutorials";
 
 interface IProps {
   concepts: TConcept[];
@@ -62,8 +65,10 @@ const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
   );
 };
 
-export const ConceptsPanel = ({ rootConcepts, concepts, onConceptClick }: IProps) => {
-  const { previousTutorial } = useContext(TutorialContext);
+export const ConceptsPanel = ({ concepts, onConceptClick, rootConcepts }: IProps) => {
+  const { themeConfig } = useContext(ThemeContext);
+  const { completedTutorials } = useContext(TutorialContext);
+  const featureFlags = useContext(FeatureFlagsContext);
 
   const otherRootConcept: TConcept = {
     wikibase_id: "Q000",
@@ -78,18 +83,18 @@ export const ConceptsPanel = ({ rootConcepts, concepts, onConceptClick }: IProps
   };
 
   const conceptsGroupedByRootConcept = groupByRootConcept(concepts, rootConcepts);
-  const knowledgeGraphIsNew = previousTutorial < 0;
+  const showKnowledgeGraphTutorial = getFirstIncompleteTutorialName(completedTutorials, themeConfig, featureFlags) === "knowledgeGraph";
 
   return (
     <div className="flex flex-col gap-4 pb-4 text-sm">
       <div className="flex flex-col gap-4 pb-4 border-b border-border-light text-text-secondary">
-        {knowledgeGraphIsNew && <TutorialCard order={0} card={TUTORIALS[0].card} />}
+        {showKnowledgeGraphTutorial && <TutorialCard name="knowledgeGraph" card={TUTORIALS.knowledgeGraph.card} />}
         <span className="text-base font-semibold text-text-primary">
           <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
           Find mentions of topics
-          {!knowledgeGraphIsNew && <Badge className="ml-2">Beta</Badge>}
+          {!showKnowledgeGraphTutorial && <Badge className="ml-2">Beta</Badge>}
         </span>
-        {!knowledgeGraphIsNew && (
+        {!showKnowledgeGraphTutorial && (
           <p>
             Find where a topic precisely appears in the main document. Accuracy is not 100%.{" "}
             <ExternalLink url="/faq#topics-faqs" className="underline inline-block">

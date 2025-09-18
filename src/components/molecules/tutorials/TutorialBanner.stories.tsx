@@ -2,6 +2,7 @@ import { Meta, StoryObj } from "@storybook/nextjs";
 
 import { TUTORIALS } from "@/constants/tutorials";
 import { TutorialContext } from "@/context/TutorialContext";
+import { TTutorialName } from "@/types";
 
 import { TutorialBanner, IProps } from "./TutorialBanner";
 
@@ -18,10 +19,10 @@ const useTutorialContext = ({ ...props }: IProps) => {
   const value = {
     displayTutorial: null,
     // eslint-disable-next-line no-console
-    setDisplayTutorial: (order: number) => console.info("setDisplayTutorial", order),
-    previousTutorial: -1,
+    setDisplayTutorial: (name: TTutorialName) => console.info("setDisplayTutorial", name),
+    completedTutorials: [],
     // eslint-disable-next-line no-console
-    setPreviousTutorial: (order: number) => console.info("setPreviousTutorial", order),
+    addCompletedTutorial: (name: TTutorialName) => console.info("addCompletedTutorial", name),
   };
 
   return (
@@ -33,8 +34,8 @@ const useTutorialContext = ({ ...props }: IProps) => {
 
 export const KnowledgeGraph: TStory = {
   args: {
-    order: TUTORIALS[0].order,
-    banner: TUTORIALS[0].banner,
+    name: "knowledgeGraph",
+    banner: TUTORIALS.knowledgeGraph.banner,
   },
   render: useTutorialContext,
 };
