@@ -1,8 +1,8 @@
 import { TFamilyConcept, TFamilyMetadata } from "@/types";
 
-import { getCourtName, getCourtNameFromMetadata } from "./getCourtName";
+import { getMostSpecificCourts, getMostSpecificCourtsFromMetadata } from "./getMostSpecificCourts";
 
-describe("getCourtName", () => {
+describe("getMostSpecificCourts", () => {
   it("should extract the court name from concepts hierarchy", () => {
     const concepts: TFamilyConcept[] = [
       {
@@ -23,7 +23,7 @@ describe("getCourtName", () => {
       },
     ];
 
-    const result = getCourtName(concepts);
+    const result = getMostSpecificCourts(concepts);
     expect(result).toBe("D.D.C.");
   });
 
@@ -39,23 +39,23 @@ describe("getCourtName", () => {
       },
     ];
 
-    const result = getCourtName(concepts);
+    const result = getMostSpecificCourts(concepts);
     expect(result).toBeNull();
   });
 
   it("should return null when concepts array is empty", () => {
-    const result = getCourtName([]);
+    const result = getMostSpecificCourts([]);
     expect(result).toBeNull();
   });
 });
 
-describe("getCourtNameFromMetadata", () => {
+describe("getMostSpecificCourtsFromMetadata", () => {
   it("should extract the court name from metadata concept_preferred_label", () => {
     const metadata: TFamilyMetadata = {
       concept_preferred_label: ["Federal Courts", "D.D.C."],
     } as TFamilyMetadata;
 
-    const result = getCourtNameFromMetadata(metadata);
+    const result = getMostSpecificCourtsFromMetadata(metadata);
     expect(result).toBe("D.D.C.");
   });
 
@@ -64,14 +64,14 @@ describe("getCourtNameFromMetadata", () => {
       concept_preferred_label: [],
     } as TFamilyMetadata;
 
-    const result = getCourtNameFromMetadata(metadata);
+    const result = getMostSpecificCourtsFromMetadata(metadata);
     expect(result).toBeNull();
   });
 
   it("should return null when concept_preferred_label is undefined", () => {
     const metadata: TFamilyMetadata = {} as TFamilyMetadata;
 
-    const result = getCourtNameFromMetadata(metadata);
+    const result = getMostSpecificCourtsFromMetadata(metadata);
     expect(result).toBeNull();
   });
 });

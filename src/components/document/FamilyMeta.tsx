@@ -2,7 +2,7 @@ import { CountryLinks } from "@/components/CountryLinks";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import useConfig from "@/hooks/useConfig";
 import { TCategory, TCorpusTypeSubCategory, TFamilyConcept, TFamilyMetadata } from "@/types";
-import { getCourtName, getCourtNameFromMetadata } from "@/utils/getCourtName";
+import { getMostSpecificCourts, getMostSpecificCourtsFromMetadata } from "@/utils/getMostSpecificCourts";
 import { convertDate } from "@/utils/timedate";
 
 import { CountryLinkWithSubdivisions } from "../CountryLinkWithSubdivisions";
@@ -33,7 +33,7 @@ export const FamilyMeta = ({ category, date, geographies, topics, author, corpus
   const CountryLinkComponent = includeSubdivisions ? CountryLinkWithSubdivisions : CountryLinks;
 
   // Get court name from concepts if available, otherwise try metadata
-  const courtName = concepts ? getCourtName(concepts) : metadata ? getCourtNameFromMetadata(metadata) : null;
+  const courtName = concepts ? getMostSpecificCourts(concepts) : metadata ? getMostSpecificCourtsFromMetadata(metadata) : null;
 
   return (
     <>
