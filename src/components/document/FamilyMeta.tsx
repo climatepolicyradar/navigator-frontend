@@ -33,7 +33,12 @@ export const FamilyMeta = ({ category, date, geographies, topics, author, corpus
   const CountryLinkComponent = includeSubdivisions ? CountryLinkWithSubdivisions : CountryLinks;
 
   // Get court name from concepts if available, otherwise try metadata
-  const courtName = concepts ? getMostSpecificCourts(concepts) : metadata ? getMostSpecificCourtsFromMetadata(metadata) : null;
+  const courtName = concepts
+    ? // Gets the last (most specific) court name from the concepts hierarchy
+      getMostSpecificCourts(concepts).at(-1)?.preferred_label
+    : metadata
+      ? getMostSpecificCourtsFromMetadata(metadata)
+      : null;
 
   return (
     <>
