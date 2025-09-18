@@ -25,6 +25,7 @@ import { Heading } from "@/components/typography/Heading";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@/constants/document";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
 import { getCorpusInfo } from "@/helpers/getCorpusInfo";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
@@ -76,7 +77,16 @@ const documentIsPublished = (familyDocuments: TDocumentPage[], documentImportId:
   return isPublished;
 };
 
-export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page, targets = [], theme, themeConfig, vespaFamilyData }: IProps) => {
+export const FamilyOriginalPage = ({
+  corpus_types,
+  countries = [],
+  family: page,
+  featureFlags,
+  targets = [],
+  theme,
+  themeConfig,
+  vespaFamilyData,
+}: IProps) => {
   // TODO remove when only the newer API endpoint is being called in getServerSideProps
   if (isNewEndpointData(page)) {
     throw new Error("Cannot render FamilyOriginalPage with V2 API data");
@@ -221,231 +231,237 @@ export const FamilyOriginalPage = ({ corpus_types, countries = [], family: page,
   };
 
   return (
-    <Layout
-      title={`${page.title}`}
-      description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)}
-      theme={theme}
-      themeConfig={themeConfig}
-      attributionUrl={attributionUrl}
-    >
-      <Script id="analytics">
-        analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "
-        {page.geographies?.join(",")}";
-      </Script>
-      <section
-        className="mb-8"
-        data-analytics-category={page.category}
-        data-analytics-type={getDocumentCategories().join(",")}
-        data-analytics-geography={page.geographies?.join(",")}
+    <FeatureFlagsContext.Provider value={featureFlags}>
+      <Layout
+        title={`${page.title}`}
+        description={getFamilyMetaDescription(page.summary, geographyNames?.join(", "), page.category)}
+        theme={theme}
+        themeConfig={themeConfig}
+        attributionUrl={attributionUrl}
       >
-        <BreadCrumbs geography={breadcrumbGeography} label={page.title} />
-        <MultiCol extraClasses="flex-wrap md:flex-nowrap">
-          <SingleCol extraClasses={`mt-8 px-5 w-full`}>
-            <FamilyHead family={page} onCollectionClick={handleCollectionClick} />
-            <section className="mt-6">
-              {/* SSR summary */}
-              <div className={`text-content mt-4 ${summary && "hidden"}`} dangerouslySetInnerHTML={{ __html: page.summary }} />
-              <div className="text-content mt-4" dangerouslySetInnerHTML={{ __html: summary }} />
-              {page.summary.length > MAX_FAMILY_SUMMARY_LENGTH && (
-                <div className="mt-4">
-                  <button onClick={() => setShowFullSummary(!showFullSummary)} className="anchor alt text-sm">
-                    {showFullSummary ? "Hide full summary" : "View full summary"}
-                  </button>
-                </div>
+        <Script id="analytics">
+          analytics.category = "{page.category}"; analytics.type = "{getDocumentCategories().join(",")}"; analytics.geography = "
+          {page.geographies?.join(",")}";
+        </Script>
+        <section
+          className="mb-8"
+          data-analytics-category={page.category}
+          data-analytics-type={getDocumentCategories().join(",")}
+          data-analytics-geography={page.geographies?.join(",")}
+        >
+          <BreadCrumbs geography={breadcrumbGeography} label={page.title} />
+          <MultiCol extraClasses="flex-wrap md:flex-nowrap">
+            <SingleCol extraClasses={`mt-8 px-5 w-full`}>
+              <FamilyHead family={page} onCollectionClick={handleCollectionClick} />
+              <section className="mt-6">
+                {/* SSR summary */}
+                <div className={`text-content mt-4 ${summary && "hidden"}`} dangerouslySetInnerHTML={{ __html: page.summary }} />
+                <div className="text-content mt-4" dangerouslySetInnerHTML={{ __html: summary }} />
+                {page.summary.length > MAX_FAMILY_SUMMARY_LENGTH && (
+                  <div className="mt-4">
+                    <button onClick={() => setShowFullSummary(!showFullSummary)} className="anchor alt text-sm">
+                      {showFullSummary ? "Hide full summary" : "View full summary"}
+                    </button>
+                  </div>
+                )}
+              </section>
+
+              {mainDocuments.length > 0 && theme !== "mcf" && (
+                <section className="mt-10">
+                  <Heading level={2}>Main {pluralise(mainDocuments.length, ["document", "documents"])}</Heading>
+                  <div data-cy="main-documents">
+                    {mainDocuments.map((doc) => (
+                      <FamilyDocument
+                        matches={getDocumentMatches(doc.slug)}
+                        document={doc}
+                        key={doc.import_id}
+                        status={status}
+                        familyMatches={searchFamily?.total_passage_hits}
+                        concepts={concepts}
+                      />
+                    ))}
+                  </div>
+                </section>
               )}
-            </section>
 
-            {mainDocuments.length > 0 && theme !== "mcf" && (
-              <section className="mt-10">
-                <Heading level={2}>Main {pluralise(mainDocuments.length, ["document", "documents"])}</Heading>
-                <div data-cy="main-documents">
-                  {mainDocuments.map((doc) => (
-                    <FamilyDocument
-                      matches={getDocumentMatches(doc.slug)}
-                      document={doc}
-                      key={doc.import_id}
-                      status={status}
-                      familyMatches={searchFamily?.total_passage_hits}
-                      concepts={concepts}
-                    />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {otherDocuments.length > 0 && (
-              <>
-                <section className="mt-8">
-                  <div className="flex items-center gap-2">
-                    <Heading level={2} extraClasses="!mb-0">
-                      {theme === "mcf" ? "Project documents" : mainDocuments.length > 0 ? "Other documents in this entry" : "Documents in this entry"}
-                    </Heading>
-                    {theme !== "mcf" && (
-                      <Tooltip
-                        id="related-documents-info"
-                        place="right"
-                        icon="i"
-                        tooltip="Other documents can be previous versions, amendments, annexes, supporting legislation, and more."
-                      />
-                    )}
-                  </div>
-                  <div data-cy="related-documents">
-                    {otherDocuments.map((doc) => (
-                      <div key={doc.import_id} className="mt-4">
-                        <FamilyDocument
-                          matches={getDocumentMatches(doc.slug)}
-                          document={doc}
-                          status={status}
-                          familyMatches={searchFamily?.total_passage_hits}
-                          concepts={concepts}
+              {otherDocuments.length > 0 && (
+                <>
+                  <section className="mt-8">
+                    <div className="flex items-center gap-2">
+                      <Heading level={2} extraClasses="!mb-0">
+                        {theme === "mcf"
+                          ? "Project documents"
+                          : mainDocuments.length > 0
+                            ? "Other documents in this entry"
+                            : "Documents in this entry"}
+                      </Heading>
+                      {theme !== "mcf" && (
+                        <Tooltip
+                          id="related-documents-info"
+                          place="right"
+                          icon="i"
+                          tooltip="Other documents can be previous versions, amendments, annexes, supporting legislation, and more."
                         />
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              </>
-            )}
-
-            {hasTargets && (
-              <>
-                <section className="mt-8">
-                  <div>
-                    <div>
-                      <Heading level={2}>Targets</Heading>
-                      <ExternalLink
-                        url="https://form.jotform.com/233542296946365"
-                        className="block text-sm my-4 md:my-0 underline text-blue-600 hover:text-blue-800"
-                        cy="download-target-csv"
-                      >
-                        Request to download all target data (.csv)
-                      </ExternalLink>
+                      )}
                     </div>
-                    <div className="flex mt-4">
-                      <Alert
-                        message={
-                          <>
-                            We are developing the ability to detect targets in documents.{" "}
-                            <ExternalLink url="https://form.jotform.com/233294139336358" className="underline text-blue-600 hover:text-blue-800">
-                              Get notified when this is ready
-                            </ExternalLink>
-                            .
-                          </>
-                        }
-                        icon={<Icon name="alertCircle" height="16" width="16" />}
-                      />
-                    </div>
-                    <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} />
-                  </div>
-                </section>
-                {publishedTargets.length > numberOfTargetsToDisplay && (
-                  <div data-cy="more-targets-button">
-                    <Button
-                      content="both"
-                      rounded
-                      variant="outlined"
-                      className="my-5"
-                      onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
-                    >
-                      <Icon name="downChevron" />
-                      View more targets
-                    </Button>
-                  </div>
-                )}
-
-                {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
-                  <div>
-                    <Button content="both" rounded variant="outlined" className="my-5" onClick={() => setNumberOfTargetsToDisplay(5)}>
-                      <div className="rotate-180">
-                        <Icon name="downChevron" />
-                      </div>
-                      Hide targets
-                    </Button>
-                  </div>
-                )}
-              </>
-            )}
-
-            {page.events.length > 0 && (
-              <section className="mt-8">
-                <Heading level={3} extraClasses="mb-0">
-                  Timeline
-                </Heading>
-                <ShowHide show={showTimeline} onClick={() => setShowTimeline(!showTimeline)} className="mt-4" />
-                {showTimeline && (
-                  <Timeline>
-                    {page.events.map((event, index: number) => (
-                      <Event event={event} index={index} last={index === page.events.length - 1 ? true : false} key={`event-${index}`} />
-                    ))}
-                  </Timeline>
-                )}
-              </section>
-            )}
-
-            {corpusNote && (
-              <section className="mt-8">
-                <Heading level={4}>Note</Heading>
-                <div className="flex text-sm">
-                  {corpusImage && (
-                    <div className="relative max-w-[144px] mt-1 mr-2">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={`${corpusImage}`} alt={corpusAltImage} className="h-auto w-full" />
-                    </div>
-                  )}
-                  <span dangerouslySetInnerHTML={{ __html: corpusNote }} className="" />
-                </div>
-              </section>
-            )}
-
-            {page.collections.length > 0 && (
-              <div className="mt-8">
-                <Divider />
-              </div>
-            )}
-
-            {page.collections.map((collection, i) => (
-              <section className="pt-12" id={`collection-${i}`} key={collection.import_id}>
-                <div className="mb-5">
-                  <Heading level={4} extraClasses="mb-0">
-                    About the {collection.title}
-                  </Heading>
-                  <ShowHide show={showCollectionDetail} onClick={() => setShowCollectionDetail(!showCollectionDetail)} />
-                </div>
-                {showCollectionDetail && (
-                  <div>
-                    <div
-                      className="mb-8 text-content"
-                      dangerouslySetInnerHTML={{
-                        __html: collection.description,
-                      }}
-                    />
-                    <Heading level={4}>Other documents in the {collection.title}</Heading>
-                    <div className="divide-y flex flex-col gap-4">
-                      {collection.families.map((collFamily, i) => (
-                        <div key={collFamily.slug} className="border-border-light">
-                          <LinkWithQuery href={`/document/${collFamily.slug}`} className="text-[#0041A3] text-left font-medium text-lg underline">
-                            {collFamily.title}
-                          </LinkWithQuery>
-                          <div
-                            className="text-content text-sm"
-                            dangerouslySetInnerHTML={{
-                              __html: collFamily.description,
-                            }}
-                          ></div>
+                    <div data-cy="related-documents">
+                      {otherDocuments.map((doc) => (
+                        <div key={doc.import_id} className="mt-4">
+                          <FamilyDocument
+                            matches={getDocumentMatches(doc.slug)}
+                            document={doc}
+                            status={status}
+                            familyMatches={searchFamily?.total_passage_hits}
+                            concepts={concepts}
+                          />
                         </div>
                       ))}
                     </div>
+                  </section>
+                </>
+              )}
+
+              {hasTargets && (
+                <>
+                  <section className="mt-8">
+                    <div>
+                      <div>
+                        <Heading level={2}>Targets</Heading>
+                        <ExternalLink
+                          url="https://form.jotform.com/233542296946365"
+                          className="block text-sm my-4 md:my-0 underline text-blue-600 hover:text-blue-800"
+                          cy="download-target-csv"
+                        >
+                          Request to download all target data (.csv)
+                        </ExternalLink>
+                      </div>
+                      <div className="flex mt-4">
+                        <Alert
+                          message={
+                            <>
+                              We are developing the ability to detect targets in documents.{" "}
+                              <ExternalLink url="https://form.jotform.com/233294139336358" className="underline text-blue-600 hover:text-blue-800">
+                                Get notified when this is ready
+                              </ExternalLink>
+                              .
+                            </>
+                          }
+                          icon={<Icon name="alertCircle" height="16" width="16" />}
+                        />
+                      </div>
+                      <Targets targets={publishedTargets.slice(0, numberOfTargetsToDisplay)} />
+                    </div>
+                  </section>
+                  {publishedTargets.length > numberOfTargetsToDisplay && (
+                    <div data-cy="more-targets-button">
+                      <Button
+                        content="both"
+                        rounded
+                        variant="outlined"
+                        className="my-5"
+                        onClick={() => setNumberOfTargetsToDisplay(numberOfTargetsToDisplay + 3)}
+                      >
+                        <Icon name="downChevron" />
+                        View more targets
+                      </Button>
+                    </div>
+                  )}
+
+                  {publishedTargets.length > startingNumberOfTargetsToDisplay && publishedTargets.length <= numberOfTargetsToDisplay && (
+                    <div>
+                      <Button content="both" rounded variant="outlined" className="my-5" onClick={() => setNumberOfTargetsToDisplay(5)}>
+                        <div className="rotate-180">
+                          <Icon name="downChevron" />
+                        </div>
+                        Hide targets
+                      </Button>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {page.events.length > 0 && (
+                <section className="mt-8">
+                  <Heading level={3} extraClasses="mb-0">
+                    Timeline
+                  </Heading>
+                  <ShowHide show={showTimeline} onClick={() => setShowTimeline(!showTimeline)} className="mt-4" />
+                  {showTimeline && (
+                    <Timeline>
+                      {page.events.map((event, index: number) => (
+                        <Event event={event} index={index} last={index === page.events.length - 1 ? true : false} key={`event-${index}`} />
+                      ))}
+                    </Timeline>
+                  )}
+                </section>
+              )}
+
+              {corpusNote && (
+                <section className="mt-8">
+                  <Heading level={4}>Note</Heading>
+                  <div className="flex text-sm">
+                    {corpusImage && (
+                      <div className="relative max-w-[144px] mt-1 mr-2">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={`${corpusImage}`} alt={corpusAltImage} className="h-auto w-full" />
+                      </div>
+                    )}
+                    <span dangerouslySetInnerHTML={{ __html: corpusNote }} className="" />
                   </div>
-                )}
-              </section>
-            ))}
-          </SingleCol>
-          {concepts.length > 0 && (
-            <div className="border-gray-200 grow-0 shrink-0 px-5 border-l pt-4 md:pt-8 basis-full md:basis-[320px] lg:basis-[380px] xl:basis-[460px]">
-              <ConceptsPanel rootConcepts={rootConcepts} concepts={concepts} onConceptClick={handleConceptClick}></ConceptsPanel>
-            </div>
-          )}
-        </MultiCol>
-      </section>
-    </Layout>
+                </section>
+              )}
+
+              {page.collections.length > 0 && (
+                <div className="mt-8">
+                  <Divider />
+                </div>
+              )}
+
+              {page.collections.map((collection, i) => (
+                <section className="pt-12" id={`collection-${i}`} key={collection.import_id}>
+                  <div className="mb-5">
+                    <Heading level={4} extraClasses="mb-0">
+                      About the {collection.title}
+                    </Heading>
+                    <ShowHide show={showCollectionDetail} onClick={() => setShowCollectionDetail(!showCollectionDetail)} />
+                  </div>
+                  {showCollectionDetail && (
+                    <div>
+                      <div
+                        className="mb-8 text-content"
+                        dangerouslySetInnerHTML={{
+                          __html: collection.description,
+                        }}
+                      />
+                      <Heading level={4}>Other documents in the {collection.title}</Heading>
+                      <div className="divide-y flex flex-col gap-4">
+                        {collection.families.map((collFamily, i) => (
+                          <div key={collFamily.slug} className="border-border-light">
+                            <LinkWithQuery href={`/document/${collFamily.slug}`} className="text-[#0041A3] text-left font-medium text-lg underline">
+                              {collFamily.title}
+                            </LinkWithQuery>
+                            <div
+                              className="text-content text-sm"
+                              dangerouslySetInnerHTML={{
+                                __html: collFamily.description,
+                              }}
+                            ></div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </section>
+              ))}
+            </SingleCol>
+            {concepts.length > 0 && (
+              <div className="border-gray-200 grow-0 shrink-0 px-5 border-l pt-4 md:pt-8 basis-full md:basis-[320px] lg:basis-[380px] xl:basis-[460px]">
+                <ConceptsPanel rootConcepts={rootConcepts} concepts={concepts} onConceptClick={handleConceptClick}></ConceptsPanel>
+              </div>
+            )}
+          </MultiCol>
+        </section>
+      </Layout>
+    </FeatureFlagsContext.Provider>
   );
 };

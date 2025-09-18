@@ -109,7 +109,7 @@ const renderWorldMap = (props: { showLitigation?: boolean; showCategorySelect?: 
 
   return render(
     <QueryClientProvider client={queryClient}>
-      <ThemeContext.Provider value={{ theme: props.theme, themeConfig: {} as any }}>
+      <ThemeContext.Provider value={{ theme: props.theme, themeConfig: {} as any, loaded: true }}>
         <WorldMap {...props} />
       </ThemeContext.Provider>
     </QueryClientProvider>

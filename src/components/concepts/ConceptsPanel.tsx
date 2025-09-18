@@ -1,22 +1,23 @@
 import startCase from "lodash/startCase";
 import { ChevronUp, TextSearch } from "lucide-react";
-import Link from "next/link";
 import { useContext, useState } from "react";
 
+import { ExternalLink } from "@/components/ExternalLink";
 import { Button } from "@/components/atoms/button/Button";
-import { NEW_FEATURES } from "@/constants/newFeatures";
-import { NewFeatureContext } from "@/context/NewFeatureContext";
+import { Badge } from "@/components/atoms/label/Badge";
+import { ConceptLink } from "@/components/molecules/conceptLink/ConceptLink";
+import { Info } from "@/components/molecules/info/Info";
+import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
+import { Heading } from "@/components/typography/Heading";
+import { TUTORIALS } from "@/constants/tutorials";
+import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
+import { ThemeContext } from "@/context/ThemeContext";
+import { TutorialContext } from "@/context/TutorialContext";
 import { TConcept } from "@/types";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { firstCase } from "@/utils/text";
-
-import { ExternalLink } from "../ExternalLink";
-import { Badge } from "../atoms/label/Badge";
-import { ConceptLink } from "../molecules/conceptLink/ConceptLink";
-import { Info } from "../molecules/info/Info";
-import { NewFeatureCard } from "../molecules/newFeatures/NewFeatureCard";
-import { Heading } from "../typography/Heading";
+import { getFirstIncompleteTutorialName } from "@/utils/tutorials";
 
 interface IProps {
   concepts: TConcept[];
@@ -64,8 +65,10 @@ const ConceptsList = ({ concepts, onConceptClick }: IConceptListProps) => {
   );
 };
 
-export const ConceptsPanel = ({ rootConcepts, concepts, onConceptClick }: IProps) => {
-  const { previousNewFeature } = useContext(NewFeatureContext);
+export const ConceptsPanel = ({ concepts, onConceptClick, rootConcepts }: IProps) => {
+  const { themeConfig } = useContext(ThemeContext);
+  const { completedTutorials } = useContext(TutorialContext);
+  const featureFlags = useContext(FeatureFlagsContext);
 
   const otherRootConcept: TConcept = {
     wikibase_id: "Q000",
@@ -80,18 +83,18 @@ export const ConceptsPanel = ({ rootConcepts, concepts, onConceptClick }: IProps
   };
 
   const conceptsGroupedByRootConcept = groupByRootConcept(concepts, rootConcepts);
-  const knowledgeGraphIsNew = previousNewFeature < 0;
+  const showKnowledgeGraphTutorial = getFirstIncompleteTutorialName(completedTutorials, themeConfig, featureFlags) === "knowledgeGraph";
 
   return (
     <div className="flex flex-col gap-4 pb-4 text-sm">
       <div className="flex flex-col gap-4 pb-4 border-b border-border-light text-text-secondary">
-        {knowledgeGraphIsNew && <NewFeatureCard newFeature={NEW_FEATURES[0]} />}
+        {showKnowledgeGraphTutorial && <TutorialCard name="knowledgeGraph" card={TUTORIALS.knowledgeGraph.card} />}
         <span className="text-base font-semibold text-text-primary">
           <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
           Find mentions of topics
-          {!knowledgeGraphIsNew && <Badge className="ml-2">Beta</Badge>}
+          {!showKnowledgeGraphTutorial && <Badge className="ml-2">Beta</Badge>}
         </span>
-        {!knowledgeGraphIsNew && (
+        {!showKnowledgeGraphTutorial && (
           <p>
             Find where a topic precisely appears in the main document. Accuracy is not 100%.{" "}
             <ExternalLink url="/faq#topics-faqs" className="underline inline-block">

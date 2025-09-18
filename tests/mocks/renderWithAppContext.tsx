@@ -24,7 +24,7 @@ export const renderWithAppContext = (Component: React.ComponentType<any>, pagePr
 
   const renderResult = render(
     <QueryClientProvider client={queryClient}>
-      <ThemeContext.Provider value={{ theme: pageProps?.theme, themeConfig: pageProps?.themeConfig }}>
+      <ThemeContext.Provider value={{ theme: pageProps?.theme, themeConfig: pageProps?.themeConfig, loaded: Boolean(pageProps) }}>
         <EnvConfigContext.Provider value={pageProps?.envConfig}>
           <SlideOutContext.Provider value={slideOutContext || defaultSlideOutContext}>
             <Component {...pageProps} />
@@ -39,7 +39,7 @@ export const renderWithAppContext = (Component: React.ComponentType<any>, pagePr
     const ComponentToRender = newComponent;
     return renderResult.rerender(
       <QueryClientProvider client={queryClient}>
-        <ThemeContext.Provider value={{ theme: newPageProps?.theme, themeConfig: newPageProps?.themeConfig }}>
+        <ThemeContext.Provider value={{ theme: newPageProps?.theme, themeConfig: newPageProps?.themeConfig, loaded: Boolean(newPageProps) }}>
           <EnvConfigContext.Provider value={newPageProps?.envConfig}>
             <SlideOutContext.Provider value={newSlideOutContext || defaultSlideOutContext}>
               <ComponentToRender {...newPageProps} />

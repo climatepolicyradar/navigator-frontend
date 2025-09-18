@@ -1,2 +1,2 @@
 export const COOKIE_CONSENT_NAME = "CPR-CC";
-export const COOKIE_FEATURES_NAME = "CPR-NF";
+export const COOKIE_TUTORIALS_NAME = "CPR-TT";
