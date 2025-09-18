@@ -39,6 +39,7 @@ import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import { useHashNavigation } from "@/hooks/useHashNavigation";
 import useSearch from "@/hooks/useSearch";
+import { useText } from "@/hooks/useText";
 import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -147,13 +148,12 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const searchSettingsButtonRef = useRef(null);
 
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
-
   const { currentSlideOut, setCurrentSlideOut } = useHashNavigation();
+  const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
+  const { getText } = useText();
 
   const configQuery = useConfig();
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
-
-  const { status: downloadCSVStatus, download: downloadCSV, resetStatus: resetCSVStatus } = useDownloadCsv();
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
@@ -686,8 +686,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           <Warning variant="info" hideableId="search-onboarding-info">
                             <p className="font-semibold text-text-brand">Get better results</p>
                             <p>
-                              You are currently viewing all of the documents in our database. Narrow your search by document type, geography, date,
-                              and more.
+                              {getText("searchOnboarding")}
                               {isKnowledgeGraphEnabled(featureFlags, themeConfig) && (
                                 <>
                                   {" "}

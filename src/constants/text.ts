@@ -6,14 +6,9 @@ export type TTextDictionary = Record<TTheme, string> | ({ default: string } & Pa
 // All app-specific text strings, by theme value (TTheme)
 // Don't reference this directly, use the useText hook
 export const APP_TEXT = {
-  foo: {
-    default: "bar",
-  },
-  baz: {
-    cpr: "cpr",
-    mcf: "mcf",
-    cclw: "cclw",
-    ccc: "ccc",
+  searchOnboarding: {
+    default: "You are currently viewing all of the documents in our database. Narrow your search by document type, geography, date, and more.",
+    ccc: "You are currently viewing all of the cases in the Climate Litigation Database. Narrow your search by case categories, geography, and more.",
   },
 } satisfies Record<string, TTextDictionary>;
 
