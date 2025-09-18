@@ -21,17 +21,17 @@ const Contact = () => {
                 Contact
               </Heading>
               <p>
-                If you would like to receive monthly updates to our climate litigation database, please subscribe to our{" "}
+                If you would like to receive updates to our climate litigation database, please subscribe to our{" "}
                 <ExternalLink url="https://mailchi.mp/law/sabin-center-litigation-newsletter">newsletter</ExternalLink>.
               </p>
               <p>
                 For general enquiries or to submit updates or corrections, please get in touch with the Climate Litigation Database team by emailing{" "}
-                <ExternalLink url="mailto:manager@climatecasechart.com">manager@climatecasechart.com</ExternalLink> or filling in{" "}
-                <ExternalLink url="https://form.jotform.com/252302964707357">this</ExternalLink> contact form.
+                <ExternalLink url="mailto:manager@climatecasechart.com">manager@climatecasechart.com</ExternalLink> or filling in this{" "}
+                <ExternalLink url="https://form.jotform.com/252302964707357">contact form</ExternalLink>.
               </p>
               <p>
-                Want to help us make the website better? Share your thoughts with the website team by filling out{" "}
-                <ExternalLink url="https://form.jotform.com/252292443502350">this</ExternalLink> feedback form.
+                Want to help us make the website better? Share your thoughts with the website team by filling out this{" "}
+                <ExternalLink url="https://form.jotform.com/252292443502350">feedback form</ExternalLink>.
               </p>
               <div className="mt-8">
                 <Divider />
@@ -40,7 +40,7 @@ const Contact = () => {
                 <div className="space-y-3">
                   <h3 className="text-lg font-semibold mb-4">Address</h3>
                   <ExternalLink url="https://climate.law.columbia.edu/" className="color-text-tertiary hover:color-text-quaternary">
-                    The Sabin Center for Climate Change Law
+                    Sabin Center for Climate Change Law
                   </ExternalLink>
                   <address className="color-text-secondary space-y-1">
                     Columbia Law School
