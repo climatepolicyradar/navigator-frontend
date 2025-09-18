@@ -70,7 +70,7 @@ const Footer = () => {
 
             <div className="footer__section">
               <div className="font-medium text-base">Climate Policy Radar</div>
-              <p>Using AI and data science to map the world's climate policies</p>
+              <p>Using AI and data science to map the world's climate documents.</p>
               <ul className="mb-6" data-cy="footer-cpr-links">
                 <li className="mb-1">
                   Visit the <ExternalLink url="https://www.climatepolicyradar.org">Climate Policy Radar website</ExternalLink>

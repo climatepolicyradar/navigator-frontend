@@ -40,6 +40,7 @@ import useConfig from "@/hooks/useConfig";
 import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import { useHashNavigation } from "@/hooks/useHashNavigation";
 import useSearch from "@/hooks/useSearch";
+import { useText } from "@/hooks/useText";
 import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -49,6 +50,7 @@ import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
+import { pluralise } from "@/utils/pluralise";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 interface IProps {
@@ -147,9 +149,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const sortSettingsButtonRef = useRef(null);
   const searchSettingsButtonRef = useRef(null);
 
-  const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
-
   const { currentSlideOut, setCurrentSlideOut } = useHashNavigation();
+  const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
+  const { getText } = useText();
 
   const configQuery = useConfig();
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
@@ -433,6 +435,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   const groupedFamilyConcepts = familyConceptsData ? Object.groupBy(familyConceptsData, (familyConcept) => familyConcept.type) : undefined;
 
+  const displayHits = hits || 0;
+  const searchResultItemName = pluralise(displayHits, [getText("searchResultItemSingular"), getText("searchResultItemPlural")]);
+
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
       <FeatureFlagsContext.Provider value={featureFlags}>
@@ -574,8 +579,8 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                               <p className="text-sm text-text-primary font-normal">
                                 Results{" "}
                                 <span className="text-text-secondary">
-                                  {hits || 0}
-                                  {themeConfig.searchResultCountLabel ? ` ${themeConfig.searchResultCountLabel}` : ""}
+                                  {displayHits}
+                                  {searchResultItemName && " " + searchResultItemName}
                                 </span>
                               </p>
                               <Info
@@ -695,8 +700,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                             <Warning variant="info" hideableId="search-onboarding-info">
                               <p className="font-semibold text-text-brand">Get better results</p>
                               <p>
-                                You are currently viewing all of the documents in our database. Narrow your search by document type, geography, date,
-                                and more.
+                                {getText("searchOnboarding")}
                                 {isKnowledgeGraphEnabled(featureFlags, themeConfig) && (
                                   <>
                                     {" "}

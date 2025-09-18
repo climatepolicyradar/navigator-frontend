@@ -15,6 +15,7 @@ import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { GeographiesContext } from "@/context/GeographiesContext";
+import { useText } from "@/hooks/useText";
 import { TSearch, TGeographyPageBlock } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
@@ -23,6 +24,8 @@ import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { IProps } from "./geographyOriginalPage";
 
 export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, targets, theme, themeConfig, vespaSearchResults, envConfig }: IProps) => {
+  const { getText } = useText();
+
   const isCountry = geographyV2.type === "country";
   const subdivisionsTitle = isCountry ? "Geographic sub-divisions" : "Related geographic sub-divisions";
 
@@ -56,9 +59,6 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
   }, [vespaSearchResults]);
 
   /* Blocks */
-
-  // TODO better app-specific family taxonomy
-  const recentFamiliesTitle = theme === "ccc" ? "Recent cases" : "Recent families";
 
   const blocksToRender = themeConfig.pageBlocks.geography;
   const blockDefinitions: TBlockDefinitions<TGeographyPageBlock> = {
@@ -134,19 +134,17 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
                 title: categorySummary.title,
                 families: searchResultsByCategory[categorySummary.slug]?.families || [],
                 count: searchResultsByCategory[categorySummary.slug]?.total_family_hits,
-                // TODO better app-specific family taxonomy
-                singularAndPlural: theme === "ccc" ? ["case", "cases"] : ["document", "documents"],
+                singularAndPlural: [getText("familySingular"), getText("familyPlural")],
               };
             })}
             onAccordionClick={(id) => {
               fetchFamiliesByCategory(id);
             }}
             geography={geographyV2}
-            title={recentFamiliesTitle}
           />
         );
-      }, [envConfig, geographyV2, recentFamiliesTitle, searchResultsByCategory, theme, themeConfig]),
-      sideBarItem: { display: recentFamiliesTitle },
+      }, [envConfig, geographyV2, getText, searchResultsByCategory, themeConfig]),
+      sideBarItem: { display: getText("recentFamiliesBlockTitle") },
     },
     statistics: {
       render: useCallback(() => {
