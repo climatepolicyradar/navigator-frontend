@@ -120,7 +120,13 @@ const getSelectedConcepts = (selectedConcepts: string | string[], allConcepts: T
 
 const getSelectedFamilyConcepts = (selectedConcepts: string | string[], allConcepts: TConcept[] = []): TConcept[] => {
   const selectedConceptsAsArray = Array.isArray(selectedConcepts) ? selectedConcepts : [selectedConcepts];
-  return allConcepts?.filter((concept) => selectedConceptsAsArray.includes(concept.wikibase_id)) || [];
+  return (
+    allConcepts?.filter(
+      (concept) =>
+        selectedConceptsAsArray.includes(concept.wikibase_id) &&
+        (concept.recursive_subconcept_of.length === 0 || concept.recursive_subconcept_of.some((sub) => selectedConceptsAsArray.includes(sub)))
+    ) || []
+  );
 };
 
 const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
@@ -485,7 +491,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                     <SlideOut showCloseButton={false}>
                       {conceptsData && currentSlideOut === "concepts" && <ConceptPicker concepts={conceptsData} title="Find mentions of topics" />}
                       {familyConceptsData && currentSlideOut === "categories" && (
-                        <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories" />
+                        <FamilyConceptPicker concepts={groupedFamilyConcepts.category} title="Case categories" isRootConceptExclusive={false} />
                       )}
                       {familyConceptsData && currentSlideOut === "principalLaws" && (
                         <FamilyConceptPicker concepts={groupedFamilyConcepts.principal_law} title="Principal laws" />

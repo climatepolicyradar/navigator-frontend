@@ -220,7 +220,7 @@ const families = [
       status: [""],
       case_number: ["2022/00114664; [2022] NSWSC 576"],
       core_object: ["Family With Test Case Category 1"],
-      concept_preferred_label: ["category/Test Case Category 1"],
+      concept_preferred_label: ["category/Test Case Category 1", "category/Parent Test Case Category"],
     },
     family_title_match: false,
     family_description_match: false,
@@ -243,7 +243,7 @@ const families = [
       status: [""],
       case_number: ["2022/00114664; [2022] NSWSC 576"],
       core_object: ["Family With Test Case Category 2"],
-      concept_preferred_label: ["category/Test Case Category 2"],
+      concept_preferred_label: ["category/Test Case Category 2", "category/Parent Test Case Category"],
     },
     family_title_match: false,
     family_description_match: false,
@@ -261,28 +261,26 @@ const setUpFamiliesRepo = (test_families: any[]) => {
 };
 
 const getFilteredFamilies = (keyword_filters: any, concept_filters: any, metadata: any) => {
-  const filteredFamilies = [];
+  let filteredFamilies = [...familiesRepo]; // start with all and whittle down
   if (keyword_filters.countries) {
     keyword_filters.countries.forEach((country: string) => {
-      const countryFilteredFamily = familiesRepo.filter((family) => {
+      filteredFamilies = filteredFamilies.filter((family) => {
         return family.family_geographies.includes(iso_slug_mapping[country]);
       });
-      filteredFamilies.push(...countryFilteredFamily);
     });
     return filteredFamilies;
   }
   if (keyword_filters.subdivisions && keyword_filters.subdivisions.length > 0) {
     keyword_filters.subdivisions.forEach((subdivision: string) => {
-      const subdivisionFilteredFamily = familiesRepo.filter((family) => {
+      filteredFamilies = filteredFamilies.filter((family) => {
         return family.family_geographies.includes(subdivision);
       });
-      filteredFamilies.push(...subdivisionFilteredFamily);
     });
     return filteredFamilies;
   }
   if (concept_filters.length > 0) {
     concept_filters.forEach((conceptFilter) => {
-      const conceptFilteredFamily = familiesRepo.filter((family) => {
+      filteredFamilies = filteredFamilies.filter((family) => {
         return (
           family.family_documents &&
           family.family_documents.some(
@@ -293,25 +291,23 @@ const getFilteredFamilies = (keyword_filters: any, concept_filters: any, metadat
           )
         );
       });
-      filteredFamilies.push(...conceptFilteredFamily);
     });
     return filteredFamilies;
   }
   if (metadata.length > 0) {
     metadata.forEach((metadataFilter) => {
-      const metadataFilteredFamily = familiesRepo.filter((family) => {
+      filteredFamilies = filteredFamilies.filter((family) => {
         return (
           family.family_metadata &&
           family.family_metadata.concept_preferred_label &&
           family.family_metadata.concept_preferred_label.some((concept_preferred_label) => concept_preferred_label === metadataFilter.value)
         );
       });
-      filteredFamilies.push(...metadataFilteredFamily);
     });
     return filteredFamilies;
   }
 
-  return familiesRepo;
+  return filteredFamilies;
 };
 
 export { getFilteredFamilies, setUpFamiliesRepo };
