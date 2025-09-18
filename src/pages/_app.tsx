@@ -6,19 +6,20 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 import ErrorBoundary from "@/components/error/ErrorBoundary";
 import { Overlays } from "@/components/organisms/overlays/Overlays";
-import { COOKIE_FEATURES_NAME } from "@/constants/cookies";
+import { COOKIE_TUTORIALS_NAME } from "@/constants/cookies";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { AdobeContext } from "@/context/AdobeContext";
 import { EnvConfigContext } from "@/context/EnvConfig";
-import { NewFeatureContext } from "@/context/NewFeatureContext";
 import { PostHogProvider } from "@/context/PostHogProvider";
-import { ThemeContext } from "@/context/ThemeContext";
+import { ThemeContext, IProps as IThemeContextProps } from "@/context/ThemeContext";
+import { TutorialContext } from "@/context/TutorialContext";
 import "../styles/flag-icons.css";
 import "../styles/main.css";
-import { TThemeConfig } from "@/types";
+import { TTheme, TTutorialName } from "@/types";
 import { getCookie, setCookie } from "@/utils/cookies";
 import getDomain from "@/utils/getDomain";
 import { readConfigFile } from "@/utils/readConfigFile";
+import { getCompletedTutorialNamesFromCookie } from "@/utils/tutorials";
 
 const favicon = `/images/favicon/${process.env.THEME}.png`;
 
@@ -32,10 +33,11 @@ interface IProps extends AppProps {
 function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
   const [siteTheme, setSiteTheme] = useState(null);
   const [adobeKey, setAdobeKey] = useState(null);
-
-  const [previousNewFeature, setPreviousNewFeature] = useState<number | null>(null);
-  const [displayNewFeature, setDisplayNewFeature] = useState<number | null>(null);
-  const [themeConfig, setThemeConfig] = useState<TThemeConfig>(DEFAULT_THEME_CONFIG);
+  const [themeContext, setThemeContext] = useState<IThemeContextProps>({
+    theme: theme as TTheme,
+    themeConfig: DEFAULT_THEME_CONFIG,
+    loaded: false,
+  });
 
   useEffect(() => {
     if (theme && theme !== "") {
@@ -53,13 +55,9 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
   const dynamicAdobeKey = adobeApiKey ?? adobeKey;
 
   useEffect(() => {
-    // Determine the last feature the user saw
-    const updateCookie = parseInt(getCookie(COOKIE_FEATURES_NAME));
-    setPreviousNewFeature(Number.isNaN(updateCookie) ? -1 : updateCookie);
-
     const getThemeConfig = async () => {
-      const config = await readConfigFile(dynamicTheme);
-      setThemeConfig(config);
+      const themeConfig = await readConfigFile(dynamicTheme);
+      setThemeContext((current) => ({ ...current, themeConfig, loaded: true }));
     };
     if (dynamicTheme) getThemeConfig();
   }, [dynamicTheme]);
@@ -69,21 +67,36 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
     setConsent(consent);
   };
 
-  const setNewFeatureSeen = (order: number) => {
-    setCookie(COOKIE_FEATURES_NAME, order.toString(), getDomain());
-    setPreviousNewFeature(order);
+  /* New features (onboarding) */
+
+  const [completedTutorials, setCompletedTutorials] = useState<TTutorialName[]>([]);
+  const [displayTutorial, setDisplayTutorial] = useState<TTutorialName | null>(null);
+
+  useEffect(() => {
+    setCompletedTutorials(getCompletedTutorialNamesFromCookie(getCookie(COOKIE_TUTORIALS_NAME)));
+  }, [dynamicTheme]);
+
+  const addCompletedTutorial = (tutorialName: TTutorialName) => {
+    setCompletedTutorials((alreadyCompletedTutorials) => {
+      const updatedCompletedTutorials = Array.from(new Set([...alreadyCompletedTutorials, tutorialName]));
+      setCookie(COOKIE_TUTORIALS_NAME, JSON.stringify(updatedCompletedTutorials), getDomain());
+      return updatedCompletedTutorials;
+    });
   };
-  const newFeatureContextProviderValue = {
-    displayNewFeature,
-    setDisplayNewFeature,
-    previousNewFeature,
-    setPreviousNewFeature: setNewFeatureSeen,
+
+  const tutorialContextProviderValue = {
+    displayTutorial,
+    setDisplayTutorial,
+    completedTutorials,
+    addCompletedTutorial,
   };
+
+  /* Render */
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeContext.Provider value={{ theme: dynamicTheme, themeConfig }}>
-        <NewFeatureContext.Provider value={newFeatureContextProviderValue}>
+      <ThemeContext.Provider value={themeContext}>
+        <TutorialContext.Provider value={tutorialContextProviderValue}>
           <AdobeContext.Provider value={dynamicAdobeKey}>
             <PostHogProvider consent={consent}>
               <EnvConfigContext.Provider value={pageProps?.envConfig}>
@@ -99,7 +112,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
               </EnvConfigContext.Provider>
             </PostHogProvider>
           </AdobeContext.Provider>
-        </NewFeatureContext.Provider>
+        </TutorialContext.Provider>
       </ThemeContext.Provider>
       {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>

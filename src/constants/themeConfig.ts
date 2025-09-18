@@ -13,6 +13,7 @@ export const DEFAULT_THEME_CONFIG: TThemeConfig = {
     family: [],
     geography: [],
   },
+  tutorials: [],
   features: DEFAULT_CONFIG_FEATURES,
   searchResultCountLabel: "",
 };

@@ -21,8 +21,9 @@ import { getDocumentDescription } from "@/constants/metaDescriptions";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { withEnvConfig } from "@/context/EnvConfig";
+import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
 import useSearch from "@/hooks/useSearch";
-import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TSlugResponse, TThemeConfig } from "@/types";
+import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TSlugResponse, TThemeConfig, TFeatureFlags } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled } from "@/utils/features";
@@ -35,6 +36,7 @@ interface IProps {
   family: TFamilyPage; // TODO switch to V2 API and use TFamilyPublic
   theme: TTheme;
   themeConfig: TThemeConfig;
+  featureFlags: TFeatureFlags;
   vespaFamilyData?: TSearchResponse;
   vespaDocumentData?: TSearchResponse;
 }
@@ -64,6 +66,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   family,
   theme,
   themeConfig,
+  featureFlags,
   vespaFamilyData,
   vespaDocumentData,
 }: IProps) => {
@@ -153,148 +156,150 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   );
 
   return (
-    <Layout
-      title={`${document.title}`}
-      description={getDocumentDescription(document.title)}
-      theme={theme}
-      themeConfig={themeConfig}
-      attributionUrl={family.organisation_attribution_url}
-    >
-      <section
-        className="pb-8 flex-1 flex flex-col"
-        data-analytics-date={family.published_date}
-        data-analytics-geography={family.geographies?.join(",")}
-        data-analytics-variant={document.variant}
-        data-analytics-type={document.content_type}
+    <FeatureFlagsContext.Provider value={featureFlags}>
+      <Layout
+        title={`${document.title}`}
+        description={getDocumentDescription(document.title)}
+        theme={theme}
+        themeConfig={themeConfig}
+        attributionUrl={family.organisation_attribution_url}
       >
-        <DocumentHead
-          document={document}
-          family={family}
-          handleViewOtherDocsClick={handleViewOtherDocsClick}
-          handleViewSourceClick={handleViewSourceClick}
-        />
-
-        {/* TODO: Remove this once we have hard launched concepts in product. */}
-        {vespaFamilyData === null && vespaDocumentData === null && (
-          <section className="flex-1 flex" id="document-viewer">
-            <FullWidth extraClasses="flex-1">
-              <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
-                <div
-                  id="document-preview"
-                  className={`flex-1 h-[400px] basis-[400px] md:block md:h-full relative ${
-                    totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""
-                  }`}
-                >
-                  {canPreview && (
-                    <EmbeddedPDF
-                      document={document}
-                      documentPassageMatches={passageMatches}
-                      pageNumber={pageNumber}
-                      startingPageNumber={startingPageNumber}
-                      searchStatus={status}
-                    />
-                  )}
-                  {!canPreview && <EmptyDocument />}
-                </div>
-                <div
-                  id="document-sidebar"
-                  className={`py-4 order-first max-h-[90vh] md:pb-0 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
-                    canPreview
-                  )}`}
-                >
-                  {status !== "success" ? (
-                    <div className="w-full flex justify-center flex-1 bg-white">
-                      <Loader />
-                    </div>
-                  ) : (
-                    <>
-                      <div id="document-search" className="flex items-start gap-2 md:pl-4 pb-4 border-b border-gray-200">
-                        <div className="flex-1">
-                          {totalNoOfMatches > 0 && (
-                            <>
-                              <div className="mb-2 text-sm" data-cy="document-matches-description">
-                                {passagesResultsContext}
-                                {totalNoOfMatches >= MAX_RESULTS && (
-                                  <Info
-                                    className="inline-block ml-2 align-text-bottom"
-                                    description={`We limit the number of search results to ${MAX_RESULTS} so that you get the best performance from our tool. We're working on a way to remove this limit.`}
-                                  />
-                                )}
-                              </div>
-                              <p className="text-sm">Sorted by {passagesByPosition ? "page number" : "search relevance"}</p>
-                            </>
-                          )}
-                        </div>
-                        <div className="relative z-10 flex justify-center">
-                          <button
-                            className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showOptions ? "bg-surface-ui" : ""}`}
-                            onClick={() => setShowOptions(!showOptions)}
-                          >
-                            Sort &amp; Display
-                          </button>
-                          <AnimatePresence initial={false}>
-                            {showOptions && (
-                              <motion.div
-                                key="content"
-                                initial="collapsed"
-                                animate="open"
-                                exit="collapsed"
-                                variants={{
-                                  collapsed: {
-                                    opacity: 0,
-                                    transition: { duration: 0.1 },
-                                  },
-                                  open: {
-                                    opacity: 1,
-                                    transition: { duration: 0.25 },
-                                  },
-                                }}
-                              >
-                                <SearchSettings
-                                  queryParams={router.query}
-                                  handleSearchChange={handleSemanticSearchChange}
-                                  setShowOptions={setShowOptions}
-                                  handlePassagesOrderChange={handlePassagesOrderChange}
-                                />
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      </div>
-                      {totalNoOfMatches > 0 && (
-                        <div
-                          id="document-passage-matches"
-                          className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
-                        >
-                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} />
-                        </div>
-                      )}
-                      {totalNoOfMatches === 0 && <EmptyPassages hasQueryString={!!router.query[QUERY_PARAMS.query_string]} />}
-                    </>
-                  )}
-                </div>
-              </div>
-            </FullWidth>
-          </section>
-        )}
-
-        {vespaFamilyData !== null && vespaDocumentData !== null && (
-          <ConceptsDocumentViewer
-            initialQueryTerm={qsSearchString}
-            initialExactMatch={exactMatchQuery}
-            initialPageNumber={startingPageNumber}
-            initialConceptFilters={conceptFilters}
-            vespaFamilyData={vespaFamilyData}
-            vespaDocumentData={vespaDocumentData}
+        <section
+          className="pb-8 flex-1 flex flex-col"
+          data-analytics-date={family.published_date}
+          data-analytics-geography={family.geographies?.join(",")}
+          data-analytics-variant={document.variant}
+          data-analytics-type={document.content_type}
+        >
+          <DocumentHead
             document={document}
-            searchStatus={status}
-            searchResultFamilies={isEmptySearch(router.query) ? [] : families}
-            handleSemanticSearchChange={handleSemanticSearchChange}
-            handlePassagesOrderChange={handlePassagesOrderChange}
+            family={family}
+            handleViewOtherDocsClick={handleViewOtherDocsClick}
+            handleViewSourceClick={handleViewSourceClick}
           />
-        )}
-      </section>
-    </Layout>
+
+          {/* TODO: Remove this once we have hard launched concepts in product. */}
+          {vespaFamilyData === null && vespaDocumentData === null && (
+            <section className="flex-1 flex" id="document-viewer">
+              <FullWidth extraClasses="flex-1">
+                <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
+                  <div
+                    id="document-preview"
+                    className={`flex-1 h-[400px] basis-[400px] md:block md:h-full relative ${
+                      totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""
+                    }`}
+                  >
+                    {canPreview && (
+                      <EmbeddedPDF
+                        document={document}
+                        documentPassageMatches={passageMatches}
+                        pageNumber={pageNumber}
+                        startingPageNumber={startingPageNumber}
+                        searchStatus={status}
+                      />
+                    )}
+                    {!canPreview && <EmptyDocument />}
+                  </div>
+                  <div
+                    id="document-sidebar"
+                    className={`py-4 order-first max-h-[90vh] md:pb-0 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
+                      canPreview
+                    )}`}
+                  >
+                    {status !== "success" ? (
+                      <div className="w-full flex justify-center flex-1 bg-white">
+                        <Loader />
+                      </div>
+                    ) : (
+                      <>
+                        <div id="document-search" className="flex items-start gap-2 md:pl-4 pb-4 border-b border-gray-200">
+                          <div className="flex-1">
+                            {totalNoOfMatches > 0 && (
+                              <>
+                                <div className="mb-2 text-sm" data-cy="document-matches-description">
+                                  {passagesResultsContext}
+                                  {totalNoOfMatches >= MAX_RESULTS && (
+                                    <Info
+                                      className="inline-block ml-2 align-text-bottom"
+                                      description={`We limit the number of search results to ${MAX_RESULTS} so that you get the best performance from our tool. We're working on a way to remove this limit.`}
+                                    />
+                                  )}
+                                </div>
+                                <p className="text-sm">Sorted by {passagesByPosition ? "page number" : "search relevance"}</p>
+                              </>
+                            )}
+                          </div>
+                          <div className="relative z-10 flex justify-center">
+                            <button
+                              className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showOptions ? "bg-surface-ui" : ""}`}
+                              onClick={() => setShowOptions(!showOptions)}
+                            >
+                              Sort &amp; Display
+                            </button>
+                            <AnimatePresence initial={false}>
+                              {showOptions && (
+                                <motion.div
+                                  key="content"
+                                  initial="collapsed"
+                                  animate="open"
+                                  exit="collapsed"
+                                  variants={{
+                                    collapsed: {
+                                      opacity: 0,
+                                      transition: { duration: 0.1 },
+                                    },
+                                    open: {
+                                      opacity: 1,
+                                      transition: { duration: 0.25 },
+                                    },
+                                  }}
+                                >
+                                  <SearchSettings
+                                    queryParams={router.query}
+                                    handleSearchChange={handleSemanticSearchChange}
+                                    setShowOptions={setShowOptions}
+                                    handlePassagesOrderChange={handlePassagesOrderChange}
+                                  />
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                        </div>
+                        {totalNoOfMatches > 0 && (
+                          <div
+                            id="document-passage-matches"
+                            className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
+                          >
+                            <PassageMatches passages={passageMatches} onClick={handlePassageClick} />
+                          </div>
+                        )}
+                        {totalNoOfMatches === 0 && <EmptyPassages hasQueryString={!!router.query[QUERY_PARAMS.query_string]} />}
+                      </>
+                    )}
+                  </div>
+                </div>
+              </FullWidth>
+            </section>
+          )}
+
+          {vespaFamilyData !== null && vespaDocumentData !== null && (
+            <ConceptsDocumentViewer
+              initialQueryTerm={qsSearchString}
+              initialExactMatch={exactMatchQuery}
+              initialPageNumber={startingPageNumber}
+              initialConceptFilters={conceptFilters}
+              vespaFamilyData={vespaFamilyData}
+              vespaDocumentData={vespaDocumentData}
+              document={document}
+              searchStatus={status}
+              searchResultFamilies={isEmptySearch(router.query) ? [] : families}
+              handleSemanticSearchChange={handleSemanticSearchChange}
+              handlePassagesOrderChange={handlePassagesOrderChange}
+            />
+          )}
+        </section>
+      </Layout>
+    </FeatureFlagsContext.Provider>
   );
 };
 
@@ -358,6 +363,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       family: familyData,
       theme: theme,
       themeConfig: themeConfig,
+      featureFlags,
       vespaFamilyData: vespaFamilyData ?? null,
       vespaDocumentData: vespaDocumentData ?? null,
     }),

@@ -1,4 +1,5 @@
 import { TConfigFeatures } from "./features";
+import { TTutorialName } from "./tutorial";
 
 /* Blocks */
 
@@ -95,6 +96,7 @@ export type TThemeConfig = {
   documentCategories: TDocumentCategory[];
   defaultDocumentCategory: TDocumentCategory;
   pageBlocks: TThemePageBlocks;
+  tutorials: TTutorialName[];
   features: TConfigFeatures;
   searchResultCountLabel: string;
 };
