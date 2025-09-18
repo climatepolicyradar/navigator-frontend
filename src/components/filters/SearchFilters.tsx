@@ -41,7 +41,7 @@ interface IProps {
   corpus_types: TCorpusTypeDictionary;
   conceptsData?: TConcept[];
   familyConceptsData?: TConcept[];
-  handleFilterChange(type: string, value: string, clearOthersOfType?: boolean): void;
+  handleFilterChange(type: string, value: string, clearOthersOfType?: boolean, otherValuesToClear?: string[]): void;
   handleYearChange(values: string[], reset?: boolean): void;
   handleClearSearch(): void;
   handleDocumentCategoryClick(value: string): void;
