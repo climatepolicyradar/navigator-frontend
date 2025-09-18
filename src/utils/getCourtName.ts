@@ -4,10 +4,8 @@ import { TFamilyConcept, TFamilyMetadata } from "@/types";
  * Extracts the court name from a hierarchy of legal entity concepts.
  * Returns the last (most specific) part of the hierarchy.
  *
- * :param concepts: Array of family concepts from API
- * :type concepts: TFamilyConcept[]
- * :return: The court name (last part of hierarchy) or null if not found
- * :rtype: string | null
+ * @param concepts - Array of family concepts from API
+ * @returns The court name (last part of hierarchy) or null if not found
  */
 export function getCourtName(concepts: TFamilyConcept[]): string | null {
   // Find all legal entity concepts
@@ -36,10 +34,8 @@ export function getCourtName(concepts: TFamilyConcept[]): string | null {
  * Extracts the court name from family metadata concept_preferred_label.
  * Returns the last (most specific) part of the hierarchy.
  *
- * :param metadata: Family metadata containing concept_preferred_label
- * :type metadata: TFamilyMetadata
- * :return: The court name (last part of hierarchy) or null if not found
- * :rtype: string | null
+ * @param metadata - Family metadata containing concept_preferred_label
+ * @returns The court name (last part of hierarchy) or null if not found
  */
 export function getCourtNameFromMetadata(metadata: TFamilyMetadata): string | null {
   const conceptLabels = metadata.concept_preferred_label;
