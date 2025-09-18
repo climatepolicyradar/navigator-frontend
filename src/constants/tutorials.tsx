@@ -77,7 +77,7 @@ export const TUTORIALS: TTutorials = {
     isEnabled: isLitigationEnabled,
     modal: {
       defaultOpen: true,
-      headerImage: <Image src="/images/features/ccc.png" alt="The logo of Sabin Center for Climate Change Law" width={920} height={400} />,
+      headerImage: <Image src="/images/features/ccc.jpg" alt="The logo of Sabin Center for Climate Change Law" width={920} height={400} />,
       close: true,
       title: "Welcome to our new site",
       content: (
