@@ -43,7 +43,7 @@ export const PoweredBy = () => (
             <p className="text-text-secondary text-base leading-normal">
               Climate Policy Radar uses AI and data science
               <br />
-              to map the world's climate policies.
+              to map the world's climate documents.
             </p>
             <p className="text-text-secondary text-base leading-normal">
               Visit{" "}
