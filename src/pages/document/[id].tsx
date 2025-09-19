@@ -55,6 +55,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       // fetch the families
       const { data: vespaFamilyDataResponse } = await backendApiClient.get(`/families/${familyData.import_id}`);
       vespaFamilyData = vespaFamilyDataResponse;
+      console.info("document/[id].getServerSideProps", vespaFamilyData);
     }
   } catch (error) {
     // TODO: handle error more elegantly
