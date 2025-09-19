@@ -189,10 +189,15 @@ export const FamilyOriginalPage = ({
   const conceptCounts: { conceptKey: string; count: number }[] = useMemo(() => {
     const uniqueConceptMap = new Map<string, number>();
 
+    console.info("conceptCounts.useMemo vespaFamilyData", vespaFamilyData);
     (vespaFamilyData?.families ?? []).forEach((family) => {
       family.hits.forEach((hit) => {
         // Check the document id against the documents in the page
         if (documentIsPublished(page.documents, hit.document_import_id) && conceptsFromDocumentId === hit.document_import_id) {
+          if (hit.concept_counts === undefined) {
+            console.info("ERROR: this should be populated", hit.concept_counts);
+          }
+
           Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
             const existingCount = uniqueConceptMap.get(conceptKey) || 0;
             uniqueConceptMap.set(conceptKey, existingCount + count);
