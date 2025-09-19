@@ -92,6 +92,7 @@ export const FamilyOriginalPage = ({
     throw new Error("Cannot render FamilyOriginalPage with V2 API data");
   }
 
+  console.info("FamilyOriginalPage", vespaFamilyData);
   const router = useRouter();
   const pathname = usePathname();
   const startingNumberOfTargetsToDisplay = 5;
@@ -204,11 +205,14 @@ export const FamilyOriginalPage = ({
       .map(([conceptKey, count]) => ({ conceptKey, count }))
       .sort((a, b) => b.count - a.count);
   }, [vespaFamilyData, page.documents, conceptsFromDocumentId]);
+  console.info("conceptCounts", conceptCounts); // ERROR: This is empty meaning the conceptIds will be empty and we won't fetch any concepts
 
   const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
+  console.info("conceptIds", conceptIds);
 
   useEffectOnce(() => {
     fetchAndProcessConcepts(conceptIds).then(({ rootConcepts, concepts }) => {
+      console.info("fetchAndProcessConcepts.then", rootConcepts, concepts);
       setRootConcepts(rootConcepts);
       setConcepts(concepts);
     });
@@ -454,6 +458,7 @@ export const FamilyOriginalPage = ({
                 </section>
               ))}
             </SingleCol>
+            {/* This does not render as the concepts.length === 0 */}
             {concepts.length > 0 && (
               <div className="border-gray-200 grow-0 shrink-0 px-5 border-l pt-4 md:pt-8 basis-full md:basis-[320px] lg:basis-[380px] xl:basis-[460px]">
                 <ConceptsPanel rootConcepts={rootConcepts} concepts={concepts} onConceptClick={handleConceptClick}></ConceptsPanel>
