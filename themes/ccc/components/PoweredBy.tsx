@@ -5,7 +5,7 @@ import { Columns } from "@/components/atoms/columns/Columns";
 import { Divider } from "@/components/dividers/Divider";
 
 export const PoweredBy = () => (
-  <div className="py-6 pb-6">
+  <div className="py-6">
     <div className="w-full mx-auto px-3 mb-8">
       <Divider />
     </div>
