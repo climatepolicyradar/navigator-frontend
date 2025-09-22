@@ -446,7 +446,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             <div className="md:flex justify-between items-center border-b border-gray-200">
               <BreadCrumbs label={"Search results"} />
               <div className="px-3 cols-2:px-6 cols-3:px-8">
-                <span className="text-sm mt-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
+                <span className="text-sm mb-4 md:mt-0 text-right flex flex-wrap gap-x-2 md:justify-end">
                   <span>Download data (.csv): </span>
                   <a
                     href="#"
@@ -574,22 +574,22 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                               <span>{showFilters ? "Hide" : "Show"} filters</span>
                             </Button>
                           </div>
-                          <div className="flex flex-wrap gap-4 justify-between items-start">
+                          <div className="flex gap-4 justify-between items-start">
                             <div className="flex items-center gap-2">
-                              <p className="text-sm text-text-primary font-normal">
-                                Results{" "}
-                                <span className="text-text-secondary">
-                                  {displayHits}
-                                  {searchResultItemName && " " + searchResultItemName}
-                                </span>
-                              </p>
                               <Info
                                 title="Showing the top 500 results"
                                 description="We limit the number of matches you can see so you get the quickest, most accurate results."
                                 link={{ href: "/faq", text: "Learn more" }}
                               />
+                              <p className="text-sm text-text-primary font-normal">
+                                Results:{" "}
+                                <span className="text-text-secondary">
+                                  {displayHits}
+                                  {searchResultItemName && " " + searchResultItemName}
+                                </span>
+                              </p>
                             </div>
-                            <div className="flex flex-col lg:flex-row gap-1 lg:gap-4">
+                            <div className="shrink-0 flex flex-col lg:flex-row gap-1 lg:gap-4">
                               <div className="relative z-10 -top-0.5 flex justify-end">
                                 <button
                                   className={`flex items-center gap-1 px-2 py-1 -mt-1 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
