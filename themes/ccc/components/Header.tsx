@@ -7,7 +7,7 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 
 export const CCCLogo = (
   <Link href="/" data-cy="ccc-logo">
-    <span className="text-text-primary text-2xl font-medium">The Climate Litigation Database</span>
+    <span className="text-text-primary text-xl md:text-lg font-medium">The Climate Litigation Database</span>
   </Link>
 );
 
