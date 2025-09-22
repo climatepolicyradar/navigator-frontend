@@ -27,8 +27,8 @@ interface IProps {
   themeConfig: TThemeConfig;
 }
 
-type TCollectionTab = "about" | "cases" | "events";
-const COLLECTION_TABS: IPageHeaderTab<TCollectionTab>[] = [{ tab: "cases" }, { tab: "events" }, { tab: "about" }];
+type TCollectionTab = "about" | "cases" | "procedural history";
+const COLLECTION_TABS: IPageHeaderTab<TCollectionTab>[] = [{ tab: "cases" }, { tab: "procedural history" }, { tab: "about" }];
 
 const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ collection, theme, themeConfig }: IProps) => {
   const [currentTab, setCurrentTab] = useState<TCollectionTab>("cases");
@@ -67,7 +67,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
           </>
         )}
 
-        {currentTab === "events" && (
+        {currentTab === "procedural history" && (
           <main className="py-3 cols-2:py-6 cols-2:col-span-2 cols-3:py-8 cols-3:col-span-3 cols-4:col-span-4">
             <EventsBlock families={families} />
           </main>
