@@ -91,6 +91,11 @@ export const Footer = () => {
                   Contact us
                 </LinkWithQuery>
               </li>
+              <li>
+                <LinkWithQuery href="/cookie-policy" className={`${link}`}>
+                  Cookie policy
+                </LinkWithQuery>
+              </li>
             </ul>
           </div>
 

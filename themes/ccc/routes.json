@@ -23,5 +23,10 @@
     "title": "Terms of use",
     "path": "terms-of-use",
     "contentPath": "terms-of-use"
+  },
+  {
+    "title": "Cookie policy",
+    "path": "cookie-policy",
+    "contentPath": "cookie-policy"
   }
 ]
