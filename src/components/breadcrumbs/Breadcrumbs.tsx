@@ -50,7 +50,7 @@ const BreadCrumb = ({ last = false, label = null, href = null, cy = "", isHome =
           >
             {isHome && (
               <>
-                {theme === "ccc" ? (
+                {theme === "ccc" ? ( // TODO: get this from config dictionary (coming soon)
                   <>Climate Litigation Database</>
                 ) : (
                   <span className="mr-1 translate-y-0.5">
