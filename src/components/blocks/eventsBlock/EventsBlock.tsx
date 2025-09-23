@@ -26,7 +26,7 @@ export const EventsBlock = ({ families }: IProps) => {
   return (
     <div className="relative">
       <Card variant="outlined" className="rounded-lg !p-5">
-        <h2 className="text-xl text-text-primary font-semibold leading-tight">Events</h2>
+        <h2 className="text-xl text-text-primary font-semibold leading-tight">Procedural history</h2>
         <InteractiveTable<TEventTableColumnId>
           columns={tableColumns}
           defaultSort={{ column: "date", ascending: false }}
