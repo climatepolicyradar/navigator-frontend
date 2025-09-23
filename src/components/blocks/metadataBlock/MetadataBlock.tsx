@@ -14,7 +14,7 @@ export const MetadataBlock = ({ block, metadata, title }: IProps) => {
 
   return (
     <Section block={block} title={title}>
-      <div className="rounded border border-border-light p-12">
+      <div className="rounded border border-border-light p-4 md:p-8 lg:p-12">
         <div className="grid gap-3">
           {metadata.length === 0 && <div className="text-text-secondary">Sorry, there is no data available at this time.</div>}
           {metadata.map((item, index) => (
