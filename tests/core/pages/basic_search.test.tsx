@@ -145,7 +145,7 @@ describe("SearchPage", async () => {
     expect(screen.getByRole("button", { name: "Latin America & Caribbean" })).toBeInTheDocument();
 
     // Verify the results are filtered by the region.
-    expect(await screen.findByText("Results")).toBeInTheDocument();
+    expect(await screen.findByText("Results:")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Argentina Report" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Belize NDC" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Afghanistan report" })).not.toBeInTheDocument();
@@ -192,7 +192,7 @@ describe("SearchPage", async () => {
     expect(screen.getByRole("button", { name: "Belize" })).toBeInTheDocument();
 
     // Verify the results are filtered by the country.
-    expect(await screen.findByText("Results")).toBeInTheDocument();
+    expect(await screen.findByText("Results:")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Belize NDC" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Argentina Report" })).not.toBeInTheDocument();
   });

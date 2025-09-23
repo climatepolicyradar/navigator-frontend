@@ -170,7 +170,7 @@ describe("SearchPage", async () => {
     expect(screen.getByRole("button", { name: "New South Wales" })).toBeInTheDocument();
 
     // Verify the results are filtered by the subdivision.
-    expect(await screen.findByText("Results")).toBeInTheDocument();
+    expect(await screen.findByText("Results:")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "New South Wales Litigation Case" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Australia Litigation Case" })).not.toBeInTheDocument();
   });
@@ -330,7 +330,7 @@ describe("SearchPage", async () => {
     // check for applied filter button
     expect(screen.getByRole("button", { name: "Test Case Category 1" })).toBeInTheDocument();
 
-    expect(await screen.findByText("Results")).toBeInTheDocument();
+    expect(await screen.findByText("Results:")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Family With Test Case Category 1" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Family With Test Case Category 2" })).not.toBeInTheDocument();
   });
