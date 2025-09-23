@@ -67,7 +67,9 @@ const getFamilyEvents = (family: TFamilyPublic): TEventWithDocument[] =>
           ...family.events.map((event) => ({ event })),
           ...family.documents.flatMap((document) => document.events.map((event) => ({ event, document }))),
         ] as TEventWithDocument[]
-      ).map((item) => [item.event.import_id, item] as const)
+      )
+        .filter((item) => item.event.event_type !== "Filing Year For Action") // TODO: review whether we still want to do this
+        .map((item) => [item.event.import_id, item] as const)
     )
   );
 
