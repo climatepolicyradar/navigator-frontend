@@ -165,6 +165,12 @@ export type TFamilyDocument = {
   document_url: string;
 };
 
+/** This is the metadata that is returned via Vespa */
+export type TVespaMetadata = {
+  name: string;
+  value: string;
+}[];
+
 export type TFamily = {
   continuation_token?: string;
   corpus_import_id: string;
@@ -175,13 +181,13 @@ export type TFamily = {
   family_description: string;
   family_documents: TFamilyDocument[];
   family_geographies: string[];
-  family_metadata: { [key: string]: string[] }; // TODO: type this better
   family_name: string;
   family_slug: string;
   family_source: string;
   family_title_match: boolean;
   prev_continuation_token?: string;
   total_passage_hits: number;
+  metadata: TVespaMetadata;
 };
 
 export type TFamilyPage = {
