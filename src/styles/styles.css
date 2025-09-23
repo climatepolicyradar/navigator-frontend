@@ -379,7 +379,7 @@ ul li.selected {
 }
 .text-content ul,
 .search-results ul {
-  @apply list-disc my-2;
+  @apply list-disc my-2 pl-2;
 }
 .text-content ul li,
 .search-results ul li {
