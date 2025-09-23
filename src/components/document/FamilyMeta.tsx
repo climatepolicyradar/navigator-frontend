@@ -1,7 +1,7 @@
 import { CountryLinks } from "@/components/CountryLinks";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import useConfig from "@/hooks/useConfig";
-import { TCategory, TCorpusTypeSubCategory, TFamilyConcept, TFamilyMetadata } from "@/types";
+import { TCategory, TCorpusTypeSubCategory, TFamilyConcept, TFamilyMetadata, TVespaMetadata } from "@/types";
 import { getMostSpecificCourts, getMostSpecificCourtsFromMetadata } from "@/utils/getMostSpecificCourts";
 import { convertDate } from "@/utils/timedate";
 
@@ -17,10 +17,10 @@ interface IProps {
   author?: string[];
   document_type?: string;
   concepts?: TFamilyConcept[];
-  metadata?: TFamilyMetadata;
+  metadata: TFamilyMetadata;
 }
 
-export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name, document_type, source, concepts, metadata }: IProps) => {
+export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name, document_type, source }: IProps) => {
   const configQuery = useConfig();
   const { data: { countries = [], subdivisions = [] } = {} } = configQuery;
 

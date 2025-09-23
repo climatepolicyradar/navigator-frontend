@@ -4,6 +4,7 @@ import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { TFamily } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { truncateString } from "@/utils/truncateString";
+import { transformVespaMetadataToFamilyMetadata } from "@/utils/vespa";
 
 import { FamilyMeta } from "./FamilyMeta";
 
@@ -24,11 +25,13 @@ export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = tru
     family_name,
     family_date,
     family_category,
-    family_metadata,
     family_source,
+    metadata,
   } = family;
 
   const allTitleClasses = joinTailwindClasses("result-title text-left font-medium text-lg duration-300 flex items-start", titleClasses);
+
+  const family_metadata = transformVespaMetadataToFamilyMetadata(metadata);
 
   // If the case is litigation and we have a core object, use that as the summary text
   const summaryText = family_category === "Litigation" ? (family_metadata?.core_object?.[0] ?? family_description) : family_description;

@@ -49,7 +49,13 @@ export const FamilyMatchesDrawer = ({ family }: IProps) => {
       <div className="h-full flex flex-col">
         <div className="p-5 pb-0 pr-12 mb-10">
           <div className="flex flex-wrap text-sm gap-1 mb-2 items-center middot-between">
-            <FamilyMeta category={family_category} corpus_type_name={corpus_type_name} geographies={family_geographies} date={family_date} />
+            <FamilyMeta
+              category={family_category}
+              corpus_type_name={corpus_type_name}
+              geographies={family_geographies}
+              date={family_date}
+              metadata={{}}
+            />
           </div>
           <Heading level={3} extraClasses="!mb-0">
             {family_name}
