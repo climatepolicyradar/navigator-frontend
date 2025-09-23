@@ -175,7 +175,6 @@ export type TFamily = {
   family_description: string;
   family_documents: TFamilyDocument[];
   family_geographies: string[];
-  family_last_updated_date: string;
   family_metadata: { [key: string]: string[] }; // TODO: type this better
   family_name: string;
   family_slug: string;
