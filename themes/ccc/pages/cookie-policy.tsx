@@ -14,7 +14,7 @@ const CookiePolicy = () => {
           <SingleCol>
             <div className="text-content mb-12">
               <Heading level={1} extraClasses="my-5">
-                Cookie policy
+                Climate Policy Radar CIC - Climate Case Chart Cookie Policy
               </Heading>
               <section>
                 <Heading level={2}>What does this Cookie Policy cover?</Heading>
