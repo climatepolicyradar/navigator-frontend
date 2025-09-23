@@ -2,6 +2,7 @@ import { FaqSection } from "@/components/FaqSection";
 import { Columns } from "@/components/atoms/columns/Columns";
 
 import { HOMEPAGE_FAQS } from "../constants/faqs";
+
 export const HomepageFaqs = () => (
   <div className="pt-15">
     <Columns>
