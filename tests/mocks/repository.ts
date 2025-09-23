@@ -1,3 +1,5 @@
+import { metadata } from "framer-motion/client";
+
 const families = [
   {
     family_slug: "belize-ndc-8ee3",
@@ -9,10 +11,10 @@ const families = [
     corpus_import_id: "UNFCCC.corpus.i00000001.n0000",
     corpus_type_name: "Intl. agreements",
     family_geographies: ["BLZ"],
-    family_metadata: {
-      author: ["Belize"],
-      author_type: ["Party"],
-    },
+    metadata: [
+      { name: "family.author", value: "Belize" },
+      { name: "family.author_type", value: "Party" },
+    ],
     family_title_match: true,
     family_description_match: true,
     total_passage_hits: 1,
@@ -30,10 +32,10 @@ const families = [
     corpus_import_id: "UNFCCC.corpus.i00000001.n0000",
     corpus_type_name: "Intl. agreements",
     family_geographies: ["ARG"],
-    family_metadata: {
-      author: ["Argentina"],
-      author_type: ["Party"],
-    },
+    metadata: [
+      { name: "family.author", value: "Argentina" },
+      { name: "family.author_type", value: "Party" },
+    ],
     family_title_match: true,
     family_description_match: true,
     total_passage_hits: 2,
@@ -51,10 +53,10 @@ const families = [
     corpus_import_id: "UNFCCC.corpus.i00000001.n0000",
     corpus_type_name: "Intl. agreements",
     family_geographies: ["AFG"],
-    family_metadata: {
-      author: ["Afghanistan"],
-      author_type: ["Party"],
-    },
+    metadata: [
+      { name: "family.author", value: "Afghanistan" },
+      { name: "family.author_type", value: "Party" },
+    ],
     family_title_match: true,
     family_description_match: true,
     total_passage_hits: 2,
@@ -72,13 +74,14 @@ const families = [
     corpus_import_id: "Academic.corpus.Litigation.n0000",
     corpus_type_name: "Litigation",
     family_geographies: ["AUS"],
-    family_metadata: {
-      id: ["16950"],
-      status: ["Decided"],
-      case_number: ["2022/00114664; [2022] NSWSC 575"],
-      core_object: ["Australia Litigation Case"],
-      concept_preferred_label: ["jurisdiction/Australia", "category/Suits against governments"],
-    },
+    metadata: [
+      { name: "family.id", value: "16950" },
+      { name: "family.status", value: "Decided" },
+      { name: "family.case_number", value: "2022/00114664; [2022] NSWSC 575" },
+      { name: "family.core_object", value: "Australia Litigation Case" },
+      { name: "family.concept_preferred_label", value: "jurisdiction/Australia" },
+      { name: "family.concept_preferred_label", value: "category/Suits against governments" },
+    ],
     family_title_match: false,
     family_description_match: false,
     total_passage_hits: 1,
@@ -94,18 +97,17 @@ const families = [
     corpus_import_id: "Academic.corpus.Litigation.n0000",
     corpus_type_name: "Litigation",
     family_geographies: ["AUS", "AU-NSW"],
-    family_metadata: {
-      id: ["16951"],
-      status: ["Decided"],
-      case_number: ["2022/00114664; [2022] NSWSC 576"],
-      core_object: ["New South Wales Case."],
-      concept_preferred_label: [
-        "jurisdiction/Australia",
-        "jurisdiction/New South Wales",
-        "category/Corporations",
-        "category/Suits against corporations, individuals",
-      ],
-    },
+    metadata: [
+      { name: "family.id", value: "16951" },
+      { name: "family.status", value: "Decided" },
+      { name: "family.case_number", value: "2022/00114664; [2022] NSWSC 576" },
+      { name: "family.core_object", value: "New South Wales Case." },
+      { name: "family.concept_preferred_label", value: "jurisdiction/Australia" },
+      { name: "family.concept_preferred_label", value: "jurisdiction/New South Wales" },
+      { name: "family.concept_preferred_label", value: "category/Corporations" },
+      { name: "family.concept_preferred_label", value: "category/Suits against corporations, individuals" },
+    ],
+
     family_title_match: false,
     family_description_match: false,
     total_passage_hits: 1,
@@ -121,10 +123,10 @@ const families = [
     corpus_import_id: "UNFCCC.corpus.i00000001.n0000",
     corpus_type_name: "Intl. agreements",
     family_geographies: ["USA"],
-    family_metadata: {
-      author: ["USA"],
-      author_type: ["Party"],
-    },
+    metadata: [
+      { name: "family.author", value: "USA" },
+      { name: "family.author_type", value: "Party" },
+    ],
     family_title_match: true,
     family_description_match: true,
     total_passage_hits: 2,
@@ -164,10 +166,10 @@ const families = [
     corpus_import_id: "UNFCCC.corpus.i00000001.n0000",
     corpus_type_name: "Intl. agreements",
     family_geographies: ["USA"],
-    family_metadata: {
-      author: ["USA"],
-      author_type: ["Party"],
-    },
+    metadata: [
+      { name: "family.author", value: "USA" },
+      { name: "family.author_type", value: "Party" },
+    ],
     family_title_match: true,
     family_description_match: true,
     total_passage_hits: 2,
@@ -207,13 +209,14 @@ const families = [
     corpus_import_id: "Academic.corpus.Litigation.n0000",
     corpus_type_name: "Litigation",
     family_geographies: ["XAA"],
-    family_metadata: {
-      id: [""],
-      status: [""],
-      case_number: ["2022/00114664; [2022] NSWSC 576"],
-      core_object: ["Family With Test Case Category 1"],
-      concept_preferred_label: ["category/Test Case Category 1", "category/Parent Test Case Category"],
-    },
+    metadata: [
+      { name: "family.id", value: "" },
+      { name: "family.status", value: "" },
+      { name: "family.case_number", value: "2022/00114664; [2022] NSWSC 576" },
+      { name: "family.core_object", value: "Family With Test Case Category 1" },
+      { name: "family.concept_preferred_label", value: "category/Test Case Category 1" },
+      { name: "family.concept_preferred_label", value: "category/Parent Test Case Category" },
+    ],
     family_title_match: false,
     family_description_match: false,
     total_passage_hits: 1,
@@ -229,13 +232,14 @@ const families = [
     corpus_import_id: "Academic.corpus.Litigation.n0000",
     corpus_type_name: "Litigation",
     family_geographies: ["XAA"],
-    family_metadata: {
-      id: [""],
-      status: [""],
-      case_number: ["2022/00114664; [2022] NSWSC 576"],
-      core_object: ["Family With Test Case Category 2"],
-      concept_preferred_label: ["category/Test Case Category 2", "category/Parent Test Case Category"],
-    },
+    metadata: [
+      { name: "family.id", value: "" },
+      { name: "family.status", value: "" },
+      { name: "family.case_number", value: "2022/00114664; [2022] NSWSC 576" },
+      { name: "family.core_object", value: "Family With Test Case Category 2" },
+      { name: "family.concept_preferred_label", value: "category/Test Case Category 2" },
+      { name: "family.concept_preferred_label", value: "category/Parent Test Case Category" },
+    ],
     family_title_match: false,
     family_description_match: false,
     total_passage_hits: 1,
@@ -289,9 +293,7 @@ const getFilteredFamilies = (keyword_filters: any, concept_filters: any, metadat
     metadata.forEach((metadataFilter) => {
       filteredFamilies = filteredFamilies.filter((family) => {
         return (
-          family.family_metadata &&
-          family.family_metadata.concept_preferred_label &&
-          family.family_metadata.concept_preferred_label.some((concept_preferred_label) => concept_preferred_label === metadataFilter.value)
+          family.metadata && family.metadata.some((meta) => meta.name === "family.concept_preferred_label" && meta.value === metadataFilter.value)
         );
       });
     });
