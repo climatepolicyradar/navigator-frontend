@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { ExternalLink } from "@/components/ExternalLink";
@@ -18,8 +19,13 @@ export const Footer = () => {
       <Columns>
         <aside className="flex flex-col items-start cols-2:col-span-2 cols-3:col-span-1">
           <Link href="/" className="max-w-70">
-            {/* trunk-ignore(eslint/@next/next/no-img-element) */}
-            <img src="/images/ccc/sabin-logo-large.png" alt="Sabin Center for Climate Change logo" className="w-full mb-2" />
+            <Image
+              src="/images/ccc/sabin-logo-large.png"
+              alt="Sabin Center for Climate Change logo"
+              width={280}
+              height={26}
+              className="max-w-full mb-2"
+            />
           </Link>
         </aside>
 
@@ -88,12 +94,19 @@ export const Footer = () => {
             </ul>
           </div>
 
-          <div className="col-span-full color-text-secondary text-sm flex flex-col">
-            <span>
+          <div className="col-span-full color-text-secondary text-sm flex flex-col gap-2">
+            <p>
+              Help us improve this tool by{" "}
+              <ExternalLink url="https://form.jotform.com/252292443502350" className={link + " underline hover:text-text-brand"}>
+                providing feedback
+              </ExternalLink>{" "}
+              on your experience.
+            </p>
+            <p>
               The materials on this website are intended to provide a general summary of the law and do not constitute legal advice. You should
               consult with counsel to determine applicable legal requirements in a specific fact situation.
-            </span>
-            <span className="mt-2 color-text-tertiary text-xs">© 2025 Sabin Center for Climate Change Law</span>
+            </p>
+            <p className="color-text-tertiary text-xs">© 2025 Sabin Center for Climate Change Law</p>
           </div>
         </main>
       </Columns>
