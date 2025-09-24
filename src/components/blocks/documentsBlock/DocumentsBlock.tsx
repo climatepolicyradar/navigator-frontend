@@ -12,7 +12,8 @@ import { TFamilyDocumentPublic, TFamilyPublic, TGeography, TLoadingStatus, TMatc
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId } from "@/utils/eventTable";
 import { formatDate } from "@/utils/timedate";
 
-const getOldestEventDate = (document: TFamilyDocumentPublic) => document.events.map((event) => event.date).sort()[0];
+// If no date found for an event, use an empty string so it sorts to the bottom
+const getOldestEventDate = (document: TFamilyDocumentPublic) => document.events.map((event) => event.date).sort()[0] || "";
 
 interface IProps {
   family: TFamilyPublic;

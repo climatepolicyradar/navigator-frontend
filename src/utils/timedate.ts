@@ -18,6 +18,7 @@ export const padNumber = (number) => {
 };
 
 export const formatDate = (data: string) => {
+  if (!data || data.length === 0) return ["", "", ""];
   const dateObj = new Date(data);
   const year = dateObj.getFullYear();
   const day = padNumber(dateObj.getDate());
