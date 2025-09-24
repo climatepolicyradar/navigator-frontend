@@ -28,5 +28,10 @@
     "title": "Cookie policy",
     "path": "cookie-policy",
     "contentPath": "cookie-policy"
+  },
+  {
+    "title": "Privacy policy",
+    "path": "privacy-policy",
+    "contentPath": "privacy-policy"
   }
 ]
