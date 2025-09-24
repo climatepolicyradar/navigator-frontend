@@ -7,9 +7,9 @@ export const convertDate = (data: string): [number, string, string] => {
     const [day, month, year] = data.split("/");
     dateObj = new Date(`${month}-${day}-${year}`);
   }
-  const year = dateObj.getFullYear();
-  const day = padNumber(dateObj.getDate());
-  const month = dateObj.getMonth();
+  const year = dateObj.getUTCFullYear();
+  const day = padNumber(dateObj.getUTCDate());
+  const month = dateObj.getUTCMonth();
   return [year, day, months[month]?.substring(0, 3)];
 };
 
@@ -20,9 +20,9 @@ export const padNumber = (number) => {
 export const formatDate = (data: string) => {
   if (!data || data.length === 0) return ["", "", ""];
   const dateObj = new Date(data);
-  const year = dateObj.getFullYear();
-  const day = padNumber(dateObj.getDate());
-  const month = dateObj.getMonth();
+  const year = dateObj.getUTCFullYear();
+  const day = padNumber(dateObj.getUTCDate());
+  const month = dateObj.getUTCMonth();
   return [year, day, months[month]];
 };
 

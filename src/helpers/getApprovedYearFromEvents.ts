@@ -3,7 +3,7 @@ export const getApprovedYearFromEvents = (events) => {
 
   if (approvalEvent) {
     const date = new Date(approvalEvent.date);
-    return String(date.getFullYear());
+    return String(date.getUTCFullYear());
   }
 
   return null;

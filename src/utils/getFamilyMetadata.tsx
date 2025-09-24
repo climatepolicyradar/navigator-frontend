@@ -39,7 +39,7 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
 
   metadata.push({
     label: "Filing year",
-    value: filingTimestamp ? new Date(filingTimestamp).getFullYear() : EN_DASH,
+    value: filingTimestamp ? new Date(filingTimestamp).getUTCFullYear() : EN_DASH,
   });
 
   /* Status */

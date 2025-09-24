@@ -3,12 +3,12 @@ export const months = ["January", "February", "March", "April", "May", "June", "
 export const minYear = 1947;
 export const currentYear = (): number => {
   const now = new Date();
-  return now.getFullYear();
+  return now.getUTCFullYear();
 };
 
 export const yearRange = () => {
   const min = minYear;
-  const max = new Date().getFullYear();
+  const max = new Date().getUTCFullYear();
   const arr = [];
   for (let i = min; i <= max; i++) {
     arr.push(i);
@@ -20,5 +20,5 @@ export const yearRange = () => {
 
 export const daysInMonth = (month, year) => {
   // Use 1 for January, 2 for February, etc.
-  return new Date(year, month, 0).getDate();
+  return new Date(Date.UTC(year, month, 0)).getUTCDate();
 };

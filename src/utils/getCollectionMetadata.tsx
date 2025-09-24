@@ -18,7 +18,7 @@ export const getCollectionMetadata = (collection: TCollectionPublicWithFamilies)
     const earliestFilingDate = new Date(Math.min(...filingDates.map((date) => date.getTime())));
     collectionMetadata.push({
       label: "Filing date",
-      value: earliestFilingDate && !isNaN(earliestFilingDate.getFullYear()) ? earliestFilingDate.getFullYear() : EN_DASH,
+      value: earliestFilingDate && !isNaN(earliestFilingDate.getUTCFullYear()) ? earliestFilingDate.getUTCFullYear() : EN_DASH,
     });
   } else {
     collectionMetadata.push({
