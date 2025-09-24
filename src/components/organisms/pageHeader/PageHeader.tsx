@@ -51,12 +51,12 @@ export const PageHeader = <Tab extends string>({
 
   const containerClasses = joinTailwindClasses(
     "pt-8 cursor-default",
-    coloured ? "bg-surface-brand-darker text-text-light" : "text-text-primary",
+    coloured ? "bg-[#EDEFF1] text-text-primary" : "text-text-primary",
     !coloured && "border-b border-b-border-light"
   );
 
   const largeTextClasses = "text-[32px] leading-none font-bold";
-  const tertiaryTextClasses = coloured ? "text-text-light/60" : "text-text-tertiary";
+  const tertiaryTextClasses = "text-text-tertiary";
 
   const labelClasses = joinTailwindClasses(largeTextClasses, tertiaryTextClasses);
   const titleClasses = joinTailwindClasses(
@@ -88,8 +88,7 @@ export const PageHeader = <Tab extends string>({
           {tabs.map((tab) => {
             const tabIsActive = tab.tab === currentTab;
             const tabClasses = joinTailwindClasses(
-              "pb-4 mb-[1px] border-b-[3px]",
-              coloured ? "hover:text-text-light" : "hover:text-text-primary",
+              "pb-4 mb-[1px] border-b-[3px] hover:text-text-primary",
               !tabIsActive && `${tertiaryTextClasses} border-b-transparent`
             );
 
