@@ -466,9 +466,7 @@ const PrivacyPolicy = () => {
                   Any changes will be made available here (or another page we notify to you at a later date) and where applicable we might also notify
                   you via email and/or in our Site.
                 </p>
-                <p>
-                  <strong>LAST UPDATE:</strong> 23rd September 2025
-                </p>
+                <p className="mt-8 text-sm text-text-tertiary">LAST UPDATE: 23rd September 2025</p>
               </section>
             </div>
           </SingleCol>
