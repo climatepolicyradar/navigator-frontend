@@ -33,7 +33,6 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
   const isUSA = geosOrdered.includes("USA");
 
   /* Filing year */
-
   let filingTimestamp = family.events.find((event) => event.event_type === "Filing Year For Action")?.date;
   if (isUSA && family.published_date) filingTimestamp = family.published_date;
 
@@ -43,14 +42,12 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
   });
 
   /* Status */
-
   metadata.push({
     label: "Status",
     value: family.metadata.status ?? EN_DASH,
   });
 
   /* Geography */
-
   if (geosOrdered.length > 0) {
     metadata.push({
       label: "Geography",
@@ -73,7 +70,6 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
   }
 
   /* Docket number */
-
   if (isUSA) {
     metadata.push({
       label: "Docket number",
@@ -86,7 +82,6 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
   }
 
   /* Court/admin entity */
-
   const legalEntities = hierarchy.filter((concept) => concept.type === "legal_entity");
   metadata.push({
     label: "Court/admin entity",
@@ -98,7 +93,6 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
   });
 
   /* Case category */
-
   const caseCategories = hierarchy.filter((concept) => concept.type === "legal_category");
   metadata.push({
     label: "Case category",
@@ -110,7 +104,6 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
   });
 
   /* Principal law */
-
   const principalLaws = hierarchy.filter((concept) => concept.type === "law");
   metadata.push({
     label: "Principal law",
@@ -120,7 +113,6 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
   });
 
   /* At issue */
-
   let atIssueValue: ReactNode = null;
 
   if (isUSA && family.collections[0]) {
