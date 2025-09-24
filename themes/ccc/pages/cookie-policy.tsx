@@ -37,8 +37,10 @@ const CookiePolicy = () => {
                 <p>We may use any or all of the following “technologies” on our Site and in our emails:</p>
                 <ul>
                   <li>
-                    <strong>Cookies:</strong> a cookie is a very small text file that may be placed on your browser or in the storage on your device.
-                    There are two types: “session cookies” and “persistent cookies”:
+                    <p>
+                      <strong>Cookies:</strong> a cookie is a very small text file that may be placed on your browser or in the storage on your
+                      device. There are two types: “session cookies” and “persistent cookies”:
+                    </p>
                     <ul>
                       <li>Session cookies are cookies that disappear from your device or browser when you close your browser.</li>
                       <li>Persistent cookies stay on your device even after you close your browser.</li>
@@ -49,11 +51,10 @@ const CookiePolicy = () => {
                     </p>
                   </li>
                   <li>
-                    <strong>Other similar technologies:</strong>
                     <p>
-                      We may also, now or in the future, use other tracking technologies, such as mobile advertising IDs and tags, HTML5 local storage
-                      / local shared objects (which store relevant data locally on your device), for similar purposes as described in this Cookie
-                      Policy.
+                      <strong>Other similar technologies:</strong> We may also, now or in the future, use other tracking technologies, such as mobile
+                      advertising IDs and tags, HTML5 local storage / local shared objects (which store relevant data locally on your device), for
+                      similar purposes as described in this Cookie Policy.
                     </p>
                     <p>
                       So, when we refer to cookies and “similar technologies” in this Cookie Policy, such reference includes reference HTML5 local

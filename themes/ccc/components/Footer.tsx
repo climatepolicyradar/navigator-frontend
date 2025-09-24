@@ -101,6 +101,11 @@ export const Footer = () => {
                   Terms of use
                 </LinkWithQuery>
               </li>
+              <li>
+                <LinkWithQuery href="/privacy-policy" className={`${link}`}>
+                  Privacy policy
+                </LinkWithQuery>
+              </li>
             </ul>
           </div>
 
