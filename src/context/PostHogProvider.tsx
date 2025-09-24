@@ -17,7 +17,7 @@ interface IProps {
   consent?: boolean;
 }
 
-function PostHogPageView() {
+function PostHogPageView({ consent }: { consent: boolean }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const posthog = usePostHog();
@@ -29,9 +29,9 @@ function PostHogPageView() {
       if (searchParams.toString()) {
         url = url + `?${searchParams.toString()}`;
       }
-      posthog.capture("$pageview", { $current_url: url });
+      posthog.capture("$pageview", { $current_url: url, consent });
     }
-  }, [pathname, searchParams, posthog]);
+  }, [pathname, searchParams, posthog, consent]);
 
   return null;
 }
@@ -44,12 +44,12 @@ function PostHogPageView() {
 export function SuspendedPostHogPageView() {
   return (
     <Suspense fallback={null}>
-      <PostHogPageView />
+      <PostHogPageView consent={false} />
     </Suspense>
   );
 }
 
-export function PostHogProvider({ children, consent }: IProps) {
+export function PostHogProvider({ children, consent = false }: IProps) {
   /**
    * The sessionStorage is read by tag manager to not re-init posthog
    * We don't use something like posthog.__loaded as posthog isn't available on the window
@@ -79,7 +79,7 @@ export function PostHogProvider({ children, consent }: IProps) {
 
   return (
     <PHProvider client={posthog}>
-      <PostHogPageView />
+      <PostHogPageView consent={consent} />
       {children}
     </PHProvider>
   );
