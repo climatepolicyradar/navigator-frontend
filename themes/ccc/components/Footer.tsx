@@ -96,6 +96,11 @@ export const Footer = () => {
                   Cookie policy
                 </LinkWithQuery>
               </li>
+              <li>
+                <LinkWithQuery href="/terms-of-use" className={`${link}`}>
+                  Terms of use
+                </LinkWithQuery>
+              </li>
             </ul>
           </div>
 
