@@ -21,7 +21,7 @@ const Header = () => {
 
   const headerClasses = joinTailwindClasses("min-h-12 bg-surface-light", !showLogo && !showSearch && "!h-[72px]", isNotHome && "!bg-[#677787]");
 
-  return <NavBar headerClasses={headerClasses} logo={CCCLogo} menu={<Menu />} showLogo={showLogo} showSearch={showSearch} />;
+  return <NavBar headerClasses={headerClasses} logo={CCCLogo} menu={<Menu isNotHome={isNotHome} />} showLogo={showLogo} showSearch={showSearch} />;
 };
 
 export default Header;
