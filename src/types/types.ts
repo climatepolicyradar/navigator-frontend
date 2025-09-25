@@ -190,27 +190,6 @@ export type TFamily = {
   metadata: TVespaMetadata;
 };
 
-export type TFamilyPage = {
-  category: TCategory;
-  collections: TCollection[];
-  corpus_id: string;
-  corpus_type_name?: TCorpusTypeSubCategory;
-  documents: TDocumentPage[];
-  events: TEvent[];
-  geographies: string[];
-  import_id: string;
-  last_updated_date: string | null;
-  metadata: TFamilyMetadata;
-  organisation: string;
-  organisation_attribution_url?: string | null;
-  published_date: string | null;
-  slug: string;
-  status?: string;
-  summary: string;
-  title: string;
-  corpus?: TCorpusPublic;
-};
-
 export type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
 
 export type TDocumentPage = {
@@ -464,14 +443,25 @@ export type TFamilyDocumentPublic = {
   variant: string | null;
 };
 
-export type TFamilyPublic = Omit<TFamilyPage, "collections" | "documents" | "events" | "organisation_attribution_url" | "status"> & {
+export type TFamilyPublic = {
+  category: TCategory;
+  corpus_id: string;
+  corpus_type_name?: TCorpusTypeSubCategory;
+  geographies: string[];
+  import_id: string;
+  last_updated_date: string | null;
+  metadata: TFamilyMetadata;
+  organisation: string;
+  published_date: string | null;
+  slug: string;
+  summary: string;
+  title: string;
+  corpus?: TCorpusPublic;
   collections: TCollectionPublic[];
   concepts: TFamilyConcept[];
-  corpus: TCorpusPublic;
   documents: TFamilyDocumentPublic[];
   events: TFamilyEventPublic[];
   organisation_attribution_url: string | null;
-  metadata: TMetadata<"id">;
 };
 
 export type TCollectionPublicWithFamilies = {

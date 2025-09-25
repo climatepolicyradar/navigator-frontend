@@ -36,7 +36,6 @@ import {
   TCorpusTypeDictionary,
   TDocumentPage,
   TFamilyPublic,
-  TFamilyPage,
   TFeatureFlags,
   TGeography,
   TGeographySubdivision,
@@ -52,12 +51,10 @@ import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { truncateString } from "@/utils/truncateString";
 
-export const isNewEndpointData = (family: TFamilyPage | TFamilyPublic): family is TFamilyPublic => "concepts" in family;
-
 export interface IProps {
   corpus_types: TCorpusTypeDictionary;
   countries: TGeography[];
-  family: TFamilyPage | TFamilyPublic;
+  family: TFamilyPublic;
   featureFlags: TFeatureFlags;
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];
@@ -87,11 +84,6 @@ export const FamilyOriginalPage = ({
   themeConfig,
   vespaFamilyData,
 }: IProps) => {
-  // TODO remove when only the newer API endpoint is being called in getServerSideProps
-  if (isNewEndpointData(page)) {
-    throw new Error("Cannot render FamilyOriginalPage with V2 API data");
-  }
-
   const router = useRouter();
   const pathname = usePathname();
   const startingNumberOfTargetsToDisplay = 5;
@@ -435,7 +427,7 @@ export const FamilyOriginalPage = ({
                       />
                       <Heading level={4}>Other documents in the {collection.title}</Heading>
                       <div className="divide-y flex flex-col gap-4">
-                        {collection.families.map((collFamily, i) => (
+                        {/* {collection.families.map((collFamily, i) => (
                           <div key={collFamily.slug} className="border-border-light">
                             <LinkWithQuery href={`/document/${collFamily.slug}`} className="text-[#0041A3] text-left font-medium text-lg underline">
                               {collFamily.title}
@@ -447,7 +439,7 @@ export const FamilyOriginalPage = ({
                               }}
                             ></div>
                           </div>
-                        ))}
+                        ))} */}
                       </div>
                     </div>
                   )}
