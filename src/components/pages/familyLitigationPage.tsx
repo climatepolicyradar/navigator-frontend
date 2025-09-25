@@ -25,14 +25,9 @@ import { getLitigationJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 import { joinNodes } from "@/utils/reactNode";
 import { convertDate } from "@/utils/timedate";
 
-import { IProps, isNewEndpointData } from "./familyOriginalPage";
+import { IProps } from "./familyOriginalPage";
 
 export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig }: IProps) => {
-  // TODO remove when only the newer API endpoint is being called in getServerSideProps
-  if (!isNewEndpointData(family)) {
-    throw new Error("Cannot render FamilyLitigationPage with V1 API data");
-  }
-
   /* Search matches */
 
   const router = useRouter();

@@ -23,7 +23,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
 import useSearch from "@/hooks/useSearch";
-import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TSlugResponse, TThemeConfig, TFeatureFlags } from "@/types";
+import { TDocumentPage, TPassage, TTheme, TSearchResponse, TSlugResponse, TThemeConfig, TFeatureFlags, TFamilyPublic } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled } from "@/utils/features";
@@ -33,7 +33,7 @@ import { readConfigFile } from "@/utils/readConfigFile";
 
 interface IProps {
   document: TDocumentPage;
-  family: TFamilyPage; // TODO switch to V2 API and use TFamilyPublic
+  family: TFamilyPublic;
   theme: TTheme;
   themeConfig: TThemeConfig;
   featureFlags: TFeatureFlags;
@@ -319,7 +319,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
   let documentData: TDocumentPage;
-  let familyData: TFamilyPage;
+  let familyData: TFamilyPublic;
   let vespaFamilyData: TSearchResponse | null = null;
   let vespaDocumentData: TSearchResponse | null = null;
   let slug: TSlugResponse;

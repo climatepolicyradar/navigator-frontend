@@ -1,12 +1,12 @@
 import { Fragment, useState } from "react";
 
 import { Heading } from "@/components/typography/Heading";
-import { TFamilyPage } from "@/types";
+import { TFamilyPublic } from "@/types";
 
 import { MetadataRenderer } from "./renderers/MetadataRenderer";
 
 interface IProps {
-  family: TFamilyPage;
+  family: TFamilyPublic;
   onCollectionClick?: (e: any, i: number) => void;
 }
 
