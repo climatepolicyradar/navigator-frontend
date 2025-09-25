@@ -34,8 +34,14 @@
       "@/cpr/*": ["themes/cpr/*"],
       "@/mcf/*": ["themes/mcf/*"],
       "@/mocks/*": ["tests/mocks/*"]
-    }
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": false
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/api/pdf.js", "vitest.config.mts"],
-  "exclude": ["node_modules"]
+  "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", "src/api/pdf.js", "vitest.config.mts", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", ".next/types/**/*.ts"]
 }
