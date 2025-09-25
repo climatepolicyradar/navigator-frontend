@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ExternalLink } from "@/components/ExternalLink";
 import { Button } from "@/components/atoms/button/Button";
 import { COOKIE_CONSENT_NAME } from "@/constants/cookies";
+import { TTheme } from "@/types";
 import { getCookie, setCookie } from "@/utils/cookies";
 import getDomain from "@/utils/getDomain";
 
@@ -16,9 +17,10 @@ declare let gtag: Function;
 
 interface IProps {
   onConsentChange: (consent: boolean) => void;
+  theme: TTheme;
 }
 
-export const CookieConsent = ({ onConsentChange }: IProps) => {
+export const CookieConsent = ({ onConsentChange, theme }: IProps) => {
   const [hide, setHide] = useState(true);
   const [enableAnalytics, setEnableAnalytics] = useState(false);
 
@@ -52,6 +54,9 @@ export const CookieConsent = ({ onConsentChange }: IProps) => {
     setHide(true);
   };
 
+  const privacyPolicyUrl = theme === "ccc" ? "/privacy-policy" : "https://climatepolicyradar.org/privacy-policy";
+  const cookiePolicyUrl = theme === "ccc" ? "/cookie-policy" : "https://climatepolicyradar.org/privacy-policy";
+
   return (
     <>
       <div className={`flex justify-end ${hide ? "hidden" : ""}`} data-cy="cookie-consent">
@@ -60,8 +65,14 @@ export const CookieConsent = ({ onConsentChange }: IProps) => {
           <p className="mt-2 mb-4 text-sm leading-normal font-normal text-text-primary">
             We take your trust and privacy seriously. Climate Policy Radar uses cookies to make our site work optimally, analyse traffic to our
             website and improve your experience. Read our{" "}
-            <ExternalLink url="https://climatepolicyradar.org/privacy-policy">privacy and cookie policy</ExternalLink> to learn more. By accepting
-            cookies you will help us make our site better, but you can reject them if you wish.
+            <ExternalLink url={privacyPolicyUrl} className="underline">
+              privacy policy
+            </ExternalLink>{" "}
+            and{" "}
+            <ExternalLink url={cookiePolicyUrl} className="underline">
+              cookie policy
+            </ExternalLink>{" "}
+            to learn more. By accepting cookies you will help us make our site better, but you can reject them if you wish.
           </p>
           <div className="flex gap-2">
             <Button
