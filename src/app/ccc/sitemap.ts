@@ -36,11 +36,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily",
       priority: 0.5,
     },
-    {
-      url: "https://www.climatecasechart.com/about",
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.5,
-    },
   ];
 }
