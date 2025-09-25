@@ -23,11 +23,15 @@ export const getLitigationJSONLD = (familyCase: TFamilyPublic, countries: TGeogr
   const geosOrdered = sortBy(familyCase.geographies, [(geo) => geo.length !== 3, (geo) => geo.toLowerCase()]);
 
   // Default JSON-LD legislation structure
+
+  // Ensure no trailing slash on hostname - no guarantee that it will be present. Better to not assume either way.
+  const hostname = process.env.HOSTNAME?.replace(/\/$/, "") || "";
+
   let jsonLd: WithContext<Legislation> = {
     "@context": "https://schema.org",
     "@type": "Legislation",
-    "@id": `${process.env.HOSTNAME}/document/${familyCase.slug}`,
-    url: `${process.env.HOSTNAME}/document/${familyCase.slug}`,
+    "@id": `${hostname}/document/${familyCase.slug}`,
+    url: `${hostname}/document/${familyCase.slug}`,
     isAccessibleForFree: true,
     name: `${familyCase.title}`,
     description: `${familyCase.summary}`,
@@ -57,7 +61,7 @@ export const getLitigationJSONLD = (familyCase: TFamilyPublic, countries: TGeogr
         spatialCoverage.push({
           "@type": "Place",
           name: countryName,
-          url: `${process.env.HOSTNAME}/geographies/${getCountrySlug(geo, countries)}`,
+          url: `${hostname}/geographies/${getCountrySlug(geo, countries)}`,
         });
       } else {
         const subdivision = subdivisions.find((sub) => sub.code === geo);
@@ -65,7 +69,7 @@ export const getLitigationJSONLD = (familyCase: TFamilyPublic, countries: TGeogr
           spatialCoverage.push({
             "@type": "Place",
             name: subdivision.name,
-            url: `${process.env.HOSTNAME}/geographies/${subdivision.code}`,
+            url: `${hostname}/geographies/${subdivision.code}`,
           });
         }
       }
@@ -104,8 +108,8 @@ export const getLitigationJSONLD = (familyCase: TFamilyPublic, countries: TGeogr
   if (familyCase.documents && familyCase.documents.length > 0) {
     jsonLd.workExample = familyCase.documents.map((doc) => ({
       "@type": "Legislation",
-      "@id": `${process.env.HOSTNAME}/documents/${doc.slug}`,
-      url: `${process.env.HOSTNAME}/documents/${doc.slug}`,
+      "@id": `${hostname}/documents/${doc.slug}`,
+      url: `${hostname}/documents/${doc.slug}`,
       isAccessibleForFree: true,
       name: doc.title,
       description: doc.events[0]?.metadata?.description || "",
