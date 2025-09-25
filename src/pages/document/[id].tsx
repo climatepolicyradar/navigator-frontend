@@ -126,7 +126,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   /** Check the family is in the "allowed_corpora" */
-  if (!isCorpusIdAllowed(process.env.BACKEND_API_TOKEN, familyData.corpus.import_id)) {
+  if (familyData.corpus?.import_id && !isCorpusIdAllowed(process.env.BACKEND_API_TOKEN, familyData.corpus.import_id)) {
     return {
       notFound: true,
     };
