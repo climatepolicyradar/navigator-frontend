@@ -121,4 +121,14 @@ export const FAMILY_PAGE_STUB: TFamilyPage = {
     },
   ],
   corpus_id: "UNFCCC.corpus.i00000001.n0000",
+  corpus: {
+    corpus_type_name: "Litigation",
+    import_id: "ABC.123",
+    organisation: {
+      id: 1,
+      name: "Litigation",
+      attribution_url: null,
+    },
+    title: "Litigation",
+  },
 };

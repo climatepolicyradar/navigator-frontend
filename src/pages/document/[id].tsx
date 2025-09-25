@@ -16,6 +16,7 @@ import {
   TSlugResponse,
   TTarget,
 } from "@/types";
+import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
@@ -119,6 +120,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   if (!familyData) {
+    return {
+      notFound: true,
+    };
+  }
+
+  /** Check the family is in the "allowed_corpora" */
+  if (familyData.corpus?.import_id && !isCorpusIdAllowed(process.env.BACKEND_API_TOKEN, familyData.corpus.import_id)) {
     return {
       notFound: true,
     };

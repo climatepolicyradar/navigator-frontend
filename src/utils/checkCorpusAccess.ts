@@ -27,3 +27,13 @@ export const hasMcfAccess = (token: string): boolean => {
     return false;
   }
 };
+
+export const isCorpusIdAllowed = (token: string, corpusId: string) => {
+  try {
+    const decoded = jwtDecode<TDecodedToken>(token);
+    return decoded.allowed_corpora_ids.some((allowedCorpusId) => allowedCorpusId === corpusId);
+  } catch (error) {
+    /** err on the side of openness */
+    return true;
+  }
+};

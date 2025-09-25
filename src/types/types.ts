@@ -208,6 +208,7 @@ export type TFamilyPage = {
   status?: string;
   summary: string;
   title: string;
+  corpus?: TCorpusPublic;
 };
 
 export type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
