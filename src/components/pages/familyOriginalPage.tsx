@@ -50,6 +50,7 @@ import { pluralise } from "@/utils/pluralise";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { truncateString } from "@/utils/truncateString";
+import { TPublicEnvConfig } from "@/context/EnvConfig";
 
 export interface IProps {
   corpus_types: TCorpusTypeDictionary;
@@ -61,6 +62,7 @@ export interface IProps {
   theme: TTheme;
   themeConfig: TThemeConfig;
   vespaFamilyData?: TSearchResponse;
+  envConfig: TPublicEnvConfig;
 }
 
 // Only published documents are returned in the family page call, so we can cross reference the import ID with those
@@ -74,6 +76,58 @@ const documentIsPublished = (familyDocuments: TDocumentPage[], documentImportId:
   return isPublished;
 };
 
+type CollectionProps = { collection: TFamilyPublic["collections"][number]; envConfig: TPublicEnvConfig };
+const Collection = ({ collection, envConfig }: CollectionProps) => {
+  const [show, setShow] = useState(false);
+  const [families, setFamilies] = useState([]);
+
+  useEffect(() => {
+    if (show && families.length === 0) {
+      console.info("families");
+      fetch(`${envConfig.CONCEPTS_API_URL}/families/collections/${collection.import_id}`)
+        .then((resp) => resp.json())
+        .then((collectionData) => setFamilies(collectionData.data.families));
+    }
+  }, [show, families]);
+
+  return (
+    <section className="pt-12" key={collection.import_id}>
+      <div className="mb-5">
+        <Heading level={4} extraClasses="mb-0">
+          About the {collection.title}
+        </Heading>
+        <ShowHide show={show} onClick={() => setShow(!show)} />
+      </div>
+      {show && (
+        <div>
+          <div
+            className="mb-8 text-content"
+            dangerouslySetInnerHTML={{
+              __html: collection.description,
+            }}
+          />
+          <Heading level={4}>Other documents in the {collection.title}</Heading>
+          <div className="divide-y flex flex-col gap-4">
+            {families.map((family, i) => (
+              <div key={family.slug} className="border-border-light">
+                <LinkWithQuery href={`/document/${family.slug}`} className="text-[#0041A3] text-left font-medium text-lg underline">
+                  {family.title}
+                </LinkWithQuery>
+                <div
+                  className="text-content text-sm"
+                  dangerouslySetInnerHTML={{
+                    __html: family.description,
+                  }}
+                ></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+};
+
 export const FamilyOriginalPage = ({
   corpus_types,
   countries = [],
@@ -83,6 +137,7 @@ export const FamilyOriginalPage = ({
   theme,
   themeConfig,
   vespaFamilyData,
+  envConfig,
 }: IProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -410,40 +465,7 @@ export const FamilyOriginalPage = ({
               )}
 
               {page.collections.map((collection, i) => (
-                <section className="pt-12" id={`collection-${i}`} key={collection.import_id}>
-                  <div className="mb-5">
-                    <Heading level={4} extraClasses="mb-0">
-                      About the {collection.title}
-                    </Heading>
-                    <ShowHide show={showCollectionDetail} onClick={() => setShowCollectionDetail(!showCollectionDetail)} />
-                  </div>
-                  {showCollectionDetail && (
-                    <div>
-                      <div
-                        className="mb-8 text-content"
-                        dangerouslySetInnerHTML={{
-                          __html: collection.description,
-                        }}
-                      />
-                      <Heading level={4}>Other documents in the {collection.title}</Heading>
-                      <div className="divide-y flex flex-col gap-4">
-                        {/* {collection.families.map((collFamily, i) => (
-                          <div key={collFamily.slug} className="border-border-light">
-                            <LinkWithQuery href={`/document/${collFamily.slug}`} className="text-[#0041A3] text-left font-medium text-lg underline">
-                              {collFamily.title}
-                            </LinkWithQuery>
-                            <div
-                              className="text-content text-sm"
-                              dangerouslySetInnerHTML={{
-                                __html: collFamily.description,
-                              }}
-                            ></div>
-                          </div>
-                        ))} */}
-                      </div>
-                    </div>
-                  )}
-                </section>
+                <Collection collection={collection} envConfig={envConfig} key={collection.import_id} />
               ))}
             </SingleCol>
             {concepts.length > 0 && (
