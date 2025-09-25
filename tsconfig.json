@@ -42,6 +42,6 @@
     ],
     "strictNullChecks": true
   },
-  "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", "src/api/pdf.js", "vitest.config.mts", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/api/pdf.js", "vitest.config.mts"],
   "exclude": ["node_modules"]
 }
