@@ -208,6 +208,20 @@ export type TFamilyPage = {
   status?: string;
   summary: string;
   title: string;
+  corpus: {
+    import_id: string;
+    title: string;
+    corpus_type_name: string;
+    organisation: {
+      attribution_url: string;
+      name: string;
+      id: number;
+    };
+    corpus_type: {
+      name: string;
+      description: string;
+    };
+  };
 };
 
 export type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
