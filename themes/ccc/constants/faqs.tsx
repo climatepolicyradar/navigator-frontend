@@ -137,9 +137,9 @@ export const FAQS: TFAQ[] = [
     content: (
       <>
         <p>
-          We have partnered with <ExternalLink url="https://climatepolicyradar.org">Climate Policy Radar</ExternalLink> (CPR) to merge the U.S. and
-          Global Climate Litigation Databases into a single platform, redesigned to enable more comprehensive searches and improved access to climate
-          litigation data. The new site allows you to:
+          We have partnered with <ExternalLink url="https://www.climatepolicyradar.org">Climate Policy Radar</ExternalLink> (CPR) to merge the U.S.
+          and Global Climate Litigation Databases into a single platform, redesigned to enable more comprehensive searches and improved access to
+          climate litigation data. The new site allows you to:
         </p>
         <ul>
           <li>
