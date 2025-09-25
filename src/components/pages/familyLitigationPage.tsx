@@ -172,11 +172,10 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
   };
 
   /* Render */
-
   return (
     <Layout
       title={family.title}
-      description={getFamilyMetaDescription(family.summary, family.geographies.join(", "), family.category)}
+      description={getFamilyMetaDescription(family?.metadata?.core_object?.[0] ?? family.summary, family.geographies.join(", "), family.category)}
       theme={theme}
       themeConfig={themeConfig}
       metadataKey="family"
