@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { ExternalLink } from "@/components/ExternalLink";
-import { PLATFORM_FAQS as GENERIC_PLATFORM_FAQS } from "@/constants/platformFaqs";
 
 type TFAQ = {
   id?: string;
