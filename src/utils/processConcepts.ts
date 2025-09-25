@@ -5,7 +5,7 @@ export const ROOT_LEVEL_CONCEPTS = {
   Q1651: "Targets",
   Q709: "Sectors",
   Q975: "Climate risk",
-  Q638: "Fossil fuels",
+  Q638: "Fossil fuel",
   Q672: "Impacted groups",
   Q1343: "Climate finance",
   Q1171: "Instruments",
