@@ -22,7 +22,7 @@ const FAQ: React.FC = () => {
       <BreadCrumbs label={"Frequently asked questions"} />
       <section className="pt-8">
         <SiteWidth>
-          <FaqSection title="FAQs" faqs={FAQS} />
+          <FaqSection title="Frequently asked questions" faqs={FAQS} />
           <FaqSection title="Platform FAQs" faqs={PLATFORM_FAQS} />
           {knowledgeGraphEnabled && <FaqSection title="Topics FAQs" faqs={CONCEPTS_FAQS} />}
         </SiteWidth>

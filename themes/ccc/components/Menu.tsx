@@ -19,7 +19,7 @@ export const Menu = ({ isNotHome }: { isNotHome: boolean }) => {
   return (
     <div ref={menuRef} className="flex items-center relative z-[41]">
       <button data-cy="menu-icon" onClick={toggleMenu} aria-label="Toggle menu" className={`${isNotHome ? "text-white" : "text-text-primary"}`}>
-        <Icon name="menu" color={isNotHome ? "white" : "text-text-primary"} width="32" height="32" />
+        <Icon name="menu" width="32" height="32" />
       </button>
       {showMenu && (
         <div className="absolute right-0 top-[100%] z-50">
