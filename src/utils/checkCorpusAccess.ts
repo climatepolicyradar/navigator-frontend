@@ -31,7 +31,7 @@ export const hasMcfAccess = (token: string): boolean => {
 export const isCorpusIdAllowed = (token: string, corpusId: string) => {
   try {
     const decoded = jwtDecode<TDecodedToken>(token);
-    return decoded.allowed_corpora_ids.some((allowedCorpusId) => allowedCorpusId == corpusId);
+    return decoded.allowed_corpora_ids.some((allowedCorpusId) => allowedCorpusId === corpusId);
   } catch (error) {
     /** err on the side of openness */
     return true;

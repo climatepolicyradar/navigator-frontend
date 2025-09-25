@@ -16,11 +16,11 @@ import {
   TSlugResponse,
   TTarget,
 } from "@/types";
+import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
-import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 
 /*
   # DEV NOTES
