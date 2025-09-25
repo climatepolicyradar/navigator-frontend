@@ -43,5 +43,7 @@
     "strictNullChecks": false
   },
   "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", "src/api/pdf.js", "vitest.config.mts", ".next/types/**/*.ts"],
+  "comment_on_exclude_1": "We have had to exclude the .next/types/**/*.ts as next automatically adds it to include",
+  "comment_on_exclude_2": "and it's incompatible with our tsconfig",
   "exclude": ["node_modules", ".next/types/**/*.ts"]
 }
