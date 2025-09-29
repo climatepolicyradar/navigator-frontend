@@ -102,21 +102,19 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     {
       label: "Geography",
       value: joinNodes(
-        geographiesToDisplay
-          .map((code) => {
-            const isCountry = !code.includes("-");
-            const slug = isCountry ? getCountrySlug(code, countries) : code.toLowerCase();
-            const name = isCountry ? getCountryName(code, countries) : getSubdivisionName(code, subdivisions);
+        geographiesToDisplay.map((code) => {
+          const isCountry = !code.includes("-");
+          const slug = isCountry ? getCountrySlug(code, countries) : code.toLowerCase();
+          const name = isCountry ? getCountryName(code, countries) : getSubdivisionName(code, subdivisions);
 
-            return !isSystemGeo(name) ? (
-              <LinkWithQuery key={code} href={`/geographies/${slug}`} className="underline">
-                {name}
-              </LinkWithQuery>
-            ) : (
-              <span key={code}>{name}</span>
-            );
-          })
-          .filter(Boolean),
+          return !isSystemGeo(name) ? (
+            <LinkWithQuery key={code} href={`/geographies/${slug}`} className="underline">
+              {name}
+            </LinkWithQuery>
+          ) : (
+            <span key={code}>{name}</span>
+          );
+        }),
         ", "
       ),
     },
