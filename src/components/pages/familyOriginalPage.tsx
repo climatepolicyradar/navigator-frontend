@@ -25,6 +25,7 @@ import { Heading } from "@/components/typography/Heading";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@/constants/document";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { TPublicEnvConfig } from "@/context/EnvConfig";
 import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
 import { getCorpusInfo } from "@/helpers/getCorpusInfo";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
@@ -50,7 +51,6 @@ import { pluralise } from "@/utils/pluralise";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { truncateString } from "@/utils/truncateString";
-import { TPublicEnvConfig } from "@/context/EnvConfig";
 
 export interface IProps {
   corpus_types: TCorpusTypeDictionary;
