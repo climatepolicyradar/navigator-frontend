@@ -2,8 +2,7 @@ import { ReactNode } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Icon } from "@/components/atoms/icon/Icon";
-import { IInteractiveTableColumn, IInteractiveTableRow } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
+import { TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily, TTableColumn, TTableRow } from "@/types";
 
 import { getMostSpecificCourts } from "./getMostSpecificCourts";
 import { formatDateShort } from "./timedate";
@@ -11,7 +10,7 @@ import { formatDateShort } from "./timedate";
 /* Columns */
 
 export type TEventTableColumnId = "action" | "caseNumber" | "caseTitle" | "court" | "date" | "document" | "matches" | "summary" | "type";
-export type TEventTableColumn = IInteractiveTableColumn<TEventTableColumnId>;
+export type TEventTableColumn = TTableColumn<TEventTableColumnId>;
 
 export const getEventTableColumns = ({
   isUSA = true,
@@ -24,7 +23,7 @@ export const getEventTableColumns = ({
 }) => {
   const columns: TEventTableColumn[] = [
     { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
-    { id: "type", sortable: true, fraction: 3 },
+    { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 3 },
     { id: "action", name: "Action Taken", fraction: 4 },
     { id: "document" },
     { id: "summary", fraction: 6, classes: "min-w-75" },
@@ -44,7 +43,7 @@ export const getEventTableColumns = ({
 
 /* Rows */
 
-export type TEventTableRow = IInteractiveTableRow<TEventTableColumnId>;
+export type TEventTableRow = TTableRow<TEventTableColumnId>;
 
 type TEventWithDocument = {
   event: TFamilyEventPublic;
@@ -121,12 +120,12 @@ export const getEventTableRows = ({
           caseTitle: family.title,
           court: getCourts(family),
           date: {
-            display: formatDateShort(date, language),
+            label: formatDateShort(date, language),
             value: date.getTime(),
           },
           document: document
             ? {
-                display: (
+                label: (
                   <LinkWithQuery href={`/documents/${document.slug}`} className="text-text-brand underline">
                     View
                   </LinkWithQuery>
@@ -135,7 +134,7 @@ export const getEventTableRows = ({
               }
             : null,
           matches: {
-            display: matchesDisplay,
+            label: matchesDisplay,
             value: matches,
           },
           summary: event.metadata.description?.[0] || null,

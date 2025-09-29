@@ -50,7 +50,7 @@ export const FamilyBlock = ({ family, language }: IProps) => {
           </div>
           <InteractiveTable<TEventTableColumnId>
             columns={tableColumns}
-            defaultSort={{ column: "date", ascending: false }}
+            defaultSort={{ column: "date", order: "desc" }}
             rows={tableRows}
             maxRows={showAllEntries ? 0 : MAX_ENTRIES_SHOWN}
             tableClasses="pt-8"

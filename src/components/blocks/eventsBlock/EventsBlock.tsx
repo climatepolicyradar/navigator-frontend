@@ -30,7 +30,7 @@ export const EventsBlock = ({ families, language }: IProps) => {
         <h2 className="text-xl text-text-primary font-semibold leading-tight">Procedural history</h2>
         <InteractiveTable<TEventTableColumnId>
           columns={tableColumns}
-          defaultSort={{ column: "date", ascending: false }}
+          defaultSort={{ column: "date", order: "desc" }}
           rows={tableRows}
           maxRows={showAllEntries ? 0 : MAX_ENTRIES_SHOWN}
           tableClasses="pt-8"
