@@ -99,7 +99,6 @@ export default CollectionPage;
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  // get the language from the accept-language header
   const language = getLanguage(context.req.headers["accept-language"]);
 
   const featureFlags = getFeatureFlags(context.req.cookies);
