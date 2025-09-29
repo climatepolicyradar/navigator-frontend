@@ -57,8 +57,8 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
         const geoName = geoSlug ? getCountryName(geo, countries) : getSubdivisionName(geo, subdivisions);
         return (
           <Fragment key={geo}>
-            {geoSlug && !isSystemGeo(geoName) ? (
-              <LinkWithQuery href={`/geographies/${geoSlug}`} className="underline">
+            {!isSystemGeo(geoName) ? (
+              <LinkWithQuery href={`/geographies/${geoSlug || geo.toLowerCase()}`} className="underline">
                 {geoName}
               </LinkWithQuery>
             ) : (
