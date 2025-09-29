@@ -83,7 +83,6 @@ const Collection = ({ collection, envConfig }: CollectionProps) => {
 
   useEffect(() => {
     if (show && families.length === 0) {
-      console.info("families");
       fetch(`${envConfig.CONCEPTS_API_URL}/families/collections/${collection.import_id}`)
         .then((resp) => resp.json())
         .then((collectionData) => setFamilies(collectionData.data.families));
