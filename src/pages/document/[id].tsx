@@ -148,7 +148,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       theme,
       themeConfig,
       vespaFamilyData: vespaFamilyData ?? null,
-      language: language,
+      language,
     }),
   };
 };
