@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Script from "next/script";
 import React, { useEffect, useMemo, useState } from "react";
 
+import { ApiClient } from "@/api/http-common";
 import { Alert } from "@/components/Alert";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -83,11 +84,10 @@ const Collection = ({ collection, envConfig }: CollectionProps) => {
 
   useEffect(() => {
     if (show && families.length === 0) {
-      fetch(`${envConfig.CONCEPTS_API_URL}/families/collections/${collection.import_id}`)
-        .then((resp) => resp.json())
-        .then((collectionData) => setFamilies(collectionData.data.families));
+      const apiClient = new ApiClient(envConfig.CONCEPTS_API_URL);
+      apiClient.get(`/families/collections/${collection.import_id}`).then((collectionData) => setFamilies(collectionData.data.data.families));
     }
-  }, [show, families]);
+  }, [show, families, collection.import_id, envConfig.CONCEPTS_API_URL]);
 
   return (
     <section className="pt-12" key={collection.import_id}>
