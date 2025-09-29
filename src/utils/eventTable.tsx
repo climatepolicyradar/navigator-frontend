@@ -23,7 +23,7 @@ export const getEventTableColumns = ({
 }) => {
   const columns: TEventTableColumn[] = [
     { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
-    { id: "type", sortable: true, fraction: 3 },
+    { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 3 },
     { id: "action", name: "Action Taken", fraction: 4 },
     { id: "document" },
     { id: "summary", fraction: 6, classes: "min-w-75" },
