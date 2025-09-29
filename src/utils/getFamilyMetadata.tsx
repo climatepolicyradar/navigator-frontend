@@ -8,6 +8,7 @@ import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
 import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
 import { buildConceptHierarchy } from "@/utils/buildConceptHierarchy";
+import { isSystemGeo } from "@/utils/isSystemGeo";
 
 const hierarchyArrow = ` ${ARROW_RIGHT} `;
 
@@ -53,14 +54,15 @@ function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], s
       label: "Geography",
       value: geosOrdered.map((geo, index) => {
         const geoSlug = getCountrySlug(geo, countries);
+        const geoName = geoSlug ? getCountryName(geo, countries) : getSubdivisionName(geo, subdivisions);
         return (
           <Fragment key={geo}>
-            {geoSlug ? (
-              <LinkWithQuery key={geo} href={`/geographies/${geoSlug}`} className="underline">
-                {getCountryName(geo, countries)}
+            {!isSystemGeo(geoName) ? (
+              <LinkWithQuery href={`/geographies/${geoSlug || geo.toLowerCase()}`} className="underline">
+                {geoName}
               </LinkWithQuery>
             ) : (
-              <>{getSubdivisionName(geo, subdivisions)}</>
+              <span>{geoName}</span>
             )}
             {index + 1 < geosOrdered.length && hierarchyArrow}
           </Fragment>

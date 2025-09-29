@@ -10,13 +10,14 @@ const MAX_ENTRIES_SHOWN = 8;
 
 interface IProps {
   families: TFamilyPublic[];
+  language: string;
 }
 
-export const EventsBlock = ({ families }: IProps) => {
+export const EventsBlock = ({ families, language }: IProps) => {
   const [showAllEntries, setShowAllEntries] = useState(false);
 
   const tableColumns = getEventTableColumns({ showFamilyColumns: true });
-  const tableRows = getEventTableRows({ families });
+  const tableRows = getEventTableRows({ families, language });
   const entriesToHide = tableRows.length > MAX_ENTRIES_SHOWN;
 
   const toggleShowAll = () => {
@@ -29,7 +30,7 @@ export const EventsBlock = ({ families }: IProps) => {
         <h2 className="text-xl text-text-primary font-semibold leading-tight">Procedural history</h2>
         <InteractiveTable<TEventTableColumnId>
           columns={tableColumns}
-          defaultSort={{ column: "date", ascending: false }}
+          defaultSort={{ column: "date", order: "desc" }}
           rows={tableRows}
           maxRows={showAllEntries ? 0 : MAX_ENTRIES_SHOWN}
           tableClasses="pt-8"

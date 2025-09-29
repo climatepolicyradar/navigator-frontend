@@ -21,13 +21,14 @@ import useSearch from "@/hooks/useSearch";
 import { TMatchedFamily, TFamilyPageBlock } from "@/types";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
+import { isSystemGeo } from "@/utils/isSystemGeo";
 import { getLitigationJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 import { joinNodes } from "@/utils/reactNode";
 import { convertDate } from "@/utils/timedate";
 
 import { IProps } from "./familyOriginalPage";
 
-export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig }: IProps) => {
+export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig, language }: IProps) => {
   /* Search matches */
 
   const router = useRouter();
@@ -66,7 +67,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     // Is a country not a subdivision.
     const geographySlug = getCountrySlug(firstGeography, countries);
     const geographyName = getCountryName(firstGeography, countries);
-    breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
+    breadcrumbGeography = !isSystemGeo(geographyName) ? { label: geographyName, href: `/geographies/${geographySlug}` } : null;
   } else {
     // Is a subdivision.
     const subdivisionData = subdivisions.find((sub) => sub.code === firstGeography);
@@ -78,16 +79,16 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
       const countrySlug = getCountrySlug(subdivisionData.country_alpha_3, countries);
       const countryName = getCountryName(subdivisionData.country_alpha_3, countries);
 
-      breadcrumbGeography = { label: countryName, href: `/geographies/${countrySlug}` };
-      breadcrumbSubGeography = { label: subdivisionName, href: `/geographies/${subdivisionSlug}` };
+      breadcrumbGeography = !isSystemGeo(countryName) ? { label: countryName, href: `/geographies/${countrySlug}` } : null;
+      breadcrumbSubGeography = !isSystemGeo(subdivisionName) ? { label: subdivisionName, href: `/geographies/${subdivisionSlug}` } : null;
     } else {
       // Fallback to country if subdivision data lookup is not found.
       const countryCode = firstGeography.split("-")[0];
       const countrySlug = getCountrySlug(countryCode, countries);
       const countryName = getCountryName(countryCode, countries);
 
-      breadcrumbGeography = { label: countryName, href: `/geographies/${countrySlug}` };
-      breadcrumbSubGeography = { label: subdivisionName, href: `/geographies/${subdivisionSlug}` };
+      breadcrumbGeography = !isSystemGeo(countryName) ? { label: countryName, href: `/geographies/${countrySlug}` } : null;
+      breadcrumbSubGeography = !isSystemGeo(subdivisionName) ? { label: subdivisionName, href: `/geographies/${subdivisionSlug}` } : null;
     }
   }
 
@@ -101,10 +102,12 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
           const slug = isCountry ? getCountrySlug(code, countries) : code.toLowerCase();
           const name = isCountry ? getCountryName(code, countries) : getSubdivisionName(code, subdivisions);
 
-          return (
+          return !isSystemGeo(name) ? (
             <LinkWithQuery key={code} href={`/geographies/${slug}`} className="underline">
               {name}
             </LinkWithQuery>
+          ) : (
+            <span key={code}>{name}</span>
           );
         }),
         ", "
@@ -140,8 +143,17 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     },
     documents: {
       render: useCallback(
-        () => <DocumentsBlock key="documents" family={family} matchesFamily={matchesFamily} matchesStatus={matchesStatus} showMatches={hasSearch} />,
-        [family, hasSearch, matchesFamily, matchesStatus]
+        () => (
+          <DocumentsBlock
+            key="documents"
+            family={family}
+            matchesFamily={matchesFamily}
+            matchesStatus={matchesStatus}
+            showMatches={hasSearch}
+            language={language}
+          />
+        ),
+        [family, hasSearch, matchesFamily, matchesStatus, language]
       ),
     },
     metadata: {

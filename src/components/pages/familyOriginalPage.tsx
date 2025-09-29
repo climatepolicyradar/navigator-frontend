@@ -64,6 +64,7 @@ export interface IProps {
   themeConfig: TThemeConfig;
   vespaFamilyData?: TSearchResponse;
   envConfig: TPublicEnvConfig;
+  language: string;
 }
 
 // Only published documents are returned in the family page call, so we can cross reference the import ID with those

@@ -448,24 +448,20 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               <div className="px-3 cols-2:px-6 cols-3:px-8">
                 <span className="text-sm mb-4 md:mb-0 text-right flex flex-wrap gap-x-2 md:justify-end">
                   <span>Download data (.csv): </span>
-                  {!isLitigationEnabled(featureFlags, themeConfig) && (
-                    <>
-                      <a
-                        href="#"
-                        className="flex gap-2 items-center justify-end text-blue-600 hover:underline hover:text-blue-800"
-                        data-cy="download-search-csv"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setShowCSVDownloadPopup(true);
-                        }}
-                      >
-                        {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
-                      </a>
-                      <span>|</span>
-                    </>
-                  )}
+                  <a
+                    href="#"
+                    className="flex gap-2 items-center justify-end text-blue-600 hover:underline hover:text-blue-800"
+                    data-cy="download-search-csv"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowCSVDownloadPopup(true);
+                    }}
+                  >
+                    {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
+                  </a>
                   {getThemeConfigLink(themeConfig, "download-database") && (
                     <>
+                      <span>|</span>
                       <ExternalLink
                         url={getThemeConfigLink(themeConfig, "download-database").url}
                         className="text-blue-600 hover:underline hover:text-blue-800"

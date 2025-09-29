@@ -11,6 +11,7 @@ import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
+import { getLanguage } from "@/utils/getLanguage";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 /*
@@ -30,6 +31,9 @@ export default FamilyPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+
+  const language = getLanguage(context.req.headers["accept-language"]);
+
   const featureFlags = getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
@@ -106,6 +110,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       theme,
       themeConfig,
       vespaFamilyData: vespaFamilyData ?? null,
+      language,
     }),
   };
 };

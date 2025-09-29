@@ -7,51 +7,28 @@ import { MenuItem } from "@/components/atoms/menu/MenuItem";
 import { MenuPopup } from "@/components/atoms/menu/MenuPopup";
 import { Tooltip } from "@/components/atoms/tooltip/Tooltip";
 import { EN_DASH } from "@/constants/chars";
+import { TTableCell, TTableColumn, TTableOrder, TTableRow, TTableSortOption, TTableSortRules } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { firstCase } from "@/utils/text";
 
-type TValue = string | number | null;
+const DEFAULT_SORT_OPTIONS: TTableSortOption[] = [
+  { order: "asc", label: "Ascending" },
+  { order: "desc", label: "Descending" },
+];
 
-export interface IInteractiveTableColumn<ColumnKey extends string> {
-  classes?: string; // Styles every cell in the column
-  fraction?: number; // CSS grid fractional units - the column's relative width
-  id: ColumnKey;
-  name?: string; // defaults to first-cased id
-  sortable?: boolean; // defaults to false
-  tooltip?: ReactNode;
-}
-
-export type TValueWithDisplay = {
-  display: ReactNode;
-  value: TValue;
-};
-
-export type TInteractiveTableCell = TValue | TValueWithDisplay;
-
-export interface IInteractiveTableRow<ColumnKey extends string> {
-  id: string;
-  cells: Record<ColumnKey, TInteractiveTableCell>;
-  classes?: string; // Styles every cell in the row
-}
-
-interface ISortRules<ColumnKey extends string> {
-  column: ColumnKey | null;
-  ascending: boolean;
-}
-
-const renderCellDisplay = (cell: TInteractiveTableCell, showValues: boolean) => {
+const renderCellDisplay = (cell: TTableCell, showValues: boolean) => {
   if (cell === null) return EN_DASH;
 
   let content: ReactNode = `${cell}`;
-  if (typeof cell === "object") content = showValues ? cell.value : cell.display;
+  if (typeof cell === "object") content = showValues ? cell.value : cell.label;
   return showValues ? <div className="inline-block bg-surface-ui text-sm text-text-tertiary font-mono">{content}</div> : content;
 };
 
 export interface IProps<ColumnKey extends string> {
-  columns: IInteractiveTableColumn<ColumnKey>[];
-  defaultSort?: ISortRules<ColumnKey>;
+  columns: TTableColumn<ColumnKey>[];
+  defaultSort?: TTableSortRules<ColumnKey>;
   maxRows?: number;
-  rows: IInteractiveTableRow<ColumnKey>[];
+  rows: TTableRow<ColumnKey>[];
   tableClasses?: string;
   scrollable?: boolean; // Adds horizontal padding and overflow scroll
   showValues?: boolean; // Debug mode for understanding sorting
@@ -67,10 +44,10 @@ export const InteractiveTable = <ColumnKey extends string>({
   tableClasses,
 }: IProps<ColumnKey>) => {
   const [openSortMenu, setOpenSortMenu] = useState<string | null>(null);
-  const [sortRules, setSortRules] = useState<ISortRules<ColumnKey>>(
+  const [sortRules, setSortRules] = useState<TTableSortRules<ColumnKey>>(
     defaultSort || {
       column: null,
-      ascending: true,
+      order: "asc",
     }
   );
 
@@ -92,7 +69,7 @@ export const InteractiveTable = <ColumnKey extends string>({
           return typeof cell === "object" ? cell.value : cell;
         },
       ],
-      ["asc", sortRules.ascending ? "asc" : "desc"]
+      ["asc", sortRules.order]
     );
   }, [rows, sortRules]);
   const displayedRows = sortedRows.slice(0, maxRows || undefined);
@@ -103,8 +80,9 @@ export const InteractiveTable = <ColumnKey extends string>({
   };
 
   // Button and menu for controlling column sorting
-  const renderSortControls = (column: IInteractiveTableColumn<ColumnKey>) => {
+  const renderSortControls = (column: TTableColumn<ColumnKey>) => {
     const columnIsSorted = sortRules.column === column.id;
+    const sortOptions = column.sortOptions || DEFAULT_SORT_OPTIONS;
     const menuIsOpen = openSortMenu === column.id;
 
     const sortButtonClasses = joinTailwindClasses(
@@ -114,8 +92,8 @@ export const InteractiveTable = <ColumnKey extends string>({
       !columnIsSorted && !menuIsOpen && "invisible group-hover:visible"
     );
 
-    const onSort = (ascending: boolean) => () => setSortRules({ column: column.id, ascending });
-    const onClearSort = () => setSortRules({ column: null, ascending: true });
+    const onSort = (order: TTableOrder) => () => setSortRules({ column: column.id, order });
+    const onClearSort = () => setSortRules({ column: null, order: "asc" });
 
     return (
       <div className="flex-1 text-right">
@@ -130,8 +108,11 @@ export const InteractiveTable = <ColumnKey extends string>({
                 <MenuItem disabled heading>
                   Sort
                 </MenuItem>
-                <MenuItem onClick={onSort(true)}>Ascending</MenuItem>
-                <MenuItem onClick={onSort(false)}>Descending</MenuItem>
+                {sortOptions.map(({ label, order }) => (
+                  <MenuItem key={label} onClick={onSort(order)}>
+                    {label}
+                  </MenuItem>
+                ))}
                 {columnIsSorted && (
                   <MenuItem color="brand" onClick={onClearSort}>
                     Clear sort

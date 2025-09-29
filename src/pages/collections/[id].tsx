@@ -19,18 +19,20 @@ import { getCaseNumbers, getCourts } from "@/utils/eventTable";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isLitigationEnabled } from "@/utils/features";
 import { getCollectionMetadata } from "@/utils/getCollectionMetadata";
+import { getLanguage } from "@/utils/getLanguage";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 interface IProps {
   collection: TCollectionPublicWithFamilies;
   theme: TTheme;
   themeConfig: TThemeConfig;
+  language: string;
 }
 
 type TCollectionTab = "about" | "cases" | "procedural history";
 const COLLECTION_TABS: IPageHeaderTab<TCollectionTab>[] = [{ tab: "cases" }, { tab: "procedural history" }, { tab: "about" }];
 
-const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ collection, theme, themeConfig }: IProps) => {
+const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ collection, theme, themeConfig, language }: IProps) => {
   const [currentTab, setCurrentTab] = useState<TCollectionTab>("cases");
   const { families } = collection;
 
@@ -61,7 +63,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
             <ContentsSideBar items={sideBarItems} stickyClasses="!top-[72px] pt-3 cols-2:pt-6 cols-3:pt-8" />
             <main className="flex flex-col py-3 gap-4 cols-2:py-6 cols-2:gap-8 cols-3:py-8 cols-3:gap-12 cols-3:col-span-2 cols-4:col-span-3">
               {families.map((family) => (
-                <FamilyBlock key={family.slug} family={family} />
+                <FamilyBlock key={family.slug} family={family} language={language} />
               ))}
             </main>
           </>
@@ -69,7 +71,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
 
         {currentTab === "procedural history" && (
           <main className="py-3 cols-2:py-6 cols-2:col-span-2 cols-3:py-8 cols-3:col-span-3 cols-4:col-span-4">
-            <EventsBlock families={families} />
+            <EventsBlock families={families} language={language} />
           </main>
         )}
 
@@ -96,6 +98,9 @@ export default CollectionPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+
+  const language = getLanguage(context.req.headers["accept-language"]);
+
   const featureFlags = getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
@@ -126,6 +131,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       collection: collectionData,
       theme,
       themeConfig,
+      language,
     }),
   };
 };
