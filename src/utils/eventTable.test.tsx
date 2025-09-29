@@ -1,6 +1,4 @@
-import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { TValueWithDisplay } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { TCategory, TCorpusPublic, TFamilyDocumentPublic } from "@/types";
+import { IMetadata, TCategory, TCorpusPublic, TFamilyDocumentPublic } from "@/types";
 
 import { getEventTableRows } from "./eventTable";
 
@@ -55,12 +53,12 @@ describe("getEventTableRows", () => {
           caseTitle: "Case 1",
           court: null,
           date: {
-            display: "01/01/2021",
+            label: "01/01/2021",
             value: 1609459200000,
           },
           document: null,
           matches: {
-            display: 0,
+            label: 0,
             value: 0,
           },
           summary: "Description 1",
@@ -129,7 +127,7 @@ describe("getEventTableRows", () => {
       caseTitle: "Case 1",
       court: null,
       date: {
-        display: "01/01/2021",
+        label: "01/01/2021",
         value: 1609459200000,
       },
       summary: "Description 1",
@@ -137,10 +135,10 @@ describe("getEventTableRows", () => {
     });
 
     expect(typeof document).toBe("object");
-    expect((document as TValueWithDisplay).value).toBe("document-1");
+    expect((document as IMetadata).value).toBe("document-1");
 
     expect(typeof matches).toBe("object");
-    expect((matches as TValueWithDisplay).value).toBe(0);
+    expect((matches as IMetadata).value).toBe(0);
   });
 
   it("returns a list of family and document event rows", () => {
@@ -215,12 +213,12 @@ describe("getEventTableRows", () => {
         caseTitle: "Case 1",
         court: null,
         date: {
-          display: "01/01/2021",
+          label: "01/01/2021",
           value: 1609459200000,
         },
         document: null,
         matches: {
-          display: 0,
+          label: 0,
           value: 0,
         },
         summary: "Description 2",
@@ -237,7 +235,7 @@ describe("getEventTableRows", () => {
       caseTitle: "Case 1",
       court: null,
       date: {
-        display: "01/01/2021",
+        label: "01/01/2021",
         value: 1609459200000,
       },
       summary: "Description 1",
@@ -245,10 +243,10 @@ describe("getEventTableRows", () => {
     });
 
     expect(typeof document).toBe("object");
-    expect((document as TValueWithDisplay).value).toBe("document-1");
+    expect((document as IMetadata).value).toBe("document-1");
 
     expect(typeof matches).toBe("object");
-    expect((matches as TValueWithDisplay).value).toBe(0);
+    expect((matches as IMetadata).value).toBe(0);
   });
 
   it("returns a deduplicated list of family and document event rows if same event linked to both family and document", () => {
@@ -324,7 +322,7 @@ describe("getEventTableRows", () => {
       caseTitle: "Case 1",
       court: null,
       date: {
-        display: "01/01/2021",
+        label: "01/01/2021",
         value: 1609459200000,
       },
       summary: "Description 1",
@@ -332,9 +330,9 @@ describe("getEventTableRows", () => {
     });
 
     expect(typeof document).toBe("object");
-    expect((document as TValueWithDisplay).value).toBe("document-1");
+    expect((document as IMetadata).value).toBe("document-1");
 
     expect(typeof matches).toBe("object");
-    expect((matches as TValueWithDisplay).value).toBe(0);
+    expect((matches as IMetadata).value).toBe(0);
   });
 });

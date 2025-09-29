@@ -1,6 +1,8 @@
 import { Meta, StoryObj } from "@storybook/nextjs";
 
-import { InteractiveTable, IProps, TInteractiveTableCell } from "./InteractiveTable";
+import { TTableCell } from "@/types";
+
+import { InteractiveTable } from "./InteractiveTable";
 
 const meta = {
   title: "Organisms/InteractiveTable",
@@ -14,8 +16,8 @@ export default meta;
 /* Generic */
 
 type TWainwrightColumns = "height" | "link" | "region" | "summited" | "wainwright";
-const linkToCell = (link: string): TInteractiveTableCell => ({
-  display: (
+const linkToCell = (link: string): TTableCell => ({
+  label: (
     <a href={link} className="text-text-brand underline">
       View
     </a>
@@ -51,11 +53,15 @@ export const Generic: TStory<TWainwrightColumns> = {
       {
         id: "summited",
         sortable: true,
+        sortOptions: [
+          { order: "desc", label: "Most recent" },
+          { order: "asc", label: "Chronological" },
+        ],
       },
     ],
     defaultSort: {
       column: "height",
-      ascending: false,
+      order: "desc",
     },
     rows: [
       {
@@ -66,7 +72,7 @@ export const Generic: TStory<TWainwrightColumns> = {
           height: 950,
           link: linkToCell("https://www.walklakes.co.uk/hill_2515.html"),
           summited: {
-            display: "23/05/2025",
+            label: "23/05/2025",
             value: "2025-05-23T10:24:00.000Z",
           },
         },
@@ -89,7 +95,7 @@ export const Generic: TStory<TWainwrightColumns> = {
           height: 931,
           link: linkToCell("https://www.walklakes.co.uk/hill_2319.html"),
           summited: {
-            display: "20/04/2024",
+            label: "20/04/2024",
             value: "2024-04-20T10:32:00.000Z",
           },
         },
@@ -102,7 +108,7 @@ export const Generic: TStory<TWainwrightColumns> = {
           height: 828,
           link: linkToCell("https://www.walklakes.co.uk/hill_2528.html"),
           summited: {
-            display: "26/10/2024",
+            label: "26/10/2024",
             value: "2024-10-26T11:24:00.000Z",
           },
         },
