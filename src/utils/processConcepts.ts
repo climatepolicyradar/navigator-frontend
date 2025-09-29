@@ -11,6 +11,8 @@ export const ROOT_LEVEL_CONCEPTS = {
   Q1171: "Instruments",
   Q218: "Greenhouse gases",
   Q1367: "Public finance actors",
+  Q47: "Just transition",
+  Q567: "Renewable energy",
 };
 export const rootLevelConceptsIds = Object.keys(ROOT_LEVEL_CONCEPTS);
 
