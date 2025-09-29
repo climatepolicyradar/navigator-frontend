@@ -33,7 +33,8 @@
       "@/cclw/*": ["themes/cclw/*"],
       "@/cpr/*": ["themes/cpr/*"],
       "@/mcf/*": ["themes/mcf/*"],
-      "@/mocks/*": ["tests/mocks/*"]
+      "@/mocks/*": ["tests/mocks/*"],
+      "@/tests/*": ["tests/*"]
     },
     "plugins": [
       {

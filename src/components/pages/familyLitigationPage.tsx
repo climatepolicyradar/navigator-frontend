@@ -28,7 +28,7 @@ import { convertDate } from "@/utils/timedate";
 
 import { IProps, isNewEndpointData } from "./familyOriginalPage";
 
-export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig }: IProps) => {
+export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig, language }: IProps) => {
   // TODO remove when only the newer API endpoint is being called in getServerSideProps
   if (!isNewEndpointData(family)) {
     throw new Error("Cannot render FamilyLitigationPage with V1 API data");
@@ -148,8 +148,17 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     },
     documents: {
       render: useCallback(
-        () => <DocumentsBlock key="documents" family={family} matchesFamily={matchesFamily} matchesStatus={matchesStatus} showMatches={hasSearch} />,
-        [family, hasSearch, matchesFamily, matchesStatus]
+        () => (
+          <DocumentsBlock
+            key="documents"
+            family={family}
+            matchesFamily={matchesFamily}
+            matchesStatus={matchesStatus}
+            showMatches={hasSearch}
+            language={language}
+          />
+        ),
+        [family, hasSearch, matchesFamily, matchesStatus, language]
       ),
     },
     metadata: {

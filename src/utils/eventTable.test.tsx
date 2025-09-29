@@ -2,6 +2,8 @@ import { IMetadata, TCategory, TCorpusPublic, TFamilyDocumentPublic } from "@/ty
 
 import { getEventTableRows } from "./eventTable";
 
+const language = "en-GB";
+
 describe("getEventTableRows", () => {
   it("returns a list of family event rows", () => {
     const familyWithoutDocuments = {
@@ -42,7 +44,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutDocuments] });
+    const eventRows = getEventTableRows({ families: [familyWithoutDocuments], language });
 
     expect(eventRows).toEqual([
       {
@@ -114,7 +116,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutEvents] });
+    const eventRows = getEventTableRows({ families: [familyWithoutEvents], language });
 
     expect(eventRows).toHaveLength(1);
     expect(eventRows[0].id).toBe("/0");
@@ -201,7 +203,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutEvents] });
+    const eventRows = getEventTableRows({ families: [familyWithoutEvents], language });
 
     expect(eventRows).toHaveLength(2);
 
@@ -309,7 +311,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutEvents] });
+    const eventRows = getEventTableRows({ families: [familyWithoutEvents], language });
 
     expect(eventRows).toHaveLength(1);
     expect(eventRows[0].id).toBe("/0");

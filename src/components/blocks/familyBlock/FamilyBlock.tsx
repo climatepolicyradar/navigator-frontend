@@ -13,14 +13,15 @@ const MAX_ENTRIES_SHOWN = 4;
 
 interface IProps {
   family: TFamilyPublic;
+  language: string;
 }
 
-export const FamilyBlock = ({ family }: IProps) => {
+export const FamilyBlock = ({ family, language }: IProps) => {
   const [showAllEntries, setShowAllEntries] = useState(false);
 
   const isUSA = family.geographies.includes("USA");
   const tableColumns = useMemo(() => getEventTableColumns({ isUSA }), [isUSA]);
-  const tableRows = useMemo(() => getEventTableRows({ families: [family] }), [family]);
+  const tableRows = useMemo(() => getEventTableRows({ families: [family], language }), [family, language]);
   const entriesToHide = tableRows.length > MAX_ENTRIES_SHOWN;
 
   const toggleShowAll = () => {
