@@ -20,9 +20,10 @@ interface IProps {
   matchesFamily?: TMatchedFamily; // The relevant search result family
   matchesStatus?: TLoadingStatus; // The status of the search
   showMatches?: boolean; // Whether to show matches from the search result
+  language: string;
 }
 
-export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
+export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatches = false, language }: IProps) => {
   const [view, setView] = useState("table");
 
   const isUSA = family.geographies.includes("USA");
@@ -30,8 +31,8 @@ export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatch
 
   const tableColumns = useMemo(() => getEventTableColumns({ isUSA, showMatches }), [isUSA, showMatches]);
   const tableRows = useMemo(
-    () => getEventTableRows({ families: [family], documentEventsOnly: true, matchesFamily, matchesStatus }),
-    [family, matchesFamily, matchesStatus]
+    () => getEventTableRows({ families: [family], documentEventsOnly: true, matchesFamily, matchesStatus, language }),
+    [family, matchesFamily, matchesStatus, language]
   );
 
   const cards: IEntityCardProps[] = useMemo(

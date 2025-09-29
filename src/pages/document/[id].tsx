@@ -39,6 +39,11 @@ export default FamilyPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+
+  // get the language from the accept-language header
+  const acceptLanguageHeader = context.req.headers["accept-language"];
+  const language = acceptLanguageHeader ? acceptLanguageHeader.split(",")[0].trim() : "en-US";
+
   const featureFlags = getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
@@ -143,6 +148,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       theme,
       themeConfig,
       vespaFamilyData: vespaFamilyData ?? null,
+      language: language,
     }),
   };
 };
