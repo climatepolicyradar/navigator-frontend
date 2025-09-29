@@ -21,6 +21,7 @@ import useSearch from "@/hooks/useSearch";
 import { TMatchedFamily, TFamilyPageBlock } from "@/types";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
+import { isSystemGeo } from "@/utils/isSystemGeo";
 import { getLitigationJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 import { joinNodes } from "@/utils/reactNode";
 import { convertDate } from "@/utils/timedate";
@@ -71,7 +72,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     // Is a country not a subdivision.
     const geographySlug = getCountrySlug(firstGeography, countries);
     const geographyName = getCountryName(firstGeography, countries);
-    breadcrumbGeography = { label: geographyName, href: `/geographies/${geographySlug}` };
+    breadcrumbGeography = !isSystemGeo(geographyName) ? { label: geographyName, href: `/geographies/${geographySlug}` } : null;
   } else {
     // Is a subdivision.
     const subdivisionData = subdivisions.find((sub) => sub.code === firstGeography);
@@ -83,16 +84,16 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
       const countrySlug = getCountrySlug(subdivisionData.country_alpha_3, countries);
       const countryName = getCountryName(subdivisionData.country_alpha_3, countries);
 
-      breadcrumbGeography = { label: countryName, href: `/geographies/${countrySlug}` };
-      breadcrumbSubGeography = { label: subdivisionName, href: `/geographies/${subdivisionSlug}` };
+      breadcrumbGeography = !isSystemGeo(countryName) ? { label: countryName, href: `/geographies/${countrySlug}` } : null;
+      breadcrumbSubGeography = !isSystemGeo(subdivisionName) ? { label: subdivisionName, href: `/geographies/${subdivisionSlug}` } : null;
     } else {
       // Fallback to country if subdivision data lookup is not found.
       const countryCode = firstGeography.split("-")[0];
       const countrySlug = getCountrySlug(countryCode, countries);
       const countryName = getCountryName(countryCode, countries);
 
-      breadcrumbGeography = { label: countryName, href: `/geographies/${countrySlug}` };
-      breadcrumbSubGeography = { label: subdivisionName, href: `/geographies/${subdivisionSlug}` };
+      breadcrumbGeography = !isSystemGeo(countryName) ? { label: countryName, href: `/geographies/${countrySlug}` } : null;
+      breadcrumbSubGeography = !isSystemGeo(subdivisionName) ? { label: subdivisionName, href: `/geographies/${subdivisionSlug}` } : null;
     }
   }
 
@@ -101,17 +102,21 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     {
       label: "Geography",
       value: joinNodes(
-        geographiesToDisplay.map((code) => {
-          const isCountry = !code.includes("-");
-          const slug = isCountry ? getCountrySlug(code, countries) : code.toLowerCase();
-          const name = isCountry ? getCountryName(code, countries) : getSubdivisionName(code, subdivisions);
+        geographiesToDisplay
+          .map((code) => {
+            const isCountry = !code.includes("-");
+            const slug = isCountry ? getCountrySlug(code, countries) : code.toLowerCase();
+            const name = isCountry ? getCountryName(code, countries) : getSubdivisionName(code, subdivisions);
 
-          return (
-            <LinkWithQuery key={code} href={`/geographies/${slug}`} className="underline">
-              {name}
-            </LinkWithQuery>
-          );
-        }),
+            return !isSystemGeo(name) ? (
+              <LinkWithQuery key={code} href={`/geographies/${slug}`} className="underline">
+                {name}
+              </LinkWithQuery>
+            ) : (
+              <span key={code}>{name}</span>
+            );
+          })
+          .filter(Boolean),
         ", "
       ),
     },
