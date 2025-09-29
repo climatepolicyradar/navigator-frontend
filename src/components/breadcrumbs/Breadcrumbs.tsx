@@ -5,6 +5,7 @@ import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { ThemeContext } from "@/context/ThemeContext";
 import { TTheme } from "@/types";
+import { isSystemGeo } from "@/utils/isSystemGeo";
 
 const BREADCRUMB_MAXLENGTH = 50;
 
@@ -81,8 +82,8 @@ export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdiv
   const isCollectionPage = !isSearchPage && !category && !family && !geography;
 
   if (isGeographyPage) {
-    const breadcrumbGeography = isSubdivision && parentGeography ? parentGeography : null;
-    const finalGeography = geography;
+    const breadcrumbGeography = isSubdivision && parentGeography && !isSystemGeo(String(parentGeography.label)) ? parentGeography : null;
+    const finalGeography = geography && !isSystemGeo(String(geography.label)) ? geography : null;
 
     return (
       <ul className="flex items-baseline flex-wrap gap-2 text-sm px-3 cols-2:px-6 cols-3:px-8 py-4 border-b border-gray-200" data-cy="breadcrumbs">
@@ -104,8 +105,13 @@ export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdiv
     );
   }
 
-  const breadcrumbGeography = isSubdivision && parentGeography ? parentGeography : geography;
-  const breadcrumbSubGeography = isSubdivision ? geography : null;
+  const breadcrumbGeography =
+    isSubdivision && parentGeography && !isSystemGeo(String(parentGeography.label))
+      ? parentGeography
+      : geography && !isSystemGeo(String(geography.label))
+        ? geography
+        : null;
+  const breadcrumbSubGeography = isSubdivision && geography && !isSystemGeo(String(geography.label)) ? geography : null;
 
   return (
     <ul
