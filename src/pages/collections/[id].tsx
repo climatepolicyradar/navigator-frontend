@@ -19,6 +19,7 @@ import { getCaseNumbers, getCourts } from "@/utils/eventTable";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isLitigationEnabled } from "@/utils/features";
 import { getCollectionMetadata } from "@/utils/getCollectionMetadata";
+import { getLanguage } from "@/utils/getLanguage";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 interface IProps {
@@ -99,8 +100,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
   // get the language from the accept-language header
-  const acceptLanguageHeader = context.req.headers["accept-language"];
-  const language = acceptLanguageHeader ? acceptLanguageHeader.split(",")[0].trim() : "en-US";
+  const language = getLanguage(context.req.headers["accept-language"]);
 
   const featureFlags = getFeatureFlags(context.req.cookies);
 

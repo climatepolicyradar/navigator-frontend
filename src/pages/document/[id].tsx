@@ -20,6 +20,7 @@ import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
+import { getLanguage } from "@/utils/getLanguage";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 /*
@@ -40,9 +41,7 @@ export default FamilyPage;
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  // get the language from the accept-language header
-  const acceptLanguageHeader = context.req.headers["accept-language"];
-  const language = acceptLanguageHeader ? acceptLanguageHeader.split(",")[0].trim() : "en-US";
+  const language = getLanguage(context.req.headers["accept-language"]);
 
   const featureFlags = getFeatureFlags(context.req.cookies);
 
