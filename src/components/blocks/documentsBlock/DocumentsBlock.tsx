@@ -8,7 +8,7 @@ import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
 import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { getCategoryName } from "@/helpers/getCategoryName";
-import { TFamilyDocumentPublic, TFamilyPublic, TGeography, TLoadingStatus, TMatchedFamily } from "@/types";
+import { TFamilyDocumentPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId } from "@/utils/eventTable";
 import { formatDate } from "@/utils/timedate";
 
@@ -76,7 +76,7 @@ export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatch
 
           {/* Table */}
           {view === "table" && (
-            <InteractiveTable<TEventTableColumnId> columns={tableColumns} rows={tableRows} defaultSort={{ column: "date", ascending: false }} />
+            <InteractiveTable<TEventTableColumnId> columns={tableColumns} rows={tableRows} defaultSort={{ column: "date", order: "desc" }} />
           )}
         </Card>
       )}
