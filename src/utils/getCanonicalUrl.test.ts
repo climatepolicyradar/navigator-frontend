@@ -50,6 +50,10 @@ describe("getCanonicalUrl", () => {
       attributionUrl: "app.climatepolicyradar.org",
       expected: "https://app.climatepolicyradar.org/documents/document-123",
     },
+
+    /** Pages with next router params in URL */
+    { route: "/geographies/us-tn?query=oil", theme: "cpr", expected: "https://app.climatepolicyradar.org/geographies/us-tn" },
+    { route: "/geographies/us-tn", theme: "cpr", expected: "https://app.climatepolicyradar.org/geographies/us-tn" },
   ] satisfies {
     route: string;
     theme: TTheme;
