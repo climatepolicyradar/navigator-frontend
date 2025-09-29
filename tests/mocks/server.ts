@@ -1,6 +1,6 @@
 import { setupServer } from "msw/node";
 
-import { testHandler } from "@/pages/api/geography-counts.test";
+import { testHandler } from "@/tests/core/api/geography-counts.test";
 
 import { backendApiSearchHandler } from "./api/backendApiHandlers";
 import { conceptHandlers } from "./api/conceptHandlers";
