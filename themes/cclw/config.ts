@@ -66,7 +66,7 @@ const config: TThemeConfig = {
         },
       ],
       type: "checkbox",
-      category: [],
+      category: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCCD.n0000", "UN.corpus.UNCBD.n0000"],
     },
 
     {
@@ -122,7 +122,7 @@ const config: TThemeConfig = {
       taxonomyKey: "_document.type",
       apiMetaDataKey: "document.type",
       type: "radio",
-      category: ["UNFCCC.corpus.i00000001.n0000"],
+      category: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCCD.n0000", "UN.corpus.UNCBD.n0000"],
       options: [
         {
           label: "Nationally Determined Contribution (NDC)",
