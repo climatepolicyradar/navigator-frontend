@@ -12,12 +12,12 @@ import { Heading } from "@/components/typography/Heading";
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
-import { TDocumentPage, TFamilyPage } from "@/types";
+import { TDocumentPage, TFamilyPublic } from "@/types";
 import { truncateString } from "@/utils/truncateString";
 
 interface IProps {
   document: TDocumentPage;
-  family: TFamilyPage;
+  family: TFamilyPublic;
   handleViewOtherDocsClick: (e: React.FormEvent<HTMLButtonElement>) => void;
   handleViewSourceClick: (e: React.FormEvent<HTMLButtonElement>) => void;
 }
