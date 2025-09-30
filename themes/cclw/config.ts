@@ -13,14 +13,17 @@ const config: TThemeConfig = {
           "CPR.corpus.i00000591.n0000",
           "CPR.corpus.i00000592.n0000",
           "UNFCCC.corpus.i00000001.n0000",
+          "UNFCCC.corpus.i00000001.n0000",
+          "UN.corpus.UNCCD.n0000",
+          "UN.corpus.UNCBD.n0000",
           "CPR.corpus.Goldstandard.n0000",
         ],
       },
       {
-        label: "UNFCCC Submissions",
-        slug: "UNFCCC",
-        value: ["UNFCCC.corpus.i00000001.n0000"],
-        category: ["UNFCCC"],
+        label: "UN",
+        slug: "UN",
+        value: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCCD.n0000", "UN.corpus.UNCBD.n0000"],
+        category: ["UNFCCC", "UNCCD", "UNCBD"],
       },
       {
         label: "Laws",
@@ -38,6 +41,34 @@ const config: TThemeConfig = {
     ],
   },
   filters: [
+    {
+      label: "UN Treaty",
+      taxonomyKey: "un_treaty",
+      startOpen: "true",
+      options: [
+        {
+          label: "UNFCCC",
+          slug: "unfccc",
+          value: ["UNFCCC.corpus.i00000001.n0000"],
+          corporaKey: "UNFCCC",
+        },
+        {
+          label: "UNCCD",
+          slug: "unccd",
+          value: ["UN.corpus.UNCCD.n0000"],
+          corporaKey: "UNCCD",
+        },
+        {
+          label: "UNCBD",
+          slug: "uncbd",
+          value: ["UN.corpus.UNCBD.n0000"],
+          corporaKey: "UNCBD",
+        },
+      ],
+      type: "checkbox",
+      category: [],
+    },
+
     {
       label: "Type",
       taxonomyKey: "framework_laws",
