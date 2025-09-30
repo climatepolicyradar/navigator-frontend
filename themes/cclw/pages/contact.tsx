@@ -10,6 +10,7 @@ const Contact = () => {
     <Layout
       title="Contact"
       description="If you have questions or comments about the content of the database, use this page to get in touch with our team."
+      theme="cclw"
     >
       <BreadCrumbs label={"Contact"} />
       <section>

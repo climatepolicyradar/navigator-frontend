@@ -15,6 +15,7 @@ const Methodology = () => {
     <Layout
       title="Methodology"
       description="Find the definitions, scope and principles we use to collect and categorise the laws and policies contained in the Climate Change Laws of the World dataset."
+      theme="cclw"
     >
       <BreadCrumbs label={"Methodology"} />
       <section>

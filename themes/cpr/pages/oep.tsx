@@ -18,7 +18,7 @@ const OceanEnergyPathwayPage = () => {
         {/* eslint-disable-next-line @next/next/no-css-tags */}
         <link rel="stylesheet" href="/css/oep/oep.css" />
       </Head>
-      <Layout title="Ocean Energy Pathway" description="Helping the offshore wind sector design effective strategies">
+      <Layout title="Ocean Energy Pathway" description="Helping the offshore wind sector design effective strategies" theme="cpr">
         <Header />
         <main id="oep" className="relative">
           <Hero />

@@ -10,6 +10,7 @@ const Contact = () => {
     <Layout
       title="Contact"
       description="Get in touch with us for inquiries, support, or feedback regarding our climate change resources and initiatives."
+      theme="mcf"
     >
       <BreadCrumbs label={"Contact us"} />
       <section className="pt-8">

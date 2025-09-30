@@ -8,7 +8,7 @@ import { Heading } from "@/components/typography/Heading";
 
 const About = () => {
   return (
-    <Layout title="About" description="Find out more about the Sabin Center for Climate Change Law's Climate Litigation Database.">
+    <Layout title="About" description="Find out more about the Sabin Center for Climate Change Law's Climate Litigation Database." theme="ccc">
       <BreadCrumbs label={"About us"} />
       <section className="pt-8 color-text-primary">
         <SiteWidth>
