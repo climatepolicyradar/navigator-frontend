@@ -7,7 +7,7 @@ import { Heading } from "@/components/typography/Heading";
 
 const TermsOfUse = () => {
   return (
-    <Layout title="Terms of use">
+    <Layout title="Terms of use" theme="cpr">
       <BreadCrumbs label={"Terms of use"} />
       <section>
         <SiteWidth>

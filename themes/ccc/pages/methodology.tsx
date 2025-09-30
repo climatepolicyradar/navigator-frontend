@@ -16,6 +16,7 @@ const Methodology = () => {
     <Layout
       title="Methodology"
       description="Find the definitions, scope and principles we use to collect and categorise the climate litigation cases."
+      theme="ccc"
     >
       <BreadCrumbs label={"Methodology"} />
       <section className="pt-8">

@@ -18,6 +18,7 @@ const FAQ: React.FC = () => {
     <Layout
       title="FAQ"
       description="Find quick tips for how you can use this resource to explore national-level climate change projects from across the world."
+      theme="mcf"
     >
       <BreadCrumbs label={"Frequently asked questions"} />
       <section className="pt-8">

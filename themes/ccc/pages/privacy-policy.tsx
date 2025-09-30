@@ -8,7 +8,7 @@ import { Heading } from "@/components/typography/Heading";
 
 const PrivacyPolicy = () => {
   return (
-    <Layout title="Privacy policy">
+    <Layout title="Privacy policy" theme="ccc">
       <BreadCrumbs label={"Privacy policy"} />
       <section>
         <SiteWidth>

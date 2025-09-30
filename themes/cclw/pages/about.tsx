@@ -14,6 +14,7 @@ const About = () => {
     <Layout
       title="About"
       description="Climate Change Laws of the World is a database of national-level climate change legislation and policies globally, led by the Grantham Research Institute at LSE."
+      theme="cclw"
     >
       <BreadCrumbs label={"About"} />
       <section>

@@ -7,7 +7,7 @@ import { Heading } from "@/components/typography/Heading";
 
 const CookiePolicy = () => {
   return (
-    <Layout title="Cookie policy">
+    <Layout title="Cookie policy" theme="ccc">
       <BreadCrumbs label={"Cookie policy"} />
       <section>
         <SiteWidth>

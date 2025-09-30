@@ -6,7 +6,11 @@ import { Heading } from "@/components/typography/Heading";
 
 const Methodology = () => {
   return (
-    <Layout title="Methodology" description="Find the definitions, scope and principles we use to collect and categorise the laws and policies.">
+    <Layout
+      title="Methodology"
+      description="Find the definitions, scope and principles we use to collect and categorise the laws and policies."
+      theme="mcf"
+    >
       <BreadCrumbs label={"Methodology"} />
       <section className="pt-8">
         <SiteWidth>
