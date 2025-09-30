@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Script from "next/script";
 import React, { useEffect, useMemo, useState } from "react";
 
+import { ApiClient } from "@/api/http-common";
 import { Alert } from "@/components/Alert";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -25,6 +26,7 @@ import { Heading } from "@/components/typography/Heading";
 import { MAX_FAMILY_SUMMARY_LENGTH } from "@/constants/document";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { TPublicEnvConfig } from "@/context/EnvConfig";
 import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
 import { getCorpusInfo } from "@/helpers/getCorpusInfo";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
@@ -36,7 +38,6 @@ import {
   TCorpusTypeDictionary,
   TDocumentPage,
   TFamilyPublic,
-  TFamilyPage,
   TFeatureFlags,
   TGeography,
   TGeographySubdivision,
@@ -52,18 +53,18 @@ import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { truncateString } from "@/utils/truncateString";
 
-export const isNewEndpointData = (family: TFamilyPage | TFamilyPublic): family is TFamilyPublic => "concepts" in family;
-
 export interface IProps {
   corpus_types: TCorpusTypeDictionary;
   countries: TGeography[];
-  family: TFamilyPage | TFamilyPublic;
+  family: TFamilyPublic;
   featureFlags: TFeatureFlags;
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
   vespaFamilyData?: TSearchResponse;
+  envConfig: TPublicEnvConfig;
+  language: string;
 }
 
 // Only published documents are returned in the family page call, so we can cross reference the import ID with those
@@ -77,6 +78,56 @@ const documentIsPublished = (familyDocuments: TDocumentPage[], documentImportId:
   return isPublished;
 };
 
+type CollectionProps = { collection: TFamilyPublic["collections"][number]; envConfig: TPublicEnvConfig };
+const Collection = ({ collection, envConfig }: CollectionProps) => {
+  const [show, setShow] = useState(false);
+  const [families, setFamilies] = useState([]);
+
+  useEffect(() => {
+    if (show && families.length === 0) {
+      const apiClient = new ApiClient(envConfig.CONCEPTS_API_URL);
+      apiClient.get(`/families/collections/${collection.import_id}`).then((collectionData) => setFamilies(collectionData.data.data.families));
+    }
+  }, [show, families, collection.import_id, envConfig.CONCEPTS_API_URL]);
+
+  return (
+    <section className="pt-12" key={collection.import_id}>
+      <div className="mb-5">
+        <Heading level={4} extraClasses="mb-0">
+          About the {collection.title}
+        </Heading>
+        <ShowHide show={show} onClick={() => setShow(!show)} />
+      </div>
+      {show && (
+        <div>
+          <div
+            className="mb-8 text-content"
+            dangerouslySetInnerHTML={{
+              __html: collection.description,
+            }}
+          />
+          <Heading level={4}>Other documents in the {collection.title}</Heading>
+          <div className="divide-y flex flex-col gap-4">
+            {families.map((family, i) => (
+              <div key={family.slug} className="border-border-light">
+                <LinkWithQuery href={`/document/${family.slug}`} className="text-[#0041A3] text-left font-medium text-lg underline">
+                  {family.title}
+                </LinkWithQuery>
+                <div
+                  className="text-content text-sm"
+                  dangerouslySetInnerHTML={{
+                    __html: family.description,
+                  }}
+                ></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+};
+
 export const FamilyOriginalPage = ({
   corpus_types,
   countries = [],
@@ -86,12 +137,8 @@ export const FamilyOriginalPage = ({
   theme,
   themeConfig,
   vespaFamilyData,
+  envConfig,
 }: IProps) => {
-  // TODO remove when only the newer API endpoint is being called in getServerSideProps
-  if (isNewEndpointData(page)) {
-    throw new Error("Cannot render FamilyOriginalPage with V2 API data");
-  }
-
   const router = useRouter();
   const pathname = usePathname();
   const startingNumberOfTargetsToDisplay = 5;
@@ -418,40 +465,7 @@ export const FamilyOriginalPage = ({
               )}
 
               {page.collections.map((collection, i) => (
-                <section className="pt-12" id={`collection-${i}`} key={collection.import_id}>
-                  <div className="mb-5">
-                    <Heading level={4} extraClasses="mb-0">
-                      About the {collection.title}
-                    </Heading>
-                    <ShowHide show={showCollectionDetail} onClick={() => setShowCollectionDetail(!showCollectionDetail)} />
-                  </div>
-                  {showCollectionDetail && (
-                    <div>
-                      <div
-                        className="mb-8 text-content"
-                        dangerouslySetInnerHTML={{
-                          __html: collection.description,
-                        }}
-                      />
-                      <Heading level={4}>Other documents in the {collection.title}</Heading>
-                      <div className="divide-y flex flex-col gap-4">
-                        {collection.families.map((collFamily, i) => (
-                          <div key={collFamily.slug} className="border-border-light">
-                            <LinkWithQuery href={`/document/${collFamily.slug}`} className="text-[#0041A3] text-left font-medium text-lg underline">
-                              {collFamily.title}
-                            </LinkWithQuery>
-                            <div
-                              className="text-content text-sm"
-                              dangerouslySetInnerHTML={{
-                                __html: collFamily.description,
-                              }}
-                            ></div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </section>
+                <Collection collection={collection} envConfig={envConfig} key={collection.import_id} />
               ))}
             </SingleCol>
             {concepts.length > 0 && (

@@ -10,6 +10,7 @@ const About = () => {
     <Layout
       title="About"
       description="Discover how the MCFs collaboratively developed this platform as a central hub for accessing documents, enhancing transparency, and raising awareness of their value and impact in addressing climate change."
+      theme="mcf"
     >
       <BreadCrumbs label={"About us"} />
       <section className="pt-8">

@@ -3,8 +3,7 @@ import { setupServer } from "msw/node";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { backendApiSearchHandler } from "@/mocks/api/backendApiHandlers";
-
-import handler from "./geography-counts";
+import handler from "@/pages/api/geography-counts";
 
 // This can be used by any pages that make this call
 export const testHandler = [

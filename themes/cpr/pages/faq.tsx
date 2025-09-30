@@ -18,6 +18,7 @@ const FAQ: React.FC = () => {
     <Layout
       title="FAQ"
       description="Find quick tips for how you can use Climate Policy Radar to explore climate laws, policies, and projects from across the world."
+      theme="cpr"
     >
       <BreadCrumbs label={"Frequently asked questions"} />
       <section className="pt-8">

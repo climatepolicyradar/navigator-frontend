@@ -13,6 +13,7 @@ const FrameworkLaws = () => {
     <Layout
       title="Climate Change Framework Laws"
       description="We assign a number of classifications and categories to laws and policies in the Climate Change Laws of the World database to enhance the usability and searchability of the data."
+      theme="cclw"
     >
       <BreadCrumbs label="Climate Change Framework Laws" />
       <section>
