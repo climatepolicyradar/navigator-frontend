@@ -77,13 +77,11 @@ export const getEventTableRows = ({
   documentEventsOnly = false,
   matchesFamily,
   matchesStatus = "success",
-  language,
 }: {
   families: TFamilyPublic[];
   documentEventsOnly?: boolean;
   matchesFamily?: TMatchedFamily;
   matchesStatus?: TLoadingStatus;
-  language: string;
 }): TEventTableRow[] => {
   const rows: TEventTableRow[] = [];
 
@@ -120,7 +118,7 @@ export const getEventTableRows = ({
           caseTitle: family.title,
           court: getCourts(family),
           date: {
-            label: formatDateShort(date, language),
+            label: formatDateShort(date),
             value: date.getTime(),
           },
           document: document

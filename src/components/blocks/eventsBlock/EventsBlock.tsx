@@ -10,14 +10,13 @@ const MAX_ENTRIES_SHOWN = 8;
 
 interface IProps {
   families: TFamilyPublic[];
-  language: string;
 }
 
-export const EventsBlock = ({ families, language }: IProps) => {
+export const EventsBlock = ({ families }: IProps) => {
   const [showAllEntries, setShowAllEntries] = useState(false);
 
   const tableColumns = getEventTableColumns({ showFamilyColumns: true });
-  const tableRows = getEventTableRows({ families, language });
+  const tableRows = getEventTableRows({ families });
   const entriesToHide = tableRows.length > MAX_ENTRIES_SHOWN;
 
   const toggleShowAll = () => {

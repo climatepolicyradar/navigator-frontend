@@ -44,7 +44,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutDocuments], language });
+    const eventRows = getEventTableRows({ families: [familyWithoutDocuments] });
 
     expect(eventRows).toEqual([
       {
@@ -116,7 +116,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutEvents], language });
+    const eventRows = getEventTableRows({ families: [familyWithoutEvents] });
 
     expect(eventRows).toHaveLength(1);
     expect(eventRows[0].id).toBe("/0");
@@ -203,7 +203,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutEvents], language });
+    const eventRows = getEventTableRows({ families: [familyWithoutEvents] });
 
     expect(eventRows).toHaveLength(2);
 
@@ -311,7 +311,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutEvents], language });
+    const eventRows = getEventTableRows({ families: [familyWithoutEvents] });
 
     expect(eventRows).toHaveLength(1);
     expect(eventRows[0].id).toBe("/0");
