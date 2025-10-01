@@ -404,9 +404,9 @@ export type TCorpusPublic = {
   organisation: {
     id: number;
     name: string;
-    attribution_url?: string | null;
   };
   title: string;
+  attribution_url: string | null;
 };
 
 export type TFamilyEventPublic = TEvent & {

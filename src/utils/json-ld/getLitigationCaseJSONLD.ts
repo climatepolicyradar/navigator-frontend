@@ -43,7 +43,7 @@ export const getLitigationJSONLD = (familyCase: TFamilyPublic, countries: TGeogr
     jsonLd.publisher = {
       "@type": "Organization",
       name: `${familyCase.corpus.organisation.name}`,
-      url: `${familyCase.corpus.organisation.attribution_url}`,
+      url: `${familyCase.corpus.attribution_url}`,
     };
   }
 
