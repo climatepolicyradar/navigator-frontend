@@ -83,9 +83,9 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
     corpus_type_name: "Litigation",
     organisation: {
       name: "Sabin",
-      attribution_url: null,
       id: 11,
     },
+    attribution_url: null,
   },
   corpus_id: "Academic.corpus.Litigation.n0000",
   organisation: "Sabin",
