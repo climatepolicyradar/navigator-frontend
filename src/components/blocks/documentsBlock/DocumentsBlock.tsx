@@ -1,5 +1,5 @@
 import orderBy from "lodash/orderBy";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Card } from "@/components/atoms/card/Card";
 import { EntityCard, IProps as IEntityCardProps } from "@/components/molecules/entityCard/EntityCard";
@@ -9,7 +9,7 @@ import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { TFamilyDocumentPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
-import { getEventTableColumns, getEventTableRows, TEventTableColumnId } from "@/utils/eventTable";
+import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
 import { formatDate } from "@/utils/timedate";
 
 // If no date found for an event, use an empty string so it sorts to the bottom
@@ -24,6 +24,7 @@ interface IProps {
 
 export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
   const [view, setView] = useState("table");
+  const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
   const isUSA = family.geographies.includes("USA");
   const category = getCategoryName(family.category, family.corpus_type_name, family.organisation);
@@ -53,6 +54,12 @@ export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatch
     setView(toggleValue[0]);
   };
 
+  useEffect(() => {
+    const language = navigator?.language;
+
+    setUpdatedRowsWithLocalisedDates(getEventTableRows({ families: [family], language }));
+  }, [family]);
+
   return (
     <Section block="documents" title="Documents">
       {hasDocumentsToDisplay && (
@@ -76,7 +83,11 @@ export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatch
 
           {/* Table */}
           {view === "table" && (
-            <InteractiveTable<TEventTableColumnId> columns={tableColumns} rows={tableRows} defaultSort={{ column: "date", order: "desc" }} />
+            <InteractiveTable<TEventTableColumnId>
+              columns={tableColumns}
+              rows={updatedRowsWithLocalisedDates || tableRows}
+              defaultSort={{ column: "date", order: "desc" }}
+            />
           )}
         </Card>
       )}
