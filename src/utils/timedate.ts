@@ -29,7 +29,7 @@ export const formatDate = (data: string) => {
 export const formatDateShort = (date: Date, language?: string): string => {
   if (isNaN(date.getTime())) return "";
 
-  return new Intl.DateTimeFormat(language ?? navigator?.language ?? "en-GB", {
+  return new Intl.DateTimeFormat(language || "en-US", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
