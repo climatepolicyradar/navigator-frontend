@@ -58,11 +58,15 @@ const filterConcepts = (concepts: TConcept[], search: string) => {
   );
 };
 
+const conceptIsOfType = (conceptQueryStringValue: string, type: string) => {
+  return conceptQueryStringValue.includes(type);
+};
+
 const onConceptChange = (
   router: NextRouter,
-  concept: TConcept,
+  selectedConcept: TConcept,
   relatedConcepts: TConcept[],
-  rootConcept: TConcept = undefined,
+  rootOfSelectedConcept: TConcept = undefined,
   isRootConceptExclusive: boolean
 ) => {
   const query = CleanRouterQuery({ ...router.query });
@@ -70,21 +74,23 @@ const onConceptChange = (
   if (router.query.id) {
     query["id"] = router.query.id;
   }
+
+  const selectedConceptLabel = selectedConcept.wikibase_id;
+
   let selectedConcepts = query[QUERY_PARAMS.concept_preferred_label] ? [query[QUERY_PARAMS.concept_preferred_label]].flat() : [];
 
-  const selectedConceptLabel = concept.wikibase_id;
   if (selectedConcepts.includes(selectedConceptLabel)) {
     // deselections
     // case 1a: root concept selected, previously selected, remove all child concepts
-    if (!rootConcept) {
+    if (!rootOfSelectedConcept) {
       selectedConcepts = selectedConcepts.filter((c) => c !== selectedConceptLabel);
       selectedConcepts = selectedConcepts.filter((c) => !relatedConcepts.map((rc) => rc.wikibase_id).includes(c));
     }
     // case 1b: child concept selected, previously selected
     // - check the root concept, if not selected, remove all concepts and reselect root and concept
-    if (rootConcept) {
-      if (!selectedConcepts.includes(rootConcept.wikibase_id)) {
-        selectedConcepts = [rootConcept.wikibase_id, selectedConceptLabel];
+    if (rootOfSelectedConcept) {
+      if (!selectedConcepts.includes(rootOfSelectedConcept.wikibase_id)) {
+        selectedConcepts = [rootOfSelectedConcept.wikibase_id, selectedConceptLabel];
       } else {
         selectedConcepts = selectedConcepts.filter((c) => c !== selectedConceptLabel);
       }
@@ -92,21 +98,35 @@ const onConceptChange = (
   } else {
     // selections
     // case 1a: root concept selected, not previously selected
-    // - remove all other concepts
+    // - remove all other concepts of same type
+    // - retain other concepts of different types
     // if isRootConceptExclusive is false, we allow multiple selections of root and child concepts
-    if (!rootConcept) selectedConcepts = isRootConceptExclusive ? [selectedConceptLabel] : [...selectedConcepts, selectedConceptLabel];
-    if (rootConcept) {
-      const rootConceptLabel = rootConcept?.wikibase_id;
+    if (!rootOfSelectedConcept) {
+      if (isRootConceptExclusive) {
+        // only remove concepts of the same type as the selected root concept
+        selectedConcepts = selectedConcepts.filter((c) => {
+          return !conceptIsOfType(c, selectedConcept.type);
+        });
+      }
+      selectedConcepts = [...selectedConcepts, selectedConceptLabel];
+    }
+    if (rootOfSelectedConcept) {
+      const rootConceptLabel = rootOfSelectedConcept?.wikibase_id;
       // case 1b: child concept selected, not previously selected & root concept was selected
       if (selectedConcepts.includes(rootConceptLabel)) {
         selectedConcepts = [...selectedConcepts, selectedConceptLabel];
       } else {
         // case 1c: child concept selected, not previously selected & root concept not selected
-        // - remove all other concepts
+        // - remove all other concepts of same type
+        // - retain other concepts of different types
         // if isRootConceptExclusive is false, we allow multiple selections of root and child concepts
-        selectedConcepts = isRootConceptExclusive
-          ? [selectedConceptLabel, rootConceptLabel]
-          : [...selectedConcepts, selectedConceptLabel, rootConceptLabel];
+        if (isRootConceptExclusive) {
+          // only remove concepts of the same type as the selected root concept
+          selectedConcepts = selectedConcepts.filter((c) => {
+            return !conceptIsOfType(c, selectedConcept.type);
+          });
+        }
+        selectedConcepts = [...selectedConcepts, selectedConceptLabel, rootConceptLabel];
       }
     }
   }
