@@ -29,7 +29,10 @@ export const ContentsSideBar = ({ containerClasses, items, stickyClasses }: IPro
   };
 
   const allContainerClasses = joinTailwindClasses("relative select-none", containerClasses);
-  const allStickyClasses = joinTailwindClasses("sticky top-0 overflow-y-auto", stickyClasses);
+  const allStickyClasses = joinTailwindClasses(
+    "sticky top-0 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker",
+    stickyClasses
+  );
 
   return (
     <aside className={allContainerClasses}>
