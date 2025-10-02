@@ -28,7 +28,7 @@ import { convertDate } from "@/utils/timedate";
 
 import { IProps } from "./familyOriginalPage";
 
-export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig, language }: IProps) => {
+export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig }: IProps) => {
   /* Search matches */
 
   const router = useRouter();
@@ -143,17 +143,8 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     },
     documents: {
       render: useCallback(
-        () => (
-          <DocumentsBlock
-            key="documents"
-            family={family}
-            matchesFamily={matchesFamily}
-            matchesStatus={matchesStatus}
-            showMatches={hasSearch}
-            language={language}
-          />
-        ),
-        [family, hasSearch, matchesFamily, matchesStatus, language]
+        () => <DocumentsBlock key="documents" family={family} matchesFamily={matchesFamily} matchesStatus={matchesStatus} showMatches={hasSearch} />,
+        [family, hasSearch, matchesFamily, matchesStatus]
       ),
     },
     metadata: {

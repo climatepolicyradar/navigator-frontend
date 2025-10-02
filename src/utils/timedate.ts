@@ -26,10 +26,10 @@ export const formatDate = (data: string) => {
   return [year, day, months[month]];
 };
 
-export const formatDateShort = (date: Date, language: string): string => {
+export const formatDateShort = (date: Date, language?: string): string => {
   if (isNaN(date.getTime())) return "";
 
-  return new Intl.DateTimeFormat(language, {
+  return new Intl.DateTimeFormat(language || "en-US", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",

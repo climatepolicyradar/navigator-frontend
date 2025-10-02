@@ -1,5 +1,5 @@
 import orderBy from "lodash/orderBy";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Card } from "@/components/atoms/card/Card";
 import { EntityCard, IProps as IEntityCardProps } from "@/components/molecules/entityCard/EntityCard";
@@ -9,7 +9,7 @@ import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { TFamilyDocumentPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
-import { getEventTableColumns, getEventTableRows, TEventTableColumnId } from "@/utils/eventTable";
+import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
 import { formatDate } from "@/utils/timedate";
 
 // If no date found for an event, use an empty string so it sorts to the bottom
@@ -20,19 +20,19 @@ interface IProps {
   matchesFamily?: TMatchedFamily; // The relevant search result family
   matchesStatus?: TLoadingStatus; // The status of the search
   showMatches?: boolean; // Whether to show matches from the search result
-  language: string;
 }
 
-export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatches = false, language }: IProps) => {
+export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
   const [view, setView] = useState("table");
+  const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
   const isUSA = family.geographies.includes("USA");
   const category = getCategoryName(family.category, family.corpus_type_name, family.organisation);
 
   const tableColumns = useMemo(() => getEventTableColumns({ isUSA, showMatches }), [isUSA, showMatches]);
   const tableRows = useMemo(
-    () => getEventTableRows({ families: [family], documentEventsOnly: true, matchesFamily, matchesStatus, language }),
-    [family, matchesFamily, matchesStatus, language]
+    () => getEventTableRows({ families: [family], documentEventsOnly: true, matchesFamily, matchesStatus }),
+    [family, matchesFamily, matchesStatus]
   );
 
   const cards: IEntityCardProps[] = useMemo(
@@ -53,6 +53,12 @@ export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatch
   const onToggleChange = (toggleValue: string[]) => {
     setView(toggleValue[0]);
   };
+
+  useEffect(() => {
+    const language = navigator?.language;
+
+    setUpdatedRowsWithLocalisedDates(getEventTableRows({ families: [family], language }));
+  }, [family]);
 
   return (
     <Section block="documents" title="Documents">
@@ -77,7 +83,11 @@ export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatch
 
           {/* Table */}
           {view === "table" && (
-            <InteractiveTable<TEventTableColumnId> columns={tableColumns} rows={tableRows} defaultSort={{ column: "date", order: "desc" }} />
+            <InteractiveTable<TEventTableColumnId>
+              columns={tableColumns}
+              rows={updatedRowsWithLocalisedDates || tableRows}
+              defaultSort={{ column: "date", order: "desc" }}
+            />
           )}
         </Card>
       )}

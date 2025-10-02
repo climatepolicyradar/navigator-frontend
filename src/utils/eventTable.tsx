@@ -83,7 +83,7 @@ export const getEventTableRows = ({
   documentEventsOnly?: boolean;
   matchesFamily?: TMatchedFamily;
   matchesStatus?: TLoadingStatus;
-  language: string;
+  language?: string;
 }): TEventTableRow[] => {
   const rows: TEventTableRow[] = [];
 

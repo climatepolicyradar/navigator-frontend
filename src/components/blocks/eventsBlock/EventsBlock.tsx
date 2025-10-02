@@ -1,28 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
 import { Card } from "@/components/atoms/card/Card";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { TFamilyPublic } from "@/types";
-import { getEventTableColumns, getEventTableRows, TEventTableColumnId } from "@/utils/eventTable";
+import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
 
 const MAX_ENTRIES_SHOWN = 8;
 
 interface IProps {
   families: TFamilyPublic[];
-  language: string;
 }
 
-export const EventsBlock = ({ families, language }: IProps) => {
+export const EventsBlock = ({ families }: IProps) => {
   const [showAllEntries, setShowAllEntries] = useState(false);
+  const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
   const tableColumns = getEventTableColumns({ showFamilyColumns: true });
-  const tableRows = getEventTableRows({ families, language });
+  const tableRows = getEventTableRows({ families });
   const entriesToHide = tableRows.length > MAX_ENTRIES_SHOWN;
 
   const toggleShowAll = () => {
     setShowAllEntries((current) => !current);
   };
+
+  useEffect(() => {
+    const language = navigator?.language;
+
+    setUpdatedRowsWithLocalisedDates(getEventTableRows({ families, language }));
+  }, [families]);
 
   return (
     <div className="relative">
@@ -31,7 +37,7 @@ export const EventsBlock = ({ families, language }: IProps) => {
         <InteractiveTable<TEventTableColumnId>
           columns={tableColumns}
           defaultSort={{ column: "date", order: "desc" }}
-          rows={tableRows}
+          rows={updatedRowsWithLocalisedDates || tableRows}
           maxRows={showAllEntries ? 0 : MAX_ENTRIES_SHOWN}
           tableClasses="pt-8"
         />

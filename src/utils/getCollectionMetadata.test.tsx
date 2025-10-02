@@ -42,8 +42,8 @@ const baseCollection: TCollectionPublicWithFamilies = {
         organisation: {
           name: "Sabin",
           id: 11,
-          attribution_url: "climatecasechart.com",
         },
+        attribution_url: "climatecasechart.com",
       },
       documents: [],
       events: [],
