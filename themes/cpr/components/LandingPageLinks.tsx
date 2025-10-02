@@ -71,11 +71,10 @@ const KNOWLEDGE_GRAPH_QUICK_SEARCHES = [
   },
   {
     id: 4,
-    label: "Emissions reductions targets + Climate framework laws",
+    label: "Climate framework laws",
     params: {
       [QUERY_PARAMS.category]: "laws",
       [QUERY_PARAMS.framework_laws]: "true",
-      [QUERY_PARAMS.concept_name]: "emissions reduction target",
     },
   },
 ];

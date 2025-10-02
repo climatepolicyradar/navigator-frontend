@@ -162,7 +162,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
         description={getDocumentDescription(document.title)}
         theme={theme}
         themeConfig={themeConfig}
-        attributionUrl={family.organisation_attribution_url}
+        attributionUrl={family.corpus.attribution_url}
       >
         <section
           className="pb-8 flex-1 flex flex-col"
