@@ -29,13 +29,13 @@ export const ContentsSideBar = ({ containerClasses, items, stickyClasses }: IPro
   };
 
   const allContainerClasses = joinTailwindClasses("relative select-none", containerClasses);
-  const allStickyClasses = joinTailwindClasses("sticky top-0", stickyClasses);
+  const allStickyClasses = joinTailwindClasses("sticky top-0 overflow-y-auto", stickyClasses);
 
   return (
     <aside className={allContainerClasses}>
       <div className={allStickyClasses}>
         <span className="block pb-2 text-xs text-text-primary font-[660] leading-none uppercase">On this page</span>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 pr-1">
           {items.map((item) => {
             const isActive = item.id === activeId;
 
