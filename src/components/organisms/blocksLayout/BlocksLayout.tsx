@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 import { Columns } from "@/components/atoms/columns/Columns";
 import { firstCase } from "@/utils/text";
@@ -28,6 +28,18 @@ interface IProps<PageBlock extends string> {
  * 2. Check if the blockDefinitions render method is returning null (won't render the block or sidebar item)
  */
 export const BlocksLayout = <PageBlock extends string>({ blockDefinitions, blocksToRender }: IProps<PageBlock>) => {
+  const [renderedSectionIds, setRenderedSectionIds] = useState<string[] | null>(null);
+
+  // Check which sections are rendered on the page
+  // This allows a sidebar item to be hidden if the block component renders but internally returns null
+  useEffect(() => {
+    if (document) {
+      const sections = Array.from(document.querySelectorAll("section"));
+      const sectionIds = sections.map((section) => (section.getAttribute("id") || "").replace("section-", "")).filter((id) => id !== "");
+      setRenderedSectionIds(sectionIds);
+    }
+  }, [blockDefinitions]);
+
   const blocks: ReactNode[] = [];
   const sideBarItems: ISideBarItem[] = [];
 
@@ -40,12 +52,14 @@ export const BlocksLayout = <PageBlock extends string>({ blockDefinitions, block
     if (renderedBlock) {
       blocks.push(renderedBlock);
 
-      // Only show a corresponding sidebar item if the block renders something
-      sideBarItems.push({
-        id: `section-${blockName}`, // If you're writing a new block, make sure its section ID and block names line up
-        display: blockDefinition.sideBarItem?.display || firstCase(blockName), // Can be inferred from block name
-        context: blockDefinition.sideBarItem?.context || undefined,
-      });
+      // Only show a corresponding sidebar item if the block renders a section
+      if (renderedSectionIds === null || renderedSectionIds.includes(blockName)) {
+        sideBarItems.push({
+          id: `section-${blockName}`, // If you're writing a new block, make sure its section ID and block names line up
+          display: blockDefinition.sideBarItem?.display || firstCase(blockName), // Can be inferred from block name
+          context: blockDefinition.sideBarItem?.context || undefined,
+        });
+      }
     }
   });
 
