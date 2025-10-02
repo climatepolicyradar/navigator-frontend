@@ -8,6 +8,7 @@ import { InputRadio } from "@/components/forms/Radio";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TConcept } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
+import { FilterSelectedConcepts } from "@/utils/conceptFilter";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { firstCase } from "@/utils/text";
 
@@ -60,9 +61,9 @@ const filterConcepts = (concepts: TConcept[], search: string) => {
 
 const onConceptChange = (
   router: NextRouter,
-  concept: TConcept,
+  selectedConcept: TConcept,
   relatedConcepts: TConcept[],
-  rootConcept: TConcept = undefined,
+  rootOfSelectedConcept: TConcept = undefined,
   isRootConceptExclusive: boolean
 ) => {
   const query = CleanRouterQuery({ ...router.query });
@@ -70,48 +71,17 @@ const onConceptChange = (
   if (router.query.id) {
     query["id"] = router.query.id;
   }
-  let selectedConcepts = query[QUERY_PARAMS.concept_preferred_label] ? [query[QUERY_PARAMS.concept_preferred_label]].flat() : [];
 
-  const selectedConceptLabel = concept.wikibase_id;
-  if (selectedConcepts.includes(selectedConceptLabel)) {
-    // deselections
-    // case 1a: root concept selected, previously selected, remove all child concepts
-    if (!rootConcept) {
-      selectedConcepts = selectedConcepts.filter((c) => c !== selectedConceptLabel);
-      selectedConcepts = selectedConcepts.filter((c) => !relatedConcepts.map((rc) => rc.wikibase_id).includes(c));
-    }
-    // case 1b: child concept selected, previously selected
-    // - check the root concept, if not selected, remove all concepts and reselect root and concept
-    if (rootConcept) {
-      if (!selectedConcepts.includes(rootConcept.wikibase_id)) {
-        selectedConcepts = [rootConcept.wikibase_id, selectedConceptLabel];
-      } else {
-        selectedConcepts = selectedConcepts.filter((c) => c !== selectedConceptLabel);
-      }
-    }
-  } else {
-    // selections
-    // case 1a: root concept selected, not previously selected
-    // - remove all other concepts
-    // if isRootConceptExclusive is false, we allow multiple selections of root and child concepts
-    if (!rootConcept) selectedConcepts = isRootConceptExclusive ? [selectedConceptLabel] : [...selectedConcepts, selectedConceptLabel];
-    if (rootConcept) {
-      const rootConceptLabel = rootConcept?.wikibase_id;
-      // case 1b: child concept selected, not previously selected & root concept was selected
-      if (selectedConcepts.includes(rootConceptLabel)) {
-        selectedConcepts = [...selectedConcepts, selectedConceptLabel];
-      } else {
-        // case 1c: child concept selected, not previously selected & root concept not selected
-        // - remove all other concepts
-        // if isRootConceptExclusive is false, we allow multiple selections of root and child concepts
-        selectedConcepts = isRootConceptExclusive
-          ? [selectedConceptLabel, rootConceptLabel]
-          : [...selectedConcepts, selectedConceptLabel, rootConceptLabel];
-      }
-    }
-  }
+  const currentSelectedConcepts = query[QUERY_PARAMS.concept_preferred_label] ? [query[QUERY_PARAMS.concept_preferred_label]].flat() : [];
 
-  query[QUERY_PARAMS.concept_preferred_label] = selectedConcepts;
+  // Update the concept selection in the query
+  query[QUERY_PARAMS.concept_preferred_label] = FilterSelectedConcepts(
+    currentSelectedConcepts,
+    selectedConcept,
+    relatedConcepts,
+    rootOfSelectedConcept,
+    isRootConceptExclusive
+  );
 
   router.push({ query: query }, undefined, { shallow: true });
 };
