@@ -43,29 +43,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
-  /** As the families API cannot be queries by slugs, we need to get the slug */
-  const { data: slugData } = await apiClient.get(`/families/slugs/${id}`).catch((error) => {
-    // eslint-disable-next-line no-console
-    console.error(error);
-    return {
-      data: {
-        data: null,
-      },
-    };
-  });
-  const slug: TSlugResponse = slugData.data;
+  let familyData: TFamilyPublic;
 
-  /** and then query the families API by the returned family_import_id */
-  const { data: familyResponse } = await apiClient.get(`/families/${slug.family_import_id}`).catch((error) => {
+  try {
+    /** As the families API cannot be queried by slugs, we need to get the slug */
+    const { data: slugData } = await apiClient.get(`/families/slugs/${id}`);
+    const slug: TSlugResponse = slugData.data;
+    /** and then query the families API by the returned family_import_id */
+    const { data: familyResponse } = await apiClient.get(`/families/${slug.family_import_id}`);
+    familyData = familyResponse.data;
+  } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
     return {
-      data: {
-        data: null,
-      },
+      notFound: true,
     };
-  });
-  const familyData: TFamilyPublic = familyResponse.data;
+  }
 
   if (!familyData) {
     return {
@@ -75,17 +68,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   /** The Vespa families data has the concepts data attached, which is why we need this */
   let vespaFamilyData: TSearchResponse;
-  if (knowledgeGraphEnabled) {
-    const { data: vespaFamilyDataResponse } = await backendApiClient.get(`/families/${familyData.import_id}`).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.error(error);
-      return {
-        data: {
-          data: null,
-        },
-      };
-    });
-    vespaFamilyData = vespaFamilyDataResponse;
+
+  try {
+    if (knowledgeGraphEnabled) {
+      const { data: vespaFamilyDataResponse } = await backendApiClient.get(`/families/${familyData.import_id}`);
+      vespaFamilyData = vespaFamilyDataResponse;
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
   }
 
   /** TODO: see where we use this config data, and if we can get it from the families response */
