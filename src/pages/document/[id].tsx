@@ -5,13 +5,13 @@ import React from "react";
 import { ApiClient } from "@/api/http-common";
 import { FamilyLitigationPage } from "@/components/pages/familyLitigationPage";
 import { FamilyOriginalPage, IProps } from "@/components/pages/familyOriginalPage";
+import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { TCorpusTypeDictionary, TFamilyPublic, TGeography, TGeographySubdivision, TSearchResponse, TSlugResponse, TTarget } from "@/types";
 import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
-import { getLanguage } from "@/utils/getLanguage";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 /*
@@ -73,7 +73,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   /** This is because our family.geographies field isn't hydrated but rather a string[] */
   const allSubdivisions = await Promise.all<TGeographySubdivision[]>(
     familyData.geographies
-      .filter((country) => country.length === 3 && !["XAA", "XAB"].includes(country))
+      .filter((country) => country.length === 3 && !EXCLUDED_ISO_CODES.includes(country))
       .map(async (country) => {
         try {
           const { data: subDivisionResponse } = await apiClient.get(`/geographies/subdivisions/${country}`);
