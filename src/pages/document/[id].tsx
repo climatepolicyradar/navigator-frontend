@@ -44,11 +44,27 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
   /** As the families API cannot be queries by slugs, we need to get the slug */
-  const { data: slugData } = await apiClient.get(`/families/slugs/${id}`);
+  const { data: slugData } = await apiClient.get(`/families/slugs/${id}`).catch((error) => {
+    // eslint-disable-next-line no-console
+    console.error(error);
+    return {
+      data: {
+        data: null,
+      },
+    };
+  });
   const slug: TSlugResponse = slugData.data;
 
   /** and then query the families API by the returned family_import_id */
-  const { data: familyResponse } = await apiClient.get(`/families/${slug.family_import_id}`);
+  const { data: familyResponse } = await apiClient.get(`/families/${slug.family_import_id}`).catch((error) => {
+    // eslint-disable-next-line no-console
+    console.error(error);
+    return {
+      data: {
+        data: null,
+      },
+    };
+  });
   const familyData: TFamilyPublic = familyResponse.data;
 
   if (!familyData) {
@@ -60,7 +76,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   /** The Vespa families data has the concepts data attached, which is why we need this */
   let vespaFamilyData: TSearchResponse;
   if (knowledgeGraphEnabled) {
-    const { data: vespaFamilyDataResponse } = await backendApiClient.get(`/families/${familyData.import_id}`);
+    const { data: vespaFamilyDataResponse } = await backendApiClient.get(`/families/${familyData.import_id}`).catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      return {
+        data: {
+          data: null,
+        },
+      };
+    });
     vespaFamilyData = vespaFamilyDataResponse;
   }
 
@@ -78,7 +102,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         try {
           const { data: subDivisionResponse } = await apiClient.get(`/geographies/subdivisions/${country}`);
           return subDivisionResponse;
-        } catch (error) {}
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        }
       })
   );
   const subdivisionsData = allSubdivisions.flat().filter((subdivision) => subdivision !== undefined);
@@ -88,7 +115,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/families/${familyData.import_id}.json`);
     targetsData = targetsRaw.data;
-  } catch (e) {}
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e);
+  }
 
   /** Check the family is in the "allowed_corpora" */
   if (familyData.corpus?.import_id && !isCorpusIdAllowed(process.env.BACKEND_API_TOKEN, familyData.corpus.import_id)) {
