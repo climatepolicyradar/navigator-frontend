@@ -24,7 +24,7 @@ export async function getServerSideProps({ res }) {
   const geographySlugs = geographiesData.flatMap((item) => extractGeographySlugs(item));
   const urls = geographySlugs.map((slug) => `${process.env.HOSTNAME ?? ""}/geographies/${slug}`);
 
-  res.setHeader("Content-Type", "application/JSON");
+  res.setHeader("Content-Type", "text/plain");
   res.write(urls.join("\n"));
   res.end();
 
