@@ -10,7 +10,7 @@ const geographyFilter = (geography: TDataNode<TGeography>): boolean => {
 };
 
 // Recursively transform node structure into flat list of geo slugs
-const extractGeographySlugs = (config: TDataNode<TGeography>): string[] => {
+export const extractGeographySlugs = (config: TDataNode<TGeography>): string[] => {
   const childrenSlugs: string[] = config.children.flatMap((node): string[] => extractGeographySlugs(node));
   return (geographyFilter(config) ? [config.node.slug] : []).concat(childrenSlugs);
 };

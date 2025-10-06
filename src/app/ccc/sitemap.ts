@@ -1,8 +1,13 @@
 import type { MetadataRoute } from "next";
 
+import { ApiClient } from "@/api/http-common";
+import { extractGeographySlugs } from "@/pages/sitemap.txt";
+
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  /* Families */
+
   const urlSearchParams = new URLSearchParams({
     "corpus.import_id": "Academic.corpus.Litigation.n0000",
   });
@@ -15,6 +20,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     };
   });
+
+  /* Geographies */
+
+  const client = new ApiClient();
+  const {
+    data: { geographies: geographiesData },
+  } = await client.getConfig();
+
+  const geographySlugs = geographiesData.flatMap((item) => extractGeographySlugs(item));
+  const geographiesSiteMap = geographySlugs.map((slug) => ({
+    url: `https://www.climatecasechart.com/geographies/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "daily",
+    priority: 0.75,
+  }));
+
   /** The manually added pages are taken from the footer */
   return [
     {
@@ -30,6 +51,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     ...familiesSiteMap,
+    ...geographiesSiteMap,
     {
       url: "https://www.climatecasechart.com/about",
       lastModified: new Date(),
