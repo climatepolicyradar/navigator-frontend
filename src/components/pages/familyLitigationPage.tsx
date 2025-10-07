@@ -162,7 +162,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
 
         return (
           <TextBlock key="summary" block="summary" title="Summary">
-            <div className="text-content whitespace-pre-line" dangerouslySetInnerHTML={{ __html: family.summary }} />
+            <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
           </TextBlock>
         );
       },
