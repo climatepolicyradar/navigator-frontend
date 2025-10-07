@@ -1,28 +1,18 @@
 import type { MetadataRoute } from "next";
 
 import { ApiClient } from "@/api/http-common";
-import { EXCLUDED_ISO_CODES, INCLUDED_GEO_TYPES } from "@/constants/geography";
-import { TDataNode, TGeography } from "@/types";
-
-// Recursively transform node structure into flat list of geo slugs
-export const extractGeographySlugs = (config: TDataNode<TGeography>): string[] => {
-  const childrenSlugs: string[] = config.children.flatMap((node): string[] => extractGeographySlugs(node));
-
-  if (EXCLUDED_ISO_CODES.includes(config.node.value) || !INCLUDED_GEO_TYPES.includes(config.node.type)) {
-    return childrenSlugs;
-  } else {
-    return [config.node.slug, ...childrenSlugs];
-  }
-};
+import CCCthemeConfig from "@/ccc/config";
+import { extractGeographySlugs } from "@/utils/geography";
 
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const allCorpusIds = CCCthemeConfig.categories?.options.flatMap((option) => option.value) || [];
+  const allCorpusIdsSearchParams = allCorpusIds.map((corpusId) => ["corpus.import_id", corpusId]);
+  const urlSearchParams = new URLSearchParams(allCorpusIdsSearchParams);
+
   /* Families */
 
-  const urlSearchParams = new URLSearchParams({
-    "corpus.import_id": "Academic.corpus.Litigation.n0000",
-  });
   const familiesData = await fetch(`https://api.climatepolicyradar.org/families/?${urlSearchParams.toString()}`).then((resp) => resp.json());
   const familiesSiteMap = familiesData.data.map((family) => {
     return {
@@ -48,7 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.75,
   }));
 
-  /** The manually added pages are taken from the footer */
+  // The manually added pages are taken from the footer
   return [
     {
       url: "https://www.climatecasechart.com",
