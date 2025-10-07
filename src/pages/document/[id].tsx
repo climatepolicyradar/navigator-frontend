@@ -11,7 +11,6 @@ import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
-import { getLanguage } from "@/utils/getLanguage";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 /*
