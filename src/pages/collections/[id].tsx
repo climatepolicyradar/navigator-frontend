@@ -1,4 +1,5 @@
 import { GetServerSideProps, InferGetStaticPropsType } from "next";
+import Head from "next/head";
 import { useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
@@ -19,7 +20,7 @@ import { getCaseNumbers, getCourts } from "@/utils/eventTable";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isLitigationEnabled } from "@/utils/features";
 import { getCollectionMetadata } from "@/utils/getCollectionMetadata";
-import { getLanguage } from "@/utils/getLanguage";
+import { getLitigationCollectionJSONLD } from "@/utils/json-ld/getLitigationCollectionJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 interface IProps {
@@ -82,13 +83,21 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
                 <div className="text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
               </TextBlock>
               <MetadataBlock block="metadata" metadata={getCollectionMetadata(collection)} />
-              {/* <Section block="debug" title="Debug">
+              <Section block="debug" title="Debug">
                 <Debug data={collection} title="Collection" />
-              </Section> */}
+              </Section>
             </main>
           </>
         )}
       </Columns>
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(getLitigationCollectionJSONLD(collection)),
+          }}
+        />
+      </Head>
     </Layout>
   );
 };

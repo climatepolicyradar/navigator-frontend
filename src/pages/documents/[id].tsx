@@ -2,6 +2,7 @@ import { ParsedUrlQuery } from "querystring";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState, useMemo } from "react";
 
@@ -22,6 +23,7 @@ import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
+import useConfig from "@/hooks/useConfig";
 import useSearch from "@/hooks/useSearch";
 import { TDocumentPage, TPassage, TTheme, TSearchResponse, TSlugResponse, TThemeConfig, TFeatureFlags, TFamilyPublic } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
@@ -29,6 +31,7 @@ import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamily";
 import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
+import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 interface IProps {
@@ -81,6 +84,8 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const exactMatchQuery = router.query[QUERY_PARAMS.exact_match] === undefined || router.query[QUERY_PARAMS.exact_match] !== "false";
   const passagesByPosition = router.query[QUERY_PARAMS.passages_by_position] === "true";
   const startingPageNumber = Number(router.query.page) || 0;
+  const configQuery = useConfig();
+  const { data: { countries = [] } = {} } = configQuery;
 
   // Note: only runs a fresh start if either a query string or concept data is provided
   const { status, families, searchQuery } = useSearch(router.query, null, document.import_id, !isEmptySearch(router.query), MAX_PASSAGES);
@@ -298,6 +303,14 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             />
           )}
         </section>
+        {["Litigation", "LITIGATION"].includes(family.category) && (
+          <Head>
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(getLitigationDocumentJSONLD(document, family, countries)) }}
+            />
+          </Head>
+        )}
       </Layout>
     </FeatureFlagsContext.Provider>
   );
