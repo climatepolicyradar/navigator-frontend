@@ -22,7 +22,7 @@ import { TMatchedFamily, TFamilyPageBlock } from "@/types";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
 import { isSystemGeo } from "@/utils/isSystemGeo";
-import { getLitigationJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
+import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 import { joinNodes } from "@/utils/reactNode";
 import { convertDate } from "@/utils/timedate";
 
@@ -191,7 +191,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(getLitigationJSONLD(family, countries, subdivisions)),
+            __html: JSON.stringify(getLitigationCaseJSONLD(family, countries, subdivisions)),
           }}
         />
       </Head>
