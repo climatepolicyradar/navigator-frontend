@@ -68,10 +68,11 @@ const geoStyle = (isActive: boolean, count: number, max: number) => {
   const countLog = Math.log10(count || 1);
 
   const ratio = countLog / maxLog;
+  const fillLuminosity = count === 0 ? 80 : 60 - ratio * 25;
 
   return {
     default: {
-      fill: isActive ? "#002CA3" : `hsl(206, 14%, ${72 - ratio * 25}%)`,
+      fill: isActive ? "#002CA3" : `hsl(206, 14%, ${fillLuminosity}%)`,
       stroke: "#fff",
       strokeWidth: 0.25,
       outline: "none",
