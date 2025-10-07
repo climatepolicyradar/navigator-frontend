@@ -42,24 +42,27 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
-  let familyData: TFamilyPublic;
-
+  let slug: TSlugResponse;
   try {
     /** As the families API cannot be queried by slugs, we need to get the slug */
     const { data: slugData } = await apiClient.get(`/families/slugs/${id}`);
-    const slug: TSlugResponse = slugData.data;
-    /** and then query the families API by the returned family_import_id */
-    const { data: familyResponse } = await apiClient.get(`/families/${slug.family_import_id}`);
-    familyData = familyResponse.data;
+    slug = slugData.data;
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error(error);
+    console.error("Error fetching slug data", error);
     return {
       notFound: true,
     };
   }
 
-  if (!familyData) {
+  let familyData: TFamilyPublic;
+  try {
+    /** and then query the families API by the returned family_import_id */
+    const { data: familyResponse } = await apiClient.get(`/families/${slug.family_import_id}`);
+    familyData = familyResponse.data;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("Error fetching families data", error);
     return {
       notFound: true,
     };
@@ -67,7 +70,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   /** The Vespa families data has the concepts data attached, which is why we need this */
   let vespaFamilyData: TSearchResponse;
-
   try {
     if (knowledgeGraphEnabled) {
       const { data: vespaFamilyDataResponse } = await backendApiClient.get(`/families/${familyData.import_id}`);
@@ -75,7 +77,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error(error);
+    console.error("Error fetching vespa family data", error);
   }
 
   /** TODO: see where we use this config data, and if we can get it from the families response */
@@ -94,7 +96,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           return subDivisionResponse;
         } catch (error) {
           // eslint-disable-next-line no-console
-          console.error(error);
+          console.error("Error fetching subdivisions data", error);
         }
       })
   );
@@ -105,9 +107,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/families/${familyData.import_id}.json`);
     targetsData = targetsRaw.data;
-  } catch (e) {
+  } catch (error) {
     // eslint-disable-next-line no-console
-    console.error(e);
+    console.error("Error fetching targets data", error);
   }
 
   /** Check the family is in the "allowed_corpora" */
