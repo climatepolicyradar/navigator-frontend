@@ -4,6 +4,8 @@ import { Legislation, WithContext } from "schema-dts";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
 
+import { getHostnameForJSONLD } from "./helpers";
+
 /**
  * Generates JSON-LD structured data for a litigation case.
  * @param familyCase - The family case data.
@@ -19,15 +21,11 @@ import { TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
  * The schema can be validated here: https://validator.schema.org/
  */
 
-export const getLitigationJSONLD = (familyCase: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]) => {
-  const geosOrdered = sortBy(familyCase.geographies, [(geo) => geo.length !== 3, (geo) => geo.toLowerCase()]);
+export const getLitigationCaseJSONLD = (familyCase: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]) => {
+  const hostname = getHostnameForJSONLD();
 
   // Default JSON-LD legislation structure
-
-  // Ensure no trailing slash on hostname - no guarantee that it will be present. Better to not assume either way.
-  const hostname = process.env.HOSTNAME?.replace(/\/$/, "") || "";
-
-  let jsonLd: WithContext<Legislation> = {
+  const jsonLd: WithContext<Legislation> = {
     "@context": "https://schema.org",
     "@type": "Legislation",
     "@id": `${hostname}/document/${familyCase.slug}`,
@@ -53,6 +51,8 @@ export const getLitigationJSONLD = (familyCase: TFamilyPublic, countries: TGeogr
   }
 
   // Geography related JSON-LD
+  const geosOrdered = sortBy(familyCase.geographies, [(geo) => geo.length !== 3, (geo) => geo.toLowerCase()]);
+
   if (geosOrdered.length > 0) {
     let spatialCoverage = [];
     geosOrdered.forEach((geo) => {
