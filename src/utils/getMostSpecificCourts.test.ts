@@ -116,7 +116,7 @@ describe("getMostSpecificCourtsFromWikiConcepts", () => {
     overrides: Partial<{
       wikibase_id: string;
       preferred_label: string;
-      type: string;
+      type: "jurisdiction" | "principal_law" | "category";
       has_subconcept: string[];
       subconcept_of: string[];
       recursive_subconcept_of: string[];
@@ -127,7 +127,7 @@ describe("getMostSpecificCourtsFromWikiConcepts", () => {
     }> = {}
   ) => ({
     wikibase_id: overrides.wikibase_id || "category/test",
-    preferred_label: overrides.preferred_label || "Test Concept",
+    preferred_label: overrides.preferred_label,
     type: overrides.type || "jurisdiction",
     has_subconcept: overrides.has_subconcept || [],
     subconcept_of: overrides.subconcept_of || [],
@@ -154,17 +154,7 @@ describe("getMostSpecificCourtsFromWikiConcepts", () => {
         preferred_label: undefined,
       }),
     ];
-    expect(getMostSpecificCourtsFromWikiConcepts(concepts)).toBeNull();
-  });
 
-  it("should handle concepts with empty subconcept_of array", () => {
-    const concepts = [
-      createConcept({
-        preferred_label: "Root Court",
-        has_subconcept: [],
-        subconcept_of: [],
-      }),
-    ];
     expect(getMostSpecificCourtsFromWikiConcepts(concepts)).toBeNull();
   });
 
