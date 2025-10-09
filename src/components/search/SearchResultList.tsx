@@ -1,5 +1,5 @@
 import { ExternalLink } from "@/components/ExternalLink";
-import { TMatchedFamily, TConcept } from "@/types";
+import { TMatchedFamily } from "@/types";
 
 import SearchResult from "./SearchResult";
 

@@ -4,7 +4,7 @@ import { CountryLinks } from "@/components/CountryLinks";
 import { WikiBaseConceptsContext } from "@/context/WikiBaseConceptsContext";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import useConfig from "@/hooks/useConfig";
-import { TCategory, TCorpusTypeSubCategory, TFamilyConcept, TFamilyMetadata, TConcept } from "@/types";
+import { TCategory, TCorpusTypeSubCategory, TFamilyConcept, TFamilyMetadata } from "@/types";
 import { getMostSpecificCourtsFromWikiConcepts } from "@/utils/getMostSpecificCourts";
 import { convertDate } from "@/utils/timedate";
 

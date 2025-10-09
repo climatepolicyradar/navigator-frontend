@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { FamilyListItem } from "@/components/document/FamilyListItem";
 import { MAX_RESULTS } from "@/constants/paging";
 import { ThemeContext } from "@/context/ThemeContext";
-import { TMatchedFamily, TConcept } from "@/types";
+import { TMatchedFamily } from "@/types";
 import { isSearchFamilySummaryEnabled } from "@/utils/features";
 import { pluralise } from "@/utils/pluralise";
 import { joinTailwindClasses } from "@/utils/tailwind";
