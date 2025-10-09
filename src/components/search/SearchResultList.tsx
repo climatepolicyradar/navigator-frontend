@@ -1,5 +1,5 @@
 import { ExternalLink } from "@/components/ExternalLink";
-import { TMatchedFamily } from "@/types";
+import { TMatchedFamily, TConcept } from "@/types";
 
 import SearchResult from "./SearchResult";
 
@@ -7,6 +7,7 @@ interface IProps {
   category?: string;
   families: TMatchedFamily[];
   activeFamilyIndex?: number | boolean;
+  wikiJurisdictionConcepts?: TConcept[];
   onClick?: (index: number) => void;
 }
 
@@ -22,7 +23,7 @@ const renderEmptyMessage = (category: string) => {
   );
 };
 
-const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: IProps) => {
+const SearchResultList = ({ category, families, activeFamilyIndex, onClick, wikiJurisdictionConcepts }: IProps) => {
   if (category && category.toLowerCase() === "litigation") {
     return (
       <>
@@ -62,7 +63,13 @@ const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: IP
     <>
       <ol className="divide-y flex flex-col gap-6" data-cy="search-result">
         {families?.map((family, index: number) => (
-          <SearchResult key={index} family={family} onClick={() => onClick(index)} active={activeFamilyIndex === index} />
+          <SearchResult
+            key={index}
+            family={family}
+            onClick={() => onClick(index)}
+            active={activeFamilyIndex === index}
+            wikiJurisdictionConcepts={wikiJurisdictionConcepts}
+          />
         ))}
       </ol>
     </>

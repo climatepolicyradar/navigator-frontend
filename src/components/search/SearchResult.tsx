@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { FamilyListItem } from "@/components/document/FamilyListItem";
 import { MAX_RESULTS } from "@/constants/paging";
 import { ThemeContext } from "@/context/ThemeContext";
-import { TMatchedFamily } from "@/types";
+import { TMatchedFamily, TConcept } from "@/types";
 import { isSearchFamilySummaryEnabled } from "@/utils/features";
 import { pluralise } from "@/utils/pluralise";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -13,9 +13,10 @@ interface IProps {
   family: TMatchedFamily;
   active: boolean;
   onClick?: () => void;
+  wikiJurisdictionConcepts?: TConcept[];
 }
 
-const SearchResult = ({ family, active, onClick }: IProps) => {
+const SearchResult = ({ family, active, onClick, wikiJurisdictionConcepts }: IProps) => {
   const { themeConfig } = useContext(ThemeContext);
   const { family_documents, total_passage_hits, family_slug } = family;
 
@@ -30,7 +31,12 @@ const SearchResult = ({ family, active, onClick }: IProps) => {
   );
 
   return (
-    <FamilyListItem family={family} showSummary={isSearchFamilySummaryEnabled(themeConfig)} titleClasses={titleClasses}>
+    <FamilyListItem
+      family={family}
+      showSummary={isSearchFamilySummaryEnabled(themeConfig)}
+      titleClasses={titleClasses}
+      wikiJurisdictionConcepts={wikiJurisdictionConcepts}
+    >
       {hasFamilyDocuments && (
         <div className="flex">
           <button

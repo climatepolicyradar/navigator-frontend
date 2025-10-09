@@ -726,6 +726,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                             families={families}
                             onClick={handleMatchesButtonClick}
                             activeFamilyIndex={drawerFamily}
+                            wikiJurisdictionConcepts={groupedFamilyConcepts?.jurisdiction ?? []}
                           />
                         </section>
                       </>
