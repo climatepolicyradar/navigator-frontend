@@ -1,4 +1,7 @@
+import { useContext } from "react";
+
 import { CountryLinks } from "@/components/CountryLinks";
+import { WikiBaseConceptsContext } from "@/context/WikiBaseConceptsContext";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import useConfig from "@/hooks/useConfig";
 import { TCategory, TCorpusTypeSubCategory, TFamilyConcept, TFamilyMetadata, TConcept } from "@/types";
@@ -17,29 +20,29 @@ interface IProps {
   author?: string[];
   document_type?: string;
   concepts?: TFamilyConcept[];
-  familyJurisdictionConcepts?: TConcept[];
   metadata: TFamilyMetadata;
 }
 
-export const FamilyMeta = ({
-  category,
-  date,
-  geographies,
-  topics,
-  author,
-  corpus_type_name,
-  document_type,
-  source,
-  familyJurisdictionConcepts = [],
-}: IProps) => {
+function getJurisdictionsFromMetadata(metadata) {
+  const labels = metadata.concept_preferred_label || [];
+  return labels.filter((label) => label.startsWith("jurisdiction/"));
+}
+
+export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name, document_type, source, metadata }: IProps) => {
   const configQuery = useConfig();
   const { data: { countries = [], subdivisions = [] } = {} } = configQuery;
+  const allConcepts = useContext(WikiBaseConceptsContext);
+  const wikiJurisdictionConcepts = allConcepts.filter((concept) => concept.wikibase_id.startsWith("jurisdiction/"));
 
   const [year] = convertDate(date);
 
   const includeSubdivisions = geographies?.some((geography) =>
     subdivisions.some((subdivision) => subdivision.value.toLowerCase() === geography.toLowerCase())
   );
+
+  const vespaJurisdictions = getJurisdictionsFromMetadata(metadata);
+
+  const familyJurisdictionConcepts = wikiJurisdictionConcepts.filter((concept) => vespaJurisdictions.includes(concept.wikibase_id));
 
   const CountryLinkComponent = includeSubdivisions ? CountryLinkWithSubdivisions : CountryLinks;
   const mostSpecificCourtName = getMostSpecificCourtsFromWikiConcepts(familyJurisdictionConcepts);

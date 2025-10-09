@@ -7,7 +7,6 @@ interface IProps {
   category?: string;
   families: TMatchedFamily[];
   activeFamilyIndex?: number | boolean;
-  wikiJurisdictionConcepts?: TConcept[];
   onClick?: (index: number) => void;
 }
 
@@ -23,7 +22,7 @@ const renderEmptyMessage = (category: string) => {
   );
 };
 
-const SearchResultList = ({ category, families, activeFamilyIndex, onClick, wikiJurisdictionConcepts }: IProps) => {
+const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: IProps) => {
   if (category && category.toLowerCase() === "litigation") {
     return (
       <>
@@ -63,13 +62,7 @@ const SearchResultList = ({ category, families, activeFamilyIndex, onClick, wiki
     <>
       <ol className="divide-y flex flex-col gap-6" data-cy="search-result">
         {families?.map((family, index: number) => (
-          <SearchResult
-            key={index}
-            family={family}
-            onClick={() => onClick(index)}
-            active={activeFamilyIndex === index}
-            wikiJurisdictionConcepts={wikiJurisdictionConcepts}
-          />
+          <SearchResult key={index} family={family} onClick={() => onClick(index)} active={activeFamilyIndex === index} />
         ))}
       </ol>
     </>

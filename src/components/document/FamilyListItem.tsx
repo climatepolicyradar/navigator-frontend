@@ -21,14 +21,7 @@ function getJurisdictionsFromVespaMetadata(metadata) {
   return metadata.filter((m) => m.name === "family.concept_preferred_label" && m.value.startsWith("jurisdiction/")).map((m) => m.value);
 }
 
-export const FamilyListItem: FC<IProps> = ({
-  children,
-  family,
-  showSummary = true,
-  titleClasses = "hover:underline",
-  className,
-  wikiJurisdictionConcepts = [],
-}) => {
+export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = true, titleClasses = "hover:underline", className }) => {
   const {
     corpus_type_name,
     family_slug,
@@ -44,8 +37,6 @@ export const FamilyListItem: FC<IProps> = ({
   const allTitleClasses = joinTailwindClasses("result-title text-left font-medium text-lg duration-300 flex items-start", titleClasses);
 
   const family_metadata = transformVespaMetadataToFamilyMetadata(metadata);
-  const vespaJurisdictions = getJurisdictionsFromVespaMetadata(metadata);
-  const familyJurisdictionConcepts = wikiJurisdictionConcepts.filter((concept) => vespaJurisdictions.includes(concept.wikibase_id));
 
   // If the case is litigation and we have a core object, use that as the summary text
   const summaryText = family_category === "Litigation" ? (family_metadata?.core_object?.[0] ?? family_description) : family_description;
@@ -60,7 +51,6 @@ export const FamilyListItem: FC<IProps> = ({
           date={family_date}
           geographies={family_geographies}
           metadata={family_metadata}
-          familyJurisdictionConcepts={familyJurisdictionConcepts}
           {...(corpus_type_name === "Reports" ? { author: (family_metadata as { author: string[] }).author } : {})}
         />
       </div>

@@ -13,10 +13,9 @@ interface IProps {
   family: TMatchedFamily;
   active: boolean;
   onClick?: () => void;
-  wikiJurisdictionConcepts?: TConcept[];
 }
 
-const SearchResult = ({ family, active, onClick, wikiJurisdictionConcepts }: IProps) => {
+const SearchResult = ({ family, active, onClick }: IProps) => {
   const { themeConfig } = useContext(ThemeContext);
   const { family_documents, total_passage_hits, family_slug } = family;
 
@@ -31,12 +30,7 @@ const SearchResult = ({ family, active, onClick, wikiJurisdictionConcepts }: IPr
   );
 
   return (
-    <FamilyListItem
-      family={family}
-      showSummary={isSearchFamilySummaryEnabled(themeConfig)}
-      titleClasses={titleClasses}
-      wikiJurisdictionConcepts={wikiJurisdictionConcepts}
-    >
+    <FamilyListItem family={family} showSummary={isSearchFamilySummaryEnabled(themeConfig)} titleClasses={titleClasses}>
       {hasFamilyDocuments && (
         <div className="flex">
           <button
