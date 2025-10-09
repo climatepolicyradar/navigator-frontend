@@ -1,7 +1,7 @@
 import { FC, ReactNode } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { TFamily, TConcept } from "@/types";
+import { TFamily } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { truncateString } from "@/utils/truncateString";
 import { transformVespaMetadataToFamilyMetadata } from "@/utils/vespa";
@@ -14,11 +14,6 @@ interface IProps {
   showSummary?: boolean;
   titleClasses?: string;
   className?: string;
-  wikiJurisdictionConcepts?: TConcept[];
-}
-
-function getJurisdictionsFromVespaMetadata(metadata) {
-  return metadata.filter((m) => m.name === "family.concept_preferred_label" && m.value.startsWith("jurisdiction/")).map((m) => m.value);
 }
 
 export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = true, titleClasses = "hover:underline", className }) => {
