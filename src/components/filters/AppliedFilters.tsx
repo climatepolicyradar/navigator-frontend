@@ -11,7 +11,7 @@ import { getCountryName } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
 import useSubdivisions from "@/hooks/useSubdivisions";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { TConcept, TGeography, TGeographySubdivision, TThemeConfig, TGeographyWithDocumentCounts } from "@/types";
+import { TConcept, TGeography, TThemeConfig, TGeographyWithDocumentCounts } from "@/types";
 
 type TFilterChange = (type: string, value: string, clearOthersOfType?: boolean, otherValuesToClear?: string[]) => void;
 
