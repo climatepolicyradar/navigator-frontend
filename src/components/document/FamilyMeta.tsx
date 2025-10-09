@@ -23,16 +23,25 @@ interface IProps {
   metadata: TFamilyMetadata;
 }
 
-function getJurisdictionsFromMetadata(metadata) {
-  const labels = metadata.concept_preferred_label || [];
-  return labels.filter((label) => label.startsWith("jurisdiction/"));
+function extractJurisdictionsFromMetadata(metadata: TFamilyMetadata): string[] {
+  return metadata.concept_preferred_label?.filter((label) => label.startsWith("jurisdiction/")) ?? [];
+}
+
+function useFamilyJurisdictionConcepts(metadata: TFamilyMetadata) {
+  const allConcepts = useContext(WikiBaseConceptsContext);
+  const wikiJurisdictionConcepts = allConcepts.filter((concept) => concept.wikibase_id.startsWith("jurisdiction/"));
+
+  const vespaJurisdictions = extractJurisdictionsFromMetadata(metadata);
+
+  const vespaJurisdictionsSet = new Set(vespaJurisdictions);
+  const familyJurisdictionConcepts = wikiJurisdictionConcepts.filter((concept) => vespaJurisdictionsSet.has(concept.wikibase_id));
+
+  return familyJurisdictionConcepts;
 }
 
 export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name, document_type, source, metadata }: IProps) => {
   const configQuery = useConfig();
   const { data: { countries = [], subdivisions = [] } = {} } = configQuery;
-  const allConcepts = useContext(WikiBaseConceptsContext);
-  const wikiJurisdictionConcepts = allConcepts.filter((concept) => concept.wikibase_id.startsWith("jurisdiction/"));
 
   const [year] = convertDate(date);
 
@@ -40,12 +49,10 @@ export const FamilyMeta = ({ category, date, geographies, topics, author, corpus
     subdivisions.some((subdivision) => subdivision.value.toLowerCase() === geography.toLowerCase())
   );
 
-  const vespaJurisdictions = getJurisdictionsFromMetadata(metadata);
-
-  const familyJurisdictionConcepts = wikiJurisdictionConcepts.filter((concept) => vespaJurisdictions.includes(concept.wikibase_id));
+  const familyJurisdictionConcepts = useFamilyJurisdictionConcepts(metadata);
+  const mostSpecificCourtName = getMostSpecificCourtsFromWikiConcepts(familyJurisdictionConcepts);
 
   const CountryLinkComponent = includeSubdivisions ? CountryLinkWithSubdivisions : CountryLinks;
-  const mostSpecificCourtName = getMostSpecificCourtsFromWikiConcepts(familyJurisdictionConcepts);
 
   return (
     <>
