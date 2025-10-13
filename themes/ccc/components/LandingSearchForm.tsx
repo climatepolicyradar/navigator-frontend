@@ -2,8 +2,34 @@ import { Search } from "lucide-react";
 import router from "next/router";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 
+import { Button } from "@/components/atoms/button/Button";
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+
+const EXAMPLE_SEARCHES = [
+  {
+    id: 1,
+    label: "Brazil + Paris Agreement",
+    params: {
+      [QUERY_PARAMS.concept_preferred_label]: ["principal_law/Brazil", "principal_law/Paris Agreement"],
+    },
+  },
+  {
+    id: 2,
+    label: "United States + United States Fifth Circuit (5th Cir.)",
+    params: {
+      [QUERY_PARAMS.concept_preferred_label]: ["jurisdiction/United States", "jurisdiction/United States Fifth Circuit (5th Cir.)"],
+    },
+  },
+  {
+    id: 3,
+    label: "Germany + Suits against governments",
+    params: {
+      [QUERY_PARAMS.country]: "Germany",
+      [QUERY_PARAMS.concept_preferred_label]: "category/Suits against governments",
+    },
+  },
+];
 
 interface IProps {
   placeholder?: string;
@@ -39,7 +65,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
 
   const displayPlaceholder = placeholder ?? "Search the full text of cases";
 
-  const handleQuickSearch = (params: Record<string, string>) => {
+  const handleQuickSearch = (params: Record<string, string | string[]>) => {
     // Push directly to search page with all parameters
     router.push({
       pathname: "/search",
@@ -72,6 +98,22 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
           <SearchDropdown term={term} show={formFocus} handleSearchClick={handleSearchInput} largeSpacing />
         </div>
       </form>
+      <div className="hidden mt-4 md:flex flex-wrap items-center gap-2 justify-center">
+        <span className="text-mcf-blue">Suggestions:</span>
+        {EXAMPLE_SEARCHES.map((example) => (
+          <Button
+            key={example.id}
+            rounded
+            size="small"
+            variant="ghost"
+            className="hover:!bg-gray-100 !text-gray-500 underline"
+            onClick={() => handleQuickSearch(example.params)}
+            data-cy={`example-search-${example.id}`}
+          >
+            {example.label}
+          </Button>
+        ))}
+      </div>
     </>
   );
 };
