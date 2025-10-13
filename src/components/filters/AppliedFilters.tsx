@@ -12,6 +12,7 @@ import useConfig from "@/hooks/useConfig";
 import useSubdivisions from "@/hooks/useSubdivisions";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
 import { TConcept, TGeography, TThemeConfig, TGeographyWithDocumentCounts } from "@/types";
+import { firstCase } from "@/utils/text";
 
 type TFilterChange = (type: string, value: string, clearOthersOfType?: boolean, otherValuesToClear?: string[]) => void;
 
@@ -41,7 +42,7 @@ const handleConceptName = (label: string, concepts: TConcept[]) => {
   if (!conceptLabel) {
     return label;
   }
-  return conceptLabel.charAt(0).toUpperCase() + conceptLabel.slice(1);
+  return firstCase(conceptLabel);
 };
 
 type TFilterKeys = keyof typeof QUERY_PARAMS;
@@ -65,7 +66,10 @@ const handleFilterDisplay = (
   concepts?: TConcept[],
   familyConcepts?: TConcept[]
 ) => {
+  const showFilterPrefixes = Boolean(themeConfig?.features.litigation);
+
   let filterLabel: string | null | undefined = null;
+  let filterPrefix: string = "";
   let filterValue = value;
   let otherValuesToClear: string[] = [];
   switch (key) {
@@ -75,18 +79,23 @@ const handleFilterDisplay = (
       break;
     case "country":
       filterLabel = handleCountryRegion(value, countries);
+      filterPrefix = "Geography";
       break;
     case "region":
       filterLabel = handleCountryRegion(value, regions);
       break;
     case "subdivision":
       filterLabel = handleSubdivision(value, subdivisions);
+      filterPrefix = "Geography";
       break;
     case "concept_name":
       filterLabel = handleConceptName(value, concepts);
       break;
     case "concept_preferred_label":
       filterLabel = handleConceptName(value, familyConcepts);
+      // Only show prefixes for specific concepts
+      if (value.startsWith("jurisdiction/")) filterPrefix = "Jurisdiction";
+      if (value.startsWith("principal_law/")) filterPrefix = "Principal laws";
       // If we are removing a root concept, we should also remove all child concepts
       otherValuesToClear = familyConcepts?.filter((c) => c.recursive_subconcept_of.includes(value)).map((c) => c.wikibase_id) || [];
       break;
@@ -131,9 +140,11 @@ const handleFilterDisplay = (
     return null;
   }
 
+  const pillLabel = (showFilterPrefixes && filterPrefix !== "" ? filterPrefix + ": " : "") + filterLabel;
+
   return (
     <Pill key={value} onClick={() => filterChange(QUERY_PARAMS[key], filterValue, false, otherValuesToClear)}>
-      {filterLabel}
+      {pillLabel}
     </Pill>
   );
 };
