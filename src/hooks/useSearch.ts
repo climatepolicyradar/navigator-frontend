@@ -1,5 +1,7 @@
+import { usePostHog } from "posthog-js/react";
 import { useEffect, useState, useMemo } from "react";
 
+import { posthogEventName } from "@/context/PostHogProvider";
 import buildSearchQuery, { TRouterQuery } from "@/utils/buildSearchQuery";
 import { getCachedSearch, updateCacheSearch, TCacheResult } from "@/utils/searchCache";
 
@@ -40,6 +42,7 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
   const [families, setFamilies] = useState<TMatchedFamily[]>([]);
   const [hits, setHits] = useState<number>(null);
   const [continuationToken, setContinuationToken] = useState<string | null>(null);
+  const posthog = usePostHog();
 
   const searchQuery = useMemo(() => {
     return buildSearchQuery({ ...query }, themeConfig, familyId, documentId, undefined, noOfPassagesPerDoc);
@@ -95,17 +98,20 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
       // If the request is aborted due to unmounting, res is undefined
       if (typeof res === "object") {
         if (res.status === 200) {
+          const { hits, total_family_hits, families, continuation_token } = res.data;
+          posthog.capture(posthogEventName("search", "results", "fetch"), { hits, total_family_hits, query: searchQuery });
+
           // Catch missing attributes from the API response
-          setFamilies(res.data.families || []);
-          setHits(res.data.total_family_hits || 0);
-          setContinuationToken(res.data.continuation_token || null);
+          setFamilies(families || []);
+          setHits(total_family_hits || 0);
+          setContinuationToken(continuation_token || null);
 
           if (CACHE_ENABLED) {
             const searchToCache: TCacheResult = {
               ...cacheId,
-              families: res.data.families,
-              hits: res.data.total_family_hits,
-              continuation_token: res.data.continuation_token,
+              families: families,
+              hits: total_family_hits,
+              continuation_token: continuation_token,
               timestamp: new Date().getTime(),
             };
             updateCacheSearch(searchToCache);
@@ -123,7 +129,7 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
     return () => {
       controller.abort();
     };
-  }, [searchQuery, runFreshSearch]);
+  }, [searchQuery, runFreshSearch, posthog]);
 
   return { status, families, hits, continuationToken, searchQuery };
 };
