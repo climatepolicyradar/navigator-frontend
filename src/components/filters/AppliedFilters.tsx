@@ -1,17 +1,19 @@
 import { ParsedUrlQuery } from "querystring";
 
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 
 import Pill from "@/components/Pill";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { sortOptions } from "@/constants/sortOptions";
+import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
+import { ThemeContext } from "@/context/ThemeContext";
 import { getConceptName } from "@/helpers/getConceptFields";
 import { getCountryName } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
 import useSubdivisions from "@/hooks/useSubdivisions";
-import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { TConcept, TGeography, TThemeConfig, TGeographyWithDocumentCounts } from "@/types";
+import { TConcept, TGeography, TThemeConfig, TGeographyWithDocumentCounts, TFeatureFlags } from "@/types";
+import { isLitigationEnabled } from "@/utils/features";
 import { firstCase } from "@/utils/text";
 
 type TFilterChange = (type: string, value: string, clearOthersOfType?: boolean, otherValuesToClear?: string[]) => void;
@@ -63,10 +65,11 @@ const handleFilterDisplay = (
   regions: TGeography[],
   subdivisions: TGeographyWithDocumentCounts[],
   themeConfig: TThemeConfig,
+  featureFlags: TFeatureFlags,
   concepts?: TConcept[],
   familyConcepts?: TConcept[]
 ) => {
-  const showFilterPrefixes = Boolean(themeConfig?.features.litigation);
+  const showFilterPrefixes = isLitigationEnabled(featureFlags, themeConfig);
 
   let filterLabel: string | null | undefined = null;
   let filterPrefix: string = "";
@@ -158,6 +161,7 @@ const generatePills = (
   regions: TGeography[],
   subdivisions: TGeographyWithDocumentCounts[],
   themeConfig: TThemeConfig,
+  featureFlags: TFeatureFlags,
   concepts?: TConcept[],
   familyConcepts?: TConcept[]
 ) => {
@@ -171,16 +175,42 @@ const generatePills = (
 
     if (value) {
       if (key === "year_range")
-        return pills.push(handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions, subdivisions, themeConfig));
+        return pills.push(
+          handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions, subdivisions, themeConfig, featureFlags)
+        );
       if (Array.isArray(value)) {
         return value.map((v: string) => {
           return pills.push(
-            handleFilterDisplay(filterChange, queryParams, key, v, countries, regions, subdivisions, themeConfig, concepts, familyConcepts)
+            handleFilterDisplay(
+              filterChange,
+              queryParams,
+              key,
+              v,
+              countries,
+              regions,
+              subdivisions,
+              themeConfig,
+              featureFlags,
+              concepts,
+              familyConcepts
+            )
           );
         });
       }
       return pills.push(
-        handleFilterDisplay(filterChange, queryParams, key, value, countries, regions, subdivisions, themeConfig, concepts, familyConcepts)
+        handleFilterDisplay(
+          filterChange,
+          queryParams,
+          key,
+          value,
+          countries,
+          regions,
+          subdivisions,
+          themeConfig,
+          featureFlags,
+          concepts,
+          familyConcepts
+        )
       );
     } else {
       return;
@@ -193,14 +223,18 @@ const generatePills = (
 export const AppliedFilters = ({ filterChange, concepts, familyConcepts }: IProps) => {
   const router = useRouter();
   const configQuery = useConfig();
-  const { themeConfig } = useGetThemeConfig();
+  const { themeConfig } = useContext(ThemeContext);
+  const featureFlags = useContext(FeatureFlagsContext);
   const { data: { countries = [], regions = [] } = {} } = configQuery;
   const subdivisionQuery = useSubdivisions();
   const { data: subdivisions = [] } = subdivisionQuery;
 
   const appliedFilters = useMemo(
-    () => generatePills(router.query, filterChange, countries, regions, subdivisions, themeConfig, concepts, familyConcepts).map((pill) => pill),
-    [router.query, filterChange, countries, regions, subdivisions, themeConfig, concepts, familyConcepts]
+    () =>
+      generatePills(router.query, filterChange, countries, regions, subdivisions, themeConfig, featureFlags, concepts, familyConcepts).map(
+        (pill) => pill
+      ),
+    [router.query, filterChange, countries, regions, subdivisions, themeConfig, featureFlags, concepts, familyConcepts]
   );
 
   if (appliedFilters.length === 0) {
