@@ -167,7 +167,7 @@ describe("SearchPage", async () => {
     expect(subdivisionOption).toBeChecked();
 
     // Verify the applied filter for the selected subdivision is visible.
-    expect(screen.getByRole("button", { name: "New South Wales" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Geography: New South Wales" })).toBeInTheDocument();
 
     // Verify the results are filtered by the subdivision.
     expect(await screen.findByText("Results:")).toBeInTheDocument();
@@ -218,8 +218,8 @@ describe("SearchPage", async () => {
     });
 
     const appliedRegionFilter = screen.getByRole("button", { name: "East Asia & Pacific" });
-    const appliedCountryFilter = screen.getByRole("button", { name: "Australia" });
-    const appliedSubdivisionFilter = screen.getByRole("button", { name: "New South Wales" });
+    const appliedCountryFilter = screen.getByRole("button", { name: "Geography: Australia" });
+    const appliedSubdivisionFilter = screen.getByRole("button", { name: "Geography: New South Wales" });
 
     // Uncheck the filter for the region.
     await act(async () => {
@@ -271,8 +271,8 @@ describe("SearchPage", async () => {
       await userEvent.click(subdivisionFilterOption);
     });
 
-    const countryFilter = screen.getByRole("button", { name: "Australia" });
-    const subdivisionFilter = screen.getByRole("button", { name: "New South Wales" });
+    const countryFilter = screen.getByRole("button", { name: "Geography: Australia" });
+    const subdivisionFilter = screen.getByRole("button", { name: "Geography: New South Wales" });
     expect(countryFilter).toBeInTheDocument();
     expect(subdivisionFilter).toBeInTheDocument();
 
@@ -517,7 +517,7 @@ describe("SearchPage", async () => {
       await userEvent.click(screen.getByRole("radio", { name: "Test Principal Law 1" }));
     });
 
-    const appliedFilter = screen.getByRole("button", { name: "Test Principal Law 1" });
+    const appliedFilter = screen.getByRole("button", { name: "Principal laws: Test Principal Law 1" });
     expect(appliedFilter).toBeInTheDocument();
 
     expect(screen.getByRole("link", { name: "Family With Test Principal Law 1" })).toBeInTheDocument();
@@ -612,7 +612,7 @@ describe("SearchPage", async () => {
       await userEvent.click(screen.getByRole("radio", { name: "Test Jurisdiction 1" }));
     });
 
-    const appliedFilter = screen.getByRole("button", { name: "Test Jurisdiction 1" });
+    const appliedFilter = screen.getByRole("button", { name: "Jurisdiction: Test Jurisdiction 1" });
     expect(appliedFilter).toBeInTheDocument();
 
     expect(screen.getByRole("link", { name: "Family With Test Jurisdiction 1" })).toBeInTheDocument();
