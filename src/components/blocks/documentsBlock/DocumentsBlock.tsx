@@ -56,9 +56,8 @@ export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatch
 
   useEffect(() => {
     const language = navigator?.language;
-
-    setUpdatedRowsWithLocalisedDates(getEventTableRows({ families: [family], language }));
-  }, [family]);
+    setUpdatedRowsWithLocalisedDates(getEventTableRows({ families: [family], language, documentEventsOnly: true, matchesFamily, matchesStatus }));
+  }, [family, matchesFamily, matchesStatus]);
 
   return (
     <Section block="documents" title="Documents">
