@@ -181,16 +181,19 @@ describe("getMostSpecificCourtsFromWikiConcepts", () => {
         preferred_label: "United States",
         has_subconcept: ["Federal Courts"],
         subconcept_of: [],
+        recursive_subconcept_of: [],
       }),
       createConcept({
         preferred_label: "Federal Courts",
         has_subconcept: ["D.D.C."],
         subconcept_of: ["United States"],
+        recursive_subconcept_of: ["United States"],
       }),
       createConcept({
         preferred_label: "D.D.C.",
         has_subconcept: [],
         subconcept_of: ["Federal Courts"],
+        recursive_subconcept_of: ["Federal Courts", "United States"],
       }),
     ];
     expect(getMostSpecificCourtsFromWikiConcepts(concepts)).toBe("D.D.C.");
