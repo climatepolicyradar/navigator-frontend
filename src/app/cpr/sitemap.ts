@@ -1,13 +1,13 @@
 import type { MetadataRoute } from "next";
 
 import { ApiClient } from "@/api/http-common";
-import CCCthemeConfig from "@/ccc/config";
+import CPRthemeConfig from "@/cpr/config";
 import { extractGeographySlugs } from "@/utils/geography";
 
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const allCorpusIds = CCCthemeConfig.categories?.options.flatMap((option) => option.value) || [];
+  const allCorpusIds = CPRthemeConfig.categories?.options.flatMap((option) => option.value) || [];
   const allCorpusIdsSearchParams = allCorpusIds.map((corpusId) => ["corpus.import_id", corpusId]);
   const urlSearchParams = new URLSearchParams(allCorpusIdsSearchParams);
 

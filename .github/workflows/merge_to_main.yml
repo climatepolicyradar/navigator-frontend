@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Use Node.js 22.12.0
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22.12.0
       - run: npm install
@@ -54,7 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Use Node.js 22.12.0
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22.12.0
       - run: npm install
@@ -80,7 +80,7 @@ jobs:
       THEME: cpr
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22.12.0
       - run: npm install
@@ -103,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22.12.0
       - run: npm install
@@ -116,7 +116,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22.12.0
       - run: npm install
@@ -142,7 +142,7 @@ jobs:
       PLAYWRIGHT_BROWSERS_PATH: $HOME/.cache/ms-playwright
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22.12.0
       - run: npm ci
@@ -200,7 +200,7 @@ jobs:
         theme: [cpr, cclw, mcf, ccc]
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22.12.0
 
@@ -213,7 +213,7 @@ jobs:
       # most of this is taken from
       # https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-to-amazon-elastic-container-service#creating-the-workflow
       - name: Configure AWS credentials (staging)
-        uses: aws-actions/configure-aws-credentials@v4.1.0
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID_STAGING }}:role/navigator-frontend-github-actions
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
@@ -235,7 +235,7 @@ jobs:
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Configure aws credentials (production)
-        uses: aws-actions/configure-aws-credentials@v4.1.0
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID_PROD }}:role/navigator-frontend-github-actions
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
@@ -263,11 +263,11 @@ jobs:
       THEME: cpr
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22.12.0
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
