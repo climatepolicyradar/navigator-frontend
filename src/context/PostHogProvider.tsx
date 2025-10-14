@@ -10,8 +10,6 @@ import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { Suspense, useEffect } from "react";
 
-import { setFeatureFlags } from "@/utils/featureFlags";
-
 interface IProps {
   children: React.ReactNode;
   consent?: boolean;
@@ -83,4 +81,13 @@ export function PostHogProvider({ children, consent = false }: IProps) {
       {children}
     </PHProvider>
   );
+}
+
+/** @see: https://posthog.com/docs/product-analytics/best-practices#2-implement-a-naming-convention */
+type Category = "search";
+type Object = "results";
+type Action = "fetch";
+
+export function posthogEventName(category: Category, object: Object, action: Action) {
+  return `${category}:${object}_${action}`;
 }
