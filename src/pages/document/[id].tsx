@@ -5,13 +5,13 @@ import React from "react";
 import { ApiClient } from "@/api/http-common";
 import { FamilyLitigationPage } from "@/components/pages/familyLitigationPage";
 import { FamilyOriginalPage, IProps } from "@/components/pages/familyOriginalPage";
+import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { TCorpusTypeDictionary, TFamilyPublic, TGeography, TGeographySubdivision, TSearchResponse, TSlugResponse, TTarget } from "@/types";
 import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
-import { getLanguage } from "@/utils/getLanguage";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 /*
@@ -43,15 +43,27 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
   const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
-  /** As the families API cannot be queries by slugs, we need to get the slug */
-  const { data: slugData } = await apiClient.get(`/families/slugs/${id}`);
-  const slug: TSlugResponse = slugData.data;
+  let slug: TSlugResponse;
+  try {
+    /** As the families API cannot be queried by slugs, we need to get the slug */
+    const { data: slugData } = await apiClient.get(`/families/slugs/${id}`);
+    slug = slugData.data;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("Error fetching slug data", error);
+    return {
+      notFound: true,
+    };
+  }
 
-  /** and then query the families API by the returned family_import_id */
-  const { data: familyResponse } = await apiClient.get(`/families/${slug.family_import_id}`);
-  const familyData: TFamilyPublic = familyResponse.data;
-
-  if (!familyData) {
+  let familyData: TFamilyPublic;
+  try {
+    /** and then query the families API by the returned family_import_id */
+    const { data: familyResponse } = await apiClient.get(`/families/${slug.family_import_id}`);
+    familyData = familyResponse.data;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("Error fetching families data", error);
     return {
       notFound: true,
     };
@@ -59,9 +71,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   /** The Vespa families data has the concepts data attached, which is why we need this */
   let vespaFamilyData: TSearchResponse;
-  if (knowledgeGraphEnabled) {
-    const { data: vespaFamilyDataResponse } = await backendApiClient.get(`/families/${familyData.import_id}`);
-    vespaFamilyData = vespaFamilyDataResponse;
+  try {
+    if (knowledgeGraphEnabled) {
+      const { data: vespaFamilyDataResponse } = await backendApiClient.get(`/families/${familyData.import_id}`);
+      vespaFamilyData = vespaFamilyDataResponse;
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("Error fetching vespa family data", error);
   }
 
   /** TODO: see where we use this config data, and if we can get it from the families response */
@@ -73,12 +90,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   /** This is because our family.geographies field isn't hydrated but rather a string[] */
   const allSubdivisions = await Promise.all<TGeographySubdivision[]>(
     familyData.geographies
-      .filter((country) => country.length === 3 && !["XAA", "XAB"].includes(country))
+      .filter((country) => country.length === 3 && !EXCLUDED_ISO_CODES.includes(country))
       .map(async (country) => {
         try {
           const { data: subDivisionResponse } = await apiClient.get(`/geographies/subdivisions/${country}`);
           return subDivisionResponse;
-        } catch (error) {}
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error("Error fetching subdivisions data", error);
+        }
       })
   );
   const subdivisionsData = allSubdivisions.flat().filter((subdivision) => subdivision !== undefined);
@@ -88,7 +108,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/families/${familyData.import_id}.json`);
     targetsData = targetsRaw.data;
-  } catch (e) {}
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("Error fetching targets data", error);
+  }
 
   /** Check the family is in the "allowed_corpora" */
   if (familyData.corpus?.import_id && !isCorpusIdAllowed(process.env.BACKEND_API_TOKEN, familyData.corpus.import_id)) {

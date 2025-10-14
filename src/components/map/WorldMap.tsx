@@ -3,6 +3,7 @@ import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, Zooma
 import { Tooltip, TooltipRefProps } from "react-tooltip";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { GEO_CENTER_POINTS } from "@/constants/mapCentres";
 import { GEO_EU_COUNTRIES } from "@/constants/mapEUCountries";
 import useConfig from "@/hooks/useConfig";
@@ -67,10 +68,11 @@ const geoStyle = (isActive: boolean, count: number, max: number) => {
   const countLog = Math.log10(count || 1);
 
   const ratio = countLog / maxLog;
+  const fillLightness = count === 0 ? 80 : 60 - ratio * 25;
 
   return {
     default: {
-      fill: isActive ? "#002CA3" : `hsl(206, 14%, ${72 - ratio * 25}%)`,
+      fill: isActive ? "#002CA3" : `hsl(206, 14%, ${fillLightness}%)`,
       stroke: "#fff",
       strokeWidth: 0.25,
       outline: "none",
@@ -177,15 +179,17 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
       ? Math.max(...mapDataRaw.map((g) => (g.family_counts?.EXECUTIVE || 0) + (g.family_counts?.LEGISLATIVE || 0)))
       : 0;
     // Only take UNFCCC, Reports and MCF counts for countries that are not XAA or XAB (international, no geography)
-    const maxMcf = mapDataRaw.length ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.MCF || 0))) : 0;
+    const maxMcf = mapDataRaw.length
+      ? Math.max(...mapDataRaw.map((g) => (EXCLUDED_ISO_CODES.includes(g.iso_code) ? 0 : g.family_counts?.MCF || 0)))
+      : 0;
     const maxReports = mapDataRaw.length
-      ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.REPORTS || 0)))
+      ? Math.max(...mapDataRaw.map((g) => (EXCLUDED_ISO_CODES.includes(g.iso_code) ? 0 : g.family_counts?.REPORTS || 0)))
       : 0;
     const maxUnfccc = mapDataRaw.length
-      ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.UNFCCC || 0)))
+      ? Math.max(...mapDataRaw.map((g) => (EXCLUDED_ISO_CODES.includes(g.iso_code) ? 0 : g.family_counts?.UNFCCC || 0)))
       : 0;
     const maxLitigation = mapDataRaw.length
-      ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.LITIGATION || 0)))
+      ? Math.max(...mapDataRaw.map((g) => (EXCLUDED_ISO_CODES.includes(g.iso_code) ? 0 : g.family_counts?.LITIGATION || 0)))
       : 0;
 
     const mapDataConstructor: TMapData = {
