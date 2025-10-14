@@ -18,7 +18,12 @@ export const getCanonicalUrl = (router: NextRouter, theme: TTheme, attributionUr
     pathname = url.pathname;
   }
 
-  const canonicalUrl = `https://${themeDomain}${pathname}`;
+  let canonicalUrl: string;
+  if (themeDomain.includes("https://")) {
+    canonicalUrl = `${themeDomain}${pathname}`;
+  } else {
+    canonicalUrl = `https://${themeDomain}${pathname}`;
+  }
 
   // Remove trailing slash to avoid duplicate content being indexed
   if (canonicalUrl.endsWith("/")) {
