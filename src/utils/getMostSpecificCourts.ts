@@ -48,14 +48,13 @@ export function getMostSpecificCourtsFromWikiConcepts(concepts: TConcept[]): str
     return concepts[0].preferred_label || null;
   }
 
-  const specificCourt = concepts.find(
-    (concept) =>
-      concept.type === "jurisdiction" &&
-      Array.isArray(concept.has_subconcept) &&
-      concept.has_subconcept.length === 0 &&
-      Array.isArray(concept.subconcept_of) &&
-      concept.subconcept_of.length > 0
-  );
+  const specificCourt = concepts
+    .filter((concept) => concept.type === "jurisdiction")
+    .reduce((deepest, current) => {
+      const currDepth = current.recursive_subconcept_of?.length || 0;
+      const deepestDepth = deepest.recursive_subconcept_of?.length || 0;
+      return currDepth > deepestDepth ? current : deepest;
+    });
 
   return specificCourt?.preferred_label || null;
 }
