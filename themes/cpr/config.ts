@@ -24,6 +24,7 @@ const config: TThemeConfig = {
           "MCF.corpus.GEF.n0000",
           "OEP.corpus.i00000001.n0000",
           "UNFCCC.corpus.i00000001.n0000",
+          "CPR.corpus.i00000002.n0000",
         ],
       },
       {
