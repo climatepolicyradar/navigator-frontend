@@ -50,6 +50,30 @@ describe("getCanonicalUrl", () => {
       attributionUrl: "app.climatepolicyradar.org",
       expected: "https://app.climatepolicyradar.org/documents/document-123",
     },
+    {
+      route: "/documents/document-456",
+      theme: "cpr",
+      attributionUrl: "https://www.climate-laws.org",
+      expected: "https://www.climate-laws.org/documents/document-456",
+    },
+    {
+      route: "/documents/document-456",
+      theme: "cclw",
+      attributionUrl: "https://app.climatepolicyradar.org",
+      expected: "https://app.climatepolicyradar.org/documents/document-456",
+    },
+    {
+      route: "/documents/document-456",
+      theme: "mcf",
+      attributionUrl: "https://app.climatepolicyradar.org",
+      expected: "https://app.climatepolicyradar.org/documents/document-456",
+    },
+    {
+      route: "/documents/document-456",
+      theme: "ccc",
+      attributionUrl: "https://app.climatepolicyradar.org",
+      expected: "https://app.climatepolicyradar.org/documents/document-456",
+    },
 
     /** Pages with next router params in URL */
     { route: "/geographies/us-tn?query=oil", theme: "cpr", expected: "https://app.climatepolicyradar.org/geographies/us-tn" },

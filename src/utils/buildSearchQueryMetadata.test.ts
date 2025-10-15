@@ -1,3 +1,4 @@
+import { DEFAULT_CONFIG_FEATURES } from "@/constants/features";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { TThemeConfig } from "@/types";
 
@@ -16,9 +17,7 @@ const testThemeConfig: TThemeConfig = {
     },
   ],
   features: {
-    familyConceptsSearch: false,
-    knowledgeGraph: false,
-    litigation: false,
+    ...DEFAULT_CONFIG_FEATURES,
     searchFamilySummary: true,
   },
 };
