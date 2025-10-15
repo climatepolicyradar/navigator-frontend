@@ -105,7 +105,21 @@ actions:
   disabled:
     - trunk-announce
     - trunk-check-pre-push
+
+  definitions:
+    - id: typescript-tsc-pre-commit
+      triggers:
+        - git_hooks: [pre-push, pre-commit]
+      run: npm run type-check
+
+    - id: npm-install
+      triggers:
+        - files: [package.json]
+      run: npm install
+
   enabled:
     - trunk-fmt-pre-commit
     - trunk-check-pre-commit
     - trunk-upgrade-available
+    - typescript-tsc-pre-commit
+    - npm-install
