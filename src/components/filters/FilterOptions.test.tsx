@@ -23,6 +23,7 @@ describe("FilterOptions", () => {
         familyConceptsSearch: false,
         knowledgeGraph: false,
         litigation: false,
+        newPageDesigns: false,
         searchFamilySummary: true,
       },
     };
