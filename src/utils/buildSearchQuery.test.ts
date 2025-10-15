@@ -1,3 +1,4 @@
+import { DEFAULT_CONFIG_FEATURES } from "@/constants/features";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { TThemeConfig } from "@/types";
 
@@ -26,9 +27,8 @@ describe("buildSearchQuery: ", () => {
         ],
       },
       features: {
-        familyConceptsSearch: false,
+        ...DEFAULT_CONFIG_FEATURES,
         knowledgeGraph: true,
-        litigation: false,
         searchFamilySummary: true,
       },
     };
@@ -49,9 +49,8 @@ describe("buildSearchQuery: ", () => {
         options: [],
       },
       features: {
-        familyConceptsSearch: false,
+        ...DEFAULT_CONFIG_FEATURES,
         knowledgeGraph: true,
-        litigation: false,
         searchFamilySummary: true,
       },
     };
