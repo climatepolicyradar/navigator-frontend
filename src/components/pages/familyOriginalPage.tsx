@@ -468,7 +468,7 @@ export const FamilyOriginalPage = ({
               ))}
             </SingleCol>
             {concepts.length > 0 && (
-              <div className="border-gray-200 grow-0 shrink-0 px-5 border-l pt-4 md:pt-8 basis-full md:basis-[320px] lg:basis-[380px] xl:basis-[460px]">
+              <div className="border-gray-300 grow-0 shrink-0 px-5 border-l pt-4 md:pt-8 basis-full md:basis-[320px] lg:basis-[380px] xl:basis-[460px]">
                 <ConceptsPanel rootConcepts={rootConcepts} concepts={concepts} onConceptClick={handleConceptClick}></ConceptsPanel>
               </div>
             )}
