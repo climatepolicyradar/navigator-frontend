@@ -255,7 +255,7 @@ test.describe("CCLW Hero Search", () => {
     await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
-  test("should maintain search state on Home breadcrumb click", async ({ page }) => {
+  test("should not maintain search state on Home breadcrumb click", async ({ page }) => {
     const searchTerm = "mango";
 
     // Type search term
@@ -273,13 +273,13 @@ test.describe("CCLW Hero Search", () => {
     // Should now be on homepage with same parameters
     await expect(page.getByText("Search over 5000 climate laws and policies worldwide")).toBeVisible();
     await expect(page).not.toHaveURL(/\/search/);
-    await expect(page).toHaveURL(/q=mango/);
+    await expect(page).not.toHaveURL(/q=mango/);
     await expect(page).not.toHaveURL(/e=true/);
 
     // Verify the search input is not cleared
     const searchInput = page.locator('[data-cy="search-input"]');
-    await expect(searchInput).not.toHaveValue("");
-    await expect(searchInput).toHaveValue(searchTerm);
+    await expect(searchInput).toHaveValue("");
+    await expect(searchInput).not.toHaveValue(searchTerm);
   });
 
   test("should navigate to geography profile when clicking country suggestion", async ({ page }) => {

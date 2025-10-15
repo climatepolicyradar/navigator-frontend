@@ -241,7 +241,7 @@ test.describe("OEP Landing Page Search", () => {
     await expect(page).not.toHaveURL(/e=true/);
   });
 
-  test("should maintain search state on Home breadcrumb click", async ({ page }) => {
+  test("should not maintain search state on Home breadcrumb click", async ({ page }) => {
     const searchTerm = "avoidance";
 
     // Type search term
@@ -260,14 +260,14 @@ test.describe("OEP Landing Page Search", () => {
     // Should now be on the CPR homepage with same parameters
     await expect(page.getByText("Helping the offshore wind sector design effective strategies")).not.toBeVisible();
     await expect(page).not.toHaveURL(/\/search/);
-    await expect(page).toHaveURL(/q=avoidance/);
-    await expect(page).toHaveURL(/c=offshore-wind-reports/);
+    await expect(page).not.toHaveURL(/q=avoidance/);
+    await expect(page).not.toHaveURL(/c=offshore-wind-reports/);
     await expect(page).not.toHaveURL(/e=true/);
 
     // Verify the search input is not cleared
     const searchInput = page.locator('[data-cy="search-input"]');
-    await expect(searchInput).not.toHaveValue("");
-    await expect(searchInput).toHaveValue(searchTerm);
+    await expect(searchInput).toHaveValue("");
+    await expect(searchInput).not.toHaveValue(searchTerm);
   });
 
   test("should perform query string search if geography is typed", async ({ page }) => {
