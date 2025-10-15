@@ -107,9 +107,9 @@ actions:
     - trunk-check-pre-push
 
   definitions:
-    - id: typescript-tsc-pre-commit
+    - id: typescript-tsc-pre-push
       triggers:
-        - git_hooks: [pre-push, pre-commit]
+        - git_hooks: [pre-push]
       run: npm run type-check
 
     - id: npm-install
@@ -121,5 +121,5 @@ actions:
     - trunk-fmt-pre-commit
     - trunk-check-pre-commit
     - trunk-upgrade-available
-    - typescript-tsc-pre-commit
+    - typescript-tsc-pre-push
     - npm-install
