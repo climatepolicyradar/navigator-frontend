@@ -22,7 +22,7 @@ test.describe("CCC Hero Search", () => {
     await page.waitForLoadState("networkidle");
 
     // Verify we're on the CCC homepage by checking the name appears
-    await expect(page.locator("h1")).toHaveText("Climate Litigation Database");
+    await expect(page.getByRole("heading", { name: "The Climate Litigation Database" })).toBeVisible();
     await expect(page.locator('[data-cy="search-input"]')).toHaveAttribute("placeholder", "Search the full text of any document");
   });
 
