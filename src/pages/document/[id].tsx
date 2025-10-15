@@ -11,7 +11,7 @@ import { TCorpusTypeDictionary, TFamilyPublic, TGeography, TGeographySubdivision
 import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
+import { isKnowledgeGraphEnabled, isNewPageDesignsEnabled } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 /*
@@ -22,8 +22,8 @@ import { readConfigFile } from "@/utils/readConfigFile";
 */
 
 const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags, themeConfig, ...props }: IProps) => {
-  const litigationIsEnabled = isLitigationEnabled(featureFlags, themeConfig);
-  const PageComponent = litigationIsEnabled ? FamilyLitigationPage : FamilyOriginalPage;
+  const newPageDesignsAreEnabled = isNewPageDesignsEnabled(featureFlags, themeConfig);
+  const PageComponent = newPageDesignsAreEnabled ? FamilyLitigationPage : FamilyOriginalPage;
   return <PageComponent featureFlags={featureFlags} themeConfig={themeConfig} {...props} />;
 };
 

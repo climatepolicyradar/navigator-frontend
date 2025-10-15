@@ -12,12 +12,12 @@ import { TTarget, TGeography } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isLitigationEnabled } from "@/utils/features";
+import { isNewPageDesignsEnabled } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags, themeConfig, ...props }: IProps) => {
-  const litigationIsEnabled = isLitigationEnabled(featureFlags, themeConfig);
-  const PageComponent = litigationIsEnabled ? GeographyLitigationPage : GeographyOriginalPage;
+  const newPageDesignsAreEnabled = isNewPageDesignsEnabled(featureFlags, themeConfig);
+  const PageComponent = newPageDesignsAreEnabled ? GeographyLitigationPage : GeographyOriginalPage;
   return <PageComponent featureFlags={featureFlags} themeConfig={themeConfig} {...props} />;
 };
 
