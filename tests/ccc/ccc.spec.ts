@@ -22,15 +22,15 @@ test.describe("CCC Hero Search", () => {
     await page.waitForLoadState("networkidle");
 
     // Verify we're on the CCC homepage by checking the name appears
-    await expect(page.locator("h1")).toHaveText("Climate Litigation Database");
-    await expect(page.locator('[data-cy="search-input"]')).toHaveAttribute("placeholder", "Search the full text of any document");
+    await expect(page.getByRole("heading", { name: "The Climate Litigation Database" })).toBeVisible();
+    await expect(page.locator('[data-cy="search-input"]')).toHaveAttribute("placeholder", "Search the full text of cases");
   });
 
   test("should display CCC Hero page with search functionality", async ({ page }) => {
     // Search input
     const searchInput = page.locator('[data-cy="search-input"]');
     await expect(searchInput).toBeVisible();
-    await expect(searchInput).toHaveAttribute("placeholder", "Search the full text of any document");
+    await expect(searchInput).toHaveAttribute("placeholder", "Search the full text of cases");
 
     // Search button
     const searchButton = page.locator('button[aria-label="Search"]');
@@ -38,9 +38,6 @@ test.describe("CCC Hero Search", () => {
 
     // Search form
     await expect(page.locator('[data-cy="search-form"]')).toBeVisible();
-
-    // Exact match checkbox
-    await expect(page.locator("#exact-match")).toBeVisible();
 
     // Quick search suggestions
     await expect(page.getByText("Search by:")).toBeVisible();
@@ -53,7 +50,7 @@ test.describe("CCC Hero Search", () => {
     // Should not crash - should redirect to /search
     await expect(page).not.toHaveURL(/e=true/);
     await expect(page).toHaveURL(/search/);
-    await expect(page.getByText("Search the full text of any document")).not.toBeVisible();
+    await expect(page.getByText("Search the full text of cases")).not.toBeVisible();
   });
 
   test("should perform search with user input via search button", async ({ page }) => {
@@ -214,7 +211,7 @@ test.describe("CCC Hero Search", () => {
     await expect(page).not.toHaveURL(/e=true/);
   });
 
-  test("should maintain search state on Home breadcrumb click", async ({ page }) => {
+  test("should not maintain search state on Home breadcrumb click", async ({ page }) => {
     const searchTerm = "adaptation";
 
     // Type search term
@@ -232,13 +229,13 @@ test.describe("CCC Hero Search", () => {
     // Should now be on homepage with same parameters
     await expect(page.locator("h1").filter({ hasText: "Climate Litigation Database" })).toBeVisible();
     await expect(page).not.toHaveURL(/\/search/);
-    await expect(page).toHaveURL(/q=adaptation/);
+    await expect(page).not.toHaveURL(/q=adaptation/);
     await expect(page).not.toHaveURL(/e=true/);
 
     // Verify the search input is not cleared
     const searchInput = page.locator('[data-cy="search-input"]');
-    await expect(searchInput).not.toHaveValue("");
-    await expect(searchInput).toHaveValue(searchTerm);
+    await expect(searchInput).toHaveValue("");
+    await expect(searchInput).not.toHaveValue(searchTerm);
   });
 
   test("should navigate to geography profile when clicking country suggestion", async ({ page }) => {
@@ -303,64 +300,5 @@ test.describe("CCC Hero Search", () => {
     // Should have correct query parameters
     await expect(page).toHaveURL(/q=renewable\+energy\+adaptation/);
     await expect(page).not.toHaveURL(/e=true/);
-  });
-
-  test("should perform exact match search if exact match checkbox is checked", async ({ page }) => {
-    const searchInput = page.locator('[data-cy="search-input"]');
-    const searchButton = page.locator('button[aria-label="Search"]');
-    const exactMatchCheckbox = page.locator("#exact-match");
-
-    // Type a search term
-    const searchTerm = "climate policy";
-    await searchInput.fill(searchTerm);
-
-    // Check the exact match checkbox
-    await exactMatchCheckbox.check();
-
-    // Click search button
-    await searchButton.click();
-
-    // Should navigate to search page with exact match parameter
-    await page.waitForURL("/search*");
-
-    // Verify the exact match parameter is in the URL
-    const url = page.url();
-    expect(url).not.toContain("e=true");
-    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
-  });
-
-  test("should check exact match checkbox is checked on homepage load", async ({ page }) => {
-    const exactMatchCheckbox = page.locator("#exact-match");
-    await expect(exactMatchCheckbox).toBeChecked();
-  });
-
-  test("should perform semantic search if exact match checkbox is not checked", async ({ page }) => {
-    const searchInput = page.locator('[data-cy="search-input"]');
-    const searchButton = page.locator('button[aria-label="Search"]');
-    const exactMatchCheckbox = page.locator("#exact-match");
-
-    // Type a search term
-    const searchTerm = "climate policy";
-    await searchInput.fill(searchTerm);
-
-    // Uncheck only if currently checked
-    if (await exactMatchCheckbox.isChecked()) {
-      // Use click instead of uncheck to trigger the onChange handler properly
-      await exactMatchCheckbox.click();
-
-      // Verify it's actually unchecked
-      await expect(exactMatchCheckbox).not.toBeChecked();
-    }
-
-    // Click search button
-    await searchButton.click();
-
-    // Should navigate to search page with exact match parameter
-    await page.waitForURL("/search*");
-
-    // Verify the exact match parameter is in the URL and is false
-    const url = page.url();
-    expect(url).toContain("e=false");
-    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 });

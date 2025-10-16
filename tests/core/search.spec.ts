@@ -40,16 +40,16 @@ test("search", async ({ page }) => {
   await expect(firstSearchResult).toBeVisible();
 
   /** TODO: Make the markup more semantic */
-  await expect(firstSearchResult.locator('[data-cy="family-title"]')).toBeVisible();
-  await expect(firstSearchResult.locator('[data-cy="family-metadata-category"]')).toBeVisible();
-  await expect(firstSearchResult.locator('[data-cy="family-metadata-year"]')).toBeVisible();
+  await expect(firstSearchResult.locator('[data-cy="family-title"]').first()).toBeVisible();
+  await expect(firstSearchResult.locator('[data-cy="family-metadata-category"]').first()).toBeVisible();
+  await expect(firstSearchResult.locator('[data-cy="family-metadata-year"]').first()).toBeVisible();
 
   // Check if country link exists at all
   const countryLink = firstSearchResult.locator('[data-cy="country-link"]').first();
   await expect(countryLink).toBeVisible();
 
   // Click first search result family title link
-  await firstSearchResult.locator('[data-cy="family-title"]').click();
+  await firstSearchResult.locator('[data-cy="family-title"]').first().click();
 
   /** Family page */
   await Promise.all([page.waitForURL("/document/*"), page.waitForResponse("**/searches")]);
