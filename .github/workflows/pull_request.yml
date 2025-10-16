@@ -203,6 +203,7 @@ jobs:
         run: mkdir -p test-results-${{ matrix.theme }}
 
       - name: Run Tests
+        continue-on-error: true
         env:
           THEME: ${{ matrix.theme }}
           PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
@@ -215,8 +216,6 @@ jobs:
           fi
 
       - name: Upload Test Results to Trunk.io
-        if: ${{ !cancelled() }}
-        continue-on-error: true
         uses: trunk-io/analytics-uploader@v2
         env:
           THEME: ${{ matrix.theme }}
