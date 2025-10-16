@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
 import { FilterOptions } from "@/components/filters/FilterOptions";
+import { DEFAULT_CONFIG_FEATURES } from "@/constants/features";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { TThemeConfig, TThemeConfigFilter } from "@/types";
 
@@ -20,9 +21,7 @@ describe("FilterOptions", () => {
       ...DEFAULT_THEME_CONFIG,
       filters: [testFilter],
       features: {
-        familyConceptsSearch: false,
-        knowledgeGraph: false,
-        litigation: false,
+        ...DEFAULT_CONFIG_FEATURES,
         searchFamilySummary: true,
       },
     };
