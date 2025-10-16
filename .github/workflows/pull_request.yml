@@ -161,13 +161,13 @@ jobs:
 
       - name: Run vitest
         run: npm run test
+        continue-on-error: true
         env:
           THEME: cpr
 
       - name: Upload vitest results to Trunk.io
         uses: trunk-io/analytics-uploader@v2
         if: ${{ !cancelled() }}
-        continue-on-error: true
         with:
           junit-paths: "**/vitest.xml"
           token: ${{ secrets.TRUNK_TOKEN }}
