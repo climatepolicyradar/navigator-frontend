@@ -23,14 +23,14 @@ test.describe("CCC Hero Search", () => {
 
     // Verify we're on the CCC homepage by checking the name appears
     await expect(page.getByRole("heading", { name: "The Climate Litigation Database" })).toBeVisible();
-    await expect(page.locator('[data-cy="search-input"]')).toHaveAttribute("placeholder", "Search the full text of any document");
+    await expect(page.locator('[data-cy="search-input"]')).toHaveAttribute("placeholder", "Search the full text of cases");
   });
 
   test("should display CCC Hero page with search functionality", async ({ page }) => {
     // Search input
     const searchInput = page.locator('[data-cy="search-input"]');
     await expect(searchInput).toBeVisible();
-    await expect(searchInput).toHaveAttribute("placeholder", "Search the full text of any document");
+    await expect(searchInput).toHaveAttribute("placeholder", "Search the full text of cases");
 
     // Search button
     const searchButton = page.locator('button[aria-label="Search"]');
@@ -53,7 +53,7 @@ test.describe("CCC Hero Search", () => {
     // Should not crash - should redirect to /search
     await expect(page).not.toHaveURL(/e=true/);
     await expect(page).toHaveURL(/search/);
-    await expect(page.getByText("Search the full text of any document")).not.toBeVisible();
+    await expect(page.getByText("Search the full text of cases")).not.toBeVisible();
   });
 
   test("should perform search with user input via search button", async ({ page }) => {
