@@ -142,11 +142,12 @@ const config: TThemeConfig = {
     family: [],
     geography: [],
   },
-  tutorials: [],
+  tutorials: ["knowledgeGraph"],
   features: {
     familyConceptsSearch: false,
-    knowledgeGraph: false,
+    knowledgeGraph: true,
     litigation: false,
+    newPageDesigns: false,
     searchFamilySummary: true,
   },
 };

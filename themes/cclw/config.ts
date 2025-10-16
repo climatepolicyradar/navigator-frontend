@@ -184,6 +184,7 @@ const config: TThemeConfig = {
     familyConceptsSearch: false,
     knowledgeGraph: true,
     litigation: false,
+    newPageDesigns: false,
     searchFamilySummary: true,
   },
 };
