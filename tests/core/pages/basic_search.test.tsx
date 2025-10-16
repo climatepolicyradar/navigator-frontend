@@ -82,7 +82,7 @@ describe("SearchPage", async () => {
     expect(await screen.findAllByText(/Exact phrases/)).toHaveLength(2);
 
     // Expect length of only 1 as it'll only be in the search options and won't appear again as it isn't selected
-    expect(await screen.findAllByText(/Relatedd phrases/)).toHaveLength(1);
+    expect(await screen.findAllByText(/Related phrases/)).toHaveLength(1);
   });
 
   it("handles sort settings dropdown", async () => {
