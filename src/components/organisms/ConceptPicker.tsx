@@ -63,10 +63,10 @@ const filterConcepts = (concepts: TConcept[], search: string) => {
 };
 
 const removeUnusableConcepts = (concepts: TConcept[], theme: TTheme): TConcept[] => {
-  // if (theme !== "mcf") return concepts;
+  if (theme !== "mcf") return concepts;
 
   const CLIMATE_FINANCE = "Q1343";
-  return concepts.filter((concept) => concept.wikibase_id !== CLIMATE_FINANCE && !concept.recursive_subconcept_of.includes(CLIMATE_FINANCE));
+  return concepts.filter((concept) => concept.wikibase_id !== CLIMATE_FINANCE && !concept.recursive_subconcept_of?.includes(CLIMATE_FINANCE));
 };
 
 const onConceptChange = (router: NextRouter, concept: TConcept) => {
