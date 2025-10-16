@@ -14,6 +14,8 @@ export default defineConfig({
     environment: "jsdom",
     exclude: ["**/node_modules/**", "**/.trunk/**", "**/tests/**/*.spec.ts", "**/themes/**"],
     setupFiles: ["./tests/setup.js"],
-    reporters: [process.env.CI ? ["junit", { outputFile: "./vitest.xml" }] : "verbose"],
+    reporters: process.env.CI ? ["default", ["junit", { outputFile: "./vitest.xml" }]] : ["verbose"],
+    /* Fail the build on CI if you accidentally left test.only in the source code. */
+    allowOnly: !process.env.CI,
   },
 });

@@ -80,7 +80,7 @@ export const RecentFamiliesCategory = ({
         <div className="pt-5 mb-5">
           <button type="button" onClick={clickAccordion} className="flex items-center gap-3">
             <LucideChevronDownCircle size={20} className={accordionIconClasses} />
-            <h3 className="text-lg text-text-primary font-[660] leading-tight">{title}</h3>
+            <h3 className="text-[18px] text-text-primary font-[660] leading-tight">{title}</h3>
           </button>
         </div>
       )}

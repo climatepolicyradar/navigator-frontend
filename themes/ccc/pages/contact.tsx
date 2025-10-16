@@ -39,7 +39,7 @@ const Contact = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-8">
                 <div className="space-y-3">
-                  <h3 className="text-lg font-semibold mb-4">Address</h3>
+                  <h3 className="text-[18px] font-semibold mb-4">Address</h3>
                   <ExternalLink url="https://climate.law.columbia.edu/" className="color-text-tertiary hover:color-text-quaternary">
                     Sabin Center for Climate Change Law
                   </ExternalLink>
@@ -54,7 +54,7 @@ const Contact = () => {
                   </address>
                 </div>
                 <div className="space-y-3">
-                  <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
+                  <h3 className="text-[18px] font-semibold mb-4">Contact Information</h3>
                   <ul className="space-y-3">
                     <li className="flex items-start">
                       <span className="font-semibold color-text-secondary min-w-[60px]">Phone:</span>
