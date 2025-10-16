@@ -1,29 +1,15 @@
-import { act, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import router from "next-router-mock";
 
 import cccConfig from "@/ccc/config";
 import { createFeatureFlags } from "@/mocks/featureFlags";
+import { resetPage } from "@/mocks/helpers";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import { setUpFamiliesRepo } from "@/mocks/repository";
 import Search from "@/pages/search";
 
-// Mock the useHashNavigation hook to provide controlled slideout state
-let mockCurrentSlideOut = "";
-let mockSetCurrentSlideOut = vi.fn();
-
-vi.mock("@/hooks/useHashNavigation", () => ({
-  useHashNavigation: () => ({
-    currentSlideOut: mockCurrentSlideOut,
-    setCurrentSlideOut: mockSetCurrentSlideOut,
-    updateHash: vi.fn(),
-  }),
-}));
-
 afterEach(() => {
-  // clear router state between tests
-  // we store query params in the router state so this resets everything
-  router.reset();
+  resetPage();
 });
 
 const basicLegalConcepts = [
@@ -130,101 +116,63 @@ const baseSearchProps = {
 
 describe("SearchPage", async () => {
   it("filters search results by subdivision", async () => {
-    mockCurrentSlideOut = ""; // Make sure we start with slideout closed.
-
     // @ts-ignore
-    const { rerender } = renderWithAppContext(Search, baseSearchProps, {
-      currentSlideOut: mockCurrentSlideOut,
-      setCurrentSlideOut: mockSetCurrentSlideOut,
-    });
+    renderWithAppContext(Search, baseSearchProps);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+    await screen.findByRole("heading", { level: 2, name: "Search results" });
 
     // Verify slideout is initially closed.
     expect(screen.queryByText("Subdivision")).not.toBeInTheDocument();
 
-    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
-    // like animations that were causing warnings in the console.
-    await act(async () => {
-      await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
-    });
-    expect(mockSetCurrentSlideOut).toHaveBeenCalledWith("geographies");
-
-    // Now simulate the slideout being open by updating the context & rerendering.
-    mockCurrentSlideOut = "geographies";
-
-    // @ts-ignore
-    rerender(Search, baseSearchProps, { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut });
+    await userEvent.click(screen.getByRole("button", { name: "Geography" }));
 
     // Verify the slideout is now open.
-    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+    expect(screen.getByText("Subdivision")).toBeInTheDocument();
 
     // Find the subdivision option and click it.
-    const subdivisionOption = await screen.findByRole("checkbox", { name: "New South Wales" });
-    await act(async () => {
-      await userEvent.click(subdivisionOption);
-    });
+    const subdivisionOption = screen.getByRole("checkbox", { name: "New South Wales" });
+
+    await userEvent.click(subdivisionOption);
+
     expect(subdivisionOption).toBeChecked();
 
     // Verify the applied filter for the selected subdivision is visible.
     expect(screen.getByRole("button", { name: "Geography: New South Wales" })).toBeInTheDocument();
 
     // Verify the results are filtered by the subdivision.
-    expect(await screen.findByText("Results:")).toBeInTheDocument();
+    expect(screen.getByText("Results:")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "New South Wales Litigation Case" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Australia Litigation Case" })).not.toBeInTheDocument();
   });
 
   it("removes country and subdivision filters when a region filter is removed ", async () => {
-    mockCurrentSlideOut = ""; // Make sure we start with slideout closed.
-
     // @ts-ignore
-    const { rerender } = renderWithAppContext(Search, baseSearchProps, {
-      currentSlideOut: mockCurrentSlideOut,
-      setCurrentSlideOut: mockSetCurrentSlideOut,
-    });
+    renderWithAppContext(Search, baseSearchProps);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+    await screen.findByRole("heading", { level: 2, name: "Search results" });
 
-    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
-    // like animations that were causing warnings in the console.
-    await act(async () => {
-      const geographyButton = await screen.findByRole("button", { name: "Geography" });
-      expect(geographyButton).toBeVisible();
-      await userEvent.click(geographyButton);
-    });
-    expect(mockSetCurrentSlideOut).toHaveBeenCalledWith("geographies");
-
-    // Now simulate the slideout being open by updating the context & rerendering.
-    mockCurrentSlideOut = "geographies";
-
-    // @ts-ignore
-    rerender(Search, baseSearchProps, { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut });
+    await userEvent.click(screen.getByRole("button", { name: "Geography" }));
 
     // Verify the slideout is now open.
-    expect(await screen.findByText("Region")).toBeInTheDocument();
-    expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
-    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+    expect(screen.getByText("Region")).toBeInTheDocument();
+    expect(screen.getByText("Published jurisdiction")).toBeInTheDocument();
+    expect(screen.getByText("Subdivision")).toBeInTheDocument();
 
     // Find the region, country, and subdivision options and click them.
     const regionFilterOption = screen.getByRole("checkbox", { name: "East Asia & Pacific" });
     const countryFilterOption = screen.getByRole("checkbox", { name: "Australia" });
     const subdivisionFilterOption = screen.getByRole("checkbox", { name: "New South Wales" });
 
-    await act(async () => {
-      await userEvent.click(regionFilterOption);
-      await userEvent.click(countryFilterOption);
-      await userEvent.click(subdivisionFilterOption);
-    });
+    await userEvent.click(regionFilterOption);
+    await userEvent.click(countryFilterOption);
+    await userEvent.click(subdivisionFilterOption);
 
     const appliedRegionFilter = screen.getByRole("button", { name: "East Asia & Pacific" });
     const appliedCountryFilter = screen.getByRole("button", { name: "Geography: Australia" });
     const appliedSubdivisionFilter = screen.getByRole("button", { name: "Geography: New South Wales" });
 
     // Uncheck the filter for the region.
-    await act(async () => {
-      await userEvent.click(regionFilterOption);
-    });
+    await userEvent.click(regionFilterOption);
 
     expect(regionFilterOption).not.toBeChecked();
     expect(countryFilterOption).not.toBeChecked();
@@ -236,40 +184,23 @@ describe("SearchPage", async () => {
   });
 
   it("removes subdivision filters when a country filter is removed", async () => {
-    mockCurrentSlideOut = ""; // Make sure we start with slideout closed.
-
     // @ts-ignore
-    const { rerender } = renderWithAppContext(Search, baseSearchProps, {
-      currentSlideOut: mockCurrentSlideOut,
-      setCurrentSlideOut: mockSetCurrentSlideOut,
-    });
+    renderWithAppContext(Search, baseSearchProps);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+    await screen.findByRole("heading", { level: 2, name: "Search results" });
 
-    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
-    // like animations that were causing warnings in the console.
-    await act(async () => {
-      await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
-    });
-    expect(mockSetCurrentSlideOut).toHaveBeenCalledWith("geographies");
-
-    // Now simulate the slideout being open by updating the context & rerendering.
-    mockCurrentSlideOut = "geographies";
-
-    // @ts-ignore
-    rerender(Search, baseSearchProps, { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut });
+    await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
 
     // Verify the slideout is now open.
-    expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
-    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+    expect(screen.getByText("Published jurisdiction")).toBeInTheDocument();
+    expect(screen.getByText("Subdivision")).toBeInTheDocument();
 
     // Find the country and subdivision options and click them.
-    const countryFilterOption = await screen.findByRole("checkbox", { name: "Australia" });
-    const subdivisionFilterOption = await screen.findByRole("checkbox", { name: "New South Wales" });
-    await act(async () => {
-      await userEvent.click(countryFilterOption);
-      await userEvent.click(subdivisionFilterOption);
-    });
+    const countryFilterOption = screen.getByRole("checkbox", { name: "Australia" });
+    const subdivisionFilterOption = screen.getByRole("checkbox", { name: "New South Wales" });
+
+    await userEvent.click(countryFilterOption);
+    await userEvent.click(subdivisionFilterOption);
 
     const countryFilter = screen.getByRole("button", { name: "Geography: Australia" });
     const subdivisionFilter = screen.getByRole("button", { name: "Geography: New South Wales" });
@@ -277,9 +208,7 @@ describe("SearchPage", async () => {
     expect(subdivisionFilter).toBeInTheDocument();
 
     // Remove the applied filter for country.
-    await act(async () => {
-      await userEvent.click(countryFilterOption);
-    });
+    await userEvent.click(countryFilterOption);
 
     expect(countryFilterOption).not.toBeChecked();
     expect(subdivisionFilterOption).not.toBeChecked();
@@ -288,65 +217,40 @@ describe("SearchPage", async () => {
   });
 
   it("filters search results by case category", async () => {
-    mockCurrentSlideOut = ""; // Make sure we start with slideout closed.
-
-    const { rerender } = renderWithAppContext(
-      // @ts-ignore
-      Search,
-      {
-        ...baseSearchProps,
-        familyConceptsData: basicLegalConcepts,
-      },
-      { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut }
-    );
-
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
-
-    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
-    // like animations that were causing warnings in the console.
-    await act(async () => {
-      await userEvent.click(await screen.findByRole("button", { name: "Case categories" }));
-    });
-    expect(mockSetCurrentSlideOut).toHaveBeenCalledWith("categories");
-
-    // Now simulate the slideout being open by updating the context & rerendering.
-    mockCurrentSlideOut = "categories";
-
     // @ts-ignore
-    rerender(Search, baseSearchProps, { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut });
+    renderWithAppContext(Search, {
+      ...baseSearchProps,
+      familyConceptsData: basicLegalConcepts,
+    });
 
-    expect(await screen.findAllByText("Parent Test Case Category")).toHaveLength(1);
+    await screen.findByRole("heading", { level: 2, name: "Search results" });
+
+    await userEvent.click(screen.getByRole("button", { name: "Case categories" }));
+
+    expect(screen.getAllByText("Parent Test Case Category")).toHaveLength(1);
 
     const caseCategoryOption1 = screen.getByRole("checkbox", { name: "Test Case Category 1" });
     const caseCategoryOption2 = screen.getByRole("checkbox", { name: "Test Case Category 2" });
     expect(caseCategoryOption1).toBeInTheDocument();
     expect(caseCategoryOption2).toBeInTheDocument();
 
-    await act(async () => {
-      await userEvent.click(caseCategoryOption1);
-    });
+    await userEvent.click(caseCategoryOption1);
 
     expect(caseCategoryOption1).toBeChecked();
     // check for applied filter button
     expect(screen.getByRole("button", { name: "Test Case Category 1" })).toBeInTheDocument();
 
-    expect(await screen.findByText("Results:")).toBeInTheDocument();
+    expect(screen.getByText("Results:")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Family With Test Case Category 1" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Family With Test Case Category 2" })).not.toBeInTheDocument();
   });
 
   it("removing a case category filter updates search results", async () => {
-    mockCurrentSlideOut = ""; // Make sure we start with slideout closed.
-
-    const { rerender } = renderWithAppContext(
-      // @ts-ignore
-      Search,
-      {
-        ...baseSearchProps,
-        familyConceptsData: basicLegalConcepts,
-      },
-      { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut }
-    );
+    // @ts-ignore
+    renderWithAppContext(Search, {
+      ...baseSearchProps,
+      familyConceptsData: basicLegalConcepts,
+    });
 
     const familyWithCategory1 = {
       family_slug: "family-with-test-case-category-1-ca23",
@@ -398,29 +302,16 @@ describe("SearchPage", async () => {
 
     setUpFamiliesRepo([familyWithCategory1, familyWithCategory2]);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+    await screen.findByRole("heading", { level: 2, name: "Search results" });
 
-    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
-    // like animations that were causing warnings in the console.
-    await act(async () => {
-      await userEvent.click(await screen.findByRole("button", { name: "Case categories" }));
-    });
+    await userEvent.click(screen.getByRole("button", { name: "Case categories" }));
 
-    // Now simulate the slideout being open by updating the context & rerendering.
-    mockCurrentSlideOut = "categories";
-
-    // @ts-ignore
-    rerender(Search, baseSearchProps, { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut });
-
-    await act(async () => {
-      await userEvent.click(screen.getByRole("checkbox", { name: "Test Case Category 1" }));
-      // await userEvent.click(screen.getByRole("checkbox", { name: "Parent Test Case Category" }));
-    });
+    await userEvent.click(screen.getByRole("checkbox", { name: "Test Case Category 1" }));
 
     // verify applied filter is displayed
     const appliedFilter = screen.getByRole("button", { name: "Test Case Category 1" });
     expect(appliedFilter).toBeInTheDocument();
-    // verify the parent concept is displayed
+    // verify the parent concept is displayed by default
     const parentConceptAppliedFilter = screen.getByRole("button", { name: "Parent Test Case Category" });
     expect(parentConceptAppliedFilter).toBeInTheDocument();
 
@@ -428,27 +319,19 @@ describe("SearchPage", async () => {
     expect(screen.queryByRole("link", { name: "Family With Test Case Category 2" })).not.toBeInTheDocument();
 
     // remove applied filter
-    await act(async () => {
-      await userEvent.click(appliedFilter);
-      await userEvent.click(parentConceptAppliedFilter);
-    });
+    await userEvent.click(appliedFilter);
+    await userEvent.click(parentConceptAppliedFilter);
 
     expect(screen.getByRole("link", { name: "Family With Test Case Category 1" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Family With Test Case Category 2" })).toBeInTheDocument();
   });
 
   it("removing a principal law filter updates search results", async () => {
-    mockCurrentSlideOut = ""; // Make sure we start with slideout closed.
-
-    const { rerender } = renderWithAppContext(
-      // @ts-ignore
-      Search,
-      {
-        ...baseSearchProps,
-        familyConceptsData: basicLegalConcepts,
-      },
-      { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut }
-    );
+    // @ts-ignore
+    renderWithAppContext(Search, {
+      ...baseSearchProps,
+      familyConceptsData: basicLegalConcepts,
+    });
 
     const familyWithPrincipalLaw1 = {
       family_slug: "family-with-test-principal-law-1-ca23",
@@ -498,24 +381,11 @@ describe("SearchPage", async () => {
 
     setUpFamiliesRepo([familyWithPrincipalLaw1, familyWithCategory2]);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+    await screen.findByRole("heading", { level: 2, name: "Search results" });
 
-    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
-    // like animations that were causing warnings in the console.
-    await act(async () => {
-      await userEvent.click(await screen.findByRole("button", { name: "Principal laws" }));
-    });
-    expect(mockSetCurrentSlideOut).toHaveBeenCalledWith("principalLaws");
+    await userEvent.click(screen.getByRole("button", { name: "Principal laws" }));
 
-    // Now simulate the slideout being open by updating the context & rerendering.
-    mockCurrentSlideOut = "principalLaws";
-
-    // @ts-ignore
-    rerender(Search, baseSearchProps, { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut });
-
-    await act(async () => {
-      await userEvent.click(screen.getByRole("radio", { name: "Test Principal Law 1" }));
-    });
+    await userEvent.click(screen.getByRole("radio", { name: "Test Principal Law 1" }));
 
     const appliedFilter = screen.getByRole("button", { name: "Principal laws: Test Principal Law 1" });
     expect(appliedFilter).toBeInTheDocument();
@@ -524,26 +394,18 @@ describe("SearchPage", async () => {
     expect(screen.queryByRole("link", { name: "Family With Test Principal Law 2" })).not.toBeInTheDocument();
 
     // remove applied filter
-    await act(async () => {
-      await userEvent.click(appliedFilter);
-    });
+    await userEvent.click(appliedFilter);
 
     expect(screen.getByRole("link", { name: "Family With Test Principal Law 1" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Family With Test Principal Law 2" })).toBeInTheDocument();
   });
 
   it("removing a jurisdiction filter updates search results", async () => {
-    mockCurrentSlideOut = ""; // Make sure we start with slideout closed.
-
-    const { rerender } = renderWithAppContext(
-      // @ts-ignore
-      Search,
-      {
-        ...baseSearchProps,
-        familyConceptsData: basicLegalConcepts,
-      },
-      { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut }
-    );
+    // @ts-ignore
+    renderWithAppContext(Search, {
+      ...baseSearchProps,
+      familyConceptsData: basicLegalConcepts,
+    });
 
     const familyWithJurisdiction1 = {
       family_slug: "family-with-test-jurisdiction-1-ca23",
@@ -593,24 +455,11 @@ describe("SearchPage", async () => {
 
     setUpFamiliesRepo([familyWithJurisdiction1, familyWithJurisdiction2]);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+    await screen.findByRole("heading", { level: 2, name: "Search results" });
 
-    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
-    // like animations that were causing warnings in the console.
-    await act(async () => {
-      await userEvent.click(await screen.findByRole("button", { name: "Jurisdictions" }));
-    });
-    expect(mockSetCurrentSlideOut).toHaveBeenCalledWith("jurisdictions");
+    await userEvent.click(screen.getByRole("button", { name: "Jurisdictions" }));
 
-    // Now simulate the slideout being open by updating the context & rerendering.
-    mockCurrentSlideOut = "jurisdictions";
-
-    // @ts-ignore
-    rerender(Search, baseSearchProps, { currentSlideOut: mockCurrentSlideOut, setCurrentSlideOut: mockSetCurrentSlideOut });
-
-    await act(async () => {
-      await userEvent.click(screen.getByRole("radio", { name: "Test Jurisdiction 1" }));
-    });
+    await userEvent.click(screen.getByRole("radio", { name: "Test Jurisdiction 1" }));
 
     const appliedFilter = screen.getByRole("button", { name: "Jurisdiction: Test Jurisdiction 1" });
     expect(appliedFilter).toBeInTheDocument();
@@ -619,9 +468,7 @@ describe("SearchPage", async () => {
     expect(screen.queryByRole("link", { name: "Family With Test Jurisdiction 2" })).not.toBeInTheDocument();
 
     // remove applied filter
-    await act(async () => {
-      await userEvent.click(appliedFilter);
-    });
+    await userEvent.click(appliedFilter);
 
     expect(screen.getByRole("link", { name: "Family With Test Jurisdiction 1" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Family With Test Jurisdiction 2" })).toBeInTheDocument();

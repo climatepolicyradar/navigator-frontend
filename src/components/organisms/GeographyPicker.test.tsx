@@ -1,4 +1,4 @@
-import { act, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
@@ -216,9 +216,7 @@ describe("GeographyPicker", () => {
 
     expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
 
-    await act(async () => {
-      await userEvent.type(screen.getByRole("textbox", { name: "Country quick search" }), "Country 1");
-    });
+    await userEvent.type(screen.getByRole("textbox", { name: "Country quick search" }), "Country 1");
 
     expect(screen.getByRole("checkbox", { name: "Country 1" })).toBeInTheDocument();
     expect(screen.queryByRole("checkbox", { name: "Country 2" })).not.toBeInTheDocument();
@@ -239,9 +237,7 @@ describe("GeographyPicker", () => {
 
     expect(await screen.findByText("Subdivision")).toBeInTheDocument();
 
-    await act(async () => {
-      await userEvent.type(screen.getByRole("textbox", { name: "Subdivision quick search" }), "Subdivision 1");
-    });
+    await userEvent.type(screen.getByRole("textbox", { name: "Subdivision quick search" }), "Subdivision 1");
 
     expect(screen.getByRole("checkbox", { name: "Subdivision 1" })).toBeInTheDocument();
     expect(screen.queryByRole("checkbox", { name: "Subdivision 2" })).not.toBeInTheDocument();
