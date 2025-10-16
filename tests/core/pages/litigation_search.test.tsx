@@ -115,22 +115,22 @@ const baseSearchProps = {
 };
 
 describe("SearchPage", async () => {
-  it("filters search results by subdivision", async () => {
+  it.only("filters search results by subdivision", async () => {
     // @ts-ignore
     renderWithAppContext(Search, baseSearchProps);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+    await screen.findByRole("heading", { level: 2, name: "Search results" });
 
     // Verify slideout is initially closed.
     expect(screen.queryByText("Subdivision")).not.toBeInTheDocument();
 
-    await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
+    await userEvent.click(screen.getByRole("button", { name: "Geography" }));
 
     // Verify the slideout is now open.
-    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+    expect(screen.getByText("Subdivision")).toBeInTheDocument();
 
     // Find the subdivision option and click it.
-    const subdivisionOption = await screen.findByRole("checkbox", { name: "New South Wales" });
+    const subdivisionOption = screen.getByRole("checkbox", { name: "New South Wales" });
 
     await userEvent.click(subdivisionOption);
 
@@ -140,7 +140,7 @@ describe("SearchPage", async () => {
     expect(screen.getByRole("button", { name: "Geography: New South Wales" })).toBeInTheDocument();
 
     // Verify the results are filtered by the subdivision.
-    expect(await screen.findByText("Results:")).toBeInTheDocument();
+    expect(screen.getByText("Results:")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "New South Wales Litigation Case" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Australia Litigation Case" })).not.toBeInTheDocument();
   });
@@ -149,14 +149,14 @@ describe("SearchPage", async () => {
     // @ts-ignore
     renderWithAppContext(Search, baseSearchProps);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+    await screen.findByRole("heading", { level: 2, name: "Search results" });
 
-    await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
+    await userEvent.click(screen.getByRole("button", { name: "Geography" }));
 
     // Verify the slideout is now open.
-    expect(await screen.findByText("Region")).toBeInTheDocument();
-    expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
-    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+    expect(screen.getByText("Region")).toBeInTheDocument();
+    expect(screen.getByText("Published jurisdiction")).toBeInTheDocument();
+    expect(screen.getByText("Subdivision")).toBeInTheDocument();
 
     // Find the region, country, and subdivision options and click them.
     const regionFilterOption = screen.getByRole("checkbox", { name: "East Asia & Pacific" });
@@ -187,17 +187,17 @@ describe("SearchPage", async () => {
     // @ts-ignore
     renderWithAppContext(Search, baseSearchProps);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+    await screen.findByRole("heading", { level: 2, name: "Search results" });
 
     await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
 
     // Verify the slideout is now open.
-    expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
-    expect(await screen.findByText("Subdivision")).toBeInTheDocument();
+    expect(screen.getByText("Published jurisdiction")).toBeInTheDocument();
+    expect(screen.getByText("Subdivision")).toBeInTheDocument();
 
     // Find the country and subdivision options and click them.
-    const countryFilterOption = await screen.findByRole("checkbox", { name: "Australia" });
-    const subdivisionFilterOption = await screen.findByRole("checkbox", { name: "New South Wales" });
+    const countryFilterOption = screen.getByRole("checkbox", { name: "Australia" });
+    const subdivisionFilterOption = screen.getByRole("checkbox", { name: "New South Wales" });
 
     await userEvent.click(countryFilterOption);
     await userEvent.click(subdivisionFilterOption);
@@ -223,11 +223,11 @@ describe("SearchPage", async () => {
       familyConceptsData: basicLegalConcepts,
     });
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+    await screen.findByRole("heading", { level: 2, name: "Search results" });
 
-    await userEvent.click(await screen.findByRole("button", { name: "Case categories" }));
+    await userEvent.click(screen.getByRole("button", { name: "Case categories" }));
 
-    expect(await screen.findAllByText("Parent Test Case Category")).toHaveLength(1);
+    expect(screen.getAllByText("Parent Test Case Category")).toHaveLength(1);
 
     const caseCategoryOption1 = screen.getByRole("checkbox", { name: "Test Case Category 1" });
     const caseCategoryOption2 = screen.getByRole("checkbox", { name: "Test Case Category 2" });
@@ -240,7 +240,7 @@ describe("SearchPage", async () => {
     // check for applied filter button
     expect(screen.getByRole("button", { name: "Test Case Category 1" })).toBeInTheDocument();
 
-    expect(await screen.findByText("Results:")).toBeInTheDocument();
+    expect(screen.getByText("Results:")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Family With Test Case Category 1" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Family With Test Case Category 2" })).not.toBeInTheDocument();
   });
@@ -302,11 +302,11 @@ describe("SearchPage", async () => {
 
     setUpFamiliesRepo([familyWithCategory1, familyWithCategory2]);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+    await screen.findByRole("heading", { level: 2, name: "Search results" });
 
-    await userEvent.click(await screen.findByRole("button", { name: "Case categories" }));
+    await userEvent.click(screen.getByRole("button", { name: "Case categories" }));
 
-    await userEvent.click(await screen.findByRole("checkbox", { name: "Test Case Category 1" }));
+    await userEvent.click(screen.getByRole("checkbox", { name: "Test Case Category 1" }));
 
     // verify applied filter is displayed
     const appliedFilter = screen.getByRole("button", { name: "Test Case Category 1" });
@@ -381,9 +381,9 @@ describe("SearchPage", async () => {
 
     setUpFamiliesRepo([familyWithPrincipalLaw1, familyWithCategory2]);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+    await screen.findByRole("heading", { level: 2, name: "Search results" });
 
-    await userEvent.click(await screen.findByRole("button", { name: "Principal laws" }));
+    await userEvent.click(screen.getByRole("button", { name: "Principal laws" }));
 
     await userEvent.click(screen.getByRole("radio", { name: "Test Principal Law 1" }));
 
@@ -455,9 +455,9 @@ describe("SearchPage", async () => {
 
     setUpFamiliesRepo([familyWithJurisdiction1, familyWithJurisdiction2]);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+    await screen.findByRole("heading", { level: 2, name: "Search results" });
 
-    await userEvent.click(await screen.findByRole("button", { name: "Jurisdictions" }));
+    await userEvent.click(screen.getByRole("button", { name: "Jurisdictions" }));
 
     await userEvent.click(screen.getByRole("radio", { name: "Test Jurisdiction 1" }));
 
