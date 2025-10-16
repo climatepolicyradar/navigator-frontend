@@ -8,7 +8,7 @@ export const BrazilImplementingNDCCard = () => {
     <Card color="mono" variant="outlined" className="m-3 sm:m-4 !mb-8 !bg-[#F9F9F9] pointer-events-auto select-none p-0 !ml-0 !mr-0 flex">
       <div>
         {" "}
-        <p className="text-base leading-normal font-semibold text-[#522CCE]">Check out Brazil&apos;s progress on implementing its NDC</p>
+        <p className="text-lg leading-normal font-semibold text-[#522CCE]">Check out Brazil&apos;s progress on implementing its NDC</p>
         <p className="mt-2 mb-4 text-sm leading-normal font-normal text-text-primary">
           NDC Align is a tool to assess how commitments in Nationally Determined Contributions (NDCs) are being implemented in domestic laws and
           policies. It allows you to explore the country&apos;s climate policy response, highlighting progress and gaps between commitments and

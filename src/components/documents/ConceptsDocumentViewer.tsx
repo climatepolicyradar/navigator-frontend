@@ -230,7 +230,7 @@ export const ConceptsDocumentViewer = ({
           {/* Preview */}
           <div
             id="document-preview"
-            className={`flex-1 relative order-last border-t border-t-gray-200 h-[600px] basis-full lg:basis-auto lg:border-t-0 lg:order-none lg:h-full md:border-gray-200 ${hasConcepts ? "lg:border-x" : "lg:border-r"}`}
+            className={`flex-1 relative order-last border-t border-t-gray-200 h-[600px] basis-full lg:basis-auto lg:border-t-0 lg:order-none lg:h-full md:border-gray-300 ${hasConcepts ? "lg:border-x" : "lg:border-r"}`}
           >
             {canPreview && (
               <EmbeddedPDF
@@ -257,7 +257,7 @@ export const ConceptsDocumentViewer = ({
               </div>
             ) : (
               <>
-                <div id="document-search" className="flex flex-col gap-2 md:pl-4 pb-4 border-b border-gray-200">
+                <div id="document-search" className="flex flex-col gap-2 md:pl-4 pb-4 border-b border-gray-300">
                   <p className="text-text-primary">Passage matches</p>
                   <div className="relative z-10 flex gap-4">
                     <div className="relative">
