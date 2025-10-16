@@ -29,7 +29,7 @@ const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig }: IPr
         </div>
         <AboutClimateProjectExplorer />
         <ContextualSearchContent />
-        <div className={`bg-white border-solid border-t border-gray-200`}>
+        <div className={`bg-white border-solid border-t border-gray-300`}>
           <AboutTheFunds />
         </div>
         <ClimatePolicyRadarBanner />

@@ -29,7 +29,7 @@ export const Targets = ({ targets = [], showFamilyInfo = false }: TTargets) => {
   return (
     <ul className="" data-cy="targets">
       {targets.map((target) => (
-        <li className="mt-5 flex flex-col gap-2 border-b border-gray-200 pb-5 last:border-0" key={target.ID}>
+        <li className="mt-5 flex flex-col gap-2 border-b border-gray-300 pb-5 last:border-0" key={target.ID}>
           <span dangerouslySetInnerHTML={{ __html: target.Description }} className="font-medium text-textDark" />
           <span className="text-sm">
             {`${target.Sector}${target.Scopes !== "" ? `: ${target.Scopes}` : ""}`}

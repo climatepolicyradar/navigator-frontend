@@ -109,7 +109,7 @@ const Collection = ({ collection, envConfig }: CollectionProps) => {
           <div className="divide-y flex flex-col gap-4">
             {families.map((family, i) => (
               <div key={family.slug} className="border-border-light">
-                <LinkWithQuery href={`/document/${family.slug}`} className="text-[#0041A3] text-left font-medium text-lg underline">
+                <LinkWithQuery href={`/document/${family.slug}`} className="text-[#0041A3] text-left font-medium text-[18px] underline">
                   {family.title}
                 </LinkWithQuery>
                 <div
@@ -468,7 +468,7 @@ export const FamilyOriginalPage = ({
               ))}
             </SingleCol>
             {concepts.length > 0 && (
-              <div className="border-gray-200 grow-0 shrink-0 px-5 border-l pt-4 md:pt-8 basis-full md:basis-[320px] lg:basis-[380px] xl:basis-[460px]">
+              <div className="border-gray-300 grow-0 shrink-0 px-5 border-l pt-4 md:pt-8 basis-full md:basis-[320px] lg:basis-[380px] xl:basis-[460px]">
                 <ConceptsPanel rootConcepts={rootConcepts} concepts={concepts} onConceptClick={handleConceptClick}></ConceptsPanel>
               </div>
             )}

@@ -89,7 +89,7 @@ export const ConceptsPanel = ({ concepts, onConceptClick, rootConcepts }: IProps
     <div className="flex flex-col gap-4 pb-4 text-sm">
       <div className="flex flex-col gap-4 pb-4 border-b border-border-light text-text-secondary">
         {showKnowledgeGraphTutorial && <TutorialCard name="knowledgeGraph" card={TUTORIALS.knowledgeGraph.card} />}
-        <span className="text-base font-semibold text-text-primary">
+        <span className="text-lg font-semibold text-text-primary">
           <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
           Find mentions of topics
           {!showKnowledgeGraphTutorial && <Badge className="ml-2">Beta</Badge>}
@@ -104,7 +104,7 @@ export const ConceptsPanel = ({ concepts, onConceptClick, rootConcepts }: IProps
         )}
       </div>
       <div className="pt-1 pb-4">
-        <span className="block mb-1 text-[15px] text-text-primary font-semibold">Topics in the main document</span>
+        <span className="block mb-1 text-base text-text-primary font-semibold">Topics in the main document</span>
         <p className="">Ordered by most frequently mentioned, grouped by category</p>
       </div>
 
@@ -115,7 +115,7 @@ export const ConceptsPanel = ({ concepts, onConceptClick, rootConcepts }: IProps
         return (
           <div key={rootConcept.wikibase_id} className="relative group">
             <div className="flex items-center gap-2">
-              <Heading level={3} className="text-[15px] leading-tight font-medium text-text-primary">
+              <Heading level={3} className="text-base leading-tight font-medium text-text-primary">
                 {firstCase(rootConcept.preferred_label)}
               </Heading>
               <Info
