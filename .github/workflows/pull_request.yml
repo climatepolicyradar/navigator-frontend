@@ -161,6 +161,7 @@ jobs:
 
       - name: Run vitest
         run: npm run test
+        # This is needed to pass the results on to the trunk-io/analytics-uploader
         continue-on-error: true
         env:
           THEME: cpr
