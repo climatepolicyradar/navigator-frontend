@@ -51,6 +51,7 @@ const config: TThemeConfig = {
     familyConceptsSearch: true,
     knowledgeGraph: false,
     litigation: true,
+    newPageDesigns: true,
     searchFamilySummary: true,
   },
 };
