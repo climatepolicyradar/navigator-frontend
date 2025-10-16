@@ -217,7 +217,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                       </div>
                     ) : (
                       <>
-                        <div id="document-search" className="flex items-start gap-2 md:pl-4 pb-4 border-b border-gray-200">
+                        <div id="document-search" className="flex items-start gap-2 md:pl-4 pb-4 border-b border-gray-300">
                           <div className="flex-1">
                             {totalNoOfMatches > 0 && (
                               <>

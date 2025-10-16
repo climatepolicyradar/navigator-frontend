@@ -20,7 +20,7 @@ const Header = () => {
 
   return (
     <NavBar
-      headerClasses={`bg-surface-light min-h-20 ${showBorder ? "border-b border-gray-200 border-solid" : ""}`}
+      headerClasses={`bg-surface-light min-h-20 ${showBorder ? "border-b border-gray-300 border-solid" : ""}`}
       logo={MCFLogo}
       menu={<Menu />}
       showSearch={showSearch}

@@ -109,7 +109,7 @@ export const CCLW: TStory = {
 
 export const MCF: TStory = {
   args: {
-    headerClasses: "bg-surface-light min-h-20 border-b border-gray-200 border-solid",
+    headerClasses: "bg-surface-light min-h-20 border-b border-gray-300 border-solid",
     logo: MCFLogo,
     menu: <MCFMenu />,
     showLogo: true,

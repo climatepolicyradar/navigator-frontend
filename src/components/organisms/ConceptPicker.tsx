@@ -115,7 +115,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>
       {/* HEADER */}
       {showKnowledgeGraphTutorial && <TutorialCard name="knowledgeGraph" card={TUTORIALS.knowledgeGraph.card} />}
-      <span className="text-base font-semibold text-text-primary">
+      <span className="text-lg font-semibold text-text-primary">
         <TextSearch size={20} className="inline mr-2 text-text-brand align-text-bottom" />
         {title}
         {!showKnowledgeGraphTutorial && showBadge && <Badge className="ml-2">Beta</Badge>}

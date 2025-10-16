@@ -5,7 +5,7 @@ interface IProps {
 }
 
 export const EmptyPassages = ({ hasQueryString }: IProps) => (
-  <div className="flex flex-col gap-4 flex-1 pt-10 text-center text-gray-600 px-4">
+  <div className="flex flex-col gap-4 flex-1 pt-10 text-center text-gray-700 px-4">
     <div className="text-blue-800 flex justify-center items-center">
       <div className="rounded-full bg-blue-50 p-6 mb-2">
         <Icon name="findInDoc" width="48" height="48" />
