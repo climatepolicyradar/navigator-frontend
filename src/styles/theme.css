@@ -1,10 +1,21 @@
 @theme {
+  /* COLOURS */
+
+  --color-brand: #0038a9;
   --color-white: #ffffff;
-  --color-black: #000000;
+
+  --color-gray-50: #f9fafb; /* Surfaces */
+  --color-gray-100: #f3f4f6;
+  --color-gray-300: #d1d5db; /* Borders */
+  --color-gray-500: #6b7280; /* Light text & icons */
+  --color-gray-700: #374151; /* Regular text */
+  --color-gray-800: #1d2939;
+  --color-gray-950: #030712; /* Dark text & headings */
+
+  /* Deprecated colours */
 
   --color-nearBlack: #101010;
   --color-transparent: transparent;
-  --color-current: currentColor;
   --color-textDark: #202020;
   --color-textNormal: #505050;
   --color-borderNormal: #dedede;
@@ -16,26 +27,14 @@
 
   --color-cclw-dark: #2e3152;
   --color-cclw-light: #414466;
-  --color-cclw-molten: #ed3d48;
 
   --color-oep-dark-blue: #080840;
   --color-oep-royal-blue: #08084c;
   --color-oep-salmon: #ff4f58;
 
   --color-mcf-blue: #082c43;
-  --color-mcf-iconBlue: #0171b8;
   --color-mcf-iconGrey: #7a7a7a;
   --color-mcf-blueOpacity64: rgba(8, 44, 67, 0.64);
-
-  --color-gray-25: #fcfcfd;
-  --color-gray-50: #f9fafb;
-  --color-gray-100: #f2f4f7;
-  --color-gray-200: #e4e7ec;
-  --color-gray-300: #d0d5dd;
-  --color-gray-500: #667085;
-  --color-gray-600: #475467;
-  --color-gray-700: #344054;
-  --color-gray-800: #1d2939;
 
   --color-blue-50: #e9f4ff;
   --color-blue-100: #d2e9ff;
@@ -51,26 +50,15 @@
   --color-blueGray-700: #394b6e;
   --color-blueGray-800: #071e4a;
 
-  --color-red-50: #fef1ef;
-  --color-red-100: #fee4e2;
-  --color-red-200: #fecec7;
-  --color-red-300: #fda29b;
   --color-red-600: #d92d20;
-  --color-red-700: #b42318;
-  --color-red-800: #912018;
 
   --color-green-50: #ecfdf3;
   --color-green-100: #d1fadf;
-  --color-green-200: #a6f4c5;
   --color-green-500: #6ce9a6;
   --color-green-600: #039855;
   --color-green-700: #027a48;
-  --color-green-800: #05603a;
-
-  /* New design colours */
 
   --color-cpr-blue: #005eeb;
-  --color-cpr-navy: #00244d;
 
   --color-text-primary: #202020;
   --color-text-secondary: #505050;
@@ -92,7 +80,6 @@
   --color-scrollbar-darker: #707070;
 
   --color-surface-light: #ffffff;
-  --color-surface-bg: #fafafa;
   --color-surface-ui: #f5f5f5;
   --color-surface-heavy: #e5e5e5;
   --color-surface-brand: #005eeb;
@@ -101,14 +88,44 @@
   --color-surface-mono: #202020;
   --color-surface-mono-dark: #000000;
 
+  /* TEXT */
+
   --font-inter:
     "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-tenez: "tenez", "system-ui", serif;
+  --font-tenez: "tenez", "system-ui", serif; /* OEP */
   --font-greycliff:
     "greycliff-cf", "InterVariable", "Inter", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    "Noto Color Emoji";
+    "Noto Color Emoji"; /* MCF */
+  --font-display--font-feature-settings: "ss03", "cv05";
+
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 15px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 32px;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 550;
+  --font-weight-heavy: 650;
+
+  /* SIZING */
 
   --radius-4xl: 30px;
+
+  --spacing-maxSiteWidth: var(--MAX_SITE_WIDTH);
+  --spacing-maxContent: var(--MAX_CONTENT_WIDTH);
+  --spacing-maxSidebar: var(--MAX_SIDEBAR_WIDTH);
+  --spacing-max-cols: 1500px;
+
+  /* BREAKPOINTS */
+
+  --breakpoint-cols-2: 540px;
+  --breakpoint-cols-3: 820px;
+  --breakpoint-cols-4: 1100px;
+
+  /* MISC */
 
   --shadow-lg: 0px 4px 48px 0px rgba(0, 0, 0, 0.08);
   --shadow-md: 0px 4px 16px 0px rgba(0, 0, 0, 0.08);
@@ -121,25 +138,9 @@
   --container-1/6-gap-4: calc(16.6% - (5 / 6 * 1rem));
   --container-maxContent: var(--MAX_CONTENT_WIDTH);
 
-  --text-h1: 48px;
-  --text-h2: 36px;
-  --text-h3: 20px;
-  --text-h4: 21px;
-  --text-h5: 18px;
-  --text-h6: 16px;
-
   --font-weight-medium: 500;
 
   --tracking-slight: 0.015em;
-
-  --spacing-maxSiteWidth: var(--MAX_SITE_WIDTH);
-  --spacing-maxContent: var(--MAX_CONTENT_WIDTH);
-  --spacing-maxSidebar: var(--MAX_SIDEBAR_WIDTH);
-  --spacing-max-cols: 1500px;
-
-  --breakpoint-cols-2: 540px;
-  --breakpoint-cols-3: 820px;
-  --breakpoint-cols-4: 1100px;
 
   --metadata-grid: 200px 1fr;
 }

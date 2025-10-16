@@ -57,7 +57,7 @@ export const DocumentHead = ({ document, family, handleViewOtherDocsClick, handl
   }, [family, showFullSummary]);
 
   return (
-    <div className="bg-white border-solid border-lineBorder border-b border-gray-200">
+    <div className="bg-white border-solid border-lineBorder border-b border-gray-300">
       <BreadCrumbs
         geography={breadcrumbGeography}
         family={breadcrumbFamily}

@@ -2,7 +2,7 @@ import { ExternalLink } from "@/components/ExternalLink";
 import { Icon } from "@/components/atoms/icon/Icon";
 
 export const EmptyDocument = () => (
-  <div className="ml-4 mt-4 text-center text-gray-600">
+  <div className="ml-4 mt-4 text-center text-gray-700">
     <div className="mb-2 flex justify-center">
       <Icon name="bookOpen" />
     </div>

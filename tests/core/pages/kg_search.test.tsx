@@ -1,16 +1,15 @@
-import { act, screen, within } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import router from "next-router-mock";
 
 import cprConfig from "@/cpr/config";
 import { mockFeatureFlagsWithConcepts } from "@/mocks/featureFlags";
+import { resetPage } from "@/mocks/helpers";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import Search from "@/pages/search";
 
 afterEach(() => {
-  // clear router state between tests
-  // we store query params in the router state so this resets everything
-  router.reset();
+  resetPage();
 });
 
 const baseSearchProps = {
@@ -65,20 +64,14 @@ describe("SearchPage", async () => {
 
     expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
-    // We have to wrap our user interactions in act() here due to some async updates that happen in the component,
-    // like animations that were causing warnings in the console.
-    await act(async () => {
-      await userEvent.click(await screen.findByRole("button", { name: "Topics Beta" }));
-    });
+    await userEvent.click(await screen.findByRole("button", { name: "Topics Beta" }));
 
     expect(await screen.findByText("Find mentions of topics")).toBeInTheDocument();
     expect(screen.getByText("Parent topic")).toBeInTheDocument();
 
     const topicOption = screen.getByRole("checkbox", { name: "Child topic 1" });
 
-    await act(async () => {
-      await userEvent.click(topicOption);
-    });
+    await userEvent.click(topicOption);
 
     expect(topicOption).toBeChecked();
     // check for applied filter button

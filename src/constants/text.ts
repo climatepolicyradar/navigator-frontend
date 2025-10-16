@@ -6,6 +6,10 @@ export type TTextDictionary = Record<TTheme, string> | ({ default: string } & Pa
 // All app-specific text strings, by theme value (TTheme)
 // Don't reference this directly, use the useText hook
 export const APP_TEXT = {
+  breadcrumbRoot: {
+    default: "Home",
+    ccc: "Climate Litigation Database",
+  },
   // TODO store singular and plural in the same key?
   familySingular: {
     default: "document",

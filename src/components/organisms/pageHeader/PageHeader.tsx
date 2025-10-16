@@ -84,7 +84,7 @@ export const PageHeader = <Tab extends string>({
 
       {/* Tabs */}
       {tabs.length > 0 && (
-        <div className="flex gap-8 cols-3:col-start-2 cols-3:col-end-4 cols-4:col-end-5 text-lg leading-tight font-[660]">
+        <div className="flex gap-8 cols-3:col-start-2 cols-3:col-end-4 cols-4:col-end-5 text-[18px] leading-tight font-[660]">
           {tabs.map((tab) => {
             const tabIsActive = tab.tab === currentTab;
             const tabClasses = joinTailwindClasses(

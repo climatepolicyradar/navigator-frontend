@@ -130,7 +130,7 @@ const LandingPageLinks = ({}) => {
         </div>
         <div>
           <div className="font-medium text-2xl">Try these searches</div>
-          <ul className="text-lg mt-4">
+          <ul className="text-[18px] mt-4">
             {searches.map((search) => (
               <li className="my-2" key={search.id}>
                 <a

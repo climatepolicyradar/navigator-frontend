@@ -50,7 +50,7 @@ const PassageMatches = ({ passages, onClick, pageColour = "textDark" }: IProps) 
               onClick={() => posthog.capture("Passage matches click", { index })}
             >
               <div
-                className={`p-4 cursor-pointer border border-gray-200 rounded-md bg-white hover:border-gray-500`}
+                className={`p-4 cursor-pointer border border-gray-300 rounded-md bg-white hover:border-gray-500`}
                 onClick={() => {
                   onClick(item.text_block_page);
                 }}

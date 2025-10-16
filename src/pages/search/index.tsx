@@ -445,7 +445,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
         <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
           <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
             <section>
-              <div className="md:flex justify-between items-center border-b border-gray-200">
+              <div className="md:flex justify-between items-center border-b border-gray-300">
                 <BreadCrumbs label={"Search results"} />
                 <div className="px-3 cols-2:px-6 cols-3:px-8">
                   <span className="text-sm mb-4 md:mb-0 text-right flex flex-wrap gap-x-2 md:justify-end">
