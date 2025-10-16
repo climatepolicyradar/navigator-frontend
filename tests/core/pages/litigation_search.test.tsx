@@ -115,7 +115,7 @@ const baseSearchProps = {
 };
 
 describe("SearchPage", async () => {
-  it.only("filters search results by subdivision", async () => {
+  it("filters search results by subdivision", async () => {
     // @ts-ignore
     renderWithAppContext(Search, baseSearchProps);
 
