@@ -18,7 +18,7 @@ export const Event = ({ event, last, index }: IProps) => {
   const renderText = (name: string, date: string) => (
     <div>
       <div className="w-[280px]">
-        <p className="text-lg capitalize text-textDark font-medium">{name}</p>
+        <p className="text-[18px] capitalize text-textDark font-medium">{name}</p>
         <p>{date}</p>
       </div>
     </div>

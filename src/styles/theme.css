@@ -98,24 +98,13 @@
     "Noto Color Emoji"; /* MCF */
   --font-display--font-feature-settings: "ss03", "cv05";
 
-  /* TODO remove? */
-
-  --text-h1: 48px;
-  --text-h2: 36px;
-  --text-h3: 20px;
-  --text-h4: 21px;
-  --text-h5: 18px;
-  --text-h6: 16px;
-
-  /* TODO correct existing uses */
-
-  --text-xs: 12px; /* 12px */
-  --text-sm: 14px; /* 14px */
-  --text-base: 16px; /* 15px -1 */
-  --text-lg: 18px; /* 16px -2 */
-  --text-xl: 20px; /* 20px */
-  --text-2xl: 24px; /* 24px */
-  --text-3xl: 30px; /* 32px +2 */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 15px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 32px;
 
   /* SIZING */
 

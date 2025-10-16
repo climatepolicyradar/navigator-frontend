@@ -70,7 +70,7 @@ export const Modal = ({
                 <X size="18" />
               </button>
             )}
-            <Heading level={1} className="text-lg leading-tight font-semibold text-text-primary flex-1">
+            <Heading level={1} className="text-[18px] leading-tight font-semibold text-text-primary flex-1">
               {title}
             </Heading>
           </div>

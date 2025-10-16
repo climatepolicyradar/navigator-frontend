@@ -29,7 +29,7 @@ export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = tru
     metadata,
   } = family;
 
-  const allTitleClasses = joinTailwindClasses("result-title text-left font-medium text-lg duration-300 flex items-start", titleClasses);
+  const allTitleClasses = joinTailwindClasses("result-title text-left font-medium text-[18px] duration-300 flex items-start", titleClasses);
 
   const family_metadata = transformVespaMetadataToFamilyMetadata(metadata);
 
