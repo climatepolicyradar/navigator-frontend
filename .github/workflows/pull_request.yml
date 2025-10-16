@@ -159,15 +159,19 @@ jobs:
       - run: npm install
       - run: cp .env.example .env
 
-      - name: Run tests and upload results to Trunk.io
-        uses: trunk-io/analytics-uploader@v2
-        with:
-          junit-paths: "**/vitest.xml"
-          run: npm run test
-          token: ${{ secrets.TRUNK_TOKEN }}
-          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+      - name: Run vitest
+        run: npm run test
         env:
           THEME: cpr
+
+      - name: Upload vitest results to Trunk.io
+        uses: trunk-io/analytics-uploader@v2
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        with:
+          junit-paths: "**/vitest.xml"
+          token: ${{ secrets.TRUNK_TOKEN }}
+          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
 
   test-e2e:
     timeout-minutes: 15
