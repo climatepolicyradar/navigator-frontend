@@ -12,7 +12,7 @@ import { TUTORIALS } from "@/constants/tutorials";
 import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
 import { ThemeContext } from "@/context/ThemeContext";
 import { TutorialContext } from "@/context/TutorialContext";
-import { TConcept } from "@/types";
+import { TConcept, TTheme } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
@@ -62,6 +62,13 @@ const filterConcepts = (concepts: TConcept[], search: string) => {
   );
 };
 
+const removeUnusableConcepts = (concepts: TConcept[], theme: TTheme): TConcept[] => {
+  // if (theme !== "mcf") return concepts;
+
+  const CLIMATE_FINANCE = "Q1343";
+  return concepts.filter((concept) => concept.wikibase_id !== CLIMATE_FINANCE && !concept.recursive_subconcept_of.includes(CLIMATE_FINANCE));
+};
+
 const onConceptChange = (router: NextRouter, concept: TConcept) => {
   const query = CleanRouterQuery({ ...router.query });
   // Retain any dynamic ids in the query (e.g. document page)
@@ -84,7 +91,7 @@ const onConceptChange = (router: NextRouter, concept: TConcept) => {
 export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = "Grouped", showBadge = false, showSearch = true, title }: IProps) => {
   const router = useRouter();
   const { completedTutorials } = useContext(TutorialContext);
-  const { themeConfig } = useContext(ThemeContext);
+  const { theme, themeConfig } = useContext(ThemeContext);
   const featureFlags = useContext(FeatureFlagsContext);
   const ref = useRef(null);
   const [search, setSearch] = useState("");
@@ -103,11 +110,15 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
   useEffect(() => {
     const conceptIds = concepts.map((concept) => concept.wikibase_id);
     fetchAndProcessConcepts(conceptIds).then(({ rootConcepts, concepts }) => {
-      setRootConcepts(rootConcepts);
-      setFilteredConcepts(concepts);
-      setConceptsGrouped(groupByRootConcept(concepts, rootConcepts));
+      // TECH DEBT: Remove climate finance concepts from MCF as they don't currently work as expected
+      const usableRootConcepts = removeUnusableConcepts(rootConcepts, theme);
+      const usableConcepts = removeUnusableConcepts(concepts, theme);
+
+      setRootConcepts(usableRootConcepts);
+      setFilteredConcepts(usableConcepts);
+      setConceptsGrouped(groupByRootConcept(usableConcepts, usableRootConcepts));
     });
-  }, [concepts]);
+  }, [concepts, theme]);
 
   const showKnowledgeGraphTutorial = getFirstIncompleteTutorialName(completedTutorials, themeConfig, featureFlags) === "knowledgeGraph";
 
