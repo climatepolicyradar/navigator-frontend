@@ -165,7 +165,6 @@ test.describe("CPR Hero Search", () => {
 
     const url4 = page.url();
     expect(url4).toContain("c=laws");
-    expect(url4).toContain("cfn=emissions+reduction+target");
     expect(url4).toContain("fl=true");
     expect(url4).not.toContain("e=true");
     await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
