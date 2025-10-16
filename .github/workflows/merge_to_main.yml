@@ -129,7 +129,6 @@ jobs:
 
       - name: Upload vitest results to Trunk.io
         uses: trunk-io/analytics-uploader@v2
-        if: ${{ !cancelled() }}
         with:
           junit-paths: "**/vitest.xml"
           token: ${{ secrets.TRUNK_TOKEN }}
