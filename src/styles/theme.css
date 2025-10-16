@@ -106,6 +106,10 @@
   --text-2xl: 24px;
   --text-3xl: 32px;
 
+  --font-weight-normal: 400;
+  --font-weight-medium: 550;
+  --font-weight-heavy: 650;
+
   /* SIZING */
 
   --radius-4xl: 30px;
