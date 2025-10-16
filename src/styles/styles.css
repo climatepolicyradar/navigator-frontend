@@ -159,7 +159,7 @@ strong,
 }
 
 hr {
-  @apply border-gray-200;
+  @apply border-gray-300;
 }
 
 .form-row {
@@ -387,11 +387,11 @@ ul li.selected {
 }
 .text-content .m-table,
 .search-results .m-table {
-  @apply border border-gray-200 my-5;
+  @apply border border-gray-300 my-5;
 }
 .text-content .m-table .row,
 .search-results .m-table .row {
-  @apply flex w-full border-b border-gray-200;
+  @apply flex w-full border-b border-gray-300;
 }
 .text-content .m-table .row:last-child,
 .search-results .m-table .row:last-child {
@@ -407,7 +407,7 @@ ul li.selected {
 }
 .text-content .m-table .row .def,
 .search-results .m-table .row .def {
-  @apply p-4 flex-grow border-l border-gray-200;
+  @apply p-4 flex-grow border-l border-gray-300;
 }
 .text-content ol,
 .search-results ol {

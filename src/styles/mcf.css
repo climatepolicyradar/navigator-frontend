@@ -74,7 +74,7 @@ body #mcf {
 }
 
 #mcf footer {
-  @apply border-t border-gray-200 border-solid;
+  @apply border-t border-gray-300 border-solid;
 }
 
 #mcf .footer__section > * {

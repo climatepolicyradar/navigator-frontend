@@ -47,7 +47,7 @@ export const TargetsBlock = ({ targets, theme }: IProps) => {
           {shownTargets.map((target) => {
             return (
               <div key={target.ID} className="flex flex-col gap-2.5 text-sm text-text-tertiary leading-tight">
-                <h3 className="text-base text-text-primary font-semibold" dangerouslySetInnerHTML={{ __html: target.Description }} />
+                <h3 className="text-lg text-text-primary font-semibold" dangerouslySetInnerHTML={{ __html: target.Description }} />
                 <span className="">{getMetadata(target).join(` ${MIDDOT} `)}</span>
                 {showSourceLink(target) && (
                   <span className="">

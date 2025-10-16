@@ -45,7 +45,7 @@ export const FamilyDocument = ({ document, matches, status, familyMatches, conce
   };
 
   const getPreviewBehaviour = () => {
-    let cssClass = "family-document group mt-4 p-4 rounded-lg border bg-gray-25 border-gray-100 shadow-xs transition duration-300 flex flex-no-wrap ";
+    let cssClass = "family-document group mt-4 p-4 rounded-lg border bg-gray-50 border-gray-100 shadow-xs transition duration-300 flex flex-no-wrap ";
     cssClass += canPreview || canViewSource ? "cursor-pointer hover:border-blue-100 hover:bg-gray-50" : "";
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

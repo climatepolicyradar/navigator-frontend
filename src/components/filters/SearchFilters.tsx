@@ -82,7 +82,7 @@ const SearchFilters = ({
       {themeConfigStatus === "loading" && <Loader size="20px" />}
       <div className="flex justify-between">
         <div className="flex items-center gap-2">
-          <p className="text-[15px] text-text-primary font-normal">Filters</p>
+          <p className="text-base text-text-primary font-normal">Filters</p>
           <Info
             title="About"
             description="Narrow down your results using the filters below. You can also combine these with a search term."
