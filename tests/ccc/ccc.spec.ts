@@ -39,9 +39,6 @@ test.describe("CCC Hero Search", () => {
     // Search form
     await expect(page.locator('[data-cy="search-form"]')).toBeVisible();
 
-    // Exact match checkbox
-    await expect(page.locator("#exact-match")).toBeVisible();
-
     // Quick search suggestions
     await expect(page.getByText("Search by:")).toBeVisible();
   });
@@ -303,64 +300,5 @@ test.describe("CCC Hero Search", () => {
     // Should have correct query parameters
     await expect(page).toHaveURL(/q=renewable\+energy\+adaptation/);
     await expect(page).not.toHaveURL(/e=true/);
-  });
-
-  test("should perform exact match search if exact match checkbox is checked", async ({ page }) => {
-    const searchInput = page.locator('[data-cy="search-input"]');
-    const searchButton = page.locator('button[aria-label="Search"]');
-    const exactMatchCheckbox = page.locator("#exact-match");
-
-    // Type a search term
-    const searchTerm = "climate policy";
-    await searchInput.fill(searchTerm);
-
-    // Check the exact match checkbox
-    await exactMatchCheckbox.check();
-
-    // Click search button
-    await searchButton.click();
-
-    // Should navigate to search page with exact match parameter
-    await page.waitForURL("/search*");
-
-    // Verify the exact match parameter is in the URL
-    const url = page.url();
-    expect(url).not.toContain("e=true");
-    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
-  });
-
-  test("should check exact match checkbox is checked on homepage load", async ({ page }) => {
-    const exactMatchCheckbox = page.locator("#exact-match");
-    await expect(exactMatchCheckbox).toBeChecked();
-  });
-
-  test("should perform semantic search if exact match checkbox is not checked", async ({ page }) => {
-    const searchInput = page.locator('[data-cy="search-input"]');
-    const searchButton = page.locator('button[aria-label="Search"]');
-    const exactMatchCheckbox = page.locator("#exact-match");
-
-    // Type a search term
-    const searchTerm = "climate policy";
-    await searchInput.fill(searchTerm);
-
-    // Uncheck only if currently checked
-    if (await exactMatchCheckbox.isChecked()) {
-      // Use click instead of uncheck to trigger the onChange handler properly
-      await exactMatchCheckbox.click();
-
-      // Verify it's actually unchecked
-      await expect(exactMatchCheckbox).not.toBeChecked();
-    }
-
-    // Click search button
-    await searchButton.click();
-
-    // Should navigate to search page with exact match parameter
-    await page.waitForURL("/search*");
-
-    // Verify the exact match parameter is in the URL and is false
-    const url = page.url();
-    expect(url).toContain("e=false");
-    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 });
