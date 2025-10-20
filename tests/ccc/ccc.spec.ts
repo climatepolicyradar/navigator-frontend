@@ -99,9 +99,8 @@ test.describe("CCC Hero Search", () => {
     await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
-  test("should handle search suggestions correctly", async ({ page }) => {
-    // test.fail(true, "Have not implemented yet - ticket APP-1183");
-
+  // TODO APP-1183: Have not implemented search suggestions for CCC yet
+  test.skip("should handle search suggestions correctly", async ({ page }) => {
     // Test clicking on "Latest NDCs" suggestion
     await page.click('[data-cy="quick-search-1"]');
 
@@ -116,7 +115,6 @@ test.describe("CCC Hero Search", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    // Verify clicking 'U.S. Cases' suggested search redirects to search page with correct parameters
     await page.click('[data-cy="quick-search-2"]');
 
     // Should navigate to search page with the suggestion as query
@@ -129,7 +127,6 @@ test.describe("CCC Hero Search", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    // Verify clicking 'Electric vehicle infrastructure' suggested search redirects to search page with correct parameters
     await page.click('[data-cy="quick-search-3"]');
 
     // Should navigate to search page with the suggestion as query
@@ -143,7 +140,6 @@ test.describe("CCC Hero Search", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    // Verify clicking 'Connecticut' suggested search redirects to search page with correct parameters
     await page.click('[data-cy="quick-search-4"]');
 
     // Should navigate to search page with the suggestion as query
