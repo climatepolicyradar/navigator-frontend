@@ -369,7 +369,7 @@ ul li.selected {
 }
 .text-content a.accordion-item,
 .search-results a.accordion-item {
-  @apply text-textNormal text-base cursor-pointer flex items-center no-underline hover:no-underline md:text-xl;
+  @apply text-textNormal text-lg cursor-pointer flex items-center no-underline hover:no-underline md:text-xl;
 }
 .text-content a {
   @apply text-blue-600 underline hover:text-blue-800;
@@ -461,7 +461,7 @@ ul li.selected {
 }
 .text-content h4,
 .search-results h4 {
-  @apply text-base mb-5;
+  @apply text-lg mb-5;
 }
 .search-results p {
   @apply my-5;
