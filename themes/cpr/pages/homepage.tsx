@@ -22,12 +22,13 @@ import { TTheme, TThemeConfig } from "@/types";
  */
 export interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
+  handleSearchChange: (type: string, value: any) => void;
   searchInput: string;
   theme: TTheme;
   themeConfig: TThemeConfig;
 }
 
-const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig }: IProps) => {
+const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, theme, themeConfig }: IProps) => {
   return (
     <Layout metadataKey="homepage" theme={theme} themeConfig={themeConfig}>
       <div className="relative">
