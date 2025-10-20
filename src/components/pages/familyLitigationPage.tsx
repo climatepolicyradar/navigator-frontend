@@ -11,7 +11,7 @@ import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
-import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
+import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { COUNTRY_FLAGS } from "@/constants/flags";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -19,7 +19,7 @@ import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
 import useSearch from "@/hooks/useSearch";
-import { TMatchedFamily, TFamilyPageBlock } from "@/types";
+import { TMatchedFamily, TFamilyPageBlock, IMetadata } from "@/types";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
 import { isSystemGeo } from "@/utils/isSystemGeo";
@@ -93,7 +93,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     }
   }
 
-  const pageHeaderMetadata: IPageHeaderMetadata[] = [
+  const pageHeaderMetadata: IMetadata[] = [
     {
       label: "Geography",
       value: joinNodes(
@@ -192,7 +192,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
         isSubdivision={!isCountry}
         label={family.title}
       />
-      <PageHeader label={categoryName} title={family.title} metadata={pageHeaderMetadata} />
+      <PageHeader title={family.title} metadata={pageHeaderMetadata} />
       <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
       <Head>
         <script
