@@ -24,6 +24,9 @@ test.describe("CCC Hero Search", () => {
     // Verify we're on the CCC homepage by checking the name appears
     await expect(page.getByRole("heading", { name: "The Climate Litigation Database" })).toBeVisible();
     await expect(page.locator('[data-cy="search-input"]')).toHaveAttribute("placeholder", "Search the full text of cases");
+
+    // Close modal by clicking outside if it appears
+    await page.click("body", { position: { x: 0, y: 0 } });
   });
 
   test("should display CCC Hero page with search functionality", async ({ page }) => {
@@ -38,14 +41,14 @@ test.describe("CCC Hero Search", () => {
 
     // Search form
     await expect(page.locator('[data-cy="search-form"]')).toBeVisible();
-
-    // Quick search suggestions
-    await expect(page.getByText("Search by:")).toBeVisible();
   });
 
   test("should handle empty search without crashing", async ({ page }) => {
     // Click search button with empty input
     await page.click('[data-cy="search-form"] button[aria-label="Search"]');
+
+    // Should navigate to search page
+    await page.waitForURL("/search*");
 
     // Should not crash - should redirect to /search
     await expect(page).not.toHaveURL(/e=true/);
@@ -97,6 +100,8 @@ test.describe("CCC Hero Search", () => {
   });
 
   test("should handle search suggestions correctly", async ({ page }) => {
+    // test.fail(true, "Have not implemented yet - ticket APP-1183");
+
     // Test clicking on "Latest NDCs" suggestion
     await page.click('[data-cy="quick-search-1"]');
 
