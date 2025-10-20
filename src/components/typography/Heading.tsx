@@ -12,7 +12,7 @@ export const coreClasses = "text-textDark font-medium";
 export const h1Classes = "text-4xl";
 export const h2Classes = "text-2xl mb-5";
 export const h3Classes = "text-xl mb-5";
-export const h4Classes = "text-[18px] mb-5";
+export const h4Classes = "text-lg mb-5";
 export const h5Classes = "text-l mb-5";
 
 export const Heading = ({ level, extraClasses = "", children, ...props }: IProps) => {

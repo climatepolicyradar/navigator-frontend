@@ -109,7 +109,7 @@ const Collection = ({ collection, envConfig }: CollectionProps) => {
           <div className="divide-y flex flex-col gap-4">
             {families.map((family, i) => (
               <div key={family.slug} className="border-border-light">
-                <LinkWithQuery href={`/document/${family.slug}`} className="text-[#0041A3] text-left font-medium text-[18px] underline">
+                <LinkWithQuery href={`/document/${family.slug}`} className="text-[#0041A3] text-left font-medium text-lg underline">
                   {family.title}
                 </LinkWithQuery>
                 <div

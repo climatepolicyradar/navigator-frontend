@@ -46,7 +46,7 @@ export const Input = ({
         textSize = "text-xs";
         break;
       case "large":
-        textSize = "text-lg";
+        textSize = "text-base";
         inputPadding = "px-2 py-3.5";
         iconPadding = "p-2";
         break;

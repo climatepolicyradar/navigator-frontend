@@ -27,7 +27,7 @@ export const Hero = ({ handleSearchInput, searchInput }: IProps) => {
           </Heading>
         </div>
         <div className="mx-auto text-center">
-          <p className="font-medium tracking-slight text-[18px] lg:text-[30px]" data-cy="intro-message">
+          <p className="font-medium tracking-slight text-lg lg:text-3xl" data-cy="intro-message">
             Search over 5000 climate laws and policies worldwide
           </p>
         </div>

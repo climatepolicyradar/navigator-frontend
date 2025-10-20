@@ -18,7 +18,7 @@ const ExactMatch = ({ id, handleSearchChange, checked, landing = false }) => {
     <div className={landing ? "landing" : ""}>
       <label className={`${checkboxClass} flex items-center cursor-pointer`} htmlFor={id}>
         <input className={`${checkboxClass} rounded`} id={id} type="checkbox" checked={checked} onChange={handleClick} />
-        <span className={`${landing ? "text-[18px]" : "text-sm"} ${textClass} pl-2 leading-none`}>Only show exact matches</span>
+        <span className={`${landing ? "text-lg" : "text-sm"} ${textClass} pl-2 leading-none`}>Only show exact matches</span>
       </label>
     </div>
   );

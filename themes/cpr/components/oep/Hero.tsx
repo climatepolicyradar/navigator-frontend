@@ -94,7 +94,7 @@ export const Hero = () => {
                   data-analytics="oep-searchInput"
                   data-cy="search-input"
                   type="search"
-                  className="w-full text-textDark py-5 pl-[52px] text-normal text-lg bg-white rounded-xl shadow-oep border-[#f1f1f1] focus:border-oep-salmon focus:ring-0 placeholder:text-textNormal"
+                  className="w-full text-textDark py-5 pl-[52px] text-normal text-base bg-white rounded-xl shadow-oep border-[#f1f1f1] focus:border-oep-salmon focus:ring-0 placeholder:text-textNormal"
                   value={term}
                   onChange={(e) => setTerm(e.currentTarget.value)}
                   onKeyDown={handleKeydown}

@@ -157,7 +157,7 @@ const Hero = ({ handleSearchInput, searchInput }: TProps) => {
     <div className="pb-6 text-white pt-[28px] sm:pt-[48px] md:pt-[80px] lg:pt-[100px] xl:pt-[140px]">
       <div className="container">
         <div className="flex flex-col items-center justify-center mb-6">
-		  <p className="font-medium tracking-slight text-[18px] lg:text-[30px]" data-cy="intro-message">
+		  <p className="font-medium tracking-slight text-lg lg:text-3xl" data-cy="intro-message">
           ${custom_app_name} Custom App
         </p>
         </div>
