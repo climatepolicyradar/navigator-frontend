@@ -1,5 +1,4 @@
 import Banner from "@/components/banner/FullHeight";
-import ExactMatch from "@/components/filters/ExactMatch";
 import Footer from "@/components/footer/Footer";
 import Header from "@/components/headers/LandingPage";
 import Layout from "@/components/layouts/LandingPage";
@@ -23,14 +22,12 @@ import { TTheme, TThemeConfig } from "@/types";
  */
 export interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
-  handleSearchChange: (type: string, value: any) => void;
   searchInput: string;
-  exactMatch: boolean;
   theme: TTheme;
   themeConfig: TThemeConfig;
 }
 
-const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exactMatch, theme, themeConfig }: IProps) => {
+const LandingPage = ({ handleSearchInput, searchInput, theme, themeConfig }: IProps) => {
   return (
     <Layout metadataKey="homepage" theme={theme} themeConfig={themeConfig}>
       <div className="relative">
@@ -41,9 +38,6 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
             <AlphaLogo />
             <SiteWidth extraClasses="mt-24 md:mt-48 max-w-screen-lg mx-auto">
               <LandingSearchForm handleSearchInput={handleSearchInput} input={searchInput} />
-              <div className="mt-4 flex justify-end">
-                <ExactMatch landing={true} checked={exactMatch} id="exact-match" handleSearchChange={handleSearchChange} />
-              </div>
               <div className="mt-12">
                 <LandingPageLinks />
               </div>
