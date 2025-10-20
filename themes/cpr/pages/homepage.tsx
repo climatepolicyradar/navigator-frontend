@@ -41,9 +41,6 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
             <AlphaLogo />
             <SiteWidth extraClasses="mt-24 md:mt-48 max-w-screen-lg mx-auto">
               <LandingSearchForm handleSearchInput={handleSearchInput} input={searchInput} />
-              <div className="mt-4 flex justify-end">
-                <ExactMatch landing={true} checked={exactMatch} id="exact-match" handleSearchChange={handleSearchChange} />
-              </div>
               <div className="mt-12">
                 <LandingPageLinks />
               </div>
