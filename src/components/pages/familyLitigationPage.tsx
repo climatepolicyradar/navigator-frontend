@@ -12,6 +12,7 @@ import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
+import { COUNTRY_FLAGS } from "@/constants/flags";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getCategoryName } from "@/helpers/getCategoryName";
@@ -93,7 +94,6 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
   }
 
   const pageHeaderMetadata: IPageHeaderMetadata[] = [
-    { label: "Date", value: isNaN(year) ? "" : year },
     {
       label: "Geography",
       value: joinNodes(
@@ -101,9 +101,11 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
           const isCountry = !code.includes("-");
           const slug = isCountry ? getCountrySlug(code, countries) : code.toLowerCase();
           const name = isCountry ? getCountryName(code, countries) : getSubdivisionName(code, subdivisions);
+          const flag = code in COUNTRY_FLAGS ? <>{COUNTRY_FLAGS[code]}&nbsp;</> : null;
 
           return !isSystemGeo(name) ? (
-            <LinkWithQuery key={code} href={`/geographies/${slug}`} className="underline">
+            <LinkWithQuery key={code} href={`/geographies/${slug}`} className="hover:underline">
+              {flag}
               {name}
             </LinkWithQuery>
           ) : (
@@ -113,13 +115,18 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
         ", "
       ),
     },
+    { label: "Date", value: isNaN(year) ? "" : year },
+    {
+      label: "Document type",
+      value: categoryName,
+    },
   ];
   if (family.collections.length) {
     pageHeaderMetadata.push({
       label: "Part of",
       value: joinNodes(
         family.collections.map((collection) => (
-          <LinkWithQuery key={collection.import_id} href={`/collections/${collection.slug}`} className="underline">
+          <LinkWithQuery key={collection.import_id} href={`/collections/${collection.slug}`} className="hover:underline">
             {collection.title}
           </LinkWithQuery>
         )),
