@@ -1,4 +1,5 @@
 import Banner from "@/components/banner/FullHeight";
+import ExactMatch from "@/components/filters/ExactMatch";
 import Footer from "@/components/footer/Footer";
 import Header from "@/components/headers/LandingPage";
 import Layout from "@/components/layouts/LandingPage";
@@ -24,11 +25,12 @@ export interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
   handleSearchChange: (type: string, value: any) => void;
   searchInput: string;
+  exactMatch: boolean;
   theme: TTheme;
   themeConfig: TThemeConfig;
 }
 
-const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, theme, themeConfig }: IProps) => {
+const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exactMatch, theme, themeConfig }: IProps) => {
   return (
     <Layout metadataKey="homepage" theme={theme} themeConfig={themeConfig}>
       <div className="relative">
