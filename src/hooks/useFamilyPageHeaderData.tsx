@@ -40,7 +40,7 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
 
     // TODO use the new geography endpoint + GeographyV2
     const geographiesDisplayData: GeographyLinkProps[] = orderBy(
-      ["GBR", "IRL", "USA", "SWE"]
+      family.geographies
         .map((code) => {
           const isSubdivision = !codeIsCountry(code);
           const name = isSubdivision ? getSubdivisionName(code, subdivisions) : getCountryName(code, countries);
