@@ -1,15 +1,11 @@
+import { LucideMenu } from "lucide-react";
 import { useState, useRef } from "react";
 
-import { Icon } from "@/components/atoms/icon/Icon";
 import DropdownMenuItem from "@/components/menus/DropdownMenuItem";
 import DropdownMenuWrapper from "@/components/menus/DropdownMenuWrapper";
 import useOutsideAlerter from "@/hooks/useOutsideAlerter";
 
-interface IProps {
-  iconClass?: string;
-}
-
-const MainMenu = ({ iconClass = "text-white" }: IProps) => {
+const MainMenu = () => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
   useOutsideAlerter(menuRef, () => setShowMenu(false));
@@ -21,8 +17,8 @@ const MainMenu = ({ iconClass = "text-white" }: IProps) => {
 
   return (
     <div ref={menuRef} className="relative z-[41]">
-      <button data-cy="menu-icon" onClick={toggleMenu} className={iconClass} aria-label="Toggle menu">
-        <Icon name="menu" />
+      <button className="flex items-center gap-1 text-gray-950 font-medium" onClick={toggleMenu} aria-label="Toggle menu" data-cy="menu-icon">
+        <LucideMenu size={16} className="text-brand" /> Menu
       </button>
       {showMenu && (
         <div className="absolute right-0 z-50">

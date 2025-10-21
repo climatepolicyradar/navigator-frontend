@@ -16,7 +16,7 @@ export function Header() {
           </div>
           <div className="flex items-center justify-end text-textDark">
             <div>
-              <MainMenu iconClass="text-textDark" />
+              <MainMenu />
             </div>
           </div>
         </div>

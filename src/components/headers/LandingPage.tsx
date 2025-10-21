@@ -1,6 +1,5 @@
+import MainMenu from "@/components/menus/MainMenu";
 import { SiteWidth } from "@/components/panels/SiteWidth";
-
-import MainMenu from "../menus/MainMenu";
 
 const LandingPageHeader = () => {
   return (

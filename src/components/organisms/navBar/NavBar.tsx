@@ -20,7 +20,7 @@ export const NavBar = ({ headerClasses = "", logo, menu, showLogo = true, showSe
   );
 
   const mainContainerClasses = joinTailwindClasses(
-    "-ml-2 flex gap-2 cols-2:col-span-2",
+    "-ml-2 flex gap-2 cols-2:col-span-2 cols-3:gap-6 cols-4:gap-0 cols-4:grid cols-4:grid-cols-subgrid",
     showSearch ? "justify-between" : "justify-end",
     showLogo || showSearch ? "cols-4:col-span-3" : "cols-3:col-span-3 cols-4:col-span-4"
   );
@@ -32,8 +32,8 @@ export const NavBar = ({ headerClasses = "", logo, menu, showLogo = true, showSe
           <div className="h-[54px] pt-2 cols-3:pt-0 flex items-center cols-2:col-span-2 cols-3:col-span-1">{showLogo && logo}</div>
         )}
         <div className={mainContainerClasses}>
-          {showSearch && <NavSearch />}
-          {menu}
+          <div className="flex-1 cols-4:col-span-2">{showSearch && <NavSearch />}</div>
+          <div className="flex items-center justify-self-end">{menu}</div>
         </div>
       </Columns>
     </header>
