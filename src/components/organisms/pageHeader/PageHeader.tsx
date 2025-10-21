@@ -1,22 +1,20 @@
 import { ReactNode } from "react";
 
 import { Columns } from "@/components/atoms/columns/Columns";
+import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
+import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
+import { IMetadata } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { firstCase } from "@/utils/text";
 
 interface IPageHeaderGenericProps {
-  coloured?: boolean;
-  label: string;
+  dark?: boolean;
+  label?: string;
   title: ReactNode;
 }
 
-export interface IPageHeaderMetadata {
-  label: string;
-  value: ReactNode;
-}
-
 interface IPageHeaderMetadataProps extends IPageHeaderGenericProps {
-  metadata: IPageHeaderMetadata[];
+  metadata: IMetadata[];
   tabs?: never;
   currentTab?: never;
   onTabChange?: never;
@@ -36,70 +34,45 @@ export interface IPageHeaderTabsProps<Tab extends string> extends IPageHeaderGen
 
 type TProps<Tab extends string = string> = IPageHeaderMetadataProps | IPageHeaderTabsProps<Tab>;
 
-export const PageHeader = <Tab extends string>({
-  coloured = false,
-  currentTab,
-  label,
-  metadata = [],
-  onTabChange,
-  tabs = [],
-  title,
-}: TProps<Tab>) => {
-  const onTabClick = (clickedTab: string) => () => {
-    onTabChange?.(clickedTab);
+export const PageHeader = <Tab extends string>({ currentTab, dark = false, label, metadata = [], onTabChange, tabs = [], title }: TProps<Tab>) => {
+  const onToggleChange = (toggleValue: string[]) => {
+    onTabChange(toggleValue[0]);
   };
 
-  const containerClasses = joinTailwindClasses(
-    "pt-8 cursor-default",
-    coloured ? "bg-[#EDEFF1] text-text-primary" : "text-text-primary",
-    !coloured && "border-b border-b-border-light"
-  );
-
-  const largeTextClasses = "text-[32px] leading-none font-bold";
-  const tertiaryTextClasses = "text-text-tertiary";
-
-  const labelClasses = joinTailwindClasses(largeTextClasses, tertiaryTextClasses);
-  const titleClasses = joinTailwindClasses(
-    largeTextClasses,
-    "block pt-8 pb-12 cols-3:pt-0 cols-3:pb-24 cols-3:w-[80%] cols-2:col-span-2 cols-4:col-span-3"
-  );
+  const hasTabs = tabs.length > 0;
+  const containerClasses = joinTailwindClasses("pt-9", hasTabs ? "pb-6" : "pb-12", dark && "bg-gray-100");
 
   return (
-    <Columns containerClasses={containerClasses} gridClasses="gap-y-0">
-      {/* Title */}
-      <div className={labelClasses}>{label}</div>
-      <h1 className={titleClasses}>{title}</h1>
+    <Columns containerClasses={containerClasses}>
+      <div className="cols-2:col-span-2 cols-3:col-span-1">{label && <h2 className="text-3xl text-gray-500 leading-9 font-heavy">{label}</h2>}</div>
+      <div className="cols-2:col-span-2 cols-4:col-span-3 flex flex-col gap-6">
+        {/* Title */}
 
-      {/* Metadata */}
-      {metadata.length > 0 && (
-        <div className="pb-4 flex gap-8 col-start-1 cols-2:col-end-3 cols-3:col-start-2 cols-3:col-end-4 cols-4:col-end-5 text-sm leading-none">
-          {metadata.map((property) => (
-            <div key={property.label} className="flex flex-col gap-2.5">
-              <div className={tertiaryTextClasses}>{property.label}</div>
-              <div className="inline-block">{property.value}</div>
-            </div>
-          ))}
-        </div>
-      )}
+        <h1 className="text-3xl text-gray-950 leading-9 font-heavy">{title}</h1>
 
-      {/* Tabs */}
-      {tabs.length > 0 && (
-        <div className="flex gap-8 cols-3:col-start-2 cols-3:col-end-4 cols-4:col-end-5 text-lg leading-tight font-[660]">
-          {tabs.map((tab) => {
-            const tabIsActive = tab.tab === currentTab;
-            const tabClasses = joinTailwindClasses(
-              "pb-4 mb-[1px] border-b-[3px] hover:text-text-primary",
-              !tabIsActive && `${tertiaryTextClasses} border-b-transparent`
-            );
+        {/* Metadata */}
+        {metadata.length > 0 && (
+          <div className="grid grid-cols-[min-content_auto] gap-x-8 gap-y-2 text-sm">
+            {metadata.map((property) => (
+              <>
+                <div className="text-gray-950 font-medium whitespace-nowrap">{property.label}</div>
+                <div className="text-gray-700">{property.value}</div>
+              </>
+            ))}
+          </div>
+        )}
 
-            return (
-              <button key={tab.tab} type="button" onClick={onTabClick(tab.tab)} className={tabClasses}>
-                {tab.label || firstCase(tab.tab)}
-              </button>
-            );
-          })}
-        </div>
-      )}
+        {/* Tabs */}
+        {hasTabs && (
+          <ToggleGroup value={[currentTab]} onValueChange={onToggleChange}>
+            {tabs.map(({ label, tab }) => (
+              <Toggle key={tab} value={tab} size="large">
+                {label || firstCase(tab)}
+              </Toggle>
+            ))}
+          </ToggleGroup>
+        )}
+      </div>
     </Columns>
   );
 };

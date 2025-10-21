@@ -22,7 +22,6 @@ export const DocumentsBlock: TStory = {
         <Toggle value="cards">Cards</Toggle>
       </>
     ),
-    className: "",
     defaultValue: ["table"],
   },
 };

@@ -13,10 +13,10 @@ import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
-import { IPageHeaderMetadata, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
+import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { GeographiesContext } from "@/context/GeographiesContext";
 import { useText } from "@/hooks/useText";
-import { TSearch, TGeographyPageBlock } from "@/types";
+import { TSearch, TGeographyPageBlock, IMetadata } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
@@ -34,7 +34,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
 
   /* Page header */
 
-  const pageHeaderMetadata: IPageHeaderMetadata[] = [];
+  const pageHeaderMetadata: IMetadata[] = [];
   if (!isCountry) {
     pageHeaderMetadata.push({
       label: "Part of",
@@ -181,11 +181,12 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
     <GeographiesContext.Provider value={allGeographies}>
       <Layout metadataKey="geography" theme={theme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
         <BreadCrumbs
+          dark
           geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
           parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
           isSubdivision={!isCountry}
         />
-        <PageHeader coloured label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
+        <PageHeader dark label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
         <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
       </Layout>
     </GeographiesContext.Provider>
