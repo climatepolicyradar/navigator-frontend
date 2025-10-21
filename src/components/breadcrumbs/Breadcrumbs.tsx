@@ -8,7 +8,7 @@ import { useText } from "@/hooks/useText";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-type TBreadcrumbLink = {
+export type TBreadcrumbLink = {
   label: string | React.ReactNode;
   href?: string;
   last?: boolean;
