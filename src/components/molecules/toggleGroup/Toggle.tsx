@@ -6,7 +6,7 @@ interface IProps extends BaseToggle.Props {
 
 export const Toggle = ({ children, ...props }: IProps) => (
   <BaseToggle
-    className="h-8 px-4 rounded-full text-base text-text-secondary font-semibold leading-none data-[pressed]:bg-surface-light data-[pressed]:text-text-primary"
+    className="h-8 px-4 rounded-full text-[15px] text-text-secondary font-semibold leading-none data-[pressed]:bg-surface-light data-[pressed]:text-text-primary"
     {...props}
   >
     {children}

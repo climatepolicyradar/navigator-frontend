@@ -7,12 +7,12 @@ import { Heading } from "@/components/typography/Heading";
 const EMAIL_SUBJECT = "Joining the NLP community";
 const EMAIL_BODY = "Hi, I am interested in joining the climate NLP community. It is relevant to me because...";
 
-const linkClasses = getButtonClasses({ color: "brand", rounded: true, className: "!bg-blue-500 hover:!bg-blue-700 !text-lg" });
+const linkClasses = getButtonClasses({ color: "brand", rounded: true, className: "!bg-blue-500 hover:!bg-blue-700 !text-base" });
 
 export const HelpUs = () => (
   <div className="bg-cclw-dark">
     <SiteWidth extraClasses="text-white py-12 pb-24">
-      <Heading level={2} extraClasses="text-[30px] xl:text-4xl xl:leading-[52px] !text-white text-center">
+      <Heading level={2} extraClasses="text-3xl xl:text-4xl xl:leading-[52px] !text-white text-center">
         Help us improve this tool
       </Heading>
       <p className="text-center text-xl">Here's a variety of ways you can contribute or collaborate with us.</p>

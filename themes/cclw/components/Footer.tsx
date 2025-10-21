@@ -22,7 +22,7 @@ const Footer = () => {
         <SiteWidth>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="footer__section" data-cy="footer-cclw">
-              <div className="font-medium text-lg">Climate Change Laws of the World</div>
+              <div className="font-medium text-base">Climate Change Laws of the World</div>
               <ul className="mb-6">
                 {MENU_LINKS.map((link) => (
                   <li key={link.href} className="mb-2">
@@ -33,7 +33,7 @@ const Footer = () => {
             </div>
 
             <div key={GRI_LINKS.title} className="footer__section" data-cy="footer-gri">
-              <div className="font-medium text-lg">{GRI_LINKS.title}</div>
+              <div className="font-medium text-base">{GRI_LINKS.title}</div>
               <ul>
                 {GRI_LINKS.links.map((link) => (
                   <li key={link.text} className="mb-2">
@@ -69,7 +69,7 @@ const Footer = () => {
             </div>
 
             <div className="footer__section">
-              <div className="font-medium text-lg">Climate Policy Radar</div>
+              <div className="font-medium text-base">Climate Policy Radar</div>
               <p>Using AI and data science to map the world's climate documents.</p>
               <ul className="mb-6" data-cy="footer-cpr-links">
                 <li className="mb-1">
@@ -113,7 +113,7 @@ const Footer = () => {
         </SiteWidth>
       </div>
       <div className="footer__base">
-        <SiteWidth extraClasses="flex flex-1 items-end h-full pt-[114px] flex-wrap text-sm lg:text-lg lg:pt-0 lg:gap-6">
+        <SiteWidth extraClasses="flex flex-1 items-end h-full pt-[114px] flex-wrap text-sm lg:text-base lg:pt-0 lg:gap-6">
           <p className="lg:mb-6">Copyright © LSE {new Date().getFullYear()}</p>
           <div className="ml-6 flex flex-wrap gap-6 lg:mb-6 lg:ml-0">
             <ExternalLink url="https://www.climatepolicyradar.org/privacy-policy" className="text-secondary-700 underline">

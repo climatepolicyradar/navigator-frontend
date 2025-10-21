@@ -9,7 +9,7 @@ const Summary = () => {
       <SiteWidth extraClasses="py-24 md:flex items-center">
         <div>
           <Heading level={2}>Read our methodology</Heading>
-          <p className="text-[18px] md:mr-8">
+          <p className="text-lg md:mr-8">
             Find out more about the scope and structure of our database, our data collection methods, terminology, updates and future developments.
           </p>
         </div>

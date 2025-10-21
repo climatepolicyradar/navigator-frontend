@@ -63,7 +63,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
             data-analytics="landingPage-searchInput"
             data-cy="search-input"
             type="search"
-            className="text-lg py-3 h-[48px] pl-12 pr-3 w-full rounded-lg border-0 placeholder:text-text-tertiary bg-surface-heavy text-text-primary"
+            className="text-base py-3 h-[48px] pl-12 pr-3 w-full rounded-lg border-0 placeholder:text-text-tertiary bg-surface-heavy text-text-primary"
             value={term}
             onChange={onChange}
             placeholder={displayPlaceholder}

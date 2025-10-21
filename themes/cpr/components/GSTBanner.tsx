@@ -3,7 +3,7 @@ import { Icon } from "@/components/atoms/icon/Icon";
 
 export const GSTBanner = () => {
   return (
-    <div className="bg-blue-100 w-full flex justify-center p-2 text-sm md:text-lg">
+    <div className="bg-blue-100 w-full flex justify-center p-2 text-sm md:text-base">
       <div className="flex items-center">
         <span className="text-primary-400 mr-2 self-start">
           <Icon name="speaker" />

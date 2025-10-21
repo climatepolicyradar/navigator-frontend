@@ -55,7 +55,7 @@ const Footer = () => {
         </SiteWidth>
       </div>
       <div className="footer__base">
-        <SiteWidth extraClasses="flex flex-1 items-end h-full pt-[20px] flex-wrap text-sm lg:text-lg lg:pt-0 lg:gap-6">
+        <SiteWidth extraClasses="flex flex-1 items-end h-full pt-[20px] flex-wrap text-sm lg:text-base lg:pt-0 lg:gap-6">
           <p className="lg:mb-6 text-sm">Copyright © {new Date().getFullYear()} Climate Project Explorer</p>
           <div className="ml-6 flex flex-wrap gap-6 lg:mb-6 lg:ml-0 text-sm">
             <ExternalLink url="https://www.climatepolicyradar.org/privacy-policy" className="text-textNormal underline hover:text-blue-800">

@@ -18,7 +18,7 @@ export const PoweredBy = () => (
       <main className="cols-2:col-span-2 cols-4:col-span-3 grid grid-cols-subgrid gap-6">
         <div className="col-span-full text-text-secondary flex flex-col gap-6">
           <ExternalLink
-            className="text-text-secondary text-lg underline leading-normal flex items-center gap-2"
+            className="text-text-secondary text-base underline leading-normal flex items-center gap-2"
             url="https://www.climatepolicyradar.org"
           >
             <Image src="/images/climate-text.svg" width={50} height={30} alt="Climate" data-cy="cpr-logo-climate-text" className="w-auto" />
@@ -40,12 +40,12 @@ export const PoweredBy = () => (
             />
           </ExternalLink>
           <div className="flex flex-col gap-4">
-            <p className="text-text-secondary text-lg leading-normal">
+            <p className="text-text-secondary text-base leading-normal">
               Climate Policy Radar uses AI and data science
               <br />
               to map the world's climate documents.
             </p>
-            <p className="text-text-secondary text-lg leading-normal">
+            <p className="text-text-secondary text-base leading-normal">
               Visit{" "}
               <ExternalLink className="underline" url="https://www.climatepolicyradar.org">
                 climatepolicyradar.org

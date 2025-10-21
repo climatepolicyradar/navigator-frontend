@@ -44,7 +44,7 @@ export const FamilyBlock = ({ family }: IProps) => {
           <LinkWithQuery href={`/document/${family.slug}`}>
             <h2 className="text-xl text-text-primary font-semibold leading-tight hover:underline">
               {family.title}&nbsp;
-              <span className="text-lg text-text-brand">↗</span>
+              <span className="text-base text-text-brand">↗</span>
             </h2>
           </LinkWithQuery>
           <div className="mt-2 flex gap-4 flex-wrap text-sm text-text-tertiary leading-none">
