@@ -31,7 +31,7 @@ const children = (
       <span className="font-medium text-[13px]">Page 16</span>
       <Copy height="16" width="16" />
     </div>
-    <p className="font-normal text-base">
+    <p className="font-normal text-[15px]">
       (PM2.5), the pollutant most associated with negative health impacts. The impact quantified here are premature deaths associated with PM2.5
       exposure, although air pollution has a much wider effect on health, including non-fatal effects on the respiratory and cardiovascular systems.
       In Nigeria in 2010, fine particulate matter exposure was associated with about 61,000 premature deaths with the most affected being children of
@@ -65,7 +65,7 @@ export const CookieConsent: TStory = {
   args: {
     children: (
       <>
-        <p className="text-lg leading-normal font-semibold text-text-primary">Cookies and your privacy</p>
+        <p className="text-base leading-normal font-semibold text-text-primary">Cookies and your privacy</p>
         <p className="mt-2 mb-4 text-sm leading-normal font-normal text-text-primary">
           We take your trust and privacy seriously. Climate Policy Radar uses cookies to make our site work optimally, analyse traffic to our website
           and improve your experience. Read our{" "}

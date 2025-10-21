@@ -13,7 +13,7 @@ export const Footer = () => {
             <Image src="/images/cpr-logo-horizontal.svg" width={228} height={35} alt="Climate Policy Radar logo" data-cy="cpr-logo" />
           </LinkWithQuery>
         </div>
-        <p className="text-[18px] text-textNormal">
+        <p className="text-lg text-textNormal">
           To report a problem, email us at support@climatepolicyradar.org <br /> Spotted missing or inaccurate data?{" "}
           <ExternalLink url="https://form.jotform.com/233294135296359" className="text-textDark underline">
             Let us know

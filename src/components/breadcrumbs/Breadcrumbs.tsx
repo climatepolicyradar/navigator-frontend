@@ -82,8 +82,9 @@ export const BreadCrumbs = ({
     const breadcrumbGeography = isSubdivision && parentGeography && !isSystemGeo(String(parentGeography.label)) ? parentGeography : null;
     const finalGeography = geography && !isSystemGeo(String(geography.label)) ? geography : null;
 
-    if (breadcrumbGeography) breadCrumbs.push(<BreadCrumb label={breadcrumbGeography.label} href={breadcrumbGeography.href} cy="geography" />);
-    if (finalGeography) breadCrumbs.push(<BreadCrumb label={finalGeography.label} last cy="current" />);
+    if (breadcrumbGeography)
+      breadCrumbs.push(<BreadCrumb key="geography" label={breadcrumbGeography.label} href={breadcrumbGeography.href} cy="geography" />);
+    if (finalGeography) breadCrumbs.push(<BreadCrumb key="final-geography" label={finalGeography.label} last cy="current" />);
   } else if (isCollectionPage) {
     if (label) breadCrumbs.push(<BreadCrumb key="collection" label={label} last cy="current" />);
   } else {
@@ -95,12 +96,13 @@ export const BreadCrumbs = ({
           : null;
     const breadcrumbSubGeography = isSubdivision && geography && !isSystemGeo(String(geography.label)) ? geography : null;
 
-    if (breadcrumbGeography) breadCrumbs.push(<BreadCrumb label={breadcrumbGeography.label} href={breadcrumbGeography.href} cy="geography" />);
+    if (breadcrumbGeography)
+      breadCrumbs.push(<BreadCrumb key="geography" label={breadcrumbGeography.label} href={breadcrumbGeography.href} cy="geography" />);
     if (breadcrumbSubGeography)
-      breadCrumbs.push(<BreadCrumb label={breadcrumbSubGeography.label} href={breadcrumbSubGeography.href} cy="sub-geography" />);
-    if (category) breadCrumbs.push(<BreadCrumb label={category.label} href={category.href} cy="category" />);
-    if (family) breadCrumbs.push(<BreadCrumb label={family.label} href={family.href} cy="family" />);
-    if (label) breadCrumbs.push(<BreadCrumb label={label} last cy="current" />);
+      breadCrumbs.push(<BreadCrumb key="sub-geography" label={breadcrumbSubGeography.label} href={breadcrumbSubGeography.href} cy="sub-geography" />);
+    if (category) breadCrumbs.push(<BreadCrumb key="category" label={category.label} href={category.href} cy="category" />);
+    if (family) breadCrumbs.push(<BreadCrumb key="family" label={family.label} href={family.href} cy="family" />);
+    if (label) breadCrumbs.push(<BreadCrumb key="current" label={label} last cy="current" />);
   }
 
   const containerClasses = joinTailwindClasses(dark && "bg-gray-100");

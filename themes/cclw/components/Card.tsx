@@ -28,7 +28,7 @@ export const Card = ({ heading, type, img, extraClasses, children }: IProps) => 
               <span className="bg-blue-50 py-2 px-3 text-blue-900 text-xs rounded-xl inline-block">{type}</span>
             </div>
           )}
-          <div className="pb-2 basis-full text-lg font-medium group-hover:underline">{heading}</div>
+          <div className="pb-2 basis-full text-base font-medium group-hover:underline">{heading}</div>
           {children}
         </div>
       </div>

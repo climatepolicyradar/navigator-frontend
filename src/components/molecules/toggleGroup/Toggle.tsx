@@ -10,7 +10,7 @@ interface IProps extends BaseToggle.Props {
 export const Toggle = ({ children, size = "medium", ...props }: IProps) => {
   const allClasses = joinTailwindClasses(
     "rounded-full text-base text-gray-950 font-heavy leading-none data-[pressed]:bg-gray-950 data-[pressed]:text-white",
-    size === "medium" ? "px-3 py-2 text-base" : "px-4 py-2.5 text-xl"
+    size === "medium" ? "px-3 py-2 text-base" : "px-4 py-2.5 text-lg"
   );
 
   return (

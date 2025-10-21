@@ -371,7 +371,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
                     <Geography
                       key={geo.rsmKey}
                       geography={geo}
-                      style={geoStyle(activeGeography === geo.properties.name, geoData?.familyCounts.LITIGATION, mapData.maxLitigation)}
+                      style={geoStyle(activeGeography === geo.properties.name, geoData?.familyCounts.LITIGATION || 0, mapData.maxLitigation)}
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();

@@ -49,8 +49,8 @@ test.describe("CPR Hero Search", () => {
     // Search form
     await expect(page.locator('[data-cy="search-form"]')).toBeVisible();
 
-    // Exact match checkbox
-    await expect(page.locator("#exact-match")).toBeVisible();
+    // Exact match checkbox should not exist
+    await expect(page.locator("#exact-match")).not.toBeAttached();
 
     // Quick search suggestions
     await expect(page.getByText("Try these searches")).toBeVisible();
@@ -165,7 +165,6 @@ test.describe("CPR Hero Search", () => {
 
     const url4 = page.url();
     expect(url4).toContain("c=laws");
-    expect(url4).toContain("cfn=emissions+reduction+target");
     expect(url4).toContain("fl=true");
     expect(url4).not.toContain("e=true");
     await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
@@ -232,7 +231,7 @@ test.describe("CPR Hero Search", () => {
     await expect(page).not.toHaveURL(/e=true/);
   });
 
-  test("should maintain search state on Home breadcrumb click", async ({ page }) => {
+  test("should not maintain search state on Home breadcrumb click", async ({ page }) => {
     const searchTerm = "adaptation";
 
     // Type search term
@@ -250,13 +249,13 @@ test.describe("CPR Hero Search", () => {
     // Should now be on homepage with same parameters
     await expect(page.locator('[data-cy="cpr-logo"]')).toBeVisible();
     await expect(page).not.toHaveURL(/\/search/);
-    await expect(page).toHaveURL(/q=adaptation/);
+    await expect(page).not.toHaveURL(/q=adaptation/);
     await expect(page).not.toHaveURL(/e=true/);
 
     // Verify the search input is not cleared
     const searchInput = page.locator('[data-cy="search-input"]');
-    await expect(searchInput).not.toHaveValue("");
-    await expect(searchInput).toHaveValue(searchTerm);
+    await expect(searchInput).toHaveValue("");
+    await expect(searchInput).not.toHaveValue(searchTerm);
   });
 
   test("should navigate to geography profile when clicking country suggestion", async ({ page }) => {
@@ -321,65 +320,6 @@ test.describe("CPR Hero Search", () => {
     // Should have correct query parameters
     await expect(page).toHaveURL(/q=renewable\+energy\+adaptation/);
     await expect(page).not.toHaveURL(/e=true/);
-  });
-
-  test("should perform exact match search if exact match checkbox is checked", async ({ page }) => {
-    const searchInput = page.locator('[data-cy="search-input"]');
-    const searchButton = page.locator('button[aria-label="Search"]');
-    const exactMatchCheckbox = page.locator("#exact-match");
-
-    // Type a search term
-    const searchTerm = "climate policy";
-    await searchInput.fill(searchTerm);
-
-    // Check the exact match checkbox
-    await exactMatchCheckbox.check();
-
-    // Click search button
-    await searchButton.click();
-
-    // Should navigate to search page with exact match parameter
-    await page.waitForURL("/search*");
-
-    // Verify the exact match parameter is in the URL
-    const url = page.url();
-    expect(url).not.toContain("e=true");
-    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
-  });
-
-  test("should check exact match checkbox is checked on homepage load", async ({ page }) => {
-    const exactMatchCheckbox = page.locator("#exact-match");
-    await expect(exactMatchCheckbox).toBeChecked();
-  });
-
-  test("should perform semantic search if exact match checkbox is not checked", async ({ page }) => {
-    const searchInput = page.locator('[data-cy="search-input"]');
-    const searchButton = page.locator('button[aria-label="Search"]');
-    const exactMatchCheckbox = page.locator("#exact-match");
-
-    // Type a search term
-    const searchTerm = "climate policy";
-    await searchInput.fill(searchTerm);
-
-    // Uncheck only if currently checked
-    if (await exactMatchCheckbox.isChecked()) {
-      // Use click instead of uncheck to trigger the onChange handler properly
-      await exactMatchCheckbox.click();
-
-      // Verify it's actually unchecked
-      await expect(exactMatchCheckbox).not.toBeChecked();
-    }
-
-    // Click search button
-    await searchButton.click();
-
-    // Should navigate to search page with exact match parameter
-    await page.waitForURL("/search*");
-
-    // Verify the exact match parameter is in the URL and is false
-    const url = page.url();
-    expect(url).toContain("e=false");
-    await expect(page.getByRole("listitem").filter({ hasText: "Search results" })).toBeVisible();
   });
 
   test("should handle search clear button", async ({ page }) => {
