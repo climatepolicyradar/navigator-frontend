@@ -12,7 +12,6 @@ import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
-import { COUNTRY_FLAGS } from "@/constants/flags";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getCategoryName } from "@/helpers/getCategoryName";
@@ -28,6 +27,7 @@ import { joinNodes } from "@/utils/reactNode";
 import { convertDate } from "@/utils/timedate";
 
 import { IProps } from "./familyOriginalPage";
+import { GeographyLink } from "../molecules/geographyLink/GeographyLink";
 
 export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig }: IProps) => {
   /* Search matches */
@@ -101,16 +101,8 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
           const isCountry = !code.includes("-");
           const slug = isCountry ? getCountrySlug(code, countries) : code.toLowerCase();
           const name = isCountry ? getCountryName(code, countries) : getSubdivisionName(code, subdivisions);
-          const flag = code in COUNTRY_FLAGS ? <>{COUNTRY_FLAGS[code]}&nbsp;</> : null;
 
-          return !isSystemGeo(name) ? (
-            <LinkWithQuery key={code} href={`/geographies/${slug}`} className="hover:underline">
-              {flag}
-              {name}
-            </LinkWithQuery>
-          ) : (
-            <span key={code}>{name}</span>
-          );
+          return <GeographyLink key={code} code={code} name={name} slug={isSystemGeo(name) ? null : slug} />;
         }),
         ", "
       ),
