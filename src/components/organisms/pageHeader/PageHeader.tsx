@@ -9,6 +9,7 @@ import { firstCase } from "@/utils/text";
 
 interface IPageHeaderGenericProps {
   dark?: boolean;
+  label?: string;
   title: ReactNode;
 }
 
@@ -33,20 +34,20 @@ export interface IPageHeaderTabsProps<Tab extends string> extends IPageHeaderGen
 
 type TProps<Tab extends string = string> = IPageHeaderMetadataProps | IPageHeaderTabsProps<Tab>;
 
-export const PageHeader = <Tab extends string>({ currentTab, dark = false, metadata = [], onTabChange, tabs = [], title }: TProps<Tab>) => {
+export const PageHeader = <Tab extends string>({ currentTab, dark = false, label, metadata = [], onTabChange, tabs = [], title }: TProps<Tab>) => {
   const onToggleChange = (toggleValue: string[]) => {
     onTabChange(toggleValue[0]);
   };
 
   const hasTabs = tabs.length > 0;
-
-  const containerClasses = joinTailwindClasses(dark && "bg-gray-100");
-  const contentClasses = joinTailwindClasses("cols-2:col-start-2 cols-3:col-end-4 flex flex-col gap-6 pt-9", hasTabs ? "pb-6" : "pb-12");
+  const containerClasses = joinTailwindClasses("pt-9", hasTabs ? "pb-6" : "pb-12", dark && "bg-gray-100");
 
   return (
     <Columns containerClasses={containerClasses}>
-      <div className={contentClasses}>
+      <div>{label && <h2 className="text-3xl text-gray-500 leading-9 font-heavy">{label}</h2>}</div>
+      <div className="cols-2:col-start-2 cols-3:col-end-4 flex flex-col gap-6">
         {/* Title */}
+
         <h1 className="text-3xl text-gray-950 leading-9 font-heavy">{title}</h1>
 
         {/* Metadata */}
