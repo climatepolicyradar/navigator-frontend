@@ -1,32 +1,24 @@
-import orderBy from "lodash/orderBy";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Debug } from "@/components/atoms/debug/Debug";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
-import { BreadCrumbs, TBreadcrumbLink } from "@/components/breadcrumbs/Breadcrumbs";
+import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { GeographyLink, IProps as GeographyLinkProps } from "@/components/molecules/geographyLink/GeographyLink";
 import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { getCategoryName } from "@/helpers/getCategoryName";
-import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { getSubdivisionName } from "@/helpers/getSubdivision";
+import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import useSearch from "@/hooks/useSearch";
-import { TMatchedFamily, TFamilyPageBlock, IMetadata } from "@/types";
+import { TMatchedFamily, TFamilyPageBlock } from "@/types";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
-import { isSystemGeo } from "@/utils/isSystemGeo";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
-import { joinNodes } from "@/utils/reactNode";
-import { convertDate } from "@/utils/timedate";
 
 import { IProps } from "./familyOriginalPage";
 
@@ -48,86 +40,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     });
   }
 
-  /* Page header */
-
-  const categoryName = getCategoryName(family.category, family.corpus_type_name, family.organisation);
-  const [year] = convertDate(family.published_date);
-  const attributionUrl = family?.organisation_attribution_url;
-
-  const codeIsCountry = (code: string) => !code.includes("-");
-
-  // TODO use the new geography endpoint + GeographyV2
-  const geographiesToDisplay: GeographyLinkProps[] = orderBy(
-    family.geographies
-      .map((code) => {
-        const isSubdivision = !codeIsCountry(code);
-        const name = isSubdivision ? getSubdivisionName(code, subdivisions) : getCountryName(code, countries);
-        const slug = isSubdivision ? code.toLowerCase() : getCountrySlug(code, countries);
-        return name && slug ? { code, name, slug: isSystemGeo(name) ? undefined : slug } : null;
-      })
-      .filter((data) => data),
-    [(data) => data.code.includes("-"), "name"],
-    ["asc", "asc"]
-  );
-
-  let breadcrumbGeography: TBreadcrumbLink = null;
-  let breadcrumbParentGeography: TBreadcrumbLink = null;
-
-  if (geographiesToDisplay.length > 0) {
-    if (geographiesToDisplay.some((geo) => !codeIsCountry(geo.code))) {
-      // Includes a subdivision
-      const subdivision = geographiesToDisplay.find((geo) => !codeIsCountry(geo.code));
-      breadcrumbGeography = { label: subdivision.name, href: `/geographies/${subdivision.slug}` };
-
-      // Get the subdivision's parent country
-      const subdivisionData = subdivisions.find((sub) => sub.code === subdivision.code);
-      const parentCountryCode = subdivisionData.country_alpha_3;
-      if (subdivisionData) {
-        const countryName = getCountryName(parentCountryCode, countries);
-        const countrySlug = getCountrySlug(parentCountryCode, countries);
-        if (countryName && countrySlug && !isSystemGeo(countryName)) {
-          breadcrumbParentGeography = { label: countryName, href: `/geographies/${countrySlug}` };
-        }
-      }
-    } else {
-      // Countries only
-      const country = geographiesToDisplay[0];
-      if (!isSystemGeo(country.name)) breadcrumbGeography = { label: country.name, href: `/geographies/${country.slug}` };
-    }
-  }
-
-  const isGeographyParentChild =
-    geographiesToDisplay.length === 2 && !geographiesToDisplay[0].code.includes("-") && geographiesToDisplay[1].code.includes("-");
-
-  const pageHeaderMetadata: IMetadata[] = [
-    {
-      label: "Geography",
-      value: joinNodes(
-        geographiesToDisplay.map(({ code, name, slug }) => {
-          return <GeographyLink key={code} code={code} name={name} slug={isSystemGeo(name) ? null : slug} />;
-        }),
-        isGeographyParentChild ? <span className="text-gray-400"> / </span> : <>&ensp;</>
-      ),
-    },
-    { label: "Date", value: isNaN(year) ? "" : year },
-    {
-      label: "Document type",
-      value: categoryName,
-    },
-  ];
-  if (family.collections.length) {
-    pageHeaderMetadata.push({
-      label: "Part of",
-      value: joinNodes(
-        family.collections.map((collection) => (
-          <LinkWithQuery key={collection.import_id} href={`/collections/${collection.slug}`} className="hover:underline">
-            {collection.title}
-          </LinkWithQuery>
-        )),
-        ", "
-      ),
-    });
-  }
+  const { pageHeaderMetadata, breadcrumbGeography, breadcrumbParentGeography } = useFamilyPageHeaderData({ countries, family, subdivisions });
 
   /* Blocks */
 
@@ -178,7 +91,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
       theme={theme}
       themeConfig={themeConfig}
       metadataKey="family"
-      attributionUrl={attributionUrl}
+      attributionUrl={family?.organisation_attribution_url}
     >
       <BreadCrumbs
         geography={breadcrumbGeography}
