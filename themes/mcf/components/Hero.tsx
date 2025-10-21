@@ -14,7 +14,7 @@ const Hero = ({ handleSearchInput, searchInput }: IProps) => (
   <div className="pb-6 pt-[28px] sm:pt-[48px] md:pt-[80px] lg:pt-[100px] xl:pt-[140px]">
     <SiteWidth extraClasses="!max-w-[1024px]">
       <div className="mx-auto text-center">
-        <p className="font-medium tracking-slight text-[18px] lg:text-xl text-mcf-blueOpacity64 mb-2 font-greycliff" data-cy="search-all">
+        <p className="font-medium tracking-slight text-lg lg:text-xl text-mcf-blueOpacity64 mb-2 font-greycliff" data-cy="search-all">
           SEARCH ALL
         </p>
         <Heading extraClasses="custom-hero" level={1}>

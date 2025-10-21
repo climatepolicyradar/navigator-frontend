@@ -91,7 +91,7 @@ export const FamilyMatchesDrawer = ({ family }: IProps) => {
               <div key={document.document_slug} className="mb-5">
                 <LinkWithQuery
                   href={`/documents/${document.document_slug}`}
-                  className="text-[#005EEB] hover:text-blue-800 hover:underline text-[18px] inline-block"
+                  className="text-[#005EEB] hover:text-blue-800 hover:underline text-lg inline-block"
                 >
                   <span className="mr-1 -mb-[2px] inline-block">
                     <File width={20} height={20} />

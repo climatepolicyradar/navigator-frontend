@@ -15,7 +15,7 @@ export const FeatureDiscover = () => (
     <div className="flex flex-col gap-4 mt-6 lg:flex-row">
       <LinkWithQuery
         href="/methodology"
-        className={getButtonClasses({ color: "brand", rounded: true, className: "!bg-blue-500 hover:!bg-blue-700 !text-lg" })}
+        className={getButtonClasses({ color: "brand", rounded: true, className: "!bg-blue-500 hover:!bg-blue-700 !text-base" })}
       >
         Learn more about our database
       </LinkWithQuery>
@@ -23,7 +23,7 @@ export const FeatureDiscover = () => (
         url="https://form.jotform.com/233131638610347"
         className={getButtonClasses({
           variant: "ghost",
-          className: "hover:!bg-transparent !text-lg !text-blue-300 hover:!text-white underline",
+          className: "hover:!bg-transparent !text-base !text-blue-300 hover:!text-white underline",
         })}
       >
         Download our data
