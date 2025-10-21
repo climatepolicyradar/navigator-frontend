@@ -44,8 +44,8 @@ export const PageHeader = <Tab extends string>({ currentTab, dark = false, label
 
   return (
     <Columns containerClasses={containerClasses}>
-      <div>{label && <h2 className="text-3xl text-gray-500 leading-9 font-heavy">{label}</h2>}</div>
-      <div className="cols-2:col-start-2 cols-3:col-end-4 flex flex-col gap-6">
+      <div className="cols-2:col-span-2 cols-3:col-span-1">{label && <h2 className="text-3xl text-gray-500 leading-9 font-heavy">{label}</h2>}</div>
+      <div className="cols-2:col-span-2 cols-4:col-span-3 flex flex-col gap-6">
         {/* Title */}
 
         <h1 className="text-3xl text-gray-950 leading-9 font-heavy">{title}</h1>
