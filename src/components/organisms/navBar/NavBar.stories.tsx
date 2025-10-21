@@ -1,5 +1,7 @@
 import { Meta, StoryObj } from "@storybook/nextjs";
 
+import { CCCLogo } from "@/ccc/components/Header";
+import { Menu as CCCMenu } from "@/ccc/components/Menu";
 import { CCLWLogo } from "@/cclw/components/Header";
 import { Menu as CCLWMenu } from "@/cclw/components/Menu";
 import MainMenu from "@/components/menus/MainMenu";
@@ -103,7 +105,6 @@ export const CCLW: TStory = {
     showLogo: true,
     showSearch: true,
   },
-  name: "CCLW",
   parameters: documentPageParameters,
 };
 
@@ -115,6 +116,16 @@ export const MCF: TStory = {
     showLogo: true,
     showSearch: true,
   },
-  name: "MCF",
+  parameters: documentPageParameters,
+};
+
+export const CCC: TStory = {
+  args: {
+    headerClasses: "min-h-12 bg-surface-light !bg-[#677787]",
+    logo: CCCLogo,
+    menu: <CCCMenu isNotHome={true} />,
+    showLogo: true,
+    showSearch: true,
+  },
   parameters: documentPageParameters,
 };

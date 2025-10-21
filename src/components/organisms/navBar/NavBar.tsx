@@ -1,11 +1,13 @@
+import { ReactNode } from "react";
+
 import { Columns } from "@/components/atoms/columns/Columns";
 import { NavSearch } from "@/components/molecules/navSearch/NavSearch";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
   headerClasses?: string;
-  logo: React.ReactNode;
-  menu: React.ReactNode;
+  logo: ReactNode;
+  menu: ReactNode;
   showLogo?: boolean;
   showSearch?: boolean;
 }
@@ -18,7 +20,7 @@ export const NavBar = ({ headerClasses = "", logo, menu, showLogo = true, showSe
   );
 
   const mainContainerClasses = joinTailwindClasses(
-    "-ml-2 flex  gap-2 cols-2:col-span-2",
+    "-ml-2 flex gap-2 cols-2:col-span-2",
     showSearch ? "justify-between" : "justify-end",
     showLogo || showSearch ? "cols-4:col-span-3" : "cols-3:col-span-3 cols-4:col-span-4"
   );
