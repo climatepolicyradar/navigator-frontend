@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { ARROW_RIGHT, EN_DASH } from "@/constants/chars";
+import { EN_DASH } from "@/constants/chars";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { IMetadata, TFamilyPublic, TGeography } from "@/types";
 import { isSystemGeo } from "@/utils/isSystemGeo";
