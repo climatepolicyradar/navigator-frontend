@@ -13,10 +13,13 @@ import { isSystemGeo } from "@/utils/isSystemGeo";
 export function getMCFMetadata(family: TFamilyPublic, countries: TGeography[]): IMetadata[] {
   const metadata = [];
 
-  metadata.push({
-    label: "Approval FY",
-    value: getApprovedYearFromEvents(family.events) || EN_DASH,
-  });
+  const approvalYear = getApprovedYearFromEvents(family.events);
+
+  approvalYear &&
+    metadata.push({
+      label: "Approval FY",
+      value: approvalYear,
+    });
 
   /* Geography */
   if (family.geographies.length > 0) {
@@ -91,6 +94,12 @@ export function getMCFMetadata(family: TFamilyPublic, countries: TGeography[]): 
       label: "Result Area",
       value: family.metadata.result_area.join(", "),
     });
+
+  metadata.push({
+    label: "Type",
+    value: "Project", // MCF families are always projects
+  });
+
   family.metadata?.project_url &&
     family.metadata?.project_url[0] !== "" &&
     metadata.push({

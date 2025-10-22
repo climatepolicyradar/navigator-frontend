@@ -11,6 +11,7 @@ export function getReportsMetadata(family: TFamilyPublic, countries: TGeography[
   const metadata = [];
 
   const [year] = convertDate(family.published_date);
+  const document_type = family.documents && family.documents.length > 0 ? family.documents[0].document_type : undefined;
 
   /* Year */
   metadata.push({
@@ -46,12 +47,17 @@ export function getReportsMetadata(family: TFamilyPublic, countries: TGeography[
       label: "Author Type",
       value: family.metadata?.author_type.join(", ") || EN_DASH,
     });
-
   family?.metadata?.author &&
     metadata.push({
       label: "Author",
       value: family.metadata?.author.join(", ") || EN_DASH,
     });
+
+  /* Document Type */
+  metadata.push({
+    label: "Type",
+    value: document_type || EN_DASH,
+  });
 
   return metadata;
 }
