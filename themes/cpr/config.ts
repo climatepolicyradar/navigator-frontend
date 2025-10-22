@@ -361,7 +361,7 @@ const config: TThemeConfig = {
   documentCategories: ["All", "UNFCCC Submissions", "Laws", "Policies", "Climate Finance Projects", "Offshore Wind Reports", "Litigation"],
   defaultDocumentCategory: "Laws",
   pageBlocks: {
-    family: ["metadata", "debug"],
+    family: ["metadata"],
     geography: [],
   },
   tutorials: ["knowledgeGraph"],
