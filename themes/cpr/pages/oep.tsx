@@ -3,10 +3,10 @@ import Image from "next/image";
 
 import { ExternalLink } from "@/components/ExternalLink";
 import Layout from "@/components/layouts/LandingPage";
+import { Header } from "@/cpr/components/Header";
 import { ColumnAndImage } from "@/cpr/components/oep/ColumnAndImage";
 import { EqualColumn, EqualColumns } from "@/cpr/components/oep/EqualColumns";
 import { Footer } from "@/cpr/components/oep/Footer";
-import { Header } from "@/cpr/components/oep/Header";
 import { Hero } from "@/cpr/components/oep/Hero";
 import { Narrow } from "@/cpr/components/oep/Narrow";
 import { Section } from "@/cpr/components/oep/Section";
@@ -19,7 +19,7 @@ const OceanEnergyPathwayPage = () => {
         <link rel="stylesheet" href="/css/oep/oep.css" />
       </Head>
       <Layout title="Ocean Energy Pathway" description="Helping the offshore wind sector design effective strategies" theme="cpr">
-        <Header />
+        <Header landingPage />
         <main id="oep" className="relative">
           <Hero />
 

@@ -1,4 +1,6 @@
-const menuLinks = [
+import { TMenuLink } from "@/types";
+
+export const MENU_LINKS: TMenuLink[] = [
   {
     text: "Home",
     href: "/",
@@ -36,5 +38,3 @@ const menuLinks = [
     cy: "contact",
   },
 ];
-
-export default menuLinks;

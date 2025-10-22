@@ -1,10 +1,9 @@
 import Banner from "@/components/banner/FullHeight";
-import ExactMatch from "@/components/filters/ExactMatch";
 import Footer from "@/components/footer/Footer";
-import Header from "@/components/headers/LandingPage";
 import Layout from "@/components/layouts/LandingPage";
 import AlphaLogo from "@/components/logo/AlphaLogo";
 import { SiteWidth } from "@/components/panels/SiteWidth";
+import { Header } from "@/cpr/components/Header";
 import LandingPageLinks from "@/cpr/components/LandingPageLinks";
 import LandingSearchForm from "@/cpr/components/LandingSearchForm";
 import Partners from "@/cpr/components/Partners";

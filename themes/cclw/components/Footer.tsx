@@ -1,12 +1,12 @@
 import Image from "next/image";
 
 import GRI_LINKS, { TLinkItem } from "@/cclw/constants/griLinks";
+import { MENU_LINKS } from "@/cclw/constants/menuLinks";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 
 import { Feedback } from "./Feedback";
-import MENU_LINKS from "../constants/menuLinks";
 
 const Footer = () => {
   const renderLink = (item: TLinkItem) => {
