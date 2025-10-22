@@ -260,6 +260,8 @@ export type TFamilyMetadata = TMetadata<
   | "project_value_fund_spend"
   | "project_value_co_financing"
   | "project_url"
+  | "theme"
+  | "result_area"
 >;
 
 export type TMCFFamilyMetadata = {

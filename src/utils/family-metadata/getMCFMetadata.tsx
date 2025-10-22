@@ -68,15 +68,30 @@ export function getMCFMetadata(family: TFamilyPublic, countries: TGeography[], s
       label: metadataLabelMappings.status.label,
       value: family.metadata.status.join(", "),
     });
-  family.metadata?.focal_area?.length > 0 &&
+  family.metadata?.theme?.length &&
     metadata.push({
-      label: metadataLabelMappings.focal_area.label,
-      value: family.metadata.focal_area.join(", "),
+      label: metadataLabelMappings.theme.label,
+      value: family.metadata.theme.join(", "),
     });
   family.metadata?.implementing_agency?.length > 0 &&
     metadata.push({
       label: metadataLabelMappings.implementing_agency.label,
       value: family.metadata.implementing_agency.join(", "),
+    });
+  family.metadata?.sector?.length &&
+    metadata.push({
+      label: metadataLabelMappings.sector.label,
+      value: family.metadata.sector.join(", "),
+    });
+  family.metadata?.focal_area?.length > 0 &&
+    metadata.push({
+      label: metadataLabelMappings.focal_area.label,
+      value: family.metadata.focal_area.join(", "),
+    });
+  family.metadata?.result_area?.length > 0 &&
+    metadata.push({
+      label: metadataLabelMappings.result_area.label,
+      value: family.metadata.result_area.join(", "),
     });
   family.metadata?.project_url?.length > 0 &&
     family.metadata?.project_url[0] !== "" &&
