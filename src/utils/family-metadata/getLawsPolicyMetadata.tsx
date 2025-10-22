@@ -1,4 +1,3 @@
-import sortBy from "lodash/sortBy";
 import { Fragment } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -8,12 +7,9 @@ import { IMetadata, TFamilyPublic, TGeography } from "@/types";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { convertDate } from "@/utils/timedate";
 
-const hierarchyArrow = ` ${ARROW_RIGHT} `;
-
 export function getLawsPolicyMetadata(family: TFamilyPublic, countries: TGeography[]): IMetadata[] {
   const metadata = [];
 
-  const geosOrdered = sortBy(family.geographies, [(geo) => geo.length !== 3, (geo) => geo.toLowerCase()]);
   const [year] = convertDate(family.published_date);
   const document_type = family.documents && family.documents.length > 0 ? family.documents[0].document_type : undefined;
 

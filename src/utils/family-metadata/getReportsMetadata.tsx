@@ -7,11 +7,10 @@ import { IMetadata, TFamilyPublic, TGeography } from "@/types";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { convertDate } from "@/utils/timedate";
 
-export function getUNFCCCMetadata(family: TFamilyPublic, countries: TGeography[]): IMetadata[] {
+export function getReportsMetadata(family: TFamilyPublic, countries: TGeography[]): IMetadata[] {
   const metadata = [];
 
   const [year] = convertDate(family.published_date);
-  const document_type = family.documents && family.documents.length > 0 ? family.documents[0].document_type : undefined;
 
   /* Year */
   metadata.push({
@@ -41,12 +40,6 @@ export function getUNFCCCMetadata(family: TFamilyPublic, countries: TGeography[]
       }),
     });
   }
-
-  /* Document Type */
-  metadata.push({
-    label: "Type",
-    value: document_type || EN_DASH,
-  });
 
   family?.metadata?.author_type &&
     metadata.push({
