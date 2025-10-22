@@ -254,6 +254,12 @@ export type TFamilyMetadata = TMetadata<
   | "core_object"
   | "original_case_name"
   | "status"
+  // MCF specific
+  | "focal_area"
+  | "implementing_agency"
+  | "project_value_fund_spend"
+  | "project_value_co_financing"
+  | "project_url"
 >;
 
 export type TMCFFamilyMetadata = {
