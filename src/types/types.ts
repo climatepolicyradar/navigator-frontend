@@ -131,7 +131,19 @@ export type TTarget = {
 export type TGeographySummaryCategory = "Executive" | "Legislative" | "Litigation" | "MCF" | "Reports" | "UNFCCC";
 
 // TODO resolve different litigation cases depending on API endpoint used
-export type TCategory = "Legislative" | "Executive" | "Litigation" | "LITIGATION" | "Policy" | "Law" | "UNFCCC" | "MCF" | "Reports";
+export type TCategory =
+  | "Legislative"
+  | "LEGISLATIVE"
+  | "Executive"
+  | "EXECUTIVE"
+  | "Litigation"
+  | "LITIGATION"
+  | "Policy"
+  | "Law"
+  | "UNFCCC"
+  | "MCF"
+  | "Reports"
+  | "REPORTS";
 export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Litigation" | "Reports";
 export type TDisplayCategory = "All" | TCategory;
 export type TEventCategory = TCategory | "Target";
