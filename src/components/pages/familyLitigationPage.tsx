@@ -152,6 +152,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
         const metadata = getFamilyMetadata(family, countries, subdivisions);
         if (metadata.length === 0) return null;
 
+        // TODO: remove "case" from title and make more dynamic based upon the type
         return <MetadataBlock key="metadata" block="metadata" title="About this case" metadata={metadata} />;
       }, [countries, family, subdivisions]),
       sideBarItem: { display: "About" },
