@@ -7,10 +7,10 @@ import { getApprovedYearFromEvents } from "@/helpers/getApprovedYearFromEvents";
 import { getSubCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSumUSD } from "@/helpers/getSumUSD";
-import { IMetadata, TCorpusTypeSubCategory, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
+import { IMetadata, TCorpusTypeSubCategory, TFamilyPublic, TGeography } from "@/types";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 
-export function getMCFMetadata(family: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]): IMetadata[] {
+export function getMCFMetadata(family: TFamilyPublic, countries: TGeography[]): IMetadata[] {
   const metadata = [];
 
   metadata.push({
@@ -46,14 +46,14 @@ export function getMCFMetadata(family: TFamilyPublic, countries: TGeography[], s
     value: getSubCategoryName(family.organisation as TCorpusTypeSubCategory) || EN_DASH,
   });
 
-  family.metadata?.project_value_fund_spend?.length > 0 &&
+  family.metadata?.project_value_fund_spend &&
     family.metadata?.project_value_fund_spend[0] !== "0" &&
     metadata.push({
       label: "Fund Spend",
       value: getSumUSD(family.metadata?.project_value_fund_spend),
     });
 
-  family.metadata?.project_value_co_financing?.length > 0 &&
+  family.metadata?.project_value_co_financing &&
     family.metadata?.project_value_co_financing[0] !== "0" &&
     metadata.push({
       label: "Co-Financing",
@@ -61,7 +61,7 @@ export function getMCFMetadata(family: TFamilyPublic, countries: TGeography[], s
     });
 
   /* Metadata */
-  family.metadata?.status?.length > 0 &&
+  family.metadata?.status &&
     metadata.push({
       label: "Status",
       value: family.metadata.status.join(", "),
@@ -71,27 +71,27 @@ export function getMCFMetadata(family: TFamilyPublic, countries: TGeography[], s
       label: "Theme",
       value: family.metadata.theme.join(", "),
     });
-  family.metadata?.implementing_agency?.length > 0 &&
+  family.metadata?.implementing_agency &&
     metadata.push({
       label: "Implementing Agency",
       value: family.metadata.implementing_agency.join(", "),
     });
-  family.metadata?.sector?.length &&
+  family.metadata?.sector &&
     metadata.push({
       label: "Sector",
       value: family.metadata.sector.join(", "),
     });
-  family.metadata?.focal_area?.length > 0 &&
+  family.metadata?.focal_area &&
     metadata.push({
       label: "Focal Area",
       value: family.metadata.focal_area.join(", "),
     });
-  family.metadata?.result_area?.length > 0 &&
+  family.metadata?.result_area &&
     metadata.push({
       label: "Result Area",
       value: family.metadata.result_area.join(", "),
     });
-  family.metadata?.project_url?.length > 0 &&
+  family.metadata?.project_url &&
     family.metadata?.project_url[0] !== "" &&
     metadata.push({
       label: "Source",

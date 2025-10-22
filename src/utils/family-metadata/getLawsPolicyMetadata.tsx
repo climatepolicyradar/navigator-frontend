@@ -4,14 +4,13 @@ import { Fragment } from "react";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { ARROW_RIGHT, EN_DASH } from "@/constants/chars";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { getSubdivisionName } from "@/helpers/getSubdivision";
-import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
+import { IMetadata, TFamilyPublic, TGeography } from "@/types";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { convertDate } from "@/utils/timedate";
 
 const hierarchyArrow = ` ${ARROW_RIGHT} `;
 
-export function getLawsPolicyMetadata(family: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]): IMetadata[] {
+export function getLawsPolicyMetadata(family: TFamilyPublic, countries: TGeography[]): IMetadata[] {
   const metadata = [];
 
   const geosOrdered = sortBy(family.geographies, [(geo) => geo.length !== 3, (geo) => geo.toLowerCase()]);
@@ -31,14 +30,15 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, countries: TGeograp
   });
 
   /* Geography */
-  if (geosOrdered.length > 0) {
+  if (family.geographies.length > 0) {
     metadata.push({
       label: "Geography",
-      value: geosOrdered.map((geo, index) => {
+      value: family.geographies.map((geo, index) => {
         const geoSlug = getCountrySlug(geo, countries);
-        const geoName = geoSlug ? getCountryName(geo, countries) : getSubdivisionName(geo, subdivisions);
+        const geoName = getCountryName(geo, countries);
         return (
           <Fragment key={geo}>
+            {index > 0 && ", "}
             {!isSystemGeo(geoName) ? (
               <LinkWithQuery href={`/geographies/${geoSlug || geo.toLowerCase()}`} className="underline">
                 {geoName}
@@ -46,7 +46,6 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, countries: TGeograp
             ) : (
               <span>{geoName}</span>
             )}
-            {index + 1 < geosOrdered.length && hierarchyArrow}
           </Fragment>
         );
       }),
@@ -54,17 +53,17 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, countries: TGeograp
   }
 
   /* Metadata */
-  family.metadata?.topic?.length > 0 &&
+  family.metadata?.topic &&
     metadata.push({
       label: "Topics",
       value: family.metadata.topic.join(", "),
     });
-  family.metadata?.sector?.length > 0 &&
+  family.metadata?.sector &&
     metadata.push({
       label: "Sectors",
       value: family.metadata.sector.join(", "),
     });
-  family.metadata?.keyword?.length > 0 &&
+  family.metadata?.keyword &&
     metadata.push({
       label: "Keywords",
       value: family.metadata.keyword.join(", "),
