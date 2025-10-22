@@ -18,6 +18,7 @@ import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
 import useSearch from "@/hooks/useSearch";
+import { useText } from "@/hooks/useText";
 import { TMatchedFamily, TFamilyPageBlock } from "@/types";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
@@ -29,8 +30,8 @@ import { convertDate } from "@/utils/timedate";
 import { IProps } from "./familyOriginalPage";
 
 export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig }: IProps) => {
+  const { getText } = useText();
   /* Search matches */
-
   const router = useRouter();
   const hasSearch = Boolean(
     router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]
@@ -152,9 +153,8 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
         const metadata = getFamilyMetadata(family, countries, subdivisions);
         if (metadata.length === 0) return null;
 
-        // TODO: remove "case" from title and make more dynamic based upon the type
-        return <MetadataBlock key="metadata" block="metadata" title="About this case" metadata={metadata} />;
-      }, [countries, family, subdivisions]),
+        return <MetadataBlock key="metadata" block="metadata" title={`About this ${getText("familySingular")}`} metadata={metadata} />;
+      }, [countries, family, subdivisions, getText]),
       sideBarItem: { display: "About" },
     },
     summary: {
