@@ -9,6 +9,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { systemGeoCodes } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
+import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { NavSearchDropdown } from "./NavSearchDropdown";
 import { NavSearchSuggestion } from "./NavSearchSuggestion";
@@ -134,7 +135,7 @@ export const NavSearch = () => {
   };
 
   return (
-    <div className="relative flex-1 max-w-[600px]" ref={ref}>
+    <div className="relative flex-1" ref={ref}>
       <div className="p-2 relative z-21">
         <form onSubmit={handleSubmit} className="flex flex-row gap-2">
           {/* Search field */}

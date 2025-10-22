@@ -478,7 +478,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               </div>
               <MultiCol id="search">
                 <SideCol
-                  extraClasses={`absolute z-99 top-0 w-screen bg-white duration-250 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] ${
+                  extraClasses={`absolute z-99 top-0 w-screen duration-250 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] ${
                     showFilters ? "translate-y-[0%]" : "fixed translate-y-[100vh]"
                   } md:translate-y-[0%] md:h-full md:sticky md:top-[72px] md:z-50`}
                 >
@@ -486,7 +486,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                     <Loader size="20px" />
                   ) : (
                     <>
-                      <div className="sticky md:top-[72px] h-screen md:h-[calc(100vh-72px)] px-5 bg-white md:border-r border-gray-300 pt-5 pb-[180px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pb-4">
+                      <div className="sticky md:top-[72px] h-screen md:h-[calc(100vh-72px)] px-5 md:border-r border-gray-300 pt-5 pb-[180px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pb-4">
                         <SearchFilters
                           searchCriteria={searchQuery}
                           query={router.query}
@@ -535,7 +535,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                         </SlideOut>
                       )}
 
-                      <div className="absolute z-50 bottom-0 left-0 w-full flex pb-[100px] bg-white md:hidden">
+                      <div className="absolute z-50 bottom-0 left-0 w-full flex pb-[100px] md:hidden">
                         <Button
                           variant={searchDirty ? "solid" : "outlined"}
                           className="m-4 w-full"
@@ -552,7 +552,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                   )}
                 </SideCol>
                 <div
-                  className={`flex-1 bg-white transition-all duration-150 ${
+                  className={`flex-1 transition-all duration-150 ${
                     currentSlideOut
                       ? "md:pointer-events-none md:select-none md:opacity-50 xl:pointer-events-auto xl:select-auto xl:opacity-100 xl:ml-[460px]"
                       : ""

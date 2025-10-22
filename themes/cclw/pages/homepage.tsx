@@ -6,7 +6,7 @@ import { BrazilImplementingNDCBanner } from "@/cclw/components/BrazilImplementin
 import { FeatureDiscover } from "@/cclw/components/FeatureDiscover";
 import { FeatureSearch } from "@/cclw/components/FeatureSearch";
 import Footer from "@/cclw/components/Footer";
-import Header from "@/cclw/components/Header";
+import { Header } from "@/cclw/components/Header";
 import { HelpUs } from "@/cclw/components/HelpUs";
 import { Hero } from "@/cclw/components/Hero";
 import { Partners } from "@/cclw/components/Partners";

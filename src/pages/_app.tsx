@@ -104,7 +104,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
                   <Head>
                     <link rel="icon" href={favicon} />
                   </Head>
-                  <div id={theme}>
+                  <div id={theme} className="root">
                     <Component {...pageProps} />
                   </div>
                   <Overlays onConsentChange={onConsentChange} />

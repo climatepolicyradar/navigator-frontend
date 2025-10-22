@@ -1,15 +1,13 @@
 import React from "react";
 
 import Layout from "@/components/layouts/LandingPage";
-import {
-  Header,
-  Footer,
-  Hero,
-  ClimatePolicyRadarBanner,
-  AboutTheFunds,
-  ContextualSearchContent,
-  AboutClimateProjectExplorer,
-} from "@/mcf/components";
+import AboutClimateProjectExplorer from "@/mcf/components/AboutClimateProjectExplorer";
+import AboutTheFunds from "@/mcf/components/AboutTheFunds";
+import ClimatePolicyRadarBanner from "@/mcf/components/ClimatePolicyRadarBanner";
+import ContextualSearchContent from "@/mcf/components/ContextualSearchContent";
+import Footer from "@/mcf/components/Footer";
+import { Header } from "@/mcf/components/Header";
+import Hero from "@/mcf/components/Hero";
 import { TTheme, TThemeConfig } from "@/types";
 
 interface IProps {

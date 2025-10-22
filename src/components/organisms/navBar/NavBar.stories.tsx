@@ -1,11 +1,11 @@
 import { Meta, StoryObj } from "@storybook/nextjs";
 
-import { CCLWLogo } from "@/cclw/components/Header";
-import { Menu as CCLWMenu } from "@/cclw/components/Menu";
-import MainMenu from "@/components/menus/MainMenu";
-import { CPRLogo } from "@/cpr/layouts/main";
-import { MCFLogo } from "@/mcf/components/Header";
-import { Menu as MCFMenu } from "@/mcf/components/Menu";
+import { Header as CCCHeader } from "@/ccc/components/Header";
+import { Header as CCLWHeader } from "@/cclw/components/Header";
+import MainMenu from "@/components/molecules/mainMenu/MainMenu";
+import { CPRLogo, CPRMenuButton } from "@/cpr/components/Header";
+import { MENU_LINKS } from "@/cpr/constants/menuLinks";
+import { Header as MCFHeader } from "@/mcf/components/Header";
 
 import { NavBar } from "./NavBar";
 
@@ -22,9 +22,9 @@ type TStory = StoryObj<typeof NavBar>;
 export default meta;
 
 const CPRArgs = {
-  headerClasses: "banner",
+  headerClasses: "",
   logo: CPRLogo,
-  menu: <MainMenu />,
+  menu: <MainMenu icon={CPRMenuButton} links={MENU_LINKS} />,
   showLogo: true,
   showSearch: true,
 };
@@ -96,25 +96,16 @@ export const DocumentPage: TStory = {
 };
 
 export const CCLW: TStory = {
-  args: {
-    headerClasses: "bg-cclw-dark",
-    logo: CCLWLogo,
-    menu: <CCLWMenu />,
-    showLogo: true,
-    showSearch: true,
-  },
-  name: "CCLW",
+  render: () => <CCLWHeader />,
   parameters: documentPageParameters,
 };
 
 export const MCF: TStory = {
-  args: {
-    headerClasses: "bg-surface-light min-h-20 border-b border-gray-300 border-solid",
-    logo: MCFLogo,
-    menu: <MCFMenu />,
-    showLogo: true,
-    showSearch: true,
-  },
-  name: "MCF",
+  render: () => <MCFHeader />,
+  parameters: documentPageParameters,
+};
+
+export const CCC: TStory = {
+  render: () => <CCCHeader />,
   parameters: documentPageParameters,
 };

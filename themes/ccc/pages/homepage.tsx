@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import { FeatureDiscover } from "@/ccc/components/FeatureDiscover";
 import { Footer } from "@/ccc/components/Footer";
-import Header from "@/ccc/components/Header";
+import { Header } from "@/ccc/components/Header";
 import { Hero } from "@/ccc/components/Hero";
 import { HomepageFaqs } from "@/ccc/components/HomepageFaqs";
 import { PoweredBy } from "@/ccc/components/PoweredBy";
