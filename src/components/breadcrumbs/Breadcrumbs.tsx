@@ -6,8 +6,9 @@ import { Columns } from "@/components/atoms/columns/Columns";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useText } from "@/hooks/useText";
 import { isSystemGeo } from "@/utils/isSystemGeo";
+import { joinTailwindClasses } from "@/utils/tailwind";
 
-type TBreadcrumbLink = {
+export type TBreadcrumbLink = {
   label: string | React.ReactNode;
   href?: string;
   last?: boolean;
@@ -16,11 +17,12 @@ type TBreadcrumbLink = {
 
 interface IProps {
   category?: TBreadcrumbLink;
+  dark?: boolean;
   family?: TBreadcrumbLink;
   geography?: TBreadcrumbLink;
-  parentGeography?: TBreadcrumbLink;
   isSubdivision?: boolean;
   label?: string | React.ReactNode;
+  parentGeography?: TBreadcrumbLink;
 }
 
 interface IBreadCrumb extends TBreadcrumbLink {
@@ -57,7 +59,15 @@ const BreadCrumb = ({ last = false, label = null, href = null, cy = "", isHome =
 /**
  * Lists the page hierarchy back to the homepage so that the user can better understand where they are, and to easily go back to a previous page.
  */
-export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdivision = false, category = null, family = null, label }: IProps) => {
+export const BreadCrumbs = ({
+  category = null,
+  dark = false,
+  family = null,
+  geography = null,
+  isSubdivision = false,
+  label,
+  parentGeography = null,
+}: IProps) => {
   const { theme } = useContext(ThemeContext);
   const isSearchPage = label === "Search results";
   const isGeographyPage = !isSearchPage && !category && !family && geography && !label;
@@ -72,8 +82,9 @@ export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdiv
     const breadcrumbGeography = isSubdivision && parentGeography && !isSystemGeo(String(parentGeography.label)) ? parentGeography : null;
     const finalGeography = geography && !isSystemGeo(String(geography.label)) ? geography : null;
 
-    if (breadcrumbGeography) breadCrumbs.push(<BreadCrumb label={breadcrumbGeography.label} href={breadcrumbGeography.href} cy="geography" />);
-    if (finalGeography) breadCrumbs.push(<BreadCrumb label={finalGeography.label} last cy="current" />);
+    if (breadcrumbGeography)
+      breadCrumbs.push(<BreadCrumb key="geography" label={breadcrumbGeography.label} href={breadcrumbGeography.href} cy="geography" />);
+    if (finalGeography) breadCrumbs.push(<BreadCrumb key="final-geography" label={finalGeography.label} last cy="current" />);
   } else if (isCollectionPage) {
     if (label) breadCrumbs.push(<BreadCrumb key="collection" label={label} last cy="current" />);
   } else {
@@ -85,16 +96,19 @@ export const BreadCrumbs = ({ geography = null, parentGeography = null, isSubdiv
           : null;
     const breadcrumbSubGeography = isSubdivision && geography && !isSystemGeo(String(geography.label)) ? geography : null;
 
-    if (breadcrumbGeography) breadCrumbs.push(<BreadCrumb label={breadcrumbGeography.label} href={breadcrumbGeography.href} cy="geography" />);
+    if (breadcrumbGeography)
+      breadCrumbs.push(<BreadCrumb key="geography" label={breadcrumbGeography.label} href={breadcrumbGeography.href} cy="geography" />);
     if (breadcrumbSubGeography)
-      breadCrumbs.push(<BreadCrumb label={breadcrumbSubGeography.label} href={breadcrumbSubGeography.href} cy="sub-geography" />);
-    if (category) breadCrumbs.push(<BreadCrumb label={category.label} href={category.href} cy="category" />);
-    if (family) breadCrumbs.push(<BreadCrumb label={family.label} href={family.href} cy="family" />);
-    if (label) breadCrumbs.push(<BreadCrumb label={label} last cy="current" />);
+      breadCrumbs.push(<BreadCrumb key="sub-geography" label={breadcrumbSubGeography.label} href={breadcrumbSubGeography.href} cy="sub-geography" />);
+    if (category) breadCrumbs.push(<BreadCrumb key="category" label={category.label} href={category.href} cy="category" />);
+    if (family) breadCrumbs.push(<BreadCrumb key="family" label={family.label} href={family.href} cy="family" />);
+    if (label) breadCrumbs.push(<BreadCrumb key="current" label={label} last cy="current" />);
   }
 
+  const containerClasses = joinTailwindClasses(dark && "bg-gray-100");
+
   return (
-    <Columns>
+    <Columns containerClasses={containerClasses}>
       <ul
         className="cols-2:col-span-2 cols-3:col-span-3 cols-4:col-span-4 flex flex-wrap items-baseline gap-2 py-3 text-sm text-gray-700 leading-tight select-none"
         data-cy="breadcrumbs"

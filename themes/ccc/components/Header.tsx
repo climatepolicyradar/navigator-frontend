@@ -1,18 +1,20 @@
+import { LucideMenu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { Menu } from "@/ccc/components/Menu";
+import { MENU_LINKS } from "@/ccc/constants/menuLinks";
+import MainMenu from "@/components/molecules/mainMenu/MainMenu";
 import { NavBar } from "@/components/organisms/navBar/NavBar";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-export const CCCLogo = (
+const CCCLogo = (
   <Link href="/" data-cy="ccc-logo" className="max-w-full">
     <Image src="/images/ccc/ccc-logo-white.png" alt="The Climate Litigation Database" width={280} height={26} />
   </Link>
 );
 
-const Header = () => {
+export const Header = () => {
   const router = useRouter();
 
   const showLogo = router.pathname !== "/";
@@ -20,8 +22,15 @@ const Header = () => {
   const isNotHome = router.pathname !== "/";
 
   const headerClasses = joinTailwindClasses("min-h-12 bg-surface-light", !showLogo && !showSearch && "!h-[72px]", isNotHome && "!bg-[#677787]");
+  const menuIconClasses = router.pathname === "/" ? "text-gray-950" : "text-white";
 
-  return <NavBar headerClasses={headerClasses} logo={CCCLogo} menu={<Menu isNotHome={isNotHome} />} showLogo={showLogo} showSearch={showSearch} />;
+  return (
+    <NavBar
+      headerClasses={headerClasses}
+      logo={CCCLogo}
+      menu={<MainMenu icon={<LucideMenu size={24} className={menuIconClasses} />} links={MENU_LINKS} />}
+      showLogo={showLogo}
+      showSearch={showSearch}
+    />
+  );
 };
-
-export default Header;

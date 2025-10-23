@@ -3,10 +3,10 @@ import Image from "next/image";
 
 import { ExternalLink } from "@/components/ExternalLink";
 import Layout from "@/components/layouts/LandingPage";
+import { Header } from "@/cpr/components/Header";
 import { ColumnAndImage } from "@/cpr/components/oep/ColumnAndImage";
 import { EqualColumn, EqualColumns } from "@/cpr/components/oep/EqualColumns";
 import { Footer } from "@/cpr/components/oep/Footer";
-import { Header } from "@/cpr/components/oep/Header";
 import { Hero } from "@/cpr/components/oep/Hero";
 import { Narrow } from "@/cpr/components/oep/Narrow";
 import { Section } from "@/cpr/components/oep/Section";
@@ -19,7 +19,7 @@ const OceanEnergyPathwayPage = () => {
         <link rel="stylesheet" href="/css/oep/oep.css" />
       </Head>
       <Layout title="Ocean Energy Pathway" description="Helping the offshore wind sector design effective strategies" theme="cpr">
-        <Header />
+        <Header landingPage />
         <main id="oep" className="relative">
           <Hero />
 
@@ -39,7 +39,7 @@ const OceanEnergyPathwayPage = () => {
                 height={398}
                 width={708}
               />
-              <p className="text-[18px]">
+              <p className="text-lg">
                 With this tool, you can find information on offshore wind from around the globe, including legislation, government policies,
                 strategies, offshore wind reports, analyses and policy recommendations from researchers and civil society. You can search for keywords
                 and policy topics across the full text of all documents, viewing your search term and related phrases highlighted in the search
@@ -81,7 +81,7 @@ const OceanEnergyPathwayPage = () => {
             </div>
           </Section>
 
-          <Section containerClasses="text-[18px] py-12 md:pt-[120px] md:pb-[160px] oep-feature-line-bg" sectionClasses="oep-feature-wave-bg">
+          <Section containerClasses="text-lg py-12 md:pt-[120px] md:pb-[160px] oep-feature-line-bg" sectionClasses="oep-feature-wave-bg">
             <Narrow extraClasses="mb-9 md:mb-[160px]">
               <h1 className="mb-[50px] text-oep-dark-blue text-6xl text-[64px] font-bold font-tenez">Why offshore wind</h1>
               <p className="font-medium text-2xl">
@@ -125,7 +125,7 @@ const OceanEnergyPathwayPage = () => {
             </ColumnAndImage>
           </Section>
 
-          <Section containerClasses="text-[18px] py-12 md:pt-[120px] md:pb-[200px]">
+          <Section containerClasses="text-lg py-12 md:pt-[120px] md:pb-[200px]">
             <div className="md:max-w-[780px] mx-auto">
               <h1 className="text-oep-dark-blue text-6xl text-[56px] font-bold font-tenez mb-9 md:mb-[120px]">
                 The POWER Library addresses this challenge and provides an accessible, one-stop search tool for offshore wind resources.
@@ -157,7 +157,7 @@ const OceanEnergyPathwayPage = () => {
             <EqualColumns>
               <EqualColumn>
                 <h2 className="mb-9 md:mb-12 items-end text-oep-salmon text-5xl font-bold font-tenez">Contribute to our growing database</h2>
-                <p className="text-[18px]">
+                <p className="text-lg">
                   If you’ve spotted missing data or would like to contribute materials to our POWER Library,{" "}
                   <ExternalLink className="text-white underline hover:text-white" url="https://form.jotform.com/233294135296359">
                     please let us know here

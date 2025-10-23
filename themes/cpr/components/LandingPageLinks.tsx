@@ -123,32 +123,25 @@ const LandingPageLinks = ({}) => {
   const searches = knowledgeGraphEnabled ? KNOWLEDGE_GRAPH_QUICK_SEARCHES : EXAMPLE_SEARCHES;
 
   return (
-    <section>
-      <div className="md:flex text-white">
-        <div className="md:mr-12">
-          <Icon name="eye" />
-        </div>
-        <div>
-          <div className="font-medium text-2xl">Try these searches</div>
-          <ul className="text-[18px] mt-4">
-            {searches.map((search) => (
-              <li className="my-2" key={search.id}>
-                <a
-                  className="text-white hover:text-blue-200 hover:underline"
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleQuickSearch(search.params);
-                  }}
-                  data-cy={`quick-search-${search.id}`}
-                >
-                  {search.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+    <section className="mt-18 text-white">
+      <div className="font-medium text-2xl">Try these searches</div>
+      <ul className="text-lg mt-4">
+        {searches.map((search) => (
+          <li className="my-2" key={search.id}>
+            <a
+              className="text-white hover:text-blue-200 hover:underline"
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                handleQuickSearch(search.params);
+              }}
+              data-cy={`quick-search-${search.id}`}
+            >
+              {search.label}
+            </a>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 };

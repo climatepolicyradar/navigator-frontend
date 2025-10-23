@@ -1,10 +1,10 @@
+import Image from "next/image";
+
 import Banner from "@/components/banner/FullHeight";
-import ExactMatch from "@/components/filters/ExactMatch";
 import Footer from "@/components/footer/Footer";
-import Header from "@/components/headers/LandingPage";
 import Layout from "@/components/layouts/LandingPage";
-import AlphaLogo from "@/components/logo/AlphaLogo";
 import { SiteWidth } from "@/components/panels/SiteWidth";
+import { Header } from "@/cpr/components/Header";
 import LandingPageLinks from "@/cpr/components/LandingPageLinks";
 import LandingSearchForm from "@/cpr/components/LandingSearchForm";
 import Partners from "@/cpr/components/Partners";
@@ -38,12 +38,12 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
         <main className="relative h-full">
           <Banner />
           <section className="absolute inset-0 z-10 flex flex-col items-center justify-center min-h-[800px]">
-            <AlphaLogo />
+            <div data-cy="cpr-logo" className="text-white flex">
+              <Image src="/images/cpr-logo-homepage.png" width={596} height={34} alt="Climate Policy Radar" className="px-5" />
+            </div>
             <SiteWidth extraClasses="mt-24 md:mt-48 max-w-screen-lg mx-auto">
               <LandingSearchForm handleSearchInput={handleSearchInput} input={searchInput} />
-              <div className="mt-12">
-                <LandingPageLinks />
-              </div>
+              <LandingPageLinks />
             </SiteWidth>
           </section>
         </main>
