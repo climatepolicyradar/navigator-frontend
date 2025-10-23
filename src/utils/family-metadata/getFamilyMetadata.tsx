@@ -9,25 +9,27 @@ import { getUNFCCCMetadata } from "@/utils/family-metadata/getUNFCCCMetadata";
 export const getFamilyMetadata = (family: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]): IMetadata[] => {
   const familyMetadata = [];
 
-  // TODO: handle more categories and their specific metadata later
-  if (["litigation"].includes(family.corpus_type_name.toLowerCase())) {
-    familyMetadata.push(...getLitigationMetadata(family, countries, subdivisions));
-  }
-
-  if (["laws and policies"].includes(family.corpus_type_name.toLowerCase())) {
-    familyMetadata.push(...getLawsPolicyMetadata(family, countries));
-  }
-
-  if (["af", "cif", "gcf", "gef"].includes(family.corpus_type_name.toLowerCase())) {
-    familyMetadata.push(...getMCFMetadata(family, countries));
-  }
-
-  if (["intl. agreements"].includes(family.corpus_type_name.toLowerCase())) {
-    familyMetadata.push(...getUNFCCCMetadata(family, countries));
-  }
-
-  if (["reports"].includes(family.corpus_type_name.toLowerCase())) {
-    familyMetadata.push(...getReportsMetadata(family, countries));
+  switch (family.corpus_type_name) {
+    case "Litigation":
+      familyMetadata.push(...getLitigationMetadata(family, countries, subdivisions));
+      break;
+    case "Laws and Policies":
+      familyMetadata.push(...getLawsPolicyMetadata(family, countries));
+      break;
+    case "AF":
+    case "CIF":
+    case "GCF":
+    case "GEF":
+      familyMetadata.push(...getMCFMetadata(family, countries));
+      break;
+    case "Intl. agreements":
+      familyMetadata.push(...getUNFCCCMetadata(family, countries));
+      break;
+    case "Reports":
+      familyMetadata.push(...getReportsMetadata(family, countries));
+      break;
+    default:
+      break;
   }
 
   return familyMetadata;
