@@ -12,19 +12,7 @@ import { isSystemGeo } from "@/utils/isSystemGeo";
 
 const hierarchyArrow = ` ${ARROW_RIGHT} `;
 
-// Format the family metadata into a shape suitable for the MetadataBlock component
-export const getFamilyMetadata = (family: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]): IMetadata[] => {
-  const familyMetadata = [];
-
-  // TODO: handle more categories and their specific metadata later
-  if (family.corpus_type_name.toLowerCase() === "litigation") {
-    familyMetadata.push(...getLitigationMetaData(family, countries, subdivisions));
-  }
-
-  return familyMetadata;
-};
-
-function getLitigationMetaData(family: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]): IMetadata[] {
+export function getLitigationMetadata(family: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]): IMetadata[] {
   const metadata = [];
 
   // Structure concepts into a hierarchy we can use
