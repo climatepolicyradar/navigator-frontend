@@ -23,7 +23,7 @@ export const FamilyMatchesDrawer = ({ family }: IProps) => {
   const { themeConfig } = useContext(ThemeContext);
 
   if (!family) return null;
-  const { family_geographies, family_name, family_category, family_date, family_documents, corpus_type_name } = family;
+  const { family_geographies, family_name, family_category, family_date, family_documents, corpus_import_id, corpus_type_name } = family;
 
   const onPassageClick = (pageNumber: number, documentIndex: number) => {
     const document = family_documents[documentIndex];
@@ -51,6 +51,7 @@ export const FamilyMatchesDrawer = ({ family }: IProps) => {
           <div className="flex flex-wrap text-sm gap-1 mb-2 items-center middot-between">
             <FamilyMeta
               category={family_category}
+              corpus_id={corpus_import_id}
               corpus_type_name={corpus_type_name}
               geographies={family_geographies}
               date={family_date}

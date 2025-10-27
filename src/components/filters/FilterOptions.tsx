@@ -1,13 +1,16 @@
 import { ParsedUrlQuery } from "querystring";
 
 import get from "lodash/get";
-import { useState } from "react";
+import groupBy from "lodash/groupBy";
+import { useContext, useState } from "react";
 
 import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
 import { TextInput } from "@/components/forms/TextInput";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { TCorpusTypeDictionary, TThemeConfig, TThemeConfigFilter } from "@/types";
+import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
+import { TCorpusTypeDictionary, TThemeConfig, TThemeConfigFilter, TThemeConfigOption } from "@/types";
+import { isRioPolicyRadarEnabled } from "@/utils/features";
 
 const getTaxonomyAllowedValues = (corporaKey: string, taxonomyKey: string, corpus_types: TCorpusTypeDictionary) => {
   const allowedValues = get(corpus_types[corporaKey].taxonomy, taxonomyKey)?.allowed_values || [];
@@ -36,41 +39,74 @@ const filterIsSelected = (queryValue: string | string[] | undefined, option: str
 
 export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types, themeConfig }: IProps) => {
   const [search, setSearch] = useState("");
+  const featureFlags = useContext(FeatureFlagsContext);
 
   // If the filter has its own options defined, display them
   if (filter.options && filter.options.length > 0) {
+    // TODO remove once feature launched (refer back to filter.options instead of displayedFilterOptions)
+    let displayedFilterOptions = [...filter.options];
+    if (filter.taxonomyKey === "_document.type" && !isRioPolicyRadarEnabled(featureFlags)) {
+      displayedFilterOptions = displayedFilterOptions.filter((option) => option.group === "UNFCCC");
+    }
+
+    const filtersAreGrouped = displayedFilterOptions.every((option) => option.group);
+    const groupedOptions: TThemeConfigOption<any>[][] = []; // any because we don't need to care about value type here
+
+    if (filtersAreGrouped) {
+      // Build a 2D array of grouped options
+      const optionsByGroup = groupBy(displayedFilterOptions, "group");
+      const groupValues = Array.from(new Set(displayedFilterOptions.map((option) => option.group))); // Preserve the declared group order from themeConfig
+
+      groupValues.forEach((groupValue) => {
+        groupedOptions.push(optionsByGroup[groupValue]);
+      });
+    } else {
+      // Treat all options as a single unlabelled group
+      groupedOptions.push(filter.options);
+    }
+
     return (
       <>
-        {filter.options.map((option) =>
-          filter.type === "radio" ? (
-            <InputRadio
-              key={option.slug}
-              label={option.label}
-              checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option.slug)}
-              onChange={() => null} // suppress normal radio behaviour to allow to deselection
-              onClick={() => {
-                handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug, true);
-              }}
-              name={`${filter.taxonomyKey}=${option.slug}`}
-            />
-          ) : (
-            <InputCheck
-              key={option.slug}
-              label={option.label}
-              checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option.slug)}
-              onChange={() => {
-                handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug);
-              }}
-              name={`${filter.taxonomyKey}=${option.slug}`}
-              additionalInfo={option.additionalInfo}
-              learnMoreUrl={option.learnMoreUrl}
-              learnMoreExternal={option.learnMoreExternal === "true"}
-            />
-          )
-        )}
+        {groupedOptions.map((filterGroup) => {
+          return (
+            <>
+              {groupedOptions.length > 1 && (
+                <span className="not-first:mt-3 text-xs text-gray-500 leading-none font-heavy cursor-default">{filterGroup[0].group}</span>
+              )}
+              {filterGroup.map((option) =>
+                filter.type === "radio" ? (
+                  <InputRadio
+                    key={option.slug}
+                    label={option.label}
+                    checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option.slug)}
+                    onChange={() => null} // suppress normal radio behaviour to allow to deselection
+                    onClick={() => {
+                      handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug, true);
+                    }}
+                    name={`${filter.taxonomyKey}=${option.slug}`}
+                  />
+                ) : (
+                  <InputCheck
+                    key={option.slug}
+                    label={option.label}
+                    checked={query && filterIsSelected(query[QUERY_PARAMS[filter.taxonomyKey]], option.slug)}
+                    onChange={() => {
+                      handleFilterChange(QUERY_PARAMS[filter.taxonomyKey], option.slug);
+                    }}
+                    name={`${filter.taxonomyKey}=${option.slug}`}
+                    additionalInfo={option.additionalInfo}
+                    learnMoreUrl={option.learnMoreUrl}
+                    learnMoreExternal={option.learnMoreExternal === "true"}
+                  />
+                )
+              )}
+            </>
+          );
+        })}
       </>
     );
   }
+
   let options: string[] = [];
   // If a filter does not have preset options defined, we need to load the taxonomy values from our config
   // The taxonomy options are nested under a corpora in our config

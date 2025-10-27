@@ -16,14 +16,7 @@ type TThemePageBlocks = {
 
 /* Everything else */
 
-export type TDocumentCategory =
-  | "All"
-  | "UNFCCC Submissions"
-  | "Laws"
-  | "Policies"
-  | "Litigation"
-  | "Climate Finance Projects"
-  | "Offshore Wind Reports";
+export type TDocumentCategory = "All" | "UN Submissions" | "Laws" | "Policies" | "Litigation" | "Climate Finance Projects" | "Offshore Wind Reports";
 
 export type TLabelVariation = {
   category: string[];
@@ -32,15 +25,16 @@ export type TLabelVariation = {
 };
 
 export type TThemeConfigOption<Value> = {
-  label: string;
-  slug: string;
-  value: Value;
+  additionalInfo?: string;
+  alias?: string;
   category?: string[];
   corporaKey?: string;
-  alias?: string;
-  additionalInfo?: string;
-  learnMoreUrl?: string;
+  group?: string;
+  label: string;
   learnMoreExternal?: string;
+  learnMoreUrl?: string;
+  slug: string;
+  value: Value;
 };
 
 type TThemeConfigCategory = {

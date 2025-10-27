@@ -325,6 +325,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     delete router.query[QUERY_PARAMS.author_type];
     // UNFCCC filters
     delete router.query[QUERY_PARAMS["_document.type"]];
+    delete router.query[QUERY_PARAMS.convention];
     // Only reset the topic and sector filters if we are not moving between laws or policies categories
     if (category !== "policies" && category !== "laws") {
       delete router.query[QUERY_PARAMS.topic];

@@ -17,9 +17,9 @@ const config: TThemeConfig = {
         ],
       },
       {
-        label: "UNFCCC Submissions",
+        label: "UN Submissions",
         slug: "UNFCCC",
-        value: ["UNFCCC.corpus.i00000001.n0000"],
+        value: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
         category: ["UNFCCC"],
       },
       {
@@ -38,6 +38,29 @@ const config: TThemeConfig = {
     ],
   },
   filters: [
+    {
+      label: "Convention",
+      taxonomyKey: "convention",
+      type: "checkbox",
+      options: [
+        {
+          label: "UNCBD",
+          slug: "uncbd",
+          value: ["UN.corpus.UNCBD.n0000"],
+        },
+        {
+          label: "UNFCCC",
+          slug: "unfccc",
+          value: ["UNFCCC.corpus.i00000001.n0000"],
+        },
+        {
+          label: "UNCCD",
+          slug: "unccd",
+          value: ["UN.corpus.UNCCD.n0000"],
+        },
+      ],
+      category: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
+    },
     {
       label: "Type",
       taxonomyKey: "framework_laws",
@@ -86,7 +109,7 @@ const config: TThemeConfig = {
       category: ["UNFCCC.corpus.i00000001.n0000"],
     },
     {
-      label: "Type of submission",
+      label: "Submission type",
       corporaKey: "Intl. agreements",
       taxonomyKey: "_document.type",
       apiMetaDataKey: "document.type",
@@ -94,49 +117,88 @@ const config: TThemeConfig = {
       category: ["UNFCCC.corpus.i00000001.n0000"],
       options: [
         {
+          label: "National Biodiversity Strategy and Action Plan (NBSAP)",
+          slug: "National Biodiversity Strategy and Action Plan (NBSAP)",
+          value: "National Biodiversity Strategy and Action Plan (NBSAP)",
+          group: "UNCBD",
+        },
+        {
+          label: "National Report (NR)",
+          slug: "National Report (NR)",
+          value: "National Report (NR)",
+          group: "UNCBD",
+        },
+        {
           label: "Nationally Determined Contribution (NDC)",
           slug: "Nationally Determined Contribution",
           value: "Nationally Determined Contribution",
+          group: "UNFCCC",
         },
         {
           label: "National Adaptation Plan (NAP)",
           slug: "National Adaptation Plan",
           value: "National Adaptation Plan",
+          group: "UNFCCC",
         },
         {
           label: "Biennial Transparency Report (BTR)",
           slug: "Biennial Transparency Report",
           value: "Biennial Transparency Report",
+          group: "UNFCCC",
         },
         {
           label: "Long-Term Low-Emission Development Strategy (LT-LEDS)",
           slug: "Long-Term Low-Emission Development Strategy",
           value: "Long-Term Low-Emission Development Strategy",
+          group: "UNFCCC",
         },
         {
           label: "Biennial Update Report (BUR)",
           slug: "Biennial Update Report",
           value: "Biennial Update Report",
+          group: "UNFCCC",
         },
         {
           label: "Biennial Report (BR)",
           slug: "Biennial Report",
           value: "Biennial Report",
+          group: "UNFCCC",
         },
         {
           label: "National Communication (NC)",
           slug: "National Communication",
           value: "National Communication",
+          group: "UNFCCC",
         },
         {
           label: "National Inventory Report (NIR)",
           slug: "National Inventory Report",
           value: "National Inventory Report",
+          group: "UNFCCC",
         },
         {
           label: "Adaptation Communication (AC)",
           slug: "Adaptation Communication",
           value: "Adaptation Communication",
+          group: "UNFCCC",
+        },
+        {
+          label: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
+          slug: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
+          value: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
+          group: "UNCCD",
+        },
+        {
+          label: "Country Report (CR)",
+          slug: "Country Report (CR)",
+          value: "Country Report (CR)",
+          group: "UNCCD",
+        },
+        {
+          label: "National Drought Plan (NDP)",
+          slug: "National Drought Plan (NDP)",
+          value: "National Drought Plan (NDP)",
+          group: "UNCCD",
         },
       ],
     },
@@ -173,7 +235,7 @@ const config: TThemeConfig = {
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
   ],
-  documentCategories: ["All", "UNFCCC Submissions", "Laws", "Policies", "Litigation"],
+  documentCategories: ["All", "UN Submissions", "Laws", "Policies", "Litigation"],
   defaultDocumentCategory: "All",
   pageBlocks: {
     family: [],

@@ -20,7 +20,7 @@ import { SlideOutContext } from "@/context/SlideOutContext";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
 import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TSearchCriteria, TThemeConfigOption } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
-import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { isKnowledgeGraphEnabled, isRioPolicyRadarEnabled } from "@/utils/features";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 
 const isCategoryChecked = (selectedCategory: string | undefined, themeConfigCategory: TThemeConfigOption<any>) => {
@@ -100,17 +100,22 @@ const SearchFilters = ({
       {themeConfigStatus === "success" && themeConfig.categories && (
         <Accordion title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
           <InputListContainer>
-            {themeConfig.categories?.options?.map((option) => (
-              <InputRadio
-                key={option.slug}
-                label={option.label}
-                checked={query && isCategoryChecked(query[QUERY_PARAMS.category] as string, option)}
-                onChange={() => {
-                  handleDocumentCategoryClick(option.slug);
-                }}
-                name={`${themeConfig.categories.label}-${option.slug}`}
-              />
-            ))}
+            {themeConfig.categories?.options?.map((option) => {
+              // TODO delete once Rio corpora released
+              if (option.label === (isRioPolicyRadarEnabled(featureFlags) ? "UNFCCC Submissions" : "UN Submissions")) return null;
+
+              return (
+                <InputRadio
+                  key={option.slug}
+                  label={option.label}
+                  checked={query && isCategoryChecked(query[QUERY_PARAMS.category] as string, option)}
+                  onChange={() => {
+                    handleDocumentCategoryClick(option.slug);
+                  }}
+                  name={`${themeConfig.categories.label}-${option.slug}`}
+                />
+              );
+            })}
           </InputListContainer>
         </Accordion>
       )}
@@ -194,6 +199,8 @@ const SearchFilters = ({
         themeConfig.filters.map((filter) => {
           // If the filter is not in the selected category, don't display it
           if (!canDisplayFilter(filter, query, themeConfig)) return;
+          if (filter.taxonomyKey === "convention" && !isRioPolicyRadarEnabled(featureFlags)) return null;
+
           return (
             <Accordion
               title={filter.label}

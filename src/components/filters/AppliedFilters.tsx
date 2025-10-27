@@ -135,6 +135,7 @@ const handleFilterDisplay = (
     case "fund_doc_type":
     case "framework_laws":
     case "_document.type":
+    case "convention":
       filterLabel = getFilterDisplayValue(key, value, themeConfig);
       break;
   }

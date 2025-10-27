@@ -24,8 +24,9 @@ export const QUERY_PARAMS = {
   topic: "tp",
   // Reports
   author_type: "at",
-  // UNFCCC
+  // UN Submissions (incl. UNFCCC)
   "_document.type": "t",
+  convention: "cv",
   // Pass through
   concept_id: "cfi",
   concept_name: "cfn",

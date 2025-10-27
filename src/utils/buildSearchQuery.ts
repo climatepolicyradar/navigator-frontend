@@ -260,13 +260,33 @@ export default function buildSearchQuery(
   if (routerQuery[QUERY_PARAMS.author_type]) {
     query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS.author_type], "author_type", themeConfig, corpusIds);
   }
-  // ---- End of Reports & UNFCCC specific specific ----
+  // ---- End of Reports & UNFCCC specific ----
 
   // ---- UNFCCC specific ----
   // These are the filters that are specific to the UNFCCC corpus type
   if (routerQuery[QUERY_PARAMS["_document.type"]]) {
     query.metadata = buildSearchQueryMetadata(query.metadata, routerQuery[QUERY_PARAMS["_document.type"]], "_document.type", themeConfig);
   }
+
+  if (routerQuery[QUERY_PARAMS.convention]) {
+    const corpusIds: string[] = [];
+    const conventions = routerQuery[QUERY_PARAMS.convention];
+    const configConventions = themeConfig.filters.find((f) => f.taxonomyKey === "convention");
+    if (configConventions) {
+      const conventionOptions = configConventions.options;
+      if (Array.isArray(conventions)) {
+        conventions.forEach((convention) => {
+          const conventionOption = conventionOptions.find((o) => o.slug === convention);
+          if (conventionOption?.value) corpusIds.push(...conventionOption.value);
+        });
+      } else {
+        const conventionOption = conventionOptions.find((o) => o.slug === conventions);
+        if (conventionOption?.value) corpusIds.push(...conventionOption.value);
+      }
+    }
+    query.corpus_import_ids = corpusIds; // this will overwrite the defaultCorpora - which is fine
+  }
+  // ---- End of UNFCCC specific ----
 
   // ---- page_size ----
   const maybePageSize = Number.isInteger(Number(routerQuery[QUERY_PARAMS["page_size"]])) ? Number(routerQuery[QUERY_PARAMS["page_size"]]) : undefined;

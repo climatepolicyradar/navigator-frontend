@@ -1,4 +1,4 @@
-export const featureFlagKeys = ["concepts-v1", "litigation", "new-page-designs", "unfccc-filters"] as const;
+export const featureFlagKeys = ["concepts-v1", "litigation", "new-page-designs", "rio-policy-radar"] as const;
 export type TFeatureFlag = (typeof featureFlagKeys)[number];
 export type TFeatureFlags = Record<TFeatureFlag, boolean>;
 
