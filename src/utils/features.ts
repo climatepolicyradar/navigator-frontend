@@ -32,11 +32,6 @@ export const isFamilyConceptsEnabled = (featureFlags: TFeatureFlags, themeConfig
     featureFlag: featureFlags["family-concepts"],
   });
 
-export const isUNFCCCFiltersEnabled = (featureFlags: TFeatureFlags) =>
-  isFeatureEnabled({
-    featureFlag: featureFlags["unfccc-filters"],
-  });
-
 export const isSearchFamilySummaryEnabled = (themeConfig: TThemeConfig) =>
   isFeatureEnabled({
     configFeature: themeConfig.features.searchFamilySummary,
@@ -46,4 +41,9 @@ export const isNewPageDesignsEnabled = (featureFlags: TFeatureFlags, themeConfig
   isFeatureEnabled({
     configFeature: themeConfig.features.newPageDesigns,
     featureFlag: featureFlags["new-page-designs"],
+  });
+
+export const isRioPolicyRadarEnabled = (featureFlags: TFeatureFlags) =>
+  isFeatureEnabled({
+    featureFlag: featureFlags["rio-policy-radar"],
   });
