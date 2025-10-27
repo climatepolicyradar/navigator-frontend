@@ -301,13 +301,13 @@ const config: TThemeConfig = {
           label: "National Biodiversity Strategy and Action Plan (NBSAP)",
           slug: "National Biodiversity Strategy and Action Plan (NBSAP)",
           value: "National Biodiversity Strategy and Action Plan (NBSAP)",
-          group: "CBD",
+          group: "UNCBD",
         },
         {
           label: "National Report (NR)",
           slug: "National Report (NR)",
           value: "National Report (NR)",
-          group: "CBD",
+          group: "UNCBD",
         },
         {
           label: "Nationally Determined Contribution (NDC)",

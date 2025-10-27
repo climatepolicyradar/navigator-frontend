@@ -30,7 +30,7 @@ export const Header = ({ landingPage = false }: IProps) => {
   const showLogo = router.pathname !== "/";
   const showSearch = router.pathname !== "/" && !landingPage;
 
-  const navBarClasses = joinTailwindClasses(router.pathname === "/" && "!absolute top-0", landingPage && "!static");
+  const navBarClasses = joinTailwindClasses("bg-white", router.pathname === "/" && "!absolute top-0", landingPage && "!static");
 
   const menuIcon = router.pathname !== "/" ? CPRMenuButton : undefined;
 
