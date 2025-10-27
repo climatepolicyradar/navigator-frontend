@@ -13,7 +13,7 @@ interface IProps {
 type TFamilyMetadataUnion = TFamilyMetadata | TMCFFamilyMetadata;
 
 export const MetadataRenderer = ({ family }: IProps) => {
-  const { metadata, organisation, category, geographies, corpus_type_name, published_date, documents } = family || {};
+  const { metadata, organisation, category, geographies, corpus_id, corpus_type_name, published_date, documents } = family || {};
   const document_type = documents && documents.length > 0 ? documents[0].document_type : undefined;
 
   const mcfFamilyMetadata: TFamilyMetadataUnion = {
@@ -29,6 +29,7 @@ export const MetadataRenderer = ({ family }: IProps) => {
     return (
       <FamilyMeta
         category={category}
+        corpus_id={corpus_id}
         corpus_type_name={corpus_type_name}
         date={published_date}
         geographies={geographies}

@@ -18,6 +18,7 @@ interface IProps {
 
 export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = true, titleClasses = "hover:underline", className }) => {
   const {
+    corpus_import_id,
     corpus_type_name,
     family_slug,
     family_geographies,
@@ -41,6 +42,7 @@ export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = tru
       <div className="flex flex-wrap text-sm gap-x-4 items-center">
         <FamilyMeta
           category={family_category}
+          corpus_id={corpus_import_id}
           corpus_type_name={corpus_type_name}
           source={family_source}
           date={family_date}

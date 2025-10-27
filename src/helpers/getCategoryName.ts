@@ -1,5 +1,11 @@
 import { TCategory, TCorpusTypeSubCategory } from "@/types";
 
+const corporaIdCategories = {
+  "UN.corpus.UNCBD.n0000": "UNCBD submission",
+  "UN.corpus.UNCCD.n0000": "UNCCD submission",
+  "UNFCCC.corpus.i00000001.n0000": "UNFCCC submission",
+};
+
 const reportSubCategories = {
   AF: "Guidance",
   CIF: "Guidance",
@@ -40,13 +46,17 @@ export const getSubCategoryName = (subCategory: TCorpusTypeSubCategory): string 
   return subCategories[subCategory as TCorpusTypeSubCategory];
 };
 
-export const getCategoryName = (category: TCategory, subCategory?: TCorpusTypeSubCategory, source?: string): string => {
+export const getCategoryName = (category: TCategory, subCategory?: TCorpusTypeSubCategory, source?: string, corpusId?: string): string => {
   const name = categories[category as TCategory];
+
   if (category === "Reports" && source) {
     return getReportsCategory(source);
   }
   if (category === "MCF" && subCategory) {
     return getSubCategoryName(subCategory);
+  }
+  if (corpusId) {
+    return corporaIdCategories[corpusId] ?? name;
   }
   return name;
 };

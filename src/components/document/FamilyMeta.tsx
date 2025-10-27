@@ -21,6 +21,7 @@ interface IProps {
   document_type?: string;
   concepts?: TFamilyConcept[];
   metadata: TFamilyMetadata;
+  corpus_id?: string;
 }
 
 function extractJurisdictionsFromMetadata(metadata: TFamilyMetadata): string[] {
@@ -39,7 +40,7 @@ function useFamilyJurisdictionConcepts(metadata: TFamilyMetadata) {
   return familyJurisdictionConcepts;
 }
 
-export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name, document_type, source, metadata }: IProps) => {
+export const FamilyMeta = ({ category, corpus_id, date, geographies, topics, author, corpus_type_name, document_type, source, metadata }: IProps) => {
   const configQuery = useConfig();
   const { data: { countries = [], subdivisions = [] } = {} } = configQuery;
 
@@ -76,7 +77,7 @@ export const FamilyMeta = ({ category, date, geographies, topics, author, corpus
       )}
       {category && (
         <span className="capitalize" data-cy="family-metadata-category">
-          {getCategoryName(category, corpus_type_name, source)}
+          {getCategoryName(category, corpus_type_name, source, corpus_id)}
         </span>
       )}
       {document_type && (
