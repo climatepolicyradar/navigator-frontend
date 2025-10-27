@@ -19,7 +19,7 @@ const config: TThemeConfig = {
       {
         label: "UN Submissions",
         slug: "UNFCCC",
-        value: ["UNFCCC.corpus.i00000001.n0000"],
+        value: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
         category: ["UNFCCC"],
       },
       {
@@ -38,6 +38,29 @@ const config: TThemeConfig = {
     ],
   },
   filters: [
+    {
+      label: "Convention",
+      taxonomyKey: "convention",
+      type: "checkbox",
+      options: [
+        {
+          label: "UNCBD",
+          slug: "uncbd",
+          value: ["UN.corpus.UNCBD.n0000"],
+        },
+        {
+          label: "UNFCCC",
+          slug: "unfccc",
+          value: ["UNFCCC.corpus.i00000001.n0000"],
+        },
+        {
+          label: "UNCCD",
+          slug: "unccd",
+          value: ["UN.corpus.UNCCD.n0000"],
+        },
+      ],
+      category: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
+    },
     {
       label: "Type",
       taxonomyKey: "framework_laws",
@@ -97,13 +120,13 @@ const config: TThemeConfig = {
           label: "National Biodiversity Strategy and Action Plan (NBSAP)",
           slug: "National Biodiversity Strategy and Action Plan (NBSAP)",
           value: "National Biodiversity Strategy and Action Plan (NBSAP)",
-          group: "CBD",
+          group: "UNCBD",
         },
         {
           label: "National Report (NR)",
           slug: "National Report (NR)",
           value: "National Report (NR)",
-          group: "CBD",
+          group: "UNCBD",
         },
         {
           label: "Nationally Determined Contribution (NDC)",
