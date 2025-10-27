@@ -24,13 +24,15 @@ const config: TThemeConfig = {
           "MCF.corpus.GEF.n0000",
           "OEP.corpus.i00000001.n0000",
           "UNFCCC.corpus.i00000001.n0000",
+          "UN.corpus.UNCBD.n0000",
+          "UN.corpus.UNCCD.n0000",
           "CPR.corpus.i00000002.n0000",
         ],
       },
       {
         label: "UNFCCC Submissions",
         slug: "UNFCCC",
-        value: ["UNFCCC.corpus.i00000001.n0000"],
+        value: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
         category: ["UNFCCC"],
       },
       {
@@ -93,6 +95,29 @@ const config: TThemeConfig = {
     ],
   },
   filters: [
+    {
+      label: "Convention",
+      taxonomyKey: "convention",
+      type: "checkbox",
+      options: [
+        {
+          label: "UNCBD",
+          slug: "uncbd",
+          value: ["UN.corpus.UNCBD.n0000"],
+        },
+        {
+          label: "UNFCCC",
+          slug: "uncbd",
+          value: ["UNFCCC.corpus.i00000001.n0000"],
+        },
+        {
+          label: "UNCCD",
+          slug: "uncbd",
+          value: ["UN.corpus.UNCCD.n0000"],
+        },
+      ],
+      category: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
+    },
     {
       label: "Funds",
       taxonomyKey: "fund",
@@ -262,7 +287,7 @@ const config: TThemeConfig = {
       taxonomyKey: "author_type",
       apiMetaDataKey: "family.author_type",
       type: "radio",
-      category: ["UNFCCC.corpus.i00000001.n0000"],
+      category: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
     },
     {
       label: "Type of submission",
@@ -270,7 +295,7 @@ const config: TThemeConfig = {
       taxonomyKey: "_document.type",
       apiMetaDataKey: "document.type",
       type: "radio",
-      category: ["UNFCCC.corpus.i00000001.n0000"],
+      category: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
       options: [
         {
           label: "Nationally Determined Contribution (NDC)",
