@@ -38,7 +38,7 @@ export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = tru
 
   return (
     <li className={`family-list-item relative flex flex-col gap-2 pb-8 border-border-light ${className}`}>
-      <div className="flex flex-wrap text-sm gap-4 items-center">
+      <div className="flex flex-wrap text-sm gap-x-4 items-center">
         <FamilyMeta
           category={family_category}
           corpus_type_name={corpus_type_name}
