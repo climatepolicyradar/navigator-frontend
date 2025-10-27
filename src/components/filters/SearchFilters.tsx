@@ -100,17 +100,22 @@ const SearchFilters = ({
       {themeConfigStatus === "success" && themeConfig.categories && (
         <Accordion title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
           <InputListContainer>
-            {themeConfig.categories?.options?.map((option) => (
-              <InputRadio
-                key={option.slug}
-                label={option.label}
-                checked={query && isCategoryChecked(query[QUERY_PARAMS.category] as string, option)}
-                onChange={() => {
-                  handleDocumentCategoryClick(option.slug);
-                }}
-                name={`${themeConfig.categories.label}-${option.slug}`}
-              />
-            ))}
+            {themeConfig.categories?.options?.map((option) => {
+              // TODO delete once Rio corpora released
+              if (option.label === (isRioPolicyRadarEnabled(featureFlags) ? "UNFCCC Submissions" : "UN Submissions")) return null;
+
+              return (
+                <InputRadio
+                  key={option.slug}
+                  label={option.label}
+                  checked={query && isCategoryChecked(query[QUERY_PARAMS.category] as string, option)}
+                  onChange={() => {
+                    handleDocumentCategoryClick(option.slug);
+                  }}
+                  name={`${themeConfig.categories.label}-${option.slug}`}
+                />
+              );
+            })}
           </InputListContainer>
         </Accordion>
       )}
