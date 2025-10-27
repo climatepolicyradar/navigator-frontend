@@ -11,7 +11,7 @@ export function getReportsMetadata(family: TFamilyPublic, countries: TGeography[
   const metadata = [];
 
   const [year] = convertDate(family.published_date);
-  const document_type = family.documents && family.documents.length > 0 ? family.documents[0].document_type : undefined;
+  const document_type = family.documents && family.documents.length > 0 ? family.documents[0].document_type : null;
 
   /* Year */
   metadata.push({
