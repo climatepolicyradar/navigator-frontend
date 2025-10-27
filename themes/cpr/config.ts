@@ -25,6 +25,8 @@ const config: TThemeConfig = {
           "OEP.corpus.i00000001.n0000",
           "UNFCCC.corpus.i00000001.n0000",
           "CPR.corpus.i00000002.n0000",
+          "UN.corpus.UNCBD.n0000",
+          "UN.corpus.UNCCD.n0000",
         ],
       },
       {
