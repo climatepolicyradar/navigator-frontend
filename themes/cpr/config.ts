@@ -1,5 +1,4 @@
 import { TThemeConfig } from "@/types";
-import { isRioPolicyRadarEnabled } from "@/utils/features";
 
 const config: TThemeConfig = {
   categories: {
@@ -29,15 +28,15 @@ const config: TThemeConfig = {
         ],
       },
       {
-        label: "UN Submissions",
-        slug: "UNFCCC",
-        value: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
-        category: ["UNFCCC"],
-      },
-      {
         label: "UNFCCC Submissions",
         slug: "UNFCCC",
         value: ["UNFCCC.corpus.i00000001.n0000"],
+        category: ["UNFCCC"],
+      },
+      {
+        label: "UN Submissions",
+        slug: "UNFCCC",
+        value: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
         category: ["UNFCCC"],
       },
       {
