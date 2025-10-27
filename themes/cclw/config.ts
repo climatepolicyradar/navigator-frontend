@@ -17,7 +17,7 @@ const config: TThemeConfig = {
         ],
       },
       {
-        label: "UNFCCC Submissions",
+        label: "UN Submissions",
         slug: "UNFCCC",
         value: ["UNFCCC.corpus.i00000001.n0000"],
         category: ["UNFCCC"],
@@ -173,7 +173,7 @@ const config: TThemeConfig = {
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
   ],
-  documentCategories: ["All", "UNFCCC Submissions", "Laws", "Policies", "Litigation"],
+  documentCategories: ["All", "UN Submissions", "Laws", "Policies", "Litigation"],
   defaultDocumentCategory: "All",
   pageBlocks: {
     family: [],

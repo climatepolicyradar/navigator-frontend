@@ -16,14 +16,7 @@ type TThemePageBlocks = {
 
 /* Everything else */
 
-export type TDocumentCategory =
-  | "All"
-  | "UNFCCC Submissions"
-  | "Laws"
-  | "Policies"
-  | "Litigation"
-  | "Climate Finance Projects"
-  | "Offshore Wind Reports";
+export type TDocumentCategory = "All" | "UN Submissions" | "Laws" | "Policies" | "Litigation" | "Climate Finance Projects" | "Offshore Wind Reports";
 
 export type TLabelVariation = {
   category: string[];

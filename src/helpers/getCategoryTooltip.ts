@@ -1,5 +1,3 @@
-import { TDocumentCategory } from "@/types";
-
 export const getCategoryTooltip = (category: string): string => {
   switch (category) {
     case "All":
@@ -10,8 +8,8 @@ export const getCategoryTooltip = (category: string): string => {
       return "For example: Policies, strategies, decrees, action plans (from executive branch)";
     case "Litigation":
       return "For example: Court cases and tribunal proceedings";
-    case "UNFCCC Submissions":
-      return "Documents submitted to the UNFCCC (including NDCs)";
+    case "UN Submissions":
+      return "Documents submitted to UN Conventions (including NDCs)";
     case "Climate Finance Projects":
       return "Multilateral climate fund projects and policies";
     case "Offshore Wind Reports":

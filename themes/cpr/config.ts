@@ -383,7 +383,7 @@ const config: TThemeConfig = {
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
   ],
-  documentCategories: ["All", "UNFCCC Submissions", "Laws", "Policies", "Climate Finance Projects", "Offshore Wind Reports", "Litigation"],
+  documentCategories: ["All", "UN Submissions", "Laws", "Policies", "Climate Finance Projects", "Offshore Wind Reports", "Litigation"],
   defaultDocumentCategory: "Laws",
   pageBlocks: {
     family: ["summary"],
