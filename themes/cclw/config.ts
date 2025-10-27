@@ -86,7 +86,7 @@ const config: TThemeConfig = {
       category: ["UNFCCC.corpus.i00000001.n0000"],
     },
     {
-      label: "Type of submission",
+      label: "Submission type",
       corporaKey: "Intl. agreements",
       taxonomyKey: "_document.type",
       apiMetaDataKey: "document.type",
@@ -95,14 +95,14 @@ const config: TThemeConfig = {
       options: [
         {
           label: "National Biodiversity Strategy and Action Plan (NBSAP)",
-          slug: "National Biodiversity Strategy and Action Plan",
-          value: "National Biodiversity Strategy and Action Plan",
+          slug: "National Biodiversity Strategy and Action Plan (NBSAP)",
+          value: "National Biodiversity Strategy and Action Plan (NBSAP)",
           group: "CBD",
         },
         {
           label: "National Report (NR)",
-          slug: "National Report",
-          value: "National Report",
+          slug: "National Report (NR)",
+          value: "National Report (NR)",
           group: "CBD",
         },
         {
@@ -161,20 +161,20 @@ const config: TThemeConfig = {
         },
         {
           label: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
-          slug: "Voluntary Land Degradation Neutrality Targets",
-          value: "Voluntary Land Degradation Neutrality Targets",
+          slug: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
+          value: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
           group: "UNCCD",
         },
         {
           label: "Country Report (CR)",
-          slug: "Country Report",
-          value: "Country Report",
+          slug: "Country Report (CR)",
+          value: "Country Report (CR)",
           group: "UNCCD",
         },
         {
           label: "National Drought Plan (NDP)",
-          slug: "National Drought Plan",
-          value: "National Drought Plan",
+          slug: "National Drought Plan (NDP)",
+          value: "National Drought Plan (NDP)",
           group: "UNCCD",
         },
       ],
