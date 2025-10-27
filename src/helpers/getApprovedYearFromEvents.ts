@@ -1,4 +1,6 @@
-export const getApprovedYearFromEvents = (events) => {
+import { TFamilyEventPublic } from "@/types";
+
+export const getApprovedYearFromEvents = (events: TFamilyEventPublic[]) => {
   const approvalEvent = events.find((event) => ["Project Approved", "Published"].includes(event.event_type));
 
   if (approvalEvent) {
