@@ -30,12 +30,15 @@ const categories: Record<TCategory, string> = {
   Litigation: "Litigation",
   LITIGATION: "Litigation",
   Legislative: "Legislative",
+  LEGISLATIVE: "Legislative",
   Law: "Legislative",
   Executive: "Policy",
+  EXECUTIVE: "Policy",
   Policy: "Policy",
   UNFCCC: "UN Submission",
   MCF: "MCF",
   Reports: "Report",
+  REPORTS: "Report",
 };
 
 const getReportsCategory = (source: string): string => {

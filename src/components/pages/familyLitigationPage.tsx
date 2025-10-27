@@ -15,16 +15,17 @@ import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import useSearch from "@/hooks/useSearch";
+import { useText } from "@/hooks/useText";
 import { TMatchedFamily, TFamilyPageBlock } from "@/types";
+import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
-import { getFamilyMetadata } from "@/utils/getFamilyMetadata";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 
 import { IProps } from "./familyOriginalPage";
 
 export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig }: IProps) => {
+  const { getText } = useText();
   /* Search matches */
-
   const router = useRouter();
   const hasSearch = Boolean(
     router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]
@@ -66,8 +67,8 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
         const metadata = getFamilyMetadata(family, countries, subdivisions);
         if (metadata.length === 0) return null;
 
-        return <MetadataBlock key="metadata" block="metadata" title="About this case" metadata={metadata} />;
-      }, [countries, family, subdivisions]),
+        return <MetadataBlock key="metadata" block="metadata" title={`About this ${getText("familySingular")}`} metadata={metadata} />;
+      }, [countries, family, subdivisions, getText]),
       sideBarItem: { display: "About" },
     },
     summary: {
