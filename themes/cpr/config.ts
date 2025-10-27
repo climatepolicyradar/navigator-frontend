@@ -381,12 +381,6 @@ const config: TThemeConfig = {
           value: "National Drought Plan",
           group: "UNCCD",
         },
-        {
-          label: "National Action Programme (NAP)",
-          slug: "National Action Programme",
-          value: "National Action Programme",
-          group: "UNCCD",
-        },
       ],
     },
   ],
