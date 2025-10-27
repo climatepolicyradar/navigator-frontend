@@ -1,4 +1,5 @@
 import { TThemeConfig } from "@/types";
+import { isRioPolicyRadarEnabled } from "@/utils/features";
 
 const config: TThemeConfig = {
   categories: {
