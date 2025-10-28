@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { Columns } from "@/components/atoms/columns/Columns";
+import { FourColumns } from "@/components/atoms/columns/FourColumns";
 import { Divider } from "@/components/dividers/Divider";
 
 export const Footer = () => {
@@ -16,7 +16,7 @@ export const Footer = () => {
         <Divider />
       </div>
 
-      <Columns>
+      <FourColumns>
         <aside className="flex flex-col items-start cols-2:col-span-2 cols-3:col-span-1">
           <Link href="/" className="max-w-70">
             <Image
@@ -124,7 +124,7 @@ export const Footer = () => {
             <p className="color-text-tertiary text-xs">© 2025 Sabin Center for Climate Change Law</p>
           </div>
         </main>
-      </Columns>
+      </FourColumns>
     </footer>
   );
 };

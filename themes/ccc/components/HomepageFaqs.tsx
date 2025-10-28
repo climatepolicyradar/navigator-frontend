@@ -1,11 +1,11 @@
 import { FaqSection } from "@/components/FaqSection";
-import { Columns } from "@/components/atoms/columns/Columns";
+import { FourColumns } from "@/components/atoms/columns/FourColumns";
 
 import { HOMEPAGE_FAQS } from "../constants/faqs";
 
 export const HomepageFaqs = () => (
   <div className="pt-15">
-    <Columns>
+    <FourColumns>
       <aside className="flex flex-col items-start cols-2:col-span-2 cols-3:col-span-1">
         <p className="text-3xl font-semibold text-text-primary">Frequently Asked Questions</p>
       </aside>
@@ -17,6 +17,6 @@ export const HomepageFaqs = () => (
           </div>
         </div>
       </main>
-    </Columns>
+    </FourColumns>
   </div>
 );

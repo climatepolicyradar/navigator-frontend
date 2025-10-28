@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import { ExternalLink } from "@/components/ExternalLink";
-import { Columns } from "@/components/atoms/columns/Columns";
+import { FourColumns } from "@/components/atoms/columns/FourColumns";
 import { Divider } from "@/components/dividers/Divider";
 
 export const PoweredBy = () => (
@@ -10,7 +10,7 @@ export const PoweredBy = () => (
       <Divider />
     </div>
 
-    <Columns>
+    <FourColumns>
       <aside className="flex flex-col items-start cols-2:col-span-2 cols-3:col-span-1">
         <p className="text-xl font-semibold text-text-primary">Powered by:</p>
       </aside>
@@ -54,6 +54,6 @@ export const PoweredBy = () => (
           </div>
         </div>
       </main>
-    </Columns>
+    </FourColumns>
   </div>
 );

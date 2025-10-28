@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/nextjs";
 
-import { Columns } from "@/components/atoms/columns/Columns";
+import { FourColumns } from "@/components/atoms/columns/FourColumns";
 import { LOREM_IPSUM } from "@/constants/stories";
 
 import { ContentsSideBar, IProps, ISideBarItem } from "./ContentsSideBar";
@@ -18,7 +18,7 @@ type TStory = StoryObj<typeof ContentsSideBar>;
 export default meta;
 
 const usePageContext = ({ ...props }: IProps) => (
-  <Columns>
+  <FourColumns>
     <ContentsSideBar {...props} />
     <div className="flex flex-col gap-8 cols-3:col-span-2 cols-4:col-span-3">
       {props.items.map((item) => (
@@ -32,7 +32,7 @@ const usePageContext = ({ ...props }: IProps) => (
         </section>
       ))}
     </div>
-  </Columns>
+  </FourColumns>
 );
 
 const GEOGRAPHY_ITEMS: ISideBarItem[] = [

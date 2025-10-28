@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
-import { Columns } from "@/components/atoms/columns/Columns";
+import { FourColumns } from "@/components/atoms/columns/FourColumns";
 import { Debug } from "@/components/atoms/debug/Debug";
 import { EventsBlock } from "@/components/blocks/eventsBlock/EventsBlock";
 import { FamilyBlock } from "@/components/blocks/familyBlock/FamilyBlock";
@@ -50,7 +50,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
     <Layout title={collection.title} description={collection.description} theme={theme} themeConfig={themeConfig} metadataKey="collection">
       <BreadCrumbs dark label={collection.title} />
       <PageHeader<TCollectionTab> dark title={collection.title} tabs={COLLECTION_TABS} currentTab={currentTab} onTabChange={onTabChange} />
-      <Columns>
+      <FourColumns>
         {currentTab === "cases" && (
           <>
             <ContentsSideBar items={sideBarItems} stickyClasses="!top-[72px] cols-3:max-h-[calc(100vh-72px)] pt-3 cols-2:pt-6 cols-3:pt-8" />
@@ -82,7 +82,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
             </main>
           </>
         )}
-      </Columns>
+      </FourColumns>
       <Head>
         <script
           type="application/ld+json"

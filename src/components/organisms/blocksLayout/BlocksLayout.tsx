@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 
-import { Columns } from "@/components/atoms/columns/Columns";
+import { FourColumns } from "@/components/atoms/columns/FourColumns";
 import { firstCase } from "@/utils/text";
 
 import { ContentsSideBar, ISideBarItem } from "../contentsSideBar/ContentsSideBar";
@@ -64,9 +64,9 @@ export const BlocksLayout = <PageBlock extends string>({ blockDefinitions, block
   });
 
   return (
-    <Columns>
+    <FourColumns>
       <ContentsSideBar items={sideBarItems} stickyClasses="!top-[72px] cols-3:max-h-[calc(100vh-72px)] pt-3 cols-2:pt-6 cols-3:pt-8" />
       <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-2:col-span-2 cols-3:py-8 cols-3:gap-8 cols-4:col-span-3">{blocks}</main>
-    </Columns>
+    </FourColumns>
   );
 };

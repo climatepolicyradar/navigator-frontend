@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import { Columns } from "@/components/atoms/columns/Columns";
+import { FourColumns } from "@/components/atoms/columns/FourColumns";
 import { NavSearch } from "@/components/molecules/navSearch/NavSearch";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -30,13 +30,13 @@ export const NavBar = ({ headerClasses = "", logo, menu, showLogo = true, showSe
 
   return (
     <header data-cy="header" className={allHeaderClasses}>
-      <Columns containerClasses="h-full" gridClasses="h-full items-center gap-y-1">
+      <FourColumns containerClasses="h-full" gridClasses="h-full items-center gap-y-1">
         <div className={logoContainerClasses}>{showLogo && logo}</div>
         <div className={mainContainerClasses}>
           <div className={searchContainerClasses}>{showSearch && <NavSearch />}</div>
           <div className="flex items-center justify-self-end">{menu}</div>
         </div>
-      </Columns>
+      </FourColumns>
     </header>
   );
 };

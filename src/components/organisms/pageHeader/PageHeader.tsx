@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import { Columns } from "@/components/atoms/columns/Columns";
+import { FourColumns } from "@/components/atoms/columns/FourColumns";
 import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
 import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { IMetadata } from "@/types";
@@ -43,7 +43,7 @@ export const PageHeader = <Tab extends string>({ currentTab, dark = false, label
   const containerClasses = joinTailwindClasses("pt-9", hasTabs ? "pb-6" : "pb-12", dark && "bg-gray-100");
 
   return (
-    <Columns containerClasses={containerClasses}>
+    <FourColumns containerClasses={containerClasses}>
       <div className="cols-2:col-span-2 cols-3:col-span-1">{label && <h2 className="text-3xl text-gray-500 leading-9 font-heavy">{label}</h2>}</div>
       <div className="cols-2:col-span-2 flex flex-col gap-6">
         {/* Title */}
@@ -73,6 +73,6 @@ export const PageHeader = <Tab extends string>({ currentTab, dark = false, label
           </ToggleGroup>
         )}
       </div>
-    </Columns>
+    </FourColumns>
   );
 };
