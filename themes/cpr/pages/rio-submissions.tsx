@@ -9,9 +9,27 @@ import { Header } from "@/cpr/components/Header";
 import { NavBarGradient } from "@/cpr/components/NavBarGradient";
 
 const QUERY_EXAMPLES: { label: ReactNode; href: string }[] = [
-  { label: <>Latest NBSAPs</>, href: "/" },
-  { label: <>Land degradation&nbsp;+ Somalia</>, href: "/" },
-  { label: <>Brazil&nbsp;+ Nature-based solutions</>, href: "/" },
+  { label: <span>Latest NBSAPs</span>, href: "/" },
+  {
+    label: (
+      <span>
+        Land degradation&nbsp;+
+        <br />
+        Somalia
+      </span>
+    ),
+    href: "/",
+  },
+  {
+    label: (
+      <span>
+        Brazil&nbsp;+
+        <br />
+        Nature-based solutions
+      </span>
+    ),
+    href: "/",
+  },
 ];
 
 const RioSubmissions = () => {
