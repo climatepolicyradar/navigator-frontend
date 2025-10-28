@@ -13,5 +13,10 @@
     "title": "FAQ",
     "path": "faq",
     "contentPath": "faq"
+  },
+  {
+    "title": "Rio submissions",
+    "path": "rio-submissions",
+    "contentPath": "rio-submissions"
   }
 ]
