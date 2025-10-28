@@ -119,6 +119,11 @@
   --breakpoint-cols-3: 820px;
   --breakpoint-cols-4: 1100px;
 
+  --breakpoint-cols5-2: 500px;
+  --breakpoint-cols5-3: 700px;
+  --breakpoint-cols5-4: 900px;
+  --breakpoint-cols5-5: 1100px;
+
   /* MISC */
 
   --shadow-lg: 0px 4px 48px 0px rgba(0, 0, 0, 0.08);
