@@ -2,7 +2,7 @@ import { ParsedUrlQuery } from "querystring";
 
 import get from "lodash/get";
 import groupBy from "lodash/groupBy";
-import { useContext, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 
 import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
@@ -69,7 +69,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
       <>
         {groupedOptions.map((filterGroup) => {
           return (
-            <>
+            <Fragment key={filterGroup[0].group || "ungrouped"}>
               {groupedOptions.length > 1 && (
                 <span className="not-first:mt-3 text-xs text-gray-500 leading-none font-heavy cursor-default">{filterGroup[0].group}</span>
               )}
@@ -100,7 +100,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
                   />
                 )
               )}
-            </>
+            </Fragment>
           );
         })}
       </>

@@ -14,16 +14,16 @@ interface IProps {
 export const Info = ({ className, description, link, title }: IProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const infoClasses = joinTailwindClasses("cursor-help", isOpen ? "text-text-brand" : "text-text-secondary", className);
+  const infoClasses = joinTailwindClasses("!cursor-help", isOpen ? "text-text-brand" : "text-text-secondary", className);
 
   return (
     <Popover
       openOnHover
       onOpenChange={setIsOpen}
       trigger={
-        <div className={infoClasses}>
+        <button className={infoClasses} role="button">
           <LuInfo size={16} />
-        </div>
+        </button>
       }
       title={title}
       description={description}

@@ -22,6 +22,7 @@ import { TPublicEnvConfig } from "@/context/EnvConfig";
 import { GeographyCountsResponse } from "@/pages/api/geography-counts";
 import { GeographyV2, TDocumentCategory, TFeatureFlags, TSearch, TSearchCriteria, TTarget, TTheme, TThemeConfig } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
+import { isRioPolicyRadarEnabled } from "@/utils/features";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 export interface IProps {
@@ -47,7 +48,16 @@ const categories: { title: TDocumentCategory; slug: string }[] = [
 
 const MAX_NUMBER_OF_FAMILIES = 3;
 
-export const GeographyOriginalPage = ({ geographyV2, parentGeographyV2, targets, theme, themeConfig, vespaSearchResults, envConfig }: IProps) => {
+export const GeographyOriginalPage = ({
+  geographyV2,
+  parentGeographyV2,
+  targets,
+  theme,
+  themeConfig,
+  vespaSearchResults,
+  envConfig,
+  featureFlags,
+}: IProps) => {
   const router = useRouter();
   const startingNumberOfTargetsToDisplay = 5;
   const [numberOfTargetsToDisplay, setNumberOfTargetsToDisplay] = useState(startingNumberOfTargetsToDisplay);
@@ -85,13 +95,18 @@ export const GeographyOriginalPage = ({ geographyV2, parentGeographyV2, targets,
   const vespaSearchTabbedNavItems = useMemo(
     () =>
       themeConfig.categories
-        ? themeConfig.categories.options.map((category) => {
-            return {
-              title: category.label,
-              /** We need to maintain the slug to to know what to send to Vespa for querying. */
-              slug: category.slug,
-            };
-          })
+        ? themeConfig.categories.options.reduce((items, category) => {
+            // TODO: remove this when FF is removed and UN docs are released
+            if (category.label === (isRioPolicyRadarEnabled(featureFlags) ? "UNFCCC Submissions" : "UN Submissions")) return items;
+            return [
+              ...items,
+              {
+                title: category.label,
+                /** We need to maintain the slug to to know what to send to Vespa for querying. */
+                slug: category.slug,
+              },
+            ];
+          }, [])
         : /** We generate an `All` for when themeConfig.categories are not available e.g. MCFs */
           [
             {
@@ -99,7 +114,7 @@ export const GeographyOriginalPage = ({ geographyV2, parentGeographyV2, targets,
               slug: "All",
             },
           ],
-    [themeConfig.categories]
+    [themeConfig.categories, featureFlags]
   );
 
   const countCategories = useMemo(
