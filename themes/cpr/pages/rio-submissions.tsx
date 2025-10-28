@@ -7,7 +7,7 @@ import { Heading } from "@/components/typography/Heading";
 const RioSubmissions = () => {
   return (
     <>
-      <Layout title="Rio Submissions" description="" theme="cpr">
+      <Layout title="Rio Submissions" description="Rio Policy Radar - a shared tool for climate, nature and land" theme="cpr">
         <section className="pt-8 text-content">
           <SingleCol>
             <Heading level={1} extraClasses="mb-6">
