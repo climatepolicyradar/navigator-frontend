@@ -27,10 +27,10 @@ interface IProps {
 export const Header = ({ landingPage = false }: IProps) => {
   const router = useRouter();
 
-  const showLogo = router.pathname !== "/";
+  const isHomepage = router.pathname === "/";
   const showSearch = router.pathname !== "/" && !landingPage;
 
-  const navBarClasses = joinTailwindClasses("bg-white", router.pathname === "/" && "!absolute top-0 !bg-transparent", landingPage && "!static");
+  const navBarClasses = joinTailwindClasses(isHomepage ? "!absolute top-0" : "bg-white", landingPage && "!static");
 
   const menuIcon = router.pathname !== "/" ? CPRMenuButton : undefined;
 
@@ -39,7 +39,7 @@ export const Header = ({ landingPage = false }: IProps) => {
       headerClasses={navBarClasses}
       logo={CPRLogo}
       menu={<MainMenu icon={menuIcon} links={MENU_LINKS} />}
-      showLogo={showLogo}
+      showLogo={!isHomepage}
       showSearch={showSearch}
     />
   );
