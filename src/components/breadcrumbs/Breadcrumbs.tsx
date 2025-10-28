@@ -2,7 +2,7 @@ import Link from "next/link";
 import React, { ReactNode, useContext } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { Columns } from "@/components/atoms/columns/Columns";
+import { FourColumns } from "@/components/atoms/columns/FourColumns";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useText } from "@/hooks/useText";
 import { isSystemGeo } from "@/utils/isSystemGeo";
@@ -108,13 +108,13 @@ export const BreadCrumbs = ({
   const containerClasses = joinTailwindClasses(dark && "bg-gray-100");
 
   return (
-    <Columns containerClasses={containerClasses}>
+    <FourColumns containerClasses={containerClasses}>
       <ul
         className="cols-2:col-span-2 cols-3:col-span-3 cols-4:col-span-4 flex flex-wrap items-baseline gap-2 py-3 text-sm text-gray-700 leading-tight select-none"
         data-cy="breadcrumbs"
       >
         {breadCrumbs}
       </ul>
-    </Columns>
+    </FourColumns>
   );
 };

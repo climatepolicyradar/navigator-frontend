@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/nextjs";
 
-import { Columns } from "@/components/atoms/columns/Columns";
+import { FourColumns } from "@/components/atoms/columns/FourColumns";
 
 import { TProps, Section } from "./Section";
 
@@ -16,13 +16,13 @@ type TStory = StoryObj<typeof Section>;
 export default meta;
 
 const useSectionContext = ({ children, ...props }: TProps) => (
-  <Columns>
+  <FourColumns>
     <main className="cols-3:col-span-2 cols-4:col-span-3 grid grid-cols-subgrid gap-6">
       <Section {...props}>
         <div className="bg-emerald-100 min-h-[300px]">Content</div>
       </Section>
     </main>
-  </Columns>
+  </FourColumns>
 );
 
 export const WithTitle: TStory = {
