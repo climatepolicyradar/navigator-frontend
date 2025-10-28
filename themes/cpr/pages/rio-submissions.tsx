@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ReactNode, useContext } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
+import Footer from "@/components/footer/Footer";
 import Layout from "@/components/layouts/LandingPage";
 import MainLayout from "@/components/layouts/Main";
 import { SingleCol } from "@/components/panels/SingleCol";
@@ -78,7 +79,7 @@ const RioSubmissions = () => {
       <Header landingPage />
       <NavBarGradient className="!static" />
       <FiveColumns>
-        <div className="pt-20 col-start-3 col-end-8">
+        <div className="pt-20 col-start-1 -col-end-1 cols5-3:col-start-2 cols5-3:-col-end-2 cols5-4:-col-end-3 cols5-5:col-start-3 cols5-5:-col-end-4">
           <span className="block text-gray-700 leading-tight">Rio Policy Radar</span>
           <h1 className="mt-3 mb-6 text-6xl text-gray-950 font-heavy leading-14 tracking-[-0.9px]">Submissions to&nbsp;the Rio&nbsp;Conventions</h1>
           <p className="my-6 text-xl text-gray-950 leading-6">
@@ -93,16 +94,16 @@ const RioSubmissions = () => {
             </Link>
           </div>
         </div>
-        <div className="mt-14 mb-10 h-[600px] bg-white border border-gray-200 rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.10)] col-start-2 col-end-10" />
-        <div className="flex flex-col gap-5 items-center col-start-4 col-end-8">
+        <div className="mt-14 mb-10 h-[600px] bg-white border border-gray-200 rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.10)]0 col-start-1 -col-end-1 cols5-5:col-start-2 cols5-5:-col-end-2" />
+        <div className="flex flex-col gap-5 items-center col-start-1 -col-end-1">
           <span className="block text-sm text-gray-950 font-medium leading-4">In collaboration with</span>
-          <div className="flex gap-3">
+          <div className="flex flex-col cols5-2:flex-row gap-3">
             <Image src="/images/rio/rio-unccd.svg" alt="United Nations Convention to Combat Desertification logo" width={166} height={48} />
             <Image src="/images/rio/rio-uncbd.svg" alt="Convention on Biological Diversity logo" width={166} height={48} />
             <Image src="/images/rio/rio-unfccc.svg" alt="United Nations Framework Convention on Climate Change" width={187} height={48} />
           </div>
         </div>
-        <main className="mt-32 mb-18 col-start-3 col-end-9">
+        <main className="mt-16 cols5-2:mt-32 mb-18 col-start-1 -col-end-1 cols5-4:col-start-2 cols5-4:-col-end-2 cols5-5:col-start-3 cols5-5:-col-end-3">
           <p className="mb-3 text-xl text-gray-950 font-heavy leading-7">
             Use our collection and full-text searchable app to search and explore submissions to the Rio&nbsp;Conventions from around the world. For
             example:
@@ -113,7 +114,7 @@ const RioSubmissions = () => {
             <li>Identify indicators used in different regions in country drought plans to the UNCCD</li>
           </ul>
           <p className="mt-10 mb-4 font-medium">Try these examples:</p>
-          <div className="flex gap-8 mb-20 text-brand text-center font-medium leading-tight">
+          <div className="flex flex-col cols5-2:flex-row gap-2 cols5-2:gap-8 mb-20 text-brand text-center font-medium leading-tight">
             {QUERY_EXAMPLES.map(({ label, href }, index) => (
               <Link
                 key={index}
@@ -154,6 +155,7 @@ const RioSubmissions = () => {
           </ul>
         </main>
       </FiveColumns>
+      <Footer />
     </Layout>
   );
 };
