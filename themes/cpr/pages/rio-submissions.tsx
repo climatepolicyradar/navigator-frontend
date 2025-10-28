@@ -94,7 +94,13 @@ const RioSubmissions = () => {
             </Link>
           </div>
         </div>
-        <div className="mt-14 mb-10 h-[600px] bg-white border border-gray-200 rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.10)]0 col-start-1 -col-end-1 cols5-5:col-start-2 cols5-5:-col-end-2" />
+        <Image
+          src="/images/rio/rio-screenshot.jpg"
+          alt="Climate Policy Radar's search page filtered by UN Submissions"
+          width={1200}
+          height={699}
+          className="max-w-[1200px] w-full mx-auto mt-14 mb-10 bg-white border border-gray-200 rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.10)]0 col-start-1 -col-end-1 cols5-5:col-start-2 cols5-5:-col-end-2"
+        />
         <div className="flex flex-col gap-5 items-center col-start-1 -col-end-1">
           <span className="block text-sm text-gray-950 font-medium leading-4">In collaboration with</span>
           <div className="flex flex-col cols5-2:flex-row gap-3">
