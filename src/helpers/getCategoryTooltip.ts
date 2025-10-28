@@ -10,6 +10,9 @@ export const getCategoryTooltip = (category: string): string => {
       return "For example: Court cases and tribunal proceedings";
     case "UN Submissions":
       return "Documents submitted to UN Conventions (including NDCs)";
+    // TODO: remove this when FF is removed and UN docs are releasedƒ
+    case "UNFCCC Submissions":
+      return "Documents submitted to the UNFCCC (including NDCs)";
     case "Climate Finance Projects":
       return "Multilateral climate fund projects and policies";
     case "Offshore Wind Reports":
