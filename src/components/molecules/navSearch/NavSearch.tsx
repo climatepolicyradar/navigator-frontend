@@ -135,7 +135,7 @@ export const NavSearch = () => {
   };
 
   return (
-    <div className="relative flex-1" ref={ref}>
+    <div className="relative flex-1 -mx-2" ref={ref}>
       <div className="p-2 relative z-21">
         <form onSubmit={handleSubmit} className="flex flex-row gap-2">
           {/* Search field */}
