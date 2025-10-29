@@ -31,7 +31,7 @@ export const EventsBlock = ({ families }: IProps) => {
   }, [families]);
 
   return (
-    <div className="relative">
+    <div className="relative col-start-1 -col-end-1">
       <Card variant="outlined" className="rounded-lg !p-5">
         <h2 className="text-xl text-text-primary font-semibold leading-tight">Procedural history</h2>
         <InteractiveTable<TEventTableColumnId>

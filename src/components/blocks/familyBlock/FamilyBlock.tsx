@@ -38,7 +38,7 @@ export const FamilyBlock = ({ family }: IProps) => {
   }, [family]);
 
   return (
-    <Section id={`section-${family.slug}`}>
+    <Section id={`section-${family.slug}`} wide>
       <div className="relative">
         <Card variant="outlined" className="rounded-lg !p-5">
           <LinkWithQuery href={`/document/${family.slug}`}>

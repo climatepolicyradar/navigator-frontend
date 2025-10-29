@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
+import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { FourColumns } from "@/components/atoms/columns/FourColumns";
 import { Debug } from "@/components/atoms/debug/Debug";
 import { EventsBlock } from "@/components/blocks/eventsBlock/EventsBlock";
@@ -12,6 +13,7 @@ import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
+import { BlocksLayout } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { ContentsSideBar, ISideBarItem } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { IPageHeaderTab, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { withEnvConfig } from "@/context/EnvConfig";
@@ -50,11 +52,11 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
     <Layout title={collection.title} description={collection.description} theme={theme} themeConfig={themeConfig} metadataKey="collection">
       <BreadCrumbs dark label={collection.title} />
       <PageHeader<TCollectionTab> dark title={collection.title} tabs={COLLECTION_TABS} currentTab={currentTab} onTabChange={onTabChange} />
-      <FourColumns>
+      <FiveColumns>
         {currentTab === "cases" && (
           <>
-            <ContentsSideBar items={sideBarItems} stickyClasses="cols5-3:!top-26 cols-3:max-h-[calc(100vh-72px)] pt-3 cols-2:pt-6 cols-3:pt-8" />
-            <main className="flex flex-col py-3 gap-4 cols-2:py-6 cols-2:gap-8 cols-3:py-8 cols-3:gap-12 cols-3:col-span-2 cols-4:col-span-3">
+            <ContentsSideBar items={sideBarItems} stickyClasses="cols5-3:!top-26 cols5-3:max-h-[calc(100vh-72px)]" />
+            <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols5-4:col-start-3">
               {families.map((family) => (
                 <FamilyBlock key={family.slug} family={family} />
               ))}
@@ -62,16 +64,12 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
           </>
         )}
 
-        {currentTab === "procedural history" && (
-          <main className="py-3 cols-2:py-6 cols-2:col-span-2 cols-3:py-8 cols-3:col-span-3 cols-4:col-span-4">
-            <EventsBlock families={families} />
-          </main>
-        )}
+        {currentTab === "procedural history" && <EventsBlock families={families} />}
 
         {currentTab === "about" && (
           <>
-            <div />
-            <main className="flex flex-col py-3 gap-3 cols-2:py-6 cols-2:gap-6 cols-3:py-8 cols-3:gap-8 cols-3:col-span-2 cols-4:col-span-3">
+            <div className="col-start-1 cols5-4:col-end-3 -col-end-1" />
+            <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols5-4:col-start-3">
               <TextBlock id="section-summary" title="Summary">
                 <div className="text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
               </TextBlock>
@@ -82,7 +80,8 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
             </main>
           </>
         )}
-      </FourColumns>
+      </FiveColumns>
+
       <Head>
         <script
           type="application/ld+json"
