@@ -1,7 +1,6 @@
 import orderBy from "lodash/orderBy";
 import { useEffect, useMemo, useState } from "react";
 
-import { Card } from "@/components/atoms/card/Card";
 import { EntityCard, IProps as IEntityCardProps } from "@/components/molecules/entityCard/EntityCard";
 import { Section } from "@/components/molecules/section/Section";
 import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
@@ -62,14 +61,12 @@ export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatch
   return (
     <Section block="documents" title="Documents" wide>
       {hasDocumentsToDisplay && (
-        <Card variant="outlined" className="flex flex-col rounded-lg !p-5">
+        <>
           {/* Controls */}
-          <div className="pb-6">
-            <ToggleGroup value={[view]} onValueChange={onToggleChange}>
-              <Toggle value="table">Table</Toggle>
-              <Toggle value="cards">Cards</Toggle>
-            </ToggleGroup>
-          </div>
+          <ToggleGroup value={[view]} onValueChange={onToggleChange} className="pb-4">
+            <Toggle value="table">Table</Toggle>
+            <Toggle value="cards">Cards</Toggle>
+          </ToggleGroup>
 
           {/* Cards */}
           {view === "cards" && (
@@ -88,7 +85,7 @@ export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatch
               defaultSort={{ column: "date", order: "desc" }}
             />
           )}
-        </Card>
+        </>
       )}
       {!hasDocumentsToDisplay && <p className="italic">There are no documents to display yet. Check back later.</p>}
     </Section>

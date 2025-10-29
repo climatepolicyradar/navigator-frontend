@@ -18,7 +18,7 @@ export default meta;
 type TWainwrightColumns = "height" | "link" | "region" | "summited" | "wainwright";
 const linkToCell = (link: string): TTableCell => ({
   label: (
-    <a href={link} className="text-text-brand underline">
+    <a href={link} className="underline decoration-gray-300">
       View
     </a>
   ),
@@ -39,11 +39,6 @@ export const Generic: TStory<TWainwrightColumns> = {
       },
       {
         id: "region",
-        tooltip: (
-          <div className="w-[200px]">
-            Which of Alfred Wainwright's books the Wainwright features in. The series of 7 books divides the Lakeland Fells by geographic region.
-          </div>
-        ),
         fraction: 2,
       },
       {

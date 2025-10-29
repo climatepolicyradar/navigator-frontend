@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-
 import { IMetadata } from "./display";
 
 export type TTableValue = string | number | null;
@@ -19,7 +17,6 @@ export type TTableColumn<ColumnKey extends string> = {
   name?: string; // defaults to first-cased id
   sortable?: boolean; // defaults to false
   sortOptions?: TTableSortOption[]; // defaults to ascending/descending controls
-  tooltip?: ReactNode;
 };
 
 export type TTableRow<ColumnKey extends string> = {
