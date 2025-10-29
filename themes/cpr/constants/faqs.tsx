@@ -39,8 +39,8 @@ export const FAQS: TFAQ[] = [
       <>
         <p>
           New data, and updates to existing data, are collected from official sources such as government websites, parliamentary records and court
-          documents. We add these to the database on a rolling basis. Submissions to the UNFCCC portals were first added on the 23rd of May 2023, and
-          are checked for updates regularly. If you're aware of documents that are missing, please let us know using our{" "}
+          documents. We add these to the database on a rolling basis. Submissions to the UN portals were first added on the 23rd of May 2023, and are
+          checked for updates regularly. If you're aware of documents that are missing, please let us know using our{" "}
           <ExternalLink url="https://form.jotform.com/250974303048355">data contributors form</ExternalLink>.
         </p>
       </>
@@ -55,8 +55,8 @@ export const PLATFORM_FAQS: TFAQ[] = [
       <>
         <ul>
           <li>
-            Find climate and climate-related laws, policies, strategies and action plans from every country and submissions to the UNFCCC relevant to
-            country level action
+            Find climate and climate-related laws, policies, strategies and action plans from every country and submissions to UN Conventions relevant
+            to country level action
           </li>
           <li>Find data from 4 biggest Multilateral Climate Funds, including project summaries, implementation documents and project guidance</li>
           <li>Search for keywords and policy topics (like 'electric vehicles' or 'gender equality') across the full text of all documents</li>
