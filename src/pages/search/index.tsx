@@ -481,13 +481,13 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 <SideCol
                   extraClasses={`absolute z-99 top-0 w-screen duration-250 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] ${
                     showFilters ? "translate-y-[0%]" : "fixed translate-y-[100vh]"
-                  } md:translate-y-[0%] md:h-full md:sticky md:top-[72px] md:z-50`}
+                  } cols5-4:translate-y-[0%] cols5-4:h-full cols5-4:sticky cols5-4:top-[72px] cols5-4:z-50`}
                 >
                   {configQuery.isFetching ? (
                     <Loader size="20px" />
                   ) : (
                     <>
-                      <div className="sticky md:top-[72px] h-screen md:h-[calc(100vh-72px)] px-5 md:border-r border-gray-300 pt-5 pb-[180px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pb-4">
+                      <div className="sticky cols5-4:top-[72px] h-screen cols5-4:h-[calc(100vh-72px)] px-5 cols5-4:border-r border-gray-300 pt-5 pb-[180px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 cols5-4:pb-4">
                         <SearchFilters
                           searchCriteria={searchQuery}
                           query={router.query}

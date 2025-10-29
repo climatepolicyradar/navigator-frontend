@@ -21,7 +21,7 @@ export const Header = () => {
   const showSearch = router.pathname !== "/";
   const isNotHome = router.pathname !== "/";
 
-  const headerClasses = joinTailwindClasses("min-h-12 bg-surface-light", !showLogo && !showSearch && "!h-[72px]", isNotHome && "!bg-[#677787]");
+  const headerClasses = joinTailwindClasses("bg-surface-light", isNotHome && "!bg-[#677787]");
   const menuIconClasses = router.pathname === "/" ? "text-gray-950" : "text-white";
 
   return (

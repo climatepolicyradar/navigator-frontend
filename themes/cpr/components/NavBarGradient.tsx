@@ -5,7 +5,7 @@ interface IProps {
 }
 
 export const NavBarGradient = ({ className }: IProps) => {
-  const allClasses = joinTailwindClasses("sticky top-[128px] cols-3:top-[72px] -z-10 h-0", className);
+  const allClasses = joinTailwindClasses("sticky top-[128px] cols5-4:top-[72px] -z-10 h-0", className);
 
   return (
     <div className={allClasses}>
