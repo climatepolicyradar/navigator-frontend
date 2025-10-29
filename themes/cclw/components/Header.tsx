@@ -21,13 +21,5 @@ export const Header = () => {
   const showLogo = router.pathname !== "/";
   const showSearch = router.pathname !== "/";
 
-  return (
-    <NavBar
-      headerClasses={`min-h-12 bg-cclw-dark ${!showLogo && !showSearch ? "!h-[72px]" : ""}`}
-      logo={CCLWLogo}
-      menu={<MainMenu links={MENU_LINKS} />}
-      showLogo={showLogo}
-      showSearch={showSearch}
-    />
-  );
+  return <NavBar headerClasses="bg-cclw-dark" logo={CCLWLogo} menu={<MainMenu links={MENU_LINKS} />} showLogo={showLogo} showSearch={showSearch} />;
 };

@@ -2,11 +2,12 @@ import Link from "next/link";
 import React, { ReactNode, useContext } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { FourColumns } from "@/components/atoms/columns/FourColumns";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useText } from "@/hooks/useText";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { joinTailwindClasses } from "@/utils/tailwind";
+
+import { FiveColumns } from "../atoms/columns/FiveColumns";
 
 export type TBreadcrumbLink = {
   label: string | React.ReactNode;
@@ -108,13 +109,15 @@ export const BreadCrumbs = ({
   const containerClasses = joinTailwindClasses(dark && "bg-gray-100");
 
   return (
-    <FourColumns containerClasses={containerClasses}>
-      <ul
-        className="cols-2:col-span-2 cols-3:col-span-3 cols-4:col-span-4 flex flex-wrap items-baseline gap-2 py-3 text-sm text-gray-700 leading-tight select-none"
-        data-cy="breadcrumbs"
-      >
-        {breadCrumbs}
-      </ul>
-    </FourColumns>
+    <div className={containerClasses}>
+      <FiveColumns>
+        <ul
+          className="col-start-1 -col-end-1 flex flex-wrap items-baseline gap-2 py-3 text-sm text-gray-700 leading-tight select-none"
+          data-cy="breadcrumbs"
+        >
+          {breadCrumbs}
+        </ul>
+      </FiveColumns>
+    </div>
   );
 };
