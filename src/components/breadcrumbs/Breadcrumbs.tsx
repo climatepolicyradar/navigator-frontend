@@ -2,7 +2,6 @@ import Link from "next/link";
 import React, { ReactNode, useContext } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { FourColumns } from "@/components/atoms/columns/FourColumns";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useText } from "@/hooks/useText";
 import { isSystemGeo } from "@/utils/isSystemGeo";

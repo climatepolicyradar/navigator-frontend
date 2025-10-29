@@ -60,7 +60,7 @@ export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatch
   }, [family, matchesFamily, matchesStatus]);
 
   return (
-    <Section block="documents" title="Documents">
+    <Section block="documents" title="Documents" wide>
       {hasDocumentsToDisplay && (
         <Card variant="outlined" className="flex flex-col rounded-lg !p-5">
           {/* Controls */}

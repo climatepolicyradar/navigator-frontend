@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
-import { FourColumns } from "@/components/atoms/columns/FourColumns";
 import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
 import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { IMetadata } from "@/types";

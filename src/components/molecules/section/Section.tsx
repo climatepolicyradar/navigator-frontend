@@ -1,11 +1,13 @@
 import { ReactNode } from "react";
 
 import { TBlock } from "@/types";
+import { joinTailwindClasses } from "@/utils/tailwind";
 
 export interface IGenericProps {
   children: ReactNode;
-  title?: string;
   count?: number;
+  title?: string;
+  wide?: boolean;
 }
 
 export interface IBlockProps extends IGenericProps {
@@ -20,15 +22,17 @@ export interface IProgrammaticProps extends IGenericProps {
 
 export type TProps = IBlockProps | IProgrammaticProps;
 
-export const Section = ({ block, children, count, id, title }: TProps) => {
+export const Section = ({ block, children, count, id, title, wide = false }: TProps) => {
   const sectionId = block ? `section-${block}` : id;
 
+  const sectionClasses = joinTailwindClasses("col-start-1 -col-end-1 scroll-mt-40 cols5-4:scroll-mt-26", !wide && "cols5-5:-col-end-3");
+
   return (
-    <section className="cols-3:col-span-2 cols-4:col-span-3 scroll-mt-35 sm:scroll-mt-21" id={sectionId}>
+    <section className={sectionClasses} id={sectionId}>
       {title && (
-        <h2 className="mb-5 text-xl text-text-primary font-[660] leading-tight">
+        <h2 className="mb-5 text-2xl text-gray-950 font-heavy leading-tight">
           <span>{title}</span>
-          {count !== undefined && <span className="ml-2 text-text-tertiary font-normal">{count}</span>}
+          {count !== undefined && <span className="text-gray-500 font-normal">&nbsp;&nbsp;{count}</span>}
         </h2>
       )}
       {children}
