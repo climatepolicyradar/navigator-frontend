@@ -100,7 +100,7 @@ const config: TThemeConfig = {
   },
   filters: [
     {
-      label: "Convention",
+      label: "UN Convention",
       taxonomyKey: "convention",
       type: "checkbox",
       options: [
@@ -121,6 +121,7 @@ const config: TThemeConfig = {
         },
       ],
       category: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
+      startOpen: "true",
     },
     {
       label: "Funds",
@@ -286,7 +287,7 @@ const config: TThemeConfig = {
       corporaKey: "Reports",
     },
     {
-      label: "Author Type",
+      label: "Party or Non-Party",
       corporaKey: "Intl. agreements",
       taxonomyKey: "author_type",
       apiMetaDataKey: "family.author_type",

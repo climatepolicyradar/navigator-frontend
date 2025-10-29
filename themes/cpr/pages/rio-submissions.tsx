@@ -46,28 +46,28 @@ const RioSubmissions = () => {
         <section className="pt-8 text-content">
           <SingleCol>
             <Heading level={1} extraClasses="mb-6">
-              COMING SOON: Rio Policy Radar - a shared tool for climate, nature and land
+              Coming Soon: Rio Policy Radar - a shared tool for climate, nature and land
             </Heading>
             <p>
-              Increasingly, policymakers working across environmental issues need to make informed decisions that straddle climate, biodiversity and
-              land use. But national policy information on these remains siloed in disparate locations, leaving many to make decisions with missing
-              data.
+              It is increasingly being recognised that climate change, biodiversity loss and land degradation are all closely linked and that dealing
+              with them as separate issues won't work. However, policymakers face barriers finding information on how these issues are being
+              approached, as this information remains siloed in disparate locations, leaving many to make decisions with missing data.
             </p>
             <p>
-              Currently, our Climate Policy Radar tool houses all national <Link href="/search?c=UNFCCC">UNFCCC submissions</Link>. However, CPR will
-              soon become a shared space for submissions from the two other "Rio Conventions" - the CBD (biodiversity) and the UNCCD (land
-              degradation).
+              To date at Climate Policy Radar we have focused more on climate and climate-related documents but we are now actively broadening our
+              horizons.
             </p>
             <p>
-              Launching at COP30, <i>Rio Policy Radar</i> will allow users to readily explore synergies amongst national plans that address the three
-              interlinked issues. For example, users will be able to discover how strategies to address nature loss are also addressing climate
-              adaptation, or identify how different countries around the world are using nature-based solutions in their drought plans.
+              Launching for COP30, <i>Rio Policy Radar</i> will be a shared space for country submissions to the three “Rio” Conventions (adopted at
+              the 1992 Rio Earth Summit) - the UNCBD (biodiversity), the UNCCD (land degradation) and the UNFCCC (climate). This tool will allow users
+              to easily explore how countries are addressing the three interlinked issues, and their co-benefits, opportunities or trade-offs. For
+              example, users will be able to discover how strategies to address nature loss are also addressing climate adaptation, or identify how
+              different countries around the world are using nature-based solutions in their drought plans.
             </p>
             <p>
-              CPR will continue to expand this collection to bring in historical submissions, other relevant planning documents and eventually
-              sub-national documents.
+              For this first step we are focusing on national submissions. Going forward we will go deeper, collecting and opening up policies and
+              laws that address biodiversity loss, land degradation and climate change.
             </p>
-            <p>More information will be added to this site soon.</p>
           </SingleCol>
         </section>
       </MainLayout>
