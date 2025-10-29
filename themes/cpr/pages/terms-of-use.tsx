@@ -342,6 +342,46 @@ const TermsOfUse = () => {
                     </td>
                   </tr>
                   <tr>
+                    <td>
+                      <ExternalLink url="https://ort.cbd.int/">CBD online reporting tool</ExternalLink>
+                    </td>
+                    <td>National Biodiversity Strategy and Action Plans</td>
+                    <td>October 2025</td>
+                    <td>
+                      <ExternalLink url="https://www.cbd.int/terms">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://www.cbd.int/reports">CBD reports</ExternalLink>
+                    </td>
+                    <td>Sixth National Reports (6NRs)</td>
+                    <td>October 2025</td>
+                    <td>
+                      <ExternalLink url="https://www.cbd.int/terms">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://www.unccd.int/land-and-life/drought/drought-planning">UNCCD drought plans</ExternalLink>
+                    </td>
+                    <td>Drought Plans</td>
+                    <td>October 2025</td>
+                    <td>
+                      <ExternalLink url="https://www.unccd.int/terms-of-use">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://www.unccd.int/our-work/country-profiles/voluntary-ldn-targets">UNCCD LDN targets</ExternalLink>
+                    </td>
+                    <td>Land Degradation Neutrality Targets</td>
+                    <td>October 2025</td>
+                    <td>
+                      <ExternalLink url="https://www.unccd.int/terms-of-use">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
                     <td>Additional data sources will be added here as they are added to the CPR database and app</td>
                     <td></td>
                     <td></td>
