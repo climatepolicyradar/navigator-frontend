@@ -53,6 +53,7 @@ const config: TThemeConfig = {
     litigation: true,
     newPageDesigns: true,
     searchFamilySummary: true,
+    rioPolicyRadar: false,
   },
 };
 

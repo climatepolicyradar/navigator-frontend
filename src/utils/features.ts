@@ -43,7 +43,8 @@ export const isNewPageDesignsEnabled = (featureFlags: TFeatureFlags, themeConfig
     featureFlag: featureFlags["new-page-designs"],
   });
 
-export const isRioPolicyRadarEnabled = (featureFlags: TFeatureFlags) =>
+export const isRioPolicyRadarEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
   isFeatureEnabled({
+    configFeature: themeConfig.features.rioPolicyRadar,
     featureFlag: featureFlags["rio-policy-radar"],
   });

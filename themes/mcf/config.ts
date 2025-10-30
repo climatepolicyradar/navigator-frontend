@@ -149,6 +149,7 @@ const config: TThemeConfig = {
     litigation: false,
     newPageDesigns: false,
     searchFamilySummary: true,
+    rioPolicyRadar: false,
   },
 };
 
