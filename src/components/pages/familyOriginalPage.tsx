@@ -452,7 +452,7 @@ export const FamilyOriginalPage = ({
                         <img src={`${corpusImage}`} alt={corpusAltImage} className="h-auto w-full" />
                       </div>
                     )}
-                    <span dangerouslySetInnerHTML={{ __html: corpusNote }} className="" />
+                    <span dangerouslySetInnerHTML={{ __html: corpusNote }} className="text-content" />
                   </div>
                 </section>
               )}
