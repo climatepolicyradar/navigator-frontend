@@ -102,7 +102,7 @@ const SearchFilters = ({
           <InputListContainer>
             {themeConfig.categories?.options?.map((option) => {
               // TODO delete once Rio corpora released
-              if (option.label === (isRioPolicyRadarEnabled(featureFlags) ? "UNFCCC Submissions" : "UN Submissions")) return null;
+              if (option.label === (isRioPolicyRadarEnabled(featureFlags, themeConfig) ? "UNFCCC Submissions" : "UN Submissions")) return null;
 
               return (
                 <InputRadio
@@ -199,7 +199,7 @@ const SearchFilters = ({
         themeConfig.filters.map((filter) => {
           // If the filter is not in the selected category, don't display it
           if (!canDisplayFilter(filter, query, themeConfig)) return;
-          if (filter.taxonomyKey === "convention" && !isRioPolicyRadarEnabled(featureFlags)) return null;
+          if (filter.taxonomyKey === "convention" && !isRioPolicyRadarEnabled(featureFlags, themeConfig)) return null;
 
           return (
             <Accordion

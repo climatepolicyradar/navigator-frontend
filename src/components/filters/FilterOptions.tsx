@@ -45,7 +45,7 @@ export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types,
   if (filter.options && filter.options.length > 0) {
     // TODO remove once feature launched (refer back to filter.options instead of displayedFilterOptions)
     let displayedFilterOptions = [...filter.options];
-    if (filter.taxonomyKey === "_document.type" && !isRioPolicyRadarEnabled(featureFlags)) {
+    if (filter.taxonomyKey === "_document.type" && !isRioPolicyRadarEnabled(featureFlags, themeConfig)) {
       displayedFilterOptions = displayedFilterOptions.filter((option) => option.group === "UNFCCC");
     }
 
