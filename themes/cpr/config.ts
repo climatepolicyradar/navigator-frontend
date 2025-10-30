@@ -293,6 +293,7 @@ const config: TThemeConfig = {
       apiMetaDataKey: "family.author_type",
       type: "radio",
       category: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
+      startOpen: "true",
     },
     {
       label: "Submission type",
@@ -301,6 +302,7 @@ const config: TThemeConfig = {
       apiMetaDataKey: "document.type",
       type: "radio",
       category: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
+      startOpen: "true",
       options: [
         {
           label: "National Biodiversity Strategy and Action Plan (NBSAP)",
