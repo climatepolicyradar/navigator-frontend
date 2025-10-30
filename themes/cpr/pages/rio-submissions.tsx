@@ -80,8 +80,8 @@ const RioSubmissions = () => {
             </Heading>
             <p>
               It is increasingly being recognised that climate change, biodiversity loss and land degradation are all closely linked and that dealing
-              with them as separate issues won't work. However, policymakers face barriers finding information on how these issues are being
-              approached, as this information remains siloed in disparate locations, leaving many to make decisions with missing data.
+              with them as separate issues won't work. But, policymakers face barriers finding information on how these issues are being approached,
+              as this information remains siloed in disparate locations, leaving many to make decisions with missing data.
             </p>
             <p>
               To date at Climate Policy Radar we have focused more on climate and climate-related documents but we are now actively broadening our
@@ -98,6 +98,7 @@ const RioSubmissions = () => {
               For this first step we are focusing on national submissions. Going forward we will go deeper, collecting and opening up policies and
               laws that address biodiversity loss, land degradation and climate change.
             </p>
+            <p>You can keep up to date with this initiative as it evolves here.</p>
           </SingleCol>
         </section>
       </MainLayout>
