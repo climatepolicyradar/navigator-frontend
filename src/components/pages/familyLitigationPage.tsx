@@ -6,6 +6,7 @@ import { Debug } from "@/components/atoms/debug/Debug";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
+import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
@@ -80,6 +81,11 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
             <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
           </TextBlock>
         );
+      },
+    },
+    topics: {
+      render: () => {
+        return <TopicsBlock topicIds={["Q769"]} />;
       },
     },
   };
