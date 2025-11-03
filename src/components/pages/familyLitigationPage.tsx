@@ -24,7 +24,8 @@ import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD
 
 import { IProps } from "./familyOriginalPage";
 
-export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig }: IProps) => {
+export const FamilyLitigationPage = ({ countries, subdivisions, family, vespaFamilyData, theme, themeConfig }: IProps) => {
+  // console.log(vespaFamilyData);
   const { getText } = useText();
   /* Search matches */
   const router = useRouter();
@@ -85,7 +86,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     },
     topics: {
       render: () => {
-        return <TopicsBlock topicIds={["Q769"]} />;
+        return <TopicsBlock vespaFamilyData={vespaFamilyData} key="topics-block" />;
       },
     },
   };
