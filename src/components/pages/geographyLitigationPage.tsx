@@ -77,7 +77,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
         if (legislativeProcess.length === 0) return null;
 
         return (
-          <TextBlock key="legislative-process" block="legislative-process" title="Legislative process">
+          <TextBlock key="legislative-process" id="legislative-process" title="Legislative process">
             <div className="text-content" dangerouslySetInnerHTML={{ __html: legislativeProcess }} />
           </TextBlock>
         );

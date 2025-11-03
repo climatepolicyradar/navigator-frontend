@@ -17,13 +17,13 @@ interface IViewMoreTextProps extends IViewMoreGenericProps {
 // HTML markup - displays a maximum height of the child element. Heavily discouraged
 interface IViewMoreContentProps extends IViewMoreGenericProps {
   children: ReactNode;
-  maxHeight: number;
+  maxHeight?: number;
   maxLines?: never;
 }
 
 export type TProps = IViewMoreTextProps | IViewMoreContentProps;
 
-export const ViewMore = ({ children, buttonText = ["View more", "View less"], onButtonClick, maxLines, maxHeight }: TProps) => {
+export const ViewMore = ({ children, buttonText = ["View more", "View less"], onButtonClick, maxLines, maxHeight = 150 }: TProps) => {
   const contentRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
