@@ -21,7 +21,7 @@ interface IViewMoreContentProps extends IViewMoreGenericProps {
   maxLines?: never;
 }
 
-type TProps = IViewMoreTextProps | IViewMoreContentProps;
+export type TProps = IViewMoreTextProps | IViewMoreContentProps;
 
 export const ViewMore = ({ children, buttonText = ["View more", "View less"], onButtonClick, maxLines, maxHeight }: TProps) => {
   const contentRef = useRef(null);
