@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const familiesData = await fetch(`https://api.climatepolicyradar.org/families/?${urlSearchParams.toString()}`).then((resp) => resp.json());
   const familiesSiteMap = familiesData.data.map((family) => {
     return {
-      url: `https://www.climatecasechart.com/document/${family.slug}`,
+      url: `https://app.climatepolicyradar.org/document/${family.slug}`,
       lastModified: family.last_updated_date,
       changeFrequency: "daily",
       priority: 1,
@@ -32,7 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const geographySlugs = geographiesData.flatMap((item) => extractGeographySlugs(item));
   const geographiesSiteMap = geographySlugs.map((slug) => ({
-    url: `https://www.climatecasechart.com/geographies/${slug}`,
+    url: `https://app.climatepolicyradar.org/geographies/${slug}`,
     lastModified: new Date(),
     changeFrequency: "daily",
     priority: 0.75,
@@ -41,13 +41,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // The manually added pages are taken from the footer
   return [
     {
-      url: "https://www.climatecasechart.com",
+      url: "https://app.climatepolicyradar.org",
       lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 1,
     },
     {
-      url: "https://www.climatecasechart.com/search",
+      url: "https://app.climatepolicyradar.org/search",
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,
@@ -55,13 +55,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...familiesSiteMap,
     ...geographiesSiteMap,
     {
-      url: "https://www.climatecasechart.com/about",
+      url: "https://app.climatepolicyradar.org/terms-of-use",
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.5,
     },
     {
-      url: "https://www.climatecasechart.com/faq",
+      url: "https://climatepolicyradar.org/privacy-policy",
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.5,
