@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { ConceptLink } from "@/components/molecules/conceptLink/ConceptLink";
 import { Info } from "@/components/molecules/info/Info";
 import { Section } from "@/components/molecules/section/Section";
+import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { Heading } from "@/components/typography/Heading";
 import { TConcept } from "@/types";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
+import { TopicTableColumns, TTopicTableColumnId } from "@/utils/tables/topic/topicTable";
 import { firstCase } from "@/utils/text";
 
 type TProps = {
@@ -33,6 +35,7 @@ export const TopicsBlock = ({ topicIds }: TProps) => {
 
   return (
     <Section block="topics" title="Topics explorer">
+      <InteractiveTable<TTopicTableColumnId> columns={TopicTableColumns} rows={[]} defaultSort={{ column: "group", order: "desc" }} />
       {rootConcepts.map((rootConcept) => {
         const hasConcepts = conceptsGrouped[rootConcept.wikibase_id]?.length > 0;
         if (!hasConcepts) return null;
