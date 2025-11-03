@@ -16,7 +16,7 @@ export default meta;
 
 export const Default: TStory = {
   args: {
-    id: "debug",
+    block: "debug",
     children: (
       <div
         className="text-content"

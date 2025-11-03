@@ -76,7 +76,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
         if (!family.summary) return null;
 
         return (
-          <TextBlock key="summary" id="summary" title="Summary">
+          <TextBlock key="summary" block="summary" title="Summary">
             <div className="text-content" dangerouslySetInnerHTML={{ __html: family.summary }} />
           </TextBlock>
         );
