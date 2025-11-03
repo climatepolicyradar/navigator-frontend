@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from "@storybook/nextjs";
+import { LucideCalendarArrowDown, LucideCalendarArrowUp } from "lucide-react";
 
 import { TTableCell } from "@/types";
 
@@ -39,6 +40,11 @@ export const Generic: TStory<TWainwrightColumns> = {
       },
       {
         id: "region",
+        tooltip: (
+          <div className="w-[200px]">
+            Which of Alfred Wainwright's books the Wainwright features in. The series of 7 books divides the Lakeland Fells by geographic region.
+          </div>
+        ),
         fraction: 2,
       },
       {
@@ -49,8 +55,8 @@ export const Generic: TStory<TWainwrightColumns> = {
         id: "summited",
         sortable: true,
         sortOptions: [
-          { order: "desc", label: "Most recent" },
-          { order: "asc", label: "Chronological" },
+          { order: "desc", label: "Most recent", icon: LucideCalendarArrowUp },
+          { order: "asc", label: "Chronological", icon: LucideCalendarArrowDown },
         ],
       },
     ],

@@ -1,10 +1,11 @@
 import { Menu } from "@base-ui-components/react";
 import orderBy from "lodash/orderBy";
-import { LucideArrowUpDown, LucideInfo } from "lucide-react";
+import { LucideArrowDown, LucideArrowUp, LucideArrowUpDown, LucideIcon, LucideInfo } from "lucide-react";
 import { ReactNode, useMemo, useState } from "react";
 
 import { MenuItem } from "@/components/atoms/menu/MenuItem";
 import { MenuPopup } from "@/components/atoms/menu/MenuPopup";
+import { Tooltip } from "@/components/atoms/tooltip/Tooltip";
 import { EN_DASH } from "@/constants/chars";
 import { TTableCell, TTableColumn, TTableOrder, TTableRow, TTableSortOption, TTableSortRules } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -14,6 +15,11 @@ const DEFAULT_SORT_OPTIONS: TTableSortOption[] = [
   { order: "asc", label: "Ascending" },
   { order: "desc", label: "Descending" },
 ];
+
+const DEFAULT_SORT_ICONS: Record<TTableOrder, LucideIcon> = {
+  asc: LucideArrowDown,
+  desc: LucideArrowUp,
+};
 
 const renderCellDisplay = (cell: TTableCell, showValues: boolean) => {
   if (cell === null) return <span className="text-gray-500">{EN_DASH}</span>;
@@ -83,11 +89,12 @@ export const InteractiveTable = <ColumnKey extends string>({
     const menuIsOpen = openSortMenu === column.id;
 
     const sortButtonClasses = joinTailwindClasses(
-      "p-1 rounded-sm focus-visible:outline-none hover:bg-surface-heavy hover:text-text-tertiary",
-      columnIsSorted ? "text-text-brand" : "text-text-tertiary",
-      menuIsOpen && "bg-surface-heavy text-text-tertiary", // Hover styling persists
+      "p-1 rounded-sm focus-visible:outline-none text-gray-500",
       !columnIsSorted && !menuIsOpen && "invisible group-hover:visible"
     );
+
+    let Icon: LucideIcon = LucideArrowUpDown;
+    if (columnIsSorted) Icon = sortOptions.find((option) => option.order === sortRules.order)?.icon || DEFAULT_SORT_ICONS[sortRules.order];
 
     const onSort = (order: TTableOrder) => () => setSortRules({ column: column.id, order });
     const onClearSort = () => setSortRules({ column: null, order: "asc" });
@@ -96,7 +103,7 @@ export const InteractiveTable = <ColumnKey extends string>({
       <div className="flex-1 text-right">
         <Menu.Root onOpenChange={onToggleMenu(column.id)}>
           <Menu.Trigger className={sortButtonClasses}>
-            <LucideArrowUpDown size={16} />
+            <Icon size={16} />
           </Menu.Trigger>
           <Menu.Portal>
             <Menu.Backdrop />
@@ -136,12 +143,17 @@ export const InteractiveTable = <ColumnKey extends string>({
         {/* Heading */}
         <div className="contents">
           {columns.map((column) => {
-            const cellClasses = joinTailwindClasses("bg-gray-100 text-gray-900 font-medium", commonCellClasses, column.classes);
+            const cellClasses = joinTailwindClasses("bg-gray-100 text-gray-900 font-medium group", commonCellClasses, column.classes);
 
             return (
               <div key={`heading-${column.id}`} className={cellClasses}>
                 <div className="flex items-center gap-1 min-h-6">
                   <span className="block">{column.name || firstCase(column.id)}</span>
+                  {column.tooltip && (
+                    <Tooltip content={column.tooltip} popupClasses="text-wrap max-w-62">
+                      <LucideInfo size={16} className="text-gray-500 leading-5" />
+                    </Tooltip>
+                  )}
                   {column.sortable === true && renderSortControls(column)}
                 </div>
               </div>
