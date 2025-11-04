@@ -35,27 +35,6 @@ export const getTopicTableRows = ({
         },
       },
     });
-
-    //       return (
-    // <div key={rootConcept.wikibase_id} className="relative group">
-    //   <div className="flex items-center gap-2">
-    //     <Heading level={3} className="text-[15px] leading-tight font-medium text-text-primary">
-    //       {firstCase(rootConcept.preferred_label)}
-    //     </Heading>
-    //     <Info
-    //       title={startCase(rootConcept.preferred_label)}
-    //       description={rootConcept.description}
-    //       link={{ href: getConceptStoreLink(rootConcept.wikibase_id), text: "Source", external: true }}
-    //     />
-    //   </div>
-    //   <ul className="">
-    //     {conceptsGrouped[rootConcept.wikibase_id].map((concept) => (
-    //       <li key={concept.wikibase_id} className="">
-    //         <ConceptLink concept={concept} />
-    //       </li>
-    //     ))}
-    //   </ul>
-    // </div>
   });
   return rows;
 };

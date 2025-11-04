@@ -7,7 +7,6 @@ type TProps = {
   familyTopics: IFamilyDocumentTopics;
 };
 
-// TODO accept a list of documents with concept counts
 export const TopicsBlock = ({ familyTopics }: TProps) => {
   return (
     <Section block="topics" title="Topics explorer">

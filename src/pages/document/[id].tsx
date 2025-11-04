@@ -13,6 +13,7 @@ import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isKnowledgeGraphEnabled, isNewPageDesignsEnabled } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
+import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
 
 /*
   # DEV NOTES
@@ -120,6 +121,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
+  // TODO: move potentially
+  let familyTopics = null;
+
+  if (vespaFamilyData) {
+    familyTopics = await processFamilyTopics(vespaFamilyData);
+  }
+
   return {
     props: withEnvConfig({
       corpus_types,
@@ -131,6 +139,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       theme,
       themeConfig,
       vespaFamilyData: vespaFamilyData ?? null,
+      familyTopics: familyTopics,
     }),
   };
 };
