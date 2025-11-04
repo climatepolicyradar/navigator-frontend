@@ -20,11 +20,10 @@ import { TMatchedFamily, TFamilyPageBlock } from "@/types";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
-import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
 
 import { IProps } from "./familyOriginalPage";
 
-export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig, vespaFamilyData }: IProps) => {
+export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTopics, theme, themeConfig }: IProps) => {
   const { getText } = useText();
 
   /* Search matches */
@@ -60,20 +59,19 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
       ),
     },
     documents: {
-      render: useCallback(() => {
-        const processedFamilyTopics = processFamilyTopics(vespaFamilyData);
-
-        return (
+      render: useCallback(
+        () => (
           <DocumentsBlock
             key="documents"
             family={family}
-            familyTopics={processedFamilyTopics}
+            familyTopics={familyTopics}
             matchesFamily={matchesFamily}
             matchesStatus={matchesStatus}
             showMatches={hasSearch}
           />
-        );
-      }, [family, hasSearch, matchesFamily, matchesStatus, vespaFamilyData]),
+        ),
+        [family, familyTopics, hasSearch, matchesFamily, matchesStatus]
+      ),
     },
     metadata: {
       render: useCallback(() => {

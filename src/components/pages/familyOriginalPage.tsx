@@ -34,6 +34,7 @@ import { getMainDocuments } from "@/helpers/getMainDocuments";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import useSearch from "@/hooks/useSearch";
 import {
+  IFamilyDocumentTopics,
   TConcept,
   TCorpusTypeDictionary,
   TDocumentPage,
@@ -64,6 +65,7 @@ export interface IProps {
   themeConfig: TThemeConfig;
   vespaFamilyData?: TSearchResponse;
   envConfig: TPublicEnvConfig;
+  familyTopics?: IFamilyDocumentTopics;
 }
 
 // Only published documents are returned in the family page call, so we can cross reference the import ID with those
