@@ -7,7 +7,7 @@ import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
 import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { getCategoryName } from "@/helpers/getCategoryName";
-import { TFamilyDocumentPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
+import { IFamilyDocumentTopics, TFamilyDocumentPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
 import { formatDate } from "@/utils/timedate";
 
@@ -16,22 +16,26 @@ const getOldestEventDate = (document: TFamilyDocumentPublic) => document.events.
 
 interface IProps {
   family: TFamilyPublic;
+  familyTopics?: IFamilyDocumentTopics;
   matchesFamily?: TMatchedFamily; // The relevant search result family
   matchesStatus?: TLoadingStatus; // The status of the search
   showMatches?: boolean; // Whether to show matches from the search result
 }
 
-export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
+export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
   const [view, setView] = useState("table");
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
   const isUSA = family.geographies.includes("USA");
   const category = getCategoryName(family.category, family.corpus_type_name, family.organisation);
 
-  const tableColumns = useMemo(() => getEventTableColumns({ hasTopics: true, isLitigation: true, isUSA, showMatches }), [isUSA, showMatches]);
+  const tableColumns = useMemo(
+    () => getEventTableColumns({ hasTopics: Boolean(familyTopics), isLitigation: true, isUSA, showMatches }),
+    [familyTopics, isUSA, showMatches]
+  );
   const tableRows = useMemo(
-    () => getEventTableRows({ families: [family], documentEventsOnly: true, matchesFamily, matchesStatus }),
-    [family, matchesFamily, matchesStatus]
+    () => getEventTableRows({ families: [family], familyTopics, documentEventsOnly: true, matchesFamily, matchesStatus }),
+    [family, familyTopics, matchesFamily, matchesStatus]
   );
 
   const cards: IEntityCardProps[] = useMemo(
@@ -55,8 +59,10 @@ export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatch
 
   useEffect(() => {
     const language = navigator?.language;
-    setUpdatedRowsWithLocalisedDates(getEventTableRows({ families: [family], language, documentEventsOnly: true, matchesFamily, matchesStatus }));
-  }, [family, matchesFamily, matchesStatus]);
+    setUpdatedRowsWithLocalisedDates(
+      getEventTableRows({ families: [family], familyTopics, language, documentEventsOnly: true, matchesFamily, matchesStatus })
+    );
+  }, [family, familyTopics, matchesFamily, matchesStatus]);
 
   return (
     <Section block="documents" title="Documents" wide>

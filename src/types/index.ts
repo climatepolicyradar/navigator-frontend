@@ -1,6 +1,7 @@
 export * from "./display";
 export * from "./features";
 export * from "./table";
+export * from "./tables/familyDocumentTopics";
 export * from "./theme";
 export * from "./themeConfig";
 export * from "./tutorial";

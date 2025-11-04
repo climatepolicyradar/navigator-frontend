@@ -20,12 +20,15 @@ import { TMatchedFamily, TFamilyPageBlock } from "@/types";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
+import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
 
 import { IProps } from "./familyOriginalPage";
 
 export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig, vespaFamilyData }: IProps) => {
   const { getText } = useText();
+
   /* Search matches */
+
   const router = useRouter();
   const hasSearch = Boolean(
     router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]
@@ -57,19 +60,20 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
       ),
     },
     documents: {
-      render: useCallback(
-        () => (
+      render: useCallback(() => {
+        const processedFamilyTopics = processFamilyTopics(vespaFamilyData);
+
+        return (
           <DocumentsBlock
             key="documents"
             family={family}
+            familyTopics={processedFamilyTopics}
             matchesFamily={matchesFamily}
             matchesStatus={matchesStatus}
             showMatches={hasSearch}
-            vespaFamilyData={vespaFamilyData}
           />
-        ),
-        [family, hasSearch, matchesFamily, matchesStatus, vespaFamilyData]
-      ),
+        );
+      }, [family, hasSearch, matchesFamily, matchesStatus, vespaFamilyData]),
     },
     metadata: {
       render: useCallback(() => {

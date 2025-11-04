@@ -1,9 +1,20 @@
+import orderBy from "lodash/orderBy";
+import Link from "next/link";
 import { ReactNode } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
-import { TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily, TTableColumn, TTableRow } from "@/types";
+import {
+  IFamilyDocumentTopics,
+  TFamilyDocumentPublic,
+  TFamilyEventPublic,
+  TFamilyPublic,
+  TLoadingStatus,
+  TMatchedFamily,
+  TTableColumn,
+  TTableRow,
+} from "@/types";
 
 import { getMostSpecificCourts } from "./getMostSpecificCourts";
 import { pluralise } from "./pluralise";
@@ -29,7 +40,7 @@ export const getEventTableColumns = ({
   const columns: TEventTableColumn[] = [
     { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
     { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 2 },
-    { id: "topics", fraction: 4 },
+    { id: "topics", fraction: 8 },
     { id: "action", name: "Action Taken", fraction: 4 },
     { id: "summary", fraction: 6, classes: "min-w-75" },
     { id: "caseNumber", name: "Case Number", fraction: 2 },
@@ -48,6 +59,8 @@ export const getEventTableColumns = ({
 };
 
 /* Rows */
+
+const MAX_TOPICS_PER_DOCUMENT = 4;
 
 export type TEventTableRow = TTableRow<TEventTableColumnId>;
 
@@ -80,12 +93,14 @@ const getFamilyEvents = (family: TFamilyPublic): TEventWithDocument[] =>
 
 export const getEventTableRows = ({
   families,
+  familyTopics,
   documentEventsOnly = false,
   matchesFamily,
   matchesStatus = "success",
   language,
 }: {
   families: TFamilyPublic[];
+  familyTopics?: IFamilyDocumentTopics;
   documentEventsOnly?: boolean;
   matchesFamily?: TMatchedFamily;
   matchesStatus?: TLoadingStatus;
@@ -97,10 +112,49 @@ export const getEventTableRows = ({
     getFamilyEvents(family).forEach(({ event, document }, eventIndex) => {
       if (documentEventsOnly && !document) return;
 
+      // can't when only events
+      // document.import_id
+      // familyTopics.documents -> find by import_id -> conceptCounts
+      // for each conceptCounts, double-find in conceptsGrouped for preferred_label
+
+      // ASK: flat dictionary of concept codes to objects (simpler lookup)
+
       const date = new Date(event.date);
       const summary = event.metadata.description?.[0];
 
-      const linkClasses = "text-gray-700 underline decoration-gray-300 hover:decoration-gray-500";
+      const linkClasses = "block text-gray-700 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
+
+      /* Topics */
+
+      let topicsDisplay: ReactNode = null;
+      if (document && familyTopics) {
+        const documentTopicsData = familyTopics.documents.find((doc) => doc.importId === document.import_id)?.conceptCounts ?? {};
+
+        const sortedTopics = orderBy(Object.entries(documentTopicsData), ["1"], ["desc"]);
+        const someTopicsHidden = sortedTopics.length > MAX_TOPICS_PER_DOCUMENT;
+
+        const topicLinks = sortedTopics.slice(0, MAX_TOPICS_PER_DOCUMENT).map(([topicId, topicCount]) => {
+          return (
+            <Link key={topicId} href="#" className={linkClasses}>
+              {topicId} <span className="text-gray-500">({topicCount})</span>
+            </Link>
+          );
+        });
+
+        topicsDisplay = (
+          <div className="flex flex-col gap-2 items-start">
+            {topicLinks}
+            {someTopicsHidden && (
+              <button
+                type="button"
+                className="p-2 mt-1 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
+              >
+                View more
+              </button>
+            )}
+          </div>
+        );
+      }
 
       /* Matches */
 
@@ -150,7 +204,7 @@ export const getEventTableRows = ({
               }
             : null,
           summary: summary ? { label: <ViewMore maxLines={4}>{summary}</ViewMore>, value: summary } : null,
-          topics: null,
+          topics: { label: topicsDisplay, value: "" },
           type: event.event_type,
         },
       });
