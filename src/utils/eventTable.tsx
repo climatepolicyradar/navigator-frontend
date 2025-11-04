@@ -2,7 +2,17 @@ import { ReactNode } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Icon } from "@/components/atoms/icon/Icon";
-import { TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily, TTableColumn, TTableRow } from "@/types";
+import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
+import {
+  TFamilyDocumentPublic,
+  TFamilyEventPublic,
+  TFamilyPublic,
+  TLoadingStatus,
+  TMatchedFamily,
+  TTableCell,
+  TTableColumn,
+  TTableRow,
+} from "@/types";
 
 import { getMostSpecificCourts } from "./getMostSpecificCourts";
 import { formatDateShort } from "./timedate";
@@ -92,6 +102,9 @@ export const getEventTableRows = ({
       if (documentEventsOnly && !document) return;
 
       const date = new Date(event.date);
+      const summary = event.metadata.description?.[0];
+
+      /* Matches */
 
       let matches = 0;
       if (matchesFamily && document) {
@@ -111,6 +124,8 @@ export const getEventTableRows = ({
           </LinkWithQuery>
         );
       }
+
+      /* Everything else */
 
       rows.push({
         id: [family.import_id, eventIndex].join("/"),
@@ -137,7 +152,7 @@ export const getEventTableRows = ({
             label: matchesDisplay,
             value: matches,
           },
-          summary: event.metadata.description?.[0] || null,
+          summary: summary ? { label: <ViewMore maxLines={4}>{summary}</ViewMore>, value: summary } : null,
           type: event.event_type,
         },
       });
