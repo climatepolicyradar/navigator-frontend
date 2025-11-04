@@ -3,29 +3,21 @@ import { ReactNode } from "react";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
-import {
-  TFamilyDocumentPublic,
-  TFamilyEventPublic,
-  TFamilyPublic,
-  TLoadingStatus,
-  TMatchedFamily,
-  TTableCell,
-  TTableColumn,
-  TTableRow,
-} from "@/types";
+import { TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily, TTableColumn, TTableRow } from "@/types";
 
 import { getMostSpecificCourts } from "./getMostSpecificCourts";
+import { pluralise } from "./pluralise";
+import { joinTailwindClasses } from "./tailwind";
 import { formatDateShort } from "./timedate";
 
 /* Columns */
 
-export type TEventTableColumnId = "action" | "caseNumber" | "caseTitle" | "court" | "date" | "document" | "matches" | "summary" | "type";
+export type TEventTableColumnId = "action" | "caseNumber" | "caseTitle" | "court" | "date" | "document" | "summary" | "type";
 export type TEventTableColumn = TTableColumn<TEventTableColumnId>;
 
 export const getEventTableColumns = ({
   isUSA = true,
   showFamilyColumns = false,
-  showMatches = false,
 }: {
   isUSA?: boolean;
   showFamilyColumns?: boolean;
@@ -33,20 +25,18 @@ export const getEventTableColumns = ({
 }) => {
   const columns: TEventTableColumn[] = [
     { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
-    { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 3 },
+    { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 2 },
     { id: "action", name: "Action Taken", fraction: 4 },
-    { id: "document" },
     { id: "summary", fraction: 6, classes: "min-w-75" },
     { id: "caseNumber", name: "Case Number", fraction: 2 },
     { id: "court" },
     { id: "caseTitle", name: "Case", fraction: 2 },
-    { id: "matches" },
+    { id: "document", fraction: 3 },
   ];
 
   const columnsToRemove: TEventTableColumnId[] = [];
   if (!isUSA) columnsToRemove.push("action");
   if (!showFamilyColumns) columnsToRemove.push("caseNumber", "court", "caseTitle");
-  if (!showMatches) columnsToRemove.push("matches");
 
   return columns.filter((column) => !columnsToRemove.includes(column.id));
 };
@@ -104,6 +94,8 @@ export const getEventTableRows = ({
       const date = new Date(event.date);
       const summary = event.metadata.description?.[0];
 
+      const linkClasses = "text-gray-700 underline decoration-gray-300 hover:decoration-gray-500";
+
       /* Matches */
 
       let matches = 0;
@@ -114,13 +106,13 @@ export const getEventTableRows = ({
         }
       }
 
-      let matchesDisplay: ReactNode = matches;
+      let matchesDisplay: ReactNode = null;
       if (matchesStatus === "loading") {
         matchesDisplay = <Icon name="loading" />;
-      } else if (document) {
+      } else if (document && matches > 0) {
         matchesDisplay = (
-          <LinkWithQuery href={`/documents/${document.slug}`} className="text-text-brand">
-            {matches}
+          <LinkWithQuery href={`/documents/${document.slug}`} className={linkClasses}>
+            {matches} {pluralise(matches, ["match", "matches"])}
           </LinkWithQuery>
         );
       }
@@ -141,17 +133,16 @@ export const getEventTableRows = ({
           document: document
             ? {
                 label: (
-                  <LinkWithQuery href={`/documents/${document.slug}`} className="text-text-brand underline">
-                    View
-                  </LinkWithQuery>
+                  <div className="flex flex-col gap-2">
+                    <LinkWithQuery href={`/documents/${document.slug}`} className={linkClasses}>
+                      View
+                    </LinkWithQuery>
+                    {matchesDisplay}
+                  </div>
                 ),
                 value: document.slug,
               }
             : null,
-          matches: {
-            label: matchesDisplay,
-            value: matches,
-          },
           summary: summary ? { label: <ViewMore maxLines={4}>{summary}</ViewMore>, value: summary } : null,
           type: event.event_type,
         },

@@ -143,7 +143,12 @@ export const InteractiveTable = <ColumnKey extends string>({
         {/* Heading */}
         <div className="contents">
           {columns.map((column) => {
-            const cellClasses = joinTailwindClasses("bg-gray-100 text-gray-900 font-medium group", commonCellClasses, column.classes);
+            const cellClasses = joinTailwindClasses(
+              "bg-gray-100 text-gray-900 font-medium group",
+              column.sortable && "pr-2",
+              commonCellClasses,
+              column.classes
+            );
 
             return (
               <div key={`heading-${column.id}`} className={cellClasses}>
