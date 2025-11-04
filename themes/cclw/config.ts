@@ -17,9 +17,9 @@ const config: TThemeConfig = {
         ],
       },
       {
-        label: "UN Submissions",
+        label: "UNFCCC Submissions",
         slug: "UNFCCC",
-        value: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
+        value: ["UNFCCC.corpus.i00000001.n0000"],
         category: ["UNFCCC"],
       },
       {
@@ -117,18 +117,6 @@ const config: TThemeConfig = {
       category: ["UNFCCC.corpus.i00000001.n0000"],
       options: [
         {
-          label: "National Biodiversity Strategy and Action Plan (NBSAP)",
-          slug: "National Biodiversity Strategy and Action Plan (NBSAP)",
-          value: "National Biodiversity Strategy and Action Plan (NBSAP)",
-          group: "UNCBD",
-        },
-        {
-          label: "National Report (NR)",
-          slug: "National Report (NR)",
-          value: "National Report (NR)",
-          group: "UNCBD",
-        },
-        {
           label: "Nationally Determined Contribution (NDC)",
           slug: "Nationally Determined Contribution",
           value: "Nationally Determined Contribution",
@@ -181,24 +169,6 @@ const config: TThemeConfig = {
           slug: "Adaptation Communication",
           value: "Adaptation Communication",
           group: "UNFCCC",
-        },
-        {
-          label: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
-          slug: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
-          value: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
-          group: "UNCCD",
-        },
-        {
-          label: "Country Report (CR)",
-          slug: "Country Report (CR)",
-          value: "Country Report (CR)",
-          group: "UNCCD",
-        },
-        {
-          label: "National Drought Plan (NDP)",
-          slug: "National Drought Plan (NDP)",
-          value: "National Drought Plan (NDP)",
-          group: "UNCCD",
         },
       ],
     },

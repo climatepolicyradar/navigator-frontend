@@ -4,16 +4,12 @@ import { useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
-import { FourColumns } from "@/components/atoms/columns/FourColumns";
-import { Debug } from "@/components/atoms/debug/Debug";
 import { EventsBlock } from "@/components/blocks/eventsBlock/EventsBlock";
 import { FamilyBlock } from "@/components/blocks/familyBlock/FamilyBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { Section } from "@/components/molecules/section/Section";
-import { BlocksLayout } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { ContentsSideBar, ISideBarItem } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { IPageHeaderTab, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { withEnvConfig } from "@/context/EnvConfig";
@@ -70,7 +66,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
           <>
             <div className="col-start-1 cols5-4:col-end-3 -col-end-1" />
             <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols5-4:col-start-3">
-              <TextBlock id="section-summary" title="Summary">
+              <TextBlock block="section-summary" title="Summary">
                 <div className="text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
               </TextBlock>
               <MetadataBlock block="metadata" metadata={getCollectionMetadata(collection)} />

@@ -1,20 +1,34 @@
+import { UrlObject } from "url";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode, useContext } from "react";
 
+import { ExternalLink } from "@/components/ExternalLink";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import Footer from "@/components/footer/Footer";
 import Layout from "@/components/layouts/LandingPage";
 import MainLayout from "@/components/layouts/Main";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { Heading } from "@/components/typography/Heading";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 import { ThemePageFeaturesContext } from "@/context/ThemePageFeaturesContext";
 import { Header } from "@/cpr/components/Header";
 import { NavBarGradient } from "@/cpr/components/NavBarGradient";
 import { isRioPolicyRadarEnabled } from "@/utils/features";
 
-const QUERY_EXAMPLES: { label: ReactNode; href: string }[] = [
-  { label: <span>Latest NBSAPs</span>, href: "/" },
+const QUERY_EXAMPLES: { label: ReactNode; href: UrlObject }[] = [
+  {
+    label: <span>Latest NBSAPs</span>,
+    href: {
+      pathname: "/search",
+      query: {
+        [QUERY_PARAMS.category]: "UN-submissions",
+        [QUERY_PARAMS.author_type]: "Party",
+        [QUERY_PARAMS["_document.type"]]: "National Biodiversity Strategy and Action Plan (NBSAP)",
+      },
+    },
+  },
   {
     label: (
       <span>
@@ -23,7 +37,15 @@ const QUERY_EXAMPLES: { label: ReactNode; href: string }[] = [
         Somalia
       </span>
     ),
-    href: "/",
+    href: {
+      pathname: "/search",
+      query: {
+        [QUERY_PARAMS.category]: "UN-submissions",
+        [QUERY_PARAMS.query_string]: "Land degradation",
+        [QUERY_PARAMS.country]: "somalia",
+        [QUERY_PARAMS.author_type]: "Party",
+      },
+    },
   },
   {
     label: (
@@ -33,7 +55,15 @@ const QUERY_EXAMPLES: { label: ReactNode; href: string }[] = [
         Nature-based solutions
       </span>
     ),
-    href: "/",
+    href: {
+      pathname: "/search",
+      query: {
+        [QUERY_PARAMS.category]: "UN-submissions",
+        [QUERY_PARAMS.author_type]: "Party",
+        [QUERY_PARAMS.country]: "brazil",
+        [QUERY_PARAMS.query_string]: "Nature-based solutions",
+      },
+    },
   },
 ];
 
@@ -50,8 +80,8 @@ const RioSubmissions = () => {
             </Heading>
             <p>
               It is increasingly being recognised that climate change, biodiversity loss and land degradation are all closely linked and that dealing
-              with them as separate issues won't work. However, policymakers face barriers finding information on how these issues are being
-              approached, as this information remains siloed in disparate locations, leaving many to make decisions with missing data.
+              with them as separate issues won't work. But, policymakers face barriers finding information on how these issues are being approached,
+              as this information remains siloed in disparate locations, leaving many to make decisions with missing data.
             </p>
             <p>
               To date at Climate Policy Radar we have focused more on climate and climate-related documents but we are now actively broadening our
@@ -68,6 +98,7 @@ const RioSubmissions = () => {
               For this first step we are focusing on national submissions. Going forward we will go deeper, collecting and opening up policies and
               laws that address biodiversity loss, land degradation and climate change.
             </p>
+            <p>You can keep up to date with this initiative as it evolves here.</p>
           </SingleCol>
         </section>
       </MainLayout>
@@ -86,12 +117,18 @@ const RioSubmissions = () => {
             Explore our curated collection that brings together and opens up dense, disparate documents on climate, nature and land.
           </p>
           <div className="flex gap-2">
-            <Link href="/" className="px-4 py-3 bg-brand rounded-md text-white font-medium leading-tight">
+            <Link
+              href={{ pathname: "/search", query: { [QUERY_PARAMS.category]: "UN-submissions", [QUERY_PARAMS.author_type]: "Party" } }}
+              className="px-4 py-3 bg-brand rounded-md text-white font-medium leading-tight"
+            >
               Get started
             </Link>
-            <Link href="/" className="px-4 py-3 bg-white hover:bg-gray-100 border border-gray-300 rounded-md text-gray-700 font-medium leading-tight">
+            <a
+              href="#examples"
+              className="px-4 py-3 bg-white hover:bg-gray-100 border border-gray-300 rounded-md text-gray-700 font-medium leading-tight"
+            >
               See some examples
-            </Link>
+            </a>
           </div>
         </div>
         <Image
@@ -109,7 +146,10 @@ const RioSubmissions = () => {
             <Image src="/images/rio/rio-unfccc.svg" alt="United Nations Framework Convention on Climate Change" width={187} height={48} />
           </div>
         </div>
-        <main className="mt-16 cols5-2:mt-32 mb-18 col-start-1 -col-end-1 cols5-4:col-start-2 cols5-4:-col-end-2 cols5-5:col-start-3 cols5-5:-col-end-3">
+        <main
+          className="mt-16 cols5-2:mt-32 mb-18 col-start-1 -col-end-1 cols5-4:col-start-2 cols5-4:-col-end-2 cols5-5:col-start-3 cols5-5:-col-end-3"
+          id="examples"
+        >
           <p className="mb-3 text-xl text-gray-950 font-heavy leading-7">
             Use our collection and full-text searchable app to search and explore submissions to the Rio&nbsp;Conventions from around the world. For
             example:
@@ -139,9 +179,9 @@ const RioSubmissions = () => {
           <p className="mb-6">You can also use our collection to navigate thousands of climate documents beyond UN submissions.</p>
           <p className="mb-16">
             We are working on adding new functionality and bringing in more and more datasets. If this interests you,{" "}
-            <Link href="/" className="inline-block underline">
+            <ExternalLink url="https://www.climatepolicyradar.org/collaborate" className="inline-block underline">
               please get in touch
-            </Link>
+            </ExternalLink>
             .
           </p>
           <h2 className="mb-2 text-xl text-gray-950 font-heavy leading-7">Methodology</h2>
