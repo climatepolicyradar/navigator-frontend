@@ -8,11 +8,13 @@ import { firstCase } from "@/utils/text";
 
 interface IProps {
   concept: TConcept;
+  label?: string;
+  children?: React.ReactNode;
   onClick?: (concept: TConcept) => void;
   triggerClasses?: string;
 }
 
-export const ConceptLink = ({ concept, onClick, triggerClasses = "" }: IProps) => {
+export const ConceptLink = ({ concept, label, onClick, triggerClasses = "", children }: IProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const allTriggerClasses = joinTailwindClasses(
@@ -22,7 +24,7 @@ export const ConceptLink = ({ concept, onClick, triggerClasses = "" }: IProps) =
     triggerClasses
   );
 
-  const title = firstCase(concept.preferred_label);
+  const title = label ?? firstCase(concept.preferred_label);
 
   const trigger = onClick ? (
     <button className={allTriggerClasses} onClick={() => onClick(concept)}>
@@ -32,7 +34,11 @@ export const ConceptLink = ({ concept, onClick, triggerClasses = "" }: IProps) =
     <span className={allTriggerClasses}>{title}</span>
   );
 
-  return (
+  return children ? (
+    <Popover openOnHover onOpenChange={setIsOpen} trigger={trigger}>
+      {children}
+    </Popover>
+  ) : (
     <Popover
       openOnHover
       onOpenChange={setIsOpen}

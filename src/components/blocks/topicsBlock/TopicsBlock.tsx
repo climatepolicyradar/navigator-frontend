@@ -12,7 +12,7 @@ export const TopicsBlock = ({ familyTopics }: TProps) => {
     <Section block="topics" title="Topics explorer">
       <InteractiveTable<TTopicTableColumnId>
         columns={TopicTableColumns}
-        rows={getTopicTableRows({ rootConcepts: familyTopics.rootConcepts, conceptsGrouped: familyTopics.conceptsGrouped })}
+        rows={getTopicTableRows(familyTopics)}
         defaultSort={{ column: "group", order: "desc" }}
       />
     </Section>
