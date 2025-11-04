@@ -16,7 +16,7 @@ export const EventsBlock = ({ families }: IProps) => {
   const [showAllEntries, setShowAllEntries] = useState(false);
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
-  const tableColumns = getEventTableColumns({ showFamilyColumns: true });
+  const tableColumns = getEventTableColumns({ isLitigation: true, showFamilyColumns: true });
   const tableRows = getEventTableRows({ families });
   const entriesToHide = tableRows.length > MAX_ENTRIES_SHOWN;
 

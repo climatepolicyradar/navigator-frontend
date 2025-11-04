@@ -26,12 +26,12 @@ export type TEventTableColumnId = "action" | "caseNumber" | "caseTitle" | "court
 export type TEventTableColumn = TTableColumn<TEventTableColumnId>;
 
 export const getEventTableColumns = ({
-  hasTopics,
+  hasTopics = false,
   isLitigation,
   isUSA = true,
   showFamilyColumns = false,
 }: {
-  hasTopics: boolean;
+  hasTopics?: boolean;
   isLitigation: boolean;
   isUSA?: boolean;
   showFamilyColumns?: boolean;
@@ -107,6 +107,7 @@ export const getEventTableRows = ({
   language?: string;
 }): TEventTableRow[] => {
   const rows: TEventTableRow[] = [];
+  const topicsData = familyTopics ? Object.values(familyTopics.conceptsGrouped).flat() : [];
 
   families.forEach((family) =>
     getFamilyEvents(family).forEach(({ event, document }, eventIndex) => {
@@ -134,9 +135,12 @@ export const getEventTableRows = ({
         const someTopicsHidden = sortedTopics.length > MAX_TOPICS_PER_DOCUMENT;
 
         const topicLinks = sortedTopics.slice(0, MAX_TOPICS_PER_DOCUMENT).map(([topicId, topicCount]) => {
+          const wikibaseId = topicId.split(":")[0];
+          const topic = topicsData.find((concept) => concept.wikibase_id === wikibaseId);
+
           return (
             <Link key={topicId} href="#" className={linkClasses}>
-              {topicId} <span className="text-gray-500">({topicCount})</span>
+              {topic?.preferred_label || topicId} <span className="text-gray-500">({topicCount})</span>
             </Link>
           );
         });
@@ -149,7 +153,7 @@ export const getEventTableRows = ({
                 type="button"
                 className="p-2 mt-1 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
               >
-                View more
+                View all topic mentions
               </button>
             )}
           </div>

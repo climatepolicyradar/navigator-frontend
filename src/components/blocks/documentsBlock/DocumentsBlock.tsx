@@ -30,8 +30,8 @@ export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesSta
   const category = getCategoryName(family.category, family.corpus_type_name, family.organisation);
 
   const tableColumns = useMemo(
-    () => getEventTableColumns({ hasTopics: Boolean(familyTopics), isLitigation: true, isUSA, showMatches }),
-    [familyTopics, isUSA, showMatches]
+    () => getEventTableColumns({ hasTopics: Boolean(familyTopics), isLitigation: family.corpus_type_name === "Litigation", isUSA, showMatches }),
+    [family, familyTopics, isUSA, showMatches]
   );
   const tableRows = useMemo(
     () => getEventTableRows({ families: [family], familyTopics, documentEventsOnly: true, matchesFamily, matchesStatus }),

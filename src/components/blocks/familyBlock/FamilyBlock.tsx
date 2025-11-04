@@ -20,7 +20,7 @@ export const FamilyBlock = ({ family }: IProps) => {
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
   const isUSA = family.geographies.includes("USA");
-  const tableColumns = useMemo(() => getEventTableColumns({ isUSA }), [isUSA]);
+  const tableColumns = useMemo(() => getEventTableColumns({ isLitigation: true, isUSA }), [isUSA]);
   const tableRows = useMemo(() => getEventTableRows({ families: [family] }), [family]);
   const entriesToHide = tableRows.length > MAX_ENTRIES_SHOWN;
 
