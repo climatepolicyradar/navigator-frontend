@@ -1,3 +1,5 @@
+import { TConcept } from "@/types";
+
 export interface IFamilyDocumentTopics {
   documents: {
     importId: string;
@@ -6,4 +8,8 @@ export interface IFamilyDocumentTopics {
     conceptCounts: Record<string, number>;
   }[];
   conceptCounts: Record<string, number>;
+  rootConcepts: TConcept[];
+  conceptsGrouped: {
+    [rootConceptId: string]: TConcept[];
+  };
 }

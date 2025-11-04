@@ -1,7 +1,9 @@
 import { IFamilyDocumentTopics, TSearchResponse } from "@/types";
+import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
+import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 
 export const processFamilyTopics = (vespaFamilyData: TSearchResponse): IFamilyDocumentTopics => {
-  const documentsWithConceptCounts: IFamilyDocumentTopics = { documents: [], conceptCounts: {} };
+  const documentsWithConceptCounts: IFamilyDocumentTopics = { documents: [], conceptCounts: {}, rootConcepts: [], conceptsGrouped: {} };
 
   vespaFamilyData.families.forEach((family) => {
     family.hits.forEach((hit) => {
@@ -17,6 +19,15 @@ export const processFamilyTopics = (vespaFamilyData: TSearchResponse): IFamilyDo
         conceptCounts: hit.concept_counts || {},
       });
     });
+  });
+
+  const conceptIds = documentsWithConceptCounts.conceptCounts
+    ? Object.keys(documentsWithConceptCounts.conceptCounts).map((id) => id.split(":")[0])
+    : [];
+
+  fetchAndProcessConcepts(conceptIds).then(({ rootConcepts, concepts }) => {
+    documentsWithConceptCounts.rootConcepts = rootConcepts;
+    documentsWithConceptCounts.conceptsGrouped = groupByRootConcept(concepts, rootConcepts);
   });
 
   return documentsWithConceptCounts;

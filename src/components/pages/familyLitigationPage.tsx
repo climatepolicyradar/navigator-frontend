@@ -86,6 +86,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, vespaFam
     },
     topics: {
       render: useCallback(() => {
+        // console.log("useCallback triggered -- Vespa family data in topics block:", vespaFamilyData);
         const processedFamilyTopics = processFamilyTopics(vespaFamilyData);
 
         return <TopicsBlock key="topics-block" familyTopics={processedFamilyTopics} />;
