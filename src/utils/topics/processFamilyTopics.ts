@@ -22,9 +22,7 @@ export const processFamilyTopics = async (vespaFamilyData: TSearchResponse): Pro
     });
   });
 
-  const conceptIds = documentsWithConceptCounts.conceptCounts
-    ? Object.keys(documentsWithConceptCounts.conceptCounts).map((id) => id.split(":")[0])
-    : [];
+  const conceptIds = documentsWithConceptCounts.conceptCounts ? Object.keys(documentsWithConceptCounts.conceptCounts) : [];
 
   const { rootConcepts, concepts } = await fetchAndProcessConcepts(conceptIds);
 
