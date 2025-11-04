@@ -16,10 +16,12 @@ export const ROOT_LEVEL_CONCEPTS = {
 };
 export const rootLevelConceptsIds = Object.keys(ROOT_LEVEL_CONCEPTS);
 
+// TODO: move this fetching to a Next API route
 const fetchConcept = async (conceptId: string): Promise<TConcept> => {
   return fetch(`https://cdn.climatepolicyradar.org/concepts/${conceptId}.json`).then((response) => response.json());
 };
 
+// TODO: make this a react query hook with caching per conceptId
 export const fetchAndProcessConcepts = async (conceptIds: string[]) => {
   const rootConceptsS3Promises = rootLevelConceptsIds.map(async (conceptId) => {
     try {

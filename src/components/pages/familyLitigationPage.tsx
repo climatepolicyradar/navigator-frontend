@@ -21,11 +21,11 @@ import { TMatchedFamily, TFamilyPageBlock } from "@/types";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
+import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
 
 import { IProps } from "./familyOriginalPage";
 
 export const FamilyLitigationPage = ({ countries, subdivisions, family, vespaFamilyData, theme, themeConfig }: IProps) => {
-  // console.log(vespaFamilyData);
   const { getText } = useText();
   /* Search matches */
   const router = useRouter();
@@ -85,9 +85,11 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, vespaFam
       },
     },
     topics: {
-      render: () => {
-        return <TopicsBlock vespaFamilyData={vespaFamilyData} key="topics-block" />;
-      },
+      render: useCallback(() => {
+        const processedFamilyTopics = processFamilyTopics(vespaFamilyData);
+
+        return <TopicsBlock key="topics-block" familyTopics={processedFamilyTopics} />;
+      }, [vespaFamilyData]),
     },
   };
 

@@ -399,8 +399,11 @@ export type TSearchResponse = {
   families: {
     id: string;
     hits: (TFamily & {
+      // Document metadata returned by Vespa
       concept_counts?: Record<string, number>;
       document_import_id: string;
+      document_title: string;
+      document_slug: string;
     })[];
   }[];
   continuation_token?: string;

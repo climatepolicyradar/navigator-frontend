@@ -2,16 +2,17 @@ import { useEffect, useMemo, useState } from "react";
 
 import { Section } from "@/components/molecules/section/Section";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { TConcept, TSearchResponse } from "@/types";
+import { IFamilyDocumentTopics, TConcept, TSearchResponse } from "@/types";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { getTopicTableRows, TopicTableColumns, TTopicTableColumnId } from "@/utils/tables/topic/topicTable";
 
 type TProps = {
-  vespaFamilyData: TSearchResponse;
+  familyTopics: IFamilyDocumentTopics;
 };
 
-export const TopicsBlock = ({ vespaFamilyData }: TProps) => {
+// TODO accept a list of documents with concept counts
+export const TopicsBlock = ({ familyTopics }: TProps) => {
   const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
   const [conceptsGrouped, setConceptsGrouped] = useState<{
     [rootConceptId: string]: TConcept[];
@@ -50,11 +51,12 @@ export const TopicsBlock = ({ vespaFamilyData }: TProps) => {
 
   return (
     <Section block="topics" title="Topics explorer">
-      <InteractiveTable<TTopicTableColumnId>
+      <></>
+      {/* <InteractiveTable<TTopicTableColumnId>
         columns={TopicTableColumns}
         rows={getTopicTableRows({ rootConcepts, conceptsGrouped })}
         defaultSort={{ column: "group", order: "desc" }}
-      />
+      /> */}
     </Section>
   );
 };
