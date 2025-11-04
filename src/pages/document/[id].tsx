@@ -121,7 +121,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  // TODO: move potentially
+  /* Package the family topics */
   let familyTopics = null;
 
   if (vespaFamilyData) {

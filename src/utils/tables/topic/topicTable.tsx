@@ -31,7 +31,7 @@ export const getTopicTableRows = ({
         group: firstCase(rootConcept.preferred_label),
         concepts: {
           label: conceptsGrouped[rootConcept.wikibase_id].map((concept) => concept.preferred_label).join(", "),
-          value: conceptsGrouped[rootConcept.wikibase_id].map((concept) => concept.wikibase_id).join(", "),
+          value: "",
         },
       },
     });
