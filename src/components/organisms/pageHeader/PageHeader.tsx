@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { Fragment, ReactNode } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
@@ -54,11 +54,11 @@ export const PageHeader = <Tab extends string>({ currentTab, dark = false, label
           {/* Metadata */}
           {metadata.length > 0 && (
             <div className="grid grid-cols-[min-content_auto] gap-x-8 gap-y-2 text-sm">
-              {metadata.map((property) => (
-                <>
+              {metadata.map((property, index) => (
+                <Fragment key={index}>
                   <div className="text-gray-950 font-medium whitespace-nowrap">{property.label}</div>
                   <div className="text-gray-700">{property.value}</div>
-                </>
+                </Fragment>
               ))}
             </div>
           )}
