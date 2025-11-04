@@ -23,7 +23,7 @@ import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD
 
 import { IProps } from "./familyOriginalPage";
 
-export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig }: IProps) => {
+export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig, vespaFamilyData }: IProps) => {
   const { getText } = useText();
   /* Search matches */
   const router = useRouter();
@@ -58,8 +58,17 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     },
     documents: {
       render: useCallback(
-        () => <DocumentsBlock key="documents" family={family} matchesFamily={matchesFamily} matchesStatus={matchesStatus} showMatches={hasSearch} />,
-        [family, hasSearch, matchesFamily, matchesStatus]
+        () => (
+          <DocumentsBlock
+            key="documents"
+            family={family}
+            matchesFamily={matchesFamily}
+            matchesStatus={matchesStatus}
+            showMatches={hasSearch}
+            vespaFamilyData={vespaFamilyData}
+          />
+        ),
+        [family, hasSearch, matchesFamily, matchesStatus, vespaFamilyData]
       ),
     },
     metadata: {

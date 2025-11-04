@@ -7,18 +7,21 @@ import { TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLoadingStatu
 
 import { getMostSpecificCourts } from "./getMostSpecificCourts";
 import { pluralise } from "./pluralise";
-import { joinTailwindClasses } from "./tailwind";
 import { formatDateShort } from "./timedate";
 
 /* Columns */
 
-export type TEventTableColumnId = "action" | "caseNumber" | "caseTitle" | "court" | "date" | "document" | "summary" | "type";
+export type TEventTableColumnId = "action" | "caseNumber" | "caseTitle" | "court" | "date" | "document" | "summary" | "topics" | "type";
 export type TEventTableColumn = TTableColumn<TEventTableColumnId>;
 
 export const getEventTableColumns = ({
+  hasTopics,
+  isLitigation,
   isUSA = true,
   showFamilyColumns = false,
 }: {
+  hasTopics: boolean;
+  isLitigation: boolean;
   isUSA?: boolean;
   showFamilyColumns?: boolean;
   showMatches?: boolean;
@@ -26,15 +29,18 @@ export const getEventTableColumns = ({
   const columns: TEventTableColumn[] = [
     { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
     { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 2 },
+    { id: "topics", fraction: 4 },
     { id: "action", name: "Action Taken", fraction: 4 },
     { id: "summary", fraction: 6, classes: "min-w-75" },
     { id: "caseNumber", name: "Case Number", fraction: 2 },
     { id: "court" },
     { id: "caseTitle", name: "Case", fraction: 2 },
-    { id: "document", fraction: 3 },
+    { id: "document", fraction: 2 },
   ];
 
   const columnsToRemove: TEventTableColumnId[] = [];
+  if (!isLitigation) columnsToRemove.push("date");
+  if (!hasTopics) columnsToRemove.push("topics");
   if (!isUSA) columnsToRemove.push("action");
   if (!showFamilyColumns) columnsToRemove.push("caseNumber", "court", "caseTitle");
 
@@ -144,6 +150,7 @@ export const getEventTableRows = ({
               }
             : null,
           summary: summary ? { label: <ViewMore maxLines={4}>{summary}</ViewMore>, value: summary } : null,
+          topics: null,
           type: event.event_type,
         },
       });

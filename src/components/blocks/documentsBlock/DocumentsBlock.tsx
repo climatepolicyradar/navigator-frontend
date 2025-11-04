@@ -28,7 +28,7 @@ export const DocumentsBlock = ({ family, matchesFamily, matchesStatus, showMatch
   const isUSA = family.geographies.includes("USA");
   const category = getCategoryName(family.category, family.corpus_type_name, family.organisation);
 
-  const tableColumns = useMemo(() => getEventTableColumns({ isUSA, showMatches }), [isUSA, showMatches]);
+  const tableColumns = useMemo(() => getEventTableColumns({ hasTopics: true, isLitigation: true, isUSA, showMatches }), [isUSA, showMatches]);
   const tableRows = useMemo(
     () => getEventTableRows({ families: [family], documentEventsOnly: true, matchesFamily, matchesStatus }),
     [family, matchesFamily, matchesStatus]
