@@ -86,10 +86,9 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTo
     },
     topics: {
       render: useCallback(() => {
-        if (!isKnowledgeGraphEnabled(featureFlags, themeConfig)) return null;
         if (!familyTopics) return null;
         return <TopicsBlock key="topics-block" familyTopics={familyTopics} />;
-      }, [familyTopics, featureFlags, themeConfig]),
+      }, [familyTopics]),
     },
   };
 
