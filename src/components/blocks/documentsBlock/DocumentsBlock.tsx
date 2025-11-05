@@ -1,18 +1,9 @@
-import orderBy from "lodash/orderBy";
 import { useEffect, useMemo, useState } from "react";
 
-import { EntityCard, IProps as IEntityCardProps } from "@/components/molecules/entityCard/EntityCard";
 import { Section } from "@/components/molecules/section/Section";
-import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
-import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { getCategoryName } from "@/helpers/getCategoryName";
-import { IFamilyDocumentTopics, TFamilyDocumentPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
+import { IFamilyDocumentTopics, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
-import { formatDate } from "@/utils/timedate";
-
-// If no date found for an event, use an empty string so it sorts to the bottom
-const getOldestEventDate = (document: TFamilyDocumentPublic) => document.events.map((event) => event.date).sort()[0] || "";
 
 interface IProps {
   family: TFamilyPublic;
@@ -23,39 +14,22 @@ interface IProps {
 }
 
 export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
-  const [view, setView] = useState("table");
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
+  const isLitigation = family.corpus_type_name === "Litigation";
   const isUSA = family.geographies.includes("USA");
-  const category = getCategoryName(family.category, family.corpus_type_name, family.organisation);
 
   const tableColumns = useMemo(
-    () => getEventTableColumns({ hasTopics: Boolean(familyTopics), isLitigation: family.corpus_type_name === "Litigation", isUSA, showMatches }),
-    [family, familyTopics, isUSA, showMatches]
+    () => getEventTableColumns({ hasTopics: Boolean(familyTopics), isLitigation, isUSA, showMatches }),
+    [familyTopics, isLitigation, isUSA, showMatches]
   );
   const tableRows = useMemo(
     () => getEventTableRows({ families: [family], familyTopics, documentEventsOnly: true, matchesFamily, matchesStatus }),
     [family, familyTopics, matchesFamily, matchesStatus]
   );
 
-  const cards: IEntityCardProps[] = useMemo(
-    () =>
-      orderBy(family.documents, [getOldestEventDate], ["desc"]).map((document) => {
-        return {
-          title: document.title,
-          metadata: [category, formatDate(getOldestEventDate(document))[0]],
-          href: `/documents/${document.slug}`,
-        };
-      }),
-    [category, family]
-  );
-
   // If the case is new, there can be one placeholder document with no events. Handle this interim state
   const hasDocumentsToDisplay = tableRows.length > 0;
-
-  const onToggleChange = (toggleValue: string[]) => {
-    setView(toggleValue[0]);
-  };
 
   useEffect(() => {
     const language = navigator?.language;
@@ -67,31 +41,12 @@ export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesSta
   return (
     <Section block="documents" title="Documents" wide>
       {hasDocumentsToDisplay && (
-        <>
-          {/* Controls */}
-          <ToggleGroup value={[view]} onValueChange={onToggleChange} className="pb-4">
-            <Toggle value="table">Table</Toggle>
-            <Toggle value="cards">Cards</Toggle>
-          </ToggleGroup>
-
-          {/* Cards */}
-          {view === "cards" && (
-            <div className="flex gap-5 items-stretch overflow-x-auto pb-2">
-              {cards.map((card) => (
-                <EntityCard key={card.href} {...card} />
-              ))}
-            </div>
-          )}
-
-          {/* Table */}
-          {view === "table" && (
-            <InteractiveTable<TEventTableColumnId>
-              columns={tableColumns}
-              rows={updatedRowsWithLocalisedDates || tableRows}
-              defaultSort={{ column: "date", order: "desc" }}
-            />
-          )}
-        </>
+        <InteractiveTable<TEventTableColumnId>
+          columns={tableColumns}
+          rows={updatedRowsWithLocalisedDates || tableRows}
+          defaultSort={{ column: "date", order: "desc" }}
+          tableClasses={isLitigation ? "min-w-250" : "min-w-200"}
+        />
       )}
       {!hasDocumentsToDisplay && <p className="italic">There are no documents to display yet. Check back later.</p>}
     </Section>

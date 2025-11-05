@@ -18,6 +18,7 @@ import {
 
 import { getMostSpecificCourts } from "./getMostSpecificCourts";
 import { pluralise } from "./pluralise";
+import { firstCase } from "./text";
 import { formatDateShort } from "./timedate";
 
 /* Columns */
@@ -40,7 +41,7 @@ export const getEventTableColumns = ({
   const columns: TEventTableColumn[] = [
     { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
     { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 2 },
-    { id: "topics", fraction: 8 },
+    { id: "topics", name: "Topics Mentioned in Text", fraction: 8 },
     { id: "action", name: "Action Taken", fraction: 4 },
     { id: "summary", fraction: 6, classes: "min-w-75" },
     { id: "caseNumber", name: "Case Number", fraction: 2 },
@@ -113,13 +114,6 @@ export const getEventTableRows = ({
     getFamilyEvents(family).forEach(({ event, document }, eventIndex) => {
       if (documentEventsOnly && !document) return;
 
-      // can't when only events
-      // document.import_id
-      // familyTopics.documents -> find by import_id -> conceptCounts
-      // for each conceptCounts, double-find in conceptsGrouped for preferred_label
-
-      // ASK: flat dictionary of concept codes to objects (simpler lookup)
-
       const date = new Date(event.date);
       const summary = event.metadata.description?.[0];
 
@@ -135,12 +129,12 @@ export const getEventTableRows = ({
         const someTopicsHidden = sortedTopics.length > MAX_TOPICS_PER_DOCUMENT;
 
         const topicLinks = sortedTopics.slice(0, MAX_TOPICS_PER_DOCUMENT).map(([topicId, topicCount]) => {
-          const wikibaseId = topicId.split(":")[0];
+          const [wikibaseId, fallbackLabel] = topicId.split(":");
           const topic = topicsData.find((concept) => concept.wikibase_id === wikibaseId);
 
           return (
             <Link key={topicId} href="#" className={linkClasses}>
-              {topic?.preferred_label || topicId} <span className="text-gray-500">({topicCount})</span>
+              {firstCase(topic?.preferred_label || fallbackLabel)} <span className="text-gray-500">({topicCount})</span>
             </Link>
           );
         });
