@@ -89,7 +89,7 @@ const RioSubmissions = () => {
             </p>
             <p>
               Launching for COP30, <i>Rio Policy Radar</i> will be a shared space for country submissions to the three “Rio” Conventions (adopted at
-              the 1992 Rio Earth Summit) - the UNCBD (biodiversity), the UNCCD (land degradation) and the UNFCCC (climate). This tool will allow users
+              the 1992 Rio Earth Summit) - the CBD (biodiversity), the UNCCD (land degradation) and the UNFCCC (climate). This tool will allow users
               to easily explore how countries are addressing the three interlinked issues, and their co-benefits, opportunities or trade-offs. For
               example, users will be able to discover how strategies to address nature loss are also addressing climate adaptation, or identify how
               different countries around the world are using nature-based solutions in their drought plans.
@@ -131,14 +131,14 @@ const RioSubmissions = () => {
             </a>
           </div>
         </div>
-        <Image
+        {/* <Image
           src="/images/rio/rio-screenshot.jpg"
           alt="Climate Policy Radar's search page filtered by UN Submissions"
           width={1200}
           height={699}
           className="max-w-[1200px] w-full mx-auto mt-14 mb-10 bg-white border border-gray-200 rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.10)]0 col-start-1 -col-end-1 cols5-5:col-start-2 cols5-5:-col-end-2 cursor-not-allowed"
-        />
-        <div className="flex flex-col gap-5 items-center col-start-1 -col-end-1">
+        /> */}
+        <div className="flex flex-col gap-5 items-center col-start-1 -col-end-1 mt-14">
           <span className="block text-sm text-gray-950 font-medium leading-4">In collaboration with</span>
           <div className="flex flex-col cols5-2:flex-row gap-3">
             <Image src="/images/rio/rio-unccd.svg" alt="United Nations Convention to Combat Desertification logo" width={166} height={48} />

@@ -326,15 +326,21 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     // UNFCCC filters
     delete router.query[QUERY_PARAMS["_document.type"]];
     delete router.query[QUERY_PARAMS.convention];
+    router.query[QUERY_PARAMS.category] = category;
+    // Default search is all categories, so we do not need to provide any category if we want all
+    if (category === "All") {
+      delete router.query[QUERY_PARAMS.category];
+    }
+    /*
+     **** Specific category selections have specific other filters to add
+     */
     // Only reset the topic and sector filters if we are not moving between laws or policies categories
     if (category !== "policies" && category !== "laws") {
       delete router.query[QUERY_PARAMS.topic];
       delete router.query[QUERY_PARAMS.sector];
     }
-    router.query[QUERY_PARAMS.category] = category;
-    // Default search is all categories, so we do not need to provide any category if we want all
-    if (category === "All") {
-      delete router.query[QUERY_PARAMS.category];
+    if (category === "UN-submissions") {
+      router.query[QUERY_PARAMS.author_type] = "Party";
     }
     router.push({ query: router.query }, undefined, { shallow: true });
     scrollTo(0, 0);

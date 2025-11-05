@@ -105,8 +105,8 @@ const config: TThemeConfig = {
       type: "checkbox",
       options: [
         {
-          label: "UNCBD",
-          slug: "uncbd",
+          label: "CBD",
+          slug: "cbd",
           value: ["UN.corpus.UNCBD.n0000"],
         },
         {
@@ -308,13 +308,13 @@ const config: TThemeConfig = {
           label: "National Biodiversity Strategy and Action Plan (NBSAP)",
           slug: "National Biodiversity Strategy and Action Plan (NBSAP)",
           value: "National Biodiversity Strategy and Action Plan (NBSAP)",
-          group: "UNCBD",
+          group: "CBD",
         },
         {
           label: "National Report (NR)",
           slug: "National Report (NR)",
           value: "National Report (NR)",
-          group: "UNCBD",
+          group: "CBD",
         },
         {
           label: "Voluntary Land Degradation Neutrality Targets (LDN-T)",

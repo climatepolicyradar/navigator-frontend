@@ -39,29 +39,6 @@ const config: TThemeConfig = {
   },
   filters: [
     {
-      label: "Convention",
-      taxonomyKey: "convention",
-      type: "checkbox",
-      options: [
-        {
-          label: "UNCBD",
-          slug: "uncbd",
-          value: ["UN.corpus.UNCBD.n0000"],
-        },
-        {
-          label: "UNFCCC",
-          slug: "unfccc",
-          value: ["UNFCCC.corpus.i00000001.n0000"],
-        },
-        {
-          label: "UNCCD",
-          slug: "unccd",
-          value: ["UN.corpus.UNCCD.n0000"],
-        },
-      ],
-      category: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
-    },
-    {
       label: "Type",
       taxonomyKey: "framework_laws",
       apiMetaDataKey: "family.framework",

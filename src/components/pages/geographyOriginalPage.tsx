@@ -38,15 +38,13 @@ export interface IProps {
 
 const categories: { title: TDocumentCategory; slug: string }[] = [
   { title: "All", slug: "all" },
-  { title: "UN Submissions", slug: "unfccc" },
+  { title: "UN Submissions", slug: "un-submissions" },
   { title: "Laws", slug: "laws" },
   { title: "Policies", slug: "policies" },
   { title: "Climate Finance Projects", slug: "climate-finance-projects" },
   { title: "Offshore Wind Reports", slug: "offshore-wind-reports" },
   { title: "Litigation", slug: "litigation" },
 ];
-
-const MAX_NUMBER_OF_FAMILIES = 3;
 
 export const GeographyOriginalPage = ({
   geographyV2,

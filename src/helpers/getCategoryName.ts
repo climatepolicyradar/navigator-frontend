@@ -1,7 +1,7 @@
 import { TCategory, TCorpusTypeSubCategory } from "@/types";
 
 const corporaIdCategories = {
-  "UN.corpus.UNCBD.n0000": "UNCBD submission",
+  "UN.corpus.UNCBD.n0000": "CBD submission",
   "UN.corpus.UNCCD.n0000": "UNCCD submission",
   "UNFCCC.corpus.i00000001.n0000": "UNFCCC submission",
 };
