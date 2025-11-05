@@ -1,3 +1,4 @@
+import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { IMetadata, TCategory, TCorpusPublic, TFamilyDocumentPublic } from "@/types";
 
 import { getEventTableRows } from "./eventTable";
@@ -59,11 +60,14 @@ describe("getEventTableRows", () => {
             value: 1609459200000,
           },
           document: null,
-          matches: {
-            label: 0,
-            value: 0,
+          summary: {
+            label: <ViewMore maxLines={4}>Description 1</ViewMore>,
+            value: "Description 1",
           },
-          summary: "Description 1",
+          topics: {
+            label: null,
+            value: "",
+          },
           type: "Event",
         },
       },
@@ -132,7 +136,14 @@ describe("getEventTableRows", () => {
         label: "01/01/2021",
         value: 1609459200000,
       },
-      summary: "Description 1",
+      summary: {
+        label: <ViewMore maxLines={4}>Description 1</ViewMore>,
+        value: "Description 1",
+      },
+      topics: {
+        label: null,
+        value: "",
+      },
       type: "Event",
     });
 
@@ -216,11 +227,14 @@ describe("getEventTableRows", () => {
           value: 1609459200000,
         },
         document: null,
-        matches: {
-          label: 0,
-          value: 0,
+        summary: {
+          label: <ViewMore maxLines={4}>Description 2</ViewMore>,
+          value: "Description 2",
         },
-        summary: "Description 2",
+        topics: {
+          label: null,
+          value: "",
+        },
         type: "Event",
       },
     });
@@ -237,7 +251,14 @@ describe("getEventTableRows", () => {
         label: "01/01/2021",
         value: 1609459200000,
       },
-      summary: "Description 1",
+      summary: {
+        label: <ViewMore maxLines={4}>Description 1</ViewMore>,
+        value: "Description 1",
+      },
+      topics: {
+        label: null,
+        value: "",
+      },
       type: "Event",
     });
 
@@ -321,7 +342,14 @@ describe("getEventTableRows", () => {
         label: "01/01/2021",
         value: 1609459200000,
       },
-      summary: "Description 1",
+      summary: {
+        label: <ViewMore maxLines={4}>Description 1</ViewMore>,
+        value: "Description 1",
+      },
+      topics: {
+        label: null,
+        value: "",
+      },
       type: "Event",
     });
 
