@@ -31,3 +31,6 @@ export const processFamilyTopics = async (vespaFamilyData: TSearchResponse): Pro
 
   return documentsWithConceptCounts;
 };
+
+export const familyTopicsHasTopics = (familyTopics: IFamilyDocumentTopics | null) =>
+  Boolean(familyTopics && Object.keys(familyTopics.conceptCounts).length > 0);

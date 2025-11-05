@@ -4,6 +4,7 @@ import { Section } from "@/components/molecules/section/Section";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { IFamilyDocumentTopics, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
+import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 interface IProps {
   family: TFamilyPublic;
@@ -20,7 +21,7 @@ export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesSta
   const isUSA = family.geographies.includes("USA");
 
   const tableColumns = useMemo(
-    () => getEventTableColumns({ hasTopics: Boolean(familyTopics), isLitigation, isUSA, showMatches }),
+    () => getEventTableColumns({ hasTopics: familyTopicsHasTopics(familyTopics), isLitigation, isUSA, showMatches }),
     [familyTopics, isLitigation, isUSA, showMatches]
   );
   const tableRows = useMemo(
