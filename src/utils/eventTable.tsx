@@ -1,47 +1,68 @@
+import orderBy from "lodash/orderBy";
+import Link from "next/link";
 import { ReactNode } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Icon } from "@/components/atoms/icon/Icon";
-import { TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLoadingStatus, TMatchedFamily, TTableColumn, TTableRow } from "@/types";
+import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import {
+  IFamilyDocumentTopics,
+  TFamilyDocumentPublic,
+  TFamilyEventPublic,
+  TFamilyPublic,
+  TLoadingStatus,
+  TMatchedFamily,
+  TTableColumn,
+  TTableRow,
+} from "@/types";
 
 import { getMostSpecificCourts } from "./getMostSpecificCourts";
+import { pluralise } from "./pluralise";
+import { firstCase } from "./text";
 import { formatDateShort } from "./timedate";
 
 /* Columns */
 
-export type TEventTableColumnId = "action" | "caseNumber" | "caseTitle" | "court" | "date" | "document" | "matches" | "summary" | "type";
+export type TEventTableColumnId = "action" | "caseNumber" | "caseTitle" | "court" | "date" | "document" | "summary" | "topics" | "type";
 export type TEventTableColumn = TTableColumn<TEventTableColumnId>;
 
 export const getEventTableColumns = ({
+  hasTopics = false,
+  isLitigation,
   isUSA = true,
   showFamilyColumns = false,
-  showMatches = false,
 }: {
+  hasTopics?: boolean;
+  isLitigation: boolean;
   isUSA?: boolean;
   showFamilyColumns?: boolean;
   showMatches?: boolean;
 }) => {
   const columns: TEventTableColumn[] = [
     { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
-    { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 3 },
+    { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 2 },
+    { id: "topics", name: "Topics Mentioned in Text", fraction: 8 },
     { id: "action", name: "Action Taken", fraction: 4 },
-    { id: "document" },
     { id: "summary", fraction: 6, classes: "min-w-75" },
     { id: "caseNumber", name: "Case Number", fraction: 2 },
     { id: "court" },
     { id: "caseTitle", name: "Case", fraction: 2 },
-    { id: "matches" },
+    { id: "document", fraction: 2 },
   ];
 
   const columnsToRemove: TEventTableColumnId[] = [];
+  if (!isLitigation) columnsToRemove.push("date");
+  if (!hasTopics) columnsToRemove.push("topics");
   if (!isUSA) columnsToRemove.push("action");
   if (!showFamilyColumns) columnsToRemove.push("caseNumber", "court", "caseTitle");
-  if (!showMatches) columnsToRemove.push("matches");
 
   return columns.filter((column) => !columnsToRemove.includes(column.id));
 };
 
 /* Rows */
+
+const MAX_TOPICS_PER_DOCUMENT = 4;
 
 export type TEventTableRow = TTableRow<TEventTableColumnId>;
 
@@ -74,24 +95,76 @@ const getFamilyEvents = (family: TFamilyPublic): TEventWithDocument[] =>
 
 export const getEventTableRows = ({
   families,
+  familyTopics,
   documentEventsOnly = false,
   matchesFamily,
   matchesStatus = "success",
   language,
 }: {
   families: TFamilyPublic[];
+  familyTopics?: IFamilyDocumentTopics;
   documentEventsOnly?: boolean;
   matchesFamily?: TMatchedFamily;
   matchesStatus?: TLoadingStatus;
   language?: string;
 }): TEventTableRow[] => {
   const rows: TEventTableRow[] = [];
+  const topicsData = familyTopics ? Object.values(familyTopics.conceptsGrouped).flat() : [];
 
   families.forEach((family) =>
     getFamilyEvents(family).forEach(({ event, document }, eventIndex) => {
       if (documentEventsOnly && !document) return;
 
       const date = new Date(event.date);
+      const summary = event.metadata.description?.[0];
+
+      const linkClasses = "block text-gray-700 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
+
+      /* Topics */
+
+      let topicsDisplay: ReactNode = null;
+      if (document && familyTopics) {
+        const documentTopicsData = familyTopics.documents.find((doc) => doc.importId === document.import_id)?.conceptCounts ?? {};
+
+        const sortedTopics = orderBy(Object.entries(documentTopicsData), ["1"], ["desc"]);
+        const someTopicsHidden = sortedTopics.length > MAX_TOPICS_PER_DOCUMENT;
+
+        const topicLinks = sortedTopics.slice(0, MAX_TOPICS_PER_DOCUMENT).map(([topicId, topicCount]) => {
+          const [wikibaseId, fallbackLabel] = topicId.split(":");
+          const topic = topicsData.find((concept) => concept.wikibase_id === wikibaseId);
+
+          // TODO investigate references to topics not in API response
+          if (!topic) return null;
+
+          return (
+            <Link
+              key={topicId}
+              href={{ pathname: `/documents/${document.slug}`, query: { [QUERY_PARAMS.concept_name]: topic.preferred_label } }}
+              className={linkClasses}
+            >
+              {firstCase(topic?.preferred_label || fallbackLabel)} <span className="text-gray-500">({topicCount})</span>
+            </Link>
+          );
+        });
+
+        topicsDisplay = (
+          <div className="flex flex-col gap-2 items-start">
+            {topicLinks}
+            {someTopicsHidden && (
+              <Link href={`/documents/${document.slug}`}>
+                <button
+                  type="button"
+                  className="p-2 mt-1 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
+                >
+                  View all topic mentions
+                </button>
+              </Link>
+            )}
+          </div>
+        );
+      }
+
+      /* Matches */
 
       let matches = 0;
       if (matchesFamily && document) {
@@ -101,16 +174,18 @@ export const getEventTableRows = ({
         }
       }
 
-      let matchesDisplay: ReactNode = matches;
+      let matchesDisplay: ReactNode = null;
       if (matchesStatus === "loading") {
         matchesDisplay = <Icon name="loading" />;
-      } else if (document) {
+      } else if (document && matches > 0) {
         matchesDisplay = (
-          <LinkWithQuery href={`/documents/${document.slug}`} className="text-text-brand">
-            {matches}
+          <LinkWithQuery href={`/documents/${document.slug}`} className={linkClasses}>
+            {matches} {pluralise(matches, ["match", "matches"])}
           </LinkWithQuery>
         );
       }
+
+      /* Everything else */
 
       rows.push({
         id: [family.import_id, eventIndex].join("/"),
@@ -126,18 +201,18 @@ export const getEventTableRows = ({
           document: document
             ? {
                 label: (
-                  <LinkWithQuery href={`/documents/${document.slug}`} className="text-text-brand underline">
-                    View
-                  </LinkWithQuery>
+                  <div className="flex flex-col gap-2">
+                    <LinkWithQuery href={`/documents/${document.slug}`} className={linkClasses}>
+                      View
+                    </LinkWithQuery>
+                    {matchesDisplay}
+                  </div>
                 ),
-                value: document.slug,
+                value: `${document.slug}:${matches}`,
               }
             : null,
-          matches: {
-            label: matchesDisplay,
-            value: matches,
-          },
-          summary: event.metadata.description?.[0] || null,
+          summary: summary ? { label: <ViewMore maxLines={4}>{summary}</ViewMore>, value: summary } : null,
+          topics: { label: topicsDisplay, value: "" },
           type: event.event_type,
         },
       });

@@ -1,3 +1,4 @@
+import { LucideIcon } from "lucide-react";
 import { ReactNode } from "react";
 
 import { IMetadata } from "./display";
@@ -8,6 +9,7 @@ export type TTableOrder = "asc" | "desc";
 export type TTableSortOption = {
   label: string;
   order: TTableOrder;
+  icon?: LucideIcon;
 };
 
 export type TTableCell = TTableValue | IMetadata;
