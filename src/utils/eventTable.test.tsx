@@ -121,7 +121,7 @@ describe("getEventTableRows", () => {
     expect(eventRows).toHaveLength(1);
     expect(eventRows[0].id).toBe("/0");
 
-    const { document, matches, ...cells } = eventRows[0].cells;
+    const { document, ...cells } = eventRows[0].cells;
 
     expect(cells).toEqual({
       action: "Action 1",
@@ -137,10 +137,7 @@ describe("getEventTableRows", () => {
     });
 
     expect(typeof document).toBe("object");
-    expect((document as IMetadata).value).toBe("document-1");
-
-    expect(typeof matches).toBe("object");
-    expect((matches as IMetadata).value).toBe(0);
+    expect((document as IMetadata).value).toBe("document-1:0");
   });
 
   it("returns a list of family and document event rows", () => {
@@ -229,7 +226,7 @@ describe("getEventTableRows", () => {
     });
 
     expect(eventRows[1].id).toBe("/1");
-    const { document, matches, ...cells } = eventRows[1].cells;
+    const { document, ...cells } = eventRows[1].cells;
 
     expect(cells).toEqual({
       action: "Action 1",
@@ -245,10 +242,7 @@ describe("getEventTableRows", () => {
     });
 
     expect(typeof document).toBe("object");
-    expect((document as IMetadata).value).toBe("document-1");
-
-    expect(typeof matches).toBe("object");
-    expect((matches as IMetadata).value).toBe(0);
+    expect((document as IMetadata).value).toBe("document-1:0");
   });
 
   it("returns a deduplicated list of family and document event rows if same event linked to both family and document", () => {
@@ -316,7 +310,7 @@ describe("getEventTableRows", () => {
     expect(eventRows).toHaveLength(1);
     expect(eventRows[0].id).toBe("/0");
 
-    const { document, matches, ...cells } = eventRows[0].cells;
+    const { document, ...cells } = eventRows[0].cells;
 
     expect(cells).toEqual({
       action: "Action 1",
@@ -332,9 +326,6 @@ describe("getEventTableRows", () => {
     });
 
     expect(typeof document).toBe("object");
-    expect((document as IMetadata).value).toBe("document-1");
-
-    expect(typeof matches).toBe("object");
-    expect((matches as IMetadata).value).toBe(0);
+    expect((document as IMetadata).value).toBe("document-1:0");
   });
 });

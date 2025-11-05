@@ -208,7 +208,7 @@ export const getEventTableRows = ({
                     {matchesDisplay}
                   </div>
                 ),
-                value: document.slug,
+                value: `${document.slug}:${matches}`,
               }
             : null,
           summary: summary ? { label: <ViewMore maxLines={4}>{summary}</ViewMore>, value: summary } : null,
