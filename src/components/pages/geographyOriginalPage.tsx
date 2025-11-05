@@ -46,8 +46,6 @@ const categories: { title: TDocumentCategory; slug: string }[] = [
   { title: "Litigation", slug: "litigation" },
 ];
 
-const MAX_NUMBER_OF_FAMILIES = 3;
-
 export const GeographyOriginalPage = ({
   geographyV2,
   parentGeographyV2,
