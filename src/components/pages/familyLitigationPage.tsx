@@ -19,12 +19,13 @@ import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
 import { TMatchedFamily, TFamilyPageBlock } from "@/types";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 
 import { IProps } from "./familyOriginalPage";
 
-export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTopics, theme, themeConfig }: IProps) => {
+export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTopics, theme, themeConfig, featureFlags }: IProps) => {
   const { getText } = useText();
   /* Search matches */
   const router = useRouter();
@@ -85,8 +86,10 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTo
     },
     topics: {
       render: useCallback(() => {
+        if (!isKnowledgeGraphEnabled(featureFlags, themeConfig)) return null;
+        if (!familyTopics) return null;
         return <TopicsBlock key="topics-block" familyTopics={familyTopics} />;
-      }, [familyTopics]),
+      }, [familyTopics, featureFlags, themeConfig]),
     },
   };
 

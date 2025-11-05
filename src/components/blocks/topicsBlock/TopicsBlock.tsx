@@ -1,6 +1,6 @@
 import { Section } from "@/components/molecules/section/Section";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { IFamilyDocumentTopics, TConcept, TSearchResponse } from "@/types";
+import { IFamilyDocumentTopics } from "@/types";
 import { getTopicTableRows, TopicTableColumns, TTopicTableColumnId } from "@/utils/tables/topic/topicTable";
 
 type TProps = {

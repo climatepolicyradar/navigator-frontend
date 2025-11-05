@@ -40,31 +40,40 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
                       concept={concept}
                       label={`${firstCase(concept.preferred_label)} (${familyTopics.conceptCounts[concept.wikibase_id] || 0})`}
                     >
-                      <div>
-                        <h6 className="mb-2 font-bold">{firstCase(concept.preferred_label)}</h6>
-                        <span className="block mb-2">{concept.description}</span>
+                      <div className="flex flex-col gap-2">
+                        <h6 className="font-bold">{firstCase(concept.preferred_label)}</h6>
+                        <span className="">{concept.description}</span>
                         <span className="text-xs text-gray-500">
                           This concept is mentioned in the following documents, click on the document to view the specific passages:
                         </span>
-                        <div className="flex flex-col gap-1">
+                        <ul className="flex flex-col gap-2">
+                          {/* because the concepts are stored as "wikibase_id:label" we have this weird lookup */}
                           {familyTopics.documents
-                            .filter((doc) => Object.keys(doc.conceptCounts).some((key) => key.split(":")[0] === concept.wikibase_id)) // TODO: make this nicer
+                            .filter((doc) =>
+                              Object.keys(doc.conceptCounts).some((key) => key === concept.wikibase_id + ":" + concept.preferred_label)
+                            )
+                            .sort((a, b) => {
+                              const countA = a.conceptCounts ? a.conceptCounts[`${concept.wikibase_id}:${concept.preferred_label}`] || 0 : 0;
+                              const countB = b.conceptCounts ? b.conceptCounts[`${concept.wikibase_id}:${concept.preferred_label}`] || 0 : 0;
+                              return countB - countA;
+                            })
                             .map((doc) => {
                               const topicCount = doc.conceptCounts ? doc.conceptCounts[`${concept.wikibase_id}:${concept.preferred_label}`] || 0 : 0;
                               return (
-                                <Link
-                                  className="font-medium block hover:text-blue-800 transition underline-offset-2 hover:underline"
-                                  key={doc.importId}
-                                  href={{
-                                    pathname: `/documents/${doc.slug}`,
-                                    query: { [QUERY_PARAMS.concept_name]: concept.preferred_label },
-                                  }}
-                                >
-                                  {doc.title} ({topicCount})
-                                </Link>
+                                <li key={doc.importId}>
+                                  <Link
+                                    className="font-medium hover:text-blue-800 transition underline-offset-2 hover:underline"
+                                    href={{
+                                      pathname: `/documents/${doc.slug}`,
+                                      query: { [QUERY_PARAMS.concept_name]: concept.preferred_label },
+                                    }}
+                                  >
+                                    {doc.title} ({topicCount})
+                                  </Link>
+                                </li>
                               );
                             })}
-                        </div>
+                        </ul>
                       </div>
                     </ConceptLink>
                     {i < familyTopics.conceptsGrouped[rootConcept.wikibase_id].length - 1 && ", "}
