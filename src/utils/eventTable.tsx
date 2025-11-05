@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 import {
   IFamilyDocumentTopics,
   TFamilyDocumentPublic,
@@ -132,8 +133,15 @@ export const getEventTableRows = ({
           const [wikibaseId, fallbackLabel] = topicId.split(":");
           const topic = topicsData.find((concept) => concept.wikibase_id === wikibaseId);
 
+          // TODO investigate references to topics not in API response
+          if (!topic) return null;
+
           return (
-            <Link key={topicId} href="#" className={linkClasses}>
+            <Link
+              key={topicId}
+              href={{ pathname: `/documents/${document.slug}`, query: { [QUERY_PARAMS.concept_name]: topic.preferred_label } }}
+              className={linkClasses}
+            >
               {firstCase(topic?.preferred_label || fallbackLabel)} <span className="text-gray-500">({topicCount})</span>
             </Link>
           );
@@ -143,12 +151,14 @@ export const getEventTableRows = ({
           <div className="flex flex-col gap-2 items-start">
             {topicLinks}
             {someTopicsHidden && (
-              <button
-                type="button"
-                className="p-2 mt-1 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
-              >
-                View all topic mentions
-              </button>
+              <Link href={`/documents/${document.slug}`}>
+                <button
+                  type="button"
+                  className="p-2 mt-1 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
+                >
+                  View all topic mentions
+                </button>
+              </Link>
             )}
           </div>
         );
