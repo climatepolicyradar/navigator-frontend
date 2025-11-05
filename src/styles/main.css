@@ -6,6 +6,7 @@
 @import "./cclw.css";
 @import "./mcf.css";
 @import "./ccc.css";
+@import "./rio.css";
 
 @plugin "@tailwindcss/forms";
 @plugin "tailwind-scrollbar" {

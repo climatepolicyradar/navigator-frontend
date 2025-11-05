@@ -1,0 +1,85 @@
+/* scene wrapper */
+.rio-screenshot-wrapper {
+  position: relative;
+  perspective: 800;
+  perspective-origin: 50% 100px;
+  margin-top: 10px;
+  padding-left: 100px;
+}
+
+/* canvas wrapper */
+.rio-screenshot-canvas {
+  position: relative;
+  width: 400px;
+  height: 500px;
+  transform-style: preserve-3d;
+  transition: all 500ms ease-in;
+  transform: rotateY(20deg) rotateX(60deg) rotateZ(-10deg);
+  box-shadow: -0px 20px 50px -12px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  margin-right: 30px;
+  display: inline-block;
+}
+
+.rio-screenshot-canvas img {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  opacity: 0.7;
+}
+
+b {
+  position: absolute;
+  width: 400px;
+  height: 500px;
+  display: block;
+  /* background-image: url(http://st.depositphotos.com/1019436/2254/v/950/depositphotos_22544613-Canvas-texture-seamless.jpg);
+  background-size: 100%; */
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 1);
+  /* font-size: 20px;
+  text-align: center;
+  line-height: 200px;
+  color: rgba(0, 0, 0, 0.5);
+  font-family: sans-serif;
+  text-transform: uppercase;
+  transition: all 1s linear; */
+  overflow: hidden;
+  border-radius: 3px;
+}
+
+b.left {
+  transform: rotateY(270deg) translateX(-1px);
+  transform-origin: center left;
+  width: 18px;
+}
+
+b.left img {
+  height: 500px;
+  opacity: 0.5;
+}
+
+b.bottom {
+  transform: rotateX(90deg) translateY(16px) translateZ(-480px);
+  transform-origin: bottom center;
+  height: 18px;
+}
+
+b.bottom img {
+  transform: rotateX(180deg);
+  width: 100%;
+  height: 500px;
+  opacity: 0.5;
+  left: 0px;
+}
+
+b.front {
+  transform: translateZ(16px);
+}
+
+b.front img {
+  width: 400px;
+  height: 500px;
+  top: 0px;
+  left: 0px;
+  position: absolute;
+}
