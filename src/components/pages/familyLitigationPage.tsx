@@ -6,6 +6,7 @@ import { Debug } from "@/components/atoms/debug/Debug";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
+import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
@@ -18,6 +19,7 @@ import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
 import { TMatchedFamily, TFamilyPageBlock } from "@/types";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 
@@ -92,6 +94,12 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTo
           </TextBlock>
         );
       },
+    },
+    topics: {
+      render: useCallback(() => {
+        if (!familyTopics) return null;
+        return <TopicsBlock key="topics-block" familyTopics={familyTopics} />;
+      }, [familyTopics]),
     },
   };
 

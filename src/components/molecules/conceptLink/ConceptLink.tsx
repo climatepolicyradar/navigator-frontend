@@ -8,31 +8,35 @@ import { firstCase } from "@/utils/text";
 
 interface IProps {
   concept: TConcept;
+  label?: string;
+  children?: React.ReactNode;
   onClick?: (concept: TConcept) => void;
   triggerClasses?: string;
 }
 
-export const ConceptLink = ({ concept, onClick, triggerClasses = "" }: IProps) => {
+export const ConceptLink = ({ concept, label, onClick, triggerClasses = "", children }: IProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const allTriggerClasses = joinTailwindClasses(
     "inline capitalize underline underline-offset-2 decoration-dotted",
     isOpen ? "decoration-text-primary" : "decoration-text-quaternary",
-    onClick ? "" : "cursor-help",
+    onClick ? "" : "!cursor-help",
     triggerClasses
   );
 
-  const title = firstCase(concept.preferred_label);
+  const title = label ?? firstCase(concept.preferred_label);
 
-  const trigger = onClick ? (
-    <button className={allTriggerClasses} onClick={() => onClick(concept)}>
+  const trigger = (
+    <button className={allTriggerClasses} onClick={() => (onClick ? onClick(concept) : null)}>
       {title}
     </button>
-  ) : (
-    <span className={allTriggerClasses}>{title}</span>
   );
 
-  return (
+  return children ? (
+    <Popover openOnHover onOpenChange={setIsOpen} trigger={trigger}>
+      {children}
+    </Popover>
+  ) : (
     <Popover
       openOnHover
       onOpenChange={setIsOpen}

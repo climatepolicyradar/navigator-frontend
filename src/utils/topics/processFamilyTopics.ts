@@ -9,7 +9,8 @@ export const processFamilyTopics = async (vespaFamilyData: TSearchResponse): Pro
     family.hits.forEach((hit) => {
       // Aggregate concept counts across all documents
       Object.entries(hit.concept_counts || {}).forEach(([conceptId, count]) => {
-        documentsWithConceptCounts.conceptCounts[conceptId] = (documentsWithConceptCounts.conceptCounts[conceptId] || 0) + count;
+        const wikiBaseId = conceptId.split(":")[0];
+        documentsWithConceptCounts.conceptCounts[wikiBaseId] = (documentsWithConceptCounts.conceptCounts[wikiBaseId] || 0) + count;
       });
       // Store document-level concept counts
       documentsWithConceptCounts.documents.push({
@@ -21,9 +22,7 @@ export const processFamilyTopics = async (vespaFamilyData: TSearchResponse): Pro
     });
   });
 
-  const conceptIds = documentsWithConceptCounts.conceptCounts
-    ? Object.keys(documentsWithConceptCounts.conceptCounts).map((id) => id.split(":")[0])
-    : [];
+  const conceptIds = documentsWithConceptCounts.conceptCounts ? Object.keys(documentsWithConceptCounts.conceptCounts) : [];
 
   const { rootConcepts, concepts } = await fetchAndProcessConcepts(conceptIds);
 
