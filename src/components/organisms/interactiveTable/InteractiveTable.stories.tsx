@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from "@storybook/nextjs";
+import { LucideCalendarArrowDown, LucideCalendarArrowUp } from "lucide-react";
 
 import { TTableCell } from "@/types";
 
@@ -18,7 +19,7 @@ export default meta;
 type TWainwrightColumns = "height" | "link" | "region" | "summited" | "wainwright";
 const linkToCell = (link: string): TTableCell => ({
   label: (
-    <a href={link} className="text-text-brand underline">
+    <a href={link} className="underline decoration-gray-300">
       View
     </a>
   ),
@@ -54,8 +55,8 @@ export const Generic: TStory<TWainwrightColumns> = {
         id: "summited",
         sortable: true,
         sortOptions: [
-          { order: "desc", label: "Most recent" },
-          { order: "asc", label: "Chronological" },
+          { order: "desc", label: "Most recent", icon: LucideCalendarArrowUp },
+          { order: "asc", label: "Chronological", icon: LucideCalendarArrowDown },
         ],
       },
     ],

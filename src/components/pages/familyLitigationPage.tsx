@@ -23,9 +23,11 @@ import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD
 
 import { IProps } from "./familyOriginalPage";
 
-export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, themeConfig }: IProps) => {
+export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTopics, theme, themeConfig }: IProps) => {
   const { getText } = useText();
+
   /* Search matches */
+
   const router = useRouter();
   const hasSearch = Boolean(
     router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]
@@ -58,8 +60,17 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, theme, t
     },
     documents: {
       render: useCallback(
-        () => <DocumentsBlock key="documents" family={family} matchesFamily={matchesFamily} matchesStatus={matchesStatus} showMatches={hasSearch} />,
-        [family, hasSearch, matchesFamily, matchesStatus]
+        () => (
+          <DocumentsBlock
+            key="documents"
+            family={family}
+            familyTopics={familyTopics}
+            matchesFamily={matchesFamily}
+            matchesStatus={matchesStatus}
+            showMatches={hasSearch}
+          />
+        ),
+        [family, familyTopics, hasSearch, matchesFamily, matchesStatus]
       ),
     },
     metadata: {
