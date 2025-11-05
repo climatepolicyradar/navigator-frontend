@@ -89,7 +89,7 @@ const RioSubmissions = () => {
             </p>
             <p>
               Launching for COP30, <i>Rio Policy Radar</i> will be a shared space for country submissions to the three “Rio” Conventions (adopted at
-              the 1992 Rio Earth Summit) - the UNCBD (biodiversity), the UNCCD (land degradation) and the UNFCCC (climate). This tool will allow users
+              the 1992 Rio Earth Summit) - the CBD (biodiversity), the UNCCD (land degradation) and the UNFCCC (climate). This tool will allow users
               to easily explore how countries are addressing the three interlinked issues, and their co-benefits, opportunities or trade-offs. For
               example, users will be able to discover how strategies to address nature loss are also addressing climate adaptation, or identify how
               different countries around the world are using nature-based solutions in their drought plans.
