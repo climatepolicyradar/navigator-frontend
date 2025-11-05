@@ -38,7 +38,7 @@ export interface IProps {
 
 const categories: { title: TDocumentCategory; slug: string }[] = [
   { title: "All", slug: "all" },
-  { title: "UN Submissions", slug: "unfccc" },
+  { title: "UN Submissions", slug: "un-submissions" },
   { title: "Laws", slug: "laws" },
   { title: "Policies", slug: "policies" },
   { title: "Climate Finance Projects", slug: "climate-finance-projects" },
