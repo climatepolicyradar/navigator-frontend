@@ -43,7 +43,7 @@ const config: TThemeConfig = {
   documentCategories: ["All"],
   defaultDocumentCategory: "All",
   pageBlocks: {
-    family: ["metadata", "documents", "summary"],
+    family: ["topics", "metadata", "documents", "summary"],
     geography: ["recents", "subdivisions"],
   },
   tutorials: ["climateLitigationDatabase"],
