@@ -1,5 +1,5 @@
 import orderBy from "lodash/orderBy";
-import { ReactNode, useMemo } from "react";
+import { Fragment, ReactNode, useMemo } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { TBreadcrumbLink } from "@/components/breadcrumbs/Breadcrumbs";
@@ -103,12 +103,12 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
     // Scroll to metadata to show hidden geographies
     if (hiddenGeographiesCount > 0) {
       geographiesNode.push(
-        <>
+        <Fragment key="others">
           &ensp;
           <button role="button" className="underline" onClick={onShowMore}>
             +{hiddenGeographiesCount} {pluralise(hiddenGeographiesCount, ["other", "others"])}
           </button>
-        </>
+        </Fragment>
       );
     }
 

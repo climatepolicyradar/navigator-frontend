@@ -154,6 +154,7 @@ export const getEventTableRows = ({
               <Link href={`/documents/${document.slug}`}>
                 <button
                   type="button"
+                  role="link"
                   className="p-2 mt-1 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
                 >
                   View all topic mentions
