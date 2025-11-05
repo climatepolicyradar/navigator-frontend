@@ -28,7 +28,7 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
         group: firstCase(rootConcept.preferred_label),
         concepts: {
           label: (
-            <div className="flex flex-wrap gap-y-2">
+            <div className="leading-normal">
               {joinNodes(
                 familyTopics.conceptsGrouped[rootConcept.wikibase_id]
                   .sort((a, b) => {
@@ -82,7 +82,7 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
                       </ConceptLink>
                     </span>
                   )),
-                <span className="mr-1">,</span>
+                ", "
               )}
             </div>
           ),

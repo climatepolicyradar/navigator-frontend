@@ -20,18 +20,16 @@ export const ConceptLink = ({ concept, label, onClick, triggerClasses = "", chil
   const allTriggerClasses = joinTailwindClasses(
     "inline capitalize underline underline-offset-2 decoration-dotted",
     isOpen ? "decoration-text-primary" : "decoration-text-quaternary",
-    onClick ? "" : "cursor-help",
+    onClick ? "" : "!cursor-help",
     triggerClasses
   );
 
   const title = label ?? firstCase(concept.preferred_label);
 
-  const trigger = onClick ? (
-    <button className={allTriggerClasses} onClick={() => onClick(concept)}>
+  const trigger = (
+    <button className={allTriggerClasses} onClick={() => (onClick ? onClick(concept) : null)}>
       {title}
     </button>
-  ) : (
-    <span className={allTriggerClasses}>{title}</span>
   );
 
   return children ? (
