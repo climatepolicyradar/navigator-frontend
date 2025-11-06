@@ -317,7 +317,7 @@ const config: TThemeConfig = {
           group: "CBD",
         },
         {
-          label: "National Target (NT)",
+          label: "National Targets (NT)",
           slug: "National Target (NT)",
           value: "National Target (NT)",
           group: "CBD",
