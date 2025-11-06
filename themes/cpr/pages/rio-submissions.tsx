@@ -31,19 +31,18 @@ const QUERY_EXAMPLES: { label: ReactNode; href: UrlObject }[] = [
     },
   },
   {
-    label: <span>Desertification in submissions to CBD</span>,
+    label: <span>Mongolia's submissions to the Rio Conventions</span>,
     href: {
       pathname: "/search",
       query: {
         [QUERY_PARAMS.category]: "UN-submissions",
-        [QUERY_PARAMS.query_string]: "desertification",
         [QUERY_PARAMS.author_type]: "Party",
-        [QUERY_PARAMS.convention]: "cbd",
+        [QUERY_PARAMS.country]: "mongolia",
       },
     },
   },
   {
-    label: <span>Subsidies in Land Degradation Neutrality Target</span>,
+    label: <span>Subsidies in Land Degradation Neutrality Targets</span>,
     href: {
       pathname: "/search",
       query: {
