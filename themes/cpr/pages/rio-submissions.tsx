@@ -19,49 +19,38 @@ import { isRioPolicyRadarEnabled } from "@/utils/features";
 
 const QUERY_EXAMPLES: { label: ReactNode; href: UrlObject }[] = [
   {
-    label: <span>Latest NBSAPs</span>,
+    label: <span>Targets in latest NBSAPs</span>,
     href: {
       pathname: "/search",
       query: {
         [QUERY_PARAMS.category]: "UN-submissions",
         [QUERY_PARAMS.author_type]: "Party",
         [QUERY_PARAMS["_document.type"]]: "National Biodiversity Strategy and Action Plan (NBSAP)",
+        [QUERY_PARAMS.concept_name]: "target",
       },
     },
   },
   {
-    label: (
-      <span>
-        Land degradation&nbsp;+
-        <br />
-        Somalia
-      </span>
-    ),
+    label: <span>Desertification in submissions to CBD</span>,
     href: {
       pathname: "/search",
       query: {
         [QUERY_PARAMS.category]: "UN-submissions",
-        [QUERY_PARAMS.query_string]: "Land degradation",
-        [QUERY_PARAMS.country]: "somalia",
+        [QUERY_PARAMS.query_string]: "desertification",
         [QUERY_PARAMS.author_type]: "Party",
+        [QUERY_PARAMS.convention]: "cbd",
       },
     },
   },
   {
-    label: (
-      <span>
-        Brazil&nbsp;+
-        <br />
-        Nature-based solutions
-      </span>
-    ),
+    label: <span>Subsidy in Land Degradation Neutrality Target</span>,
     href: {
       pathname: "/search",
       query: {
         [QUERY_PARAMS.category]: "UN-submissions",
         [QUERY_PARAMS.author_type]: "Party",
-        [QUERY_PARAMS.country]: "brazil",
-        [QUERY_PARAMS.query_string]: "Nature-based solutions",
+        [QUERY_PARAMS.convention]: "unccd",
+        [QUERY_PARAMS.concept_name]: "subsidy",
       },
     },
   },
