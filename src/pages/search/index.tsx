@@ -86,7 +86,7 @@ const showLitigationInformation = (query: ParsedUrlQuery) => {
 const showKnowledgeGraphInformation = (query: ParsedUrlQuery) => {
   let show = false;
   // If we have multiple topics/concepts selected
-  if (Array.isArray(query[QUERY_PARAMS.concept_name]) && query[QUERY_PARAMS.concept_name].length > 1) return true;
+  if (query[QUERY_PARAMS.concept_name]) return true;
   // If we have a query AND a concept selected
   if (query[QUERY_PARAMS.query_string] && (query[QUERY_PARAMS.concept_name] || query[QUERY_PARAMS.concept_id])) return true;
   return show;
@@ -718,7 +718,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                     phrase={router.query[QUERY_PARAMS.query_string] as string}
                                     selectedTopics={getSelectedConcepts(router.query[QUERY_PARAMS.concept_name], conceptsData)}
                                   />
-                                  .{" "}
+                                  . There is currently a short delay in topics appearing on new documents.{" "}
                                   <LinkWithQuery href="/faq" target="_blank" hash="topics-faqs" className="underline hover:text-blue-800">
                                     Learn more
                                   </LinkWithQuery>

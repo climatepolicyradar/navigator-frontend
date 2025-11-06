@@ -43,7 +43,7 @@ const QUERY_EXAMPLES: { label: ReactNode; href: UrlObject }[] = [
     },
   },
   {
-    label: <span>Subsidy in Land Degradation Neutrality Target</span>,
+    label: <span>Subsidies in Land Degradation Neutrality Target</span>,
     href: {
       pathname: "/search",
       query: {
