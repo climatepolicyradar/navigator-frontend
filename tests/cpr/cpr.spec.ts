@@ -116,7 +116,7 @@ test.describe("CPR Hero Search", () => {
     // Should navigate to search page with the suggestion as query
     await page.waitForURL("/search*");
     const url = page.url();
-    expect(url).toContain("c=UNFCCC");
+    expect(url).toContain("c=UN-submissions");
     expect(url).toContain("t=Nationally+Determined+Contribution");
     expect(url).toContain("at=Party");
     expect(url).not.toContain("e=true");
