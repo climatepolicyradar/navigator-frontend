@@ -56,9 +56,9 @@ const QUERY_EXAMPLES: { label: ReactNode; href: UrlObject }[] = [
 ];
 
 const RioSubmissions = () => {
-  const { featureFlags } = useContext(ThemePageFeaturesContext);
+  const { featureFlags, themeConfig } = useContext(ThemePageFeaturesContext);
 
-  if (!isRioPolicyRadarEnabled(featureFlags)) {
+  if (!isRioPolicyRadarEnabled(featureFlags, themeConfig)) {
     return (
       <MainLayout title="Rio Submissions" description="Rio Policy Radar - a shared tool for climate, nature and land" theme="cpr">
         <section className="pt-8 text-content">
