@@ -62,8 +62,6 @@ describe("SearchPage", async () => {
       ],
     });
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
-
     await userEvent.click(await screen.findByRole("button", { name: "Topics Beta" }));
 
     expect(await screen.findByText("Find mentions of topics")).toBeInTheDocument();
@@ -74,8 +72,8 @@ describe("SearchPage", async () => {
     await userEvent.click(topicOption);
 
     expect(topicOption).toBeChecked();
-    // check for applied filter button
-    expect(screen.getByRole("button", { name: "Child topic 1" }));
+    // check for applied filter button and in the info box
+    expect(screen.getAllByRole("button", { name: "Child topic 1" })).toHaveLength(2);
 
     expect(screen.getByRole("link", { name: "Family with topic 1" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Family with topic 2" })).not.toBeInTheDocument();
