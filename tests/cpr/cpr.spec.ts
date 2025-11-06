@@ -208,7 +208,7 @@ test.describe("CPR Hero Search", () => {
   });
 
   test("should maintain search state on page refresh", async ({ page }) => {
-    const searchTerm = "climate framework laws";
+    const searchTerm = "climate framework law";
 
     // Type search term
     await page.fill('[data-cy="search-input"]', searchTerm);
