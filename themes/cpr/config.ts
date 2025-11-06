@@ -317,6 +317,12 @@ const config: TThemeConfig = {
           group: "CBD",
         },
         {
+          label: "National Targets (NT)",
+          slug: "National Target (NT)",
+          value: "National Target (NT)",
+          group: "CBD",
+        },
+        {
           label: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
           slug: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
           value: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
