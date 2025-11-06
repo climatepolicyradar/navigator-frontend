@@ -208,7 +208,7 @@ test.describe("CPR Hero Search", () => {
   });
 
   test("should maintain search state on page refresh", async ({ page }) => {
-    const searchTerm = "climate framework laws";
+    const searchTerm = "climate framework law";
 
     // Type search term
     await page.fill('[data-cy="search-input"]', searchTerm);
@@ -227,7 +227,7 @@ test.describe("CPR Hero Search", () => {
 
     // Should still be on search results page with same parameters
     await expect(page).toHaveURL(/\/search/);
-    await expect(page).toHaveURL(/q=climate\+framework\+laws/);
+    await expect(page).toHaveURL(/q=climate\+framework\+law/);
     await expect(page).not.toHaveURL(/e=true/);
   });
 
