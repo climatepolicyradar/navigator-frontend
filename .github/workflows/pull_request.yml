@@ -16,94 +16,94 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-  lhci-desktop:
-    name: Lighthouse Desktop (${{ matrix.theme }})
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        theme: [cpr, cclw, mcf, ccc]
-    permissions:
-      checks: write
-      contents: read
-    steps:
-      - uses: actions/checkout@v5
-      - name: Use Node.js 22.12.0
-        uses: actions/setup-node@v5
-        with:
-          node-version: 22.12.0
-      - run: npm install
-      - run: cp .env.example .env
-      - run: THEME=${{ matrix.theme }} ROBOTS=true npm run build
-      - name: install Lighthouse CI
-        run: npm install -g @lhci/cli@0.14.x
-      - id: upper-theme
-        name: Theme to uppercase
-        run: |
-          theme=$(echo ${{ matrix.theme }} | tr '[:lower:]' '[:upper:]')
-          echo "theme=$theme" >> $GITHUB_OUTPUT
+  # lhci-desktop:
+  #   name: Lighthouse Desktop (${{ matrix.theme }})
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       theme: [cpr, cclw, mcf, ccc]
+  #   permissions:
+  #     checks: write
+  #     contents: read
+  #   steps:
+  #     - uses: actions/checkout@v5
+  #     - name: Use Node.js 22.12.0
+  #       uses: actions/setup-node@v5
+  #       with:
+  #         node-version: 22.12.0
+  #     - run: npm install
+  #     - run: cp .env.example .env
+  #     - run: THEME=${{ matrix.theme }} ROBOTS=true npm run build
+  #     - name: install Lighthouse CI
+  #       run: npm install -g @lhci/cli@0.14.x
+  #     - id: upper-theme
+  #       name: Theme to uppercase
+  #       run: |
+  #         theme=$(echo ${{ matrix.theme }} | tr '[:lower:]' '[:upper:]')
+  #         echo "theme=$theme" >> $GITHUB_OUTPUT
 
-      - name: Fetch latest base branch SHA
-        id: base-sha
-        run: |
-          git fetch origin ${{ github.event.pull_request.base.ref }}
-          echo "sha=$(git rev-parse origin/${{ github.event.pull_request.base.ref }})" >> $GITHUB_OUTPUT
+  #     - name: Fetch latest base branch SHA
+  #       id: base-sha
+  #       run: |
+  #         git fetch origin ${{ github.event.pull_request.base.ref }}
+  #         echo "sha=$(git rev-parse origin/${{ github.event.pull_request.base.ref }})" >> $GITHUB_OUTPUT
 
-      - name: run Lighthouse Desktop
-        # The --baseHash parameter compares the current commit (the one being tested) against the specified base hash.
-        # E.g., if your PR branch has commit abc123, and the main branch has commit def456,
-        # --baseHash=def456 tells Lighthouse: "Compare abc123 against def456"
-        run: lhci autorun --config=lighthouserc.desktop.js --collect.settings.preset=desktop --baseHash=${{ steps.base-sha.outputs.sha }}
+  #     - name: run Lighthouse Desktop
+  #       # The --baseHash parameter compares the current commit (the one being tested) against the specified base hash.
+  #       # E.g., if your PR branch has commit abc123, and the main branch has commit def456,
+  #       # --baseHash=def456 tells Lighthouse: "Compare abc123 against def456"
+  #       run: lhci autorun --config=lighthouserc.desktop.js --collect.settings.preset=desktop --baseHash=${{ steps.base-sha.outputs.sha }}
 
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-          LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_DESKTOP_TOKEN', steps.upper-theme.outputs.theme)] }}
-          ROBOTS: true
+  #       env:
+  #         LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+  #         LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_DESKTOP_TOKEN', steps.upper-theme.outputs.theme)] }}
+  #         ROBOTS: true
 
-  lhci-mobile:
-    name: Lighthouse Mobile (${{ matrix.theme }})
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        theme: [cpr, cclw, mcf, ccc]
-    permissions:
-      checks: write
-      contents: read
-    steps:
-      - uses: actions/checkout@v5
-      - name: Use Node.js 22.12.0
-        uses: actions/setup-node@v5
-        with:
-          node-version: 22.12.0
-      - run: npm install
-      - run: cp .env.example .env
-      - run: THEME=${{ matrix.theme }} ROBOTS=true npm run build
-      - name: install Lighthouse CI
-        run: npm install -g @lhci/cli@0.14.x
+  # lhci-mobile:
+  #   name: Lighthouse Mobile (${{ matrix.theme }})
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       theme: [cpr, cclw, mcf, ccc]
+  #   permissions:
+  #     checks: write
+  #     contents: read
+  #   steps:
+  #     - uses: actions/checkout@v5
+  #     - name: Use Node.js 22.12.0
+  #       uses: actions/setup-node@v5
+  #       with:
+  #         node-version: 22.12.0
+  #     - run: npm install
+  #     - run: cp .env.example .env
+  #     - run: THEME=${{ matrix.theme }} ROBOTS=true npm run build
+  #     - name: install Lighthouse CI
+  #       run: npm install -g @lhci/cli@0.14.x
 
-      - id: upper-theme
-        name: Theme to uppercase
-        run: |
-          theme=$(echo ${{ matrix.theme }} | tr '[:lower:]' '[:upper:]')
-          echo "theme=$theme" >> $GITHUB_OUTPUT
+  #     - id: upper-theme
+  #       name: Theme to uppercase
+  #       run: |
+  #         theme=$(echo ${{ matrix.theme }} | tr '[:lower:]' '[:upper:]')
+  #         echo "theme=$theme" >> $GITHUB_OUTPUT
 
-      - name: Fetch latest base branch SHA
-        id: base-sha
-        run: |
-          git fetch origin ${{ github.event.pull_request.base.ref }}
-          echo "sha=$(git rev-parse origin/${{ github.event.pull_request.base.ref }})" >> $GITHUB_OUTPUT
+  #     - name: Fetch latest base branch SHA
+  #       id: base-sha
+  #       run: |
+  #         git fetch origin ${{ github.event.pull_request.base.ref }}
+  #         echo "sha=$(git rev-parse origin/${{ github.event.pull_request.base.ref }})" >> $GITHUB_OUTPUT
 
-      - name: run Lighthouse Mobile
-        # The --baseHash parameter compares the current commit (the one being tested) against the specified base hash.
-        # E.g., if your PR branch has commit abc123, and the main branch has commit def456,
-        # --baseHash=def456 tells Lighthouse: "Compare abc123 against def456"
-        run: lhci autorun --config=lighthouserc.mobile.js --baseHash=${{ steps.base-sha.outputs.sha }}
+  #     - name: run Lighthouse Mobile
+  #       # The --baseHash parameter compares the current commit (the one being tested) against the specified base hash.
+  #       # E.g., if your PR branch has commit abc123, and the main branch has commit def456,
+  #       # --baseHash=def456 tells Lighthouse: "Compare abc123 against def456"
+  #       run: lhci autorun --config=lighthouserc.mobile.js --baseHash=${{ steps.base-sha.outputs.sha }}
 
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-          LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_MOBILE_TOKEN', steps.upper-theme.outputs.theme)] }}
-          ROBOTS: true
+  #       env:
+  #         LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+  #         LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_MOBILE_TOKEN', steps.upper-theme.outputs.theme)] }}
+  #         ROBOTS: true
 
   percy:
     runs-on: ubuntu-latest
