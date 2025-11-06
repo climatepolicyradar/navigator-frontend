@@ -120,14 +120,26 @@ const RioSubmissions = () => {
             </a>
           </div>
         </div>
-        {/* <Image
-          src="/images/rio/rio-screenshot.jpg"
-          alt="Climate Policy Radar's search page filtered by UN Submissions"
-          width={1200}
-          height={699}
-          className="max-w-[1200px] w-full mx-auto mt-14 mb-10 bg-white border border-gray-200 rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.10)]0 col-start-1 -col-end-1 cols5-5:col-start-2 cols5-5:-col-end-2 cursor-not-allowed"
-        /> */}
-        <div className="flex flex-col gap-5 items-center col-start-1 -col-end-1 mt-14">
+        <Link
+          href={{
+            pathname: "/search",
+            query: {
+              [QUERY_PARAMS.category]: "UN-submissions",
+              [QUERY_PARAMS.author_type]: "Party",
+            },
+          }}
+          className="max-w-[1200px] w-full mx-auto mt-14 mb-10 col-start-1 -col-end-1 cols5-5:col-start-2 cols5-5:-col-end-2"
+          title="Visit Climate Policy Radar's search page filtered by UN Submissions"
+        >
+          <Image
+            src="/images/rio/rio-screenshot-2.jpg"
+            alt="Climate Policy Radar's search page filtered by UN Submissions"
+            width={1200}
+            height={699}
+            className="w-full bg-white border border-gray-200 rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.10)]0"
+          />
+        </Link>
+        <div className="flex flex-col gap-5 items-center col-start-1 -col-end-1">
           <span className="block text-sm text-gray-950 font-medium leading-4">In collaboration with</span>
           <div className="flex flex-col cols5-2:flex-row gap-3">
             <Image src="/images/rio/rio-unccd.svg" alt="United Nations Convention to Combat Desertification logo" width={166} height={48} />
