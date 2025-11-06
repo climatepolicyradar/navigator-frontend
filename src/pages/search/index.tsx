@@ -487,7 +487,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 <SideCol
                   extraClasses={`absolute z-99 top-0 w-screen duration-250 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] ${
                     showFilters ? "translate-y-[0%]" : "fixed translate-y-[100vh]"
-                  } cols5-4:translate-y-[0%] cols5-4:h-full cols5-4:sticky cols5-4:top-[72px] cols5-4:z-50`}
+                  } cols5-4:translate-y-[0%] cols5-4:h-full cols5-4:sticky cols5-4:top-[72px] cols5-4:z-50 `}
                 >
                   {configQuery.isFetching ? (
                     <Loader size="20px" />
