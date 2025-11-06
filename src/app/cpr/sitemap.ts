@@ -14,7 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   /**
    * UN Submissions
-   * These are here while COP in Rio is on to true and get as much Google juice as possible
+   * These are here while COP in Rio is on to get as much Google juice as possible
    */
   const UNSubmissionsCorpusIds = ["UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"];
   const UNSubmissionsSearchParams = UNSubmissionsCorpusIds.map((corpusId) => ["corpus.import_id", corpusId]);
