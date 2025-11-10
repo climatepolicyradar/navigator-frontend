@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { Section } from "@/components/molecules/section/Section";
+import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
+import { TUTORIALS } from "@/constants/tutorials";
 import { IFamilyDocumentTopics, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
@@ -12,9 +14,10 @@ interface IProps {
   matchesFamily?: TMatchedFamily; // The relevant search result family
   matchesStatus?: TLoadingStatus; // The status of the search
   showMatches?: boolean; // Whether to show matches from the search result
+  showKnowledgeGraphTutorial: boolean;
 }
 
-export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesStatus, showMatches = false }: IProps) => {
+export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesStatus, showKnowledgeGraphTutorial, showMatches = false }: IProps) => {
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
   const isLitigation = family.corpus_type_name === "Litigation";
@@ -41,6 +44,10 @@ export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesSta
 
   return (
     <Section block="documents" title="Documents" wide>
+      {showKnowledgeGraphTutorial && (
+        <TutorialCard name="knowledgeGraph" card={TUTORIALS.knowledgeGraph.card} className="col-span-2 cols5-2:col-span-3 mb-4" />
+      )}
+
       <div className="col-start-1 -col-end-1">
         {hasDocumentsToDisplay && (
           <InteractiveTable<TEventTableColumnId>

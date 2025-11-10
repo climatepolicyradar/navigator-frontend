@@ -75,9 +75,10 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTo
             matchesFamily={matchesFamily}
             matchesStatus={matchesStatus}
             showMatches={hasSearch}
+            showKnowledgeGraphTutorial={showKnowledgeGraphTutorial}
           />
         ),
-        [family, familyTopics, hasSearch, matchesFamily, matchesStatus]
+        [family, familyTopics, hasSearch, matchesFamily, matchesStatus, showKnowledgeGraphTutorial]
       ),
     },
     metadata: {
