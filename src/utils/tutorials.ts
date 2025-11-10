@@ -22,13 +22,3 @@ export const getIncompleteTutorialNames = (
   themeConfig.tutorials.filter(
     (tutorialName) => !completedTutorials.includes(tutorialName) && TUTORIALS[tutorialName].isEnabled(featureFlags, themeConfig)
   );
-
-// Returns the name of the first tutorial not already completed and enabled
-export const getFirstIncompleteTutorialName = (
-  completedTutorials: TTutorialName[],
-  themeConfig: TThemeConfig,
-  featureFlags: TFeatureFlags
-): TTutorialName | null =>
-  themeConfig.tutorials.find(
-    (tutorialName) => !completedTutorials.includes(tutorialName) && TUTORIALS[tutorialName].isEnabled(featureFlags, themeConfig)
-  ) || null;
