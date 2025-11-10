@@ -13,6 +13,16 @@ export const getCompletedTutorialNamesFromCookie = (cookie: string): TTutorialNa
   }
 };
 
+// Returns the names of any tutorials not already completed and enabled
+export const getIncompleteTutorialNames = (
+  completedTutorials: TTutorialName[],
+  themeConfig: TThemeConfig,
+  featureFlags: TFeatureFlags
+): TTutorialName[] =>
+  themeConfig.tutorials.filter(
+    (tutorialName) => !completedTutorials.includes(tutorialName) && TUTORIALS[tutorialName].isEnabled(featureFlags, themeConfig)
+  );
+
 // Returns the name of the first tutorial not already completed and enabled
 export const getFirstIncompleteTutorialName = (
   completedTutorials: TTutorialName[],
