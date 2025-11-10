@@ -43,7 +43,12 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
                     <span className="inline-block" key={concept.wikibase_id}>
                       <ConceptLink
                         concept={concept}
-                        label={`${firstCase(concept.preferred_label)} (${familyTopics.conceptCounts[concept.wikibase_id] || 0})`}
+                        label={
+                          <span>
+                            {firstCase(concept.preferred_label)}{" "}
+                            <span className="text-gray-500">({familyTopics.conceptCounts[concept.wikibase_id] || 0})</span>
+                          </span>
+                        }
                       >
                         <div className="flex flex-col gap-2">
                           <h6 className="font-bold">{firstCase(concept.preferred_label)}</h6>

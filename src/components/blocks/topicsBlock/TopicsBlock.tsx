@@ -1,5 +1,6 @@
 import { LucideTextSearch } from "lucide-react";
 
+import { ExternalLink } from "@/components/ExternalLink";
 import { Section } from "@/components/molecules/section/Section";
 import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
@@ -21,8 +22,10 @@ export const TopicsBlock = ({ familyTopics, showKnowledgeGraphTutorial }: TProps
 
       <div className="col-start-1 -col-end-1">
         <p className="my-3">
-          This table shows the topics that are most frequently mentioned within this case. Explore further by clicking on a topic, and view specific
-          passages of text within the documents.
+          See how often topics get mentioned in this case and view specific passages of text highlighted in each document. Accuracy is not 100%.{" "}
+          <ExternalLink url="/faq#topics-faqs" className="inline-block underline decoration-gray-300 hover:decoration-gray-500">
+            Learn more
+          </ExternalLink>
         </p>
         <InteractiveTable<TTopicTableColumnId>
           columns={topicTableColumns}

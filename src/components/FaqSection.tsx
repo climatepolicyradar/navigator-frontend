@@ -16,12 +16,12 @@ interface IProps {
     headContent?: JSX.Element;
   }[];
   accordionMaxHeight?: string;
-  sectionId?: string;
+  sectionId: string;
   showMore?: boolean;
   openFirstOnLoad?: boolean;
 }
 
-export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionId = "", showMore = false, openFirstOnLoad = true }: IProps) => {
+export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionId, showMore = false, openFirstOnLoad = true }: IProps) => {
   useEffect(() => {
     // Only run if this component has an ID (meaning it's the target component)
     if (!sectionId) return;
