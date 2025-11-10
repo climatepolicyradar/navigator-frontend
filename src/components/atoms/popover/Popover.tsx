@@ -39,7 +39,7 @@ type TProps = IPopoverElementProps | IPopoverChildrenProps;
 
 export const Popover = ({ children, description, link, onOpenChange, openOnHover = false, popupClasses = "", title, trigger }: TProps) => {
   const allPopupClasses = joinTailwindClasses(
-    "p-3 max-w-[350px] bg-surface-light border border-border-light rounded-md shadow-md text-sm leading-normal select-auto focus-visible:outline-0 z-[50]",
+    "p-3 max-w-[350px] bg-white border border-gray-300 rounded-md shadow-md text-sm text-gray-700 leading-normal select-auto focus-visible:outline-0 z-[50]",
     popupClasses
   );
 
@@ -50,20 +50,20 @@ export const Popover = ({ children, description, link, onOpenChange, openOnHover
         <BasePopover.Positioner positionMethod="fixed" sideOffset={8} className="z-[50]">
           <BasePopover.Popup className={allPopupClasses}>
             <BasePopover.Arrow className="flex -top-2">
-              <BaseUIArrow fill="fill-surface-light" stroke="fill-border-light" />
+              <BaseUIArrow fill="fill-white" stroke="fill-gray-300" />
             </BasePopover.Arrow>
             {children || (
               <>
-                {title && <BasePopover.Title className="mb-2 font-bold">{title}</BasePopover.Title>}
+                {title && <BasePopover.Title className="mb-2 text-gray-950 font-bold">{title}</BasePopover.Title>}
                 <BasePopover.Description>
                   <span className="block">{description}</span>
                   {link && link.external && (
-                    <ExternalLink url={link.href} className="block mt-2 underline">
+                    <ExternalLink url={link.href} className="block mt-2 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500">
                       {link.text}
                     </ExternalLink>
                   )}
                   {link && !link.external && (
-                    <Link href={link.href} className="block mt-2 underline">
+                    <Link href={link.href} className="block mt-2 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500">
                       {link.text}
                     </Link>
                   )}

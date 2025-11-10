@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { Button } from "@/components/atoms/button/Button";
-import { Card } from "@/components/atoms/card/Card";
 import { Section } from "@/components/molecules/section/Section";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
+import { ARROW_UP_RIGHT } from "@/constants/chars";
 import { TFamilyPublic } from "@/types";
 import { getCaseNumbers, getCourts, getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
 import { pluralise } from "@/utils/pluralise";
@@ -45,7 +44,7 @@ export const FamilyBlock = ({ family }: IProps) => {
         <LinkWithQuery href={`/document/${family.slug}`}>
           <h2 className="text-2xl text-gray-950 font-heavy leading-tight hover:underline underline-offset-6">
             {family.title}&nbsp;
-            <span className="text-brand">↗</span>
+            <span className="text-brand">{ARROW_UP_RIGHT}</span>
           </h2>
         </LinkWithQuery>
         <div className="mt-2 mb-3 flex gap-4 flex-wrap text-sm text-gray-500 leading-none">

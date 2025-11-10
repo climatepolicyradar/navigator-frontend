@@ -1,8 +1,11 @@
 import Link from "next/link";
 
+import { ExternalLink } from "@/components/ExternalLink";
 import { ConceptLink } from "@/components/molecules/conceptLink/ConceptLink";
+import { ARROW_UP_RIGHT } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { IFamilyDocumentTopics, TTableColumn, TTableRow } from "@/types";
+import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { joinNodes } from "@/utils/reactNode";
 import { firstCase } from "@/utils/text";
 
@@ -50,13 +53,18 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
                           </span>
                         }
                       >
-                        <div className="flex flex-col gap-2">
+                        <>
                           <h6 className="font-bold">{firstCase(concept.preferred_label)}</h6>
-                          <span className="">{concept.description}</span>
-                          <span className="text-xs text-gray-500">
-                            This concept is mentioned in the following documents, click on the document to view the specific passages:
-                          </span>
-                          <ul className="flex flex-col gap-2">
+                          <p className="my-2">
+                            {firstCase(concept.description)}{" "}
+                            <ExternalLink url={getConceptStoreLink(concept.wikibase_id)} className="text-brand hover:underline">
+                              {ARROW_UP_RIGHT}
+                            </ExternalLink>
+                          </p>
+                          <p className="mt-6 mb-3 text-gray-500">
+                            This topic is mentioned in the following documents. Click on the document to view the specific passages.
+                          </p>
+                          <ul className="flex flex-col gap-3">
                             {/* because the concepts are stored as "wikibase_id:label" we have this weird lookup */}
                             {familyTopics.documents
                               .filter((doc) =>
@@ -74,7 +82,7 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
                                 return (
                                   <li key={doc.importId}>
                                     <Link
-                                      className="font-medium hover:text-blue-800 transition underline-offset-2 hover:underline"
+                                      className="block font-medium underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
                                       href={{
                                         pathname: `/documents/${doc.slug}`,
                                         query: { [QUERY_PARAMS.concept_name]: concept.preferred_label },
@@ -86,7 +94,7 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
                                 );
                               })}
                           </ul>
-                        </div>
+                        </>
                       </ConceptLink>
                     </span>
                   )),
