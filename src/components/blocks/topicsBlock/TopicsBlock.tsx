@@ -5,7 +5,7 @@ import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { TUTORIALS } from "@/constants/tutorials";
 import { IFamilyDocumentTopics } from "@/types";
-import { getTopicTableRows, TopicTableColumns, TTopicTableColumnId } from "@/utils/tables/topic/topicTable";
+import { getTopicTableRows, topicTableColumns, TTopicTableColumnId } from "@/utils/tables/topic/topicTable";
 
 type TProps = {
   familyTopics: IFamilyDocumentTopics;
@@ -25,7 +25,7 @@ export const TopicsBlock = ({ familyTopics, showKnowledgeGraphTutorial }: TProps
           passages of text within the documents.
         </p>
         <InteractiveTable<TTopicTableColumnId>
-          columns={TopicTableColumns}
+          columns={topicTableColumns}
           rows={getTopicTableRows(familyTopics)}
           defaultSort={{ column: "group", order: "desc" }}
         />

@@ -6,11 +6,11 @@ import { IFamilyDocumentTopics, TTableColumn, TTableRow } from "@/types";
 import { joinNodes } from "@/utils/reactNode";
 import { firstCase } from "@/utils/text";
 
-export type TTopicTableColumnId = "group" | "concepts";
+export type TTopicTableColumnId = "group" | "topics";
 
-export const TopicTableColumns: TTableColumn<TTopicTableColumnId>[] = [
+export const topicTableColumns: TTableColumn<TTopicTableColumnId>[] = [
   { id: "group", name: "Group", fraction: 2 },
-  { id: "concepts", name: "Concepts", fraction: 5 },
+  { id: "topics", name: "Topics", fraction: 5 },
 ];
 
 export type TTopicTableRow = TTableRow<TTopicTableColumnId>;
@@ -26,7 +26,7 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
       id: rootConcept.wikibase_id,
       cells: {
         group: firstCase(rootConcept.preferred_label),
-        concepts: {
+        topics: {
           label: (
             <div className="leading-normal">
               {joinNodes(
