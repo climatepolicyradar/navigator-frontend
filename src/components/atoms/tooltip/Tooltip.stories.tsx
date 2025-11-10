@@ -56,7 +56,7 @@ export const Complex: TStory = {
         </p>
       </div>
     ),
-    popupClasses: "w-[350px] px-3 py-3 !text-sm text-wrap leading-normal font-normal",
+    popupClasses: "w-[350px] p-3 !text-sm text-wrap leading-normal font-normal",
     side: "bottom",
   },
   argTypes: {

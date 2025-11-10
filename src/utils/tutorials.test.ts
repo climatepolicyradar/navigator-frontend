@@ -1,6 +1,6 @@
-import { featureFlagKeys, TFeatureFlags, TThemeConfig, TTutorialName, TUTORIAL_NAMES } from "@/types";
+import { featureFlagKeys, TFeatureFlags, TThemeConfig, TTutorialName } from "@/types";
 
-import { getCompletedTutorialNamesFromCookie, getFirstIncompleteTutorialName } from "./tutorials";
+import { getCompletedTutorialNamesFromCookie, getIncompleteTutorialNames } from "./tutorials";
 
 describe("getCompletedTutorialNamesFromCookie", () => {
   it("returns no tutorials for invalid JSON", () => {
@@ -20,25 +20,25 @@ describe("getCompletedTutorialNamesFromCookie", () => {
   });
 });
 
-describe("getFirstIncompleteTutorialName", () => {
+describe("getIncompleteTutorialNames", () => {
   const allFeatureFlagsEnabled = Object.fromEntries(featureFlagKeys.map((key) => [key, true])) as TFeatureFlags;
 
-  it("returns no tutorial if the app has no tutorials", () => {
+  it("returns no tutorials if the app has no tutorials", () => {
     const completedTutorials: TTutorialName[] = [];
     const themeConfig = { tutorials: [] } as TThemeConfig;
     const featureFlags = {} as TFeatureFlags;
 
-    expect(getFirstIncompleteTutorialName(completedTutorials, themeConfig, featureFlags)).toBe(null);
+    expect(getIncompleteTutorialNames(completedTutorials, themeConfig, featureFlags)).toEqual([]);
   });
 
-  it("returns no tutorial if the user has completed them all", () => {
+  it("returns no tutorials if the user has completed them all", () => {
     const completedTutorials: TTutorialName[] = ["knowledgeGraph", "climateLitigationDatabase"];
     const themeConfig = { tutorials: ["knowledgeGraph", "climateLitigationDatabase"] } as TThemeConfig;
 
-    expect(getFirstIncompleteTutorialName(completedTutorials, themeConfig, allFeatureFlagsEnabled)).toBe(null);
+    expect(getIncompleteTutorialNames(completedTutorials, themeConfig, allFeatureFlagsEnabled)).toEqual([]);
   });
 
-  it("returns no tutorial if the next tutorial is disabled", () => {
+  it("returns no tutorials if the tutorial is disabled", () => {
     const completedTutorials: TTutorialName[] = [];
     const themeConfig = {
       tutorials: ["climateLitigationDatabase"],
@@ -46,10 +46,10 @@ describe("getFirstIncompleteTutorialName", () => {
     } as TThemeConfig;
     const featureFlags = { litigation: false } as TFeatureFlags;
 
-    expect(getFirstIncompleteTutorialName(completedTutorials, themeConfig, featureFlags)).toBe(null);
+    expect(getIncompleteTutorialNames(completedTutorials, themeConfig, featureFlags)).toEqual([]);
   });
 
-  it("returns the next unseen tutorial in the config defined order", () => {
+  it("returns unseen tutorials in the config defined order", () => {
     const completedTutorials: TTutorialName[] = [];
     const themeConfig = {
       tutorials: ["knowledgeGraph", "climateLitigationDatabase"],
@@ -59,6 +59,9 @@ describe("getFirstIncompleteTutorialName", () => {
       },
     } as TThemeConfig;
 
-    expect(getFirstIncompleteTutorialName(completedTutorials, themeConfig, allFeatureFlagsEnabled)).toEqual("knowledgeGraph");
+    expect(getIncompleteTutorialNames(completedTutorials, themeConfig, allFeatureFlagsEnabled)).toEqual([
+      "knowledgeGraph",
+      "climateLitigationDatabase",
+    ]);
   });
 });

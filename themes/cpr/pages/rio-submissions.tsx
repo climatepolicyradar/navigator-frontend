@@ -100,7 +100,9 @@ const RioSubmissions = () => {
       <FiveColumns>
         <div className="pt-20 col-start-1 -col-end-1 cols5-3:col-start-2 cols5-3:-col-end-2 cols5-4:-col-end-3 cols5-5:col-start-3 cols5-5:-col-end-4">
           <span className="block text-gray-700 leading-tight">Rio Policy Radar</span>
-          <h1 className="mt-3 mb-6 text-6xl text-gray-950 font-heavy leading-14 tracking-[-0.9px]">Submissions to&nbsp;the Rio&nbsp;Conventions</h1>
+          <h1 className="mt-3 mb-6 text-4xl cols5-2:text-6xl text-gray-950 font-heavy leading-10 cols5-2:leading-14 tracking-[-0.9px]">
+            Submissions to&nbsp;the Rio&nbsp;Conventions
+          </h1>
           <p className="my-6 text-xl text-gray-950 leading-6">
             Explore our curated collection that brings together and opens up dense, disparate documents on climate, nature and land.
           </p>

@@ -1,9 +1,12 @@
 import orderBy from "lodash/orderBy";
+import { LucideInfo } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Icon } from "@/components/atoms/icon/Icon";
+import { Badge } from "@/components/atoms/label/Badge";
+import { Popover } from "@/components/atoms/popover/Popover";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import {
@@ -27,6 +30,23 @@ import { formatDateShort } from "./timedate";
 export type TEventTableColumnId = "action" | "caseNumber" | "caseTitle" | "court" | "date" | "document" | "summary" | "topics" | "type";
 export type TEventTableColumn = TTableColumn<TEventTableColumnId>;
 
+const topicsColumnName = (
+  <>
+    Topics&ensp;
+    <Badge>Beta</Badge>{" "}
+    <Popover
+      openOnHover
+      trigger={<LucideInfo size={16} className="inline-block align-text-bottom text-gray-500 hover:text-gray-700 cursor-help" />}
+      description="This table shows the most frequently mentioned topics in this document. The number in brackets is a count of how many times each topic appears. Click to view the document and see the specific passages mentioning each topic highlighted. Accuracy is not 100%."
+      link={{
+        href: "/faq#topics-faqs",
+        text: "Learn more",
+        external: true,
+      }}
+    />
+  </>
+);
+
 export const getEventTableColumns = ({
   hasTopics = false,
   isLitigation,
@@ -42,7 +62,7 @@ export const getEventTableColumns = ({
   const columns: TEventTableColumn[] = [
     { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
     { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 2 },
-    { id: "topics", name: "Topics Mentioned in Text", fraction: 8 },
+    { id: "topics", name: topicsColumnName, fraction: 8 },
     { id: "action", name: "Action Taken", fraction: 4 },
     { id: "summary", fraction: 6, classes: "min-w-75" },
     { id: "caseNumber", name: "Case Number", fraction: 2 },
