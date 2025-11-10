@@ -18,7 +18,7 @@ export const ConceptLink = ({ concept, label, onClick, triggerClasses = "", chil
   const [isOpen, setIsOpen] = useState(false);
 
   const allTriggerClasses = joinTailwindClasses(
-    "inline capitalize underline underline-offset-2 decoration-dotted",
+    "inline underline underline-offset-2 decoration-dotted",
     isOpen ? "decoration-text-primary" : "decoration-text-quaternary",
     onClick ? "" : "!cursor-help",
     triggerClasses
