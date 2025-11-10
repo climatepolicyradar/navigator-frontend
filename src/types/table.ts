@@ -18,7 +18,7 @@ export type TTableColumn<ColumnKey extends string> = {
   classes?: string; // Styles every cell in the column
   fraction?: number; // CSS grid fractional units - the column's relative width
   id: ColumnKey;
-  name?: string; // defaults to first-cased id
+  name?: ReactNode; // defaults to first-cased id
   sortable?: boolean; // defaults to false
   sortOptions?: TTableSortOption[]; // defaults to ascending/descending controls
   tooltip?: ReactNode;
