@@ -13,7 +13,7 @@ export const HomepageFaqs = () => (
       <main className="cols-2:col-span-2 cols-3:col-span-2 cols-4:col-span-3">
         <div className="w-full text-text-secondary flex flex-col gap-6">
           <div className="w-full">
-            <FaqSection faqs={HOMEPAGE_FAQS} showMore={true} openFirstOnLoad={false} />
+            <FaqSection faqs={HOMEPAGE_FAQS} showMore={true} openFirstOnLoad={false} sectionId="faqs" />
           </div>
         </div>
       </main>
