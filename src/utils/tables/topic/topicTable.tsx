@@ -25,7 +25,10 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
     rows.push({
       id: rootConcept.wikibase_id,
       cells: {
-        group: firstCase(rootConcept.preferred_label),
+        group: {
+          label: <ConceptLink concept={rootConcept} />,
+          value: rootConcept.preferred_label,
+        },
         topics: {
           label: (
             <div className="leading-normal">
