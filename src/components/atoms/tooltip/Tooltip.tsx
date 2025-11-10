@@ -15,7 +15,7 @@ interface IProps {
 
 export const Tooltip = ({ arrow = false, children, content, popupClasses, side = "top", triggerClasses }: IProps) => {
   const allPopupClasses = joinTailwindClasses(
-    "px-1.5 py-1 bg-surface-mono-dark text-xs text-text-light leading-none font-bold text-nowrap rounded-md",
+    "px-1.5 py-1 bg-gray-950 rounded-md text-xs text-white text-nowrap leading-none font-medium",
     popupClasses
   );
 

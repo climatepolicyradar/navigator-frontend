@@ -100,7 +100,7 @@ export const InteractiveTable = <ColumnKey extends string>({
     const onClearSort = () => setSortRules({ column: null, order: "asc" });
 
     return (
-      <div className="flex-1 text-right">
+      <div className="flex-1 self-start text-right">
         <Menu.Root onOpenChange={onToggleMenu(column.id)}>
           <Menu.Trigger className={sortButtonClasses}>
             <Icon size={16} />
