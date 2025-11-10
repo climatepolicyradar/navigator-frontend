@@ -30,16 +30,18 @@ export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick, geogr
 
   return (
     <Section block="recents" title={getText("recentFamiliesBlockTitle")} wide>
-      {categorySummaries.map((category) => (
-        <RecentFamiliesCategory
-          key={category.title}
-          categorySummary={category}
-          showAccordion={!hideAccordion}
-          isExpanded={expandedCategories.includes(category.title)}
-          onAccordionClick={() => onAccordionInteract(category.title, category.id)}
-          geography={geography}
-        />
-      ))}
+      <div className="col-start-1 -col-end-1">
+        {categorySummaries.map((category) => (
+          <RecentFamiliesCategory
+            key={category.title}
+            categorySummary={category}
+            showAccordion={!hideAccordion}
+            isExpanded={expandedCategories.includes(category.title)}
+            onAccordionClick={() => onAccordionInteract(category.title, category.id)}
+            geography={geography}
+          />
+        ))}
+      </div>
     </Section>
   );
 };

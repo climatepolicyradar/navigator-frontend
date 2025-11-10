@@ -41,15 +41,17 @@ export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesSta
 
   return (
     <Section block="documents" title="Documents" wide>
-      {hasDocumentsToDisplay && (
-        <InteractiveTable<TEventTableColumnId>
-          columns={tableColumns}
-          rows={updatedRowsWithLocalisedDates || tableRows}
-          defaultSort={{ column: "date", order: "desc" }}
-          tableClasses={isLitigation ? "min-w-250" : "min-w-200"}
-        />
-      )}
-      {!hasDocumentsToDisplay && <p className="italic">There are no documents to display yet. Check back later.</p>}
+      <div className="col-start-1 -col-end-1">
+        {hasDocumentsToDisplay && (
+          <InteractiveTable<TEventTableColumnId>
+            columns={tableColumns}
+            rows={updatedRowsWithLocalisedDates || tableRows}
+            defaultSort={{ column: "date", order: "desc" }}
+            tableClasses={isLitigation ? "min-w-250" : "min-w-200"}
+          />
+        )}
+        {!hasDocumentsToDisplay && <p className="italic">There are no documents to display yet. Check back later.</p>}
+      </div>
     </Section>
   );
 };

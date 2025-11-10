@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 
 import { Debug } from "@/components/atoms/debug/Debug";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
@@ -14,20 +14,24 @@ import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLa
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { TutorialContext } from "@/context/TutorialContext";
 import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
 import { TMatchedFamily, TFamilyPageBlock } from "@/types";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
-import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
+import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
 import { IProps } from "./familyOriginalPage";
 
-export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTopics, theme, themeConfig }: IProps) => {
+export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTopics, featureFlags, theme, themeConfig }: IProps) => {
+  const { completedTutorials } = useContext(TutorialContext);
   const { getText } = useText();
+
+  const showKnowledgeGraphTutorial = getIncompleteTutorialNames(completedTutorials, themeConfig, featureFlags).includes("knowledgeGraph");
 
   /* Search matches */
 
@@ -99,8 +103,8 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTo
     topics: {
       render: useCallback(() => {
         if (!familyTopicsHasTopics(familyTopics)) return null;
-        return <TopicsBlock key="topics-block" familyTopics={familyTopics} />;
-      }, [familyTopics]),
+        return <TopicsBlock key="topics-block" familyTopics={familyTopics} showKnowledgeGraphTutorial={showKnowledgeGraphTutorial} />;
+      }, [familyTopics, showKnowledgeGraphTutorial]),
     },
   };
 
