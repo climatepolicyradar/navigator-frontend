@@ -104,8 +104,8 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTo
     topics: {
       render: useCallback(() => {
         if (!familyTopicsHasTopics(familyTopics)) return null;
-        return <TopicsBlock key="topics-block" familyTopics={familyTopics} showKnowledgeGraphTutorial={showKnowledgeGraphTutorial} />;
-      }, [familyTopics, showKnowledgeGraphTutorial]),
+        return <TopicsBlock key="topics-block" familyTopics={familyTopics} />;
+      }, [familyTopics]),
     },
   };
 

@@ -45,7 +45,7 @@ export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesSta
   return (
     <Section block="documents" title="Documents" wide>
       {showKnowledgeGraphTutorial && (
-        <TutorialCard name="knowledgeGraph" card={TUTORIALS.knowledgeGraph.card} className="col-span-2 cols5-2:col-span-3 mb-4" />
+        <TutorialCard name="knowledgeGraph" card={TUTORIALS.knowledgeGraph.card} className="col-start-1 -col-end-1 cols5-5:-col-end-3 mb-4" />
       )}
 
       <div className="col-start-1 -col-end-1">
