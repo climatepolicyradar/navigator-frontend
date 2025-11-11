@@ -86,7 +86,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const searchQuery = buildSearchQuery(
     {
       l: geographyV2.slug,
-      page_size: "3",
+      page_size: "4",
     },
     themeConfig
   );

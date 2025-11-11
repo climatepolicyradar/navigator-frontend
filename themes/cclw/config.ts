@@ -186,7 +186,7 @@ const config: TThemeConfig = {
   defaultDocumentCategory: "All",
   pageBlocks: {
     family: [],
-    geography: ["statistics"],
+    geography: ["statistics", "recents"],
   },
   tutorials: ["knowledgeGraph"],
   features: {

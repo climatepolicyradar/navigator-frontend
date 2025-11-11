@@ -51,12 +51,6 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
   const [searchResultsByCategory, setSearchResultsByCategory] = useState<{ [categorySlug: string]: TSearch }>({
     All: vespaSearchResults,
   });
-  // re-render when the page has changed
-  useEffect(() => {
-    setSearchResultsByCategory({
-      All: vespaSearchResults,
-    });
-  }, [vespaSearchResults]);
 
   /* Blocks */
 
@@ -89,24 +83,20 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
         const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
 
         const fetchFamiliesByCategory = async (category: string) => {
-          if (searchResultsByCategory[category]) {
-            return searchResultsByCategory[category];
-          } else {
-            const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: category }, themeConfig);
-            const search: TSearch = await backendApiClient
-              .post("/searches", searchQuery, {
-                headers: {
-                  accept: "application/json",
-                  "Content-Type": "application/json",
-                },
-              })
-              .then((response) => response.data);
+          const searchQuery = buildSearchQuery({ l: geographyV2.slug, c: category, page_size: "4" }, themeConfig);
+          const search: TSearch = await backendApiClient
+            .post("/searches", searchQuery, {
+              headers: {
+                accept: "application/json",
+                "Content-Type": "application/json",
+              },
+            })
+            .then((response) => response.data);
 
-            setSearchResultsByCategory((currentFamilies) => ({
-              ...currentFamilies,
-              [category]: search,
-            }));
-          }
+          setSearchResultsByCategory((currentFamilies) => ({
+            ...currentFamilies,
+            [category]: search,
+          }));
         };
 
         const documentCategories = themeConfig.categories
@@ -137,9 +127,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
                 singularAndPlural: [getText("familySingular"), getText("familyPlural")],
               };
             })}
-            onAccordionClick={(id) => {
-              fetchFamiliesByCategory(id);
-            }}
+            onAccordionClick={(id) => fetchFamiliesByCategory(id)}
             geography={geographyV2}
           />
         );
