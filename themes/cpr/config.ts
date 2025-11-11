@@ -441,7 +441,7 @@ const config: TThemeConfig = {
   defaultDocumentCategory: "Laws",
   pageBlocks: {
     family: ["summary", "metadata"],
-    geography: ["statistics", "recents", "subdivisions"],
+    geography: ["statistics", "recents", "subdivisions", "legislativeProcess"],
   },
   tutorials: ["knowledgeGraph"],
   features: {

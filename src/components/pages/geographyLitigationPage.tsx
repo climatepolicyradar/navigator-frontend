@@ -65,13 +65,13 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
         </Section>
       ),
     },
-    "legislative-process": {
+    legislativeProcess: {
       render: useCallback(() => {
         const legislativeProcess = geographyV2.statistics?.legislative_process || "";
         if (legislativeProcess.length === 0) return null;
 
         return (
-          <TextBlock key="legislative-process" block="legislative-process" title="Legislative process">
+          <TextBlock key="legislative-process" block="legislative-process" title="Legislative process" maxHeight={168}>
             <div className="text-content" dangerouslySetInnerHTML={{ __html: legislativeProcess }} />
           </TextBlock>
         );
