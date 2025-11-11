@@ -13,8 +13,8 @@ const meta = {
   },
   render: ({ children, ...props }: TProps) => (
     <FiveColumns>
-      <div className="col-start-1 cols5-4:col-end-3 -col-end-1" />
-      <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols5-4:col-start-3">
+      <div className="col-start-1 cols-4:col-end-3 -col-end-1" />
+      <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols-4:col-start-3">
         <Section {...props}>
           <div className="bg-emerald-50 min-h-[100px]">Content</div>
         </Section>

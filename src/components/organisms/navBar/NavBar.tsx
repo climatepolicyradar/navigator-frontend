@@ -14,21 +14,21 @@ interface IProps {
 
 export const NavBar = ({ headerClasses = "", logo, menu, showLogo = true, showSearch = true }: IProps) => {
   const allHeaderClasses = joinTailwindClasses(
-    "sticky top-0 z-60 w-full cols5-4:h-[72px] flex flex-col justify-center",
+    "sticky top-0 z-60 w-full cols-4:h-[72px] flex flex-col justify-center",
     showSearch ? "h-[128px]" : "h-[72px]",
     headerClasses
   );
-  const allColumnClasses = joinTailwindClasses(showLogo && showSearch && "grid-rows-2 cols5-4:grid-rows-[initial]");
+  const allColumnClasses = joinTailwindClasses(showLogo && showSearch && "grid-rows-2 cols-4:grid-rows-[initial]");
 
   return (
     <header data-cy="header" className={allHeaderClasses}>
       <FiveColumns
         className={allColumnClasses}
-        columnOverrides={["grid-cols-[1fr_auto]", "cols5-2:grid-cols-[1fr_auto]", "cols5-3:grid-cols-[1fr_auto]"]}
+        columnOverrides={["grid-cols-[1fr_auto]", "cols-2:grid-cols-[1fr_auto]", "cols-3:grid-cols-[1fr_auto]"]}
       >
-        {showLogo && <div className="flex items-center col-start-1 -col-end-1 cols5-3:col-end-3">{logo}</div>}
+        {showLogo && <div className="flex items-center col-start-1 -col-end-1 cols-3:col-end-3">{logo}</div>}
         {showSearch && (
-          <div className="cols5-4:col-start-3 cols5-4:-col-end-2 cols5-5:-col-end-3">
+          <div className="cols-4:col-start-3 cols-4:-col-end-2 cols-5:-col-end-3">
             <NavSearch />
           </div>
         )}

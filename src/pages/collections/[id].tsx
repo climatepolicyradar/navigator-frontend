@@ -51,8 +51,8 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
       <FiveColumns>
         {currentTab === "cases" && (
           <>
-            <ContentsSideBar items={sideBarItems} stickyClasses="cols5-3:!top-26 cols5-3:max-h-[calc(100vh-72px)]" />
-            <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols5-4:col-start-3">
+            <ContentsSideBar items={sideBarItems} stickyClasses="cols-3:!top-26 cols-3:max-h-[calc(100vh-72px)]" />
+            <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols-4:col-start-3">
               {families.map((family) => (
                 <FamilyBlock key={family.slug} family={family} />
               ))}
@@ -64,8 +64,8 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
 
         {currentTab === "about" && (
           <>
-            <div className="col-start-1 cols5-4:col-end-3 -col-end-1" />
-            <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols5-4:col-start-3">
+            <div className="col-start-1 cols-4:col-end-3 -col-end-1" />
+            <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols-4:col-start-3">
               <TextBlock block="section-summary" title="Summary">
                 <div className="text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
               </TextBlock>

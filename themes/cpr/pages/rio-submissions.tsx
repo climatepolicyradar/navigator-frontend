@@ -99,7 +99,7 @@ const RioSubmissions = () => {
       <Header landingPage />
       <NavBarGradient className="!static" />
       <FiveColumns>
-        <div className="pt-20 col-start-1 -col-end-1 cols5-3:col-start-2 cols5-3:-col-end-2 cols5-4:-col-end-3 cols5-5:col-start-3 cols5-5:-col-end-4">
+        <div className="pt-20 col-start-1 -col-end-1 cols-3:col-start-2 cols-3:-col-end-2 cols-4:-col-end-3 cols-5:col-start-3 cols-5:-col-end-4">
           <span className="block text-gray-700 leading-tight">Rio Policy Radar</span>
           <h1 className="mt-3 mb-6 text-6xl text-gray-950 font-heavy leading-14 tracking-[-0.9px]">Submissions to&nbsp;the Rio&nbsp;Conventions</h1>
           <p className="my-6 text-xl text-gray-950 leading-6">
@@ -125,18 +125,18 @@ const RioSubmissions = () => {
           alt="Climate Policy Radar's search page filtered by UN Submissions"
           width={1200}
           height={699}
-          className="max-w-[1200px] w-full mx-auto mt-14 mb-10 bg-white border border-gray-200 rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.10)]0 col-start-1 -col-end-1 cols5-5:col-start-2 cols5-5:-col-end-2 cursor-not-allowed"
+          className="max-w-[1200px] w-full mx-auto mt-14 mb-10 bg-white border border-gray-200 rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.10)]0 col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 cursor-not-allowed"
         /> */}
         <div className="flex flex-col gap-5 items-center col-start-1 -col-end-1 mt-14">
           <span className="block text-sm text-gray-950 font-medium leading-4">In collaboration with</span>
-          <div className="flex flex-col cols5-2:flex-row gap-3">
+          <div className="flex flex-col cols-2:flex-row gap-3">
             <Image src="/images/rio/rio-unccd.svg" alt="United Nations Convention to Combat Desertification logo" width={166} height={48} />
             <Image src="/images/rio/rio-uncbd.svg" alt="Convention on Biological Diversity logo" width={166} height={48} />
             <Image src="/images/rio/rio-unfccc.svg" alt="United Nations Framework Convention on Climate Change" width={187} height={48} />
           </div>
         </div>
         <main
-          className="mt-16 cols5-2:mt-32 mb-18 col-start-1 -col-end-1 cols5-4:col-start-2 cols5-4:-col-end-2 cols5-5:col-start-3 cols5-5:-col-end-3"
+          className="mt-16 cols-2:mt-32 mb-18 col-start-1 -col-end-1 cols-4:col-start-2 cols-4:-col-end-2 cols-5:col-start-3 cols-5:-col-end-3"
           id="examples"
         >
           <p className="mb-3 text-xl text-gray-950 font-heavy leading-7">
@@ -149,7 +149,7 @@ const RioSubmissions = () => {
             <li>Identify indicators used in different regions in country drought plans to the UNCCD</li>
           </ul>
           <p className="mt-10 mb-4 font-medium">Try these examples:</p>
-          <div className="flex flex-col cols5-2:flex-row gap-2 cols5-2:gap-8 mb-20 text-brand text-center font-medium leading-tight">
+          <div className="flex flex-col cols-2:flex-row gap-2 cols-2:gap-8 mb-20 text-brand text-center font-medium leading-tight">
             {QUERY_EXAMPLES.map(({ label, href }, index) => (
               <Link
                 key={index}

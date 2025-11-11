@@ -17,7 +17,7 @@ export const Footer = () => {
       </div>
 
       <FiveColumns verticalGap>
-        <Link href="/" className="max-w-70 col-start-1 -col-end-1 cols5-4:col-start-2 cols5-5:col-start-1 cols5-5:col-end-4">
+        <Link href="/" className="max-w-70 col-start-1 -col-end-1 cols-4:col-start-2 cols-5:col-start-1 cols-5:col-end-4">
           <Image
             src="/images/ccc/sabin-logo-large.png"
             alt="Sabin Center for Climate Change logo"
@@ -26,7 +26,7 @@ export const Footer = () => {
             className="max-w-full mb-2"
           />
         </Link>
-        <ul className="flex flex-col gap-1 col-span-2 cols5-2:col-span-1 cols5-3:col-span-2 cols5-4:col-start-2 cols5-5:col-start-[initial]">
+        <ul className="flex flex-col gap-1 col-span-2 cols-2:col-span-1 cols-3:col-span-2 cols-4:col-start-2 cols-5:col-start-[initial]">
           <li>
             <Link href="/" className={`${link} ${strong}`}>
               Home
@@ -48,7 +48,7 @@ export const Footer = () => {
             </LinkWithQuery>
           </li>
         </ul>
-        <ul className="flex flex-col gap-1 cols5-3:col-span-2">
+        <ul className="flex flex-col gap-1 cols-3:col-span-2">
           <li>
             <ExternalLink url="https://www.instagram.com/sabincenter/" className={link}>
               Instagram
@@ -70,7 +70,7 @@ export const Footer = () => {
             </ExternalLink>
           </li>
         </ul>
-        <ul className="flex flex-col gap-1 cols5-2:col-span-2">
+        <ul className="flex flex-col gap-1 cols-2:col-span-2">
           <li>
             <ExternalLink url="https://mailchi.mp/law/sabin-center-litigation-newsletter" className={link}>
               Get our newsletter →
@@ -97,7 +97,7 @@ export const Footer = () => {
             </LinkWithQuery>
           </li>
         </ul>
-        <div className="color-text-secondary text-sm flex flex-col gap-2 col-span-full cols5-4:col-start-2 cols5-4:-col-end-2 cols5-5:col-start-4">
+        <div className="color-text-secondary text-sm flex flex-col gap-2 col-span-full cols-4:col-start-2 cols-4:-col-end-2 cols-5:col-start-4">
           <p>
             Help us improve this tool by{" "}
             <ExternalLink url="https://form.jotform.com/252292443502350" className={link + " underline hover:text-text-brand"}>

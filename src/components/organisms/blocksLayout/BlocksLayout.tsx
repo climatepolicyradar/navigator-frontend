@@ -65,8 +65,8 @@ export const BlocksLayout = <PageBlock extends string>({ blockDefinitions, block
 
   return (
     <FiveColumns>
-      <ContentsSideBar items={sideBarItems} stickyClasses="cols5-3:!top-26 cols5-3:max-h-[calc(100vh-72px)]" />
-      <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols5-4:col-start-3">{blocks}</main>
+      <ContentsSideBar items={sideBarItems} stickyClasses="cols-3:!top-26 cols-3:max-h-[calc(100vh-72px)]" />
+      <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols-4:col-start-3">{blocks}</main>
     </FiveColumns>
   );
 };

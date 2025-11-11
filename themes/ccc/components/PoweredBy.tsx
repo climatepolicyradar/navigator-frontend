@@ -11,8 +11,8 @@ export const PoweredBy = () => (
     </div>
 
     <FiveColumns className="gap-y-6">
-      <p className="text-xl font-semibold text-text-primary col-span-2 cols5-4:col-start-2 cols5-5:col-start-1">Powered by:</p>
-      <div className="flex flex-col gap-6 -col-end-1 col-start-1 cols5-3:col-start-3 cols5-4:col-start-4">
+      <p className="text-xl font-semibold text-text-primary col-span-2 cols-4:col-start-2 cols-5:col-start-1">Powered by:</p>
+      <div className="flex flex-col gap-6 -col-end-1 col-start-1 cols-3:col-start-3 cols-4:col-start-4">
         <ExternalLink
           className="text-text-secondary text-base underline leading-normal flex items-center gap-2"
           url="https://www.climatepolicyradar.org"

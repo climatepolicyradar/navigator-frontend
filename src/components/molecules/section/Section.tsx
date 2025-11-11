@@ -25,7 +25,7 @@ export type TProps = IBlockProps | IProgrammaticProps;
 export const Section = ({ block, children, count, id, title, wide = false }: TProps) => {
   const sectionId = block ? `section-${block}` : id;
 
-  const sectionClasses = joinTailwindClasses("col-start-1 -col-end-1 scroll-mt-40 cols5-4:scroll-mt-26", !wide && "cols5-5:-col-end-3");
+  const sectionClasses = joinTailwindClasses("col-start-1 -col-end-1 scroll-mt-40 cols-4:scroll-mt-26", !wide && "cols-5:-col-end-3");
 
   return (
     <section className={sectionClasses} id={sectionId}>
