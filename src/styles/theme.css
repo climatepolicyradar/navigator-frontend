@@ -134,6 +134,4 @@
   --container-maxContent: var(--MAX_CONTENT_WIDTH);
 
   --tracking-slight: 0.015em;
-
-  --metadata-grid: 200px 1fr;
 }
