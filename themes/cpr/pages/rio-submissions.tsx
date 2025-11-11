@@ -31,19 +31,18 @@ const QUERY_EXAMPLES: { label: ReactNode; href: UrlObject }[] = [
     },
   },
   {
-    label: <span>Desertification in submissions to CBD</span>,
+    label: <span>Mongolia's submissions to the Rio Conventions</span>,
     href: {
       pathname: "/search",
       query: {
         [QUERY_PARAMS.category]: "UN-submissions",
-        [QUERY_PARAMS.query_string]: "desertification",
         [QUERY_PARAMS.author_type]: "Party",
-        [QUERY_PARAMS.convention]: "cbd",
+        [QUERY_PARAMS.country]: "mongolia",
       },
     },
   },
   {
-    label: <span>Subsidy in Land Degradation Neutrality Target</span>,
+    label: <span>Subsidies in Land Degradation Neutrality Targets</span>,
     href: {
       pathname: "/search",
       query: {
@@ -57,9 +56,9 @@ const QUERY_EXAMPLES: { label: ReactNode; href: UrlObject }[] = [
 ];
 
 const RioSubmissions = () => {
-  const { featureFlags } = useContext(ThemePageFeaturesContext);
+  const { featureFlags, themeConfig } = useContext(ThemePageFeaturesContext);
 
-  if (!isRioPolicyRadarEnabled(featureFlags)) {
+  if (!isRioPolicyRadarEnabled(featureFlags, themeConfig)) {
     return (
       <MainLayout title="Rio Submissions" description="Rio Policy Radar - a shared tool for climate, nature and land" theme="cpr">
         <section className="pt-8 text-content">
@@ -101,7 +100,9 @@ const RioSubmissions = () => {
       <FiveColumns>
         <div className="pt-20 col-start-1 -col-end-1 cols-3:col-start-2 cols-3:-col-end-2 cols-4:-col-end-3 cols-5:col-start-3 cols-5:-col-end-4">
           <span className="block text-gray-700 leading-tight">Rio Policy Radar</span>
-          <h1 className="mt-3 mb-6 text-6xl text-gray-950 font-heavy leading-14 tracking-[-0.9px]">Submissions to&nbsp;the Rio&nbsp;Conventions</h1>
+          <h1 className="mt-3 mb-6 text-4xl cols-2:text-6xl text-gray-950 font-heavy leading-10 cols-2:leading-14 tracking-[-0.9px]">
+            Submissions to&nbsp;the Rio&nbsp;Conventions
+          </h1>
           <p className="my-6 text-xl text-gray-950 leading-6">
             Explore our curated collection that brings together and opens up dense, disparate documents on climate, nature and land.
           </p>
@@ -120,14 +121,26 @@ const RioSubmissions = () => {
             </a>
           </div>
         </div>
-        {/* <Image
-          src="/images/rio/rio-screenshot.jpg"
-          alt="Climate Policy Radar's search page filtered by UN Submissions"
-          width={1200}
-          height={699}
-          className="max-w-[1200px] w-full mx-auto mt-14 mb-10 bg-white border border-gray-200 rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.10)]0 col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2 cursor-not-allowed"
-        /> */}
-        <div className="flex flex-col gap-5 items-center col-start-1 -col-end-1 mt-14">
+        <Link
+          href={{
+            pathname: "/search",
+            query: {
+              [QUERY_PARAMS.category]: "UN-submissions",
+              [QUERY_PARAMS.author_type]: "Party",
+            },
+          }}
+          className="max-w-[1200px] w-full mx-auto mt-14 mb-10 col-start-1 -col-end-1 cols-5:col-start-2 cols-5:-col-end-2"
+          title="Visit Climate Policy Radar's search page filtered by UN Submissions"
+        >
+          <Image
+            src="/images/rio/rio-screenshot-2.jpg"
+            alt="Climate Policy Radar's search page filtered by UN Submissions"
+            width={1200}
+            height={699}
+            className="w-full bg-white border border-gray-200 rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.10)]0"
+          />
+        </Link>
+        <div className="flex flex-col gap-5 items-center col-start-1 -col-end-1">
           <span className="block text-sm text-gray-950 font-medium leading-4">In collaboration with</span>
           <div className="flex flex-col cols-2:flex-row gap-3">
             <Image src="/images/rio/rio-unccd.svg" alt="United Nations Convention to Combat Desertification logo" width={166} height={48} />

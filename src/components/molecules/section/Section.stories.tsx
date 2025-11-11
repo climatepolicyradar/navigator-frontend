@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from "@storybook/nextjs";
+import { LucideTextSearch } from "lucide-react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 
@@ -16,7 +17,7 @@ const meta = {
       <div className="col-start-1 cols-4:col-end-3 -col-end-1" />
       <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols-4:col-start-3">
         <Section {...props}>
-          <div className="bg-emerald-50 min-h-[100px]">Content</div>
+          <div className="bg-emerald-50 min-h-[100px] col-start-1 -col-end-1">Content</div>
         </Section>
       </main>
     </FiveColumns>
@@ -30,8 +31,17 @@ export const WithTitle: TStory = {
   args: {
     id: "with-title",
     title: "Targets",
-    count: 30,
     wide: false,
+  },
+};
+
+export const WithDecorations: TStory = {
+  args: {
+    id: "with-decorations",
+    Icon: LucideTextSearch,
+    title: "Topics mentioned most in this case",
+    count: 30,
+    badge: "Beta",
   },
 };
 

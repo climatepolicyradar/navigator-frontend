@@ -23,9 +23,9 @@ const FAQ: React.FC = () => {
       <BreadCrumbs label={"Frequently asked questions"} />
       <section className="pt-8">
         <SiteWidth>
-          <FaqSection title="FAQs" faqs={FAQS} />
-          <FaqSection title="Platform FAQs" faqs={PLATFORM_FAQS} />
-          {knowledgeGraphEnabled && <FaqSection title="Topics FAQs" faqs={CONCEPTS_FAQS} sectionId={"topics-faqs"} />}
+          <FaqSection title="FAQs" faqs={FAQS} sectionId="faqs" />
+          <FaqSection title="Platform FAQs" faqs={PLATFORM_FAQS} sectionId="platform-faqs" />
+          {knowledgeGraphEnabled && <FaqSection title="Topics FAQs" faqs={CONCEPTS_FAQS} sectionId="topics-faqs" />}
         </SiteWidth>
       </section>
     </Layout>

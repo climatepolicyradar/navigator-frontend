@@ -1,7 +1,10 @@
+import { LucideTextSearch } from "lucide-react";
+
+import { ExternalLink } from "@/components/ExternalLink";
 import { Section } from "@/components/molecules/section/Section";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { IFamilyDocumentTopics } from "@/types";
-import { getTopicTableRows, TopicTableColumns, TTopicTableColumnId } from "@/utils/tables/topic/topicTable";
+import { getTopicTableRows, topicTableColumns, TTopicTableColumnId } from "@/utils/tables/topic/topicTable";
 
 type TProps = {
   familyTopics: IFamilyDocumentTopics;
@@ -9,16 +12,20 @@ type TProps = {
 
 export const TopicsBlock = ({ familyTopics }: TProps) => {
   return (
-    <Section block="topics" title="Topics mentioned most in this case">
-      <p className="mb-2">
-        This table shows the topics that are most frequently mentioned within this case. Explore further by clicking on a topic, and view specific
-        passages of text within the documents.
-      </p>
-      <InteractiveTable<TTopicTableColumnId>
-        columns={TopicTableColumns}
-        rows={getTopicTableRows(familyTopics)}
-        defaultSort={{ column: "group", order: "desc" }}
-      />
+    <Section block="topics" Icon={LucideTextSearch} title="Topics mentioned most in this case" badge="Beta">
+      <div className="col-start-1 -col-end-1">
+        <p className="mb-3">
+          See how often topics get mentioned in this case and view specific passages of text highlighted in each document. Accuracy is not 100%.{" "}
+          <ExternalLink url="/faq#topics-faqs" className="inline-block underline decoration-gray-300 hover:decoration-gray-500">
+            Learn more
+          </ExternalLink>
+        </p>
+        <InteractiveTable<TTopicTableColumnId>
+          columns={topicTableColumns}
+          rows={getTopicTableRows(familyTopics)}
+          defaultSort={{ column: "group", order: "desc" }}
+        />
+      </div>
     </Section>
   );
 };

@@ -9,6 +9,8 @@ type TProps = TViewMoreProps & {
 
 export const TextBlock = ({ block, title, wide, ...viewMoreProps }: TProps) => (
   <Section id={block} title={title} wide={wide}>
-    <ViewMore {...viewMoreProps} />
+    <div className="col-start-1 -col-end-1">
+      <ViewMore {...viewMoreProps} />
+    </div>
   </Section>
 );

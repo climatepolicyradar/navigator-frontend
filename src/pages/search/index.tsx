@@ -86,7 +86,7 @@ const showLitigationInformation = (query: ParsedUrlQuery) => {
 const showKnowledgeGraphInformation = (query: ParsedUrlQuery) => {
   let show = false;
   // If we have multiple topics/concepts selected
-  if (Array.isArray(query[QUERY_PARAMS.concept_name]) && query[QUERY_PARAMS.concept_name].length > 1) return true;
+  if (query[QUERY_PARAMS.concept_name]) return true;
   // If we have a query AND a concept selected
   if (query[QUERY_PARAMS.query_string] && (query[QUERY_PARAMS.concept_name] || query[QUERY_PARAMS.concept_id])) return true;
   return show;
@@ -487,7 +487,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 <SideCol
                   extraClasses={`absolute z-99 top-0 w-screen duration-250 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] ${
                     showFilters ? "translate-y-[0%]" : "fixed translate-y-[100vh]"
-                  } cols-4:translate-y-[0%] cols-4:h-full cols-4:sticky cols-4:top-[72px] cols-4:z-50`}
+                  } cols-4:translate-y-[0%] cols-4:h-full cols-4:sticky cols-4:top-[72px] cols-4:z-50 bg-white`}
                 >
                   {configQuery.isFetching ? (
                     <Loader size="20px" />
@@ -718,7 +718,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                     phrase={router.query[QUERY_PARAMS.query_string] as string}
                                     selectedTopics={getSelectedConcepts(router.query[QUERY_PARAMS.concept_name], conceptsData)}
                                   />
-                                  .{" "}
+                                  . There is currently a short delay in topics appearing on new documents.{" "}
                                   <LinkWithQuery href="/faq" target="_blank" hash="topics-faqs" className="underline hover:text-blue-800">
                                     Learn more
                                   </LinkWithQuery>

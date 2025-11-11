@@ -62,7 +62,7 @@ const FAQ: React.FC = () => {
             </div>
           </SingleCol>
 
-          {knowledgeGraphEnabled && <FaqSection title="Topics FAQs" faqs={CONCEPTS_FAQS} sectionId={"topics-faqs"} />}
+          {knowledgeGraphEnabled && <FaqSection title="Topics FAQs" faqs={CONCEPTS_FAQS} sectionId="topics-faqs" />}
         </SiteWidth>
       </section>
     </Layout>

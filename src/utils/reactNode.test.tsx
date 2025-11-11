@@ -1,8 +1,12 @@
+import { Fragment } from "react";
+
 import { joinNodes } from "./reactNode";
 
 describe("joinNodes", () => {
+  const plus = (index: number) => <Fragment key={`join-${index}`}>+</Fragment>;
+
   it("joins multiple React nodes together", () => {
-    expect(joinNodes(["one", "two", "three"], "+")).toEqual(["one", "+", "two", "+", "three"]);
+    expect(joinNodes(["one", "two", "three"], "+")).toEqual(["one", plus(0), "two", plus(1), "three"]);
   });
 
   it("handles an empty array", () => {
@@ -14,6 +18,6 @@ describe("joinNodes", () => {
   });
 
   it("removes falsy values except for 0", () => {
-    expect(joinNodes(["one", null, "three", undefined, "", false, 0], "+")).toEqual(["one", "+", "three", "+", 0]);
+    expect(joinNodes(["one", null, "three", undefined, "", false, 0], "+")).toEqual(["one", plus(0), "three", plus(1), 0]);
   });
 });

@@ -17,7 +17,7 @@ import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { firstCase } from "@/utils/text";
-import { getFirstIncompleteTutorialName } from "@/utils/tutorials";
+import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
 import { ExternalLink } from "../ExternalLink";
 
@@ -120,7 +120,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
     });
   }, [concepts, theme]);
 
-  const showKnowledgeGraphTutorial = getFirstIncompleteTutorialName(completedTutorials, themeConfig, featureFlags) === "knowledgeGraph";
+  const showKnowledgeGraphTutorial = getIncompleteTutorialNames(completedTutorials, themeConfig, featureFlags).includes("knowledgeGraph");
 
   return (
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>

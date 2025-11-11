@@ -9,7 +9,7 @@ export const HomepageFaqs = () => (
       Frequently Asked Questions
     </p>
     <div className="w-full text-text-secondary -col-end-1 col-start-1 cols-4:col-start-4">
-      <FaqSection faqs={HOMEPAGE_FAQS} showMore={true} openFirstOnLoad={false} bare />
+      <FaqSection faqs={HOMEPAGE_FAQS} showMore={true} openFirstOnLoad={false} sectionId="faqs" bare />
     </div>
   </FiveColumns>
 );

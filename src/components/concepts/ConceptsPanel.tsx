@@ -17,7 +17,7 @@ import { TConcept } from "@/types";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { firstCase } from "@/utils/text";
-import { getFirstIncompleteTutorialName } from "@/utils/tutorials";
+import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
 interface IProps {
   concepts: TConcept[];
@@ -83,7 +83,7 @@ export const ConceptsPanel = ({ concepts, onConceptClick, rootConcepts }: IProps
   };
 
   const conceptsGroupedByRootConcept = groupByRootConcept(concepts, rootConcepts);
-  const showKnowledgeGraphTutorial = getFirstIncompleteTutorialName(completedTutorials, themeConfig, featureFlags) === "knowledgeGraph";
+  const showKnowledgeGraphTutorial = getIncompleteTutorialNames(completedTutorials, themeConfig, featureFlags).includes("knowledgeGraph");
 
   return (
     <div className="flex flex-col gap-4 pb-4 text-sm">

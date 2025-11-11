@@ -38,7 +38,7 @@ export interface IProps {
 
 const categories: { title: TDocumentCategory; slug: string }[] = [
   { title: "All", slug: "all" },
-  { title: "UN Submissions", slug: "un-submissions" },
+  { title: "UN Submissions", slug: "UN-submissions" },
   { title: "Laws", slug: "laws" },
   { title: "Policies", slug: "policies" },
   { title: "Climate Finance Projects", slug: "climate-finance-projects" },
@@ -95,7 +95,7 @@ export const GeographyOriginalPage = ({
       themeConfig.categories
         ? themeConfig.categories.options.reduce((items, category) => {
             // TODO: remove this when FF is removed and UN docs are released
-            if (category.label === (isRioPolicyRadarEnabled(featureFlags) ? "UNFCCC Submissions" : "UN Submissions")) return items;
+            if (category.label === (isRioPolicyRadarEnabled(featureFlags, themeConfig) ? "UNFCCC Submissions" : "UN Submissions")) return items;
             return [
               ...items,
               {
@@ -112,7 +112,7 @@ export const GeographyOriginalPage = ({
               slug: "All",
             },
           ],
-    [themeConfig.categories, featureFlags]
+    [themeConfig, featureFlags]
   );
 
   const countCategories = useMemo(

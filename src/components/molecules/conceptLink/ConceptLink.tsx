@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
 import { Popover } from "@/components/atoms/popover/Popover";
 import { TConcept } from "@/types";
@@ -8,7 +8,7 @@ import { firstCase } from "@/utils/text";
 
 interface IProps {
   concept: TConcept;
-  label?: string;
+  label?: ReactNode;
   children?: React.ReactNode;
   onClick?: (concept: TConcept) => void;
   triggerClasses?: string;
@@ -18,17 +18,17 @@ export const ConceptLink = ({ concept, label, onClick, triggerClasses = "", chil
   const [isOpen, setIsOpen] = useState(false);
 
   const allTriggerClasses = joinTailwindClasses(
-    "inline capitalize underline underline-offset-2 decoration-dotted",
-    isOpen ? "decoration-text-primary" : "decoration-text-quaternary",
+    "inline underline underline-offset-4",
+    isOpen ? "decoration-gray-500" : "decoration-gray-300 hover:decoration-gray-500",
     onClick ? "" : "!cursor-help",
     triggerClasses
   );
 
-  const title = label ?? firstCase(concept.preferred_label);
+  const title = firstCase(concept.preferred_label);
 
   const trigger = (
     <button className={allTriggerClasses} onClick={() => (onClick ? onClick(concept) : null)}>
-      {title}
+      {label ?? title}
     </button>
   );
 

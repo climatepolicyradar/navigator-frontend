@@ -46,7 +46,7 @@ const KNOWLEDGE_GRAPH_QUICK_SEARCHES = [
     id: 1,
     label: "Latest NDCs",
     params: {
-      [QUERY_PARAMS.category]: "UNFCCC",
+      [QUERY_PARAMS.category]: "UN-submissions",
       [QUERY_PARAMS["_document.type"]]: "Nationally Determined Contribution",
       [QUERY_PARAMS.author_type]: "Party",
     },

@@ -218,7 +218,7 @@ test.describe("CCLW Hero Search", () => {
   });
 
   test("should maintain search state on page refresh", async ({ page }) => {
-    const searchTerm = "climate framework laws";
+    const searchTerm = "climate framework law";
 
     // Type search term
     await page.fill('[data-cy="search-input"]', searchTerm);
@@ -247,7 +247,7 @@ test.describe("CCLW Hero Search", () => {
     // Should still be on search results page with same parameters
     expect(page.url()).toBe(urlBeforeRefresh);
     await expect(page).toHaveURL(/\/search/);
-    await expect(page).toHaveURL(/q=climate\+framework\+laws/);
+    await expect(page).toHaveURL(/q=climate\+framework\+law/);
     await expect(page).not.toHaveURL(/e=true/);
 
     // Verify search results are still visible after refresh
