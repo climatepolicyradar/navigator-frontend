@@ -454,7 +454,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             <section>
               <div className="md:flex justify-between items-center border-b border-gray-300">
                 <BreadCrumbs label={"Search results"} />
-                <div className="px-3 cols-2:px-6 cols-3:px-8">
+                <div className="px-2 cols5-2:px-4 cols5-3:px-6 cols5-4:px-8">
                   <span className="text-sm mb-4 md:mb-0 text-right flex flex-wrap gap-x-2 md:justify-end">
                     <span>Download data (.csv): </span>
                     <a
