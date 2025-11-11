@@ -4,7 +4,7 @@ import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Feature } from "./Feature";
 
 export const FeatureDiscover = () => (
-  <div className="w-full pt-12 pb-4 text-text-primary px-3 cols-2:px-6 cols-3:px-8">
+  <div className="w-full pt-12 pb-4 text-text-primary px-2 cols-2:px-4 cols-3:px-6 cols-4:px-8">
     <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
       <Feature heading="About us" subheading="Learn about this project" image="Homepage-image.png" imageAlt="Climate Case Chart interface">
         <p className="text-lg leading-relaxed mb-6">

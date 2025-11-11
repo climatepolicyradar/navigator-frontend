@@ -19,7 +19,7 @@ export default meta;
 const usePageContext = ({ ...props }: IProps) => (
   <FiveColumns>
     <ContentsSideBar {...props} />
-    <div className="flex flex-col gap-8 col-start-1 -col-end-1 cols5-4:col-start-3">
+    <div className="flex flex-col gap-8 col-start-1 -col-end-1 cols-4:col-start-3">
       {props.items.map((item) => (
         <section id={item.id} key={item.id}>
           <h1 className="text-2xl font-bold mb-4">{item.display}</h1>

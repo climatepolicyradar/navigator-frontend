@@ -454,7 +454,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             <section>
               <div className="md:flex justify-between items-center border-b border-gray-300">
                 <BreadCrumbs label={"Search results"} />
-                <div className="px-3 cols-2:px-6 cols-3:px-8">
+                <div className="px-2 cols-2:px-4 cols-3:px-6 cols-4:px-8">
                   <span className="text-sm mb-4 md:mb-0 text-right flex flex-wrap gap-x-2 md:justify-end">
                     <span>Download data (.csv): </span>
                     <a
@@ -487,13 +487,13 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 <SideCol
                   extraClasses={`absolute z-99 top-0 w-screen duration-250 ease-[cubic-bezier(0.04, 0.62, 0.23, 0.98)] ${
                     showFilters ? "translate-y-[0%]" : "fixed translate-y-[100vh]"
-                  } cols5-4:translate-y-[0%] cols5-4:h-full cols5-4:sticky cols5-4:top-[72px] cols5-4:z-50 bg-white`}
+                  } cols-4:translate-y-[0%] cols-4:h-full cols-4:sticky cols-4:top-[72px] cols-4:z-50 bg-white`}
                 >
                   {configQuery.isFetching ? (
                     <Loader size="20px" />
                   ) : (
                     <>
-                      <div className="sticky cols5-4:top-[72px] h-screen cols5-4:h-[calc(100vh-72px)] px-5 cols5-4:border-r border-gray-300 pt-5 pb-[180px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 cols5-4:pb-4">
+                      <div className="sticky cols-4:top-[72px] h-screen cols-4:h-[calc(100vh-72px)] px-5 cols-4:border-r border-gray-300 pt-5 pb-[180px] overflow-y-auto scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 cols-4:pb-4">
                         <SearchFilters
                           searchCriteria={searchQuery}
                           query={router.query}

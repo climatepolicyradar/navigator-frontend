@@ -30,8 +30,8 @@ export const Section = ({ badge, block, children, count, Icon, id, title, wide =
   const sectionId = block ? `section-${block}` : id;
 
   const sectionClasses = joinTailwindClasses(
-    "grid grid-cols-subgrid col-start-1 -col-end-1 scroll-mt-40 cols5-4:scroll-mt-26",
-    !wide && "cols5-5:-col-end-3"
+    "grid grid-cols-subgrid col-start-1 -col-end-1 scroll-mt-40 cols-4:scroll-mt-26",
+    !wide && "cols-5:-col-end-3"
   );
 
   return (

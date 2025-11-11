@@ -30,7 +30,7 @@ export const Template: TStory = {
     <FiveColumns>
       <div className="h-15 bg-green-300 col-start-1 -col-end-1">header</div>
       <div className="h-15 bg-blue-300 col-span-2">sidebar</div>
-      <div className="h-15 bg-purple-300 col-start-1 cols5-2:col-start-3 -col-end-1">main</div>
+      <div className="h-15 bg-purple-300 col-start-1 cols-2:col-start-3 -col-end-1">main</div>
       <div className="h-15 bg-red-300 col-start-1 -col-end-1">footer</div>
     </FiveColumns>
   ),

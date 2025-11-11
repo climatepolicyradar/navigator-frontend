@@ -46,7 +46,7 @@ export const PageHeader = <Tab extends string>({ currentTab, dark = false, label
     <div className={containerClasses}>
       <FiveColumns verticalGap>
         <div className="col-span-2">{label && <h2 className="text-3xl text-gray-500 leading-9 font-heavy">{label}</h2>}</div>
-        <div className="col-start-1 cols5-4:col-start-3 -col-end-1 cols5-5:col-end-9 flex flex-col gap-6">
+        <div className="col-start-1 cols-4:col-start-3 -col-end-1 cols-5:col-end-9 flex flex-col gap-6">
           {/* Title */}
 
           <h1 className="text-3xl text-gray-950 leading-9 font-heavy">{title}</h1>
