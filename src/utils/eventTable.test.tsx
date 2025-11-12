@@ -1,3 +1,4 @@
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { IMetadata, TCategory, TCorpusPublic, TFamilyDocumentPublic } from "@/types";
 
@@ -64,6 +65,7 @@ describe("getEventTableRows", () => {
             label: <ViewMore maxLines={4}>Description 1</ViewMore>,
             value: "Description 1",
           },
+          title: null,
           topics: {
             label: null,
             value: "",
@@ -140,6 +142,10 @@ describe("getEventTableRows", () => {
         label: <ViewMore maxLines={4}>Description 1</ViewMore>,
         value: "Description 1",
       },
+      title: {
+        label: <span className="">Document 1</span>,
+        value: false,
+      },
       topics: {
         label: null,
         value: "",
@@ -213,30 +219,40 @@ describe("getEventTableRows", () => {
 
     const eventRows = getEventTableRows({ families: [familyWithoutEvents] });
 
-    expect(eventRows).toHaveLength(2);
+    expect(eventRows).toHaveLength(1);
 
     expect(eventRows[0]).toEqual({
-      id: "/0",
       cells: {
-        action: "Action 2",
+        action: null,
         caseNumber: "Case 1",
         caseTitle: "Case 1",
         court: null,
-        date: {
-          label: "01/01/2021",
-          value: 1609459200000,
+        date: null,
+        document: {
+          label: (
+            <div className="flex flex-col gap-2">
+              <LinkWithQuery
+                className="block text-gray-700 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+                href="/documents/document-1"
+              >
+                View
+              </LinkWithQuery>
+            </div>
+          ),
+          value: "document-1:0",
         },
-        document: null,
-        summary: {
-          label: <ViewMore maxLines={4}>Description 2</ViewMore>,
-          value: "Description 2",
+        summary: null,
+        title: {
+          label: <span className="">Document 1</span>,
+          value: false,
         },
         topics: {
           label: null,
           value: "",
         },
-        type: "Event",
+        type: null,
       },
+      id: "/0",
     });
 
     expect(eventRows[1].id).toBe("/1");
@@ -255,6 +271,7 @@ describe("getEventTableRows", () => {
         label: <ViewMore maxLines={4}>Description 1</ViewMore>,
         value: "Description 1",
       },
+      title: null,
       topics: {
         label: null,
         value: "",
@@ -345,6 +362,10 @@ describe("getEventTableRows", () => {
       summary: {
         label: <ViewMore maxLines={4}>Description 1</ViewMore>,
         value: "Description 1",
+      },
+      title: {
+        label: <span className="">Document 1</span>,
+        value: false,
       },
       topics: {
         label: null,
