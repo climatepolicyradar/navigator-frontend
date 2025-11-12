@@ -1,8 +1,8 @@
 import sortBy from "lodash/sortBy";
 import { Fragment, ReactNode } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { ConceptHierarchy } from "@/components/molecules/conceptHierarchy/ConceptHierarchy";
+import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
 import { ARROW_RIGHT, EN_DASH } from "@/constants/chars";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
@@ -45,13 +45,7 @@ export function getLitigationMetadata(family: TFamilyPublic, countries: TGeograp
         const geoName = geoSlug ? getCountryName(geo, countries) : getSubdivisionName(geo, subdivisions);
         return (
           <Fragment key={geo}>
-            {!isSystemGeo(geoName) ? (
-              <LinkWithQuery href={`/geographies/${geoSlug || geo.toLowerCase()}`} className="underline">
-                {geoName}
-              </LinkWithQuery>
-            ) : (
-              <span>{geoName}</span>
-            )}
+            {!isSystemGeo(geoName) ? <GeographyLink code={geo} name={geoName} slug={geoSlug || geo.toLowerCase()} /> : <span>{geoName}</span>}
             {index + 1 < geosOrdered.length && hierarchyArrow}
           </Fragment>
         );
