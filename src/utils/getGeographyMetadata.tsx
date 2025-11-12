@@ -46,10 +46,10 @@ export const getGeographyMetaData = (stats: NonNullable<GeographyV2["statistics"
               .
             </>
           }
-          popupClasses="w-[350px] px-3 py-3 !text-sm text-wrap leading-normal font-normal"
+          popupClasses="w-[350px] p-3 !text-sm text-wrap leading-normal font-normal"
           side="bottom"
         >
-          <span className="inline underline underline-offset-2 decoration-dotted cursor-help">{stats.climate_risk_index}</span>
+          <span className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500 cursor-help">{stats.climate_risk_index}</span>
         </Tooltip>
       ),
     });
@@ -80,10 +80,12 @@ export const getGeographyMetaData = (stats: NonNullable<GeographyV2["statistics"
               <p>This percentage is based on emissions data from 2020. This data was last updated on this site on 18 September 2023.</p>
             </>
           }
-          popupClasses="w-[350px] px-3 py-3 !text-sm text-wrap leading-normal font-normal"
+          popupClasses="w-[350px] p-3 !text-sm text-wrap leading-normal font-normal"
           side="bottom"
         >
-          <span className="inline underline underline-offset-2 decoration-dotted cursor-help">{stats.global_emissions_percent + "%"}</span>
+          <span className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500 cursor-help">
+            {stats.global_emissions_percent + "%"}
+          </span>
         </Tooltip>
       ),
     });

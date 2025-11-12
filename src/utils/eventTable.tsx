@@ -36,7 +36,11 @@ const topicsColumnName = (
     <Badge>Beta</Badge>{" "}
     <Popover
       openOnHover
-      trigger={<LucideInfo size={16} className="inline-block align-text-bottom text-gray-500 hover:text-gray-700 cursor-help" />}
+      trigger={
+        <button type="button">
+          <LucideInfo size={16} className="inline-block align-text-bottom text-gray-500 hover:text-gray-700 cursor-help" />
+        </button>
+      }
       description="This table shows the most frequently mentioned topics in this document. The number in brackets is a count of how many times each topic appears. Click to view the document and see the specific passages mentioning each topic highlighted. Accuracy is not 100%."
       link={{
         href: "/faq#topics-faqs",
