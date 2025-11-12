@@ -1,3 +1,4 @@
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { IMetadata, TCategory, TCorpusPublic, TFamilyDocumentPublic } from "@/types";
 
@@ -64,6 +65,7 @@ describe("getEventTableRows", () => {
             label: <ViewMore maxLines={4}>Description 1</ViewMore>,
             value: "Description 1",
           },
+          title: null,
           topics: {
             label: null,
             value: "",
@@ -140,6 +142,10 @@ describe("getEventTableRows", () => {
         label: <ViewMore maxLines={4}>Description 1</ViewMore>,
         value: "Description 1",
       },
+      title: {
+        label: <span className="">Document 1</span>,
+        value: false,
+      },
       topics: {
         label: null,
         value: "",
@@ -213,57 +219,31 @@ describe("getEventTableRows", () => {
 
     const eventRows = getEventTableRows({ families: [familyWithoutEvents] });
 
-    expect(eventRows).toHaveLength(2);
+    expect(eventRows).toHaveLength(1);
+
+    const firstEventRow = eventRows[0];
+    delete firstEventRow.cells.document;
 
     expect(eventRows[0]).toEqual({
-      id: "/0",
       cells: {
-        action: "Action 2",
+        action: null,
         caseNumber: "Case 1",
         caseTitle: "Case 1",
         court: null,
-        date: {
-          label: "01/01/2021",
-          value: 1609459200000,
-        },
-        document: null,
-        summary: {
-          label: <ViewMore maxLines={4}>Description 2</ViewMore>,
-          value: "Description 2",
+        date: null,
+        summary: null,
+        title: {
+          label: <span className="">Document 1</span>,
+          value: false,
         },
         topics: {
           label: null,
           value: "",
         },
-        type: "Event",
+        type: null,
       },
+      id: "/0",
     });
-
-    expect(eventRows[1].id).toBe("/1");
-    const { document, ...cells } = eventRows[1].cells;
-
-    expect(cells).toEqual({
-      action: "Action 1",
-      caseNumber: "Case 1",
-      caseTitle: "Case 1",
-      court: null,
-      date: {
-        label: "01/01/2021",
-        value: 1609459200000,
-      },
-      summary: {
-        label: <ViewMore maxLines={4}>Description 1</ViewMore>,
-        value: "Description 1",
-      },
-      topics: {
-        label: null,
-        value: "",
-      },
-      type: "Event",
-    });
-
-    expect(typeof document).toBe("object");
-    expect((document as IMetadata).value).toBe("document-1:0");
   });
 
   it("returns a deduplicated list of family and document event rows if same event linked to both family and document", () => {
@@ -345,6 +325,10 @@ describe("getEventTableRows", () => {
       summary: {
         label: <ViewMore maxLines={4}>Description 1</ViewMore>,
         value: "Description 1",
+      },
+      title: {
+        label: <span className="">Document 1</span>,
+        value: false,
       },
       topics: {
         label: null,

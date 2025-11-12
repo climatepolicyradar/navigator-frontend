@@ -53,7 +53,7 @@ export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesSta
           <InteractiveTable<TEventTableColumnId>
             columns={tableColumns}
             rows={updatedRowsWithLocalisedDates || tableRows}
-            defaultSort={{ column: "date", order: "desc" }}
+            defaultSort={{ column: isLitigation ? "date" : "title", order: "desc" }}
             tableClasses={isLitigation ? "min-w-250" : "min-w-200"}
           />
         )}
