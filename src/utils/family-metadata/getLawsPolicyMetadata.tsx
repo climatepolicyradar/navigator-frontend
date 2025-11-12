@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
 import { EN_DASH } from "@/constants/chars";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { IMetadata, TFamilyPublic, TGeography } from "@/types";
@@ -35,13 +35,7 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, countries: TGeograp
         return (
           <Fragment key={geo}>
             {index > 0 && ", "}
-            {!isSystemGeo(geoName) ? (
-              <LinkWithQuery href={`/geographies/${geoSlug || geo.toLowerCase()}`} className="underline">
-                {geoName}
-              </LinkWithQuery>
-            ) : (
-              <span>{geoName}</span>
-            )}
+            {!isSystemGeo(geoName) ? <GeographyLink code={geo} name={geoName} slug={geoSlug || geo.toLowerCase()} /> : <span>{geoName}</span>}
           </Fragment>
         );
       }),

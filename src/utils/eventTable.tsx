@@ -9,6 +9,7 @@ import { Badge } from "@/components/atoms/label/Badge";
 import { Popover } from "@/components/atoms/popover/Popover";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { getMainDocuments } from "@/helpers/getMainDocuments";
 import {
   IFamilyDocumentTopics,
   TFamilyDocumentPublic,
@@ -22,12 +23,13 @@ import {
 
 import { getMostSpecificCourts } from "./getMostSpecificCourts";
 import { pluralise } from "./pluralise";
+import { joinTailwindClasses } from "./tailwind";
 import { firstCase } from "./text";
 import { formatDateShort } from "./timedate";
 
 /* Columns */
 
-export type TEventTableColumnId = "action" | "caseNumber" | "caseTitle" | "court" | "date" | "document" | "summary" | "topics" | "type";
+export type TEventTableColumnId = "action" | "caseNumber" | "caseTitle" | "court" | "date" | "document" | "summary" | "title" | "topics" | "type";
 export type TEventTableColumn = TTableColumn<TEventTableColumnId>;
 
 const topicsColumnName = (
@@ -64,9 +66,10 @@ export const getEventTableColumns = ({
   showMatches?: boolean;
 }) => {
   const columns: TEventTableColumn[] = [
+    { id: "title", fraction: 4 },
     { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
     { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 2 },
-    { id: "topics", name: topicsColumnName, fraction: 8 },
+    { id: "topics", name: topicsColumnName, fraction: isLitigation ? 8 : 3 },
     { id: "action", name: "Action Taken", fraction: 4 },
     { id: "summary", fraction: 6, classes: "min-w-75" },
     { id: "caseNumber", name: "Case Number", fraction: 2 },
@@ -76,10 +79,15 @@ export const getEventTableColumns = ({
   ];
 
   const columnsToRemove: TEventTableColumnId[] = [];
-  if (!isLitigation) columnsToRemove.push("date");
   if (!hasTopics) columnsToRemove.push("topics");
   if (!isUSA) columnsToRemove.push("action");
   if (!showFamilyColumns) columnsToRemove.push("caseNumber", "court", "caseTitle");
+
+  if (isLitigation) {
+    columnsToRemove.push("title");
+  } else {
+    columnsToRemove.push("date", "type", "action", "summary");
+  }
 
   return columns.filter((column) => !columnsToRemove.includes(column.id));
 };
@@ -90,8 +98,9 @@ const MAX_TOPICS_PER_DOCUMENT = 4;
 
 export type TEventTableRow = TTableRow<TEventTableColumnId>;
 
-type TEventWithDocument = {
-  event: TFamilyEventPublic;
+type TEventRowData = {
+  family: TFamilyPublic;
+  event?: TFamilyEventPublic;
   document?: TFamilyDocumentPublic;
 };
 
@@ -103,19 +112,21 @@ export const getCourts = (family: TFamilyPublic): string | null =>
     .join(", ") || null;
 
 // Events can be duplicated between the family and document event lists. Use object keys to overwrite the former with the latter.
-const getFamilyEvents = (family: TFamilyPublic): TEventWithDocument[] =>
+const getFamilyEvents = (family: TFamilyPublic): TEventRowData[] =>
   Object.values(
     Object.fromEntries(
       (
         [
-          ...family.events.map((event) => ({ event })),
-          ...family.documents.flatMap((document) => document.events.map((event) => ({ event, document }))),
-        ] as TEventWithDocument[]
+          ...family.events.map((event) => ({ family, event })),
+          ...family.documents.flatMap((document) => document.events.map((event) => ({ family, event, document }))),
+        ] as TEventRowData[]
       )
         .filter((item) => item.event.event_type !== "Filing Year For Action") // TODO: review whether we still want to do this
         .map((item) => [item.event.import_id, item] as const)
     )
   );
+
+const getFamilyDocuments = (family: TFamilyPublic): TEventRowData[] => family.documents.map((document) => ({ family, document }));
 
 export const getEventTableRows = ({
   families,
@@ -135,114 +146,127 @@ export const getEventTableRows = ({
   const rows: TEventTableRow[] = [];
   const topicsData = familyTopics ? Object.values(familyTopics.conceptsGrouped).flat() : [];
 
-  families.forEach((family) =>
-    getFamilyEvents(family).forEach(({ event, document }, eventIndex) => {
-      if (documentEventsOnly && !document) return;
+  // Determine how to turn families into table rows
+  // Ideally get events and documents from each family.events, or fall back to family.documents if documents don't have events (non-litigation)
 
-      const date = new Date(event.date);
-      const summary = event.metadata.description?.[0];
+  const eventRowsData = families.map(getFamilyEvents).flat();
+  const documentRowsData = families.map(getFamilyDocuments).flat();
+  const rowsData = eventRowsData.some((eventRowData) => !eventRowData.document) && documentRowsData.length > 0 ? documentRowsData : eventRowsData;
 
-      const linkClasses = "block text-gray-700 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
+  rowsData.forEach(({ family, event, document }, rowIndex) => {
+    if (documentEventsOnly && !document) return;
 
-      /* Topics */
+    const date = event ? new Date(event.date) : null;
+    const summary = event?.metadata.description?.[0] || null;
 
-      let topicsDisplay: ReactNode = null;
-      if (document && familyTopics) {
-        const documentTopicsData = familyTopics.documents.find((doc) => doc.importId === document.import_id)?.conceptCounts ?? {};
+    const [mainDocuments] = getMainDocuments(family.documents);
+    const isMainDocument = Boolean(document && mainDocuments.find((mainDocument) => mainDocument.slug === document.slug));
 
-        const sortedTopics = orderBy(Object.entries(documentTopicsData), ["1"], ["desc"]);
-        const someTopicsHidden = sortedTopics.length > MAX_TOPICS_PER_DOCUMENT;
+    const linkClasses = "block text-gray-700 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
 
-        const topicLinks = sortedTopics.slice(0, MAX_TOPICS_PER_DOCUMENT).map(([topicId, topicCount]) => {
-          const [wikibaseId, fallbackLabel] = topicId.split(":");
-          const topic = topicsData.find((concept) => concept.wikibase_id === wikibaseId);
+    /* Topics */
 
-          // TODO investigate references to topics not in API response
-          if (!topic) return null;
+    let topicsDisplay: ReactNode = null;
+    if (document && familyTopics) {
+      const documentTopicsData = familyTopics.documents.find((doc) => doc.importId === document.import_id)?.conceptCounts ?? {};
 
-          return (
-            <Link
-              key={topicId}
-              href={{ pathname: `/documents/${document.slug}`, query: { [QUERY_PARAMS.concept_name]: topic.preferred_label } }}
-              className={linkClasses}
-            >
-              {firstCase(topic?.preferred_label || fallbackLabel)} <span className="text-gray-500">({topicCount})</span>
-            </Link>
-          );
-        });
+      const sortedTopics = orderBy(Object.entries(documentTopicsData), ["1"], ["desc"]);
+      const someTopicsHidden = sortedTopics.length > MAX_TOPICS_PER_DOCUMENT;
 
-        topicsDisplay = (
-          <div className="flex flex-col gap-2 items-start">
-            {topicLinks}
-            {someTopicsHidden && (
-              <Link href={`/documents/${document.slug}`}>
-                <button
-                  type="button"
-                  role="link"
-                  className="p-2 mt-1 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
-                >
-                  View all topic mentions
-                </button>
-              </Link>
-            )}
-          </div>
+      const topicLinks = sortedTopics.slice(0, MAX_TOPICS_PER_DOCUMENT).map(([topicId, topicCount]) => {
+        const [wikibaseId, fallbackLabel] = topicId.split(":");
+        const topic = topicsData.find((concept) => concept.wikibase_id === wikibaseId);
+
+        // TODO investigate references to topics not in API response
+        if (!topic) return null;
+
+        return (
+          <Link
+            key={topicId}
+            href={{ pathname: `/documents/${document.slug}`, query: { [QUERY_PARAMS.concept_name]: topic.preferred_label } }}
+            className={linkClasses}
+          >
+            {firstCase(topic?.preferred_label || fallbackLabel)} <span className="text-gray-500">({topicCount})</span>
+          </Link>
         );
-      }
-
-      /* Matches */
-
-      let matches = 0;
-      if (matchesFamily && document) {
-        const matchesDocument = matchesFamily.family_documents.find((doc) => doc.document_slug === document.slug);
-        if (matchesDocument) {
-          matches = matchesDocument.document_passage_matches.length;
-        }
-      }
-
-      let matchesDisplay: ReactNode = null;
-      if (matchesStatus === "loading") {
-        matchesDisplay = <Icon name="loading" />;
-      } else if (document && matches > 0) {
-        matchesDisplay = (
-          <LinkWithQuery href={`/documents/${document.slug}`} className={linkClasses}>
-            {matches} {pluralise(matches, ["match", "matches"])}
-          </LinkWithQuery>
-        );
-      }
-
-      /* Everything else */
-
-      rows.push({
-        id: [family.import_id, eventIndex].join("/"),
-        cells: {
-          action: event.metadata.action_taken?.[0] || null,
-          caseNumber: getCaseNumbers(family),
-          caseTitle: family.title,
-          court: getCourts(family),
-          date: {
-            label: formatDateShort(date, language),
-            value: date.getTime(),
-          },
-          document: document
-            ? {
-                label: (
-                  <div className="flex flex-col gap-2">
-                    <LinkWithQuery href={`/documents/${document.slug}`} className={linkClasses}>
-                      View
-                    </LinkWithQuery>
-                    {matchesDisplay}
-                  </div>
-                ),
-                value: `${document.slug}:${matches}`,
-              }
-            : null,
-          summary: summary ? { label: <ViewMore maxLines={4}>{summary}</ViewMore>, value: summary } : null,
-          topics: { label: topicsDisplay, value: "" },
-          type: event.event_type,
-        },
       });
-    })
-  );
+
+      topicsDisplay = (
+        <div className="flex flex-col gap-2 items-start">
+          {topicLinks}
+          {someTopicsHidden && (
+            <Link href={`/documents/${document.slug}`}>
+              <button
+                type="button"
+                role="link"
+                className="p-2 mt-1 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
+              >
+                View all topic mentions
+              </button>
+            </Link>
+          )}
+        </div>
+      );
+    }
+
+    /* Matches */
+
+    let matches = 0;
+    if (matchesFamily && document) {
+      const matchesDocument = matchesFamily.family_documents.find((doc) => doc.document_slug === document.slug);
+      if (matchesDocument) {
+        matches = matchesDocument.document_passage_matches.length;
+      }
+    }
+
+    let matchesDisplay: ReactNode = null;
+    if (matchesStatus === "loading") {
+      matchesDisplay = <Icon name="loading" />;
+    } else if (document && matches > 0) {
+      matchesDisplay = (
+        <LinkWithQuery href={`/documents/${document.slug}`} className={linkClasses}>
+          {matches} {pluralise(matches, ["match", "matches"])}
+        </LinkWithQuery>
+      );
+    }
+
+    /* Everything else */
+
+    rows.push({
+      id: [family.import_id, rowIndex].join("/"),
+      cells: {
+        action: event?.metadata.action_taken?.[0] || null,
+        caseNumber: getCaseNumbers(family),
+        caseTitle: family.title,
+        court: getCourts(family),
+        date: date
+          ? {
+              label: formatDateShort(date, language),
+              value: date.getTime(),
+            }
+          : null,
+        document: document
+          ? {
+              label: (
+                <div className="flex flex-col gap-2">
+                  <LinkWithQuery href={`/documents/${document.slug}`} className={linkClasses}>
+                    View
+                  </LinkWithQuery>
+                  {matchesDisplay}
+                </div>
+              ),
+              value: `${document.slug}:${matches}`,
+            }
+          : null,
+        summary: summary ? { label: <ViewMore maxLines={4}>{summary}</ViewMore>, value: summary } : null,
+        title: document
+          ? { label: <span className={joinTailwindClasses(isMainDocument && "font-medium")}>{document.title}</span>, value: isMainDocument }
+          : null,
+        topics: { label: topicsDisplay, value: "" },
+        type: event?.event_type || null,
+      },
+    });
+  });
 
   return rows;
 };

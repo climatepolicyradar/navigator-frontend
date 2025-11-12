@@ -26,7 +26,7 @@ const renderCellDisplay = (cell: TTableCell, showValues: boolean) => {
 
   let content: ReactNode = `${cell}`;
   if (typeof cell === "object") content = showValues ? cell.value : cell.label;
-  return showValues ? <div className="inline-block bg-surface-ui text-sm text-text-tertiary font-mono">{content}</div> : content;
+  return showValues ? <div className="inline-block bg-surface-ui text-sm text-text-tertiary font-mono">{`${content}`}</div> : content;
 };
 
 export interface IProps<ColumnKey extends string> {
