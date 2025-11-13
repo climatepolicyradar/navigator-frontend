@@ -151,7 +151,7 @@ export const getEventTableRows = ({
 
   const eventRowsData = families.map(getFamilyEvents).flat();
   const documentRowsData = families.map(getFamilyDocuments).flat();
-  const rowsData = eventRowsData.some((eventRowData) => !eventRowData.document) && documentRowsData.length > 0 ? documentRowsData : eventRowsData;
+  const rowsData = eventRowsData.every((eventRowData) => !eventRowData.document) && documentRowsData.length > 0 ? documentRowsData : eventRowsData;
 
   rowsData.forEach(({ family, event, document }, rowIndex) => {
     if (documentEventsOnly && !document) return;
