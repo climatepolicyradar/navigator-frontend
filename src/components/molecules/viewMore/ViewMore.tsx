@@ -5,6 +5,7 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 interface IViewMoreGenericProps {
   buttonText?: [string, string];
   onButtonClick?: () => void;
+  containerClasses?: string;
 }
 
 // Plain text - displays a maximum number of lines
@@ -23,7 +24,14 @@ interface IViewMoreContentProps extends IViewMoreGenericProps {
 
 export type TProps = IViewMoreTextProps | IViewMoreContentProps;
 
-export const ViewMore = ({ children, buttonText = ["View more", "View less"], onButtonClick, maxLines, maxHeight = 150 }: TProps) => {
+export const ViewMore = ({
+  buttonText = ["View more", "View less"],
+  children,
+  containerClasses = "",
+  maxHeight = 150,
+  maxLines,
+  onButtonClick,
+}: TProps) => {
   const contentRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -52,7 +60,7 @@ export const ViewMore = ({ children, buttonText = ["View more", "View less"], on
   };
 
   return (
-    <div>
+    <div className={containerClasses}>
       <div ref={contentRef} className={contentClasses} style={contentStyles}>
         {children}
       </div>

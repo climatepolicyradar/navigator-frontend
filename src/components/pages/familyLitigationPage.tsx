@@ -5,6 +5,7 @@ import { useCallback, useContext } from "react";
 import { Debug } from "@/components/atoms/debug/Debug";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
+import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
@@ -27,7 +28,7 @@ import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
 import { IProps } from "./familyOriginalPage";
 
-export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTopics, featureFlags, theme, themeConfig }: IProps) => {
+export const FamilyLitigationPage = ({ corpus_types, countries, subdivisions, family, familyTopics, featureFlags, theme, themeConfig }: IProps) => {
   const { completedTutorials } = useContext(TutorialContext);
   const { getText } = useText();
 
@@ -89,6 +90,9 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTo
         return <MetadataBlock key="metadata" block="metadata" title={`About this ${getText("familySingular")}`} metadata={metadata} />;
       }, [countries, family, subdivisions, getText]),
       sideBarItem: { display: "About" },
+    },
+    note: {
+      render: () => <NoteBlock corpusId={family.corpus_id} corpusTypes={corpus_types} />,
     },
     summary: {
       render: () => {
