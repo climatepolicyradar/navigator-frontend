@@ -29,7 +29,7 @@ export const sortGeos = (data, prop) => {
   return myData;
 };
 
-export const sortTopics = (concepts: TConcept[]) =>
+export const sortRootTopics = (concepts: TConcept[]) =>
   orderBy(
     concepts,
     [

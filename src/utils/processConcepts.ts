@@ -1,7 +1,7 @@
 import { ORDERED_ROOT_TOPIC_IDS, ROOT_TOPICS } from "@/constants/topics";
 import { TConcept } from "@/types";
 
-import { sortTopics } from "./sorting";
+import { sortRootTopics } from "./sorting";
 
 // TODO: move this fetching to a Next API route
 const fetchConcept = async (conceptId: string): Promise<TConcept> => {
@@ -27,7 +27,7 @@ export const fetchAndProcessConcepts = async (conceptIds: string[]) => {
   const allConcepts = await Promise.allSettled([...rootConceptsS3Promises, ...conceptsS3Promises]);
   const filteredConcepts = allConcepts.filter(Boolean);
   /** We currently fail silently for some concepts, but we will see errors in the network panel */
-  const rootConceptsResults = sortTopics(
+  const rootConceptsResults = sortRootTopics(
     filteredConcepts
       .slice(0, rootConceptsS3Promises.length)
       .filter((promiseSettledResult): promiseSettledResult is PromiseFulfilledResult<TConcept> => promiseSettledResult.status === "fulfilled")
