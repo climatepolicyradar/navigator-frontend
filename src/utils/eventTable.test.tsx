@@ -48,32 +48,7 @@ describe("getEventTableRows", () => {
 
     const eventRows = getEventTableRows({ families: [familyWithoutDocuments] });
 
-    expect(eventRows).toEqual([
-      {
-        id: "/0",
-        cells: {
-          action: "Action 1",
-          caseNumber: "Case 1",
-          caseTitle: "Case 1",
-          court: null,
-          date: {
-            label: "01/01/2021",
-            value: 1609459200000,
-          },
-          document: null,
-          summary: {
-            label: <ViewMore maxLines={4}>Description 1</ViewMore>,
-            value: "Description 1",
-          },
-          title: null,
-          topics: {
-            label: null,
-            value: "",
-          },
-          type: "Event",
-        },
-      },
-    ]);
+    expect(eventRows).toEqual([]);
   });
 
   it("returns a list of document event rows", () => {
@@ -130,18 +105,12 @@ describe("getEventTableRows", () => {
     const { document, ...cells } = eventRows[0].cells;
 
     expect(cells).toEqual({
-      action: "Action 1",
+      action: null,
       caseNumber: "Case 1",
       caseTitle: "Case 1",
       court: null,
-      date: {
-        label: "01/01/2021",
-        value: 1609459200000,
-      },
-      summary: {
-        label: <ViewMore maxLines={4}>Description 1</ViewMore>,
-        value: "Description 1",
-      },
+      date: null,
+      summary: null,
       title: {
         label: <span className="">Document 1</span>,
         value: false,
@@ -150,7 +119,7 @@ describe("getEventTableRows", () => {
         label: null,
         value: "",
       },
-      type: "Event",
+      type: null,
     });
 
     expect(typeof document).toBe("object");
@@ -314,18 +283,12 @@ describe("getEventTableRows", () => {
     const { document, ...cells } = eventRows[0].cells;
 
     expect(cells).toEqual({
-      action: "Action 1",
+      action: null,
       caseNumber: "Case 1",
       caseTitle: "Case 1",
       court: null,
-      date: {
-        label: "01/01/2021",
-        value: 1609459200000,
-      },
-      summary: {
-        label: <ViewMore maxLines={4}>Description 1</ViewMore>,
-        value: "Description 1",
-      },
+      date: null,
+      summary: null,
       title: {
         label: <span className="">Document 1</span>,
         value: false,
@@ -334,7 +297,7 @@ describe("getEventTableRows", () => {
         label: null,
         value: "",
       },
-      type: "Event",
+      type: null,
     });
 
     expect(typeof document).toBe("object");

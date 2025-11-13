@@ -146,12 +146,11 @@ export const getEventTableRows = ({
   const rows: TEventTableRow[] = [];
   const topicsData = familyTopics ? Object.values(familyTopics.conceptsGrouped).flat() : [];
 
-  // Determine how to turn families into table rows
-  // Ideally get events and documents from each family.events, or fall back to family.documents if documents don't have events (non-litigation)
+  // Populate rows of data differently for litigation where we have events on documents to pull from
 
   const eventRowsData = families.map(getFamilyEvents).flat();
   const documentRowsData = families.map(getFamilyDocuments).flat();
-  const rowsData = eventRowsData.some((eventRowData) => !eventRowData.document) && documentRowsData.length > 0 ? documentRowsData : eventRowsData;
+  const rowsData = families[0].corpus_type_name === "Litigation" ? eventRowsData : documentRowsData;
 
   rowsData.forEach(({ family, event, document }, rowIndex) => {
     if (documentEventsOnly && !document) return;
