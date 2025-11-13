@@ -7,7 +7,16 @@ import { FamilyLitigationPage } from "@/components/pages/familyLitigationPage";
 import { FamilyOriginalPage, IProps } from "@/components/pages/familyOriginalPage";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { TCorpusTypeDictionary, TFamilyPublic, TGeography, TGeographySubdivision, TSearchResponse, TSlugResponse, TTarget } from "@/types";
+import {
+  IFamilyDocumentTopics,
+  TCorpusTypeDictionary,
+  TFamilyPublic,
+  TGeography,
+  TGeographySubdivision,
+  TSearchResponse,
+  TSlugResponse,
+  TTarget,
+} from "@/types";
 import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -123,7 +132,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   /* Package the family topics */
   // TODO: move potentially
-  let familyTopics = null;
+  let familyTopics: IFamilyDocumentTopics = null;
 
   if (vespaFamilyData) {
     familyTopics = await processFamilyTopics(vespaFamilyData);

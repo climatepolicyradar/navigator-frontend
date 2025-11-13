@@ -1,3 +1,8 @@
+import orderBy from "lodash/orderBy";
+
+import { ORDERED_ROOT_TOPIC_IDS } from "@/constants/topics";
+import { TConcept } from "@/types";
+
 export type TSortFuncType = (data: any, prop: any) => any;
 
 export const sortData = (data, prop) => {
@@ -23,3 +28,16 @@ export const sortGeos = (data, prop) => {
 
   return myData;
 };
+
+export const sortTopics = (concepts: TConcept[]) =>
+  orderBy(
+    concepts,
+    [
+      (concept) => {
+        const index = ORDERED_ROOT_TOPIC_IDS.findIndex((wikibaseId) => wikibaseId === concept.wikibase_id);
+        return index === -1 ? null : index;
+      },
+      "preferred_label",
+    ],
+    ["asc", "asc"]
+  );
