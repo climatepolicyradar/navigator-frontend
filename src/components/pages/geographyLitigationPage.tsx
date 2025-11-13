@@ -158,8 +158,8 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
     targets: {
       render: useCallback(() => {
         const publishedTargets = sortFilterTargets(targets);
-        return <TargetsBlock key="targets" targets={publishedTargets} theme={theme} />;
-      }, [targets, theme]),
+        return <TargetsBlock key="targets" targets={publishedTargets} />;
+      }, [targets]),
     },
   };
 
