@@ -156,6 +156,10 @@ const config: TThemeConfig = {
       key: "download-database",
       url: "https://form.jotform.com/233131638610347",
     },
+    {
+      key: "email-alerts",
+      url: "https://form.jotform.com/252034552030341",
+    },
   ],
   metadata: [
     {

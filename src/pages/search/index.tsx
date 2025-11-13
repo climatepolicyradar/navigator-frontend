@@ -456,6 +456,17 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 <BreadCrumbs label={"Search results"} />
                 <div className="px-2 cols-2:px-4 cols-3:px-6 cols-4:px-8">
                   <span className="text-sm mb-4 md:mb-0 text-right flex flex-wrap gap-x-2 md:justify-end">
+                    {getThemeConfigLink(themeConfig, "email-alerts") && (
+                      <>
+                        <ExternalLink
+                          url={getThemeConfigLink(themeConfig, "email-alerts").url}
+                          className="mr-2 text-blue-600 hover:underline hover:text-blue-800"
+                          cy="download-entire-search-csv"
+                        >
+                          Email alerts
+                        </ExternalLink>
+                      </>
+                    )}
                     <span>Download data (.csv): </span>
                     <a
                       href="#"
