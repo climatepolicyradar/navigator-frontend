@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useCallback, useContext } from "react";
 
 import { Debug } from "@/components/atoms/debug/Debug";
+import { CollectionsBlock } from "@/components/blocks/collectionsBlock/CollectionsBlock";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
@@ -23,6 +24,7 @@ import { TMatchedFamily, TFamilyPageBlock } from "@/types";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
+import { pluralise } from "@/utils/pluralise";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
@@ -67,8 +69,9 @@ export const FamilyLitigationPage = ({
 
   const blocksToRender = themeConfig.pageBlocks.family;
   const blockDefinitions: TBlockDefinitions<TFamilyPageBlock> = {
-    collection: {
-      render: () => null,
+    collections: {
+      render: () => <CollectionsBlock collections={collections} />,
+      sideBarItem: { display: pluralise(collections.length, ["Collection", "Collections"]) },
     },
     debug: {
       render: () => (
