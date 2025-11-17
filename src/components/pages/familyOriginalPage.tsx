@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import Script from "next/script";
 import React, { useEffect, useMemo, useState } from "react";
 
-import { ApiClient } from "@/api/http-common";
 import { Alert } from "@/components/Alert";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -35,6 +34,7 @@ import { useEffectOnce } from "@/hooks/useEffectOnce";
 import useSearch from "@/hooks/useSearch";
 import {
   IFamilyDocumentTopics,
+  TCollectionPublicWithFamilies,
   TConcept,
   TCorpusTypeDictionary,
   TDocumentPage,
@@ -55,17 +55,17 @@ import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { truncateString } from "@/utils/truncateString";
 
 export interface IProps {
+  collections: TCollectionPublicWithFamilies[];
   corpus_types: TCorpusTypeDictionary;
   countries: TGeography[];
   family: TFamilyPublic;
+  familyTopics?: IFamilyDocumentTopics;
   featureFlags: TFeatureFlags;
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
   vespaFamilyData?: TSearchResponse;
-  envConfig: TPublicEnvConfig;
-  familyTopics?: IFamilyDocumentTopics;
 }
 
 // Only published documents are returned in the family page call, so we can cross reference the import ID with those
@@ -79,17 +79,8 @@ const documentIsPublished = (familyDocuments: TDocumentPage[], documentImportId:
   return isPublished;
 };
 
-type CollectionProps = { collection: TFamilyPublic["collections"][number]; envConfig: TPublicEnvConfig };
-const Collection = ({ collection, envConfig }: CollectionProps) => {
+const Collection = ({ collection }: { collection: TCollectionPublicWithFamilies }) => {
   const [show, setShow] = useState(false);
-  const [families, setFamilies] = useState([]);
-
-  useEffect(() => {
-    if (show && families.length === 0) {
-      const apiClient = new ApiClient(envConfig.CONCEPTS_API_URL);
-      apiClient.get(`/families/collections/${collection.import_id}`).then((collectionData) => setFamilies(collectionData.data.data.families));
-    }
-  }, [show, families, collection.import_id, envConfig.CONCEPTS_API_URL]);
 
   return (
     <section className="pt-12" key={collection.import_id}>
@@ -109,7 +100,7 @@ const Collection = ({ collection, envConfig }: CollectionProps) => {
           />
           <Heading level={4}>Other documents in the {collection.title}</Heading>
           <div className="divide-y flex flex-col gap-4">
-            {families.map((family, i) => (
+            {collection.families.map((family, i) => (
               <div key={family.slug} className="border-border-light">
                 <LinkWithQuery href={`/document/${family.slug}`} className="text-[#0041A3] text-left font-medium text-lg underline">
                   {family.title}
@@ -117,7 +108,7 @@ const Collection = ({ collection, envConfig }: CollectionProps) => {
                 <div
                   className="text-content text-sm"
                   dangerouslySetInnerHTML={{
-                    __html: family.description,
+                    __html: family.summary,
                   }}
                 ></div>
               </div>
@@ -130,6 +121,7 @@ const Collection = ({ collection, envConfig }: CollectionProps) => {
 };
 
 export const FamilyOriginalPage = ({
+  collections,
   corpus_types,
   countries = [],
   family: page,
@@ -138,7 +130,6 @@ export const FamilyOriginalPage = ({
   theme,
   themeConfig,
   vespaFamilyData,
-  envConfig,
 }: IProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -459,14 +450,14 @@ export const FamilyOriginalPage = ({
                 </section>
               )}
 
-              {page.collections.length > 0 && (
+              {collections.length > 0 && (
                 <div className="mt-8">
                   <Divider />
                 </div>
               )}
 
-              {page.collections.map((collection, i) => (
-                <Collection collection={collection} envConfig={envConfig} key={collection.import_id} />
+              {collections.map((collection, i) => (
+                <Collection collection={collection} key={collection.import_id} />
               ))}
             </SingleCol>
             {concepts.length > 0 && (

@@ -9,6 +9,7 @@ import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
 import {
   IFamilyDocumentTopics,
+  TCollectionPublicWithFamilies,
   TCorpusTypeDictionary,
   TFamilyPublic,
   TGeography,
@@ -113,6 +114,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   );
   const subdivisionsData = allSubdivisions.flat().filter((subdivision) => subdivision !== undefined);
 
+  const allCollections = await Promise.all<TCollectionPublicWithFamilies[]>(
+    familyData.collections.map(async (collection) => {
+      try {
+        const { data: collectionResponse } = await apiClient.get(`/families/collections/${collection.import_id}`);
+        return collectionResponse.data;
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error("Error fetching collection data", error);
+      }
+    })
+  );
+  const collectionsData = allCollections.flat();
+
   /** targets data may or may not exist, so if we have a network error, we fail silently */
   let targetsData: TTarget[] = [];
   try {
@@ -140,16 +154,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: withEnvConfig({
+      collections: collectionsData,
       corpus_types,
       countries: countriesData,
       family: familyData,
+      familyTopics: familyTopics,
       featureFlags,
       subdivisions: subdivisionsData,
       targets: targetsData,
       theme,
       themeConfig,
       vespaFamilyData: vespaFamilyData ?? null,
-      familyTopics: familyTopics,
     }),
   };
 };

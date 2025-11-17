@@ -440,8 +440,8 @@ const config: TThemeConfig = {
   documentCategories: ["All", "UN Submissions", "Laws", "Policies", "Climate Finance Projects", "Offshore Wind Reports", "Litigation"],
   defaultDocumentCategory: "Laws",
   pageBlocks: {
-    family: ["topics", "metadata", "documents", "summary"],
-    geography: ["statistics", "recents", "subdivisions", "legislativeProcess"],
+    family: ["topics", "metadata", "documents", "summary", "note", "collections"],
+    geography: ["statistics", "recents", "subdivisions", "targets", "legislativeProcess"],
   },
   tutorials: ["knowledgeGraph"],
   features: {

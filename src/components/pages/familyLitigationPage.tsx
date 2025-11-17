@@ -3,8 +3,10 @@ import { useRouter } from "next/router";
 import { useCallback, useContext } from "react";
 
 import { Debug } from "@/components/atoms/debug/Debug";
+import { CollectionsBlock } from "@/components/blocks/collectionsBlock/CollectionsBlock";
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
+import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
@@ -22,12 +24,23 @@ import { TMatchedFamily, TFamilyPageBlock } from "@/types";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
+import { pluralise } from "@/utils/pluralise";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
 import { IProps } from "./familyOriginalPage";
 
-export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTopics, featureFlags, theme, themeConfig }: IProps) => {
+export const FamilyLitigationPage = ({
+  collections,
+  corpus_types,
+  countries,
+  family,
+  familyTopics,
+  featureFlags,
+  subdivisions,
+  theme,
+  themeConfig,
+}: IProps) => {
   const { completedTutorials } = useContext(TutorialContext);
   const { getText } = useText();
 
@@ -56,12 +69,19 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTo
 
   const blocksToRender = themeConfig.pageBlocks.family;
   const blockDefinitions: TBlockDefinitions<TFamilyPageBlock> = {
+    collections: {
+      render: () => <CollectionsBlock key="collections" collections={collections} />,
+      sideBarItem: { display: pluralise(collections.length, ["Collection", "Collections"]) },
+    },
     debug: {
       render: () => (
         <Section key="debug" block="debug" title="Debug">
-          <Debug data={family} title="Family" />
-          <Debug data={countries} title="Countries" />
-          <Debug data={subdivisions} title="Subdivisions" />
+          <div className="col-start-1 -col-end-1">
+            <Debug data={family} title="Family" />
+            <Debug data={collections} title="Collections" />
+            <Debug data={countries} title="Countries" />
+            <Debug data={subdivisions} title="Subdivisions" />
+          </div>
         </Section>
       ),
     },
@@ -90,6 +110,9 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTo
       }, [countries, family, subdivisions, getText]),
       sideBarItem: { display: "About" },
     },
+    note: {
+      render: () => <NoteBlock key="note" corpusId={family.corpus_id} corpusTypes={corpus_types} />,
+    },
     summary: {
       render: () => {
         if (!family.summary) return null;
@@ -104,7 +127,7 @@ export const FamilyLitigationPage = ({ countries, subdivisions, family, familyTo
     topics: {
       render: useCallback(() => {
         if (!familyTopicsHasTopics(familyTopics)) return null;
-        return <TopicsBlock key="topics-block" familyTopics={familyTopics} />;
+        return <TopicsBlock key="topics" familyTopics={familyTopics} />;
       }, [familyTopics]),
     },
   };

@@ -71,12 +71,12 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
         if (legislativeProcess.length === 0) return null;
 
         return (
-          <TextBlock key="legislative-process" block="legislative-process" title="Legislative process" maxHeight={168}>
+          <TextBlock key="legislative-process" block="legislativeProcess" title="Legislative process" maxHeight={168}>
             <div className="text-content" dangerouslySetInnerHTML={{ __html: legislativeProcess }} />
           </TextBlock>
         );
       }, [geographyV2]),
-      sideBarItem: { display: "Legislative Process" },
+      sideBarItem: { display: "Legislative process" },
     },
     recents: {
       render: useCallback(() => {
@@ -158,8 +158,8 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
     targets: {
       render: useCallback(() => {
         const publishedTargets = sortFilterTargets(targets);
-        return <TargetsBlock key="targets" targets={publishedTargets} theme={theme} />;
-      }, [targets, theme]),
+        return <TargetsBlock key="targets" targets={publishedTargets} />;
+      }, [targets]),
     },
   };
 
