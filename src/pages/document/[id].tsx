@@ -113,17 +113,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   );
   const subdivisionsData = allSubdivisions.flat().filter((subdivision) => subdivision !== undefined);
 
-  let collectionData: TCollectionPublicWithFamilies;
-  try {
-    if (familyData.collections.length > 0) {
-      const collection_import_id = familyData.collections[0].import_id;
-      const { data: collectionResponse } = await apiClient.get(`/families/collections/${collection_import_id}`);
-      collectionData = collectionResponse.data;
-    }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error("Error fetching collection data", error);
-  }
+  const allCollections = await Promise.all<TCollectionPublicWithFamilies[]>(
+    familyData.collections.map(async (collection) => {
+      try {
+        const { data: collectionResponse } = await apiClient.get(`/families/collections/${collection.import_id}`);
+        return collectionResponse.data;
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error("Error fetching collection data", error);
+      }
+    })
+  );
+  const collectionsData = allCollections.flat();
 
   /** targets data may or may not exist, so if we have a network error, we fail silently */
   let targetsData: TTarget[] = [];
@@ -152,7 +153,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: withEnvConfig({
-      collection: collectionData,
+      collections: collectionsData,
       corpus_types,
       countries: countriesData,
       family: familyData,

@@ -29,7 +29,7 @@ import { getIncompleteTutorialNames } from "@/utils/tutorials";
 import { IProps } from "./familyOriginalPage";
 
 export const FamilyLitigationPage = ({
-  collection,
+  collections,
   corpus_types,
   countries,
   family,
@@ -75,7 +75,7 @@ export const FamilyLitigationPage = ({
         <Section key="debug" block="debug" title="Debug">
           <div className="col-start-1 -col-end-1">
             <Debug data={family} title="Family" />
-            <Debug data={collection} title="Collection" />
+            <Debug data={collections} title="Collections" />
             <Debug data={countries} title="Countries" />
             <Debug data={subdivisions} title="Subdivisions" />
           </div>
