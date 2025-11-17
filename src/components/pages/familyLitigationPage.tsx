@@ -70,7 +70,7 @@ export const FamilyLitigationPage = ({
   const blocksToRender = themeConfig.pageBlocks.family;
   const blockDefinitions: TBlockDefinitions<TFamilyPageBlock> = {
     collections: {
-      render: () => <CollectionsBlock collections={collections} />,
+      render: () => <CollectionsBlock key="collections" collections={collections} />,
       sideBarItem: { display: pluralise(collections.length, ["Collection", "Collections"]) },
     },
     debug: {
@@ -111,7 +111,7 @@ export const FamilyLitigationPage = ({
       sideBarItem: { display: "About" },
     },
     note: {
-      render: () => <NoteBlock corpusId={family.corpus_id} corpusTypes={corpus_types} />,
+      render: () => <NoteBlock key="note" corpusId={family.corpus_id} corpusTypes={corpus_types} />,
     },
     summary: {
       render: () => {
@@ -127,7 +127,7 @@ export const FamilyLitigationPage = ({
     topics: {
       render: useCallback(() => {
         if (!familyTopicsHasTopics(familyTopics)) return null;
-        return <TopicsBlock key="topics-block" familyTopics={familyTopics} />;
+        return <TopicsBlock key="topics" familyTopics={familyTopics} />;
       }, [familyTopics]),
     },
   };
