@@ -23,11 +23,7 @@ export const TopicsBlock = ({ familyTopics }: TProps) => {
             Learn more
           </ExternalLink>
         </p>
-        <InteractiveTable<TTopicTableColumnId>
-          columns={topicTableColumns}
-          rows={getTopicTableRows(familyTopics)}
-          defaultSort={{ column: "group", order: "desc" }}
-        />
+        <InteractiveTable<TTopicTableColumnId> columns={topicTableColumns} rows={getTopicTableRows(familyTopics)} />
       </div>
     </Section>
   );
