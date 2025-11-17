@@ -247,8 +247,8 @@ export const FamilyOriginalPage = ({
   const conceptIds = conceptCounts.map(({ conceptKey }) => conceptKey.split(":")[0]);
 
   useEffectOnce(() => {
-    fetchAndProcessConcepts(conceptIds).then(({ rootConcepts, concepts }) => {
-      setRootConcepts(rootConcepts);
+    fetchAndProcessConcepts(conceptIds).then(({ rootConcepts: fetchedRootConcepts, concepts }) => {
+      setRootConcepts(fetchedRootConcepts);
       setConcepts(concepts);
     });
   });

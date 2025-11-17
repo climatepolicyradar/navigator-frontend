@@ -8,6 +8,7 @@ import { FamilyOriginalPage, IProps } from "@/components/pages/familyOriginalPag
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
 import {
+  IFamilyDocumentTopics,
   TCollectionPublicWithFamilies,
   TCorpusTypeDictionary,
   TFamilyPublic,
@@ -145,7 +146,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   /* Package the family topics */
   // TODO: move potentially
-  let familyTopics = null;
+  let familyTopics: IFamilyDocumentTopics = null;
 
   if (vespaFamilyData) {
     familyTopics = await processFamilyTopics(vespaFamilyData);
