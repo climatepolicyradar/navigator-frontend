@@ -7,7 +7,16 @@ import { FamilyLitigationPage } from "@/components/pages/familyLitigationPage";
 import { FamilyOriginalPage, IProps } from "@/components/pages/familyOriginalPage";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { TCorpusTypeDictionary, TFamilyPublic, TGeography, TGeographySubdivision, TSearchResponse, TSlugResponse, TTarget } from "@/types";
+import {
+  TCollectionPublicWithFamilies,
+  TCorpusTypeDictionary,
+  TFamilyPublic,
+  TGeography,
+  TGeographySubdivision,
+  TSearchResponse,
+  TSlugResponse,
+  TTarget,
+} from "@/types";
 import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
@@ -104,6 +113,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   );
   const subdivisionsData = allSubdivisions.flat().filter((subdivision) => subdivision !== undefined);
 
+  let collectionData: TCollectionPublicWithFamilies;
+  try {
+    if (familyData.collections.length > 0) {
+      const collection_import_id = familyData.collections[0].import_id;
+      const { data: collectionResponse } = await apiClient.get(`/families/collections/${collection_import_id}`);
+      collectionData = collectionResponse.data;
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("Error fetching collection data", error);
+  }
+
   /** targets data may or may not exist, so if we have a network error, we fail silently */
   let targetsData: TTarget[] = [];
   try {
@@ -131,16 +152,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: withEnvConfig({
+      collection: collectionData,
       corpus_types,
       countries: countriesData,
       family: familyData,
+      familyTopics: familyTopics,
       featureFlags,
       subdivisions: subdivisionsData,
       targets: targetsData,
       theme,
       themeConfig,
       vespaFamilyData: vespaFamilyData ?? null,
-      familyTopics: familyTopics,
     }),
   };
 };

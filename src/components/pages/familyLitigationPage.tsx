@@ -28,7 +28,17 @@ import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
 import { IProps } from "./familyOriginalPage";
 
-export const FamilyLitigationPage = ({ corpus_types, countries, subdivisions, family, familyTopics, featureFlags, theme, themeConfig }: IProps) => {
+export const FamilyLitigationPage = ({
+  collection,
+  corpus_types,
+  countries,
+  family,
+  familyTopics,
+  featureFlags,
+  subdivisions,
+  theme,
+  themeConfig,
+}: IProps) => {
   const { completedTutorials } = useContext(TutorialContext);
   const { getText } = useText();
 
@@ -57,12 +67,18 @@ export const FamilyLitigationPage = ({ corpus_types, countries, subdivisions, fa
 
   const blocksToRender = themeConfig.pageBlocks.family;
   const blockDefinitions: TBlockDefinitions<TFamilyPageBlock> = {
+    collection: {
+      render: () => null,
+    },
     debug: {
       render: () => (
         <Section key="debug" block="debug" title="Debug">
-          <Debug data={family} title="Family" />
-          <Debug data={countries} title="Countries" />
-          <Debug data={subdivisions} title="Subdivisions" />
+          <div className="col-start-1 -col-end-1">
+            <Debug data={family} title="Family" />
+            <Debug data={collection} title="Collection" />
+            <Debug data={countries} title="Countries" />
+            <Debug data={subdivisions} title="Subdivisions" />
+          </div>
         </Section>
       ),
     },

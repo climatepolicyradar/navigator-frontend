@@ -35,6 +35,7 @@ import { useEffectOnce } from "@/hooks/useEffectOnce";
 import useSearch from "@/hooks/useSearch";
 import {
   IFamilyDocumentTopics,
+  TCollectionPublicWithFamilies,
   TConcept,
   TCorpusTypeDictionary,
   TDocumentPage,
@@ -55,17 +56,18 @@ import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { truncateString } from "@/utils/truncateString";
 
 export interface IProps {
+  collection?: TCollectionPublicWithFamilies;
   corpus_types: TCorpusTypeDictionary;
   countries: TGeography[];
+  envConfig: TPublicEnvConfig;
   family: TFamilyPublic;
+  familyTopics?: IFamilyDocumentTopics;
   featureFlags: TFeatureFlags;
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];
   theme: TTheme;
   themeConfig: TThemeConfig;
   vespaFamilyData?: TSearchResponse;
-  envConfig: TPublicEnvConfig;
-  familyTopics?: IFamilyDocumentTopics;
 }
 
 // Only published documents are returned in the family page call, so we can cross reference the import ID with those
