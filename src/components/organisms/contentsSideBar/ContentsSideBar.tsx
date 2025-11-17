@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from "react";
+import { useState } from "react";
 
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { joinTailwindClasses } from "@/utils/tailwind";

@@ -66,7 +66,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
           <>
             <div className="col-start-1 cols-4:col-end-3 -col-end-1" />
             <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols-4:col-start-3">
-              <TextBlock block="section-summary" title="Summary">
+              <TextBlock block="summary" title="Summary">
                 <div className="text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
               </TextBlock>
               <MetadataBlock block="metadata" metadata={getCollectionMetadata(collection)} />
