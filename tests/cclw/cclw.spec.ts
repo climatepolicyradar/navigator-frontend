@@ -158,7 +158,7 @@ test.describe("CCLW Hero Search", () => {
     // Verify the knowledge graph search description text is displayed
     await expect(
       page.getByText(
-        "You are viewing a list of documents containing precise text passages matches related to 'marine' AND Zoning and spatial planning"
+        "You are viewing a list of documents containing precise text passage matches related to 'marine' AND Zoning and spatial planning"
       )
     ).toBeVisible();
 
