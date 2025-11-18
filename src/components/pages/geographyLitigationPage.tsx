@@ -1,5 +1,5 @@
 import sortBy from "lodash/fp/sortBy";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -22,6 +22,7 @@ import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
 import { IProps } from "./geographyOriginalPage";
+import { INTRO_BLOCK_TITLE, IntroBlock } from "../blocks/introBlock/IntroBlock";
 
 export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, targets, theme, themeConfig, vespaSearchResults, envConfig }: IProps) => {
   const { getText } = useText();
@@ -59,11 +60,17 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
     debug: {
       render: () => (
         <Section key="debug" block="debug" title="Debug">
-          <Debug data={geographyV2} title="Geography V2" />
-          <Debug data={parentGeographyV2} title="Parent geography V2" />
-          <Debug data={targets} title="Targets" />
+          <div className="col-start-1 -col-end-1">
+            <Debug data={geographyV2} title="Geography V2" />
+            <Debug data={parentGeographyV2} title="Parent geography V2" />
+            <Debug data={targets} title="Targets" />
+          </div>
         </Section>
       ),
+    },
+    intro: {
+      render: () => <IntroBlock key="intro" geography={geographyV2} />,
+      sideBarItem: { display: INTRO_BLOCK_TITLE },
     },
     legislativeProcess: {
       render: useCallback(() => {
