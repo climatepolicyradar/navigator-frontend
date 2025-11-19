@@ -190,7 +190,7 @@ const config: TThemeConfig = {
   defaultDocumentCategory: "All",
   pageBlocks: {
     family: ["topics", "metadata", "documents", "summary", "note", "collections"],
-    geography: ["statistics", "recents", "targets", "legislativeProcess"],
+    geography: ["intro", "statistics", "recents", "targets", "legislativeProcess"],
   },
   tutorials: ["knowledgeGraph"],
   features: {
