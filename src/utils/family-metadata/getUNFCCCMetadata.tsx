@@ -3,11 +3,13 @@ import { Fragment } from "react";
 import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
 import { EN_DASH } from "@/constants/chars";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { IMetadata, TFamilyPublic, TGeography } from "@/types";
+import { IFamilyDocumentTopics, IMetadata, TFamilyPublic, TGeography } from "@/types";
+import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { convertDate } from "@/utils/timedate";
+import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
-export function getUNFCCCMetadata(family: TFamilyPublic, countries: TGeography[]): IMetadata[] {
+export function getUNFCCCMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null, countries: TGeography[]): IMetadata[] {
   const metadata = [];
 
   const [year] = convertDate(family.published_date);
@@ -53,6 +55,12 @@ export function getUNFCCCMetadata(family: TFamilyPublic, countries: TGeography[]
       label: "Author",
       value: family.metadata?.author.join(", ") || EN_DASH,
     });
+
+  /* Topics */
+  if (familyTopicsHasTopics(familyTopics)) {
+    const topics = getTopicsMetadataItem(familyTopics);
+    if (topics) metadata.push(topics);
+  }
 
   return metadata;
 }

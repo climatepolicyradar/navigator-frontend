@@ -103,11 +103,11 @@ export const FamilyLitigationPage = ({
     },
     metadata: {
       render: useCallback(() => {
-        const metadata = getFamilyMetadata(family, countries, subdivisions);
+        const metadata = getFamilyMetadata(family, familyTopics, countries, subdivisions);
         if (metadata.length === 0) return null;
 
         return <MetadataBlock key="metadata" block="metadata" title={`About this ${getText("familySingular")}`} metadata={metadata} />;
-      }, [countries, family, subdivisions, getText]),
+      }, [countries, family, familyTopics, subdivisions, getText]),
       sideBarItem: { display: "About" },
     },
     note: {

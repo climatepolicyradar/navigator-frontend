@@ -7,10 +7,12 @@ import { getApprovedYearFromEvents } from "@/helpers/getApprovedYearFromEvents";
 import { getSubCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSumUSD } from "@/helpers/getSumUSD";
-import { IMetadata, TCorpusTypeSubCategory, TFamilyPublic, TGeography } from "@/types";
+import { IFamilyDocumentTopics, IMetadata, TCorpusTypeSubCategory, TFamilyPublic, TGeography } from "@/types";
+import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
 import { isSystemGeo } from "@/utils/isSystemGeo";
+import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
-export function getMCFMetadata(family: TFamilyPublic, countries: TGeography[]): IMetadata[] {
+export function getMCFMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null, countries: TGeography[]): IMetadata[] {
   const metadata = [];
 
   const approvalYear = getApprovedYearFromEvents(family.events);
@@ -104,6 +106,12 @@ export function getMCFMetadata(family: TFamilyPublic, countries: TGeography[]): 
         </ExternalLink>
       ),
     });
+
+  /* Topics */
+  if (familyTopicsHasTopics(familyTopics)) {
+    const topics = getTopicsMetadataItem(familyTopics);
+    if (topics) metadata.push(topics);
+  }
 
   return metadata;
 }
