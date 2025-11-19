@@ -105,7 +105,7 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
       geographiesNode.push(
         <Fragment key="others">
           &ensp;
-          <button role="button" className="underline" onClick={onShowMore}>
+          <button role="button" className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500" onClick={onShowMore}>
             +{hiddenGeographiesCount} {pluralise(hiddenGeographiesCount, ["other", "others"])}
           </button>
         </Fragment>
