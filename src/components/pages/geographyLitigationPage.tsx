@@ -1,5 +1,5 @@
 import sortBy from "lodash/fp/sortBy";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -52,6 +52,11 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
   const [searchResultsByCategory, setSearchResultsByCategory] = useState<{ [categorySlug: string]: TSearch }>({
     All: vespaSearchResults,
   });
+  useEffect(() => {
+    setSearchResultsByCategory({
+      All: vespaSearchResults,
+    });
+  }, [vespaSearchResults]);
 
   /* Blocks */
 
