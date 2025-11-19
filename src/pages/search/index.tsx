@@ -724,7 +724,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                             {showKnowledgeGraphInformation(router.query) && (
                               <Warning variant="info">
                                 <p>
-                                  You are viewing a list of documents containing precise text passages matches related to{" "}
+                                  You are viewing a list of documents containing precise text passage matches related to{" "}
                                   <ResultsTopicsContext
                                     phrase={router.query[QUERY_PARAMS.query_string] as string}
                                     selectedTopics={getSelectedConcepts(router.query[QUERY_PARAMS.concept_name], conceptsData)}
