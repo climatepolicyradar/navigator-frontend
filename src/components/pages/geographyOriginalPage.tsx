@@ -129,6 +129,9 @@ export const GeographyOriginalPage = ({
 
   const [currentVespaSearchSelectedCategory, setCurrentVespaSearchSelectedCategory] = useState(vespaSearchTabbedNavItems[0].title);
   const [currentVespaSearchResults, setCurrentVespaSearchResults] = useState(vespaSearchResults);
+  useEffect(() => {
+    setCurrentVespaSearchResults(vespaSearchResults);
+  }, [vespaSearchResults]);
 
   const backendApiClient = new ApiClient(envConfig.BACKEND_API_URL, envConfig.BACKEND_API_TOKEN);
   const vespaSearch = async (searchQuery: TSearchCriteria) => {
