@@ -7,11 +7,19 @@ import { ReactNode } from "react";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
+const getDebugClasses = (external: boolean, keepQuery: boolean, query?: ParsedUrlQuery) => {
+  if (external) return "outline-2! outline-red-500"; // External = red
+  if (keepQuery && query && Object.keys(query).length > 0) return "outline-2! outline-purple-500"; // Modified keep query = purple
+  if (keepQuery) return "outline-2! outline-blue-500"; // Keep query = blue
+  return "outline-2! outline-green-500"; // Interal = green
+};
+
 export const LINK_UNDERLINE = "underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
 
 interface IProps extends LinkProps {
   children: ReactNode;
   className?: string;
+  debug?: boolean;
   external?: boolean;
   hash?: string;
   href: string;
@@ -23,6 +31,7 @@ interface IProps extends LinkProps {
 export const PageLink = ({
   children,
   className = "",
+  debug = true, // Switch to true to enable everywhere
   external = false,
   hash,
   href,
@@ -42,7 +51,7 @@ export const PageLink = ({
   });
 
   const externalProps = external ? { target: "_blank", rel: "noopener noreferrer" } : undefined;
-  const allClasses = joinTailwindClasses(underline && LINK_UNDERLINE, className);
+  const allClasses = joinTailwindClasses(underline && LINK_UNDERLINE, className, debug && getDebugClasses(external, keepQuery, query));
 
   return (
     <Link {...props} {...externalProps} href={{ pathname: href, query: routerQuery, hash }} className={allClasses}>
