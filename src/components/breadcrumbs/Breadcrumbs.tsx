@@ -1,8 +1,7 @@
-import React, { ReactNode, useContext } from "react";
+import React, { ReactNode } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
-import { ThemeContext } from "@/context/ThemeContext";
 import { useText } from "@/hooks/useText";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -36,15 +35,19 @@ const BreadCrumb = ({ last = false, label = null, href = null, cy = "", isHome =
     return null;
   }
 
+  const labelSpan = (
+    <span className="max-w-85 overflow-hidden whitespace-nowrap overflow-ellipsis">{isHome ? getText("breadcrumbRoot") : label}</span>
+  );
+
   return (
     <>
-      <li className="max-w-85 overflow-hidden whitespace-nowrap overflow-ellipsis" data-cy={`breadcrumb ${cy}`}>
+      <li data-cy={`breadcrumb ${cy}`}>
         {href ? (
           <PageLink href={href} keepQuery={!isHome} className="hover:underline">
-            {isHome ? getText("breadcrumbRoot") : label}
+            {labelSpan}
           </PageLink>
         ) : (
-          <>{label}</>
+          labelSpan
         )}
       </li>
 
@@ -65,7 +68,6 @@ export const BreadCrumbs = ({
   label,
   parentGeography = null,
 }: IProps) => {
-  const { theme } = useContext(ThemeContext);
   const isSearchPage = label === "Search results";
   const isGeographyPage = !isSearchPage && !category && !family && geography && !label;
   const isCollectionPage = !isSearchPage && !category && !family && !geography;

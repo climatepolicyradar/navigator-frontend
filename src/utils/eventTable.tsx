@@ -1,9 +1,7 @@
 import orderBy from "lodash/orderBy";
 import { LucideInfo } from "lucide-react";
-import Link from "next/link";
 import { ReactNode } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { Badge } from "@/components/atoms/label/Badge";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
@@ -181,13 +179,15 @@ export const getEventTableRows = ({
         if (!topic) return null;
 
         return (
-          <Link
+          <PageLink
             key={topicId}
-            href={{ pathname: `/documents/${document.slug}`, query: { [QUERY_PARAMS.concept_name]: topic.preferred_label } }}
+            href={`/documents/${document.slug}`}
+            keepQuery
+            query={{ [QUERY_PARAMS.concept_name]: topic.preferred_label }}
             className={linkClasses}
           >
             {firstCase(topic?.preferred_label || fallbackLabel)} <span className="text-gray-500">({topicCount})</span>
-          </Link>
+          </PageLink>
         );
       });
 
@@ -195,11 +195,11 @@ export const getEventTableRows = ({
         <div className="flex flex-col gap-2 items-start">
           {topicLinks}
           {someTopicsHidden && (
-            <PageLink href={`/documents/${document.slug}`} keepQuery query={{ [QUERY_PARAMS.concept_name]: undefined }}>
+            <PageLink href={`/documents/${document.slug}`} keepQuery query={{ [QUERY_PARAMS.concept_name]: undefined }} className="mt-1">
               <button
                 type="button"
                 role="link"
-                className="p-2 mt-1 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
+                className="p-2 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
               >
                 View all topic mentions
               </button>
@@ -224,9 +224,9 @@ export const getEventTableRows = ({
       matchesDisplay = <Icon name="loading" />;
     } else if (document && matches > 0) {
       matchesDisplay = (
-        <LinkWithQuery href={`/documents/${document.slug}`} className={linkClasses}>
+        <PageLink keepQuery href={`/documents/${document.slug}`} className={linkClasses}>
           {matches} {pluralise(matches, ["match", "matches"])}
-        </LinkWithQuery>
+        </PageLink>
       );
     }
 
@@ -248,10 +248,10 @@ export const getEventTableRows = ({
         document: document
           ? {
               label: (
-                <div className="flex flex-col gap-2">
-                  <LinkWithQuery href={`/documents/${document.slug}`} className={linkClasses}>
+                <div className="flex flex-col gap-2 items-start">
+                  <PageLink keepQuery href={`/documents/${document.slug}`} className={linkClasses}>
                     View
-                  </LinkWithQuery>
+                  </PageLink>
                   {matchesDisplay}
                 </div>
               ),

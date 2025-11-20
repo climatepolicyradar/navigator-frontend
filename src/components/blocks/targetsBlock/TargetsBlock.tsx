@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Section } from "@/components/molecules/section/Section";
 import { MIDDOT } from "@/constants/chars";
 import { ThemeContext } from "@/context/ThemeContext";
@@ -44,7 +44,7 @@ export const TargetsBlock = ({ targets }: IProps) => {
       <div className="col-start-1 -col-end-1 flex flex-col gap-4 items-start">
         {shownTargets.map((target) => {
           return (
-            <LinkWithQuery key={target.ID} href={`${linkDomain}/document/${target["family-slug"]}`} className="group">
+            <PageLink key={target.ID} href={`${linkDomain}/document/${target["family-slug"]}`} className="group">
               <h3 className="text-gray-950 font-medium" dangerouslySetInnerHTML={{ __html: target.Description }} />
               <span className="block">{getMetadata(target).join(` ${MIDDOT} `)}</span>
               {showSourceLink(target) && (
@@ -53,7 +53,7 @@ export const TargetsBlock = ({ targets }: IProps) => {
                   <span className="underline underline-offset-4 decoration-gray-300 group-hover:decoration-gray-500">{target["family-name"]}</span>
                 </span>
               )}
-            </LinkWithQuery>
+            </PageLink>
           );
         })}
         {entriesToHide && (
