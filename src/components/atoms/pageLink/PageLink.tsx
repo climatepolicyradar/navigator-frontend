@@ -32,9 +32,13 @@ export const PageLink = ({
   ...props
 }: IProps) => {
   const router = useRouter();
+
   const routerQuery = CleanRouterQuery({
     ...(keepQuery ? router.query : {}),
     ...query,
+  });
+  Object.entries(query).forEach(([queryKey, queryValue]) => {
+    queryValue ?? delete routerQuery[queryKey]; // Unset null or undefined query values
   });
 
   const externalProps = external ? { target: "_blank", rel: "noopener noreferrer" } : undefined;

@@ -6,6 +6,7 @@ import { ReactNode } from "react";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { Badge } from "@/components/atoms/label/Badge";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Popover } from "@/components/atoms/popover/Popover";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -194,7 +195,7 @@ export const getEventTableRows = ({
         <div className="flex flex-col gap-2 items-start">
           {topicLinks}
           {someTopicsHidden && (
-            <Link href={`/documents/${document.slug}`}>
+            <PageLink href={`/documents/${document.slug}`} keepQuery query={{ [QUERY_PARAMS.concept_name]: undefined }}>
               <button
                 type="button"
                 role="link"
@@ -202,7 +203,7 @@ export const getEventTableRows = ({
               >
                 View all topic mentions
               </button>
-            </Link>
+            </PageLink>
           )}
         </div>
       );
