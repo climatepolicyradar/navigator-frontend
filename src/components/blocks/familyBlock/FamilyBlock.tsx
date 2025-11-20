@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Section } from "@/components/molecules/section/Section";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { ARROW_UP_RIGHT } from "@/constants/chars";
@@ -41,12 +41,12 @@ export const FamilyBlock = ({ family }: IProps) => {
   return (
     <Section id={`section-${family.slug}`} wide>
       <div className="col-start-1 -col-end-1">
-        <LinkWithQuery href={`/document/${family.slug}`}>
+        <PageLink keepQuery href={`/document/${family.slug}`}>
           <h2 className="text-2xl text-gray-950 font-heavy leading-tight hover:underline underline-offset-6">
             {family.title}&nbsp;
             <span className="text-brand">{ARROW_UP_RIGHT}</span>
           </h2>
-        </LinkWithQuery>
+        </PageLink>
         <div className="mt-2 mb-3 flex gap-4 flex-wrap text-sm text-gray-500 leading-none">
           {caseNumbers && <span>{caseNumbers}</span>}
           {courts && <span>{courts}</span>}

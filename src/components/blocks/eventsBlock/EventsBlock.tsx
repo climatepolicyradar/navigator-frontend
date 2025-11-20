@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Button } from "@/components/atoms/button/Button";
-import { Card } from "@/components/atoms/card/Card";
+import { Section } from "@/components/molecules/section/Section";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { TFamilyPublic } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
@@ -31,22 +30,24 @@ export const EventsBlock = ({ families }: IProps) => {
   }, [families]);
 
   return (
-    <div className="relative col-start-1 -col-end-1">
-      <Card variant="outlined" className="rounded-lg !p-5">
-        <h2 className="text-xl text-text-primary font-semibold leading-tight">Procedural history</h2>
+    <Section block="events" title="Procedural history" wide>
+      <div className="col-start-1 -col-end-1">
         <InteractiveTable<TEventTableColumnId>
           columns={tableColumns}
           defaultSort={{ column: "date", order: "desc" }}
           rows={updatedRowsWithLocalisedDates || tableRows}
           maxRows={showAllEntries ? 0 : MAX_ENTRIES_SHOWN}
-          tableClasses="pt-8"
         />
-      </Card>
-      {entriesToHide && (
-        <Button color="mono" size="small" rounded onClick={toggleShowAll} className="absolute -bottom-4 left-5">
-          {showAllEntries ? "Show less" : "Show all"}
-        </Button>
-      )}
-    </div>
+        {true && (
+          <button
+            type="button"
+            onClick={toggleShowAll}
+            className="p-2 mt-3 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
+          >
+            {showAllEntries ? "View less" : "View more"}
+          </button>
+        )}
+      </div>
+    </Section>
   );
 };

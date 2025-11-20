@@ -17,7 +17,7 @@ export const NoteBlock = ({ corpusId, corpusTypes }: IProps) => {
   const viewMoreClasses = joinTailwindClasses("col-start-1 -col-end-1", corpusImage && "cols-3:col-start-3");
 
   return (
-    <Section id="note" title="Note">
+    <Section block="note" title="Note">
       <div className="grid grid-cols-subgrid gap-y-6 col-start-1 -col-end-1">
         {corpusImage && (
           <>

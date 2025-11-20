@@ -1,13 +1,14 @@
 import orderBy from "lodash/orderBy";
 import { Fragment, ReactNode, useMemo } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { TBreadcrumbLink } from "@/components/breadcrumbs/Breadcrumbs";
 import { GeographyLink, IProps as GeographyLinkProps } from "@/components/molecules/geographyLink/GeographyLink";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
 import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
+import { scrollToBlock } from "@/utils/blocks/scrollToBlock";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { pluralise } from "@/utils/pluralise";
 import { joinNodes } from "@/utils/reactNode";
@@ -88,11 +89,6 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
     const isGeographiesParentAndChild =
       visibleGeographiesData.length === 2 && !visibleGeographiesData[0].code.includes("-") && visibleGeographiesData[1].code.includes("-");
 
-    const onShowMore = () => {
-      const metadataBlock = document.getElementById("section-metadata");
-      metadataBlock?.scrollIntoView({ behavior: "smooth" });
-    };
-
     const geographiesNode: ReactNode[] = joinNodes(
       visibleGeographiesData.map(({ code, name, slug }) => {
         return <GeographyLink key={code} code={code} name={name} slug={isSystemGeo(name) ? null : slug} />;
@@ -105,7 +101,11 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
       geographiesNode.push(
         <Fragment key="others">
           &ensp;
-          <button role="button" className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500" onClick={onShowMore}>
+          <button
+            role="button"
+            className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+            onClick={scrollToBlock("metadata")}
+          >
             +{hiddenGeographiesCount} {pluralise(hiddenGeographiesCount, ["other", "others"])}
           </button>
         </Fragment>
@@ -130,9 +130,9 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
         label: "Part of",
         value: joinNodes(
           family.collections.map((collection) => (
-            <LinkWithQuery key={collection.import_id} href={`/collections/${collection.slug}`} className="hover:underline">
+            <PageLink key={collection.import_id} keepQuery href={`/collections/${collection.slug}`} className="hover:underline">
               {collection.title}
-            </LinkWithQuery>
+            </PageLink>
           )),
           ", "
         ),

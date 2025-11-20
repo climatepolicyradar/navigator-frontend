@@ -36,23 +36,23 @@ const usePageContext = ({ ...props }: IProps) => (
 
 const GEOGRAPHY_ITEMS: ISideBarItem[] = [
   {
-    id: "section-recents",
+    id: "recents",
     display: "Recent documents",
   },
   {
-    id: "section-subdivisions",
+    id: "subdivisions",
     display: "Geographic sub-divisions",
   },
   {
-    id: "section-statistics",
+    id: "statistics",
     display: "Statistics",
   },
   {
-    id: "section-targets",
+    id: "targets",
     display: "Targets",
   },
   {
-    id: "section-legislative-process",
+    id: "legislativeProcess",
     display: "Legislative process",
   },
 ];
@@ -65,7 +65,7 @@ export const GeographyPage: TStory = {
   render: usePageContext,
 };
 
-const FAMILY_ITEMS: ISideBarItem[] = [
+const FAMILY_ITEMS: ISideBarItem<string>[] = [
   {
     id: "section-1",
     display: "Juliana v. United States",

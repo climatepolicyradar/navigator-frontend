@@ -1,4 +1,4 @@
-import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { COUNTRY_FLAGS } from "@/constants/flags";
 
 export interface IProps {
@@ -17,9 +17,9 @@ export const GeographyLink = ({ code, name, slug }: IProps) => {
   );
 
   return slug ? (
-    <LinkWithQuery href={`/geographies/${slug}`} className="hover:underline decoration-gray-500">
+    <PageLink href={`/geographies/${slug}`} className="hover:underline decoration-gray-500">
       {content}
-    </LinkWithQuery>
+    </PageLink>
   ) : (
     content
   );
