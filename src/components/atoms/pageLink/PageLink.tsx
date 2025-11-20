@@ -31,7 +31,7 @@ interface IProps extends LinkProps {
 export const PageLink = ({
   children,
   className = "",
-  debug = true, // Switch to true to enable everywhere
+  debug = false, // Switch to true to enable everywhere
   external = false,
   hash,
   href,
