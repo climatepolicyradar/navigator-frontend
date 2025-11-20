@@ -1,13 +1,11 @@
-import Link from "next/link";
 import React, { ReactNode, useContext } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useText } from "@/hooks/useText";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { joinTailwindClasses } from "@/utils/tailwind";
-
-import { FiveColumns } from "../atoms/columns/FiveColumns";
 
 export type TBreadcrumbLink = {
   label: string | React.ReactNode;
@@ -38,15 +36,13 @@ const BreadCrumb = ({ last = false, label = null, href = null, cy = "", isHome =
     return null;
   }
 
-  const LinkComponent = isHome ? Link : LinkWithQuery;
-
   return (
     <>
       <li className="max-w-85 overflow-hidden whitespace-nowrap overflow-ellipsis" data-cy={`breadcrumb ${cy}`}>
         {href ? (
-          <LinkComponent className="hover:underline" href={href}>
+          <PageLink href={href} keepQuery={!isHome} className="hover:underline">
             {isHome ? getText("breadcrumbRoot") : label}
-          </LinkComponent>
+          </PageLink>
         ) : (
           <>{label}</>
         )}
