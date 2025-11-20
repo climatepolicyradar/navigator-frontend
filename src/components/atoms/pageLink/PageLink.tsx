@@ -11,7 +11,7 @@ const getDebugClasses = (external: boolean, keepQuery: boolean, query?: ParsedUr
   if (external) return "outline-2! outline-red-500"; // External = red
   if (keepQuery && query && Object.keys(query).length > 0) return "outline-2! outline-purple-500"; // Modified keep query = purple
   if (keepQuery) return "outline-2! outline-blue-500"; // Keep query = blue
-  return "outline-2! outline-green-500"; // Interal = green
+  return "outline-2! outline-green-500"; // Internal = green
 };
 
 export const LINK_UNDERLINE = "underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
