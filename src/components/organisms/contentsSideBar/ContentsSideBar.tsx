@@ -1,27 +1,24 @@
 import { useState } from "react";
 
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { TBlock } from "@/types";
+import { scrollToBlock } from "@/utils/blocks/scrollToBlock";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-export interface ISideBarItem {
-  id: string;
+export interface ISideBarItem<BlockId extends string = TBlock> {
+  id: BlockId;
   display: string;
   context?: string[];
 }
 
-export interface IProps {
-  items: ISideBarItem[];
+export interface IProps<BlockId extends string = TBlock> {
+  items: ISideBarItem<BlockId>[];
   stickyClasses?: string;
 }
 
-export const ContentsSideBar = ({ items, stickyClasses }: IProps) => {
+export const ContentsSideBar = <BlockId extends string = TBlock>({ items, stickyClasses }: IProps<BlockId>) => {
   const [activeId, setActiveId] = useState("");
   useIntersectionObserver({ elementsQuery: "section", rootMargin: "-15% 0px 0px 0px", setActiveId });
-
-  const scrollToItem = (id: string) => () => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: "smooth" });
-  };
 
   const allStickyClasses = joinTailwindClasses(
     "sticky top-0 overflow-y-auto scrollbar-thumb-scrollbar scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-scrollbar-darker",
@@ -46,7 +43,7 @@ export const ContentsSideBar = ({ items, stickyClasses }: IProps) => {
             );
 
             return (
-              <button key={item.id} type="button" role="navigation" onClick={scrollToItem(item.id)} className={buttonClasses}>
+              <button key={item.id} type="button" role="navigation" onClick={scrollToBlock<BlockId>(item.id)} className={buttonClasses}>
                 <span className="">{item.display}</span>
                 {item.context?.length > 0 && <span className={contextClasses}>{item.context.join(" / ")}</span>}
               </button>
