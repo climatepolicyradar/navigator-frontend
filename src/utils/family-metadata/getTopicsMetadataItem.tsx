@@ -3,6 +3,7 @@ import { Fragment, ReactNode } from "react";
 
 import { ConceptLink } from "@/components/molecules/conceptLink/ConceptLink";
 import { IFamilyDocumentTopics, IMetadata } from "@/types";
+import { scrollToBlock } from "@/utils/blocks/scrollToBlock";
 import { pluralise } from "@/utils/pluralise";
 import { joinNodes } from "@/utils/reactNode";
 import { firstCase } from "@/utils/text";
@@ -12,11 +13,6 @@ const MAX_SHOWN_TOPICS = 3;
 
 export const getTopicsMetadataItem = (familyTopics: IFamilyDocumentTopics): IMetadata | null => {
   if (!familyTopicsHasTopics(familyTopics)) return null;
-
-  const onShowMore = () => {
-    const topicsBlock = document.getElementById("section-topics");
-    topicsBlock?.scrollIntoView({ behavior: "smooth" });
-  };
 
   // Prepare data needed to populate topics
   const topicsData = Object.values(familyTopics.conceptsGrouped).flat();
@@ -53,7 +49,11 @@ export const getTopicsMetadataItem = (familyTopics: IFamilyDocumentTopics): IMet
     topicsNode.push(
       <Fragment key="others">
         &ensp;
-        <button role="button" className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500" onClick={onShowMore}>
+        <button
+          role="button"
+          className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+          onClick={scrollToBlock("topics")}
+        >
           +{hiddenTopicsCount} {pluralise(hiddenTopicsCount, ["other", "others"])}
         </button>
       </Fragment>

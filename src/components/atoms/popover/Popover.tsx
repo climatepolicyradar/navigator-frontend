@@ -1,10 +1,10 @@
 import { Popover as BasePopover } from "@base-ui-components/react/popover";
-import Link from "next/link";
 import { ReactElement, ReactNode } from "react";
 
-import { ExternalLink } from "@/components/ExternalLink";
 import { BaseUIArrow } from "@/utils/baseUI";
 import { joinTailwindClasses } from "@/utils/tailwind";
+
+import { PageLink } from "../pageLink/PageLink";
 
 export type TPopoverLink = {
   href: string;
@@ -57,15 +57,14 @@ export const Popover = ({ children, description, link, onOpenChange, openOnHover
                 {title && <BasePopover.Title className="mb-2 text-gray-950 font-bold">{title}</BasePopover.Title>}
                 <BasePopover.Description>
                   <span className="block">{description}</span>
-                  {link && link.external && (
-                    <ExternalLink url={link.href} className="block mt-2 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500">
+                  {link && (
+                    <PageLink
+                      external={link.external}
+                      href={link.href}
+                      className="block mt-2 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+                    >
                       {link.text}
-                    </ExternalLink>
-                  )}
-                  {link && !link.external && (
-                    <Link href={link.href} className="block mt-2 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500">
-                      {link.text}
-                    </Link>
+                    </PageLink>
                   )}
                 </BasePopover.Description>
               </>

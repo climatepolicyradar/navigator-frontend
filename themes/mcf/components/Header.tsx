@@ -2,15 +2,15 @@ import { LucideMenu } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import MainMenu from "@/components/molecules/mainMenu/MainMenu";
 import { NavBar } from "@/components/organisms/navBar/NavBar";
 import { MENU_LINKS } from "@/mcf/constants/menuLinks";
 
 const MCFLogo = (
-  <LinkWithQuery href={`/`} className="flex items-center flex-nowrap gap-1" cypress="climate-project-explorer-logo">
+  <PageLink href="/" data-cy="climate-project-explorer-logo" className="flex items-center flex-nowrap gap-1">
     <Image src="/images/climate-project-explorer/cpe-logo.svg" alt="Climate Project Explorer" width={104.56} height={44} />
-  </LinkWithQuery>
+  </PageLink>
 );
 
 export const Header = () => {

@@ -1,6 +1,7 @@
+import { ParsedUrlQuery } from "querystring";
+
 import sortBy from "lodash/sortBy";
 import { ArrowRight, CornerDownLeft, Search } from "lucide-react";
-import { Url } from "next/dist/shared/lib/router/router";
 import { useRouter } from "next/router";
 import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";
 
@@ -8,8 +9,6 @@ import { Input } from "@/components/atoms/input/Input";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { systemGeoCodes } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
-import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
-import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { NavSearchDropdown } from "./NavSearchDropdown";
 import { NavSearchSuggestion } from "./NavSearchSuggestion";
@@ -88,15 +87,10 @@ export const NavSearch = () => {
   if (router.pathname === "/geographies/[id]") contextualSearchName = "This geography";
 
   // The path to navigate to when submitting the search input
-  const searchHref: Url = useMemo(() => {
-    const newQuery = CleanRouterQuery({ ...router.query });
-    delete newQuery[QUERY_PARAMS.offset];
+  const searchLink = useMemo(() => {
+    const newQuery: ParsedUrlQuery = {};
 
-    if (searchText) {
-      newQuery[QUERY_PARAMS.query_string] = searchText;
-    } else {
-      delete newQuery[QUERY_PARAMS.query_string];
-    }
+    if (searchText) newQuery[QUERY_PARAMS.query_string] = searchText;
 
     let newPathName = "/search";
 
@@ -119,7 +113,7 @@ export const NavSearch = () => {
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     setIsFocused(false);
-    router.push(searchHref);
+    router.push(searchLink);
   };
 
   const handleSuggestionClick = () => {
@@ -189,7 +183,8 @@ export const NavSearch = () => {
               )}
               {/* Search */}
               <NavSearchSuggestion
-                href={searchHref}
+                href={searchLink.pathname}
+                query={searchLink.query}
                 Icon={<Search height="16" width="16" />}
                 hint={
                   <div className="text-xs text-text-tertiary font-[440]">

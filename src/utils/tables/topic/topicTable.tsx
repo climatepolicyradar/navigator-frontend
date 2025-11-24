@@ -1,6 +1,4 @@
-import Link from "next/link";
-
-import { ExternalLink } from "@/components/ExternalLink";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { ConceptLink } from "@/components/molecules/conceptLink/ConceptLink";
 import { ARROW_UP_RIGHT } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -57,9 +55,9 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
                           <h6 className="font-bold">{firstCase(concept.preferred_label)}</h6>
                           <p className="my-2">
                             {firstCase(concept.description)}{" "}
-                            <ExternalLink url={getConceptStoreLink(concept.wikibase_id)} className="text-brand hover:underline">
+                            <PageLink external href={getConceptStoreLink(concept.wikibase_id)} className="text-brand hover:underline">
                               {ARROW_UP_RIGHT}
-                            </ExternalLink>
+                            </PageLink>
                           </p>
                           <p className="mt-6 mb-3 text-gray-500">
                             This topic is mentioned in the following documents. Click on the document to view the specific passages.
@@ -81,15 +79,14 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
                                   : 0;
                                 return (
                                   <li key={doc.importId}>
-                                    <Link
+                                    <PageLink
                                       className="block font-medium underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
-                                      href={{
-                                        pathname: `/documents/${doc.slug}`,
-                                        query: { [QUERY_PARAMS.concept_name]: concept.preferred_label },
-                                      }}
+                                      href={`/documents/${doc.slug}`}
+                                      keepQuery
+                                      query={{ [QUERY_PARAMS.concept_name]: concept.preferred_label }}
                                     >
                                       {doc.title} ({topicCount})
-                                    </Link>
+                                    </PageLink>
                                   </li>
                                 );
                               })}
