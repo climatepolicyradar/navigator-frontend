@@ -1,4 +1,4 @@
-import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Section } from "@/components/molecules/section/Section";
 import { TCollectionPublicWithFamilies } from "@/types";
 import { pluralise } from "@/utils/pluralise";
@@ -21,12 +21,12 @@ export const CollectionsBlock = ({ collections }: IProps) => {
             <ul className="list-disc pl-4">
               {collection.families.map((family) => (
                 <li key={family.import_id}>
-                  <LinkWithQuery
+                  <PageLink
                     href={`/document/${family.slug}`}
                     className="text-gray-700 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
                   >
                     {family.title}
-                  </LinkWithQuery>
+                  </PageLink>
                 </li>
               ))}
             </ul>

@@ -38,8 +38,8 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
 
   const onTabChange = (tab: TCollectionTab) => setCurrentTab(tab);
 
-  const sideBarItems: ISideBarItem[] = families.map((family) => ({
-    id: `section-${family.slug}`,
+  const sideBarItems: ISideBarItem<string>[] = families.map((family) => ({
+    id: family.slug,
     display: family.title,
     context: [getCaseNumbers(family), getCourts(family)].filter((part) => part),
   }));

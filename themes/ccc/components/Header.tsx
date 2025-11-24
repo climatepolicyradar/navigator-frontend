@@ -1,17 +1,17 @@
 import { LucideMenu } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { MENU_LINKS } from "@/ccc/constants/menuLinks";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import MainMenu from "@/components/molecules/mainMenu/MainMenu";
 import { NavBar } from "@/components/organisms/navBar/NavBar";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 const CCCLogo = (
-  <Link href="/" data-cy="ccc-logo" className="max-w-full">
+  <PageLink href="/" data-cy="ccc-logo" className="max-w-full">
     <Image src="/images/ccc/ccc-logo-white.png" alt="The Climate Litigation Database" width={280} height={26} />
-  </Link>
+  </PageLink>
 );
 
 export const Header = () => {
