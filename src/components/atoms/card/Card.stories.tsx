@@ -31,7 +31,7 @@ const children = (
       <span className="font-medium text-[13px]">Page 16</span>
       <Copy height="16" width="16" />
     </div>
-    <p className="font-normal text-[15px]">
+    <p className="font-normal">
       (PM2.5), the pollutant most associated with negative health impacts. The impact quantified here are premature deaths associated with PM2.5
       exposure, although air pollution has a much wider effect on health, including non-fatal effects on the respiratory and cardiovascular systems.
       In Nigeria in 2010, fine particulate matter exposure was associated with about 61,000 premature deaths with the most affected being children of
