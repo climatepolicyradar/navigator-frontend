@@ -17,7 +17,7 @@ type TStory = StoryObj<typeof Card>;
 export default meta;
 
 const render =
-  (containerClasses) =>
+  (containerClasses: string) =>
   // eslint-disable-next-line react/display-name
   ({ ...props }) => (
     <div className={containerClasses}>
