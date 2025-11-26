@@ -8,6 +8,7 @@
     "start": "next start",
     "prod": "next build && next start",
     "type-check": "tsc",
+    "tsc": "tsc",
     "add": "docker-compose exec -w /opt/node_app frontend npm install -S",
     "add-dev": "docker-compose exec -w /opt/node_app frontend npm install -D",
     "remove": "docker-compose exec -w /opt/node_app frontend npm uninstall",
