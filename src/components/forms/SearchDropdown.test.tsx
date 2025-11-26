@@ -2,12 +2,21 @@ import { screen, fireEvent } from "@testing-library/react";
 import { vi, it } from "vitest";
 
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
+import { TGeography } from "@/types";
 
 import { SearchDropdown } from "../../components/forms/SearchDropdown";
 
+type TQueryResponse = {
+  data: {
+    countries: TGeography[];
+  };
+  isLoading: boolean;
+  error: unknown;
+};
+
 // Mock useConfig hook
 vi.mock("@/hooks/useConfig", () => ({
-  default: () => ({
+  default: (): TQueryResponse => ({
     data: {
       countries: [
         { id: 1, slug: "spain", display_value: "Spain", value: "spain", type: "country", parent_id: null },
@@ -26,7 +35,7 @@ vi.mock("@/hooks/useConfig", () => ({
       ],
     },
     isLoading: false,
-    error: null,
+    error: {},
   }),
 }));
 
