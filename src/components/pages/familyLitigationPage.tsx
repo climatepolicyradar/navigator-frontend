@@ -42,7 +42,8 @@ export const FamilyLitigationPage = ({
   themeConfig,
 }: IProps) => {
   const { completedTutorials } = useContext(TutorialContext);
-  const { getText } = useText();
+  const { getCategoryTextLookup } = useText();
+  const getCategoryText = getCategoryTextLookup(family.category);
 
   const showKnowledgeGraphTutorial = getIncompleteTutorialNames(completedTutorials, themeConfig, featureFlags).includes("knowledgeGraph");
 
@@ -106,8 +107,8 @@ export const FamilyLitigationPage = ({
         const metadata = getFamilyMetadata(family, familyTopics, countries, subdivisions);
         if (metadata.length === 0) return null;
 
-        return <MetadataBlock key="metadata" block="metadata" title={`About this ${getText("familySingular")}`} metadata={metadata} />;
-      }, [countries, family, familyTopics, subdivisions, getText]),
+        return <MetadataBlock key="metadata" block="metadata" title={`About this ${getCategoryText("familySingular")}`} metadata={metadata} />;
+      }, [countries, family, familyTopics, subdivisions, getCategoryText]),
       sideBarItem: { display: "About" },
     },
     note: {
@@ -127,8 +128,8 @@ export const FamilyLitigationPage = ({
     topics: {
       render: useCallback(() => {
         if (!familyTopicsHasTopics(familyTopics)) return null;
-        return <TopicsBlock key="topics" familyTopics={familyTopics} />;
-      }, [familyTopics]),
+        return <TopicsBlock key="topics" familyTopics={familyTopics} getCategoryText={getCategoryText} />;
+      }, [familyTopics, getCategoryText]),
     },
   };
 
