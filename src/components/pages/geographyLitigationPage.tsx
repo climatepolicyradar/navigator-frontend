@@ -25,7 +25,7 @@ import { IProps } from "./geographyOriginalPage";
 import { INTRO_BLOCK_TITLE, IntroBlock } from "../blocks/introBlock/IntroBlock";
 
 export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, targets, theme, themeConfig, vespaSearchResults, envConfig }: IProps) => {
-  const { getText } = useText();
+  const { getAppText } = useText();
 
   const isCountry = geographyV2.type === "country";
   const subdivisionsTitle = isCountry ? "Geographic sub-divisions" : "Related geographic sub-divisions";
@@ -136,15 +136,15 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
                 title: categorySummary.title,
                 families: searchResultsByCategory[categorySummary.slug]?.families || [],
                 count: searchResultsByCategory[categorySummary.slug]?.total_family_hits,
-                singularAndPlural: [getText("familySingular"), getText("familyPlural")],
+                singularAndPlural: [getAppText("familySingular"), getAppText("familyPlural")],
               };
             })}
             onAccordionClick={(id) => fetchFamiliesByCategory(id)}
             geography={geographyV2}
           />
         );
-      }, [envConfig, geographyV2, getText, searchResultsByCategory, themeConfig]),
-      sideBarItem: { display: getText("recentFamiliesBlockTitle") },
+      }, [envConfig, geographyV2, getAppText, searchResultsByCategory, themeConfig]),
+      sideBarItem: { display: "Recent " + getAppText("familyPlural") },
     },
     statistics: {
       render: useCallback(() => {
