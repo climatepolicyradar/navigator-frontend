@@ -46,14 +46,22 @@ export const CATEGORY_DICTIONARY = {
   // TODO store singular and plural in the same key?
   familySingular: {
     default: "document",
+    Executive: "policy",
+    EXECUTIVE: "policy",
     Law: "law",
+    Legislative: "law",
+    LEGISLATIVE: "law",
     Litigation: "case",
     LITIGATION: "cases",
     Policy: "policy",
   },
   familyPlural: {
     default: "document",
+    Executive: "policies",
+    EXECUTIVE: "policies",
     Law: "laws",
+    Legislative: "laws",
+    LEGISLATIVE: "laws",
     Litigation: "cases",
     LITIGATION: "cases",
     Policy: "policies",
