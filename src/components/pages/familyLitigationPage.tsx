@@ -7,6 +7,7 @@ import { CollectionsBlock } from "@/components/blocks/collectionsBlock/Collectio
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
+import { TargetsBlock } from "@/components/blocks/targetsBlock/TargetsBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
@@ -25,6 +26,7 @@ import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 import { pluralise } from "@/utils/pluralise";
+import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
@@ -37,6 +39,7 @@ export const FamilyLitigationPage = ({
   family,
   familyTopics,
   featureFlags,
+  targets,
   subdivisions,
   theme,
   themeConfig,
@@ -130,6 +133,12 @@ export const FamilyLitigationPage = ({
         if (!familyTopicsHasTopics(familyTopics)) return null;
         return <TopicsBlock key="topics" familyTopics={familyTopics} getCategoryText={getCategoryText} />;
       }, [familyTopics, getCategoryText]),
+    },
+    targets: {
+      render: useCallback(() => {
+        const publishedTargets = sortFilterTargets(targets);
+        return <TargetsBlock key="targets" targets={publishedTargets} />;
+      }, [targets]),
     },
   };
 
