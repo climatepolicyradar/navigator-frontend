@@ -55,11 +55,6 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFami
       label: "Sectors",
       value: family.metadata.sector.join(", "),
     });
-  family.metadata?.keyword &&
-    metadata.push({
-      label: "Keywords",
-      value: family.metadata.keyword.join(", "),
-    });
 
   /* Topics */
   if (familyTopicsHasTopics(familyTopics)) {
