@@ -16,7 +16,7 @@ export default meta;
 
 /* Generic */
 
-type TWainwrightColumns = "height" | "link" | "region" | "summited" | "wainwright";
+type TWainwrightColumns = "height" | "link" | "number" | "region" | "summited" | "wainwright";
 const linkToCell = (link: string): TTableCell => ({
   label: (
     <a href={link} className="underline decoration-gray-300">
@@ -68,6 +68,7 @@ export const Generic: TStory<TWainwrightColumns> = {
       {
         id: "helvellyn",
         cells: {
+          number: 2515,
           wainwright: "Helvellyn",
           region: "The Eastern Fells",
           height: 950,
@@ -81,6 +82,7 @@ export const Generic: TStory<TWainwrightColumns> = {
       {
         id: "scafell-pike",
         cells: {
+          number: 2359,
           wainwright: "Scafell Pike",
           region: "The Southern Fells",
           height: 978,
@@ -91,6 +93,7 @@ export const Generic: TStory<TWainwrightColumns> = {
       {
         id: "skiddaw",
         cells: {
+          number: 2319,
           wainwright: "Skiddaw",
           region: "The Northern Fells",
           height: 931,
@@ -104,6 +107,7 @@ export const Generic: TStory<TWainwrightColumns> = {
       {
         id: "high-street",
         cells: {
+          number: 2528,
           wainwright: "High Street",
           region: "The Far Eastern Fells",
           height: 828,
@@ -134,5 +138,29 @@ export const CellStyling: TStory<TWainwrightColumns> = {
       if (row.id !== "skiddaw") return row;
       return { ...row, classes: "bg-green-50" };
     }),
+  },
+};
+
+/* Interactive */
+
+export const InteractiveRowsPageLink: TStory<TWainwrightColumns> = {
+  name: "Interactive Rows (PageLink)",
+  args: {
+    ...Generic.args,
+    rows: Generic.args.rows.map((row) => ({
+      ...row,
+      pageLink: { external: true, href: `https://www.walklakes.co.uk/hill_${row.cells.number}.html` },
+    })),
+  },
+};
+
+export const InteractiveRowsOnClick: TStory<TWainwrightColumns> = {
+  name: "Interactive Rows (onClick)",
+  args: {
+    ...Generic.args,
+    rows: Generic.args.rows.map((row) => ({
+      ...row,
+      onClick: (callbackRow) => alert(`${callbackRow.cells.wainwright} is ${callbackRow.cells.height} metres tall.`),
+    })),
   },
 };
