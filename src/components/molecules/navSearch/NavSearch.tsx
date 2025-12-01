@@ -9,6 +9,7 @@ import { Input } from "@/components/atoms/input/Input";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { systemGeoCodes } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
+import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 
 import { NavSearchDropdown } from "./NavSearchDropdown";
 import { NavSearchSuggestion } from "./NavSearchSuggestion";
@@ -88,9 +89,16 @@ export const NavSearch = () => {
 
   // The path to navigate to when submitting the search input
   const searchLink = useMemo(() => {
-    const newQuery: ParsedUrlQuery = {};
+    // Start with existing query if already on search page to preserve filters
+    const newQuery = router.pathname.includes("search") ? CleanRouterQuery({ ...router.query }) : {};
+    // Always reset offset / paging to start on page 1 of results
+    delete newQuery[QUERY_PARAMS.offset];
 
-    if (searchText) newQuery[QUERY_PARAMS.query_string] = searchText;
+    if (searchText) {
+      newQuery[QUERY_PARAMS.query_string] = searchText;
+    } else {
+      delete newQuery[QUERY_PARAMS.query_string];
+    }
 
     let newPathName = "/search";
 
