@@ -29,6 +29,7 @@ import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
 import { IProps } from "./familyOriginalPage";
+import { Drawer } from "../atoms/drawer/Drawer";
 
 export const FamilyLitigationPage = ({
   collections,
@@ -148,6 +149,7 @@ export const FamilyLitigationPage = ({
         isSubdivision={Boolean(breadcrumbParentGeography)}
         label={family.title}
       />
+      <Drawer trigger={<span>OPEN DRAWER TEST</span>}>TEST</Drawer>
       <PageHeader title={family.title} metadata={pageHeaderMetadata} />
       <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
       <Head>
