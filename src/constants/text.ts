@@ -54,6 +54,7 @@ export const CATEGORY_DICTIONARY = {
     Litigation: "case",
     LITIGATION: "cases",
     Policy: "policy",
+    MCF: "project",
   },
   familyPlural: {
     default: "document",
@@ -65,6 +66,7 @@ export const CATEGORY_DICTIONARY = {
     Litigation: "cases",
     LITIGATION: "cases",
     Policy: "policies",
+    MCF: "projects",
   },
 } satisfies Record<string, TCategoryDictionary>;
 
