@@ -42,15 +42,7 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
                   })
                   .map((concept) => (
                     <span className="inline-block" key={concept.wikibase_id}>
-                      <ConceptLink
-                        concept={concept}
-                        label={
-                          <span>
-                            {firstCase(concept.preferred_label)}{" "}
-                            <span className="text-gray-500">({familyTopics.conceptCounts[concept.wikibase_id] || 0})</span>
-                          </span>
-                        }
-                      >
+                      <ConceptLink concept={concept} label={<span>{firstCase(concept.preferred_label)}</span>}>
                         <>
                           <h6 className="font-bold">{firstCase(concept.preferred_label)}</h6>
                           <p className="my-2">
@@ -85,7 +77,7 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
                                       keepQuery
                                       query={{ [QUERY_PARAMS.concept_name]: concept.preferred_label }}
                                     >
-                                      {doc.title} ({topicCount})
+                                      {doc.title}
                                     </PageLink>
                                   </li>
                                 );
