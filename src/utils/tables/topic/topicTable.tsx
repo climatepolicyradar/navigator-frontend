@@ -44,14 +44,7 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
                     <span className="inline-block" key={concept.wikibase_id}>
                       <ConceptLink concept={concept} label={<span>{firstCase(concept.preferred_label)}</span>}>
                         <>
-                          <h6 className="font-bold">{firstCase(concept.preferred_label)}</h6>
-                          <p className="my-2">
-                            {firstCase(concept.description)}{" "}
-                            <PageLink external href={getConceptStoreLink(concept.wikibase_id)} className="text-brand hover:underline">
-                              {ARROW_UP_RIGHT}
-                            </PageLink>
-                          </p>
-                          <p className="mt-6 mb-3 text-gray-500">
+                          <p className="mb-3 text-gray-500">
                             This topic is mentioned in the following documents. Click on the document to view the specific passages.
                           </p>
                           <ul className="flex flex-col gap-3">
@@ -72,7 +65,7 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
                                 return (
                                   <li key={doc.importId}>
                                     <PageLink
-                                      className="block font-medium underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+                                      className="font-medium underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
                                       href={`/documents/${doc.slug}`}
                                       keepQuery
                                       query={{ [QUERY_PARAMS.concept_name]: concept.preferred_label }}
