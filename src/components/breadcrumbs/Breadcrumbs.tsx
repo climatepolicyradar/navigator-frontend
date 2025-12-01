@@ -36,7 +36,9 @@ const BreadCrumb = ({ last = false, label = null, href = null, cy = "", isHome =
   }
 
   const labelSpan = (
-    <span className="max-w-85 overflow-hidden whitespace-nowrap overflow-ellipsis">{isHome ? getAppText("breadcrumbRoot") : label}</span>
+    <span className="block max-w-70 md:max-w-85 lg:max-w-140 xl:max-w-200 overflow-hidden whitespace-nowrap overflow-ellipsis">
+      {isHome ? getAppText("breadcrumbRoot") : label}
+    </span>
   );
 
   return (
