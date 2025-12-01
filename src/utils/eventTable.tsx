@@ -160,7 +160,7 @@ export const getEventTableRows = ({
     const [mainDocuments] = getMainDocuments(family.documents);
     const isMainDocument = Boolean(document && mainDocuments.find((mainDocument) => mainDocument.slug === document.slug));
 
-    const linkClasses = "block text-gray-700 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
+    const linkClasses = "block text-brand underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
 
     /* Topics */
 
@@ -260,7 +260,21 @@ export const getEventTableRows = ({
           : null,
         summary: summary ? { label: <ViewMore maxLines={4}>{summary}</ViewMore>, value: summary } : null,
         title: document
-          ? { label: <span className={joinTailwindClasses(isMainDocument && "font-medium")}>{document.title}</span>, value: isMainDocument }
+          ? {
+              label: (
+                <>
+                  <PageLink
+                    keepQuery
+                    href={`/documents/${document.slug}`}
+                    className={joinTailwindClasses(linkClasses, isMainDocument && "font-medium")}
+                  >
+                    {document.title}
+                  </PageLink>
+                  <div>{document.variant}</div>
+                </>
+              ),
+              value: isMainDocument,
+            }
           : null,
         topics: { label: topicsDisplay, value: "" },
         type: event?.event_type || null,
