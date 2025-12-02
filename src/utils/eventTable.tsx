@@ -7,6 +7,7 @@ import { Badge } from "@/components/atoms/label/Badge";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Popover } from "@/components/atoms/popover/Popover";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
+import { ARROW_UP_RIGHT } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { getLanguage } from "@/helpers/getLanguage";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
@@ -131,14 +132,35 @@ const getFamilyDocuments = (family: TFamilyPublic): TEventRowData[] => family.do
 
 const linkClasses = "block text-brand underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
 
-const getDocumentTitleCell = (isLitigation: boolean, document: TFamilyDocumentPublic, isMainDocument: boolean, languages?: TLanguages): ReactNode => {
+const getDocumentLink = (document: TFamilyDocumentPublic, hasMatches: boolean, isMainDocument: boolean): React.ReactNode => {
+  const canPreview = hasMatches || (!!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf"));
+  const canViewSource = !canPreview && !!document.source_url;
+
+  if (canPreview)
+    return (
+      <PageLink keepQuery href={`/documents/${document.slug}`} className={joinTailwindClasses(linkClasses, isMainDocument && "font-medium")}>
+        {document.title}
+      </PageLink>
+    );
+  if (canViewSource)
+    return (
+      <PageLink external href={document.source_url} className={joinTailwindClasses(linkClasses, isMainDocument && "font-medium")}>
+        {document.title} (External page {ARROW_UP_RIGHT})
+      </PageLink>
+    );
+  return null;
+};
+
+const getDocumentTitleCell = (
+  isLitigation: boolean,
+  document: TFamilyDocumentPublic,
+  isMainDocument: boolean,
+  languages: TLanguages,
+  hasMatches: boolean
+): ReactNode => {
   return (
     <div className="flex flex-col gap-2">
-      <div>
-        <PageLink keepQuery href={`/documents/${document.slug}`} className={joinTailwindClasses(linkClasses, isMainDocument && "font-medium")}>
-          {document.title}
-        </PageLink>
-      </div>
+      <div>{getDocumentLink(document, hasMatches, isMainDocument)}</div>
       {document.document_role && (
         <span className={`${document.document_role.toLowerCase().includes("main") ? "font-medium" : ""}`}>
           <span className="capitalize">{document.document_role.toLowerCase()}</span>{" "}
@@ -302,7 +324,7 @@ export const getEventTableRows = ({
         summary: summary ? { label: <ViewMore maxLines={4}>{summary}</ViewMore>, value: summary } : null,
         title: document
           ? {
-              label: getDocumentTitleCell(isLitigation, document, isMainDocument, languages),
+              label: getDocumentTitleCell(isLitigation, document, isMainDocument, languages, matches > 0),
               value: isMainDocument,
             }
           : null,
