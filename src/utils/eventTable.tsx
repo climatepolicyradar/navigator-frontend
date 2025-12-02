@@ -312,6 +312,7 @@ export const getEventTableRows = ({
           document && matchesDisplay
             ? {
                 // TODO: improve the messaging here to include context about the search
+                // import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
                 label: <div className="flex flex-col gap-2 items-start">{matchesDisplay}</div>,
                 value: `${document.slug}:${matches}`,
               }
