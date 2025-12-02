@@ -1,36 +1,26 @@
 import { ReactNode } from "react";
-import { Drawer as VaulDrawer } from "vaul";
+import { Drawer as VaulDrawer, DialogProps as VaulDrawerRootProps } from "vaul";
 
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-interface IProps {
+type TProps = VaulDrawerRootProps & {
   children: ReactNode;
   direction?: "left" | "right";
   trigger?: ReactNode;
-}
+};
 
-/**
- * TODO
- * - Support for opening/closing manually without a trigger element
- * - Styling pass
- * - Mobile viewports & a11y pass
- * - Storybook stories
- */
-
-export const Drawer = ({ children, direction = "right", trigger }: IProps) => {
+export const Drawer = ({ children, direction = "right", trigger, ...rootProps }: TProps) => {
   const contentClasses = joinTailwindClasses(
-    "fixed top-0 right-0 bottom-0 h-full p-8 bg-white outline-none overflow-hidden",
-    direction === "right" ? "rounded-tl-xl rounded-bl-xl" : "rounded-tr-xl rounded-br-xl"
+    "fixed top-0 bottom-0 left-4 cols-2:left-6 cols-3:left-[initial] h-full cols-3:w-150 p-8 bg-white outline-none overflow-x-hidden overflow-y-auto",
+    direction === "right" ? "right-0 rounded-tl-xl rounded-bl-xl" : "left-0 rounded-tr-xl rounded-br-xl"
   );
 
   return (
-    <VaulDrawer.Root direction={direction}>
+    <VaulDrawer.Root direction={direction} {...rootProps}>
       {trigger && <VaulDrawer.Trigger>{trigger}</VaulDrawer.Trigger>}
       <VaulDrawer.Portal>
         <VaulDrawer.Overlay className="fixed inset-0 bg-black/40" />
-        <VaulDrawer.Content className={contentClasses}>
-          <div className="overflow-x-auto max-h-full">{children}</div>
-        </VaulDrawer.Content>
+        <VaulDrawer.Content className={contentClasses}>{children}</VaulDrawer.Content>
       </VaulDrawer.Portal>
     </VaulDrawer.Root>
   );

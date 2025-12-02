@@ -149,7 +149,9 @@ export const FamilyLitigationPage = ({
         isSubdivision={Boolean(breadcrumbParentGeography)}
         label={family.title}
       />
-      <Drawer trigger={<span>OPEN DRAWER TEST</span>}>TEST</Drawer>
+      <Drawer trigger={<span>OPEN DRAWER TEST</span>}>
+        <div className="bg-amber-200">CONTENT</div>
+      </Drawer>
       <PageHeader title={family.title} metadata={pageHeaderMetadata} />
       <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
       <Head>
