@@ -46,7 +46,7 @@ describe("getEventTableRows", () => {
       slug: "",
     };
 
-    const eventRows = getEventTableRows({ families: [familyWithoutDocuments], isLitigation: true });
+    const eventRows = getEventTableRows({ families: [familyWithoutDocuments], isLitigation: false });
 
     expect(eventRows).toEqual([]);
   });
@@ -102,7 +102,7 @@ describe("getEventTableRows", () => {
     expect(eventRows).toHaveLength(1);
     expect(eventRows[0].id).toBe("/0");
 
-    const { document, ...cells } = eventRows[0].cells;
+    const { ...cells } = eventRows[0].cells;
 
     expect(cells).toEqual({
       action: null,
@@ -121,9 +121,6 @@ describe("getEventTableRows", () => {
       },
       type: null,
     });
-
-    expect(typeof document).toBe("object");
-    expect((document as IMetadata).value).toBe("document-1:0");
   });
 
   it("returns a list of family and document event rows", () => {
@@ -191,7 +188,7 @@ describe("getEventTableRows", () => {
     expect(eventRows).toHaveLength(1);
 
     const firstEventRow = eventRows[0];
-    delete firstEventRow.cells.document;
+    delete firstEventRow.cells.searchResults;
 
     expect(eventRows[0]).toEqual({
       cells: {
@@ -280,7 +277,7 @@ describe("getEventTableRows", () => {
     expect(eventRows).toHaveLength(1);
     expect(eventRows[0].id).toBe("/0");
 
-    const { document, ...cells } = eventRows[0].cells;
+    const { ...cells } = eventRows[0].cells;
 
     expect(cells).toEqual({
       action: null,
@@ -299,8 +296,5 @@ describe("getEventTableRows", () => {
       },
       type: null,
     });
-
-    expect(typeof document).toBe("object");
-    expect((document as IMetadata).value).toBe("document-1:0");
   });
 });
