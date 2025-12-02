@@ -22,7 +22,7 @@ export const FamilyBlock = ({ family }: IProps) => {
   const isUSA = family.geographies.includes("USA");
 
   const tableColumns = useMemo(() => getEventTableColumns({ isLitigation, isUSA }), [isLitigation, isUSA]);
-  const tableRows = useMemo(() => getEventTableRows({ families: [family] }), [family]);
+  const tableRows = useMemo(() => getEventTableRows({ families: [family], isLitigation }), [family, isLitigation]);
   const entriesToHide = tableRows.length > MAX_ENTRIES_SHOWN;
 
   const toggleShowAll = () => {
@@ -35,8 +35,8 @@ export const FamilyBlock = ({ family }: IProps) => {
   useEffect(() => {
     const language = navigator?.language;
 
-    setUpdatedRowsWithLocalisedDates(getEventTableRows({ families: [family], language }));
-  }, [family]);
+    setUpdatedRowsWithLocalisedDates(getEventTableRows({ families: [family], language, isLitigation }));
+  }, [family, isLitigation]);
 
   return (
     <Section id={`section-${family.slug}`} wide>
