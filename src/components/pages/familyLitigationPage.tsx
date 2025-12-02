@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 
 import { Debug } from "@/components/atoms/debug/Debug";
 import { CollectionsBlock } from "@/components/blocks/collectionsBlock/CollectionsBlock";
@@ -10,6 +10,7 @@ import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import { DocumentDrawer } from "@/components/drawers/documentDrawer/DocumentDrawer";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
@@ -29,7 +30,6 @@ import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
 import { IProps } from "./familyOriginalPage";
-import { Drawer } from "../atoms/drawer/Drawer";
 
 export const FamilyLitigationPage = ({
   collections,
@@ -46,6 +46,22 @@ export const FamilyLitigationPage = ({
   const { getText } = useText();
 
   const showKnowledgeGraphTutorial = getIncompleteTutorialNames(completedTutorials, themeConfig, featureFlags).includes("knowledgeGraph");
+
+  /* Drawers */
+
+  const [documentDrawerId, setDocumentDrawerId] = useState<string | null>(null);
+  const [showDocumentDrawer, setShowDocumentDrawer] = useState(false); // Separate state so that document in drawer persists while closing
+
+  const drawerDocument = family.documents.find((doc) => doc.import_id === documentDrawerId);
+
+  const openDocumentDrawer = (importId: string) => {
+    setDocumentDrawerId(importId);
+    setShowDocumentDrawer(true);
+  };
+
+  const onDocumentDrawerOpenChange = (open: boolean) => {
+    if (!open) setShowDocumentDrawer(false);
+  };
 
   /* Search matches */
 
@@ -95,8 +111,9 @@ export const FamilyLitigationPage = ({
             familyTopics={familyTopics}
             matchesFamily={matchesFamily}
             matchesStatus={matchesStatus}
-            showMatches={hasSearch}
+            onClickRow={openDocumentDrawer}
             showKnowledgeGraphTutorial={showKnowledgeGraphTutorial}
+            showMatches={hasSearch}
           />
         ),
         [family, familyTopics, hasSearch, matchesFamily, matchesStatus, showKnowledgeGraphTutorial]
@@ -149,11 +166,9 @@ export const FamilyLitigationPage = ({
         isSubdivision={Boolean(breadcrumbParentGeography)}
         label={family.title}
       />
-      <Drawer trigger={<span>OPEN DRAWER TEST</span>}>
-        <div className="bg-amber-200">CONTENT</div>
-      </Drawer>
       <PageHeader title={family.title} metadata={pageHeaderMetadata} />
       <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
+      <DocumentDrawer document={drawerDocument} open={showDocumentDrawer} onOpenChange={onDocumentDrawerOpenChange} />
       <Head>
         <script
           type="application/ld+json"

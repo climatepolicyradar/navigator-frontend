@@ -195,7 +195,7 @@ export const InteractiveTable = <ColumnKey extends string>({
           }
 
           return (
-            <div key={rowKey} className="contents group" onClick={() => row.onClick(row)}>
+            <div key={rowKey} className="contents group" onClick={row.onClick ? () => row.onClick(row) : undefined}>
               {columnContent}
             </div>
           );

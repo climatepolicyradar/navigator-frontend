@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 
 import { Section } from "@/components/molecules/section/Section";
 import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
@@ -13,11 +13,20 @@ interface IProps {
   familyTopics?: IFamilyDocumentTopics;
   matchesFamily?: TMatchedFamily; // The relevant search result family
   matchesStatus?: TLoadingStatus; // The status of the search
-  showMatches?: boolean; // Whether to show matches from the search result
+  onClickRow: (importId: string) => void;
   showKnowledgeGraphTutorial: boolean;
+  showMatches?: boolean; // Whether to show matches from the search result
 }
 
-export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesStatus, showKnowledgeGraphTutorial, showMatches = false }: IProps) => {
+export const DocumentsBlock = ({
+  family,
+  familyTopics,
+  matchesFamily,
+  matchesStatus,
+  onClickRow,
+  showKnowledgeGraphTutorial,
+  showMatches = false,
+}: IProps) => {
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
   const isLitigation = family.corpus_type_name === "Litigation";
@@ -28,8 +37,16 @@ export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesSta
     [familyTopics, isLitigation, isUSA, showMatches]
   );
   const tableRows = useMemo(
-    () => getEventTableRows({ families: [family], familyTopics, documentEventsOnly: true, matchesFamily, matchesStatus }),
-    [family, familyTopics, matchesFamily, matchesStatus]
+    () =>
+      getEventTableRows({
+        documentEventsOnly: true,
+        documentRowClick: (rowId) => onClickRow(rowId),
+        families: [family],
+        familyTopics,
+        matchesFamily,
+        matchesStatus,
+      }),
+    [family, familyTopics, matchesFamily, matchesStatus, onClickRow]
   );
 
   // If the case is new, there can be one placeholder document with no events. Handle this interim state
@@ -38,9 +55,17 @@ export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesSta
   useEffect(() => {
     const language = navigator?.language;
     setUpdatedRowsWithLocalisedDates(
-      getEventTableRows({ families: [family], familyTopics, language, documentEventsOnly: true, matchesFamily, matchesStatus })
+      getEventTableRows({
+        documentEventsOnly: true,
+        documentRowClick: (rowId) => onClickRow(rowId),
+        families: [family],
+        familyTopics,
+        language,
+        matchesFamily,
+        matchesStatus,
+      })
     );
-  }, [family, familyTopics, matchesFamily, matchesStatus]);
+  }, [family, familyTopics, matchesFamily, matchesStatus, onClickRow]);
 
   return (
     <Section block="documents" title="Documents" wide>

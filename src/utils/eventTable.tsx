@@ -131,6 +131,7 @@ export const getEventTableRows = ({
   families,
   familyTopics,
   documentEventsOnly = false,
+  documentRowClick,
   matchesFamily,
   matchesStatus = "success",
   language,
@@ -138,6 +139,7 @@ export const getEventTableRows = ({
   families: TFamilyPublic[];
   familyTopics?: IFamilyDocumentTopics;
   documentEventsOnly?: boolean;
+  documentRowClick?: (rowId: string) => void;
   matchesFamily?: TMatchedFamily;
   matchesStatus?: TLoadingStatus;
   language?: string;
@@ -232,8 +234,8 @@ export const getEventTableRows = ({
 
     /* Everything else */
 
-    rows.push({
-      id: [family.import_id, rowIndex].join("/"),
+    const row: TEventTableRow = {
+      id: document ? document.import_id : [family.import_id, rowIndex].join("/"),
       cells: {
         action: event?.metadata.action_taken?.[0] || null,
         caseNumber: getCaseNumbers(family),
@@ -265,7 +267,13 @@ export const getEventTableRows = ({
         topics: { label: topicsDisplay, value: "" },
         type: event?.event_type || null,
       },
-    });
+    };
+
+    if (documentEventsOnly && document && documentRowClick) {
+      row.onClick = (clickedRow) => documentRowClick(clickedRow.id);
+    }
+
+    rows.push(row);
   });
 
   return rows;
