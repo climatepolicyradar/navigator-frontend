@@ -31,17 +31,7 @@ export const getTopicsMetadataItem = (familyTopics: IFamilyDocumentTopics): IMet
   if (visibleTopics.length === 0) return null;
 
   const topicsNode: ReactNode[] = joinNodes(
-    visibleTopics.map(({ topic, topicCount }) => (
-      <ConceptLink
-        key={topic.wikibase_id}
-        concept={topic}
-        label={
-          <>
-            {firstCase(topic.preferred_label)} <span className="text-gray-500">({topicCount})</span>
-          </>
-        }
-      />
-    )),
+    visibleTopics.map(({ topic }) => <ConceptLink key={topic.wikibase_id} concept={topic} label={<>{firstCase(topic.preferred_label)}</>} />),
     ", "
   );
 
