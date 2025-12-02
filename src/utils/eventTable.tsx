@@ -31,17 +31,7 @@ import { formatDateShort } from "./timedate";
 
 /* Columns */
 
-export type TEventTableColumnId =
-  | "action"
-  | "caseNumber"
-  | "caseTitle"
-  | "court"
-  | "date"
-  | "searchResults"
-  | "summary"
-  | "title"
-  | "topics"
-  | "type";
+export type TEventTableColumnId = "caseNumber" | "caseTitle" | "court" | "date" | "searchResults" | "document" | "topics" | "type";
 export type TEventTableColumn = TTableColumn<TEventTableColumnId>;
 
 const topicsColumnName = (
@@ -70,6 +60,7 @@ export const getEventTableColumns = ({
   isLitigation,
   isUSA = true,
   showFamilyColumns = false,
+  showMatches = false,
 }: {
   hasTopics?: boolean;
   isLitigation: boolean;
@@ -78,12 +69,10 @@ export const getEventTableColumns = ({
   showMatches?: boolean;
 }) => {
   const columns: TEventTableColumn[] = [
-    { id: "title", fraction: 4 },
     { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
+    { id: "document", fraction: 6 },
     { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 2 },
-    { id: "topics", name: topicsColumnName, fraction: isLitigation ? 8 : 3 },
-    { id: "action", name: "Action Taken", fraction: 4 },
-    { id: "summary", fraction: 6, classes: "min-w-75" },
+    { id: "topics", name: topicsColumnName, fraction: 4 },
     { id: "caseNumber", name: "Case Number", fraction: 2 },
     { id: "court" },
     { id: "caseTitle", name: "Case", fraction: 2 },
@@ -93,12 +82,12 @@ export const getEventTableColumns = ({
   // Remove columns based on context of the document or family
   const columnsToRemove: TEventTableColumnId[] = [];
   if (!hasTopics) columnsToRemove.push("topics");
-  if (!isUSA) columnsToRemove.push("action");
   if (!showFamilyColumns) columnsToRemove.push("caseNumber", "court", "caseTitle");
 
   if (!isLitigation) {
-    columnsToRemove.push("date", "type", "action", "summary");
+    columnsToRemove.push("date", "type");
   }
+  if (!showMatches) columnsToRemove.push("searchResults");
 
   return columns.filter((column) => !columnsToRemove.includes(column.id));
 };
@@ -141,59 +130,62 @@ const getFamilyDocuments = (family: TFamilyPublic): TEventRowData[] => family.do
 
 const linkClasses = "block text-brand underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
 
-const getDocumentLink = (document: TFamilyDocumentPublic, hasMatches: boolean, isMainDocument: boolean): React.ReactNode => {
+const getDocumentLink = (document: TFamilyDocumentPublic, hasMatches: boolean, isMainDocument: boolean, isLitigation: boolean): React.ReactNode => {
   const canPreview = hasMatches || (!!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf"));
   const canViewSource = !canPreview && !!document.source_url;
 
   if (canPreview)
     return (
-      <PageLink keepQuery href={`/documents/${document.slug}`} className={joinTailwindClasses(linkClasses, isMainDocument && "font-medium")}>
+      <PageLink
+        keepQuery
+        href={`/documents/${document.slug}`}
+        className={joinTailwindClasses(linkClasses, (isMainDocument || isLitigation) && "font-medium")}
+      >
         {document.title}
       </PageLink>
     );
   if (canViewSource)
     return (
-      <PageLink external href={document.source_url} className={joinTailwindClasses(linkClasses, isMainDocument && "font-medium")}>
+      <PageLink external href={document.source_url} className={joinTailwindClasses(linkClasses, (isMainDocument || isLitigation) && "font-medium")}>
         {document.title} (External page {ARROW_UP_RIGHT})
       </PageLink>
     );
   return null;
 };
 
-const getDocumentTitleCell = (
+const getDocumentCell = (
   isLitigation: boolean,
   document: TFamilyDocumentPublic,
   isMainDocument: boolean,
   languages: TLanguages,
-  hasMatches: boolean
+  hasMatches: boolean,
+  event?: TFamilyEventPublic
 ): ReactNode => {
   return (
     <div className="flex flex-col gap-2">
-      <div>{getDocumentLink(document, hasMatches, isMainDocument)}</div>
-      {document.document_role && (
-        <span className={`${document.document_role.toLowerCase().includes("main") ? "font-medium" : ""}`}>
-          <span className="capitalize">{document.document_role.toLowerCase()}</span>{" "}
-          {document.document_role.toLowerCase().includes("main") ? "document" : ""}
-        </span>
+      {isLitigation && (
+        <>
+          <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation)}</div>
+          {event?.metadata.action_taken?.[0] && <div className="italic">{event.metadata.action_taken[0]}</div>}
+          {event?.metadata.description?.[0] && <ViewMore maxLines={4}>{event.metadata.description[0]}</ViewMore>}
+        </>
       )}
-      {document.document_type && <div className="italic">{document.document_type}</div>}
-      {document.language && (
-        <div>
-          {getLanguage(document.language, languages)} {document.variant && `(${document.variant})`}
-        </div>
+      {!isLitigation && (
+        <>
+          <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation)}</div>
+          {document.document_role && (
+            <span className={`${document.document_role.toLowerCase().includes("main") ? "font-medium" : ""}`}>
+              {firstCase(document.document_role.toLowerCase()) + (document.document_role.toLowerCase().includes("main") ? " document" : "")}
+            </span>
+          )}
+          {document.document_type && <div className="italic">{document.document_type}</div>}
+          {document.language && (
+            <div>
+              {getLanguage(document.language, languages)} {document.variant && `(${document.variant})`}
+            </div>
+          )}
+        </>
       )}
-      {/* TODO: DELETE ME */}
-      {/* <div className="mt-4">DEBUG &darr;</div>
-                  <div>variant: {document.variant}</div>
-                  <div>
-                    role:{" "}
-                    <span className={`${document.document_role.toLowerCase().includes("main") ? "font-medium" : ""}`}>
-                      <span className="capitalize">{document.document_role.toLowerCase()}</span>{" "}
-                      {document.document_role.toLowerCase().includes("main") ? "document" : ""}
-                    </span>
-                  </div>
-                  <div>type: {document.document_type}</div>
-                  <div>language: {getLanguage(document.language, languages)}</div> */}
     </div>
   );
 };
@@ -307,7 +299,6 @@ export const getEventTableRows = ({
     rows.push({
       id: [family.import_id, rowIndex].join("/"),
       cells: {
-        action: event?.metadata.action_taken?.[0] || null,
         caseNumber: getCaseNumbers(family),
         caseTitle: family.title,
         court: getCourts(family),
@@ -317,17 +308,17 @@ export const getEventTableRows = ({
               value: date.getTime(),
             }
           : null,
-        searchResults: document
+        searchResults:
+          document && matchesDisplay
+            ? {
+                // TODO: improve the messaging here to include context about the search
+                label: <div className="flex flex-col gap-2 items-start">{matchesDisplay}</div>,
+                value: `${document.slug}:${matches}`,
+              }
+            : null,
+        document: document
           ? {
-              // TODO: improve the messaging here to include context about the search
-              label: <div className="flex flex-col gap-2 items-start">{matchesDisplay}</div>,
-              value: `${document.slug}:${matches}`,
-            }
-          : null,
-        summary: summary ? { label: <ViewMore maxLines={4}>{summary}</ViewMore>, value: summary } : null,
-        title: document
-          ? {
-              label: getDocumentTitleCell(isLitigation, document, isMainDocument, languages, matches > 0),
+              label: getDocumentCell(isLitigation, document, isMainDocument, languages, matches > 0, event),
               value: isMainDocument,
             }
           : null,
