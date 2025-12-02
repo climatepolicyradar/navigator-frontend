@@ -8,12 +8,14 @@ import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Popover } from "@/components/atoms/popover/Popover";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { getLanguage } from "@/helpers/getLanguage";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
 import {
   IFamilyDocumentTopics,
   TFamilyDocumentPublic,
   TFamilyEventPublic,
   TFamilyPublic,
+  TLanguages,
   TLoadingStatus,
   TMatchedFamily,
   TTableColumn,
@@ -127,6 +129,44 @@ const getFamilyEvents = (family: TFamilyPublic): TEventRowData[] =>
 
 const getFamilyDocuments = (family: TFamilyPublic): TEventRowData[] => family.documents.map((document) => ({ family, document }));
 
+const linkClasses = "block text-brand underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
+
+const getDocumentTitleCell = (isLitigation: boolean, document: TFamilyDocumentPublic, isMainDocument: boolean, languages?: TLanguages): ReactNode => {
+  return (
+    <div className="flex flex-col gap-2">
+      <div>
+        <PageLink keepQuery href={`/documents/${document.slug}`} className={joinTailwindClasses(linkClasses, isMainDocument && "font-medium")}>
+          {document.title}
+        </PageLink>
+      </div>
+      {document.document_role && (
+        <span className={`${document.document_role.toLowerCase().includes("main") ? "font-medium" : ""}`}>
+          <span className="capitalize">{document.document_role.toLowerCase()}</span>{" "}
+          {document.document_role.toLowerCase().includes("main") ? "document" : ""}
+        </span>
+      )}
+      {document.document_type && <div className="italic">{document.document_type}</div>}
+      {document.language && (
+        <div>
+          {getLanguage(document.language, languages)} {document.variant && `(${document.variant})`}
+        </div>
+      )}
+      {/* TODO: DELETE ME */}
+      {/* <div className="mt-4">DEBUG &darr;</div>
+                  <div>variant: {document.variant}</div>
+                  <div>
+                    role:{" "}
+                    <span className={`${document.document_role.toLowerCase().includes("main") ? "font-medium" : ""}`}>
+                      <span className="capitalize">{document.document_role.toLowerCase()}</span>{" "}
+                      {document.document_role.toLowerCase().includes("main") ? "document" : ""}
+                    </span>
+                  </div>
+                  <div>type: {document.document_type}</div>
+                  <div>language: {getLanguage(document.language, languages)}</div> */}
+    </div>
+  );
+};
+
 export const getEventTableRows = ({
   families,
   familyTopics,
@@ -134,6 +174,8 @@ export const getEventTableRows = ({
   matchesFamily,
   matchesStatus = "success",
   language,
+  languages,
+  isLitigation,
 }: {
   families: TFamilyPublic[];
   familyTopics?: IFamilyDocumentTopics;
@@ -141,6 +183,8 @@ export const getEventTableRows = ({
   matchesFamily?: TMatchedFamily;
   matchesStatus?: TLoadingStatus;
   language?: string;
+  languages?: TLanguages;
+  isLitigation: boolean;
 }): TEventTableRow[] => {
   const rows: TEventTableRow[] = [];
   const topicsData = familyTopics ? Object.values(familyTopics.conceptsGrouped).flat() : [];
@@ -149,7 +193,7 @@ export const getEventTableRows = ({
 
   const eventRowsData = families.map(getFamilyEvents).flat();
   const documentRowsData = families.map(getFamilyDocuments).flat();
-  const rowsData = families[0].corpus_type_name === "Litigation" ? eventRowsData : documentRowsData;
+  const rowsData = isLitigation ? eventRowsData : documentRowsData;
 
   rowsData.forEach(({ family, event, document }, rowIndex) => {
     if (documentEventsOnly && !document) return;
@@ -159,8 +203,6 @@ export const getEventTableRows = ({
 
     const [mainDocuments] = getMainDocuments(family.documents);
     const isMainDocument = Boolean(document && mainDocuments.find((mainDocument) => mainDocument.slug === document.slug));
-
-    const linkClasses = "block text-brand underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
 
     /* Topics */
 
@@ -200,7 +242,7 @@ export const getEventTableRows = ({
                 role="link"
                 className="p-2 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
               >
-                View all topic mentions
+                + {sortedTopics.length - MAX_TOPICS_PER_DOCUMENT} more
               </button>
             </PageLink>
           )}
@@ -260,18 +302,7 @@ export const getEventTableRows = ({
         summary: summary ? { label: <ViewMore maxLines={4}>{summary}</ViewMore>, value: summary } : null,
         title: document
           ? {
-              label: (
-                <>
-                  <PageLink
-                    keepQuery
-                    href={`/documents/${document.slug}`}
-                    className={joinTailwindClasses(linkClasses, isMainDocument && "font-medium")}
-                  >
-                    {document.title}
-                  </PageLink>
-                  <div>{document.variant}</div>
-                </>
-              ),
+              label: getDocumentTitleCell(isLitigation, document, isMainDocument, languages),
               value: isMainDocument,
             }
           : null,

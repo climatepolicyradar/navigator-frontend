@@ -4,6 +4,7 @@ import { Section } from "@/components/molecules/section/Section";
 import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { TUTORIALS } from "@/constants/tutorials";
+import useConfig from "@/hooks/useConfig";
 import { IFamilyDocumentTopics, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
@@ -18,6 +19,8 @@ interface IProps {
 }
 
 export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesStatus, showKnowledgeGraphTutorial, showMatches = false }: IProps) => {
+  const configQuery = useConfig();
+  const { data: { languages = {} } = {} } = configQuery;
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
   const isLitigation = family.corpus_type_name === "Litigation";
@@ -28,8 +31,8 @@ export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesSta
     [familyTopics, isLitigation, isUSA, showMatches]
   );
   const tableRows = useMemo(
-    () => getEventTableRows({ families: [family], familyTopics, documentEventsOnly: true, matchesFamily, matchesStatus }),
-    [family, familyTopics, matchesFamily, matchesStatus]
+    () => getEventTableRows({ families: [family], familyTopics, documentEventsOnly: true, matchesFamily, matchesStatus, languages, isLitigation }),
+    [family, familyTopics, matchesFamily, matchesStatus, languages, isLitigation]
   );
 
   // If the case is new, there can be one placeholder document with no events. Handle this interim state
@@ -38,9 +41,18 @@ export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesSta
   useEffect(() => {
     const language = navigator?.language;
     setUpdatedRowsWithLocalisedDates(
-      getEventTableRows({ families: [family], familyTopics, language, documentEventsOnly: true, matchesFamily, matchesStatus })
+      getEventTableRows({
+        families: [family],
+        familyTopics,
+        language,
+        documentEventsOnly: true,
+        matchesFamily,
+        matchesStatus,
+        languages,
+        isLitigation,
+      })
     );
-  }, [family, familyTopics, matchesFamily, matchesStatus]);
+  }, [family, familyTopics, matchesFamily, matchesStatus, languages, isLitigation]);
 
   return (
     <Section block="documents" title="Documents" wide>
