@@ -4,8 +4,7 @@ import { Section } from "@/components/molecules/section/Section";
 import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { TUTORIALS } from "@/constants/tutorials";
-import useConfig from "@/hooks/useConfig";
-import { IFamilyDocumentTopics, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
+import { IFamilyDocumentTopics, TFamilyPublic, TLanguages, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
@@ -16,11 +15,18 @@ interface IProps {
   matchesStatus?: TLoadingStatus; // The status of the search
   showMatches?: boolean; // Whether to show matches from the search result
   showKnowledgeGraphTutorial: boolean;
+  languages: TLanguages;
 }
 
-export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesStatus, showKnowledgeGraphTutorial, showMatches = false }: IProps) => {
-  const configQuery = useConfig();
-  const { data: { languages = {} } = {} } = configQuery;
+export const DocumentsBlock = ({
+  family,
+  familyTopics,
+  matchesFamily,
+  matchesStatus,
+  showKnowledgeGraphTutorial,
+  showMatches = false,
+  languages,
+}: IProps) => {
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
   const isLitigation = family.corpus_type_name === "Litigation";
