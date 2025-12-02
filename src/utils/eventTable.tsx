@@ -42,7 +42,7 @@ const topicsColumnName = (
           <LucideInfo size={16} className="inline-block align-text-bottom text-gray-500 hover:text-gray-700 cursor-help" />
         </button>
       }
-      description="This table shows the most frequently mentioned topics in this document. The number in brackets is a count of how many times each topic appears. Click to view the document and see the specific passages mentioning each topic highlighted. Accuracy is not 100%."
+      description="This table shows the most frequently mentioned topics in this document. Click to view the document and see the specific passages mentioning each topic highlighted. Accuracy is not 100%."
       link={{
         href: "/faq#topics-faqs",
         text: "Learn more",
@@ -182,11 +182,10 @@ export const getEventTableRows = ({
           <PageLink
             key={topicId}
             href={`/documents/${document.slug}`}
-            keepQuery
             query={{ [QUERY_PARAMS.concept_name]: topic.preferred_label }}
             className={linkClasses}
           >
-            {firstCase(topic?.preferred_label || fallbackLabel)} <span className="text-gray-500">({topicCount})</span>
+            {firstCase(topic?.preferred_label || fallbackLabel)}
           </PageLink>
         );
       });
