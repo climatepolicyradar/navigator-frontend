@@ -31,7 +31,17 @@ import { formatDateShort } from "./timedate";
 
 /* Columns */
 
-export type TEventTableColumnId = "action" | "caseNumber" | "caseTitle" | "court" | "date" | "document" | "summary" | "title" | "topics" | "type";
+export type TEventTableColumnId =
+  | "action"
+  | "caseNumber"
+  | "caseTitle"
+  | "court"
+  | "date"
+  | "searchResults"
+  | "summary"
+  | "title"
+  | "topics"
+  | "type";
 export type TEventTableColumn = TTableColumn<TEventTableColumnId>;
 
 const topicsColumnName = (
@@ -77,17 +87,16 @@ export const getEventTableColumns = ({
     { id: "caseNumber", name: "Case Number", fraction: 2 },
     { id: "court" },
     { id: "caseTitle", name: "Case", fraction: 2 },
-    { id: "document", fraction: 2 },
+    { id: "searchResults", name: "Search results", fraction: 2 },
   ];
 
+  // Remove columns based on context of the document or family
   const columnsToRemove: TEventTableColumnId[] = [];
   if (!hasTopics) columnsToRemove.push("topics");
   if (!isUSA) columnsToRemove.push("action");
   if (!showFamilyColumns) columnsToRemove.push("caseNumber", "court", "caseTitle");
 
-  if (isLitigation) {
-    columnsToRemove.push("title");
-  } else {
+  if (!isLitigation) {
     columnsToRemove.push("date", "type", "action", "summary");
   }
 
@@ -308,16 +317,10 @@ export const getEventTableRows = ({
               value: date.getTime(),
             }
           : null,
-        document: document
+        searchResults: document
           ? {
-              label: (
-                <div className="flex flex-col gap-2 items-start">
-                  <PageLink keepQuery href={`/documents/${document.slug}`} className={linkClasses}>
-                    View
-                  </PageLink>
-                  {matchesDisplay}
-                </div>
-              ),
+              // TODO: improve the messaging here to include context about the search
+              label: <div className="flex flex-col gap-2 items-start">{matchesDisplay}</div>,
               value: `${document.slug}:${matches}`,
             }
           : null,
