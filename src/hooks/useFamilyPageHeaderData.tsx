@@ -7,6 +7,7 @@ import { GeographyLink, IProps as GeographyLinkProps } from "@/components/molecu
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
+import { useText } from "@/hooks/useText";
 import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
 import { scrollToBlock } from "@/utils/blocks/scrollToBlock";
 import { isSystemGeo } from "@/utils/isSystemGeo";
@@ -28,10 +29,12 @@ type FamilyPageHeaderData = {
   breadcrumbParentGeography: TBreadcrumbLink | null;
 };
 
-export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IProps): FamilyPageHeaderData =>
-  useMemo(() => {
-    /* Misc */
+export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IProps): FamilyPageHeaderData => {
+  const { getCategoryTextLookup } = useText();
+  const getCategoryText = getCategoryTextLookup(family.category);
 
+  return useMemo(() => {
+    /* Misc */
     const categoryName = getCategoryName(family.category, family.corpus_type_name, family.organisation);
     const [year] = convertDate(family.published_date);
     const isLitigation = family.corpus_type_name === "Litigation";
@@ -120,7 +123,7 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
         label: "Geography",
         value: geographiesNode,
       },
-      { label: "Date", value: isNaN(year) ? "" : year },
+      { label: `${getCategoryText("familyDate")}`, value: isNaN(year) ? "" : year },
       {
         label: "Document type",
         value: categoryName,
@@ -161,4 +164,5 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
       breadcrumbGeography,
       breadcrumbParentGeography,
     };
-  }, [countries, family, subdivisions]);
+  }, [countries, family, subdivisions, getCategoryText]);
+};
