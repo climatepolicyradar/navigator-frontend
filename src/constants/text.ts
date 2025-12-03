@@ -68,6 +68,10 @@ export const CATEGORY_DICTIONARY = {
     Policy: "policies",
     MCF: "projects",
   },
+  familyDate: {
+    default: "Date",
+    MCF: "Approval FY",
+  },
 } satisfies Record<string, TCategoryDictionary>;
 
 export type TCategoryDictionaryKey = keyof typeof CATEGORY_DICTIONARY;
