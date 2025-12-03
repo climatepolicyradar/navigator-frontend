@@ -2,8 +2,6 @@ import { TCategory, TCorpusPublic, TFamilyDocumentPublic } from "@/types";
 
 import { getEventTableRows } from "./eventTable";
 
-const language = "en-GB";
-
 describe("getEventTableRows", () => {
   it("returns an empty list of document rows if there are no documents in the family", () => {
     const familyWithoutDocuments = {
