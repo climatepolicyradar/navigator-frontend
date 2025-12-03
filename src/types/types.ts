@@ -208,6 +208,7 @@ export type TDocumentPage = {
   cdn_object?: string | null;
   content_type: TDocumentContentType;
   document_role: string;
+  document_status: string | null;
   document_type: string | null;
   import_id: string;
   language: string;

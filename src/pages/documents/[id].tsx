@@ -352,6 +352,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     familyData = family;
     documentData = otherDocumentData;
 
+    if (documentData.document_status === "deleted") {
+      return {
+        notFound: true,
+      };
+    }
+
     if (knowledgeGraphEnabled) {
       const { data: vespaDocumentDataResponse } = await backendApiClient.get(`/document/${documentData.import_id}`);
       vespaDocumentData = vespaDocumentDataResponse;
