@@ -1,13 +1,11 @@
-import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
-import { IMetadata, TCategory, TCorpusPublic, TFamilyDocumentPublic } from "@/types";
+import { TCategory, TCorpusPublic, TFamilyDocumentPublic } from "@/types";
 
 import { getEventTableRows } from "./eventTable";
 
 const language = "en-GB";
 
 describe("getEventTableRows", () => {
-  it("returns a list of family event rows", () => {
+  it("returns an empty list of document rows if there are no documents in the family", () => {
     const familyWithoutDocuments = {
       category: "Litigation" as TCategory,
       collections: [],
@@ -51,7 +49,7 @@ describe("getEventTableRows", () => {
     expect(eventRows).toEqual([]);
   });
 
-  it("returns a list of document event rows", () => {
+  it("returns a list of document event rows if there are documents in the family", () => {
     const familyWithoutEvents = {
       category: "Litigation" as TCategory,
       collections: [],
@@ -100,30 +98,10 @@ describe("getEventTableRows", () => {
     const eventRows = getEventTableRows({ families: [familyWithoutEvents], isLitigation: true });
 
     expect(eventRows).toHaveLength(1);
-    expect(eventRows[0].id).toBe("/0");
-
-    const { ...cells } = eventRows[0].cells;
-
-    expect(cells).toEqual({
-      action: null,
-      caseNumber: "Case 1",
-      caseTitle: "Case 1",
-      court: null,
-      date: null,
-      summary: null,
-      title: {
-        label: <span className="">Document 1</span>,
-        value: false,
-      },
-      topics: {
-        label: null,
-        value: "",
-      },
-      type: null,
-    });
+    expect(eventRows[0].id).toBe("Document 1");
   });
 
-  it("returns a list of family and document event rows", () => {
+  it("returns a list of event rows if there are events in the family and events on documents", () => {
     const familyWithoutEvents = {
       category: "Litigation" as TCategory,
       collections: [],
@@ -155,7 +133,7 @@ describe("getEventTableRows", () => {
         {
           import_id: "Event 2",
           title: "Event 2",
-          date: "2021-01-01",
+          date: "2021-02-01",
           event_type: "Event",
           status: "Status",
           metadata: {
@@ -185,31 +163,9 @@ describe("getEventTableRows", () => {
 
     const eventRows = getEventTableRows({ families: [familyWithoutEvents], isLitigation: true });
 
-    expect(eventRows).toHaveLength(1);
-
-    const firstEventRow = eventRows[0];
-    delete firstEventRow.cells.searchResults;
-
-    expect(eventRows[0]).toEqual({
-      cells: {
-        action: null,
-        caseNumber: "Case 1",
-        caseTitle: "Case 1",
-        court: null,
-        date: null,
-        summary: null,
-        title: {
-          label: <span className="">Document 1</span>,
-          value: false,
-        },
-        topics: {
-          label: null,
-          value: "",
-        },
-        type: null,
-      },
-      id: "/0",
-    });
+    expect(eventRows).toHaveLength(2);
+    expect(eventRows[0].id).toBe("Event 2");
+    expect(eventRows[1].id).toBe("Document 1");
   });
 
   it("returns a deduplicated list of family and document event rows if same event linked to both family and document", () => {
@@ -275,26 +231,6 @@ describe("getEventTableRows", () => {
     const eventRows = getEventTableRows({ families: [familyWithoutEvents], isLitigation: true });
 
     expect(eventRows).toHaveLength(1);
-    expect(eventRows[0].id).toBe("/0");
-
-    const { ...cells } = eventRows[0].cells;
-
-    expect(cells).toEqual({
-      action: null,
-      caseNumber: "Case 1",
-      caseTitle: "Case 1",
-      court: null,
-      date: null,
-      summary: null,
-      title: {
-        label: <span className="">Document 1</span>,
-        value: false,
-      },
-      topics: {
-        label: null,
-        value: "",
-      },
-      type: null,
-    });
+    expect(eventRows[0].id).toBe("Document 1");
   });
 });

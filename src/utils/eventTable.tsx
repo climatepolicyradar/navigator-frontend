@@ -297,7 +297,7 @@ export const getEventTableRows = ({
     /* Everything else */
 
     rows.push({
-      id: [family.import_id, rowIndex].join("/"),
+      id: document ? document.import_id : event.import_id,
       cells: {
         caseNumber: getCaseNumbers(family),
         caseTitle: family.title,
