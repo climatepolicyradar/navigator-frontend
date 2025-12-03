@@ -2,8 +2,8 @@ import orderBy from "lodash/orderBy";
 import { LucideInfo } from "lucide-react";
 import { ReactNode } from "react";
 
+import { Badge } from "@/components/atoms/badge/Badge";
 import { Icon } from "@/components/atoms/icon/Icon";
-import { Badge } from "@/components/atoms/label/Badge";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Popover } from "@/components/atoms/popover/Popover";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";

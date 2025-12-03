@@ -3,8 +3,8 @@ import { ChevronUp, TextSearch } from "lucide-react";
 import { useContext, useState } from "react";
 
 import { ExternalLink } from "@/components/ExternalLink";
+import { Badge } from "@/components/atoms/badge/Badge";
 import { Button } from "@/components/atoms/button/Button";
-import { Badge } from "@/components/atoms/label/Badge";
 import { ConceptLink } from "@/components/molecules/conceptLink/ConceptLink";
 import { Info } from "@/components/molecules/info/Info";
 import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
