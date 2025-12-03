@@ -18,6 +18,7 @@ import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TutorialContext } from "@/context/TutorialContext";
+import useConfig from "@/hooks/useConfig";
 import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
@@ -44,6 +45,8 @@ export const FamilyLitigationPage = ({
   theme,
   themeConfig,
 }: IProps) => {
+  const configQuery = useConfig();
+  const { data: { languages = {} } = {} } = configQuery;
   const { completedTutorials } = useContext(TutorialContext);
   const { getCategoryTextLookup } = useText();
   const getCategoryText = getCategoryTextLookup(family.category);
@@ -100,9 +103,10 @@ export const FamilyLitigationPage = ({
             matchesStatus={matchesStatus}
             showMatches={hasSearch}
             showKnowledgeGraphTutorial={showKnowledgeGraphTutorial}
+            languages={languages}
           />
         ),
-        [family, familyTopics, hasSearch, matchesFamily, matchesStatus, showKnowledgeGraphTutorial]
+        [family, familyTopics, hasSearch, matchesFamily, matchesStatus, showKnowledgeGraphTutorial, languages]
       ),
     },
     metadata: {

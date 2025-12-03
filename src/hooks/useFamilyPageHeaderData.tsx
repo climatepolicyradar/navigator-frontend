@@ -34,6 +34,7 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
 
     const categoryName = getCategoryName(family.category, family.corpus_type_name, family.organisation);
     const [year] = convertDate(family.published_date);
+    const isLitigation = family.corpus_type_name === "Litigation";
 
     /* Geographies data */
 
@@ -128,14 +129,30 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
     if (family.collections.length) {
       pageHeaderMetadata.push({
         label: "Part of",
-        value: joinNodes(
-          family.collections.map((collection) => (
-            <PageLink key={collection.import_id} keepQuery href={`/collections/${collection.slug}`} className="hover:underline">
-              {collection.title}
-            </PageLink>
-          )),
-          ", "
-        ),
+        value: isLitigation
+          ? // litigation collections links
+            joinNodes(
+              family.collections.map((collection) => (
+                <PageLink key={collection.import_id} keepQuery href={`/collections/${collection.slug}`} className="hover:underline">
+                  {collection.title}
+                </PageLink>
+              )),
+              ", "
+            )
+          : // non-litigation collections scroll to block
+            joinNodes(
+              family.collections.map((collection) => (
+                <button
+                  key={collection.import_id}
+                  role="button"
+                  className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+                  onClick={scrollToBlock("collections")}
+                >
+                  {collection.title}
+                </button>
+              )),
+              ", "
+            ),
       });
     }
 

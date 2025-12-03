@@ -4,7 +4,7 @@ import { Section } from "@/components/molecules/section/Section";
 import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { TUTORIALS } from "@/constants/tutorials";
-import { IFamilyDocumentTopics, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
+import { IFamilyDocumentTopics, TFamilyPublic, TLanguages, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
@@ -15,9 +15,18 @@ interface IProps {
   matchesStatus?: TLoadingStatus; // The status of the search
   showMatches?: boolean; // Whether to show matches from the search result
   showKnowledgeGraphTutorial: boolean;
+  languages: TLanguages;
 }
 
-export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesStatus, showKnowledgeGraphTutorial, showMatches = false }: IProps) => {
+export const DocumentsBlock = ({
+  family,
+  familyTopics,
+  matchesFamily,
+  matchesStatus,
+  showKnowledgeGraphTutorial,
+  showMatches = false,
+  languages,
+}: IProps) => {
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
   const isLitigation = family.corpus_type_name === "Litigation";
@@ -28,8 +37,8 @@ export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesSta
     [familyTopics, isLitigation, isUSA, showMatches]
   );
   const tableRows = useMemo(
-    () => getEventTableRows({ families: [family], familyTopics, documentEventsOnly: true, matchesFamily, matchesStatus }),
-    [family, familyTopics, matchesFamily, matchesStatus]
+    () => getEventTableRows({ families: [family], familyTopics, documentEventsOnly: true, matchesFamily, matchesStatus, languages, isLitigation }),
+    [family, familyTopics, matchesFamily, matchesStatus, languages, isLitigation]
   );
 
   // If the case is new, there can be one placeholder document with no events. Handle this interim state
@@ -38,9 +47,18 @@ export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesSta
   useEffect(() => {
     const language = navigator?.language;
     setUpdatedRowsWithLocalisedDates(
-      getEventTableRows({ families: [family], familyTopics, language, documentEventsOnly: true, matchesFamily, matchesStatus })
+      getEventTableRows({
+        families: [family],
+        familyTopics,
+        language,
+        documentEventsOnly: true,
+        matchesFamily,
+        matchesStatus,
+        languages,
+        isLitigation,
+      })
     );
-  }, [family, familyTopics, matchesFamily, matchesStatus]);
+  }, [family, familyTopics, matchesFamily, matchesStatus, languages, isLitigation]);
 
   return (
     <Section block="documents" title="Documents" wide>
@@ -53,7 +71,7 @@ export const DocumentsBlock = ({ family, familyTopics, matchesFamily, matchesSta
           <InteractiveTable<TEventTableColumnId>
             columns={tableColumns}
             rows={updatedRowsWithLocalisedDates || tableRows}
-            defaultSort={{ column: isLitigation ? "date" : "title", order: "desc" }}
+            defaultSort={{ column: isLitigation ? "date" : "document", order: "desc" }}
             tableClasses={isLitigation ? "min-w-250" : "min-w-200"}
           />
         )}

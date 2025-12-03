@@ -132,7 +132,7 @@ export const InteractiveTable = <ColumnKey extends string>({
 
   const allTableClasses = joinTailwindClasses("grid text-table text-gray-700 leading-5 cursor-default", tableClasses);
   const gridTemplateColumns = columns.map((column) => `${column.fraction || 1}fr`).join(" ");
-  const commonCellClasses = "px-4 py-3 not-first:border-l border-gray-300";
+  const commonCellClasses = "px-3 py-2 not-first:border-l border-gray-300";
 
   return (
     <div className="bg-white border border-gray-300 rounded-md overflow-x-auto">

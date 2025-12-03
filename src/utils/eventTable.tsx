@@ -7,13 +7,16 @@ import { Badge } from "@/components/atoms/label/Badge";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Popover } from "@/components/atoms/popover/Popover";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
+import { ARROW_UP_RIGHT } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { getLanguage } from "@/helpers/getLanguage";
 import { getMainDocuments } from "@/helpers/getMainDocuments";
 import {
   IFamilyDocumentTopics,
   TFamilyDocumentPublic,
   TFamilyEventPublic,
   TFamilyPublic,
+  TLanguages,
   TLoadingStatus,
   TMatchedFamily,
   TTableColumn,
@@ -28,7 +31,7 @@ import { formatDateShort } from "./timedate";
 
 /* Columns */
 
-export type TEventTableColumnId = "action" | "caseNumber" | "caseTitle" | "court" | "date" | "document" | "summary" | "title" | "topics" | "type";
+export type TEventTableColumnId = "caseNumber" | "caseTitle" | "court" | "date" | "searchResults" | "document" | "topics" | "type";
 export type TEventTableColumn = TTableColumn<TEventTableColumnId>;
 
 const topicsColumnName = (
@@ -57,6 +60,7 @@ export const getEventTableColumns = ({
   isLitigation,
   isUSA = true,
   showFamilyColumns = false,
+  showMatches = false,
 }: {
   hasTopics?: boolean;
   isLitigation: boolean;
@@ -65,28 +69,25 @@ export const getEventTableColumns = ({
   showMatches?: boolean;
 }) => {
   const columns: TEventTableColumn[] = [
-    { id: "title", fraction: 4 },
     { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
+    { id: "document", fraction: 6, classes: "pb-6" },
     { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 2 },
-    { id: "topics", name: topicsColumnName, fraction: isLitigation ? 8 : 3 },
-    { id: "action", name: "Action Taken", fraction: 4 },
-    { id: "summary", fraction: 6, classes: "min-w-75" },
+    { id: "topics", name: topicsColumnName, fraction: 4 },
     { id: "caseNumber", name: "Case Number", fraction: 2 },
     { id: "court" },
     { id: "caseTitle", name: "Case", fraction: 2 },
-    { id: "document", fraction: 2 },
+    { id: "searchResults", name: "Search results", fraction: 2 },
   ];
 
+  // Remove columns based on context of the document or family
   const columnsToRemove: TEventTableColumnId[] = [];
   if (!hasTopics) columnsToRemove.push("topics");
-  if (!isUSA) columnsToRemove.push("action");
   if (!showFamilyColumns) columnsToRemove.push("caseNumber", "court", "caseTitle");
 
-  if (isLitigation) {
-    columnsToRemove.push("title");
-  } else {
-    columnsToRemove.push("date", "type", "action", "summary");
+  if (!isLitigation) {
+    columnsToRemove.push("date", "type");
   }
+  if (!showMatches) columnsToRemove.push("searchResults");
 
   return columns.filter((column) => !columnsToRemove.includes(column.id));
 };
@@ -127,6 +128,68 @@ const getFamilyEvents = (family: TFamilyPublic): TEventRowData[] =>
 
 const getFamilyDocuments = (family: TFamilyPublic): TEventRowData[] => family.documents.map((document) => ({ family, document }));
 
+const linkClasses = "block text-brand underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
+
+const getDocumentLink = (document: TFamilyDocumentPublic, hasMatches: boolean, isMainDocument: boolean, isLitigation: boolean): React.ReactNode => {
+  const canPreview = hasMatches || (!!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf"));
+  const canViewSource = !canPreview && !!document.source_url;
+
+  if (canPreview)
+    return (
+      <PageLink
+        keepQuery
+        href={`/documents/${document.slug}`}
+        className={joinTailwindClasses(linkClasses, (isMainDocument || isLitigation) && "font-medium")}
+      >
+        {document.title}
+      </PageLink>
+    );
+  if (canViewSource)
+    return (
+      <PageLink external href={document.source_url} className={joinTailwindClasses(linkClasses, (isMainDocument || isLitigation) && "font-medium")}>
+        {document.title} (External page {ARROW_UP_RIGHT})
+      </PageLink>
+    );
+  return null;
+};
+
+const getDocumentCell = (
+  isLitigation: boolean,
+  document: TFamilyDocumentPublic,
+  isMainDocument: boolean,
+  languages: TLanguages,
+  hasMatches: boolean,
+  event?: TFamilyEventPublic
+): ReactNode => {
+  return (
+    <div className="flex flex-col gap-2">
+      {isLitigation && (
+        <>
+          <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation)}</div>
+          {event?.metadata.action_taken?.[0] && <div className="italic">{event.metadata.action_taken[0]}</div>}
+          {event?.metadata.description?.[0] && <ViewMore maxLines={4}>{event.metadata.description[0]}</ViewMore>}
+        </>
+      )}
+      {!isLitigation && (
+        <>
+          <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation)}</div>
+          {document.document_role && (
+            <span className={`${document.document_role.toLowerCase().includes("main") ? "font-medium" : ""}`}>
+              {firstCase(document.document_role.toLowerCase()) + (document.document_role.toLowerCase().includes("main") ? " document" : "")}
+            </span>
+          )}
+          {document.document_type && <div className="italic">{document.document_type}</div>}
+          {document.language && (
+            <div>
+              {getLanguage(document.language, languages)} {document.variant && `(${document.variant})`}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
 export const getEventTableRows = ({
   families,
   familyTopics,
@@ -134,6 +197,8 @@ export const getEventTableRows = ({
   matchesFamily,
   matchesStatus = "success",
   language,
+  languages,
+  isLitigation,
 }: {
   families: TFamilyPublic[];
   familyTopics?: IFamilyDocumentTopics;
@@ -141,15 +206,14 @@ export const getEventTableRows = ({
   matchesFamily?: TMatchedFamily;
   matchesStatus?: TLoadingStatus;
   language?: string;
+  languages?: TLanguages;
+  isLitigation: boolean;
 }): TEventTableRow[] => {
   const rows: TEventTableRow[] = [];
   const topicsData = familyTopics ? Object.values(familyTopics.conceptsGrouped).flat() : [];
 
   // Populate rows of data differently for litigation where we have events on documents to pull from
-
-  const eventRowsData = families.map(getFamilyEvents).flat();
-  const documentRowsData = families.map(getFamilyDocuments).flat();
-  const rowsData = families[0].corpus_type_name === "Litigation" ? eventRowsData : documentRowsData;
+  const rowsData = isLitigation ? families.map(getFamilyEvents).flat() : families.map(getFamilyDocuments).flat();
 
   rowsData.forEach(({ family, event, document }, rowIndex) => {
     if (documentEventsOnly && !document) return;
@@ -159,8 +223,6 @@ export const getEventTableRows = ({
 
     const [mainDocuments] = getMainDocuments(family.documents);
     const isMainDocument = Boolean(document && mainDocuments.find((mainDocument) => mainDocument.slug === document.slug));
-
-    const linkClasses = "block text-gray-700 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
 
     /* Topics */
 
@@ -200,7 +262,7 @@ export const getEventTableRows = ({
                 role="link"
                 className="p-2 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
               >
-                View all topic mentions
+                + {sortedTopics.length - MAX_TOPICS_PER_DOCUMENT} more
               </button>
             </PageLink>
           )}
@@ -232,9 +294,8 @@ export const getEventTableRows = ({
     /* Everything else */
 
     rows.push({
-      id: [family.import_id, rowIndex].join("/"),
+      id: document ? document.import_id : event.import_id,
       cells: {
-        action: event?.metadata.action_taken?.[0] || null,
         caseNumber: getCaseNumbers(family),
         caseTitle: family.title,
         court: getCourts(family),
@@ -244,22 +305,20 @@ export const getEventTableRows = ({
               value: date.getTime(),
             }
           : null,
+        searchResults:
+          document && matchesDisplay
+            ? {
+                // TODO: improve the messaging here to include context about the search
+                // import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
+                label: <div className="flex flex-col gap-2 items-start">{matchesDisplay}</div>,
+                value: `${document.slug}:${matches}`,
+              }
+            : null,
         document: document
           ? {
-              label: (
-                <div className="flex flex-col gap-2 items-start">
-                  <PageLink keepQuery href={`/documents/${document.slug}`} className={linkClasses}>
-                    View
-                  </PageLink>
-                  {matchesDisplay}
-                </div>
-              ),
-              value: `${document.slug}:${matches}`,
+              label: getDocumentCell(isLitigation, document, isMainDocument, languages, matches > 0, event),
+              value: isMainDocument,
             }
-          : null,
-        summary: summary ? { label: <ViewMore maxLines={4}>{summary}</ViewMore>, value: summary } : null,
-        title: document
-          ? { label: <span className={joinTailwindClasses(isMainDocument && "font-medium")}>{document.title}</span>, value: isMainDocument }
           : null,
         topics: { label: topicsDisplay, value: "" },
         type: event?.event_type || null,

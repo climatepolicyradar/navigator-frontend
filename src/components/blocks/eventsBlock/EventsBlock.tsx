@@ -16,7 +16,7 @@ export const EventsBlock = ({ families }: IProps) => {
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
   const tableColumns = getEventTableColumns({ isLitigation: true, showFamilyColumns: true });
-  const tableRows = getEventTableRows({ families });
+  const tableRows = getEventTableRows({ families, isLitigation: true });
   const entriesToHide = tableRows.length > MAX_ENTRIES_SHOWN;
 
   const toggleShowAll = () => {
@@ -26,7 +26,7 @@ export const EventsBlock = ({ families }: IProps) => {
   useEffect(() => {
     const language = navigator?.language;
 
-    setUpdatedRowsWithLocalisedDates(getEventTableRows({ families, language }));
+    setUpdatedRowsWithLocalisedDates(getEventTableRows({ families, language, isLitigation: true }));
   }, [families]);
 
   return (
