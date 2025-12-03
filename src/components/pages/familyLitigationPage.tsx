@@ -52,8 +52,6 @@ export const FamilyLitigationPage = ({
   const [documentDrawerId, setDocumentDrawerId] = useState<string | null>(null);
   const [showDocumentDrawer, setShowDocumentDrawer] = useState(false); // Separate state so that document in drawer persists while closing
 
-  const drawerDocument = family.documents.find((doc) => doc.import_id === documentDrawerId);
-
   const openDocumentDrawer = (importId: string) => {
     setDocumentDrawerId(importId);
     setShowDocumentDrawer(true);
@@ -168,7 +166,7 @@ export const FamilyLitigationPage = ({
       />
       <PageHeader title={family.title} metadata={pageHeaderMetadata} />
       <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
-      <DocumentDrawer document={drawerDocument} open={showDocumentDrawer} onOpenChange={onDocumentDrawerOpenChange} />
+      <DocumentDrawer family={family} documentImportId={documentDrawerId} open={showDocumentDrawer} onOpenChange={onDocumentDrawerOpenChange} />
       <Head>
         <script
           type="application/ld+json"

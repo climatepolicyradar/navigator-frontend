@@ -4,6 +4,7 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IViewMoreGenericProps {
   buttonText?: [string, string];
+  debug?: boolean;
   onButtonClick?: () => void;
   containerClasses?: string;
 }
@@ -28,6 +29,7 @@ export const ViewMore = ({
   buttonText = ["View more", "View less"],
   children,
   containerClasses = "",
+  debug = false,
   maxHeight = 150,
   maxLines,
   onButtonClick,
@@ -53,7 +55,11 @@ export const ViewMore = ({
     onButtonClick ? onButtonClick() : setIsOpen((isOpenCurrent) => !isOpenCurrent);
   };
 
-  const contentClasses = joinTailwindClasses(!isOpen && "overflow-hidden", !isOpen && isText && "line-clamp-4");
+  const contentClasses = joinTailwindClasses(
+    !isOpen && "overflow-hidden",
+    !isOpen && isText && "line-clamp-4",
+    debug && (isText ? "bg-cyan-100" : "bg-amber-100")
+  );
   const contentStyles = {
     WebkitLineClamp: !isOpen && isText ? maxLines : undefined,
     maxHeight: !isOpen && !isText ? maxHeight : undefined,

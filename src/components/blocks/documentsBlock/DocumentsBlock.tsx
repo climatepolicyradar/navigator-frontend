@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Section } from "@/components/molecules/section/Section";
 import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
@@ -13,7 +13,7 @@ interface IProps {
   familyTopics?: IFamilyDocumentTopics;
   matchesFamily?: TMatchedFamily; // The relevant search result family
   matchesStatus?: TLoadingStatus; // The status of the search
-  onClickRow: (importId: string) => void;
+  onClickRow: (rowData: string) => void;
   showKnowledgeGraphTutorial: boolean;
   showMatches?: boolean; // Whether to show matches from the search result
 }

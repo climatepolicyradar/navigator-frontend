@@ -111,7 +111,7 @@ export const getCourts = (family: TFamilyPublic): string | null =>
     .join(", ") || null;
 
 // Events can be duplicated between the family and document event lists. Use object keys to overwrite the former with the latter.
-const getFamilyEvents = (family: TFamilyPublic): TEventRowData[] =>
+export const getFamilyEvents = (family: TFamilyPublic): TEventRowData[] =>
   Object.values(
     Object.fromEntries(
       (

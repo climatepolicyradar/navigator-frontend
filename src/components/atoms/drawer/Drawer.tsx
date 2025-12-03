@@ -22,7 +22,7 @@ export const Drawer = ({ children, direction = "right", title, trigger, ...rootP
       <VaulDrawer.Portal>
         <VaulDrawer.Overlay className="fixed inset-0 bg-black/40" />
         <VaulDrawer.Content className={contentClasses}>
-          <VaulDrawer.Title className="text-2xl text-gray-950 font-heavy leading-7 mb-4">{title}</VaulDrawer.Title>
+          <VaulDrawer.Title className="text-2xl text-gray-950 font-heavy leading-7 mb-6">{title}</VaulDrawer.Title>
           <VaulDrawer.Description asChild>
             <div>{children}</div>
           </VaulDrawer.Description>
