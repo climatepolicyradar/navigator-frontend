@@ -23,12 +23,6 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFami
     value: year || EN_DASH,
   });
 
-  /* Document Type */
-  metadata.push({
-    label: "Type",
-    value: document_type || EN_DASH,
-  });
-
   /* Geography */
   if (family.geographies.length > 0) {
     metadata.push({
