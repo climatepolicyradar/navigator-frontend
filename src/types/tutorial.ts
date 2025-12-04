@@ -4,14 +4,13 @@ import { TButtonColor, TButtonVariant } from "@/components/atoms/button/Button";
 
 import { TFeatureFlags } from "./features";
 import { TThemeConfig } from "./themeConfig";
-import { TTheme } from "./types";
 
 export const TUTORIAL_NAMES = ["knowledgeGraph", "climateLitigationDatabase"] as const;
 export type TTutorialName = (typeof TUTORIAL_NAMES)[number];
 
 export type TTutorialButtonAction = "dismiss" | "showModal";
 
-export type TTutorialButton = {
+type TTutorialButton = {
   text: string;
   action: TTutorialButtonAction;
   color?: TButtonColor;
@@ -42,7 +41,7 @@ export type TTutorialModal = {
   buttonSecondary?: TTutorialButton;
 };
 
-export type TTutorial = {
+type TTutorial = {
   isEnabled: (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) => boolean;
   banner?: TTutorialBanner;
   card?: TTutorialCard;

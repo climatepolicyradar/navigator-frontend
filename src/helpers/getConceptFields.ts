@@ -10,7 +10,3 @@ const findConceptObject = (conceptSearch: string, dataSet: TConcept[]) => {
 export const getConceptName = (conceptSearch: string, dataSet: TConcept[]) => {
   return findConceptObject(conceptSearch, dataSet)?.preferred_label;
 };
-
-export const getConceptId = (conceptSearch: string, dataSet: TConcept[]) => {
-  return findConceptObject(conceptSearch, dataSet)?.wikibase_id;
-};

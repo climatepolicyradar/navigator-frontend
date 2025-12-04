@@ -7,7 +7,7 @@ import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";
 
 import { Input } from "@/components/atoms/input/Input";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { systemGeoCodes } from "@/constants/systemGeos";
+import { SYSTEM_GEO_CODES } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 
@@ -71,7 +71,7 @@ export const NavSearch = () => {
     return sortBy(
       geographies.filter(
         (geography) =>
-          !systemGeoCodes.includes(geography.slug) &&
+          !SYSTEM_GEO_CODES.includes(geography.slug) &&
           (geography.display_value.toLowerCase().includes(searchText.toLowerCase()) ||
             searchText.toLowerCase().includes(geography.display_value.toLowerCase()))
       ),

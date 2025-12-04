@@ -9,7 +9,7 @@ export type TLinkItem = {
   external: boolean;
 };
 
-const navLinks: TFooterItem = {
+export const NAV_LINKS: TFooterItem = {
   title: "Grantham Research Institute",
   links: [
     {
@@ -44,5 +44,3 @@ const navLinks: TFooterItem = {
     },
   ],
 };
-
-export default navLinks;
