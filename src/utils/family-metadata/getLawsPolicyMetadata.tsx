@@ -47,12 +47,12 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFami
   }
 
   /* Metadata */
-  family.metadata?.topic &&
+  family.metadata?.topic?.length &&
     metadata.push({
       label: "Response areas",
       value: family.metadata.topic.join(", "),
     });
-  family.metadata?.sector &&
+  family.metadata?.sector?.length &&
     metadata.push({
       label: "Sectors",
       value: family.metadata.sector.join(", "),
