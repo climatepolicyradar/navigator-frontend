@@ -4,7 +4,7 @@ import { Section } from "@/components/molecules/section/Section";
 import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { TUTORIALS } from "@/constants/tutorials";
-import { IFamilyDocumentTopics, TFamilyPublic, TLoadingStatus, TMatchedFamily } from "@/types";
+import { IFamilyDocumentTopics, TFamilyPublic, TLanguages, TLoadingStatus, TMatchedFamily } from "@/types";
 import { getEventTableColumns, getEventTableRows, TEventTableColumnId, TEventTableRow } from "@/utils/eventTable";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
@@ -16,6 +16,7 @@ interface IProps {
   onClickRow: (rowData: string) => void;
   showKnowledgeGraphTutorial: boolean;
   showMatches?: boolean; // Whether to show matches from the search result
+  languages: TLanguages;
 }
 
 export const DocumentsBlock = ({
@@ -23,9 +24,9 @@ export const DocumentsBlock = ({
   familyTopics,
   matchesFamily,
   matchesStatus,
-  onClickRow,
   showKnowledgeGraphTutorial,
   showMatches = false,
+  languages,
 }: IProps) => {
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
@@ -37,16 +38,8 @@ export const DocumentsBlock = ({
     [familyTopics, isLitigation, isUSA, showMatches]
   );
   const tableRows = useMemo(
-    () =>
-      getEventTableRows({
-        documentEventsOnly: true,
-        documentRowClick: (rowId) => onClickRow(rowId),
-        families: [family],
-        familyTopics,
-        matchesFamily,
-        matchesStatus,
-      }),
-    [family, familyTopics, matchesFamily, matchesStatus, onClickRow]
+    () => getEventTableRows({ families: [family], familyTopics, documentEventsOnly: true, matchesFamily, matchesStatus, languages, isLitigation }),
+    [family, familyTopics, matchesFamily, matchesStatus, languages, isLitigation]
   );
 
   // If the case is new, there can be one placeholder document with no events. Handle this interim state
@@ -56,16 +49,17 @@ export const DocumentsBlock = ({
     const language = navigator?.language;
     setUpdatedRowsWithLocalisedDates(
       getEventTableRows({
-        documentEventsOnly: true,
-        documentRowClick: (rowId) => onClickRow(rowId),
         families: [family],
         familyTopics,
         language,
+        documentEventsOnly: true,
         matchesFamily,
         matchesStatus,
+        languages,
+        isLitigation,
       })
     );
-  }, [family, familyTopics, matchesFamily, matchesStatus, onClickRow]);
+  }, [family, familyTopics, matchesFamily, matchesStatus, languages, isLitigation]);
 
   return (
     <Section block="documents" title="Documents" wide>
@@ -78,7 +72,7 @@ export const DocumentsBlock = ({
           <InteractiveTable<TEventTableColumnId>
             columns={tableColumns}
             rows={updatedRowsWithLocalisedDates || tableRows}
-            defaultSort={{ column: isLitigation ? "date" : "title", order: "desc" }}
+            defaultSort={{ column: isLitigation ? "date" : "document", order: "desc" }}
             tableClasses={isLitigation ? "min-w-250" : "min-w-200"}
           />
         )}

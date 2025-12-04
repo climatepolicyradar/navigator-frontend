@@ -152,7 +152,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   const { currentSlideOut, setCurrentSlideOut } = useHashNavigation();
   const { status, families, hits, continuationToken, searchQuery } = useSearch(router.query);
-  const { getText } = useText();
+  const { getAppText } = useText();
 
   const configQuery = useConfig();
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
@@ -444,7 +444,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   const groupedFamilyConcepts = familyConceptsData ? Object.groupBy(familyConceptsData, (familyConcept) => familyConcept.type) : undefined;
 
   const displayHits = hits || 0;
-  const searchResultItemName = pluralise(displayHits, [getText("searchResultItemSingular"), getText("searchResultItemPlural")]);
+  const searchResultItemName = pluralise(displayHits, [getAppText("searchResultItemSingular"), getAppText("searchResultItemPlural")]);
 
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
@@ -740,7 +740,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                               <Warning variant="info" hideableId="search-onboarding-info">
                                 <p className="font-semibold text-text-brand">Get better results</p>
                                 <p>
-                                  {getText("searchOnboarding")}
+                                  {getAppText("searchOnboarding")}
                                   {isKnowledgeGraphEnabled(featureFlags, themeConfig) && (
                                     <>
                                       {" "}

@@ -2,7 +2,6 @@ import { useContext, useState } from "react";
 
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Section } from "@/components/molecules/section/Section";
-import { MIDDOT } from "@/constants/chars";
 import { ThemeContext } from "@/context/ThemeContext";
 import { TTarget } from "@/types";
 
@@ -46,9 +45,9 @@ export const TargetsBlock = ({ targets }: IProps) => {
           return (
             <PageLink key={target.ID} href={`${linkDomain}/document/${target["family-slug"]}`} className="group">
               <h3 className="text-gray-950 font-medium" dangerouslySetInnerHTML={{ __html: target.Description }} />
-              <span className="block">{getMetadata(target).join(` ${MIDDOT} `)}</span>
+              <span className="block text-sm">{getMetadata(target).join(`, `)}</span>
               {showSourceLink(target) && (
-                <span className="block">
+                <span className="block text-sm">
                   Source:{" "}
                   <span className="underline underline-offset-4 decoration-gray-300 group-hover:decoration-gray-500">{target["family-name"]}</span>
                 </span>

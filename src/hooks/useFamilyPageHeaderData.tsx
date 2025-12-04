@@ -7,6 +7,7 @@ import { GeographyLink, IProps as GeographyLinkProps } from "@/components/molecu
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
+import { useText } from "@/hooks/useText";
 import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
 import { scrollToBlock } from "@/utils/blocks/scrollToBlock";
 import { isSystemGeo } from "@/utils/isSystemGeo";
@@ -28,12 +29,15 @@ type FamilyPageHeaderData = {
   breadcrumbParentGeography: TBreadcrumbLink | null;
 };
 
-export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IProps): FamilyPageHeaderData =>
-  useMemo(() => {
-    /* Misc */
+export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IProps): FamilyPageHeaderData => {
+  const { getCategoryTextLookup } = useText();
+  const getCategoryText = getCategoryTextLookup(family.category);
 
+  return useMemo(() => {
+    /* Misc */
     const categoryName = getCategoryName(family.category, family.corpus_type_name, family.organisation);
     const [year] = convertDate(family.published_date);
+    const isLitigation = family.corpus_type_name === "Litigation";
 
     /* Geographies data */
 
@@ -119,7 +123,7 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
         label: "Geography",
         value: geographiesNode,
       },
-      { label: "Date", value: isNaN(year) ? "" : year },
+      { label: `${getCategoryText("familyDate")}`, value: isNaN(year) ? "" : year },
       {
         label: "Document type",
         value: categoryName,
@@ -128,14 +132,30 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
     if (family.collections.length) {
       pageHeaderMetadata.push({
         label: "Part of",
-        value: joinNodes(
-          family.collections.map((collection) => (
-            <PageLink key={collection.import_id} keepQuery href={`/collections/${collection.slug}`} className="hover:underline">
-              {collection.title}
-            </PageLink>
-          )),
-          ", "
-        ),
+        value: isLitigation
+          ? // litigation collections links
+            joinNodes(
+              family.collections.map((collection) => (
+                <PageLink key={collection.import_id} keepQuery href={`/collections/${collection.slug}`} className="hover:underline">
+                  {collection.title}
+                </PageLink>
+              )),
+              ", "
+            )
+          : // non-litigation collections scroll to block
+            joinNodes(
+              family.collections.map((collection) => (
+                <button
+                  key={collection.import_id}
+                  role="button"
+                  className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+                  onClick={scrollToBlock("collections")}
+                >
+                  {collection.title}
+                </button>
+              )),
+              ", "
+            ),
       });
     }
 
@@ -144,4 +164,5 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
       breadcrumbGeography,
       breadcrumbParentGeography,
     };
-  }, [countries, family, subdivisions]);
+  }, [countries, family, subdivisions, getCategoryText]);
+};

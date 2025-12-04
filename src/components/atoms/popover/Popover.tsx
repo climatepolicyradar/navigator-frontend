@@ -47,7 +47,7 @@ export const Popover = ({ children, description, link, onOpenChange, openOnHover
     <BasePopover.Root openOnHover={openOnHover} onOpenChangeComplete={onOpenChange}>
       <BasePopover.Trigger render={trigger} />
       <BasePopover.Portal>
-        <BasePopover.Positioner positionMethod="fixed" sideOffset={8} className="z-[50]">
+        <BasePopover.Positioner positionMethod="fixed" sideOffset={8} className="z-50">
           <BasePopover.Popup className={allPopupClasses}>
             <BasePopover.Arrow className="flex -top-2">
               <BaseUIArrow fill="fill-white" stroke="fill-gray-300" />

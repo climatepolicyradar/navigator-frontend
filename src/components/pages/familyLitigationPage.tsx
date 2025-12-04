@@ -7,6 +7,7 @@ import { CollectionsBlock } from "@/components/blocks/collectionsBlock/Collectio
 import { DocumentsBlock } from "@/components/blocks/documentsBlock/DocumentsBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { NoteBlock } from "@/components/blocks/noteBlock/NoteBlock";
+import { TargetsBlock } from "@/components/blocks/targetsBlock/TargetsBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
@@ -18,6 +19,7 @@ import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TutorialContext } from "@/context/TutorialContext";
+import useConfig from "@/hooks/useConfig";
 import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
@@ -26,6 +28,7 @@ import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
 import { pluralise } from "@/utils/pluralise";
+import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
@@ -38,12 +41,16 @@ export const FamilyLitigationPage = ({
   family,
   familyTopics,
   featureFlags,
+  targets,
   subdivisions,
   theme,
   themeConfig,
 }: IProps) => {
+  const configQuery = useConfig();
+  const { data: { languages = {} } = {} } = configQuery;
   const { completedTutorials } = useContext(TutorialContext);
-  const { getText } = useText();
+  const { getCategoryTextLookup } = useText();
+  const getCategoryText = getCategoryTextLookup(family.category);
 
   const showKnowledgeGraphTutorial = getIncompleteTutorialNames(completedTutorials, themeConfig, featureFlags).includes("knowledgeGraph");
 
@@ -112,9 +119,10 @@ export const FamilyLitigationPage = ({
             onClickRow={openDocumentDrawer}
             showKnowledgeGraphTutorial={showKnowledgeGraphTutorial}
             showMatches={hasSearch}
+            languages={languages}
           />
         ),
-        [family, familyTopics, hasSearch, matchesFamily, matchesStatus, showKnowledgeGraphTutorial]
+        [family, familyTopics, hasSearch, matchesFamily, matchesStatus, showKnowledgeGraphTutorial, languages]
       ),
     },
     metadata: {
@@ -122,8 +130,8 @@ export const FamilyLitigationPage = ({
         const metadata = getFamilyMetadata(family, familyTopics, countries, subdivisions);
         if (metadata.length === 0) return null;
 
-        return <MetadataBlock key="metadata" block="metadata" title={`About this ${getText("familySingular")}`} metadata={metadata} />;
-      }, [countries, family, familyTopics, subdivisions, getText]),
+        return <MetadataBlock key="metadata" block="metadata" title={`About this ${getCategoryText("familySingular")}`} metadata={metadata} />;
+      }, [countries, family, familyTopics, subdivisions, getCategoryText]),
       sideBarItem: { display: "About" },
     },
     note: {
@@ -143,8 +151,14 @@ export const FamilyLitigationPage = ({
     topics: {
       render: useCallback(() => {
         if (!familyTopicsHasTopics(familyTopics)) return null;
-        return <TopicsBlock key="topics" familyTopics={familyTopics} />;
-      }, [familyTopics]),
+        return <TopicsBlock key="topics" familyTopics={familyTopics} getCategoryText={getCategoryText} />;
+      }, [familyTopics, getCategoryText]),
+    },
+    targets: {
+      render: useCallback(() => {
+        const publishedTargets = sortFilterTargets(targets);
+        return <TargetsBlock key="targets" targets={publishedTargets} />;
+      }, [targets]),
     },
   };
 
