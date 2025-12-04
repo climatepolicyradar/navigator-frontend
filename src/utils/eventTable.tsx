@@ -167,7 +167,11 @@ const getDocumentCell = (
         <>
           <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation)}</div>
           {event?.metadata.action_taken?.[0] && <div className="italic">{event.metadata.action_taken[0]}</div>}
-          {event?.metadata.description?.[0] && <ViewMore maxLines={4}>{event.metadata.description[0]}</ViewMore>}
+          {event?.metadata.description?.[0] && (
+            <ViewMore maxLines={4} onButtonClick={() => {}}>
+              {event.metadata.description[0]}
+            </ViewMore>
+          )}
         </>
       )}
       {!isLitigation && (
@@ -217,11 +221,10 @@ export const getEventTableRows = ({
   // Populate rows of data differently for litigation where we have events on documents to pull from
   const rowsData = isLitigation ? families.map(getFamilyEvents).flat() : families.map(getFamilyDocuments).flat();
 
-  rowsData.forEach(({ family, event, document }, rowIndex) => {
+  rowsData.forEach(({ family, event, document }) => {
     if (documentEventsOnly && !document) return;
 
     const date = event ? new Date(event.date) : null;
-    const summary = event?.metadata.description?.[0] || null;
 
     const [mainDocuments] = getMainDocuments(family.documents);
     const isMainDocument = Boolean(document && mainDocuments.find((mainDocument) => mainDocument.slug === document.slug));

@@ -11,22 +11,23 @@ import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 interface IProps {
   family: TFamilyPublic;
   familyTopics?: IFamilyDocumentTopics;
+  languages: TLanguages;
   matchesFamily?: TMatchedFamily; // The relevant search result family
   matchesStatus?: TLoadingStatus; // The status of the search
   onClickRow: (rowData: string) => void;
   showKnowledgeGraphTutorial: boolean;
   showMatches?: boolean; // Whether to show matches from the search result
-  languages: TLanguages;
 }
 
 export const DocumentsBlock = ({
   family,
   familyTopics,
+  languages,
   matchesFamily,
   matchesStatus,
+  onClickRow,
   showKnowledgeGraphTutorial,
   showMatches = false,
-  languages,
 }: IProps) => {
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
 
@@ -38,8 +39,18 @@ export const DocumentsBlock = ({
     [familyTopics, isLitigation, isUSA, showMatches]
   );
   const tableRows = useMemo(
-    () => getEventTableRows({ families: [family], familyTopics, documentEventsOnly: true, matchesFamily, matchesStatus, languages, isLitigation }),
-    [family, familyTopics, matchesFamily, matchesStatus, languages, isLitigation]
+    () =>
+      getEventTableRows({
+        documentEventsOnly: true,
+        documentRowClick: (rowId) => onClickRow(rowId),
+        families: [family],
+        familyTopics,
+        isLitigation,
+        languages,
+        matchesFamily,
+        matchesStatus,
+      }),
+    [family, familyTopics, isLitigation, languages, matchesFamily, matchesStatus, onClickRow]
   );
 
   // If the case is new, there can be one placeholder document with no events. Handle this interim state
@@ -49,17 +60,18 @@ export const DocumentsBlock = ({
     const language = navigator?.language;
     setUpdatedRowsWithLocalisedDates(
       getEventTableRows({
+        documentEventsOnly: true,
+        documentRowClick: (rowId) => onClickRow(rowId),
         families: [family],
         familyTopics,
+        isLitigation,
         language,
-        documentEventsOnly: true,
+        languages,
         matchesFamily,
         matchesStatus,
-        languages,
-        isLitigation,
       })
     );
-  }, [family, familyTopics, matchesFamily, matchesStatus, languages, isLitigation]);
+  }, [family, familyTopics, isLitigation, languages, matchesFamily, matchesStatus, onClickRow]);
 
   return (
     <Section block="documents" title="Documents" wide>
