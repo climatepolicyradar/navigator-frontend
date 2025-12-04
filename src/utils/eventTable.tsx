@@ -230,7 +230,6 @@ export const getEventTableRows = ({
     if (documentEventsOnly && !document) return;
 
     const date = event ? new Date(event.date) : null;
-    const summary = event?.metadata.description?.[0] || null;
 
     const [mainDocuments] = getMainDocuments(family.documents);
     const isMainDocument = Boolean(document && mainDocuments.find((mainDocument) => mainDocument.slug === document.slug));
