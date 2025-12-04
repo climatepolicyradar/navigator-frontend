@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 
 import { Debug } from "@/components/atoms/debug/Debug";
 import { CollectionsBlock } from "@/components/blocks/collectionsBlock/CollectionsBlock";
@@ -11,6 +11,7 @@ import { TargetsBlock } from "@/components/blocks/targetsBlock/TargetsBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { TopicsBlock } from "@/components/blocks/topicsBlock/TopicsBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import { DocumentDrawer } from "@/components/drawers/documentDrawer/DocumentDrawer";
 import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
@@ -52,6 +53,20 @@ export const FamilyLitigationPage = ({
   const getCategoryText = getCategoryTextLookup(family.category);
 
   const showKnowledgeGraphTutorial = getIncompleteTutorialNames(completedTutorials, themeConfig, featureFlags).includes("knowledgeGraph");
+
+  /* Drawers */
+
+  const [documentDrawerId, setDocumentDrawerId] = useState<string | null>(null);
+  const [showDocumentDrawer, setShowDocumentDrawer] = useState(false); // Separate state so that document in drawer persists while closing
+
+  const openDocumentDrawer = (importId: string) => {
+    setDocumentDrawerId(importId);
+    setShowDocumentDrawer(true);
+  };
+
+  const onDocumentDrawerOpenChange = (open: boolean) => {
+    if (!open) setShowDocumentDrawer(false);
+  };
 
   /* Search matches */
 
@@ -101,8 +116,9 @@ export const FamilyLitigationPage = ({
             familyTopics={familyTopics}
             matchesFamily={matchesFamily}
             matchesStatus={matchesStatus}
-            showMatches={hasSearch}
+            onClickRow={openDocumentDrawer}
             showKnowledgeGraphTutorial={showKnowledgeGraphTutorial}
+            showMatches={hasSearch}
             languages={languages}
           />
         ),
@@ -164,6 +180,14 @@ export const FamilyLitigationPage = ({
       />
       <PageHeader title={family.title} metadata={pageHeaderMetadata} />
       <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
+      <DocumentDrawer
+        documentImportId={documentDrawerId}
+        family={family}
+        familyTopics={familyTopics}
+        languages={languages}
+        onOpenChange={onDocumentDrawerOpenChange}
+        open={showDocumentDrawer}
+      />
       <Head>
         <script
           type="application/ld+json"

@@ -14,8 +14,8 @@ import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
 import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
-import Drawer from "@/components/drawer/Drawer";
 import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
+import Slideout from "@/components/drawer/Slideout";
 import SearchFilters from "@/components/filters/SearchFilters";
 import { SearchSettings } from "@/components/filters/SearchSettings";
 import Layout from "@/components/layouts/Main";
@@ -787,9 +787,9 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 </div>
               </MultiCol>
             </section>
-            <Drawer show={drawerFamily !== false} setShow={setDrawerFamily}>
+            <Slideout show={drawerFamily !== false} setShow={setDrawerFamily}>
               <FamilyMatchesDrawer family={drawerFamily !== false && families[drawerFamily as number]} />
-            </Drawer>
+            </Slideout>
             <DownloadCsvPopup isOpen={showCSVDownloadPopup} onClose={() => setShowCSVDownloadPopup(false)} onDownload={handleDownloadCsvClick} />
           </WikiBaseConceptsContext.Provider>
         </SlideOutContext.Provider>

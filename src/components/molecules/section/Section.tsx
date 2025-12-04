@@ -1,7 +1,7 @@
 import { LucideIcon } from "lucide-react";
 import { ReactNode } from "react";
 
-import { Badge } from "@/components/atoms/label/Badge";
+import { Badge } from "@/components/atoms/badge/Badge";
 import { TBlock } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 

@@ -6,7 +6,7 @@ import { useEffect, useState, useContext } from "react";
 import Loader from "@/components/Loader";
 import { Accordion } from "@/components/accordion/Accordion";
 import { Heading } from "@/components/accordion/Heading";
-import { Badge } from "@/components/atoms/label/Badge";
+import { Badge } from "@/components/atoms/badge/Badge";
 import { AppliedFilters } from "@/components/filters/AppliedFilters";
 import { DateRange } from "@/components/filters/DateRange";
 import { FilterOptions } from "@/components/filters/FilterOptions";

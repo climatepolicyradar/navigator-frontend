@@ -2,8 +2,8 @@ import orderBy from "lodash/orderBy";
 import { LucideInfo } from "lucide-react";
 import { ReactNode } from "react";
 
+import { Badge } from "@/components/atoms/badge/Badge";
 import { Icon } from "@/components/atoms/icon/Icon";
-import { Badge } from "@/components/atoms/label/Badge";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Popover } from "@/components/atoms/popover/Popover";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
@@ -112,7 +112,7 @@ export const getCourts = (family: TFamilyPublic): string | null =>
     .join(", ") || null;
 
 // Events can be duplicated between the family and document event lists. Use object keys to overwrite the former with the latter.
-const getFamilyEvents = (family: TFamilyPublic): TEventRowData[] =>
+export const getFamilyEvents = (family: TFamilyPublic): TEventRowData[] =>
   Object.values(
     Object.fromEntries(
       (
@@ -167,7 +167,11 @@ const getDocumentCell = (
         <>
           <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation)}</div>
           {event?.metadata.action_taken?.[0] && <div className="italic">{event.metadata.action_taken[0]}</div>}
-          {event?.metadata.description?.[0] && <ViewMore maxLines={4}>{event.metadata.description[0]}</ViewMore>}
+          {event?.metadata.description?.[0] && (
+            <ViewMore maxLines={4} onButtonClick={() => {}}>
+              {event.metadata.description[0]}
+            </ViewMore>
+          )}
         </>
       )}
       {!isLitigation && (
@@ -194,6 +198,7 @@ export const getEventTableRows = ({
   families,
   familyTopics,
   documentEventsOnly = false,
+  documentRowClick,
   matchesFamily,
   matchesStatus = "success",
   language,
@@ -203,6 +208,7 @@ export const getEventTableRows = ({
   families: TFamilyPublic[];
   familyTopics?: IFamilyDocumentTopics;
   documentEventsOnly?: boolean;
+  documentRowClick?: (rowId: string) => void;
   matchesFamily?: TMatchedFamily;
   matchesStatus?: TLoadingStatus;
   language?: string;
@@ -215,11 +221,10 @@ export const getEventTableRows = ({
   // Populate rows of data differently for litigation where we have events on documents to pull from
   const rowsData = isLitigation ? families.map(getFamilyEvents).flat() : families.map(getFamilyDocuments).flat();
 
-  rowsData.forEach(({ family, event, document }, rowIndex) => {
+  rowsData.forEach(({ family, event, document }) => {
     if (documentEventsOnly && !document) return;
 
     const date = event ? new Date(event.date) : null;
-    const summary = event?.metadata.description?.[0] || null;
 
     const [mainDocuments] = getMainDocuments(family.documents);
     const isMainDocument = Boolean(document && mainDocuments.find((mainDocument) => mainDocument.slug === document.slug));
@@ -256,15 +261,13 @@ export const getEventTableRows = ({
         <div className="flex flex-col gap-2 items-start">
           {topicLinks}
           {someTopicsHidden && (
-            <PageLink href={`/documents/${document.slug}`} keepQuery query={{ [QUERY_PARAMS.concept_name]: undefined }} className="mt-1">
-              <button
-                type="button"
-                role="link"
-                className="p-2 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
-              >
-                + {sortedTopics.length - MAX_TOPICS_PER_DOCUMENT} more
-              </button>
-            </PageLink>
+            <button
+              type="button"
+              role="link"
+              className="p-2 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
+            >
+              + {sortedTopics.length - MAX_TOPICS_PER_DOCUMENT} more
+            </button>
           )}
         </div>
       );
@@ -293,7 +296,7 @@ export const getEventTableRows = ({
 
     /* Everything else */
 
-    rows.push({
+    const row: TEventTableRow = {
       id: document ? document.import_id : event.import_id,
       cells: {
         caseNumber: getCaseNumbers(family),
@@ -323,7 +326,13 @@ export const getEventTableRows = ({
         topics: { label: topicsDisplay, value: "" },
         type: event?.event_type || null,
       },
-    });
+    };
+
+    if (documentEventsOnly && document && documentRowClick) {
+      row.onClick = (clickedRow) => documentRowClick(clickedRow.id);
+    }
+
+    rows.push(row);
   });
 
   return rows;

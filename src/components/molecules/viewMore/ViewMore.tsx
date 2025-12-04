@@ -1,11 +1,12 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ChangeEvent, MouseEventHandler, ReactNode, useEffect, useRef, useState } from "react";
 
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IViewMoreGenericProps {
   buttonText?: [string, string];
-  onButtonClick?: () => void;
   containerClasses?: string;
+  debug?: boolean;
+  onButtonClick?: () => void;
 }
 
 // Plain text - displays a maximum number of lines
@@ -28,6 +29,7 @@ export const ViewMore = ({
   buttonText = ["View more", "View less"],
   children,
   containerClasses = "",
+  debug = false,
   maxHeight = 150,
   maxLines,
   onButtonClick,
@@ -49,11 +51,19 @@ export const ViewMore = ({
     };
   }, [contentRef, children, maxLines, maxHeight]);
 
-  const onViewMore = () => {
-    onButtonClick ? onButtonClick() : setIsOpen((isOpenCurrent) => !isOpenCurrent);
+  const onViewMore: MouseEventHandler<HTMLButtonElement> = (event) => {
+    if (onButtonClick) return onButtonClick();
+
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+    setIsOpen((isOpenCurrent) => !isOpenCurrent);
   };
 
-  const contentClasses = joinTailwindClasses(!isOpen && "overflow-hidden", !isOpen && isText && "line-clamp-4");
+  const contentClasses = joinTailwindClasses(
+    !isOpen && "overflow-hidden",
+    !isOpen && isText && "line-clamp-4",
+    debug && (isText ? "bg-cyan-100" : "bg-amber-100")
+  );
   const contentStyles = {
     WebkitLineClamp: !isOpen && isText ? maxLines : undefined,
     maxHeight: !isOpen && !isText ? maxHeight : undefined,

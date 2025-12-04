@@ -1,5 +1,5 @@
 import { ExternalLink } from "@/components/ExternalLink";
-import { Badge } from "@/components/atoms/label/Badge";
+import { Badge } from "@/components/atoms/badge/Badge";
 
 type TFAQ = {
   id?: string;

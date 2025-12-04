@@ -2,7 +2,7 @@ import { TextSearch } from "lucide-react";
 import { NextRouter, useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
-import { Badge } from "@/components/atoms/label/Badge";
+import { Badge } from "@/components/atoms/badge/Badge";
 import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
 import { QUERY_PARAMS } from "@/constants/queryParams";
