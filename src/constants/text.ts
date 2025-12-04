@@ -72,6 +72,10 @@ export const CATEGORY_DICTIONARY = {
     default: "Year",
     MCF: "Approval FY",
   },
+  familyType: {
+    default: "Document Type",
+    MCF: "Fund",
+  },
 } satisfies Record<string, TCategoryDictionary>;
 
 export type TCategoryDictionaryKey = keyof typeof CATEGORY_DICTIONARY;
