@@ -13,7 +13,7 @@
  */
 import { createContext, useContext } from "react";
 
-export const publicRuntimeEnvConfig = [
+const publicRuntimeEnvConfig = [
   "BACKEND_API_URL",
   "BACKEND_API_TOKEN",
   "TARGETS_URL",

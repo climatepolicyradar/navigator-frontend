@@ -1,9 +1,7 @@
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { ConceptLink } from "@/components/molecules/conceptLink/ConceptLink";
-import { ARROW_UP_RIGHT } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { IFamilyDocumentTopics, TTableColumn, TTableRow } from "@/types";
-import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { joinNodes } from "@/utils/reactNode";
 import { firstCase } from "@/utils/text";
 
@@ -14,7 +12,7 @@ export const topicTableColumns: TTableColumn<TTopicTableColumnId>[] = [
   { id: "topics", name: "Topics", fraction: 5 },
 ];
 
-export type TTopicTableRow = TTableRow<TTopicTableColumnId>;
+type TTopicTableRow = TTableRow<TTopicTableColumnId>;
 
 export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTableRow[] => {
   const rows: TTopicTableRow[] = [];

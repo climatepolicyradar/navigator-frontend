@@ -77,7 +77,7 @@ export const testCorpus2FamiliesWithSubdivisionCounts = [
   },
 ];
 
-export const testCorpus3FamiliesWithSubdivisionCounts = [
+const testCorpus3FamiliesWithSubdivisionCounts = [
   {
     code: "AU-NSW",
     name: "New South Wales",

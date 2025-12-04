@@ -1,7 +1,7 @@
 import Image from "next/image";
 
-import GRI_LINKS, { TLinkItem } from "@/cclw/constants/griLinks";
 import { MENU_LINKS } from "@/cclw/constants/menuLinks";
+import { NAV_LINKS, TLinkItem } from "@/cclw/constants/navLinks";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { SiteWidth } from "@/components/panels/SiteWidth";
@@ -32,10 +32,10 @@ const Footer = () => {
               </ul>
             </div>
 
-            <div key={GRI_LINKS.title} className="footer__section" data-cy="footer-gri">
-              <div className="font-medium text-base">{GRI_LINKS.title}</div>
+            <div key={NAV_LINKS.title} className="footer__section" data-cy="footer-gri">
+              <div className="font-medium text-base">{NAV_LINKS.title}</div>
               <ul>
-                {GRI_LINKS.links.map((link) => (
+                {NAV_LINKS.links.map((link) => (
                   <li key={link.text} className="mb-2">
                     {renderLink(link)}
                   </li>

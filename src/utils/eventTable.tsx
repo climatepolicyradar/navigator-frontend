@@ -32,7 +32,7 @@ import { formatDateShort } from "./timedate";
 /* Columns */
 
 export type TEventTableColumnId = "caseNumber" | "caseTitle" | "court" | "date" | "searchResults" | "document" | "topics" | "type";
-export type TEventTableColumn = TTableColumn<TEventTableColumnId>;
+type TEventTableColumn = TTableColumn<TEventTableColumnId>;
 
 const topicsColumnName = (
   <>

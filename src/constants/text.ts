@@ -6,7 +6,7 @@ export type TDictionary<Variant extends string> = Record<Variant, string> | ({ d
 
 /* App-specific text */
 
-export type TAppDictionary = TDictionary<TTheme>;
+type TAppDictionary = TDictionary<TTheme>;
 
 export const APP_DICTIONARY = {
   breadcrumbRoot: {
@@ -39,7 +39,7 @@ export type TAppDictionaryKey = keyof typeof APP_DICTIONARY;
 
 /* Corpus type specific text */
 
-export type TCategoryDictionary = TDictionary<TCategory>;
+type TCategoryDictionary = TDictionary<TCategory>;
 
 export const CATEGORY_DICTIONARY = {
   // TODO resolve different litigation cases depending on API endpoint used

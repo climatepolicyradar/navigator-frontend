@@ -4,7 +4,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { ApiClient } from "@/api/http-common";
 import { GeographyLitigationPage } from "@/components/pages/geographyLitigationPage";
 import { GeographyOriginalPage, IProps } from "@/components/pages/geographyOriginalPage";
-import { systemGeoNames } from "@/constants/systemGeos";
+import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode } from "@/helpers/getCountryFields";
 import { ApiItemResponse, GeographyV2, TSearch } from "@/types";
@@ -32,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const id = context.params.id;
 
-  if (systemGeoNames.includes(id as string)) {
+  if (SYSTEM_GEO_NAMES.includes(id as string)) {
     return {
       notFound: true,
     };

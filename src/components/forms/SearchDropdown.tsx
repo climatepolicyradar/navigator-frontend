@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 
 import { Icon } from "@/components/atoms/icon/Icon";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { systemGeoCodes } from "@/constants/systemGeos";
+import { SYSTEM_GEO_CODES } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
 import { TGeography } from "@/types";
 
@@ -20,7 +20,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
 
   const geographiesFiltered = geographies.filter(
     (geography) =>
-      !systemGeoCodes.includes(geography.slug) &&
+      !SYSTEM_GEO_CODES.includes(geography.slug) &&
       (geography.display_value.toLowerCase().includes(term.toLocaleLowerCase()) ||
         term.toLocaleLowerCase().includes(geography.display_value.toLowerCase()))
   );
