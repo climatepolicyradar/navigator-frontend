@@ -1,5 +1,6 @@
 import { TDocumentPage } from "@/types";
 
+// Please do not delete this file as it contains some important business logic around determining main documents
 export const getMainDocuments = (documents: TDocumentPage[]): [TDocumentPage[], TDocumentPage[]] => {
   let mainDocuments: TDocumentPage[] = [];
   let otherDocuments: TDocumentPage[] = [];

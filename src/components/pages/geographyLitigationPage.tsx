@@ -151,7 +151,7 @@ export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, target
         const geographyMetaData = geographyV2.statistics ? getGeographyMetaData(geographyV2.statistics) : [];
         if (geographyMetaData.length === 0) return null;
 
-        return <MetadataBlock key="statistics" block="statistics" title="Statistics" metadata={geographyMetaData} />;
+        return <MetadataBlock key="statistics" block="statistics" title="About this geography" metadata={geographyMetaData} />;
       }, [geographyV2]),
     },
     subdivisions: {

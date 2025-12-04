@@ -69,8 +69,12 @@ export const CATEGORY_DICTIONARY = {
     MCF: "projects",
   },
   familyDate: {
-    default: "Date",
+    default: "Year",
     MCF: "Approval FY",
+  },
+  familyType: {
+    default: "Document Type",
+    MCF: "Fund",
   },
 } satisfies Record<string, TCategoryDictionary>;
 

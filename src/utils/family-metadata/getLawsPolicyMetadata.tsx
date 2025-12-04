@@ -15,7 +15,6 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFami
   const metadata = [];
 
   const [year] = convertDate(family.published_date);
-  const document_type = family.documents && family.documents.length > 0 ? family.documents[0].document_type : null;
 
   /* Year */
   metadata.push({
@@ -23,11 +22,19 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFami
     value: year || EN_DASH,
   });
 
-  /* Document Type */
-  metadata.push({
-    label: "Type",
-    value: document_type || EN_DASH,
-  });
+  /* Most recent update */
+  if (family.events.length > 0) {
+    const latestEvent = orderBy(family.events, ["date"], ["desc"])[0];
+    // TODO refactor all dates displayed into a single component
+    const [year, day, month] = formatDate(latestEvent.date);
+    if (year) {
+      const monthDisplay = padNumber(months.indexOf(month) + 1);
+      metadata.push({
+        label: "Most recent update",
+        value: `${day}/${monthDisplay}/${year}`,
+      });
+    }
+  }
 
   /* Geography */
   if (family.geographies.length > 0) {
@@ -47,12 +54,12 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFami
   }
 
   /* Metadata */
-  family.metadata?.topic &&
+  family.metadata?.topic?.length &&
     metadata.push({
-      label: "Topics",
+      label: "Response areas",
       value: family.metadata.topic.join(", "),
     });
-  family.metadata?.sector &&
+  family.metadata?.sector?.length &&
     metadata.push({
       label: "Sectors",
       value: family.metadata.sector.join(", "),
@@ -61,24 +68,7 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFami
   /* Topics */
   if (familyTopicsHasTopics(familyTopics)) {
     const topics = getTopicsMetadataItem(familyTopics);
-    if (topics) {
-      topics.label = "Response areas";
-      metadata.push(topics);
-    }
-  }
-
-  /* Last amended */
-  if (family.events.length > 0) {
-    const latestEvent = orderBy(family.events, ["date"], ["desc"])[0];
-    // TODO refactor all dates displayed into a single component
-    const [year, day, month] = formatDate(latestEvent.date);
-    if (year) {
-      const monthDisplay = padNumber(months.indexOf(month) + 1);
-      metadata.push({
-        label: "Last amended",
-        value: `${day}/${monthDisplay}/${year}`,
-      });
-    }
+    if (topics) metadata.push(topics);
   }
 
   return metadata;
