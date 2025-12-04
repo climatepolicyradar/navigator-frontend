@@ -69,7 +69,7 @@ export const CATEGORY_DICTIONARY = {
     MCF: "projects",
   },
   familyDate: {
-    default: "Date",
+    default: "Year",
     MCF: "Approval FY",
   },
 } satisfies Record<string, TCategoryDictionary>;
