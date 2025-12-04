@@ -8,9 +8,11 @@ import { NavBar } from "@/components/organisms/navBar/NavBar";
 
 const CCLWLogo = (
   <PageLink href="/" data-cy="cclw-logo">
-    <div className="max-h-[56px] flex items-center flex-nowrap gap-2">
-      <Image src="/images/cclw/cclw-logo-globe.png" alt="Climate Change Laws of the World logo globe" width={60} height={60} />
-      <Image src="/images/cclw/cclw-logo-text-light.svg" alt="Climate Change Laws of the World logo text" width={197} height={30} />
+    <div className="max-h-14 flex items-center flex-nowrap gap-2">
+      <Image src="/images/cclw/cclw-logo-globe.png" alt="Climate Change Laws of the World logo globe" width={60} height={60} className="shrink-0" />
+      <div className="shrink">
+        <Image src="/images/cclw/cclw-logo-text-light.svg" alt="Climate Change Laws of the World logo text" width={197} height={30} />
+      </div>
     </div>
   </PageLink>
 );
