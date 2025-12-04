@@ -166,7 +166,13 @@ export const FamilyLitigationPage = ({
       />
       <PageHeader title={family.title} metadata={pageHeaderMetadata} />
       <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
-      <DocumentDrawer family={family} documentImportId={documentDrawerId} open={showDocumentDrawer} onOpenChange={onDocumentDrawerOpenChange} />
+      <DocumentDrawer
+        family={family}
+        familyTopics={familyTopics}
+        documentImportId={documentDrawerId}
+        open={showDocumentDrawer}
+        onOpenChange={onDocumentDrawerOpenChange}
+      />
       <Head>
         <script
           type="application/ld+json"

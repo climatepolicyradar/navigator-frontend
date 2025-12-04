@@ -3,19 +3,37 @@ import { Fragment } from "react";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
+import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { ARROW_RIGHT } from "@/constants/chars";
-import { IMetadata, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic } from "@/types";
+import { IFamilyDocumentTopics, IMetadata, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TTableColumn } from "@/types";
 import { getFamilyEvents } from "@/utils/eventTable";
+import { DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS, getDocumentDrawerTopicTableRow } from "@/utils/tables/topic/documentDrawerTopicTable";
+import { TTopicTableColumnId, TTopicTableRow } from "@/utils/tables/topic/topicTable";
 import { formatDateShort } from "@/utils/timedate";
 
+type TopicsTableColumnId = "group" | "topics";
+const TOPICS_TABLE_COLUMNS: TTableColumn<TopicsTableColumnId>[] = [
+  { id: "group" },
+  {
+    id: "topics",
+    name: (
+      <>
+        Topics <span className="font-normal!">(Order: most frequent)</span>
+      </>
+    ),
+    fraction: 2,
+  },
+];
+
 interface IProps {
-  documentImportId: string | null;
+  documentImportId: string | null; // The currently displayed document
   family: TFamilyPublic;
-  onOpenChange: (open: boolean) => void;
-  open: boolean;
+  familyTopics?: IFamilyDocumentTopics;
+  onOpenChange: (open: boolean) => void; // Triggered each time the drawer is opened or closed
+  open: boolean; // Whether the drawer is currently open. Necessitates useState
 }
 
-export const DocumentDrawer = ({ documentImportId, family, onOpenChange, open }: IProps) => {
+export const DocumentDrawer = ({ documentImportId, family, familyTopics, onOpenChange, open }: IProps) => {
   /* Get the document and its associated event if present */
 
   let document: TFamilyDocumentPublic | null = null;
@@ -41,7 +59,7 @@ export const DocumentDrawer = ({ documentImportId, family, onOpenChange, open }:
     );
   }
 
-  /* Content */
+  /* Metadata */
 
   const metadata: IMetadata[] = [];
 
@@ -58,10 +76,17 @@ export const DocumentDrawer = ({ documentImportId, family, onOpenChange, open }:
     }
   }
 
+  /* Topics */
+
+  let topicRows: TTopicTableRow[] = [];
+  if (familyTopics) topicRows = getDocumentDrawerTopicTableRow(familyTopics, documentImportId);
+
+  /* Render */
+
   return (
     <Drawer open={open} onOpenChange={onOpenChange} title={document.title}>
       {metadata.length > 0 && (
-        <div className="grid grid-cols-[auto_auto] gap-x-6 gap-y-2 mb-4 text-sm text-gray-700 leading-5">
+        <div className="grid grid-cols-[120px_auto] gap-x-3 gap-y-2 mb-6 text-sm text-gray-700 leading-5">
           {metadata.map((item, itemIndex) => (
             <Fragment key={itemIndex}>
               <div className="font-medium">{item.label}</div>
@@ -76,6 +101,13 @@ export const DocumentDrawer = ({ documentImportId, family, onOpenChange, open }:
           Go to document {ARROW_RIGHT}
         </button>
       </PageLink>
+
+      {topicRows.length > 0 && (
+        <div className="mt-9">
+          <h3 className="mt-6 mb-5 text-lg text-gray-950 font-heavy leading-6">Topics mentioned in this document</h3>
+          <InteractiveTable<TTopicTableColumnId> columns={DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS} rows={topicRows} />
+        </div>
+      )}
     </Drawer>
   );
 };

@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ChangeEvent, MouseEventHandler, ReactNode, useEffect, useRef, useState } from "react";
 
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -51,7 +51,9 @@ export const ViewMore = ({
     };
   }, [contentRef, children, maxLines, maxHeight]);
 
-  const onViewMore = () => {
+  const onViewMore: MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
     onButtonClick ? onButtonClick() : setIsOpen((isOpenCurrent) => !isOpenCurrent);
   };
 
