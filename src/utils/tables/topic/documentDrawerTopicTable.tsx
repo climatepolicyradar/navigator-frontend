@@ -1,6 +1,8 @@
 import orderBy from "lodash/orderBy";
 
 import { Label } from "@/components/atoms/label/Label";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 import { IFamilyDocumentTopics, TConcept, TTableColumn } from "@/types";
 import { firstCase } from "@/utils/text";
 
@@ -30,27 +32,34 @@ export const getDocumentDrawerTopicTableRow = (familyTopics: IFamilyDocumentTopi
 
   const rows: TTopicTableRow[] = [];
 
-  familyTopics.rootConcepts.forEach((rootConcept) => {
-    const conceptsInGroup = familyTopics.conceptsGrouped[rootConcept.wikibase_id] ?? [];
-    if (conceptsInGroup.every((concept) => concept.wikibase_id !== rootConcept.wikibase_id)) {
-      conceptsInGroup.push(rootConcept);
+  familyTopics.rootConcepts.forEach((rootTopic) => {
+    const topicsInGroup = familyTopics.conceptsGrouped[rootTopic.wikibase_id] ?? [];
+    if (topicsInGroup.every((topic) => topic.wikibase_id !== rootTopic.wikibase_id)) {
+      topicsInGroup.push(rootTopic);
     }
 
-    const conceptsToDisplay: TConcept[] = conceptsInGroup.reduce((accumulatedConcepts, concept) => {
-      return wikibaseIds.includes(concept.wikibase_id) ? [...accumulatedConcepts, concept] : accumulatedConcepts;
+    const topicsToDisplay: TConcept[] = topicsInGroup.reduce((accumulatedTopics, topic) => {
+      return wikibaseIds.includes(topic.wikibase_id) ? [...accumulatedTopics, topic] : accumulatedTopics;
     }, []);
-    const sortedConcepts = orderBy(conceptsToDisplay, [(concept) => document.conceptCounts[concept.wikibase_id] ?? 0], ["desc"]);
+    const sortedTopics = orderBy(topicsToDisplay, [(topic) => document.conceptCounts[topic.wikibase_id] ?? 0], ["desc"]);
 
-    if (sortedConcepts.length > 0) {
+    if (sortedTopics.length > 0) {
       rows.push({
-        id: rootConcept.wikibase_id,
+        id: rootTopic.wikibase_id,
         cells: {
-          group: firstCase(rootConcept.preferred_label),
+          group: firstCase(rootTopic.preferred_label),
           topics: {
             label: (
               <div className="flex flex-col items-start gap-1">
-                {sortedConcepts.map((concept) => (
-                  <Label key={concept.wikibase_id}>{firstCase(concept.preferred_label)}</Label>
+                {sortedTopics.map((topic) => (
+                  <PageLink
+                    key={topic.wikibase_id}
+                    href={`/documents/${document.slug}`}
+                    keepQuery
+                    query={{ [QUERY_PARAMS.concept_name]: topic.preferred_label }}
+                  >
+                    <Label>{firstCase(topic.preferred_label)}</Label>
+                  </PageLink>
                 ))}
               </div>
             ),

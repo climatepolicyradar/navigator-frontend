@@ -4,9 +4,9 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IViewMoreGenericProps {
   buttonText?: [string, string];
+  containerClasses?: string;
   debug?: boolean;
   onButtonClick?: () => void;
-  containerClasses?: string;
 }
 
 // Plain text - displays a maximum number of lines
@@ -52,9 +52,11 @@ export const ViewMore = ({
   }, [contentRef, children, maxLines, maxHeight]);
 
   const onViewMore: MouseEventHandler<HTMLButtonElement> = (event) => {
+    if (onButtonClick) return onButtonClick();
+
     event.stopPropagation();
     event.nativeEvent.stopImmediatePropagation();
-    onButtonClick ? onButtonClick() : setIsOpen((isOpenCurrent) => !isOpenCurrent);
+    setIsOpen((isOpenCurrent) => !isOpenCurrent);
   };
 
   const contentClasses = joinTailwindClasses(

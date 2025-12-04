@@ -197,15 +197,13 @@ export const getEventTableRows = ({
         <div className="flex flex-col gap-2 items-start">
           {topicLinks}
           {someTopicsHidden && (
-            <PageLink href={`/documents/${document.slug}`} keepQuery query={{ [QUERY_PARAMS.concept_name]: undefined }} className="mt-1">
-              <button
-                type="button"
-                role="link"
-                className="p-2 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
-              >
-                View all topic mentions
-              </button>
-            </PageLink>
+            <button
+              type="button"
+              role="link"
+              className="p-2 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
+            >
+              View all topic mentions
+            </button>
           )}
         </div>
       );
@@ -260,7 +258,16 @@ export const getEventTableRows = ({
               value: `${document.slug}:${matches}`,
             }
           : null,
-        summary: summary ? { label: <ViewMore maxLines={4}>{summary}</ViewMore>, value: summary } : null,
+        summary: summary
+          ? {
+              label: (
+                <ViewMore maxLines={4} onButtonClick={() => {}}>
+                  {summary}
+                </ViewMore>
+              ),
+              value: summary,
+            }
+          : null,
         title: document
           ? { label: <span className={joinTailwindClasses(isMainDocument && "font-medium")}>{document.title}</span>, value: isMainDocument }
           : null,
