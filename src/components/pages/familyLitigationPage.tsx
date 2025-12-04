@@ -181,11 +181,12 @@ export const FamilyLitigationPage = ({
       <PageHeader title={family.title} metadata={pageHeaderMetadata} />
       <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
       <DocumentDrawer
+        documentImportId={documentDrawerId}
         family={family}
         familyTopics={familyTopics}
-        documentImportId={documentDrawerId}
-        open={showDocumentDrawer}
+        languages={languages}
         onOpenChange={onDocumentDrawerOpenChange}
+        open={showDocumentDrawer}
       />
       <Head>
         <script

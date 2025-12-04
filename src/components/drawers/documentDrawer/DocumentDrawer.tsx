@@ -5,35 +5,24 @@ import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { ARROW_RIGHT } from "@/constants/chars";
-import { IFamilyDocumentTopics, IMetadata, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TTableColumn } from "@/types";
+import { getLanguage } from "@/helpers/getLanguage";
+import { IFamilyDocumentTopics, IMetadata, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLanguages } from "@/types";
 import { getFamilyEvents } from "@/utils/eventTable";
 import { DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS, getDocumentDrawerTopicTableRow } from "@/utils/tables/topic/documentDrawerTopicTable";
 import { TTopicTableColumnId, TTopicTableRow } from "@/utils/tables/topic/topicTable";
+import { firstCase } from "@/utils/text";
 import { formatDateShort } from "@/utils/timedate";
-
-type TopicsTableColumnId = "group" | "topics";
-const TOPICS_TABLE_COLUMNS: TTableColumn<TopicsTableColumnId>[] = [
-  { id: "group" },
-  {
-    id: "topics",
-    name: (
-      <>
-        Topics <span className="font-normal!">(Order: most frequent)</span>
-      </>
-    ),
-    fraction: 2,
-  },
-];
 
 interface IProps {
   documentImportId: string | null; // The currently displayed document
   family: TFamilyPublic;
   familyTopics?: IFamilyDocumentTopics;
+  languages: TLanguages;
   onOpenChange: (open: boolean) => void; // Triggered each time the drawer is opened or closed
   open: boolean; // Whether the drawer is currently open. Necessitates useState
 }
 
-export const DocumentDrawer = ({ documentImportId, family, familyTopics, onOpenChange, open }: IProps) => {
+export const DocumentDrawer = ({ documentImportId, family, familyTopics, languages, onOpenChange, open }: IProps) => {
   /* Get the document and its associated event if present */
 
   let document: TFamilyDocumentPublic | null = null;
@@ -62,8 +51,9 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, onOpenC
   /* Metadata */
 
   const metadata: IMetadata[] = [];
+  const isLitigation = family.corpus_type_name === "Litigation";
 
-  if (event) {
+  if (isLitigation && event) {
     metadata.push({ label: "Filing date", value: formatDateShort(new Date(event.date)) }, { label: "Type", value: event.event_type });
     if (event.metadata.action_taken?.[0]) {
       metadata.push({ label: "Action taken", value: event.metadata.action_taken?.[0] });
@@ -72,6 +62,20 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, onOpenC
       metadata.push({
         label: "Summary",
         value: <ViewMore maxLines={5}>{event.metadata.description?.[0]}</ViewMore>,
+      });
+    }
+  } else if (!isLitigation) {
+    if (document.document_role) {
+      metadata.push({
+        label: "Role",
+        value: firstCase(document.document_role.toLowerCase()) + (document.document_role.toLowerCase().includes("main") ? " document" : ""),
+      });
+    }
+    if (document.document_type) metadata.push({ label: "Type", value: document.document_type });
+    if (document.language) {
+      metadata.push({
+        label: "Language",
+        value: getLanguage(document.language, languages) + (document.variant ? ` (${document.variant})` : ""),
       });
     }
   }
