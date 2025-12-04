@@ -49,7 +49,7 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFami
   /* Metadata */
   family.metadata?.topic &&
     metadata.push({
-      label: "Topics",
+      label: "Response areas",
       value: family.metadata.topic.join(", "),
     });
   family.metadata?.sector &&
@@ -61,10 +61,7 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFami
   /* Topics */
   if (familyTopicsHasTopics(familyTopics)) {
     const topics = getTopicsMetadataItem(familyTopics);
-    if (topics) {
-      topics.label = "Response areas";
-      metadata.push(topics);
-    }
+    if (topics) metadata.push(topics);
   }
 
   /* Last amended */
