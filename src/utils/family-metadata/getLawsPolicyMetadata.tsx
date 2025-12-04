@@ -22,6 +22,20 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFami
     value: year || EN_DASH,
   });
 
+  /* Most recent update */
+  if (family.events.length > 0) {
+    const latestEvent = orderBy(family.events, ["date"], ["desc"])[0];
+    // TODO refactor all dates displayed into a single component
+    const [year, day, month] = formatDate(latestEvent.date);
+    if (year) {
+      const monthDisplay = padNumber(months.indexOf(month) + 1);
+      metadata.push({
+        label: "Most recent update",
+        value: `${day}/${monthDisplay}/${year}`,
+      });
+    }
+  }
+
   /* Geography */
   if (family.geographies.length > 0) {
     metadata.push({
@@ -55,20 +69,6 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFami
   if (familyTopicsHasTopics(familyTopics)) {
     const topics = getTopicsMetadataItem(familyTopics);
     if (topics) metadata.push(topics);
-  }
-
-  /* Last amended */
-  if (family.events.length > 0) {
-    const latestEvent = orderBy(family.events, ["date"], ["desc"])[0];
-    // TODO refactor all dates displayed into a single component
-    const [year, day, month] = formatDate(latestEvent.date);
-    if (year) {
-      const monthDisplay = padNumber(months.indexOf(month) + 1);
-      metadata.push({
-        label: "Last amended",
-        value: `${day}/${monthDisplay}/${year}`,
-      });
-    }
   }
 
   return metadata;
