@@ -5,7 +5,7 @@ import { Badge } from "@/components/atoms/label/Badge";
 import { TBlock } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-export interface IGenericProps {
+interface IGenericProps {
   badge?: string;
   children: ReactNode;
   count?: number;
@@ -14,12 +14,12 @@ export interface IGenericProps {
   wide?: boolean;
 }
 
-export interface IBlockProps extends IGenericProps {
+interface IBlockProps extends IGenericProps {
   block: TBlock;
   id?: never;
 }
 
-export interface IProgrammaticProps extends IGenericProps {
+interface IProgrammaticProps extends IGenericProps {
   block?: never;
   id: string;
 }

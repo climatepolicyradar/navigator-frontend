@@ -2,7 +2,7 @@ import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { TLatestItem } from "@/types";
 import { formatDate } from "@/utils/timedate";
 
-export interface IProps {
+interface IProps {
   latestItems: TLatestItem[];
 }
 

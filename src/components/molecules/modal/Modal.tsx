@@ -5,7 +5,7 @@ import { Card } from "@/components/atoms/card/Card";
 import { Heading } from "@/components/typography/Heading";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
-export interface ModalProps {
+interface ModalProps {
   cardClasses?: string;
   children: ReactNode;
   contentClasses?: string;
