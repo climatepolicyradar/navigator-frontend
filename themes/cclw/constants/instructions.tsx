@@ -11,13 +11,15 @@ type TFamilyTotals = {
 
 const heroLinkClasses = "text-white flex items-start gap-1 hover:text-white hover:underline";
 
+const roundToHundred = (num: number) => Math.floor(num / 100) * 100;
+
 export const INSTRUCTIONS = (familyTotals: TFamilyTotals) => [
   {
     content: (
       <ul>
         <li>
           <Link href="/search?c=laws" className={heroLinkClasses}>
-            <b>{familyTotals.laws}</b> laws{" "}
+            <b>{roundToHundred(familyTotals.laws)}+</b> laws{" "}
             <span className="self-center">
               <Icon name="externalLink" height="12" width="12" />
             </span>
@@ -25,7 +27,7 @@ export const INSTRUCTIONS = (familyTotals: TFamilyTotals) => [
         </li>
         <li>
           <Link href="/search?c=policies" className={heroLinkClasses}>
-            <b>{familyTotals.policies}</b> policies{" "}
+            <b>{roundToHundred(familyTotals.policies)}+</b> policies{" "}
             <span className="self-center">
               <Icon name="externalLink" height="12" width="12" />
             </span>
@@ -33,15 +35,7 @@ export const INSTRUCTIONS = (familyTotals: TFamilyTotals) => [
         </li>
         <li>
           <Link href="/search?c=UNFCCC" className={heroLinkClasses}>
-            <b>{familyTotals.unfccc}</b> UNFCCC submissions{" "}
-            <span className="self-center">
-              <Icon name="externalLink" height="12" width="12" />
-            </span>
-          </Link>
-        </li>
-        <li>
-          <Link href="/search?c=Reports" className={heroLinkClasses}>
-            <b>{familyTotals.reports}</b> Reports{" "}
+            <b>2700+</b> UNFCCC submissions{" "}
             <span className="self-center">
               <Icon name="externalLink" height="12" width="12" />
             </span>

@@ -1,6 +1,6 @@
 import { FC, Fragment, ReactNode } from "react";
 
-import { systemGeoCodes } from "@/constants/systemGeos";
+import { SYSTEM_GEO_CODES } from "@/constants/systemGeos";
 import { TGeography } from "@/types";
 
 import { LinkWithQuery } from "./LinkWithQuery";
@@ -31,7 +31,7 @@ export const CountryLinkWithSubdivisions: FC<TCountryLinkWithSubdivisions> = ({
   // Force render without any empty content fallback the children without a link
   if (!slug && emptyContentFallback) return <>{emptyContentFallback}</>;
   if (!slug && !emptyContentFallback) return <>{children}</>;
-  if (systemGeoCodes.includes(slug)) return <>{children}</>;
+  if (SYSTEM_GEO_CODES.includes(slug)) return <>{children}</>;
 
   return (
     <span className="flex gap-1">

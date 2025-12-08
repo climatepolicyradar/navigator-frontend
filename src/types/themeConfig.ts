@@ -7,8 +7,8 @@ import { TTutorialName } from "./tutorial";
 
 // All of the possible block names used in TThemeConfig.pageBlocks to specify which blocks to render on each page
 // Adding a new block to a page? Add a new string to the page's type here, then add the new key to the TBlockDefinitions declaration on the page
-export type TFamilyPageBlock = "collections" | "debug" | "documents" | "metadata" | "note" | "summary" | "topics";
-export type TCollectionPageBlock = "events";
+export type TFamilyPageBlock = "collections" | "debug" | "documents" | "metadata" | "note" | "summary" | "topics" | "targets";
+type TCollectionPageBlock = "events";
 export type TGeographyPageBlock = "debug" | "intro" | "legislativeProcess" | "recents" | "statistics" | "subdivisions" | "targets";
 export type TBlock = TFamilyPageBlock | TCollectionPageBlock | TGeographyPageBlock;
 
@@ -21,7 +21,7 @@ type TThemePageBlocks = {
 
 export type TDocumentCategory = "All" | "UN Submissions" | "Laws" | "Policies" | "Litigation" | "Climate Finance Projects" | "Offshore Wind Reports";
 
-export type TLabelVariation = {
+type TLabelVariation = {
   category: string[];
   label: string;
   key: string;

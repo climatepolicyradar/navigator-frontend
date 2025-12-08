@@ -31,7 +31,7 @@ export const ContentsSideBar = <BlockId extends string = TBlock>({ items, sticky
         <div className="inline-flex flex-col">
           <h2 className="mb-4 text-2xl text-gray-950 font-heavy leading-tight cols-4:hidden">On this page</h2>
           {items.map((item) => {
-            const isActive = item.id === activeId;
+            const isActive = "section-" + item.id === activeId;
 
             const buttonClasses = joinTailwindClasses(
               "pr-4 cols-4:pl-4 py-2 text-sm text-left group cols-4:border-l-2",

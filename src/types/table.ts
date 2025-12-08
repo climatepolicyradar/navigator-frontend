@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 import { IMetadata } from "./display";
 
-export type TTableValue = string | number | null;
+type TTableValue = string | number | null;
 export type TTableOrder = "asc" | "desc";
 
 export type TTableSortOption = {

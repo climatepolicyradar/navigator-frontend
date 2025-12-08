@@ -189,15 +189,15 @@ const config: TThemeConfig = {
   documentCategories: ["All", "UN Submissions", "Laws", "Policies", "Litigation"],
   defaultDocumentCategory: "All",
   pageBlocks: {
-    family: ["metadata", "documents", "topics", "summary", "note", "collections"],
-    geography: ["intro", "statistics", "recents", "targets", "legislativeProcess"],
+    family: ["summary", "documents", "metadata", "topics", "collections", "targets", "note"],
+    geography: ["recents", "targets", "statistics", "legislativeProcess"],
   },
   tutorials: ["knowledgeGraph"],
   features: {
     familyConceptsSearch: false,
     knowledgeGraph: true,
     litigation: false,
-    newPageDesigns: false,
+    newPageDesigns: true,
     searchFamilySummary: true,
     rioPolicyRadar: false,
   },

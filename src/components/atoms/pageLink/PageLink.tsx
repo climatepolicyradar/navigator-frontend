@@ -14,7 +14,7 @@ const getDebugClasses = (external: boolean, keepQuery: boolean, query?: ParsedUr
   return "outline-2! outline-green-500"; // Internal = green
 };
 
-export const LINK_UNDERLINE = "underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
+const LINK_UNDERLINE = "underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500";
 
 interface IProps extends LinkProps {
   children: ReactNode;

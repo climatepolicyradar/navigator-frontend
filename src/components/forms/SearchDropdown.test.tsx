@@ -41,7 +41,7 @@ vi.mock("@/hooks/useConfig", () => ({
 
 // Mock system geocodes
 vi.mock("@/constants/systemGeos", () => ({
-  systemGeoCodes: ["global", "regional"],
+  SYSTEM_GEO_CODES: ["global", "regional"],
 }));
 
 const defaultProps = {

@@ -13,7 +13,7 @@ export interface IProps {
 }
 
 export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick, geography }: IProps) => {
-  const { getText } = useText();
+  const { getAppText } = useText();
   const [expandedCategory, setExpandedCategory] = useState(categorySummaries[0].title);
 
   const hideAccordion = categorySummaries.length === 1 && categorySummaries[0].title === "All";
@@ -28,7 +28,7 @@ export const RecentFamiliesBlock = ({ categorySummaries, onAccordionClick, geogr
   };
 
   return (
-    <Section block="recents" title={getText("recentFamiliesBlockTitle")} wide>
+    <Section block="recents" title={"Recent " + getAppText("familyPlural")} wide>
       <div className="col-start-1 -col-end-1">
         {categorySummaries.map((category) => (
           <RecentFamiliesCategory

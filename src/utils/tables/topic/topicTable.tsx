@@ -1,9 +1,7 @@
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { ConceptLink } from "@/components/molecules/conceptLink/ConceptLink";
-import { ARROW_UP_RIGHT } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { IFamilyDocumentTopics, TTableColumn, TTableRow } from "@/types";
-import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { joinNodes } from "@/utils/reactNode";
 import { firstCase } from "@/utils/text";
 
@@ -14,7 +12,7 @@ export const topicTableColumns: TTableColumn<TTopicTableColumnId>[] = [
   { id: "topics", name: "Topics", fraction: 5 },
 ];
 
-export type TTopicTableRow = TTableRow<TTopicTableColumnId>;
+type TTopicTableRow = TTableRow<TTopicTableColumnId>;
 
 export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTableRow[] => {
   const rows: TTopicTableRow[] = [];
@@ -42,24 +40,9 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
                   })
                   .map((concept) => (
                     <span className="inline-block" key={concept.wikibase_id}>
-                      <ConceptLink
-                        concept={concept}
-                        label={
-                          <span>
-                            {firstCase(concept.preferred_label)}{" "}
-                            <span className="text-gray-500">({familyTopics.conceptCounts[concept.wikibase_id] || 0})</span>
-                          </span>
-                        }
-                      >
+                      <ConceptLink concept={concept} label={<span>{firstCase(concept.preferred_label)}</span>}>
                         <>
-                          <h6 className="font-bold">{firstCase(concept.preferred_label)}</h6>
-                          <p className="my-2">
-                            {firstCase(concept.description)}{" "}
-                            <PageLink external href={getConceptStoreLink(concept.wikibase_id)} className="text-brand hover:underline">
-                              {ARROW_UP_RIGHT}
-                            </PageLink>
-                          </p>
-                          <p className="mt-6 mb-3 text-gray-500">
+                          <p className="mb-3 text-gray-700">
                             This topic is mentioned in the following documents. Click on the document to view the specific passages.
                           </p>
                           <ul className="flex flex-col gap-3">
@@ -80,12 +63,12 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTa
                                 return (
                                   <li key={doc.importId}>
                                     <PageLink
-                                      className="block font-medium underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+                                      className="font-medium underline underline-offset-4 text-brand decoration-gray-300 hover:decoration-gray-500"
                                       href={`/documents/${doc.slug}`}
                                       keepQuery
                                       query={{ [QUERY_PARAMS.concept_name]: concept.preferred_label }}
                                     >
-                                      {doc.title} ({topicCount})
+                                      {doc.title}
                                     </PageLink>
                                   </li>
                                 );

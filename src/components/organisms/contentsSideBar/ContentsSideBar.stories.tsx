@@ -21,7 +21,7 @@ const usePageContext = ({ ...props }: IProps) => (
     <ContentsSideBar {...props} />
     <div className="flex flex-col gap-8 col-start-1 -col-end-1 cols-4:col-start-3">
       {props.items.map((item) => (
-        <section id={item.id} key={item.id}>
+        <section id={"section-" + item.id} key={item.id}>
           <h1 className="text-2xl font-bold mb-4">{item.display}</h1>
           {LOREM_IPSUM.map((paragraph, index) => (
             <p key={index} className="mb-3">
@@ -67,27 +67,27 @@ export const GeographyPage: TStory = {
 
 const FAMILY_ITEMS: ISideBarItem<string>[] = [
   {
-    id: "section-1",
+    id: "1",
     display: "Juliana v. United States",
     context: ["Federal Courts", "24-645"],
   },
   {
-    id: "section-2",
+    id: "2",
     display: "Juliana v. United States",
     context: ["Federal Courts", "DB-485790"],
   },
   {
-    id: "section-3",
+    id: "3",
     display: "Juliana v. United States",
     context: ["Federal Courts", "56580-20"],
   },
   {
-    id: "section-4",
+    id: "4",
     display: "In re Juliana",
     context: ["Federal Courts", "DB-485790"],
   },
   {
-    id: "section-5",
+    id: "5",
     display: "United States v. U.S. District Court for the District of Oregon",
     context: ["Federal Courts", "DB-485790"],
   },

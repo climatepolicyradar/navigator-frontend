@@ -1,5 +1,5 @@
 export const featureFlagKeys = ["concepts-v1", "litigation", "new-page-designs", "rio-policy-radar"] as const;
-export type TFeatureFlag = (typeof featureFlagKeys)[number];
+type TFeatureFlag = (typeof featureFlagKeys)[number];
 export type TFeatureFlags = Record<TFeatureFlag, boolean>;
 
 export const configFeatureKeys = [
@@ -10,5 +10,5 @@ export const configFeatureKeys = [
   "searchFamilySummary",
   "rioPolicyRadar",
 ] as const;
-export type TConfigFeature = (typeof configFeatureKeys)[number];
+type TConfigFeature = (typeof configFeatureKeys)[number];
 export type TConfigFeatures = Record<TConfigFeature, boolean>;

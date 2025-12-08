@@ -7,8 +7,9 @@ import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";
 
 import { Input } from "@/components/atoms/input/Input";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { systemGeoCodes } from "@/constants/systemGeos";
+import { SYSTEM_GEO_CODES } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
+import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 
 import { NavSearchDropdown } from "./NavSearchDropdown";
 import { NavSearchSuggestion } from "./NavSearchSuggestion";
@@ -70,7 +71,7 @@ export const NavSearch = () => {
     return sortBy(
       geographies.filter(
         (geography) =>
-          !systemGeoCodes.includes(geography.slug) &&
+          !SYSTEM_GEO_CODES.includes(geography.slug) &&
           (geography.display_value.toLowerCase().includes(searchText.toLowerCase()) ||
             searchText.toLowerCase().includes(geography.display_value.toLowerCase()))
       ),
@@ -88,9 +89,16 @@ export const NavSearch = () => {
 
   // The path to navigate to when submitting the search input
   const searchLink = useMemo(() => {
-    const newQuery: ParsedUrlQuery = {};
+    // Start with existing query if already on search page to preserve filters
+    const newQuery = router.pathname.includes("search") ? CleanRouterQuery({ ...router.query }) : {};
+    // Always reset offset / paging to start on page 1 of results
+    delete newQuery[QUERY_PARAMS.offset];
 
-    if (searchText) newQuery[QUERY_PARAMS.query_string] = searchText;
+    if (searchText) {
+      newQuery[QUERY_PARAMS.query_string] = searchText;
+    } else {
+      delete newQuery[QUERY_PARAMS.query_string];
+    }
 
     let newPathName = "/search";
 

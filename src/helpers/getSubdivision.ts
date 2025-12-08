@@ -13,11 +13,3 @@ const findSubdivision = (search: string, dataSet: TGeographySubdivision[]) => {
 export const getSubdivisionName = (search: string, dataSet: TGeographySubdivision[]) => {
   return findSubdivision(search, dataSet)?.name;
 };
-
-export const getSubdivisionCode = (search: string, dataSet: TGeographySubdivision[]) => {
-  return findSubdivision(search, dataSet)?.code;
-};
-
-export const getSubdivisionType = (search: string, dataSet: TGeographySubdivision[]) => {
-  return findSubdivision(search, dataSet)?.type;
-};

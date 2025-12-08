@@ -1,19 +1,20 @@
+import orderBy from "lodash/orderBy";
 import { Fragment } from "react";
 
 import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
 import { EN_DASH } from "@/constants/chars";
+import { months } from "@/constants/timedate";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { IFamilyDocumentTopics, IMetadata, TFamilyPublic, TGeography } from "@/types";
 import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
 import { isSystemGeo } from "@/utils/isSystemGeo";
-import { convertDate } from "@/utils/timedate";
+import { convertDate, formatDate, padNumber } from "@/utils/timedate";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null, countries: TGeography[]): IMetadata[] {
   const metadata = [];
 
   const [year] = convertDate(family.published_date);
-  const document_type = family.documents && family.documents.length > 0 ? family.documents[0].document_type : null;
 
   /* Year */
   metadata.push({
@@ -21,11 +22,19 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFami
     value: year || EN_DASH,
   });
 
-  /* Document Type */
-  metadata.push({
-    label: "Type",
-    value: document_type || EN_DASH,
-  });
+  /* Most recent update */
+  if (family.events.length > 0) {
+    const latestEvent = orderBy(family.events, ["date"], ["desc"])[0];
+    // TODO refactor all dates displayed into a single component
+    const [year, day, month] = formatDate(latestEvent.date);
+    if (year) {
+      const monthDisplay = padNumber(months.indexOf(month) + 1);
+      metadata.push({
+        label: "Most recent update",
+        value: `${day}/${monthDisplay}/${year}`,
+      });
+    }
+  }
 
   /* Geography */
   if (family.geographies.length > 0) {
@@ -45,20 +54,15 @@ export function getLawsPolicyMetadata(family: TFamilyPublic, familyTopics: IFami
   }
 
   /* Metadata */
-  family.metadata?.topic &&
+  family.metadata?.topic?.length &&
     metadata.push({
-      label: "Topics",
+      label: "Response areas",
       value: family.metadata.topic.join(", "),
     });
-  family.metadata?.sector &&
+  family.metadata?.sector?.length &&
     metadata.push({
       label: "Sectors",
       value: family.metadata.sector.join(", "),
-    });
-  family.metadata?.keyword &&
-    metadata.push({
-      label: "Keywords",
-      value: family.metadata.keyword.join(", "),
     });
 
   /* Topics */

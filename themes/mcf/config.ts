@@ -139,7 +139,7 @@ const config: TThemeConfig = {
   documentCategories: ["All"],
   defaultDocumentCategory: "All",
   pageBlocks: {
-    family: ["metadata", "documents", "topics", "summary", "note", "collections"],
+    family: ["summary", "documents", "metadata", "topics", "collections", "note"],
     geography: ["recents"],
   },
   tutorials: ["knowledgeGraph"],
@@ -147,7 +147,7 @@ const config: TThemeConfig = {
     familyConceptsSearch: false,
     knowledgeGraph: true,
     litigation: false,
-    newPageDesigns: false,
+    newPageDesigns: true,
     searchFamilySummary: true,
     rioPolicyRadar: false,
   },

@@ -60,7 +60,7 @@ export function getMCFMetadata(family: TFamilyPublic, familyTopics: IFamilyDocum
     });
 
   /* Metadata */
-  family.metadata?.status &&
+  family.metadata?.status?.length &&
     metadata.push({
       label: "Status",
       value: family.metadata.status.join(", "),
@@ -70,22 +70,22 @@ export function getMCFMetadata(family: TFamilyPublic, familyTopics: IFamilyDocum
       label: "Theme",
       value: family.metadata.theme.join(", "),
     });
-  family.metadata?.implementing_agency &&
+  family.metadata?.implementing_agency?.length &&
     metadata.push({
       label: "Implementing Agency",
       value: family.metadata.implementing_agency.join(", "),
     });
-  family.metadata?.sector &&
+  family.metadata?.sector?.length &&
     metadata.push({
       label: "Sector",
       value: family.metadata.sector.join(", "),
     });
-  family.metadata?.focal_area &&
+  family.metadata?.focal_area?.length &&
     metadata.push({
       label: "Focal Area",
       value: family.metadata.focal_area.join(", "),
     });
-  family.metadata?.result_area &&
+  family.metadata?.result_area?.length &&
     metadata.push({
       label: "Result Area",
       value: family.metadata.result_area.join(", "),
