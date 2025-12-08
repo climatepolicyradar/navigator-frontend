@@ -21,7 +21,7 @@ export const DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS: TTableColumn<TTopicTableColum
   },
 ];
 
-export const getDocumentDrawerTopicTableRow = (familyTopics: IFamilyDocumentTopics, documentImportId: string): TTopicTableRow[] => {
+export const getDocumentDrawerTopicTableRows = (familyTopics: IFamilyDocumentTopics, documentImportId: string): TTopicTableRow[] => {
   const document = familyTopics.documents.find((doc) => doc.importId === documentImportId);
   if (!document) return [];
 

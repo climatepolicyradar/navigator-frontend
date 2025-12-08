@@ -8,7 +8,7 @@ import { ARROW_RIGHT } from "@/constants/chars";
 import { getLanguage } from "@/helpers/getLanguage";
 import { IFamilyDocumentTopics, IMetadata, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLanguages } from "@/types";
 import { getFamilyEvents } from "@/utils/eventTable";
-import { DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS, getDocumentDrawerTopicTableRow } from "@/utils/tables/topic/documentDrawerTopicTable";
+import { DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS, getDocumentDrawerTopicTableRows } from "@/utils/tables/topic/documentDrawerTopicTable";
 import { TTopicTableColumnId, TTopicTableRow } from "@/utils/tables/topic/topicTable";
 import { firstCase } from "@/utils/text";
 import { formatDateShort } from "@/utils/timedate";
@@ -83,7 +83,7 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
   /* Topics */
 
   let topicRows: TTopicTableRow[] = [];
-  if (familyTopics) topicRows = getDocumentDrawerTopicTableRow(familyTopics, documentImportId);
+  if (familyTopics) topicRows = getDocumentDrawerTopicTableRows(familyTopics, documentImportId);
 
   /* Render */
 

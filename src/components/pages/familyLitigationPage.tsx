@@ -135,8 +135,8 @@ export const FamilyLitigationPage = ({
     topics: {
       render: useCallback(() => {
         if (!familyTopicsHasTopics(familyTopics)) return null;
-        return <TopicsBlock key="topics" familyTopics={familyTopics} getCategoryText={getCategoryText} />;
-      }, [familyTopics, getCategoryText]),
+        return <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />;
+      }, [family, familyTopics, getCategoryText]),
     },
     targets: {
       render: useCallback(() => {

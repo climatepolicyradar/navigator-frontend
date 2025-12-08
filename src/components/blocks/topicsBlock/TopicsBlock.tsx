@@ -10,11 +10,12 @@ import { IFamilyDocumentTopics, TFamilyPublic } from "@/types";
 import { getTopicTableRows, topicTableColumns, TTopicTableColumnId } from "@/utils/tables/topic/topicTable";
 
 type TProps = {
+  family: TFamilyPublic;
   familyTopics: IFamilyDocumentTopics;
   getCategoryText: (textKey: TCategoryDictionaryKey) => string;
 };
 
-export const TopicsBlock = ({ familyTopics, getCategoryText }: TProps) => {
+export const TopicsBlock = ({ family, familyTopics, getCategoryText }: TProps) => {
   const [topicDrawerId, setTopicDrawerId] = useState<string | null>(null);
   const [showTopicDrawer, setShowTopicDrawer] = useState(false); // Separate state so that topic in drawer persists while closing
 
@@ -40,7 +41,13 @@ export const TopicsBlock = ({ familyTopics, getCategoryText }: TProps) => {
         <InteractiveTable<TTopicTableColumnId> columns={topicTableColumns} rows={getTopicTableRows(familyTopics, onTopicClick)} />
       </div>
 
-      <TopicDrawer familyTopics={familyTopics} topicWikibaseId={topicDrawerId} onOpenChange={onTopicDrawerOpenChange} open={showTopicDrawer} />
+      <TopicDrawer
+        family={family}
+        familyTopics={familyTopics}
+        topicWikibaseId={topicDrawerId}
+        onOpenChange={onTopicDrawerOpenChange}
+        open={showTopicDrawer}
+      />
     </Section>
   );
 };
