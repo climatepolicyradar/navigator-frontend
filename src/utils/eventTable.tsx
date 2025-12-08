@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 
 import { Badge } from "@/components/atoms/badge/Badge";
 import { Icon } from "@/components/atoms/icon/Icon";
+import { Label } from "@/components/atoms/label/Label";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Popover } from "@/components/atoms/popover/Popover";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
@@ -263,13 +264,13 @@ export const getEventTableRows = ({
             query={{ [QUERY_PARAMS.concept_name]: topic.preferred_label }}
             className={linkClasses}
           >
-            {firstCase(topic?.preferred_label || fallbackLabel)}
+            <Label>{firstCase(topic?.preferred_label || fallbackLabel)}</Label>
           </PageLink>
         );
       });
 
       topicsDisplay = (
-        <div className="flex flex-col gap-2 items-start">
+        <div className="flex flex-col gap-1 items-start">
           {topicLinks}
           {someTopicsHidden && (
             <button
