@@ -7,6 +7,7 @@ import { GeographyLink, IProps as GeographyLinkProps } from "@/components/molecu
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
+import { getSumUSD } from "@/helpers/getSumUSD";
 import { useText } from "@/hooks/useText";
 import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
 import { scrollToBlock } from "@/utils/blocks/scrollToBlock";
@@ -38,6 +39,7 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
     const categoryName = getCategoryName(family.category, family.corpus_type_name, family.organisation);
     const [year] = convertDate(family.published_date);
     const isLitigation = family.corpus_type_name === "Litigation";
+    const isMCF = family.category === "MCF";
 
     /* Geographies data */
 
@@ -125,7 +127,7 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
       },
       { label: `${getCategoryText("familyDate")}`, value: isNaN(year) ? "" : year },
       {
-        label: "Document type",
+        label: getCategoryText("familyType"),
         value: categoryName,
       },
     ];
@@ -157,6 +159,20 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
               ", "
             ),
       });
+    }
+    if (isMCF) {
+      family.metadata?.project_value_fund_spend &&
+        family.metadata?.project_value_fund_spend[0] !== "0" &&
+        pageHeaderMetadata.push({
+          label: "Fund Spend",
+          value: getSumUSD(family.metadata?.project_value_fund_spend),
+        });
+      family.metadata?.project_value_co_financing &&
+        family.metadata?.project_value_co_financing[0] !== "0" &&
+        pageHeaderMetadata.push({
+          label: "Co-Financing",
+          value: getSumUSD(family.metadata?.project_value_co_financing),
+        });
     }
 
     return {
