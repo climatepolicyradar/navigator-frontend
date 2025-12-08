@@ -30,7 +30,7 @@ const renderCellDisplay = (cell: TTableCell, showValues: boolean) => {
   return showValues ? <div className="inline-block bg-surface-ui text-sm text-text-tertiary font-mono">{`${content}`}</div> : content;
 };
 
-export interface IProps<ColumnKey extends string> {
+interface IProps<ColumnKey extends string> {
   columns: TTableColumn<ColumnKey>[];
   defaultSort?: TTableSortRules<ColumnKey>;
   maxRows?: number;

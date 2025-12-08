@@ -339,7 +339,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
       delete router.query[QUERY_PARAMS.topic];
       delete router.query[QUERY_PARAMS.sector];
     }
-    if (category === "UN-submissions") {
+    if (category === "UN-submissions" || category === "UNFCCC") {
       router.query[QUERY_PARAMS.author_type] = "Party";
     }
     router.push({ query: router.query }, undefined, { shallow: true });

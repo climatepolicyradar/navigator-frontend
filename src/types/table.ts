@@ -5,7 +5,7 @@ import { IProps as PageLinkProps } from "@/components/atoms/pageLink/PageLink";
 
 import { IMetadata } from "./display";
 
-export type TTableValue = string | number | null;
+type TTableValue = string | number | null;
 export type TTableOrder = "asc" | "desc";
 
 export type TTableSortOption = {

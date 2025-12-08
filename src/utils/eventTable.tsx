@@ -32,7 +32,7 @@ import { formatDateShort } from "./timedate";
 /* Columns */
 
 export type TEventTableColumnId = "caseNumber" | "caseTitle" | "court" | "date" | "searchResults" | "document" | "topics" | "type";
-export type TEventTableColumn = TTableColumn<TEventTableColumnId>;
+type TEventTableColumn = TTableColumn<TEventTableColumnId>;
 
 const topicsColumnName = (
   <>
@@ -70,7 +70,7 @@ export const getEventTableColumns = ({
 }) => {
   const columns: TEventTableColumn[] = [
     { id: "date", name: "Filing Date", sortable: true, fraction: 2 },
-    { id: "document", fraction: 6, classes: "pb-6" },
+    { id: "document", fraction: 6 },
     { id: "type", sortable: true, sortOptions: [{ label: "Group by type", order: "asc" }], fraction: 2 },
     { id: "topics", name: topicsColumnName, fraction: 4 },
     { id: "caseNumber", name: "Case Number", fraction: 2 },
@@ -150,7 +150,18 @@ const getDocumentLink = (document: TFamilyDocumentPublic, hasMatches: boolean, i
         {document.title} (External page {ARROW_UP_RIGHT})
       </PageLink>
     );
-  return null;
+  return (
+    <>
+      {document.title} <br />{" "}
+      <span className="text-sm">
+        (We do not have this document in our database.{" "}
+        <PageLink href="/contact" className="underline hover:text-brand">
+          Contact us
+        </PageLink>{" "}
+        if you can help us find it)
+      </span>
+    </>
+  );
 };
 
 const getDocumentCell = (
@@ -162,7 +173,7 @@ const getDocumentCell = (
   event?: TFamilyEventPublic
 ): ReactNode => {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 pb-4">
       {isLitigation && (
         <>
           <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation)}</div>
