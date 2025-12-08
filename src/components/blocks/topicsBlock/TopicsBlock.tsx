@@ -34,7 +34,7 @@ export const TopicsBlock = ({ family, familyTopics, getCategoryText }: TProps) =
         <p className="mb-3">
           See how often topics get mentioned in this {getCategoryText("familySingular")} and view specific passages of text highlighted in each
           document. Accuracy is not 100%.{" "}
-          <PageLink external href="/faq#topics-faqs" className="inline-block underline decoration-gray-300 hover:decoration-gray-500">
+          <PageLink href="/faq" hash="topics-faqs" className="inline-block underline decoration-gray-300 hover:decoration-gray-500">
             Learn more
           </PageLink>
         </p>

@@ -59,10 +59,7 @@ export function getUNFCCCMetadata(family: TFamilyPublic, familyTopics: IFamilyDo
   /* Topics */
   if (familyTopicsHasTopics(familyTopics)) {
     const topics = getTopicsMetadataItem(familyTopics);
-    if (topics) {
-      topics.label = "Response areas";
-      metadata.push(topics);
-    }
+    if (topics) metadata.push(topics);
   }
 
   return metadata;
