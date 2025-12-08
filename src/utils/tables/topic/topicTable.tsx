@@ -1,14 +1,13 @@
 import orderBy from "lodash/orderBy";
 
 import { Label } from "@/components/atoms/label/Label";
-import { ConceptLink } from "@/components/molecules/conceptLink/ConceptLink";
 import { IFamilyDocumentTopics, TTableColumn, TTableRow } from "@/types";
 import { firstCase } from "@/utils/text";
 
 export type TTopicTableColumnId = "group" | "topics";
 
 export const topicTableColumns: TTableColumn<TTopicTableColumnId>[] = [
-  { id: "group", name: "Group", fraction: 2 },
+  { id: "group", name: "Group", fraction: 2, classes: "font-medium" },
   { id: "topics", name: "Topics", fraction: 5 },
 ];
 
@@ -31,7 +30,7 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics, onClickTo
       id: rootConcept.wikibase_id,
       cells: {
         group: {
-          label: <ConceptLink concept={rootConcept} />,
+          label: firstCase(rootConcept.preferred_label),
           value: rootConcept.preferred_label,
         },
         topics: {
