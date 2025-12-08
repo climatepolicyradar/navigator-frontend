@@ -308,7 +308,7 @@ export const getEventTableRows = ({
     /* Everything else */
 
     const row: TEventTableRow = {
-      id: document ? document.import_id : event.import_id,
+      id: `${document.import_id || ""}:${event.import_id || ""}`,
       cells: {
         caseNumber: getCaseNumbers(family),
         caseTitle: family.title,

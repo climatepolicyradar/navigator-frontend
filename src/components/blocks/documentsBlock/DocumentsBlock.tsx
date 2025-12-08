@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { DocumentDrawer } from "@/components/drawers/documentDrawer/DocumentDrawer";
 import { Section } from "@/components/molecules/section/Section";
 import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
@@ -14,7 +15,6 @@ interface IProps {
   languages: TLanguages;
   matchesFamily?: TMatchedFamily; // The relevant search result family
   matchesStatus?: TLoadingStatus; // The status of the search
-  onClickRow: (rowData: string) => void;
   showKnowledgeGraphTutorial: boolean;
   showMatches?: boolean; // Whether to show matches from the search result
 }
@@ -25,11 +25,21 @@ export const DocumentsBlock = ({
   languages,
   matchesFamily,
   matchesStatus,
-  onClickRow,
   showKnowledgeGraphTutorial,
   showMatches = false,
 }: IProps) => {
   const [updatedRowsWithLocalisedDates, setUpdatedRowsWithLocalisedDates] = useState<TEventTableRow[]>(null);
+  const [documentDrawerId, setDocumentDrawerId] = useState<string | null>(null);
+  const [showDocumentDrawer, setShowDocumentDrawer] = useState(false); // Separate state so that document in drawer persists while closing
+
+  const onRowClick = (rowId: string) => {
+    setDocumentDrawerId(rowId.split(":")[0]);
+    setShowDocumentDrawer(true);
+  };
+
+  const onDocumentDrawerOpenChange = (open: boolean) => {
+    if (!open) setShowDocumentDrawer(false);
+  };
 
   const isLitigation = family.corpus_type_name === "Litigation";
   const isUSA = family.geographies.includes("USA");
@@ -42,7 +52,7 @@ export const DocumentsBlock = ({
     () =>
       getEventTableRows({
         documentEventsOnly: true,
-        documentRowClick: (rowId) => onClickRow(rowId),
+        documentRowClick: onRowClick,
         families: [family],
         familyTopics,
         isLitigation,
@@ -50,7 +60,7 @@ export const DocumentsBlock = ({
         matchesFamily,
         matchesStatus,
       }),
-    [family, familyTopics, isLitigation, languages, matchesFamily, matchesStatus, onClickRow]
+    [family, familyTopics, isLitigation, languages, matchesFamily, matchesStatus]
   );
 
   // If the case is new, there can be one placeholder document with no events. Handle this interim state
@@ -61,7 +71,7 @@ export const DocumentsBlock = ({
     setUpdatedRowsWithLocalisedDates(
       getEventTableRows({
         documentEventsOnly: true,
-        documentRowClick: (rowId) => onClickRow(rowId),
+        documentRowClick: onRowClick,
         families: [family],
         familyTopics,
         isLitigation,
@@ -71,7 +81,7 @@ export const DocumentsBlock = ({
         matchesStatus,
       })
     );
-  }, [family, familyTopics, isLitigation, languages, matchesFamily, matchesStatus, onClickRow]);
+  }, [family, familyTopics, isLitigation, languages, matchesFamily, matchesStatus]);
 
   return (
     <Section block="documents" title="Documents" wide>
@@ -90,6 +100,15 @@ export const DocumentsBlock = ({
         )}
         {!hasDocumentsToDisplay && <p className="italic">There are no documents to display yet. Check back later.</p>}
       </div>
+
+      <DocumentDrawer
+        documentImportId={documentDrawerId}
+        family={family}
+        familyTopics={familyTopics}
+        languages={languages}
+        onOpenChange={onDocumentDrawerOpenChange}
+        open={showDocumentDrawer}
+      />
     </Section>
   );
 };
