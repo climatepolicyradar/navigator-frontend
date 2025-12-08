@@ -12,7 +12,7 @@ export const topicTableColumns: TTableColumn<TTopicTableColumnId>[] = [
   { id: "topics", name: "Topics", fraction: 5 },
 ];
 
-type TTopicTableRow = TTableRow<TTopicTableColumnId>;
+export type TTopicTableRow = TTableRow<TTopicTableColumnId>;
 
 export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics): TTopicTableRow[] => {
   const rows: TTopicTableRow[] = [];
