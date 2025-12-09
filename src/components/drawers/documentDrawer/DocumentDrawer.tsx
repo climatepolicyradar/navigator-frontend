@@ -1,10 +1,10 @@
 import { Fragment } from "react";
 
 import { Drawer } from "@/components/atoms/drawer/Drawer";
+import { Icon } from "@/components/atoms/icon/Icon";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { ARROW_RIGHT } from "@/constants/chars";
 import { getLanguage } from "@/helpers/getLanguage";
 import { IFamilyDocumentTopics, IMetadata, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLanguages } from "@/types";
 import { getFamilyEvents } from "@/utils/eventTable";
@@ -43,7 +43,7 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
   if (!document) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange} title="Document">
-        {null}
+        <Icon name="loading" />
       </Drawer>
     );
   }

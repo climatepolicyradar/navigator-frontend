@@ -1,6 +1,6 @@
 import orderBy from "lodash/orderBy";
 
-import { Label } from "@/components/atoms/label/Label";
+import { LabelButton } from "@/components/atoms/labelButton/LabelButton";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { IFamilyDocumentTopics, TConcept, TTableColumn } from "@/types";
@@ -58,7 +58,7 @@ export const getDocumentDrawerTopicTableRows = (familyTopics: IFamilyDocumentTop
                     keepQuery
                     query={{ [QUERY_PARAMS.concept_name]: topic.preferred_label }}
                   >
-                    <Label>{firstCase(topic.preferred_label)}</Label>
+                    <LabelButton>{firstCase(topic.preferred_label)}</LabelButton>
                   </PageLink>
                 ))}
               </div>

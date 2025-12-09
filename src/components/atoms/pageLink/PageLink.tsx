@@ -25,7 +25,6 @@ export interface IProps extends LinkProps {
   href: string;
   keepQuery?: boolean;
   query?: ParsedUrlQuery;
-  stopPropagation?: boolean;
   underline?: boolean;
 }
 

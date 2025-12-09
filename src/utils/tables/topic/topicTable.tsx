@@ -1,6 +1,6 @@
 import orderBy from "lodash/orderBy";
 
-import { Label } from "@/components/atoms/label/Label";
+import { LabelButton } from "@/components/atoms/labelButton/LabelButton";
 import { IFamilyDocumentTopics, TTableColumn, TTableRow } from "@/types";
 import { firstCase } from "@/utils/text";
 
@@ -37,9 +37,9 @@ export const getTopicTableRows = (familyTopics: IFamilyDocumentTopics, onClickTo
           label: (
             <div className="flex flex-col gap-1 items-start">
               {sortedConcepts.map((concept) => (
-                <Label key={concept.wikibase_id} onClick={() => onClickTopic(concept.wikibase_id)}>
+                <LabelButton key={concept.wikibase_id} onClick={() => onClickTopic(concept.wikibase_id)}>
                   {firstCase(concept.preferred_label)}
-                </Label>
+                </LabelButton>
               ))}
             </div>
           ),

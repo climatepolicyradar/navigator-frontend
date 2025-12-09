@@ -1,16 +1,16 @@
 import { Meta, StoryObj } from "@storybook/nextjs";
 
-import { Label } from "./Label";
+import { LabelButton } from "./LabelButton";
 
 const meta = {
-  title: "Atoms/Label",
-  component: Label,
+  title: "Atoms/LabelButton",
+  component: LabelButton,
   parameters: { layout: "centered" },
   argTypes: {
     children: { control: "text" },
   },
-} satisfies Meta<typeof Label>;
-type TStory = StoryObj<typeof Label>;
+} satisfies Meta<typeof LabelButton>;
+type TStory = StoryObj<typeof LabelButton>;
 
 export default meta;
 

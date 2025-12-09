@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 
 import { Badge } from "@/components/atoms/badge/Badge";
 import { Icon } from "@/components/atoms/icon/Icon";
-import { Label } from "@/components/atoms/label/Label";
+import { LabelButton } from "@/components/atoms/labelButton/LabelButton";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Popover } from "@/components/atoms/popover/Popover";
 import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
@@ -264,7 +264,7 @@ export const getEventTableRows = ({
             query={{ [QUERY_PARAMS.concept_name]: topic.preferred_label }}
             className={linkClasses}
           >
-            <Label>{firstCase(topic?.preferred_label || fallbackLabel)}</Label>
+            <LabelButton>{firstCase(topic?.preferred_label || fallbackLabel)}</LabelButton>
           </PageLink>
         );
       });
