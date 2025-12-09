@@ -96,7 +96,7 @@ describe("getEventTableRows", () => {
     const eventRows = getEventTableRows({ families: [familyWithoutEvents], isLitigation: true });
 
     expect(eventRows).toHaveLength(1);
-    expect(eventRows[0].id).toBe("Document 1");
+    expect(eventRows[0].id).toBe("Document 1:Event 1");
   });
 
   it("returns a list of event rows if there are events in the family and events on documents", () => {
@@ -162,8 +162,8 @@ describe("getEventTableRows", () => {
     const eventRows = getEventTableRows({ families: [familyWithoutEvents], isLitigation: true });
 
     expect(eventRows).toHaveLength(2);
-    expect(eventRows[0].id).toBe("Event 2");
-    expect(eventRows[1].id).toBe("Document 1");
+    expect(eventRows[0].id).toBe(":Event 2");
+    expect(eventRows[1].id).toBe("Document 1:Event 1");
   });
 
   it("returns a deduplicated list of family and document event rows if same event linked to both family and document", () => {
@@ -229,6 +229,6 @@ describe("getEventTableRows", () => {
     const eventRows = getEventTableRows({ families: [familyWithoutEvents], isLitigation: true });
 
     expect(eventRows).toHaveLength(1);
-    expect(eventRows[0].id).toBe("Document 1");
+    expect(eventRows[0].id).toBe("Document 1:Event 1");
   });
 });

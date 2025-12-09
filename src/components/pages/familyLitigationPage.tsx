@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback, useContext } from "react";
+import { useCallback } from "react";
 
 import { Debug } from "@/components/atoms/debug/Debug";
 import { CollectionsBlock } from "@/components/blocks/collectionsBlock/CollectionsBlock";
@@ -17,7 +17,6 @@ import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLa
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { TutorialContext } from "@/context/TutorialContext";
 import useConfig from "@/hooks/useConfig";
 import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import useSearch from "@/hooks/useSearch";
@@ -29,7 +28,6 @@ import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD
 import { pluralise } from "@/utils/pluralise";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
-import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
 import { IProps } from "./familyOriginalPage";
 
@@ -47,11 +45,8 @@ export const FamilyLitigationPage = ({
 }: IProps) => {
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
-  const { completedTutorials } = useContext(TutorialContext);
   const { getCategoryTextLookup } = useText();
   const getCategoryText = getCategoryTextLookup(family.category);
-
-  const showKnowledgeGraphTutorial = getIncompleteTutorialNames(completedTutorials, themeConfig, featureFlags).includes("knowledgeGraph");
 
   /* Search matches */
 
@@ -102,11 +97,10 @@ export const FamilyLitigationPage = ({
             matchesFamily={matchesFamily}
             matchesStatus={matchesStatus}
             showMatches={hasSearch}
-            showKnowledgeGraphTutorial={showKnowledgeGraphTutorial}
             languages={languages}
           />
         ),
-        [family, familyTopics, hasSearch, matchesFamily, matchesStatus, showKnowledgeGraphTutorial, languages]
+        [family, familyTopics, hasSearch, matchesFamily, matchesStatus, languages]
       ),
     },
     metadata: {
@@ -135,8 +129,8 @@ export const FamilyLitigationPage = ({
     topics: {
       render: useCallback(() => {
         if (!familyTopicsHasTopics(familyTopics)) return null;
-        return <TopicsBlock key="topics" familyTopics={familyTopics} getCategoryText={getCategoryText} />;
-      }, [familyTopics, getCategoryText]),
+        return <TopicsBlock key="topics" family={family} familyTopics={familyTopics} getCategoryText={getCategoryText} />;
+      }, [family, familyTopics, getCategoryText]),
     },
     targets: {
       render: useCallback(() => {

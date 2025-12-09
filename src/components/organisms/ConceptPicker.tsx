@@ -3,7 +3,7 @@ import { NextRouter, useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
 
 import { Accordion } from "@/components/accordion/Accordion";
-import { Badge } from "@/components/atoms/label/Badge";
+import { Badge } from "@/components/atoms/badge/Badge";
 import { Select } from "@/components/atoms/select/Select";
 import { InputCheck } from "@/components/forms/Checkbox";
 import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
