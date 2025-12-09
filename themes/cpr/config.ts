@@ -448,7 +448,6 @@ const config: TThemeConfig = {
     familyConceptsSearch: false,
     knowledgeGraph: true,
     litigation: false,
-    newPageDesigns: true,
     searchFamilySummary: false,
     rioPolicyRadar: true,
   },
