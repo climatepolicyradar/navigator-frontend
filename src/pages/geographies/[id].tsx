@@ -2,23 +2,18 @@ import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
-import { GeographyLitigationPage } from "@/components/pages/geographyLitigationPage";
-import { GeographyOriginalPage, IProps } from "@/components/pages/geographyOriginalPage";
+import { IProps, GeographyPage } from "@/components/pages/geographyPage";
 import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode } from "@/helpers/getCountryFields";
-import { ApiItemResponse, GeographyV2, TSearch } from "@/types";
-import { TTarget, TGeography } from "@/types";
+import { ApiItemResponse, GeographyV2, TSearch, TTarget, TGeography } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isNewPageDesignsEnabled } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags, themeConfig, ...props }: IProps) => {
-  const newPageDesignsAreEnabled = isNewPageDesignsEnabled(featureFlags, themeConfig);
-  const PageComponent = newPageDesignsAreEnabled ? GeographyLitigationPage : GeographyOriginalPage;
-  return <PageComponent featureFlags={featureFlags} themeConfig={themeConfig} {...props} />;
+  return <GeographyPage featureFlags={featureFlags} themeConfig={themeConfig} {...props} />;
 };
 
 export default CountryPage;

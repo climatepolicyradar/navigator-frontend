@@ -14,17 +14,28 @@ import Layout from "@/components/layouts/Main";
 import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
+import { TPublicEnvConfig } from "@/context/EnvConfig";
 import { GeographiesContext } from "@/context/GeographiesContext";
 import { useText } from "@/hooks/useText";
-import { TSearch, TGeographyPageBlock, IMetadata } from "@/types";
+import { TSearch, TGeographyPageBlock, IMetadata, GeographyV2, TFeatureFlags, TTheme, TThemeConfig, TTarget } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
-import { IProps } from "./geographyOriginalPage";
 import { INTRO_BLOCK_TITLE, IntroBlock } from "../blocks/introBlock/IntroBlock";
 
-export const GeographyLitigationPage = ({ geographyV2, parentGeographyV2, targets, theme, themeConfig, vespaSearchResults, envConfig }: IProps) => {
+export interface IProps {
+  featureFlags: TFeatureFlags;
+  geographyV2: GeographyV2;
+  parentGeographyV2?: GeographyV2;
+  targets: TTarget[];
+  theme: TTheme;
+  themeConfig: TThemeConfig;
+  vespaSearchResults?: TSearch;
+  envConfig: TPublicEnvConfig;
+}
+
+export const GeographyPage = ({ geographyV2, parentGeographyV2, targets, theme, themeConfig, vespaSearchResults, envConfig }: IProps) => {
   const { getAppText } = useText();
 
   const isCountry = geographyV2.type === "country";
