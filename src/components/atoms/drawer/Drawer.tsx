@@ -6,7 +6,7 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 type TProps = VaulDrawerRootProps & {
   children: ReactNode;
   direction?: "left" | "right";
-  title: string;
+  title: ReactNode;
   trigger?: ReactNode;
 };
 

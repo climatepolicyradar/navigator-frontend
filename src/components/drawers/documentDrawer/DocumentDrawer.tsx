@@ -61,7 +61,11 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
     if (event.metadata.description?.[0]) {
       metadata.push({
         label: "Summary",
-        value: <ViewMore maxLines={5}>{event.metadata.description?.[0]}</ViewMore>,
+        value: (
+          <ViewMore maxLines={5} buttonText={["Read more", "Read less"]}>
+            {event.metadata.description?.[0]}
+          </ViewMore>
+        ),
       });
     }
   } else if (!isLitigation) {
@@ -88,7 +92,19 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
   /* Render */
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} title={document.title}>
+    <Drawer
+      open={open}
+      onOpenChange={onOpenChange}
+      title={
+        <PageLink
+          keepQuery
+          href={"/documents/" + document.slug}
+          className="underline text-brand underline-offset-5 decoration-gray-300 hover:decoration-brand"
+        >
+          {document.title}
+        </PageLink>
+      }
+    >
       {metadata.length > 0 && (
         <div className="grid grid-cols-[120px_auto] gap-x-3 gap-y-2 mb-6 text-sm text-gray-700 leading-5">
           {metadata.map((item, itemIndex) => (
@@ -100,15 +116,10 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
         </div>
       )}
 
-      <PageLink keepQuery href={"/documents/" + document.slug}>
-        <button type="button" className="px-3 py-2 bg-brand rounded-sm text-sm text-white font-medium leading-5">
-          Go to document {ARROW_RIGHT}
-        </button>
-      </PageLink>
-
       {topicRows.length > 0 && (
         <div className="mt-9">
-          <h3 className="mt-6 mb-5 text-lg text-gray-950 font-heavy leading-6">Topics mentioned in this document</h3>
+          <h3 className="mt-6 mb-2 text-lg text-gray-950 font-heavy leading-6">Topics mentioned</h3>
+          <p className="mb-4">See exactly where a topic is mentioned in this document.</p>
           <InteractiveTable<TTopicTableColumnId> columns={DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS} rows={topicRows} />
         </div>
       )}
