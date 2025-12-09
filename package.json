@@ -39,7 +39,8 @@
     "react-simple-maps": "^3.0.0",
     "react-tooltip": "^5.26.3",
     "sass": "^1.93.3",
-    "schema-dts": "^1.1.5"
+    "schema-dts": "^1.1.5",
+    "vaul": "^1.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",
