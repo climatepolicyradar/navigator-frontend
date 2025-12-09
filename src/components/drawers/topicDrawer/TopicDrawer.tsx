@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { Drawer } from "@/components/atoms/drawer/Drawer";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
-import { ARROW_RIGHT } from "@/constants/chars";
+import { ARROW_RIGHT, ARROW_UP_RIGHT } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { IFamilyDocumentTopics, TFamilyPublic } from "@/types";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
@@ -45,34 +45,20 @@ export const TopicDrawer = ({ family, familyTopics, onOpenChange, open, topicWik
     <Drawer open={open} onOpenChange={onOpenChange} title={topicName}>
       <div className="grid grid-cols-[120px_auto] gap-x-3 gap-y-2 text-sm text-gray-700 leading-5">
         <div className="font-medium">Definition</div>
+        <p>{firstCase(topic.description)}</p>
+        <div className="font-medium">Methodology</div>
         <div>
-          <p>{firstCase(topic.description)}</p>
-          <ul className="flex flex-col gap-1 mt-3">
-            <li>
-              {ARROW_RIGHT}&ensp;
-              <PageLink
-                external
-                href={getConceptStoreLink(topic.wikibase_id)}
-                className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
-              >
-                View source data and methodology
-              </PageLink>
-            </li>
-            <li>
-              {ARROW_RIGHT}&ensp;
-              <PageLink
-                href="/search"
-                query={{ [QUERY_PARAMS.concept_name]: topic.preferred_label }}
-                className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
-              >
-                Search the entire database for ‘{topicName}’
-              </PageLink>
-            </li>
-          </ul>
+          <PageLink
+            external
+            href={getConceptStoreLink(topic.wikibase_id)}
+            className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+          >
+            View source data&nbsp;<span className="text-gray-500">{ARROW_UP_RIGHT}</span>
+          </PageLink>
         </div>
       </div>
 
-      <h3 className="mt-9 mb-5 text-lg text-gray-950 font-heavy leading-6">Documents mentioning this topic</h3>
+      <h3 className="mt-9 mb-5 text-lg text-gray-950 font-heavy leading-6">Documents that mention this topic</h3>
       <InteractiveTable<TDocumentMentionsTableColumnId>
         columns={TOPIC_DRAWER_DOCUMENTS_TABLE_COLUMNS}
         rows={documentRows}
