@@ -22,7 +22,7 @@ export const DocumentsBlock = ({ family, familyTopics, languages, matchesFamily,
   const [showDocumentDrawer, setShowDocumentDrawer] = useState(false); // Separate state so that document in drawer persists while closing
 
   const onRowClick = (rowId: string) => {
-    // setDocumentDrawerId(rowId.split(":")[0]);
+    setDocumentDrawerId(rowId.split(":")[0]);
     setShowDocumentDrawer(true);
   };
 
