@@ -39,7 +39,7 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
           <Banner />
           <section className="absolute inset-0 z-10 flex flex-col items-center justify-center min-h-[800px]">
             <div data-cy="cpr-logo" className="text-white flex">
-              <Image src="/images/cpr-logo-homepage.png" width={596} height={34} alt="Climate Policy Radar" className="px-5" />
+              <Image src="/images/cpr-logo-homepage.png" width={596} height={34} alt="Climate Policy Radar" className="px-5" data-cy="cpr-logo" />
             </div>
             <SiteWidth extraClasses="mt-24 md:mt-48 max-w-screen-lg mx-auto">
               <LandingSearchForm handleSearchInput={handleSearchInput} input={searchInput} />
