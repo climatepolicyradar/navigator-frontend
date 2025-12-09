@@ -41,7 +41,7 @@ const categories: Record<TCategory, string> = {
   REPORTS: "Report",
 };
 
-const getReportsCategory = (source: string): string => {
+const getReportsCategory = (source: keyof typeof reportSubCategories): string => {
   return reportSubCategories[source] || "Reports";
 };
 
@@ -53,13 +53,13 @@ export const getCategoryName = (category: TCategory, subCategory?: TCorpusTypeSu
   const name = categories[category as TCategory];
 
   if (category === "Reports" && source) {
-    return getReportsCategory(source);
+    return getReportsCategory(source as keyof typeof reportSubCategories);
   }
   if (category === "MCF" && subCategory) {
     return getSubCategoryName(subCategory);
   }
   if (corpusId) {
-    return corporaIdCategories[corpusId] ?? name;
+    return corporaIdCategories[corpusId as keyof typeof corporaIdCategories] ?? name;
   }
   return name;
 };
