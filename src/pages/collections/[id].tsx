@@ -10,8 +10,9 @@ import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
+import { TToggleGroupToggle } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { ContentsSideBar, ISideBarItem } from "@/components/organisms/contentsSideBar/ContentsSideBar";
-import { IPageHeaderTab, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
+import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { TCollectionPublicWithFamilies, TTheme, TThemeConfig } from "@/types";
 import { getCaseNumbers, getCourts } from "@/utils/eventTable";
@@ -27,16 +28,16 @@ interface IProps {
   themeConfig: TThemeConfig;
 }
 
-type TCollectionTab = "about" | "cases" | "procedural history";
-const COLLECTION_TABS: IPageHeaderTab<TCollectionTab>[] = [{ tab: "cases" }, { tab: "procedural history" }, { tab: "about" }];
+type TCollectionTabId = "about" | "cases" | "procedural history";
+const COLLECTION_TABS: TToggleGroupToggle<TCollectionTabId>[] = [{ id: "cases" }, { id: "procedural history" }, { id: "about" }];
 
 const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ collection, theme, themeConfig }: IProps) => {
-  const [currentTab, setCurrentTab] = useState<TCollectionTab>("cases");
+  const [currentTab, setCurrentTab] = useState<TCollectionTabId>("cases");
   const { families } = collection;
 
   // TODO sort families before displaying
 
-  const onTabChange = (tab: TCollectionTab) => setCurrentTab(tab);
+  const onTabChange = (tab: TCollectionTabId) => setCurrentTab(tab);
 
   const sideBarItems: ISideBarItem<string>[] = families.map((family) => ({
     id: family.slug,
@@ -47,7 +48,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
   return (
     <Layout title={collection.title} description={collection.description} theme={theme} themeConfig={themeConfig} metadataKey="collection">
       <BreadCrumbs dark label={collection.title} />
-      <PageHeader<TCollectionTab> dark title={collection.title} tabs={COLLECTION_TABS} currentTab={currentTab} onTabChange={onTabChange} />
+      <PageHeader<TCollectionTabId> dark title={collection.title} tabs={COLLECTION_TABS} currentTab={currentTab} onTabChange={onTabChange} />
       <FiveColumns>
         {currentTab === "cases" && (
           <>

@@ -37,7 +37,6 @@ export const FamilyLitigationPage = ({
   countries,
   family,
   familyTopics,
-  featureFlags,
   targets,
   subdivisions,
   theme,
