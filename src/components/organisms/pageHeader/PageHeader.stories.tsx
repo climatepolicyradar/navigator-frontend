@@ -47,7 +47,7 @@ export const CollectionPage: TStory<TCollectionTab> = {
   args: {
     dark: true,
     title: "Climate United Fund v. Citibank, N.A.",
-    tabs: [{ tab: "cases" }, { tab: "events" }, { tab: "about" }],
+    tabs: [{ id: "cases" }, { id: "events" }, { id: "about" }],
   },
   render: useTabsRender,
 };
