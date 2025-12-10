@@ -40,7 +40,7 @@ export const TUTORIALS: TTutorials = {
       defaultOpen: false,
       title: "New improvements",
       close: true,
-      content: (
+      content: (theme) => (
         <>
           <p>We have introduced a new layer of structure to the data, automatically identifying mentions of key climate topics in documents.</p>
           <p>
@@ -60,6 +60,7 @@ export const TUTORIALS: TTutorials = {
             </PageLink>
             .
           </p>
+          {theme === "ccc" && <p>Litigation-specific topics are coming soon.</p>}
         </>
       ),
       buttonPrimary: {
@@ -82,7 +83,7 @@ export const TUTORIALS: TTutorials = {
       headerImage: <Image src="/images/features/ccc.jpg" alt="The logo of Sabin Center for Climate Change Law" width={920} height={400} />,
       close: true,
       title: "Welcome to our new site",
-      content: (
+      content: () => (
         <p>
           The Climate Litigation Database is the most comprehensive resource tracking climate change litigation worldwide. Please bear with us while
           we make some exciting new updates.
