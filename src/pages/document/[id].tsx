@@ -17,6 +17,7 @@ import {
   TSearchResponse,
   TSlugResponse,
   TTarget,
+  TTheme,
 } from "@/types";
 import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
@@ -45,7 +46,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const featureFlags = getFeatureFlags(context.req.cookies);
 
-  const theme = process.env.THEME;
+  const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
 
   const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
@@ -149,7 +150,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let familyTopics: IFamilyDocumentTopics = null;
 
   if (vespaFamilyData) {
-    familyTopics = await processFamilyTopics(vespaFamilyData);
+    familyTopics = await processFamilyTopics(vespaFamilyData, theme);
   }
 
   return {

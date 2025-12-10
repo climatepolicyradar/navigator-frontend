@@ -1,8 +1,8 @@
-import { IFamilyDocumentTopics, TSearchResponse } from "@/types";
+import { IFamilyDocumentTopics, TSearchResponse, TTheme } from "@/types";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 
-export const processFamilyTopics = async (vespaFamilyData: TSearchResponse): Promise<IFamilyDocumentTopics> => {
+export const processFamilyTopics = async (vespaFamilyData: TSearchResponse, theme: TTheme): Promise<IFamilyDocumentTopics> => {
   const documentsWithConceptCounts: IFamilyDocumentTopics = { documents: [], conceptCounts: {}, rootConcepts: [], conceptsGrouped: {} };
 
   vespaFamilyData.families.forEach((family) => {
@@ -24,7 +24,7 @@ export const processFamilyTopics = async (vespaFamilyData: TSearchResponse): Pro
 
   const conceptIds = documentsWithConceptCounts.conceptCounts ? Object.keys(documentsWithConceptCounts.conceptCounts) : [];
 
-  const { rootConcepts, concepts } = await fetchAndProcessConcepts(conceptIds);
+  const { rootConcepts, concepts } = await fetchAndProcessConcepts(conceptIds, theme);
 
   documentsWithConceptCounts.rootConcepts = rootConcepts;
   documentsWithConceptCounts.conceptsGrouped = groupByRootConcept(concepts, rootConcepts);

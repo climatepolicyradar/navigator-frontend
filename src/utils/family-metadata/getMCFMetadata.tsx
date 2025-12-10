@@ -20,7 +20,7 @@ export function getMCFMetadata(family: TFamilyPublic, familyTopics: IFamilyDocum
   approvalYear &&
     metadata.push({
       label: "Approval FY",
-      value: approvalYear,
+      value: approvalYear || EN_DASH,
     });
 
   /* Geography */

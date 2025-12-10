@@ -109,7 +109,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
 
   useEffect(() => {
     const conceptIds = concepts.map((concept) => concept.wikibase_id);
-    fetchAndProcessConcepts(conceptIds).then(({ rootConcepts, concepts }) => {
+    fetchAndProcessConcepts(conceptIds, theme).then(({ rootConcepts, concepts }) => {
       // TECH DEBT: Remove climate finance concepts from MCF as they don't currently work as expected
       const usableRootConcepts = removeUnusableConcepts(rootConcepts, theme);
       const usableConcepts = removeUnusableConcepts(concepts, theme);

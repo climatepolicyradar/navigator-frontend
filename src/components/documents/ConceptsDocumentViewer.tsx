@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/router";
-import React, { useEffect, useMemo, useReducer, useState } from "react";
+import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
 
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
@@ -14,6 +14,7 @@ import { SearchSettings } from "@/components/filters/SearchSettings";
 import { MAX_RESULTS } from "@/constants/paging";
 import { SEARCH_PASSAGE_ORDER } from "@/constants/searchPassagesOrder";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
+import { ThemeContext } from "@/context/ThemeContext";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import { TConcept, TDocumentPage, TLoadingStatus, TMatchedFamily, TPassage, TSearchResponse } from "@/types";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
@@ -73,6 +74,7 @@ export const ConceptsDocumentViewer = ({
   handlePassagesOrderChange,
 }: IProps) => {
   const router = useRouter();
+  const { theme } = useContext(ThemeContext);
   const [showSearchOptions, setShowSearchOptions] = useState(false);
   const [showSortOptions, setShowSortOptions] = useState(false);
   const [showConcepts, setShowConcepts] = useState(false);
@@ -100,7 +102,7 @@ export const ConceptsDocumentViewer = ({
       });
     });
 
-    fetchAndProcessConcepts(Array.from(conceptIds)).then(({ concepts }) => {
+    fetchAndProcessConcepts(Array.from(conceptIds), theme).then(({ concepts }) => {
       setFamilyConcepts(concepts);
     });
   });
