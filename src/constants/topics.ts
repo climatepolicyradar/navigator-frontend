@@ -1,3 +1,5 @@
+import { TTheme } from "@/types";
+
 export const ROOT_TOPICS = {
   Q1651: "Target",
   Q709: "Economic sector",
@@ -15,3 +17,12 @@ export const ROOT_TOPICS = {
 type TRootTopicId = keyof typeof ROOT_TOPICS;
 
 export const ORDERED_ROOT_TOPIC_IDS: TRootTopicId[] = ["Q1651", "Q1171", "Q975", "Q672", "Q47", "Q567", "Q638", "Q218", "Q709", "Q1343", "Q1367"];
+
+export const DISABLED_TOPICS: Record<TTheme, string[]> = {
+  cpr: [],
+  cclw: [],
+  mcf: [],
+  ccc: [
+    "Q1277", // Fees and charges
+  ],
+};
