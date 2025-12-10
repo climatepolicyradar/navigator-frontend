@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-import { Button } from "@/components/atoms/button/Button";
+import { TutorialButton } from "@/components/molecules/tutorials/TutorialButton";
 import { TutorialContext } from "@/context/TutorialContext";
 import { TTutorialBanner, TTutorialButtonAction, TTutorialName } from "@/types";
 
@@ -21,25 +21,13 @@ export const TutorialBanner = ({ name, banner: { buttonPrimary, buttonSecondary,
     <div className="flex gap-x-4 gap-y-3 justify-center items-center flex-wrap p-3 bg-surface-brand pointer-events-auto select-none">
       <span className="text-sm leading-normal text-text-light">{text}</span>
       <div className="flex gap-2">
-        <Button
-          className="border-border-light/75 hover:border-border-light hover:!bg-transparent text-text-light"
-          size="small"
-          variant={buttonPrimary.variant || "outlined"}
-          color={buttonPrimary.color || "brand"}
-          onClick={buttonActions[buttonPrimary.action]}
-        >
-          {buttonPrimary.text}
-        </Button>
+        <TutorialButton
+          {...buttonPrimary}
+          actions={buttonActions}
+          className="border-border-light/75 hover:border-border-light hover:bg-transparent! text-text-light"
+        />
         {buttonSecondary && (
-          <Button
-            className="text-text-light/75 hover:text-text-light hover:!bg-transparent"
-            size="small"
-            variant={buttonSecondary.variant || "ghost"}
-            color={buttonSecondary.color || "brand"}
-            onClick={buttonActions[buttonSecondary.action]}
-          >
-            {buttonSecondary.text}
-          </Button>
+          <TutorialButton {...buttonSecondary} actions={buttonActions} className="text-text-light/75 hover:text-text-light hover:bg-transparent!" />
         )}
       </div>
     </div>
