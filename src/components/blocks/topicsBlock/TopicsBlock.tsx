@@ -28,6 +28,9 @@ export const TopicsBlock = ({ family, familyTopics, getCategoryText }: TProps) =
     if (!open) setShowTopicDrawer(false);
   };
 
+  const topicTableRows = getTopicTableRows(familyTopics, onTopicClick);
+  if (topicTableRows.length === 0) return null;
+
   return (
     <Section block="topics" Icon={LucideTextSearch} title={"Topics mentioned most in this " + getCategoryText("familySingular")} badge="Beta">
       <div className="col-start-1 -col-end-1">
@@ -38,7 +41,7 @@ export const TopicsBlock = ({ family, familyTopics, getCategoryText }: TProps) =
             Learn more
           </PageLink>
         </p>
-        <InteractiveTable<TTopicTableColumnId> columns={topicTableColumns} rows={getTopicTableRows(familyTopics, onTopicClick)} />
+        <InteractiveTable<TTopicTableColumnId> columns={topicTableColumns} rows={topicTableRows} />
       </div>
 
       <TopicDrawer
