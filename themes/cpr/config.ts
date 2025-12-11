@@ -30,12 +30,6 @@ const config: TThemeConfig = {
         ],
       },
       {
-        label: "UNFCCC Submissions",
-        slug: "UNFCCC",
-        value: ["UNFCCC.corpus.i00000001.n0000"],
-        category: ["UNFCCC"],
-      },
-      {
         label: "UN Submissions",
         slug: "UN-submissions",
         value: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
