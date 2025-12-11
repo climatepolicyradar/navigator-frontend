@@ -37,12 +37,6 @@ export const isSearchFamilySummaryEnabled = (themeConfig: TThemeConfig) =>
     configFeature: themeConfig.features.searchFamilySummary,
   });
 
-export const isNewPageDesignsEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.newPageDesigns,
-    featureFlag: featureFlags["new-page-designs"],
-  });
-
 export const isRioPolicyRadarEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
   isFeatureEnabled({
     configFeature: themeConfig.features.rioPolicyRadar,

@@ -21,7 +21,21 @@ import useConfig from "@/hooks/useConfig";
 import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
-import { TMatchedFamily, TFamilyPageBlock } from "@/types";
+import {
+  IFamilyDocumentTopics,
+  TCollectionPublicWithFamilies,
+  TCorpusTypeDictionary,
+  TMatchedFamily,
+  TFamilyPageBlock,
+  TFamilyPublic,
+  TFeatureFlags,
+  TGeography,
+  TGeographySubdivision,
+  TSearchResponse,
+  TTarget,
+  TTheme,
+  TThemeConfig,
+} from "@/types";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
@@ -29,19 +43,21 @@ import { pluralise } from "@/utils/pluralise";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
-import { IProps } from "./familyOriginalPage";
+export interface IProps {
+  collections: TCollectionPublicWithFamilies[];
+  corpus_types: TCorpusTypeDictionary;
+  countries: TGeography[];
+  family: TFamilyPublic;
+  familyTopics?: IFamilyDocumentTopics;
+  featureFlags: TFeatureFlags;
+  subdivisions: TGeographySubdivision[];
+  targets: TTarget[];
+  theme: TTheme;
+  themeConfig: TThemeConfig;
+  vespaFamilyData?: TSearchResponse;
+}
 
-export const FamilyLitigationPage = ({
-  collections,
-  corpus_types,
-  countries,
-  family,
-  familyTopics,
-  targets,
-  subdivisions,
-  theme,
-  themeConfig,
-}: IProps) => {
+export const FamilyPage = ({ collections, corpus_types, countries, family, familyTopics, targets, subdivisions, theme, themeConfig }: IProps) => {
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
   const { getCategoryTextLookup } = useText();
