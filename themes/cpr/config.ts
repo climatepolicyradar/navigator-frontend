@@ -443,7 +443,6 @@ const config: TThemeConfig = {
     knowledgeGraph: true,
     litigation: false,
     searchFamilySummary: false,
-    rioPolicyRadar: true,
   },
 };
 

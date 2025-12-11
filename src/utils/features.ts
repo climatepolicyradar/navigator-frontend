@@ -36,9 +36,3 @@ export const isSearchFamilySummaryEnabled = (themeConfig: TThemeConfig) =>
   isFeatureEnabled({
     configFeature: themeConfig.features.searchFamilySummary,
   });
-
-export const isRioPolicyRadarEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.rioPolicyRadar,
-    featureFlag: featureFlags["rio-policy-radar"],
-  });
