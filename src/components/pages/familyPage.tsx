@@ -57,17 +57,7 @@ export interface IProps {
   vespaFamilyData?: TSearchResponse;
 }
 
-export const FamilyPage = ({
-  collections,
-  corpus_types,
-  countries,
-  family,
-  familyTopics,
-  targets,
-  subdivisions,
-  theme,
-  themeConfig,
-}: IProps) => {
+export const FamilyPage = ({ collections, corpus_types, countries, family, familyTopics, targets, subdivisions, theme, themeConfig }: IProps) => {
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
   const { getCategoryTextLookup } = useText();
