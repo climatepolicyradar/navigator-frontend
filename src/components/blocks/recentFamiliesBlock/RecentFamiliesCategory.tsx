@@ -31,7 +31,7 @@ interface IProps {
 }
 
 export const RecentFamiliesCategory = ({
-  categorySummary: { count, families, singularAndPlural, title },
+  categorySummary: { count, families, singularAndPlural, title, id },
   showAccordion = false,
   isExpanded = true,
   onAccordionClick,
@@ -70,7 +70,7 @@ export const RecentFamiliesCategory = ({
   };
 
   if (title.toLowerCase() !== "all") {
-    viewAllUrlQuery[QUERY_PARAMS.category] = title;
+    viewAllUrlQuery[QUERY_PARAMS.category] = id;
   }
 
   return (

@@ -2,20 +2,15 @@ import { UrlObject } from "url";
 
 import Image from "next/image";
 import Link from "next/link";
-import { ReactNode, useContext } from "react";
+import { ReactNode } from "react";
 
 import { ExternalLink } from "@/components/ExternalLink";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import Footer from "@/components/footer/Footer";
 import Layout from "@/components/layouts/LandingPage";
-import MainLayout from "@/components/layouts/Main";
-import { SingleCol } from "@/components/panels/SingleCol";
-import { Heading } from "@/components/typography/Heading";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { ThemePageFeaturesContext } from "@/context/ThemePageFeaturesContext";
 import { Header } from "@/cpr/components/Header";
 import { NavBarGradient } from "@/cpr/components/NavBarGradient";
-import { isRioPolicyRadarEnabled } from "@/utils/features";
 
 const QUERY_EXAMPLES: { label: ReactNode; href: UrlObject }[] = [
   {
@@ -56,47 +51,10 @@ const QUERY_EXAMPLES: { label: ReactNode; href: UrlObject }[] = [
 ];
 
 const RioSubmissions = () => {
-  const { featureFlags, themeConfig } = useContext(ThemePageFeaturesContext);
-
-  if (!isRioPolicyRadarEnabled(featureFlags, themeConfig)) {
-    return (
-      <MainLayout title="Rio Submissions" description="Rio Policy Radar - a shared tool for climate, nature and land" theme="cpr">
-        <section className="pt-8 text-content">
-          <SingleCol>
-            <Heading level={1} extraClasses="mb-6">
-              Coming Soon: Rio Policy Radar - a shared tool for climate, nature and land
-            </Heading>
-            <p>
-              It is increasingly being recognised that climate change, biodiversity loss and land degradation are all closely linked and that dealing
-              with them as separate issues won't work. But, policymakers face barriers finding information on how these issues are being approached,
-              as this information remains siloed in disparate locations, leaving many to make decisions with missing data.
-            </p>
-            <p>
-              To date at Climate Policy Radar we have focused more on climate and climate-related documents but we are now actively broadening our
-              horizons.
-            </p>
-            <p>
-              Launching for COP30, <i>Rio Policy Radar</i> will be a shared space for country submissions to the three “Rio” Conventions (adopted at
-              the 1992 Rio Earth Summit) - the CBD (biodiversity), the UNCCD (land degradation) and the UNFCCC (climate). This tool will allow users
-              to easily explore how countries are addressing the three interlinked issues, and their co-benefits, opportunities or trade-offs. For
-              example, users will be able to discover how strategies to address nature loss are also addressing climate adaptation, or identify how
-              different countries around the world are using nature-based solutions in their drought plans.
-            </p>
-            <p>
-              For this first step we are focusing on national submissions. Going forward we will go deeper, collecting and opening up policies and
-              laws that address biodiversity loss, land degradation and climate change.
-            </p>
-            <p>You can keep up to date with this initiative as it evolves here.</p>
-          </SingleCol>
-        </section>
-      </MainLayout>
-    );
-  }
-
   return (
     <Layout title="Rio Submissions" description="Rio Policy Radar - a shared tool for climate, nature and land" theme="cpr">
       <Header landingPage />
-      <NavBarGradient className="!static" />
+      <NavBarGradient className="static!" />
       <FiveColumns>
         <div className="pt-20 col-start-1 -col-end-1 cols-3:col-start-2 cols-3:-col-end-2 cols-4:-col-end-3 cols-5:col-start-3 cols-5:-col-end-4">
           <span className="block text-gray-700 leading-tight">Rio Policy Radar</span>

@@ -10,6 +10,7 @@ export type TPopoverLink = {
   href: string;
   text: string;
   external?: boolean;
+  hash?: string;
 };
 
 // Provide options for structuring the popover using props & Base UI components (heavily preferred) or children for full flexibility
@@ -61,6 +62,7 @@ export const Popover = ({ children, description, link, onOpenChange, openOnHover
                     <PageLink
                       external={link.external}
                       href={link.href}
+                      hash={link.hash}
                       className="block mt-2 underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
                     >
                       {link.text}
