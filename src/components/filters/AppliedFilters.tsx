@@ -168,8 +168,9 @@ const generatePills = (
 ) => {
   const pills: JSX.Element[] = [];
 
-  Object.keys(QUERY_PARAMS).map((key: TFilterKeys) => {
-    const value = queryParams[QUERY_PARAMS[key]];
+  Object.keys(QUERY_PARAMS).map((key) => {
+    const keyRecast = key as TFilterKeys;
+    const value = queryParams[QUERY_PARAMS[keyRecast]];
 
     // Exclude the search query from pills as it displays in NavSearch instead
     if (key === "query_string") return;
@@ -185,7 +186,7 @@ const generatePills = (
             handleFilterDisplay(
               filterChange,
               queryParams,
-              key,
+              keyRecast,
               v,
               countries,
               regions,
@@ -202,7 +203,7 @@ const generatePills = (
         handleFilterDisplay(
           filterChange,
           queryParams,
-          key,
+          keyRecast,
           value,
           countries,
           regions,

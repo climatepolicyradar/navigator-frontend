@@ -14,7 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   /* Families */
 
   const familiesData = await fetch(`https://api.climatepolicyradar.org/families/?${urlSearchParams.toString()}`).then((resp) => resp.json());
-  const familiesSiteMap = familiesData.data.map((family) => {
+  const familiesSiteMap = familiesData.data.map((family: any) => {
     return {
       url: `https://app.climatepolicyradar.org/document/${family.slug}`,
       lastModified: family.last_updated_date,

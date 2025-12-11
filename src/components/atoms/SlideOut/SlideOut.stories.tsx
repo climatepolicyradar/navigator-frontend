@@ -24,7 +24,7 @@ export const Default: TStory = {
   args: {
     children: "SlideOut content",
   },
-  render: ({ children }) => {
+  render: ({ children }: { children: React.ReactNode }) => {
     return (
       <SlideOutContext.Provider value={{ currentSlideOut: "concepts", setCurrentSlideOut: () => {} }}>
         <div className="relative h-screen w-4">

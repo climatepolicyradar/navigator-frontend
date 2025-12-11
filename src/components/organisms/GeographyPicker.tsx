@@ -11,7 +11,7 @@ import { InputListContainer } from "../filters/InputListContainer";
 import { InputCheck } from "../forms/Checkbox";
 import { TextInput } from "../forms/TextInput";
 
-interface IProps {
+export interface IProps {
   regions: TGeography[];
   handleRegionChange: (s: string) => void;
   handleFilterChange: (t: string, v: string) => void;

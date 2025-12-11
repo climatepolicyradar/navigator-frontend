@@ -59,7 +59,6 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
       geography = geographies.reduce(function (prev, current) {
         return prev && prev.display_value.length > current.display_value.length ? prev : current;
       });
-      geography = Object.keys(geography).length === 1 ? geography[0] : geography;
     } else geography = geographies[0];
 
     const intendedGeography = geography;
@@ -89,7 +88,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
       }`}
     >
       <a href="#" className={anchorClasses(!geographiesFiltered.length)} onClick={handleClick}>
-        <span className="mr-2 w-[20px]">
+        <span className="mr-2 w-5">
           <Icon name="search" />
         </span>
         Search <span className="font-medium text-black mx-1">{term}</span> in all documents

@@ -5,10 +5,16 @@ interface IProps {
   corpus_id: string;
 }
 
-export const getCorpusInfo = ({ corpus_types, corpus_id }: IProps) => {
+interface ICorpusInfo {
+  corpusImage: string | null;
+  corpusAltImage: string;
+  corpusNote: string;
+}
+
+export const getCorpusInfo = ({ corpus_types, corpus_id }: IProps): ICorpusInfo => {
   const corpora = Object.values(corpus_types).flatMap((corpus_type) => corpus_type.corpora);
   const selectedCorpus = corpora.find((corpus) => corpus.corpus_import_id === corpus_id);
-  const defaultCorpus = {
+  const defaultCorpus: ICorpusInfo = {
     corpusImage: null,
     corpusAltImage: "No corpus image found",
     corpusNote: "No corpus note found",
