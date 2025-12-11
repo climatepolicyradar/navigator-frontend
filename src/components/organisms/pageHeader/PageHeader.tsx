@@ -1,11 +1,9 @@
 import { Fragment, ReactNode } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
-import { Toggle } from "@/components/molecules/toggleGroup/Toggle";
-import { ToggleGroup } from "@/components/molecules/toggleGroup/ToggleGroup";
+import { ToggleGroup, TToggleGroupToggle } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { IMetadata } from "@/types";
 import { joinTailwindClasses } from "@/utils/tailwind";
-import { firstCase } from "@/utils/text";
 
 interface IPageHeaderGenericProps {
   dark?: boolean;
@@ -20,25 +18,24 @@ interface IPageHeaderMetadataProps extends IPageHeaderGenericProps {
   onTabChange?: never;
 }
 
-export interface IPageHeaderTab<Tab extends string> {
-  tab: Tab;
-  label?: string;
-}
-
-export interface IPageHeaderTabsProps<Tab extends string> extends IPageHeaderGenericProps {
+export interface IPageHeaderTabsProps<TabId extends string> extends IPageHeaderGenericProps {
   metadata?: never;
-  tabs: IPageHeaderTab<Tab>[];
-  currentTab: Tab;
-  onTabChange: (tab: string) => void;
+  tabs: TToggleGroupToggle<TabId>[];
+  currentTab: TabId;
+  onTabChange: (tab: TabId) => void;
 }
 
-type TProps<Tab extends string = string> = IPageHeaderMetadataProps | IPageHeaderTabsProps<Tab>;
+type TProps<TabId extends string = string> = IPageHeaderMetadataProps | IPageHeaderTabsProps<TabId>;
 
-export const PageHeader = <Tab extends string>({ currentTab, dark = false, label, metadata = [], onTabChange, tabs = [], title }: TProps<Tab>) => {
-  const onToggleChange = (toggleValue: string[]) => {
-    onTabChange(toggleValue[0]);
-  };
-
+export const PageHeader = <TabId extends string>({
+  currentTab,
+  dark = false,
+  label,
+  metadata = [],
+  onTabChange,
+  tabs = [],
+  title,
+}: TProps<TabId>) => {
   const hasTabs = tabs.length > 0;
   const containerClasses = joinTailwindClasses("pt-9", hasTabs ? "pb-6" : "pb-12", dark && "mb-8 bg-gray-100");
 
@@ -64,15 +61,7 @@ export const PageHeader = <Tab extends string>({ currentTab, dark = false, label
           )}
 
           {/* Tabs */}
-          {hasTabs && (
-            <ToggleGroup value={[currentTab]} onValueChange={onToggleChange}>
-              {tabs.map(({ label, tab }) => (
-                <Toggle key={tab} value={tab} size="large">
-                  {label || firstCase(tab)}
-                </Toggle>
-              ))}
-            </ToggleGroup>
-          )}
+          {hasTabs && <ToggleGroup<TabId> toggles={tabs} value={currentTab} onValueChange={onTabChange} buttonSize="large" />}
         </div>
       </FiveColumns>
     </div>
