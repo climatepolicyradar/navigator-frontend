@@ -33,20 +33,10 @@ const FAQ: React.FC = () => {
               </Heading>
               <p>You can use this resource to:</p>
               <ul>
-                <li>Search the full text of over 5000 laws, policies and UNFCCC submissions from every country.</li>
+                <li>Search the full text of over 8000 laws, policies and UNFCCC submissions from every country.</li>
                 <li>See exact matches and related phrases highlighted in the text.</li>
                 <li>Find documents from all languages translated to English to increase accessibility.</li>
               </ul>
-              <p>Watch the video below to learn how to use this resource</p>
-              <iframe
-                height="315"
-                src="https://www.youtube-nocookie.com/embed/QvM2RybWhMM"
-                title="Learn how to use Climate Laws of the World"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-                className="w-full"
-              ></iframe>
             </div>
 
             <div className="text-content mb-12">
