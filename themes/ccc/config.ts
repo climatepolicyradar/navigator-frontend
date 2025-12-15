@@ -52,7 +52,6 @@ const config: TThemeConfig = {
     knowledgeGraph: true,
     litigation: true,
     searchFamilySummary: true,
-    rioPolicyRadar: false,
   },
 };
 
