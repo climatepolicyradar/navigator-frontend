@@ -220,6 +220,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   };
 
   const handleFilterChange = (type: string, value: string, clearOthersOfType: boolean = false, otherValuesToClear: string[] = []) => {
+    console.log(value);
     // Clear pagination controls and continuation tokens
     delete router.query[QUERY_PARAMS.offset];
     delete router.query[QUERY_PARAMS.active_continuation_token];

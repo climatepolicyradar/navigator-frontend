@@ -14,7 +14,7 @@ const parseButton = (cells: string[]): HackButton => ({
 const parseQuestion = (row: string[]): HackQuestion => {
   return {
     id: row[0],
-    text: row[1],
+    text: row[1].replaceAll(";", ",").split("/"),
     buttons: [
       parseButton(row.slice(2, 7)),
       parseButton(row.slice(7, 12)),

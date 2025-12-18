@@ -1,10 +1,7 @@
-import { X } from "lucide-react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-import { Button } from "@/components/atoms/button/Button";
 import { Modal } from "@/components/molecules/modal/Modal";
-import { ARROW_LEFT } from "@/constants/chars";
 
 import { HackButton, HackQuestion, QUESTIONS } from "./data";
 
@@ -12,7 +9,7 @@ import { HackButton, HackQuestion, QUESTIONS } from "./data";
 const rollUpParams = (buttonPresses: HackButton[]) =>
   buttonPresses
     .filter((button) => button.searchParams)
-    .map((button) => button.searchParams.replace("+", " ").split("&"))
+    .map((button) => button.searchParams.replaceAll("+", " ").replaceAll("%28", "(").replaceAll("%29", ")").split("&"))
     .flat()
     .reduce((allParams, paramPair) => {
       const [key, value] = paramPair.split("=");
@@ -21,9 +18,12 @@ const rollUpParams = (buttonPresses: HackButton[]) =>
       return { ...allParams, [key]: [...allParams[key], value] };
     }, {});
 
-export const HackathonModal = () => {
+interface IProps {
+  onClose: () => void;
+}
+
+export const HackathonQuestions = ({ onClose }: IProps) => {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(true);
   const [buttonsPressed, setButtonsPressed] = useState<HackButton[]>([]);
 
   const reversedButtons = buttonsPressed.toReversed();
@@ -52,7 +52,6 @@ export const HackathonModal = () => {
     if (button.goToPage) {
       const rolledUpParams = rollUpParams(allButtonPresses);
 
-      setIsOpen(false);
       router.push({
         pathname: button.goToPage,
         query: rolledUpParams,
@@ -63,46 +62,47 @@ export const HackathonModal = () => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={() => {}} showCloseButton={false} cardClasses="max-w-[initial]! w-[80vw]!">
-      <div className="flex flex-col items-centre justify-between h-[50vh]">
-        {/* Controls */}
-        <div className="flex justify-between h-5 mb-4">
-          <div>
+    <>
+      {!image && (
+        <div className="flex flex-col gap-6 min-w-[200px] max-w-[530px]">
+          <div className="flex flex-col gap-2">
+            {question.text.map((line, lineIndex) => (
+              <p key={`line-${lineIndex}`}>{line}</p>
+            ))}
+          </div>
+          <div className="flex flex-col gap-2 items-start">
+            {question.buttons.map((button, buttonIndex) => (
+              <button
+                role="button"
+                key={buttonIndex}
+                onClick={() => pressButton(button)}
+                className="text-brand underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+              >
+                {button.text}
+              </button>
+            ))}
+          </div>
+          <div className="flex flex-col gap-2 items-start">
             {buttonsPressed.length > 0 && (
-              <button role="button" onClick={goBack} className="text-gray-500">
-                {ARROW_LEFT} Back
+              <button role="button" onClick={goBack} className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500">
+                Go back one question
               </button>
             )}
+            <button role="button" onClick={onClose} className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500">
+              Never mind
+            </button>
           </div>
-          <button role="button" onClick={() => setIsOpen(false)} className="text-gray-500">
-            <X size={20} />
-          </button>
         </div>
+      )}
 
-        {/* Question */}
-        {!image && (
-          <>
-            <h1 className="text-3xl text-gray-950 text-center font-bold">{question.text}</h1>
-            <div className="flex flex-col items-center gap-4 flex-1 justify-center">
-              {question.buttons.map((button, buttonIndex) => (
-                <Button key={buttonIndex} onClick={() => pressButton(button)} className="inline-block">
-                  {button.text}
-                </Button>
-              ))}
-            </div>
-            <div>
-              {buttonsPressed
-                .filter((button) => button.searchParams)
-                .map((button, buttonIndex) => (
-                  <p key={buttonIndex}>{button.searchParams}</p>
-                ))}
-            </div>
-          </>
-        )}
-
-        {/* Image */}
-        {image && <img src={image} />}
-      </div>
-    </Modal>
+      {image && (
+        <>
+          <p>Here's a chart for you.</p>
+          <Modal isOpen onClose={onClose}>
+            <img src={`HACKATHON/${image}`} />
+          </Modal>
+        </>
+      )}
+    </>
   );
 };

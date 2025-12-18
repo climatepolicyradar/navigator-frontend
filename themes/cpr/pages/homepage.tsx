@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { HackathonModal } from "src/HACKATHON/modal";
+import { HackathonJourney } from "src/HACKATHON/journey";
 
 import Banner from "@/components/banner/FullHeight";
 import Footer from "@/components/footer/Footer";
@@ -55,7 +55,7 @@ const LandingPage = ({ handleSearchInput, handleSearchChange, searchInput, exact
         <Summary />
         <Partners />
         <Footer />
-        <HackathonModal />ß
+        <HackathonJourney />
       </div>
     </Layout>
   );
