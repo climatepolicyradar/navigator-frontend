@@ -3,8 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import React from "react";
 
 import { ApiClient } from "@/api/http-common";
-import { FamilyLitigationPage } from "@/components/pages/familyLitigationPage";
-import { FamilyOriginalPage, IProps } from "@/components/pages/familyOriginalPage";
+import { IProps, FamilyPage as FamilyPageUI } from "@/components/pages/familyPage";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
 import {
@@ -21,7 +20,7 @@ import {
 import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isKnowledgeGraphEnabled, isNewPageDesignsEnabled } from "@/utils/features";
+import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
 import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
 
@@ -33,9 +32,7 @@ import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
 */
 
 const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags, themeConfig, ...props }: IProps) => {
-  const newPageDesignsAreEnabled = isNewPageDesignsEnabled(featureFlags, themeConfig);
-  const PageComponent = newPageDesignsAreEnabled ? FamilyLitigationPage : FamilyOriginalPage;
-  return <PageComponent featureFlags={featureFlags} themeConfig={themeConfig} {...props} />;
+  return <FamilyPageUI featureFlags={featureFlags} themeConfig={themeConfig} {...props} />;
 };
 
 export default FamilyPage;

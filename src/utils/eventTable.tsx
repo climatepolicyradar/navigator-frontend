@@ -48,7 +48,8 @@ const topicsColumnName = (
       }
       description="This table shows the most frequently mentioned topics in this document. Click to view the document and see the specific passages mentioning each topic highlighted. Accuracy is not 100%."
       link={{
-        href: "/faq#topics-faqs",
+        href: "/faq",
+        hash: "topics-faqs",
         text: "Learn more",
         external: true,
       }}

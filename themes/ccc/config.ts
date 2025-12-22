@@ -43,17 +43,15 @@ const config: TThemeConfig = {
   documentCategories: ["All"],
   defaultDocumentCategory: "All",
   pageBlocks: {
-    family: ["metadata", "documents", "topics", "summary"],
+    family: ["metadata", "documents", "summary", "topics"],
     geography: ["recents", "subdivisions"],
   },
   tutorials: ["climateLitigationDatabase", "knowledgeGraph"],
   features: {
     familyConceptsSearch: true,
-    knowledgeGraph: false,
+    knowledgeGraph: true,
     litigation: true,
-    newPageDesigns: true,
     searchFamilySummary: true,
-    rioPolicyRadar: false,
   },
 };
 
