@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import fs from "fs";
 
+import { GetStaticProps, InferGetStaticPropsType } from "next";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 
@@ -29,7 +30,7 @@ interface IProps {
   };
 }
 
-export default function Page({ page }: IProps) {
+export default function Page({ page }: InferGetStaticPropsType<typeof getStaticProps>) {
   // const [configFeatures, setConfigFeatures] = useState<TConfigFeatures>(DEFAULT_CONFIG_FEATURES);
   const [featureFlags, setFeatureFlags] = useState<TFeatureFlags>(DEFAULT_FEATURE_FLAGS);
   const [themeConfig, setThemeConfig] = useState<TThemeConfig>({ features: DEFAULT_CONFIG_FEATURES } as TThemeConfig);
@@ -59,9 +60,13 @@ export default function Page({ page }: IProps) {
     return window.location.replace("/not-found");
   }
 
-  const DynamicComponent = dynamic(() => import(`../../themes/${process.env.THEME}/pages/${page.contentPath}`).catch(() => () => null), {
-    ssr: true,
-  });
+  const DynamicComponent = dynamic(
+    () =>
+      import(`../../themes/${process.env.THEME}/pages/${page.contentPath}`).catch((): { default: React.ComponentType } => ({ default: () => null })),
+    {
+      ssr: true,
+    }
+  );
 
   return (
     <ThemePageFeaturesContext.Provider value={{ featureFlags, themeConfig }}>
@@ -78,7 +83,7 @@ export async function getStaticPaths() {
     jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
   } catch (err) {
     console.group("[page] getStaticPaths() catch");
-    if (err.code === "ENOENT") {
+    if (err instanceof Error && (err as NodeJS.ErrnoException).code === "ENOENT") {
       // Handle the case where the file does not exist
       console.error("File not found");
       console.error("at :" + filePath);
@@ -101,8 +106,8 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }) {
-  const currentPath = params.page;
+export const getStaticProps: GetStaticProps<IProps> = async (context) => {
+  const currentPath = context.params?.page;
 
   // Read the JSON file based on the environment variable
   const filePath = `./themes/${process.env.THEME}/routes.json`;
@@ -111,7 +116,7 @@ export async function getStaticProps({ params }) {
     jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
   } catch (err) {
     console.group("[page] getStaticProps() catch");
-    if (err.code === "ENOENT") {
+    if (err instanceof Error && (err as NodeJS.ErrnoException).code === "ENOENT") {
       // Handle the case where the file does not exist
       console.error("File not found");
       console.error("at :" + filePath);
@@ -138,4 +143,4 @@ export async function getStaticProps({ params }) {
       page,
     },
   };
-}
+};
