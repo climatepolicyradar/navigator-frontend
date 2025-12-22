@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 
 import { Icon } from "@/components/atoms/icon/Icon";
 import SuggestList from "@/components/filters/SuggestList";
+import { type TGeographyWithCoords, type TGeographiesWithCoords } from "@/components/map/WorldMap";
 import { sortData } from "@/utils/sorting";
 
 interface IProps {
   title: string;
-  list: { [key: string]: {} };
-  keyField: string;
-  keyFieldDisplay?: string;
+  list: TGeographiesWithCoords;
+  keyField: keyof TGeographyWithCoords;
+  keyFieldDisplay?: keyof TGeographyWithCoords;
   filterType: string;
   handleFilterChange(filterType: string, value: string): void;
 }
@@ -28,8 +29,7 @@ const GeographySelect = ({ title, list, keyField, keyFieldDisplay, filterType, h
     }
     let filteredList: Record<string, unknown>[] = [];
     filteredList = Object.values(list).filter((item) => {
-      const record = item as Record<string, string>;
-      return record[keyFieldDisplay ?? keyField].toLowerCase().indexOf(input.toLowerCase()) > -1;
+      return item[keyFieldDisplay ?? keyField].toString().toLowerCase().indexOf(input.toLowerCase()) > -1;
     });
     setSuggestList(sortData(filteredList, keyFieldDisplay) as never[]);
   }, [input, keyField, keyFieldDisplay, list]);

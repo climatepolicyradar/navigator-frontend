@@ -45,13 +45,13 @@ type TGeoMarkers = {
   litigation: number;
 };
 
-type TGeographyWithCoords = TGeography & {
+export type TGeographyWithCoords = TGeography & {
   coords: TPoint;
   familyCounts: TGeoFamilyCounts;
   markers: TGeoMarkers;
 };
 
-type TGeographiesWithCoords = { [key: string]: TGeographyWithCoords };
+export type TGeographiesWithCoords = { [key: string]: TGeographyWithCoords };
 
 type TMapData = {
   maxLawsPolicies: number;
