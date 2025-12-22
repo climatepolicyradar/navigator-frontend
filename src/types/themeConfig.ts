@@ -1,3 +1,5 @@
+import { TQueryParams } from "@/constants/queryParams";
+
 import { TConfigFeatures } from "./features";
 import { TTutorialName } from "./tutorial";
 
@@ -45,7 +47,7 @@ type TThemeConfigCategory = {
 
 interface IThemeConfigFilterType {
   label: string;
-  taxonomyKey: string;
+  taxonomyKey: TQueryParams;
   apiMetaDataKey?: string;
   type: string;
   category: string[];

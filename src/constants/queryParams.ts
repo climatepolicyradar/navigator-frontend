@@ -1,3 +1,5 @@
+export type TQueryParams = keyof typeof QUERY_PARAMS;
+
 export const QUERY_PARAMS = {
   // Core
   active_continuation_token: "act",

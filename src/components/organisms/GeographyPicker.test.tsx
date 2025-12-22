@@ -1,9 +1,10 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { initialSearchCriteria } from "@/constants/searchCriteria";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 
-import { GeographyPicker } from "./GeographyPicker";
+import { IProps, GeographyPicker } from "./GeographyPicker";
 
 const subdivisionsByCountries = [
   { code: "SUB-1", name: "Subdivision 1", country_alpha_3: "COU-1" },
@@ -31,18 +32,14 @@ vi.mock("@/hooks/useGeographySubdivisions", () => ({
 }));
 
 describe("GeographyPicker", () => {
-  const geoPickerProps = {
-    envConfig: {
-      BACKEND_API_URL: process.env.BACKEND_API_URL,
-      CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
-    },
+  const geoPickerProps: IProps = {
     regions: [
       { id: 1, display_value: "Region 1", value: "REG-1", type: "region", parent_id: null, slug: "region-1" },
       { id: 2, display_value: "Region 2", value: "REG-2", type: "region", parent_id: null, slug: "region-2" },
     ],
     handleRegionChange: () => {},
     handleFilterChange: () => {},
-    searchQuery: {},
+    searchQuery: initialSearchCriteria,
     countries: [
       { id: 1, display_value: "Country 1", value: "COU-1", type: "country", parent_id: 1, slug: "country-1" },
       { id: 2, display_value: "Country 2", value: "COU-2", type: "country", parent_id: 2, slug: "country-2" },

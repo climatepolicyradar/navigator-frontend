@@ -60,7 +60,7 @@ describe("canDisplayFilter: ", () => {
     const filter: TThemeConfigFilter = {
       label: "TEST FILTER",
       category: [],
-      taxonomyKey: "test_filter",
+      taxonomyKey: "page_size",
       type: "radio",
     };
 
@@ -73,7 +73,7 @@ describe("canDisplayFilter: ", () => {
     const filter: TThemeConfigFilter = {
       label: "TEST FILTER",
       category: ["test_category_1"],
-      taxonomyKey: "test_filter",
+      taxonomyKey: "page_size",
       type: "radio",
     };
 
@@ -86,7 +86,7 @@ describe("canDisplayFilter: ", () => {
     const filter: TThemeConfigFilter = {
       label: "TEST FILTER",
       category: ["test_category_999"],
-      taxonomyKey: "test_filter",
+      taxonomyKey: "page_size",
       type: "radio",
     };
 
@@ -99,7 +99,7 @@ describe("canDisplayFilter: ", () => {
     const filter: TThemeConfigFilter = {
       label: "TEST FILTER",
       category: ["test_category_2"],
-      taxonomyKey: "test_filter",
+      taxonomyKey: "page_size",
       type: "radio",
     };
 
@@ -112,7 +112,7 @@ describe("canDisplayFilter: ", () => {
     const filter: TThemeConfigFilter = {
       label: "TEST FILTER",
       category: ["test_category_3_alias"],
-      taxonomyKey: "test_filter",
+      taxonomyKey: "page_size",
       type: "radio",
     };
 
@@ -124,7 +124,7 @@ describe("canDisplayFilter: ", () => {
   it("should return true if the selected category is in the filter's category and the category key is set", () => {
     const filter: TThemeConfigFilter = {
       label: "TEST DEPENDANT FILTER",
-      taxonomyKey: "test_depdndant_filter",
+      taxonomyKey: "offset",
       type: "radio",
       category: ["test_option_2"],
       categoryKey: "fund_doc_type",
@@ -139,7 +139,7 @@ describe("canDisplayFilter: ", () => {
     const filter: TThemeConfigFilter = {
       label: "TEST FILTER",
       category: ["test_category_3"],
-      taxonomyKey: "test_filter",
+      taxonomyKey: "page_size",
       corporaKey: "TEST_CATEGORY_3",
       type: "radio",
     };

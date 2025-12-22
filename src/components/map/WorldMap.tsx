@@ -42,15 +42,16 @@ type TGeoMarkers = {
   unfccc: number;
   mcf: number;
   reports: number;
+  litigation: number;
 };
 
-type TGeographyWithCoords = TGeography & {
+export type TGeographyWithCoords = TGeography & {
   coords: TPoint;
   familyCounts: TGeoFamilyCounts;
   markers: TGeoMarkers;
 };
 
-type TGeographiesWithCoords = { [key: string]: TGeographyWithCoords };
+export type TGeographiesWithCoords = { [key: string]: TGeographyWithCoords };
 
 type TMapData = {
   maxLawsPolicies: number;
@@ -201,7 +202,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
       geographies: {},
     };
 
-    mapDataConstructor.geographies = configCountries.reduce((acc, country) => {
+    mapDataConstructor.geographies = configCountries.reduce<TGeographiesWithCoords>((acc, country) => {
       const geoStats = mapDataRaw.find((geo) => geo.slug === country.slug);
       const lawsPoliciesCount = (geoStats?.family_counts?.EXECUTIVE || 0) + (geoStats?.family_counts?.LEGISLATIVE || 0);
 
@@ -307,7 +308,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
         {showCategorySelect && (
           <div>
             <select
-              className="border border-gray-300 small rounded-full !pl-4"
+              className="border border-gray-300 small rounded-full pl-4!"
               onChange={(e) => {
                 setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc" | "mcf" | "reports" | "litigation");
               }}
