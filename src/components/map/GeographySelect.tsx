@@ -31,7 +31,7 @@ const GeographySelect = ({ title, list, keyField, keyFieldDisplay, filterType, h
     filteredList = Object.values(list).filter((item) => {
       return item[keyFieldDisplay ?? keyField].toString().toLowerCase().indexOf(input.toLowerCase()) > -1;
     });
-    setSuggestList(sortData(filteredList, keyFieldDisplay) as never[]);
+    setSuggestList(sortData(filteredList, keyFieldDisplay));
   }, [input, keyField, keyFieldDisplay, list]);
 
   return (
