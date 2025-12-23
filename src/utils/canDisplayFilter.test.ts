@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG_FEATURES } from "@/constants/features";
-import { QUERY_PARAMS } from "@/constants/queryParams";
+import { QUERY_PARAMS, type TQueryParams } from "@/constants/queryParams";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { TThemeConfig, TThemeConfigFilter } from "@/types";
 
@@ -130,11 +130,7 @@ describe("canDisplayFilter: ", () => {
       categoryKey: "fund_doc_type",
     };
 
-    const canDisplay = canDisplayFilter(
-      filter,
-      { [QUERY_PARAMS[filter.categoryKey as keyof typeof QUERY_PARAMS]]: "test_option_2" },
-      testThemeConfig
-    );
+    const canDisplay = canDisplayFilter(filter, { [QUERY_PARAMS[filter.categoryKey as TQueryParams]]: "test_option_2" }, testThemeConfig);
 
     expect(canDisplay).toBe(true);
   });
