@@ -60,7 +60,7 @@ export const getLitigationDocumentJSONLD = (document: TDocumentPage, family: TFa
   const geosOrdered = sortBy(family.geographies, [(geo) => geo.length !== 3, (geo) => geo.toLowerCase()]);
 
   if (geosOrdered.length > 0) {
-    let spatialCoverage = [];
+    let spatialCoverage: any[] = []; // TODO: improve typing using schema-dts
     geosOrdered.forEach((geo) => {
       const countryName = getCountryName(geo, countries);
       if (countryName) {
