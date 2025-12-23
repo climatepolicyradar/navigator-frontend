@@ -52,7 +52,7 @@ const defaultProps = {
 };
 
 function textContentMatcher(text: string) {
-  return (_: string, element: HTMLElement | null) => {
+  return (_: string, element: Element | null) => {
     if (!element) return false;
     const content = element.textContent || "";
     // For "Did you mean" suggestions, we need to be more flexible as text is split across spans
