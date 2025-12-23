@@ -57,6 +57,11 @@ describe("SearchPage", async () => {
     // @ts-ignore
     renderWithAppContext(Search, search_props);
 
+    // Wait for the results to render
+    await waitFor(() => {
+      expect(screen.getByText("Results:")).toBeInTheDocument();
+    });
+
     const buttons = await screen.findAllByTestId("search-options");
     const searchOptionsButton = buttons[0]; // First button is the search options
     expect(searchOptionsButton).toBeInTheDocument();
@@ -74,6 +79,11 @@ describe("SearchPage", async () => {
     const search_props = { ...baseSearchProps };
     // @ts-ignore
     renderWithAppContext(Search, search_props);
+
+    // Wait for the results to render
+    await waitFor(() => {
+      expect(screen.getByText("Results:")).toBeInTheDocument();
+    });
 
     const sortOptionsButtons = await screen.findAllByTestId("search-options");
     const sortOptionsButton = sortOptionsButtons[1]; // Second button is the sort options
