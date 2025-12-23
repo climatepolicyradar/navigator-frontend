@@ -7,12 +7,13 @@ import { resetPage } from "@/mocks/helpers";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import { setUpFamiliesRepo } from "@/mocks/repository";
 import Search from "@/pages/search";
+import { TConcept, TFamily } from "@/types";
 
 afterEach(() => {
   resetPage();
 });
 
-const basicLegalConcepts = [
+const basicLegalConcepts: TConcept[] = [
   {
     wikibase_id: "category/Parent Test Case Category",
     preferred_label: "Parent Test Case Category",
@@ -99,7 +100,7 @@ const basicLegalConcepts = [
   },
 ];
 
-const baseSearchProps = {
+const baseSearchProps: any = {
   envConfig: {
     BACKEND_API_URL: process.env.BACKEND_API_URL,
     CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
@@ -252,7 +253,7 @@ describe("SearchPage", async () => {
       familyConceptsData: basicLegalConcepts,
     });
 
-    const familyWithCategory1 = {
+    const familyWithCategory1: TFamily = {
       family_slug: "family-with-test-case-category-1-ca23",
       family_name: "Family With Test Case Category 1",
       family_description: "<p>Family With Test Case Category 1</p>",
@@ -276,7 +277,7 @@ describe("SearchPage", async () => {
       family_documents: [],
     };
 
-    const familyWithCategory2 = {
+    const familyWithCategory2: TFamily = {
       family_slug: "family-with-test-case-category-2-ca23",
       family_name: "Family With Test Case Category 2",
       family_description: "<p>Family With Test Case Category 2</p>",
@@ -333,7 +334,7 @@ describe("SearchPage", async () => {
       familyConceptsData: basicLegalConcepts,
     });
 
-    const familyWithPrincipalLaw1 = {
+    const familyWithPrincipalLaw1: TFamily = {
       family_slug: "family-with-test-principal-law-1-ca23",
       family_name: "Family With Test Principal Law 1",
       family_description: "<p>Family With Test Principal Law 1</p>",
@@ -356,7 +357,7 @@ describe("SearchPage", async () => {
       family_documents: [],
     };
 
-    const familyWithCategory2 = {
+    const familyWithCategory2: TFamily = {
       family_slug: "family-with-test-principal-law-2-ca23",
       family_name: "Family With Test Principal Law 2",
       family_description: "<p>Family With Test Principal Law 2</p>",
@@ -407,7 +408,7 @@ describe("SearchPage", async () => {
       familyConceptsData: basicLegalConcepts,
     });
 
-    const familyWithJurisdiction1 = {
+    const familyWithJurisdiction1: TFamily = {
       family_slug: "family-with-test-jurisdiction-1-ca23",
       family_name: "Family With Test Jurisdiction 1",
       family_description: "<p>Family With Test Jurisdiction 1</p>",
@@ -430,7 +431,7 @@ describe("SearchPage", async () => {
       family_documents: [],
     };
 
-    const familyWithJurisdiction2 = {
+    const familyWithJurisdiction2: TFamily = {
       family_slug: "family-with-test-principal-law-2-ca23",
       family_name: "Family With Test Jurisdiction 2",
       family_description: "<p>Family With Test Jurisdiction 2</p>",
