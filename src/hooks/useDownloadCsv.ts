@@ -12,7 +12,13 @@ type TConfig = {
   };
 };
 
-const downloadFile = ({ data, fileName, fileType }) => {
+type TDownloadFile = {
+  data: string;
+  fileName: string;
+  fileType: string;
+};
+
+const downloadFile = ({ data, fileName, fileType }: TDownloadFile) => {
   const blob = new Blob([data], { type: fileType });
 
   const a = document.createElement("a");

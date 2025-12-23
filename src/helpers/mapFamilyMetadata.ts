@@ -17,7 +17,7 @@ export const mapFamilyMetadata = (metadata: IMetadata) => {
   const result: TResultItem[] = [];
 
   for (const [key, values] of Object.entries(metadata)) {
-    const mapping = metadataLabelMappings[key];
+    const mapping = metadataLabelMappings[key as keyof typeof metadataLabelMappings];
 
     if (mapping && values) {
       if (key === "geographies") {

@@ -28,7 +28,7 @@ export function getRecursiveParentLabels(item: FamilyConcept, items: FamilyConce
 }
 
 export function mapFamilyConceptsToConcepts(familyConcepts: FamilyConcept[]): TConcept[] {
-  return familyConcepts.map((familyConcept) => {
+  return familyConcepts.map<TConcept>((familyConcept) => {
     return {
       wikibase_id: `${familyConcept.relation}/${familyConcept.preferred_label}`,
       preferred_label: familyConcept.preferred_label,

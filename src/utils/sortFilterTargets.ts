@@ -1,6 +1,6 @@
 import { TTarget } from "@/types";
 
-const sourceMapping = {
+const sourceMapping: Record<string, string> = {
   strategy: "executive",
   plan: "executive",
   law: "legislative",

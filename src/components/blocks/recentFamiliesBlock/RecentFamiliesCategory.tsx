@@ -47,7 +47,7 @@ export const RecentFamiliesCategory = ({
         const metadata = [
           getCategoryName(family.family_category, family.corpus_type_name, family.family_source),
           getMostSpecificGeography(geographies)?.name,
-          formatDate(family.family_date)[0],
+          formatDate(family.family_date)[0].toString(),
         ].filter((line) => Boolean(line));
 
         return {

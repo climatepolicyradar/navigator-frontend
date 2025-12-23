@@ -1,8 +1,17 @@
 import { test, expect } from "@playwright/test";
 
+import { type TConfigQueryResponse } from "@/hooks/useConfig";
+
 test("search filters", async ({ page }) => {
   await page.route("*/**/api/v1/config", async (route) => {
-    const json = {
+    const json: TConfigQueryResponse = {
+      regions: [],
+      countries: [],
+      subdivisions: [],
+      languages: {
+        en: "English",
+        fr: "French",
+      },
       geographies: [
         {
           node: {
@@ -31,23 +40,35 @@ test("search filters", async ({ page }) => {
       corpus_types: {
         // add more corpus types and different taxonomies
         "Laws and Policies": {
+          corpus_type_name: "Laws and Policies",
+          corpus_type_description: "Laws and Policies",
           taxonomy: {
             topic: {
               allowed_values: ["Mitigation"],
+              allow_any: false,
+              allow_blanks: false,
             },
             sector: {
               allowed_values: ["Energy"],
+              allow_any: false,
+              allow_blanks: false,
             },
           },
           corpora: [],
         },
         "Intl. agreements": {
+          corpus_type_name: "Intl. agreements",
+          corpus_type_description: "International agreements",
           taxonomy: {
             author: {
               allowed_values: [],
+              allow_any: false,
+              allow_blanks: false,
             },
             author_type: {
               allowed_values: ["Party"],
+              allow_any: false,
+              allow_blanks: false,
             },
           },
           corpora: [],

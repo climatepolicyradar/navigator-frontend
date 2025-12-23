@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useContext, useMemo } from "react";
 
 import Pill from "@/components/Pill";
-import { QUERY_PARAMS } from "@/constants/queryParams";
+import { QUERY_PARAMS, type TQueryParams } from "@/constants/queryParams";
 import { sortOptions } from "@/constants/sortOptions";
 import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
 import { ThemeContext } from "@/context/ThemeContext";
@@ -47,11 +47,9 @@ const handleConceptName = (label: string, concepts: TConcept[]) => {
   return firstCase(conceptLabel);
 };
 
-type TFilterKeys = keyof typeof QUERY_PARAMS;
-
 const MAX_FILTER_CHARACTERS = 32;
 
-const getFilterDisplayValue = (key: TFilterKeys, value: string, themeConfig: TThemeConfig) => {
+const getFilterDisplayValue = (key: TQueryParams, value: string, themeConfig: TThemeConfig) => {
   const filterDisplayLabel = themeConfig?.filters.find((f) => f.taxonomyKey === key)?.options.find((f) => f.slug === value);
   return filterDisplayLabel ? filterDisplayLabel.label : value;
 };
@@ -59,7 +57,7 @@ const getFilterDisplayValue = (key: TFilterKeys, value: string, themeConfig: TTh
 const handleFilterDisplay = (
   filterChange: TFilterChange,
   queryParams: ParsedUrlQuery,
-  key: TFilterKeys,
+  key: TQueryParams,
   value: string,
   countries: TGeography[],
   regions: TGeography[],
@@ -169,7 +167,7 @@ const generatePills = (
   const pills: JSX.Element[] = [];
 
   Object.keys(QUERY_PARAMS).map((key) => {
-    const keyRecast = key as TFilterKeys;
+    const keyRecast = key as TQueryParams;
     const value = queryParams[QUERY_PARAMS[keyRecast]];
 
     // Exclude the search query from pills as it displays in NavSearch instead

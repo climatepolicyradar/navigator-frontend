@@ -1,6 +1,7 @@
+import { TConcept } from "@/types";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 
-const ROOT_CONCEPTS = [
+const ROOT_CONCEPTS: TConcept[] = [
   {
     alternative_labels: [],
     definition: "RC1 definition.",
@@ -8,7 +9,6 @@ const ROOT_CONCEPTS = [
     has_subconcept: ["Q1652"],
     negative_labels: [],
     preferred_label: "rc1",
-    recursive_has_subconcept: null,
     recursive_subconcept_of: ["Q1171"],
     related_concepts: [],
     subconcept_of: ["Q1171"],
@@ -16,7 +16,7 @@ const ROOT_CONCEPTS = [
   },
 ];
 
-const CONCEPTS = [
+const CONCEPTS: TConcept[] = [
   {
     alternative_labels: [],
     definition: "c1 definition.",
@@ -24,7 +24,6 @@ const CONCEPTS = [
     has_subconcept: [],
     negative_labels: [],
     preferred_label: "c1",
-    recursive_has_subconcept: null,
     recursive_subconcept_of: ["Q1651", "Q1171", "Q1652"],
     related_concepts: [],
     subconcept_of: ["Q1652"],
@@ -37,7 +36,6 @@ const CONCEPTS = [
     has_subconcept: [],
     negative_labels: [],
     preferred_label: "c2",
-    recursive_has_subconcept: null,
     recursive_subconcept_of: [],
     related_concepts: [],
     subconcept_of: [],

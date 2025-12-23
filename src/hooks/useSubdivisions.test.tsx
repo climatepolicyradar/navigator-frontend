@@ -17,7 +17,7 @@ describe("useSubdivisions", () => {
   it("only returns a list subdivision data that has been published", async () => {
     const queryClient = new QueryClient();
 
-    const wrapper = ({ children }) => (
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
       <QueryClientProvider client={queryClient}>
         {/* @ts-ignore */}
         <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
@@ -39,7 +39,7 @@ describe("useSubdivisions", () => {
 
     const queryClient = new QueryClient();
 
-    const wrapper = ({ children }) => (
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
       <QueryClientProvider client={queryClient}>
         {/* @ts-ignore */}
         <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
@@ -61,7 +61,7 @@ describe("useSubdivisions", () => {
 
     const queryClient = new QueryClient();
 
-    const wrapper = ({ children }) => (
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
       <QueryClientProvider client={queryClient}>
         {/* @ts-ignore */}
         <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
@@ -92,7 +92,7 @@ describe("useSubdivisions", () => {
 
     const queryClient = new QueryClient();
 
-    const wrapper = ({ children }) => (
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
       <QueryClientProvider client={queryClient}>
         {/* @ts-ignore */}
         <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
