@@ -130,7 +130,11 @@ describe("canDisplayFilter: ", () => {
       categoryKey: "fund_doc_type",
     };
 
-    const canDisplay = canDisplayFilter(filter, { [QUERY_PARAMS[filter.categoryKey]]: "test_option_2" }, testThemeConfig);
+    const canDisplay = canDisplayFilter(
+      filter,
+      { [QUERY_PARAMS[filter.categoryKey as keyof typeof QUERY_PARAMS]]: "test_option_2" },
+      testThemeConfig
+    );
 
     expect(canDisplay).toBe(true);
   });
