@@ -1,10 +1,10 @@
-import { TCategory, TCorpusPublic, TFamilyDocumentPublic } from "@/types";
+import { TCategory, TCorpusPublic, TFamilyDocumentPublic, TFamilyPublic } from "@/types";
 
 import { getEventTableRows } from "./eventTable";
 
 describe("getEventTableRows", () => {
   it("returns an empty list of document rows if there are no documents in the family", () => {
-    const familyWithoutDocuments = {
+    const familyWithoutDocuments: TFamilyPublic = {
       category: "Litigation" as TCategory,
       collections: [],
       concepts: [],
@@ -34,7 +34,6 @@ describe("getEventTableRows", () => {
       import_id: "",
       last_updated_date: "",
       corpus_id: "",
-      status: "",
       summary: "",
       title: "Case 1",
       organisation: "",
@@ -48,7 +47,7 @@ describe("getEventTableRows", () => {
   });
 
   it("returns a list of document event rows if there are documents in the family", () => {
-    const familyWithoutEvents = {
+    const familyWithoutEvents: TFamilyPublic = {
       category: "Litigation" as TCategory,
       collections: [],
       concepts: [],
@@ -85,7 +84,6 @@ describe("getEventTableRows", () => {
       import_id: "",
       last_updated_date: "",
       corpus_id: "",
-      status: "",
       summary: "",
       title: "Case 1",
       organisation: "",
@@ -100,7 +98,7 @@ describe("getEventTableRows", () => {
   });
 
   it("returns a list of event rows if there are events in the family and events on documents", () => {
-    const familyWithoutEvents = {
+    const familyWithoutEvents: TFamilyPublic = {
       category: "Litigation" as TCategory,
       collections: [],
       concepts: [],
@@ -151,7 +149,6 @@ describe("getEventTableRows", () => {
       import_id: "",
       last_updated_date: "",
       corpus_id: "",
-      status: "",
       summary: "",
       title: "Case 1",
       organisation: "",
@@ -167,7 +164,7 @@ describe("getEventTableRows", () => {
   });
 
   it("returns a deduplicated list of family and document event rows if same event linked to both family and document", () => {
-    const familyWithoutEvents = {
+    const familyWithoutEvents: TFamilyPublic = {
       category: "Litigation" as TCategory,
       collections: [],
       concepts: [],
@@ -218,7 +215,6 @@ describe("getEventTableRows", () => {
       import_id: "",
       last_updated_date: "",
       corpus_id: "",
-      status: "",
       summary: "",
       title: "Case 1",
       organisation: "",
