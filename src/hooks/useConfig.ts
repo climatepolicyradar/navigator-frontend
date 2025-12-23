@@ -5,7 +5,7 @@ import { extractNestedData } from "@/utils/extractNestedData";
 
 import { ApiClient, getEnvFromServer } from "../api/http-common";
 
-type TQueryResponse = {
+export type TConfigQueryResponse = {
   geographies: TDataNode<TGeography>[];
   regions: TGeography[];
   countries: TGeography[];
@@ -25,7 +25,7 @@ export default function useConfig() {
       const [regions, countries, subdivisions] = extractNestedData<TGeography>(geographies);
       const corpus_types = query_response.data.corpus_types;
 
-      const resp_end: TQueryResponse = {
+      const resp_end: TConfigQueryResponse = {
         geographies,
         regions,
         countries,
