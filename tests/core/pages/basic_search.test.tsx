@@ -12,7 +12,8 @@ afterEach(() => {
   resetPage();
 });
 
-const baseSearchProps = {
+const baseSearchProps: any = {
+  // TODO: fix 'any' type
   envConfig: {
     BACKEND_API_URL: process.env.BACKEND_API_URL,
     CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
