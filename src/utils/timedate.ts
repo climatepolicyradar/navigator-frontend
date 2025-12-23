@@ -13,11 +13,11 @@ export const convertDate = (data: string): [number, string, string] => {
   return [year, day, months[month]?.substring(0, 3)];
 };
 
-export const padNumber = (number) => {
-  return number >= 10 ? number : number.toString().padStart(2, "0");
+export const padNumber = (number: number) => {
+  return number >= 10 ? number.toString() : number.toString().padStart(2, "0");
 };
 
-export const formatDate = (data: string) => {
+export const formatDate = (data: string): [number | "", string, string] => {
   if (!data || data.length === 0) return ["", "", ""];
   const dateObj = new Date(data);
   const year = dateObj.getUTCFullYear();
