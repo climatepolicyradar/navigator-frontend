@@ -20,7 +20,7 @@ import {
 import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { getFeatures } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
 import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
 
@@ -31,8 +31,8 @@ import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
   - The 'physical document' view is within the folder: src/pages/documents/[id].tsx.
 */
 
-const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags, themeConfig, ...props }: IProps) => {
-  return <FamilyPageUI featureFlags={featureFlags} themeConfig={themeConfig} {...props} />;
+const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ ...props }: IProps) => {
+  return <FamilyPageUI {...props} />;
 };
 
 export default FamilyPage;
@@ -40,12 +40,10 @@ export default FamilyPage;
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const featureFlags = getFeatureFlags(context.req.cookies);
-
   const theme = process.env.THEME;
   const themeConfig = await readConfigFile(theme);
-
-  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+  const featureFlags = getFeatureFlags(context.req.cookies);
+  const features = getFeatures(themeConfig, featureFlags);
 
   const id = context.params.id;
   const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
@@ -80,7 +78,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   /** The Vespa families data has the concepts data attached, which is why we need this */
   let vespaFamilyData: TSearchResponse;
   try {
-    if (knowledgeGraphEnabled) {
+    if (features.knowledgeGraph) {
       const { data: vespaFamilyDataResponse } = await backendApiClient.get(`/families/${familyData.import_id}`);
       vespaFamilyData = vespaFamilyDataResponse;
     }
@@ -156,7 +154,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       countries: countriesData,
       family: familyData,
       familyTopics: familyTopics,
-      featureFlags,
+      features,
       subdivisions: subdivisionsData,
       targets: targetsData,
       theme,

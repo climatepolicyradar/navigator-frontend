@@ -3,11 +3,10 @@ import Image from "next/image";
 
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { TTutorials } from "@/types";
-import { isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
 
 export const TUTORIALS: TTutorials = {
   knowledgeGraph: {
-    isEnabled: isKnowledgeGraphEnabled,
+    featureKey: "knowledgeGraph",
     banner: {
       text: "You can now find what you're looking for faster",
       buttonPrimary: {
@@ -77,7 +76,7 @@ export const TUTORIALS: TTutorials = {
     },
   },
   climateLitigationDatabase: {
-    isEnabled: isLitigationEnabled,
+    featureKey: "litigation",
     modal: {
       defaultOpen: true,
       headerImage: <Image src="/images/features/ccc.jpg" alt="The logo of Sabin Center for Climate Change Law" width={920} height={400} />,

@@ -19,9 +19,8 @@ import { currentYear, minYear } from "@/constants/timedate";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { SlideOutContext } from "@/context/SlideOutContext";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TSearchCriteria, TThemeConfigOption } from "@/types";
+import { TConcept, TCorpusTypeDictionary, TSearchCriteria, TThemeConfigOption } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
-import { isKnowledgeGraphEnabled } from "@/utils/features";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 
 const isCategoryChecked = (selectedCategory: string | undefined, themeConfigCategory: TThemeConfigOption<any>) => {

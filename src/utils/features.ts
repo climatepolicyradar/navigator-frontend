@@ -29,28 +29,3 @@ export const getFeatures = (themeConfig: TThemeConfig, featureFlags: TFeatureFla
     })
   ) as TFeatures;
 };
-
-/* Specific feature shorthand functions */
-
-export const isKnowledgeGraphEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.knowledgeGraph,
-    featureFlag: featureFlags["concepts-v1"],
-  });
-
-export const isLitigationEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.litigation,
-    featureFlag: featureFlags["litigation"],
-  });
-
-export const isFamilyConceptsEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.familyConceptsSearch,
-    featureFlag: featureFlags["family-concepts"],
-  });
-
-export const isSearchFamilySummaryEnabled = (themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.searchFamilySummary,
-  });

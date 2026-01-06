@@ -8,4 +8,5 @@ export const configFeatureKeys = ["familyConceptsSearch", "knowledgeGraph", "lit
 export type TConfigFeature = (typeof configFeatureKeys)[number];
 export type TConfigFeatures = Record<TConfigFeature, boolean>;
 
-export type TFeatures = Record<TFeatureFlag | TConfigFeature, boolean>;
+export type TFeature = TFeatureFlag | TConfigFeature;
+export type TFeatures = Record<TFeature, boolean>;

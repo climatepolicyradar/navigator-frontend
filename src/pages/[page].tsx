@@ -9,7 +9,7 @@ import { DEFAULT_FEATURE_FLAGS } from "@/constants/features";
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
 import { ThemeContext, IProps as IThemeContextProps } from "@/context/ThemeContext";
-import { TFeatureFlags, TTheme, TThemeConfig } from "@/types";
+import { TFeatureFlags, TTheme } from "@/types";
 import { getAllCookies } from "@/utils/cookies";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { readConfigFile } from "@/utils/readConfigFile";
