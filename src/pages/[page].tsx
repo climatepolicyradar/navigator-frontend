@@ -5,9 +5,11 @@ import { GetStaticProps, InferGetStaticPropsType } from "next";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 
-import { DEFAULT_CONFIG_FEATURES, DEFAULT_FEATURE_FLAGS } from "@/constants/features";
-import { ThemePageFeaturesContext } from "@/context/ThemePageFeaturesContext";
-import { TFeatureFlags, TThemeConfig } from "@/types";
+import { DEFAULT_FEATURE_FLAGS } from "@/constants/features";
+import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
+import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
+import { ThemeContext, IProps as IThemeContextProps } from "@/context/ThemeContext";
+import { TFeatureFlags, TTheme, TThemeConfig } from "@/types";
 import { getAllCookies } from "@/utils/cookies";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { readConfigFile } from "@/utils/readConfigFile";
@@ -33,7 +35,11 @@ interface IProps {
 export default function Page({ page }: InferGetStaticPropsType<typeof getStaticProps>) {
   // const [configFeatures, setConfigFeatures] = useState<TConfigFeatures>(DEFAULT_CONFIG_FEATURES);
   const [featureFlags, setFeatureFlags] = useState<TFeatureFlags>(DEFAULT_FEATURE_FLAGS);
-  const [themeConfig, setThemeConfig] = useState<TThemeConfig>({ features: DEFAULT_CONFIG_FEATURES } as TThemeConfig);
+  const [themeContext, setThemeContext] = useState<IThemeContextProps>({
+    theme: process.env.THEME as TTheme,
+    themeConfig: DEFAULT_THEME_CONFIG,
+    loaded: false,
+  });
 
   const loadFeatureFlags = async () => {
     const allCookies = getAllCookies();
@@ -44,7 +50,7 @@ export default function Page({ page }: InferGetStaticPropsType<typeof getStaticP
   const loadThemeConfig = async () => {
     const theme = process.env.THEME;
     const themeConfig = await readConfigFile(theme);
-    setThemeConfig(themeConfig);
+    setThemeContext((current) => ({ ...current, themeConfig, loaded: true }));
   };
 
   // TODO: once dynamic imports are no longer needed, both of these are synchronous
@@ -69,9 +75,11 @@ export default function Page({ page }: InferGetStaticPropsType<typeof getStaticP
   );
 
   return (
-    <ThemePageFeaturesContext.Provider value={{ featureFlags, themeConfig }}>
-      <DynamicComponent />
-    </ThemePageFeaturesContext.Provider>
+    <ThemeContext.Provider value={themeContext}>
+      <FeatureFlagsContext.Provider value={featureFlags}>
+        <DynamicComponent />
+      </FeatureFlagsContext.Provider>
+    </ThemeContext.Provider>
   );
 }
 
