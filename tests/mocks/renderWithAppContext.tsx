@@ -8,7 +8,6 @@ import { EnvConfigContext } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { SlideOutContext } from "@/context/SlideOutContext";
 import { ThemeContext } from "@/context/ThemeContext";
-import { TFeatures } from "@/types";
 
 import { setUpThemeConfig } from "./api/configHandlers";
 
