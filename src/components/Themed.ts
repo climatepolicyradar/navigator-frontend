@@ -6,6 +6,4 @@
 
 export { default as Homepage } from "@/themes/pages/homepage";
 export { default as Analytics } from "@/themes/components/Analytics";
-// export { Header } from 'theme/components/Header'
-// export { default as Wrapper } from 'theme/layouts/main'
-// export { Footer } from 'theme/components/Footer'
+export { default as Wrapper } from "@/themes/layouts/main";
