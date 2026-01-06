@@ -1,0 +1,23 @@
+# trunk-ignore-all(trivy/DS002)
+# trunk-ignore-all(checkov/CKV_DOCKER_3)
+# trunk-ignore-all(trivy/DS026)
+# trunk-ignore-all(checkov/CKV_DOCKER_2)
+FROM node:20-alpine
+WORKDIR /app
+ENV NODE_ENV=development
+ARG THEME
+ENV THEME=${THEME}
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+
+RUN node -e "\
+const fs=require('fs');\
+const tpl=fs.readFileSync('tsconfig.base.json','utf8');\
+fs.writeFileSync('tsconfig.json', tpl.replace(/__THEME__/g, process.env.THEME));\
+"
+
+EXPOSE 3000
+CMD ["npm", "run", "dev"]

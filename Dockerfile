@@ -9,7 +9,7 @@ RUN npm ci
 
 FROM node:20-alpine AS builder
 WORKDIR /app
-ARG THEME=cpr
+ARG THEME
 ENV THEME=${THEME}
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -25,7 +25,7 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-ARG THEME=cpr
+ARG THEME
 ENV THEME=${THEME}
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public

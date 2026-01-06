@@ -1,3 +1,7 @@
-const Anlytics = (): JSX.Element => null;
+interface IProps {
+  enableAnalytics: boolean;
+}
 
-export default Anlytics;
+const Analytics = ({ enableAnalytics }: IProps): JSX.Element => null;
+
+export default Analytics;
