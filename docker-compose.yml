@@ -1,0 +1,45 @@
+version: "3.9"
+services:
+  app-theme-cpr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        THEME: cpr
+    environment:
+      - THEME=cpr
+    ports:
+      - 3001:3000
+
+  app-theme-cclw:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        THEME: cclw
+    environment:
+      - THEME=cclw
+    ports:
+      - 3002:3000
+
+  app-theme-mcf:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        THEME: mcf
+    environment:
+      - THEME=mcf
+    ports:
+      - 3003:3000
+
+  app-theme-ccc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        THEME: ccc
+    environment:
+      - THEME=ccc
+    ports:
+      - 3004:3000

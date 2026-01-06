@@ -24,6 +24,8 @@ import { TTheme, TThemeConfig } from "@/types";
 
 interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
+  handleSearchChange: (type: string, value: any) => void;
+  exactMatch: boolean;
   searchInput: string;
   theme: TTheme;
   themeConfig: TThemeConfig;

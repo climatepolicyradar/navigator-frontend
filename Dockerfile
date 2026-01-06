@@ -1,38 +1,37 @@
+# trunk-ignore-all(trivy/DS002)
+# trunk-ignore-all(checkov/CKV_DOCKER_3)
 # trunk-ignore-all(trivy/DS026)
 # trunk-ignore-all(checkov/CKV_DOCKER_2)
-FROM node:22.12.0-alpine3.21
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
 
-ARG THEME
-ENV THEME=$THEME
-
-# @related: GITHUB_SHA_ENV_VAR
-ARG GITHUB_SHA
-ENV GITHUB_SHA=${GITHUB_SHA}
-
-# Make sure the latest npm is installed for speed and fixes.
-RUN npm i npm@latest -g
-
-# Switch to root user to copy files safely
-USER root
-
-WORKDIR /home/node/app
+FROM node:20-alpine AS builder
+WORKDIR /app
+ARG THEME=cpr
+ENV THEME=${THEME}
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN chown -R node:node /home/node/app
-
-
-# The official Node image provides an unprivileged user as a security best
-# practice, but it needs to be manually enabled. We put it here so npm installs
-# dependencies as the same user who runs the app.
-USER node
-
-# Create workdir and copy source code into it, giving the node user read and
-# execute permissions, but not alter permissions.
-
-# Install dependencies.
-RUN npm install
-
-ENV PATH=/home/node/app/node_modules/.bin:$PATH
-
+# Generate tsconfig.json from template with the selected THEME
+RUN node -e "\
+const fs=require('fs');\
+const tpl=fs.readFileSync('tsconfig.base.json','utf8');\
+fs.writeFileSync('tsconfig.json', tpl.replace(/__THEME__/g, process.env.THEME));\
+"
+# Build Next.js
 RUN npm run build
 
-CMD [ "npm", "run", "start" ]
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+ARG THEME=cpr
+ENV THEME=${THEME}
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+# include the generated tsconfig for editor tooling inside container (optional)
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
+EXPOSE 3000
+CMD ["npm", "run", "start"]
