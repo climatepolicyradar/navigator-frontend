@@ -1,3 +1,5 @@
+// Note: feature flags and config features with the same key are considered the same feature
+
 // All available feature flags. If adding a new one, make sure to add it here or it won't be available via useFeatures
 export const featureFlagKeys = ["concepts-v1", "litigation"] as const;
 export type TFeatureFlag = (typeof featureFlagKeys)[number];

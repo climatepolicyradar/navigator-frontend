@@ -13,6 +13,7 @@ export const isFeatureEnabled = ({ configFeature, featureFlag }: IArgs): boolean
 };
 
 // Constructs an object containing all feature flags & config features and whether they're enabled or not
+// Prefer FeaturesContext over getFeatures where possible. Use getFeatures in getServerSideProps or inside page components
 export const getFeatures = (themeConfig: TThemeConfig, featureFlags: TFeatureFlags) => {
   // Only keys defined in these two array will be included
   const featureKeys: (TFeatureFlag | TConfigFeature)[] = Array.from(new Set([...featureFlagKeys, ...configFeatureKeys]));
