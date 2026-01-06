@@ -34,7 +34,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { sortOptions } from "@/constants/sortOptions";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { SlideOutContext } from "@/context/SlideOutContext";
 import { WikiBaseConceptsContext } from "@/context/WikiBaseConceptsContext";
 import useConfig from "@/hooks/useConfig";
@@ -42,10 +42,10 @@ import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import { useHashNavigation } from "@/hooks/useHashNavigation";
 import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
-import { TConcept, TFeatureFlags, TTheme, TThemeConfig } from "@/types";
+import { TConcept, TFeatures, TTheme, TThemeConfig } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isFamilyConceptsEnabled, isKnowledgeGraphEnabled, isLitigationEnabled } from "@/utils/features";
+import { getFeatures } from "@/utils/features";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
 import { getFilterLabel } from "@/utils/getFilterLabel";
@@ -57,7 +57,7 @@ import { readConfigFile } from "@/utils/readConfigFile";
 interface IProps {
   theme: TTheme;
   themeConfig: TThemeConfig;
-  featureFlags: TFeatureFlags;
+  features: TFeatures;
   conceptsData?: TConcept[] | null;
   familyConceptsData?: TConcept[] | null;
 }
@@ -70,10 +70,6 @@ const SETTINGS_ANIMATION_VARIANTS = {
 const getSelectedSortOptionText = (sortOption: string) => {
   const selectedOptionValue = sortOptions.find(({ value }) => value === sortOption);
   return selectedOptionValue.label;
-};
-
-const showResultInformation = (query: ParsedUrlQuery) => {
-  return showKnowledgeGraphInformation(query) || showCorporateDisclosuresInformation(query);
 };
 
 // We want to show information when using specific litigation filters
@@ -136,7 +132,7 @@ const getSelectedFamilyConcepts = (selectedConcepts: string | string[], allConce
 const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   theme,
   themeConfig,
-  featureFlags,
+  features,
   conceptsData,
   familyConceptsData,
 }: IProps) => {
@@ -448,7 +444,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   return (
     <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
-      <FeatureFlagsContext.Provider value={featureFlags}>
+      <FeaturesContext.Provider value={features}>
         <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
           <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
             <section>
@@ -515,7 +511,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                           handleYearChange={handleYearChange}
                           handleClearSearch={handleClearSearch}
                           handleDocumentCategoryClick={handleDocumentCategoryClick}
-                          featureFlags={featureFlags}
                         />
                       </div>
 
@@ -547,7 +542,6 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                 router.query[QUERY_PARAMS.category],
                                 themeConfig
                               )}
-                              litigationEnabled={isLitigationEnabled(featureFlags, themeConfig)}
                             />
                           )}
                         </SlideOut>
@@ -741,7 +735,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                                 <p className="font-semibold text-text-brand">Get better results</p>
                                 <p>
                                   {getAppText("searchOnboarding")}
-                                  {isKnowledgeGraphEnabled(featureFlags, themeConfig) && (
+                                  {features.knowledgeGraph && (
                                     <>
                                       {" "}
                                       You can also use the AI-supported{" "}
@@ -793,7 +787,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
             <DownloadCsvPopup isOpen={showCSVDownloadPopup} onClose={() => setShowCSVDownloadPopup(false)} onDownload={handleDownloadCsvClick} />
           </WikiBaseConceptsContext.Provider>
         </SlideOutContext.Provider>
-      </FeatureFlagsContext.Provider>
+      </FeaturesContext.Provider>
     </Layout>
   );
 };
@@ -807,10 +801,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const theme = process.env.THEME;
   const themeConfig = await readConfigFile(theme);
 
-  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+  const features = getFeatures(themeConfig, featureFlags);
 
   let conceptsData: TConcept[];
-  if (knowledgeGraphEnabled) {
+  if (features.knowledgeGraph) {
     try {
       const client = new ApiClient(process.env.CONCEPTS_API_URL);
       const { data: returnedData } = await client.get(`/concepts/search?limit=10000&has_classifier=true`);
@@ -822,7 +816,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   // TODO: Next - start rendering this data
   let familyConceptsData: TConcept[] | undefined;
-  if (isFamilyConceptsEnabled(featureFlags, themeConfig)) {
+  if (features.familyConceptsSearch) {
     try {
       const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts`);
       const familyConceptsJson: { data: FamilyConcept[] } = await familyConceptsResponse.json();
@@ -836,7 +830,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: withEnvConfig({
       theme,
       themeConfig,
-      featureFlags,
+      features,
       conceptsData: conceptsData ?? null,
       familyConceptsData: familyConceptsData ?? null,
     }),

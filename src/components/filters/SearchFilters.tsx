@@ -16,6 +16,7 @@ import { Info } from "@/components/molecules/info/Info";
 import { SLIDE_OUT_DATA_KEY } from "@/constants/dataAttributes";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { currentYear, minYear } from "@/constants/timedate";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { SlideOutContext } from "@/context/SlideOutContext";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
 import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TSearchCriteria, TThemeConfigOption } from "@/types";
@@ -45,7 +46,6 @@ interface IProps {
   handleYearChange(values: string[], reset?: boolean): void;
   handleClearSearch(): void;
   handleDocumentCategoryClick(value: string): void;
-  featureFlags: TFeatureFlags;
 }
 
 const SearchFilters = ({
@@ -58,11 +58,11 @@ const SearchFilters = ({
   handleYearChange,
   handleClearSearch,
   handleDocumentCategoryClick,
-  featureFlags,
 }: IProps) => {
   const { status: themeConfigStatus, themeConfig } = useGetThemeConfig();
   const [showClear, setShowClear] = useState(false);
   const { currentSlideOut, setCurrentSlideOut } = useContext(SlideOutContext);
+  const features = useContext(FeaturesContext);
 
   const thisYear = currentYear();
 
@@ -206,7 +206,7 @@ const SearchFilters = ({
               showFade={filter.showFade}
             >
               <InputListContainer>
-                {filter.showTopicsMessage && isKnowledgeGraphEnabled(featureFlags, themeConfig) && (
+                {filter.showTopicsMessage && features.knowledgeGraph && (
                   <p className="opacity-80 mb-2">
                     Our new topic filter automatically identifies {filter.label.toLowerCase()} in the text of documents.{" "}
                     <a
