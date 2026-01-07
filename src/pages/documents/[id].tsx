@@ -1,7 +1,7 @@
 import { ParsedUrlQuery } from "querystring";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState, useMemo } from "react";
@@ -64,15 +64,7 @@ const isEmptySearch = (query: ParsedUrlQuery) => {
   - If the document is an HTML, the passages will be displayed in a list on the left side of the page but the document will not be displayed.
 */
 
-const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
-  document,
-  family,
-  theme,
-  themeConfig,
-  featureFlags,
-  vespaFamilyData,
-  vespaDocumentData,
-}: IProps) => {
+const DocumentPage: NextPage<IProps> = ({ document, family, theme, themeConfig, featureFlags, vespaFamilyData, vespaDocumentData }) => {
   const [canPreview, setCanPreview] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [pageNumber, setPageNumber] = useState(null);

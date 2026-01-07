@@ -1,6 +1,5 @@
 import axios from "axios";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import React from "react";
+import { GetServerSideProps, NextPage } from "next";
 
 import { ApiClient } from "@/api/http-common";
 import { IProps, FamilyPage as FamilyPageUI } from "@/components/pages/familyPage";
@@ -31,7 +30,7 @@ import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
   - The 'physical document' view is within the folder: src/pages/documents/[id].tsx.
 */
 
-const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags, themeConfig, ...props }: IProps) => {
+const FamilyPage: NextPage<IProps> = ({ featureFlags, themeConfig, ...props }) => {
   return <FamilyPageUI featureFlags={featureFlags} themeConfig={themeConfig} {...props} />;
 };
 

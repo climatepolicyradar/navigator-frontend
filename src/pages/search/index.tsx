@@ -2,7 +2,7 @@ import { ParsedUrlQuery } from "querystring";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
@@ -133,13 +133,7 @@ const getSelectedFamilyConcepts = (selectedConcepts: string | string[], allConce
   );
 };
 
-const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
-  theme,
-  themeConfig,
-  featureFlags,
-  conceptsData,
-  familyConceptsData,
-}: IProps) => {
+const Search: NextPage<IProps> = ({ theme, themeConfig, featureFlags, conceptsData, familyConceptsData }) => {
   const router = useRouter();
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);

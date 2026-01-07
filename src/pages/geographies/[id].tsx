@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { GetServerSideProps, NextPage } from "next";
 
 import { ApiClient } from "@/api/http-common";
 import { IProps, GeographyPage } from "@/components/pages/geographyPage";
@@ -12,7 +12,7 @@ import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { readConfigFile } from "@/utils/readConfigFile";
 
-const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags, themeConfig, ...props }: IProps) => {
+const CountryPage: NextPage<IProps> = ({ featureFlags, themeConfig, ...props }) => {
   return <GeographyPage featureFlags={featureFlags} themeConfig={themeConfig} {...props} />;
 };
 
