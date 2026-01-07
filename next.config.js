@@ -15,15 +15,6 @@ const nextConfig = {
   env: {
     THEME: process.env.THEME,
   },
-  // Supports dynamic component imports
-  // webpack(config) {
-  //   config.experiments = { ...config.experiments, topLevelAwait: true };
-  //   config.watchOptions = { // Enable polling for file changes - useful for docker
-  //     poll: 1000, // Check for changes every second
-  //     aggregateTimeout: 300, // Delay before rebuilding
-  //   };
-  //   return config;
-  // },
   // Redirects
   redirects: async () => {
     return configureRedirects(process.env.THEME);
