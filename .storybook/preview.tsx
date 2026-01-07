@@ -1,4 +1,4 @@
-import type { Preview } from "@storybook/nextjs";
+import type { Preview } from "@storybook/nextjs-vite";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import { ThemeContext } from "../src/context/ThemeContext";

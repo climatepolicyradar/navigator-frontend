@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/nextjs";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { TUTORIALS } from "@/constants/tutorials";
 import { TutorialContext } from "@/context/TutorialContext";

@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/nextjs";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { Header as CCCHeader } from "@/ccc/components/Header";
 import { default as CCLWHeader } from "@/cclw/components/Header";

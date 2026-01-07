@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/nextjs";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { MoveUpRight } from "lucide-react";
 
 import { Icon } from "@/components/atoms/icon/Icon";
