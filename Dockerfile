@@ -2,12 +2,12 @@
 # trunk-ignore-all(checkov/CKV_DOCKER_3)
 # trunk-ignore-all(trivy/DS026)
 # trunk-ignore-all(checkov/CKV_DOCKER_2)
-FROM node:20-alpine AS deps
+FROM node:24-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 ARG THEME
 ENV THEME=${THEME}
@@ -22,7 +22,7 @@ fs.writeFileSync('tsconfig.json', tpl.replace(/__THEME__/g, process.env.THEME));
 # Build Next.js
 RUN npm run build
 
-FROM node:20-alpine AS runner
+FROM node:24-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ARG THEME
