@@ -24,6 +24,8 @@
     "@opentelemetry/api-logs": "^0.207.0",
     "@opentelemetry/instrumentation": "^0.207.0",
     "@opentelemetry/sdk-logs": "^0.207.0",
+    "@tanstack/react-query": "^5.90.16",
+    "@tanstack/react-query-devtools": "^5.91.2",
     "@vercel/otel": "^2.1.0",
     "axios": "^1.13.1",
     "babel-loader": "^10.0.0",
@@ -35,7 +37,6 @@
     "posthog-js": "^1.298.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "react-query": "^3.39.0",
     "react-simple-maps": "^3.0.0",
     "react-tooltip": "^5.26.3",
     "sass": "^1.93.3",
@@ -53,6 +54,7 @@
     "@size-limit/webpack": "^11.1.6",
     "@size-limit/webpack-why": "^11.1.6",
     "@storybook/addon-docs": "^10.1.11",
+    "@storybook/nextjs-vite": "10.1.11",
     "@tailwindcss/forms": "^0.5.0",
     "@tailwindcss/postcss": "^4.1.16",
     "@testing-library/dom": "^10.4.1",
@@ -96,13 +98,12 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.2",
+    "vite": "^7.0.0",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.4",
-    "@storybook/nextjs-vite": "10.1.11",
-    "vite": "^7.0.0"
+    "vitest": "^3.2.4"
   },
   "overrides": {
-    "react-simple-maps": {
+    "@vnedyalk0v/react19-simple-maps": {
       "d3-geo": "^3.1.0",
       "d3-color": "^3.1.0",
       "d3-selection": "^3.0.0",

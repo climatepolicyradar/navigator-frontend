@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { TGeography, TLanguages, TCorpusTypeDictionary, TDataNode } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
@@ -15,9 +15,9 @@ export type TConfigQueryResponse = {
 };
 
 export default function useConfig() {
-  return useQuery(
-    "config",
-    async () => {
+  return useQuery({
+    queryKey: ["config"],
+    queryFn: async () => {
       const { data } = await getEnvFromServer();
       const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
       const query_response = await client.getConfig();
@@ -35,10 +35,8 @@ export default function useConfig() {
       };
       return resp_end;
     },
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      cacheTime: 1000 * 60 * 60 * 24,
-    }
-  );
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    gcTime: 1000 * 60 * 60 * 24,
+  });
 }

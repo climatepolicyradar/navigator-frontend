@@ -35,7 +35,7 @@
       "@/mcf/*": ["themes/mcf/*"],
       "@/mocks/*": ["tests/mocks/*"],
       "@/tests/*": ["tests/*"],
-      "@/themes/*": ["themes/cpr/*"] // think about how we want to switch themes better
+      "@/themes/*": ["themes/cclw/*"] // think about how we want to switch themes better
     },
     "plugins": [
       {

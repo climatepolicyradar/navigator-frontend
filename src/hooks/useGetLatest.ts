@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { ApiClient, getEnvFromServer } from "@/api/http-common";
 import { TLatestItem } from "@/types";
@@ -11,9 +11,9 @@ type TLatestResponse = {
 };
 
 export default function useGetLatest(limit?: number) {
-  return useQuery(
-    "latest",
-    async () => {
+  return useQuery({
+    queryKey: ["latest"],
+    queryFn: async () => {
       const { data } = await getEnvFromServer();
       const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
       const query_response = await client.get<TLatestResponse[]>("/latest", { limit: limit });
@@ -24,10 +24,8 @@ export default function useGetLatest(limit?: number) {
         url: `/document/${item.slug}`,
       })) as TLatestItem[];
     },
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      cacheTime: 1000 * 60 * 60 * 24,
-    }
-  );
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    gcTime: 1000 * 60 * 60 * 24,
+  });
 }
