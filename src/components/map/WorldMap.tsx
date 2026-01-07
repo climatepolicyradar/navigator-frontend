@@ -1,5 +1,16 @@
+import {
+  ComposableMap,
+  Geographies,
+  Geography,
+  Graticule,
+  Marker,
+  Sphere,
+  ZoomableGroup,
+  createCoordinates,
+  createTranslateExtent,
+} from "@vnedyalk0v/react19-simple-maps";
+import type { Feature, Geometry } from "geojson";
 import React, { useRef, useState, useMemo, useEffect } from "react";
-import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
 import { Tooltip, TooltipRefProps } from "react-tooltip";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -18,6 +29,8 @@ import { ExternalLink } from "../ExternalLink";
 import { Heading } from "../typography/Heading";
 
 const geoUrl = "/data/map/world-countries-50m.json";
+
+type TPoint = [number, number];
 
 type TSvgGeo = {
   geometry: { type: string; coordinates: TPoint[] };
@@ -228,18 +241,18 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
     return mapDataConstructor;
   }, [configCountries, mapDataRaw]);
 
-  const handleGeoClick = (e: React.MouseEvent<SVGPathElement>, geo: TSvgGeo) => {
+  const handleGeoClick = (e: React.MouseEvent<SVGPathElement>, geo: Feature<Geometry>) => {
     setActiveGeography(geo.properties.name);
     const geography = Object.values(mapData.geographies).find((g) => g.display_value === geo.properties.name);
     openToolTip([e.clientX, e.clientY], geography?.display_value ?? geo.properties.name);
   };
 
-  const handleMarkerClick = (e: React.MouseEvent<SVGPathElement>, countryCode: string) => {
+  const handleMarkerClick = (e: React.MouseEvent<SVGGElement>, countryCode: string) => {
     const geography = mapData.geographies[countryCode];
     openToolTip([e.clientX, e.clientY], geography?.display_value ?? "");
   };
 
-  const handleGeoHover = (e: React.MouseEvent<SVGPathElement>, hoveredGeo: string) => {
+  const handleGeoHover = (e: React.MouseEvent<SVGGElement>, hoveredGeo: string) => {
     setActiveGeography("");
     openToolTip([e.clientX, e.clientY], hoveredGeo);
   };
@@ -276,7 +289,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
     });
   };
 
-  if (mapDataStatus === "loading") {
+  if (mapDataStatus === "pending") {
     return <p>Loading data for the map...</p>;
   }
 
@@ -347,12 +360,9 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           <ZoomableGroup
             maxZoom={MAX_ZOOM}
             minZoom={MIN_ZOOM}
-            center={mapCenter}
+            center={createCoordinates(...mapCenter)}
             zoom={mapZoom}
-            translateExtent={[
-              [-400, -200],
-              [1000, 600],
-            ]}
+            translateExtent={createTranslateExtent(createCoordinates(-400, -200), createCoordinates(1000, 600))}
             onMoveStart={() => {
               geographyInfoTooltipRef.current?.close();
               setActiveGeography("");
@@ -370,7 +380,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
                   const geoData = mapData.geographies[geo.properties.name];
                   return (
                     <Geography
-                      key={geo.rsmKey}
+                      key={(geo as TSvgGeo).rsmKey} // TODO: annoying that we have to cast here
                       geography={geo}
                       style={geoStyle(activeGeography === geo.properties.name, geoData?.familyCounts.LITIGATION || 0, mapData.maxLitigation)}
                       onClick={(e) => {
@@ -398,7 +408,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
                   return (
                     <Marker
                       key={geo.slug}
-                      coordinates={geo.coords}
+                      coordinates={createCoordinates(...geo.coords)}
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
