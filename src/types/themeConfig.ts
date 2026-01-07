@@ -74,10 +74,7 @@ interface IThemeConfigFilterFilterRadio extends IThemeConfigFilterType {
 
 export type TThemeConfigFilter = IThemeConfigFilterCheckbox | IThemeConfigFilterFilterRadio;
 
-type TThemeLink = {
-  key: string;
-  url: string;
-};
+type TThemeLinkKey = "downloadDatabase" | "emailAlerts";
 
 type TThemeMetadata = {
   key: string;
@@ -90,7 +87,7 @@ export type TThemeConfig = {
   categories?: TThemeConfigCategory;
   filters: TThemeConfigFilter[];
   labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
-  links: TThemeLink[];
+  links: TPartialRecord<TThemeLinkKey, string>;
   metadata: TThemeMetadata[];
   documentCategories: TDocumentCategory[];
   defaultDocumentCategory: TDocumentCategory;

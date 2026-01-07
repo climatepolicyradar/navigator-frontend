@@ -399,12 +399,9 @@ const config: TThemeConfig = {
       category: ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"],
     },
   },
-  links: [
-    {
-      key: "download-database",
-      url: "https://form.jotform.com/250202141318339",
-    },
-  ],
+  links: {
+    downloadDatabase: "https://form.jotform.com/250202141318339",
+  },
   metadata: [
     {
       // default - used for app title (i.e. on each page after the title)

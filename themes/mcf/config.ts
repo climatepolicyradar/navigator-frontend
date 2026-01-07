@@ -106,12 +106,9 @@ const config: TThemeConfig = {
       category: [],
     },
   },
-  links: [
-    {
-      key: "download-database",
-      url: "https://form.jotform.com/242902819253357",
-    },
-  ],
+  links: {
+    downloadDatabase: "https://form.jotform.com/242902819253357",
+  },
   metadata: [
     {
       key: "default",

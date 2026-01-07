@@ -9,12 +9,9 @@ const config: TThemeConfig = {
       category: [],
     },
   },
-  links: [
-    {
-      key: "download-database",
-      url: "https://form.jotform.com/252292116187356",
-    },
-  ],
+  links: {
+    downloadDatabase: "https://form.jotform.com/252292116187356",
+  },
   metadata: [
     {
       // default - used for app title (i.e. on each page after the title)

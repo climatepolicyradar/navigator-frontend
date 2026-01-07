@@ -151,16 +151,10 @@ const config: TThemeConfig = {
     },
   ],
   labelVariations: {},
-  links: [
-    {
-      key: "download-database",
-      url: "https://form.jotform.com/233131638610347",
-    },
-    {
-      key: "email-alerts",
-      url: "https://form.jotform.com/252034552030341",
-    },
-  ],
+  links: {
+    downloadDatabase: "https://form.jotform.com/233131638610347",
+    emailAlerts: "https://form.jotform.com/252034552030341",
+  },
   metadata: [
     {
       // default - used for app title (i.e. on each page after the title)
