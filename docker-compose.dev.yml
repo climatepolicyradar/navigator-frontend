@@ -7,6 +7,14 @@ services:
         THEME: ${THEME}
     environment:
       - THEME=${THEME}
+      - BACKEND_API_URL=${BACKEND_API_URL}
+      - TARGETS_URL=${TARGETS_URL}
+      - CDN_URL=${CDN_URL}
+      - CONCEPTS_API_URL=${CONCEPTS_API_URL}
+      - BACKEND_API_TOKEN=${BACKEND_API_TOKEN}
+      - ADOBE_API_KEY=${ADOBE_API_KEY}
+      - HOSTNAME=${HOSTNAME}
+      - REDIRECT_FILE=${REDIRECT_FILE}
       - NODE_ENV=development
     ports:
       - 3000:3000
