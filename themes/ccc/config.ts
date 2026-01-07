@@ -11,6 +11,9 @@ const config: TThemeConfig = {
   },
   links: {
     downloadDatabase: "https://form.jotform.com/252292116187356",
+    cookiePolicy: "/cookie-policy",
+    privacyPolicy: "/privacy-policy",
+    targetDomain: "https://app.climatepolicyradar.org",
   },
   pageMetadata: {
     default: {

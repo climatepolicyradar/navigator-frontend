@@ -49,7 +49,7 @@ export const Overlays = ({ onConsentChange }: IProps) => {
       <div className="fixed z-1000 inset-0 pointer-events-none">
         <div className="flex flex-col-reverse h-full">
           {currentBanner && <TutorialBanner name={currentBanner.name} banner={currentBanner.tutorial.banner} />}
-          <CookieConsent onConsentChange={onConsentChange} theme={theme} />
+          <CookieConsent onConsentChange={onConsentChange} themeConfig={themeConfig} />
         </div>
       </div>
     </>

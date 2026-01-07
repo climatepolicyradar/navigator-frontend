@@ -452,7 +452,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
         )}
       </div>
       {selectedFamCategory !== "litigation" ? (
-        <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} theme={theme} />
+        <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} />
       ) : (
         <div className="flex flex-col items-center justify-center gap-4 text-center text-sm font-normal leading-none py-4">
           <p className="text-text-secondary">Darker color indicates the number of litigation submissions in our databases.</p>

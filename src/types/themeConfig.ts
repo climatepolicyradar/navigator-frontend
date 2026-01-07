@@ -74,7 +74,7 @@ interface IThemeConfigFilterFilterRadio extends IThemeConfigFilterType {
 
 export type TThemeConfigFilter = IThemeConfigFilterCheckbox | IThemeConfigFilterFilterRadio;
 
-type TThemeLinkKey = "downloadDatabase" | "emailAlerts";
+type TThemeLinkKey = "cookiePolicy" | "downloadDatabase" | "emailAlerts" | "privacyPolicy" | "targetDomain";
 
 // default - used for app title (i.e. on each page after the title)
 export type TThemePageMetadataKey = "default" | "geography" | "homepage" | "search";
