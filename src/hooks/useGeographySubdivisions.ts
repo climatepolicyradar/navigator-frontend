@@ -1,4 +1,4 @@
-import { useQueries } from "react-query";
+import { useQueries } from "@tanstack/react-query";
 
 import { useEnvConfig } from "@/context/EnvConfig";
 import { TGeographySubdivision } from "@/types";
@@ -7,8 +7,8 @@ import { ApiClient } from "../api/http-common";
 
 export default function useGeographySubdivisions(parentAlpha3Code: string[]) {
   const { CONCEPTS_API_URL } = useEnvConfig();
-  const results = useQueries(
-    parentAlpha3Code.map((code) => ({
+  const results = useQueries({
+    queries: parentAlpha3Code.map((code) => ({
       queryKey: ["subdivisions", code],
       queryFn: async () => {
         const client = new ApiClient();
@@ -17,9 +17,9 @@ export default function useGeographySubdivisions(parentAlpha3Code: string[]) {
       },
       refetchOnWindowFocus: false,
       refetchOnMount: false,
-      cacheTime: 1000 * 60 * 60 * 24,
-    }))
-  );
+      gcTime: 1000 * 60 * 60 * 24,
+    })),
+  });
 
   const data = results.flatMap((result) => result.data || []);
   const isLoading = results.some((result) => result.isLoading);
