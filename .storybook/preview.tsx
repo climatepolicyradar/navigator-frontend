@@ -1,5 +1,5 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { Preview } from "@storybook/nextjs-vite";
-import { QueryClient, QueryClientProvider } from "react-query";
 
 import { ThemeContext } from "../src/context/ThemeContext";
 import "../src/styles/main.css";
@@ -49,7 +49,7 @@ const preview: Preview = {
       return (
         <div className="root isolate">
           <QueryClientProvider client={queryClient}>
-            <ThemeContext.Provider value={{ theme, themeConfig: themeConfigs[theme] }}>
+            <ThemeContext.Provider value={{ theme, themeConfig: themeConfigs[theme], loaded: true }}>
               <Story />
             </ThemeContext.Provider>
           </QueryClientProvider>
