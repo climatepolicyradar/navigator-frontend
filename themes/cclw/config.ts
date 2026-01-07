@@ -150,7 +150,7 @@ const config: TThemeConfig = {
       ],
     },
   ],
-  labelVariations: [],
+  labelVariations: {},
   links: [
     {
       key: "download-database",

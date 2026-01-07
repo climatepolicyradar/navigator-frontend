@@ -3,13 +3,12 @@ import { TThemeConfig } from "@/types";
 const config: TThemeConfig = {
   defaultCorpora: ["Academic.corpus.Litigation.n0000"],
   filters: [],
-  labelVariations: [
-    {
-      key: "date",
+  labelVariations: {
+    date: {
       label: "Filing year",
       category: [],
     },
-  ],
+  },
   links: [
     {
       key: "download-database",

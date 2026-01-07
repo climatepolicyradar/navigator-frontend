@@ -3,6 +3,8 @@ import { TQueryParams } from "@/constants/queryParams";
 import { TConfigFeatures } from "./features";
 import { TTutorialName } from "./tutorial";
 
+type TPartialRecord<Key extends string, Value> = Partial<Record<Key, Value>>;
+
 /* Blocks */
 
 // All of the possible block names used in TThemeConfig.pageBlocks to specify which blocks to render on each page
@@ -21,10 +23,10 @@ type TThemePageBlocks = {
 
 export type TDocumentCategory = "All" | "UN Submissions" | "Laws" | "Policies" | "Litigation" | "Climate Finance Projects" | "Offshore Wind Reports";
 
+export type TLabelVariationKey = "country" | "date" | "region";
 type TLabelVariation = {
   category: string[];
   label: string;
-  key: string;
 };
 
 export type TThemeConfigOption<Value> = {
@@ -87,7 +89,7 @@ export type TThemeConfig = {
   defaultCorpora?: string[];
   categories?: TThemeConfigCategory;
   filters: TThemeConfigFilter[];
-  labelVariations: TLabelVariation[];
+  labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
   links: TThemeLink[];
   metadata: TThemeMetadata[];
   documentCategories: TDocumentCategory[];

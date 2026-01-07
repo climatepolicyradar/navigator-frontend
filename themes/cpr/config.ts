@@ -393,13 +393,12 @@ const config: TThemeConfig = {
       ],
     },
   ],
-  labelVariations: [
-    {
-      key: "date",
+  labelVariations: {
+    date: {
       label: "First published",
       category: ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"],
     },
-  ],
+  },
   links: [
     {
       key: "download-database",

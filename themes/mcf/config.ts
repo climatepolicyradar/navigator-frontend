@@ -100,13 +100,12 @@ const config: TThemeConfig = {
       quickSearch: "true",
     },
   ],
-  labelVariations: [
-    {
-      key: "date",
+  labelVariations: {
+    date: {
       label: "Approval FY",
       category: [],
     },
-  ],
+  },
   links: [
     {
       key: "download-database",
