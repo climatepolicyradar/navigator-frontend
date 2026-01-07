@@ -2,6 +2,7 @@ import { TextSearch } from "lucide-react";
 import { NextRouter, useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
 
+import { ExternalLink } from "@/components/ExternalLink";
 import { Accordion } from "@/components/accordion/Accordion";
 import { Badge } from "@/components/atoms/badge/Badge";
 import { Select } from "@/components/atoms/select/Select";
@@ -9,7 +10,7 @@ import { InputCheck } from "@/components/forms/Checkbox";
 import { TutorialCard } from "@/components/molecules/tutorials/TutorialCard";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TUTORIALS } from "@/constants/tutorials";
-import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { ThemeContext } from "@/context/ThemeContext";
 import { TutorialContext } from "@/context/TutorialContext";
 import { TConcept, TTheme } from "@/types";
@@ -18,8 +19,6 @@ import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 import { firstCase } from "@/utils/text";
 import { getIncompleteTutorialNames } from "@/utils/tutorials";
-
-import { ExternalLink } from "../ExternalLink";
 
 interface IProps {
   concepts: TConcept[];
@@ -92,7 +91,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
   const router = useRouter();
   const { completedTutorials } = useContext(TutorialContext);
   const { theme, themeConfig } = useContext(ThemeContext);
-  const featureFlags = useContext(FeatureFlagsContext);
+  const features = useContext(FeaturesContext);
   const ref = useRef(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<TSort>(startingSort);
@@ -120,7 +119,7 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
     });
   }, [concepts, theme]);
 
-  const showKnowledgeGraphTutorial = getIncompleteTutorialNames(completedTutorials, themeConfig, featureFlags).includes("knowledgeGraph");
+  const showKnowledgeGraphTutorial = getIncompleteTutorialNames(completedTutorials, themeConfig, features).includes("knowledgeGraph");
 
   return (
     <div className={`relative flex flex-col gap-5 max-h-full pb-5 ${containerClasses}`} ref={ref}>

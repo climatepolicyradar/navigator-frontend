@@ -9,13 +9,12 @@ import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
-import { ThemePageFeaturesContext } from "@/context/ThemePageFeaturesContext";
-import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
+import { useFeatures } from "@/hooks/useFeatures";
 
 const FAQ: React.FC = () => {
-  const { featureFlags, themeConfig } = useContext(ThemePageFeaturesContext);
-
-  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+  const featureFlags = useContext(FeatureFlagsContext);
+  const { features } = useFeatures(featureFlags);
 
   return (
     <Layout
@@ -52,7 +51,7 @@ const FAQ: React.FC = () => {
             </div>
           </SingleCol>
 
-          {knowledgeGraphEnabled && <FaqSection title="Topics FAQs" faqs={CONCEPTS_FAQS} sectionId="topics-faqs" />}
+          {features.knowledgeGraph && <FaqSection title="Topics FAQs" faqs={CONCEPTS_FAQS} sectionId="topics-faqs" />}
         </SiteWidth>
       </section>
     </Layout>

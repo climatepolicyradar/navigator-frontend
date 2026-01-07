@@ -6,14 +6,13 @@ import { useContext, useMemo } from "react";
 import Pill from "@/components/Pill";
 import { QUERY_PARAMS, type TQueryParams } from "@/constants/queryParams";
 import { sortOptions } from "@/constants/sortOptions";
-import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { ThemeContext } from "@/context/ThemeContext";
 import { getConceptName } from "@/helpers/getConceptFields";
 import { getCountryName } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
 import useSubdivisions from "@/hooks/useSubdivisions";
-import { TConcept, TGeography, TThemeConfig, TGeographyWithDocumentCounts, TFeatureFlags } from "@/types";
-import { isLitigationEnabled } from "@/utils/features";
+import { TConcept, TGeography, TThemeConfig, TGeographyWithDocumentCounts, TFeatures } from "@/types";
 import { firstCase } from "@/utils/text";
 
 type TFilterChange = (type: string, value: string, clearOthersOfType?: boolean, otherValuesToClear?: string[]) => void;
@@ -63,11 +62,11 @@ const handleFilterDisplay = (
   regions: TGeography[],
   subdivisions: TGeographyWithDocumentCounts[],
   themeConfig: TThemeConfig,
-  featureFlags: TFeatureFlags,
+  features: TFeatures,
   concepts?: TConcept[],
   familyConcepts?: TConcept[]
 ) => {
-  const showFilterPrefixes = isLitigationEnabled(featureFlags, themeConfig);
+  const showFilterPrefixes = features.litigation;
 
   let filterLabel: string | null | undefined = null;
   let filterPrefix: string = "";
@@ -160,7 +159,7 @@ const generatePills = (
   regions: TGeography[],
   subdivisions: TGeographyWithDocumentCounts[],
   themeConfig: TThemeConfig,
-  featureFlags: TFeatureFlags,
+  features: TFeatures,
   concepts?: TConcept[],
   familyConcepts?: TConcept[]
 ) => {
@@ -176,7 +175,7 @@ const generatePills = (
     if (value) {
       if (key === "year_range")
         return pills.push(
-          handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions, subdivisions, themeConfig, featureFlags)
+          handleFilterDisplay(filterChange, queryParams, key, value.toString(), countries, regions, subdivisions, themeConfig, features)
         );
       if (Array.isArray(value)) {
         return value.map((v: string) => {
@@ -190,7 +189,7 @@ const generatePills = (
               regions,
               subdivisions,
               themeConfig,
-              featureFlags,
+              features,
               concepts,
               familyConcepts
             )
@@ -207,7 +206,7 @@ const generatePills = (
           regions,
           subdivisions,
           themeConfig,
-          featureFlags,
+          features,
           concepts,
           familyConcepts
         )
@@ -224,17 +223,17 @@ export const AppliedFilters = ({ filterChange, concepts, familyConcepts }: IProp
   const router = useRouter();
   const configQuery = useConfig();
   const { themeConfig } = useContext(ThemeContext);
-  const featureFlags = useContext(FeatureFlagsContext);
+  const features = useContext(FeaturesContext);
   const { data: { countries = [], regions = [] } = {} } = configQuery;
   const subdivisionQuery = useSubdivisions();
   const { data: subdivisions = [] } = subdivisionQuery;
 
   const appliedFilters = useMemo(
     () =>
-      generatePills(router.query, filterChange, countries, regions, subdivisions, themeConfig, featureFlags, concepts, familyConcepts).map(
+      generatePills(router.query, filterChange, countries, regions, subdivisions, themeConfig, features, concepts, familyConcepts).map(
         (pill) => pill
       ),
-    [router.query, filterChange, countries, regions, subdivisions, themeConfig, featureFlags, concepts, familyConcepts]
+    [router.query, filterChange, countries, regions, subdivisions, themeConfig, features, concepts, familyConcepts]
   );
 
   if (appliedFilters.length === 0) {

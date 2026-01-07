@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import { TButtonColor, TButtonVariant } from "@/components/atoms/button/Button";
 import { IProps as IPageLinkProps } from "@/components/atoms/pageLink/PageLink";
 
-import { TFeatureFlags } from "./features";
+import { TFeature, TFeatureFlags } from "./features";
 import { TThemeConfig } from "./themeConfig";
 import { TTheme } from "./types";
 
@@ -45,7 +45,7 @@ export type TTutorialModal = {
 };
 
 type TTutorial = {
-  isEnabled: (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) => boolean;
+  featureKey: TFeature;
   banner?: TTutorialBanner;
   card?: TTutorialCard;
   modal?: TTutorialModal;

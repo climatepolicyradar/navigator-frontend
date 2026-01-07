@@ -1,17 +1,11 @@
-import { useContext } from "react";
-
 import { ExternalLink } from "@/components/ExternalLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
-import { ThemePageFeaturesContext } from "@/context/ThemePageFeaturesContext";
-import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 
 const Methodology = () => {
-  const { themeConfig } = useContext(ThemePageFeaturesContext);
-
   return (
     <Layout
       title="Methodology"

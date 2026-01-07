@@ -1,13 +1,12 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-import { Icon } from "@/components/atoms/icon/Icon";
 import { DEFAULT_CONFIG_FEATURES } from "@/constants/features";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TFeatureFlags, TThemeConfig } from "@/types";
 import { getAllCookies } from "@/utils/cookies";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { getFeatures } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 const EXAMPLE_SEARCHES = [
@@ -108,7 +107,7 @@ const LandingPageLinks = ({}) => {
     loadConfig();
   }, []);
 
-  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, localThemeConfig);
+  const features = getFeatures(localThemeConfig, featureFlags);
 
   const handleQuickSearch = (params: Record<string, string>) => {
     // Push directly to search page with all parameters
@@ -120,7 +119,7 @@ const LandingPageLinks = ({}) => {
     });
   };
 
-  const searches = knowledgeGraphEnabled ? KNOWLEDGE_GRAPH_QUICK_SEARCHES : EXAMPLE_SEARCHES;
+  const searches = features.knowledgeGraph ? KNOWLEDGE_GRAPH_QUICK_SEARCHES : EXAMPLE_SEARCHES;
 
   return (
     <section className="mt-18 text-white">

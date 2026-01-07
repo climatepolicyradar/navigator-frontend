@@ -8,10 +8,9 @@ import { Button } from "@/components/atoms/button/Button";
 import { FamilyMeta } from "@/components/document/FamilyMeta";
 import { Heading } from "@/components/typography/Heading";
 import { MAX_FAMILY_SUMMARY_LENGTH_BRIEF } from "@/constants/document";
-import { ThemeContext } from "@/context/ThemeContext";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { TMatchedFamily } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
-import { isSearchFamilySummaryEnabled } from "@/utils/features";
 import { truncateString } from "@/utils/truncateString";
 
 interface IProps {
@@ -20,7 +19,7 @@ interface IProps {
 
 export const FamilyMatchesDrawer = ({ family }: IProps) => {
   const router = useRouter();
-  const { themeConfig } = useContext(ThemeContext);
+  const features = useContext(FeaturesContext);
 
   if (!family) return null;
   const { family_geographies, family_name, family_category, family_date, family_documents, corpus_import_id, corpus_type_name } = family;
@@ -61,7 +60,7 @@ export const FamilyMatchesDrawer = ({ family }: IProps) => {
           <Heading level={3} extraClasses="!mb-0">
             {family_name}
           </Heading>
-          {isSearchFamilySummaryEnabled(themeConfig) && (
+          {features.searchFamilySummary && (
             <div className="mt-5">
               <Heading level={4}>Summary</Heading>
               <div

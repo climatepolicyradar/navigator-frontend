@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import cccConfig from "@/ccc/config";
-import { createFeatureFlags } from "@/mocks/featureFlags";
+import { DEFAULT_FEATURES } from "@/constants/features";
 import { resetPage } from "@/mocks/helpers";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import { setUpFamiliesRepo } from "@/mocks/repository";
@@ -107,10 +107,10 @@ const baseSearchProps: any = {
   },
   theme: "ccc",
   themeConfig: cccConfig,
-  featureFlags: createFeatureFlags({
-    "concepts-v1": false,
+  features: {
+    ...DEFAULT_FEATURES,
     litigation: true,
-  }),
+  },
   conceptsData: null,
   familyConceptsData: basicLegalConcepts,
 };
@@ -118,7 +118,7 @@ const baseSearchProps: any = {
 describe("SearchPage", async () => {
   it("filters search results by subdivision", async () => {
     // @ts-ignore
-    renderWithAppContext(Search, baseSearchProps);
+    renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     await screen.findByRole("heading", { level: 2, name: "Search results" });
 
@@ -148,7 +148,7 @@ describe("SearchPage", async () => {
 
   it("removes country and subdivision filters when a region filter is removed ", async () => {
     // @ts-ignore
-    renderWithAppContext(Search, baseSearchProps);
+    renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     await screen.findByRole("heading", { level: 2, name: "Search results" });
 
@@ -186,7 +186,7 @@ describe("SearchPage", async () => {
 
   it("removes subdivision filters when a country filter is removed", async () => {
     // @ts-ignore
-    renderWithAppContext(Search, baseSearchProps);
+    renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     await screen.findByRole("heading", { level: 2, name: "Search results" });
 
@@ -220,8 +220,10 @@ describe("SearchPage", async () => {
   it("filters search results by case category", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
-      ...baseSearchProps,
-      familyConceptsData: basicLegalConcepts,
+      pageProps: {
+        ...baseSearchProps,
+        familyConceptsData: basicLegalConcepts,
+      },
     });
 
     await screen.findByRole("heading", { level: 2, name: "Search results" });
@@ -249,8 +251,10 @@ describe("SearchPage", async () => {
   it("removing a case category filter updates search results", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
-      ...baseSearchProps,
-      familyConceptsData: basicLegalConcepts,
+      pageProps: {
+        ...baseSearchProps,
+        familyConceptsData: basicLegalConcepts,
+      },
     });
 
     const familyWithCategory1: TFamily = {
@@ -330,8 +334,10 @@ describe("SearchPage", async () => {
   it("removing a principal law filter updates search results", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
-      ...baseSearchProps,
-      familyConceptsData: basicLegalConcepts,
+      pageProps: {
+        ...baseSearchProps,
+        familyConceptsData: basicLegalConcepts,
+      },
     });
 
     const familyWithPrincipalLaw1: TFamily = {
@@ -404,8 +410,10 @@ describe("SearchPage", async () => {
   it("removing a jurisdiction filter updates search results", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
-      ...baseSearchProps,
-      familyConceptsData: basicLegalConcepts,
+      pageProps: {
+        ...baseSearchProps,
+        familyConceptsData: basicLegalConcepts,
+      },
     });
 
     const familyWithJurisdiction1: TFamily = {

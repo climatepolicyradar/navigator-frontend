@@ -22,13 +22,13 @@ import { getDocumentDescription } from "@/constants/metaDescriptions";
 import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import useConfig from "@/hooks/useConfig";
 import useSearch from "@/hooks/useSearch";
-import { TDocumentPage, TPassage, TTheme, TSearchResponse, TSlugResponse, TThemeConfig, TFeatureFlags, TFamilyPublic } from "@/types";
+import { TDocumentPage, TPassage, TTheme, TSearchResponse, TSlugResponse, TThemeConfig, TFamilyPublic, TFeatures } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { getFeatures } from "@/utils/features";
 import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamily";
 import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
 import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
@@ -39,7 +39,7 @@ interface IProps {
   family: TFamilyPublic;
   theme: TTheme;
   themeConfig: TThemeConfig;
-  featureFlags: TFeatureFlags;
+  features: TFeatures;
   vespaFamilyData?: TSearchResponse;
   vespaDocumentData?: TSearchResponse;
 }
@@ -69,7 +69,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   family,
   theme,
   themeConfig,
-  featureFlags,
+  features,
   vespaFamilyData,
   vespaDocumentData,
 }: IProps) => {
@@ -161,7 +161,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   );
 
   return (
-    <FeatureFlagsContext.Provider value={featureFlags}>
+    <FeaturesContext.Provider value={features}>
       <Layout
         title={`${document.title}`}
         description={getDocumentDescription(document.title)}
@@ -312,7 +312,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
           </Head>
         )}
       </Layout>
-    </FeatureFlagsContext.Provider>
+    </FeaturesContext.Provider>
   );
 };
 
@@ -320,12 +320,11 @@ export default DocumentPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-  const featureFlags = getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
   const themeConfig = await readConfigFile(theme);
-
-  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+  const featureFlags = getFeatureFlags(context.req.cookies);
+  const features = getFeatures(themeConfig, featureFlags);
 
   const id = context.params.id;
   const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
@@ -352,7 +351,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     familyData = family;
     documentData = otherDocumentData;
 
-    if (knowledgeGraphEnabled) {
+    if (features.knowledgeGraph) {
       const { data: vespaDocumentDataResponse } = await backendApiClient.get(`/document/${documentData.import_id}`);
       vespaDocumentData = vespaDocumentDataResponse;
       const { data: vespaFamilyDataResponse } = await backendApiClient.get(`/families/${familyData.import_id}`);
@@ -376,7 +375,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       family: familyData,
       theme: theme,
       themeConfig: themeConfig,
-      featureFlags,
+      features,
       vespaFamilyData: vespaFamilyData ?? null,
       vespaDocumentData: vespaDocumentData ?? null,
     }),

@@ -1,5 +1,5 @@
 import { TUTORIALS } from "@/constants/tutorials";
-import { TFeatureFlags, TThemeConfig, TTutorialName, TUTORIAL_NAMES } from "@/types";
+import { TFeatures, TThemeConfig, TTutorialName, TUTORIAL_NAMES } from "@/types";
 
 export const getCompletedTutorialNamesFromCookie = (cookie: string): TTutorialName[] => {
   try {
@@ -14,11 +14,9 @@ export const getCompletedTutorialNamesFromCookie = (cookie: string): TTutorialNa
 };
 
 // Returns the names of any tutorials not already completed and enabled
-export const getIncompleteTutorialNames = (
-  completedTutorials: TTutorialName[],
-  themeConfig: TThemeConfig,
-  featureFlags: TFeatureFlags
-): TTutorialName[] =>
+export const getIncompleteTutorialNames = (completedTutorials: TTutorialName[], themeConfig: TThemeConfig, features: TFeatures): TTutorialName[] =>
   themeConfig.tutorials.filter(
-    (tutorialName) => !completedTutorials.includes(tutorialName) && TUTORIALS[tutorialName].isEnabled(featureFlags, themeConfig)
+    (tutorialName) =>
+      !completedTutorials.includes(tutorialName) && // Tutorial not yet completed
+      features[TUTORIALS[tutorialName].featureKey] // Tutorial enabled
   );
