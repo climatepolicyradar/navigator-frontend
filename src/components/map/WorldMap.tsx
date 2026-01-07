@@ -8,6 +8,7 @@ import {
   ZoomableGroup,
   createCoordinates,
   createTranslateExtent,
+  GeographyErrorBoundary,
 } from "@vnedyalk0v/react19-simple-maps";
 import type { Feature, Geometry } from "geojson";
 import React, { useRef, useState, useMemo, useEffect } from "react";
@@ -315,7 +316,15 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
   };
 
   return (
-    <>
+    <GeographyErrorBoundary
+      fallback={(error, retry) => (
+        <div>
+          <p>Failed to load map: {error.message}</p>
+          <button onClick={retry}>Retry</button>
+        </div>
+      )}
+      // onError={(error) => console.error("Geography error:", error)}
+    >
       <div className="flex justify-between items-center my-4">
         <Heading level={2}>Search the globe</Heading>
         {showCategorySelect && (
@@ -355,6 +364,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           </div>
         </div>
       </div>
+
       <div ref={mapRef} className="map-container relative" data-cy="world-map">
         <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 125 }} height={340}>
           <ZoomableGroup
@@ -376,11 +386,11 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
             <Graticule stroke="#E4E5E6" strokeWidth={0.2} />
             <Geographies geography={geoUrl}>
               {({ geographies }) =>
-                geographies.map((geo) => {
+                geographies.map((geo, i) => {
                   const geoData = mapData.geographies[geo.properties.name];
                   return (
                     <Geography
-                      key={(geo as TSvgGeo).rsmKey} // TODO: annoying that we have to cast here
+                      key={geo.id}
                       geography={geo}
                       style={geoStyle(activeGeography === geo.properties.name, geoData?.familyCounts.LITIGATION || 0, mapData.maxLitigation)}
                       onClick={(e) => {
@@ -475,6 +485,6 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           </p>
         </div>
       )}
-    </>
+    </GeographyErrorBoundary>
   );
 }
