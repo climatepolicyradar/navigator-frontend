@@ -1,4 +1,4 @@
-import { GetServerSideProps, InferGetStaticPropsType } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { useState } from "react";
 
@@ -31,7 +31,7 @@ interface IProps {
 type TCollectionTabId = "about" | "cases" | "procedural history";
 const COLLECTION_TABS: TToggleGroupToggle<TCollectionTabId>[] = [{ id: "cases" }, { id: "procedural history" }, { id: "about" }];
 
-const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ collection, theme, themeConfig }: IProps) => {
+const CollectionPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ collection, theme, themeConfig }: IProps) => {
   const [currentTab, setCurrentTab] = useState<TCollectionTabId>("cases");
   const { families } = collection;
 
