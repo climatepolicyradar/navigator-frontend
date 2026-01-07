@@ -76,8 +76,9 @@ export type TThemeConfigFilter = IThemeConfigFilterCheckbox | IThemeConfigFilter
 
 type TThemeLinkKey = "downloadDatabase" | "emailAlerts";
 
-type TThemeMetadata = {
-  key: string;
+// default - used for app title (i.e. on each page after the title)
+export type TThemePageMetadataKey = "default" | "geography" | "homepage" | "search";
+type TThemePageMetadata = {
   title: string;
   description: string;
 };
@@ -88,7 +89,7 @@ export type TThemeConfig = {
   filters: TThemeConfigFilter[];
   labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
   links: TPartialRecord<TThemeLinkKey, string>;
-  metadata: TThemeMetadata[];
+  pageMetadata: Record<TThemePageMetadataKey, TThemePageMetadata>;
   documentCategories: TDocumentCategory[];
   defaultDocumentCategory: TDocumentCategory;
   pageBlocks: TThemePageBlocks;

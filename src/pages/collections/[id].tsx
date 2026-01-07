@@ -46,7 +46,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
   }));
 
   return (
-    <Layout title={collection.title} description={collection.description} theme={theme} themeConfig={themeConfig} metadataKey="collection">
+    <Layout title={collection.title} description={collection.description} theme={theme} themeConfig={themeConfig}>
       <BreadCrumbs dark label={collection.title} />
       <PageHeader<TCollectionTabId> dark title={collection.title} tabs={COLLECTION_TABS} currentTab={currentTab} onTabChange={onTabChange} />
       <FiveColumns>

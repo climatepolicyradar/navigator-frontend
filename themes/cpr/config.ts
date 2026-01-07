@@ -402,31 +402,26 @@ const config: TThemeConfig = {
   links: {
     downloadDatabase: "https://form.jotform.com/250202141318339",
   },
-  metadata: [
-    {
-      // default - used for app title (i.e. on each page after the title)
-      key: "default",
+  pageMetadata: {
+    default: {
       title: "Climate Policy Radar",
       description: "",
     },
-    {
-      key: "homepage",
+    homepage: {
       title: "Law and Policy Search",
       description:
         "Use Climate Policy Radar's data science and AI-powered platform to search and explore thousands of climate change laws, policies and legal cases worldwide.",
     },
-    {
-      key: "geography",
+    geography: {
       title: "{text} climate laws, policies and reports",
       description:
         "Find climate change laws, policies, targets and other climate policy data and indicators for {text}, alongside information about their legislative process.",
     },
-    {
-      key: "search",
+    search: {
       title: "Search the Climate Policy Radar database",
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
-  ],
+  },
   documentCategories: ["All", "UN Submissions", "Laws", "Policies", "Climate Finance Projects", "Offshore Wind Reports", "Litigation"],
   defaultDocumentCategory: "Laws",
   pageBlocks: {

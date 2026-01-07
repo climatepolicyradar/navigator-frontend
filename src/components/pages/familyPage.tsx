@@ -162,7 +162,6 @@ export const FamilyPage = ({ collections, corpus_types, countries, family, famil
       description={getFamilyMetaDescription(family?.metadata?.core_object?.[0] ?? family.summary, family.geographies.join(", "), family.category)}
       theme={theme}
       themeConfig={themeConfig}
-      metadataKey="family"
       attributionUrl={family?.organisation_attribution_url}
     >
       <BreadCrumbs

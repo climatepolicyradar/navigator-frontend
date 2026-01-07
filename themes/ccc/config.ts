@@ -12,30 +12,25 @@ const config: TThemeConfig = {
   links: {
     downloadDatabase: "https://form.jotform.com/252292116187356",
   },
-  metadata: [
-    {
-      // default - used for app title (i.e. on each page after the title)
-      key: "default",
+  pageMetadata: {
+    default: {
       title: "The Climate Litigation Database",
       description: "",
     },
-    {
-      key: "homepage",
+    homepage: {
       title: "The Climate Litigation Database",
       description:
         "Sabin Center for Climate Change Law provides Climate Litigation Database, a comprehensive database of US and Global climate change caselaw",
     },
-    {
-      key: "geography",
+    geography: {
       title: "{text} litigation",
       description: "Find climate change litigation data and indicators for {text}.",
     },
-    {
-      key: "search",
+    search: {
       title: "Search the Climate Litigation Database",
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
-  ],
+  },
   documentCategories: ["All"],
   defaultDocumentCategory: "All",
   pageBlocks: {
