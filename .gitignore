@@ -12,7 +12,6 @@ node_modules
 # next.js
 /.next/
 /out/
-next-env.d.ts
 
 # production
 /build
@@ -52,3 +51,6 @@ storybook-static
 # vitest
 vitest.xml
 .env.backup
+
+# typescript
+/next-env.d.ts
