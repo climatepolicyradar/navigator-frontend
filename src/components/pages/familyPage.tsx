@@ -52,7 +52,7 @@ export interface IProps {
   featureFlags: TFeatureFlags;
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];
-  theme: TTheme;
+  theme: string;
   themeConfig: TThemeConfig;
   vespaFamilyData?: TSearchResponse;
 }
@@ -160,7 +160,7 @@ export const FamilyPage = ({ collections, corpus_types, countries, family, famil
     <Layout
       title={family.title}
       description={getFamilyMetaDescription(family?.metadata?.core_object?.[0] ?? family.summary, family.geographies.join(", "), family.category)}
-      theme={theme}
+      theme={theme as TTheme}
       themeConfig={themeConfig}
       metadataKey="family"
       attributionUrl={family?.organisation_attribution_url}

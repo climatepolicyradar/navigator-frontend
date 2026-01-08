@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GetServerSideProps, NextPage } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
 import { IProps, GeographyPage } from "@/components/pages/geographyPage";
@@ -12,13 +12,13 @@ import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { readConfigFile } from "@/utils/readConfigFile";
 
-const CountryPage: NextPage<IProps> = ({ featureFlags, themeConfig, ...props }) => {
+const CountryPage = ({ featureFlags, themeConfig, ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return <GeographyPage featureFlags={featureFlags} themeConfig={themeConfig} {...props} />;
 };
 
 export default CountryPage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
   const featureFlags = getFeatureFlags(context.req.cookies);
 
@@ -111,4 +111,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       vespaSearchResults: vespaSearchResults,
     }),
   };
-};
+}) satisfies GetServerSideProps;

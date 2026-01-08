@@ -2,7 +2,7 @@ import { ParsedUrlQuery } from "querystring";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { GetServerSideProps, NextPage } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
@@ -33,7 +33,7 @@ import SearchResultList from "@/components/search/SearchResultList";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { sortOptions } from "@/constants/sortOptions";
-import { withEnvConfig } from "@/context/EnvConfig";
+import { TPublicEnvConfig, withEnvConfig } from "@/context/EnvConfig";
 import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
 import { SlideOutContext } from "@/context/SlideOutContext";
 import { WikiBaseConceptsContext } from "@/context/WikiBaseConceptsContext";
@@ -55,7 +55,7 @@ import { pluralise } from "@/utils/pluralise";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 interface IProps {
-  theme: TTheme;
+  theme: string;
   themeConfig: TThemeConfig;
   featureFlags: TFeatureFlags;
   conceptsData?: TConcept[] | null;
@@ -133,7 +133,7 @@ const getSelectedFamilyConcepts = (selectedConcepts: string | string[], allConce
   );
 };
 
-const Search: NextPage<IProps> = ({ theme, themeConfig, featureFlags, conceptsData, familyConceptsData }) => {
+const Search = ({ theme, themeConfig, featureFlags, conceptsData, familyConceptsData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
@@ -441,7 +441,7 @@ const Search: NextPage<IProps> = ({ theme, themeConfig, featureFlags, conceptsDa
   const searchResultItemName = pluralise(displayHits, [getAppText("searchResultItemSingular"), getAppText("searchResultItemPlural")]);
 
   return (
-    <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
+    <Layout theme={theme as TTheme} themeConfig={themeConfig} metadataKey="search">
       <FeatureFlagsContext.Provider value={featureFlags}>
         <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
           <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
@@ -794,7 +794,7 @@ const Search: NextPage<IProps> = ({ theme, themeConfig, featureFlags, conceptsDa
 
 export default Search;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
   const featureFlags = getFeatureFlags(context.req.cookies);
 
@@ -835,4 +835,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       familyConceptsData: familyConceptsData ?? null,
     }),
   };
-};
+}) satisfies GetServerSideProps;

@@ -1,7 +1,7 @@
 import { ParsedUrlQuery } from "querystring";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { GetServerSideProps, NextPage } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState, useMemo } from "react";
@@ -64,7 +64,15 @@ const isEmptySearch = (query: ParsedUrlQuery) => {
   - If the document is an HTML, the passages will be displayed in a list on the left side of the page but the document will not be displayed.
 */
 
-const DocumentPage: NextPage<IProps> = ({ document, family, theme, themeConfig, featureFlags, vespaFamilyData, vespaDocumentData }) => {
+const DocumentPage = ({
+  document,
+  family,
+  theme,
+  themeConfig,
+  featureFlags,
+  vespaFamilyData,
+  vespaDocumentData,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [canPreview, setCanPreview] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [pageNumber, setPageNumber] = useState(null);
@@ -157,7 +165,7 @@ const DocumentPage: NextPage<IProps> = ({ document, family, theme, themeConfig, 
       <Layout
         title={`${document.title}`}
         description={getDocumentDescription(document.title)}
-        theme={theme}
+        theme={theme as TTheme}
         themeConfig={themeConfig}
         attributionUrl={family.corpus.attribution_url}
       >
@@ -310,7 +318,7 @@ const DocumentPage: NextPage<IProps> = ({ document, family, theme, themeConfig, 
 
 export default DocumentPage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
   const featureFlags = getFeatureFlags(context.req.cookies);
 
@@ -373,4 +381,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       vespaDocumentData: vespaDocumentData ?? null,
     }),
   };
-};
+}) satisfies GetServerSideProps;

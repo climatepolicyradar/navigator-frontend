@@ -29,7 +29,7 @@ export interface IProps {
   geographyV2: GeographyV2;
   parentGeographyV2?: GeographyV2;
   targets: TTarget[];
-  theme: TTheme;
+  theme: string;
   themeConfig: TThemeConfig;
   vespaSearchResults?: TSearch;
   envConfig: TPublicEnvConfig;
@@ -190,7 +190,7 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, targets, theme, 
 
   return (
     <GeographiesContext.Provider value={allGeographies}>
-      <Layout metadataKey="geography" theme={theme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
+      <Layout metadataKey="geography" theme={theme as TTheme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
         <BreadCrumbs
           dark
           geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}

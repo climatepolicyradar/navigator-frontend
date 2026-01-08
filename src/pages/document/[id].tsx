@@ -1,8 +1,8 @@
 import axios from "axios";
-import { GetServerSideProps, NextPage } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
-import { IProps, FamilyPage as FamilyPageUI } from "@/components/pages/familyPage";
+import { FamilyPage as FamilyPageUI } from "@/components/pages/familyPage";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
 import {
@@ -30,13 +30,13 @@ import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
   - The 'physical document' view is within the folder: src/pages/documents/[id].tsx.
 */
 
-const FamilyPage: NextPage<IProps> = ({ featureFlags, themeConfig, ...props }) => {
+const FamilyPage = ({ featureFlags, themeConfig, ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return <FamilyPageUI featureFlags={featureFlags} themeConfig={themeConfig} {...props} />;
 };
 
 export default FamilyPage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
   const featureFlags = getFeatureFlags(context.req.cookies);
@@ -163,4 +163,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       vespaFamilyData: vespaFamilyData ?? null,
     }),
   };
-};
+}) satisfies GetServerSideProps;
