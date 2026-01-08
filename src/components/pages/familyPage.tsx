@@ -163,7 +163,7 @@ export const FamilyPage = ({ collections, corpus_types, countries, family, famil
       theme={theme}
       themeConfig={themeConfig}
       metadataKey="family"
-      attributionUrl={family?.organisation_attribution_url}
+      attributionUrl={family?.corpus?.attribution_url}
     >
       <BreadCrumbs
         geography={breadcrumbGeography}
