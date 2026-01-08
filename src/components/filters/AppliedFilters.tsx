@@ -1,7 +1,7 @@
 import { ParsedUrlQuery } from "querystring";
 
 import { useRouter } from "next/router";
-import { useContext, useMemo } from "react";
+import { JSX, useContext, useMemo } from "react";
 
 import Pill from "@/components/Pill";
 import { QUERY_PARAMS, type TQueryParams } from "@/constants/queryParams";

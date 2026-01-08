@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/nextjs";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { Button } from "@/components/atoms/button/Button";
 import { LOREM_IPSUM } from "@/constants/stories";

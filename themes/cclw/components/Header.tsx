@@ -17,7 +17,7 @@ const CCLWLogo = (
   </PageLink>
 );
 
-export const Header = () => {
+const Header = () => {
   const router = useRouter();
 
   const showLogo = router.pathname !== "/";
@@ -25,3 +25,5 @@ export const Header = () => {
 
   return <NavBar headerClasses="bg-cclw-dark" logo={CCLWLogo} menu={<MainMenu links={MENU_LINKS} />} showLogo={showLogo} showSearch={showSearch} />;
 };
+
+export default Header;

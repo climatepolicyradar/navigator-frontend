@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        THEME: ${THEME}
+    environment:
+      - THEME=${THEME}
+    ports:
+      - 3000:3000

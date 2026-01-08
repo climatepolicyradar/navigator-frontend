@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, JSX, useEffect } from "react";
 
 import { Accordion } from "@/components/accordion/Accordion";
 import { SingleCol } from "@/components/panels/SingleCol";

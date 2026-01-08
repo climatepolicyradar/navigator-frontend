@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { ApiClient, getEnvFromServer } from "../api/http-common";
 
@@ -17,9 +17,9 @@ type TMapGeographyStats = {
 };
 
 export default function useGeographies() {
-  return useQuery(
-    "geographies",
-    async () => {
+  return useQuery({
+    queryKey: ["geographies"],
+    queryFn: async () => {
       const { data } = await getEnvFromServer();
       const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
       const query_response = await client.get("/geographies", null);
@@ -27,10 +27,8 @@ export default function useGeographies() {
 
       return mapData;
     },
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      cacheTime: 1000 * 60 * 60 * 24,
-    }
-  );
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    gcTime: 1000 * 60 * 60 * 24,
+  });
 }

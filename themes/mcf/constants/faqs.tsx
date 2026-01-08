@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 import { ExternalLink } from "@/components/ExternalLink";
 import { PLATFORM_FAQS as GENERIC_PLATFORM_FAQS } from "@/constants/platformFaqs";
 

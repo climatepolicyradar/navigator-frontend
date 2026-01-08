@@ -1,6 +1,6 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import React from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
 
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { EnvConfigContext } from "@/context/EnvConfig";

@@ -51,3 +51,6 @@ storybook-static
 # vitest
 vitest.xml
 .env.backup
+
+# typescript
+/next-env.d.ts

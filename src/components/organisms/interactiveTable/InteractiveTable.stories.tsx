@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/nextjs";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { LucideCalendarArrowDown, LucideCalendarArrowUp } from "lucide-react";
 
 import { TTableCell } from "@/types";

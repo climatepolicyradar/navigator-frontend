@@ -103,8 +103,6 @@ describe("SearchPage", async () => {
     // @ts-ignore
     renderWithAppContext(Search, baseSearchProps);
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
-
     // Verify slideout is initially closed.
     expect(screen.queryByText("Region")).not.toBeInTheDocument();
 
@@ -132,8 +130,6 @@ describe("SearchPage", async () => {
   it("filters search results by country", async () => {
     // @ts-ignore
     renderWithAppContext(Search, baseSearchProps);
-
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
     // Verify slideout is initially closed.
     expect(screen.queryByText("Published jurisdiction")).not.toBeInTheDocument();

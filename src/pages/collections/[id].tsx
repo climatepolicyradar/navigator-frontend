@@ -1,4 +1,4 @@
-import { GetServerSideProps, InferGetStaticPropsType } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { useState } from "react";
 
@@ -14,7 +14,7 @@ import { TToggleGroupToggle } from "@/components/molecules/toggleGroup/ToggleGro
 import { ContentsSideBar, ISideBarItem } from "@/components/organisms/contentsSideBar/ContentsSideBar";
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { TCollectionPublicWithFamilies, TTheme, TThemeConfig } from "@/types";
+import { TCollectionPublicWithFamilies, TTheme } from "@/types";
 import { getCaseNumbers, getCourts } from "@/utils/eventTable";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { isLitigationEnabled } from "@/utils/features";
@@ -22,16 +22,10 @@ import { getCollectionMetadata } from "@/utils/getCollectionMetadata";
 import { getLitigationCollectionJSONLD } from "@/utils/json-ld/getLitigationCollectionJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
 
-interface IProps {
-  collection: TCollectionPublicWithFamilies;
-  theme: TTheme;
-  themeConfig: TThemeConfig;
-}
-
 type TCollectionTabId = "about" | "cases" | "procedural history";
 const COLLECTION_TABS: TToggleGroupToggle<TCollectionTabId>[] = [{ id: "cases" }, { id: "procedural history" }, { id: "about" }];
 
-const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ collection, theme, themeConfig }: IProps) => {
+const CollectionPage = ({ collection, theme, themeConfig }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [currentTab, setCurrentTab] = useState<TCollectionTabId>("cases");
   const { families } = collection;
 
@@ -46,7 +40,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
   }));
 
   return (
-    <Layout title={collection.title} description={collection.description} theme={theme} themeConfig={themeConfig} metadataKey="collection">
+    <Layout title={collection.title} description={collection.description} theme={theme as TTheme} themeConfig={themeConfig} metadataKey="collection">
       <BreadCrumbs dark label={collection.title} />
       <PageHeader<TCollectionTabId> dark title={collection.title} tabs={COLLECTION_TABS} currentTab={currentTab} onTabChange={onTabChange} />
       <FiveColumns>
@@ -93,7 +87,7 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
 
 export default CollectionPage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
   const featureFlags = getFeatureFlags(context.req.cookies);
@@ -128,4 +122,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       themeConfig,
     }),
   };
-};
+}) satisfies GetServerSideProps;

@@ -1,7 +1,7 @@
 import { FC, ReactNode } from "react";
 
 import Footer from "@/cclw/components/Footer";
-import { Header } from "@/cclw/components/Header";
+import Header from "@/cclw/components/Header";
 
 interface IProps {
   children?: ReactNode;

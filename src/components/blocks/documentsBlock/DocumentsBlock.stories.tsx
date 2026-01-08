@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/nextjs";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { FAMILY_NEW_STUB } from "@/stubs/familyNewStub";
 import { TFamilyDocument, TMatchedFamily } from "@/types";

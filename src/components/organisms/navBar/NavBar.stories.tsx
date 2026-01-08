@@ -1,7 +1,7 @@
-import { Meta, StoryObj } from "@storybook/nextjs";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { Header as CCCHeader } from "@/ccc/components/Header";
-import { Header as CCLWHeader } from "@/cclw/components/Header";
+import { default as CCLWHeader } from "@/cclw/components/Header";
 import MainMenu from "@/components/molecules/mainMenu/MainMenu";
 import { CPRLogo, CPRMenuButton } from "@/cpr/components/Header";
 import { MENU_LINKS } from "@/cpr/constants/menuLinks";

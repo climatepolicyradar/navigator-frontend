@@ -1,18 +1,15 @@
 import { GetServerSideProps } from "next";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 
+import { Homepage } from "@/components/Themed";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { IProps as HomepageProps } from "@/cpr/pages/homepage";
 import useConfig from "@/hooks/useConfig";
 import useUpdateCountries from "@/hooks/useUpdateCountries";
 import { TTheme, TThemeConfig } from "@/types";
 import { readConfigFile } from "@/utils/readConfigFile";
 import { triggerNewSearch } from "@/utils/triggerNewSearch";
-
-const Homepage = dynamic<HomepageProps>(() => import(`../../themes/${process.env.THEME}/pages/homepage`));
 
 interface IProps {
   theme: TTheme;

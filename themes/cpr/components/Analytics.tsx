@@ -1,3 +1,9 @@
-const Anlytics = (): JSX.Element => null;
+import { JSX } from "react";
 
-export default Anlytics;
+interface IProps {
+  enableAnalytics: boolean;
+}
+
+const Analytics = ({ enableAnalytics }: IProps): JSX.Element => null;
+
+export default Analytics;

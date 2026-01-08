@@ -1,16 +1,14 @@
-import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { FC, ReactNode, useContext } from "react";
 
+import { Wrapper } from "@/components/Themed";
 import { ThemeContext } from "@/context/ThemeContext";
 import { TTheme, TThemeConfig } from "@/types";
 import { getAppTitle } from "@/utils/getAppTitle";
 import { getCanonicalUrl } from "@/utils/getCanonicalUrl";
 import { getPageDescription } from "@/utils/getPageDescription";
 import { getPageTitle } from "@/utils/getPageTitle";
-
-const Wrapper = dynamic<{ children: ReactNode }>(() => import(`../../../themes/${process.env.THEME}/layouts/main.tsx`));
 
 interface IProps {
   title?: string;

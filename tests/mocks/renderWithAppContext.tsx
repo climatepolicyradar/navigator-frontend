@@ -1,7 +1,7 @@
 vi.mock("next/router", () => require("next-router-mock"));
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render } from "@testing-library/react";
-import { QueryClient, QueryClientProvider } from "react-query";
 
 import { EnvConfigContext } from "@/context/EnvConfig";
 import { SlideOutContext } from "@/context/SlideOutContext";

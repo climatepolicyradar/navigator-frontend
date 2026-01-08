@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 
