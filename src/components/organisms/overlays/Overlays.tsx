@@ -8,6 +8,7 @@ import { ThemeContext } from "@/context/ThemeContext";
 import { TutorialContext } from "@/context/TutorialContext";
 import { getAllCookies } from "@/utils/cookies";
 import { getFeatureFlags } from "@/utils/featureFlags";
+import { getFeatures } from "@/utils/features";
 import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
 interface IProps {
@@ -23,8 +24,9 @@ export const Overlays = ({ onConsentChange }: IProps) => {
     cookies = getAllCookies();
   } catch (_error) {}
   const featureFlags = getFeatureFlags(cookies);
+  const features = getFeatures(themeConfig, featureFlags);
 
-  const incompleteTutorials = getIncompleteTutorialNames(completedTutorials, themeConfig, featureFlags).map((tutorialName) => ({
+  const incompleteTutorials = getIncompleteTutorialNames(completedTutorials, themeConfig, features).map((tutorialName) => ({
     name: tutorialName,
     tutorial: TUTORIALS[tutorialName],
   }));

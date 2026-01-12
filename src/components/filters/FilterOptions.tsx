@@ -2,13 +2,12 @@ import { ParsedUrlQuery } from "querystring";
 
 import get from "lodash/get";
 import groupBy from "lodash/groupBy";
-import { Fragment, useContext, useState } from "react";
+import { Fragment, useState } from "react";
 
 import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
 import { TextInput } from "@/components/forms/TextInput";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
 import { TCorpusTypeDictionary, TThemeConfig, TThemeConfigFilter, TThemeConfigOption } from "@/types";
 
 const getTaxonomyAllowedValues = (corporaKey: string, taxonomyKey: string, corpus_types: TCorpusTypeDictionary) => {
@@ -38,7 +37,6 @@ const filterIsSelected = (queryValue: string | string[] | undefined, option: str
 
 export const FilterOptions = ({ filter, query, handleFilterChange, corpus_types, themeConfig }: IProps) => {
   const [search, setSearch] = useState("");
-  const featureFlags = useContext(FeatureFlagsContext);
 
   // If the filter has its own options defined, display them
   if (filter.options && filter.options.length > 0) {

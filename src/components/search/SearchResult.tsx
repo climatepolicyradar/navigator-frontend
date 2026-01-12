@@ -3,9 +3,8 @@ import { useContext } from "react";
 
 import { FamilyListItem } from "@/components/document/FamilyListItem";
 import { MAX_RESULTS } from "@/constants/paging";
-import { ThemeContext } from "@/context/ThemeContext";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { TMatchedFamily } from "@/types";
-import { isSearchFamilySummaryEnabled } from "@/utils/features";
 import { pluralise } from "@/utils/pluralise";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
@@ -16,7 +15,7 @@ interface IProps {
 }
 
 const SearchResult = ({ family, active, onClick }: IProps) => {
-  const { themeConfig } = useContext(ThemeContext);
+  const features = useContext(FeaturesContext);
   const { family_documents, total_passage_hits, family_slug } = family;
 
   const hasFamilyDocuments = family_documents.length > 0;
@@ -30,7 +29,7 @@ const SearchResult = ({ family, active, onClick }: IProps) => {
   );
 
   return (
-    <FamilyListItem family={family} showSummary={isSearchFamilySummaryEnabled(themeConfig)} titleClasses={titleClasses}>
+    <FamilyListItem family={family} showSummary={features.searchFamilySummary} titleClasses={titleClasses}>
       {hasFamilyDocuments && (
         <div className="flex">
           <button
