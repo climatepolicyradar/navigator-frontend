@@ -25,7 +25,6 @@ describe("getEventTableRows", () => {
           },
         },
       ],
-      organisation_attribution_url: null,
       metadata: {
         id: ["Id 1"],
         case_number: ["Case 1"],
@@ -75,7 +74,6 @@ describe("getEventTableRows", () => {
         } as TFamilyDocumentPublic,
       ],
       events: [],
-      organisation_attribution_url: null,
       metadata: {
         id: ["Id 1"],
         case_number: ["Case 1"],
@@ -140,7 +138,6 @@ describe("getEventTableRows", () => {
           },
         },
       ],
-      organisation_attribution_url: null,
       metadata: {
         id: ["Id 1"],
         case_number: ["Case 1"],
@@ -206,7 +203,6 @@ describe("getEventTableRows", () => {
           },
         },
       ],
-      organisation_attribution_url: null,
       metadata: {
         id: ["Id 1"],
         case_number: ["Case 1"],

@@ -2,8 +2,8 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import router from "next-router-mock";
 
+import { DEFAULT_FEATURES } from "@/constants/features";
 import cprConfig from "@/cpr/config";
-import { mockFeatureFlagsWithConcepts } from "@/mocks/featureFlags";
 import { resetPage } from "@/mocks/helpers";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import Search from "@/pages/search";
@@ -19,14 +19,17 @@ const baseSearchProps = {
   },
   theme: "cpr",
   themeConfig: cprConfig,
-  featureFlags: mockFeatureFlagsWithConcepts,
+  features: {
+    ...DEFAULT_FEATURES,
+    knowledgeGraph: true,
+  },
 };
 
 describe("SearchPage", async () => {
   it("shows search onboarding info when no filters applied", async () => {
     const search_props = { ...baseSearchProps };
     // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    renderWithAppContext(Search, { pageProps: search_props });
 
     expect(await screen.findByText("Get better results")).toBeInTheDocument();
     expect(screen.getByText(/You are currently viewing all of the documents in our database/)).toBeInTheDocument();
@@ -37,7 +40,7 @@ describe("SearchPage", async () => {
     const search_props = { ...baseSearchProps, searchParams: { q: "climate policy" } };
     router.query = { q: "climate policy" };
     // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    renderWithAppContext(Search, { pageProps: search_props });
 
     expect(screen.queryByText(/Get better results/)).not.toBeInTheDocument();
     expect(screen.queryByText(/You are currently viewing all of the documents in our database/)).not.toBeInTheDocument();
@@ -46,20 +49,22 @@ describe("SearchPage", async () => {
   it("filters search results by topic", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
-      ...baseSearchProps,
-      conceptsData: [
-        {
-          alternative_labels: [],
-          description: "test concept 1",
-          has_subconcept: [],
-          negative_labels: [],
-          preferred_label: "child topic 1",
-          recursive_subconcept_of: [],
-          related_concepts: [],
-          subconcept_of: [],
-          wikibase_id: "1",
-        },
-      ],
+      pageProps: {
+        ...baseSearchProps,
+        conceptsData: [
+          {
+            alternative_labels: [],
+            description: "test concept 1",
+            has_subconcept: [],
+            negative_labels: [],
+            preferred_label: "child topic 1",
+            recursive_subconcept_of: [],
+            related_concepts: [],
+            subconcept_of: [],
+            wikibase_id: "1",
+          },
+        ],
+      },
     });
 
     await userEvent.click(await screen.findByRole("button", { name: "Topics Beta" }));

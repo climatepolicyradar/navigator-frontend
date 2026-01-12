@@ -1,4 +1,4 @@
-import { TFeatureFlags, TThemeConfig } from "@/types";
+import { configFeatureKeys, featureFlagKeys, TConfigFeature, TFeatureFlag, TFeatureFlags, TFeatures, TTheme, TThemeConfig } from "@/types";
 
 interface IArgs {
   configFeature?: boolean;
@@ -12,27 +12,21 @@ export const isFeatureEnabled = ({ configFeature, featureFlag }: IArgs): boolean
   return featureFlag === true; // Config feature off + feature flag = use feature flag. This will be off is the feature flag is undefined
 };
 
-/* Specific feature shorthand functions */
+// Constructs an object containing all feature flags & config features and whether they're enabled or not
+// Prefer FeaturesContext over getFeatures where possible. Use getFeatures in getServerSideProps or inside page components
+export const getFeatures = (themeConfig: TThemeConfig, featureFlags: TFeatureFlags) => {
+  // Only keys defined in these two array will be included
+  const featureKeys: (TFeatureFlag | TConfigFeature)[] = Array.from(new Set([...featureFlagKeys, ...configFeatureKeys]));
 
-export const isKnowledgeGraphEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.knowledgeGraph,
-    featureFlag: featureFlags["concepts-v1"],
-  });
+  // Construct an object of feature keys and boolean values. This simplifies the relation between feature flags and config features
+  return Object.fromEntries(
+    featureKeys.map((featureKey) => {
+      const isEnabled = isFeatureEnabled({
+        configFeature: themeConfig.features[featureKey],
+        featureFlag: featureFlags[featureKey],
+      });
 
-export const isLitigationEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.litigation,
-    featureFlag: featureFlags["litigation"],
-  });
-
-export const isFamilyConceptsEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.familyConceptsSearch,
-    featureFlag: featureFlags["family-concepts"],
-  });
-
-export const isSearchFamilySummaryEnabled = (themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.searchFamilySummary,
-  });
+      return [featureKey, isEnabled];
+    })
+  ) as TFeatures;
+};

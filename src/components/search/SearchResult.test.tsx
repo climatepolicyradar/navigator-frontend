@@ -34,7 +34,7 @@ describe("SearchResult", () => {
       onClick: () => {},
     };
 
-    renderWithAppContext(SearchResult, { ...searchResultProps, themeConfig: { features: {} } });
+    renderWithAppContext(SearchResult, { pageProps: { ...searchResultProps, themeConfig: { features: {} } } });
 
     expect(await screen.findByRole("link", { name: "Australia" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Argentina" })).toBeInTheDocument();
@@ -62,7 +62,7 @@ describe("SearchResult", () => {
       onClick: () => {},
     };
 
-    renderWithAppContext(SearchResult, { ...searchResultProps, themeConfig: { features: {} } });
+    renderWithAppContext(SearchResult, { pageProps: { ...searchResultProps, themeConfig: { features: {} } } });
 
     const countryLink = await screen.findByRole("link", { name: "Australia" });
     const subdivisionLink1 = screen.getByRole("link", { name: "New South Wales" });

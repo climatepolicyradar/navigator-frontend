@@ -17,6 +17,7 @@ import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLa
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import useConfig from "@/hooks/useConfig";
 import { useFamilyPageHeaderData } from "@/hooks/useFamilyPageHeaderData";
 import useSearch from "@/hooks/useSearch";
@@ -28,13 +29,13 @@ import {
   TMatchedFamily,
   TFamilyPageBlock,
   TFamilyPublic,
-  TFeatureFlags,
   TGeography,
   TGeographySubdivision,
   TSearchResponse,
   TTarget,
   TTheme,
   TThemeConfig,
+  TFeatures,
 } from "@/types";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
@@ -49,7 +50,7 @@ export interface IProps {
   countries: TGeography[];
   family: TFamilyPublic;
   familyTopics?: IFamilyDocumentTopics;
-  featureFlags: TFeatureFlags;
+  features: TFeatures;
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];
   theme: TTheme;
@@ -57,7 +58,18 @@ export interface IProps {
   vespaFamilyData?: TSearchResponse;
 }
 
-export const FamilyPage = ({ collections, corpus_types, countries, family, familyTopics, targets, subdivisions, theme, themeConfig }: IProps) => {
+export const FamilyPage = ({
+  collections,
+  corpus_types,
+  countries,
+  family,
+  familyTopics,
+  features,
+  targets,
+  subdivisions,
+  theme,
+  themeConfig,
+}: IProps) => {
   const configQuery = useConfig();
   const { data: { languages = {} } = {} } = configQuery;
   const { getCategoryTextLookup } = useText();
@@ -162,24 +174,26 @@ export const FamilyPage = ({ collections, corpus_types, countries, family, famil
       description={getFamilyMetaDescription(family?.metadata?.core_object?.[0] ?? family.summary, family.geographies.join(", "), family.category)}
       theme={theme}
       themeConfig={themeConfig}
-      attributionUrl={family?.organisation_attribution_url}
+      attributionUrl={family?.corpus?.attribution_url}
     >
-      <BreadCrumbs
-        geography={breadcrumbGeography}
-        parentGeography={breadcrumbParentGeography}
-        isSubdivision={Boolean(breadcrumbParentGeography)}
-        label={family.title}
-      />
-      <PageHeader title={family.title} metadata={pageHeaderMetadata} />
-      <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
-      <Head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(getLitigationCaseJSONLD(family, countries, subdivisions)),
-          }}
+      <FeaturesContext.Provider value={features}>
+        <BreadCrumbs
+          geography={breadcrumbGeography}
+          parentGeography={breadcrumbParentGeography}
+          isSubdivision={Boolean(breadcrumbParentGeography)}
+          label={family.title}
         />
-      </Head>
+        <PageHeader title={family.title} metadata={pageHeaderMetadata} />
+        <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
+        <Head>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(getLitigationCaseJSONLD(family, countries, subdivisions)),
+            }}
+          />
+        </Head>
+      </FeaturesContext.Provider>
     </Layout>
   );
 };

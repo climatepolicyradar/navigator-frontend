@@ -47,7 +47,6 @@ const baseCollection: TCollectionPublicWithFamilies = {
       },
       documents: [],
       events: [],
-      organisation_attribution_url: null,
     },
   ],
   metadata: {},

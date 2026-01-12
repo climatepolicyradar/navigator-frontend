@@ -449,7 +449,6 @@ export type TFamilyPublic = {
   concepts: TFamilyConcept[];
   documents: TFamilyDocumentPublic[];
   events: TFamilyEventPublic[];
-  organisation_attribution_url: string | null;
 };
 
 export type TCollectionPublicWithFamilies = {

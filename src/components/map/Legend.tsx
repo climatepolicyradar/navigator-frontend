@@ -2,7 +2,7 @@ import { useContext } from "react";
 
 import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
 import { ThemeContext } from "@/context/ThemeContext";
-import { isLitigationEnabled } from "@/utils/features";
+import { getFeatures } from "@/utils/features";
 
 interface IProps {
   max: number;
@@ -13,8 +13,7 @@ interface IProps {
 export const Legend = ({ max, showLitigation, showMcf }: IProps) => {
   const { themeConfig } = useContext(ThemeContext);
   const featureFlags = useContext(FeatureFlagsContext);
-
-  const litigationIsEnabled = isLitigationEnabled(featureFlags, themeConfig);
+  const features = getFeatures(themeConfig, featureFlags);
 
   const scale = [1, Math.round(max * 0.25), Math.round(max * 0.5), Math.round(max * 0.75), max];
 
@@ -44,7 +43,7 @@ export const Legend = ({ max, showLitigation, showMcf }: IProps) => {
           <p>{scale[4]}</p>
         </div>
       </div>
-      {litigationIsEnabled ? (
+      {features.litigation ? (
         <p>Size and colour show the number of litigation submissions in our databases.</p>
       ) : (
         <p>
