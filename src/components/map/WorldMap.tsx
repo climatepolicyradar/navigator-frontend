@@ -153,7 +153,7 @@ interface IProps {
   theme: TTheme;
 }
 
-export default function MapChart({ showLitigation = false, showCategorySelect = true, showEUCheckbox = false, theme }: IProps) {
+export default function WorldMap({ showLitigation = false, showCategorySelect = true, showEUCheckbox = false, theme }: IProps) {
   const configQuery = useConfig();
   const geographiesQuery = useGeographies();
   const { data: { countries: configCountries = [] } = {} } = configQuery;
