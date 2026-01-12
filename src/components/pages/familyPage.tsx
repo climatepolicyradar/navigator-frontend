@@ -175,7 +175,7 @@ export const FamilyPage = ({
       theme={theme}
       themeConfig={themeConfig}
       metadataKey="family"
-      attributionUrl={family?.organisation_attribution_url}
+      attributionUrl={family?.corpus?.attribution_url}
     >
       <FeaturesContext.Provider value={features}>
         <BreadCrumbs

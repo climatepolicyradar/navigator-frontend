@@ -95,7 +95,6 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
-      organisation_attribution_url: null,
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
@@ -513,7 +512,6 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
-      organisation_attribution_url: null,
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
@@ -2739,7 +2737,6 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
-      organisation_attribution_url: null,
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
@@ -9481,7 +9478,6 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
-      organisation_attribution_url: null,
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
@@ -9722,7 +9718,6 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
-      organisation_attribution_url: null,
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
@@ -10791,7 +10786,6 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
-      organisation_attribution_url: null,
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
@@ -14657,7 +14651,6 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
-      organisation_attribution_url: null,
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
@@ -15070,7 +15063,6 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
-      organisation_attribution_url: null,
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
@@ -15579,7 +15571,6 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
-      organisation_attribution_url: null,
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
@@ -15864,7 +15855,6 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
-      organisation_attribution_url: null,
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
@@ -16245,7 +16235,6 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
-      organisation_attribution_url: null,
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
@@ -16574,7 +16563,6 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
-      organisation_attribution_url: null,
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
@@ -16911,7 +16899,6 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
-      organisation_attribution_url: null,
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
@@ -17334,7 +17321,6 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
-      organisation_attribution_url: null,
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
@@ -17609,7 +17595,6 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
       },
       corpus_id: "Academic.corpus.Litigation.n0000",
       organisation: "Sabin",
-      organisation_attribution_url: null,
       summary:
         "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
       geographies: ["USA", "US-OR"],
