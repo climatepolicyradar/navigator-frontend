@@ -16,7 +16,7 @@ interface IProps {
 }
 
 export const Overlays = ({ onConsentChange }: IProps) => {
-  const { themeConfig, theme, loaded } = useContext(ThemeContext);
+  const { themeConfig, loaded } = useContext(ThemeContext);
   const { completedTutorials, displayTutorial, setDisplayTutorial } = useContext(TutorialContext);
 
   let cookies: Record<string, string> = {};
@@ -47,7 +47,7 @@ export const Overlays = ({ onConsentChange }: IProps) => {
 
   return (
     <>
-      {displayCurrentModal && currentModal && <TutorialModal name={currentModal.name} modal={currentModal.tutorial.modal} />}
+      {displayCurrentModal && currentModal && <TutorialModal name={currentModal.name} modal={currentModal.tutorial.modal} features={features} />}
       <div className="fixed z-1000 inset-0 pointer-events-none">
         <div className="flex flex-col-reverse h-full">
           {currentBanner && <TutorialBanner name={currentBanner.name} banner={currentBanner.tutorial.banner} />}
