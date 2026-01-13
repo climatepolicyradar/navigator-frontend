@@ -174,7 +174,6 @@ export const FamilyPage = ({
       description={getFamilyMetaDescription(family?.metadata?.core_object?.[0] ?? family.summary, family.geographies.join(", "), family.category)}
       theme={theme}
       themeConfig={themeConfig}
-      metadataKey="family"
       attributionUrl={family?.corpus?.attribution_url}
     >
       <FeaturesContext.Provider value={features}>

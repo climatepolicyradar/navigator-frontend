@@ -1,10 +1,7 @@
-import { TThemeConfig } from "@/types";
+import { TThemeConfig, TThemePageMetadataKey } from "@/types";
 
-export const getPageTitle = (themeConfig?: TThemeConfig, metadataKey?: string, text?: string) => {
-  let title = "";
-  if (metadataKey && themeConfig) {
-    title = themeConfig.metadata.find((meta) => meta.key === metadataKey)?.title ?? "";
-    if (text) title = title.replace("{text}", text);
-  }
-  return title;
+export const getPageTitle = (themeConfig: TThemeConfig, metadataKey?: TThemePageMetadataKey, text?: string) => {
+  if (!metadataKey) return "";
+  const metadata = themeConfig.pageMetadata[metadataKey];
+  return text ? metadata.title.replace("{text}", text) : metadata.title;
 };

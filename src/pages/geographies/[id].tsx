@@ -107,7 +107,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       features,
       geographyV2,
       parentGeographyV2,
-      targets: theme === "mcf" ? [] : targetsData,
+      targets: targetsData,
       theme,
       themeConfig,
       vespaSearchResults: vespaSearchResults,

@@ -39,7 +39,7 @@ export const TUTORIALS: TTutorials = {
       defaultOpen: false,
       title: "New improvements",
       close: true,
-      content: (theme) => (
+      content: (features) => (
         <>
           <p>We have introduced a new layer of structure to the data, automatically identifying mentions of key climate topics in documents.</p>
           <p>
@@ -59,7 +59,7 @@ export const TUTORIALS: TTutorials = {
             </PageLink>
             .
           </p>
-          {theme === "ccc" && <p>Litigation-specific topics are coming soon.</p>}
+          {features.litigation && <p>Litigation-specific topics are coming soon.</p>}
         </>
       ),
       buttonPrimary: {

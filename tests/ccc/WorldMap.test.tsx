@@ -3,6 +3,9 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { vi } from "vitest";
 
 import WorldMap from "@/components/map/WorldMap";
+import { DEFAULT_FEATURE_FLAGS } from "@/constants/features";
+import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
+import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
 import { ThemeContext } from "@/context/ThemeContext";
 import { TTheme } from "@/types";
 
@@ -109,8 +112,10 @@ const renderWorldMap = (props: { showLitigation?: boolean; showCategorySelect?: 
 
   return render(
     <QueryClientProvider client={queryClient}>
-      <ThemeContext.Provider value={{ theme: props.theme, themeConfig: {} as any, loaded: true }}>
-        <WorldMap {...props} />
+      <ThemeContext.Provider value={{ theme: props.theme, themeConfig: DEFAULT_THEME_CONFIG, loaded: true }}>
+        <FeatureFlagsContext.Provider value={DEFAULT_FEATURE_FLAGS}>
+          <WorldMap {...props} />
+        </FeatureFlagsContext.Provider>
       </ThemeContext.Provider>
     </QueryClientProvider>
   );

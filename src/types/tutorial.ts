@@ -3,9 +3,7 @@ import { ReactNode } from "react";
 import { TButtonColor, TButtonVariant } from "@/components/atoms/button/Button";
 import { IProps as IPageLinkProps } from "@/components/atoms/pageLink/PageLink";
 
-import { TFeature, TFeatureFlags } from "./features";
-import { TThemeConfig } from "./themeConfig";
-import { TTheme } from "./types";
+import { TFeature, TFeatures } from "./features";
 
 export const TUTORIAL_NAMES = ["knowledgeGraph", "climateLitigationDatabase"] as const;
 export type TTutorialName = (typeof TUTORIAL_NAMES)[number];
@@ -39,7 +37,7 @@ export type TTutorialModal = {
   headerImage?: ReactNode;
   title?: string;
   close: boolean;
-  content: (theme: TTheme) => ReactNode;
+  content: (features: TFeatures) => ReactNode;
   buttonPrimary?: ITutorialButton;
   buttonSecondary?: ITutorialButton;
 };

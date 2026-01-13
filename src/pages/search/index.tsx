@@ -50,7 +50,6 @@ import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
-import { getThemeConfigLink } from "@/utils/getThemeConfigLink";
 import { pluralise } from "@/utils/pluralise";
 import { readConfigFile } from "@/utils/readConfigFile";
 
@@ -452,10 +451,10 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                 <BreadCrumbs label={"Search results"} />
                 <div className="px-2 cols-2:px-4 cols-3:px-6 cols-4:px-8">
                   <span className="text-sm mb-4 md:mb-0 text-right flex flex-wrap gap-x-2 md:justify-end">
-                    {getThemeConfigLink(themeConfig, "email-alerts") && (
+                    {themeConfig.links.emailAlerts && (
                       <>
                         <ExternalLink
-                          url={getThemeConfigLink(themeConfig, "email-alerts").url}
+                          url={themeConfig.links.emailAlerts}
                           className="mr-2 text-blue-600 hover:underline hover:text-blue-800"
                           cy="download-entire-search-csv"
                         >
@@ -475,11 +474,11 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({
                     >
                       {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
                     </a>
-                    {getThemeConfigLink(themeConfig, "download-database") && (
+                    {themeConfig.links.downloadDatabase && (
                       <>
                         <span>|</span>
                         <ExternalLink
-                          url={getThemeConfigLink(themeConfig, "download-database").url}
+                          url={themeConfig.links.downloadDatabase}
                           className="text-blue-600 hover:underline hover:text-blue-800"
                           cy="download-entire-search-csv"
                         >
