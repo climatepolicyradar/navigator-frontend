@@ -25,7 +25,7 @@ THEME=cclw npm run dev
 
 ## 📋 Prerequisites
 
-- Node.js (v18 or higher)
+- Node.js (v22 or higher)
 - Docker
 - Make
 - [Trunk.io](https://trunk.io) for code quality
