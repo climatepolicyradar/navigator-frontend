@@ -114,7 +114,7 @@ actions:
 
     - id: npm-install
       triggers:
-        - files: [package.json]
+        - files: [package.json, package-lock.json]
       run: npm install
 
   enabled:
