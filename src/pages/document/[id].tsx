@@ -7,7 +7,6 @@ import { IProps, FamilyPage as FamilyPageUI } from "@/components/pages/familyPag
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
 import {
-  IFamilyDocumentTopics,
   TCollectionPublicWithFamilies,
   TCorpusTypeDictionary,
   TFamilyPublic,
@@ -76,16 +75,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   /** The Vespa families data has the concepts data attached, which is why we need this */
-  let vespaFamilyData: TSearchResponse;
-  try {
-    if (features.knowledgeGraph) {
-      const { data: vespaFamilyDataResponse } = await backendApiClient.get(`/families/${familyData.import_id}`);
-      vespaFamilyData = vespaFamilyDataResponse;
-    }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error("Error fetching vespa family data", error);
-  }
+  const { data: vespaFamilyData } = await backendApiClient.get<TSearchResponse>(`/families/${familyData.import_id}`);
+
+  /* Package the family topics */
+  const familyTopics = await processFamilyTopics(vespaFamilyData);
 
   /** TODO: see where we use this config data, and if we can get it from the families response */
   const configRaw = await backendApiClient.getConfig();
@@ -137,14 +130,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       notFound: true,
     };
-  }
-
-  /* Package the family topics */
-  // TODO: move potentially
-  let familyTopics: IFamilyDocumentTopics = null;
-
-  if (vespaFamilyData) {
-    familyTopics = await processFamilyTopics(vespaFamilyData);
   }
 
   return {
