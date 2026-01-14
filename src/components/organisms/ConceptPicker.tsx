@@ -16,7 +16,7 @@ import { TutorialContext } from "@/context/TutorialContext";
 import { TConcept, TTheme } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
-import { fetchAndProcessConcepts } from "@/utils/processConcepts";
+import { fetchAndProcessConcepts } from "@/utils/fetchAndProcessConcepts";
 import { firstCase } from "@/utils/text";
 import { getIncompleteTutorialNames } from "@/utils/tutorials";
 

@@ -1,6 +1,6 @@
 import { IFamilyDocumentTopics, TSearchResponse } from "@/types";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
-import { fetchAndProcessConcepts } from "@/utils/processConcepts";
+import { fetchAndProcessConcepts } from "@/utils/fetchAndProcessConcepts";
 
 export const processFamilyTopics = async (vespaFamilyData: TSearchResponse): Promise<IFamilyDocumentTopics> => {
   const documentsWithConceptCounts: IFamilyDocumentTopics = { documents: [], conceptCounts: {}, rootConcepts: [], conceptsGrouped: {} };

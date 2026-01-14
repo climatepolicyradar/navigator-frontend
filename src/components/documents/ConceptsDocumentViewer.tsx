@@ -16,10 +16,10 @@ import { SEARCH_PASSAGE_ORDER } from "@/constants/searchPassagesOrder";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { useEffectOnce } from "@/hooks/useEffectOnce";
 import { TConcept, TDocumentPage, TLoadingStatus, TMatchedFamily, TPassage, TSearchResponse } from "@/types";
+import { fetchAndProcessConcepts } from "@/utils/fetchAndProcessConcepts";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
 import { getCurrentPassagesOrderChoice } from "@/utils/getPassagesSortOrder";
-import { fetchAndProcessConcepts } from "@/utils/processConcepts";
 
 import { Info } from "../molecules/info/Info";
 import { ConceptPicker } from "../organisms/ConceptPicker";
