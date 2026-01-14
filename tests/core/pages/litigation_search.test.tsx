@@ -7,13 +7,13 @@ import { resetPage } from "@/mocks/helpers";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import { setUpFamiliesRepo } from "@/mocks/repository";
 import Search from "@/pages/search";
-import { TConcept, TFamily } from "@/types";
+import { TTopic, TFamily } from "@/types";
 
 afterEach(() => {
   resetPage();
 });
 
-const basicLegalConcepts: TConcept[] = [
+const basicLegalConcepts: TTopic[] = [
   {
     wikibase_id: "category/Parent Test Case Category",
     preferred_label: "Parent Test Case Category",

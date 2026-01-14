@@ -13,15 +13,15 @@ import { TUTORIALS } from "@/constants/tutorials";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { ThemeContext } from "@/context/ThemeContext";
 import { TutorialContext } from "@/context/TutorialContext";
-import { TConcept, TTheme } from "@/types";
+import { TTopic, TTheme } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
-import { fetchAndProcessConcepts } from "@/utils/fetchAndProcessConcepts";
+import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
 import { firstCase } from "@/utils/text";
 import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
 interface IProps {
-  concepts: TConcept[];
+  concepts: TTopic[];
   containerClasses?: string;
   showBadge?: boolean;
   showSearch?: boolean;
@@ -44,7 +44,7 @@ const isSelected = (queryValue: string | string[] | undefined, option: string) =
   }
 };
 
-const conceptsSorter = (a: TConcept, b: TConcept, sort: TSort) => {
+const conceptsSorter = (a: TTopic, b: TTopic, sort: TSort) => {
   if (sort === "A-Z") {
     return a.preferred_label.localeCompare(b.preferred_label);
   } else if (sort === "Grouped") {
@@ -53,7 +53,7 @@ const conceptsSorter = (a: TConcept, b: TConcept, sort: TSort) => {
   return 0;
 };
 
-const filterConcepts = (concepts: TConcept[], search: string) => {
+const filterConcepts = (concepts: TTopic[], search: string) => {
   return concepts.filter(
     (concept) =>
       concept.preferred_label.toLowerCase().includes(search.toLowerCase()) ||
@@ -61,14 +61,14 @@ const filterConcepts = (concepts: TConcept[], search: string) => {
   );
 };
 
-const removeUnusableConcepts = (concepts: TConcept[], theme: TTheme): TConcept[] => {
+const removeUnusableConcepts = (concepts: TTopic[], theme: TTheme): TTopic[] => {
   if (theme !== "mcf") return concepts;
 
   const CLIMATE_FINANCE = "Q1343";
   return concepts.filter((concept) => concept.wikibase_id !== CLIMATE_FINANCE && !concept.recursive_subconcept_of?.includes(CLIMATE_FINANCE));
 };
 
-const onConceptChange = (router: NextRouter, concept: TConcept) => {
+const onConceptChange = (router: NextRouter, concept: TTopic) => {
   const query = CleanRouterQuery({ ...router.query });
   // Retain any dynamic ids in the query (e.g. document page)
   if (router.query.id) {
@@ -95,11 +95,11 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
   const ref = useRef(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<TSort>(startingSort);
-  const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
+  const [rootConcepts, setRootConcepts] = useState<TTopic[]>([]);
   const [conceptsGrouped, setConceptsGrouped] = useState<{
-    [rootConceptId: string]: TConcept[];
+    [rootConceptId: string]: TTopic[];
   }>({});
-  const [filteredConcepts, setFilteredConcepts] = useState<TConcept[]>([]);
+  const [filteredConcepts, setFilteredConcepts] = useState<TTopic[]>([]);
 
   const selectOptions = SORT_OPTIONS.map((option) => ({
     value: option,
@@ -108,10 +108,10 @@ export const ConceptPicker = ({ concepts, containerClasses = "", startingSort = 
 
   useEffect(() => {
     const conceptIds = concepts.map((concept) => concept.wikibase_id);
-    fetchAndProcessConcepts(conceptIds).then(({ rootConcepts, concepts }) => {
+    fetchAndProcessTopics(conceptIds).then(({ rootTopics, topics }) => {
       // TECH DEBT: Remove climate finance concepts from MCF as they don't currently work as expected
-      const usableRootConcepts = removeUnusableConcepts(rootConcepts, theme);
-      const usableConcepts = removeUnusableConcepts(concepts, theme);
+      const usableRootConcepts = removeUnusableConcepts(rootTopics, theme);
+      const usableConcepts = removeUnusableConcepts(topics, theme);
 
       setRootConcepts(usableRootConcepts);
       setFilteredConcepts(usableConcepts);

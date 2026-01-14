@@ -42,7 +42,7 @@ import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import { useHashNavigation } from "@/hooks/useHashNavigation";
 import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
-import { TConcept, TFeatures, TTheme, TThemeConfig } from "@/types";
+import { TTopic, TFeatures, TTheme, TThemeConfig } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -57,8 +57,8 @@ interface IProps {
   theme: TTheme;
   themeConfig: TThemeConfig;
   features: TFeatures;
-  conceptsData?: TConcept[] | null;
-  familyConceptsData?: TConcept[] | null;
+  conceptsData?: TTopic[] | null;
+  familyConceptsData?: TTopic[] | null;
 }
 
 const SETTINGS_ANIMATION_VARIANTS = {
@@ -112,12 +112,12 @@ const showSearchOnboarding = (query: ParsedUrlQuery) => {
   return false;
 };
 
-const getSelectedConcepts = (selectedConcepts: string | string[], allConcepts: TConcept[] = []): TConcept[] => {
+const getSelectedConcepts = (selectedConcepts: string | string[], allConcepts: TTopic[] = []): TTopic[] => {
   const selectedConceptsAsArray = Array.isArray(selectedConcepts) ? selectedConcepts : [selectedConcepts];
   return allConcepts?.filter((concept) => selectedConceptsAsArray.includes(concept.preferred_label.toLowerCase())) || [];
 };
 
-const getSelectedFamilyConcepts = (selectedConcepts: string | string[], allConcepts: TConcept[] = []): TConcept[] => {
+const getSelectedFamilyConcepts = (selectedConcepts: string | string[], allConcepts: TTopic[] = []): TTopic[] => {
   const selectedConceptsAsArray = Array.isArray(selectedConcepts) ? selectedConcepts : [selectedConcepts];
   return (
     allConcepts?.filter(
@@ -801,7 +801,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
 
-  let conceptsData: TConcept[];
+  let conceptsData: TTopic[];
   if (features.knowledgeGraph) {
     try {
       const client = new ApiClient(process.env.CONCEPTS_API_URL);
@@ -813,7 +813,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   // TODO: Next - start rendering this data
-  let familyConceptsData: TConcept[] | undefined;
+  let familyConceptsData: TTopic[] | undefined;
   if (features.familyConceptsSearch) {
     try {
       const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts`);
