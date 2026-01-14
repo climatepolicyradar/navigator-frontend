@@ -1,3 +1,8 @@
 import { createContext } from "react";
 
-export const TopicsContext = createContext(null);
+import { TTopics } from "@/types";
+
+export const TopicsContext = createContext<TTopics>({
+  rootTopics: [],
+  topics: [],
+});
