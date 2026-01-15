@@ -101,18 +101,19 @@ const basicLegalConcepts: TTopic[] = [
 ];
 
 const baseSearchProps: any = {
+  conceptsData: null,
   envConfig: {
     BACKEND_API_URL: process.env.BACKEND_API_URL,
     CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
   },
-  theme: "ccc",
-  themeConfig: cccConfig,
+  familyConceptsData: basicLegalConcepts,
   features: {
     ...DEFAULT_FEATURES,
     litigation: true,
   },
-  conceptsData: null,
-  familyConceptsData: basicLegalConcepts,
+  theme: "ccc",
+  themeConfig: cccConfig,
+  topicsData: { rootTopics: [], topics: [] },
 };
 
 describe("SearchPage", async () => {
