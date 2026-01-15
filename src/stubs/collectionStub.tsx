@@ -223,6 +223,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.88891.n0003",
@@ -256,6 +257,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.88891.n0006",
@@ -290,6 +292,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.88891.n0005",
@@ -322,6 +325,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.88891.n0001",
@@ -356,6 +360,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.88891.n0004",
@@ -388,6 +393,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.88891.n0002",
@@ -1154,6 +1160,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0003",
@@ -1186,6 +1193,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0007",
@@ -1220,6 +1228,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0001",
@@ -1254,6 +1263,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0002",
@@ -1288,6 +1298,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0006",
@@ -1322,6 +1333,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0005",
@@ -1354,6 +1366,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0018",
@@ -1386,6 +1399,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0042",
@@ -1418,6 +1432,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0027",
@@ -1450,6 +1465,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0024",
@@ -1484,6 +1500,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0012",
@@ -1516,6 +1533,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0013",
@@ -1548,6 +1566,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0036",
@@ -1582,6 +1601,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0032",
@@ -1616,6 +1636,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0017",
@@ -1648,6 +1669,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0009",
@@ -1680,6 +1702,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0039",
@@ -1715,6 +1738,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0020",
@@ -1749,6 +1773,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0044",
@@ -1781,6 +1806,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0010",
@@ -1813,6 +1839,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0019",
@@ -1847,6 +1874,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0040",
@@ -1881,6 +1909,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0015",
@@ -1913,6 +1942,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0016",
@@ -1945,6 +1975,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0038",
@@ -1979,6 +2010,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0035",
@@ -2013,6 +2045,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0008",
@@ -2045,6 +2078,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0043",
@@ -2077,6 +2111,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0014",
@@ -2109,6 +2144,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0034",
@@ -2141,6 +2177,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0046",
@@ -2173,6 +2210,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0037",
@@ -2207,6 +2245,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0041",
@@ -2241,6 +2280,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0029",
@@ -2273,6 +2313,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0023",
@@ -2305,6 +2346,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0026",
@@ -2337,6 +2379,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0045",
@@ -2369,6 +2412,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0033",
@@ -2401,6 +2445,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0022",
@@ -2435,6 +2480,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0030",
@@ -2467,6 +2513,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0021",
@@ -2499,6 +2546,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0031",
@@ -2533,6 +2581,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0011",
@@ -2565,6 +2614,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0025",
@@ -2599,6 +2649,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.14255.n0004",
@@ -4599,6 +4650,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0049",
@@ -4631,6 +4683,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [],
         },
         {
@@ -4650,6 +4703,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [],
         },
         {
@@ -4669,6 +4723,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0013",
@@ -4701,6 +4756,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0120",
@@ -4733,6 +4789,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0005",
@@ -4765,6 +4822,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0003",
@@ -4797,6 +4855,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0006",
@@ -4829,6 +4888,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0007",
@@ -4861,6 +4921,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0004",
@@ -4893,6 +4954,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0001",
@@ -4927,6 +4989,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0027",
@@ -4959,6 +5022,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0033",
@@ -4991,6 +5055,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0037",
@@ -5023,6 +5088,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0040",
@@ -5055,6 +5121,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0038",
@@ -5087,6 +5154,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0011",
@@ -5121,6 +5189,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0022",
@@ -5153,6 +5222,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0026",
@@ -5185,6 +5255,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0042",
@@ -5217,6 +5288,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0045",
@@ -5249,6 +5321,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0018",
@@ -5281,6 +5354,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0036",
@@ -5313,6 +5387,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0031",
@@ -5345,6 +5420,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0032",
@@ -5377,6 +5453,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0017",
@@ -5411,6 +5488,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0039",
@@ -5443,6 +5521,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0041",
@@ -5475,6 +5554,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0024",
@@ -5507,6 +5587,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0029",
@@ -5539,6 +5620,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0012",
@@ -5571,6 +5653,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0044",
@@ -5603,6 +5686,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0014",
@@ -5635,6 +5719,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0019",
@@ -5667,6 +5752,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0035",
@@ -5699,6 +5785,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0021",
@@ -5731,6 +5818,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0023",
@@ -5763,6 +5851,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0043",
@@ -5795,6 +5884,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0015",
@@ -5829,6 +5919,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0030",
@@ -5861,6 +5952,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0025",
@@ -5893,6 +5985,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0008",
@@ -5927,6 +6020,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0028",
@@ -5959,6 +6053,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0009",
@@ -5991,6 +6086,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0016",
@@ -6023,6 +6119,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0020",
@@ -6055,6 +6152,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [],
         },
         {
@@ -6074,6 +6172,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0061",
@@ -6106,6 +6205,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0053",
@@ -6138,6 +6238,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0071",
@@ -6170,6 +6271,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0065",
@@ -6202,6 +6304,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [],
         },
         {
@@ -6221,6 +6324,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0048",
@@ -6253,6 +6357,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0064",
@@ -6287,6 +6392,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0060",
@@ -6319,6 +6425,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [],
         },
         {
@@ -6338,6 +6445,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0057",
@@ -6370,6 +6478,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0062",
@@ -6402,6 +6511,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [],
         },
         {
@@ -6421,6 +6531,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0051",
@@ -6453,6 +6564,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0047",
@@ -6485,6 +6597,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0072",
@@ -6517,6 +6630,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0068",
@@ -6549,6 +6663,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0070",
@@ -6581,6 +6696,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0056",
@@ -6613,6 +6729,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [],
         },
         {
@@ -6632,6 +6749,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0058",
@@ -6664,6 +6782,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0063",
@@ -6696,6 +6815,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0059",
@@ -6728,6 +6848,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0046",
@@ -6760,6 +6881,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0055",
@@ -6792,6 +6914,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0054",
@@ -6824,6 +6947,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0067",
@@ -6856,6 +6980,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0069",
@@ -6888,6 +7013,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0073",
@@ -6920,6 +7046,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0050",
@@ -6952,6 +7079,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0052",
@@ -6984,6 +7112,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0066",
@@ -7016,6 +7145,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0113",
@@ -7048,6 +7178,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0106",
@@ -7080,6 +7211,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0080",
@@ -7112,6 +7244,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0081",
@@ -7144,6 +7277,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0109",
@@ -7176,6 +7310,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0077",
@@ -7210,6 +7345,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0092",
@@ -7244,6 +7380,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0096",
@@ -7278,6 +7415,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0083",
@@ -7310,6 +7448,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0078",
@@ -7344,6 +7483,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0075",
@@ -7378,6 +7518,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0101",
@@ -7410,6 +7551,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0102",
@@ -7442,6 +7584,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0112",
@@ -7474,6 +7617,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0114",
@@ -7506,6 +7650,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0089",
@@ -7540,6 +7685,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0090",
@@ -7572,6 +7718,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0086",
@@ -7604,6 +7751,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0087",
@@ -7636,6 +7784,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0084",
@@ -7668,6 +7817,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0094",
@@ -7700,6 +7850,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0085",
@@ -7732,6 +7883,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0097",
@@ -7764,6 +7916,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0076",
@@ -7796,6 +7949,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0098",
@@ -7828,6 +7982,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0105",
@@ -7860,6 +8015,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0091",
@@ -7892,6 +8048,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0107",
@@ -7924,6 +8081,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0111",
@@ -7956,6 +8114,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0082",
@@ -7988,6 +8147,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0104",
@@ -8020,6 +8180,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0095",
@@ -8052,6 +8213,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0099",
@@ -8084,6 +8246,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0100",
@@ -8116,6 +8279,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0074",
@@ -8151,6 +8315,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0115",
@@ -8185,6 +8350,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0103",
@@ -8217,6 +8383,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0110",
@@ -8251,6 +8418,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0079",
@@ -8283,6 +8451,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0108",
@@ -8315,6 +8484,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0088",
@@ -8349,6 +8519,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0137",
@@ -8383,6 +8554,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [],
         },
         {
@@ -8402,6 +8574,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0125",
@@ -8434,6 +8607,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0117",
@@ -8466,6 +8640,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0131",
@@ -8498,6 +8673,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0143",
@@ -8532,6 +8708,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0144",
@@ -8566,6 +8743,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0136",
@@ -8600,6 +8778,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0146",
@@ -8634,6 +8813,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0116",
@@ -8666,6 +8846,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0130",
@@ -8700,6 +8881,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0121",
@@ -8732,6 +8914,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0127",
@@ -8765,6 +8948,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0128",
@@ -8799,6 +8983,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0122",
@@ -8831,6 +9016,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0119",
@@ -8863,6 +9049,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0134",
@@ -8895,6 +9082,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0129",
@@ -8927,6 +9115,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0133",
@@ -8961,6 +9150,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0141",
@@ -8993,6 +9183,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0118",
@@ -9025,6 +9216,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0142",
@@ -9059,6 +9251,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0124",
@@ -9091,6 +9284,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0138",
@@ -9125,6 +9319,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0145",
@@ -9157,6 +9352,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0126",
@@ -9189,6 +9385,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0139",
@@ -9222,6 +9419,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0140",
@@ -9256,6 +9454,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0123",
@@ -9288,6 +9487,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0135",
@@ -9320,6 +9520,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0093",
@@ -9354,6 +9555,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.155.n0034",
@@ -9558,6 +9760,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.83933.n0001",
@@ -9592,6 +9795,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.83933.n0002",
@@ -10023,6 +10227,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0010",
@@ -10058,6 +10263,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0013",
@@ -10091,6 +10297,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0005",
@@ -10124,6 +10331,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0014",
@@ -10157,6 +10365,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0001",
@@ -10192,6 +10401,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0008",
@@ -10225,6 +10435,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0002",
@@ -10258,6 +10469,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0012",
@@ -10291,6 +10503,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0006",
@@ -10324,6 +10537,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0004",
@@ -10357,6 +10571,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0011",
@@ -10392,6 +10607,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0009",
@@ -10425,6 +10641,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0007",
@@ -10458,6 +10675,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0003",
@@ -10491,6 +10709,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0015",
@@ -10526,6 +10745,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0019",
@@ -10559,6 +10779,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0020",
@@ -10594,6 +10815,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0018",
@@ -10627,6 +10849,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0017",
@@ -10660,6 +10883,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.43062.n0016",
@@ -11860,6 +12084,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0032",
@@ -11892,6 +12117,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0022",
@@ -11924,6 +12150,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0014",
@@ -11958,6 +12185,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0019",
@@ -11992,6 +12220,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0005",
@@ -12024,6 +12253,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0023",
@@ -12056,6 +12286,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0009",
@@ -12090,6 +12321,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0024",
@@ -12122,6 +12354,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0016",
@@ -12156,6 +12389,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0033",
@@ -12190,6 +12424,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0021",
@@ -12222,6 +12457,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0001",
@@ -12256,6 +12492,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0028",
@@ -12288,6 +12525,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0012",
@@ -12322,6 +12560,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0038",
@@ -12356,6 +12595,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0030",
@@ -12388,6 +12628,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0025",
@@ -12420,6 +12661,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0018",
@@ -12454,6 +12696,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0011",
@@ -12488,6 +12731,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0029",
@@ -12520,6 +12764,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0027",
@@ -12552,6 +12797,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0037",
@@ -12586,6 +12832,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0002",
@@ -12620,6 +12867,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0003",
@@ -12654,6 +12902,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0017",
@@ -12688,6 +12937,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0015",
@@ -12722,6 +12972,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0035",
@@ -12756,6 +13007,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [],
         },
         {
@@ -12775,6 +13027,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0008",
@@ -12809,6 +13062,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0004",
@@ -12843,6 +13097,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0020",
@@ -12877,6 +13132,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0006",
@@ -12909,6 +13165,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0007",
@@ -12941,6 +13198,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0031",
@@ -12973,6 +13231,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0010",
@@ -13007,6 +13266,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0013",
@@ -13041,6 +13301,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0034",
@@ -13075,6 +13336,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0039",
@@ -13107,6 +13369,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0026",
@@ -13139,6 +13402,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0077",
@@ -13173,6 +13437,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0073",
@@ -13205,6 +13470,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0049",
@@ -13237,6 +13503,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0065",
@@ -13269,6 +13536,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0078",
@@ -13301,6 +13569,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0059",
@@ -13333,6 +13602,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0058",
@@ -13365,6 +13635,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0080",
@@ -13397,6 +13668,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0043",
@@ -13429,6 +13701,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0047",
@@ -13461,6 +13734,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0062",
@@ -13493,6 +13767,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0072",
@@ -13525,6 +13800,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0079",
@@ -13557,6 +13833,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0066",
@@ -13589,6 +13866,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0070",
@@ -13621,6 +13899,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0040",
@@ -13653,6 +13932,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0051",
@@ -13685,6 +13965,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [],
         },
         {
@@ -13704,6 +13985,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0041",
@@ -13736,6 +14018,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0069",
@@ -13768,6 +14051,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0056",
@@ -13802,6 +14086,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0067",
@@ -13834,6 +14119,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0057",
@@ -13866,6 +14152,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0052",
@@ -13900,6 +14187,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0054",
@@ -13932,6 +14220,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0064",
@@ -13964,6 +14253,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0046",
@@ -13996,6 +14286,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0055",
@@ -14030,6 +14321,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0068",
@@ -14062,6 +14354,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0076",
@@ -14096,6 +14389,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0075",
@@ -14130,6 +14424,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0063",
@@ -14162,6 +14457,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0045",
@@ -14194,6 +14490,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0048",
@@ -14227,6 +14524,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0074",
@@ -14261,6 +14559,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0071",
@@ -14293,6 +14592,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0050",
@@ -14325,6 +14625,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0044",
@@ -14357,6 +14658,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0042",
@@ -14389,6 +14691,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0053",
@@ -14423,6 +14726,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0060",
@@ -14455,6 +14759,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [],
         },
         {
@@ -14474,6 +14779,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [],
         },
         {
@@ -14493,6 +14799,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0036",
@@ -14527,6 +14834,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8360.n0061",
@@ -14777,6 +15085,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8353.n0004",
@@ -14809,6 +15118,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8353.n0002",
@@ -14841,6 +15151,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8353.n0006",
@@ -14873,6 +15184,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8353.n0005",
@@ -14905,6 +15217,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8353.n0001",
@@ -14939,6 +15252,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8353.n0003",
@@ -15214,6 +15528,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8186.n0004",
@@ -15247,6 +15562,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8186.n0002",
@@ -15280,6 +15596,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8186.n0007",
@@ -15313,6 +15630,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8186.n0005",
@@ -15346,6 +15664,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8186.n0008",
@@ -15379,6 +15698,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8186.n0003",
@@ -15412,6 +15732,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8186.n0006",
@@ -15445,6 +15766,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8186.n0001",
@@ -15663,6 +15985,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8004.n0003",
@@ -15697,6 +16020,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8004.n0002",
@@ -15729,6 +16053,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8004.n0001",
@@ -15975,6 +16300,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8001.n0005",
@@ -16009,6 +16335,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8001.n0001",
@@ -16043,6 +16370,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8001.n0004",
@@ -16077,6 +16405,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8001.n0002",
@@ -16109,6 +16438,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.8001.n0003",
@@ -16338,6 +16668,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7870.n0002",
@@ -16371,6 +16702,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7870.n0001",
@@ -16406,6 +16738,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7870.n0003",
@@ -16439,6 +16772,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7870.n0004",
@@ -16670,6 +17004,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7298.n0003",
@@ -16705,6 +17040,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7298.n0004",
@@ -16740,6 +17076,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7298.n0001",
@@ -16775,6 +17112,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7298.n0002",
@@ -17028,6 +17366,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7290.n0005",
@@ -17061,6 +17400,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7290.n0001",
@@ -17096,6 +17436,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7290.n0006",
@@ -17129,6 +17470,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7290.n0004",
@@ -17162,6 +17504,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7290.n0003",
@@ -17195,6 +17538,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7290.n0002",
@@ -17424,6 +17768,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7087.n0004",
@@ -17457,6 +17802,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.7087.n0002",
@@ -17802,6 +18148,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.5335.n0002",
@@ -17837,6 +18184,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.5335.n0001",
@@ -17872,6 +18220,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.5335.n0010",
@@ -17905,6 +18254,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.5335.n0003",
@@ -17938,6 +18288,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.5335.n0008",
@@ -17973,6 +18324,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.5335.n0005",
@@ -18006,6 +18358,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.5335.n0006",
@@ -18039,6 +18392,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.5335.n0012",
@@ -18074,6 +18428,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.5335.n0004",
@@ -18107,6 +18462,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.5335.n0011",
@@ -18140,6 +18496,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.5335.n0007",
@@ -18173,6 +18530,7 @@ export const COLLECTION_STUB: TCollectionPublicWithFamilies = {
           languages: ["eng"],
           document_type: null,
           document_role: null,
+          document_status: "published",
           events: [
             {
               import_id: "Sabin.event.5335.n0009",

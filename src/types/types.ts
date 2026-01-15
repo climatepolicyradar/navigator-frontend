@@ -429,6 +429,7 @@ export type TFamilyDocumentPublic = {
   valid_metadata: TMetadata<"id">;
   variant_name: string | null;
   variant: string | null;
+  document_status: string | null;
 };
 
 export type TFamilyPublic = {
