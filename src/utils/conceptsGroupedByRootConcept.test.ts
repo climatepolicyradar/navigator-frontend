@@ -1,7 +1,7 @@
-import { TConcept } from "@/types";
+import { TTopic } from "@/types";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 
-const ROOT_CONCEPTS: TConcept[] = [
+const ROOT_CONCEPTS: TTopic[] = [
   {
     alternative_labels: [],
     definition: "RC1 definition.",
@@ -16,7 +16,7 @@ const ROOT_CONCEPTS: TConcept[] = [
   },
 ];
 
-const CONCEPTS: TConcept[] = [
+const CONCEPTS: TTopic[] = [
   {
     alternative_labels: [],
     definition: "c1 definition.",

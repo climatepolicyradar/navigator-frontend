@@ -7,13 +7,13 @@ import { resetPage } from "@/mocks/helpers";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import { setUpFamiliesRepo } from "@/mocks/repository";
 import Search from "@/pages/search";
-import { TConcept, TFamily } from "@/types";
+import { TTopic, TFamily } from "@/types";
 
 afterEach(() => {
   resetPage();
 });
 
-const basicLegalConcepts: TConcept[] = [
+const basicLegalConcepts: TTopic[] = [
   {
     wikibase_id: "category/Parent Test Case Category",
     preferred_label: "Parent Test Case Category",
@@ -101,18 +101,19 @@ const basicLegalConcepts: TConcept[] = [
 ];
 
 const baseSearchProps: any = {
+  conceptsData: null,
   envConfig: {
     BACKEND_API_URL: process.env.BACKEND_API_URL,
     CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
   },
-  theme: "ccc",
-  themeConfig: cccConfig,
+  familyConceptsData: basicLegalConcepts,
   features: {
     ...DEFAULT_FEATURES,
     litigation: true,
   },
-  conceptsData: null,
-  familyConceptsData: basicLegalConcepts,
+  theme: "ccc",
+  themeConfig: cccConfig,
+  topicsData: { rootTopics: [], topics: [] },
 };
 
 describe("SearchPage", async () => {

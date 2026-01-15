@@ -1,4 +1,4 @@
-import { TConcept } from "@/types";
+import { TTopic } from "@/types";
 
 const conceptIsOfType = (conceptQueryStringValue: string, type: string) => {
   return conceptQueryStringValue.includes(type);
@@ -7,9 +7,9 @@ const conceptIsOfType = (conceptQueryStringValue: string, type: string) => {
 // Function to filter selected concepts
 export const FilterSelectedConcepts = (
   currentSelectedConcepts: string[],
-  selectedConcept: TConcept,
-  relatedConcepts: TConcept[],
-  rootOfSelectedConcept: TConcept = undefined,
+  selectedConcept: TTopic,
+  relatedConcepts: TTopic[],
+  rootOfSelectedConcept: TTopic = undefined,
   isRootConceptExclusive: boolean
 ) => {
   const selectedConceptLabel = selectedConcept.wikibase_id;

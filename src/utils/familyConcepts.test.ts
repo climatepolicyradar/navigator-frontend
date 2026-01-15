@@ -1,4 +1,4 @@
-import { TConcept } from "@/types";
+import { TTopic } from "@/types";
 
 import { FamilyConcept, getRecursiveParentLabels, mapFamilyConceptsToConcepts } from "./familyConcepts";
 
@@ -35,7 +35,7 @@ const familyConcepts: FamilyConcept[] = [
   },
 ];
 
-const expectedGroupMappedConcepts: TConcept[] = [
+const expectedGroupMappedConcepts: TTopic[] = [
   {
     wikibase_id: "jurisdiction/New South Wales",
     preferred_label: "New South Wales",

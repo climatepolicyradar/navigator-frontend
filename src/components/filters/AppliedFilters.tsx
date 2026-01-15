@@ -12,15 +12,15 @@ import { getConceptName } from "@/helpers/getConceptFields";
 import { getCountryName } from "@/helpers/getCountryFields";
 import useConfig from "@/hooks/useConfig";
 import useSubdivisions from "@/hooks/useSubdivisions";
-import { TConcept, TGeography, TThemeConfig, TGeographyWithDocumentCounts, TFeatures } from "@/types";
+import { TTopic, TGeography, TThemeConfig, TGeographyWithDocumentCounts, TFeatures } from "@/types";
 import { firstCase } from "@/utils/text";
 
 type TFilterChange = (type: string, value: string, clearOthersOfType?: boolean, otherValuesToClear?: string[]) => void;
 
 interface IProps {
   filterChange: TFilterChange;
-  concepts?: TConcept[];
-  familyConcepts?: TConcept[];
+  concepts?: TTopic[];
+  familyConcepts?: TTopic[];
 }
 
 const handleCountryRegion = (slug: string, dataSet: TGeography[]) => {
@@ -35,7 +35,7 @@ const handleSubdivision = (iso_code: string, subdivisions: TGeographyWithDocumen
   return subdivisionMatch?.name;
 };
 
-const handleConceptName = (label: string, concepts: TConcept[]) => {
+const handleConceptName = (label: string, concepts: TTopic[]) => {
   if (!concepts) {
     return label;
   }
@@ -63,8 +63,8 @@ const handleFilterDisplay = (
   subdivisions: TGeographyWithDocumentCounts[],
   themeConfig: TThemeConfig,
   features: TFeatures,
-  concepts?: TConcept[],
-  familyConcepts?: TConcept[]
+  concepts?: TTopic[],
+  familyConcepts?: TTopic[]
 ) => {
   const showFilterPrefixes = features.litigation;
 
@@ -160,8 +160,8 @@ const generatePills = (
   subdivisions: TGeographyWithDocumentCounts[],
   themeConfig: TThemeConfig,
   features: TFeatures,
-  concepts?: TConcept[],
-  familyConcepts?: TConcept[]
+  concepts?: TTopic[],
+  familyConcepts?: TTopic[]
 ) => {
   const pills: JSX.Element[] = [];
 

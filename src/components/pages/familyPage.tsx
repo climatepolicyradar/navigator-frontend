@@ -49,7 +49,7 @@ export interface IProps {
   corpus_types: TCorpusTypeDictionary;
   countries: TGeography[];
   family: TFamilyPublic;
-  familyTopics?: IFamilyDocumentTopics;
+  familyTopics: IFamilyDocumentTopics;
   features: TFeatures;
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];

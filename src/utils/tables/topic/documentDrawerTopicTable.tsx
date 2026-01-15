@@ -3,7 +3,7 @@ import orderBy from "lodash/orderBy";
 import { LabelButton } from "@/components/atoms/labelButton/LabelButton";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { IFamilyDocumentTopics, TConcept, TTableColumn } from "@/types";
+import { IFamilyDocumentTopics, TTopic, TTableColumn } from "@/types";
 import { firstCase } from "@/utils/text";
 
 import { TTopicTableColumnId, TTopicTableRow } from "./topicTable";
@@ -38,7 +38,7 @@ export const getDocumentDrawerTopicTableRows = (familyTopics: IFamilyDocumentTop
       topicsInGroup.push(rootTopic);
     }
 
-    const topicsToDisplay: TConcept[] = topicsInGroup.reduce((accumulatedTopics, topic) => {
+    const topicsToDisplay: TTopic[] = topicsInGroup.reduce((accumulatedTopics, topic) => {
       return wikibaseIds.includes(topic.wikibase_id) ? [...accumulatedTopics, topic] : accumulatedTopics;
     }, []);
     const sortedTopics = orderBy(topicsToDisplay, [(topic) => document.conceptCounts[topic.wikibase_id] ?? 0], ["desc"]);

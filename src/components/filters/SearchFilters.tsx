@@ -19,7 +19,7 @@ import { currentYear, minYear } from "@/constants/timedate";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { SlideOutContext } from "@/context/SlideOutContext";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { TConcept, TCorpusTypeDictionary, TSearchCriteria, TThemeConfigOption } from "@/types";
+import { TTopic, TCorpusTypeDictionary, TSearchCriteria, TThemeConfigOption } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 
@@ -39,8 +39,8 @@ interface IProps {
   searchCriteria: TSearchCriteria;
   query: ParsedUrlQuery;
   corpus_types: TCorpusTypeDictionary;
-  conceptsData?: TConcept[];
-  familyConceptsData?: TConcept[];
+  conceptsData?: TTopic[];
+  familyConceptsData?: TTopic[];
   handleFilterChange(type: string, value: string, clearOthersOfType?: boolean, otherValuesToClear?: string[]): void;
   handleYearChange(values: string[], reset?: boolean): void;
   handleClearSearch(): void;

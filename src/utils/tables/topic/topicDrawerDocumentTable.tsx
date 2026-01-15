@@ -2,7 +2,7 @@ import sortBy from "lodash/sortBy";
 
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { IFamilyDocumentTopics, TConcept, TFamilyPublic, TTableColumn, TTableRow } from "@/types";
+import { IFamilyDocumentTopics, TTopic, TFamilyPublic, TTableColumn, TTableRow } from "@/types";
 import { firstCase } from "@/utils/text";
 import { formatDateShort } from "@/utils/timedate";
 
@@ -16,7 +16,7 @@ export const TOPIC_DRAWER_DOCUMENTS_TABLE_COLUMNS: TTableColumn<TDocumentMention
 export const getTopicDrawerDocumentTableRows = (
   family: TFamilyPublic,
   familyTopics: IFamilyDocumentTopics,
-  topic: TConcept
+  topic: TTopic
 ): TTableRow<TDocumentMentionsTableColumnId>[] => {
   const conceptCountsKey = `${topic.wikibase_id}:${topic.preferred_label}`;
 

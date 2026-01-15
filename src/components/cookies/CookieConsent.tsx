@@ -54,8 +54,8 @@ export const CookieConsent = ({ onConsentChange, themeConfig }: IProps) => {
     setHide(true);
   };
 
-  const cookiePolicyUrl = themeConfig.links.cookiePolicy || "https://climatepolicyradar.org/privacy-policy";
-  const privacyPolicyUrl = themeConfig.links.privacyPolicy || "https://climatepolicyradar.org/privacy-policy";
+  const cookiePolicyUrl = themeConfig?.links?.cookiePolicy || "https://climatepolicyradar.org/privacy-policy";
+  const privacyPolicyUrl = themeConfig?.links?.privacyPolicy || "https://climatepolicyradar.org/privacy-policy";
 
   return (
     <>

@@ -4,5 +4,6 @@ export * from "./table";
 export * from "./tables/familyDocumentTopics";
 export * from "./theme";
 export * from "./themeConfig";
+export * from "./topics";
 export * from "./tutorial";
 export * from "./types";

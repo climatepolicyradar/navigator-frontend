@@ -17,12 +17,13 @@ const baseSearchProps = {
     BACKEND_API_URL: process.env.BACKEND_API_URL,
     CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
   },
-  theme: "cpr",
-  themeConfig: cprConfig,
   features: {
     ...DEFAULT_FEATURES,
     knowledgeGraph: true,
   },
+  theme: "cpr",
+  themeConfig: cprConfig,
+  topicsData: { rootTopics: [], topics: [] },
 };
 
 describe("SearchPage", async () => {
@@ -51,26 +52,45 @@ describe("SearchPage", async () => {
     renderWithAppContext(Search, {
       pageProps: {
         ...baseSearchProps,
-        conceptsData: [
-          {
-            alternative_labels: [],
-            description: "test concept 1",
-            has_subconcept: [],
-            negative_labels: [],
-            preferred_label: "child topic 1",
-            recursive_subconcept_of: [],
-            related_concepts: [],
-            subconcept_of: [],
-            wikibase_id: "1",
-          },
-        ],
+        topicsData: {
+          rootTopics: [
+            {
+              alternative_labels: [],
+              definition: "",
+              description: "",
+              has_subconcept: ["Q1652"],
+              labelled_passages: [],
+              negative_labels: [],
+              preferred_label: "target",
+              recursive_subconcept_of: [],
+              related_concepts: ["Q1171"],
+              subconcept_of: [],
+              wikibase_id: "Q1651",
+            },
+          ],
+          topics: [
+            {
+              alternative_labels: [],
+              definition: "",
+              description: "",
+              has_subconcept: [],
+              labelled_passages: [],
+              negative_labels: [],
+              preferred_label: "child topic 1",
+              recursive_subconcept_of: ["Q1651", "Q1652"],
+              related_concepts: [],
+              subconcept_of: ["Q1652"],
+              wikibase_id: "1",
+            },
+          ],
+        },
       },
     });
 
     await userEvent.click(await screen.findByRole("button", { name: "Topics Beta" }));
 
     expect(await screen.findByText("Find mentions of topics")).toBeInTheDocument();
-    expect(screen.getByText("Parent topic")).toBeInTheDocument();
+    expect(screen.getByText("Target")).toBeInTheDocument();
 
     const topicOption = screen.getByRole("checkbox", { name: "Child topic 1" });
 

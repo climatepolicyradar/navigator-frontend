@@ -13,19 +13,20 @@ afterEach(() => {
 });
 
 const baseSearchProps: any = {
+  conceptsData: null,
   // TODO: fix 'any' type
   envConfig: {
     BACKEND_API_URL: process.env.BACKEND_API_URL,
     CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
   },
+  familyConceptsData: null,
+  features: DEFAULT_FEATURES,
   theme: "cpr",
   themeConfig: {
     ...cprConfig,
     features: { knowledgeGraph: false, searchFamilySummary: false },
   },
-  features: DEFAULT_FEATURES,
-  conceptsData: null,
-  familyConceptsData: null,
+  topicsData: { rootTopics: [], topics: [] },
 };
 
 describe("SearchPage", async () => {

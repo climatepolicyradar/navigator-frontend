@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/router";
-import React, { useEffect, useMemo, useReducer, useState } from "react";
+import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
 
 import EmbeddedPDF from "@/components/EmbeddedPDF";
 import Loader from "@/components/Loader";
@@ -11,20 +11,18 @@ import { Icon } from "@/components/atoms/icon/Icon";
 import { EmptyDocument } from "@/components/documents/EmptyDocument";
 import { EmptyPassages } from "@/components/documents/EmptyPassages";
 import { SearchSettings } from "@/components/filters/SearchSettings";
+import { Info } from "@/components/molecules/info/Info";
+import { ConceptPicker } from "@/components/organisms/ConceptPicker";
+import { FullWidth } from "@/components/panels/FullWidth";
+import { SideCol } from "@/components/panels/SideCol";
 import { MAX_RESULTS } from "@/constants/paging";
 import { SEARCH_PASSAGE_ORDER } from "@/constants/searchPassagesOrder";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
-import { useEffectOnce } from "@/hooks/useEffectOnce";
-import { TConcept, TDocumentPage, TLoadingStatus, TMatchedFamily, TPassage, TSearchResponse } from "@/types";
+import { TopicsContext } from "@/context/TopicsContext";
+import { TTopic, TDocumentPage, TLoadingStatus, TMatchedFamily, TPassage, TSearchResponse } from "@/types";
 import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
 import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
 import { getCurrentPassagesOrderChoice } from "@/utils/getPassagesSortOrder";
-import { fetchAndProcessConcepts } from "@/utils/processConcepts";
-
-import { Info } from "../molecules/info/Info";
-import { ConceptPicker } from "../organisms/ConceptPicker";
-import { FullWidth } from "../panels/FullWidth";
-import { SideCol } from "../panels/SideCol";
 
 type TState = {
   pageNumber: number;
@@ -37,7 +35,6 @@ interface IProps {
   initialExactMatch?: boolean;
   initialPageNumber?: number;
   initialConceptFilters?: string[];
-  vespaFamilyData: TSearchResponse;
   vespaDocumentData: TSearchResponse;
   document: TDocumentPage;
   searchStatus: TLoadingStatus;
@@ -65,7 +62,6 @@ export const ConceptsDocumentViewer = ({
   initialPageNumber,
   initialConceptFilters,
   document,
-  vespaFamilyData,
   vespaDocumentData,
   searchStatus,
   searchResultFamilies,
@@ -76,6 +72,7 @@ export const ConceptsDocumentViewer = ({
   const [showSearchOptions, setShowSearchOptions] = useState(false);
   const [showSortOptions, setShowSortOptions] = useState(false);
   const [showConcepts, setShowConcepts] = useState(false);
+  const { topics: familyTopics } = useContext(TopicsContext);
 
   const [state, setState] = useReducer((prev: TState, next: Partial<TState>) => ({ ...prev, ...next }), {
     pageNumber: initialPageNumber,
@@ -83,36 +80,16 @@ export const ConceptsDocumentViewer = ({
     totalNoOfMatches: 0,
   });
 
-  const [familyConcepts, setFamilyConcepts] = useState<TConcept[]>([]);
-
   const canPreview = !!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf");
 
-  // Load concept data
-  useEffectOnce(() => {
-    // Extract unique concept IDs directly from vespaFamilyData
-    const conceptIds = new Set<string>();
-    (vespaFamilyData?.families ?? []).forEach((family) => {
-      family.hits.forEach((hit) => {
-        Object.keys(hit.concept_counts ?? {}).forEach((conceptKey) => {
-          const [conceptId] = conceptKey.split(":");
-          conceptIds.add(conceptId);
-        });
-      });
-    });
-
-    fetchAndProcessConcepts(Array.from(conceptIds)).then(({ concepts }) => {
-      setFamilyConcepts(concepts);
-    });
-  });
-
-  const documentConcepts: TConcept[] = useMemo(() => {
-    const uniqueConceptMap = new Map<string, { concept: TConcept; count: number }>();
+  const documentConcepts: TTopic[] = useMemo(() => {
+    const uniqueConceptMap = new Map<string, { concept: TTopic; count: number }>();
 
     (vespaDocumentData?.families ?? []).forEach((family) => {
       family.hits.forEach((hit) => {
         Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
           const [conceptId] = conceptKey.split(":");
-          const matchingConcept = familyConcepts.find((concept) => concept.wikibase_id === conceptId);
+          const matchingConcept = familyTopics.find((concept) => concept.wikibase_id === conceptId);
 
           if (matchingConcept) {
             const existingEntry = uniqueConceptMap.get(conceptId);
@@ -133,16 +110,16 @@ export const ConceptsDocumentViewer = ({
         count,
       }))
       .sort((a, b) => (b.count || 0) - (a.count || 0));
-  }, [vespaDocumentData, familyConcepts]);
+  }, [vespaDocumentData, familyTopics]);
 
   const selectedConcepts = useMemo(
     () =>
       initialConceptFilters
-        ? familyConcepts.filter((concept) =>
+        ? familyTopics.filter((concept) =>
             (Array.isArray(initialConceptFilters) ? initialConceptFilters : [initialConceptFilters]).includes(concept.preferred_label)
           )
         : [],
-    [initialConceptFilters, familyConcepts]
+    [initialConceptFilters, familyTopics]
   );
 
   // Calculate passage matches.
@@ -218,7 +195,6 @@ export const ConceptsDocumentViewer = ({
                 </Button>
               </div>
               <ConceptPicker
-                concepts={documentConcepts}
                 showBadge
                 showSearch={false}
                 title="In this document"
