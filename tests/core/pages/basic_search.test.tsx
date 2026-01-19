@@ -39,7 +39,7 @@ describe("SearchPage", async () => {
       expect(screen.getByText("Get better results")).toBeInTheDocument();
     });
 
-    expect(screen.getByText(/You are currently viewing all of the documents in our database/)).toBeInTheDocument();
+    expect(await screen.findByText(/You are currently viewing all of the documents in our database/)).toBeInTheDocument();
     expect(screen.queryByText(/Topics filter/)).not.toBeInTheDocument();
   });
 
