@@ -17,18 +17,5 @@ export default defineConfig({
     reporters: process.env.CI ? ["default", ["junit", { outputFile: "./vitest.xml" }]] : ["verbose"],
     /* Fail the build on CI if you accidentally left test.only in the source code. */
     allowOnly: !process.env.CI,
-    browser: {
-      expect: {
-        toMatchScreenshot: {
-          comparatorName: "pixelmatch",
-          comparatorOptions: {
-            // 0-1, how different can colors be?
-            threshold: 0.2,
-            // 1% of pixels can differ
-            allowedMismatchedPixelRatio: 0.01,
-          },
-        },
-      },
-    },
   },
 });
