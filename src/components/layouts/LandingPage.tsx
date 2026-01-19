@@ -23,7 +23,7 @@ const Layout = ({ children, title, theme, description, themeConfig, metadataKey,
   const { themeConfig: contextThemeConfig } = useContext(ThemeContext);
 
   const themeConfigToUse = themeConfig ?? contextThemeConfig;
-  const appTitle = themeConfigToUse.pageMetadata.default || "";
+  const appTitle = themeConfigToUse.pageMetadata.default.title || "";
 
   return (
     <>
