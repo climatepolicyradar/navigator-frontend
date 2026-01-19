@@ -1,17 +1,6 @@
-import {
-  ComposableMap,
-  Geographies,
-  Geography,
-  Graticule,
-  Marker,
-  Sphere,
-  ZoomableGroup,
-  createCoordinates,
-  createTranslateExtent,
-  GeographyErrorBoundary,
-} from "@vnedyalk0v/react19-simple-maps";
-import type { Feature, Geometry } from "geojson";
 import React, { useRef, useState, useMemo, useEffect } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
 import { Tooltip, TooltipRefProps } from "react-tooltip";
 
 import { LinkWithQuery } from "@/components/LinkWithQuery";
@@ -30,8 +19,6 @@ import { ExternalLink } from "../ExternalLink";
 import { Heading } from "../typography/Heading";
 
 const geoUrl = "/data/map/world-countries-50m.json";
-
-type TPoint = [number, number];
 
 type TSvgGeo = {
   geometry: { type: string; coordinates: TPoint[] };
@@ -242,7 +229,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
     return mapDataConstructor;
   }, [configCountries, mapDataRaw]);
 
-  const handleGeoClick = (e: React.MouseEvent<SVGPathElement>, geo: Feature<Geometry>) => {
+  const handleGeoClick = (e: React.MouseEvent<SVGPathElement>, geo: TSvgGeo) => {
     setActiveGeography(geo.properties.name);
     const geography = Object.values(mapData.geographies).find((g) => g.display_value === geo.properties.name);
     openToolTip([e.clientX, e.clientY], geography?.display_value ?? geo.properties.name);
@@ -316,15 +303,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
   };
 
   return (
-    <GeographyErrorBoundary
-      fallback={(error, retry) => (
-        <div>
-          <p>Failed to load map: {error.message}</p>
-          <button onClick={retry}>Retry</button>
-        </div>
-      )}
-      // onError={(error) => console.error("Geography error:", error)}
-    >
+    <ErrorBoundary fallback={<div>Sorry. The map has failed to load.</div>}>
       <div className="flex justify-between items-center my-4">
         <Heading level={2}>Search the globe</Heading>
         {showCategorySelect && (
@@ -370,9 +349,12 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           <ZoomableGroup
             maxZoom={MAX_ZOOM}
             minZoom={MIN_ZOOM}
-            center={createCoordinates(...mapCenter)}
+            center={mapCenter}
             zoom={mapZoom}
-            translateExtent={createTranslateExtent(createCoordinates(-400, -200), createCoordinates(1000, 600))}
+            translateExtent={[
+              [-400, -200],
+              [1000, 600],
+            ]}
             onMoveStart={() => {
               geographyInfoTooltipRef.current?.close();
               setActiveGeography("");
@@ -390,7 +372,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
                   const geoData = mapData.geographies[geo.properties.name];
                   return (
                     <Geography
-                      key={geo.id}
+                      key={geo.rsmKey}
                       geography={geo}
                       style={geoStyle(activeGeography === geo.properties.name, geoData?.familyCounts.LITIGATION || 0, mapData.maxLitigation)}
                       onClick={(e) => {
@@ -418,7 +400,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
                   return (
                     <Marker
                       key={geo.slug}
-                      coordinates={createCoordinates(...geo.coords)}
+                      coordinates={geo.coords}
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -485,6 +467,6 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           </p>
         </div>
       )}
-    </GeographyErrorBoundary>
+    </ErrorBoundary>
   );
 }

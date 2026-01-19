@@ -27,7 +27,6 @@
     "@tanstack/react-query": "^5.90.16",
     "@tanstack/react-query-devtools": "^5.91.2",
     "@vercel/otel": "^2.1.0",
-    "@vnedyalk0v/react19-simple-maps": "^1.2.1",
     "axios": "^1.13.1",
     "babel-loader": "^10.0.0",
     "framer-motion": "^12.23.22",
@@ -38,6 +37,8 @@
     "posthog-js": "^1.298.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "react-error-boundary": "^6.1.0",
+    "react-simple-maps": "^3.0.0",
     "react-tooltip": "^5.26.3",
     "sass": "^1.93.3",
     "schema-dts": "^1.1.5",
@@ -104,11 +105,13 @@
     "vitest": "^3.2.4"
   },
   "overrides": {
-    "@vnedyalk0v/react19-simple-maps": {
+    "react-simple-maps": {
       "d3-geo": "^3.1.0",
       "d3-color": "^3.1.0",
       "d3-selection": "^3.0.0",
-      "d3-zoom": "^3.0.0"
+      "d3-zoom": "^3.0.0",
+      "react": "^16.8.0 || 17.x || 18.x || 19.x",
+      "react-dom": "^16.8.0 || 17.x || 18.x || 19.x"
     }
   }
 }

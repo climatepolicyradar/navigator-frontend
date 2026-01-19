@@ -20,4 +20,4 @@ fs.writeFileSync('tsconfig.json', tpl.replace(/__THEME__/g, process.env.THEME));
 "
 
 EXPOSE 3000
-CMD ["npm", "run", "dev"]
+CMD ["npm", "ci", "&&", "npm", "run", "dev"]
