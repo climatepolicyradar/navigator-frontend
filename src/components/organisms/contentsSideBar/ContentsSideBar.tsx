@@ -43,7 +43,14 @@ export const ContentsSideBar = <BlockId extends string = TBlock>({ items, sticky
             );
 
             return (
-              <button key={item.id} type="button" role="navigation" onClick={scrollToBlock<BlockId>(item.id)} className={buttonClasses}>
+              <button
+                key={item.id}
+                type="button"
+                role="navigation"
+                onClick={scrollToBlock<BlockId>(item.id)}
+                className={buttonClasses}
+                data-ph-capture-attribute-side-bar-id={item.id}
+              >
                 <span className="">{item.display}</span>
                 {item.context?.length > 0 && <span className={contextClasses}>{item.context.join(" / ")}</span>}
               </button>

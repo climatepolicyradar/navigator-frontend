@@ -113,12 +113,24 @@ export const InteractiveTable = <ColumnKey extends string>({
                   Sort
                 </MenuItem>
                 {sortOptions.map(({ label, order }) => (
-                  <MenuItem key={label} onClick={onSort(order)}>
+                  <MenuItem
+                    key={label}
+                    onClick={onSort(order)}
+                    data-ph-capture-attribute-button-purpose="table-sort"
+                    data-ph-capture-attribute-table-sort-column={column.id}
+                    data-ph-capture-attribute-table-sort-direction={order}
+                  >
                     {label}
                   </MenuItem>
                 ))}
                 {columnIsSorted && (
-                  <MenuItem color="brand" onClick={onClearSort}>
+                  <MenuItem
+                    color="brand"
+                    onClick={onClearSort}
+                    data-ph-capture-attribute-button-purpose="table-sort"
+                    data-ph-capture-attribute-table-sort-column={column.id}
+                    data-ph-capture-attribute-table-sort-direction="clear"
+                  >
                     Clear sort
                   </MenuItem>
                 )}

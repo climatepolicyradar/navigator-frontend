@@ -27,7 +27,7 @@ interface IProps {
   themeConfig: TThemeConfig;
 }
 
-type TCollectionTab = "about" | "cases" | "procedural history";
+type TCollectionTab = "about" | "cases" | "procedural history"; // Don't rename, add a label instead (else analytics break)
 const COLLECTION_TABS: IPageHeaderTab<TCollectionTab>[] = [{ tab: "cases" }, { tab: "procedural history" }, { tab: "about" }];
 
 const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ collection, theme, themeConfig }: IProps) => {

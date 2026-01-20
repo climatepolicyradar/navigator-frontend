@@ -67,7 +67,7 @@ export const PageHeader = <Tab extends string>({ currentTab, dark = false, label
           {hasTabs && (
             <ToggleGroup value={[currentTab]} onValueChange={onToggleChange}>
               {tabs.map(({ label, tab }) => (
-                <Toggle key={tab} value={tab} size="large">
+                <Toggle key={tab} value={tab} size="large" data-ph-capture-attribute-page-header-tab={tab}>
                   {label || firstCase(tab)}
                 </Toggle>
               ))}
