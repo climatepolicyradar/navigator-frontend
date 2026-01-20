@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
       args:
         THEME: ${THEME}
-    environment:
-      - THEME=${THEME}
+    env_file:
+      - .env
     ports:
       - 3000:3000
