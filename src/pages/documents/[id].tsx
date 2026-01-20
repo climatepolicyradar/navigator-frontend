@@ -55,11 +55,6 @@ const DocumentPage = ({
   topicsData,
   vespaDocumentData,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [canPreview, setCanPreview] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
-  const [pageNumber, setPageNumber] = useState(null);
-  const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
-  const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
   const router = useRouter();
   const qsSearchString = router.query[QUERY_PARAMS.query_string];
   // exact match is default, so only instances where it is explicitly set to false do we check against
