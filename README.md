@@ -122,7 +122,9 @@ Themes are configured in `themes/[theme-name]/config.ts`. Each theme can overrid
 
 ## 🏴‍☠️ Features
 
-There are three different methods used in the app to control which feature set a given user sees. These work in tandem and are designed to overlap, which is possible by using the same key for multiple types.
+There are three different methods used in the app to control which feature set\
+a given user sees. These work in tandem and are designed to overlap, which is\
+possible by using the same key for multiple types.
 
 | Method:                   | A/B test                                                               | Feature flag                                                              | Theme feature                                                      |
 | ------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------ |
@@ -137,7 +139,10 @@ There are three different methods used in the app to control which feature set a
 
 An example of intentionally overlapping keys:
 
-`knowledgeGraph` was a key used both as a feature flag and as a theme feature (added to both key arrays). When one was on, the feature was on, so it could be on for all users on specific apps using the theme feature, and on other apps turned on manually through the feature flags page to preview it.
+`knowledgeGraph` was a key used both as a feature flag and as a theme feature\
+(added to both key arrays). When one was on, the feature was on, so it could be\
+on for all users on specific apps using the theme feature, and on other apps\
+turned on manually through the feature flags page to preview it.
 
 ## 📜 License
 
