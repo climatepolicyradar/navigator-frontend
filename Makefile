@@ -8,6 +8,7 @@ CONCEPTS_API_URL ?= https://api.climatepolicyradar.org
 ADOBE_API_KEY ?= dca9187b65294374a6367824df902fdf
 BACKEND_API_URL ?= https://cpr.staging.climatepolicyradar.org/api/v1
 BACKEND_API_TOKEN ?= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkX2NvcnBvcmFfaWRzIjpbIkNDTFcuY29ycHVzLmkwMDAwMDAwMS5uMDAwMCIsIkNQUi5jb3JwdXMuaTAwMDAwMDAxLm4wMDAwIiwiVU5GQ0NDLmNvcnB1cy5pMDAwMDAwMDEubjAwMDAiXSwiZXhwIjoyMDQyMTEzMzY5LCJpYXQiOjE3MjY1NzY5NjksImlzcyI6IkNsaW1hdGUgUG9saWN5IFJhZGFyIiwic3ViIjoiQ1BSIiwiYXVkIjoiaHR0cHM6Ly9hcHAuZGV2LmNsaW1hdGVwb2xpY3lyYWRhci5vcmcvIn0.mJ2qLJmMyPLGt0rM_tTXhlVv1glxooxmQV0bWrvPwKU
+REDIRECT_FILE="redirects.json"
 
 build:
 	docker build --build-arg THEME=${THEME} -t ${TAG}-${THEME} .
@@ -15,7 +16,6 @@ build:
 run: build
 	docker run --rm -it \
 		-p 3000:3000 \
-		-e THEME=$(THEME) \
 		-e BACKEND_API_TOKEN=$(BACKEND_API_TOKEN) \
 		-e BACKEND_API_URL=$(BACKEND_API_URL) \
 		-e ADOBE_API_KEY=$(ADOBE_API_KEY) \
@@ -23,6 +23,9 @@ run: build
 		-e NODE_ENV="development" \
 		-e ROBOTS="false" \
 		-e HOSTNAME="http://localhost:3000" \
+		-e CONCEPTS_API_URL=$(CONCEPTS_API_URL) \
+		-e REDIRECT_FILE=$(REDIRECT_FILE) \
+		-e CDN_URL=$(CDN_URL) \
 		-v $(PWD):/opt/node_app/app \
 		${TAG}-${THEME} npm run dev
 
