@@ -10,20 +10,22 @@ import { ApiItemResponse, GeographyV2, TSearch, TTarget, TGeography } from "@/ty
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
+import { getFeatures } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
 
-const CountryPage = ({ featureFlags, themeConfig, ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  return <GeographyPage featureFlags={featureFlags} themeConfig={themeConfig} {...props} />;
+const CountryPage = ({ ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  return <GeographyPage {...props} />;
 };
 
 export default CountryPage;
 
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-  const featureFlags = getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
   const themeConfig = await readConfigFile(theme);
+  const featureFlags = getFeatureFlags(context.req.cookies);
+  const features = getFeatures(themeConfig, featureFlags);
 
   const id = context.params.id;
 
@@ -102,10 +104,10 @@ export const getServerSideProps = (async (context) => {
 
   return {
     props: withEnvConfig({
-      featureFlags,
+      features,
       geographyV2,
       parentGeographyV2,
-      targets: theme === "mcf" ? [] : targetsData,
+      targets: targetsData,
       theme,
       themeConfig,
       vespaSearchResults: vespaSearchResults,

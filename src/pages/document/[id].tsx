@@ -6,7 +6,6 @@ import { FamilyPage as FamilyPageUI } from "@/components/pages/familyPage";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
 import {
-  IFamilyDocumentTopics,
   TCollectionPublicWithFamilies,
   TCorpusTypeDictionary,
   TFamilyPublic,
@@ -19,7 +18,7 @@ import {
 import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { getFeatures } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
 import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
 
@@ -30,8 +29,8 @@ import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
   - The 'physical document' view is within the folder: src/pages/documents/[id].tsx.
 */
 
-const FamilyPage = ({ featureFlags, themeConfig, ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  return <FamilyPageUI featureFlags={featureFlags} themeConfig={themeConfig} {...props} />;
+const FamilyPage = ({ ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  return <FamilyPageUI {...props} />;
 };
 
 export default FamilyPage;
@@ -39,12 +38,10 @@ export default FamilyPage;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const featureFlags = getFeatureFlags(context.req.cookies);
-
   const theme = process.env.THEME;
   const themeConfig = await readConfigFile(theme);
-
-  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+  const featureFlags = getFeatureFlags(context.req.cookies);
+  const features = getFeatures(themeConfig, featureFlags);
 
   const id = context.params.id;
   const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
@@ -77,16 +74,10 @@ export const getServerSideProps = (async (context) => {
   }
 
   /** The Vespa families data has the concepts data attached, which is why we need this */
-  let vespaFamilyData: TSearchResponse;
-  try {
-    if (knowledgeGraphEnabled) {
-      const { data: vespaFamilyDataResponse } = await backendApiClient.get(`/families/${familyData.import_id}`);
-      vespaFamilyData = vespaFamilyDataResponse;
-    }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error("Error fetching vespa family data", error);
-  }
+  const { data: vespaFamilyData } = await backendApiClient.get<TSearchResponse>(`/families/${familyData.import_id}`);
+
+  /* Package the family topics */
+  const familyTopics = await processFamilyTopics(vespaFamilyData);
 
   /** TODO: see where we use this config data, and if we can get it from the families response */
   const configRaw = await backendApiClient.getConfig();
@@ -140,14 +131,6 @@ export const getServerSideProps = (async (context) => {
     };
   }
 
-  /* Package the family topics */
-  // TODO: move potentially
-  let familyTopics: IFamilyDocumentTopics = null;
-
-  if (vespaFamilyData) {
-    familyTopics = await processFamilyTopics(vespaFamilyData);
-  }
-
   return {
     props: withEnvConfig({
       collections: collectionsData,
@@ -155,7 +138,7 @@ export const getServerSideProps = (async (context) => {
       countries: countriesData,
       family: familyData,
       familyTopics: familyTopics,
-      featureFlags,
+      features,
       subdivisions: subdivisionsData,
       targets: targetsData,
       theme,

@@ -1,4 +1,4 @@
-import { TFamilyConcept, TFamilyMetadata, TConcept } from "@/types";
+import { TFamilyConcept, TFamilyMetadata, TTopic } from "@/types";
 
 export const getMostSpecificCourts = (concepts: TFamilyConcept[]): TFamilyConcept[] => {
   let courtConcepts = concepts.filter((concept) => concept.type === "legal_entity");
@@ -39,7 +39,7 @@ export function getMostSpecificCourtsFromMetadata(metadata: TFamilyMetadata): st
   return conceptLabels[conceptLabels.length - 1];
 }
 
-export function getMostSpecificCourtsFromWikiConcepts(concepts: TConcept[]): string | null {
+export function getMostSpecificCourtsFromWikiConcepts(concepts: TTopic[]): string | null {
   if (!Array.isArray(concepts) || concepts.length === 0) {
     return null;
   }

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ApiClient } from "@/api/http-common";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { Debug } from "@/components/atoms/debug/Debug";
+import { INTRO_BLOCK_TITLE, IntroBlock } from "@/components/blocks/introBlock/IntroBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { RecentFamiliesBlock } from "@/components/blocks/recentFamiliesBlock/RecentFamiliesBlock";
 import { SubDivisionBlock } from "@/components/blocks/subDivisionBlock/SubDivisionBlock";
@@ -15,17 +16,16 @@ import { Section } from "@/components/molecules/section/Section";
 import { BlocksLayout, TBlockDefinitions } from "@/components/organisms/blocksLayout/BlocksLayout";
 import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { TPublicEnvConfig } from "@/context/EnvConfig";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { GeographiesContext } from "@/context/GeographiesContext";
 import { useText } from "@/hooks/useText";
-import { TSearch, TGeographyPageBlock, IMetadata, GeographyV2, TFeatureFlags, TTheme, TThemeConfig, TTarget } from "@/types";
+import { TSearch, TGeographyPageBlock, IMetadata, GeographyV2, TTheme, TThemeConfig, TTarget, TFeatures } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { getGeographyMetaData } from "@/utils/getGeographyMetadata";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 
-import { INTRO_BLOCK_TITLE, IntroBlock } from "../blocks/introBlock/IntroBlock";
-
 export interface IProps {
-  featureFlags: TFeatureFlags;
+  features: TFeatures;
   geographyV2: GeographyV2;
   parentGeographyV2?: GeographyV2;
   targets: TTarget[];
@@ -35,7 +35,7 @@ export interface IProps {
   envConfig: TPublicEnvConfig;
 }
 
-export const GeographyPage = ({ geographyV2, parentGeographyV2, targets, theme, themeConfig, vespaSearchResults, envConfig }: IProps) => {
+export const GeographyPage = ({ geographyV2, parentGeographyV2, targets, theme, themeConfig, features, vespaSearchResults, envConfig }: IProps) => {
   const { getAppText } = useText();
 
   const isCountry = geographyV2.type === "country";
@@ -189,17 +189,19 @@ export const GeographyPage = ({ geographyV2, parentGeographyV2, targets, theme, 
   /* Render */
 
   return (
-    <GeographiesContext.Provider value={allGeographies}>
-      <Layout metadataKey="geography" theme={theme as TTheme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
-        <BreadCrumbs
-          dark
-          geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
-          parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
-          isSubdivision={!isCountry}
-        />
-        <PageHeader dark label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
-        <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
-      </Layout>
-    </GeographiesContext.Provider>
+    <Layout metadataKey="geography" theme={theme as TTheme} themeConfig={themeConfig} title={geographyV2.name} text={geographyV2.name}>
+      <FeaturesContext.Provider value={features}>
+        <GeographiesContext.Provider value={allGeographies}>
+          <BreadCrumbs
+            dark
+            geography={{ label: geographyV2.name, href: `/geographies/${geographyV2.slug}` }}
+            parentGeography={parentGeographyV2 ? { label: parentGeographyV2.name, href: `/geographies/${parentGeographyV2.slug}` } : null}
+            isSubdivision={!isCountry}
+          />
+          <PageHeader dark label="Geography" title={geographyV2.name} metadata={pageHeaderMetadata} />
+          <BlocksLayout blockDefinitions={blockDefinitions} blocksToRender={blocksToRender} />
+        </GeographiesContext.Provider>
+      </FeaturesContext.Provider>
+    </Layout>
   );
 };

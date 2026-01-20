@@ -1,9 +1,9 @@
-import { TConcept } from "@/types";
+import { TTopic } from "@/types";
 
 import { FilterSelectedConcepts } from "./conceptFilter";
 
 // Mock concepts
-const rootConcept1a: TConcept = {
+const rootConcept1a: TTopic = {
   wikibase_id: "principal_law/Argentina",
   preferred_label: "Argentina",
   subconcept_of: [],
@@ -16,7 +16,7 @@ const rootConcept1a: TConcept = {
   has_subconcept: [],
 };
 
-const rootConcept1b: TConcept = {
+const rootConcept1b: TTopic = {
   wikibase_id: "principal_law/Argentina_b",
   preferred_label: "Argentina2",
   subconcept_of: [],
@@ -29,7 +29,7 @@ const rootConcept1b: TConcept = {
   has_subconcept: [],
 };
 
-const subConceptOfRoot1a: TConcept = {
+const subConceptOfRoot1a: TTopic = {
   wikibase_id: "principal_law/Article 3",
   preferred_label: "Article 3",
   subconcept_of: ["Constitution"],
@@ -42,7 +42,7 @@ const subConceptOfRoot1a: TConcept = {
   has_subconcept: [],
 };
 
-const subConceptOfRoot1b: TConcept = {
+const subConceptOfRoot1b: TTopic = {
   wikibase_id: "principal_law/Article 3_b",
   preferred_label: "Article 3",
   subconcept_of: ["Constitution"],
@@ -55,7 +55,7 @@ const subConceptOfRoot1b: TConcept = {
   has_subconcept: [],
 };
 
-const rootConcept2: TConcept = {
+const rootConcept2: TTopic = {
   wikibase_id: "jurisdiction/Australia",
   preferred_label: "Australia",
   subconcept_of: [],
@@ -68,7 +68,7 @@ const rootConcept2: TConcept = {
   has_subconcept: [],
 };
 
-const subConceptOfRoot2: TConcept = {
+const subConceptOfRoot2: TTopic = {
   wikibase_id: "jurisdiction/Australia",
   preferred_label: "Australia",
   subconcept_of: [],
@@ -81,8 +81,8 @@ const subConceptOfRoot2: TConcept = {
   has_subconcept: [],
 };
 
-const relatedConcepts1: TConcept[] = [rootConcept1a, subConceptOfRoot1a, rootConcept1b, subConceptOfRoot1b];
-const relatedConcepts2: TConcept[] = [rootConcept2, subConceptOfRoot2];
+const relatedConcepts1: TTopic[] = [rootConcept1a, subConceptOfRoot1a, rootConcept1b, subConceptOfRoot1b];
+const relatedConcepts2: TTopic[] = [rootConcept2, subConceptOfRoot2];
 
 describe("FilterSelectedConcepts", () => {
   it("should select a root concept when not previously selected", () => {

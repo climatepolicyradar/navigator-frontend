@@ -8,6 +8,7 @@ import { ThemeContext } from "@/context/ThemeContext";
 import { TutorialContext } from "@/context/TutorialContext";
 import { getAllCookies } from "@/utils/cookies";
 import { getFeatureFlags } from "@/utils/featureFlags";
+import { getFeatures } from "@/utils/features";
 import { getIncompleteTutorialNames } from "@/utils/tutorials";
 
 interface IProps {
@@ -15,7 +16,7 @@ interface IProps {
 }
 
 export const Overlays = ({ onConsentChange }: IProps) => {
-  const { themeConfig, theme, loaded } = useContext(ThemeContext);
+  const { themeConfig, loaded } = useContext(ThemeContext);
   const { completedTutorials, displayTutorial, setDisplayTutorial } = useContext(TutorialContext);
 
   let cookies: Record<string, string> = {};
@@ -23,8 +24,9 @@ export const Overlays = ({ onConsentChange }: IProps) => {
     cookies = getAllCookies();
   } catch (_error) {}
   const featureFlags = getFeatureFlags(cookies);
+  const features = getFeatures(themeConfig, featureFlags);
 
-  const incompleteTutorials = getIncompleteTutorialNames(completedTutorials, themeConfig, featureFlags).map((tutorialName) => ({
+  const incompleteTutorials = getIncompleteTutorialNames(completedTutorials, themeConfig, features).map((tutorialName) => ({
     name: tutorialName,
     tutorial: TUTORIALS[tutorialName],
   }));
@@ -45,11 +47,11 @@ export const Overlays = ({ onConsentChange }: IProps) => {
 
   return (
     <>
-      {displayCurrentModal && currentModal && <TutorialModal name={currentModal.name} modal={currentModal.tutorial.modal} />}
+      {displayCurrentModal && currentModal && <TutorialModal name={currentModal.name} modal={currentModal.tutorial.modal} features={features} />}
       <div className="fixed z-1000 inset-0 pointer-events-none">
         <div className="flex flex-col-reverse h-full">
           {currentBanner && <TutorialBanner name={currentBanner.name} banner={currentBanner.tutorial.banner} />}
-          <CookieConsent onConsentChange={onConsentChange} theme={theme} />
+          <CookieConsent onConsentChange={onConsentChange} themeConfig={themeConfig} />
         </div>
       </div>
     </>

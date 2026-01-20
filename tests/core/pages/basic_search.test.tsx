@@ -2,8 +2,8 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import router from "next-router-mock";
 
+import { DEFAULT_FEATURES } from "@/constants/features";
 import cprConfig from "@/cpr/config";
-import { mockFeatureFlagsWithoutConcepts } from "@/mocks/featureFlags";
 import { resetPage } from "@/mocks/helpers";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import Search from "@/pages/search";
@@ -13,26 +13,27 @@ afterEach(() => {
 });
 
 const baseSearchProps: any = {
+  conceptsData: null,
   // TODO: fix 'any' type
   envConfig: {
     BACKEND_API_URL: process.env.BACKEND_API_URL,
     CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
   },
+  familyConceptsData: null,
+  features: DEFAULT_FEATURES,
   theme: "cpr",
   themeConfig: {
     ...cprConfig,
     features: { knowledgeGraph: false, searchFamilySummary: false },
   },
-  featureFlags: mockFeatureFlagsWithoutConcepts,
-  conceptsData: null,
-  familyConceptsData: null,
+  topicsData: { rootTopics: [], topics: [] },
 };
 
 describe("SearchPage", async () => {
   it("shows search onboarding info when no filters applied", async () => {
     const search_props = { ...baseSearchProps };
     // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    renderWithAppContext(Search, { pageProps: search_props });
 
     // Wait for the component to render
     await waitFor(() => {
@@ -47,7 +48,7 @@ describe("SearchPage", async () => {
     const search_props = { ...baseSearchProps, searchParams: { q: "climate policy" } };
     router.query = { q: "climate policy" };
     // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    renderWithAppContext(Search, { pageProps: search_props });
 
     expect(screen.queryByText(/Get better results/)).not.toBeInTheDocument();
     expect(screen.queryByText(/You are currently viewing all of the documents in our database/)).not.toBeInTheDocument();
@@ -56,7 +57,7 @@ describe("SearchPage", async () => {
   it("handles search settings dropdown", async () => {
     const search_props = { ...baseSearchProps };
     // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    renderWithAppContext(Search, { pageProps: search_props });
 
     // Wait for the results to render
     await waitFor(() => {
@@ -79,7 +80,7 @@ describe("SearchPage", async () => {
   it("handles sort settings dropdown", async () => {
     const search_props = { ...baseSearchProps };
     // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    renderWithAppContext(Search, { pageProps: search_props });
 
     // Wait for the results to render
     await waitFor(() => {
@@ -101,7 +102,7 @@ describe("SearchPage", async () => {
 
   it("filters search results by region", async () => {
     // @ts-ignore
-    renderWithAppContext(Search, baseSearchProps);
+    renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     // Verify slideout is initially closed.
     expect(screen.queryByText("Region")).not.toBeInTheDocument();
@@ -129,7 +130,7 @@ describe("SearchPage", async () => {
 
   it("filters search results by country", async () => {
     // @ts-ignore
-    renderWithAppContext(Search, baseSearchProps);
+    renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     // Verify slideout is initially closed.
     expect(screen.queryByText("Published jurisdiction")).not.toBeInTheDocument();

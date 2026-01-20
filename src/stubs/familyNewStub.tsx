@@ -89,7 +89,6 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
   },
   corpus_id: "Academic.corpus.Litigation.n0000",
   organisation: "Sabin",
-  organisation_attribution_url: null,
   summary:
     "Action by young plaintiffs asserting that the federal government violated their constitutional rights by causing dangerous carbon dioxide concentrations. [Due to a technical issue, some documents are currently not available.]",
   geographies: ["USA", "US-OR"],
@@ -732,6 +731,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0003",
@@ -764,6 +764,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0007",
@@ -798,6 +799,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0001",
@@ -832,6 +834,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0002",
@@ -866,6 +869,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0006",
@@ -900,6 +904,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0005",
@@ -932,6 +937,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0018",
@@ -964,6 +970,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0042",
@@ -996,6 +1003,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0027",
@@ -1028,6 +1036,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0024",
@@ -1062,6 +1071,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0012",
@@ -1094,6 +1104,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0013",
@@ -1126,6 +1137,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0036",
@@ -1160,6 +1172,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0032",
@@ -1194,6 +1207,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0017",
@@ -1226,6 +1240,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0009",
@@ -1258,6 +1273,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0039",
@@ -1293,6 +1309,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0020",
@@ -1327,6 +1344,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0044",
@@ -1359,6 +1377,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0010",
@@ -1391,6 +1410,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0019",
@@ -1425,6 +1445,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0040",
@@ -1459,6 +1480,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0015",
@@ -1491,6 +1513,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0016",
@@ -1523,6 +1546,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0038",
@@ -1557,6 +1581,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0035",
@@ -1591,6 +1616,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0008",
@@ -1623,6 +1649,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0043",
@@ -1655,6 +1682,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0014",
@@ -1687,6 +1715,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0034",
@@ -1719,6 +1748,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0046",
@@ -1751,6 +1781,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0037",
@@ -1785,6 +1816,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0041",
@@ -1819,6 +1851,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0029",
@@ -1851,6 +1884,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0023",
@@ -1883,6 +1917,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0026",
@@ -1915,6 +1950,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0045",
@@ -1947,6 +1983,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0033",
@@ -1979,6 +2016,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0022",
@@ -2013,6 +2051,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0030",
@@ -2045,6 +2084,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0021",
@@ -2077,6 +2117,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0031",
@@ -2111,6 +2152,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0011",
@@ -2143,6 +2185,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0025",
@@ -2177,6 +2220,7 @@ export const FAMILY_NEW_STUB: TFamilyPublic = {
       languages: ["eng"],
       document_type: null,
       document_role: null,
+      document_status: "published",
       events: [
         {
           import_id: "Sabin.event.14255.n0004",
