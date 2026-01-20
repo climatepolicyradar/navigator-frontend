@@ -120,14 +120,24 @@ Themes are configured in `themes/[theme-name]/config.ts`. Each theme can overrid
 - Feature flags
 - Environment-specific configurations
 
-## 🏴‍☠️ Feature flags
+## 🏴‍☠️ Features
 
-### Theme features
+There are three different methods used in the app to control which feature set a given user sees. These work in tandem and are designed to overlap, which is possible by using the same key for multiple types.
 
-We have the ability to turn features on per theme. These are controlled via the
-[`themeConfig.features`](./src/types/themeConfig.ts#l75).
+| Method:                   | A/B test                                                               | Feature flag                                                              | Theme feature                                                      |
+| ------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Use:                      | Rolling an experimental feature out to a proportion of users.          | Previewing an upcoming feature or developing a new feature in production. | Making features available on a per-app basis, typically long term. |
+| Configured at:            | PostHog feature flag with % rollout                                    | PostHog feature flag with 0% rollout + PostHog early access feature       | `/themes/<THEME>/config.ts` `features` object                      |
+| Add key to:               | `/src/types/features.ts` `abTestKeys`                                  | `/src/types/features.ts` `featureFlagKeys`                                | `/src/types/features.ts` `configFeatureKeys`                       |
+| Manually enable via:      | `/_feature-flags` only if also added as a PostHog early access feature | `/_feature-flags`                                                         | Theme config file (above)                                          |
+| Can be on by default:     | Yes                                                                    | No                                                                        | Yes                                                                |
+| Client-side only:         | Yes                                                                    | No                                                                        | No                                                                 |
+| Get value via:            | `getFeaturesWithABTests()`                                             | `getFeatures()`                                                           | `getFeatures()`                                                    |
+| Persist client-side with: | `FeaturesContext`                                                      | `FeaturesContext`                                                         | `FeaturesContext`                                                  |
 
-These are accessed via [`./src/utils/features.ts`](./src/utils/features.ts).
+An example of intentionally overlapping keys:
+
+`knowledgeGraph` was a key used both as a feature flag and as a theme feature (added to both key arrays). When one was on, the feature was on, so it could be on for all users on specific apps using the theme feature, and on other apps turned on manually through the feature flags page to preview it.
 
 ## 📜 License
 
