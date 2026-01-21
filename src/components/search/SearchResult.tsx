@@ -9,12 +9,14 @@ import { pluralise } from "@/utils/pluralise";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
-  family: TMatchedFamily;
   active: boolean;
+  family: TMatchedFamily;
   onClick?: () => void;
+  position: number;
+  positionOffset: number;
 }
 
-const SearchResult = ({ family, active, onClick }: IProps) => {
+const SearchResult = ({ family, active, onClick, position, positionOffset }: IProps) => {
   const features = useContext(FeaturesContext);
   const { family_documents, total_passage_hits, family_slug } = family;
 
@@ -29,7 +31,13 @@ const SearchResult = ({ family, active, onClick }: IProps) => {
   );
 
   return (
-    <FamilyListItem family={family} showSummary={features.searchFamilySummary} titleClasses={titleClasses}>
+    <FamilyListItem
+      family={family}
+      position={position}
+      positionOffset={positionOffset}
+      showSummary={features.searchFamilySummary}
+      titleClasses={titleClasses}
+    >
       {hasFamilyDocuments && (
         <div className="flex">
           <button
