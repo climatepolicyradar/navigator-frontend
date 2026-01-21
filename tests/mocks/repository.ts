@@ -1,6 +1,6 @@
-import { metadata } from "framer-motion/client";
+import { TFamilyDocument, TMatchedFamily, TSearchCriteriaMeta } from "@/types";
 
-const families = [
+const families: TMatchedFamily[] = [
   {
     family_slug: "belize-ndc-8ee3",
     family_name: "Belize NDC",
@@ -132,26 +132,32 @@ const families = [
     total_passage_hits: 2,
     family_documents: [
       {
-        document_passage_matches: {
-          concepts: [
-            {
-              id: "1",
-              name: "child topic 1",
-              parent_concepts: [
-                {
-                  name: "",
-                  id: "Q1651",
-                },
-              ],
-              parent_concept_ids_flat: "Q1651,",
-              model: "",
-              end: 776,
-              start: 0,
-              timestamp: "2025-05-27T11:51:54.039195",
-            },
-          ],
-        },
-      },
+        document_passage_matches: [
+          {
+            concepts: [
+              {
+                id: "1",
+                name: "child topic 1",
+                parent_concepts: [
+                  {
+                    name: "",
+                    id: "Q1651",
+                  },
+                ],
+                parent_concept_ids_flat: "Q1651,",
+                model: "",
+                end: 776,
+                start: 0,
+                timestamp: "2025-05-27T11:51:54.039195",
+              },
+            ],
+            text_block_coords: [],
+            text_block_id: "",
+            text_block_page: 0,
+            text: "",
+          },
+        ],
+      } as unknown as TFamilyDocument,
     ],
     continuation_token: null,
     prev_continuation_token: null,
@@ -175,26 +181,32 @@ const families = [
     total_passage_hits: 2,
     family_documents: [
       {
-        document_passage_matches: {
-          concepts: [
-            {
-              id: "2",
-              name: "child topic 2",
-              parent_concepts: [
-                {
-                  name: "",
-                  id: "Q1651",
-                },
-              ],
-              parent_concept_ids_flat: "Q1651,",
-              model: "",
-              end: 776,
-              start: 0,
-              timestamp: "2025-05-27T11:51:54.039195",
-            },
-          ],
-        },
-      },
+        document_passage_matches: [
+          {
+            concepts: [
+              {
+                id: "2",
+                name: "child topic 2",
+                parent_concepts: [
+                  {
+                    name: "",
+                    id: "Q1651",
+                  },
+                ],
+                parent_concept_ids_flat: "Q1651,",
+                model: "",
+                end: 776,
+                start: 0,
+                timestamp: "2025-05-27T11:51:54.039195",
+              },
+            ],
+            text_block_coords: [],
+            text_block_id: "",
+            text_block_page: 0,
+            text: "",
+          },
+        ],
+      } as unknown as TFamilyDocument,
     ],
     continuation_token: null,
     prev_continuation_token: null,
@@ -255,12 +267,16 @@ const setUpFamiliesRepo = (test_families: any[]) => {
   familiesRepo = test_families;
 };
 
-const getFilteredFamilies = (keyword_filters: any, concept_filters: any, metadata: any) => {
+const getFilteredFamilies = (
+  keyword_filters: any,
+  concept_filters: { name: string; value: string }[],
+  metadata: TSearchCriteriaMeta[]
+): TMatchedFamily[] => {
   let filteredFamilies = [...familiesRepo]; // start with all and whittle down
   if (keyword_filters.countries) {
     keyword_filters.countries.forEach((country: string) => {
       filteredFamilies = filteredFamilies.filter((family) => {
-        return family.family_geographies.includes(iso_slug_mapping[country]);
+        return family.family_geographies.includes(iso_slug_mapping[country as keyof typeof iso_slug_mapping]);
       });
     });
     return filteredFamilies;
@@ -281,8 +297,7 @@ const getFilteredFamilies = (keyword_filters: any, concept_filters: any, metadat
           family.family_documents.some(
             (doc) =>
               doc.document_passage_matches &&
-              doc.document_passage_matches.concepts &&
-              doc.document_passage_matches.concepts.some((concept) => concept.name === conceptFilter.value)
+              doc.document_passage_matches.some((match) => match.concepts?.some((concept) => concept.name === conceptFilter.value))
           )
         );
       });
