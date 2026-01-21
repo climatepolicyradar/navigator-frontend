@@ -35,7 +35,7 @@
       "@/mcf/*": ["themes/mcf/*"],
       "@/mocks/*": ["tests/mocks/*"],
       "@/tests/*": ["tests/*"],
-      "@/themes/*": ["themes/__THEME__/*"]
+      "@/themes/*": ["themes/__THEME__/*"] // this gets generated based on the .env THEME variable
     },
     "plugins": [
       {
