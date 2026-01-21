@@ -1,4 +1,18 @@
-.PHONY: build build_dev run run_dev run_ci with_production install_trunk
+.PHONY: build build_dev run run_dev with_production install_trunk
+
+# DEV MODE
+# dev mode takes environment vars from .env
+# see Dockerfile.dev
+build_dev:
+	docker build -f Dockerfile.dev -t ${TAG}-dev .
+
+run_dev: build_dev
+	docker run --rm -it \
+		-p 3000:3000 \
+		-v $(PWD):/app \
+		-v /app/node_modules \
+		${TAG}-dev npm run dev
+# END DEV MODE
 
 TAG = navigator-frontend
 THEME ?= cclw
@@ -13,12 +27,10 @@ REDIRECT_FILE="redirects.json"
 build:
 	docker build --build-arg THEME=${THEME} -t ${TAG}-${THEME} .
 
-build_dev:
-	docker build -f Dockerfile.dev -t ${TAG}-dev .
-
 run: build
 	docker run --rm -it \
 		-p 3000:3000 \
+		-e THEME=$(THEME) \
 		-e BACKEND_API_TOKEN=$(BACKEND_API_TOKEN) \
 		-e BACKEND_API_URL=$(BACKEND_API_URL) \
 		-e ADOBE_API_KEY=$(ADOBE_API_KEY) \
@@ -28,33 +40,10 @@ run: build
 		-e CONCEPTS_API_URL=$(CONCEPTS_API_URL) \
 		-e REDIRECT_FILE=$(REDIRECT_FILE) \
 		-e CDN_URL=$(CDN_URL) \
-		-e NODE_ENV=production \
-		-v $(PWD):/app \
-		-v /app/node_modules \
-		${TAG}-${THEME} npm run dev
-
-run_dev: build_dev
-	docker run --rm -it \
-		-p 3000:3000 \
-		-v $(PWD):/app \
-		-v /app/node_modules \
-		${TAG}-dev npm run dev
+		${TAG}-${THEME}
 
 with_production:
 	make API_URL=https://api.climatepolicyradar.org/api/v1
-
-run_ci:
-	docker run --rm -d \
-		-p 3000:3000 \
-		-e THEME=$(THEME) \
-		-e BACKEND_API_TOKEN=$(BACKEND_API_TOKEN) \
-		-e BACKEND_API_URL=$(BACKEND_API_URL) \
-		-e ADOBE_API_KEY=$(ADOBE_API_KEY) \
-		-e TARGETS_URL=$(TARGETS_URL) \
-		-e NODE_ENV=production \
-		-e ROBOTS="false" \
-		-e HOSTNAME="http://localhost:3000" \
-		${TAG}-${THEME}
 
 install_trunk:
 	$(eval trunk_installed=$(shell trunk --version > /dev/null 2>&1 ; echo $$? ))
