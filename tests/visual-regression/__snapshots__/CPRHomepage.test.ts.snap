@@ -1,0 +1,1110 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CPR homepage looks correct > cpr-homepage 1`] = `
+{
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <a
+        class="sr-only"
+        href="#main"
+      >
+        Skip to content
+      </a>
+      <div
+        class="relative"
+      >
+        <header
+          class="sticky top-0 z-60 w-full cols-4:h-[72px] flex flex-col justify-center h-[72px] !absolute top-0"
+          data-cy="header"
+        >
+          <div
+            class="w-full max-w-(--MAX_SITE_WIDTH) grid flex-wrap px-2 mx-auto cols-2:px-4 cols-3:px-6 cols-4:px-8 grid-cols-[1fr_auto] cols-2:grid-cols-[1fr_auto] cols-3:grid-cols-[1fr_auto] cols-4:grid-cols-8 cols-5:grid-cols-10 gap-x-2 cols-2:gap-x-4 cols-3:gap-x-6 cols-4:gap-x-8"
+          >
+            <div
+              class="flex items-center justify-end -col-end-1"
+            >
+              <nav>
+                <ul
+                  aria-orientation="horizontal"
+                >
+                  <li
+                    class="flex items-center"
+                  >
+                    <button
+                      aria-disabled="false"
+                      aria-expanded="false"
+                      class="group"
+                      data-base-ui-navigation-menu-trigger=""
+                      tabindex="0"
+                      type="button"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="lucide lucide-menu text-white"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M4 5h16"
+                        />
+                        <path
+                          d="M4 12h16"
+                        />
+                        <path
+                          d="M4 19h16"
+                        />
+                      </svg>
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </header>
+        <main
+          class="relative h-full"
+        >
+          <div
+            class="banner banner--full h-screen min-h-[800px] overflow-hidden"
+          />
+          <section
+            class="absolute inset-0 z-10 flex flex-col items-center justify-center min-h-[800px]"
+          >
+            <div
+              class="text-white flex"
+              data-cy="cpr-logo"
+            >
+              <img
+                alt="Climate Policy Radar"
+                class="px-5"
+                data-nimg="1"
+                decoding="async"
+                height="34"
+                loading="lazy"
+                src="/_next/image?url=%2Fimages%2Fcpr-logo-homepage.png&w=1200&q=75"
+                srcset="/_next/image?url=%2Fimages%2Fcpr-logo-homepage.png&w=640&q=75 1x, /_next/image?url=%2Fimages%2Fcpr-logo-homepage.png&w=1200&q=75 2x"
+                style="color: transparent;"
+                width="596"
+              />
+            </div>
+            <div
+              class="max-w-maxSiteWidth w-full px-5 mx-auto mt-24 md:mt-48 max-w-screen-lg mx-auto"
+            >
+              <form
+                data-cy="search-form"
+              >
+                <div
+                  class="max-w-screen-lg mx-auto flex items-stretch relative text-white"
+                >
+                  <input
+                    aria-label="Search term"
+                    class="text-white placeholder:text-transparent py-4 pr-16 text-2xl bg-transparent border-t-0 border-l-0 border-r-0 border-white border-b-2 rounded-none focus:border-white focus:ring-0 w-full "
+                    data-analytics="landingPage-searchInput"
+                    data-cy="search-input"
+                    id="landingPage-searchInput"
+                    placeholder="Search the full text of over 12,000 climate documents"
+                    type="search"
+                    value=""
+                  />
+                  <div
+                    class="search-animated-placeholder"
+                  >
+                    Search the full text of over 12,000 climate documents
+                  </div>
+                  <button
+                    aria-label="Search"
+                    class="absolute top-0 right-0 h-full"
+                    type="submit"
+                  >
+                    <span
+                      class="block"
+                    >
+                      <svg
+                        enable-background="new 0 0 512.392 512.392"
+                        fill="currentColor"
+                        id="Layer_1"
+                        style="width: 40px; height: 30px;"
+                        viewBox="0 0 512.392 512.392"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g>
+                          <path
+                            d="m211.196 422c-116.346 0-211-94.654-211-211s94.654-211 211-211 211 94.654 211 211-94.654 211-211 211zm0-382c-94.29 0-171 76.71-171 171s76.71 171 171 171 171-76.71 171-171-76.71-171-171-171zm295.143 466.534c7.81-7.811 7.81-20.475 0-28.285l-89.5-89.5c-7.811-7.811-20.475-7.811-28.285 0s-7.81 20.475 0 28.285l89.5 89.5c3.905 3.905 9.024 5.857 14.143 5.857s10.236-1.952 14.142-5.857z"
+                          />
+                        </g>
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+              </form>
+              <section
+                class="mt-18 text-white"
+              >
+                <div
+                  class="font-medium text-2xl"
+                >
+                  Try these searches
+                </div>
+                <ul
+                  class="text-lg mt-4"
+                >
+                  <li
+                    class="my-2"
+                  >
+                    <a
+                      class="text-white hover:text-blue-200 hover:underline"
+                      data-cy="quick-search-1"
+                      href="#"
+                    >
+                      Adaptation
+                    </a>
+                  </li>
+                  <li
+                    class="my-2"
+                  >
+                    <a
+                      class="text-white hover:text-blue-200 hover:underline"
+                      data-cy="quick-search-2"
+                      href="#"
+                    >
+                      Brazil
+                    </a>
+                  </li>
+                  <li
+                    class="my-2"
+                  >
+                    <a
+                      class="text-white hover:text-blue-200 hover:underline"
+                      data-cy="quick-search-3"
+                      href="#"
+                    >
+                      Climate framework laws
+                    </a>
+                  </li>
+                  <li
+                    class="my-2"
+                  >
+                    <a
+                      class="text-white hover:text-blue-200 hover:underline"
+                      data-cy="quick-search-4"
+                      href="#"
+                    >
+                      Coastal zones
+                    </a>
+                  </li>
+                </ul>
+              </section>
+            </div>
+          </section>
+        </main>
+        <section
+          class="bg-blue-200"
+        >
+          <div
+            class="max-w-maxSiteWidth w-full px-5 mx-auto py-24 md:flex items-center"
+          >
+            <div>
+              <h2
+                class="text-textDark font-medium text-2xl mb-5 "
+              >
+                Read our methodology
+              </h2>
+              <p
+                class="text-lg md:mr-8"
+              >
+                Find out more about the scope and structure of our database, our data collection methods, terminology, updates and future developments.
+              </p>
+            </div>
+            <a
+              class="mt-4 md:mt-0 block w-full text-center bg-blue-500 text-white md:grow-0 p-2 rounded-xl md:w-48 transition duration-300 hover:text-white"
+              href="https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <div
+                class="flex justify-center"
+              >
+                <svg
+                  enable-background="new 0 0 512 512"
+                  fill="currentColor"
+                  id="Capa_1"
+                  style="width: 60px; height: 60px;"
+                  viewBox="0 0 512 512"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g>
+                    <path
+                      d="m195 136h302c8.291 0 15-6.709 15-15s-6.709-15-15-15h-302c-8.291 0-15 6.709-15 15s6.709 15 15 15z"
+                    />
+                    <path
+                      d="m497 196h-242c-8.291 0-15 6.709-15 15s6.709 15 15 15h242c8.291 0 15-6.709 15-15s-6.709-15-15-15z"
+                    />
+                    <path
+                      d="m497 286h-242c-8.291 0-15 6.709-15 15s6.709 15 15 15h242c8.291 0 15-6.709 15-15s-6.709-15-15-15z"
+                    />
+                    <path
+                      d="m497 376h-302c-8.291 0-15 6.709-15 15s6.709 15 15 15h302c8.291 0 15-6.709 15-15s-6.709-15-15-15z"
+                    />
+                    <path
+                      d="m205.587 245.376-59.982-59.982c-5.859-5.859-15.352-5.859-21.211 0s-5.859 15.352 0 21.211l34.395 34.395h-143.789c-8.291 0-15 6.709-15 15s6.709 15 15 15h143.789l-34.395 34.395c-5.859 5.859-5.859 15.352 0 21.211s15.351 5.86 21.211 0l59.982-59.982c5.806-5.791 5.897-15.367 0-21.248z"
+                    />
+                  </g>
+                </svg>
+              </div>
+              <span>
+                Read more
+              </span>
+            </a>
+          </div>
+        </section>
+        <div
+          class="py-24"
+        >
+          <div
+            class="max-w-maxSiteWidth w-full px-5 mx-auto "
+          >
+            <h2
+              class="text-textDark font-medium text-2xl mb-5 text-center"
+            >
+              Our partners
+            </h2>
+            <div
+              class="max-w-maxContent basis-maxContent mx-auto "
+            >
+              <div
+                class="flex flex-col gap-5 mb-5 md:flex-row md:flex-wrap md:justify-center md:mb-0"
+              >
+                <a
+                  class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                  href="https://www.lse.ac.uk/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <span
+                    style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                  >
+                    <img
+                      alt="LSE logo"
+                      class="custom-img"
+                      data-nimg="fill"
+                      decoding="async"
+                      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                      style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                    />
+                    <noscript />
+                  </span>
+                </a>
+                <a
+                  class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                  href="https://www.lse.ac.uk/granthaminstitute/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <span
+                    style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                  >
+                    <img
+                      alt="Grantham Research Institute on Climate Change and the Environment logo"
+                      class="custom-img"
+                      data-nimg="fill"
+                      decoding="async"
+                      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                      style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                    />
+                    <noscript />
+                  </span>
+                </a>
+                <a
+                  class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                  href="https://www.climateparl.net/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <span
+                    style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                  >
+                    <img
+                      alt="Climate Parliament logo"
+                      class="custom-img"
+                      data-nimg="fill"
+                      decoding="async"
+                      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                      style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                    />
+                    <noscript />
+                  </span>
+                </a>
+                <a
+                  class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                  href="https://www.ucl.ac.uk/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <span
+                    style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                  >
+                    <img
+                      alt="UCL logo"
+                      class="custom-img"
+                      data-nimg="fill"
+                      decoding="async"
+                      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                      style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                    />
+                    <noscript />
+                  </span>
+                </a>
+                <a
+                  class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                  href="https://www.worldpolicycenter.org/about/about-world"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <span
+                    style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                  >
+                    <img
+                      alt="WORLD Policy Analysis Center logo"
+                      class="custom-img"
+                      data-nimg="fill"
+                      decoding="async"
+                      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                      style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                    />
+                    <noscript />
+                  </span>
+                </a>
+                <a
+                  class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                  href="https://www.worldbank.org/en/home"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <span
+                    style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                  >
+                    <img
+                      alt="The World Bank logo"
+                      class="custom-img"
+                      data-nimg="fill"
+                      decoding="async"
+                      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                      style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                    />
+                    <noscript />
+                  </span>
+                </a>
+                <a
+                  class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                  href="https://southsouthnorth.org/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <span
+                    style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                  >
+                    <img
+                      alt="South South North logo"
+                      class="custom-img"
+                      data-nimg="fill"
+                      decoding="async"
+                      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                      style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                    />
+                    <noscript />
+                  </span>
+                </a>
+                <a
+                  class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                  href="https://cdkn.org/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <span
+                    style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                  >
+                    <img
+                      alt="Climate & Development Knowledge Network logo"
+                      class="custom-img"
+                      data-nimg="fill"
+                      decoding="async"
+                      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                      style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                    />
+                    <noscript />
+                  </span>
+                </a>
+                <a
+                  class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                  href="http://www.dlapiper.com/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <span
+                    style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                  >
+                    <img
+                      alt="DLA Piper UK LLP logo"
+                      class="custom-img"
+                      data-nimg="fill"
+                      decoding="async"
+                      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                      style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                    />
+                    <noscript />
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer
+          class="py-12 dark-gradient"
+        >
+          <div
+            class="max-w-maxSiteWidth w-full px-5 mx-auto "
+          >
+            <p
+              class="font-medium text-lg mb-5 text-white md:text-center"
+            >
+              To report a problem, email us at support@climatepolicyradar.org 
+              <br />
+               Spotted missing or inaccurate data?
+               
+              <a
+                class="text-white underline hover:text-white"
+                href="https://form.jotform.com/233294135296359"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Let us know
+              </a>
+            </p>
+            <nav>
+              <div
+                class="flex flex-col gap-2 md:flex-row justify-center md:gap-8 md:gap-16"
+                data-cy="footer-nav"
+              >
+                <a
+                  class="text-white underline hover:text-blue-500"
+                  href="https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Methodology
+                </a>
+                <a
+                  class="text-white underline hover:text-blue-500"
+                  href="https://github.com/climatepolicyradar/methodology/blob/main/Climate%20Policy%20Radar%20Codebook.xlsx"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Codebook
+                </a>
+                <a
+                  class="text-white underline hover:text-blue-500"
+                  href="/terms-of-use"
+                >
+                  Terms & conditions
+                </a>
+                <a
+                  class="text-white underline hover:text-blue-500"
+                  href="https://climatepolicyradar.org/privacy-policy"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Privacy policy
+                </a>
+              </div>
+            </nav>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <a
+      class="sr-only"
+      href="#main"
+    >
+      Skip to content
+    </a>
+    <div
+      class="relative"
+    >
+      <header
+        class="sticky top-0 z-60 w-full cols-4:h-[72px] flex flex-col justify-center h-[72px] !absolute top-0"
+        data-cy="header"
+      >
+        <div
+          class="w-full max-w-(--MAX_SITE_WIDTH) grid flex-wrap px-2 mx-auto cols-2:px-4 cols-3:px-6 cols-4:px-8 grid-cols-[1fr_auto] cols-2:grid-cols-[1fr_auto] cols-3:grid-cols-[1fr_auto] cols-4:grid-cols-8 cols-5:grid-cols-10 gap-x-2 cols-2:gap-x-4 cols-3:gap-x-6 cols-4:gap-x-8"
+        >
+          <div
+            class="flex items-center justify-end -col-end-1"
+          >
+            <nav>
+              <ul
+                aria-orientation="horizontal"
+              >
+                <li
+                  class="flex items-center"
+                >
+                  <button
+                    aria-disabled="false"
+                    aria-expanded="false"
+                    class="group"
+                    data-base-ui-navigation-menu-trigger=""
+                    tabindex="0"
+                    type="button"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="lucide lucide-menu text-white"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4 5h16"
+                      />
+                      <path
+                        d="M4 12h16"
+                      />
+                      <path
+                        d="M4 19h16"
+                      />
+                    </svg>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </header>
+      <main
+        class="relative h-full"
+      >
+        <div
+          class="banner banner--full h-screen min-h-[800px] overflow-hidden"
+        />
+        <section
+          class="absolute inset-0 z-10 flex flex-col items-center justify-center min-h-[800px]"
+        >
+          <div
+            class="text-white flex"
+            data-cy="cpr-logo"
+          >
+            <img
+              alt="Climate Policy Radar"
+              class="px-5"
+              data-nimg="1"
+              decoding="async"
+              height="34"
+              loading="lazy"
+              src="/_next/image?url=%2Fimages%2Fcpr-logo-homepage.png&w=1200&q=75"
+              srcset="/_next/image?url=%2Fimages%2Fcpr-logo-homepage.png&w=640&q=75 1x, /_next/image?url=%2Fimages%2Fcpr-logo-homepage.png&w=1200&q=75 2x"
+              style="color: transparent;"
+              width="596"
+            />
+          </div>
+          <div
+            class="max-w-maxSiteWidth w-full px-5 mx-auto mt-24 md:mt-48 max-w-screen-lg mx-auto"
+          >
+            <form
+              data-cy="search-form"
+            >
+              <div
+                class="max-w-screen-lg mx-auto flex items-stretch relative text-white"
+              >
+                <input
+                  aria-label="Search term"
+                  class="text-white placeholder:text-transparent py-4 pr-16 text-2xl bg-transparent border-t-0 border-l-0 border-r-0 border-white border-b-2 rounded-none focus:border-white focus:ring-0 w-full "
+                  data-analytics="landingPage-searchInput"
+                  data-cy="search-input"
+                  id="landingPage-searchInput"
+                  placeholder="Search the full text of over 12,000 climate documents"
+                  type="search"
+                  value=""
+                />
+                <div
+                  class="search-animated-placeholder"
+                >
+                  Search the full text of over 12,000 climate documents
+                </div>
+                <button
+                  aria-label="Search"
+                  class="absolute top-0 right-0 h-full"
+                  type="submit"
+                >
+                  <span
+                    class="block"
+                  >
+                    <svg
+                      enable-background="new 0 0 512.392 512.392"
+                      fill="currentColor"
+                      id="Layer_1"
+                      style="width: 40px; height: 30px;"
+                      viewBox="0 0 512.392 512.392"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g>
+                        <path
+                          d="m211.196 422c-116.346 0-211-94.654-211-211s94.654-211 211-211 211 94.654 211 211-94.654 211-211 211zm0-382c-94.29 0-171 76.71-171 171s76.71 171 171 171 171-76.71 171-171-76.71-171-171-171zm295.143 466.534c7.81-7.811 7.81-20.475 0-28.285l-89.5-89.5c-7.811-7.811-20.475-7.811-28.285 0s-7.81 20.475 0 28.285l89.5 89.5c3.905 3.905 9.024 5.857 14.143 5.857s10.236-1.952 14.142-5.857z"
+                        />
+                      </g>
+                    </svg>
+                  </span>
+                </button>
+              </div>
+            </form>
+            <section
+              class="mt-18 text-white"
+            >
+              <div
+                class="font-medium text-2xl"
+              >
+                Try these searches
+              </div>
+              <ul
+                class="text-lg mt-4"
+              >
+                <li
+                  class="my-2"
+                >
+                  <a
+                    class="text-white hover:text-blue-200 hover:underline"
+                    data-cy="quick-search-1"
+                    href="#"
+                  >
+                    Adaptation
+                  </a>
+                </li>
+                <li
+                  class="my-2"
+                >
+                  <a
+                    class="text-white hover:text-blue-200 hover:underline"
+                    data-cy="quick-search-2"
+                    href="#"
+                  >
+                    Brazil
+                  </a>
+                </li>
+                <li
+                  class="my-2"
+                >
+                  <a
+                    class="text-white hover:text-blue-200 hover:underline"
+                    data-cy="quick-search-3"
+                    href="#"
+                  >
+                    Climate framework laws
+                  </a>
+                </li>
+                <li
+                  class="my-2"
+                >
+                  <a
+                    class="text-white hover:text-blue-200 hover:underline"
+                    data-cy="quick-search-4"
+                    href="#"
+                  >
+                    Coastal zones
+                  </a>
+                </li>
+              </ul>
+            </section>
+          </div>
+        </section>
+      </main>
+      <section
+        class="bg-blue-200"
+      >
+        <div
+          class="max-w-maxSiteWidth w-full px-5 mx-auto py-24 md:flex items-center"
+        >
+          <div>
+            <h2
+              class="text-textDark font-medium text-2xl mb-5 "
+            >
+              Read our methodology
+            </h2>
+            <p
+              class="text-lg md:mr-8"
+            >
+              Find out more about the scope and structure of our database, our data collection methods, terminology, updates and future developments.
+            </p>
+          </div>
+          <a
+            class="mt-4 md:mt-0 block w-full text-center bg-blue-500 text-white md:grow-0 p-2 rounded-xl md:w-48 transition duration-300 hover:text-white"
+            href="https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <div
+              class="flex justify-center"
+            >
+              <svg
+                enable-background="new 0 0 512 512"
+                fill="currentColor"
+                id="Capa_1"
+                style="width: 60px; height: 60px;"
+                viewBox="0 0 512 512"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g>
+                  <path
+                    d="m195 136h302c8.291 0 15-6.709 15-15s-6.709-15-15-15h-302c-8.291 0-15 6.709-15 15s6.709 15 15 15z"
+                  />
+                  <path
+                    d="m497 196h-242c-8.291 0-15 6.709-15 15s6.709 15 15 15h242c8.291 0 15-6.709 15-15s-6.709-15-15-15z"
+                  />
+                  <path
+                    d="m497 286h-242c-8.291 0-15 6.709-15 15s6.709 15 15 15h242c8.291 0 15-6.709 15-15s-6.709-15-15-15z"
+                  />
+                  <path
+                    d="m497 376h-302c-8.291 0-15 6.709-15 15s6.709 15 15 15h302c8.291 0 15-6.709 15-15s-6.709-15-15-15z"
+                  />
+                  <path
+                    d="m205.587 245.376-59.982-59.982c-5.859-5.859-15.352-5.859-21.211 0s-5.859 15.352 0 21.211l34.395 34.395h-143.789c-8.291 0-15 6.709-15 15s6.709 15 15 15h143.789l-34.395 34.395c-5.859 5.859-5.859 15.352 0 21.211s15.351 5.86 21.211 0l59.982-59.982c5.806-5.791 5.897-15.367 0-21.248z"
+                  />
+                </g>
+              </svg>
+            </div>
+            <span>
+              Read more
+            </span>
+          </a>
+        </div>
+      </section>
+      <div
+        class="py-24"
+      >
+        <div
+          class="max-w-maxSiteWidth w-full px-5 mx-auto "
+        >
+          <h2
+            class="text-textDark font-medium text-2xl mb-5 text-center"
+          >
+            Our partners
+          </h2>
+          <div
+            class="max-w-maxContent basis-maxContent mx-auto "
+          >
+            <div
+              class="flex flex-col gap-5 mb-5 md:flex-row md:flex-wrap md:justify-center md:mb-0"
+            >
+              <a
+                class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                href="https://www.lse.ac.uk/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <span
+                  style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                >
+                  <img
+                    alt="LSE logo"
+                    class="custom-img"
+                    data-nimg="fill"
+                    decoding="async"
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                    style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                  />
+                  <noscript />
+                </span>
+              </a>
+              <a
+                class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                href="https://www.lse.ac.uk/granthaminstitute/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <span
+                  style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                >
+                  <img
+                    alt="Grantham Research Institute on Climate Change and the Environment logo"
+                    class="custom-img"
+                    data-nimg="fill"
+                    decoding="async"
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                    style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                  />
+                  <noscript />
+                </span>
+              </a>
+              <a
+                class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                href="https://www.climateparl.net/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <span
+                  style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                >
+                  <img
+                    alt="Climate Parliament logo"
+                    class="custom-img"
+                    data-nimg="fill"
+                    decoding="async"
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                    style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                  />
+                  <noscript />
+                </span>
+              </a>
+              <a
+                class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                href="https://www.ucl.ac.uk/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <span
+                  style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                >
+                  <img
+                    alt="UCL logo"
+                    class="custom-img"
+                    data-nimg="fill"
+                    decoding="async"
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                    style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                  />
+                  <noscript />
+                </span>
+              </a>
+              <a
+                class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                href="https://www.worldpolicycenter.org/about/about-world"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <span
+                  style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                >
+                  <img
+                    alt="WORLD Policy Analysis Center logo"
+                    class="custom-img"
+                    data-nimg="fill"
+                    decoding="async"
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                    style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                  />
+                  <noscript />
+                </span>
+              </a>
+              <a
+                class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                href="https://www.worldbank.org/en/home"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <span
+                  style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                >
+                  <img
+                    alt="The World Bank logo"
+                    class="custom-img"
+                    data-nimg="fill"
+                    decoding="async"
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                    style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                  />
+                  <noscript />
+                </span>
+              </a>
+              <a
+                class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                href="https://southsouthnorth.org/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <span
+                  style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                >
+                  <img
+                    alt="South South North logo"
+                    class="custom-img"
+                    data-nimg="fill"
+                    decoding="async"
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                    style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                  />
+                  <noscript />
+                </span>
+              </a>
+              <a
+                class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                href="https://cdkn.org/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <span
+                  style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                >
+                  <img
+                    alt="Climate & Development Knowledge Network logo"
+                    class="custom-img"
+                    data-nimg="fill"
+                    decoding="async"
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                    style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                  />
+                  <noscript />
+                </span>
+              </a>
+              <a
+                class="block relative py-12 unset-img md:basis-[30%] md:mb-5"
+                href="http://www.dlapiper.com/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <span
+                  style="box-sizing: border-box; display: block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"
+                >
+                  <img
+                    alt="DLA Piper UK LLP logo"
+                    class="custom-img"
+                    data-nimg="fill"
+                    decoding="async"
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                    style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; box-sizing: border-box; padding: 0px; margin: auto; display: block; width: 0px; height: 0px; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                  />
+                  <noscript />
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer
+        class="py-12 dark-gradient"
+      >
+        <div
+          class="max-w-maxSiteWidth w-full px-5 mx-auto "
+        >
+          <p
+            class="font-medium text-lg mb-5 text-white md:text-center"
+          >
+            To report a problem, email us at support@climatepolicyradar.org 
+            <br />
+             Spotted missing or inaccurate data?
+             
+            <a
+              class="text-white underline hover:text-white"
+              href="https://form.jotform.com/233294135296359"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Let us know
+            </a>
+          </p>
+          <nav>
+            <div
+              class="flex flex-col gap-2 md:flex-row justify-center md:gap-8 md:gap-16"
+              data-cy="footer-nav"
+            >
+              <a
+                class="text-white underline hover:text-blue-500"
+                href="https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Methodology
+              </a>
+              <a
+                class="text-white underline hover:text-blue-500"
+                href="https://github.com/climatepolicyradar/methodology/blob/main/Climate%20Policy%20Radar%20Codebook.xlsx"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Codebook
+              </a>
+              <a
+                class="text-white underline hover:text-blue-500"
+                href="/terms-of-use"
+              >
+                Terms & conditions
+              </a>
+              <a
+                class="text-white underline hover:text-blue-500"
+                href="https://climatepolicyradar.org/privacy-policy"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Privacy policy
+              </a>
+            </div>
+          </nav>
+        </div>
+      </footer>
+    </div>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;
