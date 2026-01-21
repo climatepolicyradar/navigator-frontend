@@ -36,7 +36,7 @@ run: build
 		-e ADOBE_API_KEY=$(ADOBE_API_KEY) \
 		-e TARGETS_URL=$(TARGETS_URL) \
 		-e ROBOTS="false" \
-		-e HOSTNAME="http://localhost:3000" \
+		-e HOSTNAME="localhost" \
 		-e CONCEPTS_API_URL=$(CONCEPTS_API_URL) \
 		-e REDIRECT_FILE=$(REDIRECT_FILE) \
 		-e CDN_URL=$(CDN_URL) \

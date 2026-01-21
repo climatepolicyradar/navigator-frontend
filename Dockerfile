@@ -21,5 +21,9 @@ fs.writeFileSync('tsconfig.json', tpl.replace(/__THEME__/g, process.env.THEME));
 # Build Next.js
 RUN npm run build
 
+# Copy static files into standalone directory
+RUN cp -r public .next/standalone/public
+RUN cp -r .next/static .next/standalone/.next/static
+
 EXPOSE 3000
-CMD ["npm", "run", "start"]
+CMD ["sh", "-c", "HOSTNAME=0.0.0.0 PORT=3000 node .next/standalone/server.js"]
