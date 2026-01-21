@@ -1,5 +1,5 @@
 import { DEFAULT_FEATURE_FLAGS } from "@/constants/features";
-import { TFeatureFlags } from "@/types";
+import { TFeatureFlag, TFeatureFlags } from "@/types";
 
 import { deleteCookie, setCookie } from "./cookies";
 import getDomain from "./getDomain";
@@ -27,7 +27,7 @@ export const getFeatureFlags = (
       const featureFlagsObject = JSON.parse(featureFlagsCookie);
 
       Object.keys(featureFlagsObject).forEach((key) => {
-        if (key in featureFlags) featureFlags[key] = featureFlagsObject[key] === true;
+        if (key in featureFlags) featureFlags[key as TFeatureFlag] = featureFlagsObject[key] === true;
       });
     } catch (error) {
       /** it would be nice to alert to a beacon service, but we have none 😢 */

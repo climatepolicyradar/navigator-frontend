@@ -11,7 +11,7 @@ export interface ISideBarItem<BlockId extends string = TBlock> {
   context?: string[];
 }
 
-export interface IProps<BlockId extends string = TBlock> {
+interface IProps<BlockId extends string = TBlock> {
   items: ISideBarItem<BlockId>[];
   stickyClasses?: string;
 }

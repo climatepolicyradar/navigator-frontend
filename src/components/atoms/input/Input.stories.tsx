@@ -21,7 +21,7 @@ type TStory = StoryObj<typeof Input>;
 
 export default meta;
 
-const useInputContext = ({ ...props }) => {
+const useInputContext = ({ ...props }: React.ComponentProps<typeof Input>) => {
   const [value, setValue] = useState("");
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => setValue(event.currentTarget.value);
   const handleClear = () => setValue("");

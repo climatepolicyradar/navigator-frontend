@@ -6,7 +6,7 @@ import { GeographyV2, TCategorySummary } from "@/types";
 
 import { RecentFamiliesCategory } from "./RecentFamiliesCategory";
 
-export interface IProps {
+interface IProps {
   categorySummaries: TCategorySummary[];
   onAccordionClick?: (id: string) => void;
   geography: GeographyV2;

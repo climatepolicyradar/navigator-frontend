@@ -39,10 +39,12 @@ export type TSearchCriteria = {
 type TPassageBlockCoords = [number, number];
 
 export type TPassage = {
-  text: string;
+  block_id_sort_key?: number;
+  concepts?: any[];
   text_block_coords: TPassageBlockCoords[];
   text_block_id: string;
   text_block_page: number;
+  text: string;
 };
 
 export type TDataNode<T> = {

@@ -4,7 +4,7 @@ import { TutorialButton } from "@/components/molecules/tutorials/TutorialButton"
 import { TutorialContext } from "@/context/TutorialContext";
 import { TTutorialBanner, TTutorialButtonAction, TTutorialName } from "@/types";
 
-export interface IProps {
+interface IProps {
   name: TTutorialName;
   banner: TTutorialBanner;
 }

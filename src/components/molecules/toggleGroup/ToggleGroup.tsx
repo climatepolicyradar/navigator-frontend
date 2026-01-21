@@ -9,7 +9,7 @@ export type TToggleGroupToggle<ToggleId extends string> = {
   label?: string;
 };
 
-export interface IProps<ToggleId extends string> {
+interface IProps<ToggleId extends string> {
   buttonClasses?: string;
   buttonSize: "medium" | "large";
   groupClasses?: string;
