@@ -13,4 +13,4 @@ COPY . .
 
 EXPOSE 3000
 # Regenerate tsconfig at runtime using THEME from mounted .env
-CMD ["sh", "-c", "node -e \"const fs=require('fs');const tpl=fs.readFileSync('tsconfig.base.json','utf8');const theme=process.env.THEME||'cpr';fs.writeFileSync('tsconfig.json',tpl.replace(/__THEME__/g,theme));\" && npm ci && npm run dev"]
+CMD ["sh", "-c", "npm ci && npm run dev"]
