@@ -1,6 +1,11 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const config = {
+type TEnvironmentConfig = {
+  baseURL: string;
+  useWebserver: boolean;
+};
+
+const config: Record<string, TEnvironmentConfig> = {
   development: {
     baseURL: "http://localhost:3000",
     useWebserver: true,

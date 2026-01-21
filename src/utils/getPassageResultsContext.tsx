@@ -2,7 +2,7 @@ import React from "react";
 
 import { ConceptLink } from "@/components/molecules/conceptLink/ConceptLink";
 import { MAX_PASSAGES } from "@/constants/paging";
-import { TConcept } from "@/types";
+import { TTopic } from "@/types";
 
 import { pluralise } from "./pluralise";
 
@@ -10,10 +10,10 @@ interface IArgs {
   isExactSearch?: boolean;
   passageMatches: number;
   queryTerm: string | string[];
-  selectedTopics: TConcept[];
+  selectedTopics: TTopic[];
 }
 
-export const ResultsTopicsContext = ({ phrase, selectedTopics }: { phrase: string; selectedTopics: TConcept[] }) => {
+export const ResultsTopicsContext = ({ phrase, selectedTopics }: { phrase: string; selectedTopics: TTopic[] }) => {
   return (
     <>
       {phrase && <>'{phrase}'&nbsp;</>}

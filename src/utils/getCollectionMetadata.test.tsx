@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 
 import { EN_DASH } from "@/constants/chars";
-import { TCollectionPublicWithFamilies } from "@/types";
+import { TCollectionPublicWithFamilies, TFamilyConcept } from "@/types";
 import { containsStringInReactNode } from "@/utils/test-utils/containsStringInReactNode";
 
 import { getCollectionMetadata } from "./getCollectionMetadata";
@@ -47,7 +47,6 @@ const baseCollection: TCollectionPublicWithFamilies = {
       },
       documents: [],
       events: [],
-      organisation_attribution_url: null,
     },
   ],
   metadata: {},
@@ -89,7 +88,7 @@ describe("getCollectionMetadata", () => {
   });
 
   it("returns EN_DASH if status is missing", () => {
-    const collection = {
+    const collection: TCollectionPublicWithFamilies = {
       ...baseCollection,
       families: [{ ...baseCollection.families[0], metadata: {} }],
     };
@@ -105,11 +104,11 @@ describe("getCollectionMetadata", () => {
   });
 
   it("renders case categories and principal laws", () => {
-    const concepts = [
+    const concepts: TFamilyConcept[] = [
       { id: "1", ids: [], type: "legal_category", preferred_label: "Category A", relation: "category", subconcept_of_labels: [] },
       { id: "2", ids: [], type: "law", preferred_label: "Law X", relation: "principal_law", subconcept_of_labels: [] },
     ];
-    const collection = {
+    const collection: TCollectionPublicWithFamilies = {
       ...baseCollection,
       families: [{ ...baseCollection.families[0], concepts }],
     };
@@ -121,7 +120,7 @@ describe("getCollectionMetadata", () => {
   });
 
   it("renders EN_DASH if no case categories or laws", () => {
-    const collection = {
+    const collection: TCollectionPublicWithFamilies = {
       ...baseCollection,
       families: [{ ...baseCollection.families[0], concepts: [] }],
     };
@@ -131,7 +130,7 @@ describe("getCollectionMetadata", () => {
   });
 
   it("handles missing families gracefully", () => {
-    const collection = { ...baseCollection, families: [] };
+    const collection: TCollectionPublicWithFamilies = { ...baseCollection, families: [] };
     const result = getCollectionMetadata(collection);
     expect(containsStringInReactNode(result[0].value, EN_DASH)).toBe(true);
     expect(containsStringInReactNode(result[1].value, EN_DASH)).toBe(true);

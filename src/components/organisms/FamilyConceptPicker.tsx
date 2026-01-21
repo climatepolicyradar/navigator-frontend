@@ -2,18 +2,18 @@ import { TextSearch } from "lucide-react";
 import { NextRouter, useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
-import { Badge } from "@/components/atoms/label/Badge";
+import { Badge } from "@/components/atoms/badge/Badge";
 import { InputCheck } from "@/components/forms/Checkbox";
 import { InputRadio } from "@/components/forms/Radio";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { TConcept } from "@/types";
+import { TTopic } from "@/types";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
 import { FilterSelectedConcepts } from "@/utils/conceptFilter";
 import { groupByRootConcept } from "@/utils/conceptsGroupedbyRootConcept";
 import { firstCase } from "@/utils/text";
 
 interface IProps {
-  concepts: TConcept[];
+  concepts: TTopic[];
   containerClasses?: string;
   showBadge?: boolean;
   showSearch?: boolean;
@@ -42,7 +42,7 @@ const isSelected = (queryValue: string | string[] | undefined, option: string, p
   }
 };
 
-const conceptsSorter = (a: TConcept, b: TConcept, sort: TSort) => {
+const conceptsSorter = (a: TTopic, b: TTopic, sort: TSort) => {
   if (sort === "A-Z") {
     return a.preferred_label.localeCompare(b.preferred_label);
   } else if (sort === "Grouped") {
@@ -51,7 +51,7 @@ const conceptsSorter = (a: TConcept, b: TConcept, sort: TSort) => {
   return 0;
 };
 
-const filterConcepts = (concepts: TConcept[], search: string) => {
+const filterConcepts = (concepts: TTopic[], search: string) => {
   return concepts.filter(
     (concept) =>
       concept.preferred_label.toLowerCase().includes(search.toLowerCase()) ||
@@ -61,9 +61,9 @@ const filterConcepts = (concepts: TConcept[], search: string) => {
 
 const onConceptChange = (
   router: NextRouter,
-  selectedConcept: TConcept,
-  relatedConcepts: TConcept[],
-  rootOfSelectedConcept: TConcept = undefined,
+  selectedConcept: TTopic,
+  relatedConcepts: TTopic[],
+  rootOfSelectedConcept: TTopic = undefined,
   isRootConceptExclusive: boolean
 ) => {
   const query = CleanRouterQuery({ ...router.query });
@@ -107,9 +107,9 @@ export const FamilyConceptPicker = ({
   const router = useRouter();
   const ref = useRef(null);
   const [search, setSearch] = useState("");
-  const [rootConcepts, setRootConcepts] = useState<TConcept[]>([]);
+  const [rootConcepts, setRootConcepts] = useState<TTopic[]>([]);
   const [conceptsGrouped, setConceptsGrouped] = useState<{
-    [rootConceptId: string]: TConcept[];
+    [rootConceptId: string]: TTopic[];
   }>({});
 
   useEffect(() => {

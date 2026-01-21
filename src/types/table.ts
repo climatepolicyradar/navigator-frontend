@@ -1,6 +1,8 @@
 import { LucideIcon } from "lucide-react";
 import { ReactNode } from "react";
 
+import { IProps as PageLinkProps } from "@/components/atoms/pageLink/PageLink";
+
 import { IMetadata } from "./display";
 
 type TTableValue = string | number | null;
@@ -28,6 +30,8 @@ export type TTableRow<ColumnKey extends string> = {
   id: string;
   cells: Record<ColumnKey, TTableCell>;
   classes?: string; // Styles every cell in the row
+  onClick?: (row: TTableRow<ColumnKey>) => void; // Row click as an onClick event
+  pageLink?: Omit<PageLinkProps, "children"> & { children?: never }; // Row click as a PageLink component wrap
 };
 
 export type TTableSortRules<ColumnKey extends string> = {

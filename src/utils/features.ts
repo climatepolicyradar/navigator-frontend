@@ -1,4 +1,6 @@
-import { TFeatureFlags, TThemeConfig } from "@/types";
+import { useFeatureFlagEnabled } from "posthog-js/react";
+
+import { abTestKeys, configFeatureKeys, featureFlagKeys, TConfigFeature, TFeatureFlag, TFeatureFlags, TFeatures, TThemeConfig } from "@/types";
 
 interface IArgs {
   configFeature?: boolean;
@@ -12,39 +14,33 @@ export const isFeatureEnabled = ({ configFeature, featureFlag }: IArgs): boolean
   return featureFlag === true; // Config feature off + feature flag = use feature flag. This will be off is the feature flag is undefined
 };
 
-/* Specific feature shorthand functions */
+// Constructs an object containing all feature flags & config features and whether they're enabled or not
+// Prefer FeaturesContext over getFeatures where possible. Use getFeatures in getServerSideProps or inside page components
+export const getFeatures = (themeConfig: TThemeConfig, featureFlags: TFeatureFlags) => {
+  // Only keys defined in these two array will be included
+  const featureKeys: (keyof TFeatures)[] = Array.from(new Set([...featureFlagKeys, ...abTestKeys, ...configFeatureKeys]));
 
-export const isKnowledgeGraphEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.knowledgeGraph,
-    featureFlag: featureFlags["concepts-v1"],
+  // Construct an object of feature keys and boolean values. This simplifies the relation between feature flags and config features
+  return Object.fromEntries(
+    featureKeys.map((featureKey) => {
+      const isEnabled = isFeatureEnabled({
+        configFeature: themeConfig.features[featureKey as TConfigFeature],
+        featureFlag: featureFlags[featureKey as TFeatureFlag],
+      });
+
+      return [featureKey, isEnabled];
+    })
+  ) as TFeatures;
+};
+
+// Add A/B test feature flags into TFeatures. Does not work if called in getServerSideProps
+export const getFeaturesWithABTests = (features: TFeatures): TFeatures => {
+  const featuresWithABTests = { ...features };
+
+  abTestKeys.forEach((key) => {
+    const abTestIsEnabled = useFeatureFlagEnabled(key);
+    featuresWithABTests[key] = Boolean(abTestIsEnabled); // May be undefined if not yet initialised
   });
 
-export const isLitigationEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.litigation,
-    featureFlag: featureFlags["litigation"],
-  });
-
-export const isFamilyConceptsEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.familyConceptsSearch,
-    featureFlag: featureFlags["family-concepts"],
-  });
-
-export const isSearchFamilySummaryEnabled = (themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.searchFamilySummary,
-  });
-
-export const isNewPageDesignsEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.newPageDesigns,
-    featureFlag: featureFlags["new-page-designs"],
-  });
-
-export const isRioPolicyRadarEnabled = (featureFlags: TFeatureFlags, themeConfig: TThemeConfig) =>
-  isFeatureEnabled({
-    configFeature: themeConfig.features.rioPolicyRadar,
-    featureFlag: featureFlags["rio-policy-radar"],
-  });
+  return featuresWithABTests;
+};

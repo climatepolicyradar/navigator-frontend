@@ -22,7 +22,6 @@ export const WithoutMatches: TStory = {
     matchesFamily: null,
     matchesStatus: "success",
     showMatches: false,
-    showKnowledgeGraphTutorial: false,
   },
 };
 

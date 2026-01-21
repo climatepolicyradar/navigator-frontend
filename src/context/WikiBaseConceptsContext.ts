@@ -1,5 +1,5 @@
 import { createContext } from "react";
 
-import { TConcept } from "@/types";
+import { TTopic } from "@/types";
 
-export const WikiBaseConceptsContext = createContext<TConcept[]>([]);
+export const WikiBaseConceptsContext = createContext<TTopic[]>([]);

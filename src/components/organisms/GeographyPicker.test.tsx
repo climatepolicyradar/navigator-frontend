@@ -1,9 +1,10 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { initialSearchCriteria } from "@/constants/searchCriteria";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 
-import { GeographyPicker } from "./GeographyPicker";
+import { IProps, GeographyPicker } from "./GeographyPicker";
 
 const subdivisionsByCountries = [
   { code: "SUB-1", name: "Subdivision 1", country_alpha_3: "COU-1" },
@@ -31,18 +32,14 @@ vi.mock("@/hooks/useGeographySubdivisions", () => ({
 }));
 
 describe("GeographyPicker", () => {
-  const geoPickerProps = {
-    envConfig: {
-      BACKEND_API_URL: process.env.BACKEND_API_URL,
-      CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
-    },
+  const geoPickerProps: IProps = {
     regions: [
       { id: 1, display_value: "Region 1", value: "REG-1", type: "region", parent_id: null, slug: "region-1" },
       { id: 2, display_value: "Region 2", value: "REG-2", type: "region", parent_id: null, slug: "region-2" },
     ],
     handleRegionChange: () => {},
     handleFilterChange: () => {},
-    searchQuery: {},
+    searchQuery: initialSearchCriteria,
     countries: [
       { id: 1, display_value: "Country 1", value: "COU-1", type: "country", parent_id: 1, slug: "country-1" },
       { id: 2, display_value: "Country 2", value: "COU-2", type: "country", parent_id: 2, slug: "country-2" },
@@ -50,17 +47,18 @@ describe("GeographyPicker", () => {
     ],
     regionFilterLabel: "Region",
     countryFilterLabel: "Published jurisdiction",
-    litigationEnabled: true,
   };
 
   it("shows a list of all countries when no region is selected", async () => {
     renderWithAppContext(GeographyPicker, {
-      ...geoPickerProps,
-      searchQuery: {
-        keyword_filters: {
-          regions: [],
-          countries: [],
-          subdivisions: [],
+      pageProps: {
+        ...geoPickerProps,
+        searchQuery: {
+          keyword_filters: {
+            regions: [],
+            countries: [],
+            subdivisions: [],
+          },
         },
       },
     });
@@ -74,12 +72,14 @@ describe("GeographyPicker", () => {
 
   it("only shows a list of countries related to the selected region", async () => {
     renderWithAppContext(GeographyPicker, {
-      ...geoPickerProps,
-      searchQuery: {
-        keyword_filters: {
-          regions: ["region-2"],
-          countries: [],
-          subdivisions: [],
+      pageProps: {
+        ...geoPickerProps,
+        searchQuery: {
+          keyword_filters: {
+            regions: ["region-2"],
+            countries: [],
+            subdivisions: [],
+          },
         },
       },
     });
@@ -96,14 +96,17 @@ describe("GeographyPicker", () => {
 
   it("shows a list of all subdivisions with valid data and document counts when no country is selected", async () => {
     renderWithAppContext(GeographyPicker, {
-      ...geoPickerProps,
-      searchQuery: {
-        keyword_filters: {
-          regions: [],
-          countries: [],
-          subdivisions: [],
+      pageProps: {
+        ...geoPickerProps,
+        searchQuery: {
+          keyword_filters: {
+            regions: [],
+            countries: [],
+            subdivisions: [],
+          },
         },
       },
+      features: { litigation: true },
     });
 
     expect(await screen.findByText("Subdivision")).toBeInTheDocument();
@@ -116,14 +119,17 @@ describe("GeographyPicker", () => {
 
   it("only shows a list of subdivisions related to the selected country", async () => {
     renderWithAppContext(GeographyPicker, {
-      ...geoPickerProps,
-      searchQuery: {
-        keyword_filters: {
-          regions: [],
-          countries: ["country-3"],
-          subdivisions: [],
+      pageProps: {
+        ...geoPickerProps,
+        searchQuery: {
+          keyword_filters: {
+            regions: [],
+            countries: ["country-3"],
+            subdivisions: [],
+          },
         },
       },
+      features: { litigation: true },
     });
 
     expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
@@ -137,14 +143,17 @@ describe("GeographyPicker", () => {
 
   it("only shows a list of subdivisions with valid document counts when a country is selected", async () => {
     renderWithAppContext(GeographyPicker, {
-      ...geoPickerProps,
-      searchQuery: {
-        keyword_filters: {
-          regions: [],
-          countries: ["country-1"],
-          subdivisions: [],
+      pageProps: {
+        ...geoPickerProps,
+        searchQuery: {
+          keyword_filters: {
+            regions: [],
+            countries: ["country-1"],
+            subdivisions: [],
+          },
         },
       },
+      features: { litigation: true },
     });
 
     expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
@@ -160,14 +169,17 @@ describe("GeographyPicker", () => {
 
   it("only shows a list of subdivisions related to the selected region when no country is selected", async () => {
     renderWithAppContext(GeographyPicker, {
-      ...geoPickerProps,
-      searchQuery: {
-        keyword_filters: {
-          regions: ["region-2"],
-          countries: [],
-          subdivisions: [],
+      pageProps: {
+        ...geoPickerProps,
+        searchQuery: {
+          keyword_filters: {
+            regions: ["region-2"],
+            countries: [],
+            subdivisions: [],
+          },
         },
       },
+      features: { litigation: true },
     });
 
     expect(await screen.findByText("Region")).toBeInTheDocument();
@@ -182,14 +194,17 @@ describe("GeographyPicker", () => {
 
   it("only shows a list of subdivisions related to the selected country if both country and region are selected", async () => {
     renderWithAppContext(GeographyPicker, {
-      ...geoPickerProps,
-      searchQuery: {
-        keyword_filters: {
-          regions: ["region-2"],
-          countries: ["country-3"],
-          subdivisions: [],
+      pageProps: {
+        ...geoPickerProps,
+        searchQuery: {
+          keyword_filters: {
+            regions: ["region-2"],
+            countries: ["country-3"],
+            subdivisions: [],
+          },
         },
       },
+      features: { litigation: true },
     });
 
     expect(await screen.findByText("Region")).toBeInTheDocument();
@@ -204,12 +219,14 @@ describe("GeographyPicker", () => {
 
   it("using country quick search narrows down the list of country options to match what is typed", async () => {
     renderWithAppContext(GeographyPicker, {
-      ...geoPickerProps,
-      searchQuery: {
-        keyword_filters: {
-          regions: [],
-          countries: [],
-          subdivisions: [],
+      pageProps: {
+        ...geoPickerProps,
+        searchQuery: {
+          keyword_filters: {
+            regions: [],
+            countries: [],
+            subdivisions: [],
+          },
         },
       },
     });
@@ -225,14 +242,17 @@ describe("GeographyPicker", () => {
 
   it("using subdivision quick search narrows down the list of subdivision options to match what is typed", async () => {
     renderWithAppContext(GeographyPicker, {
-      ...geoPickerProps,
-      searchQuery: {
-        keyword_filters: {
-          regions: [],
-          countries: [],
-          subdivisions: [],
+      pageProps: {
+        ...geoPickerProps,
+        searchQuery: {
+          keyword_filters: {
+            regions: [],
+            countries: [],
+            subdivisions: [],
+          },
         },
       },
+      features: { litigation: true },
     });
 
     expect(await screen.findByText("Subdivision")).toBeInTheDocument();

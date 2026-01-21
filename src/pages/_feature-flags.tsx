@@ -18,7 +18,7 @@ export default function FeatureFlags() {
     });
 
     posthog.onFeatureFlags((featureFlags) => {
-      const newFeatureFlags = {};
+      const newFeatureFlags: { [key: string]: boolean } = {};
       for (const featureFlag of featureFlags) {
         newFeatureFlags[featureFlag] = true;
       }

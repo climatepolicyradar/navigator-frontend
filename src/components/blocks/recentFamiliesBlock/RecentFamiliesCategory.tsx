@@ -31,7 +31,7 @@ interface IProps {
 }
 
 export const RecentFamiliesCategory = ({
-  categorySummary: { count, families, singularAndPlural, title },
+  categorySummary: { count, families, singularAndPlural, title, id },
   showAccordion = false,
   isExpanded = true,
   onAccordionClick,
@@ -47,7 +47,7 @@ export const RecentFamiliesCategory = ({
         const metadata = [
           getCategoryName(family.family_category, family.corpus_type_name, family.family_source),
           getMostSpecificGeography(geographies)?.name,
-          formatDate(family.family_date)[0],
+          formatDate(family.family_date)[0].toString(),
         ].filter((line) => Boolean(line));
 
         return {
@@ -70,7 +70,7 @@ export const RecentFamiliesCategory = ({
   };
 
   if (title.toLowerCase() !== "all") {
-    viewAllUrlQuery[QUERY_PARAMS.category] = title;
+    viewAllUrlQuery[QUERY_PARAMS.category] = id;
   }
 
   return (

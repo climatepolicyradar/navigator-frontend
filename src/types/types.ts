@@ -39,10 +39,12 @@ export type TSearchCriteria = {
 type TPassageBlockCoords = [number, number];
 
 export type TPassage = {
-  text: string;
+  block_id_sort_key?: number;
+  concepts?: any[];
   text_block_coords: TPassageBlockCoords[];
   text_block_id: string;
   text_block_page: number;
+  text: string;
 };
 
 export type TDataNode<T> = {
@@ -331,22 +333,6 @@ interface IDictionary<T> {
 
 export type TCorpusTypeDictionary = IDictionary<TCorpusType>;
 
-export type TConcept = {
-  alternative_labels: string[];
-  count?: number;
-  definition?: string;
-  description: string;
-  has_subconcept: string[];
-  labelled_passages?: [];
-  negative_labels: string[];
-  preferred_label: string;
-  recursive_subconcept_of: string[];
-  related_concepts: string[];
-  subconcept_of: string[];
-  wikibase_id: string;
-  type?: "principal_law" | "jurisdiction" | "category";
-};
-
 export type TFamilyConcept = {
   id: string;
   ids: string[];
@@ -429,6 +415,7 @@ export type TFamilyDocumentPublic = {
   valid_metadata: TMetadata<"id">;
   variant_name: string | null;
   variant: string | null;
+  document_status: string | null;
 };
 
 export type TFamilyPublic = {
@@ -449,7 +436,6 @@ export type TFamilyPublic = {
   concepts: TFamilyConcept[];
   documents: TFamilyDocumentPublic[];
   events: TFamilyEventPublic[];
-  organisation_attribution_url: string | null;
 };
 
 export type TCollectionPublicWithFamilies = {

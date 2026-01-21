@@ -12,7 +12,7 @@ interface IProps {
 }
 
 export const TargetsBlock = ({ targets }: IProps) => {
-  const { theme } = useContext(ThemeContext);
+  const { themeConfig } = useContext(ThemeContext);
   const [showAllEntries, setShowAllEntries] = useState(false);
 
   if (targets.length === 0) return null;
@@ -32,7 +32,7 @@ export const TargetsBlock = ({ targets }: IProps) => {
     setShowAllEntries((current) => !current);
   };
 
-  const linkDomain = theme === "ccc" ? "https://app.climatepolicyradar.org" : "";
+  const linkDomain = themeConfig.links.targetDomain || "";
   const shownTargets = showAllEntries ? targets : targets.slice(0, MAX_ENTRIES_SHOWN);
   const entriesToHide = targets.length > MAX_ENTRIES_SHOWN;
 

@@ -52,7 +52,7 @@ export const CATEGORY_DICTIONARY = {
     Legislative: "law",
     LEGISLATIVE: "law",
     Litigation: "case",
-    LITIGATION: "cases",
+    LITIGATION: "case",
     Policy: "policy",
     MCF: "project",
   },

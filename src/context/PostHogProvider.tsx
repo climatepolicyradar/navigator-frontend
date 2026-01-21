@@ -15,7 +15,7 @@ interface IProps {
   consent?: boolean;
 }
 
-function PostHogPageView({ consent }: { consent: boolean }) {
+function PostHogPageView({ consent }: { consent: boolean }): null {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const posthog = usePostHog();

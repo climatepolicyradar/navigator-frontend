@@ -5,6 +5,7 @@ import { ReactNode, useMemo, useState } from "react";
 
 import { MenuItem } from "@/components/atoms/menu/MenuItem";
 import { MenuPopup } from "@/components/atoms/menu/MenuPopup";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Tooltip } from "@/components/atoms/tooltip/Tooltip";
 import { EN_DASH } from "@/constants/chars";
 import { TTableCell, TTableColumn, TTableOrder, TTableRow, TTableSortOption, TTableSortRules } from "@/types";
@@ -176,20 +177,41 @@ export const InteractiveTable = <ColumnKey extends string>({
         </div>
 
         {/* Rows */}
-        {displayedRows.map((row) => (
-          <div key={`row-${row.id}`} className="contents group">
-            {columns.map((column) => {
-              const cell = row.cells[column.id];
-              const cellClasses = joinTailwindClasses("border-t group-hover:bg-gray-100", commonCellClasses, column.classes, row.classes);
+        {displayedRows.map((row) => {
+          const rowKey = "row-" + row.id;
+          const isClickable = Boolean(row.onClick || row.pageLink);
 
-              return (
-                <div key={`row-${row.id}-${column.id}`} className={cellClasses}>
-                  {renderCellDisplay(cell, showValues)}
-                </div>
-              );
-            })}
-          </div>
-        ))}
+          const columnContent = columns.map((column) => {
+            const cell = row.cells[column.id];
+            const cellClasses = joinTailwindClasses(
+              "border-t",
+              commonCellClasses,
+              isClickable && "group-hover:bg-gray-100 cursor-pointer",
+              column.classes,
+              row.classes
+            );
+
+            return (
+              <div key={`row-${row.id}-${column.id}`} className={cellClasses}>
+                {renderCellDisplay(cell, showValues)}
+              </div>
+            );
+          });
+
+          if (row.pageLink) {
+            return (
+              <PageLink key={rowKey} {...row.pageLink} className="group grid grid-cols-subgrid col-start-1 -col-end-1">
+                {columnContent}
+              </PageLink>
+            );
+          }
+
+          return (
+            <div key={rowKey} className="contents group" onClick={row.onClick ? () => row.onClick(row) : undefined}>
+              {columnContent}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

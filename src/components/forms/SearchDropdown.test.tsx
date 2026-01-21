@@ -2,12 +2,21 @@ import { screen, fireEvent } from "@testing-library/react";
 import { vi, it } from "vitest";
 
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
+import { TGeography } from "@/types";
 
 import { SearchDropdown } from "../../components/forms/SearchDropdown";
 
+type TQueryResponse = {
+  data: {
+    countries: TGeography[];
+  };
+  isLoading: boolean;
+  error: unknown;
+};
+
 // Mock useConfig hook
 vi.mock("@/hooks/useConfig", () => ({
-  default: () => ({
+  default: (): TQueryResponse => ({
     data: {
       countries: [
         { id: 1, slug: "spain", display_value: "Spain", value: "spain", type: "country", parent_id: null },
@@ -26,7 +35,7 @@ vi.mock("@/hooks/useConfig", () => ({
       ],
     },
     isLoading: false,
-    error: null,
+    error: {},
   }),
 }));
 
@@ -43,7 +52,7 @@ const defaultProps = {
 };
 
 function textContentMatcher(text: string) {
-  return (_: string, element: HTMLElement | null) => {
+  return (_: string, element: Element | null) => {
     if (!element) return false;
     const content = element.textContent || "";
     // For "Did you mean" suggestions, we need to be more flexible as text is split across spans
@@ -72,19 +81,19 @@ describe("SearchDropdown", () => {
   });
 
   it("should not render when show is false", async () => {
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, show: false });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, show: false } });
 
     expect(screen.queryByText("Search")).not.toBeInTheDocument();
   });
 
   it("should not render when term is empty", async () => {
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "" });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "" } });
 
     expect(screen.queryByText("Search")).not.toBeInTheDocument();
   });
 
   it("should display search dropdown with a country suggestion when typing a country name", async () => {
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "spain" });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "spain" } });
 
     // Verify "Search in all documents" option is present
     expect(screen.getAllByText(textContentMatcher("Search spain in all documents"))[0]).toBeInTheDocument();
@@ -97,7 +106,7 @@ describe("SearchDropdown", () => {
   });
 
   it("should display multiple country suggestions for partial matches", async () => {
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "fr" });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "fr" } });
 
     // Verify "Search in all documents" option is present
     expect(screen.getAllByText(textContentMatcher("Search fr in all documents"))[0]).toBeInTheDocument();
@@ -112,7 +121,7 @@ describe("SearchDropdown", () => {
   });
 
   it("should display multiple country suggestions for term in multiple country names", async () => {
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "sudan" });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "sudan" } });
 
     // Verify "Search in all documents" option is present
     expect(screen.getAllByText(textContentMatcher("Search sudan in all documents"))[0]).toBeInTheDocument();
@@ -126,7 +135,7 @@ describe("SearchDropdown", () => {
   });
 
   it("should display 'Did you mean to search for X in Y?' suggestion when typing country with additional terms", async () => {
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "climate spain" });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "climate spain" } });
 
     // Verify "Search in all documents" option is present
     expect(screen.getAllByText(textContentMatcher("Search climate spain in all documents"))[0]).toBeInTheDocument();
@@ -139,7 +148,7 @@ describe("SearchDropdown", () => {
   });
 
   it("should display 'Did you mean' suggestion for multiple word terms", async () => {
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "renewable energy france" });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "renewable energy france" } });
 
     // Verify "Search in all documents" option is present
     expect(screen.getAllByText(textContentMatcher("Search renewable energy france in all documents"))[0]).toBeInTheDocument();
@@ -153,7 +162,7 @@ describe("SearchDropdown", () => {
 
   it("should handle clicking on 'Search in all documents' option", async () => {
     const handleSearchClick = vi.fn();
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "climate", handleSearchClick });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "climate", handleSearchClick } });
 
     // Click on the "Search in all documents" option
     fireEvent.click(screen.getAllByText(textContentMatcher("Search climate in all documents"))[0]);
@@ -164,7 +173,7 @@ describe("SearchDropdown", () => {
 
   it("should handle clicking on 'Did you mean' suggestion", async () => {
     const handleSearchClick = vi.fn();
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "climate spain", handleSearchClick });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "climate spain", handleSearchClick } });
 
     // Click on the "Did you mean" suggestion
     fireEvent.click(screen.getAllByText(textContentMatcher("Did you mean to search for climate in Spain?"))[0]);
@@ -174,7 +183,7 @@ describe("SearchDropdown", () => {
   });
 
   it("should handle clicking on geography profile link", async () => {
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "spain" });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "spain" } });
 
     // Click on Spain geography profile
     fireEvent.click(screen.getByRole("link", { name: "Spain Geography profile" }));
@@ -190,7 +199,7 @@ describe("SearchDropdown", () => {
     // Set up initial query parameters
     Object.assign(mockQuery, { someParam: "value", anotherParam: "test" });
 
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "spain" });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "spain" } });
 
     // Click on Spain geography profile
     fireEvent.click(screen.getByRole("link", { name: "Spain Geography profile" }));
@@ -203,7 +212,7 @@ describe("SearchDropdown", () => {
   });
 
   it.fails("should fail (handle multiple geography matches by showing all geography profiles)", async () => {
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "sudan policy" });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "sudan policy" } });
 
     // Should show "Did you mean" suggestions for Sudan and South Sudan
     expect(screen.getAllByText(textContentMatcher("Did you mean to search for policy in Sudan?"))[0]).toBeInTheDocument();
@@ -215,7 +224,7 @@ describe("SearchDropdown", () => {
   });
 
   it("should not show 'Did you mean' suggestion when term only contains country name", async () => {
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "spain" });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "spain" } });
 
     // Should not show "Did you mean" suggestion when term is just the country name
     expect(screen.queryByText("Did you mean to search for")).not.toBeInTheDocument();
@@ -225,7 +234,7 @@ describe("SearchDropdown", () => {
   });
 
   it("should not show 'Did you mean' suggestion when country name is not in term", async () => {
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "climate policy" });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "climate policy" } });
 
     // Should not show "Did you mean" suggestion when no country matches
     expect(screen.queryByText("Did you mean to search for")).not.toBeInTheDocument();
@@ -235,28 +244,28 @@ describe("SearchDropdown", () => {
   });
 
   it("should apply large spacing class when largeSpacing prop is true", async () => {
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "spain", largeSpacing: true });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "spain", largeSpacing: true } });
 
     const dropdown = document.querySelector(".search-dropdown");
     expect(dropdown).toHaveClass("search-dropdown_large");
   });
 
   it("should not apply large spacing class when largeSpacing prop is false", async () => {
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "spain", largeSpacing: false });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "spain", largeSpacing: false } });
 
     const dropdown = document.querySelector(".search-dropdown");
     expect(dropdown).not.toHaveClass("search-dropdown_large");
   });
 
   it("should handle case insensitive country matching", async () => {
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "SPAIN" });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "SPAIN" } });
 
     // Should still find Spain despite different case
     expect(screen.getByRole("link", { name: "Spain Geography profile" })).toBeInTheDocument();
   });
 
   it("should handle case insensitive partial country matches", async () => {
-    await renderWithAppContext(SearchDropdown, { ...defaultProps, term: "FR" });
+    await renderWithAppContext(SearchDropdown, { pageProps: { ...defaultProps, term: "FR" } });
 
     // Should still find countries that contain "fr" despite different case
     expect(screen.getByRole("link", { name: "France Geography profile" })).toBeInTheDocument();

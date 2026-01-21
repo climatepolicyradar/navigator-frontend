@@ -3,7 +3,7 @@ import { Meta, StoryObj } from "@storybook/nextjs";
 import { FiveColumns } from "./FiveColumns";
 
 const meta = {
-  title: "Atoms/Columns/FiveColumns",
+  title: "Atoms/FiveColumns",
   component: FiveColumns,
   argTypes: {
     children: { control: false },

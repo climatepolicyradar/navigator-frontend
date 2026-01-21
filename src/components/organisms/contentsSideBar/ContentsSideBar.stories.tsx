@@ -3,7 +3,7 @@ import { Meta, StoryObj } from "@storybook/nextjs";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { LOREM_IPSUM } from "@/constants/stories";
 
-import { ContentsSideBar, IProps, ISideBarItem } from "./ContentsSideBar";
+import { ContentsSideBar, ISideBarItem } from "./ContentsSideBar";
 
 const meta = {
   title: "Organisms/ContentsSideBar",
@@ -16,7 +16,7 @@ type TStory = StoryObj<typeof ContentsSideBar>;
 
 export default meta;
 
-const usePageContext = ({ ...props }: IProps) => (
+const usePageContext = ({ ...props }: React.ComponentProps<typeof ContentsSideBar>) => (
   <FiveColumns>
     <ContentsSideBar {...props} />
     <div className="flex flex-col gap-8 col-start-1 -col-end-1 cols-4:col-start-3">

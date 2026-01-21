@@ -9,13 +9,12 @@ import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 import { CONCEPTS_FAQS } from "@/constants/conceptsFaqs";
-import { ThemePageFeaturesContext } from "@/context/ThemePageFeaturesContext";
-import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
+import { useFeatures } from "@/hooks/useFeatures";
 
 const FAQ: React.FC = () => {
-  const { featureFlags, themeConfig } = useContext(ThemePageFeaturesContext);
-
-  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, themeConfig);
+  const featureFlags = useContext(FeatureFlagsContext);
+  const { features } = useFeatures(featureFlags);
 
   return (
     <Layout
@@ -33,20 +32,10 @@ const FAQ: React.FC = () => {
               </Heading>
               <p>You can use this resource to:</p>
               <ul>
-                <li>Search the full text of over 5000 laws, policies and UNFCCC submissions from every country.</li>
+                <li>Search the full text of over 8000 laws, policies and UNFCCC submissions from every country.</li>
                 <li>See exact matches and related phrases highlighted in the text.</li>
                 <li>Find documents from all languages translated to English to increase accessibility.</li>
               </ul>
-              <p>Watch the video below to learn how to use this resource</p>
-              <iframe
-                height="315"
-                src="https://www.youtube-nocookie.com/embed/QvM2RybWhMM"
-                title="Learn how to use Climate Laws of the World"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-                className="w-full"
-              ></iframe>
             </div>
 
             <div className="text-content mb-12">
@@ -62,7 +51,7 @@ const FAQ: React.FC = () => {
             </div>
           </SingleCol>
 
-          {knowledgeGraphEnabled && <FaqSection title="Topics FAQs" faqs={CONCEPTS_FAQS} sectionId="topics-faqs" />}
+          {features.knowledgeGraph && <FaqSection title="Topics FAQs" faqs={CONCEPTS_FAQS} sectionId="topics-faqs" />}
         </SiteWidth>
       </section>
     </Layout>

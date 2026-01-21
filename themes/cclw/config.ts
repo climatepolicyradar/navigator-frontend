@@ -150,42 +150,31 @@ const config: TThemeConfig = {
       ],
     },
   ],
-  labelVariations: [],
-  links: [
-    {
-      key: "download-database",
-      url: "https://form.jotform.com/233131638610347",
-    },
-    {
-      key: "email-alerts",
-      url: "https://form.jotform.com/252034552030341",
-    },
-  ],
-  metadata: [
-    {
-      // default - used for app title (i.e. on each page after the title)
-      key: "default",
+  labelVariations: {},
+  links: {
+    downloadDatabase: "https://form.jotform.com/233131638610347",
+    emailAlerts: "https://form.jotform.com/252034552030341",
+  },
+  pageMetadata: {
+    default: {
       title: "Climate Change Laws of the World",
       description: "",
     },
-    {
-      key: "homepage",
+    homepage: {
       title: "Law and Policy Search",
       description:
         "The Climate Change Laws of the World database gives you access to national-level climate change legislation and policies from around the world.",
     },
-    {
-      key: "geography",
+    geography: {
       title: "{text} climate laws and policies",
       description:
         "Find climate change laws, policies, targets and other climate policy data and indicators for {text}, alongside information about their legislative process.",
     },
-    {
-      key: "search",
+    search: {
       title: "Search the Climate Change Laws of the World database",
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
-  ],
+  },
   documentCategories: ["All", "UN Submissions", "Laws", "Policies", "Litigation"],
   defaultDocumentCategory: "All",
   pageBlocks: {
@@ -197,9 +186,7 @@ const config: TThemeConfig = {
     familyConceptsSearch: false,
     knowledgeGraph: true,
     litigation: false,
-    newPageDesigns: true,
     searchFamilySummary: true,
-    rioPolicyRadar: false,
   },
 };
 

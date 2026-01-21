@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState, useEffect, useRef, ChangeEvent } from "react";
+import { useState, useEffect, useRef, ChangeEvent, useContext } from "react";
 
 import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
@@ -9,7 +9,7 @@ import { QUERY_PARAMS } from "@/constants/queryParams";
 import { TFeatureFlags, TThemeConfig } from "@/types";
 import { getAllCookies } from "@/utils/cookies";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isKnowledgeGraphEnabled } from "@/utils/features";
+import { getFeatures } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
 
 const EXAMPLE_SEARCHES = [
@@ -120,7 +120,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
     loadConfig();
   }, []);
 
-  const knowledgeGraphEnabled = isKnowledgeGraphEnabled(featureFlags, localThemeConfig);
+  const features = getFeatures(localThemeConfig, featureFlags);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTerm(e.currentTarget.value);
@@ -184,7 +184,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
       </form>
       <div className="hidden mt-4 md:flex flex-wrap items-center gap-2">
         <span className="text-gray-200">Search by:</span>
-        {knowledgeGraphEnabled
+        {features.knowledgeGraph
           ? KNOWLEDGE_GRAPH_QUICK_SEARCHES.map((quickSearch) => (
               <Button
                 key={quickSearch.id}

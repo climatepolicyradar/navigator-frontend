@@ -1,7 +1,5 @@
 import { setupServer } from "msw/node";
 
-import { testHandler } from "@/tests/core/api/geography-counts.test";
-
 import { backendApiSearchHandler } from "./api/backendApiHandlers";
 import { conceptHandlers } from "./api/conceptHandlers";
 import { configHandlers } from "./api/configHandlers";
@@ -16,7 +14,5 @@ export const server = setupServer(
   ...searchHandlers,
   ...conceptHandlers,
   ...familiesHandlers,
-
-  ...testHandler,
   ...backendApiSearchHandler
 );

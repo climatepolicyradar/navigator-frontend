@@ -1,10 +1,10 @@
-import { TCategory, TCorpusPublic, TFamilyDocumentPublic } from "@/types";
+import { TCategory, TCorpusPublic, TFamilyDocumentPublic, TFamilyPublic } from "@/types";
 
 import { getEventTableRows } from "./eventTable";
 
 describe("getEventTableRows", () => {
   it("returns an empty list of document rows if there are no documents in the family", () => {
-    const familyWithoutDocuments = {
+    const familyWithoutDocuments: TFamilyPublic = {
       category: "Litigation" as TCategory,
       collections: [],
       concepts: [],
@@ -25,7 +25,6 @@ describe("getEventTableRows", () => {
           },
         },
       ],
-      organisation_attribution_url: null,
       metadata: {
         id: ["Id 1"],
         case_number: ["Case 1"],
@@ -34,7 +33,6 @@ describe("getEventTableRows", () => {
       import_id: "",
       last_updated_date: "",
       corpus_id: "",
-      status: "",
       summary: "",
       title: "Case 1",
       organisation: "",
@@ -48,7 +46,7 @@ describe("getEventTableRows", () => {
   });
 
   it("returns a list of document event rows if there are documents in the family", () => {
-    const familyWithoutEvents = {
+    const familyWithoutEvents: TFamilyPublic = {
       category: "Litigation" as TCategory,
       collections: [],
       concepts: [],
@@ -76,7 +74,6 @@ describe("getEventTableRows", () => {
         } as TFamilyDocumentPublic,
       ],
       events: [],
-      organisation_attribution_url: null,
       metadata: {
         id: ["Id 1"],
         case_number: ["Case 1"],
@@ -85,7 +82,6 @@ describe("getEventTableRows", () => {
       import_id: "",
       last_updated_date: "",
       corpus_id: "",
-      status: "",
       summary: "",
       title: "Case 1",
       organisation: "",
@@ -96,11 +92,11 @@ describe("getEventTableRows", () => {
     const eventRows = getEventTableRows({ families: [familyWithoutEvents], isLitigation: true });
 
     expect(eventRows).toHaveLength(1);
-    expect(eventRows[0].id).toBe("Document 1");
+    expect(eventRows[0].id).toBe("Document 1:Event 1");
   });
 
   it("returns a list of event rows if there are events in the family and events on documents", () => {
-    const familyWithoutEvents = {
+    const familyWithoutEvents: TFamilyPublic = {
       category: "Litigation" as TCategory,
       collections: [],
       concepts: [],
@@ -142,7 +138,6 @@ describe("getEventTableRows", () => {
           },
         },
       ],
-      organisation_attribution_url: null,
       metadata: {
         id: ["Id 1"],
         case_number: ["Case 1"],
@@ -151,7 +146,6 @@ describe("getEventTableRows", () => {
       import_id: "",
       last_updated_date: "",
       corpus_id: "",
-      status: "",
       summary: "",
       title: "Case 1",
       organisation: "",
@@ -162,12 +156,12 @@ describe("getEventTableRows", () => {
     const eventRows = getEventTableRows({ families: [familyWithoutEvents], isLitigation: true });
 
     expect(eventRows).toHaveLength(2);
-    expect(eventRows[0].id).toBe("Event 2");
-    expect(eventRows[1].id).toBe("Document 1");
+    expect(eventRows[0].id).toBe(":Event 2");
+    expect(eventRows[1].id).toBe("Document 1:Event 1");
   });
 
   it("returns a deduplicated list of family and document event rows if same event linked to both family and document", () => {
-    const familyWithoutEvents = {
+    const familyWithoutEvents: TFamilyPublic = {
       category: "Litigation" as TCategory,
       collections: [],
       concepts: [],
@@ -209,7 +203,6 @@ describe("getEventTableRows", () => {
           },
         },
       ],
-      organisation_attribution_url: null,
       metadata: {
         id: ["Id 1"],
         case_number: ["Case 1"],
@@ -218,7 +211,6 @@ describe("getEventTableRows", () => {
       import_id: "",
       last_updated_date: "",
       corpus_id: "",
-      status: "",
       summary: "",
       title: "Case 1",
       organisation: "",
@@ -229,6 +221,6 @@ describe("getEventTableRows", () => {
     const eventRows = getEventTableRows({ families: [familyWithoutEvents], isLitigation: true });
 
     expect(eventRows).toHaveLength(1);
-    expect(eventRows[0].id).toBe("Document 1");
+    expect(eventRows[0].id).toBe("Document 1:Event 1");
   });
 });
