@@ -18,7 +18,7 @@ interface IPageHeaderMetadataProps extends IPageHeaderGenericProps {
   onTabChange?: never;
 }
 
-export interface IPageHeaderTabsProps<TabId extends string> extends IPageHeaderGenericProps {
+interface IPageHeaderTabsProps<TabId extends string> extends IPageHeaderGenericProps {
   metadata?: never;
   tabs: TToggleGroupToggle<TabId>[];
   currentTab: TabId;

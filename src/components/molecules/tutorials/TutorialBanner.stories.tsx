@@ -1,10 +1,10 @@
 import { Meta, StoryObj } from "@storybook/nextjs";
 
 import { TUTORIALS } from "@/constants/tutorials";
-import { TutorialContext } from "@/context/TutorialContext";
+import { TTutorialContext, TutorialContext } from "@/context/TutorialContext";
 import { TTutorialName } from "@/types";
 
-import { TutorialBanner, IProps } from "./TutorialBanner";
+import { TutorialBanner } from "./TutorialBanner";
 
 const meta = {
   title: "Molecules/Tutorials/TutorialBanner",
@@ -15,8 +15,8 @@ type TStory = StoryObj<typeof TutorialBanner>;
 
 export default meta;
 
-const useTutorialContext = ({ ...props }: IProps) => {
-  const value = {
+const useTutorialContext = ({ ...props }: React.ComponentProps<typeof TutorialBanner>) => {
+  const value: TTutorialContext = {
     displayTutorial: null,
     // eslint-disable-next-line no-console
     setDisplayTutorial: (name: TTutorialName) => console.info("setDisplayTutorial", name),

@@ -6,7 +6,7 @@ import { TutorialButton } from "@/components/molecules/tutorials/TutorialButton"
 import { TutorialContext } from "@/context/TutorialContext";
 import { TTutorialButtonAction, TTutorialCard, TTutorialName } from "@/types";
 
-export interface IProps {
+interface IProps {
   className?: string;
   name: TTutorialName;
   card: TTutorialCard;

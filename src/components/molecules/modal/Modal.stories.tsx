@@ -20,7 +20,7 @@ type TStory = StoryObj<typeof Modal>;
 
 export default meta;
 
-const useModalContext = ({ children, ...props }) => {
+const useModalContext = ({ children, ...props }: React.ComponentProps<typeof Modal>) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -42,7 +42,6 @@ export const Primary: TStory = {
 };
 
 export const DownloadCSV: TStory = {
-  name: "Download CSV",
   args: {
     children: (
       <>
