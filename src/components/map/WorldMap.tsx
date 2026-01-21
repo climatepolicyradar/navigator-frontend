@@ -138,7 +138,12 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
       {geography.familyCounts?.REPORTS > 0 && <p>Reports: {geography.familyCounts?.REPORTS || 0}</p>}
       {geography.familyCounts?.LITIGATION > 0 ? <p>Litigation: {geography.familyCounts?.LITIGATION || 0}</p> : <p>No litigation data available</p>}
       <p>
-        <LinkWithQuery href={`/geographies/${geography.slug}`} className="text-blue-600 underline hover:text-blue-800">
+        <LinkWithQuery
+          href={`/geographies/${geography.slug}`}
+          className="text-blue-600 underline hover:text-blue-800"
+          data-ph-capture-attribute-link-purpose="map-view-more"
+          data-ph-capture-attribute-country={geography.slug}
+        >
           View more
         </LinkWithQuery>
       </p>
