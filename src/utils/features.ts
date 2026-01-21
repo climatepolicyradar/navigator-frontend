@@ -1,6 +1,6 @@
 import { useFeatureFlagEnabled } from "posthog-js/react";
 
-import { abTestKeys, configFeatureKeys, featureFlagKeys, TFeatureFlags, TFeatures, TThemeConfig } from "@/types";
+import { abTestKeys, configFeatureKeys, featureFlagKeys, TConfigFeature, TFeatureFlag, TFeatureFlags, TFeatures, TThemeConfig } from "@/types";
 
 interface IArgs {
   configFeature?: boolean;
@@ -24,8 +24,8 @@ export const getFeatures = (themeConfig: TThemeConfig, featureFlags: TFeatureFla
   return Object.fromEntries(
     featureKeys.map((featureKey) => {
       const isEnabled = isFeatureEnabled({
-        configFeature: themeConfig.features[featureKey],
-        featureFlag: featureFlags[featureKey],
+        configFeature: themeConfig.features[featureKey as TConfigFeature],
+        featureFlag: featureFlags[featureKey as TFeatureFlag],
       });
 
       return [featureKey, isEnabled];

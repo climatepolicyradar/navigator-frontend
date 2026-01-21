@@ -14,8 +14,8 @@ export const useFeatures = (featureFlags: TFeatureFlags) => {
   const features = Object.fromEntries(
     featureKeys.map((featureKey) => {
       const isEnabled = isFeatureEnabled({
-        configFeature: themeConfig.features[featureKey],
-        featureFlag: featureFlags[featureKey],
+        configFeature: themeConfig.features[featureKey as TConfigFeature],
+        featureFlag: featureFlags[featureKey as TFeatureFlag],
       });
 
       return [featureKey, isEnabled];
