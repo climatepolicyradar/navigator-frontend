@@ -78,7 +78,14 @@ export const RecentFamiliesCategory = ({
       {/* Accordion */}
       {showAccordion && (
         <div className="pt-5 mb-5">
-          <button type="button" onClick={clickAccordion} className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={clickAccordion}
+            className="flex items-center gap-3"
+            data-ph-capture-attribute-button-purpose="toggle-accordion"
+            data-ph-capture-attribute-accordion-already-open={isExpanded}
+            data-ph-capture-attribute-category={id}
+          >
             <LucideChevronDownCircle size={20} className={accordionIconClasses} />
             <h3 className="text-lg text-text-primary font-[660] leading-tight">{title}</h3>
           </button>
@@ -99,6 +106,8 @@ export const RecentFamiliesCategory = ({
                   query: { ...viewAllUrlQuery },
                 }}
                 className="min-w-16 max-w-25 flex-1 flex justify-center items-center bg-surface-brand-darker/8 text-text-brand-darker font-semibold leading-tight"
+                data-ph-capture-attribute-link-purpose="all-recents"
+                data-ph-capture-attribute-category={id}
               >
                 All {ARROW_RIGHT}
               </Link>

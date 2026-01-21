@@ -70,7 +70,12 @@ export const SubDivisionBlock = ({ subdivisions, title = "Geographic sub-divisio
               className={`text-text-secondary col-start-1 ${get2ColumnClass(index, subGeosWithHasData.length)} ${get3ColumnClass(index, subGeosWithHasData.length)}`}
             >
               {subdivision.has_data ? (
-                <LinkWithQuery href={`/geographies/${subdivision.slug}`} className="underline text-text-primary hover:text-text-brand-darker">
+                <LinkWithQuery
+                  href={`/geographies/${subdivision.slug}`}
+                  className="underline text-text-primary hover:text-text-brand-darker"
+                  data-ph-capture-attribute-link-purpose="subdivision"
+                  data-ph-capture-attribute-subdivision={subdivision.id}
+                >
                   {subdivision.name}
                 </LinkWithQuery>
               ) : (
