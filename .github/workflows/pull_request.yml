@@ -139,6 +139,8 @@ jobs:
 
   code-quality:
     runs-on: ubuntu-latest
+    env:
+      THEME: cpr
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
