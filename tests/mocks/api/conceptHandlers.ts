@@ -1,10 +1,12 @@
 import { http, HttpResponse } from "msw";
 
+import { TTopic } from "@/types";
+
 export const conceptHandlers = [
   http.get("*/concepts/:id.json", ({ params }) => {
     const { id } = params;
 
-    const concepts = [
+    const concepts: TTopic[] = [
       {
         alternative_labels: [],
         description: "test concept 1",

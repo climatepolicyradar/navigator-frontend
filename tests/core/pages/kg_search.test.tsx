@@ -7,6 +7,7 @@ import cprConfig from "@/cpr/config";
 import { resetPage } from "@/mocks/helpers";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import Search from "@/pages/search";
+import { TTopics } from "@/types";
 
 afterEach(() => {
   resetPage();
@@ -23,7 +24,7 @@ const baseSearchProps = {
   },
   theme: "cpr",
   themeConfig: cprConfig,
-  topicsData: { rootTopics: [], topics: [] },
+  topicsData: { rootTopics: [], topics: [] } as TTopics,
 };
 
 describe("SearchPage", async () => {
