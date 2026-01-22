@@ -128,7 +128,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: envConfig.useWebserver
     ? {
-        command: "npm run start",
+        command: "node .next/standalone/server.js",
         url: envConfig.baseURL,
         reuseExistingServer: !process.env.CI,
       }
