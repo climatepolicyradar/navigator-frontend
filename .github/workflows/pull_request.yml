@@ -215,6 +215,11 @@ jobs:
         env:
           NODE_ENV: production
 
+      - name: Copy static assets to standalone
+        run: |
+          cp -r public .next/standalone/public
+          cp -r .next/static .next/standalone/.next/static
+
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
