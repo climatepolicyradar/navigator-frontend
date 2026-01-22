@@ -54,7 +54,6 @@ const envConfig = config[env];
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  // timeout: 60_000,
   testDir: "./tests",
   testMatch: "**/*.spec.ts",
   /* Run tests in files in parallel */
@@ -63,6 +62,13 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
+  /* Attempt to see fewer timeout errors on CI */
+  workers: process.env.CI ? 1 : undefined,
+  /*
+   * timeout is for the entire test, not per request.
+   * Set to 60 seconds to accommodate for slower CI environments
+   */
+  timeout: 60_000,
   /*
    * Reporter to use. See https://playwright.dev/docs/test-reporters
    * The generated XML file is used in merge_to_main and pull_request gitHub workflows
