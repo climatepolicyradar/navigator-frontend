@@ -128,7 +128,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: envConfig.useWebserver
     ? {
-        command: "node .next/standalone/server.js",
+        command: "HOSTNAME=0.0.0.0 PORT=3000 node .next/standalone/server.js",
         url: envConfig.baseURL,
         reuseExistingServer: !process.env.CI,
       }
