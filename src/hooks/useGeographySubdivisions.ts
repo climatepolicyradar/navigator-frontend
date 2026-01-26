@@ -1,5 +1,6 @@
 import { useQueries } from "@tanstack/react-query";
 
+import { dayInMilliseconds } from "@/constants/dayInMilleseconds";
 import { useEnvConfig } from "@/context/EnvConfig";
 import { TGeographySubdivision } from "@/types";
 
@@ -17,7 +18,7 @@ export default function useGeographySubdivisions(parentAlpha3Code: string[]) {
       },
       refetchOnWindowFocus: false,
       refetchOnMount: false,
-      gcTime: 1000 * 60 * 60 * 24,
+      gcTime: dayInMilliseconds,
     })),
   });
 

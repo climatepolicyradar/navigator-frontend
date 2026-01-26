@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { ApiClient, getEnvFromServer } from "@/api/http-common";
+import { dayInMilliseconds } from "@/constants/dayInMilleseconds";
 import { TLatestItem } from "@/types";
 
 type TLatestResponse = {
@@ -26,6 +27,6 @@ export default function useGetLatest(limit?: number) {
     },
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    gcTime: 1000 * 60 * 60 * 24,
+    gcTime: dayInMilliseconds,
   });
 }

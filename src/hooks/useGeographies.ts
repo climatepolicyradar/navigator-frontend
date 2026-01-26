@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { dayInMilliseconds } from "@/constants/dayInMilleseconds";
+
 import { ApiClient, getEnvFromServer } from "../api/http-common";
 
 type TMapGeographyStats = {
@@ -29,6 +31,6 @@ export default function useGeographies() {
     },
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    gcTime: 1000 * 60 * 60 * 24,
+    gcTime: dayInMilliseconds,
   });
 }

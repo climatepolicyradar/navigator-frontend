@@ -79,6 +79,10 @@ const nextConfig = {
    * @see: https://github.com/vercel/next.js/issues/65324
    */
   serverExternalPackages: ["@vercel/otel"],
+  /*
+   * See Next docs for more info: https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
+   * standalone output is optimised for running the app in a container
+   */
   output: "standalone",
 };
 

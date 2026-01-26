@@ -125,7 +125,11 @@ export default defineConfig({
     // },
   ],
 
-  /* Run your local dev server before starting the tests */
+  /*
+   * Run your local dev server before starting the tests *
+   * See next docs for more info: https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
+   * And playwright docs: https://playwright.dev/docs/test-configuration#web-server
+   */
   webServer: envConfig.useWebserver
     ? {
         command: "HOSTNAME=0.0.0.0 PORT=3000 node .next/standalone/server.js",

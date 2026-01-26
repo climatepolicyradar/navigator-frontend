@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { dayInMilliseconds } from "@/constants/dayInMilleseconds";
 import { TGeography, TLanguages, TCorpusTypeDictionary, TDataNode } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
 
@@ -37,6 +38,6 @@ export default function useConfig() {
     },
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    gcTime: 1000 * 60 * 60 * 24,
+    gcTime: dayInMilliseconds,
   });
 }

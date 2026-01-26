@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { dayInMilliseconds } from "@/constants/dayInMilleseconds";
 import { useEnvConfig } from "@/context/EnvConfig";
 import { TGeographyWithDocumentCounts } from "@/types";
 
@@ -28,7 +29,7 @@ export default function useSubdivisions() {
     },
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    gcTime: 1000 * 60 * 60 * 24,
+    gcTime: dayInMilliseconds,
     enabled: Boolean(themeConfig),
   });
 }
