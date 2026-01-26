@@ -60,7 +60,14 @@ export const PageLink = ({
   const allClasses = joinTailwindClasses(underline && LINK_UNDERLINE, className, debug && getDebugClasses(external, keepQuery, query));
 
   return (
-    <Link {...props} {...externalProps} href={{ pathname: href, query: routerQuery, hash }} className={allClasses} onClick={stopPropagation}>
+    <Link
+      {...props}
+      {...externalProps}
+      href={{ pathname: href, query: routerQuery, hash }}
+      className={allClasses}
+      onClick={stopPropagation}
+      data-data-ph-capture-attribute-href={href}
+    >
       {children}
     </Link>
   );
