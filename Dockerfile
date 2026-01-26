@@ -36,5 +36,4 @@ USER nextjs
 EXPOSE 3000
 CMD ["sh", "-c", "HOSTNAME=0.0.0.0 PORT=3000 node .next/standalone/server.js"]
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+HEALTHCHECK NONE
