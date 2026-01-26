@@ -1,5 +1,6 @@
 TAG=navigator-frontend
-THEME=$(shell grep '^THEME=' .env | cut -d '=' -f2)
+# Use THEME from environment (e.g. CI) when set; otherwise read from .env
+THEME ?= $(shell grep '^THEME=' .env 2>/dev/null | cut -d '=' -f2)
 
 # DEV MODE
 # dev mode takes environment vars from .env
