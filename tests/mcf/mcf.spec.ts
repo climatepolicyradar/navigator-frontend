@@ -21,6 +21,11 @@ test.describe("MCF Hero Search", () => {
     // Wait for the page to load completely
     await page.waitForLoadState("networkidle");
 
+    /** Reject the consent banner */
+    const consentHeading = page.getByText("Cookies and your privacy");
+    const consentBanner = page.locator("div").filter({ has: consentHeading });
+    await consentBanner.getByRole("button", { name: "Reject" }).click();
+
     // Verify we're on the MCF homepage by checking the hero section
     await expect(page.getByRole("heading", { name: "Multilateral Climate Funds" })).toBeVisible();
   });

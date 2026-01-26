@@ -12,6 +12,10 @@ jobs:
       THEME: cpr
     steps:
       - uses: actions/checkout@v6
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/cpr/g" tsconfig.json
       - uses: andresz1/size-limit-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -116,6 +120,10 @@ jobs:
           node-version: 22.12.0
       - run: npm install
       - run: cp .env.example .env
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/$THEME/g" tsconfig.json
       - run: npm run build
         env:
           NODE_ENV: production
@@ -131,12 +139,18 @@ jobs:
 
   code-quality:
     runs-on: ubuntu-latest
+    env:
+      THEME: cpr
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
           node-version: 22.12.0
       - run: npm install
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/$THEME/g" tsconfig.json
       - uses: trunk-io/trunk-action@v1
         with:
           arguments: --ci
@@ -158,6 +172,10 @@ jobs:
           node-version: 22.12.0
       - run: npm install
       - run: cp .env.example .env
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/cpr/g" tsconfig.json
 
       - name: Run vitest
         run: npm run test
@@ -189,9 +207,18 @@ jobs:
           node-version: 22.12.0
       - run: npm ci
       - run: cp .env.example .env
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/${{ matrix.theme }}/g" tsconfig.json
       - run: THEME=${{ matrix.theme }} npm run build
         env:
           NODE_ENV: production
+
+      - name: Copy static assets to standalone
+        run: |
+          cp -r public .next/standalone/public
+          cp -r .next/static .next/standalone/.next/static
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4

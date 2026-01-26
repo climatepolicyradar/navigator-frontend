@@ -1,9 +1,8 @@
 import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import React from "react";
 
 import { ApiClient } from "@/api/http-common";
-import { IProps, FamilyPage as FamilyPageUI } from "@/components/pages/familyPage";
+import { FamilyPage as FamilyPageUI } from "@/components/pages/familyPage";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
 import {
@@ -30,13 +29,13 @@ import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
   - The 'physical document' view is within the folder: src/pages/documents/[id].tsx.
 */
 
-const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ ...props }: IProps) => {
+const FamilyPage = ({ ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return <FamilyPageUI {...props} />;
 };
 
 export default FamilyPage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
   const theme = process.env.THEME;
@@ -147,4 +146,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       vespaFamilyData: vespaFamilyData ?? null,
     }),
   };
-};
+}) satisfies GetServerSideProps;

@@ -13,13 +13,13 @@ import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
 
-const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ ...props }: IProps) => {
+const CountryPage = ({ ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return <GeographyPage {...props} />;
 };
 
 export default CountryPage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
   const theme = process.env.THEME;
@@ -113,4 +113,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       vespaSearchResults: vespaSearchResults,
     }),
   };
-};
+}) satisfies GetServerSideProps;

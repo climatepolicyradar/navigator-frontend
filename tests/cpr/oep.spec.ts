@@ -224,6 +224,7 @@ test.describe("OEP Landing Page Search", () => {
     // Click search button
     const searchButton = page.locator('button[aria-label="Search"]');
     await searchButton.click();
+    await page.waitForURL("/search*");
 
     // Should navigate to search results page
     await expect(page).toHaveURL(/\/search/);
@@ -250,6 +251,7 @@ test.describe("OEP Landing Page Search", () => {
     // Click search button
     const searchButton = page.locator('button[aria-label="Search"]');
     await searchButton.click();
+    await page.waitForURL("/search*");
 
     // Should navigate to search results page
     await expect(page).toHaveURL(/\/search/);
@@ -282,6 +284,7 @@ test.describe("OEP Landing Page Search", () => {
     // Click search button
     const searchButton = page.locator('button[aria-label="Search"]');
     await searchButton.click();
+    await page.waitForURL("/search*");
 
     // Should navigate to search results page
     await expect(page).toHaveURL(/\/search/);
@@ -327,6 +330,7 @@ test.describe("OEP Landing Page Search", () => {
     const searchTerm = "renewable energy france";
     await searchInput.fill(searchTerm);
     await searchButton.click();
+    await page.waitForURL("/search*");
 
     // Should navigate to search results page
     await expect(page).toHaveURL(/\/search/);

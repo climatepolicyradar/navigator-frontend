@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { PageLink } from "@/components/atoms/pageLink/PageLink";
 
