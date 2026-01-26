@@ -1,9 +1,11 @@
-# trunk-ignore-all(trivy/DS002)
-# trunk-ignore-all(checkov/CKV_DOCKER_3)
 # trunk-ignore-all(trivy/DS026)
 # trunk-ignore-all(checkov/CKV_DOCKER_2)
 FROM node:24-alpine
 WORKDIR /app
+
+# Create a non-root user
+RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+
 COPY . .
 RUN npm ci
 
@@ -28,6 +30,10 @@ RUN npm run build
 # Copy static files into standalone directory
 RUN cp -r public .next/standalone/public
 RUN cp -r .next/static .next/standalone/.next/static
+
+# Set ownership and switch to non-root user
+RUN chown -R nextjs:nodejs .next/standalone
+USER nextjs
 
 EXPOSE 3000
 CMD ["sh", "-c", "HOSTNAME=0.0.0.0 PORT=3000 node .next/standalone/server.js"]

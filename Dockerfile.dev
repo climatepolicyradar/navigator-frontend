@@ -1,15 +1,18 @@
-# trunk-ignore-all(trivy/DS002)
-# trunk-ignore-all(checkov/CKV_DOCKER_3)
 # trunk-ignore-all(trivy/DS026)
 # trunk-ignore-all(checkov/CKV_DOCKER_2)
 FROM node:24-alpine
 WORKDIR /app
 ENV NODE_ENV=development
 
+# Create a non-root user
+RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+
 COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
+
+USER nextjs
 
 EXPOSE 3000
 # Regenerate tsconfig at runtime using THEME from mounted .env
