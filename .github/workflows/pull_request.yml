@@ -175,8 +175,9 @@ jobs:
       - name: Generate tsconfig.json
         run: |
           cp tsconfig.base.json tsconfig.json
-          sed -i "s/__THEME__/cpr/g" tsconfig.json
-
+          sed -i "s/__THEME__/$THEME/g" tsconfig.json
+        env:
+          THEME: cpr
       - name: Run vitest
         run: npm run test
         # This is needed to pass the results on to the trunk-io/analytics-uploader
