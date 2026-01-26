@@ -802,7 +802,6 @@ export const getServerSideProps = (async (context) => {
     const { data: topicsResponse } = await client.get<TTopic[]>(`/concepts/search?limit=10000&has_classifier=true`);
     topicsData = await fetchAndProcessTopics(topicsResponse.map((topic) => topic.wikibase_id));
 
-    // TODO: Next - start rendering this data
     if (features.familyConceptsSearch) {
       const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts`);
       const familyConceptsJson: { data: FamilyConcept[] } = await familyConceptsResponse.json();
