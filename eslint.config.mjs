@@ -1,8 +1,12 @@
+import path from "path";
+import { fileURLToPath } from "url";
+
 import globals from "globals";
 
 import js from "@eslint/js";
 import nextPackage from "@next/eslint-plugin-next";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const { flatConfig: nextFlatConfig } = nextPackage;
 import tsParser from "@typescript-eslint/parser";
 import importPlugin from "eslint-plugin-import";
@@ -58,10 +62,12 @@ const eslintConfig = [
       },
       parser: tsParser,
       parserOptions: {
-        // project: "./tsconfig.json",
-        ecmaFeatures: {
-          jsx: true,
-        },
+        // projectService discovers tsconfig per-file; avoids "file not in project"
+        // when e.g. Trunk uses temp paths. See typescript-eslint’s own eslint.config.
+        projectService: true,
+        tsconfigRootDir: __dirname,
+        warnOnUnsupportedTypeScriptVersion: true,
+        ecmaFeatures: { jsx: true },
       },
     },
     plugins: {
