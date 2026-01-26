@@ -1,4 +1,4 @@
-import { Icon } from "./atoms/icon/Icon";
+import { Icon } from "@/components/atoms/icon/Icon";
 import { ToolTipSSR } from "@/components/tooltip/TooltipSSR";
 
 interface IProps {

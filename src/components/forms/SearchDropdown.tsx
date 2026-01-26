@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
-import { TGeography } from "@/types";
-import useConfig from "@/hooks/useConfig";
-import { QUERY_PARAMS } from "@/constants/queryParams";
+
 import { Icon } from "@/components/atoms/icon/Icon";
-import { systemGeoCodes } from "@/constants/systemGeos";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { SYSTEM_GEO_CODES } from "@/constants/systemGeos";
+import useConfig from "@/hooks/useConfig";
+import { TGeography } from "@/types";
 
 interface IProps {
   show: boolean;
@@ -19,7 +20,7 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
 
   const geographiesFiltered = geographies.filter(
     (geography) =>
-      !systemGeoCodes.includes(geography.slug) &&
+      !SYSTEM_GEO_CODES.includes(geography.slug) &&
       (geography.display_value.toLowerCase().includes(term.toLocaleLowerCase()) ||
         term.toLocaleLowerCase().includes(geography.display_value.toLowerCase()))
   );
@@ -58,7 +59,6 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
       geography = geographies.reduce(function (prev, current) {
         return prev && prev.display_value.length > current.display_value.length ? prev : current;
       });
-      geography = Object.keys(geography).length === 1 ? geography[0] : geography;
     } else geography = geographies[0];
 
     const intendedGeography = geography;
@@ -72,7 +72,8 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
         <li key={intendedGeography.slug}>
           <a href="#" className={anchorClasses(false)} onClick={(e) => handleSuggestionClick(e, intendedGeography)}>
             Did you mean to search for&nbsp;
-            <span className="font-medium text-black">{termWithoutGeography(intendedGeography.display_value)}</span>&nbsp;in&nbsp;
+            <span className="font-medium text-black">{termWithoutGeography(intendedGeography.display_value)}</span>
+            &nbsp;in&nbsp;
             <span className="font-medium text-black">{intendedGeography.display_value}</span>?
           </a>
         </li>
@@ -82,12 +83,12 @@ export const SearchDropdown = ({ show = false, term, handleSearchClick, largeSpa
 
   return (
     <div
-      className={`search-dropdown absolute bg-gray-50 text-cpr-dark border-t-transparent border border-gray-200 w-full rounded-b-lg max-h-[300px] overflow-y-auto z-10 shadow-inner ${
+      className={`search-dropdown absolute bg-gray-50 text-cpr-dark border-t-transparent border border-gray-300 w-full rounded-b-lg max-h-[300px] overflow-y-auto z-10 shadow-inner ${
         largeSpacing ? "search-dropdown_large" : ""
       }`}
     >
       <a href="#" className={anchorClasses(!geographiesFiltered.length)} onClick={handleClick}>
-        <span className="mr-2 w-[20px]">
+        <span className="mr-2 w-5">
           <Icon name="search" />
         </span>
         Search <span className="font-medium text-black mx-1">{term}</span> in all documents

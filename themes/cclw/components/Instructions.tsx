@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 
-import useConfig from "@/hooks/useConfig";
-
-import { calculateTotalFamilies } from "@/helpers/getFamilyCounts";
-
+import { INSTRUCTIONS } from "@/cclw/constants/instructions";
 import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
-
-import { INSTRUCTIONS } from "@/cclw/constants/instructions";
+import { calculateTotalFamilies } from "@/helpers/getFamilyCounts";
+import useConfig from "@/hooks/useConfig";
 
 const ANIMATION_DELAY = 3000;
 

@@ -1,4 +1,4 @@
-/**
+/*
  * This implementation gives us runtime, isomorphic env variables.
  *
  * We could use NEXT_PUBLIC_* env variables, but those have to be baked in at build time.
@@ -13,7 +13,7 @@
  */
 import { createContext, useContext } from "react";
 
-export const publicRuntimeEnvConfig = [
+const publicRuntimeEnvConfig = [
   "BACKEND_API_URL",
   "BACKEND_API_TOKEN",
   "TARGETS_URL",

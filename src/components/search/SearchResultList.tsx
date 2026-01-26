@@ -1,7 +1,7 @@
 import { ExternalLink } from "@/components/ExternalLink";
-import SearchResult from "./SearchResult";
-
 import { TMatchedFamily } from "@/types";
+
+import SearchResult from "./SearchResult";
 
 interface IProps {
   category?: string;
@@ -60,11 +60,11 @@ const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: IP
   }
   return (
     <>
-      {families?.map((family, index: number) => (
-        <div key={index} className={`my-10 ${index === 0 && "md:mt-0"}`} data-cy="search-result">
-          <SearchResult family={family} onClick={() => onClick(index)} active={activeFamilyIndex === index} />
-        </div>
-      ))}
+      <ol className="divide-y flex flex-col gap-6" data-cy="search-result">
+        {families?.map((family, index: number) => (
+          <SearchResult key={index} family={family} onClick={() => onClick(index)} active={activeFamilyIndex === index} />
+        ))}
+      </ol>
     </>
   );
 };

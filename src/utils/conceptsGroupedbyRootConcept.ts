@@ -1,7 +1,11 @@
-import { TConcept } from "@/types";
+import { TTopic } from "@/types";
 
-export const groupByRootConcept = (concepts: TConcept[], rootConcepts: TConcept[]): { [rootConceptId: string]: TConcept[] } => {
-  const otherRootConcept: TConcept = {
+// TODO: remove this concept tech-debt
+// Ticket: APP-711
+const DISABLED_CONCEPTS = ["Q777", "Q778", "Q221"];
+
+export const groupByRootConcept = (concepts: TTopic[], rootConcepts: TTopic[]): { [rootConceptId: string]: TTopic[] } => {
+  const otherRootConcept: TTopic = {
     wikibase_id: "Q000",
     preferred_label: "Other",
     subconcept_of: [],
@@ -13,7 +17,11 @@ export const groupByRootConcept = (concepts: TConcept[], rootConcepts: TConcept[
     has_subconcept: [],
   };
 
-  return Object.groupBy(concepts, (concept) => {
+  // TODO: remove this concept tech-debt
+  // Ticket: APP-711
+  const conceptsWithoutDisabled = concepts.filter((concept) => !DISABLED_CONCEPTS.includes(concept.wikibase_id));
+
+  return Object.groupBy(conceptsWithoutDisabled, (concept) => {
     const rootConcept = rootConcepts.find((rootConcept) => concept.recursive_subconcept_of.includes(rootConcept.wikibase_id));
     const isRootConcept = rootConcepts.some((rootConcept) => rootConcept.wikibase_id === concept.wikibase_id);
 

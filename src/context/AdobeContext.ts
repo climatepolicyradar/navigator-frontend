@@ -1,3 +1,3 @@
 import { createContext } from "react";
 
-export const AdobeContext = createContext(null);
+export const AdobeContext = createContext<string>("");

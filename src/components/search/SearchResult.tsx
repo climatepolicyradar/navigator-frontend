@@ -1,9 +1,12 @@
-import { TMatchedFamily } from "@/types";
-import { MAX_RESULTS } from "@/constants/paging";
-import { Button } from "@/components/atoms/button/Button";
+import { TextSearch } from "lucide-react";
+import { useContext } from "react";
+
 import { FamilyListItem } from "@/components/document/FamilyListItem";
-import { Icon } from "@/components/atoms/icon/Icon";
-import { ToolTipSSR } from "@/components/tooltip/TooltipSSR";
+import { MAX_RESULTS } from "@/constants/paging";
+import { FeaturesContext } from "@/context/FeaturesContext";
+import { TMatchedFamily } from "@/types";
+import { pluralise } from "@/utils/pluralise";
+import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
   family: TMatchedFamily;
@@ -12,32 +15,34 @@ interface IProps {
 }
 
 const SearchResult = ({ family, active, onClick }: IProps) => {
+  const features = useContext(FeaturesContext);
   const { family_documents, total_passage_hits, family_slug } = family;
 
+  const hasFamilyDocuments = family_documents.length > 0;
+
   const matchesNumber = total_passage_hits >= MAX_RESULTS ? `${MAX_RESULTS}+` : `${total_passage_hits}`;
-  const matchesText = `${matchesNumber} ${total_passage_hits === 1 ? "match" : "matches"} in documents`;
+  const matchesText = `View ${matchesNumber} text ${pluralise(total_passage_hits, ["passage", "passages"])} matching your search`;
+
+  const titleClasses = joinTailwindClasses(
+    hasFamilyDocuments ? "text-text-primary" : "text-[#0041A3]",
+    active ? "!underline" : "!no-underline hover:!underline"
+  );
 
   return (
-    <FamilyListItem family={family}>
-      {family_documents.length > 0 && (
-        <div>
-          <div className="inline-block" data-tooltip-content="View passages in this document that match your search" data-tooltip-id={family_slug}>
-            <Button
-              color={active ? "brand" : "mono"}
-              content="both"
-              rounded
-              size="small"
-              variant={active ? "faded" : "outlined"}
-              onClick={onClick}
-              aria-label={matchesText}
-              data-analytics="search-result-matches-button"
-              data-slug={family_slug}
-            >
-              <Icon name="documentMagnify" width="16" height="16" />
-              {matchesText}
-            </Button>
-            <ToolTipSSR id={family_slug} place={"top"} />
-          </div>
+    <FamilyListItem family={family} showSummary={features.searchFamilySummary} titleClasses={titleClasses}>
+      {hasFamilyDocuments && (
+        <div className="flex">
+          <button
+            type="button"
+            onClick={onClick}
+            className="text-text-brand flex items-center"
+            aria-label={matchesText}
+            data-analytics="search-result-matches-button"
+            data-slug={family_slug}
+          >
+            <TextSearch size={16} className="inline mr-1.5" />
+            <span className="text-sm font-semibold underline">{matchesText}</span>
+          </button>
         </div>
       )}
     </FamilyListItem>

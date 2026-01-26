@@ -1,8 +1,21 @@
-import type { Preview } from "@storybook/react";
-import React from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { Preview } from "@storybook/nextjs-vite";
 
+import { ThemeContext } from "../src/context/ThemeContext";
 import "../src/styles/main.css";
+import { TTheme, TThemeConfig } from "../src/types";
+import CCCconfig from "../themes/ccc/config";
+import CCLWconfig from "../themes/cclw/config";
+import CPRconfig from "../themes/cpr/config";
+import MCFconfig from "../themes/mcf/config";
+
+const themeItems: TTheme[] = ["cpr", "cclw", "mcf", "ccc"];
+const themeConfigs: Record<TTheme, TThemeConfig> = {
+  ccc: CCCconfig,
+  cclw: CCLWconfig,
+  cpr: CPRconfig,
+  mcf: MCFconfig,
+};
 
 const preview: Preview = {
   parameters: {
@@ -14,14 +27,31 @@ const preview: Preview = {
     },
   },
   tags: ["autodocs"],
+  globalTypes: {
+    theme: {
+      description: "The app theme e.g. CCLW",
+      toolbar: {
+        title: "Theme",
+        icon: "browser",
+        items: themeItems,
+        dynamicTitle: true,
+      },
+    },
+  },
+  initialGlobals: {
+    theme: "cpr",
+  },
   decorators: [
-    (Story) => {
+    (Story, { globals }) => {
       const queryClient = new QueryClient();
+      const theme = globals.theme as TTheme;
 
       return (
         <div className="root isolate">
           <QueryClientProvider client={queryClient}>
-            <Story />
+            <ThemeContext.Provider value={{ theme, themeConfig: themeConfigs[theme], loaded: true }}>
+              <Story />
+            </ThemeContext.Provider>
           </QueryClientProvider>
         </div>
       );

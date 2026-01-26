@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { ReactNode } from "react";
 
 import { ExternalLink } from "@/components/ExternalLink";
@@ -10,17 +9,31 @@ type TAcknowledgement = {
     imageUrl: string;
     imageAlt: string;
   };
+  partnerImages?: Array<{
+    url: string;
+    imageUrl: string;
+    imageAlt: string;
+  }>;
   children?: ReactNode;
 };
 
-const Acknowledgement = ({ partnerImage, children }: TAcknowledgement) => {
+const Acknowledgement = ({ partnerImage, partnerImages, children }: TAcknowledgement) => {
+  const images = partnerImages || (partnerImage ? [partnerImage] : []);
+
   return (
     <div className="mb-6 md:flex">
-      {partnerImage && (
-        <div className="mb-4 md:mb-0 md:basis-1/2 lg:basis-1/3 flex">
-          <ExternalLink className="" url={partnerImage.url}>
-            <img src={`/images/cclw/partners/${partnerImage.imageUrl}`} alt={partnerImage.imageAlt} className="max-h-[96px]" />
-          </ExternalLink>
+      {images.length > 0 && (
+        <div className="mb-4 md:mb-0 md:basis-1/2 lg:basis-1/3 flex gap-4">
+          {images.map((img, index) => (
+            <ExternalLink key={index} className="" url={img.url}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={img.imageUrl.startsWith("/") ? img.imageUrl : `/images/ccc/partners/${img.imageUrl}`}
+                alt={img.imageAlt}
+                className="max-h-[96px]"
+              />
+            </ExternalLink>
+          ))}
         </div>
       )}
       <div className="md:basis-1/2 lg:basis-2/3 md:pl-6">{children}</div>
@@ -33,24 +46,9 @@ export const Acknowledgements = () => {
     <div>
       <Heading level={2}>Acknowledgements</Heading>
       <p className="mb-8">
-        The Climate Change Laws of the World project is made possible through the work of many contributors. In particular, the Grantham Research
-        Institute at LSE would like to acknowledge the contributions of the following key partners:
+        The Climate Litigation Database project is made possible through the work of many contributors. In particular, the Sabin Center would like to
+        acknowledge the contributions of the following key partners:
       </p>
-      <Acknowledgement
-        partnerImage={{
-          url: "https://climate.law.columbia.edu",
-          imageUrl: "sabin-logo-full.jpg",
-          imageAlt: "Sabin Center for Climate Change Law at Columbia Law School logo",
-        }}
-      >
-        <p>
-          The Sabin Center for Climate Change Law, a joint center of the Columbia Law School and the Climate School, develops and promulgates legal
-          techniques to address climate change and trains the next generation of lawyers who will be leaders in the field. The Sabin Center is an
-          affiliate of the Earth Institute and the Columbia Climate School. Climate Change Laws of the World builds on more than a decade of data
-          collection by the Grantham Research Institute at LSE and the Sabin Center at Columbia Law School. Work to identify cases is now supported by
-          a Global Network of Peer Reviewers, coordinated by the Sabin Center.
-        </p>
-      </Acknowledgement>
       <Acknowledgement
         partnerImage={{
           url: "https://www.filefoundation.org/",
@@ -59,71 +57,97 @@ export const Acknowledgements = () => {
         }}
       >
         <p>
-          FILE is a global philanthropic foundation supporting legal innovation to address the climate crisis. The Grantham Institute would like to
-          thank FILE for its generous support for developments to the database.
-        </p>
-      </Acknowledgement>
-      <Acknowledgement partnerImage={{ url: "https://www.ipu.org/", imageUrl: "IPU_logo.png", imageAlt: "Inter-Parliamentary Union logo" }}>
-        <p>
-          The Inter-Parliamentary Union (IPU) is the global organisation of national parliaments. It began in 1889 as a small group of
-          parliamentarians, dedicated to promoting peace through parliamentary diplomacy and dialogue, and has since grown into a truly global
-          organisation of national parliaments. Through the Grantham Research Institute’s ongoing partnership with IPU, we work to develop timely and
-          relevant outputs on climate change legislation and policy that can inform the work of IPU’s members.
+          FILE is a global philanthropic foundation supporting legal innovation to address the climate crisis. The Sabin Center's work on climate
+          litigation is generously supported by FILE.
         </p>
       </Acknowledgement>
       <Acknowledgement
         partnerImage={{
-          url: "https://www.law.ed.ac.uk/research/research-centres-and-networks/edinburgh-centre-constitutional-law/about",
-          imageUrl: "UoE_Law_logo.jpeg",
-          imageAlt: "Edinburgh Centre for Constitutional Law logo",
-        }}
-      >
-        <p>
-          The Edinburgh Centre for Constitutional Law (ECCL) provides a focal point for staff and postgraduate research students working in all areas
-          of Scots and UK public law, Commonwealth and comparative constitutional law, human rights law, environmental law and climate change law,
-          democratisation and transitional constitutionalism, and constitutional theory. Data on climate-relevant constitutions found in the Climate
-          Change Laws of the World database is gathered and maintained through an ongoing collaboration with ECCL.
-        </p>
-      </Acknowledgement>
-      <Acknowledgement
-        partnerImage={{
-          url: "https://www.sussex.ac.uk/",
-          imageUrl: "UoS_logo.png",
-          imageAlt: "University of Sussex logo",
-        }}
-      >
-        <p>
-          Based on the best practices of former treaty campaigns and existing struggles led by frontline communities, the Fossil Fuel
-          Non-Proliferation Treaty Initiative started in 2019 through a Climate Breakthrough Project award. The Initiative promotes international
-          action to phase out fossil fuel production based on the principles of non-proliferation, a fair phase out, and a just transition. LSE
-          collaborates with researchers at the University of Sussex supporting the non-proliferation initiative to exchange information on national
-          level laws and policies regarding moratoria, bans, and limits placed on fossil fuel use and/or divestment from fossil fuels.
-        </p>
-      </Acknowledgement>
-      <Acknowledgement
-        partnerImage={{
-          url: "https://www.juma.nima.puc-rio.br/sobre-juma/",
+          url: "https://juma.jur.puc-rio.br/base-dados-litigancia-climatica-no-brasil",
           imageUrl: "JUMA_logo.png",
-          imageAlt: "JUMA logo",
+          imageAlt: "Law, Environment and Justice in the Anthropocene Research Group (JUMA) logo",
         }}
       >
         <p>
           The Law, Environment and Justice in the Anthropocene Research Group (JUMA) produces qualified knowledge on topics linked to environmental
           and climate issues in the context of the Anthropocene. Its objective is to contribute to the fight against socio-environmental and climate
           injustice, based on a critical analysis of the challenges of Law in the face of the hypercomplex scenario of environmental and climate
-          crisis.
+          crisis. The Sabin Center relies on JUMA's{" "}
+          <ExternalLink url="https://juma.jur.puc-rio.br/base-dados-litigancia-climatica-no-brasil">database</ExternalLink> for climate cases from
+          Brazil.
         </p>
       </Acknowledgement>
       <Acknowledgement
         partnerImage={{
-          url: "https://www.vancecenter.org/ ",
-          imageUrl: "CRVCIJ_logo.png",
-          imageAlt: "Cyrus R. Vance Center for International Justice logo",
+          url: "https://law.app.unimelb.edu.au/climate-change/",
+          imageUrl: "UoM_logo.png",
+          imageAlt: "The University of Melbourne's logo",
         }}
       >
         <p>
-          The Vance Center advances global justice by engaging lawyers across borders to support civil society and an ethically active legal
-          profession.
+          The University of Melbourne's{" "}
+          <ExternalLink url="https://law.app.unimelb.edu.au/climate-change/">Australia and Pacific Climate Change Litigation Database</ExternalLink>{" "}
+          records litigation (including settled cases and court orders) on issues of climate change in Australia, New Zealand, and the Pacific
+          Islands. The Sabin Center relies on its database for cases in Australia.
+        </p>
+      </Acknowledgement>
+      <Acknowledgement
+        partnerImage={{
+          url: "https://aida-americas.org/en/blog/climate-litigation-platform-latin-america-and-caribbean-road-traveled",
+          imageUrl: "AIDA_logo.svg",
+          imageAlt: "Climate Litigation Platform for Latin America and the Caribbean (PLC) logo",
+        }}
+      >
+        <p>
+          The{" "}
+          <ExternalLink url="https://aida-americas.org/en/blog/climate-litigation-platform-latin-america-and-caribbean-road-traveled">
+            Climate Litigation Platform for Latin America and the Caribbean (PLC)
+          </ExternalLink>
+          , coordinated by AIDA, systematizes and analyzes climate-related cases across the region. Its purpose is to strengthen litigation as a tool
+          to address the climate crisis, providing accessible information, legal analysis, and resources to people interested in climate justice
+          (practitioners, researchers, attorneys, and communities). By documenting ongoing and concluded cases and disseminating information through
+          reports, articles, blogs, and newsletters, the PLC promotes transparency, fosters collaboration, and highlights the role of the judiciary
+          towards climate justice throughout the Latin American region. The Sabin Center collaborates with AIDA on tracking cases in Latin America and
+          the Caribbean.
+        </p>
+      </Acknowledgement>
+      <Acknowledgement
+        partnerImage={{
+          url: "https://www.ucc.ie/en/youthclimatejustice/caselawdatabase/",
+          imageUrl: "YCJ_logos.png",
+          imageAlt: "Youth Climate Justice partners logos",
+        }}
+      >
+        <p>
+          The <ExternalLink url="https://www.ucc.ie/en/youthclimatejustice/caselawdatabase/">Youth Climate Justice database</ExternalLink> is part of
+          the Youth Climate Justice project, funded by the European Research Council. The project researches youth climate action and its impact on
+          international human rights law, working with young climate leaders across five continents. The database contains over 80 climate cases
+          involving children and youth (up to age 25). Breakdowns are provided of these cases on the basis of various children's rights considerations
+          - e.g., the ways in which children/youth were involved, the UN Convention on the Rights of the Child rights involved, or whether future
+          generations are mentioned in the case. The aim of the database is to provide researchers with significant amounts of information to
+          facilitate research and writing on youth climate cases. The database relies on summaries from the Sabin Center's database.
+        </p>
+      </Acknowledgement>
+      <Acknowledgement
+        partnerImages={[
+          {
+            url: "https://www.lse.ac.uk/",
+            imageUrl: "/images/partners/lse-logo.png",
+            imageAlt: "London School of Economics logo",
+          },
+          {
+            url: "https://www.lse.ac.uk/granthaminstitute/",
+            imageUrl: "/images/partners/grantham-logo.png",
+            imageAlt: "Grantham Research Institute for Climate Change and the Environment logo",
+          },
+        ]}
+      >
+        <p>
+          The Sabin Center often collaborates with the{" "}
+          <ExternalLink url="https://www.lse.ac.uk/granthaminstitute/">
+            Grantham Research Institute on Climate Change and the Environment
+          </ExternalLink>
+          .
         </p>
       </Acknowledgement>
     </div>

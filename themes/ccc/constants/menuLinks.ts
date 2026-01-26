@@ -1,4 +1,6 @@
-const menuLinks = [
+import { TMenuLink } from "@/types";
+
+export const MENU_LINKS: TMenuLink[] = [
   {
     text: "Home",
     href: "/",
@@ -18,7 +20,7 @@ const menuLinks = [
     cy: "methodology",
   },
   {
-    text: "FAQ",
+    text: "FAQs",
     href: "/faq",
     external: false,
     cy: "faq",
@@ -30,17 +32,9 @@ const menuLinks = [
     cy: "search",
   },
   {
-    text: "Framework laws",
-    href: "/framework-laws",
-    external: false,
-    cy: "framework-laws",
-  },
-  {
     text: "Contact",
     href: "/contact",
     external: false,
     cy: "contact",
   },
 ];
-
-export default menuLinks;

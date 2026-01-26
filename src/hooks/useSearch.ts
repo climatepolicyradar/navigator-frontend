@@ -1,13 +1,13 @@
+import { usePostHog } from "posthog-js/react";
 import { useEffect, useState, useMemo } from "react";
-import { ApiClient, getEnvFromServer } from "../api/http-common";
 
-import useGetThemeConfig from "./useThemeConfig";
-
+import { posthogEventName } from "@/context/PostHogProvider";
 import buildSearchQuery, { TRouterQuery } from "@/utils/buildSearchQuery";
 import { getCachedSearch, updateCacheSearch, TCacheResult } from "@/utils/searchCache";
 
+import useGetThemeConfig from "./useThemeConfig";
+import { ApiClient, getEnvFromServer } from "../api/http-common";
 import { initialSearchCriteria } from "../constants/searchCriteria";
-
 import { TMatchedFamily, TSearch, TLoadingStatus } from "../types";
 
 const CACHE_ENABLED = false;
@@ -17,14 +17,16 @@ type TConfig = {
     accept: string;
     "Content-Type": string;
   };
+  signal: AbortSignal;
 };
 
-async function getSearch(query = initialSearchCriteria) {
+async function getSearch(query = initialSearchCriteria, signal: AbortSignal) {
   const config: TConfig = {
     headers: {
       accept: "application/json",
       "Content-Type": "application/json",
     },
+    signal,
   };
 
   const url = "/searches";
@@ -40,6 +42,7 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
   const [families, setFamilies] = useState<TMatchedFamily[]>([]);
   const [hits, setHits] = useState<number>(null);
   const [continuationToken, setContinuationToken] = useState<string | null>(null);
+  const posthog = usePostHog();
 
   const searchQuery = useMemo(() => {
     return buildSearchQuery({ ...query }, themeConfig, familyId, documentId, undefined, noOfPassagesPerDoc);
@@ -47,6 +50,9 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
 
   useEffect(() => {
     setStatus("loading");
+
+    // When this useEffect execution is unmounted, send a signal to the Axios request to abort the API request mid-flight
+    const controller = new AbortController();
 
     // If we don't want to trigger an API call, return early
     if (!runFreshSearch || !searchQuery.runSearch) {
@@ -86,34 +92,44 @@ const useSearch = (query: TRouterQuery, familyId = "", documentId = "", runFresh
       }
     }
 
-    const resultsQuery = getSearch(searchQuery);
+    const resultsQuery = getSearch(searchQuery, controller.signal);
 
     resultsQuery.then((res) => {
-      if (res.status === 200) {
-        // Catch missing attributes from the API response
-        setFamilies(res.data.families || []);
-        setHits(res.data.total_family_hits || 0);
-        setContinuationToken(res.data.continuation_token || null);
+      // If the request is aborted due to unmounting, res is undefined
+      if (typeof res === "object") {
+        if (res.status === 200) {
+          const { hits, total_family_hits, families, continuation_token } = res.data;
+          posthog.capture(posthogEventName("search", "results", "fetch"), { hits, total_family_hits, query: searchQuery });
 
-        if (CACHE_ENABLED) {
-          const searchToCache: TCacheResult = {
-            ...cacheId,
-            families: res.data.families,
-            hits: res.data.total_family_hits,
-            continuation_token: res.data.continuation_token,
-            timestamp: new Date().getTime(),
-          };
-          updateCacheSearch(searchToCache);
+          // Catch missing attributes from the API response
+          setFamilies(families || []);
+          setHits(total_family_hits || 0);
+          setContinuationToken(continuation_token || null);
+
+          if (CACHE_ENABLED) {
+            const searchToCache: TCacheResult = {
+              ...cacheId,
+              families: families,
+              hits: total_family_hits,
+              continuation_token: continuation_token,
+              timestamp: new Date().getTime(),
+            };
+            updateCacheSearch(searchToCache);
+          }
+        } else {
+          setFamilies([]);
+          setHits(0);
+          setContinuationToken(null);
+          setStatus("error");
         }
-      } else {
-        setFamilies([]);
-        setHits(0);
-        setContinuationToken(null);
-        setStatus("error");
+        setStatus("success");
       }
-      setStatus("success");
     });
-  }, [searchQuery, runFreshSearch]);
+
+    return () => {
+      controller.abort();
+    };
+  }, [searchQuery, runFreshSearch, posthog]);
 
   return { status, families, hits, continuationToken, searchQuery };
 };

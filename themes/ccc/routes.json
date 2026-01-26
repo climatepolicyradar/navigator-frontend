@@ -10,14 +10,9 @@
     "contentPath": "contact"
   },
   {
-    "title": "FAQ",
+    "title": "FAQs",
     "path": "faq",
     "contentPath": "faq"
-  },
-  {
-    "title": "Framework Laws",
-    "path": "framework-laws",
-    "contentPath": "framework-laws"
   },
   {
     "title": "Methodology",
@@ -28,5 +23,15 @@
     "title": "Terms of use",
     "path": "terms-of-use",
     "contentPath": "terms-of-use"
+  },
+  {
+    "title": "Cookie policy",
+    "path": "cookie-policy",
+    "contentPath": "cookie-policy"
+  },
+  {
+    "title": "Privacy policy",
+    "path": "privacy-policy",
+    "contentPath": "privacy-policy"
   }
 ]

@@ -1,7 +1,8 @@
+import { Info as LuInfo } from "lucide-react";
+import { useState } from "react";
+
 import { Popover, TPopoverLink } from "@/components/atoms/popover/Popover";
 import { joinTailwindClasses } from "@/utils/tailwind";
-import { useState } from "react";
-import { LuInfo } from "react-icons/lu";
 
 interface IProps {
   className?: string;
@@ -13,16 +14,16 @@ interface IProps {
 export const Info = ({ className, description, link, title }: IProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const infoClasses = joinTailwindClasses("cursor-help", isOpen ? "text-text-brand" : "text-text-secondary", className);
+  const infoClasses = joinTailwindClasses("!cursor-help", isOpen ? "text-text-brand" : "text-text-secondary", className);
 
   return (
     <Popover
       openOnHover
       onOpenChange={setIsOpen}
       trigger={
-        <div className={infoClasses}>
+        <button className={infoClasses} role="button">
           <LuInfo size={16} />
-        </div>
+        </button>
       }
       title={title}
       description={description}

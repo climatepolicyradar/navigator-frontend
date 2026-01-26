@@ -1,20 +1,22 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
 import { Tooltip, TooltipRefProps } from "react-tooltip";
 
+import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { EXCLUDED_ISO_CODES } from "@/constants/geography";
+import { GEO_CENTER_POINTS } from "@/constants/mapCentres";
+import { GEO_EU_COUNTRIES } from "@/constants/mapEUCountries";
 import useConfig from "@/hooks/useConfig";
 import useGeographies from "@/hooks/useGeographies";
 import { useMcfData } from "@/hooks/useMcfData";
+import { TGeography, TTheme } from "@/types";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 import GeographySelect from "./GeographySelect";
-import { ZoomControls } from "./ZoomControls";
 import { Legend } from "./Legend";
-
-import { TGeography } from "@/types";
-
-import { GEO_EU_COUNTRIES } from "@/constants/mapEUCountries";
-import { GEO_CENTER_POINTS } from "@/constants/mapCentres";
+import { ZoomControls } from "./ZoomControls";
+import { ExternalLink } from "../ExternalLink";
+import { Heading } from "../typography/Heading";
 
 const geoUrl = "/data/map/world-countries-50m.json";
 
@@ -41,11 +43,16 @@ type TGeoMarkers = {
   unfccc: number;
   mcf: number;
   reports: number;
+  litigation: number;
 };
 
-type TGeographyWithCoords = TGeography & { coords: TPoint; familyCounts: TGeoFamilyCounts; markers: TGeoMarkers };
+export type TGeographyWithCoords = TGeography & {
+  coords: TPoint;
+  familyCounts: TGeoFamilyCounts;
+  markers: TGeoMarkers;
+};
 
-type TGeographiesWithCoords = { [key: string]: TGeographyWithCoords };
+export type TGeographiesWithCoords = { [key: string]: TGeographyWithCoords };
 
 type TMapData = {
   maxLawsPolicies: number;
@@ -56,16 +63,24 @@ type TMapData = {
   geographies: TGeographiesWithCoords;
 };
 
-const geoStyle = (isActive: boolean) => {
+// For converting Hex to HSL for use in our calculation
+// https://htmlcolors.com/hex-to-hsl
+const geoStyle = (isActive: boolean, count: number, max: number) => {
+  const maxLog = Math.log10(max);
+  const countLog = Math.log10(count || 1);
+
+  const ratio = countLog / maxLog;
+  const fillLightness = count === 0 ? 80 : 60 - ratio * 25;
+
   return {
     default: {
-      fill: isActive ? "#1F93FF" : "#dfdfdf",
+      fill: isActive ? "#002CA3" : `hsl(206, 14%, ${fillLightness}%)`,
       stroke: "#fff",
       strokeWidth: 0.25,
       outline: "none",
     },
     hover: {
-      fill: "#1F93FF",
+      fill: "#002CA3",
       cursor: "pointer",
       outline: "none",
     },
@@ -94,13 +109,13 @@ const minMarkerSize = 1.5;
 
 const getMarkerColour = (value: number, min: number, max: number, active: boolean) => {
   if (active) {
-    return "#1F93FF";
+    return "#002CA3";
   }
   const offset = ((value - min) / (max - min)) * 100;
   return `hsl(200, 50%, ${100 - offset}%)`;
 };
 
-const getMarketStroke = (active: boolean) => {
+const getMarkerStroke = (active: boolean) => {
   return active ? "#fff" : "#1D2939";
 };
 
@@ -122,7 +137,7 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
       {geography.familyCounts?.UNFCCC > 0 && <p>UNFCCC: {geography.familyCounts?.UNFCCC || 0}</p>}
       {geography.familyCounts?.MCF > 0 && <p>MCF projects: {geography.familyCounts?.MCF || 0}</p>}
       {geography.familyCounts?.REPORTS > 0 && <p>Reports: {geography.familyCounts?.REPORTS || 0}</p>}
-      {geography.familyCounts?.LITIGATION > 0 && <p>Litigation: {geography.familyCounts?.LITIGATION || 0}</p>}
+      {geography.familyCounts?.LITIGATION > 0 ? <p>Litigation: {geography.familyCounts?.LITIGATION || 0}</p> : <p>No litigation data available</p>}
       <p>
         <LinkWithQuery href={`/geographies/${geography.slug}`} className="text-blue-600 underline hover:text-blue-800">
           View more
@@ -134,9 +149,12 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
 
 interface IProps {
   showLitigation?: boolean;
+  showCategorySelect?: boolean;
+  showEUCheckbox?: boolean;
+  theme: TTheme;
 }
 
-export default function MapChart({ showLitigation = false }: IProps) {
+export default function WorldMap({ showLitigation = false, showCategorySelect = true, showEUCheckbox = false, theme }: IProps) {
   const configQuery = useConfig();
   const geographiesQuery = useGeographies();
   const { data: { countries: configCountries = [] } = {} } = configQuery;
@@ -151,10 +169,10 @@ export default function MapChart({ showLitigation = false }: IProps) {
   const showMcf = useMcfData();
 
   useEffect(() => {
-    if (!showMcf && selectedFamCategory === "mcf") {
-      setSelectedFamCategory("lawsPolicies");
+    if (theme === "ccc") {
+      setSelectedFamCategory("litigation");
     }
-  }, [showMcf, selectedFamCategory]);
+  }, [theme]);
 
   // Combine the data from the coordinates and the map data from the API into a unified object
   const mapData: TMapData = useMemo(() => {
@@ -163,15 +181,17 @@ export default function MapChart({ showLitigation = false }: IProps) {
       ? Math.max(...mapDataRaw.map((g) => (g.family_counts?.EXECUTIVE || 0) + (g.family_counts?.LEGISLATIVE || 0)))
       : 0;
     // Only take UNFCCC, Reports and MCF counts for countries that are not XAA or XAB (international, no geography)
-    const maxMcf = mapDataRaw.length ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.MCF || 0))) : 0;
+    const maxMcf = mapDataRaw.length
+      ? Math.max(...mapDataRaw.map((g) => (EXCLUDED_ISO_CODES.includes(g.iso_code) ? 0 : g.family_counts?.MCF || 0)))
+      : 0;
     const maxReports = mapDataRaw.length
-      ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.REPORTS || 0)))
+      ? Math.max(...mapDataRaw.map((g) => (EXCLUDED_ISO_CODES.includes(g.iso_code) ? 0 : g.family_counts?.REPORTS || 0)))
       : 0;
     const maxUnfccc = mapDataRaw.length
-      ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.UNFCCC || 0)))
+      ? Math.max(...mapDataRaw.map((g) => (EXCLUDED_ISO_CODES.includes(g.iso_code) ? 0 : g.family_counts?.UNFCCC || 0)))
       : 0;
     const maxLitigation = mapDataRaw.length
-      ? Math.max(...mapDataRaw.map((g) => (["XAA", "XAB"].includes(g.iso_code) ? 0 : g.family_counts?.LITIGATION || 0)))
+      ? Math.max(...mapDataRaw.map((g) => (EXCLUDED_ISO_CODES.includes(g.iso_code) ? 0 : g.family_counts?.LITIGATION || 0)))
       : 0;
 
     const mapDataConstructor: TMapData = {
@@ -183,7 +203,7 @@ export default function MapChart({ showLitigation = false }: IProps) {
       geographies: {},
     };
 
-    mapDataConstructor.geographies = configCountries.reduce((acc, country) => {
+    mapDataConstructor.geographies = configCountries.reduce<TGeographiesWithCoords>((acc, country) => {
       const geoStats = mapDataRaw.find((geo) => geo.slug === country.slug);
       const lawsPoliciesCount = (geoStats?.family_counts?.EXECUTIVE || 0) + (geoStats?.family_counts?.LEGISLATIVE || 0);
 
@@ -191,9 +211,8 @@ export default function MapChart({ showLitigation = false }: IProps) {
       const unfcccCount = geoStats?.family_counts?.UNFCCC || 0;
       const mcfCount = geoStats?.family_counts?.MCF || 0;
       const reportsCount = geoStats?.family_counts?.REPORTS || 0;
-      const litigationCount = geoStats?.family_counts?.LITIGATION || 0;
 
-      acc[country.value] = {
+      acc[country.display_value] = {
         ...country,
         coords: GEO_CENTER_POINTS[country.value],
         familyCounts: geoStats?.family_counts,
@@ -202,7 +221,7 @@ export default function MapChart({ showLitigation = false }: IProps) {
           unfccc: maxUnfccc > 0 ? Math.max(minMarkerSize, (unfcccCount / maxUnfccc) * maxMarkerSize) : 0,
           mcf: maxMcf > 0 ? Math.max(minMarkerSize, (mcfCount / maxMcf) * maxMarkerSize) : 0,
           reports: maxReports > 0 ? Math.max(minMarkerSize, (reportsCount / maxReports) * maxMarkerSize) : 0,
-          litigation: maxLitigation > 0 ? Math.max(minMarkerSize, (litigationCount / maxLitigation) * maxMarkerSize) : 0,
+          litigation: minMarkerSize,
         },
       };
       return acc;
@@ -216,17 +235,18 @@ export default function MapChart({ showLitigation = false }: IProps) {
     openToolTip([e.clientX, e.clientY], geography?.display_value ?? geo.properties.name);
   };
 
-  const handleMarkerClick = (e: React.MouseEvent<SVGPathElement>, countryCode: string) => {
+  const handleMarkerClick = (e: React.MouseEvent<SVGGElement>, countryCode: string) => {
     const geography = mapData.geographies[countryCode];
     openToolTip([e.clientX, e.clientY], geography?.display_value ?? "");
   };
 
-  const handleGeoHover = (e: React.MouseEvent<SVGPathElement>, hoveredGeo: string) => {
+  const handleGeoHover = (e: React.MouseEvent<SVGGElement>, hoveredGeo: string) => {
     setActiveGeography("");
     openToolTip([e.clientX, e.clientY], hoveredGeo);
   };
 
   const handleGeographySelected = (selectedCountry: TGeographyWithCoords) => {
+    if (!selectedCountry || !selectedCountry.coords) return;
     setMapCenter(selectedCountry.coords);
     setMapZoom(5);
     const mapElement = mapRef.current;
@@ -257,7 +277,7 @@ export default function MapChart({ showLitigation = false }: IProps) {
     });
   };
 
-  if (mapDataStatus === "loading") {
+  if (mapDataStatus === "pending") {
     return <p>Loading data for the map...</p>;
   }
 
@@ -265,45 +285,67 @@ export default function MapChart({ showLitigation = false }: IProps) {
     return <p>There was an error loading the data for the map.</p>;
   }
 
+  const getMaxValue = () => {
+    switch (selectedFamCategory) {
+      case "lawsPolicies":
+        return mapData.maxLawsPolicies;
+      case "unfccc":
+        return mapData.maxUnfccc;
+      case "reports":
+        return mapData.maxReports;
+      case "mcf":
+        return mapData.maxMcf;
+      case "litigation":
+        return mapData.maxLitigation;
+      default:
+        return mapData.maxLawsPolicies;
+    }
+  };
+
   return (
-    <>
+    <ErrorBoundary fallback={<div>Sorry. The map has failed to load.</div>}>
       <div className="flex justify-between items-center my-4">
-        <div>
-          <select
-            className="border border-gray-300 small rounded-full !pl-4"
-            onChange={(e) => {
-              setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc" | "mcf" | "reports" | "litigation");
-            }}
-            value={selectedFamCategory}
-            aria-label="Select a document type to display on the map"
-            name="Document type selector"
-          >
-            <option value="lawsPolicies">Laws and policies</option>
-            <option value="unfccc">UNFCCC</option>
-            {showMcf && <option value="mcf">MCF projects</option>}
-            <option value="reports">Reports</option>
-            {showLitigation && <option value="litigation">Litigation</option>}
-          </select>
-        </div>
+        <Heading level={2}>Search the globe</Heading>
+        {showCategorySelect && (
+          <div>
+            <select
+              className="border border-gray-300 small rounded-full pl-4!"
+              onChange={(e) => {
+                setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc" | "mcf" | "reports" | "litigation");
+              }}
+              value={selectedFamCategory}
+              aria-label="Select a document type to display on the map"
+              name="Document type selector"
+            >
+              <option value="lawsPolicies">Laws and policies</option>
+              <option value="unfccc">UNFCCC</option>
+              {showMcf && <option value="mcf">MCF projects</option>}
+              <option value="reports">Reports</option>
+              {showLitigation && <option value="litigation">Litigation</option>}
+            </select>
+          </div>
+        )}
+
         <div>
           <div className="flex items-center gap-4">
             <div className="relative w-[300px]" data-cy="geographies">
               <GeographySelect
                 title="Search for a country or territory"
                 list={mapData.geographies}
-                keyField="value"
+                keyField="display_value"
                 keyFieldDisplay="display_value"
                 filterType="geography"
                 handleFilterChange={(_, value) => {
-                  handleGeographySelected(mapData.geographies[value]);
+                  handleGeographySelected(mapData.geographies[value]); //TODO: fix this because we are using the name as key
                 }}
               />
             </div>
           </div>
         </div>
       </div>
-      <div ref={mapRef} className="map-container relative border border-gray-300" data-cy="world-map">
-        <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 160 }} height={340}>
+
+      <div ref={mapRef} className="map-container relative" data-cy="world-map">
+        <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 125 }} height={340}>
           <ZoomableGroup
             maxZoom={MAX_ZOOM}
             minZoom={MIN_ZOOM}
@@ -326,21 +368,24 @@ export default function MapChart({ showLitigation = false }: IProps) {
             <Graticule stroke="#E4E5E6" strokeWidth={0.2} />
             <Geographies geography={geoUrl}>
               {({ geographies }) =>
-                geographies.map((geo) => (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    style={geoStyle(activeGeography === geo.properties.name)}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleGeoClick(e, geo);
-                    }}
-                    onMouseOver={(e) => {
-                      handleGeoHover(e, geo.properties.name);
-                    }}
-                  />
-                ))
+                geographies.map((geo, i) => {
+                  const geoData = mapData.geographies[geo.properties.name];
+                  return (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      style={geoStyle(activeGeography === geo.properties.name, geoData?.familyCounts.LITIGATION || 0, mapData.maxLitigation)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleGeoClick(e, geo);
+                      }}
+                      onMouseOver={(e) => {
+                        handleGeoHover(e, geo.properties.name);
+                      }}
+                    />
+                  );
+                })
               }
             </Geographies>
             {mapDataStatus === "success" && (
@@ -369,7 +414,7 @@ export default function MapChart({ showLitigation = false }: IProps) {
                       <circle
                         r={geo.markers[selectedFamCategory]}
                         fill={getMarkerColour(geo.markers[selectedFamCategory], minMarkerSize, maxMarkerSize, activeGeography === geo.display_value)}
-                        stroke={getMarketStroke(activeGeography === geo.display_value)}
+                        stroke={getMarkerStroke(activeGeography === geo.display_value)}
                         strokeWidth={0.25}
                       />
                     </Marker>
@@ -388,41 +433,40 @@ export default function MapChart({ showLitigation = false }: IProps) {
           handleZoomOut={() => setMapZoom(mapZoom - 1)}
           handleReset={handleResetMapClick}
         />
-        <div className="absolute top-0 right-0 p-4">
-          <label
-            className="checkbox-input flex items-center p-2 px-4 rounded-full cursor-pointer border border-gray-300 bg-white"
-            htmlFor="show_eu_aggregated"
-          >
-            <input
-              className="border-gray-300 cursor-pointer"
-              id="show_eu_aggregated"
-              type="checkbox"
-              name="exact_match"
-              value={0}
-              checked={showUnifiedEU}
-              onChange={() => setShowUnifiedEU(!showUnifiedEU)}
-            />
-            <span className="px-2 text-sm">Show aggregated EU data</span>
-          </label>
-        </div>
+        {showEUCheckbox && (
+          <div className="absolute top-0 right-0 p-4">
+            <label
+              className="checkbox-input flex items-center p-2 px-4 rounded-full cursor-pointer border border-gray-300 bg-white"
+              htmlFor="show_eu_aggregated"
+            >
+              <input
+                className="border-gray-300 cursor-pointer"
+                id="show_eu_aggregated"
+                type="checkbox"
+                name="exact_match"
+                value={0}
+                checked={showUnifiedEU}
+                onChange={() => setShowUnifiedEU(!showUnifiedEU)}
+              />
+              <span className="px-2 text-sm">Show aggregated EU data</span>
+            </label>
+          </div>
+        )}
       </div>
-      {!!mapData.maxLawsPolicies && !!mapData.maxUnfccc && (
-        <Legend
-          max={
-            selectedFamCategory === "lawsPolicies"
-              ? mapData.maxLawsPolicies
-              : selectedFamCategory === "unfccc"
-                ? mapData.maxUnfccc
-                : selectedFamCategory === "reports"
-                  ? mapData.maxReports
-                  : selectedFamCategory === "mcf"
-                    ? mapData.maxMcf
-                    : mapData.maxLitigation
-          }
-          showMcf={showMcf}
-          showLitigation={showLitigation}
-        />
+      {selectedFamCategory !== "litigation" ? (
+        <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} />
+      ) : (
+        <div className="flex flex-col items-center justify-center gap-4 text-center text-sm font-normal leading-none py-4">
+          <p className="text-text-secondary">Darker color indicates the number of litigation submissions in our databases.</p>
+          <p className="text-text-tertiary">
+            This map uses the{" "}
+            <ExternalLink className="underline" url="https://www.iso.org/iso-3166-country-codes.html">
+              ISO 3166
+            </ExternalLink>{" "}
+            country code standard and is without prejudice to the status of or sovereignty over any territory.
+          </p>
+        </div>
       )}
-    </>
+    </ErrorBoundary>
   );
 }

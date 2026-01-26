@@ -1,17 +1,12 @@
+import { TLabelVariationKey, TThemeConfig } from "@/types";
+
 import { containsAny } from "./containsAny";
 
-import { TThemeConfig } from "@/types";
+export const getFilterLabel = (fallbackLabel: string, key: TLabelVariationKey, queryCategories: string | string[], themeConfig: TThemeConfig) => {
+  if (!themeConfig) return fallbackLabel;
 
-export const getFilterLabel = (fallbackLabel: string, key: string, queryCategories: string | string[], themeConfig: TThemeConfig) => {
-  if (!themeConfig || !themeConfig.labelVariations) {
-    return fallbackLabel;
-  }
-
-  const labelVariation = themeConfig.labelVariations.find((variation) => variation.key === key);
-
-  if (!labelVariation) {
-    return fallbackLabel;
-  }
+  const labelVariation = themeConfig.labelVariations[key];
+  if (!labelVariation) return fallbackLabel;
 
   // If our label variation does not have any categories - we assume that is for all
   if (labelVariation && labelVariation.category.length === 0) {

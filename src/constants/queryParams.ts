@@ -1,9 +1,12 @@
+export type TQueryParams = keyof typeof QUERY_PARAMS;
+
 export const QUERY_PARAMS = {
   // Core
   active_continuation_token: "act",
   category: "c",
   continuation_tokens: "cts",
   country: "l",
+  subdivision: "sd",
   exact_match: "e",
   offset: "o",
   passages_by_position: "sp",
@@ -23,9 +26,12 @@ export const QUERY_PARAMS = {
   topic: "tp",
   // Reports
   author_type: "at",
-  // UNFCCC
+  // UN Submissions (incl. UNFCCC)
   "_document.type": "t",
+  convention: "cv",
   // Pass through
   concept_id: "cfi",
   concept_name: "cfn",
+  concept_preferred_label: "cpl",
+  page_size: "page_size",
 };

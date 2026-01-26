@@ -1,20 +1,18 @@
+import { ExternalLink } from "@/components/ExternalLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { SiteWidth } from "@/components/panels/SiteWidth";
 import { SingleCol } from "@/components/panels/SingleCol";
-import { SubNav } from "@/components/nav/SubNav";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
-import { ExternalLink } from "@/components/ExternalLink";
 
 const Contact = () => {
   return (
     <Layout
       title="Contact"
       description="Get in touch with us for inquiries, support, or feedback regarding our climate change resources and initiatives."
+      theme="mcf"
     >
-      <SubNav>
-        <BreadCrumbs label={"Contact us"} />
-      </SubNav>
+      <BreadCrumbs label={"Contact us"} />
       <section className="pt-8">
         <SiteWidth>
           <SingleCol>

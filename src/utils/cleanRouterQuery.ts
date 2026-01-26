@@ -1,4 +1,5 @@
 import { ParsedUrlQuery } from "querystring";
+
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
 export const CleanRouterQuery = (query: ParsedUrlQuery) => {

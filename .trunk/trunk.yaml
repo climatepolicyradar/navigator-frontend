@@ -3,23 +3,51 @@
 # To learn more about the format of this file, see https://docs.trunk.io/reference/trunk-yaml
 version: 0.1
 cli:
-  version: 1.21.0
+  version: 1.24.0
 
 # Trunk provides extensibility via plugins.
 # (https://docs.trunk.io/plugins)
 plugins:
   sources:
     - id: trunk
-      ref: v1.4.5
+      ref: v1.7.1
       uri: https://github.com/trunk-io/plugins
+
+downloads:
+  - name: typos
+    downloads:
+      - os:
+          macos: apple-darwin
+        cpu:
+          x86_64: x86_64
+          arm_64: aarch64
+        url: https://github.com/crate-ci/typos/releases/download/v${version}/typos-v${version}-${cpu}-${os}.tar.gz
+      - os:
+          linux: unknown-linux-musl
+        cpu:
+          x86_64: x86_64
+          arm_64: aarch64
+        url: https://github.com/crate-ci/typos/releases/download/v${version}/typos-v${version}-${cpu}-${os}.tar.gz
+      - os:
+          windows: pc-windows-mscvc
+        cpu:
+          x86_64: x86_64
+        url: https://github.com/crate-ci/typos/releases/download/v${version}/typos-v${version}-${cpu}-${os}.tar.gz
 
 # Many linters and tools depend on runtimes - configure them here.
 # (https://docs.trunk.io/runtimes)
 runtimes:
   enabled:
     - go@1.21.0
-    - node@18.12.1
+    - node@22.16.0
     - python@3.10.8
+
+tools:
+  definitions:
+    - name: typos
+      download: typos
+      known_good_version: 1.36.2
+      shims: [typos]
 
 # This is the section where you manage your linters.
 # (https://docs.trunk.io/check/configuration)
@@ -35,27 +63,62 @@ lint:
     - linters: [markdownlint]
       paths:
         - LICENSE.md
+    - linters: [typos]
+      paths:
+        - src/constants/mapCentres.ts
+        - src/constants/stories.ts
+
+  definitions:
+    - name: typos
+      files:
+        - python
+        - markdown
+        - xml
+        - shell
+        - java
+        - typescript
+        - javascript
+      tools: [typos]
+      commands:
+        - output: sarif
+          success_codes: [0, 2]
+          run: typos ${target} --format sarif --config ${workspace}/.trunk/configs/_typos.toml --no-unicode
+          read_output_from: stdout
 
   enabled:
-    - actionlint@1.7.5
-    - checkov@3.2.46
-    - eslint@9.24.0
+    - actionlint@1.7.7
+    - checkov@3.2.451
+    - eslint@8.57.0
     - git-diff-check
-    - markdownlint@0.39.0
-    - oxipng@9.0.0
-    - prettier@3.2.5
+    - markdownlint@0.45.0
+    - oxipng@9.1.5
+    - prettier@3.6.2
     - shellcheck@0.10.0
     - shfmt@3.6.0
-    - svgo@3.2.0
-    - terrascan@1.19.1
-    - trivy@0.50.0
-    - trufflehog@3.71.0
-    - yamllint@1.35.1
+    - svgo@4.0.0
+    - trivy@0.64.1
+    - trufflehog@3.90.0
+    - typos@1.36.2
+    - yamllint@1.37.1
 actions:
   disabled:
     - trunk-announce
     - trunk-check-pre-push
+
+  definitions:
+    - id: typescript-tsc-pre-push
+      triggers:
+        - git_hooks: [pre-push]
+      run: npm run type-check
+
+    - id: npm-install
+      triggers:
+        - files: [package.json, package-lock.json]
+      run: npm install
+
   enabled:
     - trunk-fmt-pre-commit
     - trunk-check-pre-commit
     - trunk-upgrade-available
+    - typescript-tsc-pre-push
+    - npm-install

@@ -1,4 +1,4 @@
-import { LuCheck } from "react-icons/lu";
+import { Check } from "lucide-react";
 
 interface IProps {
   children: React.ReactNode;
@@ -8,12 +8,12 @@ interface IProps {
 
 export const SearchSettingsItem = ({ children, isActive, onClick, ...props }: IProps) => (
   <a
-    className={`flex gap-1 text-white items-center hover:text-white hover:opacity-100 ${isActive ? "" : "opacity-70"}`}
+    className={`flex justify-between gap-1 text-text-primary items-top hover:opacity-100 ${isActive ? "" : "opacity-80"}`}
     onClick={onClick}
     href="#"
     {...props}
   >
-    {isActive && <LuCheck size="14" />}
     {children}
+    {isActive && <Check size="14" className="shrink-0 mt-1" />}
   </a>
 );

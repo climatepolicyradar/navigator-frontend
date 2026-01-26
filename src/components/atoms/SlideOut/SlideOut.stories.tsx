@@ -1,7 +1,8 @@
-import { Meta, StoryObj } from "@storybook/react/*";
-import { SlideOut } from "./SlideOut";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
+
 import { SlideOutContext } from "@/context/SlideOutContext";
-import { useState } from "react";
+
+import { SlideOut } from "./SlideOut";
 
 interface IProps {
   open: boolean;
@@ -23,7 +24,7 @@ export const Default: TStory = {
   args: {
     children: "SlideOut content",
   },
-  render: ({ children }) => {
+  render: ({ children }: { children: React.ReactNode }) => {
     return (
       <SlideOutContext.Provider value={{ currentSlideOut: "concepts", setCurrentSlideOut: () => {} }}>
         <div className="relative h-screen w-4">

@@ -1,7 +1,8 @@
-import { Button } from "@/components/atoms/button/Button";
-import { setFeatureFlags } from "@/utils/featureFlags";
 import { usePostHog } from "posthog-js/react";
 import { useEffect } from "react";
+
+import { Button } from "@/components/atoms/button/Button";
+import { setFeatureFlags } from "@/utils/featureFlags";
 
 export default function FeatureFlags() {
   const posthog = usePostHog();
@@ -17,7 +18,7 @@ export default function FeatureFlags() {
     });
 
     posthog.onFeatureFlags((featureFlags) => {
-      const newFeatureFlags = {};
+      const newFeatureFlags: { [key: string]: boolean } = {};
       for (const featureFlag of featureFlags) {
         newFeatureFlags[featureFlag] = true;
       }

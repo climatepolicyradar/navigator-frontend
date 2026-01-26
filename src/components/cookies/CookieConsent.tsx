@@ -1,24 +1,24 @@
-import { useEffect, useState } from "react";
 import Script from "next/script";
+import { useEffect, useState } from "react";
 
-import { Button } from "@/components/atoms/button/Button";
 import { ExternalLink } from "@/components/ExternalLink";
-
+import { Analytics } from "@/components/Themed";
+import { Button } from "@/components/atoms/button/Button";
+import { COOKIE_CONSENT_NAME } from "@/constants/cookies";
+import { TThemeConfig } from "@/types";
 import { getCookie, setCookie } from "@/utils/cookies";
 import getDomain from "@/utils/getDomain";
 
-import { COOKIE_CONSENT_NAME } from "@/constants/cookies";
-import dynamic from "next/dynamic";
-
-const ThemeAnalytics = dynamic<{ enableAnalytics: boolean }>(() => import(`/themes/${process.env.THEME}/components/Analytics`));
+import { Card } from "../atoms/card/Card";
 
 declare let gtag: Function;
 
 interface IProps {
   onConsentChange: (consent: boolean) => void;
+  themeConfig: TThemeConfig;
 }
 
-export const CookieConsent = ({ onConsentChange }: IProps) => {
+export const CookieConsent = ({ onConsentChange, themeConfig }: IProps) => {
   const [hide, setHide] = useState(true);
   const [enableAnalytics, setEnableAnalytics] = useState(false);
 
@@ -52,29 +52,49 @@ export const CookieConsent = ({ onConsentChange }: IProps) => {
     setHide(true);
   };
 
+  const cookiePolicyUrl = themeConfig?.links?.cookiePolicy || "https://climatepolicyradar.org/privacy-policy";
+  const privacyPolicyUrl = themeConfig?.links?.privacyPolicy || "https://climatepolicyradar.org/privacy-policy";
+
   return (
     <>
-      <div
-        data-cy="cookie-consent"
-        className={`${hide ? "hidden" : ""} fixed w-[90%] max-w-[600px] bottom-6 left-1/2 translate-x-[-50%] z-[9999] rounded-xl bg-blue-100`}
-      >
-        <div className="py-4 px-6">
-          <div className="text-xl mb-2">Cookies and your privacy</div>
-          <p className="text-content text-sm mb-2">
+      <div className={`flex justify-end ${hide ? "hidden" : ""}`} data-cy="cookie-consent">
+        <Card color="mono" variant="outlined" className="m-3 sm:m-4 max-w-[550px] bg-surface-ui pointer-events-auto select-none">
+          <p className="text-base leading-normal font-semibold text-text-primary">Cookies and your privacy</p>
+          <p className="mt-2 mb-4 text-sm leading-normal font-normal text-text-primary">
             We take your trust and privacy seriously. Climate Policy Radar uses cookies to make our site work optimally, analyse traffic to our
             website and improve your experience. Read our{" "}
-            <ExternalLink url="https://climatepolicyradar.org/privacy-policy">privacy and cookie policy</ExternalLink> to learn more. By accepting
-            cookies you will help us make our site better, but you can reject them if you wish.
+            <ExternalLink url={privacyPolicyUrl} className="underline">
+              privacy policy
+            </ExternalLink>{" "}
+            and{" "}
+            <ExternalLink url={cookiePolicyUrl} className="underline">
+              cookie policy
+            </ExternalLink>{" "}
+            to learn more. By accepting cookies you will help us make our site better, but you can reject them if you wish.
           </p>
-          <div className="flex justify-end gap-4">
-            <Button rounded data-cy="cookie-consent-accept" onClick={cookiesAcceptHandler}>
+          <div className="flex gap-2">
+            <Button
+              color="mono"
+              size="small"
+              onClick={cookiesAcceptHandler}
+              data-cy="cookie-consent-accept"
+              data-ph-capture-attribute-cookie-consent="accept"
+            >
               Accept
             </Button>
-            <Button rounded variant="ghost" onClick={cookiesRejectHandler} data-cy="cookie-consent-reject">
+            <Button
+              color="mono"
+              size="small"
+              variant="ghost"
+              className="text-text-secondary hover:text-text-primary"
+              onClick={cookiesRejectHandler}
+              data-cy="cookie-consent-reject"
+              data-ph-capture-attribute-cookie-consent="reject"
+            >
               Reject
             </Button>
           </div>
-        </div>
+        </Card>
       </div>
       <Script id="google-analytics" strategy="afterInteractive">
         {`
@@ -116,7 +136,7 @@ export const CookieConsent = ({ onConsentChange }: IProps) => {
           </Script>
         </>
       )}
-      <ThemeAnalytics enableAnalytics={enableAnalytics} />
+      <Analytics enableAnalytics={enableAnalytics} />
     </>
   );
 };

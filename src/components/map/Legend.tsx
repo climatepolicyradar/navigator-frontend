@@ -1,3 +1,9 @@
+import { useContext } from "react";
+
+import { FeatureFlagsContext } from "@/context/FeatureFlagsContext";
+import { ThemeContext } from "@/context/ThemeContext";
+import { getFeatures } from "@/utils/features";
+
 interface IProps {
   max: number;
   showLitigation: boolean;
@@ -5,6 +11,10 @@ interface IProps {
 }
 
 export const Legend = ({ max, showLitigation, showMcf }: IProps) => {
+  const { themeConfig } = useContext(ThemeContext);
+  const featureFlags = useContext(FeatureFlagsContext);
+  const features = getFeatures(themeConfig, featureFlags);
+
   const scale = [1, Math.round(max * 0.25), Math.round(max * 0.5), Math.round(max * 0.75), max];
 
   return (
@@ -33,10 +43,14 @@ export const Legend = ({ max, showLitigation, showMcf }: IProps) => {
           <p>{scale[4]}</p>
         </div>
       </div>
-      <p>
-        Size and colour show the number of laws, policies, reports{showLitigation ? ", litigation" : ""}
-        {showMcf ? ", MCF projects" : ""} or UNFCCC submissions in our databases.
-      </p>
+      {features.litigation ? (
+        <p>Size and colour show the number of litigation submissions in our databases.</p>
+      ) : (
+        <p>
+          Size and colour show the number of laws, policies, reports{showLitigation ? ", litigation" : ""}
+          {showMcf ? ", MCF projects" : ""} or UNFCCC submissions in our databases.
+        </p>
+      )}
     </div>
   );
 };

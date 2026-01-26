@@ -1,8 +1,10 @@
-import App from "@/pages/_app";
 import { render } from "@testing-library/react";
-import { useEnvConfig, withEnvConfig } from "./EnvConfig";
 import "@testing-library/jest-dom";
 import { vi } from "vitest";
+
+import App from "@/pages/_app";
+
+import { useEnvConfig, withEnvConfig } from "./EnvConfig";
 
 const mockRouter = {} as any;
 test("should not error when component does not use useEnvConfig nor uses withEnvConfig", async () => {
@@ -10,7 +12,7 @@ test("should not error when component does not use useEnvConfig nor uses withEnv
   const WithNoUseEnvConfig = <App router={mockRouter} Component={ComponentWithNoEnvConfig} pageProps={{}} theme={""} adobeApiKey={""} />;
 
   const rendered = render(WithNoUseEnvConfig);
-  expect(rendered.getByText("Hello testing library")).toBeDefined();
+  expect(rendered.getByText("Hello testing library")).toBeInTheDocument();
 });
 
 test("should error when component uses useEnvConfig without using withEnvConfig", async () => {
@@ -24,7 +26,7 @@ test("should error when component uses useEnvConfig without using withEnvConfig"
   const WithUseEnvConfig = <App router={mockRouter} Component={ComponentWithUseEnvConfig} pageProps={{}} theme={""} adobeApiKey={""} />;
 
   const rendered = render(WithUseEnvConfig);
-  expect(rendered.getByText("Sorry, the app has encountered an error")).toBeDefined();
+  expect(rendered.getByText("Sorry, the app has encountered an error")).toBeInTheDocument();
   expect(consoleSpy).toHaveBeenCalled();
 
   consoleSpy.mockRestore();
@@ -48,5 +50,5 @@ test("should not error when component uses useEnvConfig with using withEnvConfig
   const WithNoNoEnvConfig = <App router={mockRouter} Component={ComponentWithUseEnvConfig} pageProps={pageProps.props} theme={""} adobeApiKey={""} />;
 
   const rendered = render(WithNoNoEnvConfig);
-  expect(rendered.getByText("Hello testing library my_var")).toBeDefined();
+  expect(rendered.getByText("Hello testing library my_var")).toBeInTheDocument();
 });

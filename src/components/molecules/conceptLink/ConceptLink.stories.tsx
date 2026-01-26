@@ -1,18 +1,22 @@
-import { Meta, StoryObj } from "@storybook/react/*";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
+
+import { TTopic } from "@/types";
+
 import { ConceptLink } from "./ConceptLink";
-import { TConcept } from "@/types";
 
 const meta = {
   title: "Molecules/ConceptLink",
   component: ConceptLink,
   parameters: { layout: "centered" },
-  argTypes: {},
+  argTypes: {
+    onClick: { control: false },
+  },
 } satisfies Meta<typeof ConceptLink>;
 type TStory = StoryObj<typeof ConceptLink>;
 
 export default meta;
 
-const concepts: Partial<TConcept>[] = [
+const concepts: Partial<TTopic>[] = [
   {
     preferred_label: "air pollution risk",
     description:
@@ -49,7 +53,7 @@ const concepts: Partial<TConcept>[] = [
 
 export const Single: TStory = {
   args: {
-    concept: concepts[0] as TConcept,
+    concept: concepts[0] as TTopic,
   },
 };
 
@@ -60,8 +64,16 @@ export const Multiple: TStory = {
   render: () => (
     <div className="flex flex-row gap-4">
       {concepts.map((concept) => (
-        <ConceptLink key={concept.wikibase_id} concept={concept as TConcept} />
+        <ConceptLink key={concept.wikibase_id} concept={concept as TTopic} />
       ))}
     </div>
   ),
+};
+
+export const WithOnClick: TStory = {
+  name: "With onClick",
+  args: {
+    concept: concepts[1] as TTopic,
+    onClick: (concept: TTopic) => alert(concept.preferred_label),
+  },
 };

@@ -1,13 +1,16 @@
-import { Input } from "@/components/atoms/input/Input";
-import { QUERY_PARAMS } from "@/constants/queryParams";
-import { systemGeoCodes } from "@/constants/systemGeos";
-import useConfig from "@/hooks/useConfig";
-import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
-import { sortBy } from "lodash";
-import { Url } from "next/dist/shared/lib/router/router";
+import { ParsedUrlQuery } from "querystring";
+
+import sortBy from "lodash/sortBy";
+import { ArrowRight, CornerDownLeft, Search } from "lucide-react";
 import { useRouter } from "next/router";
 import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";
-import { LuArrowRight, LuCornerDownLeft, LuSearch } from "react-icons/lu";
+
+import { Input } from "@/components/atoms/input/Input";
+import { QUERY_PARAMS } from "@/constants/queryParams";
+import { SYSTEM_GEO_CODES } from "@/constants/systemGeos";
+import useConfig from "@/hooks/useConfig";
+import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
+
 import { NavSearchDropdown } from "./NavSearchDropdown";
 import { NavSearchSuggestion } from "./NavSearchSuggestion";
 
@@ -68,7 +71,7 @@ export const NavSearch = () => {
     return sortBy(
       geographies.filter(
         (geography) =>
-          !systemGeoCodes.includes(geography.slug) &&
+          !SYSTEM_GEO_CODES.includes(geography.slug) &&
           (geography.display_value.toLowerCase().includes(searchText.toLowerCase()) ||
             searchText.toLowerCase().includes(geography.display_value.toLowerCase()))
       ),
@@ -85,8 +88,10 @@ export const NavSearch = () => {
   if (router.pathname === "/geographies/[id]") contextualSearchName = "This geography";
 
   // The path to navigate to when submitting the search input
-  const searchHref: Url = useMemo(() => {
-    const newQuery = CleanRouterQuery({ ...router.query });
+  const searchLink = useMemo(() => {
+    // Start with existing query if already on search page to preserve filters
+    const newQuery = router.pathname.includes("search") ? CleanRouterQuery({ ...router.query }) : {};
+    // Always reset offset / paging to start on page 1 of results
     delete newQuery[QUERY_PARAMS.offset];
 
     if (searchText) {
@@ -116,7 +121,7 @@ export const NavSearch = () => {
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     setIsFocused(false);
-    router.push(searchHref);
+    router.push(searchLink);
   };
 
   const handleSuggestionClick = () => {
@@ -132,7 +137,7 @@ export const NavSearch = () => {
   };
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="relative flex-1 -mx-2" ref={ref}>
       <div className="p-2 relative z-21">
         <form onSubmit={handleSubmit} className="flex flex-row gap-2">
           {/* Search field */}
@@ -142,7 +147,7 @@ export const NavSearch = () => {
             containerClasses={`h-[40px] focus-within:!outline-0`}
             icon={
               <button type="submit" className="w-4 h-4 ml-0.5 shrink-0">
-                <LuSearch height="16" width="16" />
+                <Search height="16" width="16" />
               </button>
             }
             iconOnLeft
@@ -175,7 +180,7 @@ export const NavSearch = () => {
                       key={geography.id}
                       href={`/geographies/${geography.slug}`}
                       Icon={
-                        <LuArrowRight height="16" width="16" className="opacity-0 group-hover:opacity-100 text-text-brand transition duration-200" />
+                        <ArrowRight height="16" width="16" className="opacity-0 group-hover:opacity-100 text-text-brand transition duration-200" />
                       }
                       onClick={handleSuggestionClick}
                     >
@@ -186,11 +191,12 @@ export const NavSearch = () => {
               )}
               {/* Search */}
               <NavSearchSuggestion
-                href={searchHref}
-                Icon={<LuSearch height="16" width="16" />}
+                href={searchLink.pathname}
+                query={searchLink.query}
+                Icon={<Search height="16" width="16" />}
                 hint={
                   <div className="text-xs text-text-tertiary font-[440]">
-                    Press <LuCornerDownLeft height="12" width="12" className="inline group-hover:text-text-brand transition duration-200" /> ENTER
+                    Press <CornerDownLeft height="12" width="12" className="inline group-hover:text-text-brand transition duration-200" /> ENTER
                   </div>
                 }
                 onClick={handleSuggestionClick}

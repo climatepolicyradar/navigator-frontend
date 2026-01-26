@@ -1,42 +1,41 @@
 import { useState, useEffect } from "react";
 
-import TabbedNavItem from "./TabbedNavItem";
-
 import { getCategoryTooltip } from "@/helpers/getCategoryTooltip";
-
 import { TDocumentCategory } from "@/types";
 
+import TabbedNavItem from "./TabbedNavItem";
+
 type TTabItems = {
-  title: TDocumentCategory;
+  title: string;
   count?: number;
 };
 
 interface IProps {
   handleTabClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string): void;
   items: TTabItems[];
-  activeIndex: number;
+  activeItem: string;
   showBorder?: boolean;
 }
 
-const TabbedNav = ({ handleTabClick, items, activeIndex = 0, showBorder = true }: IProps) => {
-  const [activeTab, setActiveTab] = useState(activeIndex);
+const TabbedNav = ({ handleTabClick, items, activeItem, showBorder = true }: IProps) => {
+  const [activeTab, setActiveTab] = useState(items.findIndex((item) => item.title === activeItem));
 
-  const helpText = (index: number) => {
-    return getCategoryTooltip(items[index].title);
+  const helpText = (item: string) => {
+    return getCategoryTooltip(items.find((i) => i.title === item) ? item : "All");
   };
 
   useEffect(() => {
-    setActiveTab(activeIndex);
-  }, [activeIndex]);
+    setActiveTab(items.findIndex((item) => item.title === activeItem));
+  }, [items, activeItem]);
 
   const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number, value: string) => {
-    setActiveTab(index);
+    setActiveTab(items.findIndex((item) => item.title === value));
     handleTabClick(e, index, value);
   };
 
   return (
     <>
-      <div className={`grid grid-cols-2 pb-2 ${showBorder && "border-b border-gray-200"} md:grid-cols-none md:flex`} data-cy="tabbed-nav">
+      <div className="flex flex-wrap gap-2" data-cy="tabbed-nav">
         {items.map((item, index) => (
           <TabbedNavItem
             key={`tab${index}`}
@@ -48,7 +47,7 @@ const TabbedNav = ({ handleTabClick, items, activeIndex = 0, showBorder = true }
           />
         ))}
       </div>
-      {helpText(activeIndex) && <div className="pl-2 text-sm my-1">{helpText(activeIndex)}</div>}
+      {helpText(activeItem) && <div className="text-sm my-2 text-text-tertiary">{helpText(activeItem)}</div>}
     </>
   );
 };

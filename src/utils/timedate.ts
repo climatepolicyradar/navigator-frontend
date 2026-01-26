@@ -7,20 +7,32 @@ export const convertDate = (data: string): [number, string, string] => {
     const [day, month, year] = data.split("/");
     dateObj = new Date(`${month}-${day}-${year}`);
   }
-  const year = dateObj.getFullYear();
-  const day = padNumber(dateObj.getDate());
-  const month = dateObj.getMonth();
+  const year = dateObj.getUTCFullYear();
+  const day = padNumber(dateObj.getUTCDate());
+  const month = dateObj.getUTCMonth();
   return [year, day, months[month]?.substring(0, 3)];
 };
 
-export const padNumber = (number) => {
-  return number >= 10 ? number : number.toString().padStart(2, "0");
+export const padNumber = (number: number) => {
+  return number >= 10 ? number.toString() : number.toString().padStart(2, "0");
 };
 
-export const formatDate = (data: string) => {
+export const formatDate = (data: string): [number | "", string, string] => {
+  if (!data || data.length === 0) return ["", "", ""];
   const dateObj = new Date(data);
-  const year = dateObj.getFullYear();
-  const day = padNumber(dateObj.getDate());
-  const month = dateObj.getMonth();
+  const year = dateObj.getUTCFullYear();
+  const day = padNumber(dateObj.getUTCDate());
+  const month = dateObj.getUTCMonth();
   return [year, day, months[month]];
+};
+
+export const formatDateShort = (date: Date, language?: string): string => {
+  if (isNaN(date.getTime())) return "";
+
+  return new Intl.DateTimeFormat(language || "en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "UTC",
+  }).format(date);
 };

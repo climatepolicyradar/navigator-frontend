@@ -1,18 +1,14 @@
-import Layout from "@/components/layouts/Main";
-import { SiteWidth } from "@/components/panels/SiteWidth";
-import { SingleCol } from "@/components/panels/SingleCol";
-import { SubNav } from "@/components/nav/SubNav";
-
 import { ExternalLink } from "@/components/ExternalLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Layout from "@/components/layouts/Main";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 
 const TermsOfUse = () => {
   return (
-    <Layout title="Terms of use">
-      <SubNav>
-        <BreadCrumbs label={"Terms of use"} />
-      </SubNav>
+    <Layout title="Terms of use" theme="cclw">
+      <BreadCrumbs label={"Terms of use"} />
       <section>
         <SiteWidth>
           <SingleCol>

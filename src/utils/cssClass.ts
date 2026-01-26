@@ -1,4 +1,4 @@
-export function removeClass(el, className) {
+export function removeClass(el: HTMLElement, className: string) {
   if (el?.classList) {
     el.classList.remove(className);
   } else {
@@ -6,7 +6,7 @@ export function removeClass(el, className) {
   }
 }
 
-export function addClass(el, className) {
+export function addClass(el: HTMLElement, className: string) {
   if (el?.classList) {
     el.classList.add(className);
   } else {

@@ -1,18 +1,22 @@
-import React, { useEffect } from "react";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 
-import useUpdateCountries from "@/hooks/useUpdateCountries";
-import useConfig from "@/hooks/useConfig";
-
+import { Homepage } from "@/components/Themed";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-
+import { withEnvConfig } from "@/context/EnvConfig";
+import useConfig from "@/hooks/useConfig";
+import useUpdateCountries from "@/hooks/useUpdateCountries";
+import { TTheme, TThemeConfig } from "@/types";
+import { readConfigFile } from "@/utils/readConfigFile";
 import { triggerNewSearch } from "@/utils/triggerNewSearch";
-import dynamic from "next/dynamic";
-import { IProps as HomepageProps } from "@/cpr/pages/homepage";
 
-const Homepage = dynamic<HomepageProps>(() => import(`/themes/${process.env.THEME}/pages/homepage`));
+interface IProps {
+  theme: TTheme;
+  themeConfig: TThemeConfig;
+}
 
-const IndexPage = () => {
+const IndexPage = ({ theme, themeConfig }: IProps) => {
   const router = useRouter();
   const { mutate: updateCountries } = useUpdateCountries();
 
@@ -24,7 +28,16 @@ const IndexPage = () => {
   };
 
   const handleSearchChange = (type: string, value: any) => {
-    router.query[type] = [value];
+    // Handle exact_match specially - only include when false
+    if (type === QUERY_PARAMS.exact_match) {
+      if (value === false) {
+        router.query[type] = "false";
+      } else {
+        delete router.query[type];
+      }
+    } else {
+      router.query[type] = [value];
+    }
     router.push({ query: router.query });
   };
 
@@ -42,10 +55,26 @@ const IndexPage = () => {
         handleSearchInput={handleSearchInput}
         handleSearchChange={handleSearchChange}
         searchInput={(router.query[QUERY_PARAMS.query_string] as string) ?? ""}
-        exactMatch={router.query[QUERY_PARAMS.exact_match] === "true"}
+        exactMatch={router.query[QUERY_PARAMS.exact_match] !== "false"}
+        theme={theme}
+        themeConfig={themeConfig}
       />
     </>
   );
 };
 
 export default IndexPage;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
+
+  const theme = process.env.THEME;
+  const themeConfig = await readConfigFile(theme);
+
+  return {
+    props: withEnvConfig({
+      theme,
+      themeConfig,
+    }),
+  };
+};

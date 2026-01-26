@@ -1,26 +1,22 @@
 import Image from "next/image";
 
-import Layout from "@/components/layouts/Main";
-import { SiteWidth } from "@/components/panels/SiteWidth";
-import { SingleCol } from "@/components/panels/SingleCol";
-import { SubNav } from "@/components/nav/SubNav";
-
+import { Acknowledgements } from "@/cclw/components/Acknowledgements";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Layout from "@/components/layouts/Main";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
-
-import { Acknowledgements } from "@/cclw/components/Acknowledgements";
 
 const About = () => {
   return (
     <Layout
       title="About"
       description="Climate Change Laws of the World is a database of national-level climate change legislation and policies globally, led by the Grantham Research Institute at LSE."
+      theme="cclw"
     >
-      <SubNav>
-        <BreadCrumbs label={"About"} />
-      </SubNav>
+      <BreadCrumbs label={"About"} />
       <section>
         <SiteWidth>
           <SingleCol>

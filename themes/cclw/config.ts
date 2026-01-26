@@ -7,26 +7,33 @@ const config: TThemeConfig = {
       {
         label: "All",
         slug: "All",
-        value: ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000591.n0000", "CPR.corpus.i00000592.n0000", "UNFCCC.corpus.i00000001.n0000"],
+        value: [
+          "CCLW.corpus.i00000001.n0000",
+          "CPR.corpus.i00000001.n0000",
+          "CPR.corpus.i00000591.n0000",
+          "CPR.corpus.i00000592.n0000",
+          "UNFCCC.corpus.i00000001.n0000",
+          "CPR.corpus.Goldstandard.n0000",
+        ],
       },
       {
-        label: "UNFCCC",
+        label: "UNFCCC Submissions",
         slug: "UNFCCC",
         value: ["UNFCCC.corpus.i00000001.n0000"],
         category: ["UNFCCC"],
       },
       {
-        label: "Policies",
-        slug: "policies",
-        value: ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000592.n0000"],
-        category: ["Executive"],
-      },
-      {
         label: "Laws",
         slug: "laws",
-        value: ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000592.n0000"],
+        value: ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000592.n0000", "CPR.corpus.i00000001.n0000", "CPR.corpus.Goldstandard.n0000"],
         category: ["Legislative"],
         alias: "LAWS",
+      },
+      {
+        label: "Policies",
+        slug: "policies",
+        value: ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000592.n0000", "CPR.corpus.i00000001.n0000", "CPR.corpus.Goldstandard.n0000"],
+        category: ["Executive"],
       },
     ],
   },
@@ -49,13 +56,14 @@ const config: TThemeConfig = {
       ],
     },
     {
-      label: "Topic",
+      label: "Response areas",
       taxonomyKey: "topic",
       apiMetaDataKey: "family.topic",
       type: "radio",
       category: ["CCLW.corpus.i00000001.n0000"],
       dependentFilterKey: "",
       corporaKey: "Laws and Policies",
+      showTopicsMessage: true,
     },
     {
       label: "Sector",
@@ -67,35 +75,119 @@ const config: TThemeConfig = {
       showFade: "true",
       corporaKey: "Laws and Policies",
       quickSearch: "true",
+      showTopicsMessage: true,
+    },
+    {
+      label: "Author Type",
+      corporaKey: "Intl. agreements",
+      taxonomyKey: "author_type",
+      apiMetaDataKey: "family.author_type",
+      type: "radio",
+      category: ["UNFCCC.corpus.i00000001.n0000"],
+    },
+    {
+      label: "Submission type",
+      corporaKey: "Intl. agreements",
+      taxonomyKey: "_document.type",
+      apiMetaDataKey: "document.type",
+      type: "radio",
+      category: ["UNFCCC.corpus.i00000001.n0000"],
+      options: [
+        {
+          label: "Nationally Determined Contribution (NDC)",
+          slug: "Nationally Determined Contribution",
+          value: "Nationally Determined Contribution",
+          group: "UNFCCC",
+        },
+        {
+          label: "National Adaptation Plan (NAP)",
+          slug: "National Adaptation Plan",
+          value: "National Adaptation Plan",
+          group: "UNFCCC",
+        },
+        {
+          label: "Biennial Transparency Report (BTR)",
+          slug: "Biennial Transparency Report",
+          value: "Biennial Transparency Report",
+          group: "UNFCCC",
+        },
+        {
+          label: "Long-Term Low-Emission Development Strategy (LT-LEDS)",
+          slug: "Long-Term Low-Emission Development Strategy",
+          value: "Long-Term Low-Emission Development Strategy",
+          group: "UNFCCC",
+        },
+        {
+          label: "Biennial Update Report (BUR)",
+          slug: "Biennial Update Report",
+          value: "Biennial Update Report",
+          group: "UNFCCC",
+        },
+        {
+          label: "Biennial Report (BR)",
+          slug: "Biennial Report",
+          value: "Biennial Report",
+          group: "UNFCCC",
+        },
+        {
+          label: "National Communication (NC)",
+          slug: "National Communication",
+          value: "National Communication",
+          group: "UNFCCC",
+        },
+        {
+          label: "National Inventory Report (NIR)",
+          slug: "National Inventory Report",
+          value: "National Inventory Report",
+          group: "UNFCCC",
+        },
+        {
+          label: "Adaptation Communication (AC)",
+          slug: "Adaptation Communication",
+          value: "Adaptation Communication",
+          group: "UNFCCC",
+        },
+      ],
     },
   ],
-  labelVariations: [],
-  links: [
-    {
-      key: "download-database",
-      url: "https://form.jotform.com/233131638610347",
-    },
-  ],
-  metadata: [
-    {
-      key: "default",
+  labelVariations: {},
+  links: {
+    downloadDatabase: "https://form.jotform.com/233131638610347",
+    emailAlerts: "https://form.jotform.com/252034552030341",
+  },
+  pageMetadata: {
+    default: {
       title: "Climate Change Laws of the World",
+      description: "",
+    },
+    homepage: {
+      title: "Law and Policy Search",
       description:
         "The Climate Change Laws of the World database gives you access to national-level climate change legislation and policies from around the world.",
     },
-    {
-      key: "geography",
+    geography: {
       title: "{text} climate laws and policies",
       description:
         "Find climate change laws, policies, targets and other climate policy data and indicators for {text}, alongside information about their legislative process.",
     },
-    {
-      key: "search",
-      title: "Law and Policy Search",
+    search: {
+      title: "Search the Climate Change Laws of the World database",
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
-  ],
-  documentCategories: ["All", "Laws", "Policies", "UNFCCC", "Litigation"],
+  },
+  documentCategories: ["All", "UN Submissions", "Laws", "Policies", "Litigation"],
+  defaultDocumentCategory: "All",
+  pageBlocks: {
+    family: ["summary", "documents", "metadata", "topics", "collections", "targets", "note"],
+    geography: ["recents", "targets", "statistics", "legislativeProcess"],
+  },
+  tutorials: ["knowledgeGraph"],
+  features: {
+    familyConceptsSearch: false,
+    knowledgeGraph: true,
+    litigation: false,
+    searchFamilySummary: true,
+  },
 };
 
 export default config;

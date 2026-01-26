@@ -1,13 +1,12 @@
 import Image from "next/image";
 
-import { SiteWidth } from "@/components/panels/SiteWidth";
-
+import { MENU_LINKS } from "@/cclw/constants/menuLinks";
+import { NAV_LINKS, TLinkItem } from "@/cclw/constants/navLinks";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { Feedback } from "./Feedback";
-import MENU_LINKS from "../constants/menuLinks";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 
-import GRI_LINKS, { TLinkItem } from "@/cclw/constants/griLinks";
+import { Feedback } from "./Feedback";
 
 const Footer = () => {
   const renderLink = (item: TLinkItem) => {
@@ -33,10 +32,10 @@ const Footer = () => {
               </ul>
             </div>
 
-            <div key={GRI_LINKS.title} className="footer__section" data-cy="footer-gri">
-              <div className="font-medium text-base">{GRI_LINKS.title}</div>
+            <div key={NAV_LINKS.title} className="footer__section" data-cy="footer-gri">
+              <div className="font-medium text-base">{NAV_LINKS.title}</div>
               <ul>
-                {GRI_LINKS.links.map((link) => (
+                {NAV_LINKS.links.map((link) => (
                   <li key={link.text} className="mb-2">
                     {renderLink(link)}
                   </li>
@@ -54,12 +53,15 @@ const Footer = () => {
                 <div>Follow Grantham Research Institute</div>
                 <div className="flex items-start gap-6 footer__social-links">
                   <ExternalLink url="https://twitter.com/GRI_LSE">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/social/twitter_col.svg" alt="Twitter Logo" />
                   </ExternalLink>
                   <ExternalLink url="https://www.linkedin.com/company/grantham-research-institute-lse/">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/social/linkedIn_col.svg" alt="LinkedIn Logo" />
                   </ExternalLink>
                   <ExternalLink url="https://www.youtube.com/user/GranthamResearch">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/social/youtube_col.svg" alt="YouTube Logo" />
                   </ExternalLink>
                 </div>
@@ -68,7 +70,7 @@ const Footer = () => {
 
             <div className="footer__section">
               <div className="font-medium text-base">Climate Policy Radar</div>
-              <p>Using AI and data science to map the world's climate policies</p>
+              <p>Using AI and data science to map the world's climate documents.</p>
               <ul className="mb-6" data-cy="footer-cpr-links">
                 <li className="mb-1">
                   Visit the <ExternalLink url="https://www.climatepolicyradar.org">Climate Policy Radar website</ExternalLink>
@@ -86,15 +88,19 @@ const Footer = () => {
                 <div>Follow Climate Policy Radar</div>
                 <div className="flex items-start gap-6 footer__social-links">
                   <ExternalLink url="https://twitter.com/climatepolradar">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/social/twitter_col.svg" alt="Twitter Logo" />
                   </ExternalLink>
                   <ExternalLink url="https://www.linkedin.com/company/climate-policy-radar">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/social/linkedIn_col.svg" alt="LinkedIn Logo" />
                   </ExternalLink>
                   <ExternalLink url="https://www.youtube.com/channel/UCjcQnXKzZmo7r9t-RnHjbnA">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/social/youtube_col.svg" alt="YouTube Logo" />
                   </ExternalLink>
                   <ExternalLink url="https://github.com/climatepolicyradar/">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/social/github-white.svg" alt="GitHub Logo" />
                   </ExternalLink>
                 </div>

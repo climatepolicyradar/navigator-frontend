@@ -7,7 +7,7 @@ export const partners = [
     width: "240",
   },
   {
-    name: "Grantham Reasearch Institute on Climate Change and the Environment logo",
+    name: "Grantham Research Institute on Climate Change and the Environment logo",
     logo: "grantham-logo.png",
     link: "https://www.lse.ac.uk/granthaminstitute/",
     height: "180",

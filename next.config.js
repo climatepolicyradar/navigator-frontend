@@ -15,11 +15,6 @@ const nextConfig = {
   env: {
     THEME: process.env.THEME,
   },
-  // Supports dynamic component imports
-  webpack(config) {
-    config.experiments = { ...config.experiments, topLevelAwait: true };
-    return config;
-  },
   // Redirects
   redirects: async () => {
     return configureRedirects(process.env.THEME);
@@ -77,6 +72,18 @@ const nextConfig = {
       },
     ];
   },
+  devIndicators: false,
+  experimental: {},
+  /**
+   * this is used for instrumentation.ts
+   * @see: https://github.com/vercel/next.js/issues/65324
+   */
+  serverExternalPackages: ["@vercel/otel"],
+  /*
+   * See Next docs for more info: https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
+   * standalone output is optimised for running the app in a container
+   */
+  output: "standalone",
 };
 
 module.exports = nextConfig;

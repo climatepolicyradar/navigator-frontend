@@ -1,7 +1,6 @@
-import { Heading } from "@/components/typography/Heading";
 import { ExternalLink } from "@/components/ExternalLink";
-
 import { SiteWidth } from "@/components/panels/SiteWidth";
+import { Heading } from "@/components/typography/Heading";
 
 const ClimatePolicyRadarBannerHolder = () => {
   return (
@@ -15,7 +14,7 @@ const ClimatePolicyRadarBannerHolder = () => {
             Climate Policy Radar
           </Heading>
           <br />
-          <p>Climate Policy radar uses AI and data science to map the world's climate policies.</p>
+          <p>Climate Policy radar uses AI and data science to map the world's climate documents.</p>
           <br />
           <p>
             Visit{" "}

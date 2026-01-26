@@ -1,6 +1,6 @@
-import { TSearchCriteria } from "@/types";
-import { minYear, currentYear } from "@/constants/timedate";
 import { RESULTS_PER_PAGE, PASSAGES_PER_DOC } from "@/constants/paging";
+import { minYear, currentYear } from "@/constants/timedate";
+import { TSearchCriteria } from "@/types";
 
 export const initialSearchCriteria: TSearchCriteria = {
   concept_filters: [],

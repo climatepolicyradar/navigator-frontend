@@ -1,18 +1,14 @@
-import Layout from "@/components/layouts/Main";
-import { SiteWidth } from "@/components/panels/SiteWidth";
-import { SingleCol } from "@/components/panels/SingleCol";
-import { SubNav } from "@/components/nav/SubNav";
-
 import { ExternalLink } from "@/components/ExternalLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Layout from "@/components/layouts/Main";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 
 const TermsOfUse = () => {
   return (
-    <Layout title="Terms of use">
-      <SubNav>
-        <BreadCrumbs label={"Terms of use"} />
-      </SubNav>
+    <Layout title="Terms of use" theme="mcf">
+      <BreadCrumbs label={"Terms of use"} />
       <section>
         <SiteWidth>
           <SingleCol>
@@ -25,10 +21,10 @@ const TermsOfUse = () => {
               </Heading>
               <div className="text-content mb-12">
                 <p>
-                  Welcome to Climate Project Explorer, a platform from the four Multilateral Climate Funds (MCFs) - Adaptation Fund (AF), Climate
-                  Investment Funds (CIF), Global Environment Facility (GEF) and Green Climate Fund (GCF), in partnership with Climate Policy Radar CIC
-                  (“CPR”).The following Terms govern the use of the CPR Database, the CPR App infrastructure, the Climate Project Explorer and data
-                  from the MCFs published in the App.
+                  Welcome to Climate Project Explorer, a platform from the four Multilateral Climate Funds (MCFs) - Adaptation Fund (AF), Funds (CIF),
+                  Global Environment Facility (GEF) and Green Climate Fund (GCF), in partnership with Climate Policy Radar CIC (“CPR”).The following
+                  Terms govern the use of the CPR Database, the CPR App infrastructure, the Climate Project Explorer and data from the MCFs published
+                  in the App.
                 </p>
                 <p>
                   The CPR Database and App are operated by <ExternalLink url="https://climatepolicyradar.org/">Climate Policy Radar CIC</ExternalLink>{" "}

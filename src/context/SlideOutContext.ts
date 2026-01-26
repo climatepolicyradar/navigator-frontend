@@ -1,6 +1,9 @@
 import { createContext } from "react";
 
-export type TSlideOutContent = "concepts" | "";
+import { SLIDEOUT_VALUES } from "@/constants/slideOutValues";
+
+// Derive the type from the values
+export type TSlideOutContent = (typeof SLIDEOUT_VALUES)[number] | "";
 
 interface IProps {
   currentSlideOut: TSlideOutContent;

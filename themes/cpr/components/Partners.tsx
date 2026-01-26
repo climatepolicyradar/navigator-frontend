@@ -1,11 +1,9 @@
 import Image from "next/legacy/image";
 
-import { SiteWidth } from "@/components/panels/SiteWidth";
-import { SingleCol } from "@/components/panels/SingleCol";
-
 import { ExternalLink } from "@/components/ExternalLink";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
-
 import { partners } from "@/constants/partners";
 
 const Partners = () => {

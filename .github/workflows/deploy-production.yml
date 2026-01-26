@@ -1,0 +1,59 @@
+name: Deploy to production
+on:
+  workflow_dispatch:
+    inputs:
+      # This is a gated deploy workflow.
+      # User inputs are intentional and protected by:
+      # 1. Limited theme choices
+      # 2. Only deploying existing images
+      # trunk-ignore(checkov/CKV_GHA_7)
+      theme:
+        description: Theme to deploy
+        type: choice
+        required: true
+        options:
+          - cpr
+          - cclw
+          - mcf
+          - ccc
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-production:
+    name: Deploy ${{ github.sha }} to ${{ inputs.theme }} production
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - if: ${{ github.ref != 'refs/heads/main' }}
+        run: |
+          echo "This workflow can only be run from main."
+          exit 1
+      - uses: actions/checkout@v6
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-new-frontend-github-actions
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: eu-west-1
+
+      - name: Login to Amazon ECR (production)
+        id: login-ecr-production
+        uses: aws-actions/amazon-ecr-login@d63b14614fe5d7fc5e5e52c523dea4e876816cc4
+
+      - name: Build, tag, and push to ECR with 'latest' tag
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+          IMAGE_TAG: latest
+          AWS_REGION: eu-west-1
+          ECR_REPOSITORY: navigator-frontend-${{ inputs.theme }}
+          THEME: ${{ inputs.theme }}
+        # @related: GITHUB_SHA_ENV_VAR
+        run: |
+          docker build --build-arg THEME=${THEME} --build-arg GITHUB_SHA=$(git rev-parse HEAD) -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT

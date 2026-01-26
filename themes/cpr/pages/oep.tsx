@@ -1,12 +1,12 @@
 import Head from "next/head";
 import Image from "next/image";
 
-import Layout from "@/components/layouts/LandingPage";
 import { ExternalLink } from "@/components/ExternalLink";
+import Layout from "@/components/layouts/LandingPage";
+import { Header } from "@/cpr/components/Header";
 import { ColumnAndImage } from "@/cpr/components/oep/ColumnAndImage";
 import { EqualColumn, EqualColumns } from "@/cpr/components/oep/EqualColumns";
 import { Footer } from "@/cpr/components/oep/Footer";
-import { Header } from "@/cpr/components/oep/Header";
 import { Hero } from "@/cpr/components/oep/Hero";
 import { Narrow } from "@/cpr/components/oep/Narrow";
 import { Section } from "@/cpr/components/oep/Section";
@@ -17,8 +17,8 @@ const OceanEnergyPathwayPage = () => {
       <Head>
         <link rel="stylesheet" href="/css/oep/oep.css" />
       </Head>
-      <Layout title="Ocean Energy Pathway" description="Helping the offshore wind sector design effective strategies">
-        <Header />
+      <Layout title="Ocean Energy Pathway" description="Helping the offshore wind sector design effective strategies" theme="cpr">
+        <Header landingPage />
         <main id="oep" className="relative">
           <Hero />
 
@@ -40,8 +40,9 @@ const OceanEnergyPathwayPage = () => {
               />
               <p className="text-lg">
                 With this tool, you can find information on offshore wind from around the globe, including legislation, government policies,
-                strategies, industry reports, analyses and policy recommendations from researchers and civil society. You can search for keywords and
-                policy concepts across the full text of all documents, viewing your search term and related phrases highlighted in the search results.
+                strategies, offshore wind reports, analyses and policy recommendations from researchers and civil society. You can search for keywords
+                and policy topics across the full text of all documents, viewing your search term and related phrases highlighted in the search
+                results.
               </p>
             </ColumnAndImage>
           </Section>

@@ -1,21 +1,38 @@
+import router from "next/router";
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 
+import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
-import { Button } from "@/components/atoms/button/Button";
-
 import { QUERY_PARAMS } from "@/constants/queryParams";
 
-// See the method handleSearchInput in the index.tsx file for the processing of the example searches
 const EXAMPLE_SEARCHES = [
-  { id: 1, term: "Adaptation" },
-  { id: 2, term: "Extreme Weather" },
-  { id: 3, filterValue: "Philippines", filterType: QUERY_PARAMS.country },
+  {
+    id: 1,
+    label: "Adaptation",
+    params: {
+      [QUERY_PARAMS.query_string]: "Adaptation",
+    },
+  },
+  {
+    id: 2,
+    label: "Extreme Weather",
+    params: {
+      [QUERY_PARAMS.query_string]: "Extreme Weather",
+    },
+  },
+  {
+    id: 3,
+    label: "Philippines",
+    params: {
+      [QUERY_PARAMS.country]: "philippines",
+    },
+  },
 ];
 
 interface IProps {
   placeholder?: string;
-  handleSearchInput(term: string, filter?: string, filterValue?: string): void;
+  handleSearchInput: (term: string) => void;
   input?: string;
 }
 
@@ -47,6 +64,16 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
 
   const displayPlaceholder = placeholder ?? "Search the full text of any document";
 
+  const handleQuickSearch = (params: Record<string, string>) => {
+    // Push directly to search page with all parameters
+    router.push({
+      pathname: "/search",
+      query: {
+        ...params,
+      },
+    });
+  };
+
   return (
     <>
       <form data-cy="search-form" ref={formRef} onSubmit={(e) => e.preventDefault()}>
@@ -56,7 +83,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
             data-analytics="landingPage-searchInput"
             data-cy="search-input"
             type="search"
-            className="text-base leading-5 py-3 h-[50px] px-6 w-full text-gray-800 focus:ring-0 rounded-full border-white border-2"
+            className="text-base leading-5 py-3 h-[50px] px-6 w-full text-gray-700 focus:ring-0 rounded-full border-white border-2"
             value={term}
             onChange={onChange}
             placeholder={displayPlaceholder}
@@ -79,10 +106,10 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
             size="small"
             variant="ghost"
             className="hover:!bg-gray-100 !text-gray-500 underline"
-            onClick={() => handleSearchInput(example.term, example.filterType, example.filterValue)}
+            onClick={() => handleQuickSearch(example.params)}
             data-cy={`example-search-${example.id}`}
           >
-            {example.term ?? example.filterValue}
+            {example.label}
           </Button>
         ))}
       </div>

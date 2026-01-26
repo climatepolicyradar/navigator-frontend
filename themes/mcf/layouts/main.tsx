@@ -1,5 +1,7 @@
 import React, { FC, ReactNode } from "react";
-import { Header, Footer } from "@/mcf/components";
+
+import Footer from "@/mcf/components/Footer";
+import { Header } from "@/mcf/components/Header";
 
 interface IProps {
   children?: ReactNode;

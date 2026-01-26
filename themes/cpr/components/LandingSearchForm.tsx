@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
+
+import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
-import { Button } from "@/components/atoms/button/Button";
 
 interface IProps {
   placeholder?: string;
@@ -48,7 +49,7 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
     };
   }, [formRef]);
 
-  const displayPlaceholder = placeholder ?? "Search the full text of 5000+ laws and policies";
+  const displayPlaceholder = placeholder ?? "Search the full text of over 12,000 climate documents";
 
   return (
     <form
@@ -100,4 +101,5 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
     </form>
   );
 };
+
 export default LandingSearchForm;

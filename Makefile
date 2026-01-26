@@ -1,60 +1,31 @@
-.PHONEY: build run run_ci with_production
+TAG=navigator-frontend
+THEME=$(shell grep '^THEME=' .env | cut -d '=' -f2)
 
-TAG = navigator-frontend
-THEME ?= cclw
-TARGETS_URL ?= https://cpr-staging-targets-json-store.s3.eu-west-1.amazonaws.com
-CDN_URL ?= https://cdn.dev.climatepolicyradar.org
-CONCEPTS_API_URL ?= https://api.climatepolicyradar.org
-ADOBE_API_KEY ?= dca9187b65294374a6367824df902fdf
-BACKEND_API_URL ?= https://app.dev.climatepolicyradar.org/api/v1
-BACKEND_API_TOKEN ?= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkX2NvcnBvcmFfaWRzIjpbIkNDTFcuY29ycHVzLmkwMDAwMDAwMS5uMDAwMCIsIkNQUi5jb3JwdXMuaTAwMDAwMDAxLm4wMDAwIiwiVU5GQ0NDLmNvcnB1cy5pMDAwMDAwMDEubjAwMDAiXSwiZXhwIjoyMDQyMTEzMzY5LCJpYXQiOjE3MjY1NzY5NjksImlzcyI6IkNsaW1hdGUgUG9saWN5IFJhZGFyIiwic3ViIjoiQ1BSIiwiYXVkIjoiaHR0cHM6Ly9hcHAuZGV2LmNsaW1hdGVwb2xpY3lyYWRhci5vcmcvIn0.mJ2qLJmMyPLGt0rM_tTXhlVv1glxooxmQV0bWrvPwKU
+# DEV MODE
+# dev mode takes environment vars from .env
+# see Dockerfile.dev
+build_dev:
+	docker build -f Dockerfile.dev -t ${TAG}-dev .
+
+generate_tsconfig:
+	cp tsconfig.base.json tsconfig.json
+	sed -i '' "s/__THEME__/$(THEME)/g" tsconfig.json
+
+run_dev: build_dev generate_tsconfig
+	docker run --rm -it \
+		-p 3000:3000 \
+		-v $(PWD):/app \
+		-v /app/node_modules \
+		${TAG}-dev npm run dev
+# END DEV MODE
 
 build:
 	docker build --build-arg THEME=${THEME} -t ${TAG}-${THEME} .
 
+# Helper function to run the production version of the app in a container
+# Reads env vars from the env.example file
 run: build
 	docker run --rm -it \
 		-p 3000:3000 \
-		-e THEME=$(THEME) \
-		-e BACKEND_API_TOKEN=$(BACKEND_API_TOKEN) \
-		-e BACKEND_API_URL=$(BACKEND_API_URL) \
-		-e ADOBE_API_KEY=$(ADOBE_API_KEY) \
-		-e TARGETS_URL=$(TARGETS_URL) \
-		-e NODE_ENV="development" \
-		-e ROBOTS="false" \
-		-e HOSTNAME="http://localhost:3000" \
-		-v $(PWD):/opt/node_app/app \
-		${TAG}-${THEME} npm run dev
-
-with_production:
-	make API_URL=https://api.climatepolicyradar.org/api/v1
-
-run_ci:
-	docker run --rm -d \
-		-p 3000:3000 \
-		-e THEME=$(THEME) \
-		-e BACKEND_API_TOKEN=$(BACKEND_API_TOKEN) \
-		-e BACKEND_API_URL=$(BACKEND_API_URL) \
-		-e ADOBE_API_KEY=$(ADOBE_API_KEY) \
-		-e TARGETS_URL=$(TARGETS_URL) \
-		-e NODE_ENV="production" \
-		-e ROBOTS="false" \
-		-e HOSTNAME="http://localhost:3000" \
+		--env-file ./.env.example \
 		${TAG}-${THEME}
-
-install_trunk:
-	$(eval trunk_installed=$(shell trunk --version > /dev/null 2>&1 ; echo $$? ))
-ifneq (${trunk_installed},0)
-	$(eval OS_NAME=$(shell uname -s | tr A-Z a-z))
-	curl https://get.trunk.io -fsSL | bash
-endif
-
-uninstall_trunk:
-	sudo rm -if `which trunk`
-	rm -ifr ${HOME}/.cache/trunk
-
-build_custom_app: ## Creates a directory for the custom app with the required files
-	. "${PWD}"/scripts/build-custom-app.sh
-
-delete_custom_app: ## Deletes a custom app and its related files / directories
-	. "${PWD}"/scripts/delete-custom-app.sh

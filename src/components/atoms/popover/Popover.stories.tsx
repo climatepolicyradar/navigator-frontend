@@ -1,6 +1,7 @@
-import { Meta, StoryObj } from "@storybook/react/*";
-import { Button } from "../button/Button";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
+
 import { Popover } from "./Popover";
+import { Button } from "../button/Button";
 
 const meta = {
   title: "Atoms/Popover",

@@ -1,4 +1,5 @@
-import { Meta, StoryObj } from "@storybook/react/*";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
+
 import { Info } from "./Info";
 
 const meta = {

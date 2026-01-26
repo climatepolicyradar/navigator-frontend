@@ -1,34 +1,50 @@
+import { ReactNode, useState } from "react";
+
 import { Popover } from "@/components/atoms/popover/Popover";
-import { TConcept } from "@/types";
+import { TTopic } from "@/types";
+import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { joinTailwindClasses } from "@/utils/tailwind";
-import { startCase } from "lodash";
-import { useState } from "react";
+import { firstCase } from "@/utils/text";
 
 interface IProps {
-  concept: TConcept;
+  concept: TTopic;
+  label?: ReactNode;
+  children?: React.ReactNode;
+  onClick?: (concept: TTopic) => void;
   triggerClasses?: string;
 }
 
-export const ConceptLink = ({ concept, triggerClasses = "" }: IProps) => {
+export const ConceptLink = ({ concept, label, onClick, triggerClasses = "", children }: IProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const allTriggerClasses = joinTailwindClasses(
-    "inline text-text-primary capitalize underline underline-offset-2 decoration-dotted cursor-help",
-    isOpen ? "decoration-text-primary" : "decoration-text-quaternary",
+    "inline underline underline-offset-4",
+    isOpen ? "decoration-gray-500" : "decoration-gray-300 hover:decoration-gray-500",
+    onClick ? "" : "!cursor-help",
     triggerClasses
   );
 
-  const title = startCase(concept.preferred_label);
+  const title = firstCase(concept.preferred_label);
 
-  return (
+  const trigger = (
+    <button className={allTriggerClasses} onClick={() => (onClick ? onClick(concept) : null)}>
+      {label ?? title}
+    </button>
+  );
+
+  return children ? (
+    <Popover openOnHover onOpenChange={setIsOpen} trigger={trigger}>
+      {children}
+    </Popover>
+  ) : (
     <Popover
       openOnHover
       onOpenChange={setIsOpen}
-      trigger={<span className={allTriggerClasses}>{title}</span>}
+      trigger={trigger}
       title={title}
       description={concept.description}
       link={{
-        href: `https://climatepolicyradar.wikibase.cloud/wiki/Item:${concept.wikibase_id}`,
+        href: getConceptStoreLink(concept.wikibase_id),
         text: "Source",
         external: true,
       }}

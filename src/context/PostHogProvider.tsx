@@ -15,7 +15,7 @@ interface IProps {
   consent?: boolean;
 }
 
-function PostHogPageView() {
+function PostHogPageView({ consent }: { consent: boolean }): null {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const posthog = usePostHog();
@@ -27,9 +27,9 @@ function PostHogPageView() {
       if (searchParams.toString()) {
         url = url + `?${searchParams.toString()}`;
       }
-      posthog.capture("$pageview", { $current_url: url });
+      posthog.capture("$pageview", { $current_url: url, consent });
     }
-  }, [pathname, searchParams, posthog]);
+  }, [pathname, searchParams, posthog, consent]);
 
   return null;
 }
@@ -42,12 +42,12 @@ function PostHogPageView() {
 export function SuspendedPostHogPageView() {
   return (
     <Suspense fallback={null}>
-      <PostHogPageView />
+      <PostHogPageView consent={false} />
     </Suspense>
   );
 }
 
-export function PostHogProvider({ children, consent }: IProps) {
+export function PostHogProvider({ children, consent = false }: IProps) {
   /**
    * The sessionStorage is read by tag manager to not re-init posthog
    * We don't use something like posthog.__loaded as posthog isn't available on the window
@@ -57,27 +57,37 @@ export function PostHogProvider({ children, consent }: IProps) {
    * @see: https://posthog.com/docs/privacy#is-it-ok-for-my-api-key-to-be-exposed-and-public
    */
   useEffect(() => {
-    /** If consent is granted, initialize our cookied PostHog instance */
     posthog.init("phc_zaZYaLxsAeMjCLPsU2YvFqu4oaXRJ8uAkgXY8DancyL", {
       api_host: "https://eu.i.posthog.com",
-      capture_pageview: false,
+      capture_pageview: true,
       capture_pageleave: true,
-      persistence: "memory",
-      person_profiles: "always",
     });
     window.sessionStorage.setItem("posthogLoaded", "true");
   }, []);
 
   useEffect(() => {
+    // We only set the config value based on consent
+    // This approach fixes the previous issue of not persisting user data between sessions
     if (consent) {
       posthog.set_config({ persistence: "localStorage+cookie" });
+    } else {
+      posthog.set_config({ persistence: "memory" });
     }
   }, [consent]);
 
   return (
     <PHProvider client={posthog}>
-      <PostHogPageView />
+      <PostHogPageView consent={consent} />
       {children}
     </PHProvider>
   );
+}
+
+/** @see: https://posthog.com/docs/product-analytics/best-practices#2-implement-a-naming-convention */
+type Category = "search";
+type Object = "results";
+type Action = "fetch";
+
+export function posthogEventName(category: Category, object: Object, action: Action) {
+  return `${category}:${object}_${action}`;
 }

@@ -1,12 +1,10 @@
-import { useContext, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LuArrowLeft } from "react-icons/lu";
+import { ArrowLeft } from "lucide-react";
+import { useContext, useEffect, useRef } from "react";
 
 import { Icon } from "@/components/atoms/icon/Icon";
-
-import { SlideOutContext } from "@/context/SlideOutContext";
-
 import { SLIDE_OUT_DATA_KEY } from "@/constants/dataAttributes";
+import { SlideOutContext } from "@/context/SlideOutContext";
 
 interface IProps {
   children: React.ReactNode;
@@ -39,7 +37,11 @@ export const SlideOut = ({ children, showCloseButton = true }: IProps) => {
           ref={ref}
           key="slideOut"
           initial={{ translateX: "-100px" }}
-          animate={{ opacity: 1, translateX: 0, transition: { duration: 0.25, ease: [0.04, 0.62, 0.23, 0.98] } }}
+          animate={{
+            opacity: 1,
+            translateX: 0,
+            transition: { duration: 0.25, ease: [0.04, 0.62, 0.23, 0.98] },
+          }}
           exit={{ opacity: 0, transition: { duration: 0 } }}
           className="absolute z-20 top-0 left-0 h-full bg-white p-5 pb-[180px] w-screen md:px-9 md:z-0 md:w-auto md:min-w-[460px] md:left-full md:pb-0 md:border-r md:border-gray-300"
         >
@@ -53,7 +55,7 @@ export const SlideOut = ({ children, showCloseButton = true }: IProps) => {
               className="flex items-center gap-2 text-sm text-text-secondary opacity-50 hover:opacity-100"
               onClick={() => setCurrentSlideOut("")}
             >
-              <LuArrowLeft /> Back
+              <ArrowLeft /> Back
             </button>
           </div>
           {children}

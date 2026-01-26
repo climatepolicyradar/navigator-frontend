@@ -1,17 +1,85 @@
-import { useState, useEffect, useRef, ChangeEvent } from "react";
+import { useRouter } from "next/router";
+import { useState, useEffect, useRef, ChangeEvent, useContext } from "react";
 
+import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
 import { SearchDropdown } from "@/components/forms/SearchDropdown";
-import { Button } from "@/components/atoms/button/Button";
-
+import { DEFAULT_CONFIG_FEATURES } from "@/constants/features";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { TFeatureFlags, TThemeConfig } from "@/types";
+import { getAllCookies } from "@/utils/cookies";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { getFeatures } from "@/utils/features";
+import { readConfigFile } from "@/utils/readConfigFile";
 
-// See the method handleSearchInput in the index.tsx file for the processing of the example searches
 const EXAMPLE_SEARCHES = [
-  { id: 1, term: "Adaptation" },
-  { id: 2, filterValue: "Brazil", filterType: QUERY_PARAMS.country },
-  { id: 3, term: "Climate framework laws" },
-  { id: 4, term: "Coastal zones" },
+  {
+    id: 1,
+    label: "Adaptation",
+    params: {
+      [QUERY_PARAMS.query_string]: "Adaptation",
+    },
+  },
+  {
+    id: 2,
+    label: "Brazil",
+    params: {
+      [QUERY_PARAMS.country]: "brazil",
+    },
+  },
+  {
+    id: 3,
+    label: "Climate framework laws",
+    params: {
+      [QUERY_PARAMS.category]: "laws",
+      [QUERY_PARAMS.framework_laws]: "true",
+    },
+  },
+  {
+    id: 4,
+    label: "Coastal zones",
+    params: {
+      [QUERY_PARAMS.query_string]: "Coastal zones",
+    },
+  },
+];
+
+const KNOWLEDGE_GRAPH_QUICK_SEARCHES = [
+  {
+    id: 1,
+    label: "Latest NDCs",
+    params: {
+      [QUERY_PARAMS.category]: "UNFCCC",
+      [QUERY_PARAMS["_document.type"]]: "Nationally Determined Contribution",
+      [QUERY_PARAMS.author_type]: "Party",
+    },
+  },
+  {
+    id: 2,
+    label: "Indigenous people + Brazil + Laws",
+    params: {
+      [QUERY_PARAMS.country]: "brazil",
+      [QUERY_PARAMS.category]: "laws",
+      [QUERY_PARAMS.concept_name]: "indigenous people",
+    },
+  },
+  {
+    id: 3,
+    label: "Zoning and spatial planning + marine",
+    params: {
+      [QUERY_PARAMS.concept_name]: "zoning and spatial planning",
+      [QUERY_PARAMS.query_string]: "marine",
+      [QUERY_PARAMS.exact_match]: "true",
+    },
+  },
+  {
+    id: 4,
+    label: "Climate framework laws",
+    params: {
+      [QUERY_PARAMS.category]: "laws",
+      [QUERY_PARAMS.framework_laws]: "true",
+    },
+  },
 ];
 
 interface IProps {
@@ -24,6 +92,35 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
   const [term, setTerm] = useState("");
   const [formFocus, setFormFocus] = useState(false);
   const formRef = useRef(null);
+  const router = useRouter();
+
+  /*
+    The landing page is read in not by using Next.JS, but by our CCLW specific page reading logic.
+    This means that we cannot fetch the feature flags directly by using the page context.
+    This function provides a means of working around this so we can conditionally display the
+    quick searches.
+
+    TODO: Remove this once we have hard launched concepts in product.
+  */
+  const [featureFlags, setFeatureFlags] = useState({} as TFeatureFlags);
+  const [localThemeConfig, setLocalThemeConfig] = useState<TThemeConfig>({ features: DEFAULT_CONFIG_FEATURES } as TThemeConfig);
+
+  async function loadConfig() {
+    const allCookies = getAllCookies();
+    const parsedFeatureFlags = getFeatureFlags(allCookies);
+    setFeatureFlags(parsedFeatureFlags);
+
+    const theme = process.env.THEME;
+    const themeConfig = await readConfigFile(theme);
+    setLocalThemeConfig(themeConfig);
+  }
+
+  // TODO: Remove this once we have hard launched concepts in product.
+  useEffect(() => {
+    loadConfig();
+  }, []);
+
+  const features = getFeatures(localThemeConfig, featureFlags);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTerm(e.currentTarget.value);
@@ -47,6 +144,16 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
   }, [formRef]);
 
   const displayPlaceholder = placeholder ?? "Search the full text of any document";
+
+  const handleQuickSearch = (params: Record<string, string>) => {
+    // Push directly to search page with all parameters
+    router.push({
+      pathname: "/search",
+      query: {
+        ...params,
+      },
+    });
+  };
 
   return (
     <>
@@ -77,19 +184,32 @@ const LandingSearchForm = ({ placeholder, input, handleSearchInput }: IProps) =>
       </form>
       <div className="hidden mt-4 md:flex flex-wrap items-center gap-2">
         <span className="text-gray-200">Search by:</span>
-        {EXAMPLE_SEARCHES.map((example) => (
-          <Button
-            key={example.id}
-            rounded
-            className="!bg-cclw-light hover:!bg-gray-700 border !border-gray-500"
-            onClick={() => handleSearchInput(example.term, example.filterType, example.filterValue)}
-            data-cy={`example-search-${example.id}`}
-          >
-            {example.term ?? example.filterValue}
-          </Button>
-        ))}
+        {features.knowledgeGraph
+          ? KNOWLEDGE_GRAPH_QUICK_SEARCHES.map((quickSearch) => (
+              <Button
+                key={quickSearch.id}
+                rounded
+                className="!bg-cclw-light hover:!bg-gray-700 border !border-gray-500"
+                onClick={() => handleQuickSearch(quickSearch.params)}
+                data-cy={`quick-search-${quickSearch.id}`}
+              >
+                {quickSearch.label}
+              </Button>
+            ))
+          : EXAMPLE_SEARCHES.map((quickSearch) => (
+              <Button
+                key={quickSearch.id}
+                rounded
+                className="!bg-cclw-light hover:!bg-gray-700 border !border-gray-500"
+                onClick={() => handleQuickSearch(quickSearch.params)}
+                data-cy={`quick-search-${quickSearch.id}`}
+              >
+                {quickSearch.label}
+              </Button>
+            ))}
       </div>
     </>
   );
 };
+
 export default LandingSearchForm;

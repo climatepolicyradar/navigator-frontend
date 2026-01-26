@@ -1,5 +1,7 @@
+import { JSX } from "react";
+
 import { ExternalLink } from "@/components/ExternalLink";
-import { Label } from "@/components/labels/Label";
+import { Badge } from "@/components/atoms/badge/Badge";
 
 type TFAQ = {
   id?: string;
@@ -10,14 +12,14 @@ type TFAQ = {
 
 export const CONCEPTS_FAQS: TFAQ[] = [
   {
-    id: "concepts",
-    title: "Automatic detection of key concepts in documents",
-    headContent: <Label>Beta</Label>,
+    id: "topics",
+    title: "Automatic detection of key topics in documents",
+    headContent: <Badge>Beta</Badge>,
     content: (
       <>
         <p>
-          This new feature automatically identifies mentions of key concepts in documents, helping you quickly find where important topics like
-          economic sectors, targets, and climate finance instruments appear in our database.
+          This new feature automatically identifies mentions of key topics in documents, helping you quickly find where important topics like economic
+          sectors, targets, and climate finance instruments appear in our database.
         </p>
 
         <p>While this feature is more precise than our standard search, accuracy is not 100%.</p>
@@ -28,7 +30,7 @@ export const CONCEPTS_FAQS: TFAQ[] = [
     title: "How should I use this feature?",
     content: (
       <>
-        <p>Automatically detected concepts help you:</p>
+        <p>Automatically detected topics help you:</p>
         <ul>
           <li>Quickly locate mentions of key topics in documents.</li>
           <li>Understand the primary focus of a document.</li>
@@ -36,14 +38,37 @@ export const CONCEPTS_FAQS: TFAQ[] = [
 
         <p>However, results are not 100% accurate. Be cautious when:</p>
         <ul>
-          <li>Counting how often a concept appears in a document.</li>
-          <li>Comparing documents based on concept frequency.</li>
+          <li>Counting how often a topic appears in a document.</li>
+          <li>Comparing documents based on topic frequency.</li>
         </ul>
       </>
     ),
   },
   {
-    title: "Which concepts are currently available?",
+    title: "What happens if I select multiple topics or add a text search?",
+    content: (
+      <>
+        <p>
+          When you select more than one topic or combine a topic with a text search, the tool looks for <i>individual passages</i> (short sections of
+          text) that include <b>all</b> selected topics and/or keywords together.
+        </p>
+
+        <p>Because few passages contain many topics at once, selecting more topics can reduce the number of results — sometimes to zero.</p>
+
+        <p>
+          <b>Example:</b> If you choose "target" and "energy sector", you'll only see passages where <i>both</i> appear together, not all documents
+          that mention each topic separately.
+        </p>
+
+        <p>
+          We're working on improving this feature to support broader searches across entire documents and give you more control over how topics and
+          keywords are combined.
+        </p>
+      </>
+    ),
+  },
+  {
+    title: "Which topics are currently available?",
     content: (
       <>
         <p>Examples include:</p>
@@ -68,18 +93,18 @@ export const CONCEPTS_FAQS: TFAQ[] = [
     ),
   },
   {
-    title: "How do we automatically detect climate concepts in documents?",
+    title: "How do we automatically detect climate topics in documents?",
     content: (
       <>
-        <p>Each detected concept is based on a combination of expert knowledge and automated models:</p>
+        <p>Each detected topic is based on a combination of expert knowledge and automated models:</p>
         <ul>
           <li>
-            <b>Expert-driven concept selection</b>: our policy specialists identify the most important concepts by looking at existing taxonomies and
-            consulting external experts. We maintain a catalogue of these concepts in{" "}
+            <b>Expert-driven topic selection</b>: our policy specialists identify the most important topics by looking at existing taxonomies and
+            consulting external experts. We maintain a catalogue of these topics in{" "}
             <ExternalLink url="https://climatepolicyradar.wikibase.cloud/wiki/Main_Page">our concept store</ExternalLink>.
           </li>
           <li>
-            <b>Automated detection</b>: our data scientists and software engineers build models to find these concepts in text, continuously refining
+            <b>Automated detection</b>: our data scientists and software engineers build models to find these topics in text, continuously refining
             them based on human feedback.
           </li>
           <li>
@@ -97,9 +122,9 @@ export const CONCEPTS_FAQS: TFAQ[] = [
 
         <ul>
           <li>
-            On average, if a classifier highlights a concept, it is correct in <b>9 out of 10 cases</b>.
+            On average, if a classifier highlights a topic, it is correct in <b>9 out of 10 cases</b>.
           </li>
-          <li>Accuracy varies by concept and document quality. For example, if text extraction fails, we cannot accurately detect concepts.</li>
+          <li>Accuracy varies by topic and document quality. For example, if text extraction fails, we cannot accurately detect topics.</li>
           <li>We are actively improving accuracy by refining our models and ensuring consistency across different document types and languages.</li>
         </ul>
       </>
@@ -150,7 +175,7 @@ export const CONCEPTS_FAQS: TFAQ[] = [
     content: (
       <>
         <p>
-          If you believe a concept is missing or misclassified, <ExternalLink url="https://eu.jotform.com/250402253775352">contact us</ExternalLink>.
+          If you believe a topic is missing or misclassified, <ExternalLink url="https://eu.jotform.com/250402253775352">contact us</ExternalLink>.
           Your feedback helps us improve.
         </p>
       </>

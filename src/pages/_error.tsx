@@ -1,12 +1,14 @@
-import Layout from "../components/layouts/Main";
-import { SiteWidth } from "@/components/panels/SiteWidth";
+import { NextPageContext } from "next";
 
 import { ExternalLink } from "@/components/ExternalLink";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 
-function Error({ statusCode }) {
+import Layout from "../components/layouts/Main";
+
+function Error({ statusCode }: { statusCode: number }) {
   return (
-    <Layout title={statusCode}>
+    <Layout title={statusCode.toString()}>
       <section>
         <SiteWidth extraClasses="text-content my-12">
           <Heading level={1}>{statusCode === 404 ? "Sorry, we can't find that page" : "Sorry, an error has occurred loading this page"}</Heading>
@@ -23,7 +25,7 @@ function Error({ statusCode }) {
   );
 }
 
-Error.getInitialProps = ({ res, err }) => {
+Error.getInitialProps = ({ res, err }: NextPageContext) => {
   const statusCode = res ? res.statusCode : err ? err.statusCode : 404;
   return { statusCode };
 };

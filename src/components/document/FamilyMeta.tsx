@@ -1,8 +1,14 @@
-import useConfig from "@/hooks/useConfig";
-import { getCategoryName } from "@/helpers/getCategoryName";
-import { convertDate } from "@/utils/timedate";
-import { TCategory, TCorpusTypeSubCategory } from "@/types";
+import { useContext } from "react";
+
 import { CountryLinks } from "@/components/CountryLinks";
+import { WikiBaseConceptsContext } from "@/context/WikiBaseConceptsContext";
+import { getCategoryName } from "@/helpers/getCategoryName";
+import useConfig from "@/hooks/useConfig";
+import { TCategory, TCorpusTypeSubCategory, TFamilyConcept, TFamilyMetadata } from "@/types";
+import { getMostSpecificCourtsFromWikiConcepts } from "@/utils/getMostSpecificCourts";
+import { convertDate } from "@/utils/timedate";
+
+import { CountryLinkWithSubdivisions } from "../CountryLinkWithSubdivisions";
 
 interface IProps {
   category: TCategory;
@@ -13,19 +19,52 @@ interface IProps {
   topics?: string[];
   author?: string[];
   document_type?: string;
+  concepts?: TFamilyConcept[];
+  metadata: TFamilyMetadata;
+  corpus_id?: string;
 }
 
-export const FamilyMeta = ({ category, date, geographies, topics, author, corpus_type_name, document_type, source }: IProps) => {
+function extractJurisdictionsFromMetadata(metadata: TFamilyMetadata): string[] {
+  return metadata.concept_preferred_label?.filter((label) => label.startsWith("jurisdiction/")) ?? [];
+}
+
+function useFamilyJurisdictionConcepts(metadata: TFamilyMetadata) {
+  const allConcepts = useContext(WikiBaseConceptsContext);
+  const wikiJurisdictionConcepts = allConcepts.filter((concept) => concept.wikibase_id.startsWith("jurisdiction/"));
+
+  const vespaJurisdictions = extractJurisdictionsFromMetadata(metadata);
+
+  const vespaJurisdictionsSet = new Set(vespaJurisdictions);
+  const familyJurisdictionConcepts = wikiJurisdictionConcepts.filter((concept) => vespaJurisdictionsSet.has(concept.wikibase_id));
+
+  return familyJurisdictionConcepts;
+}
+
+export const FamilyMeta = ({ category, corpus_id, date, geographies, topics, author, corpus_type_name, document_type, source, metadata }: IProps) => {
   const configQuery = useConfig();
-  const { data: { countries = [] } = {} } = configQuery;
+  const { data: { countries = [], subdivisions = [] } = {} } = configQuery;
 
   const [year] = convertDate(date);
 
+  const includeSubdivisions = geographies?.some((geography) =>
+    subdivisions.some((subdivision) => subdivision.value.toLowerCase() === geography.toLowerCase())
+  );
+
+  const familyJurisdictionConcepts = useFamilyJurisdictionConcepts(metadata);
+  const mostSpecificCourtName = getMostSpecificCourtsFromWikiConcepts(familyJurisdictionConcepts);
+
+  const CountryLinkComponent = includeSubdivisions ? CountryLinkWithSubdivisions : CountryLinks;
+
   return (
     <>
-      <CountryLinks geographies={geographies} countries={countries} />
+      <CountryLinkComponent geographies={geographies} countries={countries} subdivisions={subdivisions} />
       {/* TODO: we need to revisit this once we have updated the config, so that we can determine this output based on the corpora */}
       {!isNaN(year) && <span data-cy="family-metadata-year">{`${category === "MCF" ? "Approval FY: " + year : year}`}</span>}
+      {mostSpecificCourtName && (
+        <span className="capitalize" data-cy="family-metadata-court">
+          {mostSpecificCourtName}
+        </span>
+      )}
       {topics && topics.length > 0 && (
         <span className="capitalize" data-cy="family-metadata-topics">
           {topics.join(", ")}
@@ -38,7 +77,7 @@ export const FamilyMeta = ({ category, date, geographies, topics, author, corpus
       )}
       {category && (
         <span className="capitalize" data-cy="family-metadata-category">
-          {getCategoryName(category, corpus_type_name, source)}
+          {getCategoryName(category, corpus_type_name, source, corpus_id)}
         </span>
       )}
       {document_type && (

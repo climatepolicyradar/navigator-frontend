@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
-import { TCorpusTypeDictionary, TDataNode, TGeography, TLanguages } from "@/types";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
+
+import { TCorpusTypeDictionary, TDataNode, TGeography, TLanguages } from "@/types";
 
 export async function getEnvFromServer() {
   return await axios.get("/api/env").then((res: any) => res);
@@ -28,14 +29,22 @@ class ApiClient {
       this.appToken = process.env.BACKEND_API_TOKEN;
     }
 
-    this.axiosClient = axios.create({ baseURL: this.baseUrl, headers: { "app-token": this.appToken } });
+    // In Axios, empty or undefined headers throw errors.
+    const headers: Record<string, string> = {};
+    if (this.appToken) {
+      headers["app-token"] = this.appToken;
+    }
+
+    this.axiosClient = axios.create({
+      baseURL: this.baseUrl,
+      headers,
+    });
   }
 
   /**
    * Submit a GET request and return the response as a mapped promise.
    */
   get<T = any>(url: string, params?: any): Promise<AxiosResponse<T>> {
-    // console.log(`GET: ${this.baseUrl}${url}`);
     return this.axiosClient
       .get<T>(url, { params })
       .then((res: any) => res)
@@ -46,7 +55,6 @@ class ApiClient {
   }
 
   post<T>(url: string, values: any, config = {}) {
-    // console.log(`POST: ${this.baseUrl}${url}`);
     return this.axiosClient
       .post<T>(url, values, config)
       .then((res) => res)
@@ -61,7 +69,6 @@ class ApiClient {
   }
 
   put(url: string, values: any) {
-    // console.log(`PUT: ${this.baseUrl}${url}`);
     return this.axiosClient
       .put(url, values)
       .then((res) => res)
@@ -72,7 +79,11 @@ class ApiClient {
   }
 
   getConfig() {
-    return this.get<{ geographies: TDataNode<TGeography>[]; corpus_types: TCorpusTypeDictionary; languages: TLanguages }>("/config");
+    return this.get<{
+      geographies: TDataNode<TGeography>[];
+      corpus_types: TCorpusTypeDictionary;
+      languages: TLanguages;
+    }>("/config");
   }
 }
 

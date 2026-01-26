@@ -1,6 +1,8 @@
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { MoveUpRight } from "lucide-react";
+
 import { Icon } from "@/components/atoms/icon/Icon";
-import { Meta, StoryObj } from "@storybook/react/*";
-import { LuMoveUpRight } from "react-icons/lu";
+
 import { Button } from "./Button";
 
 const meta = {
@@ -135,7 +137,7 @@ export const IconAndText: TStory = {
       </Button>
       <Button {...props}>
         View source document
-        <LuMoveUpRight className="ml-2" height="16" width="16" />
+        <MoveUpRight className="ml-2" height="16" width="16" />
       </Button>
     </div>
   ),

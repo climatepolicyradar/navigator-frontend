@@ -1,0 +1,13 @@
+import { TPublicEnvConfig } from "@/context/EnvConfig";
+
+export const envConfig: TPublicEnvConfig = {
+  BACKEND_API_URL: "https://app.climatepolicyradar.org/api/v1",
+  BACKEND_API_TOKEN:
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkX2NvcnBvcmFfaWRzIjpbIkFjYWRlbWljLmNvcnB1cy5MaXRpZ2F0aW9uLm4wMDAwIiwiQ0NMVy5jb3JwdXMuaTAwMDAwMDAxLm4wMDAwIiwiQ1BSLmNvcnB1cy5Hb2xkc3RhbmRhcmQubjAwMDAiLCJDUFIuY29ycHVzLmkwMDAwMDAwMS5uMDAwMCIsIkNQUi5jb3JwdXMuaTAwMDAwMDAyLm4wMDAwIiwiQ1BSLmNvcnB1cy5pMDAwMDA1ODkubjAwMDAiLCJDUFIuY29ycHVzLmkwMDAwMDU5MS5uMDAwMCIsIkNQUi5jb3JwdXMuaTAwMDAwNTkyLm4wMDAwIiwiTUNGLmNvcnB1cy5BRi5HdWlkYW5jZSIsIk1DRi5jb3JwdXMuQUYubjAwMDAiLCJNQ0YuY29ycHVzLkNJRi5HdWlkYW5jZSIsIk1DRi5jb3JwdXMuQ0lGLm4wMDAwIiwiTUNGLmNvcnB1cy5HQ0YuR3VpZGFuY2UiLCJNQ0YuY29ycHVzLkdDRi5uMDAwMCIsIk1DRi5jb3JwdXMuR0VGLkd1aWRhbmNlIiwiTUNGLmNvcnB1cy5HRUYubjAwMDAiLCJPRVAuY29ycHVzLmkwMDAwMDAwMS5uMDAwMCIsIlVOLmNvcnB1cy5VTkNCRC5uMDAwMCIsIlVOLmNvcnB1cy5VTkNDRC5uMDAwMCIsIlVORkNDQy5jb3JwdXMuaTAwMDAwMDAxLm4wMDAwIl0sInN1YiI6IkNQUiIsImF1ZCI6ImxvY2FsaG9zdCIsImlzcyI6IkNsaW1hdGUgUG9saWN5IFJhZGFyIiwiZXhwIjoyMDc3OTgzNzUwLjAsImlhdCI6MTc2MjQ1MDk1MH0.8zzDrsre801pywPKGNl5AF29hnvPYvFWiMC3dyIddsg",
+  TARGETS_URL: "https://cpr-production-targets-json-store.s3.eu-west-1.amazonaws.com",
+  CDN_URL: "https://cdn.climatepolicyradar.org",
+  CONCEPTS_API_URL: "https://api.climatepolicyradar.org",
+  ADOBE_API_KEY: "dca9187b65294374a6367824df902fdf",
+  REDIRECT_FILE: "redirects.json",
+  HOSTNAME: "http://localhost:3000",
+};

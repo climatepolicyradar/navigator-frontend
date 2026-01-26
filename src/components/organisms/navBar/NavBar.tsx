@@ -1,29 +1,39 @@
+import { ReactNode } from "react";
+
+import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
 import { NavSearch } from "@/components/molecules/navSearch/NavSearch";
+import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IProps {
   headerClasses?: string;
-  logo: React.ReactNode;
-  menu: React.ReactNode;
+  logo: ReactNode;
+  menu: ReactNode;
   showLogo?: boolean;
   showSearch?: boolean;
 }
 
 export const NavBar = ({ headerClasses = "", logo, menu, showLogo = true, showSearch = true }: IProps) => {
+  const allHeaderClasses = joinTailwindClasses(
+    "sticky top-0 z-60 w-full cols-4:h-[72px] flex flex-col justify-center",
+    showSearch ? "h-[128px]" : "h-[72px]",
+    headerClasses
+  );
+  const allColumnClasses = joinTailwindClasses(showLogo && showSearch && "grid-rows-2 cols-4:grid-rows-[initial]");
+
   return (
-    <header data-cy="header" className={`w-full h-[128px] sm:h-[72px] sticky top-0 z-60 ${headerClasses}`}>
-      <div
-        className={`max-w-maxSiteWidth sm:px-4 pt-2 sm:pb-2 mx-auto flex justify-between items-center flex-wrap sm:flex-nowrap gap-y-1 sm:gap-y-0 ${
-          !showLogo && !showSearch ? "justify-end" : ""
-        }`}
+    <header data-cy="header" className={allHeaderClasses}>
+      <FiveColumns
+        className={allColumnClasses}
+        columnOverrides={["grid-cols-[1fr_auto]", "cols-2:grid-cols-[1fr_auto]", "cols-3:grid-cols-[1fr_auto]"]}
       >
-        {showLogo && <div className="lg:flex-1 shrink-4 md:max-w-[30%] px-4 sm:pl-0 sm:pt-0">{logo}</div>}
+        {showLogo && <div className="flex items-center col-start-1 -col-end-1 cols-3:col-end-3">{logo}</div>}
         {showSearch && (
-          <div className="flex-[1_1_100%] sm:flex-initial order-1 sm:order-0 lg:min-w-[550px]">
+          <div className="cols-4:col-start-3 cols-4:-col-end-2 cols-5:-col-end-3">
             <NavSearch />
           </div>
         )}
-        <div className="lg:flex-1 flex justify-end pt-4 pr-4 sm:pt-0 sm:pr-0">{menu}</div>
-      </div>
+        <div className="flex items-center justify-end -col-end-1">{menu}</div>
+      </FiveColumns>
     </header>
   );
 };

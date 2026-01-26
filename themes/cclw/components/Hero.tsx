@@ -1,10 +1,10 @@
 import dynamic from "next/dynamic";
 
 import { SiteWidth } from "@/components/panels/SiteWidth";
+import { Heading } from "@/components/typography/Heading";
 
 import LandingSearchForm from "./LandingSearchForm";
 import { LogoLarge } from "./LogoLarge";
-import { Heading } from "@/components/typography/Heading";
 
 const Instructions = dynamic(() => import("./Instructions"), {
   loading: () => <p>Loading document stats...</p>,
@@ -18,7 +18,7 @@ interface IProps {
 
 export const Hero = ({ handleSearchInput, searchInput }: IProps) => {
   return (
-    <div className="pb-6 text-white pt-[28px] sm:pt-[48px] md:pt-[80px] lg:pt-[100px] xl:pt-[140px]">
+    <div className="pb-6 text-white pt-7 sm:pt-12 md:pt-20 lg:pt-[100px] xl:pt-[140px]">
       <SiteWidth>
         <div className="flex flex-col items-center justify-center mb-6">
           <LogoLarge />
@@ -28,13 +28,13 @@ export const Hero = ({ handleSearchInput, searchInput }: IProps) => {
         </div>
         <div className="mx-auto text-center">
           <p className="font-medium tracking-slight text-lg lg:text-3xl" data-cy="intro-message">
-            Search over 5000 climate laws and policies worldwide
+            Search over 7000 climate laws, policies and UNFCCC submissions
           </p>
         </div>
-        <div className="max-w-screen-md mx-auto mt-6">
+        <div className="max-w-3xl mx-auto mt-6">
           <LandingSearchForm handleSearchInput={handleSearchInput} placeholder="Search the full text of any document" input={searchInput} />
         </div>
-        <div className="mt-6 mt-[48px] sm:mt-[88px] md:mt-[188px] lg:mt-[208px] xl:mt-[248px]">
+        <div className="mt-12 sm:mt-[88px] md:mt-[188px] lg:mt-52 xl:mt-[248px]">
           <Instructions />
         </div>
       </SiteWidth>

@@ -2,19 +2,15 @@ import { TThemeConfig } from "@/types";
 
 const config: TThemeConfig = {
   categories: {
-    label: "Category",
+    label: "Document Type",
     options: [
-      {
-        label: "Climate Policy Radar Reports",
-        slug: "climate_policy_radar_reports",
-        value: ["CPR.corpus.i00000002.n0000"],
-      },
       {
         label: "All",
         slug: "All",
         value: [
           "CCLW.corpus.i00000001.n0000",
           "CPR.corpus.Goldstandard.n0000",
+          "CPR.corpus.i00000001.n0000",
           "CPR.corpus.i00000589.n0000",
           "CPR.corpus.i00000591.n0000",
           "CPR.corpus.i00000592.n0000",
@@ -28,31 +24,23 @@ const config: TThemeConfig = {
           "MCF.corpus.GEF.n0000",
           "OEP.corpus.i00000001.n0000",
           "UNFCCC.corpus.i00000001.n0000",
+          "UN.corpus.UNCBD.n0000",
+          "UN.corpus.UNCCD.n0000",
+          "CPR.corpus.i00000002.n0000",
         ],
       },
       {
-        label: "UNFCCC",
-        slug: "UNFCCC",
-        value: ["UNFCCC.corpus.i00000001.n0000"],
+        label: "UN Submissions",
+        slug: "UN-submissions",
+        value: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
         category: ["UNFCCC"],
-      },
-      {
-        label: "Policies",
-        slug: "policies",
-        value: [
-          "CCLW.corpus.i00000001.n0000",
-          "CPR.corpus.i00000589.n0000",
-          "CPR.corpus.i00000591.n0000",
-          "CPR.corpus.i00000592.n0000",
-          "CPR.corpus.Goldstandard.n0000",
-        ],
-        category: ["Executive"],
       },
       {
         label: "Laws",
         slug: "laws",
         value: [
           "CCLW.corpus.i00000001.n0000",
+          "CPR.corpus.i00000001.n0000",
           "CPR.corpus.i00000589.n0000",
           "CPR.corpus.i00000591.n0000",
           "CPR.corpus.i00000592.n0000",
@@ -62,8 +50,21 @@ const config: TThemeConfig = {
         alias: "LAWS",
       },
       {
-        label: "Multilateral Climate Funds",
-        slug: "multilateral-climate-funds",
+        label: "Policies",
+        slug: "policies",
+        value: [
+          "CCLW.corpus.i00000001.n0000",
+          "CPR.corpus.i00000001.n0000",
+          "CPR.corpus.i00000589.n0000",
+          "CPR.corpus.i00000591.n0000",
+          "CPR.corpus.i00000592.n0000",
+          "CPR.corpus.Goldstandard.n0000",
+        ],
+        category: ["Executive"],
+      },
+      {
+        label: "Climate Finance Projects",
+        slug: "climate-finance-projects",
         value: [
           "MCF.corpus.GCF.n0000",
           "MCF.corpus.GEF.n0000",
@@ -76,12 +77,17 @@ const config: TThemeConfig = {
         ],
       },
       {
-        label: "Reports",
-        slug: "Reports",
+        label: "Corporate Disclosures",
+        slug: "corporate-disclosures",
+        value: ["CPR.corpus.i00000002.n0000"],
+      },
+      {
+        label: "Offshore Wind Reports",
+        slug: "offshore-wind-reports",
         value: ["OEP.corpus.i00000001.n0000"],
       },
       {
-        label: "Litigation",
+        label: "Litigation (coming soon)",
         slug: "Litigation",
         category: ["Litigation"],
         value: ["LITIGATION-COMING-SOON"],
@@ -89,6 +95,30 @@ const config: TThemeConfig = {
     ],
   },
   filters: [
+    {
+      label: "UN Convention",
+      taxonomyKey: "convention",
+      type: "checkbox",
+      options: [
+        {
+          label: "CBD",
+          slug: "cbd",
+          value: ["UN.corpus.UNCBD.n0000"],
+        },
+        {
+          label: "UNCCD",
+          slug: "unccd",
+          value: ["UN.corpus.UNCCD.n0000"],
+        },
+        {
+          label: "UNFCCC",
+          slug: "unfccc",
+          value: ["UNFCCC.corpus.i00000001.n0000"],
+        },
+      ],
+      category: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
+      startOpen: "true",
+    },
     {
       label: "Funds",
       taxonomyKey: "fund",
@@ -211,7 +241,7 @@ const config: TThemeConfig = {
       ],
     },
     {
-      label: "Topic",
+      label: "Response areas",
       taxonomyKey: "topic",
       apiMetaDataKey: "family.topic",
       type: "radio",
@@ -224,6 +254,7 @@ const config: TThemeConfig = {
       ],
       dependentFilterKey: "",
       corporaKey: "Laws and Policies",
+      showTopicsMessage: true,
     },
     {
       label: "Sector",
@@ -241,6 +272,7 @@ const config: TThemeConfig = {
       showFade: "true",
       corporaKey: "Laws and Policies",
       quickSearch: "true",
+      showTopicsMessage: true,
     },
     {
       label: "Author Type",
@@ -251,102 +283,158 @@ const config: TThemeConfig = {
       corporaKey: "Reports",
     },
     {
-      label: "Author Type",
+      label: "Party or Non-Party",
       corporaKey: "Intl. agreements",
       taxonomyKey: "author_type",
-      apiMetaDataKey: "family.author.type",
+      apiMetaDataKey: "family.author_type",
       type: "radio",
-      category: ["UNFCCC.corpus.i00000001.n0000"],
+      category: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
+      startOpen: "true",
     },
     {
-      label: "Type of submission",
+      label: "Submission type",
       corporaKey: "Intl. agreements",
       taxonomyKey: "_document.type",
       apiMetaDataKey: "document.type",
       type: "radio",
-      category: ["UNFCCC.corpus.i00000001.n0000"],
+      category: ["UNFCCC.corpus.i00000001.n0000", "UN.corpus.UNCBD.n0000", "UN.corpus.UNCCD.n0000"],
+      startOpen: "true",
       options: [
+        {
+          label: "National Biodiversity Strategy and Action Plan (NBSAP)",
+          slug: "National Biodiversity Strategy and Action Plan (NBSAP)",
+          value: "National Biodiversity Strategy and Action Plan (NBSAP)",
+          group: "CBD",
+        },
+        {
+          label: "National Report (NR)",
+          slug: "National Report (NR)",
+          value: "National Report (NR)",
+          group: "CBD",
+        },
+        {
+          label: "National Targets (NT)",
+          slug: "National Target (NT)",
+          value: "National Target (NT)",
+          group: "CBD",
+        },
+        {
+          label: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
+          slug: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
+          value: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
+          group: "UNCCD",
+        },
+        {
+          label: "Country Report (CR)",
+          slug: "Country Report (CR)",
+          value: "Country Report (CR)",
+          group: "UNCCD",
+        },
+        {
+          label: "National Drought Plan (NDP)",
+          slug: "National Drought Plan (NDP)",
+          value: "National Drought Plan (NDP)",
+          group: "UNCCD",
+        },
         {
           label: "Nationally Determined Contribution (NDC)",
           slug: "Nationally Determined Contribution",
           value: "Nationally Determined Contribution",
+          group: "UNFCCC",
         },
         {
           label: "National Adaptation Plan (NAP)",
           slug: "National Adaptation Plan",
           value: "National Adaptation Plan",
+          group: "UNFCCC",
         },
         {
           label: "Biennial Transparency Report (BTR)",
           slug: "Biennial Transparency Report",
           value: "Biennial Transparency Report",
+          group: "UNFCCC",
         },
         {
           label: "Long-Term Low-Emission Development Strategy (LT-LEDS)",
           slug: "Long-Term Low-Emission Development Strategy",
           value: "Long-Term Low-Emission Development Strategy",
+          group: "UNFCCC",
         },
         {
           label: "Biennial Update Report (BUR)",
           slug: "Biennial Update Report",
           value: "Biennial Update Report",
+          group: "UNFCCC",
         },
         {
           label: "Biennial Report (BR)",
           slug: "Biennial Report",
           value: "Biennial Report",
+          group: "UNFCCC",
         },
         {
           label: "National Communication (NC)",
           slug: "National Communication",
           value: "National Communication",
+          group: "UNFCCC",
         },
         {
           label: "National Inventory Report (NIR)",
           slug: "National Inventory Report",
           value: "National Inventory Report",
+          group: "UNFCCC",
         },
         {
           label: "Adaptation Communication (AC)",
           slug: "Adaptation Communication",
           value: "Adaptation Communication",
+          group: "UNFCCC",
         },
       ],
     },
   ],
-  labelVariations: [
-    {
-      key: "date",
+  labelVariations: {
+    date: {
       label: "First published",
       category: ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"],
     },
-  ],
-  links: [
-    {
-      key: "download-database",
-      url: "https://form.jotform.com/250202141318339",
-    },
-  ],
-  metadata: [
-    {
-      key: "default",
+  },
+  links: {
+    downloadDatabase: "https://form.jotform.com/250202141318339",
+  },
+  pageMetadata: {
+    default: {
       title: "Climate Policy Radar",
+      description: "",
+    },
+    homepage: {
+      title: "Law and Policy Search",
       description:
         "Use Climate Policy Radar's data science and AI-powered platform to search and explore thousands of climate change laws, policies and legal cases worldwide.",
     },
-    {
-      key: "geography",
-      title: "{text} climate laws and policies",
+    geography: {
+      title: "{text} climate laws, policies and reports",
       description:
         "Find climate change laws, policies, targets and other climate policy data and indicators for {text}, alongside information about their legislative process.",
     },
-    {
-      key: "search",
-      title: "Law and Policy Search",
+    search: {
+      title: "Search the Climate Policy Radar database",
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
-  ],
-  documentCategories: ["All", "Laws", "Policies", "UNFCCC", "Litigation", "MCF", "Reports"],
+  },
+  documentCategories: ["All", "UN Submissions", "Laws", "Policies", "Climate Finance Projects", "Offshore Wind Reports", "Litigation"],
+  defaultDocumentCategory: "Laws",
+  pageBlocks: {
+    family: ["documents", "summary", "metadata", "topics", "collections", "targets", "note"],
+    geography: ["recents", "intro", "targets", "statistics", "legislativeProcess"],
+  },
+  tutorials: ["knowledgeGraph"],
+  features: {
+    familyConceptsSearch: false,
+    knowledgeGraph: true,
+    litigation: false,
+    searchFamilySummary: false,
+  },
 };
 
 export default config;

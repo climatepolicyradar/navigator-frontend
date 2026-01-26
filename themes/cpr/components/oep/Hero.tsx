@@ -1,13 +1,38 @@
-import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
+import { ExternalLink } from "@/components/ExternalLink";
+import { Icon } from "@/components/atoms/icon/Icon";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { SiteWidth } from "@/components/panels/SiteWidth";
-import { ExternalLink } from "@/components/ExternalLink";
-
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { Icon } from "@/components/atoms/icon/Icon";
+
+interface SearchSuggestion {
+  label: string;
+  params?: Record<string, string>;
+}
+
+const SEARCH_SUGGESTIONS: SearchSuggestion[] = [
+  {
+    label: "Offshore wind development",
+    params: {
+      [QUERY_PARAMS.query_string]: "Offshore wind development",
+    },
+  },
+  {
+    label: "Floating offshore wind",
+    params: {
+      [QUERY_PARAMS.query_string]: "Floating offshore wind",
+    },
+  },
+  {
+    label: "Zoning and spatial planning",
+    params: {
+      [QUERY_PARAMS.concept_name]: "zoning and spatial planning",
+    },
+  },
+];
 
 export const Hero = () => {
   const router = useRouter();
@@ -15,17 +40,29 @@ export const Hero = () => {
 
   const handleKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleSubmit();
+      handleSubmit(term);
     }
   };
 
-  const handleSuggestionClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    handleSubmit(e.currentTarget.textContent);
+  const handleSubmit = (query?: string) => {
+    router.push({
+      pathname: "/search",
+      query: {
+        [QUERY_PARAMS.query_string]: query ?? term,
+        [QUERY_PARAMS.category]: "offshore-wind-reports",
+      },
+    });
   };
 
-  const handleSubmit = (query?: string) => {
-    router.push({ pathname: "/search", query: { [QUERY_PARAMS.query_string]: query ?? term, [QUERY_PARAMS.category]: "Reports" } });
+  const handleQuickSearch = (params: Record<string, string>) => {
+    // Push directly to search page with all parameters
+    router.push({
+      pathname: "/search",
+      query: {
+        ...params,
+        [QUERY_PARAMS.category]: "offshore-wind-reports",
+      },
+    });
   };
 
   return (
@@ -47,7 +84,7 @@ export const Hero = () => {
               </h1>
               <p className="my-6 text-xl text-textDark md:text-2xl">Helping the offshore wind sector design effective strategies</p>
               <div className="relative z-1 mb-4">
-                <button className="h-full absolute left-0 px-4 text-textNormal" onClick={() => handleSubmit()} aria-label="Search">
+                <button className="h-full absolute left-0 px-4 text-textNormal" onClick={() => handleSubmit(term)} aria-label="Search">
                   <span className="block">
                     <Icon name="search" height="20" width="20" />
                   </span>
@@ -68,21 +105,20 @@ export const Hero = () => {
               <div className="flex gap-4 relative z-2 text-sm">
                 <p className="font-medium text-textDark">Suggestions:</p>
                 <ul className="flex flex-col md:flex-row gap-2 md:gap-4">
-                  <li>
-                    <a href="" onClick={handleSuggestionClick} className="text-textDark opacity-60 hover:opacity-100">
-                      Offshore wind development
-                    </a>
-                  </li>
-                  <li>
-                    <a href="" onClick={handleSuggestionClick} className="text-textDark opacity-60 hover:opacity-100">
-                      Floating offshore wind
-                    </a>
-                  </li>
-                  <li>
-                    <a href="" onClick={handleSuggestionClick} className="text-textDark opacity-60 hover:opacity-100">
-                      Offshore wind communities
-                    </a>
-                  </li>
+                  {SEARCH_SUGGESTIONS.map((suggestion, index) => (
+                    <li key={index}>
+                      <a
+                        href=""
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleQuickSearch(suggestion.params);
+                        }}
+                        className="text-textDark opacity-60 hover:opacity-100"
+                      >
+                        {suggestion.label}
+                      </a>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>

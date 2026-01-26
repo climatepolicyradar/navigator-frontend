@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 import { ExternalLink } from "@/components/ExternalLink";
 import { PLATFORM_FAQS as GENERIC_PLATFORM_FAQS } from "@/constants/platformFaqs";
 
@@ -13,9 +15,9 @@ export const FAQS: TFAQ[] = [
     content: (
       <>
         <p>
-          Climate Policy Radar builds responsible AI tools for climate action. A UK-based not-for-profit, our data and tools help governments,
-          researchers, international organisations, civil society, and the private sector create effective climate policies and deploy climate
-          finance.
+          Climate Policy Radar builds responsible AI tools for climate action. A UK-based not-for-profit, our data and tools support governments,
+          researchers, international organisations, civil society, and the private sector in their decision-making pertaining to climate policy, law
+          and/or finance.
         </p>
       </>
     ),
@@ -39,8 +41,8 @@ export const FAQS: TFAQ[] = [
       <>
         <p>
           New data, and updates to existing data, are collected from official sources such as government websites, parliamentary records and court
-          documents. We add these to the database on a rolling basis. Submissions to the UNFCCC portals were first added on the 23rd of May 2023, and
-          are checked for updates regularly. If you're aware of documents that are missing, please let us know using our{" "}
+          documents. We add these to the database on a rolling basis. Submissions to the UN portals were first added on the 23rd of May 2023, and are
+          checked for updates regularly. If you're aware of documents that are missing, please let us know using our{" "}
           <ExternalLink url="https://form.jotform.com/250974303048355">data contributors form</ExternalLink>.
         </p>
       </>
@@ -55,14 +57,17 @@ export const PLATFORM_FAQS: TFAQ[] = [
       <>
         <ul>
           <li>
-            Find climate and climate-related laws, policies, strategies and action plans from every country and submissions to the UNFCCC relevant to
-            country level action
+            Find climate and climate-related laws, policies, strategies and action plans from every country and submissions to UN Conventions relevant
+            to country level action
           </li>
           <li>Find data from 4 biggest Multilateral Climate Funds, including project summaries, implementation documents and project guidance</li>
-          <li>Search for keywords and policy concepts (like 'electric vehicles' or 'gender equality') across the full text of all documents</li>
+          <li>Search for keywords and policy topics (like 'electric vehicles' or 'gender equality') across the full text of all documents</li>
           <li>View your search term (and related phrases) highlighted in search results</li>
           <li>Browse country profiles to find and compare their climate laws, policies and strategies</li>
-          <li>Access the raw data: you just need to fill out this form to request a copy of the entire dataset</li>
+          <li>
+            Access the raw data: you just need to fill out <ExternalLink url="https://form.jotform.com/250202141318339">this form</ExternalLink> to
+            request a copy of the entire dataset
+          </li>
         </ul>
       </>
     ),

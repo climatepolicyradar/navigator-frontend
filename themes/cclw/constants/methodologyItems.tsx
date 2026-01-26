@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 
@@ -158,7 +160,8 @@ export const METHODOLOGY: TDataListItem[] = [
           <li>Set out institutional arrangements for climate governance at the national level</li>
           <li>Are multi-sectoral in scope</li>
           <li>
-            Involve mechanisms for transparency and/or accountability.<a href="#note-ii">[ii]</a>
+            Involve mechanisms for transparency and/or accountability.
+            <a href="#note-ii">[ii]</a>
           </li>
         </ol>
 
@@ -215,8 +218,10 @@ export const METHODOLOGY: TDataListItem[] = [
           social media alerts. Data collection is overseen by LSE, supported by Climate Policy Radar and other partners. These efforts are regularly
           supplemented by contributions from lawyers, scholars, policymakers and other colleagues from around the world, who alert us to new data.
           Please use 
-          <ExternalLink url="https://form.jotform.com/233294135296359">this link</ExternalLink> or email us at 
-          <ExternalLink url="mailto:support@climatepolicyradar.org">support@climatepolicyradar.org</ExternalLink> if you wish to contribute.
+          <ExternalLink url="https://form.jotform.com/233294135296359">this link</ExternalLink>
+           or email us at 
+          <ExternalLink url="mailto:support@climatepolicyradar.org">support@climatepolicyradar.org</ExternalLink>
+           if you wish to contribute.
         </p>
         <p>
           In July 2024, a large volume of data not previously included in the database was ingested from the 

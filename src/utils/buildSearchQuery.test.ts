@@ -1,10 +1,15 @@
+import { DEFAULT_CONFIG_FEATURES } from "@/constants/features";
+import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
+import { TThemeConfig } from "@/types";
+
 import buildSearchQuery from "./buildSearchQuery";
 
 describe("buildSearchQuery: ", () => {
   it("should use All.categories if there's no category in the routerQuery", () => {
     const allCategories = ["CCLW.corpus.i00000001.n0000", "CPR.corpus.i00000592.n0000", "MCF.corpus.AF.Guidance"];
     const unfcccCategories = ["UNFCCC.corpus.i00000001.n0000"];
-    const themeConfig = {
+    const themeConfig: TThemeConfig = {
+      ...DEFAULT_THEME_CONFIG,
       defaultCorpora: undefined,
       categories: {
         label: "Category",
@@ -21,11 +26,11 @@ describe("buildSearchQuery: ", () => {
           },
         ],
       },
-      filters: [],
-      labelVariations: [],
-      links: [],
-      metadata: [],
-      documentCategories: [],
+      features: {
+        ...DEFAULT_CONFIG_FEATURES,
+        knowledgeGraph: true,
+        searchFamilySummary: true,
+      },
     };
 
     const searchQueryWithNoCategory = buildSearchQuery({}, themeConfig);
@@ -36,17 +41,18 @@ describe("buildSearchQuery: ", () => {
   });
 
   it("should set the sort order to 'date' 'descending' if no query or sort is provided", () => {
-    const themeConfig = {
+    const themeConfig: TThemeConfig = {
+      ...DEFAULT_THEME_CONFIG,
       defaultCorpora: undefined,
       categories: {
         label: "Category",
         options: [],
       },
-      filters: [],
-      labelVariations: [],
-      links: [],
-      metadata: [],
-      documentCategories: [],
+      features: {
+        ...DEFAULT_CONFIG_FEATURES,
+        knowledgeGraph: true,
+        searchFamilySummary: true,
+      },
     };
 
     const searchQuery = buildSearchQuery({}, themeConfig);

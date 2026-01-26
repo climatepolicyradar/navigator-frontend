@@ -1,27 +1,23 @@
 import { Fragment } from "react";
 
-import Layout from "@/components/layouts/Main";
-import { SiteWidth } from "@/components/panels/SiteWidth";
-import { SingleCol } from "@/components/panels/SingleCol";
-import { SubNav } from "@/components/nav/SubNav";
-
+import { AccordionItem } from "@/cclw/components/AccordionItem";
+import { METHODOLOGY } from "@/cclw/constants/methodologyItems";
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Layout from "@/components/layouts/Main";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
-import { AccordianItem } from "@/cclw/components/AccordianItem";
-
-import { METHODOLOGY } from "@/cclw/constants/methodologyItems";
 
 const Methodology = () => {
   return (
     <Layout
       title="Methodology"
       description="Find the definitions, scope and principles we use to collect and categorise the laws and policies contained in the Climate Change Laws of the World dataset."
+      theme="cclw"
     >
-      <SubNav>
-        <BreadCrumbs label={"Methodology"} />
-      </SubNav>
+      <BreadCrumbs label={"Methodology"} />
       <section>
         <SiteWidth>
           <SingleCol>
@@ -44,7 +40,10 @@ const Methodology = () => {
                 offered alongside national level climate change laws and policies to help users in gaining a comprehensive understanding of national
                 level climate action. For details of the documents included, please visit our <LinkWithQuery href="/faq">FAQs</LinkWithQuery>. To
                 understand more about how new document types may be added in future, visit the{" "}
-                <ExternalLink url="https://github.com/climatepolicyradar/methodology">Climate Policy Radar methodology page</ExternalLink>.
+                <ExternalLink url="https://github.com/climatepolicyradar/methodology/blob/main/METHODOLOGY.md">
+                  Climate Policy Radar methodology page
+                </ExternalLink>
+                .
               </p>
               <p>
                 Classifications described below have been assigned manually. LSE, Climate Policy Radar, and our partners are currently working to
@@ -53,7 +52,7 @@ const Methodology = () => {
 
               {METHODOLOGY.map((item, i) => (
                 <Fragment key={item.title}>
-                  <AccordianItem title={item.title}>{item.content}</AccordianItem>
+                  <AccordionItem title={item.title}>{item.content}</AccordionItem>
                   <hr />
                 </Fragment>
               ))}

@@ -1,18 +1,14 @@
-import Layout from "@/components/layouts/Main";
-import { SiteWidth } from "@/components/panels/SiteWidth";
-import { SingleCol } from "@/components/panels/SingleCol";
-import { SubNav } from "@/components/nav/SubNav";
-
 import { ExternalLink } from "@/components/ExternalLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
+import Layout from "@/components/layouts/Main";
+import { SingleCol } from "@/components/panels/SingleCol";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
 
 const TermsOfUse = () => {
   return (
-    <Layout title="Terms of use">
-      <SubNav>
-        <BreadCrumbs label={"Terms of use"} />
-      </SubNav>
+    <Layout title="Terms of use" theme="cpr">
+      <BreadCrumbs label={"Terms of use"} />
       <section>
         <SiteWidth>
           <SingleCol extraClasses="mt-8">
@@ -113,16 +109,9 @@ const TermsOfUse = () => {
                 </li>
 
                 <li>
-                  <p>When citing a specific data point(s), for example, if citing a summary of a document, please use the following citation:</p>
-                  <p className="italic">
-                    “This summary was written by researchers at the Grantham Research Institute at the London School of Economics, sourced from
-                    Climate Policy Radar, https://app.climatepolicyradar.org and made available under and under the Creative Commons CC-BY licence”
-                  </p>
                   <p>
-                    <span className="font-medium">Note</span>: As of May 2023, all climate law and policy summaries in the CPR App were written by
-                    researchers at the Grantham Research Institute (as reflected on every document page). Documents from the UNFCCC document
-                    registries and data portals are out of the scope for this declaration (see further “Data from third party sources”). This section
-                    and recommended citation will be updated to reflect any changes to this.
+                    When citing a specific data point(s) (for example, if citing a summary of a document), please refer to Terms and Conditions by our{" "}
+                    <a href="/terms-of-use#data-from-third-party-sources">third party data providers</a>.
                   </p>
                 </li>
               </ul>
@@ -164,7 +153,9 @@ const TermsOfUse = () => {
                 sites or services. Climate Policy Radar strongly advises you to read the terms and conditions and privacy policy of any third-party
                 site that you visit.
               </p>
-              <Heading level={3}>Data from Third Party Sources</Heading>
+              <Heading level={3} id="data-from-third-party-sources">
+                Data from Third Party Sources
+              </Heading>
               <p>
                 The CPR Database and App contains data that were created by third parties. The data includes document summaries that were written by
                 third parties and/or information about the documents (”meta-data”) assigned by third parties, e.g. classifications to sector or legal
@@ -336,6 +327,58 @@ const TermsOfUse = () => {
                     <td>January 2025</td>
                     <td>
                       <ExternalLink url="https://oceanenergypathway.org/terms-conditions/">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://www.lseg.com/en">LSEG</ExternalLink>
+                    </td>
+                    <td>
+                      <ExternalLink url="https://permid.org/">PermID</ExternalLink> Uniform Resource Identifier (URI)
+                    </td>
+                    <td>May 2025</td>
+                    <td>
+                      <ExternalLink url="https://permid.org/terms">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://ort.cbd.int/">CBD online reporting tool</ExternalLink>
+                    </td>
+                    <td>National Biodiversity Strategy and Action Plans</td>
+                    <td>October 2025</td>
+                    <td>
+                      <ExternalLink url="https://www.cbd.int/terms">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://www.cbd.int/reports">CBD reports</ExternalLink>
+                    </td>
+                    <td>Sixth National Reports (6NRs)</td>
+                    <td>October 2025</td>
+                    <td>
+                      <ExternalLink url="https://www.cbd.int/terms">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://www.unccd.int/land-and-life/drought/drought-planning">UNCCD drought plans</ExternalLink>
+                    </td>
+                    <td>Drought Plans</td>
+                    <td>October 2025</td>
+                    <td>
+                      <ExternalLink url="https://www.unccd.int/terms-of-use">View</ExternalLink>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <ExternalLink url="https://www.unccd.int/our-work/country-profiles/voluntary-ldn-targets">UNCCD LDN targets</ExternalLink>
+                    </td>
+                    <td>Land Degradation Neutrality Targets</td>
+                    <td>October 2025</td>
+                    <td>
+                      <ExternalLink url="https://www.unccd.int/terms-of-use">View</ExternalLink>
                     </td>
                   </tr>
                   <tr>

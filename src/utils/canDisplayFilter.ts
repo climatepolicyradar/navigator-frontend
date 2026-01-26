@@ -1,13 +1,12 @@
 import { ParsedUrlQuery } from "querystring";
 
-import { containsAny } from "./containsAny";
-
-import { QUERY_PARAMS } from "@/constants/queryParams";
-
+import { QUERY_PARAMS, type TQueryParams } from "@/constants/queryParams";
 import { TThemeConfig, TThemeConfigFilter } from "@/types";
 
+import { containsAny } from "./containsAny";
+
 export const canDisplayFilter = (filter: TThemeConfigFilter, query: ParsedUrlQuery, themeConfig: TThemeConfig) => {
-  let canDisplay = false;
+  const canDisplay = false;
   if (!filter.category) return false;
   // Check whether the filter has a category it is associated with
   // No defined categories on the filter means it is for all
@@ -15,7 +14,7 @@ export const canDisplayFilter = (filter: TThemeConfigFilter, query: ParsedUrlQue
   // Check whether we have a selected category
   if (filter.categoryKey) {
     // Check whether the filter has a dependent category key (such as another filter)
-    const selectedCategoryKey = query[QUERY_PARAMS[filter.categoryKey]] as string;
+    const selectedCategoryKey = query[QUERY_PARAMS[filter.categoryKey as TQueryParams]] as string;
     if (containsAny(filter.category, [selectedCategoryKey])) return true;
   }
   const selectedCategory = query[QUERY_PARAMS.category] as string;

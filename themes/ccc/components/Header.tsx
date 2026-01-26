@@ -1,30 +1,36 @@
-import { Menu } from "@/ccc/components/Menu";
-import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { NavBar } from "@/components/organisms/navBar/NavBar";
+import { LucideMenu } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-export const CCLWLogo = (
-  <LinkWithQuery href={`/`} cypress="cclw-logo">
-    <span className="text-text-light text-2xl font-medium">Climate Case Chart</span>
-  </LinkWithQuery>
+import { MENU_LINKS } from "@/ccc/constants/menuLinks";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
+import MainMenu from "@/components/molecules/mainMenu/MainMenu";
+import { NavBar } from "@/components/organisms/navBar/NavBar";
+import { joinTailwindClasses } from "@/utils/tailwind";
+
+const CCCLogo = (
+  <PageLink href="/" data-cy="ccc-logo" className="max-w-full">
+    <Image src="/images/ccc/ccc-logo-white.png" alt="The Climate Litigation Database" width={280} height={26} />
+  </PageLink>
 );
 
-const Header = () => {
+export const Header = () => {
   const router = useRouter();
 
   const showLogo = router.pathname !== "/";
   const showSearch = router.pathname !== "/";
+  const isNotHome = router.pathname !== "/";
+
+  const headerClasses = joinTailwindClasses("bg-surface-light", isNotHome && "!bg-[#677787]");
+  const menuIconClasses = router.pathname === "/" ? "text-gray-950" : "text-white";
 
   return (
     <NavBar
-      headerClasses={`min-h-12 bg-[rebeccapurple] ${!showLogo && !showSearch ? "!h-[72px]" : ""}`}
-      logo={CCLWLogo}
-      menu={<Menu />}
+      headerClasses={headerClasses}
+      logo={CCCLogo}
+      menu={<MainMenu icon={<LucideMenu size={24} className={menuIconClasses} />} links={MENU_LINKS} />}
       showLogo={showLogo}
       showSearch={showSearch}
     />
   );
 };
-
-export default Header;

@@ -1,7 +1,11 @@
+import { DEFAULT_CONFIG_FEATURES } from "@/constants/features";
+import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { TThemeConfig } from "@/types";
+
 import { buildSearchQueryMetadata } from "./buildSearchQueryMetadata";
 
 const testThemeConfig: TThemeConfig = {
+  ...DEFAULT_THEME_CONFIG,
   filters: [
     {
       label: "Status",
@@ -12,10 +16,10 @@ const testThemeConfig: TThemeConfig = {
       dependentFilterKey: "fund",
     },
   ],
-  labelVariations: [],
-  links: [],
-  documentCategories: [],
-  metadata: [],
+  features: {
+    ...DEFAULT_CONFIG_FEATURES,
+    searchFamilySummary: true,
+  },
 };
 
 describe("buildSearchQueryMetadata: ", () => {

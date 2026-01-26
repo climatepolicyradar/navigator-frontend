@@ -1,6 +1,6 @@
+import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 
 const AboutClimateProjectExplorer = () => {
   return (

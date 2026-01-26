@@ -1,15 +1,21 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { ParsedUrlQuery } from "querystring";
 
-import { SearchSettingsList } from "./SearchSettingsList";
-import { SearchSettingsItem } from "./SearchSettingsItem";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { SEARCH_PASSAGE_ORDER } from "@/constants/searchPassagesOrder";
+import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { sortOptions, sortOptionsBrowse } from "@/constants/sortOptions";
+import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
+import { getCurrentSortChoice } from "@/utils/getCurrentSortChoice";
+import { getCurrentPassagesOrderChoice } from "@/utils/getPassagesSortOrder";
+
+import { SearchSettingsItem } from "./SearchSettingsItem";
+import { SearchSettingsList } from "./SearchSettingsList";
 
 interface IProps {
   extraClasses?: string;
-  handlePassagesClick?: (passagesOption: string) => void;
+  handlePassagesOrderChange?: (passagesOption: string) => void;
   handleSearchChange?: (key: string, value: string) => void;
   handleSortClick?: (sortOption: string) => void;
   queryParams: ParsedUrlQuery;
@@ -17,31 +23,9 @@ interface IProps {
   settingsButtonRef?: MutableRefObject<any>;
 }
 
-const getCurrentSortChoice = (queryParams: ParsedUrlQuery, isBrowsing: boolean) => {
-  const field = queryParams[QUERY_PARAMS.sort_field];
-  const order = queryParams[QUERY_PARAMS.sort_order];
-  if (field === undefined && order === undefined) {
-    if (isBrowsing) return "date:desc";
-    return "relevance";
-  }
-  return `${field}:${order}`;
-};
-
-const getCurrentSemanticSearchChoice = (queryParams: ParsedUrlQuery) => {
-  const exactMatch = queryParams[QUERY_PARAMS.exact_match];
-  if (exactMatch === undefined) {
-    return "false";
-  }
-  return exactMatch as string;
-};
-
-const getCurrentPassagesOrderChoice = (queryParams: ParsedUrlQuery) => {
-  return queryParams[QUERY_PARAMS.passages_by_position] === "true";
-};
-
 export const SearchSettings = ({
   extraClasses = "",
-  handlePassagesClick,
+  handlePassagesOrderChange,
   handleSearchChange,
   handleSortClick,
   queryParams,
@@ -69,7 +53,7 @@ export const SearchSettings = ({
   const handlePassagesOrderClick = (e: React.MouseEvent<HTMLAnchorElement>, value: string) => {
     e.preventDefault();
     setShowOptions(false);
-    handlePassagesClick?.(value);
+    handlePassagesOrderChange?.(value);
   };
 
   useEffect(() => {
@@ -96,7 +80,7 @@ export const SearchSettings = ({
 
   return (
     <div
-      className={`absolute top-full right-0 bg-nearBlack rounded-lg p-4 mt-2 z-10 text-white text-sm w-[180px] ${extraClasses}`}
+      className={`absolute top-full mt-1 right-0 p-3 w-[180px] max-w-[350px] bg-surface-light border border-border-light rounded-md shadow-md text-sm leading-normal select-none focus-visible:outline-0 ${extraClasses}`}
       ref={searchOptionsRef}
       data-cy="search-settings"
     >
@@ -104,37 +88,36 @@ export const SearchSettings = ({
       {queryParams[QUERY_PARAMS.category]?.toString().toLowerCase() !== "litigation" && (
         <>
           {handleSearchChange && (
-            <div className={`${handlePassagesClick || handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
+            <div className={`${handlePassagesOrderChange || handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
               <SearchSettingsList data-cy="semantic-search" aria-label="Semantic search">
-                <SearchSettingsItem
-                  onClick={(e) => handleSemanticSearchClick(e, "false")}
-                  isActive={getCurrentSemanticSearchChoice(queryParams) === "false"}
-                >
-                  Related phrases
+                <SearchSettingsItem onClick={(e) => handleSemanticSearchClick(e, "true")} isActive={getCurrentSearchChoice(queryParams) === "true"}>
+                  {SEARCH_SETTINGS.exact}
                 </SearchSettingsItem>
-                <SearchSettingsItem
-                  onClick={(e) => handleSemanticSearchClick(e, "true")}
-                  isActive={getCurrentSemanticSearchChoice(queryParams) === "true"}
-                >
-                  Exact phrases only
+                <SearchSettingsItem onClick={(e) => handleSemanticSearchClick(e, "false")} isActive={getCurrentSearchChoice(queryParams) === "false"}>
+                  <span className="">
+                    <span>{SEARCH_SETTINGS.semantic}</span>
+                    <span className="block text-text-secondary">
+                      This may surface results that are not relevant to your search. We are working on improving this.
+                    </span>
+                  </span>
                 </SearchSettingsItem>
               </SearchSettingsList>
             </div>
           )}
-          {handlePassagesClick && (
+          {handlePassagesOrderChange && (
             <div className={`${handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
               <SearchSettingsList data-cy="passages-sort" aria-label="Passages sort">
                 <SearchSettingsItem
                   onClick={(e) => handlePassagesOrderClick(e, "false")}
                   isActive={getCurrentPassagesOrderChoice(queryParams) === false}
                 >
-                  Relevance
+                  {SEARCH_PASSAGE_ORDER.relevance}
                 </SearchSettingsItem>
                 <SearchSettingsItem
                   onClick={(e) => handlePassagesOrderClick(e, "true")}
                   isActive={getCurrentPassagesOrderChoice(queryParams) === true}
                 >
-                  Page number
+                  {SEARCH_PASSAGE_ORDER.page}
                 </SearchSettingsItem>
               </SearchSettingsList>
             </div>

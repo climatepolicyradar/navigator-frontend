@@ -1,12 +1,14 @@
-import { Fragment } from "react";
+import { Fragment, JSX, useEffect } from "react";
 
-import { Accordian } from "@/components/accordian/Accordian";
+import { Accordion } from "@/components/accordion/Accordion";
 import { SingleCol } from "@/components/panels/SingleCol";
 import { Heading } from "@/components/typography/Heading";
 import { VerticalSpacing } from "@/components/utility/VerticalSpacing";
 
+import { LinkWithQuery } from "./LinkWithQuery";
+
 interface IProps {
-  title: string;
+  title?: string;
   faqs: {
     id?: string;
     title: string;
@@ -14,26 +16,57 @@ interface IProps {
     headContent?: JSX.Element;
   }[];
   accordionMaxHeight?: string;
+  sectionId: string;
+  showMore?: boolean;
+  openFirstOnLoad?: boolean;
+  bare?: boolean;
 }
 
-export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px" }: IProps) => {
+export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionId, showMore = false, openFirstOnLoad = true, bare }: IProps) => {
+  useEffect(() => {
+    // Only run if this component has an ID (meaning it's the target component)
+    if (!sectionId) return;
+
+    const hash = window.location.hash.substring(1);
+
+    if (hash === sectionId) {
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 200);
+    }
+  }, [sectionId]);
+
+  const Wrapper = bare ? Fragment : SingleCol;
+
   return (
-    <SingleCol>
-      <Heading level={1} extraClasses="custom-header">
-        {title}
-      </Heading>
-      <VerticalSpacing size="md" />
+    <Wrapper>
+      {title && (
+        <>
+          <Heading level={1} extraClasses="custom-header" id={sectionId}>
+            {title}
+          </Heading>
+          <VerticalSpacing size="md" />
+        </>
+      )}
       <div className="text-content mb-14">
         {faqs.map((faq, index) => (
           <Fragment key={faq.title}>
-            <Accordian title={faq.title} headContent={faq.headContent ?? null} open={index === 0} fixedHeight={accordionMaxHeight}>
+            <Accordion title={faq.title} headContent={faq.headContent ?? null} open={openFirstOnLoad && index === 0} fixedHeight={accordionMaxHeight}>
               {faq.content}
-            </Accordian>
+            </Accordion>
             <hr />
           </Fragment>
         ))}
+        {showMore && (
+          <LinkWithQuery href="/faq" className="!text-text-brand-darker font-semibold text-sm !no-underline">
+            See more FAQs →
+          </LinkWithQuery>
+        )}
       </div>
-    </SingleCol>
+    </Wrapper>
   );
 };
 

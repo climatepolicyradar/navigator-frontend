@@ -1,9 +1,8 @@
-import { SiteWidth } from "@/components/panels/SiteWidth";
-
 import { ExternalLink } from "@/components/ExternalLink";
 import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { Heading } from "@/components/typography/Heading";
 import { getButtonClasses } from "@/components/atoms/button/Button";
+import { SiteWidth } from "@/components/panels/SiteWidth";
+import { Heading } from "@/components/typography/Heading";
 
 const EMAIL_SUBJECT = "Joining the NLP community";
 const EMAIL_BODY = "Hi, I am interested in joining the climate NLP community. It is relevant to me because...";

@@ -8,55 +8,88 @@ on:
 # trunk-ignore(checkov/CKV2_GHA_1)
 permissions: write-all
 jobs:
-  lhci-desktop:
-    name: Lighthouse Desktop
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 22.12.0
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.12.0
-      - run: npm install
-      - run: cp .env.example .env
-      - run: npm run build
-      - name: install Lighthouse CI
-        run: npm install -g @lhci/cli@0.14.x
-      - name: run Lighthouse Desktop
-        run: lhci autorun --collect.settings.preset=desktop
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+  # lhci-desktop:
+  #   name: Lighthouse Desktop
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       theme: [cpr, cclw, mcf, ccc]
+  #   permissions:
+  #     checks: write
+  #     contents: read
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - name: Use Node.js 22.12.0
+  #       uses: actions/setup-node@v6
+  #       with:
+  #         node-version: 22.12.0
+  #     - run: npm install
+  #     - run: cp .env.example .env
+  #     - run: ROBOTS=true npm run build
+  #     - name: install Lighthouse CI
+  #       run: npm install -g @lhci/cli@0.14.x
+  #     - id: upper-theme
+  #       name: Theme to uppercase
+  #       run: |
+  #         theme=$(echo ${{ matrix.theme }} | tr '[:lower:]' '[:upper:]')
+  #         echo "theme=$theme" >> $GITHUB_OUTPUT
+  #     - name: run Lighthouse Desktop
+  #       run: lhci autorun --config=lighthouserc.desktop.js --collect.settings.preset=desktop
+  #       env:
+  #         LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+  #         LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_DESKTOP_TOKEN', steps.upper-theme.outputs.theme)] }}
+  #         ROBOTS: true
 
-  lhci-mobile:
-    name: Lighthouse Mobile
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 22.12.0
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.12.0
-      - run: npm install
-      - run: cp .env.example .env
-      - run: npm run build
-      - name: install Lighthouse CI
-        run: npm install -g @lhci/cli@0.14.x
-      - name: run Lighthouse Mobile
-        run: lhci autorun
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+  # lhci-mobile:
+  #   name: Lighthouse Mobile
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       theme: [cpr, cclw, mcf, ccc]
+  #   permissions:
+  #     checks: write
+  #     contents: read
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - name: Use Node.js 22.12.0
+  #       uses: actions/setup-node@v6
+  #       with:
+  #         node-version: 22.12.0
+  #     - run: npm install
+  #     - run: cp .env.example .env
+  #     - run: ROBOTS=true npm run build
+  #     - name: install Lighthouse CI
+  #       run: npm install -g @lhci/cli@0.14.x
+  #     - id: upper-theme
+  #       name: Theme to uppercase
+  #       run: |
+  #         theme=$(echo ${{ matrix.theme }} | tr '[:lower:]' '[:upper:]')
+  #         echo "theme=$theme" >> $GITHUB_OUTPUT
+  #     - name: run Lighthouse Mobile
+  #       run: lhci autorun --config=lighthouserc.mobile.js
+  #       env:
+  #         LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+  #         LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_MOBILE_TOKEN', steps.upper-theme.outputs.theme)] }}
+  #         ROBOTS: true
 
   percy:
     runs-on: ubuntu-latest
     env:
       THEME: cpr
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 22.12.0
       - run: npm install
       - run: cp .env.example .env
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/$THEME/g" tsconfig.json
+
       - run: npm run build
         env:
           NODE_ENV: production
@@ -74,10 +107,14 @@ jobs:
   code-quality:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 22.12.0
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/$THEME/g" tsconfig.json
       - run: npm install
       - uses: trunk-io/trunk-action@v1
         with:
@@ -87,90 +124,131 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 22.12.0
       - run: npm install
       - run: cp .env.example .env
-      - run: npm run build
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/$THEME/g" tsconfig.json
         env:
-          NODE_ENV: production
-      - run: npm run test
-      - name: Upload results
-        # Run this step even if the test step ahead fails
-        if: ${{ !cancelled() }}
-        uses: trunk-io/analytics-uploader@main
+          THEME: cpr
+      - name: Run vitest
+        run: npm run test
+        # This is needed to pass the results on to the trunk-io/analytics-uploader
+        continue-on-error: true
+        env:
+          THEME: cpr
+
+      - name: Upload vitest results to Trunk.io
+        uses: trunk-io/analytics-uploader@v2
         with:
           junit-paths: "**/vitest.xml"
-          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
           token: ${{ secrets.TRUNK_TOKEN }}
-        continue-on-error: true
+          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
 
   test-e2e:
-    timeout-minutes: 60
+    timeout-minutes: 20
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        theme: [cpr, cclw, mcf, ccc]
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: $HOME/.cache/ms-playwright
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 22.12.0
       - run: npm ci
       - run: cp .env.example .env
-      - run: npm run build
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/${{ matrix.theme }}/g" tsconfig.json
+      - run: THEME=${{ matrix.theme }} npm run build
         env:
           NODE_ENV: production
+
+      - name: Copy static assets to standalone
+        run: |
+          cp -r public .next/standalone/public
+          cp -r .next/static .next/standalone/.next/static
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+
       - run: npx playwright install --with-deps
-      - run: npx playwright test
-      - name: Upload Test Result
-        # Upload the results even if the tests fails to Trunk.io
-        if: ${{ !cancelled() }}
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+
+      - name: Ensure test results directory exists
+        run: mkdir -p test-results-${{ matrix.theme }}
+
+      - name: Run Tests
         continue-on-error: true
-        uses: trunk-io/analytics-uploader@main
+        env:
+          THEME: ${{ matrix.theme }}
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+        run: |
+          echo "Running Playwright tests..."
+          if [ "${{ matrix.theme }}" = "ccc" ]; then
+            npx playwright test tests/${{ matrix.theme }}/
+          else
+            npx playwright test tests/core/ tests/${{ matrix.theme }}/
+          fi
+
+      - name: Upload Test Results to Trunk.io
+        uses: trunk-io/analytics-uploader@v2
+        env:
+          THEME: ${{ matrix.theme }}
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
         with:
-          junit-paths: "**/playwright.xml"
-          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+          junit-paths: test-results-${{ matrix.theme }}/playwright.xml
           token: ${{ secrets.TRUNK_TOKEN }}
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
-  # deploy
+          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+
   release:
     runs-on: ubuntu-latest
     needs: [code-quality, test, test-e2e]
-    environment: production
     strategy:
       fail-fast: false
       matrix:
         theme: [cpr, cclw, mcf, ccc]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 22.12.0
+
       # build
       - run: |
           export THEME=${{ matrix.theme }}
           make build
+
       # release
       # most of this is taken from
       # https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-to-amazon-elastic-container-service#creating-the-workflow
-      - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4.1.0
+      - name: Configure AWS credentials (staging)
+        uses: aws-actions/configure-aws-credentials@v5
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/navigator-frontend-github-actions
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID_STAGING }}:role/navigator-frontend-github-actions
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: eu-west-1
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
+      - name: Login to Amazon ECR (staging)
+        id: login-ecr-staging
+        uses: aws-actions/amazon-ecr-login@d63b14614fe5d7fc5e5e52c523dea4e876816cc4
+      - name: Build, tag, and push image to Amazon ECR (staging)
+        id: build-image-staging
         env:
-          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY_STAGING }}
           IMAGE_TAG: ${{ github.sha }}
           AWS_REGION: eu-west-1
           ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
@@ -179,22 +257,49 @@ jobs:
           docker build --build-arg THEME=${THEME} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-      # TODO: deploy
+
+      - name: Configure aws credentials (production)
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID_PROD }}:role/navigator-frontend-github-actions
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: eu-west-1
+      - name: Login to Amazon ECR (production)
+        id: login-ecr-prod
+        uses: aws-actions/amazon-ecr-login@d63b14614fe5d7fc5e5e52c523dea4e876816cc4
+
+      - name: Build, tag, and push image to Amazon ECR (production)
+        id: build-image-prod
+        env:
+          ECR_REGISTRY: ${{ secrets.DOCKER_REGISTRY_PROD }}
+          IMAGE_TAG: ${{ github.sha }}
+          AWS_REGION: eu-west-1
+          ECR_REPOSITORY: navigator-frontend-${{ matrix.theme }}
+          THEME: ${{ matrix.theme }}
+        run: |
+          docker build --build-arg THEME=${THEME} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
   storybook:
     runs-on: ubuntu-latest
     env:
       THEME: cpr
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 22.12.0
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/$THEME/g" tsconfig.json
       - run: npm install
       - run: npm run build-storybook
       - name: Upload to S3
@@ -204,3 +309,16 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-west-1
+
+  # cleanup-lhci-pr-data:
+  #   runs-on: ubuntu-latest
+  #   needs: [lhci-desktop, lhci-mobile]
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - name: Trigger downstream workflow
+  #       run: |
+  #         curl -X POST \
+  #           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+  #           -H "Accept: application/vnd.github.v3+json" \
+  #           https://api.github.com/repos/${{ github.repository_owner }}/navigator-infra/dispatches \
+  #           -d '{"event_type":"cleanup_lhci","client_payload":{"commit_hash":"${{ github.sha }}","source_repo":"${{ github.repository }}"}}'

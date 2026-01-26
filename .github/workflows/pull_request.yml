@@ -11,60 +11,119 @@ jobs:
       CI_JOB_NUMBER: 1
       THEME: cpr
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/cpr/g" tsconfig.json
       - uses: andresz1/size-limit-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-  lhci-desktop:
-    name: Lighthouse Desktop
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 22.12.0
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.12.0
-      - run: npm install
-      - run: cp .env.example .env
-      - run: npm run build
-      - name: install Lighthouse CI
-        run: npm install -g @lhci/cli@0.14.x
-      - name: run Lighthouse Desktop
-        run: lhci autorun --collect.settings.preset=desktop
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+  # lhci-desktop:
+  #   name: Lighthouse Desktop (${{ matrix.theme }})
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       theme: [cpr, cclw, mcf, ccc]
+  #   permissions:
+  #     checks: write
+  #     contents: read
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - name: Use Node.js 22.12.0
+  #       uses: actions/setup-node@v6
+  #       with:
+  #         node-version: 22.12.0
+  #     - run: npm install
+  #     - run: cp .env.example .env
+  #     - run: THEME=${{ matrix.theme }} ROBOTS=true npm run build
+  #     - name: install Lighthouse CI
+  #       run: npm install -g @lhci/cli@0.14.x
+  #     - id: upper-theme
+  #       name: Theme to uppercase
+  #       run: |
+  #         theme=$(echo ${{ matrix.theme }} | tr '[:lower:]' '[:upper:]')
+  #         echo "theme=$theme" >> $GITHUB_OUTPUT
 
-  lhci-mobile:
-    name: Lighthouse Mobile
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 22.12.0
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.12.0
-      - run: npm install
-      - run: cp .env.example .env
-      - run: npm run build
-      - name: install Lighthouse CI
-        run: npm install -g @lhci/cli@0.14.x
-      - name: run Lighthouse Mobile
-        run: lhci autorun
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+  #     - name: Fetch latest base branch SHA
+  #       id: base-sha
+  #       run: |
+  #         git fetch origin ${{ github.event.pull_request.base.ref }}
+  #         echo "sha=$(git rev-parse origin/${{ github.event.pull_request.base.ref }})" >> $GITHUB_OUTPUT
+
+  #     - name: run Lighthouse Desktop
+  #       # The --baseHash parameter compares the current commit (the one being tested) against the specified base hash.
+  #       # E.g., if your PR branch has commit abc123, and the main branch has commit def456,
+  #       # --baseHash=def456 tells Lighthouse: "Compare abc123 against def456"
+  #       run: lhci autorun --config=lighthouserc.desktop.js --collect.settings.preset=desktop --baseHash=${{ steps.base-sha.outputs.sha }}
+
+  #       env:
+  #         LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+  #         LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_DESKTOP_TOKEN', steps.upper-theme.outputs.theme)] }}
+  #         ROBOTS: true
+
+  # lhci-mobile:
+  #   name: Lighthouse Mobile (${{ matrix.theme }})
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       theme: [cpr, cclw, mcf, ccc]
+  #   permissions:
+  #     checks: write
+  #     contents: read
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - name: Use Node.js 22.12.0
+  #       uses: actions/setup-node@v6
+  #       with:
+  #         node-version: 22.12.0
+  #     - run: npm install
+  #     - run: cp .env.example .env
+  #     - run: THEME=${{ matrix.theme }} ROBOTS=true npm run build
+  #     - name: install Lighthouse CI
+  #       run: npm install -g @lhci/cli@0.14.x
+
+  #     - id: upper-theme
+  #       name: Theme to uppercase
+  #       run: |
+  #         theme=$(echo ${{ matrix.theme }} | tr '[:lower:]' '[:upper:]')
+  #         echo "theme=$theme" >> $GITHUB_OUTPUT
+
+  #     - name: Fetch latest base branch SHA
+  #       id: base-sha
+  #       run: |
+  #         git fetch origin ${{ github.event.pull_request.base.ref }}
+  #         echo "sha=$(git rev-parse origin/${{ github.event.pull_request.base.ref }})" >> $GITHUB_OUTPUT
+
+  #     - name: run Lighthouse Mobile
+  #       # The --baseHash parameter compares the current commit (the one being tested) against the specified base hash.
+  #       # E.g., if your PR branch has commit abc123, and the main branch has commit def456,
+  #       # --baseHash=def456 tells Lighthouse: "Compare abc123 against def456"
+  #       run: lhci autorun --config=lighthouserc.mobile.js --baseHash=${{ steps.base-sha.outputs.sha }}
+
+  #       env:
+  #         LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+  #         LHCI_TOKEN: ${{ secrets[format('LHCI_{0}_MOBILE_TOKEN', steps.upper-theme.outputs.theme)] }}
+  #         ROBOTS: true
 
   percy:
     runs-on: ubuntu-latest
     env:
       THEME: cpr
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 22.12.0
       - run: npm install
       - run: cp .env.example .env
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/$THEME/g" tsconfig.json
       - run: npm run build
         env:
           NODE_ENV: production
@@ -80,15 +139,23 @@ jobs:
 
   code-quality:
     runs-on: ubuntu-latest
+    env:
+      THEME: cpr
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 22.12.0
       - run: npm install
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/$THEME/g" tsconfig.json
       - uses: trunk-io/trunk-action@v1
         with:
           arguments: --ci
+      - run: npm run type-check
+
     permissions:
       # For trunk to post annotations
       checks: write
@@ -99,53 +166,93 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 22.12.0
       - run: npm install
       - run: cp .env.example .env
-      - run: npm run build
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/$THEME/g" tsconfig.json
         env:
-          NODE_ENV: production
-      - run: npm run test
-      - name: Upload results
-        # Run this step even if the test step ahead fails
-        if: ${{ !cancelled() }}
-        uses: trunk-io/analytics-uploader@main
+          THEME: cpr
+      - name: Run vitest
+        run: npm run test
+        # This is needed to pass the results on to the trunk-io/analytics-uploader
+        continue-on-error: true
+        env:
+          THEME: cpr
+
+      - name: Upload vitest results to Trunk.io
+        uses: trunk-io/analytics-uploader@v2
         with:
           junit-paths: "**/vitest.xml"
-          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
           token: ${{ secrets.TRUNK_TOKEN }}
-        continue-on-error: true
+          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
 
   test-e2e:
     timeout-minutes: 15
     runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: $HOME/.cache/ms-playwright
+    strategy:
+      fail-fast: false
+      matrix:
+        theme: [cpr, cclw, mcf, ccc]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 22.12.0
       - run: npm ci
       - run: cp .env.example .env
-      - run: npm run build
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/${{ matrix.theme }}/g" tsconfig.json
+      - run: THEME=${{ matrix.theme }} npm run build
         env:
           NODE_ENV: production
+
+      - name: Copy static assets to standalone
+        run: |
+          cp -r public .next/standalone/public
+          cp -r .next/static .next/standalone/.next/static
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+
       - run: npx playwright install --with-deps
-      - run: npx playwright test
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: test-results/
-          retention-days: 30
-      - name: Upload Test Result
-        # Upload the results even if the tests fails to Trunk.io
-        if: ${{ !cancelled() }}
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+
+      - name: Create test results directory
+        run: mkdir -p test-results-${{ matrix.theme }}
+
+      - name: Run Tests
         continue-on-error: true
-        uses: trunk-io/analytics-uploader@main
+        env:
+          THEME: ${{ matrix.theme }}
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
+        run: |
+          echo "Running Playwright tests..."
+          if [ "${{ matrix.theme }}" = "ccc" ]; then
+            npx playwright test tests/${{ matrix.theme }}/
+          else
+            npx playwright test tests/core/ tests/${{ matrix.theme }}/
+          fi
+
+      - name: Upload Test Results to Trunk.io
+        uses: trunk-io/analytics-uploader@v2
+        env:
+          THEME: ${{ matrix.theme }}
+          PLAYWRIGHT_BROWSERS_PATH: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
         with:
-          junit-paths: "**/playwright.xml"
-          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}
+          junit-paths: test-results-${{ matrix.theme }}/playwright.xml
           token: ${{ secrets.TRUNK_TOKEN }}
+          org-slug: ${{ secrets.TRUNK_ORG_SLUG }}

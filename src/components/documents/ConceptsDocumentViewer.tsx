@@ -1,29 +1,31 @@
-import { UnavailableConcepts } from "@/components/documents/UnavailableConcepts";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
+import { useRouter } from "next/router";
+import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
+
 import EmbeddedPDF from "@/components/EmbeddedPDF";
-import { SearchSettings } from "@/components/filters/SearchSettings";
 import Loader from "@/components/Loader";
 import PassageMatches from "@/components/PassageMatches";
-import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
-import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
-import { QUERY_PARAMS } from "@/constants/queryParams";
-import { useEffectOnce } from "@/hooks/useEffectOnce";
-import useSearch from "@/hooks/useSearch";
-import { TConcept, TDocumentPage, TPassage, TSearchResponse } from "@/types";
-import { fetchAndProcessConcepts } from "@/utils/processConcepts";
-import { AnimatePresence, motion } from "framer-motion";
-import React, { useCallback, useEffect, useMemo, useReducer, useState } from "react";
-import { LuSettings2 } from "react-icons/lu";
-import { Button } from "../atoms/button/Button";
-import { Icon } from "../atoms/icon/Icon";
-import { ConceptPicker } from "../organisms/ConceptPicker";
-import { SideCol } from "../panels/SideCol";
-import { EmptyDocument } from "./EmptyDocument";
-import { EmptyPassages } from "./EmptyPassages";
-import { useRouter } from "next/router";
+import { Button } from "@/components/atoms/button/Button";
+import { Icon } from "@/components/atoms/icon/Icon";
+import { EmptyDocument } from "@/components/documents/EmptyDocument";
+import { EmptyPassages } from "@/components/documents/EmptyPassages";
+import { SearchSettings } from "@/components/filters/SearchSettings";
+import { Info } from "@/components/molecules/info/Info";
+import { ConceptPicker } from "@/components/organisms/ConceptPicker";
+import { FullWidth } from "@/components/panels/FullWidth";
+import { SideCol } from "@/components/panels/SideCol";
+import { MAX_RESULTS } from "@/constants/paging";
+import { SEARCH_PASSAGE_ORDER } from "@/constants/searchPassagesOrder";
+import { SEARCH_SETTINGS } from "@/constants/searchSettings";
+import { TopicsContext } from "@/context/TopicsContext";
+import { TTopic, TDocumentPage, TLoadingStatus, TMatchedFamily, TPassage, TSearchResponse } from "@/types";
+import { getCurrentSearchChoice } from "@/utils/getCurrentSearchChoice";
+import { getPassageResultsContext } from "@/utils/getPassageResultsContext";
+import { getCurrentPassagesOrderChoice } from "@/utils/getPassagesSortOrder";
 
 type TState = {
-  passageIndex: number;
-  isExactSearch: boolean;
+  pageNumber: number;
   passageMatches: TPassage[];
   totalNoOfMatches: number;
 };
@@ -31,78 +33,63 @@ type TState = {
 interface IProps {
   initialQueryTerm?: string | string[];
   initialExactMatch?: boolean;
-  initialPassage?: number;
+  initialPageNumber?: number;
   initialConceptFilters?: string[];
-  vespaFamilyData: TSearchResponse;
   vespaDocumentData: TSearchResponse;
   document: TDocumentPage;
-  familySlug: string;
+  searchStatus: TLoadingStatus;
+  searchResultFamilies: TMatchedFamily[];
   // Callback props for state changes
-  onExactMatchChange?: (isExact: boolean) => void;
+  handleSemanticSearchChange?: (_: string, isExact: string) => void;
+  handlePassagesOrderChange?: (orderValue: string) => void;
 }
 
 const passageClasses = (canPreview: boolean) => {
   if (canPreview) {
-    return "xl:w-1/3";
+    return "lg:w-1/3";
   }
-  return "xl:w-2/3";
+  return "md:w-2/3";
 };
 
-const renderPassageCount = (count: number): string => {
-  return count > MAX_PASSAGES ? `top ${MAX_PASSAGES} matches` : count + ` match${count > 1 ? "es" : ""}`;
+const SETTINGS_ANIMATION_VARIANTS = {
+  hidden: { opacity: 0, transition: { duration: 0.1 } },
+  visible: { opacity: 1, transition: { duration: 0 } },
 };
 
 export const ConceptsDocumentViewer = ({
   initialQueryTerm = "",
-  initialExactMatch = false,
-  initialPassage = 0,
+  initialExactMatch,
+  initialPageNumber,
   initialConceptFilters,
   document,
-  familySlug,
-  vespaFamilyData,
   vespaDocumentData,
-  onExactMatchChange,
+  searchStatus,
+  searchResultFamilies,
+  handleSemanticSearchChange,
+  handlePassagesOrderChange,
 }: IProps) => {
   const router = useRouter();
   const [showSearchOptions, setShowSearchOptions] = useState(false);
+  const [showSortOptions, setShowSortOptions] = useState(false);
   const [showConcepts, setShowConcepts] = useState(false);
+  const { topics: familyTopics } = useContext(TopicsContext);
 
   const [state, setState] = useReducer((prev: TState, next: Partial<TState>) => ({ ...prev, ...next }), {
-    passageIndex: initialPassage,
-    isExactSearch: initialExactMatch,
+    pageNumber: initialPageNumber,
     passageMatches: [],
     totalNoOfMatches: 0,
   });
 
-  const [familyConcepts, setFamilyConcepts] = useState<TConcept[]>([]);
-
   const canPreview = !!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf");
 
-  useEffectOnce(() => {
-    // Extract unique concept IDs directly from vespaFamilyData
-    const conceptIds = new Set<string>();
-    (vespaFamilyData?.families ?? []).forEach((family) => {
-      family.hits.forEach((hit) => {
-        Object.keys(hit.concept_counts ?? {}).forEach((conceptKey) => {
-          const [conceptId] = conceptKey.split(":");
-          conceptIds.add(conceptId);
-        });
-      });
-    });
-
-    fetchAndProcessConcepts(Array.from(conceptIds)).then(({ concepts }) => {
-      setFamilyConcepts(concepts);
-    });
-  });
-
-  const documentConcepts: TConcept[] = useMemo(() => {
-    const uniqueConceptMap = new Map<string, { concept: TConcept; count: number }>();
+  const documentConcepts: TTopic[] = useMemo(() => {
+    const uniqueConceptMap = new Map<string, { concept: TTopic; count: number }>();
 
     (vespaDocumentData?.families ?? []).forEach((family) => {
       family.hits.forEach((hit) => {
         Object.entries(hit.concept_counts ?? {}).forEach(([conceptKey, count]) => {
           const [conceptId] = conceptKey.split(":");
-          const matchingConcept = familyConcepts.find((concept) => concept.wikibase_id === conceptId);
+          const matchingConcept = familyTopics.find((concept) => concept.wikibase_id === conceptId);
 
           if (matchingConcept) {
             const existingEntry = uniqueConceptMap.get(conceptId);
@@ -123,250 +110,217 @@ export const ConceptsDocumentViewer = ({
         count,
       }))
       .sort((a, b) => (b.count || 0) - (a.count || 0));
-  }, [vespaDocumentData, familyConcepts]);
+  }, [vespaDocumentData, familyTopics]);
 
   const selectedConcepts = useMemo(
     () =>
       initialConceptFilters
-        ? familyConcepts.filter((concept) =>
+        ? familyTopics.filter((concept) =>
             (Array.isArray(initialConceptFilters) ? initialConceptFilters : [initialConceptFilters]).includes(concept.preferred_label)
           )
         : [],
-    [initialConceptFilters, familyConcepts]
-  );
-
-  // Check if any initial concept filters are not in the document concepts (e.g., the concept appears in the family or other documents
-  // but not this one)
-  const unavailableConcepts = initialConceptFilters
-    ? initialConceptFilters.filter((filter) => !documentConcepts?.some((concept) => concept.preferred_label === filter))
-    : [];
-
-  // Prepare search.
-  const searchQueryParams = useMemo(
-    () => ({
-      [QUERY_PARAMS.query_string]: initialQueryTerm,
-      [QUERY_PARAMS.exact_match]: state.isExactSearch ? "true" : "false",
-      [QUERY_PARAMS.concept_name]: initialConceptFilters
-        ? Array.isArray(initialConceptFilters)
-          ? initialConceptFilters
-          : [initialConceptFilters]
-        : undefined,
-    }),
-    [initialQueryTerm, state.isExactSearch, initialConceptFilters]
-  );
-
-  const { status, families, searchQuery } = useSearch(
-    searchQueryParams,
-    null,
-    document.import_id,
-    !!(initialQueryTerm || initialConceptFilters),
-    MAX_PASSAGES
+    [initialConceptFilters, familyTopics]
   );
 
   // Calculate passage matches.
   useEffect(() => {
-    const matches = families.flatMap((family) =>
+    let matches = searchResultFamilies.flatMap((family) =>
       family.family_documents.filter((cacheDoc) => cacheDoc.document_slug === document.slug).flatMap((cacheDoc) => cacheDoc.document_passage_matches)
     );
 
-    const totalMatches =
-      families.find((family) => family.family_documents.some((cacheDoc) => cacheDoc.document_slug === document.slug))?.total_passage_hits || 0;
+    let totalMatches =
+      searchResultFamilies.find((family) => family.family_documents.some((cacheDoc) => cacheDoc.document_slug === document.slug))
+        ?.total_passage_hits || 0;
+    //  ___   ___   ______   _________  ______   ________  __     __
+    // /__/\ /__/\ /_____/\ /________/\/_____/\ /_______/\/__/\ /__/\
+    // \::\ \\  \ \\:::_ \ \\__.::.__\/\::::_\/_\__.::._\/\ \::\\:.\ \
+    //  \::\/_\ .\ \\:\ \ \ \  \::\ \   \:\/___/\  \::\ \  \_\::_\:_\/
+    //   \:: ___::\ \\:\ \ \ \  \::\ \   \:::._\/  _\::\ \__ _\/__\_\_/\
+    //    \: \ \\::\ \\:\_\ \ \  \::\ \   \:\ \   /__\::\__/\\ \ \ \::\ \
+    //     \__\/ \::\/ \_____\/   \__\/    \_\/   \________\/ \_\/  \__\/
+    // HOTFIX - slug mismatch can happen between RDS and Vespa when document titles are updated
+    // TODO: delete / figure this out later but for now a temporary solution is to check against the source url as that is relatively unchanging
+    if (!matches.length) {
+      matches = searchResultFamilies.flatMap((family) =>
+        family.family_documents
+          .filter((cacheDoc) => cacheDoc.document_source_url === document.source_url)
+          .flatMap((cacheDoc) => cacheDoc.document_passage_matches)
+      );
+
+      totalMatches =
+        searchResultFamilies.find((family) => family.family_documents.some((cacheDoc) => cacheDoc.document_source_url === document.source_url))
+          ?.total_passage_hits || 0;
+    }
 
     setState({
       passageMatches: matches,
       totalNoOfMatches: totalMatches,
     });
-  }, [families, document.slug]);
+  }, [searchResultFamilies, document.slug, document.source_url]);
 
-  const handlePassageClick = useCallback(
-    (index: number) => {
-      if (!canPreview) return;
-      setState({ passageIndex: index });
-    },
-    [canPreview]
-  );
-
-  const handleSemanticSearchChange = useCallback(
-    (_: string, isExact: string) => {
-      const exactBool = isExact === "true";
-      setState({
-        isExactSearch: exactBool,
-        passageIndex: 0,
-      });
-      setShowSearchOptions(false);
-      onExactMatchChange?.(exactBool);
-    },
-    [onExactMatchChange]
-  );
+  const handlePassageClick = (pageNumber: number) => {
+    if (!canPreview) return;
+    setState({ pageNumber: pageNumber });
+  };
 
   const handleToggleConcepts = () => {
     setShowConcepts((current) => !current);
   };
 
-  const handlePassagesOrderChange = (orderValue: string) => {
-    setState({ passageIndex: 0 });
-    const queryObj = { ...router.query };
-    queryObj[QUERY_PARAMS.passages_by_position] = orderValue;
-    router.push({ query: queryObj }, undefined, { shallow: true });
-  };
+  const passagesResultsContext = getPassageResultsContext({
+    isExactSearch: initialExactMatch,
+    passageMatches: state.totalNoOfMatches,
+    queryTerm: initialQueryTerm,
+    selectedTopics: selectedConcepts,
+  });
 
-  const isLoading = status !== "success";
+  const isLoading = searchStatus !== "success";
   const hasConcepts = documentConcepts.length > 0;
   const hasSelectedConcepts = selectedConcepts.length > 0;
-  const hasPassages = state.totalNoOfMatches > 0;
   const hasQuery = initialQueryTerm !== "" || hasSelectedConcepts;
-  const hasUnavailableConcepts = state.totalNoOfMatches === 0 && unavailableConcepts.length > 0;
 
   return (
-    <section className="flex-1 xl:px-5" id="document-concepts-viewer">
-      <div id="document-container" className="flex flex-col xl:flex-row xl:h-[90vh]">
-        {/* Concepts */}
-        {hasConcepts && (
-          <SideCol id="document-concepts" extraClasses="!w-full xl:!w-maxSidebar">
-            <div className="p-4 xl:hidden">
-              <Button content="both" onClick={handleToggleConcepts}>
-                <span>{showConcepts ? "Hide" : "Show"} concepts</span>
-                <div className={showConcepts ? "rotate-180" : ""}>
-                  <Icon name="downChevron" />
-                </div>
-              </Button>
-            </div>
-            <ConceptPicker
-              concepts={documentConcepts}
-              showSearch={false}
-              title={<p className="text-base font-medium">In this document</p>}
-              containerClasses={`pt-4 pr-4 pl-4 xl:pl-0 ${showConcepts ? "" : "hidden xl:flex"}`}
-            />
-          </SideCol>
-        )}
-
-        {/* Preview */}
-        <div
-          id="document-preview"
-          className={`flex-1 order-last xl:order-none h-[400px] basis-[400px] xl:block xl:h-full xl:border-gray-200 px-4 xl:px-0 ${
-            hasConcepts ? "xl:border-x" : "xl:border-r"
-          }`}
-        >
-          {canPreview && (
-            <EmbeddedPDF
-              document={document}
-              documentPassageMatches={state.passageMatches}
-              passageIndex={state.passageIndex}
-              startingPassageIndex={initialPassage}
-            />
+    <section className="flex-1 flex" id="document-concepts-viewer">
+      <FullWidth extraClasses="flex-1">
+        <div id="document-container" className="flex flex-row flex-wrap lg:flex-nowrap lg:h-[80vh]">
+          {/* Concepts */}
+          {hasConcepts && (
+            <SideCol id="document-concepts" extraClasses="w-full max-h-[80vh] md:!w-1/2 lg:!w-maxSidebar lg:max-h-full">
+              <div className="py-4 md:hidden">
+                <Button content="both" onClick={handleToggleConcepts}>
+                  <span>{showConcepts ? "Hide" : "Show"} topics</span>
+                  <div className={showConcepts ? "rotate-180" : ""}>
+                    <Icon name="downChevron" />
+                  </div>
+                </Button>
+              </div>
+              <ConceptPicker
+                showBadge
+                showSearch={false}
+                title="In this document"
+                containerClasses={`pt-4 pr-4 pl-4 md:pl-0 ${showConcepts ? "" : "hidden md:flex"}`}
+              />
+            </SideCol>
           )}
-          {!canPreview && <EmptyDocument />}
-        </div>
 
-        {/* Sidebar */}
-        <div
-          id="document-sidebar"
-          className={`flex flex-col overflow-y-auto max-h-[90vh] mr-4 xl:mr-0 scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 xl:max-h-full xl:max-w-[480px] xl:min-w-[400px] xl:grow-0 xl:shrink-0 ${passageClasses(
-            canPreview
-          )}`}
-        >
-          <div className="relative">
-            <div className="flex justify-between items-end p-4">
-              <h1 className="text-base font-medium">Passage matches</h1>
-              <button
-                className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
-                onClick={() => setShowSearchOptions(!showSearchOptions)}
-              >
-                Sort &amp; Display
-              </button>
-            </div>
-            <AnimatePresence initial={false}>
-              {showSearchOptions && (
-                <motion.div
-                  key="content"
-                  initial="collapsed"
-                  animate="open"
-                  exit="collapsed"
-                  variants={{
-                    collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                    open: { opacity: 1, transition: { duration: 0.25 } },
-                  }}
-                >
-                  <SearchSettings
-                    queryParams={searchQueryParams}
-                    handleSearchChange={handleSemanticSearchChange}
-                    handlePassagesClick={handlePassagesOrderChange}
-                    setShowOptions={setShowSearchOptions}
-                    extraClasses="!mt-0 mr-4"
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
+          {/* Preview */}
+          <div
+            id="document-preview"
+            className={`flex-1 relative order-last border-t border-t-gray-200 h-[600px] basis-full lg:basis-auto lg:border-t-0 lg:order-none lg:h-full md:border-gray-300 ${hasConcepts ? "lg:border-x" : "lg:border-r"}`}
+          >
+            {canPreview && (
+              <EmbeddedPDF
+                document={document}
+                documentPassageMatches={state.passageMatches}
+                pageNumber={state.pageNumber}
+                startingPageNumber={initialPageNumber}
+                searchStatus={searchStatus}
+              />
+            )}
+            {!canPreview && <EmptyDocument />}
           </div>
 
-          {isLoading && (
-            <div className="w-full flex justify-center flex-1">
-              <Loader />
-            </div>
-          )}
-
-          {!isLoading && (
-            <>
-              {hasSelectedConcepts && (
-                <div className="px-4">
-                  {selectedConcepts.map((concept) => (
-                    <React.Fragment key={concept.wikibase_id}>
-                      <p className="mt-4 my-2 capitalize text-[15px] font-medium text-neutral-800 text-base leading-normal flex-grow">
-                        {concept.preferred_label}
-                      </p>
-                      <p className="mt-2 my-4">{concept.description}</p>
-                    </React.Fragment>
-                  ))}
+          {/* Sidebar */}
+          <div
+            id="document-sidebar"
+            className={`py-4 max-h-[80vh] md:w-1/2 lg:max-w-[480px] lg:min-w-[400px] lg:max-h-full lg:grow-0 lg:shrink-0 lg:pb-0 flex flex-col ${hasConcepts ? "lg:!max-w-[400px]" : ""} ${passageClasses(
+              canPreview
+            )}`}
+          >
+            {isLoading ? (
+              <div className="w-full flex justify-center flex-1 bg-white">
+                <Loader />
+              </div>
+            ) : (
+              <>
+                <div id="document-search" className="flex flex-col gap-2 md:pl-4 pb-4 border-b border-gray-300">
+                  <p className="text-text-primary">Passage matches</p>
+                  <div className="relative z-10 flex gap-4">
+                    <div className="relative">
+                      <button
+                        className={`flex items-center gap-1 px-2 py-1 -mt-1 -ml-2 rounded-md text-sm text-text-primary font-normal ${showSearchOptions ? "bg-surface-ui" : ""}`}
+                        onClick={() => setShowSearchOptions(!showSearchOptions)}
+                      >
+                        <span className="font-bold">Search:</span>{" "}
+                        <span>{getCurrentSearchChoice(router.query) === "true" ? SEARCH_SETTINGS.exact : SEARCH_SETTINGS.semantic}</span>
+                        <ChevronDown />
+                      </button>
+                      <AnimatePresence initial={false}>
+                        {showSearchOptions && (
+                          <motion.div key="content" initial="collapsed" animate="open" exit="collapsed" variants={SETTINGS_ANIMATION_VARIANTS}>
+                            <SearchSettings
+                              queryParams={router.query}
+                              handleSearchChange={handleSemanticSearchChange}
+                              setShowOptions={setShowSearchOptions}
+                              extraClasses="w-[280px]"
+                            />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                    <div className="relative">
+                      <button
+                        className={`flex items-center gap-1 px-2 py-1 -mt-1 -ml-2 rounded-md text-sm text-text-primary font-normal ${showSortOptions ? "bg-surface-ui" : ""}`}
+                        onClick={() => setShowSortOptions(!showSortOptions)}
+                      >
+                        <span className="font-bold">Order:</span>{" "}
+                        <span>
+                          {getCurrentPassagesOrderChoice(router.query) === true ? SEARCH_PASSAGE_ORDER.page : SEARCH_PASSAGE_ORDER.relevance}
+                        </span>
+                        <ChevronDown />
+                      </button>
+                      <AnimatePresence initial={false}>
+                        {showSortOptions && (
+                          <motion.div key="content" initial="collapsed" animate="open" exit="collapsed" variants={SETTINGS_ANIMATION_VARIANTS}>
+                            <SearchSettings
+                              queryParams={router.query}
+                              setShowOptions={setShowSortOptions}
+                              handlePassagesOrderChange={handlePassagesOrderChange}
+                            />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                  <div className="">
+                    {hasQuery && (
+                      <>
+                        <div className="flex flex-wrap mb-2 text-sm" data-cy="document-matches-description">
+                          {passagesResultsContext}
+                          {state.totalNoOfMatches >= MAX_RESULTS && (
+                            <Info
+                              className="inline-block ml-2 align-text-bottom"
+                              description={`We limit the number of search results to ${MAX_RESULTS} so that you get the best performance from our tool. We're working on a way to remove this limit.`}
+                            />
+                          )}
+                        </div>
+                        {state.totalNoOfMatches > 0 && (
+                          <>
+                            <p className="text-sm">
+                              Sorted by {getCurrentPassagesOrderChoice(router.query) === true ? "page number" : "search relevance"}
+                            </p>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
-              )}
-
-              {hasQuery &&
-                (hasPassages ? (
-                  <>
-                    <div className="border-gray-200 p-4 text-sm border-b xl:pl-4" data-cy="document-matches-description">
-                      <div className="mb-2">
-                        Displaying {renderPassageCount(state.totalNoOfMatches)}{" "}
-                        {initialQueryTerm && (
-                          <>
-                            for "<span className="text-textDark font-medium">{`${initialQueryTerm}`}</span>"
-                          </>
-                        )}
-                        {initialQueryTerm && !searchQuery.exact_match && ` and related phrases`}
-                        {selectedConcepts.length > 0 && (
-                          <>
-                            {" in "}
-                            <b>{selectedConcepts.map((concept) => concept.preferred_label).join(", ")}</b>
-                          </>
-                        )}
-                        {state.totalNoOfMatches >= MAX_RESULTS && (
-                          <span className="ml-1 inline-block">
-                            <SearchLimitTooltip colour="grey" />
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div
-                      id="document-passage-matches"
-                      className="relative xl:overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 px-4"
-                    >
-                      <PassageMatches
-                        passages={state.passageMatches}
-                        onClick={handlePassageClick}
-                        activeIndex={state.passageIndex ?? initialPassage}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <EmptyPassages hasQueryString />
-                ))}
-
-              {!hasQuery && <EmptyPassages hasQueryString={false} />}
-
-              {hasUnavailableConcepts && <UnavailableConcepts unavailableConcepts={unavailableConcepts} familySlug={familySlug} />}
-            </>
-          )}
+                {hasQuery && state.totalNoOfMatches > 0 && (
+                  <div
+                    id="document-passage-matches"
+                    className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
+                  >
+                    {/* Removing active passage index for now as we don't use indexes any more //activeIndex={pageNumber ?? startingPassage} */}
+                    <PassageMatches passages={state.passageMatches} onClick={handlePassageClick} />
+                  </div>
+                )}
+                {hasQuery && state.totalNoOfMatches === 0 && <EmptyPassages hasQueryString />}
+                {!hasQuery && <EmptyPassages hasQueryString={false} />}
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      </FullWidth>
     </section>
   );
 };

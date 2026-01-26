@@ -1,10 +1,7 @@
-import useConfig from "@/hooks/useConfig";
-
-import { ExternalLink } from "@/components/ExternalLink";
 import { CountryLinksAsList } from "@/components/CountryLinks";
-
+import { ExternalLink } from "@/components/ExternalLink";
 import { mapFamilyMetadata } from "@/helpers/mapFamilyMetadata";
-
+import useConfig from "@/hooks/useConfig";
 import { TFamilyMetadata, TMCFFamilyMetadata } from "@/types";
 
 interface MetadataItemProps {

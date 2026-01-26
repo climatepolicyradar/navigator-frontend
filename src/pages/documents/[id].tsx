@@ -1,41 +1,30 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { ParsedUrlQuery } from "querystring";
+
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import { AnimatePresence, motion } from "framer-motion";
+import { useMemo } from "react";
 
 import { ApiClient } from "@/api/http-common";
-
-import useSearch from "@/hooks/useSearch";
-
-import { FullWidth } from "@/components/panels/FullWidth";
-
-import Layout from "@/components/layouts/Main";
-import EmbeddedPDF from "@/components/EmbeddedPDF";
-import PassageMatches from "@/components/PassageMatches";
-import Loader from "@/components/Loader";
-import { SearchLimitTooltip } from "@/components/tooltip/SearchLimitTooltip";
-import { DocumentHead } from "@/components/documents/DocumentHead";
-import { EmptyPassages } from "@/components/documents/EmptyPassages";
-import { EmptyDocument } from "@/components/documents/EmptyDocument";
-import { SearchSettings } from "@/components/filters/SearchSettings";
-
-import { QUERY_PARAMS } from "@/constants/queryParams";
-import { getDocumentDescription } from "@/constants/metaDescriptions";
-import { MAX_PASSAGES, MAX_RESULTS } from "@/constants/paging";
-
-import { TDocumentPage, TFamilyPage, TPassage, TTheme, TSearchResponse, TConcept } from "@/types";
-import { getFeatureFlags } from "@/utils/featureFlags";
 import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
-import { getMatchedPassagesFromSearch } from "@/utils/getMatchedPassagesFromFamiy";
+import { DocumentHead } from "@/components/documents/DocumentHead";
+import Layout from "@/components/layouts/Main";
+import { getDocumentDescription } from "@/constants/metaDescriptions";
+import { MAX_PASSAGES } from "@/constants/paging";
+import { QUERY_PARAMS } from "@/constants/queryParams";
 import { withEnvConfig } from "@/context/EnvConfig";
-
-interface IProps {
-  document: TDocumentPage;
-  family: TFamilyPage;
-  theme: TTheme;
-  vespaFamilyData?: TSearchResponse;
-  vespaDocumentData?: TSearchResponse;
-}
+import { FeaturesContext } from "@/context/FeaturesContext";
+import { TopicsContext } from "@/context/TopicsContext";
+import useConfig from "@/hooks/useConfig";
+import useSearch from "@/hooks/useSearch";
+import { TDocumentPage, TTheme, TSearchResponse, TSlugResponse, TThemeConfig, TFamilyPublic, TFeatures, TTopics } from "@/types";
+import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
+import { extractTopicIds } from "@/utils/extractTopicIds";
+import { getFeatureFlags } from "@/utils/featureFlags";
+import { getFeatures } from "@/utils/features";
+import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
+import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
+import { readConfigFile } from "@/utils/readConfigFile";
 
 const passageClasses = (canPreview: boolean) => {
   if (canPreview) {
@@ -44,19 +33,9 @@ const passageClasses = (canPreview: boolean) => {
   return "md:w-2/3";
 };
 
-const scrollToPassage = (index: number) => {
-  setTimeout(() => {
-    const passage = window.document.getElementById(`passage-${index}`);
-    if (!passage) return;
-    const topPos = passage.offsetTop;
-    const container = window.document.getElementById("document-passage-matches");
-    if (!container) return;
-    container.scrollTo({ top: topPos - 10, behavior: "smooth" });
-  }, 100);
-};
-
-const renderPassageCount = (count: number): string => {
-  return count > MAX_PASSAGES ? `top ${MAX_PASSAGES} matches` : count + ` match${count > 1 ? "es" : ""}`;
+// If we don't have a query string or a concept selected, we do't have a search
+const isEmptySearch = (query: ParsedUrlQuery) => {
+  return !(query[QUERY_PARAMS.query_string] || query[QUERY_PARAMS.concept_id] || query[QUERY_PARAMS.concept_name]);
 };
 
 /*
@@ -67,38 +46,25 @@ const renderPassageCount = (count: number): string => {
   - If the document is an HTML, the passages will be displayed in a list on the left side of the page but the document will not be displayed.
 */
 
-const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
+const DocumentPage = ({
   document,
   family,
+  features,
   theme,
-  vespaFamilyData,
+  themeConfig,
+  topicsData,
   vespaDocumentData,
-}: IProps) => {
-  const [canPreview, setCanPreview] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
-  const [passageIndex, setPassageIndex] = useState(null);
-  const [passageMatches, setPassageMatches] = useState<TPassage[]>([]);
-  const [totalNoOfMatches, setTotalNoOfMatches] = useState(0);
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const qsSearchString = router.query[QUERY_PARAMS.query_string];
-  const exactMatchQuery = !!router.query[QUERY_PARAMS.exact_match];
-  const passagesByPosition = router.query[QUERY_PARAMS.passages_by_position] === "true";
-  const startingPassage = Number(router.query.passage) || 0;
+  // exact match is default, so only instances where it is explicitly set to false do we check against
+  const exactMatchQuery = router.query[QUERY_PARAMS.exact_match] === undefined || router.query[QUERY_PARAMS.exact_match] !== "false";
+  const startingPageNumber = Number(router.query.page) || 0;
+  const configQuery = useConfig();
+  const { data: { countries = [] } = {} } = configQuery;
 
-  // TODO: Remove this once we have hard launched concepts in product.
-  const { status, families, searchQuery } = useSearch(
-    router.query,
-    null,
-    document.import_id,
-    !!(router.query[QUERY_PARAMS.query_string] || router.query[QUERY_PARAMS.concept_id] || router.query[QUERY_PARAMS.concept_name]),
-    MAX_PASSAGES
-  );
-
-  const handlePassageClick = (index: number) => {
-    if (!canPreview) return;
-    setPassageIndex(index);
-    scrollToPassage(index);
-  };
+  // Note: only runs a fresh start if either a query string or concept data is provided
+  const { status, families } = useSearch(router.query, null, document.import_id, !isEmptySearch(router.query), MAX_PASSAGES);
 
   const handleViewSourceClick = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -114,10 +80,9 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
   // Semantic search / exact match handler
   const handleSemanticSearchChange = (_: string, isExact: string) => {
-    setPassageIndex(0);
-    const queryObj = { ...router.query };
+    const queryObj = CleanRouterQuery({ ...router.query });
     if (isExact === "false") {
-      delete queryObj[QUERY_PARAMS.exact_match];
+      queryObj[QUERY_PARAMS.exact_match] = "false";
     } else if (isExact === "true") {
       queryObj[QUERY_PARAMS.exact_match] = "true";
     }
@@ -133,227 +98,112 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   };
 
   const handlePassagesOrderChange = (orderValue: string) => {
-    setPassageIndex(0);
-    const queryObj = { ...router.query };
+    const queryObj = CleanRouterQuery({ ...router.query });
+    queryObj["id"] = document.slug;
     queryObj[QUERY_PARAMS.passages_by_position] = orderValue;
     router.push({ query: queryObj }, undefined, { shallow: true });
   };
 
-  // Handlers to update router
-
-  const handleExactMatchChange = useCallback(
-    (isExact: boolean) => {
-      const queryObj = { ...router.query };
-
-      if (isExact) {
-        queryObj[QUERY_PARAMS.exact_match] = "true";
-      }
-
-      router.push(
-        {
-          pathname: `/documents/${document.slug}`,
-          query: queryObj,
-        },
-        undefined,
-        { shallow: true }
-      );
-    },
-    [router, document.slug]
-  );
-
-  useEffect(() => {
-    const [passageMatches, totalNoOfMatches] = getMatchedPassagesFromSearch(families, document);
-
-    setPassageMatches(passageMatches);
-    setTotalNoOfMatches(totalNoOfMatches);
-    setCanPreview(!!document.cdn_object && document.cdn_object.toLowerCase().endsWith(".pdf"));
-    // comparing families as objects will cause an infinite loop as each collection is a new instance of an object
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(families), document.slug]);
-
   const conceptFiltersQuery = router.query[QUERY_PARAMS.concept_name];
+
   const conceptFilters = useMemo(
     () => (conceptFiltersQuery ? (Array.isArray(conceptFiltersQuery) ? conceptFiltersQuery : [conceptFiltersQuery]) : undefined),
     [conceptFiltersQuery]
   );
 
   return (
-    <Layout title={`${document.title}`} description={getDocumentDescription(document.title)} theme={theme}>
-      <section
-        className="pb-8 flex-1 flex flex-col"
-        data-analytics-date={family.published_date}
-        data-analytics-geography={family.geographies?.join(",")}
-        data-analytics-variant={document.variant}
-        data-analytics-type={document.content_type}
-      >
-        <DocumentHead
-          document={document}
-          family={family}
-          handleViewOtherDocsClick={handleViewOtherDocsClick}
-          handleViewSourceClick={handleViewSourceClick}
-        />
+    <Layout
+      title={`${document.title}`}
+      description={getDocumentDescription(document.title)}
+      theme={theme as TTheme}
+      themeConfig={themeConfig}
+      attributionUrl={family.corpus.attribution_url}
+    >
+      <FeaturesContext.Provider value={features}>
+        <TopicsContext.Provider value={topicsData}>
+          <section
+            className="pb-8 flex-1 flex flex-col"
+            data-analytics-date={family.published_date}
+            data-analytics-geography={family.geographies?.join(",")}
+            data-analytics-variant={document.variant}
+            data-analytics-type={document.content_type}
+          >
+            <DocumentHead
+              document={document}
+              family={family}
+              handleViewOtherDocsClick={handleViewOtherDocsClick}
+              handleViewSourceClick={handleViewSourceClick}
+            />
 
-        {/* TODO: Remove this once we have hard launched concepts in product. */}
-        {vespaFamilyData === null && vespaDocumentData === null && (
-          <section className="flex-1 flex" id="document-viewer">
-            <FullWidth extraClasses="flex-1">
-              <div id="document-container" className="flex flex-col md:flex-row md:h-[80vh]">
-                <div
-                  id="document-preview"
-                  className={`flex-1 h-[400px] basis-[400px] md:block md:h-full ${totalNoOfMatches ? "md:border-r md:border-r-gray-200" : ""}`}
-                >
-                  {canPreview && (
-                    <EmbeddedPDF
-                      document={document}
-                      documentPassageMatches={passageMatches}
-                      passageIndex={passageIndex}
-                      startingPassageIndex={startingPassage}
-                    />
-                  )}
-                  {!canPreview && <EmptyDocument />}
-                </div>
-                <div
-                  id="document-sidebar"
-                  className={`py-4 order-first max-h-[90vh] md:pb-0 md:order-last md:max-h-full md:max-w-[480px] md:min-w-[400px] md:grow-0 md:shrink-0 flex flex-col ${passageClasses(
-                    canPreview
-                  )}`}
-                >
-                  {status !== "success" ? (
-                    <div className="w-full flex justify-center flex-1 bg-white">
-                      <Loader />
-                    </div>
-                  ) : (
-                    <>
-                      <div id="document-search" className="flex items-start gap-2 md:pl-4 pb-4 border-b border-gray-200">
-                        <div className="flex-1">
-                          {totalNoOfMatches > 0 && (
-                            <>
-                              <div className="mb-2 text-sm" data-cy="document-matches-description">
-                                Displaying {renderPassageCount(totalNoOfMatches)} for "
-                                <span className="text-textDark font-medium">{`${qsSearchString}`}</span>"
-                                {!searchQuery.exact_match && ` and related phrases`}
-                                {totalNoOfMatches >= MAX_RESULTS && (
-                                  <span className="ml-1 inline-block">
-                                    <SearchLimitTooltip colour="grey" />
-                                  </span>
-                                )}
-                              </div>
-                              <p className="text-sm">Sorted by {passagesByPosition ? "page number" : "search relevance"}</p>
-                            </>
-                          )}
-                        </div>
-                        <div className="relative z-10 flex justify-center">
-                          <button
-                            className={`px-1 py-0.5 -mt-0.5 rounded-md text-sm text-text-primary font-normal ${showOptions ? "bg-surface-ui" : ""}`}
-                            onClick={() => setShowOptions(!showOptions)}
-                          >
-                            Sort &amp; Display
-                          </button>
-                          <AnimatePresence initial={false}>
-                            {showOptions && (
-                              <motion.div
-                                key="content"
-                                initial="collapsed"
-                                animate="open"
-                                exit="collapsed"
-                                variants={{
-                                  collapsed: { opacity: 0, transition: { duration: 0.1 } },
-                                  open: { opacity: 1, transition: { duration: 0.25 } },
-                                }}
-                              >
-                                <SearchSettings
-                                  queryParams={router.query}
-                                  handleSearchChange={handleSemanticSearchChange}
-                                  setShowOptions={setShowOptions}
-                                  handlePassagesClick={handlePassagesOrderChange}
-                                />
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      </div>
-                      {totalNoOfMatches > 0 && (
-                        <div
-                          id="document-passage-matches"
-                          className="relative overflow-y-scroll scrollbar-thumb-gray-200 scrollbar-thin scrollbar-track-white scrollbar-thumb-rounded-full hover:scrollbar-thumb-gray-500 md:pl-4"
-                        >
-                          <PassageMatches passages={passageMatches} onClick={handlePassageClick} activeIndex={passageIndex ?? startingPassage} />
-                        </div>
-                      )}
-                      {totalNoOfMatches === 0 && <EmptyPassages hasQueryString={!!router.query[QUERY_PARAMS.query_string]} />}
-                    </>
-                  )}
-                </div>
-              </div>
-            </FullWidth>
+            <ConceptsDocumentViewer
+              initialQueryTerm={qsSearchString}
+              initialExactMatch={exactMatchQuery}
+              initialPageNumber={startingPageNumber}
+              initialConceptFilters={conceptFilters}
+              vespaDocumentData={vespaDocumentData}
+              document={document}
+              searchStatus={status}
+              searchResultFamilies={isEmptySearch(router.query) ? [] : families}
+              handleSemanticSearchChange={handleSemanticSearchChange}
+              handlePassagesOrderChange={handlePassagesOrderChange}
+            />
           </section>
-        )}
-
-        {vespaFamilyData !== null && vespaDocumentData !== null && (
-          <ConceptsDocumentViewer
-            initialQueryTerm={qsSearchString}
-            initialExactMatch={exactMatchQuery}
-            initialPassage={startingPassage}
-            initialConceptFilters={conceptFilters}
-            vespaFamilyData={vespaFamilyData}
-            vespaDocumentData={vespaDocumentData}
-            familySlug={family.slug}
-            document={document}
-            onExactMatchChange={handleExactMatchChange}
-          />
-        )}
-      </section>
+          {["Litigation", "LITIGATION"].includes(family.category) && (
+            <Head>
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(getLitigationDocumentJSONLD(document, family, countries)) }}
+              />
+            </Head>
+          )}
+        </TopicsContext.Provider>
+      </FeaturesContext.Provider>
     </Layout>
   );
 };
 
 export default DocumentPage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-  const featureFlags = await getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
-  const id = context.params.id;
-  const client = new ApiClient(process.env.BACKEND_API_URL);
+  const themeConfig = await readConfigFile(theme);
+  const featureFlags = getFeatureFlags(context.req.cookies);
+  const features = getFeatures(themeConfig, featureFlags);
 
-  let documentData: TDocumentPage;
-  let familyData: TFamilyPage;
-  let vespaFamilyData: TSearchResponse | null = null;
-  let vespaDocumentData: TSearchResponse | null = null;
+  const id = context.params.id;
+  const backendApiClient = new ApiClient(process.env.BACKEND_API_URL);
+  const apiClient = new ApiClient(process.env.CONCEPTS_API_URL);
 
   try {
-    const { data: returnedDocumentData } = await client.get(`/documents/${id}`);
-    documentData = returnedDocumentData.document;
-    const familySlug = returnedDocumentData.family?.slug;
-    const { data: returnedFamilyData } = await client.get(`/documents/${familySlug}`);
-    familyData = returnedFamilyData;
+    const { data: slugData } = await apiClient.get(`/families/slugs/${id}`);
+    const slug: TSlugResponse = slugData.data;
 
-    // Fetch Vespa family data for concepts (similar to document/[id].tsx)
-    const conceptsV1 = featureFlags["concepts-v1"];
-    if (conceptsV1) {
-      const { data: vespaDocumentDataResponse } = await client.get(`/document/${documentData.import_id}`);
-      vespaDocumentData = vespaDocumentDataResponse;
-      const { data: vespaFamilyDataResponse } = await client.get(`/families/${familyData.import_id}`);
-      vespaFamilyData = vespaFamilyDataResponse;
-    }
-  } catch {
-    // TODO: Handle error more elegantly
-  }
+    const { data: returnedDocumentData } = await apiClient.get(`/families/documents/${slug.family_document_import_id}`);
+    const { family: familyData, ...otherDocumentData } = returnedDocumentData.data;
+    const family: TFamilyPublic = familyData;
+    const document: TDocumentPage = otherDocumentData;
 
-  if (!documentData || !familyData) {
+    if (!document || !family) return { notFound: true };
+
+    const { data: vespaDocumentData } = await backendApiClient.get<TSearchResponse>(`/document/${document.import_id}`);
+    const { data: vespaFamilyData } = await backendApiClient.get<TSearchResponse>(`/families/${family.import_id}`);
+
+    const topicsData = await fetchAndProcessTopics(extractTopicIds(vespaFamilyData));
+
     return {
-      notFound: true,
+      props: withEnvConfig({
+        document,
+        family,
+        features,
+        theme: theme,
+        themeConfig: themeConfig,
+        topicsData,
+        vespaDocumentData,
+      }),
     };
+  } catch (error) {
+    return { notFound: true };
   }
-
-  return {
-    props: withEnvConfig({
-      document: documentData,
-      family: familyData,
-      theme: theme,
-      vespaFamilyData: vespaFamilyData ?? null,
-      vespaDocumentData: vespaDocumentData ?? null,
-    }),
-  };
-};
+}) satisfies GetServerSideProps;

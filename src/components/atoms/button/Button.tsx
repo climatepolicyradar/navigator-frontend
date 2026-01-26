@@ -1,14 +1,18 @@
-import { joinTailwindClasses } from "@/utils/tailwind";
 import { useMemo } from "react";
+
+import { joinTailwindClasses } from "@/utils/tailwind";
+
+export type TButtonColor = "brand" | "mono";
+export type TButtonVariant = "solid" | "faded" | "outlined" | "ghost";
 
 interface IButtonClassArgs {
   className?: string;
-  color?: "brand" | "mono";
+  color?: TButtonColor;
   content?: "text" | "icon" | "both";
   disabled?: boolean;
-  size?: "small" | "medium" | "large";
+  size?: "x-small" | "small" | "medium" | "large";
   rounded?: boolean;
-  variant?: "solid" | "faded" | "outlined" | "ghost";
+  variant?: TButtonVariant;
 }
 
 type TProps = IButtonClassArgs & React.ComponentProps<"button">;
@@ -23,7 +27,7 @@ export const getButtonClasses = ({
   variant = "solid",
 }: IButtonClassArgs) => {
   const baseClasses =
-    "flex flex-row items-center justify-center text-sm leading-3.5 font-medium transition duration-200 focus-visible:outline-2 outline-offset-2";
+    "flex flex-row items-center justify-center leading-3.5 font-medium transition duration-200 focus-visible:outline-2 outline-offset-2";
 
   /* Colour */
 
@@ -33,7 +37,7 @@ export const getButtonClasses = ({
   if (variant)
     switch (variant) {
       case "faded":
-        bgColor = color === "brand" ? "bg-surface-brand/16 hocus:bg-surface-brand/32" : "bg-surface-mono/16 hocus:bg-surface-mono/32";
+        bgColor = color === "brand" ? "bg-surface-brand/16 hocus:bg-surface-brand/32" : "bg-surface-mono/8 hocus:bg-surface-mono/16";
         textColor = color === "brand" ? "text-cpr-blue" : "text-text-primary";
         break;
       case "outlined":
@@ -56,19 +60,28 @@ export const getButtonClasses = ({
 
   /* Size */
 
+  let textSize = "";
+
   const isIcon = content === "icon";
-  let layout = content === "both" ? "gap-2" : "";
+  const layout = content === "both" ? "gap-2" : "";
   let sizing = "";
 
   switch (size) {
+    case "x-small":
+      sizing = isIcon ? "w-7 h-7" : "px-2 py-1";
+      textSize = "text-xs";
+      break;
     case "small":
-      sizing = isIcon ? "w-7 h-7" : "px-2 py-2.5";
+      sizing = isIcon ? "w-7 h-7" : "px-2.5 py-2.25";
+      textSize = "text-sm";
       break;
     case "medium":
       sizing = isIcon ? "w-9 h-9" : "px-4 py-3";
+      textSize = "text-sm";
       break;
     case "large":
       sizing = isIcon ? "w-12 h-12" : "px-4 py-5";
+      textSize = "text-sm";
       break;
   }
 
@@ -76,7 +89,7 @@ export const getButtonClasses = ({
 
   const cursor = disabled ? "pointer-events-none" : "";
 
-  return joinTailwindClasses(baseClasses, layout, sizing, bgColor, border, outlineColor, roundness, textColor, cursor, className);
+  return joinTailwindClasses(baseClasses, layout, sizing, textSize, bgColor, border, outlineColor, roundness, textColor, cursor, className);
 };
 
 export const Button = ({
@@ -91,7 +104,16 @@ export const Button = ({
   ...props
 }: TProps) => {
   const classes = useMemo(
-    () => getButtonClasses({ className, color, content, disabled, size, rounded, variant }),
+    () =>
+      getButtonClasses({
+        className,
+        color,
+        content,
+        disabled,
+        size,
+        rounded,
+        variant,
+      }),
     [className, color, content, disabled, size, rounded, variant]
   );
 

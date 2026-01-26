@@ -1,20 +1,18 @@
+import { ExternalLink } from "@/components/ExternalLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { SiteWidth } from "@/components/panels/SiteWidth";
 import { SingleCol } from "@/components/panels/SingleCol";
-import { SubNav } from "@/components/nav/SubNav";
+import { SiteWidth } from "@/components/panels/SiteWidth";
 import { Heading } from "@/components/typography/Heading";
-import { ExternalLink } from "@/components/ExternalLink";
 
 const About = () => {
   return (
     <Layout
       title="About"
       description="Discover how the MCFs collaboratively developed this platform as a central hub for accessing documents, enhancing transparency, and raising awareness of their value and impact in addressing climate change."
+      theme="mcf"
     >
-      <SubNav>
-        <BreadCrumbs label={"About us"} />
-      </SubNav>
+      <BreadCrumbs label={"About us"} />
       <section className="pt-8">
         <SiteWidth>
           <SingleCol>

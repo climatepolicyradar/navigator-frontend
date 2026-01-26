@@ -1,91 +1,83 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
+
 import { addClass, removeClass } from "@/utils/cssClass";
 
-const SuggestList = ({ list, setList, keyField, keyFieldDisplay, type, setInput, handleFilterChange }) => {
-  const ulRef = useRef(null);
-  let liSelected;
-  let index = -1;
+interface SuggestListItem {
+  [key: string]: string;
+}
 
-  const navigateList = useCallback(
-    (e): void => {
-      const ul = ulRef.current;
-      const len = list.length - 1;
+interface SuggestListProps {
+  list: SuggestListItem[];
+  setList: React.Dispatch<React.SetStateAction<SuggestListItem[]>>;
+  keyField: string;
+  keyFieldDisplay?: string;
+  type: string;
+  setInput: React.Dispatch<React.SetStateAction<string>>;
+  handleFilterChange: (type: string, value: string) => void;
+}
 
-      if (e.key === "ArrowDown") {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        index += 1;
-        // down
-        if (liSelected) {
-          removeClass(liSelected, "selected");
-          let next = ul.getElementsByTagName("li")[index];
-          if (typeof next !== undefined && index <= len) {
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            liSelected = next;
-          } else {
-            index = 0;
-            liSelected = ul.getElementsByTagName("li")[0];
-          }
-          addClass(liSelected, "selected");
-        } else {
-          index = 0;
-          liSelected = ul.getElementsByTagName("li")[0];
-          addClass(liSelected, "selected");
-        }
-      } else if (e.key === "ArrowUp") {
-        // up
-        if (liSelected) {
-          removeClass(liSelected, "selected");
-          index -= 1;
-          let next = ul.getElementsByTagName("li")[index];
-          if (typeof next !== undefined && index >= 0) {
-            liSelected = next;
-          } else {
-            index = len;
-            liSelected = ul.getElementsByTagName("li")[len];
-          }
-          addClass(liSelected, "selected");
-        } else {
-          index = 0;
-          liSelected = ul.getElementsByTagName("li")[len];
-          addClass(liSelected, "selected");
-        }
-      } else if (e.key === "Enter") {
-        if (liSelected) {
-          liSelected.click();
-          window.removeEventListener("keydown", navigateList);
-        }
-      }
-    },
-    [liSelected, index, list]
-  );
+const SuggestList: React.FC<SuggestListProps> = ({ list, setList, keyField, keyFieldDisplay, type, setInput, handleFilterChange }) => {
+  const [liSelected, setLiSelected] = useState<HTMLLIElement | null>(null);
+  const [index, setIndex] = useState(-1);
+  const ulRef = useRef<HTMLUListElement>(null);
 
-  const handleClick = (item: Object) => {
+  const handleClick = (item: SuggestListItem): void => {
     handleFilterChange(type, item[keyField]);
     setList([]);
     setInput("");
-    liSelected = null;
-    index = -1;
   };
 
-  useEffect(() => {
-    if (list.length) {
-      window.addEventListener("keydown", navigateList);
-    } else {
-      window.removeEventListener("keydown", navigateList);
-    }
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (!ulRef.current) return;
 
+      const ulElement = ulRef.current;
+      const liElements = ulElement.getElementsByTagName("li");
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (liSelected) {
+          removeClass(liSelected, "selected");
+        }
+        const newIndex = index + 1 >= liElements.length ? 0 : index + 1;
+        const newLiSelected = liElements[newIndex];
+        addClass(newLiSelected, "selected");
+        setLiSelected(newLiSelected);
+        setIndex(newIndex);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (liSelected) {
+          removeClass(liSelected, "selected");
+        }
+        const newIndex = index - 1 < 0 ? liElements.length - 1 : index - 1;
+        const newLiSelected = liElements[newIndex];
+        addClass(newLiSelected, "selected");
+        setLiSelected(newLiSelected);
+        setIndex(newIndex);
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (liSelected) {
+          liSelected.click();
+        }
+      }
+    },
+    [index, liSelected]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.removeEventListener("keydown", navigateList);
+      document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [list, navigateList]);
+  }, [handleKeyDown]);
 
   return (
     <ul ref={ulRef} className="bg-white rounded-b-xl border border-borderNormal border-t-0 m-0">
       {list.map(
-        (item: Object, index: number) =>
-          index < 10 && (
+        (item: SuggestListItem, idx: number) =>
+          idx < 10 && (
             <li
-              key={index}
+              key={idx}
               onClick={() => {
                 handleClick(item);
               }}
