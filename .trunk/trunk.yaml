@@ -60,6 +60,9 @@ lint:
       paths:
         # Ignore all images under public/images
         - public/images/**/*
+    - linters: [checkov]
+      paths:
+        - package-lock.json
     - linters: [markdownlint]
       paths:
         - LICENSE.md
