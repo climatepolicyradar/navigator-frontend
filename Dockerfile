@@ -12,6 +12,10 @@ ARG THEME
 ENV THEME=${THEME}
 ENV NODE_ENV=production
 
+# @related: GITHUB_SHA_ENV_VAR
+ARG GITHUB_SHA
+ENV GITHUB_SHA=${GITHUB_SHA}
+
 # Generate tsconfig.json from template with the selected THEME
 RUN node -e "\
 const fs=require('fs');\
