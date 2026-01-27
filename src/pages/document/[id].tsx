@@ -80,8 +80,10 @@ export const getServerSideProps = (async (context) => {
     const { data: vespaFamilyDataRaw } = await backendApiClient.get<TSearchResponse>(`/families/${familyData.import_id}`);
     vespaFamilyData = vespaFamilyDataRaw;
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error("Error fetching vespa families data", error);
+    if (axios.isAxiosError(error) && error.response?.status === 500) {
+      // eslint-disable-next-line no-console
+      console.error("Error fetching vespa families data", error);
+    }
   }
 
   /* Package the family topics */
