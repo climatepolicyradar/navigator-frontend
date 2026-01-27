@@ -49,13 +49,13 @@ export interface IProps {
   corpus_types: TCorpusTypeDictionary;
   countries: TGeography[];
   family: TFamilyPublic;
-  familyTopics: IFamilyDocumentTopics;
+  familyTopics: IFamilyDocumentTopics | null;
   features: TFeatures;
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];
   theme: string;
   themeConfig: TThemeConfig;
-  vespaFamilyData?: TSearchResponse;
+  vespaFamilyData?: TSearchResponse | null;
 }
 
 export const FamilyPage = ({

@@ -16,7 +16,7 @@ import { formatDateShort } from "@/utils/timedate";
 interface IProps {
   documentImportId: string | null; // The currently displayed document
   family: TFamilyPublic;
-  familyTopics?: IFamilyDocumentTopics;
+  familyTopics?: IFamilyDocumentTopics | null;
   languages: TLanguages;
   onOpenChange: (open: boolean) => void; // Triggered each time the drawer is opened or closed
   open: boolean; // Whether the drawer is currently open. Necessitates useState
