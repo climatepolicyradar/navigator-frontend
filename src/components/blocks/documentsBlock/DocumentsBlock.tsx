@@ -9,7 +9,7 @@ import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 interface IProps {
   family: TFamilyPublic;
-  familyTopics?: IFamilyDocumentTopics;
+  familyTopics?: IFamilyDocumentTopics | null;
   languages: TLanguages;
   matchesFamily?: TMatchedFamily; // The relevant search result family
   matchesStatus?: TLoadingStatus; // The status of the search
