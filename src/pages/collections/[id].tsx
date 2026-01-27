@@ -1,3 +1,4 @@
+import orderBy from "lodash/orderBy";
 import { GetServerSideProps, InferGetStaticPropsType } from "next";
 import Head from "next/head";
 import { useState } from "react";
@@ -16,7 +17,7 @@ import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TCollectionPublicWithFamilies, TFeatures, TTheme, TThemeConfig } from "@/types";
-import { getCaseNumbers, getCourts } from "@/utils/eventTable";
+import { getCaseFirstDocumentDate, getCaseNumbers, getCourts } from "@/utils/eventTable";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { getCollectionMetadata } from "@/utils/getCollectionMetadata";
@@ -35,13 +36,11 @@ const COLLECTION_TABS: TToggleGroupToggle<TCollectionTabId>[] = [{ id: "cases" }
 
 const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ collection, theme, themeConfig, features }: IProps) => {
   const [currentTab, setCurrentTab] = useState<TCollectionTabId>("cases");
-  const { families } = collection;
-
-  // TODO sort families before displaying
-
   const onTabChange = (tab: TCollectionTabId) => setCurrentTab(tab);
 
-  const sideBarItems: ISideBarItem<string>[] = families.map((family) => ({
+  const sortedFamilies = orderBy(collection.families, [getCaseFirstDocumentDate], ["desc"]);
+
+  const sideBarItems: ISideBarItem<string>[] = sortedFamilies.map((family) => ({
     id: family.slug,
     display: family.title,
     context: [getCaseNumbers(family), getCourts(family)].filter((part) => part),
@@ -57,14 +56,14 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
             <>
               <ContentsSideBar items={sideBarItems} stickyClasses="cols-3:!top-26 cols-3:max-h-[calc(100vh-72px)]" />
               <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols-4:col-start-3">
-                {families.map((family) => (
+                {sortedFamilies.map((family) => (
                   <FamilyBlock key={family.slug} family={family} />
                 ))}
               </main>
             </>
           )}
 
-          {currentTab === "procedural history" && <EventsBlock families={families} />}
+          {currentTab === "procedural history" && <EventsBlock families={sortedFamilies} />}
 
           {currentTab === "about" && (
             <>
@@ -75,8 +74,8 @@ const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ co
                 </TextBlock>
                 <MetadataBlock block="metadata" metadata={getCollectionMetadata(collection)} />
                 {/* <Section block="debug" title="Debug">
-                <Debug data={collection} title="Collection" />
-              </Section> */}
+                  <Debug data={collection} title="Collection" />
+                </Section> */}
               </main>
             </>
           )}

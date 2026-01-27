@@ -351,3 +351,11 @@ export const getEventTableRows = ({
 
   return rows;
 };
+
+// Returns the date of the first document in a case
+// Uses family.documents over family.events as often the oldest event is the start of a year, so no good for sorting
+export const getCaseFirstDocumentDate = (family: TFamilyPublic): string =>
+  family.documents
+    .filter((document) => document.events.length > 0)
+    .map((document) => document.events.map((event) => event.date).sort()[0])
+    .sort()[0] || "";
