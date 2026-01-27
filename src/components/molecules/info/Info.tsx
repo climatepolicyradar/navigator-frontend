@@ -1,5 +1,5 @@
 import { Info as LuInfo } from "lucide-react";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
 import { Popover, TPopoverLink } from "@/components/atoms/popover/Popover";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -7,7 +7,7 @@ import { joinTailwindClasses } from "@/utils/tailwind";
 interface IProps {
   className?: string;
   title?: string;
-  description: string;
+  description: ReactNode;
   link?: TPopoverLink;
 }
 
