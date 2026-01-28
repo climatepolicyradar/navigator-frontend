@@ -3,6 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
 import { FamilyPage as FamilyPageUI } from "@/components/pages/familyPage";
+import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
 import {
@@ -66,6 +67,9 @@ export const getServerSideProps = (async (context) => {
     /** and then query the families API by the returned family_import_id */
     const { data: familyResponse } = await apiClient.get(`/families/${slug.family_import_id}`);
     familyData = familyResponse.data;
+    familyData.documents.forEach((document) => {
+      if (document.title === "") document.title = DEFAULT_DOCUMENT_TITLE;
+    });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error("Error fetching families data", error);

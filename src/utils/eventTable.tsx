@@ -120,11 +120,13 @@ export const getFamilyEvents = (family: TFamilyPublic): TEventRowData[] =>
       (
         [
           ...family.events.map((event) => ({ family, event })),
-          ...family.documents.flatMap((document) => document.events.map((event) => ({ family, event, document }))),
+          ...family.documents.flatMap((document) =>
+            document.events.length > 0 ? document.events.map((event) => ({ family, event, document })) : [{ family, document }]
+          ),
         ] as TEventRowData[]
       )
-        .filter((item) => item.event.event_type !== "Filing Year For Action") // TODO: review whether we still want to do this
-        .map((item) => [item.event.import_id, item] as const)
+        .filter((item) => !item.event || item.event.event_type !== "Filing Year For Action") // TODO: review whether we still want to do this
+        .map((item) => [item.event?.import_id || item.document.import_id, item] as const)
     )
   );
 
@@ -176,7 +178,7 @@ const getDocumentCell = (
   event?: TFamilyEventPublic
 ): ReactNode => {
   return (
-    <div className="flex flex-col gap-2 pb-4">
+    <div className="flex flex-col gap-2">
       {isLitigation && (
         <>
           <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation)}</div>

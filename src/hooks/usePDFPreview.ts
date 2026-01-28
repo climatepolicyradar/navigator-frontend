@@ -1,4 +1,5 @@
 import ViewSDKClient from "@/api/pdf";
+import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { TPassage, TDocumentPage } from "@/types";
 
 function generateHighlights(document: TDocumentPage, documentPassageMatches: TPassage[]) {
@@ -96,7 +97,7 @@ export default function usePDFPreview(physicalDocument: TDocumentPage, adobeKey:
           },
         },
         metaData: {
-          fileName: physicalDocument.title,
+          fileName: physicalDocument.title || DEFAULT_DOCUMENT_TITLE,
           id: physicalDocument.import_id,
         },
       },
