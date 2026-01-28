@@ -66,7 +66,7 @@ export const PageLink = ({
       href={{ pathname: href, query: routerQuery, hash }}
       className={allClasses}
       onClick={stopPropagation}
-      data-data-ph-capture-attribute-href={href}
+      data-ph-capture-attribute-href={href}
     >
       {children}
     </Link>
