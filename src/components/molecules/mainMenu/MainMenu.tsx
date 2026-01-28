@@ -1,4 +1,4 @@
-import { NavigationMenu } from "@base-ui-components/react";
+import { NavigationMenu } from "@base-ui/react";
 import { LucideMenu } from "lucide-react";
 import { ReactNode } from "react";
 

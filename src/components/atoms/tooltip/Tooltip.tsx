@@ -1,4 +1,4 @@
-import { Tooltip as BaseTooltip } from "@base-ui-components/react";
+import { Tooltip as BaseTooltip } from "@base-ui/react";
 import { ReactNode } from "react";
 
 import { BaseUIArrow } from "@/utils/baseUI";

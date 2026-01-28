@@ -1,4 +1,4 @@
-import { Popover as BasePopover } from "@base-ui-components/react/popover";
+import { Popover as BasePopover } from "@base-ui/react/popover";
 import { JSX, ReactNode } from "react";
 
 import { BaseUIArrow } from "@/utils/baseUI";
@@ -45,8 +45,8 @@ export const Popover = ({ children, description, link, onOpenChange, openOnHover
   );
 
   return (
-    <BasePopover.Root openOnHover={openOnHover} onOpenChangeComplete={onOpenChange}>
-      <BasePopover.Trigger render={trigger} />
+    <BasePopover.Root onOpenChangeComplete={onOpenChange}>
+      <BasePopover.Trigger openOnHover={openOnHover} render={trigger} />
       <BasePopover.Portal>
         <BasePopover.Positioner positionMethod="fixed" sideOffset={8} className="z-50">
           <BasePopover.Popup className={allPopupClasses}>
