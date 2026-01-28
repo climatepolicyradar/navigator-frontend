@@ -1,4 +1,5 @@
 {
+  "name": "navigator-frontend",
   "private": true,
   "scripts": {
     "dev": "next",
