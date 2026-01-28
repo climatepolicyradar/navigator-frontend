@@ -189,9 +189,9 @@ export const FAQS: TFAQ[] = [
     content: (
       <>
         <p>
-          The database is refreshed twice a week, on Mondays and Wednesdays. Information is updated on a rolling basis, but completeness cannot be
-          guaranteed. Twice a month, the Sabin Center publishes Climate Litigation Updates summarizing recent additions. You can{" "}
-          <ExternalLink url="https://mailchi.mp/law/sabin-center-litigation-newsletter">subscribe here</ExternalLink> to receive the twice-monthly
+          The database is refreshed 4 times a week, on Mondays, Tuesdays, Wednesdays and Thursdays. Information is updated on a rolling basis, but
+          completeness cannot be guaranteed. Twice a month, the Sabin Center publishes Climate Litigation Updates summarizing recent additions. You
+          can <ExternalLink url="https://mailchi.mp/law/sabin-center-litigation-newsletter">subscribe here</ExternalLink> to receive the twice-monthly
           Climate Litigation Newsletter. If you have updates to a case, please send them to{" "}
           <ExternalLink url="mailto:manager@climatecasechart.com">manager@climatecasechart.com</ExternalLink>.
         </p>

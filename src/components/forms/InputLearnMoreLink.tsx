@@ -11,7 +11,7 @@ export const InputLearnMoreLink = ({ additionalInfo, learnMoreUrl, learnMoreExte
     <p className="ml-[24px] pl-2 opacity-80">
       {additionalInfo}{" "}
       {learnMoreUrl && (
-        <a href={learnMoreUrl} target={learnMoreExternal ? "_blank" : ""} className="text-textNormal italic underline">
+        <a href={learnMoreUrl} target={learnMoreExternal ? "_blank" : ""} className="text-textNormal italic underline" rel="noreferrer">
           Learn more
         </a>
       )}

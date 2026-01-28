@@ -129,14 +129,17 @@ export const getServerSideProps = (async (context) => {
   );
   const collectionsData = allCollections.flat();
 
-  /** targets data may or may not exist, so if we have a network error, we fail silently */
   let targetsData: TTarget[] = [];
   try {
     const targetsRaw = await axios.get<TTarget[]>(`${process.env.TARGETS_URL}/families/${familyData.import_id}.json`);
     targetsData = targetsRaw.data;
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error("Error fetching targets data", error);
+    // Targets store in S3 are not available for the majority of families, so we fail silently
+    // Otherwise the logs are flooded with 404s and 403s
+    if (axios.isAxiosError(error) && error.response?.status === 500) {
+      // eslint-disable-next-line no-console
+      console.error("Error fetching targets data", error);
+    }
   }
 
   /** Check the family is in the "allowed_corpora" */

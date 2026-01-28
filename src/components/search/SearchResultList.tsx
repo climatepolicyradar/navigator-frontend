@@ -8,6 +8,7 @@ interface IProps {
   families: TMatchedFamily[];
   activeFamilyIndex?: number | boolean;
   onClick?: (index: number) => void;
+  offset?: number;
 }
 
 const renderEmptyMessage = (category: string) => {
@@ -22,7 +23,7 @@ const renderEmptyMessage = (category: string) => {
   );
 };
 
-const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: IProps) => {
+const SearchResultList = ({ category, families, activeFamilyIndex, onClick, offset = 0 }: IProps) => {
   if (category && category.toLowerCase() === "litigation") {
     return (
       <>
@@ -62,7 +63,14 @@ const SearchResultList = ({ category, families, activeFamilyIndex, onClick }: IP
     <>
       <ol className="divide-y flex flex-col gap-6" data-cy="search-result">
         {families?.map((family, index: number) => (
-          <SearchResult key={index} family={family} onClick={() => onClick(index)} active={activeFamilyIndex === index} />
+          <SearchResult
+            active={activeFamilyIndex === index}
+            family={family}
+            key={index}
+            onClick={() => onClick(index)}
+            position={index + 1}
+            positionOffset={offset}
+          />
         ))}
       </ol>
     </>

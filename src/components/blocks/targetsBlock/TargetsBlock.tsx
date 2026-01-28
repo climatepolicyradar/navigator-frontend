@@ -43,7 +43,13 @@ export const TargetsBlock = ({ targets }: IProps) => {
       <div className="col-start-1 -col-end-1 flex flex-col gap-4 items-start">
         {shownTargets.map((target) => {
           return (
-            <PageLink key={target.ID} href={`${linkDomain}/document/${target["family-slug"]}`} className="group">
+            <PageLink
+              key={target.ID}
+              href={`${linkDomain}/document/${target["family-slug"]}`}
+              className="group"
+              data-ph-capture-attribute-link-purpose="target"
+              data-ph-capture-attribute-target={target.ID}
+            >
               <h3 className="text-gray-950 font-medium" dangerouslySetInnerHTML={{ __html: target.Description }} />
               <span className="block text-sm">{getMetadata(target).join(`, `)}</span>
               {showSourceLink(target) && (

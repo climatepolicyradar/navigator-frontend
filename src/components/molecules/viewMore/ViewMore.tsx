@@ -79,6 +79,8 @@ export const ViewMore = ({
           type="button"
           onClick={onViewMore}
           className="p-2 mt-3 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
+          data-ph-capture-attribute-button-purpose="view-more"
+          data-ph-capture-attribute-view-more-intent={onButtonClick || !isOpen ? "more" : "less"}
         >
           {isOpen ? buttonText[1] : buttonText[0]}
         </button>
