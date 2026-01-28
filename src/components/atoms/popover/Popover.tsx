@@ -24,7 +24,7 @@ interface IPopoverGenericProps {
 
 interface IPopoverElementProps extends IPopoverGenericProps {
   title?: string;
-  description: string;
+  description: ReactNode;
   link?: TPopoverLink;
   children?: never;
 }

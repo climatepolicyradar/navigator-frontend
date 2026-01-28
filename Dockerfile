@@ -33,7 +33,8 @@ RUN cp -r .next/static .next/standalone/.next/static
 RUN chown -R nextjs:nodejs .next/standalone
 USER nextjs
 
-EXPOSE 3000
-CMD ["sh", "-c", "HOSTNAME=0.0.0.0 PORT=3000 node .next/standalone/server.js"]
+EXPOSE 8080
+CMD ["sh", "-c", "HOSTNAME=0.0.0.0 PORT=8080 node .next/standalone/server.js"]
 
-HEALTHCHECK NONE
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:8080', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"

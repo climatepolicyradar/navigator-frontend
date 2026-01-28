@@ -13,6 +13,7 @@ import Loader from "@/components/Loader";
 import { SlideOut } from "@/components/atoms/SlideOut/SlideOut";
 import { Button } from "@/components/atoms/button/Button";
 import { Icon } from "@/components/atoms/icon/Icon";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import { FamilyMatchesDrawer } from "@/components/drawer/FamilyMatchesDrawer";
 import Slideout from "@/components/drawer/Slideout";
@@ -462,6 +463,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                           e.preventDefault();
                           setShowCSVDownloadPopup(true);
                         }}
+                        data-ph-capture-attribute-link-purpose="download-search"
                       >
                         {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
                       </a>
@@ -472,6 +474,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                             url={themeConfig.links.downloadDatabase}
                             className="text-blue-600 hover:underline hover:text-blue-800"
                             cy="download-entire-search-csv"
+                            data-ph-capture-attribute-link-purpose="download-database"
                           >
                             whole database
                           </ExternalLink>
@@ -587,7 +590,24 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                                 <div className="flex items-center gap-2">
                                   <Info
                                     title="Showing the top 500 results"
-                                    description="We limit the number of matches you can see so you get the quickest, most accurate results."
+                                    description={
+                                      <>
+                                        <span>We limit the number of matches you can see so you get the quickest, most accurate results.</span>
+                                        {theme === "ccc" && (
+                                          <span className="block mt-2">
+                                            This number may not accurately reflect the number of cases; please contact{" "}
+                                            <PageLink
+                                              external
+                                              href="mailto:manager@climatecasechart.com"
+                                              className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+                                            >
+                                              manager@climatecasechart.com
+                                            </PageLink>{" "}
+                                            for information about case numbers.
+                                          </span>
+                                        )}
+                                      </>
+                                    }
                                     link={{ href: "/faq", text: "Learn more" }}
                                   />
                                   <p className="text-sm text-text-primary font-normal">
@@ -748,6 +768,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                               <SearchResultList
                                 category={router.query[QUERY_PARAMS.category]?.toString()}
                                 families={families}
+                                offset={Number.parseInt(router.query[QUERY_PARAMS.offset] as string)}
                                 onClick={handleMatchesButtonClick}
                                 activeFamilyIndex={drawerFamily}
                               />
