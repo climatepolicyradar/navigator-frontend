@@ -1,12 +1,12 @@
 import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import React from "react";
 
 import { ApiClient } from "@/api/http-common";
-import { IProps, FamilyPage as FamilyPageUI } from "@/components/pages/familyPage";
+import { FamilyPage as FamilyPageUI } from "@/components/pages/familyPage";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
 import {
+  IFamilyDocumentTopics,
   TCollectionPublicWithFamilies,
   TCorpusTypeDictionary,
   TFamilyPublic,
@@ -30,13 +30,13 @@ import { processFamilyTopics } from "@/utils/topics/processFamilyTopics";
   - The 'physical document' view is within the folder: src/pages/documents/[id].tsx.
 */
 
-const FamilyPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ ...props }: IProps) => {
+const FamilyPage = ({ ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return <FamilyPageUI {...props} />;
 };
 
 export default FamilyPage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
   const theme = process.env.THEME;
@@ -75,10 +75,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   /** The Vespa families data has the concepts data attached, which is why we need this */
-  const { data: vespaFamilyData } = await backendApiClient.get<TSearchResponse>(`/families/${familyData.import_id}`);
+  let vespaFamilyData: TSearchResponse | null = null;
+  try {
+    const { data: vespaFamilyDataRaw } = await backendApiClient.get<TSearchResponse>(`/families/${familyData.import_id}`);
+    vespaFamilyData = vespaFamilyDataRaw;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 500) {
+      // eslint-disable-next-line no-console
+      console.error("Error fetching vespa families data", error);
+    }
+  }
 
   /* Package the family topics */
-  const familyTopics = await processFamilyTopics(vespaFamilyData);
+  let familyTopics: IFamilyDocumentTopics | null = null;
+  if (vespaFamilyData) familyTopics = await processFamilyTopics(vespaFamilyData);
 
   /** TODO: see where we use this config data, and if we can get it from the families response */
   const configRaw = await backendApiClient.getConfig();
@@ -144,7 +154,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       targets: targetsData,
       theme,
       themeConfig,
-      vespaFamilyData: vespaFamilyData ?? null,
+      vespaFamilyData: vespaFamilyData,
     }),
   };
-};
+}) satisfies GetServerSideProps;

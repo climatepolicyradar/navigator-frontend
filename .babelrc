@@ -1,8 +1,0 @@
-// DO NOT REMOVE THIS FILE
-// In the build step Next.js recommends to remove this file, however we need it because of how we use dynamic imports
-// https://nextjs.org/docs/advanced-features/dynamic-import#babel-plugin
-// Currently this is the only way to make dynamic imports work with Next.js, SWC does not work using them
-{
-  "presets": ["next/babel"],
-  "plugins": []
-}

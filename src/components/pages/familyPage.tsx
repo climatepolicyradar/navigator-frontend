@@ -49,13 +49,13 @@ export interface IProps {
   corpus_types: TCorpusTypeDictionary;
   countries: TGeography[];
   family: TFamilyPublic;
-  familyTopics: IFamilyDocumentTopics;
+  familyTopics: IFamilyDocumentTopics | null;
   features: TFeatures;
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];
-  theme: TTheme;
+  theme: string;
   themeConfig: TThemeConfig;
-  vespaFamilyData?: TSearchResponse;
+  vespaFamilyData?: TSearchResponse | null;
 }
 
 export const FamilyPage = ({
@@ -172,7 +172,7 @@ export const FamilyPage = ({
     <Layout
       title={family.title}
       description={getFamilyMetaDescription(family?.metadata?.core_object?.[0] ?? family.summary, family.geographies.join(", "), family.category)}
-      theme={theme}
+      theme={theme as TTheme}
       themeConfig={themeConfig}
       attributionUrl={family?.corpus?.attribution_url}
     >

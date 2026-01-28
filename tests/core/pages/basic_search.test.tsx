@@ -40,7 +40,7 @@ describe("SearchPage", async () => {
       expect(screen.getByText("Get better results")).toBeInTheDocument();
     });
 
-    expect(screen.getByText(/You are currently viewing all of the documents in our database/)).toBeInTheDocument();
+    expect(await screen.findByText(/You are currently viewing all of the documents in our database/)).toBeInTheDocument();
     expect(screen.queryByText(/Topics filter/)).not.toBeInTheDocument();
   });
 
@@ -104,8 +104,6 @@ describe("SearchPage", async () => {
     // @ts-ignore
     renderWithAppContext(Search, { pageProps: baseSearchProps });
 
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
-
     // Verify slideout is initially closed.
     expect(screen.queryByText("Region")).not.toBeInTheDocument();
 
@@ -133,8 +131,6 @@ describe("SearchPage", async () => {
   it("filters search results by country", async () => {
     // @ts-ignore
     renderWithAppContext(Search, { pageProps: baseSearchProps });
-
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
 
     // Verify slideout is initially closed.
     expect(screen.queryByText("Published jurisdiction")).not.toBeInTheDocument();

@@ -1,5 +1,5 @@
 import { Popover as BasePopover } from "@base-ui-components/react/popover";
-import { ReactElement, ReactNode } from "react";
+import { JSX, ReactNode } from "react";
 
 import { BaseUIArrow } from "@/utils/baseUI";
 import { joinTailwindClasses } from "@/utils/tailwind";
@@ -19,7 +19,7 @@ interface IPopoverGenericProps {
   onOpenChange?: (open: boolean) => void;
   openOnHover?: boolean;
   popupClasses?: string;
-  trigger: ReactElement;
+  trigger: JSX.Element;
 }
 
 interface IPopoverElementProps extends IPopoverGenericProps {

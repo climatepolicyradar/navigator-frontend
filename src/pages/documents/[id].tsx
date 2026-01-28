@@ -26,16 +26,6 @@ import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
 import { getLitigationDocumentJSONLD } from "@/utils/json-ld/getLitigationDocumentJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
 
-interface IProps {
-  document: TDocumentPage;
-  family: TFamilyPublic;
-  theme: TTheme;
-  themeConfig: TThemeConfig;
-  features: TFeatures;
-  topicsData: TTopics;
-  vespaDocumentData: TSearchResponse;
-}
-
 const passageClasses = (canPreview: boolean) => {
   if (canPreview) {
     return "md:w-1/3";
@@ -56,7 +46,7 @@ const isEmptySearch = (query: ParsedUrlQuery) => {
   - If the document is an HTML, the passages will be displayed in a list on the left side of the page but the document will not be displayed.
 */
 
-const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
+const DocumentPage = ({
   document,
   family,
   features,
@@ -64,7 +54,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   themeConfig,
   topicsData,
   vespaDocumentData,
-}: IProps) => {
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const qsSearchString = router.query[QUERY_PARAMS.query_string];
   // exact match is default, so only instances where it is explicitly set to false do we check against
@@ -125,7 +115,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
     <Layout
       title={`${document.title}`}
       description={getDocumentDescription(document.title)}
-      theme={theme}
+      theme={theme as TTheme}
       themeConfig={themeConfig}
       attributionUrl={family.corpus.attribution_url}
     >
@@ -174,7 +164,7 @@ const DocumentPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({
 
 export default DocumentPage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
   const theme = process.env.THEME;
@@ -216,4 +206,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch (error) {
     return { notFound: true };
   }
-};
+}) satisfies GetServerSideProps;

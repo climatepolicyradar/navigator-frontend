@@ -85,6 +85,11 @@ jobs:
           node-version: 22.12.0
       - run: npm install
       - run: cp .env.example .env
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/$THEME/g" tsconfig.json
+
       - run: npm run build
         env:
           NODE_ENV: production
@@ -106,6 +111,10 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 22.12.0
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/$THEME/g" tsconfig.json
       - run: npm install
       - uses: trunk-io/trunk-action@v1
         with:
@@ -121,6 +130,12 @@ jobs:
           node-version: 22.12.0
       - run: npm install
       - run: cp .env.example .env
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/$THEME/g" tsconfig.json
+        env:
+          THEME: cpr
       - name: Run vitest
         run: npm run test
         # This is needed to pass the results on to the trunk-io/analytics-uploader
@@ -151,12 +166,21 @@ jobs:
           node-version: 22.12.0
       - run: npm ci
       - run: cp .env.example .env
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/${{ matrix.theme }}/g" tsconfig.json
       - run: THEME=${{ matrix.theme }} npm run build
         env:
           NODE_ENV: production
 
+      - name: Copy static assets to standalone
+        run: |
+          cp -r public .next/standalone/public
+          cp -r .next/static .next/standalone/.next/static
+
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ env.PLAYWRIGHT_BROWSERS_PATH }}
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
@@ -272,6 +296,10 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
+      - name: Generate tsconfig.json
+        run: |
+          cp tsconfig.base.json tsconfig.json
+          sed -i "s/__THEME__/$THEME/g" tsconfig.json
       - run: npm install
       - run: npm run build-storybook
       - name: Upload to S3
