@@ -40,7 +40,7 @@ export const ToggleGroup = <ToggleId extends string>({
   return (
     <BaseToggleGroup className={allGroupClasses} defaultValue={[toggles[0].id]} value={[value]} multiple={false} onValueChange={changeValue}>
       {toggles.map(({ id, label }) => (
-        <BaseToggle key={id} className={allButtonClasses} pressed={value === id} value={id}>
+        <BaseToggle key={id} className={allButtonClasses} pressed={value === id} value={id} data-ph-capture-attribute-page-header-tab={id}>
           {label || firstCase(id)}
         </BaseToggle>
       ))}

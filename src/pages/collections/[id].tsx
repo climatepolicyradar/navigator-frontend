@@ -24,7 +24,14 @@ import { getCollectionMetadata } from "@/utils/getCollectionMetadata";
 import { getLitigationCollectionJSONLD } from "@/utils/json-ld/getLitigationCollectionJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
 
-type TCollectionTabId = "about" | "cases" | "procedural history";
+interface IProps {
+  collection: TCollectionPublicWithFamilies;
+  theme: TTheme;
+  themeConfig: TThemeConfig;
+  features: TFeatures;
+}
+
+type TCollectionTabId = "about" | "cases" | "procedural history"; // Don't rename, add a label instead (else analytics break)
 const COLLECTION_TABS: TToggleGroupToggle<TCollectionTabId>[] = [{ id: "cases" }, { id: "procedural history" }, { id: "about" }];
 
 const CollectionPage = ({ collection, theme, themeConfig, features }: InferGetServerSidePropsType<typeof getServerSideProps>) => {

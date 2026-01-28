@@ -463,6 +463,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                           e.preventDefault();
                           setShowCSVDownloadPopup(true);
                         }}
+                        data-ph-capture-attribute-link-purpose="download-search"
                       >
                         {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
                       </a>
@@ -473,6 +474,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                             url={themeConfig.links.downloadDatabase}
                             className="text-blue-600 hover:underline hover:text-blue-800"
                             cy="download-entire-search-csv"
+                            data-ph-capture-attribute-link-purpose="download-database"
                           >
                             whole database
                           </ExternalLink>
@@ -766,6 +768,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                               <SearchResultList
                                 category={router.query[QUERY_PARAMS.category]?.toString()}
                                 families={families}
+                                offset={Number.parseInt(router.query[QUERY_PARAMS.offset] as string)}
                                 onClick={handleMatchesButtonClick}
                                 activeFamilyIndex={drawerFamily}
                               />

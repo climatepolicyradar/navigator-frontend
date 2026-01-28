@@ -27,7 +27,29 @@ function PostHogPageView({ consent }: { consent: boolean }): null {
       if (searchParams.toString()) {
         url = url + `?${searchParams.toString()}`;
       }
-      posthog.capture("$pageview", { $current_url: url, consent });
+
+      // Infer metadata from URL
+      const pathParts = pathname.split("/");
+      let pageType: string | undefined = undefined;
+      let pageTypeSlug: string | undefined = undefined;
+      let geographyType: string | undefined = undefined;
+
+      switch (pathParts[1]) {
+        case "document":
+        case "collections":
+        case "geographies":
+        case "document":
+        case "documents":
+          pageType = pathParts[1];
+          pageTypeSlug = pathParts[2];
+      }
+
+      if (pathParts[1] === "geographies") {
+        const subdivisionMatcher = /^[a-z]{2}-[a-z]{2,3}$/i;
+        geographyType = subdivisionMatcher.test(pathParts[2]) ? "subdivision" : "country";
+      }
+
+      posthog.capture("$pageview", { $current_url: url, consent, geographyType, pageType, pageTypeSlug });
     }
   }, [pathname, searchParams, posthog, consent]);
 
