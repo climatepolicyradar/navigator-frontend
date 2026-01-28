@@ -88,7 +88,7 @@
     "eslint-plugin-react-refresh": "^0.4.26",
     "eslint-plugin-storybook": "10.2.1",
     "globals": "^16.5.0",
-    "jsdom": "^26.0.0",
+    "jsdom": "^27.4.0",
     "msw": "^2.12.7",
     "next-router-mock": "^1.0.5",
     "postcss": "^8.5.1",
