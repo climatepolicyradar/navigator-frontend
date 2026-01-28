@@ -1,38 +1,40 @@
-# trunk-ignore-all(trivy/DS026)
-# trunk-ignore-all(checkov/CKV_DOCKER_2)
-FROM node:22.12.0-alpine3.21
+FROM node:24-alpine
+WORKDIR /app
+
+# Create a non-root user
+RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+
+COPY . .
+RUN npm ci
 
 ARG THEME
-ENV THEME=$THEME
+
+ENV THEME=${THEME}
+ENV NODE_ENV=production
 
 # @related: GITHUB_SHA_ENV_VAR
 ARG GITHUB_SHA
 ENV GITHUB_SHA=${GITHUB_SHA}
 
-# Make sure the latest npm is installed for speed and fixes.
-RUN npm i npm@latest -g
-
-# Switch to root user to copy files safely
-USER root
-
-WORKDIR /home/node/app
-COPY . .
-RUN chown -R node:node /home/node/app
-
-
-# The official Node image provides an unprivileged user as a security best
-# practice, but it needs to be manually enabled. We put it here so npm installs
-# dependencies as the same user who runs the app.
-USER node
-
-# Create workdir and copy source code into it, giving the node user read and
-# execute permissions, but not alter permissions.
-
-# Install dependencies.
-RUN npm install
-
-ENV PATH=/home/node/app/node_modules/.bin:$PATH
-
+# Generate tsconfig.json from template with the selected THEME
+RUN node -e "\
+const fs=require('fs');\
+const tpl=fs.readFileSync('tsconfig.base.json','utf8');\
+fs.writeFileSync('tsconfig.json', tpl.replace(/__THEME__/g, process.env.THEME));\
+"
+# Build Next.js
 RUN npm run build
 
-CMD [ "npm", "run", "start" ]
+# Copy static files into standalone directory
+RUN cp -r public .next/standalone/public
+RUN cp -r .next/static .next/standalone/.next/static
+
+# Set ownership and switch to non-root user
+RUN chown -R nextjs:nodejs .next/standalone
+USER nextjs
+
+EXPOSE 8080
+CMD ["sh", "-c", "HOSTNAME=0.0.0.0 PORT=8080 node .next/standalone/server.js"]
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:8080', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"

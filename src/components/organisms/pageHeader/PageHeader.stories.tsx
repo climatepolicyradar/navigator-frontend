@@ -1,5 +1,5 @@
-import { Meta, StoryObj } from "@storybook/nextjs";
-import React, { useState } from "react";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { useState } from "react";
 
 import { PageHeader } from "./PageHeader";
 

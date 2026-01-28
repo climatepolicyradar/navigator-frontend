@@ -1,4 +1,5 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
 import { Tooltip, TooltipRefProps } from "react-tooltip";
 
@@ -239,12 +240,12 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
     openToolTip([e.clientX, e.clientY], geography?.display_value ?? geo.properties.name);
   };
 
-  const handleMarkerClick = (e: React.MouseEvent<SVGPathElement>, countryCode: string) => {
+  const handleMarkerClick = (e: React.MouseEvent<SVGGElement>, countryCode: string) => {
     const geography = mapData.geographies[countryCode];
     openToolTip([e.clientX, e.clientY], geography?.display_value ?? "");
   };
 
-  const handleGeoHover = (e: React.MouseEvent<SVGPathElement>, hoveredGeo: string) => {
+  const handleGeoHover = (e: React.MouseEvent<SVGGElement>, hoveredGeo: string) => {
     setActiveGeography("");
     openToolTip([e.clientX, e.clientY], hoveredGeo);
   };
@@ -281,7 +282,7 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
     });
   };
 
-  if (mapDataStatus === "loading") {
+  if (mapDataStatus === "pending") {
     return <p>Loading data for the map...</p>;
   }
 
@@ -307,7 +308,7 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
   };
 
   return (
-    <>
+    <ErrorBoundary fallback={<div>Sorry. The map has failed to load.</div>}>
       <div className="flex justify-between items-center my-4">
         <Heading level={2}>Search the globe</Heading>
         {showCategorySelect && (
@@ -347,6 +348,7 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
           </div>
         </div>
       </div>
+
       <div ref={mapRef} className="map-container relative" data-cy="world-map">
         <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 125 }} height={340}>
           <ZoomableGroup
@@ -371,7 +373,7 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
             <Graticule stroke="#E4E5E6" strokeWidth={0.2} />
             <Geographies geography={geoUrl}>
               {({ geographies }) =>
-                geographies.map((geo) => {
+                geographies.map((geo, i) => {
                   const geoData = mapData.geographies[geo.properties.name];
                   return (
                     <Geography
@@ -470,6 +472,6 @@ export default function WorldMap({ showLitigation = false, showCategorySelect = 
           </p>
         </div>
       )}
-    </>
+    </ErrorBoundary>
   );
 }

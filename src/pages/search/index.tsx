@@ -33,7 +33,7 @@ import SearchResultList from "@/components/search/SearchResultList";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { sortOptions } from "@/constants/sortOptions";
-import { withEnvConfig } from "@/context/EnvConfig";
+import { TPublicEnvConfig, withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { SlideOutContext } from "@/context/SlideOutContext";
 import { TopicsContext } from "@/context/TopicsContext";
@@ -54,14 +54,6 @@ import { getFilterLabel } from "@/utils/getFilterLabel";
 import { ResultsTopicsContext } from "@/utils/getPassageResultsContext";
 import { pluralise } from "@/utils/pluralise";
 import { readConfigFile } from "@/utils/readConfigFile";
-
-interface IProps {
-  familyConceptsData?: TTopic[] | null;
-  features: TFeatures;
-  theme: TTheme;
-  themeConfig: TThemeConfig;
-  topicsData: TTopics;
-}
 
 const SETTINGS_ANIMATION_VARIANTS = {
   hidden: { opacity: 0, transition: { duration: 0.1 } },
@@ -130,7 +122,7 @@ const getSelectedFamilyConcepts = (selectedConcepts: string | string[], allConce
   );
 };
 
-const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ familyConceptsData, features, theme, themeConfig, topicsData }: IProps) => {
+const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
@@ -440,7 +432,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ family
   const searchResultItemName = pluralise(displayHits, [getAppText("searchResultItemSingular"), getAppText("searchResultItemPlural")]);
 
   return (
-    <Layout theme={theme} themeConfig={themeConfig} metadataKey="search">
+    <Layout theme={theme as TTheme} themeConfig={themeConfig} metadataKey="search">
       <FeaturesContext.Provider value={features}>
         <TopicsContext.Provider value={topicsData}>
           <SlideOutContext.Provider value={{ currentSlideOut, setCurrentSlideOut }}>
@@ -796,7 +788,7 @@ const Search: InferGetServerSidePropsType<typeof getServerSideProps> = ({ family
 
 export default Search;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
   const theme = process.env.THEME;
@@ -806,28 +798,29 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const client = new ApiClient(process.env.CONCEPTS_API_URL);
 
+  let topicsData: TTopics = { rootTopics: [], topics: [] };
+  let familyConceptsData: TTopic[] | undefined;
+
   try {
     const { data: topicsResponse } = await client.get<TTopic[]>(`/concepts/search?limit=10000&has_classifier=true`);
-    const topicsData = await fetchAndProcessTopics(topicsResponse.map((topic) => topic.wikibase_id));
+    topicsData = await fetchAndProcessTopics(topicsResponse.map((topic) => topic.wikibase_id));
 
-    // TODO: Next - start rendering this data
-    let familyConceptsData: TTopic[] | undefined;
     if (features.familyConceptsSearch) {
       const familyConceptsResponse = await fetch(`${process.env.CONCEPTS_API_URL}/families/concepts`);
       const familyConceptsJson: { data: FamilyConcept[] } = await familyConceptsResponse.json();
       familyConceptsData = mapFamilyConceptsToConcepts(familyConceptsJson.data);
     }
-
-    return {
-      props: withEnvConfig({
-        familyConceptsData: familyConceptsData ?? null,
-        features,
-        theme,
-        themeConfig,
-        topicsData,
-      }),
-    };
   } catch (error) {
     // TODO handle error more elegantly
   }
-};
+
+  return {
+    props: withEnvConfig({
+      familyConceptsData: familyConceptsData ?? null,
+      features,
+      theme,
+      themeConfig,
+      topicsData,
+    }),
+  };
+}) satisfies GetServerSideProps;

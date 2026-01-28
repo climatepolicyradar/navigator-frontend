@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 type TFAQ = {
   id?: string;
   title: string;

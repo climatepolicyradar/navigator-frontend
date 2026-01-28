@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import router from "next-router-mock";
 
@@ -33,9 +33,13 @@ describe("SearchPage", async () => {
     // @ts-ignore
     renderWithAppContext(Search, { pageProps: search_props });
 
-    expect(await screen.findByText("Get better results")).toBeInTheDocument();
-    expect(screen.getByText(/You are currently viewing all of the documents in our database/)).toBeInTheDocument();
-    expect(screen.getByText(/Topics filter/)).toBeInTheDocument();
+    // Wait for the component to render
+    await waitFor(() => {
+      expect(screen.getByText("Get better results")).toBeInTheDocument();
+    });
+
+    expect(await screen.findByText(/You are currently viewing all of the documents in our database/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Topics filter/i)).toBeInTheDocument();
   });
 
   it("hides search onboarding info when filters are applied", async () => {

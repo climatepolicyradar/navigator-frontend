@@ -6,7 +6,7 @@ import { BrazilImplementingNDCBanner } from "@/cclw/components/BrazilImplementin
 import { FeatureDiscover } from "@/cclw/components/FeatureDiscover";
 import { FeatureSearch } from "@/cclw/components/FeatureSearch";
 import Footer from "@/cclw/components/Footer";
-import { Header } from "@/cclw/components/Header";
+import Header from "@/cclw/components/Header";
 import { HelpUs } from "@/cclw/components/HelpUs";
 import { Hero } from "@/cclw/components/Hero";
 import { Partners } from "@/cclw/components/Partners";
@@ -24,6 +24,8 @@ import { TTheme, TThemeConfig } from "@/types";
 
 interface IProps {
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
+  handleSearchChange: (type: string, value: any) => void;
+  exactMatch: boolean;
   searchInput: string;
   theme: TTheme;
   themeConfig: TThemeConfig;

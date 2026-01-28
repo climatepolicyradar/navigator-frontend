@@ -220,7 +220,7 @@ export const getEventTableRows = ({
   isLitigation,
 }: {
   families: TFamilyPublic[];
-  familyTopics?: IFamilyDocumentTopics;
+  familyTopics?: IFamilyDocumentTopics | null;
   documentEventsOnly?: boolean;
   documentRowClick?: (rowId: string) => void;
   matchesFamily?: TMatchedFamily;

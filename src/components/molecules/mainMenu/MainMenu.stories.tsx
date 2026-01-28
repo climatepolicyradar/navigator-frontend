@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/nextjs";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { LucideMenu } from "lucide-react";
 
 import { MENU_LINKS as CPR_MENU_LINKS } from "@/cpr/constants/menuLinks";
