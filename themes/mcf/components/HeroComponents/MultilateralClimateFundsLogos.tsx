@@ -35,6 +35,7 @@ export const MultilateralClimateFundLogos = () => {
       {fundInformation.map((fund) => (
         <div key={fund.name} className="w-[120px] h-[60px]">
           <ExternalLink url={fund.url} className="block w-full h-full">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={fund.imgSrc} alt={`${fund.name} logo`} className="object-contain w-full h-full" />
           </ExternalLink>
         </div>

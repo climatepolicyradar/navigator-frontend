@@ -50,6 +50,7 @@ const AboutTheFundsContent = () => {
           </LinkWithQuery>
         </div>
         <div className="hidden xl:flex xl:h-full">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/images/mcf/mcf-fund-logos.png" alt="Multilateral Climate Fund Logos" className="h-auto max-w-[306px]" />
         </div>
       </div>

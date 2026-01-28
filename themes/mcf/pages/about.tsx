@@ -30,6 +30,7 @@ const About = () => {
               </Heading>
               <div className="text-content mb-12">
                 <div className="border border-gray-300 p-4 rounded-lg flex justify-center items-center h-[304px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={"/images/mcf/AF.png"} alt={`Adaptation Fund logo`} className="h-20 w-auto" />
                 </div>
                 <p>
@@ -55,6 +56,7 @@ const About = () => {
               </div>
               <div className="text-content mb-12">
                 <div className="border border-gray-300 p-4 rounded-lg flex justify-center items-center h-[304px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={"/images/mcf/CIF.png"} alt={`Climate Investment Funds logo`} className="h-20 w-auto" />
                 </div>
                 <p>
@@ -79,6 +81,7 @@ const About = () => {
               </div>
               <div className="text-content mb-12">
                 <div className="border border-gray-300 p-4 rounded-lg flex justify-center items-center h-[304px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={"/images/mcf/GEF.png"} alt={`Global Environment Facility logo`} className="h-20 w-auto" />
                 </div>
                 <p>
@@ -131,6 +134,7 @@ const About = () => {
               </div>
               <div className="text-content mb-12">
                 <div className="border border-gray-300 p-4 rounded-lg flex justify-center items-center h-[304px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={"/images/mcf/GCF.png"} alt={`Green Climate Fund logo`} className="h-20 w-auto" />
                 </div>
                 <p>

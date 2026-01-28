@@ -11,6 +11,7 @@ const ContextualSearchContent = () => {
           </Heading>
           <p>Find information from 4 different funds projects and policies in more than 130 countries.</p>
           <div className="pt-9">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={"/images/climate-project-explorer/cpe-search-results.jpg"}
               alt={`Climate Project Explorer Search Filters Snapshot`}
@@ -25,6 +26,7 @@ const ContextualSearchContent = () => {
           <p>Quickly find exact matches and highlighted related phrases. Get English translations of relevant passages.</p>
 
           <div className="pt-9">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={"/images/climate-project-explorer/cpe-contextual-search.jpg"}
               alt={`Climate Project Explorer Contextual Search Snapshot`}
