@@ -132,6 +132,7 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
         <div className="flex gap-2 items-center justify-between">
           {showSearch && (
             <input
+              name="Topic quick search"
               type="text"
               placeholder="Quick search"
               value={search}

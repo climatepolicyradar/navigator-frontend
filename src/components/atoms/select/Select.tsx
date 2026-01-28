@@ -8,7 +8,7 @@ type TSelectOption = {
 };
 
 interface IProps {
-  container?: HTMLElement | RefObject<HTMLElement> | null;
+  container?: HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot>;
   defaultValue?: string;
   id?: string;
   onValueChange?: (value: string) => void;
@@ -16,7 +16,7 @@ interface IProps {
   value?: string;
 }
 
-export function Select({ defaultValue, value, options, onValueChange, container = null, id }: IProps) {
+export function Select({ defaultValue, value, options, onValueChange, container, id }: IProps) {
   const handleValueChange = (value: string) => {
     onValueChange?.(value);
   };
