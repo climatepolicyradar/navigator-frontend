@@ -1,4 +1,4 @@
-import { Popover as BasePopover } from "@base-ui-components/react/popover";
+import { Popover as BasePopover } from "@base-ui/react/popover";
 import { JSX, ReactNode } from "react";
 
 import { BaseUIArrow } from "@/utils/baseUI";
