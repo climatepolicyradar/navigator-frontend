@@ -18,7 +18,7 @@ const arrayStringMatchChecker = (a?: string[] | null, b?: string[] | null) => {
   return result;
 };
 
-export type TCacheIdentifier = {
+type TCacheIdentifier = {
   query_string: string;
   exact_match: boolean;
   keyword_filters?: TSearchKeywordFilters;

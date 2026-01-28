@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
+import { TBlock } from "@/types";
 import { firstCase } from "@/utils/text";
 
 import { ContentsSideBar, ISideBarItem } from "../contentsSideBar/ContentsSideBar";
@@ -16,9 +17,9 @@ type TBlockDefinition = {
 };
 export type TBlockDefinitions<PageBlock extends string> = Record<PageBlock, TBlockDefinition>;
 
-interface IProps<PageBlock extends string> {
-  blocksToRender: PageBlock[]; // Ordered list of blocks to render
-  blockDefinitions: TBlockDefinitions<PageBlock>; // How to render each block and its sidebar item
+interface IProps<BlockId extends string> {
+  blocksToRender: BlockId[]; // Ordered list of blocks to render
+  blockDefinitions: TBlockDefinitions<BlockId>; // How to render each block and its sidebar item
 }
 
 /**
@@ -27,7 +28,7 @@ interface IProps<PageBlock extends string> {
  * 1. Check themeConfig.pageBlocks includes the block name for the given page
  * 2. Check if the blockDefinitions render method is returning null (won't render the block or sidebar item)
  */
-export const BlocksLayout = <PageBlock extends string>({ blockDefinitions, blocksToRender }: IProps<PageBlock>) => {
+export const BlocksLayout = <BlockId extends string = TBlock>({ blockDefinitions, blocksToRender }: IProps<BlockId>) => {
   const [renderedSectionIds, setRenderedSectionIds] = useState<string[] | null>(null);
 
   // Check which sections are rendered on the page
@@ -41,7 +42,7 @@ export const BlocksLayout = <PageBlock extends string>({ blockDefinitions, block
   }, [blockDefinitions]);
 
   const blocks: ReactNode[] = [];
-  const sideBarItems: ISideBarItem[] = [];
+  const sideBarItems: ISideBarItem<BlockId>[] = [];
 
   blocksToRender.forEach((blockName) => {
     const blockDefinition = blockDefinitions[blockName];
@@ -55,7 +56,7 @@ export const BlocksLayout = <PageBlock extends string>({ blockDefinitions, block
       // Only show a corresponding sidebar item if the block renders a section
       if (renderedSectionIds === null || renderedSectionIds.includes(blockName)) {
         sideBarItems.push({
-          id: `section-${blockName}`, // If you're writing a new block, make sure its section ID and block names line up
+          id: blockName, // If you're writing a new block, make sure its section ID and block names line up
           display: blockDefinition.sideBarItem?.display || firstCase(blockName), // Can be inferred from block name
           context: blockDefinition.sideBarItem?.context || undefined,
         });
@@ -65,8 +66,8 @@ export const BlocksLayout = <PageBlock extends string>({ blockDefinitions, block
 
   return (
     <FiveColumns>
-      <ContentsSideBar items={sideBarItems} stickyClasses="cols5-3:!top-26 cols5-3:max-h-[calc(100vh-72px)]" />
-      <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols5-4:col-start-3">{blocks}</main>
+      <ContentsSideBar items={sideBarItems} stickyClasses="cols-3:!top-26 cols-3:max-h-[calc(100vh-72px)]" />
+      <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols-4:col-start-3">{blocks}</main>
     </FiveColumns>
   );
 };

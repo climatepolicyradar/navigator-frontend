@@ -1,6 +1,6 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import React from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
 
 import { DEFAULT_THEME_CONFIG } from "@/constants/themeConfig";
 import { EnvConfigContext } from "@/context/EnvConfig";
@@ -17,7 +17,7 @@ describe("useSubdivisions", () => {
   it("only returns a list subdivision data that has been published", async () => {
     const queryClient = new QueryClient();
 
-    const wrapper = ({ children }) => (
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
       <QueryClientProvider client={queryClient}>
         {/* @ts-ignore */}
         <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
@@ -39,7 +39,7 @@ describe("useSubdivisions", () => {
 
     const queryClient = new QueryClient();
 
-    const wrapper = ({ children }) => (
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
       <QueryClientProvider client={queryClient}>
         {/* @ts-ignore */}
         <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
@@ -61,7 +61,7 @@ describe("useSubdivisions", () => {
 
     const queryClient = new QueryClient();
 
-    const wrapper = ({ children }) => (
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
       <QueryClientProvider client={queryClient}>
         {/* @ts-ignore */}
         <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>
@@ -92,7 +92,7 @@ describe("useSubdivisions", () => {
 
     const queryClient = new QueryClient();
 
-    const wrapper = ({ children }) => (
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
       <QueryClientProvider client={queryClient}>
         {/* @ts-ignore */}
         <EnvConfigContext.Provider value={{}}>{children}</EnvConfigContext.Provider>

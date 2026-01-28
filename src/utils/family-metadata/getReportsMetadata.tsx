@@ -1,13 +1,15 @@
 import { Fragment } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
 import { EN_DASH } from "@/constants/chars";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
-import { IMetadata, TFamilyPublic, TGeography } from "@/types";
+import { IFamilyDocumentTopics, IMetadata, TFamilyPublic, TGeography } from "@/types";
+import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { convertDate } from "@/utils/timedate";
+import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
-export function getReportsMetadata(family: TFamilyPublic, countries: TGeography[]): IMetadata[] {
+export function getReportsMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null, countries: TGeography[]): IMetadata[] {
   const metadata = [];
 
   const [year] = convertDate(family.published_date);
@@ -29,13 +31,7 @@ export function getReportsMetadata(family: TFamilyPublic, countries: TGeography[
         return (
           <Fragment key={geo}>
             {index > 0 && ", "}
-            {!isSystemGeo(geoName) ? (
-              <LinkWithQuery href={`/geographies/${geoSlug || geo.toLowerCase()}`} className="underline">
-                {geoName}
-              </LinkWithQuery>
-            ) : (
-              <span>{geoName}</span>
-            )}
+            {!isSystemGeo(geoName) ? <GeographyLink code={geo} name={geoName} slug={geoSlug || geo.toLowerCase()} /> : <span>{geoName}</span>}
           </Fragment>
         );
       }),
@@ -58,6 +54,12 @@ export function getReportsMetadata(family: TFamilyPublic, countries: TGeography[
     label: "Type",
     value: document_type || EN_DASH,
   });
+
+  /* Topics */
+  if (familyTopicsHasTopics(familyTopics)) {
+    const topics = getTopicsMetadataItem(familyTopics);
+    if (topics) metadata.push(topics);
+  }
 
   return metadata;
 }

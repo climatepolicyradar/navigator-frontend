@@ -1,11 +1,11 @@
-import { Meta, StoryObj } from "@storybook/nextjs";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { GeographiesContext } from "@/context/GeographiesContext";
 import { CATEGORY_SUMMARY_STUB } from "@/stubs/categorySummarytStub";
 import { GEOGRAPHY_V2_STUB } from "@/stubs/geographyV2Stub";
 import { GeographyV2 } from "@/types";
 
-import { RecentFamiliesBlock, IProps } from "./RecentFamiliesBlock";
+import { RecentFamiliesBlock } from "./RecentFamiliesBlock";
 
 const meta = {
   title: "Blocks/RecentFamiliesBlock",
@@ -18,7 +18,7 @@ export default meta;
 
 const GEOGRAPHIES: GeographyV2[] = [GEOGRAPHY_V2_STUB, ...GEOGRAPHY_V2_STUB.has_subconcept];
 
-const useGeographiesContext = ({ ...props }: IProps) => (
+const useGeographiesContext = ({ ...props }: React.ComponentProps<typeof RecentFamiliesBlock>) => (
   <GeographiesContext.Provider value={GEOGRAPHIES}>
     <RecentFamiliesBlock {...props} />
   </GeographiesContext.Provider>

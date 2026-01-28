@@ -62,7 +62,7 @@ export const SubDivisionBlock = ({ subdivisions, title = "Geographic sub-divisio
 
   return (
     <Section block="subdivisions" title={title} count={subGeosWithHasData.length}>
-      <div className="rounded bg-surface-ui py-6 px-10">
+      <div className="col-start-1 -col-end-1 rounded bg-surface-ui py-6 px-10">
         <ol className="text-sm list-none pl-5 grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3 grid-flow-dense">
           {subGeosWithHasData.map((subdivision, index) => (
             <li
@@ -70,7 +70,12 @@ export const SubDivisionBlock = ({ subdivisions, title = "Geographic sub-divisio
               className={`text-text-secondary col-start-1 ${get2ColumnClass(index, subGeosWithHasData.length)} ${get3ColumnClass(index, subGeosWithHasData.length)}`}
             >
               {subdivision.has_data ? (
-                <LinkWithQuery href={`/geographies/${subdivision.slug}`} className="underline text-text-primary hover:text-text-brand-darker">
+                <LinkWithQuery
+                  href={`/geographies/${subdivision.slug}`}
+                  className="underline text-text-primary hover:text-text-brand-darker"
+                  data-ph-capture-attribute-link-purpose="subdivision"
+                  data-ph-capture-attribute-subdivision={subdivision.id}
+                >
                   {subdivision.name}
                 </LinkWithQuery>
               ) : (

@@ -1,15 +1,15 @@
+import { ParsedUrlQuery } from "querystring";
+
 import sortBy from "lodash/sortBy";
 import { ArrowRight, CornerDownLeft, Search } from "lucide-react";
-import { Url } from "next/dist/shared/lib/router/router";
 import { useRouter } from "next/router";
 import { FormEventHandler, useEffect, useMemo, useRef, useState } from "react";
 
 import { Input } from "@/components/atoms/input/Input";
 import { QUERY_PARAMS } from "@/constants/queryParams";
-import { systemGeoCodes } from "@/constants/systemGeos";
+import { SYSTEM_GEO_CODES } from "@/constants/systemGeos";
 import useConfig from "@/hooks/useConfig";
 import { CleanRouterQuery } from "@/utils/cleanRouterQuery";
-import { joinTailwindClasses } from "@/utils/tailwind";
 
 import { NavSearchDropdown } from "./NavSearchDropdown";
 import { NavSearchSuggestion } from "./NavSearchSuggestion";
@@ -71,7 +71,7 @@ export const NavSearch = () => {
     return sortBy(
       geographies.filter(
         (geography) =>
-          !systemGeoCodes.includes(geography.slug) &&
+          !SYSTEM_GEO_CODES.includes(geography.slug) &&
           (geography.display_value.toLowerCase().includes(searchText.toLowerCase()) ||
             searchText.toLowerCase().includes(geography.display_value.toLowerCase()))
       ),
@@ -88,8 +88,10 @@ export const NavSearch = () => {
   if (router.pathname === "/geographies/[id]") contextualSearchName = "This geography";
 
   // The path to navigate to when submitting the search input
-  const searchHref: Url = useMemo(() => {
-    const newQuery = CleanRouterQuery({ ...router.query });
+  const searchLink = useMemo(() => {
+    // Start with existing query if already on search page to preserve filters
+    const newQuery = router.pathname.includes("search") ? CleanRouterQuery({ ...router.query }) : {};
+    // Always reset offset / paging to start on page 1 of results
     delete newQuery[QUERY_PARAMS.offset];
 
     if (searchText) {
@@ -119,7 +121,7 @@ export const NavSearch = () => {
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     setIsFocused(false);
-    router.push(searchHref);
+    router.push(searchLink);
   };
 
   const handleSuggestionClick = () => {
@@ -137,7 +139,7 @@ export const NavSearch = () => {
   return (
     <div className="relative flex-1 -mx-2" ref={ref}>
       <div className="p-2 relative z-21">
-        <form onSubmit={handleSubmit} className="flex flex-row gap-2">
+        <form onSubmit={handleSubmit} className="flex flex-row gap-2" data-ph-capture-attribute-form-type="search">
           {/* Search field */}
           <Input
             autoComplete="off"
@@ -189,7 +191,8 @@ export const NavSearch = () => {
               )}
               {/* Search */}
               <NavSearchSuggestion
-                href={searchHref}
+                href={searchLink.pathname}
+                query={searchLink.query}
                 Icon={<Search height="16" width="16" />}
                 hint={
                   <div className="text-xs text-text-tertiary font-[440]">

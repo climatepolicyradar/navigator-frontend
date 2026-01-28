@@ -1,4 +1,4 @@
-import React from "react";
+import React, { JSX } from "react";
 
 export const iconNames = [
   "accordionClose",
@@ -53,7 +53,7 @@ interface IconProps {
 }
 
 // Should never be exported. Import the Icon component instead.
-const allIcons: Record<TIconName, (IconProps) => JSX.Element> = {
+const allIcons: Record<TIconName, (IconProps: IconProps) => JSX.Element> = {
   accordionClose: ({ color = "currentColor", height = "20", width = "20" }) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" style={{ width: `${width}px`, height: `${height}px` }}>
       <g>

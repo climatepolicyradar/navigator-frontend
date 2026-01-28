@@ -77,7 +77,7 @@ export const testCorpus2FamiliesWithSubdivisionCounts = [
   },
 ];
 
-export const testCorpus3FamiliesWithSubdivisionCounts = [
+const testCorpus3FamiliesWithSubdivisionCounts = [
   {
     code: "AU-NSW",
     name: "New South Wales",
@@ -86,7 +86,7 @@ export const testCorpus3FamiliesWithSubdivisionCounts = [
   },
 ];
 
-const familyCountsPerCorpus = {
+const familyCountsPerCorpus: Record<string, typeof testCorpus1FamiliesWithSubdivisionCounts> = {
   "Test.corpus.n0000": testCorpus1FamiliesWithSubdivisionCounts,
   "Test.corpus.n0001": testCorpus2FamiliesWithSubdivisionCounts,
   "Test.corpus.n0002": testCorpus3FamiliesWithSubdivisionCounts,

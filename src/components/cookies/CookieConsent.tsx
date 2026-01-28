@@ -1,26 +1,24 @@
-import dynamic from "next/dynamic";
 import Script from "next/script";
 import { useEffect, useState } from "react";
 
 import { ExternalLink } from "@/components/ExternalLink";
+import { Analytics } from "@/components/Themed";
 import { Button } from "@/components/atoms/button/Button";
 import { COOKIE_CONSENT_NAME } from "@/constants/cookies";
-import { TTheme } from "@/types";
+import { TThemeConfig } from "@/types";
 import { getCookie, setCookie } from "@/utils/cookies";
 import getDomain from "@/utils/getDomain";
 
 import { Card } from "../atoms/card/Card";
 
-const ThemeAnalytics = dynamic<{ enableAnalytics: boolean }>(() => import(`../../../themes/${process.env.THEME}/components/Analytics.tsx`));
-
 declare let gtag: Function;
 
 interface IProps {
   onConsentChange: (consent: boolean) => void;
-  theme: TTheme;
+  themeConfig: TThemeConfig;
 }
 
-export const CookieConsent = ({ onConsentChange, theme }: IProps) => {
+export const CookieConsent = ({ onConsentChange, themeConfig }: IProps) => {
   const [hide, setHide] = useState(true);
   const [enableAnalytics, setEnableAnalytics] = useState(false);
 
@@ -54,8 +52,8 @@ export const CookieConsent = ({ onConsentChange, theme }: IProps) => {
     setHide(true);
   };
 
-  const privacyPolicyUrl = theme === "ccc" ? "/privacy-policy" : "https://climatepolicyradar.org/privacy-policy";
-  const cookiePolicyUrl = theme === "ccc" ? "/cookie-policy" : "https://climatepolicyradar.org/privacy-policy";
+  const cookiePolicyUrl = themeConfig?.links?.cookiePolicy || "https://climatepolicyradar.org/privacy-policy";
+  const privacyPolicyUrl = themeConfig?.links?.privacyPolicy || "https://climatepolicyradar.org/privacy-policy";
 
   return (
     <>
@@ -138,7 +136,7 @@ export const CookieConsent = ({ onConsentChange, theme }: IProps) => {
           </Script>
         </>
       )}
-      <ThemeAnalytics enableAnalytics={enableAnalytics} />
+      <Analytics enableAnalytics={enableAnalytics} />
     </>
   );
 };

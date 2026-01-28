@@ -1,18 +1,25 @@
 import sortBy from "lodash/sortBy";
 import { Fragment, ReactNode } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
 import { ConceptHierarchy } from "@/components/molecules/conceptHierarchy/ConceptHierarchy";
+import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
 import { ARROW_RIGHT, EN_DASH } from "@/constants/chars";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
-import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
+import { IFamilyDocumentTopics, IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
 import { buildConceptHierarchy } from "@/utils/buildConceptHierarchy";
+import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
 import { isSystemGeo } from "@/utils/isSystemGeo";
+import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 const hierarchyArrow = ` ${ARROW_RIGHT} `;
 
-export function getLitigationMetadata(family: TFamilyPublic, countries: TGeography[], subdivisions: TGeographySubdivision[]): IMetadata[] {
+export function getLitigationMetadata(
+  family: TFamilyPublic,
+  familyTopics: IFamilyDocumentTopics | null,
+  countries: TGeography[],
+  subdivisions: TGeographySubdivision[]
+): IMetadata[] {
   const metadata = [];
 
   // Structure concepts into a hierarchy we can use
@@ -45,13 +52,7 @@ export function getLitigationMetadata(family: TFamilyPublic, countries: TGeograp
         const geoName = geoSlug ? getCountryName(geo, countries) : getSubdivisionName(geo, subdivisions);
         return (
           <Fragment key={geo}>
-            {!isSystemGeo(geoName) ? (
-              <LinkWithQuery href={`/geographies/${geoSlug || geo.toLowerCase()}`} className="underline">
-                {geoName}
-              </LinkWithQuery>
-            ) : (
-              <span>{geoName}</span>
-            )}
+            {!isSystemGeo(geoName) ? <GeographyLink code={geo} name={geoName} slug={geoSlug || geo.toLowerCase()} /> : <span>{geoName}</span>}
             {index + 1 < geosOrdered.length && hierarchyArrow}
           </Fragment>
         );
@@ -116,6 +117,12 @@ export function getLitigationMetadata(family: TFamilyPublic, countries: TGeograp
       label: "At issue",
       value: <div className="grid">{atIssueValue}</div>,
     });
+  }
+
+  /* Topics */
+  if (familyTopicsHasTopics(familyTopics)) {
+    const topics = getTopicsMetadataItem(familyTopics);
+    if (topics) metadata.push(topics);
   }
 
   return metadata;

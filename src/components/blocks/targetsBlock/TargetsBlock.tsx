@@ -1,21 +1,18 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { Button } from "@/components/atoms/button/Button";
-import { Card } from "@/components/atoms/card/Card";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { Section } from "@/components/molecules/section/Section";
-import { MIDDOT } from "@/constants/chars";
-import { TTarget, TTheme } from "@/types";
-import { joinTailwindClasses } from "@/utils/tailwind";
+import { ThemeContext } from "@/context/ThemeContext";
+import { TTarget } from "@/types";
 
 const MAX_ENTRIES_SHOWN = 3;
 
 interface IProps {
   targets: TTarget[];
-  theme: TTheme;
 }
 
-export const TargetsBlock = ({ targets, theme }: IProps) => {
+export const TargetsBlock = ({ targets }: IProps) => {
+  const { themeConfig } = useContext(ThemeContext);
   const [showAllEntries, setShowAllEntries] = useState(false);
 
   if (targets.length === 0) return null;
@@ -35,36 +32,43 @@ export const TargetsBlock = ({ targets, theme }: IProps) => {
     setShowAllEntries((current) => !current);
   };
 
-  const linkDomain = theme === "ccc" ? "https://app.climatepolicyradar.org" : "";
+  const linkDomain = themeConfig.links.targetDomain || "";
   const shownTargets = showAllEntries ? targets : targets.slice(0, MAX_ENTRIES_SHOWN);
   const entriesToHide = targets.length > MAX_ENTRIES_SHOWN;
-  const containerClasses = joinTailwindClasses("relative", entriesToHide && "pb-4");
+
+  if (shownTargets.length === 0) return null;
 
   return (
     <Section block="targets" title="Targets" count={targets.length}>
-      <div className={containerClasses}>
-        <Card className="!p-12 flex flex-col gap-10 bg-surface-ui rounded-sm">
-          {shownTargets.map((target) => {
-            return (
-              <div key={target.ID} className="flex flex-col gap-2.5 text-sm text-text-tertiary leading-tight">
-                <h3 className="text-base text-text-primary font-semibold" dangerouslySetInnerHTML={{ __html: target.Description }} />
-                <span className="">{getMetadata(target).join(` ${MIDDOT} `)}</span>
-                {showSourceLink(target) && (
-                  <span className="">
-                    Source:{" "}
-                    <LinkWithQuery href={`${linkDomain}/document/${target["family-slug"]}`} className="underline">
-                      {target["family-name"]}
-                    </LinkWithQuery>
-                  </span>
-                )}
-              </div>
-            );
-          })}
-        </Card>
+      <div className="col-start-1 -col-end-1 flex flex-col gap-4 items-start">
+        {shownTargets.map((target) => {
+          return (
+            <PageLink
+              key={target.ID}
+              href={`${linkDomain}/document/${target["family-slug"]}`}
+              className="group"
+              data-ph-capture-attribute-link-purpose="target"
+              data-ph-capture-attribute-target={target.ID}
+            >
+              <h3 className="text-gray-950 font-medium" dangerouslySetInnerHTML={{ __html: target.Description }} />
+              <span className="block text-sm">{getMetadata(target).join(`, `)}</span>
+              {showSourceLink(target) && (
+                <span className="block text-sm">
+                  Source:{" "}
+                  <span className="underline underline-offset-4 decoration-gray-300 group-hover:decoration-gray-500">{target["family-name"]}</span>
+                </span>
+              )}
+            </PageLink>
+          );
+        })}
         {entriesToHide && (
-          <Button color="mono" size="small" rounded onClick={toggleShowAll} className="absolute bottom-0 left-12">
-            {showAllEntries ? "Show less" : "Show all"}
-          </Button>
+          <button
+            type="button"
+            onClick={toggleShowAll}
+            className="p-2 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
+          >
+            {showAllEntries ? "View less" : "View more"}
+          </button>
         )}
       </div>
     </Section>

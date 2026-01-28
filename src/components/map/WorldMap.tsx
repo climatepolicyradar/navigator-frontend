@@ -1,4 +1,5 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { ComposableMap, Geographies, Geography, Graticule, Marker, Sphere, ZoomableGroup, Point as TPoint } from "react-simple-maps";
 import { Tooltip, TooltipRefProps } from "react-tooltip";
 
@@ -42,15 +43,16 @@ type TGeoMarkers = {
   unfccc: number;
   mcf: number;
   reports: number;
+  litigation: number;
 };
 
-type TGeographyWithCoords = TGeography & {
+export type TGeographyWithCoords = TGeography & {
   coords: TPoint;
   familyCounts: TGeoFamilyCounts;
   markers: TGeoMarkers;
 };
 
-type TGeographiesWithCoords = { [key: string]: TGeographyWithCoords };
+export type TGeographiesWithCoords = { [key: string]: TGeographyWithCoords };
 
 type TMapData = {
   maxLawsPolicies: number;
@@ -137,7 +139,12 @@ const GeographyDetail = ({ geo, geographies }: { geo: any; geographies: TGeograp
       {geography.familyCounts?.REPORTS > 0 && <p>Reports: {geography.familyCounts?.REPORTS || 0}</p>}
       {geography.familyCounts?.LITIGATION > 0 ? <p>Litigation: {geography.familyCounts?.LITIGATION || 0}</p> : <p>No litigation data available</p>}
       <p>
-        <LinkWithQuery href={`/geographies/${geography.slug}`} className="text-blue-600 underline hover:text-blue-800">
+        <LinkWithQuery
+          href={`/geographies/${geography.slug}`}
+          className="text-blue-600 underline hover:text-blue-800"
+          data-ph-capture-attribute-link-purpose="map-view-more"
+          data-ph-capture-attribute-country={geography.slug}
+        >
           View more
         </LinkWithQuery>
       </p>
@@ -152,7 +159,7 @@ interface IProps {
   theme: TTheme;
 }
 
-export default function MapChart({ showLitigation = false, showCategorySelect = true, showEUCheckbox = false, theme }: IProps) {
+export default function WorldMap({ showLitigation = false, showCategorySelect = true, showEUCheckbox = false, theme }: IProps) {
   const configQuery = useConfig();
   const geographiesQuery = useGeographies();
   const { data: { countries: configCountries = [] } = {} } = configQuery;
@@ -201,7 +208,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
       geographies: {},
     };
 
-    mapDataConstructor.geographies = configCountries.reduce((acc, country) => {
+    mapDataConstructor.geographies = configCountries.reduce<TGeographiesWithCoords>((acc, country) => {
       const geoStats = mapDataRaw.find((geo) => geo.slug === country.slug);
       const lawsPoliciesCount = (geoStats?.family_counts?.EXECUTIVE || 0) + (geoStats?.family_counts?.LEGISLATIVE || 0);
 
@@ -233,12 +240,12 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
     openToolTip([e.clientX, e.clientY], geography?.display_value ?? geo.properties.name);
   };
 
-  const handleMarkerClick = (e: React.MouseEvent<SVGPathElement>, countryCode: string) => {
+  const handleMarkerClick = (e: React.MouseEvent<SVGGElement>, countryCode: string) => {
     const geography = mapData.geographies[countryCode];
     openToolTip([e.clientX, e.clientY], geography?.display_value ?? "");
   };
 
-  const handleGeoHover = (e: React.MouseEvent<SVGPathElement>, hoveredGeo: string) => {
+  const handleGeoHover = (e: React.MouseEvent<SVGGElement>, hoveredGeo: string) => {
     setActiveGeography("");
     openToolTip([e.clientX, e.clientY], hoveredGeo);
   };
@@ -275,7 +282,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
     });
   };
 
-  if (mapDataStatus === "loading") {
+  if (mapDataStatus === "pending") {
     return <p>Loading data for the map...</p>;
   }
 
@@ -301,13 +308,13 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
   };
 
   return (
-    <>
+    <ErrorBoundary fallback={<div>Sorry. The map has failed to load.</div>}>
       <div className="flex justify-between items-center my-4">
         <Heading level={2}>Search the globe</Heading>
         {showCategorySelect && (
           <div>
             <select
-              className="border border-gray-300 small rounded-full !pl-4"
+              className="border border-gray-300 small rounded-full pl-4!"
               onChange={(e) => {
                 setSelectedFamCategory(e.currentTarget.value as "lawsPolicies" | "unfccc" | "mcf" | "reports" | "litigation");
               }}
@@ -341,6 +348,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           </div>
         </div>
       </div>
+
       <div ref={mapRef} className="map-container relative" data-cy="world-map">
         <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 125 }} height={340}>
           <ZoomableGroup
@@ -365,7 +373,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
             <Graticule stroke="#E4E5E6" strokeWidth={0.2} />
             <Geographies geography={geoUrl}>
               {({ geographies }) =>
-                geographies.map((geo) => {
+                geographies.map((geo, i) => {
                   const geoData = mapData.geographies[geo.properties.name];
                   return (
                     <Geography
@@ -451,7 +459,7 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
         )}
       </div>
       {selectedFamCategory !== "litigation" ? (
-        <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} theme={theme} />
+        <Legend max={getMaxValue()} showMcf={showMcf} showLitigation={showLitigation} />
       ) : (
         <div className="flex flex-col items-center justify-center gap-4 text-center text-sm font-normal leading-none py-4">
           <p className="text-text-secondary">Darker color indicates the number of litigation submissions in our databases.</p>
@@ -464,6 +472,6 @@ export default function MapChart({ showLitigation = false, showCategorySelect = 
           </p>
         </div>
       )}
-    </>
+    </ErrorBoundary>
   );
 }

@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { ApiClient } from "@/api/http-common";
 import CPRthemeConfig from "@/cpr/config";
+import { TFamilyPublic } from "@/types";
 import { extractGeographySlugs } from "@/utils/geography";
 
 export const dynamic = "force-dynamic";
@@ -14,7 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   /* Families */
 
   const familiesData = await fetch(`https://api.climatepolicyradar.org/families/?${urlSearchParams.toString()}`).then((resp) => resp.json());
-  const familiesSiteMap = familiesData.data.map((family) => {
+  const familiesSiteMap = familiesData.data.map((family: TFamilyPublic) => {
     return {
       url: `https://app.climatepolicyradar.org/document/${family.slug}`,
       lastModified: family.last_updated_date,

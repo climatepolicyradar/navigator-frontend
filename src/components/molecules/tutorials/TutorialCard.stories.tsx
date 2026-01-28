@@ -1,10 +1,10 @@
-import { Meta, StoryObj } from "@storybook/nextjs";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { TUTORIALS } from "@/constants/tutorials";
-import { TutorialContext } from "@/context/TutorialContext";
+import { TTutorialContext, TutorialContext } from "@/context/TutorialContext";
 import { TTutorialName } from "@/types";
 
-import { TutorialCard, IProps } from "./TutorialCard";
+import { TutorialCard } from "./TutorialCard";
 
 const meta = {
   title: "Molecules/Tutorials/TutorialCard",
@@ -15,8 +15,8 @@ type TStory = StoryObj<typeof TutorialCard>;
 
 export default meta;
 
-const useTutorialContext = ({ ...props }: IProps) => {
-  const value = {
+const useTutorialContext = ({ ...props }: React.ComponentProps<typeof TutorialCard>) => {
+  const value: TTutorialContext = {
     displayTutorial: null,
     // eslint-disable-next-line no-console
     setDisplayTutorial: (name: TTutorialName) => console.info("setDisplayTutorial", name),

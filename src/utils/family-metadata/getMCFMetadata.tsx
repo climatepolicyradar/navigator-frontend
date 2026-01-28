@@ -1,16 +1,18 @@
 import { Fragment } from "react";
 
 import { ExternalLink } from "@/components/ExternalLink";
-import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { GeographyLink } from "@/components/molecules/geographyLink/GeographyLink";
 import { EN_DASH } from "@/constants/chars";
 import { getApprovedYearFromEvents } from "@/helpers/getApprovedYearFromEvents";
 import { getSubCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSumUSD } from "@/helpers/getSumUSD";
-import { IMetadata, TCorpusTypeSubCategory, TFamilyPublic, TGeography } from "@/types";
+import { IFamilyDocumentTopics, IMetadata, TCorpusTypeSubCategory, TFamilyPublic, TGeography } from "@/types";
+import { getTopicsMetadataItem } from "@/utils/family-metadata/getTopicsMetadataItem";
 import { isSystemGeo } from "@/utils/isSystemGeo";
+import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
-export function getMCFMetadata(family: TFamilyPublic, countries: TGeography[]): IMetadata[] {
+export function getMCFMetadata(family: TFamilyPublic, familyTopics: IFamilyDocumentTopics | null, countries: TGeography[]): IMetadata[] {
   const metadata = [];
 
   const approvalYear = getApprovedYearFromEvents(family.events);
@@ -31,13 +33,7 @@ export function getMCFMetadata(family: TFamilyPublic, countries: TGeography[]): 
         return (
           <Fragment key={geo}>
             {index > 0 && ", "}
-            {!isSystemGeo(geoName) ? (
-              <LinkWithQuery href={`/geographies/${geoSlug || geo.toLowerCase()}`} className="underline">
-                {geoName}
-              </LinkWithQuery>
-            ) : (
-              <span>{geoName}</span>
-            )}
+            {!isSystemGeo(geoName) ? <GeographyLink code={geo} name={geoName} slug={geoSlug || geo.toLowerCase()} /> : <span>{geoName}</span>}
           </Fragment>
         );
       }),
@@ -64,7 +60,7 @@ export function getMCFMetadata(family: TFamilyPublic, countries: TGeography[]): 
     });
 
   /* Metadata */
-  family.metadata?.status &&
+  family.metadata?.status?.length &&
     metadata.push({
       label: "Status",
       value: family.metadata.status.join(", "),
@@ -74,22 +70,22 @@ export function getMCFMetadata(family: TFamilyPublic, countries: TGeography[]): 
       label: "Theme",
       value: family.metadata.theme.join(", "),
     });
-  family.metadata?.implementing_agency &&
+  family.metadata?.implementing_agency?.length &&
     metadata.push({
       label: "Implementing Agency",
       value: family.metadata.implementing_agency.join(", "),
     });
-  family.metadata?.sector &&
+  family.metadata?.sector?.length &&
     metadata.push({
       label: "Sector",
       value: family.metadata.sector.join(", "),
     });
-  family.metadata?.focal_area &&
+  family.metadata?.focal_area?.length &&
     metadata.push({
       label: "Focal Area",
       value: family.metadata.focal_area.join(", "),
     });
-  family.metadata?.result_area &&
+  family.metadata?.result_area?.length &&
     metadata.push({
       label: "Result Area",
       value: family.metadata.result_area.join(", "),
@@ -110,6 +106,12 @@ export function getMCFMetadata(family: TFamilyPublic, countries: TGeography[]): 
         </ExternalLink>
       ),
     });
+
+  /* Topics */
+  if (familyTopicsHasTopics(familyTopics)) {
+    const topics = getTopicsMetadataItem(familyTopics);
+    if (topics) metadata.push(topics);
+  }
 
   return metadata;
 }

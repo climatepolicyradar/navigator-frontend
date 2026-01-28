@@ -1,11 +1,12 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
+import { dayInMilliseconds } from "@/constants/dayInMilleseconds";
 import { TGeography, TLanguages, TCorpusTypeDictionary, TDataNode } from "@/types";
 import { extractNestedData } from "@/utils/extractNestedData";
 
 import { ApiClient, getEnvFromServer } from "../api/http-common";
 
-type TQueryResponse = {
+export type TConfigQueryResponse = {
   geographies: TDataNode<TGeography>[];
   regions: TGeography[];
   countries: TGeography[];
@@ -15,9 +16,9 @@ type TQueryResponse = {
 };
 
 export default function useConfig() {
-  return useQuery(
-    "config",
-    async () => {
+  return useQuery({
+    queryKey: ["config"],
+    queryFn: async () => {
       const { data } = await getEnvFromServer();
       const client = new ApiClient(data?.env?.api_url, data?.env?.app_token);
       const query_response = await client.getConfig();
@@ -25,7 +26,7 @@ export default function useConfig() {
       const [regions, countries, subdivisions] = extractNestedData<TGeography>(geographies);
       const corpus_types = query_response.data.corpus_types;
 
-      const resp_end: TQueryResponse = {
+      const resp_end: TConfigQueryResponse = {
         geographies,
         regions,
         countries,
@@ -35,10 +36,8 @@ export default function useConfig() {
       };
       return resp_end;
     },
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      cacheTime: 1000 * 60 * 60 * 24,
-    }
-  );
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    gcTime: dayInMilliseconds,
+  });
 }

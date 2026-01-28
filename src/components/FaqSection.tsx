@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, JSX, useEffect } from "react";
 
 import { Accordion } from "@/components/accordion/Accordion";
 import { SingleCol } from "@/components/panels/SingleCol";
@@ -16,12 +16,13 @@ interface IProps {
     headContent?: JSX.Element;
   }[];
   accordionMaxHeight?: string;
-  sectionId?: string;
+  sectionId: string;
   showMore?: boolean;
   openFirstOnLoad?: boolean;
+  bare?: boolean;
 }
 
-export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionId = "", showMore = false, openFirstOnLoad = true }: IProps) => {
+export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionId, showMore = false, openFirstOnLoad = true, bare }: IProps) => {
   useEffect(() => {
     // Only run if this component has an ID (meaning it's the target component)
     if (!sectionId) return;
@@ -38,8 +39,10 @@ export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionI
     }
   }, [sectionId]);
 
+  const Wrapper = bare ? Fragment : SingleCol;
+
   return (
-    <SingleCol>
+    <Wrapper>
       {title && (
         <>
           <Heading level={1} extraClasses="custom-header" id={sectionId}>
@@ -63,7 +66,7 @@ export const FaqSection = ({ title, faqs, accordionMaxHeight = "464px", sectionI
           </LinkWithQuery>
         )}
       </div>
-    </SingleCol>
+    </Wrapper>
   );
 };
 

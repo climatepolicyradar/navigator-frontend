@@ -1,13 +1,10 @@
-import Link from "next/link";
-import React, { ReactNode, useContext } from "react";
+import React, { ReactNode } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
-import { ThemeContext } from "@/context/ThemeContext";
+import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { useText } from "@/hooks/useText";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { joinTailwindClasses } from "@/utils/tailwind";
-
-import { FiveColumns } from "../atoms/columns/FiveColumns";
 
 export type TBreadcrumbLink = {
   label: string | React.ReactNode;
@@ -31,24 +28,28 @@ interface IBreadCrumb extends TBreadcrumbLink {
 }
 
 const BreadCrumb = ({ last = false, label = null, href = null, cy = "", isHome = false }: IBreadCrumb) => {
-  const { getText } = useText();
+  const { getAppText } = useText();
 
   // Don't render if label is empty, null, or undefined (unless it's the home item)
   if (!isHome && (!label || (typeof label === "string" && label.trim() === ""))) {
     return null;
   }
 
-  const LinkComponent = isHome ? Link : LinkWithQuery;
+  const labelSpan = (
+    <span className="block max-w-70 md:max-w-85 lg:max-w-140 xl:max-w-200 overflow-hidden whitespace-nowrap overflow-ellipsis">
+      {isHome ? getAppText("breadcrumbRoot") : label}
+    </span>
+  );
 
   return (
     <>
-      <li className="max-w-85 overflow-hidden whitespace-nowrap overflow-ellipsis" data-cy={`breadcrumb ${cy}`}>
+      <li data-cy={`breadcrumb ${cy}`}>
         {href ? (
-          <LinkComponent className="hover:underline" href={href}>
-            {isHome ? getText("breadcrumbRoot") : label}
-          </LinkComponent>
+          <PageLink href={href} keepQuery={!isHome} className="hover:underline">
+            {labelSpan}
+          </PageLink>
         ) : (
-          <>{label}</>
+          labelSpan
         )}
       </li>
 
@@ -69,7 +70,6 @@ export const BreadCrumbs = ({
   label,
   parentGeography = null,
 }: IProps) => {
-  const { theme } = useContext(ThemeContext);
   const isSearchPage = label === "Search results";
   const isGeographyPage = !isSearchPage && !category && !family && geography && !label;
   const isCollectionPage = !isSearchPage && !category && !family && !geography;

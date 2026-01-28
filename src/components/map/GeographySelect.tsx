@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 
 import { Icon } from "@/components/atoms/icon/Icon";
 import SuggestList from "@/components/filters/SuggestList";
+import { type TGeographyWithCoords, type TGeographiesWithCoords } from "@/components/map/WorldMap";
 import { sortData } from "@/utils/sorting";
 
 interface IProps {
   title: string;
-  list: { [key: string]: {} };
-  keyField: string;
-  keyFieldDisplay?: string;
+  list: TGeographiesWithCoords;
+  keyField: keyof TGeographyWithCoords;
+  keyFieldDisplay?: keyof TGeographyWithCoords;
   filterType: string;
   handleFilterChange(filterType: string, value: string): void;
 }
@@ -26,9 +27,9 @@ const GeographySelect = ({ title, list, keyField, keyFieldDisplay, filterType, h
       setSuggestList([]);
       return;
     }
-    let filteredList = [];
+    let filteredList: Record<string, unknown>[] = [];
     filteredList = Object.values(list).filter((item) => {
-      return item[keyFieldDisplay ?? keyField].toLowerCase().indexOf(input.toLowerCase()) > -1;
+      return item[keyFieldDisplay ?? keyField].toString().toLowerCase().indexOf(input.toLowerCase()) > -1;
     });
     setSuggestList(sortData(filteredList, keyFieldDisplay));
   }, [input, keyField, keyFieldDisplay, list]);
@@ -36,7 +37,7 @@ const GeographySelect = ({ title, list, keyField, keyFieldDisplay, filterType, h
   return (
     <div className="relative">
       <div className={`bg-white relative z-20 ${suggestList.length > 0 ? "rounded-b-none rounded-t-lg" : "rounded-full"}`}>
-        <div className="absolute p-[1px] pr-0 top-0 left-0 h-full flex items-center justify-start z-20">
+        <div className="absolute p-px pr-0 top-0 left-0 h-full flex items-center justify-start z-20">
           <div
             className={`text-white py-1 px-2 pl-4 h-full transition duration-300 shrink-0 flex items-center ${
               suggestList.length > 0 ? "rounded-tl-lg" : "rounded-l-full"
@@ -48,7 +49,7 @@ const GeographySelect = ({ title, list, keyField, keyFieldDisplay, filterType, h
         <input
           data-analytics="map-searchInput"
           data-cy="map-input"
-          className={`w-full bg-white appearance-none py-2 pl-12 pr-2 z-10 leading-snug relative flex-grow border-gray-300 placeholder:text-grey-300 ${
+          className={`w-full bg-white appearance-none py-2 pl-12 pr-2 z-10 leading-snug relative grow border-gray-300 placeholder:text-grey-300 ${
             suggestList.length > 0 ? "rounded-b-none rounded-t-lg" : "rounded-full"
           }`}
           type="search"

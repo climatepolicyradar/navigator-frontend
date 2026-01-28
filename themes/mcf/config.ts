@@ -100,54 +100,45 @@ const config: TThemeConfig = {
       quickSearch: "true",
     },
   ],
-  labelVariations: [
-    {
-      key: "date",
+  labelVariations: {
+    date: {
       label: "Approval FY",
       category: [],
     },
-  ],
-  links: [
-    {
-      key: "download-database",
-      url: "https://form.jotform.com/242902819253357",
-    },
-  ],
-  metadata: [
-    {
-      key: "default",
+  },
+  links: {
+    downloadDatabase: "https://form.jotform.com/242902819253357",
+  },
+  pageMetadata: {
+    default: {
       title: "Climate Project Explorer",
       description: "",
     },
-    {
-      key: "homepage",
+    homepage: {
       title: "Climate Fund Search",
       description:
         "Climate Project Explorer is a single point of entry for navigating and exploring the MCF's documents (including project documents and policies).",
     },
-    {
-      key: "geography",
+    geography: {
       title: "{text} climate projects",
       description: "Find climate projects for {text}.",
     },
-    {
-      key: "search",
+    search: {
       title: "Search the Climate Project Explorer database",
       description: "Quickly and easily search through the complete text of thousands of project documents.",
     },
-  ],
+  },
   documentCategories: ["All"],
   defaultDocumentCategory: "All",
   pageBlocks: {
-    family: [],
-    geography: [],
+    family: ["summary", "documents", "metadata", "topics", "collections", "note"],
+    geography: ["recents"],
   },
   tutorials: ["knowledgeGraph"],
   features: {
     familyConceptsSearch: false,
     knowledgeGraph: true,
     litigation: false,
-    newPageDesigns: false,
     searchFamilySummary: true,
   },
 };

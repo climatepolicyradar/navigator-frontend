@@ -1,26 +1,25 @@
-import { GetServerSideProps, InferGetStaticPropsType } from "next";
+import orderBy from "lodash/orderBy";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { FiveColumns } from "@/components/atoms/columns/FiveColumns";
-import { FourColumns } from "@/components/atoms/columns/FourColumns";
-import { Debug } from "@/components/atoms/debug/Debug";
 import { EventsBlock } from "@/components/blocks/eventsBlock/EventsBlock";
 import { FamilyBlock } from "@/components/blocks/familyBlock/FamilyBlock";
 import { MetadataBlock } from "@/components/blocks/metadataBlock/MetadataBlock";
 import { TextBlock } from "@/components/blocks/textBlock/TextBlock";
 import { BreadCrumbs } from "@/components/breadcrumbs/Breadcrumbs";
 import Layout from "@/components/layouts/Main";
-import { Section } from "@/components/molecules/section/Section";
-import { BlocksLayout } from "@/components/organisms/blocksLayout/BlocksLayout";
+import { TToggleGroupToggle } from "@/components/molecules/toggleGroup/ToggleGroup";
 import { ContentsSideBar, ISideBarItem } from "@/components/organisms/contentsSideBar/ContentsSideBar";
-import { IPageHeaderTab, PageHeader } from "@/components/organisms/pageHeader/PageHeader";
+import { PageHeader } from "@/components/organisms/pageHeader/PageHeader";
 import { withEnvConfig } from "@/context/EnvConfig";
-import { TCollectionPublicWithFamilies, TTheme, TThemeConfig } from "@/types";
-import { getCaseNumbers, getCourts } from "@/utils/eventTable";
+import { FeaturesContext } from "@/context/FeaturesContext";
+import { TCollectionPublicWithFamilies, TFeatures, TTheme, TThemeConfig } from "@/types";
+import { getCaseFirstDocumentDate, getCaseNumbers, getCourts } from "@/utils/eventTable";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isLitigationEnabled } from "@/utils/features";
+import { getFeatures } from "@/utils/features";
 import { getCollectionMetadata } from "@/utils/getCollectionMetadata";
 import { getLitigationCollectionJSONLD } from "@/utils/json-ld/getLitigationCollectionJSONLD";
 import { readConfigFile } from "@/utils/readConfigFile";
@@ -29,82 +28,83 @@ interface IProps {
   collection: TCollectionPublicWithFamilies;
   theme: TTheme;
   themeConfig: TThemeConfig;
+  features: TFeatures;
 }
 
-type TCollectionTab = "about" | "cases" | "procedural history";
-const COLLECTION_TABS: IPageHeaderTab<TCollectionTab>[] = [{ tab: "cases" }, { tab: "procedural history" }, { tab: "about" }];
+type TCollectionTabId = "about" | "cases" | "procedural history"; // Don't rename, add a label instead (else analytics break)
+const COLLECTION_TABS: TToggleGroupToggle<TCollectionTabId>[] = [{ id: "cases" }, { id: "procedural history" }, { id: "about" }];
 
-const CollectionPage: InferGetStaticPropsType<typeof getServerSideProps> = ({ collection, theme, themeConfig }: IProps) => {
-  const [currentTab, setCurrentTab] = useState<TCollectionTab>("cases");
-  const { families } = collection;
+const CollectionPage = ({ collection, theme, themeConfig, features }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const [currentTab, setCurrentTab] = useState<TCollectionTabId>("cases");
+  const onTabChange = (tab: TCollectionTabId) => setCurrentTab(tab);
 
-  // TODO sort families before displaying
+  const sortedFamilies = orderBy(collection.families, [getCaseFirstDocumentDate], ["desc"]);
 
-  const onTabChange = (tab: TCollectionTab) => setCurrentTab(tab);
-
-  const sideBarItems: ISideBarItem[] = families.map((family) => ({
-    id: `section-${family.slug}`,
+  const sideBarItems: ISideBarItem<string>[] = sortedFamilies.map((family) => ({
+    id: family.slug,
     display: family.title,
     context: [getCaseNumbers(family), getCourts(family)].filter((part) => part),
   }));
 
   return (
-    <Layout title={collection.title} description={collection.description} theme={theme} themeConfig={themeConfig} metadataKey="collection">
-      <BreadCrumbs dark label={collection.title} />
-      <PageHeader<TCollectionTab> dark title={collection.title} tabs={COLLECTION_TABS} currentTab={currentTab} onTabChange={onTabChange} />
-      <FiveColumns>
-        {currentTab === "cases" && (
-          <>
-            <ContentsSideBar items={sideBarItems} stickyClasses="cols5-3:!top-26 cols5-3:max-h-[calc(100vh-72px)]" />
-            <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols5-4:col-start-3">
-              {families.map((family) => (
-                <FamilyBlock key={family.slug} family={family} />
-              ))}
-            </main>
-          </>
-        )}
+    <Layout title={collection.title} description={collection.description} theme={theme as TTheme} themeConfig={themeConfig}>
+      <FeaturesContext.Provider value={features}>
+        <BreadCrumbs dark label={collection.title} />
+        <PageHeader<TCollectionTabId> dark title={collection.title} tabs={COLLECTION_TABS} currentTab={currentTab} onTabChange={onTabChange} />
+        <FiveColumns>
+          {currentTab === "cases" && (
+            <>
+              <ContentsSideBar items={sideBarItems} stickyClasses="cols-3:!top-26 cols-3:max-h-[calc(100vh-72px)]" />
+              <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols-4:col-start-3">
+                {sortedFamilies.map((family) => (
+                  <FamilyBlock key={family.slug} family={family} />
+                ))}
+              </main>
+            </>
+          )}
 
-        {currentTab === "procedural history" && <EventsBlock families={families} />}
+          {currentTab === "procedural history" && <EventsBlock families={sortedFamilies} />}
 
-        {currentTab === "about" && (
-          <>
-            <div className="col-start-1 cols5-4:col-end-3 -col-end-1" />
-            <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols5-4:col-start-3">
-              <TextBlock block="section-summary" title="Summary">
-                <div className="text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
-              </TextBlock>
-              <MetadataBlock block="metadata" metadata={getCollectionMetadata(collection)} />
-              {/* <Section block="debug" title="Debug">
-                <Debug data={collection} title="Collection" />
-              </Section> */}
-            </main>
-          </>
-        )}
-      </FiveColumns>
+          {currentTab === "about" && (
+            <>
+              <div className="col-start-1 cols-4:col-end-3 -col-end-1" />
+              <main className="pb-8 grid grid-cols-subgrid gap-y-8 col-start-1 -col-end-1 cols-4:col-start-3">
+                <TextBlock block="summary" title="Summary">
+                  <div className="text-content" dangerouslySetInnerHTML={{ __html: collection.description }} />
+                </TextBlock>
+                <MetadataBlock block="metadata" metadata={getCollectionMetadata(collection)} />
+                {/* <Section block="debug" title="Debug">
+                  <Debug data={collection} title="Collection" />
+                </Section> */}
+              </main>
+            </>
+          )}
+        </FiveColumns>
 
-      <Head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(getLitigationCollectionJSONLD(collection)),
-          }}
-        />
-      </Head>
+        <Head>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(getLitigationCollectionJSONLD(collection)),
+            }}
+          />
+        </Head>
+      </FeaturesContext.Provider>
     </Layout>
   );
 };
 
 export default CollectionPage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-
-  const featureFlags = getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
   const themeConfig = await readConfigFile(theme);
+  const featureFlags = getFeatureFlags(context.req.cookies);
+  const features = getFeatures(themeConfig, featureFlags);
 
-  if (!isLitigationEnabled(featureFlags, themeConfig)) {
+  if (!features.litigation) {
     return { notFound: true };
   }
 
@@ -129,6 +129,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       collection: collectionData,
       theme,
       themeConfig,
+      features,
     }),
   };
-};
+}) satisfies GetServerSideProps;

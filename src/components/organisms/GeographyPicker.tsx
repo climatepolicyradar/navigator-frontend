@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 
 import { Accordion } from "@/components/accordion/Accordion";
 import { QUERY_PARAMS } from "@/constants/queryParams";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { getCountriesFromRegions } from "@/helpers/getCountriesFromRegions";
 import useGeographySubdivisions from "@/hooks/useGeographySubdivisions";
 import useSubdivisions from "@/hooks/useSubdivisions";
@@ -11,7 +12,7 @@ import { InputListContainer } from "../filters/InputListContainer";
 import { InputCheck } from "../forms/Checkbox";
 import { TextInput } from "../forms/TextInput";
 
-interface IProps {
+export interface IProps {
   regions: TGeography[];
   handleRegionChange: (s: string) => void;
   handleFilterChange: (t: string, v: string) => void;
@@ -19,7 +20,6 @@ interface IProps {
   countries: TGeography[];
   regionFilterLabel: string;
   countryFilterLabel: string;
-  litigationEnabled: boolean;
 }
 
 export const GeographyPicker = ({
@@ -30,8 +30,8 @@ export const GeographyPicker = ({
   countries,
   regionFilterLabel,
   countryFilterLabel,
-  litigationEnabled,
 }: IProps) => {
+  const features = useContext(FeaturesContext);
   const [countryQuickSearch, setCountryQuickSearch] = useState("");
   const [subdivisionQuickSearch, setSubdivisionQuickSearch] = useState("");
   const {
@@ -68,7 +68,7 @@ export const GeographyPicker = ({
   let subdivisions: TGeographyWithDocumentCounts[] = [];
   let alphabetisedFilteredSubdivisions: (TGeographySubdivision | TGeographyWithDocumentCounts)[] = [];
 
-  if (litigationEnabled) {
+  if (features.litigation) {
     countrySubdivisions = countrySubdivisionsData;
     subdivisions = subdivisionsData;
 

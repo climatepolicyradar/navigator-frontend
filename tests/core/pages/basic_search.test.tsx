@@ -2,8 +2,8 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import router from "next-router-mock";
 
+import { DEFAULT_FEATURES } from "@/constants/features";
 import cprConfig from "@/cpr/config";
-import { mockFeatureFlagsWithoutConcepts } from "@/mocks/featureFlags";
 import { resetPage } from "@/mocks/helpers";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import Search from "@/pages/search";
@@ -12,33 +12,35 @@ afterEach(() => {
   resetPage();
 });
 
-const baseSearchProps = {
+const baseSearchProps: any = {
+  conceptsData: null,
+  // TODO: fix 'any' type
   envConfig: {
     BACKEND_API_URL: process.env.BACKEND_API_URL,
     CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
   },
+  familyConceptsData: null,
+  features: DEFAULT_FEATURES,
   theme: "cpr",
   themeConfig: {
     ...cprConfig,
     features: { knowledgeGraph: false, searchFamilySummary: false },
   },
-  featureFlags: mockFeatureFlagsWithoutConcepts,
-  conceptsData: null,
-  familyConceptsData: null,
+  topicsData: { rootTopics: [], topics: [] },
 };
 
 describe("SearchPage", async () => {
   it("shows search onboarding info when no filters applied", async () => {
     const search_props = { ...baseSearchProps };
     // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    renderWithAppContext(Search, { pageProps: search_props });
 
     // Wait for the component to render
     await waitFor(() => {
       expect(screen.getByText("Get better results")).toBeInTheDocument();
     });
 
-    expect(screen.getByText(/You are currently viewing all of the documents in our database/)).toBeInTheDocument();
+    expect(await screen.findByText(/You are currently viewing all of the documents in our database/)).toBeInTheDocument();
     expect(screen.queryByText(/Topics filter/)).not.toBeInTheDocument();
   });
 
@@ -46,7 +48,7 @@ describe("SearchPage", async () => {
     const search_props = { ...baseSearchProps, searchParams: { q: "climate policy" } };
     router.query = { q: "climate policy" };
     // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    renderWithAppContext(Search, { pageProps: search_props });
 
     expect(screen.queryByText(/Get better results/)).not.toBeInTheDocument();
     expect(screen.queryByText(/You are currently viewing all of the documents in our database/)).not.toBeInTheDocument();
@@ -55,7 +57,12 @@ describe("SearchPage", async () => {
   it("handles search settings dropdown", async () => {
     const search_props = { ...baseSearchProps };
     // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    renderWithAppContext(Search, { pageProps: search_props });
+
+    // Wait for the results to render
+    await waitFor(() => {
+      expect(screen.getByText("Results:")).toBeInTheDocument();
+    });
 
     const buttons = await screen.findAllByTestId("search-options");
     const searchOptionsButton = buttons[0]; // First button is the search options
@@ -73,7 +80,12 @@ describe("SearchPage", async () => {
   it("handles sort settings dropdown", async () => {
     const search_props = { ...baseSearchProps };
     // @ts-ignore
-    renderWithAppContext(Search, search_props);
+    renderWithAppContext(Search, { pageProps: search_props });
+
+    // Wait for the results to render
+    await waitFor(() => {
+      expect(screen.getByText("Results:")).toBeInTheDocument();
+    });
 
     const sortOptionsButtons = await screen.findAllByTestId("search-options");
     const sortOptionsButton = sortOptionsButtons[1]; // Second button is the sort options
@@ -90,9 +102,7 @@ describe("SearchPage", async () => {
 
   it("filters search results by region", async () => {
     // @ts-ignore
-    renderWithAppContext(Search, baseSearchProps);
-
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+    renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     // Verify slideout is initially closed.
     expect(screen.queryByText("Region")).not.toBeInTheDocument();
@@ -120,9 +130,7 @@ describe("SearchPage", async () => {
 
   it("filters search results by country", async () => {
     // @ts-ignore
-    renderWithAppContext(Search, baseSearchProps);
-
-    expect(await screen.findByRole("heading", { level: 2, name: "Search results" })).toBeInTheDocument();
+    renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     // Verify slideout is initially closed.
     expect(screen.queryByText("Published jurisdiction")).not.toBeInTheDocument();

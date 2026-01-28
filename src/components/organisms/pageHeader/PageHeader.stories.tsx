@@ -1,7 +1,7 @@
-import { Meta, StoryObj } from "@storybook/nextjs";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
 
-import { IPageHeaderTabsProps, PageHeader } from "./PageHeader";
+import { PageHeader } from "./PageHeader";
 
 const meta = {
   title: "Organisms/PageHeader",
@@ -36,18 +36,16 @@ export const FamilyPage: TStory = {
 
 type TCollectionTab = "about" | "cases" | "events";
 
-const useTabsRender = ({ ...props }: IPageHeaderTabsProps<TCollectionTab>) => {
-  const [currentTab, setCurrentTab] = useState<TCollectionTab>("cases");
-  const handleChange = (newTab: TCollectionTab) => setCurrentTab(newTab);
-
-  return <PageHeader<TCollectionTab> currentTab={currentTab} onTabChange={handleChange} {...props} />;
-};
-
 export const CollectionPage: TStory<TCollectionTab> = {
   args: {
     dark: true,
     title: "Climate United Fund v. Citibank, N.A.",
-    tabs: [{ tab: "cases" }, { tab: "events" }, { tab: "about" }],
+    tabs: [{ id: "cases" }, { id: "events" }, { id: "about" }],
   },
-  render: useTabsRender,
+  render: ({ dark, title, tabs }: React.ComponentProps<typeof PageHeader<TCollectionTab>>) => {
+    const [currentTab, setCurrentTab] = useState<TCollectionTab>("cases");
+    const handleChange = (newTab: TCollectionTab) => setCurrentTab(newTab);
+
+    return <PageHeader<TCollectionTab> title={title} dark={dark} tabs={tabs} currentTab={currentTab} onTabChange={handleChange} />;
+  },
 };

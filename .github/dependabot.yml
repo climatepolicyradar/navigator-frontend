@@ -3,10 +3,11 @@ updates:
   - package-ecosystem: npm
     directory: /
     schedule:
-      interval: monthly
+      interval: weekly
     groups:
       # Major updates will be raised as separate PRs by default
       minor-and-patch:
+        applies-to: version-updates
         patterns:
           - "*"
         update-types:
@@ -16,7 +17,7 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: monthly
+      interval: weekly
     groups:
       all:
         applies-to: version-updates

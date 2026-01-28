@@ -6,7 +6,7 @@ import { useEffect, useState, useContext } from "react";
 import Loader from "@/components/Loader";
 import { Accordion } from "@/components/accordion/Accordion";
 import { Heading } from "@/components/accordion/Heading";
-import { Badge } from "@/components/atoms/label/Badge";
+import { Badge } from "@/components/atoms/badge/Badge";
 import { AppliedFilters } from "@/components/filters/AppliedFilters";
 import { DateRange } from "@/components/filters/DateRange";
 import { FilterOptions } from "@/components/filters/FilterOptions";
@@ -16,11 +16,11 @@ import { Info } from "@/components/molecules/info/Info";
 import { SLIDE_OUT_DATA_KEY } from "@/constants/dataAttributes";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { currentYear, minYear } from "@/constants/timedate";
+import { FeaturesContext } from "@/context/FeaturesContext";
 import { SlideOutContext } from "@/context/SlideOutContext";
 import useGetThemeConfig from "@/hooks/useThemeConfig";
-import { TConcept, TCorpusTypeDictionary, TFeatureFlags, TSearchCriteria, TThemeConfigOption } from "@/types";
+import { TTopic, TCorpusTypeDictionary, TSearchCriteria, TThemeConfigOption } from "@/types";
 import { canDisplayFilter } from "@/utils/canDisplayFilter";
-import { isKnowledgeGraphEnabled, isRioPolicyRadarEnabled } from "@/utils/features";
 import { getFilterLabel } from "@/utils/getFilterLabel";
 
 const isCategoryChecked = (selectedCategory: string | undefined, themeConfigCategory: TThemeConfigOption<any>) => {
@@ -39,13 +39,12 @@ interface IProps {
   searchCriteria: TSearchCriteria;
   query: ParsedUrlQuery;
   corpus_types: TCorpusTypeDictionary;
-  conceptsData?: TConcept[];
-  familyConceptsData?: TConcept[];
+  conceptsData?: TTopic[];
+  familyConceptsData?: TTopic[];
   handleFilterChange(type: string, value: string, clearOthersOfType?: boolean, otherValuesToClear?: string[]): void;
   handleYearChange(values: string[], reset?: boolean): void;
   handleClearSearch(): void;
   handleDocumentCategoryClick(value: string): void;
-  featureFlags: TFeatureFlags;
 }
 
 const SearchFilters = ({
@@ -58,11 +57,11 @@ const SearchFilters = ({
   handleYearChange,
   handleClearSearch,
   handleDocumentCategoryClick,
-  featureFlags,
 }: IProps) => {
   const { status: themeConfigStatus, themeConfig } = useGetThemeConfig();
   const [showClear, setShowClear] = useState(false);
   const { currentSlideOut, setCurrentSlideOut } = useContext(SlideOutContext);
+  const features = useContext(FeaturesContext);
 
   const thisYear = currentYear();
 
@@ -101,9 +100,6 @@ const SearchFilters = ({
         <Accordion title={themeConfig.categories.label} data-cy="categories" key={themeConfig.categories.label} startOpen>
           <InputListContainer>
             {themeConfig.categories?.options?.map((option) => {
-              // TODO delete once Rio corpora released
-              if (option.label === (isRioPolicyRadarEnabled(featureFlags) ? "UNFCCC Submissions" : "UN Submissions")) return null;
-
               return (
                 <InputRadio
                   key={option.slug}
@@ -198,8 +194,7 @@ const SearchFilters = ({
       {themeConfigStatus === "success" &&
         themeConfig.filters.map((filter) => {
           // If the filter is not in the selected category, don't display it
-          if (!canDisplayFilter(filter, query, themeConfig)) return;
-          if (filter.taxonomyKey === "convention" && !isRioPolicyRadarEnabled(featureFlags)) return null;
+          if (!canDisplayFilter(filter, query, themeConfig)) return null;
 
           return (
             <Accordion
@@ -210,7 +205,7 @@ const SearchFilters = ({
               showFade={filter.showFade}
             >
               <InputListContainer>
-                {filter.showTopicsMessage && isKnowledgeGraphEnabled(featureFlags, themeConfig) && (
+                {filter.showTopicsMessage && features.knowledgeGraph && (
                   <p className="opacity-80 mb-2">
                     Our new topic filter automatically identifies {filter.label.toLowerCase()} in the text of documents.{" "}
                     <a

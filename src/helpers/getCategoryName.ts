@@ -1,7 +1,7 @@
 import { TCategory, TCorpusTypeSubCategory } from "@/types";
 
 const corporaIdCategories = {
-  "UN.corpus.UNCBD.n0000": "UNCBD submission",
+  "UN.corpus.UNCBD.n0000": "CBD submission",
   "UN.corpus.UNCCD.n0000": "UNCCD submission",
   "UNFCCC.corpus.i00000001.n0000": "UNFCCC submission",
 };
@@ -41,7 +41,7 @@ const categories: Record<TCategory, string> = {
   REPORTS: "Report",
 };
 
-const getReportsCategory = (source: string): string => {
+const getReportsCategory = (source: keyof typeof reportSubCategories): string => {
   return reportSubCategories[source] || "Reports";
 };
 
@@ -53,13 +53,13 @@ export const getCategoryName = (category: TCategory, subCategory?: TCorpusTypeSu
   const name = categories[category as TCategory];
 
   if (category === "Reports" && source) {
-    return getReportsCategory(source);
+    return getReportsCategory(source as keyof typeof reportSubCategories);
   }
   if (category === "MCF" && subCategory) {
     return getSubCategoryName(subCategory);
   }
   if (corpusId) {
-    return corporaIdCategories[corpusId] ?? name;
+    return corporaIdCategories[corpusId as keyof typeof corporaIdCategories] ?? name;
   }
   return name;
 };

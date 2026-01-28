@@ -3,55 +3,48 @@ import { TThemeConfig } from "@/types";
 const config: TThemeConfig = {
   defaultCorpora: ["Academic.corpus.Litigation.n0000"],
   filters: [],
-  labelVariations: [
-    {
-      key: "date",
+  labelVariations: {
+    date: {
       label: "Filing year",
       category: [],
     },
-  ],
-  links: [
-    {
-      key: "download-database",
-      url: "https://form.jotform.com/252292116187356",
-    },
-  ],
-  metadata: [
-    {
-      // default - used for app title (i.e. on each page after the title)
-      key: "default",
+  },
+  links: {
+    downloadDatabase: "https://form.jotform.com/252292116187356",
+    cookiePolicy: "/cookie-policy",
+    privacyPolicy: "/privacy-policy",
+    targetDomain: "https://app.climatepolicyradar.org",
+  },
+  pageMetadata: {
+    default: {
       title: "The Climate Litigation Database",
       description: "",
     },
-    {
-      key: "homepage",
+    homepage: {
       title: "The Climate Litigation Database",
       description:
         "Sabin Center for Climate Change Law provides Climate Litigation Database, a comprehensive database of US and Global climate change caselaw",
     },
-    {
-      key: "geography",
+    geography: {
       title: "{text} litigation",
       description: "Find climate change litigation data and indicators for {text}.",
     },
-    {
-      key: "search",
+    search: {
       title: "Search the Climate Litigation Database",
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
-  ],
+  },
   documentCategories: ["All"],
   defaultDocumentCategory: "All",
   pageBlocks: {
-    family: ["metadata", "documents", "summary"],
+    family: ["metadata", "documents", "summary", "topics"],
     geography: ["recents", "subdivisions"],
   },
-  tutorials: ["climateLitigationDatabase"],
+  tutorials: ["climateLitigationDatabase", "knowledgeGraph"],
   features: {
     familyConceptsSearch: true,
-    knowledgeGraph: false,
+    knowledgeGraph: true,
     litigation: true,
-    newPageDesigns: true,
     searchFamilySummary: true,
   },
 };

@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/nextjs";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { LucideInfo } from "lucide-react";
 
 import { Tooltip } from "./Tooltip";
@@ -56,7 +56,7 @@ export const Complex: TStory = {
         </p>
       </div>
     ),
-    popupClasses: "w-[350px] px-3 py-3 !text-sm text-wrap leading-normal font-normal",
+    popupClasses: "w-[350px] p-3 !text-sm text-wrap leading-normal font-normal",
     side: "bottom",
   },
   argTypes: {

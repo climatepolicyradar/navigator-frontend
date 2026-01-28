@@ -2,17 +2,18 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import cccConfig from "@/ccc/config";
-import { createFeatureFlags } from "@/mocks/featureFlags";
+import { DEFAULT_FEATURES } from "@/constants/features";
 import { resetPage } from "@/mocks/helpers";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import { setUpFamiliesRepo } from "@/mocks/repository";
 import Search from "@/pages/search";
+import { TTopic, TFamily } from "@/types";
 
 afterEach(() => {
   resetPage();
 });
 
-const basicLegalConcepts = [
+const basicLegalConcepts: TTopic[] = [
   {
     wikibase_id: "category/Parent Test Case Category",
     preferred_label: "Parent Test Case Category",
@@ -99,25 +100,26 @@ const basicLegalConcepts = [
   },
 ];
 
-const baseSearchProps = {
+const baseSearchProps: any = {
+  conceptsData: null,
   envConfig: {
     BACKEND_API_URL: process.env.BACKEND_API_URL,
     CONCEPTS_API_URL: process.env.CONCEPTS_API_URL,
   },
+  familyConceptsData: basicLegalConcepts,
+  features: {
+    ...DEFAULT_FEATURES,
+    litigation: true,
+  },
   theme: "ccc",
   themeConfig: cccConfig,
-  featureFlags: createFeatureFlags({
-    "concepts-v1": false,
-    litigation: true,
-  }),
-  conceptsData: null,
-  familyConceptsData: basicLegalConcepts,
+  topicsData: { rootTopics: [], topics: [] },
 };
 
 describe("SearchPage", async () => {
   it("filters search results by subdivision", async () => {
     // @ts-ignore
-    renderWithAppContext(Search, baseSearchProps);
+    renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     await screen.findByRole("heading", { level: 2, name: "Search results" });
 
@@ -147,7 +149,7 @@ describe("SearchPage", async () => {
 
   it("removes country and subdivision filters when a region filter is removed ", async () => {
     // @ts-ignore
-    renderWithAppContext(Search, baseSearchProps);
+    renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     await screen.findByRole("heading", { level: 2, name: "Search results" });
 
@@ -185,7 +187,7 @@ describe("SearchPage", async () => {
 
   it("removes subdivision filters when a country filter is removed", async () => {
     // @ts-ignore
-    renderWithAppContext(Search, baseSearchProps);
+    renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     await screen.findByRole("heading", { level: 2, name: "Search results" });
 
@@ -219,8 +221,10 @@ describe("SearchPage", async () => {
   it("filters search results by case category", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
-      ...baseSearchProps,
-      familyConceptsData: basicLegalConcepts,
+      pageProps: {
+        ...baseSearchProps,
+        familyConceptsData: basicLegalConcepts,
+      },
     });
 
     await screen.findByRole("heading", { level: 2, name: "Search results" });
@@ -248,11 +252,13 @@ describe("SearchPage", async () => {
   it("removing a case category filter updates search results", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
-      ...baseSearchProps,
-      familyConceptsData: basicLegalConcepts,
+      pageProps: {
+        ...baseSearchProps,
+        familyConceptsData: basicLegalConcepts,
+      },
     });
 
-    const familyWithCategory1 = {
+    const familyWithCategory1: TFamily = {
       family_slug: "family-with-test-case-category-1-ca23",
       family_name: "Family With Test Case Category 1",
       family_description: "<p>Family With Test Case Category 1</p>",
@@ -276,7 +282,7 @@ describe("SearchPage", async () => {
       family_documents: [],
     };
 
-    const familyWithCategory2 = {
+    const familyWithCategory2: TFamily = {
       family_slug: "family-with-test-case-category-2-ca23",
       family_name: "Family With Test Case Category 2",
       family_description: "<p>Family With Test Case Category 2</p>",
@@ -329,11 +335,13 @@ describe("SearchPage", async () => {
   it("removing a principal law filter updates search results", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
-      ...baseSearchProps,
-      familyConceptsData: basicLegalConcepts,
+      pageProps: {
+        ...baseSearchProps,
+        familyConceptsData: basicLegalConcepts,
+      },
     });
 
-    const familyWithPrincipalLaw1 = {
+    const familyWithPrincipalLaw1: TFamily = {
       family_slug: "family-with-test-principal-law-1-ca23",
       family_name: "Family With Test Principal Law 1",
       family_description: "<p>Family With Test Principal Law 1</p>",
@@ -356,7 +364,7 @@ describe("SearchPage", async () => {
       family_documents: [],
     };
 
-    const familyWithCategory2 = {
+    const familyWithCategory2: TFamily = {
       family_slug: "family-with-test-principal-law-2-ca23",
       family_name: "Family With Test Principal Law 2",
       family_description: "<p>Family With Test Principal Law 2</p>",
@@ -403,11 +411,13 @@ describe("SearchPage", async () => {
   it("removing a jurisdiction filter updates search results", async () => {
     // @ts-ignore
     renderWithAppContext(Search, {
-      ...baseSearchProps,
-      familyConceptsData: basicLegalConcepts,
+      pageProps: {
+        ...baseSearchProps,
+        familyConceptsData: basicLegalConcepts,
+      },
     });
 
-    const familyWithJurisdiction1 = {
+    const familyWithJurisdiction1: TFamily = {
       family_slug: "family-with-test-jurisdiction-1-ca23",
       family_name: "Family With Test Jurisdiction 1",
       family_description: "<p>Family With Test Jurisdiction 1</p>",
@@ -430,7 +440,7 @@ describe("SearchPage", async () => {
       family_documents: [],
     };
 
-    const familyWithJurisdiction2 = {
+    const familyWithJurisdiction2: TFamily = {
       family_slug: "family-with-test-principal-law-2-ca23",
       family_name: "Family With Test Jurisdiction 2",
       family_description: "<p>Family With Test Jurisdiction 2</p>",

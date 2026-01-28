@@ -2,16 +2,16 @@ import { LucideMenu } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import MainMenu from "@/components/molecules/mainMenu/MainMenu";
 import { NavBar } from "@/components/organisms/navBar/NavBar";
 import { MENU_LINKS } from "@/cpr/constants/menuLinks";
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 export const CPRLogo = (
-  <LinkWithQuery href="/">
+  <PageLink href="/" data-cy="cpr-logo">
     <Image src="/images/cpr-logo-horizontal-new.svg" width={228} height={35} alt="Climate Policy Radar logo" data-cy="cpr-logo" />
-  </LinkWithQuery>
+  </PageLink>
 );
 
 export const CPRMenuButton = (

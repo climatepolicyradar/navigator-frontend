@@ -11,7 +11,9 @@ import Hero from "@/mcf/components/Hero";
 import { TTheme, TThemeConfig } from "@/types";
 
 interface IProps {
+  exactMatch: boolean;
   handleSearchInput: (term: string, filter?: string, filterValue?: string) => void;
+  handleSearchChange: (type: string, value: any) => void;
   searchInput: string;
   theme: TTheme;
   themeConfig: TThemeConfig;

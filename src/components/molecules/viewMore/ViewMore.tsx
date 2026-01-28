@@ -1,9 +1,11 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ChangeEvent, MouseEventHandler, ReactNode, useEffect, useRef, useState } from "react";
 
 import { joinTailwindClasses } from "@/utils/tailwind";
 
 interface IViewMoreGenericProps {
   buttonText?: [string, string];
+  containerClasses?: string;
+  debug?: boolean;
   onButtonClick?: () => void;
 }
 
@@ -23,7 +25,15 @@ interface IViewMoreContentProps extends IViewMoreGenericProps {
 
 export type TProps = IViewMoreTextProps | IViewMoreContentProps;
 
-export const ViewMore = ({ children, buttonText = ["View more", "View less"], onButtonClick, maxLines, maxHeight = 150 }: TProps) => {
+export const ViewMore = ({
+  buttonText = ["View more", "View less"],
+  children,
+  containerClasses = "",
+  debug = false,
+  maxHeight = 150,
+  maxLines,
+  onButtonClick,
+}: TProps) => {
   const contentRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -41,18 +51,26 @@ export const ViewMore = ({ children, buttonText = ["View more", "View less"], on
     };
   }, [contentRef, children, maxLines, maxHeight]);
 
-  const onViewMore = () => {
-    onButtonClick ? onButtonClick() : setIsOpen((isOpenCurrent) => !isOpenCurrent);
+  const onViewMore: MouseEventHandler<HTMLButtonElement> = (event) => {
+    if (onButtonClick) return onButtonClick();
+
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+    setIsOpen((isOpenCurrent) => !isOpenCurrent);
   };
 
-  const contentClasses = joinTailwindClasses(!isOpen && "overflow-hidden", !isOpen && isText && "line-clamp-4");
+  const contentClasses = joinTailwindClasses(
+    !isOpen && "overflow-hidden",
+    !isOpen && isText && "line-clamp-4",
+    debug && (isText ? "bg-cyan-100" : "bg-amber-100")
+  );
   const contentStyles = {
     WebkitLineClamp: !isOpen && isText ? maxLines : undefined,
     maxHeight: !isOpen && !isText ? maxHeight : undefined,
   };
 
   return (
-    <div>
+    <div className={containerClasses}>
       <div ref={contentRef} className={contentClasses} style={contentStyles}>
         {children}
       </div>
@@ -61,6 +79,8 @@ export const ViewMore = ({ children, buttonText = ["View more", "View less"], on
           type="button"
           onClick={onViewMore}
           className="p-2 mt-3 hover:bg-gray-50 active:bg-gray-100 border border-gray-300 rounded-md text-sm text-gray-700 leading-4 font-medium"
+          data-ph-capture-attribute-button-purpose="view-more"
+          data-ph-capture-attribute-view-more-intent={onButtonClick || !isOpen ? "more" : "less"}
         >
           {isOpen ? buttonText[1] : buttonText[0]}
         </button>

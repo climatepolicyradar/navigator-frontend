@@ -1,13 +1,18 @@
+import { TQueryParams } from "@/constants/queryParams";
+
 import { TConfigFeatures } from "./features";
 import { TTutorialName } from "./tutorial";
+
+type TPartialRecord<Key extends string, Value> = Partial<Record<Key, Value>>;
 
 /* Blocks */
 
 // All of the possible block names used in TThemeConfig.pageBlocks to specify which blocks to render on each page
 // Adding a new block to a page? Add a new string to the page's type here, then add the new key to the TBlockDefinitions declaration on the page
-export type TFamilyPageBlock = "debug" | "documents" | "metadata" | "summary";
-export type TGeographyPageBlock = "debug" | "legislative-process" | "recents" | "statistics" | "subdivisions" | "targets";
-export type TBlock = TFamilyPageBlock | TGeographyPageBlock;
+export type TFamilyPageBlock = "collections" | "debug" | "documents" | "metadata" | "note" | "summary" | "topics" | "targets";
+type TCollectionPageBlock = "events";
+export type TGeographyPageBlock = "debug" | "intro" | "legislativeProcess" | "recents" | "statistics" | "subdivisions" | "targets";
+export type TBlock = TFamilyPageBlock | TCollectionPageBlock | TGeographyPageBlock;
 
 type TThemePageBlocks = {
   family: TFamilyPageBlock[];
@@ -18,10 +23,10 @@ type TThemePageBlocks = {
 
 export type TDocumentCategory = "All" | "UN Submissions" | "Laws" | "Policies" | "Litigation" | "Climate Finance Projects" | "Offshore Wind Reports";
 
-export type TLabelVariation = {
+export type TLabelVariationKey = "country" | "date" | "region";
+type TLabelVariation = {
   category: string[];
   label: string;
-  key: string;
 };
 
 export type TThemeConfigOption<Value> = {
@@ -44,7 +49,7 @@ type TThemeConfigCategory = {
 
 interface IThemeConfigFilterType {
   label: string;
-  taxonomyKey: string;
+  taxonomyKey: TQueryParams;
   apiMetaDataKey?: string;
   type: string;
   category: string[];
@@ -69,13 +74,11 @@ interface IThemeConfigFilterFilterRadio extends IThemeConfigFilterType {
 
 export type TThemeConfigFilter = IThemeConfigFilterCheckbox | IThemeConfigFilterFilterRadio;
 
-type TThemeLink = {
-  key: string;
-  url: string;
-};
+type TThemeLinkKey = "cookiePolicy" | "downloadDatabase" | "emailAlerts" | "privacyPolicy" | "targetDomain";
 
-type TThemeMetadata = {
-  key: string;
+// default - used for app title (i.e. on each page after the title)
+export type TThemePageMetadataKey = "default" | "geography" | "homepage" | "search";
+type TThemePageMetadata = {
   title: string;
   description: string;
 };
@@ -84,9 +87,9 @@ export type TThemeConfig = {
   defaultCorpora?: string[];
   categories?: TThemeConfigCategory;
   filters: TThemeConfigFilter[];
-  labelVariations: TLabelVariation[];
-  links: TThemeLink[];
-  metadata: TThemeMetadata[];
+  labelVariations: TPartialRecord<TLabelVariationKey, TLabelVariation>;
+  links: TPartialRecord<TThemeLinkKey, string>;
+  pageMetadata: Record<TThemePageMetadataKey, TThemePageMetadata>;
   documentCategories: TDocumentCategory[];
   defaultDocumentCategory: TDocumentCategory;
   pageBlocks: TThemePageBlocks;

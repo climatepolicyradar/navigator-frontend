@@ -6,7 +6,7 @@ export function transformVespaMetadataToFamilyMetadata(vespaMetadata: TVespaMeta
      * VespaMetadata is prefixed with `family.` or `document.`
      * TODO: validate if we want to keep these prefixes. For now we remove them for the smallest refactor.
      */
-    const key = curr.name.replace("family.", "").replace("document.", "");
+    const key: keyof TFamilyMetadata = curr.name.replace("family.", "").replace("document.", "") as keyof TFamilyMetadata;
     if (acc[key]) {
       acc[key] = [...acc[key], curr.value];
     } else {

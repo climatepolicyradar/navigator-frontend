@@ -1,4 +1,6 @@
-import { Meta, StoryObj } from "@storybook/nextjs";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
+
+import { GeographyV2 } from "@/types";
 
 import { SubDivisionBlock } from "./SubDivisionBlock";
 
@@ -12,7 +14,7 @@ type TStory = StoryObj<typeof SubDivisionBlock>;
 
 export default meta;
 
-const unitedStates = {
+const unitedStates: GeographyV2 = {
   id: "1",
   name: "United States",
   type: "country" as const,
@@ -20,6 +22,7 @@ const unitedStates = {
   has_subconcept: [],
   subconcept_of: [],
 };
+
 export const Default: TStory = {
   args: {
     subdivisions: [

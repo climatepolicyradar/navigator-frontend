@@ -1,38 +1,42 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
 import { Popover } from "@/components/atoms/popover/Popover";
-import { TConcept } from "@/types";
+import { TTopic } from "@/types";
 import { getConceptStoreLink } from "@/utils/getConceptStoreLink";
 import { joinTailwindClasses } from "@/utils/tailwind";
 import { firstCase } from "@/utils/text";
 
 interface IProps {
-  concept: TConcept;
-  onClick?: (concept: TConcept) => void;
+  concept: TTopic;
+  label?: ReactNode;
+  children?: React.ReactNode;
+  onClick?: (concept: TTopic) => void;
   triggerClasses?: string;
 }
 
-export const ConceptLink = ({ concept, onClick, triggerClasses = "" }: IProps) => {
+export const ConceptLink = ({ concept, label, onClick, triggerClasses = "", children }: IProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const allTriggerClasses = joinTailwindClasses(
-    "inline capitalize underline underline-offset-2 decoration-dotted",
-    isOpen ? "decoration-text-primary" : "decoration-text-quaternary",
-    onClick ? "" : "cursor-help",
+    "inline underline underline-offset-4",
+    isOpen ? "decoration-gray-500" : "decoration-gray-300 hover:decoration-gray-500",
+    onClick ? "" : "!cursor-help",
     triggerClasses
   );
 
   const title = firstCase(concept.preferred_label);
 
-  const trigger = onClick ? (
-    <button className={allTriggerClasses} onClick={() => onClick(concept)}>
-      {title}
+  const trigger = (
+    <button className={allTriggerClasses} onClick={() => (onClick ? onClick(concept) : null)}>
+      {label ?? title}
     </button>
-  ) : (
-    <span className={allTriggerClasses}>{title}</span>
   );
 
-  return (
+  return children ? (
+    <Popover openOnHover onOpenChange={setIsOpen} trigger={trigger}>
+      {children}
+    </Popover>
+  ) : (
     <Popover
       openOnHover
       onOpenChange={setIsOpen}

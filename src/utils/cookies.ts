@@ -40,13 +40,3 @@ export function setCookie(cname: string, cvalue: string, domain: string) {
 export function deleteCookie(cname: string, domain: string) {
   document.cookie = `${cname}=; domain=${domain}; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
 }
-
-export function deleteCookies() {
-  const ca = document.cookie.split(";");
-  for (let index = 0; index < ca.length; index++) {
-    const cookie = ca[index];
-    const eqPos = cookie.indexOf("=");
-    const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-    document.cookie = name + "=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-  }
-}

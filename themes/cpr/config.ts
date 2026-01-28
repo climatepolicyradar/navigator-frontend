@@ -24,14 +24,10 @@ const config: TThemeConfig = {
           "MCF.corpus.GEF.n0000",
           "OEP.corpus.i00000001.n0000",
           "UNFCCC.corpus.i00000001.n0000",
+          "UN.corpus.UNCBD.n0000",
+          "UN.corpus.UNCCD.n0000",
           "CPR.corpus.i00000002.n0000",
         ],
-      },
-      {
-        label: "UNFCCC Submissions",
-        slug: "UNFCCC",
-        value: ["UNFCCC.corpus.i00000001.n0000"],
-        category: ["UNFCCC"],
       },
       {
         label: "UN Submissions",
@@ -105,8 +101,8 @@ const config: TThemeConfig = {
       type: "checkbox",
       options: [
         {
-          label: "UNCBD",
-          slug: "uncbd",
+          label: "CBD",
+          slug: "cbd",
           value: ["UN.corpus.UNCBD.n0000"],
         },
         {
@@ -308,13 +304,19 @@ const config: TThemeConfig = {
           label: "National Biodiversity Strategy and Action Plan (NBSAP)",
           slug: "National Biodiversity Strategy and Action Plan (NBSAP)",
           value: "National Biodiversity Strategy and Action Plan (NBSAP)",
-          group: "UNCBD",
+          group: "CBD",
         },
         {
           label: "National Report (NR)",
           slug: "National Report (NR)",
           value: "National Report (NR)",
-          group: "UNCBD",
+          group: "CBD",
+        },
+        {
+          label: "National Targets (NT)",
+          slug: "National Target (NT)",
+          value: "National Target (NT)",
+          group: "CBD",
         },
         {
           label: "Voluntary Land Degradation Neutrality Targets (LDN-T)",
@@ -391,56 +393,46 @@ const config: TThemeConfig = {
       ],
     },
   ],
-  labelVariations: [
-    {
-      key: "date",
+  labelVariations: {
+    date: {
       label: "First published",
       category: ["MCF.corpus.GCF.n0000", "MCF.corpus.GEF.n0000", "MCF.corpus.AF.n0000", "MCF.corpus.CIF.n0000"],
     },
-  ],
-  links: [
-    {
-      key: "download-database",
-      url: "https://form.jotform.com/250202141318339",
-    },
-  ],
-  metadata: [
-    {
-      // default - used for app title (i.e. on each page after the title)
-      key: "default",
+  },
+  links: {
+    downloadDatabase: "https://form.jotform.com/250202141318339",
+  },
+  pageMetadata: {
+    default: {
       title: "Climate Policy Radar",
       description: "",
     },
-    {
-      key: "homepage",
+    homepage: {
       title: "Law and Policy Search",
       description:
         "Use Climate Policy Radar's data science and AI-powered platform to search and explore thousands of climate change laws, policies and legal cases worldwide.",
     },
-    {
-      key: "geography",
+    geography: {
       title: "{text} climate laws, policies and reports",
       description:
         "Find climate change laws, policies, targets and other climate policy data and indicators for {text}, alongside information about their legislative process.",
     },
-    {
-      key: "search",
+    search: {
       title: "Search the Climate Policy Radar database",
       description: "Quickly and easily search through the complete text of thousands of climate change law and policy documents from every country.",
     },
-  ],
+  },
   documentCategories: ["All", "UN Submissions", "Laws", "Policies", "Climate Finance Projects", "Offshore Wind Reports", "Litigation"],
   defaultDocumentCategory: "Laws",
   pageBlocks: {
-    family: ["summary", "metadata"],
-    geography: [],
+    family: ["documents", "summary", "metadata", "topics", "collections", "targets", "note"],
+    geography: ["recents", "intro", "targets", "statistics", "legislativeProcess"],
   },
   tutorials: ["knowledgeGraph"],
   features: {
     familyConceptsSearch: false,
     knowledgeGraph: true,
     litigation: false,
-    newPageDesigns: false,
     searchFamilySummary: false,
   },
 };

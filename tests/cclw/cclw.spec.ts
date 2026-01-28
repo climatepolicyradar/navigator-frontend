@@ -29,7 +29,7 @@ test.describe("CCLW Hero Search", () => {
     await page.waitForLoadState("networkidle");
 
     // Verify we're on the CCLW homepage by checking the intro message
-    await expect(page.getByText("Search over 5000 climate laws and policies worldwide")).toBeVisible();
+    await expect(page.getByText("Search over 7000 climate laws, policies and UNFCCC submissions")).toBeVisible();
 
     // Verify we're on the CCLW homepage by checking the hero section
     await expect(page.getByRole("heading", { name: "Climate Change Laws of the World" })).toBeVisible();
@@ -59,7 +59,7 @@ test.describe("CCLW Hero Search", () => {
     // Should not crash - should redirect to /search
     await expect(page).not.toHaveURL(/e=true/);
     await expect(page).toHaveURL(/search/);
-    await expect(page.getByText("Search over 5000 climate laws and policies worldwide")).not.toBeVisible();
+    await expect(page.getByText("Search over 7000 climate laws, policies and UNFCCC submissions")).not.toBeVisible();
   });
 
   test("should perform search with user input via search button", async ({ page }) => {
@@ -158,7 +158,7 @@ test.describe("CCLW Hero Search", () => {
     // Verify the knowledge graph search description text is displayed
     await expect(
       page.getByText(
-        "You are viewing a list of documents containing precise text passages matches related to 'marine' AND Zoning and spatial planning"
+        "You are viewing a list of documents containing precise text passage matches related to 'marine' AND Zoning and spatial planning"
       )
     ).toBeVisible();
 
@@ -218,7 +218,7 @@ test.describe("CCLW Hero Search", () => {
   });
 
   test("should maintain search state on page refresh", async ({ page }) => {
-    const searchTerm = "climate framework laws";
+    const searchTerm = "climate framework law";
 
     // Type search term
     await page.fill('[data-cy="search-input"]', searchTerm);
@@ -247,7 +247,7 @@ test.describe("CCLW Hero Search", () => {
     // Should still be on search results page with same parameters
     expect(page.url()).toBe(urlBeforeRefresh);
     await expect(page).toHaveURL(/\/search/);
-    await expect(page).toHaveURL(/q=climate\+framework\+laws/);
+    await expect(page).toHaveURL(/q=climate\+framework\+law/);
     await expect(page).not.toHaveURL(/e=true/);
 
     // Verify search results are still visible after refresh
@@ -270,7 +270,7 @@ test.describe("CCLW Hero Search", () => {
     await page.click('[data-cy="breadcrumb home"] a');
 
     // Should now be on homepage with same parameters
-    await expect(page.getByText("Search over 5000 climate laws and policies worldwide")).toBeVisible();
+    await expect(page.getByText("Search over 7000 climate laws, policies and UNFCCC submissions")).toBeVisible();
     await expect(page).not.toHaveURL(/\/search/);
     await expect(page).not.toHaveURL(/q=mango/);
     await expect(page).not.toHaveURL(/e=true/);

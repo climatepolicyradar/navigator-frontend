@@ -115,14 +115,10 @@
 
   /* BREAKPOINTS */
 
-  --breakpoint-cols-2: 540px;
-  --breakpoint-cols-3: 820px;
-  --breakpoint-cols-4: 1100px;
-
-  --breakpoint-cols5-2: 500px;
-  --breakpoint-cols5-3: 700px;
-  --breakpoint-cols5-4: 900px;
-  --breakpoint-cols5-5: 1100px;
+  --breakpoint-cols-2: 500px;
+  --breakpoint-cols-3: 700px;
+  --breakpoint-cols-4: 900px;
+  --breakpoint-cols-5: 1100px;
 
   /* MISC */
 
@@ -138,6 +134,4 @@
   --container-maxContent: var(--MAX_CONTENT_WIDTH);
 
   --tracking-slight: 0.015em;
-
-  --metadata-grid: 200px 1fr;
 }

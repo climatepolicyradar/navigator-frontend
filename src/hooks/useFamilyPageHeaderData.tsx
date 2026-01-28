@@ -1,13 +1,16 @@
 import orderBy from "lodash/orderBy";
-import { ReactNode, useMemo } from "react";
+import { Fragment, ReactNode, useMemo } from "react";
 
-import { LinkWithQuery } from "@/components/LinkWithQuery";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { TBreadcrumbLink } from "@/components/breadcrumbs/Breadcrumbs";
 import { GeographyLink, IProps as GeographyLinkProps } from "@/components/molecules/geographyLink/GeographyLink";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { getCountryName, getCountrySlug } from "@/helpers/getCountryFields";
 import { getSubdivisionName } from "@/helpers/getSubdivision";
+import { getSumUSD } from "@/helpers/getSumUSD";
+import { useText } from "@/hooks/useText";
 import { IMetadata, TFamilyPublic, TGeography, TGeographySubdivision } from "@/types";
+import { scrollToBlock } from "@/utils/blocks/scrollToBlock";
 import { isSystemGeo } from "@/utils/isSystemGeo";
 import { pluralise } from "@/utils/pluralise";
 import { joinNodes } from "@/utils/reactNode";
@@ -27,12 +30,16 @@ type FamilyPageHeaderData = {
   breadcrumbParentGeography: TBreadcrumbLink | null;
 };
 
-export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IProps): FamilyPageHeaderData =>
-  useMemo(() => {
-    /* Misc */
+export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IProps): FamilyPageHeaderData => {
+  const { getCategoryTextLookup } = useText();
+  const getCategoryText = getCategoryTextLookup(family.category);
 
+  return useMemo(() => {
+    /* Misc */
     const categoryName = getCategoryName(family.category, family.corpus_type_name, family.organisation);
     const [year] = convertDate(family.published_date);
+    const isLitigation = family.corpus_type_name === "Litigation";
+    const isMCF = family.category === "MCF";
 
     /* Geographies data */
 
@@ -88,11 +95,6 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
     const isGeographiesParentAndChild =
       visibleGeographiesData.length === 2 && !visibleGeographiesData[0].code.includes("-") && visibleGeographiesData[1].code.includes("-");
 
-    const onShowMore = () => {
-      const metadataBlock = document.getElementById("section-metadata");
-      metadataBlock?.scrollIntoView({ behavior: "smooth" });
-    };
-
     const geographiesNode: ReactNode[] = joinNodes(
       visibleGeographiesData.map(({ code, name, slug }) => {
         return <GeographyLink key={code} code={code} name={name} slug={isSystemGeo(name) ? null : slug} />;
@@ -103,12 +105,16 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
     // Scroll to metadata to show hidden geographies
     if (hiddenGeographiesCount > 0) {
       geographiesNode.push(
-        <>
+        <Fragment key="others">
           &ensp;
-          <button role="button" className="underline" onClick={onShowMore}>
+          <button
+            role="button"
+            className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+            onClick={scrollToBlock("metadata")}
+          >
             +{hiddenGeographiesCount} {pluralise(hiddenGeographiesCount, ["other", "others"])}
           </button>
-        </>
+        </Fragment>
       );
     }
 
@@ -119,24 +125,54 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
         label: "Geography",
         value: geographiesNode,
       },
-      { label: "Date", value: isNaN(year) ? "" : year },
+      { label: `${getCategoryText("familyDate")}`, value: isNaN(year) ? "" : year },
       {
-        label: "Document type",
+        label: getCategoryText("familyType"),
         value: categoryName,
       },
     ];
     if (family.collections.length) {
       pageHeaderMetadata.push({
         label: "Part of",
-        value: joinNodes(
-          family.collections.map((collection) => (
-            <LinkWithQuery key={collection.import_id} href={`/collections/${collection.slug}`} className="hover:underline">
-              {collection.title}
-            </LinkWithQuery>
-          )),
-          ", "
-        ),
+        value: isLitigation
+          ? // litigation collections links
+            joinNodes(
+              family.collections.map((collection) => (
+                <PageLink key={collection.import_id} keepQuery href={`/collections/${collection.slug}`} className="hover:underline">
+                  {collection.title}
+                </PageLink>
+              )),
+              ", "
+            )
+          : // non-litigation collections scroll to block
+            joinNodes(
+              family.collections.map((collection) => (
+                <button
+                  key={collection.import_id}
+                  role="button"
+                  className="underline underline-offset-4 decoration-gray-300 hover:decoration-gray-500"
+                  onClick={scrollToBlock("collections")}
+                >
+                  {collection.title}
+                </button>
+              )),
+              ", "
+            ),
       });
+    }
+    if (isMCF) {
+      family.metadata?.project_value_fund_spend &&
+        family.metadata?.project_value_fund_spend[0] !== "0" &&
+        pageHeaderMetadata.push({
+          label: "Fund Spend",
+          value: getSumUSD(family.metadata?.project_value_fund_spend),
+        });
+      family.metadata?.project_value_co_financing &&
+        family.metadata?.project_value_co_financing[0] !== "0" &&
+        pageHeaderMetadata.push({
+          label: "Co-Financing",
+          value: getSumUSD(family.metadata?.project_value_co_financing),
+        });
     }
 
     return {
@@ -144,4 +180,5 @@ export const useFamilyPageHeaderData = ({ countries, family, subdivisions }: IPr
       breadcrumbGeography,
       breadcrumbParentGeography,
     };
-  }, [countries, family, subdivisions]);
+  }, [countries, family, subdivisions, getCategoryText]);
+};

@@ -9,11 +9,6 @@ export type TSearchKeywordFilters = {
   subdivisions?: string[];
 };
 
-export type TSearchConceptFilters = {
-  names?: string[];
-  ids?: string[];
-};
-
 export type TSearchCriteriaMeta = {
   name: string;
   value: string;
@@ -41,13 +36,15 @@ export type TSearchCriteria = {
   runSearch?: boolean;
 };
 
-export type TPassageBlockCoords = [number, number];
+type TPassageBlockCoords = [number, number];
 
 export type TPassage = {
-  text: string;
+  block_id_sort_key?: number;
+  concepts?: any[];
   text_block_coords: TPassageBlockCoords[];
   text_block_id: string;
   text_block_page: number;
+  text: string;
 };
 
 export type TDataNode<T> = {
@@ -128,8 +125,6 @@ export type TTarget = {
   "family-name": string;
 };
 
-export type TGeographySummaryCategory = "Executive" | "Legislative" | "Litigation" | "MCF" | "Reports" | "UNFCCC";
-
 // TODO resolve different litigation cases depending on API endpoint used
 export type TCategory =
   | "Legislative"
@@ -145,25 +140,12 @@ export type TCategory =
   | "Reports"
   | "REPORTS";
 export type TCorpusTypeSubCategory = "AF" | "CIF" | "GCF" | "GEF" | "Laws and Policies" | "Intl. agreements" | "Litigation" | "Reports";
-export type TDisplayCategory = "All" | TCategory;
-export type TEventCategory = TCategory | "Target";
 
 export type TEvent = {
   title: string;
   date: string;
   event_type: string;
   status: string;
-};
-
-export type TAssociatedDocument = {
-  country_code: string;
-  country_name: string;
-  description: string;
-  name: string;
-  postfix: string;
-  slug: string;
-  publication_ts: string;
-  category?: TCategory;
 };
 
 export type TFamilyDocument = {
@@ -202,7 +184,7 @@ export type TFamily = {
   metadata: TVespaMetadata;
 };
 
-export type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
+type TDocumentContentType = "application/pdf" | "text/html" | "application/octet-stream";
 
 export type TDocumentPage = {
   cdn_object?: string | null;
@@ -219,21 +201,7 @@ export type TDocumentPage = {
   variant: string | null;
 };
 
-export type TCollection = {
-  import_id: string;
-  title: string;
-  description: string;
-  families: TCollectionFamily[];
-  slug: string;
-};
-
-export type TCollectionFamily = {
-  description: string;
-  slug: string;
-  title: string;
-};
-
-export type TMetadata<Key extends string> = {
+type TMetadata<Key extends string> = {
   [K in Key]?: string[];
 };
 
@@ -306,7 +274,7 @@ export type TLanguages = {
   [key: string]: string;
 };
 
-export type TCorpus = {
+type TCorpus = {
   title: string;
   description: string;
   corpus_type: string;
@@ -324,7 +292,7 @@ export type TCorpus = {
   };
 };
 
-export type TCorpusWithStats = {
+type TCorpusWithStats = {
   corpus_import_id: string;
   title: string;
   description: string;
@@ -338,7 +306,7 @@ export type TCorpusWithStats = {
   };
 };
 
-export type TOrganisation = {
+type TOrganisation = {
   corpora: TCorpus[];
   total: number;
   count_by_category: {
@@ -346,7 +314,7 @@ export type TOrganisation = {
   };
 };
 
-export type TCorpusType = {
+type TCorpusType = {
   corpus_type_name: string;
   corpus_type_description: string;
   taxonomy: {
@@ -359,28 +327,11 @@ export type TCorpusType = {
   corpora: TCorpusWithStats[];
 };
 
-export interface IDictionary<T> {
+interface IDictionary<T> {
   [Key: string]: T;
 }
 
-export type TOrganisationDictionary = IDictionary<TOrganisation>;
 export type TCorpusTypeDictionary = IDictionary<TCorpusType>;
-
-export type TConcept = {
-  alternative_labels: string[];
-  count?: number;
-  definition?: string;
-  description: string;
-  has_subconcept: string[];
-  labelled_passages?: [];
-  negative_labels: string[];
-  preferred_label: string;
-  recursive_subconcept_of: string[];
-  related_concepts: string[];
-  subconcept_of: string[];
-  wikibase_id: string;
-  type?: "principal_law" | "jurisdiction" | "category";
-};
 
 export type TFamilyConcept = {
   id: string;
@@ -399,8 +350,11 @@ export type TSearchResponse = {
   families: {
     id: string;
     hits: (TFamily & {
+      // Document metadata returned by Vespa
       concept_counts?: Record<string, number>;
       document_import_id: string;
+      document_title: string;
+      document_slug: string;
     })[];
   }[];
   continuation_token?: string;
@@ -410,7 +364,7 @@ export type TSearchResponse = {
 
 /* /families API response types */
 
-export type TCollectionPublic = {
+type TCollectionPublic = {
   description: string;
   import_id: string;
   metadata: TMetadata<"event_type" | "description" | "datetime_event_name" | "id">;
@@ -461,6 +415,7 @@ export type TFamilyDocumentPublic = {
   valid_metadata: TMetadata<"id">;
   variant_name: string | null;
   variant: string | null;
+  document_status: string | null;
 };
 
 export type TFamilyPublic = {
@@ -481,7 +436,6 @@ export type TFamilyPublic = {
   concepts: TFamilyConcept[];
   documents: TFamilyDocumentPublic[];
   events: TFamilyEventPublic[];
-  organisation_attribution_url: string | null;
 };
 
 export type TCollectionPublicWithFamilies = {

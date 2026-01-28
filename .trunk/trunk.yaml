@@ -96,7 +96,6 @@ lint:
     - shellcheck@0.10.0
     - shfmt@3.6.0
     - svgo@4.0.0
-    - terrascan@1.19.1
     - trivy@0.64.1
     - trufflehog@3.90.0
     - typos@1.36.2
@@ -114,7 +113,7 @@ actions:
 
     - id: npm-install
       triggers:
-        - files: [package.json]
+        - files: [package.json, package-lock.json]
       run: npm install
 
   enabled:

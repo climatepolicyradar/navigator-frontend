@@ -2,37 +2,34 @@ import axios from "axios";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
-import { GeographyLitigationPage } from "@/components/pages/geographyLitigationPage";
-import { GeographyOriginalPage, IProps } from "@/components/pages/geographyOriginalPage";
-import { systemGeoNames } from "@/constants/systemGeos";
+import { IProps, GeographyPage } from "@/components/pages/geographyPage";
+import { SYSTEM_GEO_NAMES } from "@/constants/systemGeos";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { getCountryCode } from "@/helpers/getCountryFields";
-import { ApiItemResponse, GeographyV2, TSearch } from "@/types";
-import { TTarget, TGeography } from "@/types";
+import { ApiItemResponse, GeographyV2, TSearch, TTarget, TGeography } from "@/types";
 import buildSearchQuery from "@/utils/buildSearchQuery";
 import { extractNestedData } from "@/utils/extractNestedData";
 import { getFeatureFlags } from "@/utils/featureFlags";
-import { isNewPageDesignsEnabled } from "@/utils/features";
+import { getFeatures } from "@/utils/features";
 import { readConfigFile } from "@/utils/readConfigFile";
 
-const CountryPage: InferGetServerSidePropsType<typeof getServerSideProps> = ({ featureFlags, themeConfig, ...props }: IProps) => {
-  const newPageDesignsAreEnabled = isNewPageDesignsEnabled(featureFlags, themeConfig);
-  const PageComponent = newPageDesignsAreEnabled ? GeographyLitigationPage : GeographyOriginalPage;
-  return <PageComponent featureFlags={featureFlags} themeConfig={themeConfig} {...props} />;
+const CountryPage = ({ ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  return <GeographyPage {...props} />;
 };
 
 export default CountryPage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
-  const featureFlags = getFeatureFlags(context.req.cookies);
 
   const theme = process.env.THEME;
   const themeConfig = await readConfigFile(theme);
+  const featureFlags = getFeatureFlags(context.req.cookies);
+  const features = getFeatures(themeConfig, featureFlags);
 
   const id = context.params.id;
 
-  if (systemGeoNames.includes(id as string)) {
+  if (SYSTEM_GEO_NAMES.includes(id as string)) {
     return {
       notFound: true,
     };
@@ -86,7 +83,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const searchQuery = buildSearchQuery(
     {
       l: geographyV2.slug,
-      page_size: "3",
+      page_size: "4",
     },
     themeConfig
   );
@@ -107,13 +104,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: withEnvConfig({
-      featureFlags,
+      features,
       geographyV2,
       parentGeographyV2,
-      targets: theme === "mcf" ? [] : targetsData,
+      targets: targetsData,
       theme,
       themeConfig,
       vespaSearchResults: vespaSearchResults,
     }),
   };
-};
+}) satisfies GetServerSideProps;

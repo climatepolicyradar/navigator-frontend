@@ -10,13 +10,23 @@ import { FamilyMeta } from "./FamilyMeta";
 
 interface IProps {
   children?: ReactNode;
+  className?: string;
   family: TFamily;
+  position: number;
+  positionOffset: number;
   showSummary?: boolean;
   titleClasses?: string;
-  className?: string;
 }
 
-export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = true, titleClasses = "hover:underline", className }) => {
+export const FamilyListItem: FC<IProps> = ({
+  children,
+  className,
+  family,
+  position,
+  positionOffset,
+  showSummary = true,
+  titleClasses = "hover:underline",
+}) => {
   const {
     corpus_import_id,
     corpus_type_name,
@@ -51,7 +61,15 @@ export const FamilyListItem: FC<IProps> = ({ children, family, showSummary = tru
           {...(corpus_type_name === "Reports" ? { author: (family_metadata as { author: string[] }).author } : {})}
         />
       </div>
-      <LinkWithQuery href={`/document/${family_slug}`} className={allTitleClasses} passHref data-cy="family-title">
+      <LinkWithQuery
+        href={`/document/${family_slug}`}
+        passHref
+        className={allTitleClasses}
+        data-cy="family-title"
+        data-ph-capture-attribute-link-purpose="search-result-family"
+        data-ph-capture-attribute-position-page={position}
+        data-ph-capture-attribute-position-total={positionOffset + position}
+      >
         {family_name}
       </LinkWithQuery>
       {showSummary && (

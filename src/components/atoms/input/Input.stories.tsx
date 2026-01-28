@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/nextjs";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
 
 import { iconNames } from "@/components/atoms/icon/Icon";
@@ -21,7 +21,7 @@ type TStory = StoryObj<typeof Input>;
 
 export default meta;
 
-const useInputContext = ({ ...props }) => {
+const useInputContext = ({ ...props }: React.ComponentProps<typeof Input>) => {
   const [value, setValue] = useState("");
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => setValue(event.currentTarget.value);
   const handleClear = () => setValue("");

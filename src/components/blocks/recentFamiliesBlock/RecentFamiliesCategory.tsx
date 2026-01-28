@@ -31,7 +31,7 @@ interface IProps {
 }
 
 export const RecentFamiliesCategory = ({
-  categorySummary: { count, families, singularAndPlural, title },
+  categorySummary: { count, families, singularAndPlural, title, id },
   showAccordion = false,
   isExpanded = true,
   onAccordionClick,
@@ -47,7 +47,7 @@ export const RecentFamiliesCategory = ({
         const metadata = [
           getCategoryName(family.family_category, family.corpus_type_name, family.family_source),
           getMostSpecificGeography(geographies)?.name,
-          formatDate(family.family_date)[0],
+          formatDate(family.family_date)[0].toString(),
         ].filter((line) => Boolean(line));
 
         return {
@@ -70,7 +70,7 @@ export const RecentFamiliesCategory = ({
   };
 
   if (title.toLowerCase() !== "all") {
-    viewAllUrlQuery[QUERY_PARAMS.category] = title;
+    viewAllUrlQuery[QUERY_PARAMS.category] = id;
   }
 
   return (
@@ -78,7 +78,14 @@ export const RecentFamiliesCategory = ({
       {/* Accordion */}
       {showAccordion && (
         <div className="pt-5 mb-5">
-          <button type="button" onClick={clickAccordion} className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={clickAccordion}
+            className="flex items-center gap-3"
+            data-ph-capture-attribute-button-purpose="toggle-accordion"
+            data-ph-capture-attribute-accordion-already-open={isExpanded}
+            data-ph-capture-attribute-category={id}
+          >
             <LucideChevronDownCircle size={20} className={accordionIconClasses} />
             <h3 className="text-lg text-text-primary font-[660] leading-tight">{title}</h3>
           </button>
@@ -99,6 +106,8 @@ export const RecentFamiliesCategory = ({
                   query: { ...viewAllUrlQuery },
                 }}
                 className="min-w-16 max-w-25 flex-1 flex justify-center items-center bg-surface-brand-darker/8 text-text-brand-darker font-semibold leading-tight"
+                data-ph-capture-attribute-link-purpose="all-recents"
+                data-ph-capture-attribute-category={id}
               >
                 All {ARROW_RIGHT}
               </Link>
