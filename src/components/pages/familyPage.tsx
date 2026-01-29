@@ -44,6 +44,21 @@ import { pluralise } from "@/utils/pluralise";
 import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
+const orderFamilyPageBlocks = (familyBlocks: TFamilyPageBlock[], features: TFeatures, theme: TTheme): TFamilyPageBlock[] => {
+  if (theme !== "cclw" || !features.abFamilyTopicBlock) return familyBlocks;
+
+  let updatedFamilyBlocks: TFamilyPageBlock[] = [...familyBlocks];
+
+  // Move topics to after summary. Not hardcoded positions in case the family block order changes
+  if (familyBlocks.includes("topics")) {
+    updatedFamilyBlocks = updatedFamilyBlocks.filter((block) => block !== "topics");
+    const summaryIndex = updatedFamilyBlocks.findIndex((block) => block === "summary");
+    updatedFamilyBlocks.splice(summaryIndex + 1, 0, "topics");
+  }
+
+  return updatedFamilyBlocks;
+};
+
 export interface IProps {
   collections: TCollectionPublicWithFamilies[];
   corpus_types: TCorpusTypeDictionary;
@@ -53,7 +68,7 @@ export interface IProps {
   features: TFeatures;
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];
-  theme: string;
+  theme: TTheme;
   themeConfig: TThemeConfig;
   vespaFamilyData?: TSearchResponse | null;
 }
@@ -96,7 +111,7 @@ export const FamilyPage = ({
 
   /* Blocks */
 
-  const blocksToRender = themeConfig.pageBlocks.family;
+  const blocksToRender = orderFamilyPageBlocks(themeConfig.pageBlocks.family, features, theme);
   const blockDefinitions: TBlockDefinitions<TFamilyPageBlock> = {
     collections: {
       render: () => <CollectionsBlock key="collections" collections={collections} />,

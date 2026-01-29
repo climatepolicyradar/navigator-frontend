@@ -10,7 +10,7 @@
 export const featureFlagKeys = ["concepts-v1", "litigation"] as const;
 
 // PostHog feature flags with 1-100% rollout. Automatically rolled to each consenting user. Can also be present on /_feature-flags if configured in PostHog as an early access feature
-export const abTestKeys = ["ab-example"] as const;
+export const abTestKeys = ["abFamilyTopicBlock"] as const;
 
 // Theme config feature configured at themes/THEME/config.ts features object
 export const configFeatureKeys = ["familyConceptsSearch", "knowledgeGraph", "litigation", "searchFamilySummary"] as const;
