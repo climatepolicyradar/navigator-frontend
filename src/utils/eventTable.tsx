@@ -113,31 +113,30 @@ export const getCourts = (family: TFamilyPublic): string | null =>
     .map((concept) => concept.preferred_label)
     .join(", ") || null;
 
-/**
- * Returns an array of event table rows. Each row may contain an event and/or document
- * Events on their own come from family.events
- * Each document row is populated from the singular event attached to each document
- * When a document has no events this is a bug, but is covered by adding these documents anyway without an associated event
- * All collected events are then made unique (array -> object -> array) as family events and document events can be duplicates of each other
- */
-export const getFamilyEvents = (family: TFamilyPublic): TEventRowData[] =>
-  Object.values(
-    Object.fromEntries(
-      (
-        [
-          ...family.events.map((event) => ({ family, event })), // Events with no document attached
-          ...family.documents.flatMap(
-            (document) =>
-              document.events.length > 0
-                ? document.events.map((event) => ({ family, event, document })) // Event that is part of a document
-                : [{ family, document }] // Fallback document with no events
-          ),
-        ] as TEventRowData[]
-      )
-        .filter((item) => !item.event || item.event.event_type !== "Filing Year For Action") // TODO: review whether we still want to do this
-        .map((item) => [item.event?.import_id || item.document.import_id, item] as const)
-    )
-  );
+// Get one row per event and/or document to populate an events table with
+export const getFamilyEvents = (family: TFamilyPublic): TEventRowData[] => {
+  const eventRows: TEventRowData[] = family.events.map((event) => ({ family, event }));
+  const documentRows: TEventRowData[] = [];
+
+  family.documents.forEach((document) => {
+    if (document.events.length === 0) {
+      // If this happens there is an API bug but we still want the document to show
+      documentRows.push({ family, document });
+    } else {
+      documentRows.push(...document.events.map((event) => ({ family, event, document })));
+    }
+  });
+
+  const allRows = [...eventRows, ...documentRows];
+  const filteredRows = allRows.filter((row) => !row.event || row.event.event_type !== "Filing Year For Action");
+
+  // family.events and family.document.events sometimes have the same event
+  // remove duplicates by import_id and prioritise the document event (because it was added to allRows last)
+  const rowEntries = filteredRows.map((row) => [row.event?.import_id || row.document.import_id, row] as const);
+  const uniqueRows = Object.values(Object.fromEntries(rowEntries));
+
+  return uniqueRows;
+};
 
 const getFamilyDocuments = (family: TFamilyPublic): TEventRowData[] =>
   family.documents.filter((document) => document.document_status !== "deleted").map((document) => ({ family, document }));
