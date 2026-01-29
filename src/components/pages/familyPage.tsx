@@ -45,7 +45,7 @@ import { sortFilterTargets } from "@/utils/sortFilterTargets";
 import { familyTopicsHasTopics } from "@/utils/topics/processFamilyTopics";
 
 const orderFamilyPageBlocks = (familyBlocks: TFamilyPageBlock[], features: TFeatures, theme: TTheme): TFamilyPageBlock[] => {
-  if (theme !== "cclw" || !features.abFamilyTopicBlock) return familyBlocks;
+  if (theme !== "cclw" || !features["ab-family-topic-block"]) return familyBlocks;
 
   let updatedFamilyBlocks: TFamilyPageBlock[] = [...familyBlocks];
 
