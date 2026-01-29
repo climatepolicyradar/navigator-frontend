@@ -113,15 +113,24 @@ export const getCourts = (family: TFamilyPublic): string | null =>
     .map((concept) => concept.preferred_label)
     .join(", ") || null;
 
-// Events can be duplicated between the family and document event lists. Use object keys to overwrite the former with the latter.
+/**
+ * Returns an array of event table rows. Each row may contain an event and/or document
+ * Events on their own come from family.events
+ * Each document row is populated from the singular event attached to each document
+ * When a document has no events this is a bug, but is covered by adding these documents anyway without an associated event
+ * All collected events are then made unique (array -> object -> array) as family events and document events can be duplicates of each other
+ */
 export const getFamilyEvents = (family: TFamilyPublic): TEventRowData[] =>
   Object.values(
     Object.fromEntries(
       (
         [
-          ...family.events.map((event) => ({ family, event })),
-          ...family.documents.flatMap((document) =>
-            document.events.length > 0 ? document.events.map((event) => ({ family, event, document })) : [{ family, document }]
+          ...family.events.map((event) => ({ family, event })), // Events with no document attached
+          ...family.documents.flatMap(
+            (document) =>
+              document.events.length > 0
+                ? document.events.map((event) => ({ family, event, document })) // Event that is part of a document
+                : [{ family, document }] // Fallback document with no events
           ),
         ] as TEventRowData[]
       )
