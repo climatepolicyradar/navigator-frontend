@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  navigator-frontend-cpr:
+    # Shipyard routes all HTTP traffic matching this path to the service
+    labels:
+      shipyard.route: /
+      shipyard.primary-route: true
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        THEME: cpr
+
+    # Container listens on 8080 (from your Dockerfile); expose it on 3000 externally
+    ports:
+      - 3000:8080
