@@ -114,7 +114,7 @@ export const getCourts = (family: TFamilyPublic): string | null =>
     .join(", ") || null;
 
 // Get one row per event and/or document to populate an events table with
-export const getFamilyEvents = (family: TFamilyPublic): TEventRowData[] => {
+export const getEventTableRowsData = (family: TFamilyPublic): TEventRowData[] => {
   const eventRows: TEventRowData[] = family.events.map((event) => ({ family, event }));
   const documentRows: TEventRowData[] = [];
 
@@ -243,7 +243,7 @@ export const getEventTableRows = ({
   const topicsData = familyTopics ? Object.values(familyTopics.conceptsGrouped).flat() : [];
 
   // Populate rows of data differently for litigation where we have events on documents to pull from
-  const rowsData = isLitigation ? families.map(getFamilyEvents).flat() : families.map(getFamilyDocuments).flat();
+  const rowsData = isLitigation ? families.map(getEventTableRowsData).flat() : families.map(getFamilyDocuments).flat();
 
   rowsData.forEach(({ family, event, document }) => {
     if (documentEventsOnly && !document) return;
