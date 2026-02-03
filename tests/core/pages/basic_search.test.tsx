@@ -1,5 +1,4 @@
-import { screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { fireEvent, screen } from "@testing-library/react";
 import router from "next-router-mock";
 
 import { DEFAULT_FEATURES } from "@/constants/features";
@@ -62,7 +61,7 @@ describe("SearchPage", async () => {
     const searchOptionsButton = await screen.findByRole("button", { name: "Search options" });
     expect(searchOptionsButton).toHaveTextContent("Exact phrases");
 
-    await userEvent.click(searchOptionsButton);
+    fireEvent.click(searchOptionsButton);
 
     // Check there are two options in the list
     expect(await screen.findByRole("list", { name: "Semantic search" })).toBeInTheDocument();
@@ -71,7 +70,7 @@ describe("SearchPage", async () => {
 
     // Select one
     const relatedPhrasesOption = await screen.findByRole("button", { name: "Related phrases" });
-    await userEvent.click(relatedPhrasesOption);
+    fireEvent.click(relatedPhrasesOption);
 
     // Check that the search options has been updated to reflect the selected option
     expect(await screen.findByRole("button", { name: "Search options" })).toHaveTextContent("Related phrases");
@@ -85,7 +84,7 @@ describe("SearchPage", async () => {
     const searchOptionsButton = await screen.findByRole("button", { name: "Sort options" });
     expect(searchOptionsButton).toBeInTheDocument();
 
-    await userEvent.click(searchOptionsButton);
+    fireEvent.click(searchOptionsButton);
 
     // Check there are the correct options in the list - browse by default
     for (const item of sortOptionsBrowse) {
@@ -94,7 +93,7 @@ describe("SearchPage", async () => {
 
     // Select one
     const sortOptionToSelect = await screen.findByRole("button", { name: sortOptionsBrowse[0].label });
-    await userEvent.click(sortOptionToSelect);
+    fireEvent.click(sortOptionToSelect);
 
     // TODO: figure out how to test that the correct options are being displayed when we aren't browsing
     // i.e. we have a search term
@@ -112,14 +111,14 @@ describe("SearchPage", async () => {
     // Verify slideout is initially closed.
     expect(screen.queryByText("Region")).not.toBeInTheDocument();
 
-    await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Geography" }));
 
     // Verify the slideout is now open.
     expect(await screen.findByText("Region")).toBeInTheDocument();
 
     const regionFilterOption = await screen.findByRole("checkbox", { name: "Latin America & Caribbean" });
 
-    await userEvent.click(regionFilterOption);
+    fireEvent.click(regionFilterOption);
 
     expect(regionFilterOption).toBeChecked();
 
@@ -139,7 +138,7 @@ describe("SearchPage", async () => {
     // Verify slideout is initially closed.
     expect(screen.queryByText("Published jurisdiction")).not.toBeInTheDocument();
 
-    await userEvent.click(await screen.findByRole("button", { name: "Geography" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Geography" }));
 
     // Verify the slideout is now open.
     expect(await screen.findByText("Published jurisdiction")).toBeInTheDocument();
@@ -147,7 +146,7 @@ describe("SearchPage", async () => {
     // Find the country option and click it.
     const countryOption = await screen.findByRole("checkbox", { name: "Belize" });
 
-    await userEvent.click(countryOption);
+    fireEvent.click(countryOption);
 
     expect(countryOption).toBeChecked();
 
