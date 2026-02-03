@@ -625,6 +625,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                                       onClick={() => setShowSearchOptions(!showSearchOptions)}
                                       data-cy="search-options"
                                       ref={searchSettingsButtonRef}
+                                      aria-label="Search options"
                                     >
                                       <span className="font-bold">Search:</span>{" "}
                                       <span>

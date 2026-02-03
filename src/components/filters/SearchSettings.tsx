@@ -38,19 +38,19 @@ export const SearchSettings = ({
   // no query string OR query string is empty
   const isBrowsing = !queryParams[QUERY_PARAMS.query_string] || queryParams[QUERY_PARAMS.query_string]?.toString().trim() === "";
 
-  const handleSemanticSearchClick = (e: React.MouseEvent<HTMLAnchorElement>, value: string) => {
+  const handleSemanticSearchClick = (e: React.MouseEvent<HTMLButtonElement>, value: string) => {
     e.preventDefault();
     setShowOptions(false);
     handleSearchChange?.(QUERY_PARAMS.exact_match, value);
   };
 
-  const handleSortOptionClick = (e: React.MouseEvent<HTMLAnchorElement>, sortOption: string) => {
+  const handleSortOptionClick = (e: React.MouseEvent<HTMLButtonElement>, sortOption: string) => {
     e.preventDefault();
     setShowOptions(false);
     handleSortClick?.(sortOption);
   };
 
-  const handlePassagesOrderClick = (e: React.MouseEvent<HTMLAnchorElement>, value: string) => {
+  const handlePassagesOrderClick = (e: React.MouseEvent<HTMLButtonElement>, value: string) => {
     e.preventDefault();
     setShowOptions(false);
     handlePassagesOrderChange?.(value);

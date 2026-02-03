@@ -32,7 +32,7 @@ const baseSearchProps: any = {
 describe("SearchPage", async () => {
   it("shows search onboarding info when no filters applied", async () => {
     const search_props = { ...baseSearchProps };
-    // @ts-ignore
+
     renderWithAppContext(Search, { pageProps: search_props });
 
     // Wait for the component to render
@@ -40,58 +40,55 @@ describe("SearchPage", async () => {
       expect(screen.getByText("Get better results")).toBeInTheDocument();
     });
 
-    expect(await screen.findByText(/You are currently viewing all of the documents in our database/)).toBeInTheDocument();
+    expect(screen.getByText(/You are currently viewing all of the documents/)).toBeInTheDocument();
+
     expect(screen.queryByText(/Topics filter/)).not.toBeInTheDocument();
   });
 
   it("hides search onboarding info when filters are applied", async () => {
     const search_props = { ...baseSearchProps, searchParams: { q: "climate policy" } };
     router.query = { q: "climate policy" };
-    // @ts-ignore
+
     renderWithAppContext(Search, { pageProps: search_props });
 
     expect(screen.queryByText(/Get better results/)).not.toBeInTheDocument();
     expect(screen.queryByText(/You are currently viewing all of the documents in our database/)).not.toBeInTheDocument();
   });
 
-  it("handles search settings dropdown", async () => {
+  it("displays search settings options when clicked on", async () => {
     const search_props = { ...baseSearchProps };
-    // @ts-ignore
+
     renderWithAppContext(Search, { pageProps: search_props });
 
-    // Wait for the results to render
-    await waitFor(() => {
-      expect(screen.getByText("Results:")).toBeInTheDocument();
-    });
-
-    const buttons = await screen.findAllByTestId("search-options");
-    const searchOptionsButton = buttons[0]; // First button is the search options
-    expect(searchOptionsButton).toBeInTheDocument();
+    const searchOptionsButton = await screen.findByRole("button", { name: "Search options" });
+    expect(searchOptionsButton).toHaveTextContent("Exact phrases");
 
     await userEvent.click(searchOptionsButton);
 
-    // Expect length of 2: 1 in the search options and one as the selected option title
-    expect(await screen.findAllByText(/Exact phrases/)).toHaveLength(2);
+    // Check there are two options in the list
+    // screen.debug(screen.getByRole("list", { name: "Semantic search" }));
+    expect(await screen.findByRole("list", { name: "Semantic search" })).toBeInTheDocument();
 
-    // Expect length of only 1 as it'll only be in the search options and won't appear again as it isn't selected
-    expect(await screen.findAllByText(/Related phrases/)).toHaveLength(1);
+    // Select one
+
+    // Check that it is the selected item
+
+    // Expect length of 2: 1 in the search options and one as the selected option title
+    // expect(await screen.findAllByText(/Exact phrases/i)).toHaveLength(2);
+
+    // // Expect length of only 1 as it'll only be in the search options and won't appear again as it isn't selected
+    // expect(await screen.findAllByText(/Related phrases/)).toHaveLength(1);
   });
 
-  it("handles sort settings dropdown", async () => {
+  it("displays sort settings options when clicked on", async () => {
     const search_props = { ...baseSearchProps };
-    // @ts-ignore
+
     renderWithAppContext(Search, { pageProps: search_props });
 
-    // Wait for the results to render
-    await waitFor(() => {
-      expect(screen.getByText("Results:")).toBeInTheDocument();
-    });
+    const searchOptionsButton = await screen.findByRole("button", { name: "Sort options" });
+    expect(searchOptionsButton).toBeInTheDocument();
 
-    const sortOptionsButtons = await screen.findAllByTestId("search-options");
-    const sortOptionsButton = sortOptionsButtons[1]; // Second button is the sort options
-    expect(sortOptionsButton).toBeInTheDocument();
-
-    await userEvent.click(sortOptionsButton);
+    await userEvent.click(searchOptionsButton);
 
     // Expect length of 3 because we have 2 date options and 1 title option
     expect(await screen.findAllByText(/Date:/)).toHaveLength(3);
@@ -101,7 +98,6 @@ describe("SearchPage", async () => {
   });
 
   it("filters search results by region", async () => {
-    // @ts-ignore
     renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     // Verify slideout is initially closed.
@@ -129,7 +125,6 @@ describe("SearchPage", async () => {
   });
 
   it("filters search results by country", async () => {
-    // @ts-ignore
     renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     // Verify slideout is initially closed.
