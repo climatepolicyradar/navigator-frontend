@@ -27,6 +27,7 @@ const eslintConfig = [
       "**/build",
       "**/node_modules",
       "**/*.config.js",
+      "**/*.config.ts",
       "**/*.config.mjs",
       "**/eslint.config.mjs",
       "**/vite.config.{js,mts}",
