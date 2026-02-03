@@ -7,7 +7,7 @@ import { ViewMore } from "@/components/molecules/viewMore/ViewMore";
 import { InteractiveTable } from "@/components/organisms/interactiveTable/InteractiveTable";
 import { getLanguage } from "@/helpers/getLanguage";
 import { IFamilyDocumentTopics, IMetadata, TFamilyDocumentPublic, TFamilyEventPublic, TFamilyPublic, TLanguages } from "@/types";
-import { getFamilyEvents } from "@/utils/eventTable";
+import { getEventTableRowsData } from "@/utils/eventTable";
 import { DOCUMENT_DRAWER_TOPICS_TABLE_COLUMNS, getDocumentDrawerTopicTableRows } from "@/utils/tables/topic/documentDrawerTopicTable";
 import { TTopicTableColumnId, TTopicTableRow } from "@/utils/tables/topic/topicTable";
 import { firstCase } from "@/utils/text";
@@ -29,7 +29,7 @@ export const DocumentDrawer = ({ documentImportId, family, familyTopics, languag
   let event: TFamilyEventPublic | null = null;
 
   if (family.corpus_type_name === "Litigation") {
-    const eventAndDocument = getFamilyEvents(family).find((row) => row.document?.import_id === documentImportId);
+    const eventAndDocument = getEventTableRowsData(family).find((row) => row.document?.import_id === documentImportId);
     if (eventAndDocument) {
       document = eventAndDocument.document;
       event = eventAndDocument.event;
