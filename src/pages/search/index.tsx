@@ -34,7 +34,7 @@ import SearchResultList from "@/components/search/SearchResultList";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SEARCH_SETTINGS } from "@/constants/searchSettings";
 import { sortOptions } from "@/constants/sortOptions";
-import { TPublicEnvConfig, withEnvConfig } from "@/context/EnvConfig";
+import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { SlideOutContext } from "@/context/SlideOutContext";
 import { TopicsContext } from "@/context/TopicsContext";
@@ -44,7 +44,7 @@ import { useDownloadCsv } from "@/hooks/useDownloadCsv";
 import { useHashNavigation } from "@/hooks/useHashNavigation";
 import useSearch from "@/hooks/useSearch";
 import { useText } from "@/hooks/useText";
-import { TTopic, TFeatures, TTheme, TThemeConfig, TTopics } from "@/types";
+import { TTopic, TTheme, TTopics } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
@@ -123,7 +123,9 @@ const getSelectedFamilyConcepts = (selectedConcepts: string | string[], allConce
   );
 };
 
-const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+export type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }: TProps) => {
   const router = useRouter();
   const [showFilters, setShowFilters] = useState(false);
   const [showCSVDownloadPopup, setShowCSVDownloadPopup] = useState(false);
@@ -455,8 +457,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                         </>
                       )}
                       <span>Download data (.csv): </span>
-                      <a
-                        href="#"
+                      <button
                         className="flex gap-2 items-center justify-end text-blue-600 hover:underline hover:text-blue-800"
                         data-cy="download-search-csv"
                         onClick={(e) => {
@@ -464,9 +465,10 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                           setShowCSVDownloadPopup(true);
                         }}
                         data-ph-capture-attribute-link-purpose="download-search"
+                        aria-label="Download search results as CSV"
                       >
                         {downloadCSVStatus === "loading" ? <Icon name="loading" /> : "this search"}
-                      </a>
+                      </button>
                       {themeConfig.links.downloadDatabase && (
                         <>
                           <span>|</span>
@@ -659,6 +661,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                                       onClick={() => setShowSortOptions(!showSortOptions)}
                                       data-cy="search-options"
                                       ref={sortSettingsButtonRef}
+                                      aria-label="Sort options"
                                     >
                                       <span className="font-bold">Order:</span>{" "}
                                       <span>
