@@ -15,6 +15,7 @@ import {
   TSearchResponse,
   TSlugResponse,
   TTarget,
+  TTheme,
 } from "@/types";
 import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
@@ -39,7 +40,7 @@ export default FamilyPage;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const theme = process.env.THEME;
+  const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
