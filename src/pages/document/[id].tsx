@@ -3,6 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
 import { FamilyPage as FamilyPageUI } from "@/components/pages/familyPage";
+import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { EXCLUDED_ISO_CODES } from "@/constants/geography";
 import { withEnvConfig } from "@/context/EnvConfig";
 import {
@@ -15,6 +16,7 @@ import {
   TSearchResponse,
   TSlugResponse,
   TTarget,
+  TTheme,
 } from "@/types";
 import { isCorpusIdAllowed } from "@/utils/checkCorpusAccess";
 import { extractNestedData } from "@/utils/extractNestedData";
@@ -39,7 +41,7 @@ export default FamilyPage;
 export const getServerSideProps = (async (context) => {
   context.res.setHeader("Cache-Control", "public, max-age=3600, immutable");
 
-  const theme = process.env.THEME;
+  const theme = process.env.THEME as TTheme;
   const themeConfig = await readConfigFile(theme);
   const featureFlags = getFeatureFlags(context.req.cookies);
   const features = getFeatures(themeConfig, featureFlags);
@@ -66,6 +68,9 @@ export const getServerSideProps = (async (context) => {
     /** and then query the families API by the returned family_import_id */
     const { data: familyResponse } = await apiClient.get(`/families/${slug.family_import_id}`);
     familyData = familyResponse.data;
+    familyData.documents.forEach((document) => {
+      if (document.title === "") document.title = DEFAULT_DOCUMENT_TITLE;
+    });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error("Error fetching families data", error);

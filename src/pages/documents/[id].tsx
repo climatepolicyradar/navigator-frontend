@@ -9,6 +9,7 @@ import { ApiClient } from "@/api/http-common";
 import { ConceptsDocumentViewer } from "@/components/documents/ConceptsDocumentViewer";
 import { DocumentHead } from "@/components/documents/DocumentHead";
 import Layout from "@/components/layouts/Main";
+import { DEFAULT_DOCUMENT_TITLE } from "@/constants/document";
 import { getDocumentDescription } from "@/constants/metaDescriptions";
 import { MAX_PASSAGES } from "@/constants/paging";
 import { QUERY_PARAMS } from "@/constants/queryParams";
@@ -184,6 +185,7 @@ export const getServerSideProps = (async (context) => {
     const { family: familyData, ...otherDocumentData } = returnedDocumentData.data;
     const family: TFamilyPublic = familyData;
     const document: TDocumentPage = otherDocumentData;
+    if (document.title === "") document.title = DEFAULT_DOCUMENT_TITLE;
 
     if (!document || !family) return { notFound: true };
 

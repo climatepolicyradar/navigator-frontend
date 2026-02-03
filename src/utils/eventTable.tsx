@@ -113,20 +113,30 @@ export const getCourts = (family: TFamilyPublic): string | null =>
     .map((concept) => concept.preferred_label)
     .join(", ") || null;
 
-// Events can be duplicated between the family and document event lists. Use object keys to overwrite the former with the latter.
-export const getFamilyEvents = (family: TFamilyPublic): TEventRowData[] =>
-  Object.values(
-    Object.fromEntries(
-      (
-        [
-          ...family.events.map((event) => ({ family, event })),
-          ...family.documents.flatMap((document) => document.events.map((event) => ({ family, event, document }))),
-        ] as TEventRowData[]
-      )
-        .filter((item) => item.event.event_type !== "Filing Year For Action") // TODO: review whether we still want to do this
-        .map((item) => [item.event.import_id, item] as const)
-    )
-  );
+// Get one row per event and/or document to populate an events table with
+export const getEventTableRowsData = (family: TFamilyPublic): TEventRowData[] => {
+  const eventRows: TEventRowData[] = family.events.map((event) => ({ family, event }));
+  const documentRows: TEventRowData[] = [];
+
+  family.documents.forEach((document) => {
+    if (document.events.length === 0) {
+      // If this happens there is an API bug but we still want the document to show
+      documentRows.push({ family, document });
+    } else {
+      documentRows.push(...document.events.map((event) => ({ family, event, document })));
+    }
+  });
+
+  const allRows = [...eventRows, ...documentRows];
+  const filteredRows = allRows.filter((row) => !row.event || row.event.event_type !== "Filing Year For Action");
+
+  // family.events and family.document.events sometimes have the same event
+  // remove duplicates by import_id and prioritise the document event (because it was added to allRows last)
+  const rowEntries = filteredRows.map((row) => [row.event?.import_id || row.document.import_id, row] as const);
+  const uniqueRows = Object.values(Object.fromEntries(rowEntries));
+
+  return uniqueRows;
+};
 
 const getFamilyDocuments = (family: TFamilyPublic): TEventRowData[] =>
   family.documents.filter((document) => document.document_status !== "deleted").map((document) => ({ family, document }));
@@ -176,7 +186,7 @@ const getDocumentCell = (
   event?: TFamilyEventPublic
 ): ReactNode => {
   return (
-    <div className="flex flex-col gap-2 pb-4">
+    <div className="flex flex-col gap-2">
       {isLitigation && (
         <>
           <div>{getDocumentLink(document, hasMatches, isMainDocument, isLitigation)}</div>
@@ -233,7 +243,7 @@ export const getEventTableRows = ({
   const topicsData = familyTopics ? Object.values(familyTopics.conceptsGrouped).flat() : [];
 
   // Populate rows of data differently for litigation where we have events on documents to pull from
-  const rowsData = isLitigation ? families.map(getFamilyEvents).flat() : families.map(getFamilyDocuments).flat();
+  const rowsData = isLitigation ? families.map(getEventTableRowsData).flat() : families.map(getFamilyDocuments).flat();
 
   rowsData.forEach(({ family, event, document }) => {
     if (documentEventsOnly && !document) return;

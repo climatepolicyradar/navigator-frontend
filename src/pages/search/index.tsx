@@ -432,6 +432,9 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
   const displayHits = hits || 0;
   const searchResultItemName = pluralise(displayHits, [getAppText("searchResultItemSingular"), getAppText("searchResultItemPlural")]);
 
+  let offset = Number.parseInt(router.query[QUERY_PARAMS.offset] as string);
+  if (isNaN(offset)) offset = 0;
+
   return (
     <Layout theme={theme as TTheme} themeConfig={themeConfig} metadataKey="search">
       <FeaturesContext.Provider value={features}>
@@ -768,7 +771,7 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                               <SearchResultList
                                 category={router.query[QUERY_PARAMS.category]?.toString()}
                                 families={families}
-                                offset={Number.parseInt(router.query[QUERY_PARAMS.offset] as string)}
+                                offset={offset}
                                 onClick={handleMatchesButtonClick}
                                 activeFamilyIndex={drawerFamily}
                               />
