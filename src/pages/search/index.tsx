@@ -715,16 +715,16 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                                   <p>
                                     A snapshot of 900+ corporate reports from H1/2025, including climate transition plans and regulatory filings
                                     published by 460 publicly listed high emitting companies. Note, some of the{" "}
-                                    <a
+                                    <button
                                       className="underline hover:text-blue-800"
-                                      href="#"
                                       onClick={(e) => {
                                         e.preventDefault();
                                         setCurrentSlideOut("concepts");
                                       }}
+                                      aria-label="Open Topics filter"
                                     >
                                       automatic topic filters
-                                    </a>{" "}
+                                    </button>{" "}
                                     such as "Climate finance" currently do not perform as well on this dataset.
                                   </p>
                                 </Warning>
@@ -753,16 +753,16 @@ const Search = ({ familyConceptsData, features, theme, themeConfig, topicsData }
                                       <>
                                         {" "}
                                         You can also use the AI-supported{" "}
-                                        <a
+                                        <button
                                           className="underline hover:text-blue-800"
-                                          href="#"
+                                          aria-label="Open Topics filter"
                                           onClick={(e) => {
                                             e.preventDefault();
                                             setCurrentSlideOut("concepts");
                                           }}
                                         >
                                           Topics filter
-                                        </a>{" "}
+                                        </button>{" "}
                                         to help refine your search.
                                       </>
                                     )}
