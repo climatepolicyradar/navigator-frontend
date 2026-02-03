@@ -5,11 +5,18 @@ type TEnvironmentConfig = {
   useWebserver: boolean;
 };
 
+const localBaseURL = "http://localhost:3000";
+
 const config: Record<string, TEnvironmentConfig> = {
   development: {
-    baseURL: "http://localhost:3000",
+    baseURL: localBaseURL,
     useWebserver: true,
   },
+  shipyard: {
+    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? localBaseURL,
+    useWebserver: false,
+  },
+
   // CPR
   cpr_staging: {
     baseURL: "https://cpr.staging.climatepolicyradar.org",
