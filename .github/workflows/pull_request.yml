@@ -233,6 +233,8 @@ jobs:
       - name: Create test results directory
         run: mkdir -p test-results-${{ matrix.theme }}
 
+      - run: echo "SHIPYARD_ENVIRONMENT_URL is ${{ env.SHIPYARD_ENVIRONMENT_URL }}"
+
       - name: Run Tests
         continue-on-error: true
         env:
