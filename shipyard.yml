@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  navigator-frontend-cpr:
+    labels:
+      # Main front door for the environment
+      shipyard.route: /
+      shipyard.primary-route: true
+      shipyard.host.cpr: '{"prefix": "cpr"}'
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        THEME: cpr
+    # Container listens on 8080
+    ports:
+      - "8080"
+
+  navigator-frontend-cclw:
+    labels:
+      shipyard.route: /
+      shipyard.host.cclw: '{"prefix": "cclw"}'
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        THEME: cclw
+    ports:
+      - "8080"
+
+  navigator-frontend-mcf:
+    labels:
+      shipyard.route: /
+      shipyard.host.mcf: '{"prefix": "mcf"}'
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        THEME: mcf
+    ports:
+      - "8080"
+
+  navigator-frontend-ccc:
+    labels:
+      shipyard.route: /
+      shipyard.host.ccc: '{"prefix": "ccc"}'
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        THEME: ccc
+    ports:
+      - "8080"
