@@ -1,6 +1,6 @@
 import { ParsedUrlQuery } from "querystring";
 
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState, Fragment } from "react";
 
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { SEARCH_PASSAGE_ORDER } from "@/constants/searchPassagesOrder";
@@ -88,12 +88,21 @@ export const SearchSettings = ({
       {queryParams[QUERY_PARAMS.category]?.toString().toLowerCase() !== "litigation" && (
         <>
           {handleSearchChange && (
-            <div className={`${handlePassagesOrderChange || handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
+            <div className={`${handlePassagesOrderChange || handleSortClick ? "border-b border-white/24 pb-4 mb-4" : ""}`}>
               <SearchSettingsList data-cy="semantic-search" aria-label="Semantic search">
-                <SearchSettingsItem onClick={(e) => handleSemanticSearchClick(e, "true")} isActive={getCurrentSearchChoice(queryParams) === "true"}>
+                <SearchSettingsItem
+                  onClick={(e) => handleSemanticSearchClick(e, "true")}
+                  isActive={getCurrentSearchChoice(queryParams) === "true"}
+                  aria-label="Exact match"
+                >
                   {SEARCH_SETTINGS.exact}
                 </SearchSettingsItem>
-                <SearchSettingsItem onClick={(e) => handleSemanticSearchClick(e, "false")} isActive={getCurrentSearchChoice(queryParams) === "false"}>
+
+                <SearchSettingsItem
+                  onClick={(e) => handleSemanticSearchClick(e, "false")}
+                  isActive={getCurrentSearchChoice(queryParams) === "false"}
+                  aria-label="Related phrases"
+                >
                   <span className="">
                     <span>{SEARCH_SETTINGS.semantic}</span>
                     <span className="block text-text-secondary">
@@ -105,17 +114,20 @@ export const SearchSettings = ({
             </div>
           )}
           {handlePassagesOrderChange && (
-            <div className={`${handleSortClick ? "border-b border-white/[0.24] pb-4 mb-4" : ""}`}>
+            <div className={`${handleSortClick ? "border-b border-white/24 pb-4 mb-4" : ""}`}>
               <SearchSettingsList data-cy="passages-sort" aria-label="Passages sort">
                 <SearchSettingsItem
                   onClick={(e) => handlePassagesOrderClick(e, "false")}
                   isActive={getCurrentPassagesOrderChoice(queryParams) === false}
+                  aria-label="Relevance"
                 >
                   {SEARCH_PASSAGE_ORDER.relevance}
                 </SearchSettingsItem>
+
                 <SearchSettingsItem
                   onClick={(e) => handlePassagesOrderClick(e, "true")}
                   isActive={getCurrentPassagesOrderChoice(queryParams) === true}
+                  aria-label="Page order"
                 >
                   {SEARCH_PASSAGE_ORDER.page}
                 </SearchSettingsItem>
@@ -125,13 +137,15 @@ export const SearchSettings = ({
           {handleSortClick && (
             <SearchSettingsList data-cy="sort" aria-label="Sort">
               {options.map((item) => (
-                <SearchSettingsItem
-                  key={item.value}
-                  onClick={(e) => handleSortOptionClick(e, item.value)}
-                  isActive={item.value === getCurrentSortChoice(queryParams, isBrowsing)}
-                >
-                  {item.label}
-                </SearchSettingsItem>
+                <Fragment key={item.value}>
+                  <SearchSettingsItem
+                    onClick={(e) => handleSortOptionClick(e, item.value)}
+                    isActive={item.value === getCurrentSortChoice(queryParams, isBrowsing)}
+                    aria-label={item.label}
+                  >
+                    {item.label}
+                  </SearchSettingsItem>
+                </Fragment>
               ))}
             </SearchSettingsList>
           )}
