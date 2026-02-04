@@ -1,4 +1,4 @@
-import { ExternalLink } from "@/components/ExternalLink";
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { TMatchedFamily } from "@/types";
 
 import SearchResult from "./SearchResult";
@@ -28,18 +28,11 @@ const SearchResultList = ({ category, families, activeFamilyIndex, onClick, offs
     return (
       <>
         <p className="my-4 md:mt-0">
-          Climate litigation case documents are coming soon.{" "}
-          <ExternalLink url="https://form.jotform.com/233294371485361" className="underline text-blue-600 hover:text-blue-800">
-            Get notified when they arrive
-          </ExternalLink>
-          .
-        </p>
-        <p className="my-4 md:mt-0">
-          In the meantime, visit the Sabin Center's{" "}
-          <ExternalLink url="http://climatecasechart.com/" className="underline text-blue-600 hover:text-blue-800">
-            Climate Change Litigation Databases
-          </ExternalLink>
-          .
+          Visit the{" "}
+          <PageLink external href="https://www.climatecasechart.com/" className="text-brand underline">
+            Climate Litigation Database
+          </PageLink>{" "}
+          to see litigation documents.
         </p>
       </>
     );
