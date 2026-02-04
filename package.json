@@ -92,7 +92,6 @@
     "msw": "^2.12.7",
     "next-router-mock": "^1.0.5",
     "postcss": "^8.5.1",
-    "postcss-preset-env": "^7.0.2",
     "prettier": "^3.8.1",
     "run-parallel": "^1.2.0",
     "size-limit": "^11.1.6",
