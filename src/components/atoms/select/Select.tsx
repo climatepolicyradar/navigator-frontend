@@ -1,4 +1,4 @@
-import { Select as BaseSelect } from "@base-ui-components/react";
+import { Select as BaseSelect } from "@base-ui/react";
 import { ChevronsUpDown } from "lucide-react";
 import { RefObject } from "react";
 
@@ -8,20 +8,21 @@ type TSelectOption = {
 };
 
 interface IProps {
+  container?: HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot>;
   defaultValue?: string;
-  value?: string;
-  options?: TSelectOption[];
+  id?: string;
   onValueChange?: (value: string) => void;
-  container?: HTMLElement | RefObject<HTMLElement> | null;
+  options?: TSelectOption[];
+  value?: string;
 }
 
-export function Select({ defaultValue, value, options, onValueChange, container = null }: IProps) {
+export function Select({ defaultValue, value, options, onValueChange, container, id }: IProps) {
   const handleValueChange = (value: string) => {
     onValueChange?.(value);
   };
 
   return (
-    <BaseSelect.Root defaultValue={defaultValue} onValueChange={handleValueChange} value={value}>
+    <BaseSelect.Root defaultValue={defaultValue} onValueChange={handleValueChange} value={value} id={id}>
       <BaseSelect.Trigger className="flex items-center justify-between gap-1 px-1 h-[30px] rounded-sm text-sm text-text-primary m-0 outline-0 select-none cursor-default hover:border-inputSelected active:bg-surface-ui data-popup-open:bg-surface-ui focus:border-inputSelected">
         <BaseSelect.Value />
         <BaseSelect.Icon className="flex">

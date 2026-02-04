@@ -1,4 +1,4 @@
-import { Menu as BaseMenu } from "@base-ui-components/react";
+import { Menu as BaseMenu } from "@base-ui/react";
 
 import { joinTailwindClasses } from "@/utils/tailwind";
 
