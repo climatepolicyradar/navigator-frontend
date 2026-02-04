@@ -37,6 +37,7 @@ import {
   TThemeConfig,
   TFeatures,
 } from "@/types";
+import { getFamilyBlocks } from "@/utils/blocks/getFamilyBlocks";
 import { getFamilyMetadata } from "@/utils/family-metadata/getFamilyMetadata";
 import { getFamilyMetaDescription } from "@/utils/getFamilyMetaDescription";
 import { getLitigationCaseJSONLD } from "@/utils/json-ld/getLitigationCaseJSONLD";
@@ -53,7 +54,7 @@ export interface IProps {
   features: TFeatures;
   subdivisions: TGeographySubdivision[];
   targets: TTarget[];
-  theme: string;
+  theme: TTheme;
   themeConfig: TThemeConfig;
   vespaFamilyData?: TSearchResponse | null;
 }
@@ -96,7 +97,7 @@ export const FamilyPage = ({
 
   /* Blocks */
 
-  const blocksToRender = themeConfig.pageBlocks.family;
+  const blocksToRender = getFamilyBlocks(themeConfig.pageBlocks.family, features, theme);
   const blockDefinitions: TBlockDefinitions<TFamilyPageBlock> = {
     collections: {
       render: () => <CollectionsBlock key="collections" collections={collections} />,
