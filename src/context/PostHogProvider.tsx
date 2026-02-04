@@ -35,7 +35,6 @@ function PostHogPageView({ consent }: { consent: boolean }): null {
       let geographyType: string | undefined = undefined;
 
       switch (pathParts[1]) {
-        case "document":
         case "collections":
         case "geographies":
         case "document":

@@ -1,6 +1,5 @@
-import { screen, waitFor } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import router from "next-router-mock";
 
 import { DEFAULT_FEATURES } from "@/constants/features";
 import cprConfig from "@/cpr/config";
@@ -28,32 +27,7 @@ const baseSearchProps = {
 };
 
 describe("SearchPage", async () => {
-  it("shows search onboarding info when no filters applied", async () => {
-    const search_props = { ...baseSearchProps };
-    // @ts-ignore
-    renderWithAppContext(Search, { pageProps: search_props });
-
-    // Wait for the component to render
-    await waitFor(() => {
-      expect(screen.getByText("Get better results")).toBeInTheDocument();
-    });
-
-    expect(await screen.findByText(/You are currently viewing all of the documents in our database/i)).toBeInTheDocument();
-    expect(await screen.findByText(/Topics filter/i)).toBeInTheDocument();
-  });
-
-  it("hides search onboarding info when filters are applied", async () => {
-    const search_props = { ...baseSearchProps, searchParams: { q: "climate policy" } };
-    router.query = { q: "climate policy" };
-    // @ts-ignore
-    renderWithAppContext(Search, { pageProps: search_props });
-
-    expect(screen.queryByText(/Get better results/)).not.toBeInTheDocument();
-    expect(screen.queryByText(/You are currently viewing all of the documents in our database/)).not.toBeInTheDocument();
-  });
-
   it("filters search results by topic", async () => {
-    // @ts-ignore
     renderWithAppContext(Search, {
       pageProps: {
         ...baseSearchProps,

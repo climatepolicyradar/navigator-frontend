@@ -47,7 +47,6 @@ const eslintConfig = [
   ...(Array.isArray(tseslintConfigs.recommended) ? tseslintConfigs.recommended : [tseslintConfigs.recommended]),
   reactPlugin.configs.flat.recommended,
   reactPlugin.configs.flat["jsx-runtime"],
-  reactHooksPlugin.configs["recommended-latest"],
   jsxA11yPlugin.flatConfigs.recommended,
   nextFlatConfig.recommended,
   nextFlatConfig.coreWebVitals,
@@ -72,7 +71,9 @@ const eslintConfig = [
     },
     plugins: {
       import: importPlugin,
+      "react-hooks": reactHooksPlugin,
     },
+    rules: reactHooksPlugin.configs.recommended.rules,
     settings: {
       react: {
         version: "detect",

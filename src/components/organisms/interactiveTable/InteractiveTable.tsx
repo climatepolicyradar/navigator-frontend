@@ -1,4 +1,4 @@
-import { Menu } from "@base-ui-components/react";
+import { Menu } from "@base-ui/react";
 import orderBy from "lodash/orderBy";
 import { LucideArrowDown, LucideArrowUp, LucideArrowUpDown, LucideIcon, LucideInfo } from "lucide-react";
 import { ReactNode, useMemo, useState } from "react";

@@ -132,6 +132,7 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
         <div className="flex gap-2 items-center justify-between">
           {showSearch && (
             <input
+              name="Topic quick search"
               type="text"
               placeholder="Quick search"
               value={search}
@@ -140,13 +141,16 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
             />
           )}
           <div className="basis-3/10 shrink-0 relative flex items-center">
-            <label className="text-sm text-text-tertiary">Sort:</label>
+            <label className="text-sm text-text-tertiary" htmlFor="sort-select">
+              Sort:
+            </label>
             <Select
-              defaultValue="A-Z"
+              defaultValue="Grouped"
               value={sort}
               onValueChange={(value) => setSort(value as TSort)}
               options={selectOptions}
               container={ref.current}
+              id="sort-select"
             />
           </div>
         </div>
@@ -208,7 +212,7 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
                 />
               ))}
 
-          <div className="h-[34px] sticky block bottom-0 w-full bg-gradient-to-b from-transparent to-white">&nbsp;</div>
+          <div className="h-[34px] sticky block bottom-0 w-full bg-linear-to-b from-transparent to-white">&nbsp;</div>
         </div>
       </div>
     </div>

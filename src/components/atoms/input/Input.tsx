@@ -1,4 +1,4 @@
-import { Input as BaseInput } from "@base-ui-components/react";
+import { Input as BaseInput } from "@base-ui/react";
 import { useMemo } from "react";
 
 import { Icon, TIconName, iconNames } from "@/components/atoms/icon/Icon";
