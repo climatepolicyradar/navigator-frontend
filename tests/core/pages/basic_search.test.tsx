@@ -2,7 +2,7 @@ import { fireEvent, screen } from "@testing-library/react";
 import router from "next-router-mock";
 
 import { DEFAULT_FEATURES } from "@/constants/features";
-import { sortOptionsBrowse } from "@/constants/sortOptions";
+import { sortOptions, sortOptionsBrowse } from "@/constants/sortOptions";
 import cprConfig from "@/cpr/config";
 import { resetPage } from "@/mocks/helpers";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
@@ -95,14 +95,24 @@ describe("SearchPage", async () => {
     const sortOptionToSelect = await screen.findByRole("button", { name: sortOptionsBrowse[0].label });
     fireEvent.click(sortOptionToSelect);
 
-    // TODO: figure out how to test that the correct options are being displayed when we aren't browsing
-    // i.e. we have a search term
-    // set query value so that we are not in "browse" mode
-    // router.query = { q: "test" };
+    // Check that the search options has been updated to reflect the selected option
+    expect(await screen.findByRole("button", { name: "Sort options" })).toHaveTextContent(sortOptionsBrowse[0].label);
+  });
 
-    // for (const item of sortOptions) {
-    //   expect(await screen.findByRole("button", { name: item.label })).toBeInTheDocument();
-    // }
+  it("display the non-browse sort settings when there is a search term", async () => {
+    const search_props = { ...baseSearchProps, searchParams: { q: "climate policy" } };
+    router.query = { q: "climate policy" };
+
+    renderWithAppContext(Search, { pageProps: search_props });
+
+    const searchOptionsButton = await screen.findByRole("button", { name: "Sort options" });
+    expect(searchOptionsButton).toBeInTheDocument();
+
+    fireEvent.click(searchOptionsButton);
+
+    for (const item of sortOptions) {
+      expect(await screen.findByRole("button", { name: item.label })).toBeInTheDocument();
+    }
   });
 
   it("filters search results by region", async () => {
