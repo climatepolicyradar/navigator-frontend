@@ -4,13 +4,8 @@ import router from "next-router-mock";
 import { DEFAULT_FEATURES } from "@/constants/features";
 import { sortOptions, sortOptionsBrowse } from "@/constants/sortOptions";
 import cprConfig from "@/cpr/config";
-import { resetPage } from "@/mocks/helpers";
 import { renderWithAppContext } from "@/mocks/renderWithAppContext";
 import Search, { type TProps as TSearchPageProps } from "@/pages/search";
-
-afterEach(() => {
-  resetPage();
-});
 
 const baseSearchProps: TSearchPageProps = {
   envConfig: {
@@ -143,6 +138,9 @@ describe("SearchPage", async () => {
   });
 
   it("filters search results by country", async () => {
+    router.reset();
+    window.location.hash = "";
+
     renderWithAppContext(Search, { pageProps: baseSearchProps });
 
     // Verify slideout is initially closed.
