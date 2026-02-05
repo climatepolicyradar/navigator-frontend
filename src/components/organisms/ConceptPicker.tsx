@@ -43,10 +43,14 @@ const isSelected = (queryValue: string | string[] | undefined, option: string) =
   }
 };
 
-const conceptsSorter = (a: TTopic, b: TTopic, sort: TSort) => {
+const conceptsSorter = (a: TTopic, b: TTopic, sort: TSort, rootTopic?: TTopic) => {
   if (sort === "A-Z") {
     return a.preferred_label.localeCompare(b.preferred_label);
   } else if (sort === "Grouped") {
+    // Root topics grouped within themselves always show first
+    if (rootTopic?.preferred_label === a.preferred_label) return -1;
+    if (rootTopic?.preferred_label === b.preferred_label) return 1;
+
     return a.recursive_subconcept_of[0].localeCompare(b.recursive_subconcept_of[0]);
   }
   return 0;
@@ -179,7 +183,7 @@ export const ConceptPicker = ({ containerClasses = "", startingSort = "Grouped",
                 >
                   <div className="flex flex-col gap-2 pb-2">
                     {filteredTopics
-                      .sort((a, b) => conceptsSorter(a, b, "A-Z"))
+                      .sort((a, b) => conceptsSorter(a, b, "Grouped", rootTopic))
                       .map((concept) => (
                         <InputCheck
                           key={concept.wikibase_id}
