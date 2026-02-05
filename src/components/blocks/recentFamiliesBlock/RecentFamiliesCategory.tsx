@@ -1,12 +1,14 @@
 import sortBy from "lodash/sortBy";
 import { LucideChevronDownCircle } from "lucide-react";
 import Link from "next/link";
-import { useContext, useMemo } from "react";
+import { ReactNode, useContext, useMemo } from "react";
 
+import { PageLink } from "@/components/atoms/pageLink/PageLink";
 import { EntityCard, IProps as IEntityCardProps } from "@/components/molecules/entityCard/EntityCard";
 import { ARROW_RIGHT } from "@/constants/chars";
 import { QUERY_PARAMS } from "@/constants/queryParams";
 import { GeographiesContext } from "@/context/GeographiesContext";
+import { ThemeContext } from "@/context/ThemeContext";
 import { getCategoryName } from "@/helpers/getCategoryName";
 import { GeographyTypeV2, GeographyV2, TCategorySummary } from "@/types";
 import { pluralise } from "@/utils/pluralise";
@@ -38,6 +40,7 @@ export const RecentFamiliesCategory = ({
   geography,
 }: IProps) => {
   const allGeographies = useContext(GeographiesContext);
+  const { theme } = useContext(ThemeContext);
 
   const cards: IEntityCardProps[] = useMemo(
     () =>
@@ -73,6 +76,20 @@ export const RecentFamiliesCategory = ({
     viewAllUrlQuery[QUERY_PARAMS.category] = id;
   }
 
+  // Provides a way to set a redirection note to data in one of our other apps
+  let placeholder: ReactNode = null;
+  if (id === "Litigation" && theme !== "ccc") {
+    placeholder = (
+      <p className="mt-4 mb-12 text-text-primary">
+        Visit the{" "}
+        <PageLink external href="https://www.climatecasechart.com/" className="text-brand underline">
+          Climate Litigation Database
+        </PageLink>{" "}
+        to see litigation documents.
+      </p>
+    );
+  }
+
   return (
     <div className="border-b border-border-light">
       {/* Accordion */}
@@ -95,27 +112,32 @@ export const RecentFamiliesCategory = ({
       {/* Cards */}
       {(!showAccordion || isExpanded) && (
         <>
-          {families.length > 0 && (
-            <div className="flex gap-5 items-stretch overflow-x-auto pb-2">
-              {cards.map((card) => (
-                <EntityCard key={card.href} {...card} />
-              ))}
-              <Link
-                href={{
-                  pathname: "/search",
-                  query: { ...viewAllUrlQuery },
-                }}
-                className="min-w-16 max-w-25 flex-1 flex justify-center items-center bg-surface-brand-darker/8 text-text-brand-darker font-semibold leading-tight"
-                data-ph-capture-attribute-link-purpose="all-recents"
-                data-ph-capture-attribute-category={id}
-              >
-                All {ARROW_RIGHT}
-              </Link>
-            </div>
+          {placeholder}
+          {!placeholder && (
+            <>
+              {families.length > 0 && (
+                <div className="flex gap-5 items-stretch overflow-x-auto pb-2">
+                  {cards.map((card) => (
+                    <EntityCard key={card.href} {...card} />
+                  ))}
+                  <Link
+                    href={{
+                      pathname: "/search",
+                      query: { ...viewAllUrlQuery },
+                    }}
+                    className="min-w-16 max-w-25 flex-1 flex justify-center items-center bg-surface-brand-darker/8 text-text-brand-darker font-semibold leading-tight"
+                    data-ph-capture-attribute-link-purpose="all-recents"
+                    data-ph-capture-attribute-category={id}
+                  >
+                    All {ARROW_RIGHT}
+                  </Link>
+                </div>
+              )}
+              <p className="mt-4 mb-12 text-sm text-text-tertiary">
+                There {pluralise(count, ["is", "are"])} {count} {pluralise(count, singularAndPlural)} in the database.
+              </p>
+            </>
           )}
-          <p className="mt-4 mb-12 text-sm text-text-tertiary">
-            There {pluralise(count, ["is", "are"])} {count} {pluralise(count, singularAndPlural)} in the database.
-          </p>
         </>
       )}
     </div>

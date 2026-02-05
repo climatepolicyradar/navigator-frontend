@@ -87,10 +87,10 @@ const config: TThemeConfig = {
         value: ["OEP.corpus.i00000001.n0000"],
       },
       {
-        label: "Litigation (coming soon)",
+        label: "Litigation",
         slug: "Litigation",
         category: ["Litigation"],
-        value: ["LITIGATION-COMING-SOON"],
+        value: ["LITIGATION-PLACEHOLDER"],
       },
     ],
   },
