@@ -1,6 +1,10 @@
 import { GetServerSidePropsContext } from "next";
 
-const crawlableRobotsTxt = `User-agent: *\nAllow: /`;
+const uncrawlableRoutes = ["/_search"];
+
+const crawlableRobotsTxt = `User-agent: *
+Allow: /
+${uncrawlableRoutes.map((route) => `Disallow: ${route}`).join("\n")}`;
 
 const uncrawlableRobotsTxt = `User-agent: *\nDisallow: /`;
 
