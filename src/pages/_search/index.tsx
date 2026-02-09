@@ -61,7 +61,6 @@ export const getServerSideProps = (async (context) => {
     }
   } catch (error) {
     // TODO handle error more elegantly
-    /* trunk-ignore(eslint/no-console) */
     // eslint-disable-next-line no-console
     console.warn("Error fetching concepts data for Shadow Search page:", error);
   }
