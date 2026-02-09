@@ -1,6 +1,7 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { ApiClient } from "@/api/http-common";
+import { PatrickComponent } from "@/components/_experiment/patrick/patrick";
 import { Debug } from "@/components/atoms/debug/Debug";
 import Layout from "@/components/layouts/Main";
 import { withEnvConfig } from "@/context/EnvConfig";
@@ -22,6 +23,7 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
       <FeaturesContext.Provider value={features}>
         <TopicsContext.Provider value={topicsData}>
           <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
+            <PatrickComponent />
             <section>
               <h1>_Shadow Search Page</h1>
               <Debug title="Features" data={features} />
