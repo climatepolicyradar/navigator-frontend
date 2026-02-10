@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { Button } from "@base-ui/react/button";
+import { Input } from "@base-ui/react/input";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useState } from "react";
-import { Input } from "@base-ui/react/input";
-import { Button } from "@base-ui/react/button";
+
 import { ApiClient } from "@/api/http-common";
 import { PatrickComponent } from "@/components/_experiment/patrick/patrick";
 import { Debug } from "@/components/atoms/debug/Debug";
