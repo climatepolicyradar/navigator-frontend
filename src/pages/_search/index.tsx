@@ -65,6 +65,7 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
                 }}
+                className={"h-[40px] focus-within:outline-0!"}
                 value={searchTerm}
               />
 
