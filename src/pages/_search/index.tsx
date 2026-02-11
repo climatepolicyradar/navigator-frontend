@@ -68,8 +68,8 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                 </p>
               </header>
 
-              <div className="grid gap-8 md:grid-cols-[260px,1fr] items-start">
-                <aside className="space-y-4 rounded-2xl border border-border-lighter bg-white/70 p-4 shadow-sm">
+              <div className="grid gap-8 md:grid-cols-12 items-start">
+                <aside className="md:col-span-4 space-y-4 rounded-2xl border border-border-lighter bg-white/70 p-4 shadow-sm">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-text-tertiary">Active filters</p>
                   </div>
@@ -128,7 +128,7 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                   </div>
                 </aside>
 
-                <main className="space-y-6">
+                <main className="md:col-span-8 space-y-6">
                   <div className="rounded-2xl border border-border-lighter bg-white/70 p-4 shadow-sm">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                       <Input
