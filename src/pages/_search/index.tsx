@@ -58,108 +58,163 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
     <FeaturesContext.Provider value={features}>
       <TopicsContext.Provider value={topicsData}>
         <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
-          <section>
-            <>
-              <Input
-                placeholder="Search"
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                }}
-                value={searchTerm}
-              />
+          <section className="py-8">
+            <div className="mx-auto max-w-5xl px-4">
+              <header className="mb-6">
+                <h1 className="text-2xl font-semibold text-text-primary">Shadow search</h1>
+              </header>
 
-              <Button onClick={() => setSearchTerm("")}>x</Button>
-            </>
+              <div className="grid gap-6 md:grid-cols-3 items-start">
+                <aside className="space-y-4 border border-border-lighter p-4">
+                  <h2 className="text-sm font-semibold text-text-primary">Active filters</h2>
 
-            <div>
-              <ul>
-                <li> Based on your search: "{searchTerm}", we found the following topics, geos, and years:</li>
-                {matchedConcepts
-                  .filter((concept) => !selectedTopics.includes(concept))
-                  .map((concept) => (
-                    <li key={concept}>
-                      <Button onClick={() => setSelectedTopics([...selectedTopics, concept])}>{concept}</Button>
-                    </li>
-                  ))}
-                {matchedGeos
-                  .filter((geo) => !selectedGeos.includes(geo))
-                  .map((geo) => (
-                    <li key={geo}>
-                      <Button onClick={() => setSelectedGeos([...selectedGeos, geo])}>{geo}</Button>
-                    </li>
-                  ))}
-                {matchedYears
-                  .filter((year) => !selectedYears.includes(year))
-                  .map((year) => (
-                    <li key={year}>
-                      <Button onClick={() => setSelectedYears([...selectedYears, year])}>{year}</Button>
-                    </li>
-                  ))}
-                {(matchedConcepts.length > 0 || matchedGeos.length > 0 || matchedYears.length > 0) && (
-                  <>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="mb-1 text-xs text-text-tertiary">Topics</p>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedTopics.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
+                        {selectedTopics.map((topic) => (
+                          <Button key={topic} onClick={() => setSelectedTopics(selectedTopics.filter((topicToRemove) => topicToRemove !== topic))}>
+                            {topic}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="mb-1 text-xs text-text-tertiary">Geographies</p>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedGeos.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
+                        {selectedGeos.map((geo) => (
+                          <Button key={geo} onClick={() => setSelectedGeos(selectedGeos.filter((geoToRemove) => geoToRemove !== geo))}>
+                            {geo}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="mb-1 text-xs text-text-tertiary">Years</p>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedYears.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
+                        {selectedYears.map((year) => (
+                          <Button key={year} onClick={() => setSelectedYears(selectedYears.filter((yearToRemove) => yearToRemove !== year))}>
+                            {year}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </aside>
+
+                <main className="space-y-4 md:col-span-2">
+                  <div className="space-y-2">
+                    <Input
+                      placeholder="Search"
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                      }}
+                      className="h-[40px] w-full"
+                      value={searchTerm}
+                    />
+                    <div className="flex gap-2">
+                      <Button onClick={() => setSearchTerm("")} disabled={!searchTerm}>
+                        Clear
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h2 className="text-sm font-semibold text-text-primary">Suggested filters</h2>
+                    <p className="text-xs text-text-secondary">Based on your search &ldquo;{searchTerm}&rdquo;, we have found the following:</p>
+                    <ul className="space-y-2 text-sm text-text-primary">
+                      {matchedConcepts.length === 0 && matchedGeos.length === 0 && matchedYears.length === 0 && (
+                        <li className="text-xs text-text-tertiary">
+                          We will show filter suggestions here once your search includes recognised topics, geographies or years.
+                        </li>
+                      )}
+
+                      {matchedConcepts.length > 0 && (
+                        <li>
+                          <p className="mb-1 text-xs text-text-tertiary">Topics</p>
+                          <div className="flex flex-wrap gap-2">
+                            {matchedConcepts
+                              .filter((concept) => !selectedTopics.includes(concept))
+                              .map((concept) => (
+                                <Button key={concept} onClick={() => setSelectedTopics([...selectedTopics, concept])}>
+                                  {concept}
+                                </Button>
+                              ))}
+                          </div>
+                        </li>
+                      )}
+
+                      {matchedGeos.length > 0 && (
+                        <li>
+                          <p className="mb-1 text-xs text-text-tertiary">Geographies</p>
+                          <div className="flex flex-wrap gap-2">
+                            {matchedGeos
+                              .filter((geo) => !selectedGeos.includes(geo))
+                              .map((geo) => (
+                                <Button key={geo} onClick={() => setSelectedGeos([...selectedGeos, geo])}>
+                                  {geo}
+                                </Button>
+                              ))}
+                          </div>
+                        </li>
+                      )}
+
+                      {matchedYears.length > 0 && (
+                        <li>
+                          <p className="mb-1 text-xs text-text-tertiary">Years</p>
+                          <div className="flex flex-wrap gap-2">
+                            {matchedYears
+                              .filter((year) => !selectedYears.includes(year))
+                              .map((year) => (
+                                <Button key={year} onClick={() => setSelectedYears([...selectedYears, year])}>
+                                  {year}
+                                </Button>
+                              ))}
+                          </div>
+                        </li>
+                      )}
+                    </ul>
+
+                    {(matchedConcepts.length > 0 || matchedGeos.length > 0 || matchedYears.length > 0) && (
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Button
+                          onClick={() => {
+                            setSelectedTopics(matchedConcepts);
+                            setSelectedGeos(matchedGeos);
+                            setSelectedYears(matchedYears);
+                            setRawSearchTerm(searchTerm);
+                            setSearchTerm("");
+                          }}
+                        >
+                          Apply all filters
+                        </Button>
+                        <Button onClick={() => setSearchTerm(searchTerm)}>Search &ldquo;{searchTerm}&rdquo; only</Button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <h2 className="text-sm font-semibold text-text-primary">Filtered view</h2>
+                    <p className="text-sm text-text-primary">Results for &ldquo;{rawSearchTerm}&rdquo;</p>
+                    <p className="text-xs text-text-secondary">This query has been translated into the filters on the left.</p>
                     <Button
                       onClick={() => {
-                        setSelectedTopics(matchedConcepts);
-                        setSelectedGeos(matchedGeos);
-                        setSelectedYears(matchedYears);
-                        setRawSearchTerm(searchTerm);
-                        setSearchTerm("");
+                        setSearchTerm(rawSearchTerm);
+                        setSelectedTopics([]);
+                        setSelectedGeos([]);
+                        setSelectedYears([]);
                       }}
                     >
-                      Apply all filters
+                      Reset filters to original search
                     </Button>
-                    <p>or</p>
-                  </>
-                )}
-                <Button onClick={() => setSearchTerm(searchTerm)}>Search "{searchTerm}"?</Button>
-              </ul>
-            </div>
-            <br />
-
-            <div>
-              <p>Filters:</p>
-              <p>
-                Topics:{" "}
-                {selectedTopics.map((topic) => (
-                  <Button key={topic} onClick={() => setSelectedTopics(selectedTopics.filter((topicToRemove) => topicToRemove !== topic))}>
-                    {topic}
-                  </Button>
-                ))}
-              </p>
-              <p>
-                Geos:{" "}
-                {selectedGeos.map((geo) => (
-                  <Button key={geo} onClick={() => setSelectedGeos(selectedGeos.filter((geoToRemove) => geoToRemove !== geo))}>
-                    {geo}
-                  </Button>
-                ))}
-              </p>
-              <p>
-                Years:{" "}
-                {selectedYears.map((year) => (
-                  <Button key={year} onClick={() => setSelectedYears(selectedYears.filter((yearToRemove) => yearToRemove !== year))}>
-                    {year}
-                  </Button>
-                ))}
-              </p>
-            </div>
-
-            <br />
-            <div>
-              <p>Results for your query:</p>
-              <p>"{rawSearchTerm}"</p>
-
-              <p>This has been transformed into a filtered view...:</p>
-              <Button
-                onClick={() => {
-                  setSearchTerm(rawSearchTerm);
-                  setSelectedTopics([]);
-                  setSelectedGeos([]);
-                  setSelectedYears([]);
-                }}
-              >
-                Reset
-              </Button>
+                  </div>
+                </main>
+              </div>
             </div>
           </section>
         </WikiBaseConceptsContext.Provider>
