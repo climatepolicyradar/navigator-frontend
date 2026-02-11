@@ -1,46 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button } from "@base-ui/react/button";
-import { Input } from "@base-ui/react/input";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
-import { PatrickComponent } from "@/components/_experiment/patrick/patrick";
-import { Debug } from "@/components/atoms/debug/Debug";
-import Layout from "@/components/layouts/Main";
+import { SearchTypeahead } from "@/components/_experiment/searchTypeahead/SearchTypeahead";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TopicsContext } from "@/context/TopicsContext";
 import { WikiBaseConceptsContext } from "@/context/WikiBaseConceptsContext";
 import useConfig from "@/hooks/useConfig";
-import { TTheme, TTopic, TTopics } from "@/types";
+import { TTopic, TTopics } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
 import { readConfigFile } from "@/utils/readConfigFile";
 
-const TOPICS = ["flood defence", "targets"];
-const GEOS = ["spain"];
-
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
-
-const findMatches = (searchTerm: string) => {
-  if (!searchTerm) return { matchedConcepts: [], matchedGeos: [], matchedYears: [] };
-
-  const matchedYears: string[] = [];
-  const rawSearchTermParts = searchTerm.trim().split(" ");
-  for (let i = 0; i < rawSearchTermParts.length; i++) {
-    const year = parseInt(rawSearchTermParts[i]);
-    if (!isNaN(year) && year >= 1900 && year <= 2100) {
-      matchedYears.push(year.toString());
-    }
-  }
-
-  const matchedConcepts = TOPICS.filter((topic) => searchTerm.toLowerCase().includes(topic.toLowerCase()));
-  const matchedGeos = GEOS.filter((geo) => searchTerm.toLowerCase().includes(geo.toLowerCase()));
-  return { matchedConcepts, matchedGeos, matchedYears };
-};
 
 const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConceptsData }: TProps) => {
   const configQuery = useConfig();
@@ -51,9 +28,7 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [selectedGeos, setSelectedGeos] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
-
-  const { matchedConcepts, matchedGeos, matchedYears } = findMatches(searchTerm);
-
+  const [selectedDocumentTypes, setSelectedDocumentTypes] = useState<string[]>([]);
   return (
     <FeaturesContext.Provider value={features}>
       <TopicsContext.Provider value={topicsData}>
@@ -105,103 +80,65 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                       </div>
                     </div>
                   </div>
+
+                  {(searchTerm || selectedTopics.length > 0 || selectedGeos.length > 0 || selectedYears.length > 0) && (
+                    <Button
+                      onClick={() => {
+                        setSelectedTopics([]);
+                        setSelectedGeos([]);
+                        setSelectedYears([]);
+                      }}
+                      className="text-xs"
+                    >
+                      Clear all filters
+                    </Button>
+                  )}
                 </aside>
 
                 <main className="space-y-4 md:col-span-2">
-                  <div className="space-y-2">
-                    <Input
-                      placeholder="Search"
-                      onChange={(e) => {
-                        setSearchTerm(e.target.value);
-                      }}
-                      className="h-[40px] w-full"
-                      value={searchTerm}
-                    />
-                    <div className="flex gap-2">
-                      <Button onClick={() => setSearchTerm("")} disabled={!searchTerm}>
-                        Clear
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h2 className="text-sm font-semibold text-text-primary">Suggested filters</h2>
-                    <p className="text-xs text-text-secondary">Based on your search &ldquo;{searchTerm}&rdquo;, we have found the following:</p>
-                    <ul className="space-y-2 text-sm text-text-primary">
-                      {matchedConcepts.length === 0 && matchedGeos.length === 0 && matchedYears.length === 0 && (
-                        <li className="text-xs text-text-tertiary">
-                          We will show filter suggestions here once your search includes recognised topics, geographies or years.
-                        </li>
-                      )}
-
-                      {matchedConcepts.length > 0 && (
-                        <li>
-                          <p className="mb-1 text-xs text-text-tertiary">Topics</p>
-                          <div className="flex flex-wrap gap-2">
-                            {matchedConcepts
-                              .filter((concept) => !selectedTopics.includes(concept))
-                              .map((concept) => (
-                                <Button key={concept} onClick={() => setSelectedTopics([...selectedTopics, concept])}>
-                                  {concept}
-                                </Button>
-                              ))}
-                          </div>
-                        </li>
-                      )}
-
-                      {matchedGeos.length > 0 && (
-                        <li>
-                          <p className="mb-1 text-xs text-text-tertiary">Geographies</p>
-                          <div className="flex flex-wrap gap-2">
-                            {matchedGeos
-                              .filter((geo) => !selectedGeos.includes(geo))
-                              .map((geo) => (
-                                <Button key={geo} onClick={() => setSelectedGeos([...selectedGeos, geo])}>
-                                  {geo}
-                                </Button>
-                              ))}
-                          </div>
-                        </li>
-                      )}
-
-                      {matchedYears.length > 0 && (
-                        <li>
-                          <p className="mb-1 text-xs text-text-tertiary">Years</p>
-                          <div className="flex flex-wrap gap-2">
-                            {matchedYears
-                              .filter((year) => !selectedYears.includes(year))
-                              .map((year) => (
-                                <Button key={year} onClick={() => setSelectedYears([...selectedYears, year])}>
-                                  {year}
-                                </Button>
-                              ))}
-                          </div>
-                        </li>
-                      )}
-                    </ul>
-
-                    {(matchedConcepts.length > 0 || matchedGeos.length > 0 || matchedYears.length > 0) && (
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Button
-                          onClick={() => {
-                            setSelectedTopics(matchedConcepts);
-                            setSelectedGeos(matchedGeos);
-                            setSelectedYears(matchedYears);
-                            setRawSearchTerm(searchTerm);
-                            setSearchTerm("");
-                          }}
-                        >
-                          Apply all filters
-                        </Button>
-                        <Button onClick={() => setSearchTerm(searchTerm)}>Search &ldquo;{searchTerm}&rdquo; only</Button>
-                      </div>
-                    )}
-                  </div>
+                  <SearchTypeahead
+                    searchTerm={searchTerm}
+                    onSearchTermChange={setSearchTerm}
+                    selectedTopics={selectedTopics}
+                    selectedGeos={selectedGeos}
+                    selectedYears={selectedYears}
+                    selectedDocumentTypes={selectedDocumentTypes}
+                    onSelectDocumentType={(documentType) => {
+                      setSelectedDocumentTypes([...selectedDocumentTypes, documentType]);
+                      setSearchTerm("");
+                    }}
+                    onSelectConcept={(concept) => {
+                      setSelectedTopics([...selectedTopics, concept]);
+                      setSearchTerm("");
+                    }}
+                    onSelectGeo={(geo) => {
+                      setSelectedGeos([...selectedGeos, geo]);
+                      setSearchTerm("");
+                    }}
+                    onSelectYear={(year) => {
+                      setSelectedYears([...selectedYears, year]);
+                      setSearchTerm("");
+                    }}
+                    onApplyAll={({ concepts, geos, years, documentTypes }) => {
+                      setSelectedTopics(concepts);
+                      setSelectedGeos(geos);
+                      setSelectedYears(years);
+                      setSelectedDocumentTypes(documentTypes);
+                      setRawSearchTerm(searchTerm);
+                      setSearchTerm("");
+                    }}
+                    onSearchOnly={() => {
+                      setRawSearchTerm(searchTerm);
+                      setSearchTerm("");
+                    }}
+                  />
 
                   <div className="space-y-2">
                     <h2 className="text-sm font-semibold text-text-primary">Filtered view</h2>
                     <p className="text-sm text-text-primary">Results for &ldquo;{rawSearchTerm}&rdquo;</p>
-                    <p className="text-xs text-text-secondary">This query has been translated into the filters on the left.</p>
+                    {(selectedTopics.length > 0 || selectedGeos.length > 0 || selectedYears.length > 0) && (
+                      <p className="text-xs text-text-secondary">This query has been translated into the filters on the left.</p>
+                    )}
                     <Button
                       onClick={() => {
                         setSearchTerm(rawSearchTerm);
@@ -210,7 +147,7 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                         setSelectedYears([]);
                       }}
                     >
-                      Reset filters to original search
+                      Undo search
                     </Button>
                   </div>
                 </main>
