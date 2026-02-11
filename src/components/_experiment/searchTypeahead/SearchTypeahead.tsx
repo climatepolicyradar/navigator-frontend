@@ -9,10 +9,12 @@ export interface SearchTypeaheadProps {
   selectedTopics: string[];
   selectedGeos: string[];
   selectedYears: string[];
+  selectedDocumentTypes: string[];
   onSelectConcept: (concept: string) => void;
   onSelectGeo: (geo: string) => void;
   onSelectYear: (year: string) => void;
-  onApplyAll: (matches: { concepts: string[]; geos: string[]; years: string[] }) => void;
+  onSelectDocumentType: (documentType: string) => void;
+  onApplyAll: (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => void;
   onSearchOnly: () => void;
   placeholder?: string;
 }
@@ -23,9 +25,11 @@ export const SearchTypeahead = ({
   selectedTopics,
   selectedGeos,
   selectedYears,
+  selectedDocumentTypes,
   onSelectConcept,
   onSelectGeo,
   onSelectYear,
+  onSelectDocumentType,
   onApplyAll,
   onSearchOnly,
   placeholder = "Search",
@@ -46,9 +50,11 @@ export const SearchTypeahead = ({
         selectedTopics={selectedTopics}
         selectedGeos={selectedGeos}
         selectedYears={selectedYears}
+        selectedDocumentTypes={selectedDocumentTypes}
         onSelectConcept={onSelectConcept}
         onSelectGeo={onSelectGeo}
         onSelectYear={onSelectYear}
+        onSelectDocumentType={onSelectDocumentType}
         onApplyAll={onApplyAll}
         onSearchOnly={onSearchOnly}
       />

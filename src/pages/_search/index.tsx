@@ -28,7 +28,7 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [selectedGeos, setSelectedGeos] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
-
+  const [selectedDocumentTypes, setSelectedDocumentTypes] = useState<string[]>([]);
   return (
     <FeaturesContext.Provider value={features}>
       <TopicsContext.Provider value={topicsData}>
@@ -102,6 +102,11 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                     selectedTopics={selectedTopics}
                     selectedGeos={selectedGeos}
                     selectedYears={selectedYears}
+                    selectedDocumentTypes={selectedDocumentTypes}
+                    onSelectDocumentType={(documentType) => {
+                      setSelectedDocumentTypes([...selectedDocumentTypes, documentType]);
+                      setSearchTerm("");
+                    }}
                     onSelectConcept={(concept) => {
                       setSelectedTopics([...selectedTopics, concept]);
                       setSearchTerm("");
@@ -114,10 +119,11 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                       setSelectedYears([...selectedYears, year]);
                       setSearchTerm("");
                     }}
-                    onApplyAll={({ concepts, geos, years }) => {
+                    onApplyAll={({ concepts, geos, years, documentTypes }) => {
                       setSelectedTopics(concepts);
                       setSelectedGeos(geos);
                       setSelectedYears(years);
+                      setSelectedDocumentTypes(documentTypes);
                       setRawSearchTerm(searchTerm);
                       setSearchTerm("");
                     }}

@@ -5,22 +5,25 @@ export interface SuggestedFiltersProps {
   selectedTopics: string[];
   selectedGeos: string[];
   selectedYears: string[];
+  selectedDocumentTypes: string[];
   onSelectConcept: (concept: string) => void;
   onSelectGeo: (geo: string) => void;
   onSelectYear: (year: string) => void;
-  onApplyAll: (matches: { concepts: string[]; geos: string[]; years: string[] }) => void;
+  onApplyAll: (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => void;
+  onSelectDocumentType: (documentType: string) => void;
   onSearchOnly: () => void;
 }
 
 const TOPICS = ["flood defence", "targets"];
 const GEOS = ["spain"];
-
+const DOCUMENT_TYPES = ["laws", "policies", "reports", "litigation"];
 const findMatches = (searchTerm: string) => {
   if (!searchTerm) {
     return {
       matchedConcepts: [],
       matchedGeos: [],
       matchedYears: [],
+      matchedDocumentTypes: [],
     };
   }
 
@@ -35,8 +38,8 @@ const findMatches = (searchTerm: string) => {
 
   const matchedConcepts = TOPICS.filter((topic) => searchTerm.toLowerCase().includes(topic.toLowerCase()));
   const matchedGeos = GEOS.filter((geo) => searchTerm.toLowerCase().includes(geo.toLowerCase()));
-
-  return { matchedConcepts, matchedGeos, matchedYears };
+  const matchedDocumentTypes = DOCUMENT_TYPES.filter((documentType) => searchTerm.toLowerCase().includes(documentType.toLowerCase()));
+  return { matchedConcepts, matchedGeos, matchedYears, matchedDocumentTypes };
 };
 
 export const SuggestedFilters = ({
@@ -44,17 +47,19 @@ export const SuggestedFilters = ({
   selectedTopics,
   selectedGeos,
   selectedYears,
+  selectedDocumentTypes,
   onSelectConcept,
   onSelectGeo,
   onSelectYear,
+  onSelectDocumentType,
   onApplyAll,
   onSearchOnly,
 }: SuggestedFiltersProps) => {
   if (searchTerm.length === 0) return null;
 
-  const { matchedConcepts, matchedGeos, matchedYears } = findMatches(searchTerm);
+  const { matchedConcepts, matchedGeos, matchedYears, matchedDocumentTypes } = findMatches(searchTerm);
 
-  const hasMatches = matchedConcepts.length > 0 || matchedGeos.length > 0 || matchedYears.length > 0;
+  const hasMatches = matchedConcepts.length > 0 || matchedGeos.length > 0 || matchedYears.length > 0 || matchedDocumentTypes.length > 0;
 
   return (
     <div className="space-y-2">
@@ -111,6 +116,21 @@ export const SuggestedFilters = ({
             </div>
           </li>
         )}
+
+        {matchedDocumentTypes.length > 0 && (
+          <li>
+            <p className="mb-1 text-xs text-text-tertiary">Document types</p>
+            <div className="flex flex-wrap gap-2">
+              {matchedDocumentTypes
+                .filter((documentType) => !selectedDocumentTypes.includes(documentType))
+                .map((documentType) => (
+                  <Button key={documentType} onClick={() => onSelectDocumentType(documentType)}>
+                    {documentType}
+                  </Button>
+                ))}
+            </div>
+          </li>
+        )}
       </ul>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -122,6 +142,7 @@ export const SuggestedFilters = ({
                   concepts: matchedConcepts,
                   geos: matchedGeos,
                   years: matchedYears,
+                  documentTypes: matchedDocumentTypes,
                 })
               }
             >
