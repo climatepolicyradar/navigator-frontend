@@ -58,66 +58,9 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
     <FeaturesContext.Provider value={features}>
       <TopicsContext.Provider value={topicsData}>
         <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
-          <section>
-            <>
-              <Input
-                placeholder="Search"
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                }}
-                className={"h-[40px] focus-within:outline-0!"}
-                value={searchTerm}
-              />
-
-              <Button onClick={() => setSearchTerm("")}>x</Button>
-            </>
-
-            <div>
-              <ul>
-                <li> Based on your search: "{searchTerm}", we found the following topics, geos, and years:</li>
-                {matchedConcepts
-                  .filter((concept) => !selectedTopics.includes(concept))
-                  .map((concept) => (
-                    <li key={concept}>
-                      <Button onClick={() => setSelectedTopics([...selectedTopics, concept])}>{concept}</Button>
-                    </li>
-                  ))}
-                {matchedGeos
-                  .filter((geo) => !selectedGeos.includes(geo))
-                  .map((geo) => (
-                    <li key={geo}>
-                      <Button onClick={() => setSelectedGeos([...selectedGeos, geo])}>{geo}</Button>
-                    </li>
-                  ))}
-                {matchedYears
-                  .filter((year) => !selectedYears.includes(year))
-                  .map((year) => (
-                    <li key={year}>
-                      <Button onClick={() => setSelectedYears([...selectedYears, year])}>{year}</Button>
-                    </li>
-                  ))}
-                {(matchedConcepts.length > 0 || matchedGeos.length > 0 || matchedYears.length > 0) && (
-                  <>
-                    <Button
-                      onClick={() => {
-                        setSelectedTopics(matchedConcepts);
-                        setSelectedGeos(matchedGeos);
-                        setSelectedYears(matchedYears);
-                        setRawSearchTerm(searchTerm);
-                        setSearchTerm("");
-                      }}
-                    >
-                      Apply all filters
-                    </Button>
-                    <p>or</p>
-                  </>
-                )}
-                <Button onClick={() => setSearchTerm(searchTerm)}>Search "{searchTerm}"?</Button>
-              </ul>
-            </div>
-            <br />
-
-            <div>
+          <section className="flex gap-4">
+            <aside className="w-[200px]">
+              <h1 className="text-4xl font-bold mb-4">Search</h1>
               <p>Filters:</p>
               <p>
                 Topics:{" "}
@@ -143,25 +86,83 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                   </Button>
                 ))}
               </p>
-            </div>
+            </aside>
 
-            <br />
-            <div>
-              <p>Results for your query:</p>
-              <p>"{rawSearchTerm}"</p>
-
-              <p>This has been transformed into a filtered view...:</p>
-              <Button
-                onClick={() => {
-                  setSearchTerm(rawSearchTerm);
-                  setSelectedTopics([]);
-                  setSelectedGeos([]);
-                  setSelectedYears([]);
+            <main>
+              <Input
+                placeholder="Search"
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
                 }}
-              >
-                Reset
-              </Button>
-            </div>
+                className={"h-[40px] focus-within:outline-0!"}
+                value={searchTerm}
+              />
+
+              <Button onClick={() => setSearchTerm("")}>x</Button>
+
+              <div>
+                <ul>
+                  <li> Based on your search: "{searchTerm}", we found the following topics, geos, and years:</li>
+                  {matchedConcepts
+                    .filter((concept) => !selectedTopics.includes(concept))
+                    .map((concept) => (
+                      <li key={concept}>
+                        <Button onClick={() => setSelectedTopics([...selectedTopics, concept])}>{concept}</Button>
+                      </li>
+                    ))}
+                  {matchedGeos
+                    .filter((geo) => !selectedGeos.includes(geo))
+                    .map((geo) => (
+                      <li key={geo}>
+                        <Button onClick={() => setSelectedGeos([...selectedGeos, geo])}>{geo}</Button>
+                      </li>
+                    ))}
+                  {matchedYears
+                    .filter((year) => !selectedYears.includes(year))
+                    .map((year) => (
+                      <li key={year}>
+                        <Button onClick={() => setSelectedYears([...selectedYears, year])}>{year}</Button>
+                      </li>
+                    ))}
+                  {(matchedConcepts.length > 0 || matchedGeos.length > 0 || matchedYears.length > 0) && (
+                    <>
+                      <Button
+                        onClick={() => {
+                          setSelectedTopics(matchedConcepts);
+                          setSelectedGeos(matchedGeos);
+                          setSelectedYears(matchedYears);
+                          setRawSearchTerm(searchTerm);
+                          setSearchTerm("");
+                        }}
+                      >
+                        Apply all filters
+                      </Button>
+                      <p>or</p>
+                    </>
+                  )}
+                  <Button onClick={() => setSearchTerm(searchTerm)}>Search "{searchTerm}"?</Button>
+                </ul>
+              </div>
+              <br />
+
+              <br />
+              <div>
+                <p>Results for your query:</p>
+                <p>"{rawSearchTerm}"</p>
+
+                <p>This has been transformed into a filtered view...:</p>
+                <Button
+                  onClick={() => {
+                    setSearchTerm(rawSearchTerm);
+                    setSelectedTopics([]);
+                    setSelectedGeos([]);
+                    setSelectedYears([]);
+                  }}
+                >
+                  Reset
+                </Button>
+              </div>
+            </main>
           </section>
         </WikiBaseConceptsContext.Provider>
       </TopicsContext.Provider>
