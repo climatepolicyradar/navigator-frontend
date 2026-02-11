@@ -94,7 +94,7 @@
     "postcss": "^8.5.1",
     "prettier": "^3.8.1",
     "run-parallel": "^1.2.0",
-    "size-limit": "^11.1.6",
+    "size-limit": "^12.0.0",
     "storybook": "10.2.8",
     "tailwind-scrollbar": "^4.0.0",
     "tailwindcss": "^4.0.0",
