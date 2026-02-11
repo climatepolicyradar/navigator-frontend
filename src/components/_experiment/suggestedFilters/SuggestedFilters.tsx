@@ -2,24 +2,45 @@ import { Button } from "@base-ui/react/button";
 
 export interface SuggestedFiltersProps {
   searchTerm: string;
-  matchedConcepts: string[];
-  matchedGeos: string[];
-  matchedYears: string[];
   selectedTopics: string[];
   selectedGeos: string[];
   selectedYears: string[];
   onSelectConcept: (concept: string) => void;
   onSelectGeo: (geo: string) => void;
   onSelectYear: (year: string) => void;
-  onApplyAll: () => void;
+  onApplyAll: (matches: { concepts: string[]; geos: string[]; years: string[] }) => void;
   onSearchOnly: () => void;
 }
 
+const TOPICS = ["flood defence", "targets"];
+const GEOS = ["spain"];
+
+const findMatches = (searchTerm: string) => {
+  if (!searchTerm) {
+    return {
+      matchedConcepts: [],
+      matchedGeos: [],
+      matchedYears: [],
+    };
+  }
+
+  const matchedYears: string[] = [];
+  const rawSearchTermParts = searchTerm.trim().split(" ");
+  for (let i = 0; i < rawSearchTermParts.length; i += 1) {
+    const year = parseInt(rawSearchTermParts[i], 10);
+    if (!Number.isNaN(year) && year >= 1900 && year <= 2100) {
+      matchedYears.push(year.toString());
+    }
+  }
+
+  const matchedConcepts = TOPICS.filter((topic) => searchTerm.toLowerCase().includes(topic.toLowerCase()));
+  const matchedGeos = GEOS.filter((geo) => searchTerm.toLowerCase().includes(geo.toLowerCase()));
+
+  return { matchedConcepts, matchedGeos, matchedYears };
+};
+
 export const SuggestedFilters = ({
   searchTerm,
-  matchedConcepts,
-  matchedGeos,
-  matchedYears,
   selectedTopics,
   selectedGeos,
   selectedYears,
@@ -30,6 +51,8 @@ export const SuggestedFilters = ({
   onSearchOnly,
 }: SuggestedFiltersProps) => {
   if (searchTerm.length === 0) return null;
+
+  const { matchedConcepts, matchedGeos, matchedYears } = findMatches(searchTerm);
 
   const hasMatches = matchedConcepts.length > 0 || matchedGeos.length > 0 || matchedYears.length > 0;
 
@@ -93,7 +116,17 @@ export const SuggestedFilters = ({
       <div className="flex flex-wrap items-center gap-2">
         {hasMatches && (
           <>
-            <Button onClick={onApplyAll}>Apply all filters</Button>
+            <Button
+              onClick={() =>
+                onApplyAll({
+                  concepts: matchedConcepts,
+                  geos: matchedGeos,
+                  years: matchedYears,
+                })
+              }
+            >
+              Apply all filters
+            </Button>
             <p> or</p>
           </>
         )}

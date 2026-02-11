@@ -10,34 +10,14 @@ import { FeaturesContext } from "@/context/FeaturesContext";
 import { TopicsContext } from "@/context/TopicsContext";
 import { WikiBaseConceptsContext } from "@/context/WikiBaseConceptsContext";
 import useConfig from "@/hooks/useConfig";
-import { TTheme, TTopic, TTopics } from "@/types";
+import { TTopic, TTopics } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
 import { getFeatureFlags } from "@/utils/featureFlags";
 import { getFeatures } from "@/utils/features";
 import { fetchAndProcessTopics } from "@/utils/fetchAndProcessTopics";
 import { readConfigFile } from "@/utils/readConfigFile";
 
-const TOPICS = ["flood defence", "targets"];
-const GEOS = ["spain"];
-
 type TProps = InferGetServerSidePropsType<typeof getServerSideProps>;
-
-const findMatches = (searchTerm: string) => {
-  if (!searchTerm) return { matchedConcepts: [], matchedGeos: [], matchedYears: [] };
-
-  const matchedYears: string[] = [];
-  const rawSearchTermParts = searchTerm.trim().split(" ");
-  for (let i = 0; i < rawSearchTermParts.length; i++) {
-    const year = parseInt(rawSearchTermParts[i]);
-    if (!isNaN(year) && year >= 1900 && year <= 2100) {
-      matchedYears.push(year.toString());
-    }
-  }
-
-  const matchedConcepts = TOPICS.filter((topic) => searchTerm.toLowerCase().includes(topic.toLowerCase()));
-  const matchedGeos = GEOS.filter((geo) => searchTerm.toLowerCase().includes(geo.toLowerCase()));
-  return { matchedConcepts, matchedGeos, matchedYears };
-};
 
 const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConceptsData }: TProps) => {
   const configQuery = useConfig();
@@ -48,8 +28,6 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [selectedGeos, setSelectedGeos] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
-
-  const { matchedConcepts, matchedGeos, matchedYears } = findMatches(searchTerm);
 
   return (
     <FeaturesContext.Provider value={features}>
@@ -121,9 +99,6 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                   <SearchTypeahead
                     searchTerm={searchTerm}
                     onSearchTermChange={setSearchTerm}
-                    matchedConcepts={matchedConcepts}
-                    matchedGeos={matchedGeos}
-                    matchedYears={matchedYears}
                     selectedTopics={selectedTopics}
                     selectedGeos={selectedGeos}
                     selectedYears={selectedYears}
@@ -139,10 +114,10 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                       setSelectedYears([...selectedYears, year]);
                       setSearchTerm("");
                     }}
-                    onApplyAll={() => {
-                      setSelectedTopics(matchedConcepts);
-                      setSelectedGeos(matchedGeos);
-                      setSelectedYears(matchedYears);
+                    onApplyAll={({ concepts, geos, years }) => {
+                      setSelectedTopics(concepts);
+                      setSelectedGeos(geos);
+                      setSelectedYears(years);
                       setRawSearchTerm(searchTerm);
                       setSearchTerm("");
                     }}

@@ -6,16 +6,13 @@ import { SuggestedFilters } from "@/components/_experiment/suggestedFilters/Sugg
 export interface SearchTypeaheadProps {
   searchTerm: string;
   onSearchTermChange: (value: string) => void;
-  matchedConcepts: string[];
-  matchedGeos: string[];
-  matchedYears: string[];
   selectedTopics: string[];
   selectedGeos: string[];
   selectedYears: string[];
   onSelectConcept: (concept: string) => void;
   onSelectGeo: (geo: string) => void;
   onSelectYear: (year: string) => void;
-  onApplyAll: () => void;
+  onApplyAll: (matches: { concepts: string[]; geos: string[]; years: string[] }) => void;
   onSearchOnly: () => void;
   placeholder?: string;
 }
@@ -23,9 +20,6 @@ export interface SearchTypeaheadProps {
 export const SearchTypeahead = ({
   searchTerm,
   onSearchTermChange,
-  matchedConcepts,
-  matchedGeos,
-  matchedYears,
   selectedTopics,
   selectedGeos,
   selectedYears,
@@ -49,9 +43,6 @@ export const SearchTypeahead = ({
 
       <SuggestedFilters
         searchTerm={searchTerm}
-        matchedConcepts={matchedConcepts}
-        matchedGeos={matchedGeos}
-        matchedYears={matchedYears}
         selectedTopics={selectedTopics}
         selectedGeos={selectedGeos}
         selectedYears={selectedYears}
