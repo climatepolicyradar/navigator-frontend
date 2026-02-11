@@ -1,7 +1,7 @@
 import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 
-import { SuggestedFilters } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
+import { SuggestedFilters, getSuggestedFilterMatches } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
 
 export interface SearchTypeaheadProps {
   searchTerm: string;
@@ -34,6 +34,13 @@ export const SearchTypeahead = ({
   onSearchOnly,
   placeholder = "Search",
 }: SearchTypeaheadProps) => {
+  const matches = getSuggestedFilterMatches(searchTerm);
+  const hasMatches =
+    matches.matchedConcepts.length > 0 ||
+    matches.matchedGeos.length > 0 ||
+    matches.matchedYears.length > 0 ||
+    matches.matchedDocumentTypes.length > 0;
+
   return (
     <div className="border border-border-lighter bg-white p-4 space-y-4">
       <div className="relative">
@@ -60,6 +67,7 @@ export const SearchTypeahead = ({
 
       <SuggestedFilters
         searchTerm={searchTerm}
+        matches={matches}
         selectedTopics={selectedTopics}
         selectedGeos={selectedGeos}
         selectedYears={selectedYears}
@@ -68,9 +76,32 @@ export const SearchTypeahead = ({
         onSelectGeo={onSelectGeo}
         onSelectYear={onSelectYear}
         onSelectDocumentType={onSelectDocumentType}
-        onApplyAll={onApplyAll}
-        onSearchOnly={onSearchOnly}
       />
+
+      {hasMatches && (
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <Button
+            onClick={() =>
+              onApplyAll({
+                concepts: matches.matchedConcepts,
+                geos: matches.matchedGeos,
+                years: matches.matchedYears,
+                documentTypes: matches.matchedDocumentTypes,
+              })
+            }
+            className="inline-flex items-center border border-border-lighter bg-text-brand px-4 py-2 text-xs font-semibold text-white hover:bg-text-brand/90"
+          >
+            Apply all filters
+          </Button>
+          <span className="text-xs text-text-tertiary">or</span>
+          <Button
+            onClick={onSearchOnly}
+            className="inline-flex items-center border border-border-lighter bg-white px-4 py-2 text-xs font-medium text-text-primary hover:bg-surface-light"
+          >
+            Search &ldquo;{searchTerm}&rdquo; only
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
