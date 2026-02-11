@@ -2,6 +2,7 @@ import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 
 import { SuggestedFilters, getSuggestedFilterMatches } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
+import { hasAnyMatches } from "@/components/_experiment/suggestedFilters/suggestedFilterUtils";
 
 export interface SearchTypeaheadProps {
   searchTerm: string;
@@ -36,12 +37,7 @@ export const SearchTypeahead = ({
 }: SearchTypeaheadProps) => {
   const trimmedSearch = searchTerm.trim();
   const matches = getSuggestedFilterMatches(trimmedSearch);
-  const hasMatches =
-    trimmedSearch.length > 0 &&
-    (matches.matchedConcepts.length > 0 ||
-      matches.matchedGeos.length > 0 ||
-      matches.matchedYears.length > 0 ||
-      matches.matchedDocumentTypes.length > 0);
+  const hasMatches = trimmedSearch.length > 0 && hasAnyMatches(matches);
 
   return (
     <div className="border border-border-lighter bg-white p-4 space-y-4">

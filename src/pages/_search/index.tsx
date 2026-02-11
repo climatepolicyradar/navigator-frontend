@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button } from "@base-ui/react/button";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { SearchTypeahead } from "@/components/_experiment/searchTypeahead/SearchTypeahead";
-import { SuggestedFilters, getSuggestedFilterMatches } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
+import { SuggestedFilters } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TopicsContext } from "@/context/TopicsContext";
 import { WikiBaseConceptsContext } from "@/context/WikiBaseConceptsContext";
+import useShadowSearch from "@/hooks/useShadowSearch";
 import useConfig from "@/hooks/useConfig";
 import { TTopic, TTopics } from "@/types";
 import { FamilyConcept, mapFamilyConceptsToConcepts } from "@/utils/familyConcepts";
@@ -24,44 +24,28 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
   const configQuery = useConfig();
   const { data: { regions = [], countries = [], corpus_types = {} } = {} } = configQuery;
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [rawSearchTerm, setRawSearchTerm] = useState("");
-  const [wasStringOnlySearch, setWasStringOnlySearch] = useState(false);
-  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-  const [selectedGeos, setSelectedGeos] = useState<string[]>([]);
-  const [selectedYears, setSelectedYears] = useState<string[]>([]);
-  const [selectedDocumentTypes, setSelectedDocumentTypes] = useState<string[]>([]);
+  const {
+    searchTerm,
+    setSearchTerm,
+    rawSearchTerm,
+    rawMatches,
+    filters,
+    hasAnyFilters,
+    showStringOnlyResults,
+    clearAllFilters,
+    handleSelectConcept,
+    handleSelectGeo,
+    handleSelectYear,
+    handleSelectDocumentType,
+    handleApplyAll,
+    handleSearchOnly,
+    resetFiltersToOriginalSearch,
+    removeTopic,
+    removeGeo,
+    removeYear,
+    removeDocumentType,
+  } = useShadowSearch();
 
-  const hasRemainingSuggestionsForSearch = (search: string, topics: string[], geos: string[], years: string[], documentTypes: string[]): boolean => {
-    const trimmed = search.trim();
-    if (!trimmed) {
-      return false;
-    }
-
-    const matches = getSuggestedFilterMatches(trimmed);
-
-    const remainingConcepts = matches.matchedConcepts.filter((concept) => !topics.includes(concept));
-    const remainingGeos = matches.matchedGeos.filter((geo) => !geos.includes(geo));
-    const remainingYears = matches.matchedYears.filter((year) => !years.includes(year));
-    const remainingDocumentTypes = matches.matchedDocumentTypes.filter((documentType) => !documentTypes.includes(documentType));
-
-    return remainingConcepts.length > 0 || remainingGeos.length > 0 || remainingYears.length > 0 || remainingDocumentTypes.length > 0;
-  };
-
-  const rawMatches = getSuggestedFilterMatches(rawSearchTerm);
-  const hasAnyFilters = selectedTopics.length > 0 || selectedGeos.length > 0 || selectedYears.length > 0 || selectedDocumentTypes.length > 0;
-  const clearAllFilters = () => {
-    setSelectedTopics([]);
-    setSelectedGeos([]);
-    setSelectedYears([]);
-    setSelectedDocumentTypes([]);
-  };
-  const hasRawMatches =
-    rawMatches.matchedConcepts.length > 0 ||
-    rawMatches.matchedGeos.length > 0 ||
-    rawMatches.matchedYears.length > 0 ||
-    rawMatches.matchedDocumentTypes.length > 0;
-  const showStringOnlyResults = !!rawSearchTerm && wasStringOnlySearch && !hasAnyFilters && hasRawMatches;
   return (
     <FeaturesContext.Provider value={features}>
       <TopicsContext.Provider value={topicsData}>
@@ -82,11 +66,11 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                     <div>
                       <p className="mb-1 text-xs font-medium text-text-tertiary">Topics</p>
                       <div className="flex flex-wrap gap-2">
-                        {selectedTopics.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
-                        {selectedTopics.map((topic) => (
+                        {filters.topics.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
+                        {filters.topics.map((topic: string) => (
                           <Button
                             key={topic}
-                            onClick={() => setSelectedTopics(selectedTopics.filter((topicToRemove) => topicToRemove !== topic))}
+                            onClick={() => removeTopic(topic)}
                             className="group inline-flex items-center gap-1 rounded-full border border-border-lighter bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui hover:text-text-brand transition"
                           >
                             <span>{topic}</span>
@@ -99,11 +83,11 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                     <div>
                       <p className="mb-1 text-xs font-medium text-text-tertiary">Geographies</p>
                       <div className="flex flex-wrap gap-2">
-                        {selectedGeos.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
-                        {selectedGeos.map((geo) => (
+                        {filters.geos.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
+                        {filters.geos.map((geo: string) => (
                           <Button
                             key={geo}
-                            onClick={() => setSelectedGeos(selectedGeos.filter((geoToRemove) => geoToRemove !== geo))}
+                            onClick={() => removeGeo(geo)}
                             className="group inline-flex items-center gap-1 rounded-full border border-border-lighter bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui hover:text-text-brand transition"
                           >
                             <span>{geo}</span>
@@ -116,11 +100,11 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                     <div>
                       <p className="mb-1 text-xs font-medium text-text-tertiary">Years</p>
                       <div className="flex flex-wrap gap-2">
-                        {selectedYears.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
-                        {selectedYears.map((year) => (
+                        {filters.years.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
+                        {filters.years.map((year: string) => (
                           <Button
                             key={year}
-                            onClick={() => setSelectedYears(selectedYears.filter((yearToRemove) => yearToRemove !== year))}
+                            onClick={() => removeYear(year)}
                             className="group inline-flex items-center gap-1 rounded-full border border-border-lighter bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui hover:text-text-brand transition"
                           >
                             <span>{year}</span>
@@ -133,11 +117,11 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                     <div>
                       <p className="mb-1 text-xs font-medium text-text-tertiary">Document types</p>
                       <div className="flex flex-wrap gap-2">
-                        {selectedDocumentTypes.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
-                        {selectedDocumentTypes.map((documentType) => (
+                        {filters.documentTypes.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
+                        {filters.documentTypes.map((documentType: string) => (
                           <Button
                             key={documentType}
-                            onClick={() => setSelectedDocumentTypes(selectedDocumentTypes.filter((typeToRemove) => typeToRemove !== documentType))}
+                            onClick={() => removeDocumentType(documentType)}
                             className="group inline-flex items-center gap-1 rounded-full border border-border-lighter bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui hover:text-text-brand transition"
                           >
                             <span>{documentType}</span>
@@ -150,9 +134,7 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
 
                   {hasAnyFilters && (
                     <Button
-                      onClick={() => {
-                        clearAllFilters();
-                      }}
+                      onClick={clearAllFilters}
                       className="mt-2 inline-flex items-center border border-border-lighter bg-surface-light px-3 py-2 text-xs font-medium text-text-secondary hover:bg-surface-ui"
                     >
                       Clear all filters
@@ -164,72 +146,16 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                   <SearchTypeahead
                     searchTerm={searchTerm}
                     onSearchTermChange={setSearchTerm}
-                    selectedTopics={selectedTopics}
-                    selectedGeos={selectedGeos}
-                    selectedYears={selectedYears}
-                    selectedDocumentTypes={selectedDocumentTypes}
-                    onSelectConcept={(concept) => {
-                      const trimmed = searchTerm.trim();
-                      const nextTopics = [...selectedTopics, concept];
-                      setSelectedTopics(nextTopics);
-                      if (trimmed.length > 0) {
-                        setRawSearchTerm(trimmed);
-                      }
-                      setWasStringOnlySearch(false);
-                      if (!hasRemainingSuggestionsForSearch(trimmed, nextTopics, selectedGeos, selectedYears, selectedDocumentTypes)) {
-                        setSearchTerm("");
-                      }
-                    }}
-                    onSelectGeo={(geo) => {
-                      const trimmed = searchTerm.trim();
-                      const nextGeos = [...selectedGeos, geo];
-                      setSelectedGeos(nextGeos);
-                      if (trimmed.length > 0) {
-                        setRawSearchTerm(trimmed);
-                      }
-                      setWasStringOnlySearch(false);
-                      if (!hasRemainingSuggestionsForSearch(trimmed, selectedTopics, nextGeos, selectedYears, selectedDocumentTypes)) {
-                        setSearchTerm("");
-                      }
-                    }}
-                    onSelectYear={(year) => {
-                      const trimmed = searchTerm.trim();
-                      const nextYears = [...selectedYears, year];
-                      setSelectedYears(nextYears);
-                      if (trimmed.length > 0) {
-                        setRawSearchTerm(trimmed);
-                      }
-                      setWasStringOnlySearch(false);
-                      if (!hasRemainingSuggestionsForSearch(trimmed, selectedTopics, selectedGeos, nextYears, selectedDocumentTypes)) {
-                        setSearchTerm("");
-                      }
-                    }}
-                    onSelectDocumentType={(documentType) => {
-                      const trimmed = searchTerm.trim();
-                      const nextDocumentTypes = [...selectedDocumentTypes, documentType];
-                      setSelectedDocumentTypes(nextDocumentTypes);
-                      if (trimmed.length > 0) {
-                        setRawSearchTerm(trimmed);
-                      }
-                      setWasStringOnlySearch(false);
-                      if (!hasRemainingSuggestionsForSearch(trimmed, selectedTopics, selectedGeos, selectedYears, nextDocumentTypes)) {
-                        setSearchTerm("");
-                      }
-                    }}
-                    onApplyAll={({ concepts, geos, years, documentTypes }) => {
-                      setSelectedTopics(concepts);
-                      setSelectedGeos(geos);
-                      setSelectedYears(years);
-                      setSelectedDocumentTypes(documentTypes);
-                      setRawSearchTerm(searchTerm);
-                      setWasStringOnlySearch(false);
-                      setSearchTerm("");
-                    }}
-                    onSearchOnly={() => {
-                      setRawSearchTerm(searchTerm);
-                      setWasStringOnlySearch(true);
-                      setSearchTerm("");
-                    }}
+                    selectedTopics={filters.topics}
+                    selectedGeos={filters.geos}
+                    selectedYears={filters.years}
+                    selectedDocumentTypes={filters.documentTypes}
+                    onSelectConcept={handleSelectConcept}
+                    onSelectGeo={handleSelectGeo}
+                    onSelectYear={handleSelectYear}
+                    onSelectDocumentType={handleSelectDocumentType}
+                    onApplyAll={handleApplyAll}
+                    onSearchOnly={handleSearchOnly}
                   />
 
                   {rawSearchTerm && (
@@ -238,22 +164,9 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                         <div className="border border-border-lighter bg-white p-4 space-y-3">
                           <p className="text-xs font-semibold tracking-[0.14em] text-text-tertiary uppercase">Results</p>
                           <div className="space-y-2 text-xs text-text-secondary">
-                            <p>
-                              The original search <span className="font-semibold">&ldquo;{rawSearchTerm}&rdquo;</span> has been converted into the
-                              filters on the left. Adjust or clear the filters to change these results.
-                            </p>
+                            <p>Your search has been converted into the filters on the left. Adjust or clear the filters to change these results.</p>
                             <Button
-                              onClick={() => {
-                                // Put the original query back into the search box,
-                                // clear all filters, and hide the results section
-                                // so the user is effectively "back at square one".
-                                setSearchTerm(rawSearchTerm);
-                                setSelectedTopics([]);
-                                setSelectedGeos([]);
-                                setSelectedYears([]);
-                                setSelectedDocumentTypes([]);
-                                setRawSearchTerm("");
-                              }}
+                              onClick={resetFiltersToOriginalSearch}
                               className="inline-flex items-center border border-border-lighter bg-white px-3 py-2 text-[11px] font-medium text-text-primary hover:bg-surface-light"
                             >
                               Reset filters to original search
@@ -273,24 +186,14 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                             <SuggestedFilters
                               searchTerm={rawSearchTerm}
                               matches={rawMatches}
-                              selectedTopics={selectedTopics}
-                              selectedGeos={selectedGeos}
-                              selectedYears={selectedYears}
-                              selectedDocumentTypes={selectedDocumentTypes}
-                              onSelectConcept={(concept) => {
-                                setSelectedTopics([...selectedTopics, concept]);
-                              }}
-                              onSelectGeo={(geo) => {
-                                setSelectedGeos([...selectedGeos, geo]);
-                              }}
-                              onSelectYear={(year) => {
-                                setSelectedYears([...selectedYears, year]);
-                                setWasStringOnlySearch(false);
-                              }}
-                              onSelectDocumentType={(documentType) => {
-                                setSelectedDocumentTypes([...selectedDocumentTypes, documentType]);
-                                setWasStringOnlySearch(false);
-                              }}
+                              selectedTopics={filters.topics}
+                              selectedGeos={filters.geos}
+                              selectedYears={filters.years}
+                              selectedDocumentTypes={filters.documentTypes}
+                              onSelectConcept={handleSelectConcept}
+                              onSelectGeo={handleSelectGeo}
+                              onSelectYear={handleSelectYear}
+                              onSelectDocumentType={handleSelectDocumentType}
                               showHeader={false}
                               showEmptyCopy={false}
                             />
