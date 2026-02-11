@@ -1,15 +1,15 @@
 import { Button } from "@base-ui/react/button";
 
-export type SuggestedFilterMatches = {
+export type TSuggestedFilterMatches = {
   matchedConcepts: string[];
   matchedGeos: string[];
   matchedYears: string[];
   matchedDocumentTypes: string[];
 };
 
-export interface SuggestedFiltersProps {
+export interface ISuggestedFiltersProps {
   searchTerm: string;
-  matches: SuggestedFilterMatches;
+  matches: TSuggestedFilterMatches;
   selectedTopics: string[];
   selectedGeos: string[];
   selectedYears: string[];
@@ -26,7 +26,7 @@ const TOPICS = ["flood defence", "targets"];
 const GEOS = ["spain", "france", "germany"];
 const DOCUMENT_TYPES = ["laws", "policies", "reports", "litigation"];
 
-export const getSuggestedFilterMatches = (searchTerm: string): SuggestedFilterMatches => {
+export const getSuggestedFilterMatches = (searchTerm: string): TSuggestedFilterMatches => {
   if (!searchTerm) {
     return {
       matchedConcepts: [],
@@ -65,7 +65,7 @@ export const SuggestedFilters = ({
   onSelectDocumentType,
   showHeader = true,
   showEmptyCopy = true,
-}: SuggestedFiltersProps) => {
+}: ISuggestedFiltersProps) => {
   const { matchedConcepts, matchedGeos, matchedYears, matchedDocumentTypes } = matches;
 
   const remainingConcepts = matchedConcepts.filter((concept) => !selectedTopics.includes(concept));

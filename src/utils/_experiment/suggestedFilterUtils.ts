@@ -1,4 +1,4 @@
-import { getSuggestedFilterMatches, SuggestedFilterMatches } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
+import { getSuggestedFilterMatches, TSuggestedFilterMatches } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
 
 /** Single object holding all selected filter arrays. */
 export type SelectedFilters = {
@@ -21,7 +21,7 @@ export function hasAnyFilters(filters: SelectedFilters): boolean {
 }
 
 /** True if the search string has at least one match in any category. */
-export function hasAnyMatches(matches: SuggestedFilterMatches): boolean {
+export function hasAnyMatches(matches: TSuggestedFilterMatches): boolean {
   return (
     matches.matchedConcepts.length > 0 || matches.matchedGeos.length > 0 || matches.matchedYears.length > 0 || matches.matchedDocumentTypes.length > 0
   );

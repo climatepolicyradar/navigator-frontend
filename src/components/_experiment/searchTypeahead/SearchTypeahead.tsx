@@ -4,7 +4,7 @@ import { Input } from "@base-ui/react/input";
 import { SuggestedFilters, getSuggestedFilterMatches } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
 import { hasAnyMatches } from "@/utils/_experiment/suggestedFilterUtils";
 
-export interface SearchTypeaheadProps {
+export interface ISearchTypeaheadProps {
   searchTerm: string;
   onSearchTermChange: (value: string) => void;
   selectedTopics: string[];
@@ -34,7 +34,7 @@ export const SearchTypeahead = ({
   onApplyAll,
   onSearchOnly,
   placeholder = "Search",
-}: SearchTypeaheadProps) => {
+}: ISearchTypeaheadProps) => {
   const trimmedSearch = searchTerm.trim();
   const matches = getSuggestedFilterMatches(trimmedSearch);
   const hasMatches = trimmedSearch.length > 0 && hasAnyMatches(matches);
