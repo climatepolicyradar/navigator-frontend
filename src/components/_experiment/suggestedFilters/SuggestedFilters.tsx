@@ -1,7 +1,15 @@
 import { Button } from "@base-ui/react/button";
 
+export type SuggestedFilterMatches = {
+  matchedConcepts: string[];
+  matchedGeos: string[];
+  matchedYears: string[];
+  matchedDocumentTypes: string[];
+};
+
 export interface SuggestedFiltersProps {
   searchTerm: string;
+  matches: SuggestedFilterMatches;
   selectedTopics: string[];
   selectedGeos: string[];
   selectedYears: string[];
@@ -10,14 +18,15 @@ export interface SuggestedFiltersProps {
   onSelectGeo: (geo: string) => void;
   onSelectYear: (year: string) => void;
   onSelectDocumentType: (documentType: string) => void;
-  onApplyAll: (matches: { concepts: string[]; geos: string[]; years: string[]; documentTypes: string[] }) => void;
-  onSearchOnly: () => void;
+  showHeader?: boolean;
+  showEmptyCopy?: boolean;
 }
 
 const TOPICS = ["flood defence", "targets"];
 const GEOS = ["spain", "france", "germany"];
 const DOCUMENT_TYPES = ["laws", "policies", "reports", "litigation"];
-const findMatches = (searchTerm: string) => {
+
+export const getSuggestedFilterMatches = (searchTerm: string): SuggestedFilterMatches => {
   if (!searchTerm) {
     return {
       matchedConcepts: [],
@@ -36,14 +45,16 @@ const findMatches = (searchTerm: string) => {
     }
   }
 
-  const matchedConcepts = TOPICS.filter((topic) => searchTerm.toLowerCase().includes(topic.toLowerCase()));
-  const matchedGeos = GEOS.filter((geo) => searchTerm.toLowerCase().includes(geo.toLowerCase()));
-  const matchedDocumentTypes = DOCUMENT_TYPES.filter((documentType) => searchTerm.toLowerCase().includes(documentType.toLowerCase()));
+  const lowerSearch = searchTerm.toLowerCase();
+  const matchedConcepts = TOPICS.filter((topic) => lowerSearch.includes(topic.toLowerCase()));
+  const matchedGeos = GEOS.filter((geo) => lowerSearch.includes(geo.toLowerCase()));
+  const matchedDocumentTypes = DOCUMENT_TYPES.filter((documentType) => lowerSearch.includes(documentType.toLowerCase()));
   return { matchedConcepts, matchedGeos, matchedYears, matchedDocumentTypes };
 };
 
 export const SuggestedFilters = ({
   searchTerm,
+  matches,
   selectedTopics,
   selectedGeos,
   selectedYears,
@@ -52,25 +63,26 @@ export const SuggestedFilters = ({
   onSelectGeo,
   onSelectYear,
   onSelectDocumentType,
-  onApplyAll,
-  onSearchOnly,
+  showHeader = true,
+  showEmptyCopy = true,
 }: SuggestedFiltersProps) => {
-  if (searchTerm.length === 0) return null;
-
-  const { matchedConcepts, matchedGeos, matchedYears, matchedDocumentTypes } = findMatches(searchTerm);
-
+  const { matchedConcepts, matchedGeos, matchedYears, matchedDocumentTypes } = matches;
   const hasMatches = matchedConcepts.length > 0 || matchedGeos.length > 0 || matchedYears.length > 0 || matchedDocumentTypes.length > 0;
 
   return (
     <div className="space-y-3">
-      <h2 className="mb-1 text-sm font-semibold text-text-primary">Suggested filters</h2>
-      {hasMatches ? (
-        <p className="mb-1 text-xs text-text-secondary">
-          Based on your search <span className="font-semibold">&ldquo;{searchTerm}&rdquo;</span>, we have found the following:
-        </p>
-      ) : null}
+      {showHeader && (
+        <>
+          <h2 className="mb-1 text-sm font-semibold text-text-primary">Suggested filters</h2>
+          {hasMatches && (
+            <p className="mb-1 text-xs text-text-secondary">
+              Based on your search <span className="font-semibold">&ldquo;{searchTerm}&rdquo;</span>, we have found the following:
+            </p>
+          )}
+        </>
+      )}
       <ul className="space-y-3 text-sm text-text-primary">
-        {!hasMatches && (
+        {!hasMatches && searchTerm.length > 0 && showEmptyCopy && (
           <li className="text-xs text-text-tertiary">
             We will show filter suggestions here once your search includes recognised topics, geographies, years or document types.
           </li>
@@ -152,31 +164,6 @@ export const SuggestedFilters = ({
           </li>
         )}
       </ul>
-
-      {hasMatches && (
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <Button
-            onClick={() =>
-              onApplyAll({
-                concepts: matchedConcepts,
-                geos: matchedGeos,
-                years: matchedYears,
-                documentTypes: matchedDocumentTypes,
-              })
-            }
-            className="inline-flex items-center rounded-full bg-text-brand px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-text-brand/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-text-brand"
-          >
-            Apply all filters
-          </Button>
-          <span className="text-xs text-text-tertiary">or</span>
-          <Button
-            onClick={onSearchOnly}
-            className="inline-flex items-center rounded-full border border-border-lighter bg-white px-4 py-2 text-xs font-medium text-text-primary hover:bg-surface-light"
-          >
-            Search &ldquo;{searchTerm}&rdquo; only
-          </Button>
-        </div>
-      )}
     </div>
   );
 };

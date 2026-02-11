@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
 import { SearchTypeahead } from "@/components/_experiment/searchTypeahead/SearchTypeahead";
+import { SuggestedFilters, getSuggestedFilterMatches } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TopicsContext } from "@/context/TopicsContext";
@@ -29,6 +30,13 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
   const [selectedGeos, setSelectedGeos] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
   const [selectedDocumentTypes, setSelectedDocumentTypes] = useState<string[]>([]);
+
+  const rawMatches = getSuggestedFilterMatches(rawSearchTerm);
+  const hasRawMatches =
+    rawMatches.matchedConcepts.length > 0 ||
+    rawMatches.matchedGeos.length > 0 ||
+    rawMatches.matchedYears.length > 0 ||
+    rawMatches.matchedDocumentTypes.length > 0;
   return (
     <FeaturesContext.Provider value={features}>
       <TopicsContext.Provider value={topicsData}>
@@ -164,27 +172,79 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                     }}
                   />
 
-                  <div className="border border-border-lighter bg-white p-4 space-y-3">
-                    <p className="text-xs font-semibold tracking-[0.14em] text-text-tertiary uppercase">Filtered view</p>
-                    <p className="text-sm text-text-primary">
-                      Results for <span className="font-semibold">&ldquo;{rawSearchTerm}&rdquo;</span>
-                    </p>
-                    <p className="text-xs text-text-secondary">
-                      This query has been translated into the filters on the left. Use the search box to adjust your query, or clear the filters to
-                      start again.
-                    </p>
-                    <Button
-                      onClick={() => {
-                        setSearchTerm(rawSearchTerm);
-                        setSelectedTopics([]);
-                        setSelectedGeos([]);
-                        setSelectedYears([]);
-                      }}
-                      className="mt-2 inline-flex items-center rounded-full border border-border-lighter bg-white px-3 py-2 text-xs font-medium text-text-primary hover:bg-surface-light"
-                    >
-                      Reset filters to original search
-                    </Button>
-                  </div>
+                  {rawSearchTerm && (
+                    <div className="space-y-3">
+                      {selectedTopics.length > 0 || selectedGeos.length > 0 || selectedYears.length > 0 || selectedDocumentTypes.length > 0 ? (
+                        <div className="border border-border-lighter bg-white p-4 space-y-3">
+                          <p className="text-xs font-semibold tracking-[0.14em] text-text-tertiary uppercase">Results</p>
+                          <div className="space-y-2 text-xs text-text-secondary">
+                            <p>
+                              The original search <span className="font-semibold">&ldquo;{rawSearchTerm}&rdquo;</span> has been converted into the
+                              filters on the left. Adjust or clear the filters to change these results.
+                            </p>
+                            <Button
+                              onClick={() => {
+                                // Put the original query back into the search box,
+                                // clear all filters, and hide the results section
+                                // so the user is effectively "back at square one".
+                                setSearchTerm(rawSearchTerm);
+                                setSelectedTopics([]);
+                                setSelectedGeos([]);
+                                setSelectedYears([]);
+                                setSelectedDocumentTypes([]);
+                                setRawSearchTerm("");
+                              }}
+                              className="inline-flex items-center border border-border-lighter bg-white px-3 py-2 text-[11px] font-medium text-text-primary hover:bg-surface-light"
+                            >
+                              Reset filters to original search
+                            </Button>
+                          </div>
+                          <p className="text-xs text-text-tertiary">Search results will appear here.</p>
+                        </div>
+                      ) : hasRawMatches ? (
+                        <div className="border border-border-lighter bg-white p-4 space-y-3">
+                          <p className="text-xs font-semibold tracking-[0.14em] text-text-tertiary uppercase">Results</p>
+                          <p className="text-sm text-text-primary">
+                            Showing results for <span className="font-semibold">&ldquo;{rawSearchTerm}&rdquo;</span>
+                          </p>
+                          <p className="text-xs text-text-secondary">To get more precise results, try applying filters based on your search.</p>
+
+                          <div className="mt-3 bg-surface-light p-3">
+                            <SuggestedFilters
+                              searchTerm={rawSearchTerm}
+                              matches={rawMatches}
+                              selectedTopics={selectedTopics}
+                              selectedGeos={selectedGeos}
+                              selectedYears={selectedYears}
+                              selectedDocumentTypes={selectedDocumentTypes}
+                              onSelectConcept={(concept) => {
+                                setSelectedTopics([...selectedTopics, concept]);
+                              }}
+                              onSelectGeo={(geo) => {
+                                setSelectedGeos([...selectedGeos, geo]);
+                              }}
+                              onSelectYear={(year) => {
+                                setSelectedYears([...selectedYears, year]);
+                              }}
+                              onSelectDocumentType={(documentType) => {
+                                setSelectedDocumentTypes([...selectedDocumentTypes, documentType]);
+                              }}
+                              showHeader={false}
+                              showEmptyCopy={false}
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="border border-border-lighter bg-white p-4 space-y-3">
+                          <p className="text-xs font-semibold tracking-[0.14em] text-text-tertiary uppercase">Results</p>
+                          <p className="text-sm text-text-primary">
+                            Showing results for <span className="font-semibold">&ldquo;{rawSearchTerm}&rdquo;</span>
+                          </p>
+                          <p className="text-xs text-text-tertiary">Search results will appear here.</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </main>
               </div>
             </div>
