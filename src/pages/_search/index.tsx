@@ -50,6 +50,12 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
 
   const rawMatches = getSuggestedFilterMatches(rawSearchTerm);
   const hasAnyFilters = selectedTopics.length > 0 || selectedGeos.length > 0 || selectedYears.length > 0 || selectedDocumentTypes.length > 0;
+  const clearAllFilters = () => {
+    setSelectedTopics([]);
+    setSelectedGeos([]);
+    setSelectedYears([]);
+    setSelectedDocumentTypes([]);
+  };
   const hasRawMatches =
     rawMatches.matchedConcepts.length > 0 ||
     rawMatches.matchedGeos.length > 0 ||
@@ -142,13 +148,10 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                     </div>
                   </div>
 
-                  {(selectedTopics.length > 0 || selectedGeos.length > 0 || selectedYears.length > 0 || selectedDocumentTypes.length > 0) && (
+                  {hasAnyFilters && (
                     <Button
                       onClick={() => {
-                        setSelectedTopics([]);
-                        setSelectedGeos([]);
-                        setSelectedYears([]);
-                        setSelectedDocumentTypes([]);
+                        clearAllFilters();
                       }}
                       className="mt-2 inline-flex items-center border border-border-lighter bg-surface-light px-3 py-2 text-xs font-medium text-text-secondary hover:bg-surface-ui"
                     >
