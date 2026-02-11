@@ -26,6 +26,7 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
 
   const [searchTerm, setSearchTerm] = useState("");
   const [rawSearchTerm, setRawSearchTerm] = useState("");
+  const [wasStringOnlySearch, setWasStringOnlySearch] = useState(false);
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [selectedGeos, setSelectedGeos] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
@@ -48,11 +49,13 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
   };
 
   const rawMatches = getSuggestedFilterMatches(rawSearchTerm);
+  const hasAnyFilters = selectedTopics.length > 0 || selectedGeos.length > 0 || selectedYears.length > 0 || selectedDocumentTypes.length > 0;
   const hasRawMatches =
     rawMatches.matchedConcepts.length > 0 ||
     rawMatches.matchedGeos.length > 0 ||
     rawMatches.matchedYears.length > 0 ||
     rawMatches.matchedDocumentTypes.length > 0;
+  const showStringOnlyResults = !!rawSearchTerm && wasStringOnlySearch && !hasAnyFilters && hasRawMatches;
   return (
     <FeaturesContext.Provider value={features}>
       <TopicsContext.Provider value={topicsData}>
@@ -166,9 +169,10 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                       const trimmed = searchTerm.trim();
                       const nextTopics = [...selectedTopics, concept];
                       setSelectedTopics(nextTopics);
-                      if (!rawSearchTerm && trimmed.length > 0) {
+                      if (trimmed.length > 0) {
                         setRawSearchTerm(trimmed);
                       }
+                      setWasStringOnlySearch(false);
                       if (!hasRemainingSuggestionsForSearch(trimmed, nextTopics, selectedGeos, selectedYears, selectedDocumentTypes)) {
                         setSearchTerm("");
                       }
@@ -177,9 +181,10 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                       const trimmed = searchTerm.trim();
                       const nextGeos = [...selectedGeos, geo];
                       setSelectedGeos(nextGeos);
-                      if (!rawSearchTerm && trimmed.length > 0) {
+                      if (trimmed.length > 0) {
                         setRawSearchTerm(trimmed);
                       }
+                      setWasStringOnlySearch(false);
                       if (!hasRemainingSuggestionsForSearch(trimmed, selectedTopics, nextGeos, selectedYears, selectedDocumentTypes)) {
                         setSearchTerm("");
                       }
@@ -188,9 +193,10 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                       const trimmed = searchTerm.trim();
                       const nextYears = [...selectedYears, year];
                       setSelectedYears(nextYears);
-                      if (!rawSearchTerm && trimmed.length > 0) {
+                      if (trimmed.length > 0) {
                         setRawSearchTerm(trimmed);
                       }
+                      setWasStringOnlySearch(false);
                       if (!hasRemainingSuggestionsForSearch(trimmed, selectedTopics, selectedGeos, nextYears, selectedDocumentTypes)) {
                         setSearchTerm("");
                       }
@@ -199,9 +205,10 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                       const trimmed = searchTerm.trim();
                       const nextDocumentTypes = [...selectedDocumentTypes, documentType];
                       setSelectedDocumentTypes(nextDocumentTypes);
-                      if (!rawSearchTerm && trimmed.length > 0) {
+                      if (trimmed.length > 0) {
                         setRawSearchTerm(trimmed);
                       }
+                      setWasStringOnlySearch(false);
                       if (!hasRemainingSuggestionsForSearch(trimmed, selectedTopics, selectedGeos, selectedYears, nextDocumentTypes)) {
                         setSearchTerm("");
                       }
@@ -212,17 +219,19 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                       setSelectedYears(years);
                       setSelectedDocumentTypes(documentTypes);
                       setRawSearchTerm(searchTerm);
+                      setWasStringOnlySearch(false);
                       setSearchTerm("");
                     }}
                     onSearchOnly={() => {
                       setRawSearchTerm(searchTerm);
+                      setWasStringOnlySearch(true);
                       setSearchTerm("");
                     }}
                   />
 
                   {rawSearchTerm && (
                     <div className="space-y-3">
-                      {selectedTopics.length > 0 || selectedGeos.length > 0 || selectedYears.length > 0 || selectedDocumentTypes.length > 0 ? (
+                      {hasAnyFilters ? (
                         <div className="border border-border-lighter bg-white p-4 space-y-3">
                           <p className="text-xs font-semibold tracking-[0.14em] text-text-tertiary uppercase">Results</p>
                           <div className="space-y-2 text-xs text-text-secondary">
@@ -249,7 +258,7 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                           </div>
                           <p className="text-xs text-text-tertiary">Search results will appear here.</p>
                         </div>
-                      ) : hasRawMatches ? (
+                      ) : showStringOnlyResults ? (
                         <div className="border border-border-lighter bg-white p-4 space-y-3">
                           <p className="text-xs font-semibold tracking-[0.14em] text-text-tertiary uppercase">Results</p>
                           <p className="text-sm text-text-primary">
@@ -273,9 +282,11 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                               }}
                               onSelectYear={(year) => {
                                 setSelectedYears([...selectedYears, year]);
+                                setWasStringOnlySearch(false);
                               }}
                               onSelectDocumentType={(documentType) => {
                                 setSelectedDocumentTypes([...selectedDocumentTypes, documentType]);
+                                setWasStringOnlySearch(false);
                               }}
                               showHeader={false}
                               showEmptyCopy={false}
@@ -285,9 +296,6 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                       ) : (
                         <div className="border border-border-lighter bg-white p-4 space-y-3">
                           <p className="text-xs font-semibold tracking-[0.14em] text-text-tertiary uppercase">Results</p>
-                          <p className="text-sm text-text-primary">
-                            Showing results for <span className="font-semibold">&ldquo;{rawSearchTerm}&rdquo;</span>
-                          </p>
                           <p className="text-xs text-text-tertiary">Search results will appear here.</p>
                         </div>
                       )}

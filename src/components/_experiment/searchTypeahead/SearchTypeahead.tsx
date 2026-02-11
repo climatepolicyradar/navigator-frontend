@@ -65,7 +65,6 @@ export const SearchTypeahead = ({
           </Button>
         )}
       </div>
-      <p className="text-xs text-text-tertiary">Start typing to discover topics, geographies, years and document types we can turn into filters.</p>
 
       {trimmedSearch.length > 0 && (
         <>
