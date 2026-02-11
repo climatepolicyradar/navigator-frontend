@@ -2,7 +2,7 @@ import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 
 import { SuggestedFilters, getSuggestedFilterMatches } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
-import { hasAnyMatches } from "@/components/_experiment/suggestedFilters/suggestedFilterUtils";
+import { hasAnyMatches } from "@/utils/_experiment/suggestedFilterUtils";
 
 export interface SearchTypeaheadProps {
   searchTerm: string;

@@ -6,8 +6,8 @@ import {
   hasAnyFilters as checkHasAnyFilters,
   hasAnyMatches,
   hasRemainingSuggestions,
-  type SelectedFilters,
-} from "@/components/_experiment/suggestedFilters/suggestedFilterUtils";
+  SelectedFilters,
+} from "@/utils/_experiment/suggestedFilterUtils";
 
 /**
  * Encapsulates all state and behaviour for the shadow search (experimental search) page:

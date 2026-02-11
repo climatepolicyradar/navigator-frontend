@@ -1,4 +1,4 @@
-import { getSuggestedFilterMatches, type SuggestedFilterMatches } from "./SuggestedFilters";
+import { getSuggestedFilterMatches, SuggestedFilterMatches } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
 
 /** Single object holding all selected filter arrays. */
 export type SelectedFilters = {
