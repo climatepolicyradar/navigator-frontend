@@ -67,14 +67,29 @@ export const SuggestedFilters = ({
   showEmptyCopy = true,
 }: SuggestedFiltersProps) => {
   const { matchedConcepts, matchedGeos, matchedYears, matchedDocumentTypes } = matches;
-  const hasMatches = matchedConcepts.length > 0 || matchedGeos.length > 0 || matchedYears.length > 0 || matchedDocumentTypes.length > 0;
+
+  const remainingConcepts = matchedConcepts.filter((concept) => !selectedTopics.includes(concept));
+  const remainingGeos = matchedGeos.filter((geo) => !selectedGeos.includes(geo));
+  const remainingYears = matchedYears.filter((year) => !selectedYears.includes(year));
+  const remainingDocumentTypes = matchedDocumentTypes.filter((documentType) => !selectedDocumentTypes.includes(documentType));
+
+  const hasAnyOriginalMatches = matchedConcepts.length > 0 || matchedGeos.length > 0 || matchedYears.length > 0 || matchedDocumentTypes.length > 0;
+
+  const hasRemainingSuggestions =
+    remainingConcepts.length > 0 || remainingGeos.length > 0 || remainingYears.length > 0 || remainingDocumentTypes.length > 0;
+
+  // If there were matches but the user has already added all of them as filters,
+  // do not show an empty "suggested filters" block.
+  if (!hasRemainingSuggestions && hasAnyOriginalMatches) {
+    return null;
+  }
 
   return (
     <div className="space-y-3">
       {showHeader && (
         <>
           <h2 className="mb-1 text-sm font-semibold text-text-primary">Suggested filters</h2>
-          {hasMatches && (
+          {hasRemainingSuggestions && (
             <p className="mb-1 text-xs text-text-secondary">
               Based on your search <span className="font-semibold">&ldquo;{searchTerm}&rdquo;</span>, we have found the following:
             </p>
@@ -82,84 +97,76 @@ export const SuggestedFilters = ({
         </>
       )}
       <ul className="space-y-3 text-sm text-text-primary">
-        {!hasMatches && searchTerm.length > 0 && showEmptyCopy && (
+        {!hasAnyOriginalMatches && searchTerm.length > 0 && showEmptyCopy && (
           <li className="text-xs text-text-tertiary">
             We will show filter suggestions here once your search includes recognised topics, geographies, years or document types.
           </li>
         )}
 
-        {matchedConcepts.length > 0 && (
+        {remainingConcepts.length > 0 && (
           <li>
             <p className="mb-1 text-xs font-medium uppercase tracking-[0.14em] text-text-tertiary">Topics</p>
             <div className="flex flex-wrap gap-2">
-              {matchedConcepts
-                .filter((concept) => !selectedTopics.includes(concept))
-                .map((concept) => (
-                  <Button
-                    key={concept}
-                    onClick={() => onSelectConcept(concept)}
-                    className="inline-flex items-center rounded-full bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui"
-                  >
-                    {concept}
-                  </Button>
-                ))}
+              {remainingConcepts.map((concept) => (
+                <Button
+                  key={concept}
+                  onClick={() => onSelectConcept(concept)}
+                  className="inline-flex items-center rounded-full bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui"
+                >
+                  {concept}
+                </Button>
+              ))}
             </div>
           </li>
         )}
 
-        {matchedGeos.length > 0 && (
+        {remainingGeos.length > 0 && (
           <li>
             <p className="mb-1 text-xs font-medium uppercase tracking-[0.14em] text-text-tertiary">Geographies</p>
             <div className="flex flex-wrap gap-2">
-              {matchedGeos
-                .filter((geo) => !selectedGeos.includes(geo))
-                .map((geo) => (
-                  <Button
-                    key={geo}
-                    onClick={() => onSelectGeo(geo)}
-                    className="inline-flex items-center rounded-full bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui"
-                  >
-                    {geo}
-                  </Button>
-                ))}
+              {remainingGeos.map((geo) => (
+                <Button
+                  key={geo}
+                  onClick={() => onSelectGeo(geo)}
+                  className="inline-flex items-center rounded-full bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui"
+                >
+                  {geo}
+                </Button>
+              ))}
             </div>
           </li>
         )}
 
-        {matchedYears.length > 0 && (
+        {remainingYears.length > 0 && (
           <li>
             <p className="mb-1 text-xs font-medium uppercase tracking-[0.14em] text-text-tertiary">Years</p>
             <div className="flex flex-wrap gap-2">
-              {matchedYears
-                .filter((year) => !selectedYears.includes(year))
-                .map((year) => (
-                  <Button
-                    key={year}
-                    onClick={() => onSelectYear(year)}
-                    className="inline-flex items-center rounded-full bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui"
-                  >
-                    {year}
-                  </Button>
-                ))}
+              {remainingYears.map((year) => (
+                <Button
+                  key={year}
+                  onClick={() => onSelectYear(year)}
+                  className="inline-flex items-center rounded-full bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui"
+                >
+                  {year}
+                </Button>
+              ))}
             </div>
           </li>
         )}
 
-        {matchedDocumentTypes.length > 0 && (
+        {remainingDocumentTypes.length > 0 && (
           <li>
             <p className="mb-1 text-xs font-medium uppercase tracking-[0.14em] text-text-tertiary">Document types</p>
             <div className="flex flex-wrap gap-2">
-              {matchedDocumentTypes
-                .filter((documentType) => !selectedDocumentTypes.includes(documentType))
-                .map((documentType) => (
-                  <Button
-                    key={documentType}
-                    onClick={() => onSelectDocumentType(documentType)}
-                    className="inline-flex items-center rounded-full bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui"
-                  >
-                    {documentType}
-                  </Button>
-                ))}
+              {remainingDocumentTypes.map((documentType) => (
+                <Button
+                  key={documentType}
+                  onClick={() => onSelectDocumentType(documentType)}
+                  className="inline-flex items-center rounded-full bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui"
+                >
+                  {documentType}
+                </Button>
+              ))}
             </div>
           </li>
         )}

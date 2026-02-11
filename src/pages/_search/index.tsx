@@ -31,6 +31,22 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
   const [selectedDocumentTypes, setSelectedDocumentTypes] = useState<string[]>([]);
 
+  const hasRemainingSuggestionsForSearch = (search: string, topics: string[], geos: string[], years: string[], documentTypes: string[]): boolean => {
+    const trimmed = search.trim();
+    if (!trimmed) {
+      return false;
+    }
+
+    const matches = getSuggestedFilterMatches(trimmed);
+
+    const remainingConcepts = matches.matchedConcepts.filter((concept) => !topics.includes(concept));
+    const remainingGeos = matches.matchedGeos.filter((geo) => !geos.includes(geo));
+    const remainingYears = matches.matchedYears.filter((year) => !years.includes(year));
+    const remainingDocumentTypes = matches.matchedDocumentTypes.filter((documentType) => !documentTypes.includes(documentType));
+
+    return remainingConcepts.length > 0 || remainingGeos.length > 0 || remainingYears.length > 0 || remainingDocumentTypes.length > 0;
+  };
+
   const rawMatches = getSuggestedFilterMatches(rawSearchTerm);
   const hasRawMatches =
     rawMatches.matchedConcepts.length > 0 ||
@@ -147,16 +163,48 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                     selectedYears={selectedYears}
                     selectedDocumentTypes={selectedDocumentTypes}
                     onSelectConcept={(concept) => {
-                      setSelectedTopics([...selectedTopics, concept]);
+                      const trimmed = searchTerm.trim();
+                      const nextTopics = [...selectedTopics, concept];
+                      setSelectedTopics(nextTopics);
+                      if (!rawSearchTerm && trimmed.length > 0) {
+                        setRawSearchTerm(trimmed);
+                      }
+                      if (!hasRemainingSuggestionsForSearch(trimmed, nextTopics, selectedGeos, selectedYears, selectedDocumentTypes)) {
+                        setSearchTerm("");
+                      }
                     }}
                     onSelectGeo={(geo) => {
-                      setSelectedGeos([...selectedGeos, geo]);
+                      const trimmed = searchTerm.trim();
+                      const nextGeos = [...selectedGeos, geo];
+                      setSelectedGeos(nextGeos);
+                      if (!rawSearchTerm && trimmed.length > 0) {
+                        setRawSearchTerm(trimmed);
+                      }
+                      if (!hasRemainingSuggestionsForSearch(trimmed, selectedTopics, nextGeos, selectedYears, selectedDocumentTypes)) {
+                        setSearchTerm("");
+                      }
                     }}
                     onSelectYear={(year) => {
-                      setSelectedYears([...selectedYears, year]);
+                      const trimmed = searchTerm.trim();
+                      const nextYears = [...selectedYears, year];
+                      setSelectedYears(nextYears);
+                      if (!rawSearchTerm && trimmed.length > 0) {
+                        setRawSearchTerm(trimmed);
+                      }
+                      if (!hasRemainingSuggestionsForSearch(trimmed, selectedTopics, selectedGeos, nextYears, selectedDocumentTypes)) {
+                        setSearchTerm("");
+                      }
                     }}
                     onSelectDocumentType={(documentType) => {
-                      setSelectedDocumentTypes([...selectedDocumentTypes, documentType]);
+                      const trimmed = searchTerm.trim();
+                      const nextDocumentTypes = [...selectedDocumentTypes, documentType];
+                      setSelectedDocumentTypes(nextDocumentTypes);
+                      if (!rawSearchTerm && trimmed.length > 0) {
+                        setRawSearchTerm(trimmed);
+                      }
+                      if (!hasRemainingSuggestionsForSearch(trimmed, selectedTopics, selectedGeos, selectedYears, nextDocumentTypes)) {
+                        setSearchTerm("");
+                      }
                     }}
                     onApplyAll={({ concepts, geos, years, documentTypes }) => {
                       setSelectedTopics(concepts);
