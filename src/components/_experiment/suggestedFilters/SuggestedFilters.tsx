@@ -15,12 +15,6 @@ export interface SuggestedFiltersProps {
   onSearchOnly: () => void;
 }
 
-/**
- * Displays suggested filters based on the current search term.
- *
- * @param props - Component properties.
- * @returns The suggested filters UI, or null if no search term.
- */
 export const SuggestedFilters = ({
   searchTerm,
   matchedConcepts,
@@ -42,14 +36,14 @@ export const SuggestedFilters = ({
   return (
     <div className="space-y-2">
       <h2 className="text-sm font-semibold text-text-primary">Suggested filters</h2>
-      <p className="text-xs text-text-secondary">Based on your search &ldquo;{searchTerm}&rdquo;, we have found the following:</p>
+      {hasMatches ? (
+        <p className="text-xs text-text-secondary">Based on your search &ldquo;{searchTerm}&rdquo;, we have found the following:</p>
+      ) : (
+        <p className="text-xs text-text-tertiary">
+          We will show filter suggestions here once your search includes recognised topics, geographies or years.
+        </p>
+      )}
       <ul className="space-y-2 text-sm text-text-primary">
-        {!hasMatches && (
-          <li className="text-xs text-text-tertiary">
-            We will show filter suggestions here once your search includes recognised topics, geographies or years.
-          </li>
-        )}
-
         {matchedConcepts.length > 0 && (
           <li>
             <p className="mb-1 text-xs text-text-tertiary">Topics</p>
