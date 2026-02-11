@@ -105,23 +105,40 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                       </div>
                     </div>
                   </div>
+
+                  {(searchTerm || selectedTopics.length > 0 || selectedGeos.length > 0 || selectedYears.length > 0) && (
+                    <Button
+                      onClick={() => {
+                        setSelectedTopics([]);
+                        setSelectedGeos([]);
+                        setSelectedYears([]);
+                      }}
+                      className="text-xs"
+                    >
+                      Clear all filters
+                    </Button>
+                  )}
                 </aside>
 
                 <main className="space-y-4 md:col-span-2">
-                  <div className="space-y-2">
+                  <div className="relative">
                     <Input
                       placeholder="Search"
                       onChange={(e) => {
                         setSearchTerm(e.target.value);
                       }}
-                      className="h-[40px] w-full"
+                      className="h-[40px] w-full pr-10"
                       value={searchTerm}
                     />
-                    <div className="flex gap-2">
-                      <Button onClick={() => setSearchTerm("")} disabled={!searchTerm}>
-                        Clear
+                    {searchTerm && (
+                      <Button
+                        onClick={() => setSearchTerm("")}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-text-tertiary hover:text-text-primary"
+                        aria-label="Clear search"
+                      >
+                        x
                       </Button>
-                    </div>
+                    )}
                   </div>
 
                   <div className="space-y-2">
