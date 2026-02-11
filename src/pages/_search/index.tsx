@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button } from "@base-ui/react/button";
-import { Input } from "@base-ui/react/input";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useState } from "react";
 
 import { ApiClient } from "@/api/http-common";
-import { SuggestedFilters } from "@/components/_experiment/suggestedFilters/SuggestedFilters";
+import { SearchTypeahead } from "@/components/_experiment/searchTypeahead/SearchTypeahead";
 import { withEnvConfig } from "@/context/EnvConfig";
 import { FeaturesContext } from "@/context/FeaturesContext";
 import { TopicsContext } from "@/context/TopicsContext";
@@ -119,28 +118,9 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                 </aside>
 
                 <main className="space-y-4 md:col-span-2">
-                  <div className="relative">
-                    <Input
-                      placeholder="Search"
-                      onChange={(e) => {
-                        setSearchTerm(e.target.value);
-                      }}
-                      className="h-[40px] w-full pr-10"
-                      value={searchTerm}
-                    />
-                    {searchTerm && (
-                      <Button
-                        onClick={() => setSearchTerm("")}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-text-tertiary hover:text-text-primary"
-                        aria-label="Clear search"
-                      >
-                        x
-                      </Button>
-                    )}
-                  </div>
-
-                  <SuggestedFilters
+                  <SearchTypeahead
                     searchTerm={searchTerm}
+                    onSearchTermChange={setSearchTerm}
                     matchedConcepts={matchedConcepts}
                     matchedGeos={matchedGeos}
                     matchedYears={matchedYears}
