@@ -141,7 +141,13 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                             {matchedConcepts
                               .filter((concept) => !selectedTopics.includes(concept))
                               .map((concept) => (
-                                <Button key={concept} onClick={() => setSelectedTopics([...selectedTopics, concept])}>
+                                <Button
+                                  key={concept}
+                                  onClick={() => {
+                                    setSelectedTopics([...selectedTopics, concept]);
+                                    setSearchTerm("");
+                                  }}
+                                >
                                   {concept}
                                 </Button>
                               ))}
@@ -156,7 +162,13 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                             {matchedGeos
                               .filter((geo) => !selectedGeos.includes(geo))
                               .map((geo) => (
-                                <Button key={geo} onClick={() => setSelectedGeos([...selectedGeos, geo])}>
+                                <Button
+                                  key={geo}
+                                  onClick={() => {
+                                    setSelectedGeos([...selectedGeos, geo]);
+                                    setSearchTerm("");
+                                  }}
+                                >
                                   {geo}
                                 </Button>
                               ))}
@@ -171,7 +183,13 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                             {matchedYears
                               .filter((year) => !selectedYears.includes(year))
                               .map((year) => (
-                                <Button key={year} onClick={() => setSelectedYears([...selectedYears, year])}>
+                                <Button
+                                  key={year}
+                                  onClick={() => {
+                                    setSelectedYears([...selectedYears, year]);
+                                    setSearchTerm("");
+                                  }}
+                                >
                                   {year}
                                 </Button>
                               ))}
