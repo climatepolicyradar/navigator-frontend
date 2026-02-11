@@ -36,25 +36,24 @@ export const SearchTypeahead = ({
 }: SearchTypeaheadProps) => {
   return (
     <div className="border border-border-lighter bg-white p-4 space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="relative">
         <Input
           placeholder={placeholder}
           onChange={(e) => {
             onSearchTermChange(e.target.value);
           }}
-          className="h-[44px] w-full border border-border-lighter bg-surface-light px-4 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-text-brand"
+          className="h-[44px] w-full border border-border-lighter bg-surface-light px-4 pr-10 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-text-brand"
           value={searchTerm}
         />
 
         {searchTerm.length > 0 && (
-          <div className="flex gap-2 justify-end sm:justify-start">
-            <Button
-              onClick={() => onSearchTermChange("")}
-              className="inline-flex items-center border border-border-lighter bg-surface-light px-3 py-2 text-xs font-medium text-text-secondary hover:bg-surface-ui"
-            >
-              x
-            </Button>
-          </div>
+          <Button
+            onClick={() => onSearchTermChange("")}
+            aria-label="Clear search"
+            className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center border border-border-lighter bg-surface-light text-xs font-medium text-text-secondary hover:bg-surface-ui"
+          >
+            x
+          </Button>
         )}
       </div>
       <p className="text-xs text-text-tertiary">Start typing to discover topics, geographies, years and document types we can turn into filters.</p>
