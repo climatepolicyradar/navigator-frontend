@@ -58,69 +58,48 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
     <FeaturesContext.Provider value={features}>
       <TopicsContext.Provider value={topicsData}>
         <WikiBaseConceptsContext.Provider value={familyConceptsData || []}>
-          <section className="bg-surface-light py-10 md:py-16">
+          <section className="py-8">
             <div className="mx-auto max-w-5xl px-4">
-              <header className="mb-10 space-y-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-text-tertiary">Experimental</p>
-                <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-text-primary">Search</h1>
-                <p className="max-w-2xl text-sm text-text-secondary">
-                  Try the next-generation filters for topics, geographies and years before they graduate into the main search.
-                </p>
+              <header className="mb-6">
+                <h1 className="text-2xl font-semibold text-text-primary">Shadow search</h1>
               </header>
 
-              <div className="grid gap-8 md:grid-cols-12 items-start">
-                <aside className="md:col-span-4 space-y-4 rounded-2xl border border-border-lighter bg-white/70 p-4 shadow-sm">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-text-tertiary">Active filters</p>
-                  </div>
+              <div className="grid gap-6 md:grid-cols-3 items-start">
+                <aside className="space-y-4 border border-border-lighter p-4">
+                  <h2 className="text-sm font-semibold text-text-primary">Active filters</h2>
 
                   <div className="space-y-3">
                     <div>
-                      <p className="mb-1 text-xs font-medium text-text-tertiary">Topics</p>
+                      <p className="mb-1 text-xs text-text-tertiary">Topics</p>
                       <div className="flex flex-wrap gap-2">
                         {selectedTopics.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
                         {selectedTopics.map((topic) => (
-                          <Button
-                            key={topic}
-                            onClick={() => setSelectedTopics(selectedTopics.filter((topicToRemove) => topicToRemove !== topic))}
-                            className="group inline-flex items-center gap-1 rounded-full border border-border-lighter bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui hover:text-text-brand transition"
-                          >
-                            <span>{topic}</span>
-                            <span className="text-xs text-text-tertiary group-hover:text-text-brand">×</span>
+                          <Button key={topic} onClick={() => setSelectedTopics(selectedTopics.filter((topicToRemove) => topicToRemove !== topic))}>
+                            {topic}
                           </Button>
                         ))}
                       </div>
                     </div>
 
                     <div>
-                      <p className="mb-1 text-xs font-medium text-text-tertiary">Geographies</p>
+                      <p className="mb-1 text-xs text-text-tertiary">Geographies</p>
                       <div className="flex flex-wrap gap-2">
                         {selectedGeos.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
                         {selectedGeos.map((geo) => (
-                          <Button
-                            key={geo}
-                            onClick={() => setSelectedGeos(selectedGeos.filter((geoToRemove) => geoToRemove !== geo))}
-                            className="group inline-flex items-center gap-1 rounded-full border border-border-lighter bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui hover:text-text-brand transition"
-                          >
-                            <span>{geo}</span>
-                            <span className="text-xs text-text-tertiary group-hover:text-text-brand">×</span>
+                          <Button key={geo} onClick={() => setSelectedGeos(selectedGeos.filter((geoToRemove) => geoToRemove !== geo))}>
+                            {geo}
                           </Button>
                         ))}
                       </div>
                     </div>
 
                     <div>
-                      <p className="mb-1 text-xs font-medium text-text-tertiary">Years</p>
+                      <p className="mb-1 text-xs text-text-tertiary">Years</p>
                       <div className="flex flex-wrap gap-2">
                         {selectedYears.length === 0 && <span className="text-xs text-text-tertiary">None</span>}
                         {selectedYears.map((year) => (
-                          <Button
-                            key={year}
-                            onClick={() => setSelectedYears(selectedYears.filter((yearToRemove) => yearToRemove !== year))}
-                            className="group inline-flex items-center gap-1 rounded-full border border-border-lighter bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui hover:text-text-brand transition"
-                          >
-                            <span>{year}</span>
-                            <span className="text-xs text-text-tertiary group-hover:text-text-brand">×</span>
+                          <Button key={year} onClick={() => setSelectedYears(selectedYears.filter((yearToRemove) => yearToRemove !== year))}>
+                            {year}
                           </Button>
                         ))}
                       </div>
@@ -128,39 +107,27 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                   </div>
                 </aside>
 
-                <main className="md:col-span-8 space-y-6">
-                  <div className="rounded-2xl border border-border-lighter bg-white/70 p-4 shadow-sm">
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                      <Input
-                        placeholder="Search the database"
-                        onChange={(e) => {
-                          setSearchTerm(e.target.value);
-                        }}
-                        className="h-[44px] w-full rounded-full border border-border-lighter bg-surface-light px-4 text-sm text-text-primary shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-text-brand"
-                        value={searchTerm}
-                      />
-
-                      <div className="flex gap-2 justify-end sm:justify-start">
-                        <Button
-                          onClick={() => setSearchTerm("")}
-                          disabled={!searchTerm}
-                          className="inline-flex items-center rounded-full border border-border-lighter bg-surface-light px-3 py-2 text-xs font-medium text-text-secondary hover:bg-surface-ui disabled:opacity-60 disabled:hover:bg-surface-light"
-                        >
-                          Clear
-                        </Button>
-                      </div>
+                <main className="space-y-4 md:col-span-2">
+                  <div className="space-y-2">
+                    <Input
+                      placeholder="Search"
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                      }}
+                      className="h-[40px] w-full"
+                      value={searchTerm}
+                    />
+                    <div className="flex gap-2">
+                      <Button onClick={() => setSearchTerm("")} disabled={!searchTerm}>
+                        Clear
+                      </Button>
                     </div>
-                    <p className="mt-3 text-xs text-text-tertiary">
-                      Start typing to discover topics, geographies and years we can turn into filters.
-                    </p>
                   </div>
 
-                  <div className="rounded-2xl border border-border-lighter bg-white/70 p-4 shadow-sm">
-                    <h2 className="mb-3 text-sm font-semibold text-text-primary">Suggested filters</h2>
-                    <p className="mb-3 text-xs text-text-secondary">
-                      Based on your search <span className="font-semibold">&ldquo;{searchTerm}&rdquo;</span>, we have found the following:
-                    </p>
-                    <ul className="space-y-3 text-sm text-text-primary">
+                  <div className="space-y-2">
+                    <h2 className="text-sm font-semibold text-text-primary">Suggested filters</h2>
+                    <p className="text-xs text-text-secondary">Based on your search &ldquo;{searchTerm}&rdquo;, we have found the following:</p>
+                    <ul className="space-y-2 text-sm text-text-primary">
                       {matchedConcepts.length === 0 && matchedGeos.length === 0 && matchedYears.length === 0 && (
                         <li className="text-xs text-text-tertiary">
                           We will show filter suggestions here once your search includes recognised topics, geographies or years.
@@ -169,16 +136,12 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
 
                       {matchedConcepts.length > 0 && (
                         <li>
-                          <p className="mb-1 text-xs font-medium uppercase tracking-[0.14em] text-text-tertiary">Topics</p>
+                          <p className="mb-1 text-xs text-text-tertiary">Topics</p>
                           <div className="flex flex-wrap gap-2">
                             {matchedConcepts
                               .filter((concept) => !selectedTopics.includes(concept))
                               .map((concept) => (
-                                <Button
-                                  key={concept}
-                                  onClick={() => setSelectedTopics([...selectedTopics, concept])}
-                                  className="inline-flex items-center rounded-full bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui"
-                                >
+                                <Button key={concept} onClick={() => setSelectedTopics([...selectedTopics, concept])}>
                                   {concept}
                                 </Button>
                               ))}
@@ -188,16 +151,12 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
 
                       {matchedGeos.length > 0 && (
                         <li>
-                          <p className="mb-1 text-xs font-medium uppercase tracking-[0.14em] text-text-tertiary">Geographies</p>
+                          <p className="mb-1 text-xs text-text-tertiary">Geographies</p>
                           <div className="flex flex-wrap gap-2">
                             {matchedGeos
                               .filter((geo) => !selectedGeos.includes(geo))
                               .map((geo) => (
-                                <Button
-                                  key={geo}
-                                  onClick={() => setSelectedGeos([...selectedGeos, geo])}
-                                  className="inline-flex items-center rounded-full bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui"
-                                >
+                                <Button key={geo} onClick={() => setSelectedGeos([...selectedGeos, geo])}>
                                   {geo}
                                 </Button>
                               ))}
@@ -207,16 +166,12 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
 
                       {matchedYears.length > 0 && (
                         <li>
-                          <p className="mb-1 text-xs font-medium uppercase tracking-[0.14em] text-text-tertiary">Years</p>
+                          <p className="mb-1 text-xs text-text-tertiary">Years</p>
                           <div className="flex flex-wrap gap-2">
                             {matchedYears
                               .filter((year) => !selectedYears.includes(year))
                               .map((year) => (
-                                <Button
-                                  key={year}
-                                  onClick={() => setSelectedYears([...selectedYears, year])}
-                                  className="inline-flex items-center rounded-full bg-surface-light px-3 py-1.5 text-[11px] font-medium text-text-primary hover:bg-surface-ui"
-                                >
+                                <Button key={year} onClick={() => setSelectedYears([...selectedYears, year])}>
                                   {year}
                                 </Button>
                               ))}
@@ -226,7 +181,7 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                     </ul>
 
                     {(matchedConcepts.length > 0 || matchedGeos.length > 0 || matchedYears.length > 0) && (
-                      <div className="mt-4 flex flex-wrap items-center gap-3">
+                      <div className="flex flex-wrap items-center gap-2">
                         <Button
                           onClick={() => {
                             setSelectedTopics(matchedConcepts);
@@ -235,30 +190,18 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                             setRawSearchTerm(searchTerm);
                             setSearchTerm("");
                           }}
-                          className="inline-flex items-center rounded-full bg-text-brand px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-text-brand/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-text-brand"
                         >
                           Apply all filters
                         </Button>
-                        <span className="text-xs text-text-tertiary">or</span>
-                        <Button
-                          onClick={() => setSearchTerm(searchTerm)}
-                          className="inline-flex items-center rounded-full border border-border-lighter bg-white px-4 py-2 text-xs font-medium text-text-primary hover:bg-surface-light"
-                        >
-                          Search &ldquo;{searchTerm}&rdquo; only
-                        </Button>
+                        <Button onClick={() => setSearchTerm(searchTerm)}>Search &ldquo;{searchTerm}&rdquo; only</Button>
                       </div>
                     )}
                   </div>
 
-                  <div className="rounded-2xl border border-border-lighter bg-white/70 p-4 shadow-sm space-y-3">
-                    <p className="text-xs font-semibold tracking-[0.14em] text-text-tertiary uppercase">Filtered view</p>
-                    <p className="text-sm text-text-primary">
-                      Results for <span className="font-semibold">&ldquo;{rawSearchTerm}&rdquo;</span>
-                    </p>
-                    <p className="text-xs text-text-secondary">
-                      This query has been translated into the filters on the left. Use the search box to adjust your query, or clear the filters to
-                      start again.
-                    </p>
+                  <div className="space-y-2">
+                    <h2 className="text-sm font-semibold text-text-primary">Filtered view</h2>
+                    <p className="text-sm text-text-primary">Results for &ldquo;{rawSearchTerm}&rdquo;</p>
+                    <p className="text-xs text-text-secondary">This query has been translated into the filters on the left.</p>
                     <Button
                       onClick={() => {
                         setSearchTerm(rawSearchTerm);
@@ -266,7 +209,6 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                         setSelectedGeos([]);
                         setSelectedYears([]);
                       }}
-                      className="mt-2 inline-flex items-center rounded-full border border-border-lighter bg-white px-3 py-2 text-xs font-medium text-text-primary hover:bg-surface-light"
                     >
                       Reset filters to original search
                     </Button>
