@@ -97,7 +97,12 @@ export const SuggestedFilters = ({
       </ul>
 
       <div className="flex flex-wrap items-center gap-2">
-        {hasMatches && <Button onClick={onApplyAll}>Apply all filters</Button>}
+        {hasMatches && (
+          <>
+            <Button onClick={onApplyAll}>Apply all filters</Button>
+            <p> or</p>
+          </>
+        )}
         <Button onClick={onSearchOnly}>Search &ldquo;{searchTerm}&rdquo; only</Button>
       </div>
     </div>
