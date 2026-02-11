@@ -52,7 +52,7 @@
     "@next/eslint-plugin-next": "^15.5.4",
     "@percy/cli": "^1.31.8",
     "@playwright/test": "^1.58.2",
-    "@size-limit/file": "^11.1.6",
+    "@size-limit/file": "^12.0.0",
     "@size-limit/webpack": "^11.1.6",
     "@size-limit/webpack-why": "^11.1.6",
     "@storybook/addon-docs": "10.2.8",
