@@ -245,7 +245,9 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                   <div className="space-y-2">
                     <h2 className="text-sm font-semibold text-text-primary">Filtered view</h2>
                     <p className="text-sm text-text-primary">Results for &ldquo;{rawSearchTerm}&rdquo;</p>
-                    <p className="text-xs text-text-secondary">This query has been translated into the filters on the left.</p>
+                    {(selectedTopics.length > 0 || selectedGeos.length > 0 || selectedYears.length > 0) && (
+                      <p className="text-xs text-text-secondary">This query has been translated into the filters on the left.</p>
+                    )}
                     <Button
                       onClick={() => {
                         setSearchTerm(rawSearchTerm);
@@ -254,7 +256,7 @@ const ShadowSearch = ({ theme, themeConfig, features, topicsData, familyConcepts
                         setSelectedYears([]);
                       }}
                     >
-                      Reset filters to original search
+                      Undo search
                     </Button>
                   </div>
                 </main>
