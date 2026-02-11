@@ -4,6 +4,7 @@ import App, { AppProps } from "next/app";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 
+import { FrontendObservability } from "@/components/FrontendObservability";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
 import { Overlays } from "@/components/organisms/overlays/Overlays";
 import { COOKIE_TUTORIALS_NAME } from "@/constants/cookies";
@@ -105,6 +106,7 @@ function MyApp({ Component, pageProps, theme, adobeApiKey }: IProps) {
                     <link rel="icon" href={favicon} />
                   </Head>
                   <div id={theme} className="root">
+                    <FrontendObservability />
                     <Component {...pageProps} />
                   </div>
                   <Overlays onConsentChange={onConsentChange} />
