@@ -5,11 +5,18 @@ type TEnvironmentConfig = {
   useWebserver: boolean;
 };
 
+const localBaseURL = "http://localhost:3000";
+
 const config: Record<string, TEnvironmentConfig> = {
   development: {
-    baseURL: "http://localhost:3000",
+    baseURL: localBaseURL,
     useWebserver: true,
   },
+  shipyard: {
+    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? localBaseURL,
+    useWebserver: false,
+  },
+
   // CPR
   cpr_staging: {
     baseURL: "https://cpr.staging.climatepolicyradar.org",
@@ -50,6 +57,10 @@ const config: Record<string, TEnvironmentConfig> = {
 const env = process.env.PLAYWRIGHT_ENV ?? "development";
 const envConfig = config[env];
 
+/** Extra headers for Shipyard ephemeral env auth (bypass token). Set PLAYWRIGHT_BYPASS_TOKEN in CI. */
+const bypassToken = process.env.PLAYWRIGHT_BYPASS_TOKEN;
+const extraHTTPHeaders = bypassToken ? { "x-shipyard-bypass-token": bypassToken } : undefined;
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -85,6 +96,7 @@ export default defineConfig({
     screenshot: "off",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
+    ...(extraHTTPHeaders && { extraHTTPHeaders }),
   },
 
   /* Configure projects for major browsers */

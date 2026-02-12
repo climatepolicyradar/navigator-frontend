@@ -6,7 +6,6 @@ services:
       # Main front door for the environment
       shipyard.route: /
       shipyard.primary-route: true
-      shipyard.host.cpr: '{"prefix": "cpr"}'
     build:
       context: .
       dockerfile: Dockerfile
@@ -27,13 +26,11 @@ services:
   navigator-frontend-cclw:
     labels:
       shipyard.route: /
-      shipyard.host.cclw: '{"prefix": "cclw"}'
     build:
       context: .
       dockerfile: Dockerfile
       args:
         THEME: cclw
-        # trunk-ignore(checkov/CKV_SECRET_6)
         ADOBE_API_KEY: f27f373000c74f22a7f3976caba43efe
         BACKEND_API_URL: https://cpr.staging.climatepolicyradar.org/api/v1
         # trunk-ignore(checkov/CKV_SECRET_9)
@@ -47,13 +44,11 @@ services:
   navigator-frontend-mcf:
     labels:
       shipyard.route: /
-      shipyard.host.mcf: '{"prefix": "mcf"}'
     build:
       context: .
       dockerfile: Dockerfile
       args:
         THEME: mcf
-        # trunk-ignore(checkov/CKV_SECRET_6)
         ADOBE_API_KEY: f27f373000c74f22a7f3976caba43efe
         BACKEND_API_URL: https://cpr.staging.climatepolicyradar.org/api/v1
         # trunk-ignore(checkov/CKV_SECRET_9)
@@ -67,13 +62,11 @@ services:
   navigator-frontend-ccc:
     labels:
       shipyard.route: /
-      shipyard.host.ccc: '{"prefix": "ccc"}'
     build:
       context: .
       dockerfile: Dockerfile
       args:
         THEME: ccc
-        # trunk-ignore(checkov/CKV_SECRET_6)
         ADOBE_API_KEY: f27f373000c74f22a7f3976caba43efe
         BACKEND_API_URL: https://cpr.staging.climatepolicyradar.org/api/v1
         # trunk-ignore(checkov/CKV_SECRET_9)
