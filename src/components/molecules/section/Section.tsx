@@ -35,7 +35,7 @@ export const Section = ({ badge, block, children, count, Icon, id, title, wide =
   );
 
   return (
-    <section className={sectionClasses} id={sectionId}>
+    <section className={sectionClasses} id={sectionId} role="region">
       {title && (
         <h2 className="block col-start-1 -col-end-1 mb-5 text-2xl text-gray-950 font-heavy leading-tight">
           {Icon && (
